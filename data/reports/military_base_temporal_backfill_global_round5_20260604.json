@@ -1,0 +1,553 @@
+{
+  "generated_at": "2026-06-04T22:27:41.7057434Z",
+  "temporal_source": "manual_web_research_global_round5",
+  "candidates": [
+    {
+      "source_id": "geonames:12165732",
+      "name": "Forton Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1807,
+      "end_year": 1969,
+      "operational_intervals": [
+        {
+          "start_year": 1807,
+          "end_year": 1923,
+          "label": "Army barracks / Portsmouth Division Royal Marines phase"
+        },
+        {
+          "start_year": 1927,
+          "end_year": 1969,
+          "label": "HMS St Vincent Royal Navy training establishment phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Forton Barracks - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Forton_Barracks",
+          "note": "Infobox gives built 1807 and used 1807-1923; history notes Royal Marines left in August 1923 and the site recommissioned as HMS St Vincent in 1927 until 1969."
+        },
+        {
+          "title": "HMS St Vincent (Gosport shore establishment) - DBpedia",
+          "url": "https://dbpedia.org/page/HMS_St_Vincent_(Gosport_shore_establishment)",
+          "note": "Secondary structured summary identifies HMS St Vincent as the Forton Barracks shore establishment from 1927."
+        }
+      ],
+      "rationale": "The overlay row is the historical Forton Barracks site at Gosport. Public history sources provide both the initial barracks opening and the later Royal Navy training-establishment interval, so the candidate uses explicit intervals instead of flattening the gap."
+    },
+    {
+      "source_id": "geonames:11983565",
+      "name": "Royal Navy Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1889,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1889,
+          "end_year": 1934,
+          "label": "Devonport Royal Naval Barracks / HMS Vivid phase"
+        },
+        {
+          "start_year": 1934,
+          "end_year": null,
+          "label": "HMS Drake / Fleet Accommodation Centre phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "HMNB Devonport - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/HMNB_Devonport",
+          "note": "The naval barracks at Devonport were completed in 1889, named HMS Vivid, renamed HMS Drake on January 1, 1934, and remain in Ministry of Defence ownership as the Fleet Accommodation Centre."
+        },
+        {
+          "title": "HMS Vivid - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/HMS_Vivid",
+          "note": "Lists the Devonport Navy barracks shore establishment as commissioned in 1890 and renamed HMS Drake in 1934."
+        }
+      ],
+      "rationale": "The coordinates and name align with the Devonport Royal Naval Barracks/HMS Drake site. Because the historical name changed but the military accommodation use continued, the endpoint is left open."
+    },
+    {
+      "source_id": "geonames:11983571",
+      "name": "Royal Navy Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1903,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1903,
+          "end_year": 1974,
+          "label": "Portsmouth Royal Naval Barracks / HMS Victory phase"
+        },
+        {
+          "start_year": 1974,
+          "end_year": null,
+          "label": "HMS Nelson shore establishment phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "HMS Nelson (shore establishment) - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/HMS_Nelson_(shore_establishment)",
+          "note": "States the Portsmouth naval barracks opened in 1903 as HMS Victory and were renamed HMS Nelson in 1974."
+        },
+        {
+          "title": "Sea Your History - RNB Portsmouth",
+          "url": "https://seayourhistory.org.uk/content/view/609/777/",
+          "note": "Royal Naval Museum education page says the Royal Naval Barracks at Portsmouth opened in 1903 and were renamed HMS Nelson in 1974."
+        }
+      ],
+      "rationale": "This Portsmouth Royal Navy Barracks row has a documented opening year and continued Royal Navy shore-establishment identity under HMS Nelson."
+    },
+    {
+      "source_id": "geonames:11983562",
+      "name": "Raglan Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1856,
+      "end_year": 1970,
+      "operational_intervals": [
+        {
+          "start_year": 1856,
+          "end_year": 1970,
+          "label": "Devonport army barracks phase; end year rounded to early-1970s demolition"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Raglan Barracks, Devonport - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Raglan_Barracks,_Devonport",
+          "note": "Infobox gives built 1853-1856 and used 1856-1970s; text says first occupied in December 1858 and demolished in the early 1970s."
+        },
+        {
+          "title": "Raglan Gatehouse - Devonport Online",
+          "url": "https://www.devonportonline.co.uk/historic_devonport/buildings_historic/raglan-gatehouse/raglan-gatehouse.aspx",
+          "note": "Local history page says Raglan Barracks was built between 1853 and 1858 and that barracks buildings survived until the late 1960s or early 1970s."
+        }
+      ],
+      "rationale": "The row is explicitly the Devonport historical barracks. The end year is conservative and rounded because sources state use/demolition in the 1970s rather than a precise closure date."
+    },
+    {
+      "source_id": "geonames:11983570",
+      "name": "Royal Marine Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1779,
+      "end_year": 1950,
+      "operational_intervals": [
+        {
+          "start_year": 1779,
+          "end_year": 1950,
+          "label": "Chatham Division Royal Marines barracks phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Royal Marine Barracks, Chatham - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Royal_Marine_Barracks,_Chatham",
+          "note": "Infobox gives built 1779 and used 1779-1950; history says the buildings were first occupied on September 2, 1779 and remained in use until the Chatham Group was disbanded in 1950."
+        },
+        {
+          "title": "Royal Marine Barracks, Chatham - Hansard",
+          "url": "https://api.parliament.uk/historic-hansard/commons/1959/mar/04/royal-marine-barracks-chatham",
+          "note": "Parliamentary record documents the Royal Marine Barracks, Chatham disposal context after closure."
+        }
+      ],
+      "rationale": "Exact historical Royal Marine Barracks row with a clearly sourced occupation start and closure year."
+    },
+    {
+      "source_id": "geonames:11983567",
+      "name": "Chatham Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1757,
+      "end_year": 2014,
+      "operational_intervals": [
+        {
+          "start_year": 1757,
+          "end_year": 1928,
+          "label": "Chatham Infantry Barracks phase"
+        },
+        {
+          "start_year": 1928,
+          "end_year": 2014,
+          "label": "Kitchener Barracks phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Kitchener Barracks - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Kitchener_Barracks",
+          "note": "Infobox gives built 1757 and used 1757-2014; history says the site was originally Chatham Infantry Barracks and renamed Kitchener Barracks in 1928."
+        },
+        {
+          "title": "Former C18 barrack block, Kitchener Barracks - Historic England",
+          "url": "https://historicengland.org.uk/listing/the-list/list-entry/1410725",
+          "note": "Historic England identifies Chatham Infantry Barracks, later Kitchener Barracks, as constructed in 1757."
+        }
+      ],
+      "rationale": "The overlay name and Chatham coordinates match the Chatham Infantry/Kitchener Barracks complex. The dated renaming is captured as an interval boundary."
+    },
+    {
+      "source_id": "geonames:11983563",
+      "name": "Mount Wise Barracks (historical)",
+      "country_code": "GB",
+      "start_year": 1834,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1834,
+          "end_year": null,
+          "label": "documented barracks / later naval command and ancillary barracks use"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Devonport Ordnance Laboratory/Mount Wise Barracks - Devonport Online",
+          "url": "https://www.devonportonline.co.uk/historic_devonport/buildings_historic/mountwise-barracks/mountwise-barracks.aspx",
+          "note": "Local history page says the Devonport Ordnance Laboratory was converted to barracks by 1834 and later used by army engineers and tradesmen."
+        },
+        {
+          "title": "Mount Wise, Plymouth - LoopNet historical summary",
+          "url": "https://www.loopnet.com/portfolio-property/Mount-Wise-Plymouth/9332074/",
+          "note": "Property history summary says Mount Wise was in military use from the 18th century and later served the Naval Commander in Chief with ancillary naval barracks."
+        }
+      ],
+      "rationale": "The start year is a documented conversion-to-barracks date. The endpoint is open because sources establish later military/naval use but do not provide a clean closure year for the overlay barracks row."
+    },
+    {
+      "source_id": "geonames:11919697",
+      "name": "Dhamial Army Airbase",
+      "country_code": "PK",
+      "start_year": 1964,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1964,
+          "end_year": null,
+          "label": "Pakistan Army Aviation / Qasim Army Aviation Base phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Qasim Army Aviation Base - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Qasim_Army_Aviation_Base",
+          "note": "States Dhamial Airbase was redesignated as an Army Aviation Air Base on October 3, 1964 and renamed Qasim Army Aviation Base on December 12, 1972."
+        }
+      ],
+      "rationale": "The queue row uses the Dhamial Army Airbase name and coordinates; the public source supplies the military aviation start and later naming."
+    },
+    {
+      "source_id": "geonames:11118496",
+      "name": "Sharea Faisal",
+      "country_code": "PK",
+      "start_year": 1933,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1933,
+          "end_year": 1975,
+          "label": "RAF Drigh Road / PAF Station Drigh Road phase"
+        },
+        {
+          "start_year": 1975,
+          "end_year": null,
+          "label": "PAF Base Faisal / Shahrah-e-Faisal phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "PAF Base Faisal - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/PAF_Base_Faisal",
+          "note": "Infobox gives built 1933 and used 1933-present; text says RAF activities began at Drigh Road in 1933 and that it was named after King Faisal in 1975."
+        },
+        {
+          "title": "History of the Pakistan Air Force - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/History_of_the_Pakistan_Air_Force",
+          "note": "Notes the British colonial government established the first air force station in the British Raj near Drigh Road in 1933, now PAF Base Faisal."
+        }
+      ],
+      "rationale": "The overlay label Sharea Faisal corresponds to the PAF Base Faisal / former Drigh Road military airbase row at Karachi."
+    },
+    {
+      "source_id": "geonames:7045790",
+      "name": "Pakistan Naval Station Haider",
+      "country_code": "PK",
+      "start_year": 1976,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1976,
+          "end_year": null,
+          "label": "PNS Haider naval depot / Maritime Headquarters support phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Pakistan - Naval History - GlobalSecurity.org",
+          "url": "https://www.globalsecurity.org/military/world/pakistan/navy-history.htm",
+          "note": "States Maritime Headquarters at Clifton Karachi was inaugurated in 1976 along with PNS Haider commissioned as its depot."
+        }
+      ],
+      "rationale": "The source directly names PNS Haider and gives a commissioning year. Endpoint remains open because the queue row is a naval-station overlay and no closure evidence was found."
+    },
+    {
+      "source_id": "geonames:11427448",
+      "name": "Bhisiana Air Force Station",
+      "country_code": "IN",
+      "start_year": 1975,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1975,
+          "end_year": null,
+          "label": "Bhisiana Air Force Station / Bathinda civil-enclave military base phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Bathinda Airport - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Bathinda_Airport",
+          "note": "Air Force Station section says Bhisiana Air Force Station was built in 1975 and upgraded to a wing on February 18, 1980."
+        }
+      ],
+      "rationale": "The overlay row is the military air station, not the later civilian enclave. The candidate uses the documented military-station build year."
+    },
+    {
+      "source_id": "geonames:11749504",
+      "name": "Hashimara Air Force Station",
+      "country_code": "IN",
+      "start_year": 1963,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1963,
+          "end_year": null,
+          "label": "Indian Air Force Station Hasimara / Hashimara phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Hasimara Air Force Station - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Hasimara_Air_Force_Station",
+          "note": "History says the station was activated on April 7, 1963 and had completed 50 years of operational existence in April 2013."
+        },
+        {
+          "title": "Bharat Rakshak - No. 16 Wing, Indian Air Force",
+          "url": "https://bharat-rakshak.com/indianairforce/database/units/16%2BWing",
+          "note": "Unit database lists date raised as 1963-04-07 at Hashimara Air Force Station and says AFS Hasimara was set up on April 7, 1963."
+        }
+      ],
+      "rationale": "Exact overlay feature with a corroborated activation date."
+    },
+    {
+      "source_id": "geonames:6301070",
+      "name": "Car Nicobar Air Force Base",
+      "country_code": "IN",
+      "start_year": 1956,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "Indian Air Force staging post / air force base phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Bharat Rakshak - Indian Air Force Operational Bases index",
+          "url": "https://www.bharat-rakshak.com/indianairforce/database/units/index.php?init=G&uniq=Operational+Bases",
+          "note": "Search-result excerpt from the IAF units database says IAF commenced operations at Car Nicobar in 1956 with a staging post for logistics support missions."
+        },
+        {
+          "title": "Car Nicobar - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Car_Nicobar",
+          "note": "Aviation section describes the IAF base as evolving from a wartime British strip and later becoming a permanent staging base."
+        }
+      ],
+      "rationale": "The overlay row is the Car Nicobar Air Force Base. The 1956 IAF operational start is conservative and avoids treating the earlier wartime strip as the same continuous military base without stronger evidence."
+    },
+    {
+      "source_id": "geonames:11499694",
+      "name": "Ubaydah Bin Al Jarrah",
+      "country_code": "IQ",
+      "start_year": 1973,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1973,
+          "end_year": 2003,
+          "label": "Iraqi Air Force al-Kut / Ubaydah Bin Al Jarrah Air Base phase"
+        },
+        {
+          "start_year": 2003,
+          "end_year": 2011,
+          "label": "U.S.-led coalition FOB/COB Delta phase"
+        },
+        {
+          "start_year": 2012,
+          "end_year": null,
+          "label": "Iraqi Army Aviation Corps phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Ubaydah Bin Al Jarrah Air Base - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ubaydah_Bin_Al_Jarrah_Air_Base",
+          "note": "Infobox gives built 1973 and used 1973-present, with operators Iraqi Air Force 1973-2003, United States Army 2003-2011, and Iraqi Army Aviation Corps 2012-present."
+        }
+      ],
+      "rationale": "Exact al-Kut/Ubaydah row with clear multi-operator intervals."
+    },
+    {
+      "source_id": "geonames:11749411",
+      "name": "H3 Northwest AFB",
+      "country_code": "IQ",
+      "start_year": 1935,
+      "end_year": 2003,
+      "operational_intervals": [
+        {
+          "start_year": 1935,
+          "end_year": 2003,
+          "label": "H-3 complex airstrip / Iraqi Air Force base phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "H-3 Air Base - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/H-3_Air_Base",
+          "note": "Infobox gives built 1935 and used 1935-2003; history says the H-3 airstrip was established by the Iraq Petroleum Company in 1935."
+        },
+        {
+          "title": "H-3 Air Base, Iraq - GlobalMilitary.net",
+          "url": "https://www.globalmilitary.net/airbases/h-3-air-base/",
+          "note": "Profile repeats 1935 establishment as a landing ground for pumping station H3 and describes later military airbase use."
+        }
+      ],
+      "rationale": "The queue row is the H3 Northwest AFB feature in the H-3 complex. The start reflects the airstrip establishment date, while the endpoint follows the sourced used-through-2003 military airbase span."
+    },
+    {
+      "source_id": "geonames:11497803",
+      "name": "Shayrat Airbase",
+      "country_code": "SY",
+      "start_year": 1960,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Syrian Air Force / later Syrian and Russian-supported operational airbase phase; start rounded to decade"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Shayrat Airbase - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Shayrat_Airbase",
+          "note": "History says the airbase was originally constructed in the 1960s and describes later Syrian/Russian operational use."
+        },
+        {
+          "title": "Shayrat airbase: One of the major strongholds of Assad's Air Force - TASS",
+          "url": "https://tass.com/defense/940064",
+          "note": "Contemporary profile identifies Shayrat as a major Syrian Air Force stronghold."
+        }
+      ],
+      "rationale": "Only decade-level construction evidence was found, so the candidate uses a medium-confidence 1960 start with an explicit rounded-start note."
+    },
+    {
+      "source_id": "geonames:11496247",
+      "name": "Tiyas Military Airbase",
+      "country_code": "SY",
+      "start_year": 1970,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1970,
+          "end_year": null,
+          "label": "documented Soviet-access / Syrian military airbase phase; start rounded to decade"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Tiyas - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Tiyas",
+          "note": "States the nearby Tiyas Military Airbase was accessed by the Soviet Union during the 1970s and 1980s for periodical deployment of naval aircraft."
+        },
+        {
+          "title": "The U.S. Army Corps of Engineers / Gulf District history PDF excerpt",
+          "url": "https://tile.loc.gov/storage-services/master/gdc/gdcebookspublic/20/21/76/10/60/2021761060/2021761060.pdf",
+          "note": "Public report describes Tiyas as a military airbase with fighter, fighter-bomber, and training units and existing military infrastructure."
+        }
+      ],
+      "rationale": "The exact Tiyas Military Airbase row has documented military use by the 1970s. Because no precise construction/opening year was found, the start is rounded to the first documented decade."
+    },
+    {
+      "source_id": "geonames:12164567",
+      "name": "Ras Banas",
+      "country_code": "EG",
+      "start_year": 1966,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1966,
+          "end_year": null,
+          "label": "documented Ras Banas military airfield / facilities phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ras Banas Airfield - CIA CREST imagery report",
+          "url": "https://www.cia.gov/readingroom/docs/CIA-RDP78T05929A001400060004-6.pdf",
+          "note": "Declassified February 22, 1966 imagery report is titled Ras Banas Airfield and discusses its air-defense capabilities."
+        },
+        {
+          "title": "Ras Banas - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Ras_Banas",
+          "note": "History notes U.S. interest in use of military facilities at Ras Banas in 1982."
+        }
+      ],
+      "rationale": "The source proves a military airfield existed by 1966 and later public history confirms military-facility status. The start is therefore a documented-by year rather than a construction year."
+    },
+    {
+      "source_id": "geonames:12205065",
+      "name": "San Diego Barracks (historical)",
+      "country_code": "US",
+      "start_year": 1850,
+      "end_year": 1921,
+      "operational_intervals": [
+        {
+          "start_year": 1850,
+          "end_year": 1921,
+          "label": "U.S. Army quartermaster depot and barracks phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "New San Diego Barracks - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/New_San_Diego_Barracks",
+          "note": "States New San Diego/San Diego Barracks was set up by Captain Nathaniel Lyon; land was sold to the U.S. Army on September 12, 1850, and the depot closed on December 15, 1921."
+        },
+        {
+          "title": "San Diego Barracks - FortWiki",
+          "url": "https://fortwiki.com/San_Diego_Barracks",
+          "note": "FortWiki summary gives San Diego Barracks as 1850-1921 and says it was first established in 1850."
+        }
+      ],
+      "rationale": "Easy high-priority U.S. leftover with exact overlay name and explicit establishment/closure years."
+    }
+  ]
+}

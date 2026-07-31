@@ -1,0 +1,498 @@
+{
+  "generated_at": "2026-06-04",
+  "description": "Second-round research-only temporal candidates for Canada-only military/facility overlay records that remain undated after the current military_base_temporal_overrides.json file. Candidates are intentionally conservative and omit vague or weak name matches.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json, webapp/static_public/data/map_overlays/military_bases.geojson, and webapp/static_public/data/map_overlays/military_base_temporal_overrides.json.",
+    "Only country_code CA records with no current temporal override were considered.",
+    "Several residual GeoNames military/range records were skipped because no exact or reliable temporal source was found in this pass."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:5914735",
+      "name": "Canadian Forces Station Aldergrove",
+      "country_code": "CA",
+      "start_year": 1943,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1967,
+          "label": "Aldergrove naval radio station / HMCS Aldergrove phase"
+        },
+        {
+          "start_year": 1967,
+          "end_year": 1996,
+          "label": "Canadian Forces Station Aldergrove phase"
+        },
+        {
+          "start_year": 1996,
+          "end_year": null,
+          "label": "Naval Radio Section Aldergrove / CFB Esquimalt attachment phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "HMCS Aldergrove - Canada.ca",
+          "url": "https://www.canada.ca/en/navy/services/history/ships-histories/aldergrove.html",
+          "note": "Canada.ca says the new Aldergrove receiving station was decided in 1942, first buildings were ready more than a year later, HMCS Aldergrove handled naval communications during the rest of the Second World War, the station became CFS Aldergrove in 1967, and it was renamed Naval Radio Section Aldergrove in 1996 while remaining staffed."
+        }
+      ],
+      "rationale": "Exact overlay name/source_id pair for the Aldergrove station. The official Navy history supports a 1943 site-origin candidate, preserves the 1967 CFS naming transition, and leaves the site open because the official source says the transmitter and receiver sites remain staffed after the 1996 administrative change."
+    },
+    {
+      "source_id": "geonames:6155586",
+      "name": "Station des Forces canadiennes Aldergrove",
+      "country_code": "CA",
+      "start_year": 1943,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1967,
+          "label": "Aldergrove naval radio station / HMCS Aldergrove phase"
+        },
+        {
+          "start_year": 1967,
+          "end_year": 1996,
+          "label": "Station des Forces canadiennes Aldergrove phase"
+        },
+        {
+          "start_year": 1996,
+          "end_year": null,
+          "label": "Naval Radio Section Aldergrove / CFB Esquimalt attachment phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "HMCS Aldergrove - Canada.ca",
+          "url": "https://www.canada.ca/en/navy/services/history/ships-histories/aldergrove.html",
+          "note": "Canada.ca documents the Aldergrove station's wartime construction/operation, 1967 CFS renaming, and 1996 Naval Radio Section renaming."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as CFS Aldergrove; the same official source-backed site chronology applies."
+    },
+    {
+      "source_id": "geonames:5914739",
+      "name": "Canadian Forces Station Masset",
+      "country_code": "CA",
+      "start_year": 1943,
+      "end_year": 1997,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1945,
+          "label": "Naval Radio Station Masset wartime HF/DF station"
+        },
+        {
+          "start_year": 1949,
+          "end_year": 1949,
+          "label": "Postwar HF/DF station reopening before earthquake suspension"
+        },
+        {
+          "start_year": 1951,
+          "end_year": 1997,
+          "label": "NRS/HMC NRS/CFS Masset active phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "HMCS Masset - Canada.ca",
+          "url": "https://www.canada.ca/en/navy/services/history/ships-histories/masset.html",
+          "note": "Canada.ca says Naval Radio Station Masset became active on February 23, 1943, closed in fall 1945, reopened in 1949, suspended after an August 1949 earthquake until 1951, later became CFS Masset, and stood down on April 4, 1997."
+        }
+      ],
+      "rationale": "Exact station-name match with a detailed official Navy history. Intervals preserve the documented closure/suspension gaps instead of flattening Masset into one continuous span."
+    },
+    {
+      "source_id": "geonames:6155590",
+      "name": "Station des Forces canadiennes Masset",
+      "country_code": "CA",
+      "start_year": 1943,
+      "end_year": 1997,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1945,
+          "label": "Station radio navale Masset wartime HF/DF station"
+        },
+        {
+          "start_year": 1949,
+          "end_year": 1949,
+          "label": "Postwar HF/DF station reopening before earthquake suspension"
+        },
+        {
+          "start_year": 1951,
+          "end_year": 1997,
+          "label": "SRN/SRN CSM/SFC Masset active phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "NCSM Masset - Canada.ca",
+          "url": "https://www.canada.ca/fr/marine/services/histoire/historiques-navires/masset.html",
+          "note": "The French Canada.ca history gives the same 1943 activation, fall 1945 closure, 1949 reopening, 1951 resumption, SFC Masset renaming, and April 4, 1997 stand-down."
+        }
+      ],
+      "rationale": "French overlay alias of the same Masset facility; the official French Navy history directly supports the interval candidate."
+    },
+    {
+      "source_id": "geonames:5914738",
+      "name": "Canadian Forces Station Leitrim",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1949,
+          "label": "No. 1 Special Wireless Station phase"
+        },
+        {
+          "start_year": 1949,
+          "end_year": 1966,
+          "label": "Ottawa Wireless Station phase"
+        },
+        {
+          "start_year": 1966,
+          "end_year": null,
+          "label": "Canadian Forces Station Leitrim phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Canadian Armed Forces bases and support units - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/services/bases-support-units.html",
+          "note": "Canada.ca lists Canadian Forces Station Leitrim as a current CAF station in Ontario."
+        },
+        {
+          "title": "Canadian Forces Station Leitrim - TSCM.com",
+          "url": "https://www.tscm.com/leitrim.html",
+          "note": "The site history says Leitrim was established by the Royal Canadian Corps of Signals in 1941 as 1 Special Wireless Station, renamed Ottawa Wireless Station in 1949, and acquired its current name when the Supplementary Radio System was created in 1966."
+        }
+      ],
+      "rationale": "Exact overlay name/source_id match and active-station confirmation are official; the founding-year source is a detailed site history that cites National Defence/C&E Museum material, so confidence is medium_high rather than high."
+    },
+    {
+      "source_id": "geonames:6155589",
+      "name": "Station des Forces canadiennes Leitrim",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1949,
+          "label": "No. 1 Special Wireless Station phase"
+        },
+        {
+          "start_year": 1949,
+          "end_year": 1966,
+          "label": "Ottawa Wireless Station phase"
+        },
+        {
+          "start_year": 1966,
+          "end_year": null,
+          "label": "Station des Forces canadiennes Leitrim phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Canadian Armed Forces bases and support units - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/services/bases-support-units.html",
+          "note": "Canada.ca lists Canadian Forces Station Leitrim as a current CAF station in Ontario."
+        },
+        {
+          "title": "Canadian Forces Station Leitrim - TSCM.com",
+          "url": "https://www.tscm.com/leitrim.html",
+          "note": "The site history provides the 1941, 1949, and 1966 naming/operational milestones."
+        }
+      ],
+      "rationale": "French overlay alias of the Leitrim station; use the same sourced interval candidate while keeping confidence below high because the date source is not a current Canada.ca history page."
+    },
+    {
+      "source_id": "geonames:5914740",
+      "name": "Canadian Forces Station St. John's",
+      "country_code": "CA",
+      "start_year": 1967,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "New Infrastructure at Canadian Forces Station St. John's - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2014/06/new-infrastructure-canadian-forces-station-st-john-s.html",
+          "note": "Canada.ca backgrounder says Canadian Forces units were relocated to Pleasantville and CFS St. John's was officially established there in 1967."
+        },
+        {
+          "title": "Canadian Forces Station St. John's - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2010/10/canadian-forces-station-st-john-s.html",
+          "note": "Canada.ca confirms CFS St. John's as an operating station supporting Navy, land operations, cadet, and family-resource functions."
+        }
+      ],
+      "rationale": "Exact CFS St. John's overlay name with an official establishment year. Earlier Pleasantville military use is not folded into this candidate because the source gives 1967 as the official CFS establishment date."
+    },
+    {
+      "source_id": "geonames:6155591",
+      "name": "Station des Forces canadiennes St. John's",
+      "country_code": "CA",
+      "start_year": 1967,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Nouvelle infrastructure a la Station des Forces canadiennes St. John's - Canada.ca",
+          "url": "https://www.canada.ca/fr/nouvelles/archive/2014/06/nouvelle-infrastructure-station-forces-canadiennes-st-john-s.html",
+          "note": "The French Canada.ca backgrounder says the local Canadian Forces units were relocated to Pleasantville and the Station des Forces canadiennes St. John's was officially established there in 1967."
+        }
+      ],
+      "rationale": "French overlay alias of CFS St. John's; the official French backgrounder supports the same 1967 establishment year."
+    },
+    {
+      "source_id": "geonames:5894561",
+      "name": "Base militaire de Senneterre",
+      "country_code": "CA",
+      "start_year": 1953,
+      "end_year": 1988,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": 1967,
+          "label": "RCAF Station Senneterre / 34 AC&W Squadron phase"
+        },
+        {
+          "start_year": 1967,
+          "end_year": 1988,
+          "label": "Canadian Forces Station Senneterre phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Senneterre, QC - 1998 - General History - Canadian Communications and Electronics Museum archive",
+          "url": "https://www.candemuseum.org/sites/default/files/archives/Pinetreeline/other/other35/other35b.html",
+          "note": "The C&E Museum Pinetree Line archive says 34 AC&W Squadron became fully operational at Senneterre on June 1, 1953."
+        },
+        {
+          "title": "RCAF Station Senneterre - FortWiki Historic U.S. and Canadian Forts",
+          "url": "https://fortwiki.com/RCAF_Station_Senneterre",
+          "note": "FortWiki gives a 1953-1988 span, notes the 1967 Canadian Forces Station transition, and says Senneterre closed in 1988."
+        }
+      ],
+      "rationale": "The overlay name is the French GeoNames label for the former Senneterre military site. Candidate uses the documented 1953 operational start and 1988 closure, but confidence is medium because this pass did not locate a direct Canada.ca installation history."
+    },
+    {
+      "source_id": "geonames:5914215",
+      "name": "Camp-Bouchard",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": 1972,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1945,
+          "label": "Plan-Bouchard wartime munitions filling plant"
+        },
+        {
+          "start_year": 1945,
+          "end_year": 1972,
+          "label": "Camp Bouchard military-base / depot phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Chemin du Plan-Bouchard - Commission de toponymie du Quebec",
+          "url": "https://toponymie.gouv.qc.ca/ct/ToposWeb/Fiche.aspx?no_seq=190206",
+          "note": "Quebec's official toponymy record says the road led to the former munitions filling plant that operated from 1941 to 1945, known as Plan-Bouchard, and lists Chemin du Camp-Bouchard as the former official name."
+        },
+        {
+          "title": "Une usine de remplissage de munitions et un camp militaire, Plan Bouchard: une histoire a valoriser - Nord Info",
+          "url": "https://nordinfo.com/actualites/une-usine-de-remplissage-de-munitions-et-un-camp-militaire-plan-bouchard-une-histoire-a-valoriser",
+          "note": "Local site-history reporting says Plan Bouchard was built in 1941 and became Camp Bouchard, a military base, until 1972."
+        }
+      ],
+      "rationale": "Exact overlay label with provincial toponymy support for the 1941-1945 wartime plant and a local site-history source for the later Camp Bouchard base phase. Marked medium because the 1972 endpoint is not from Canada.ca/DND."
+    },
+    {
+      "source_id": "geonames:5883332",
+      "name": "Aldershot Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1904,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Department of Militia and Defence for the Dominion of Canada Report for the Year Ended December 31, 1904 - Canada.ca",
+          "url": "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/reports/militia-reports/militia-defence-dominion-canada-report-1904-12-31.pdf",
+          "note": "The official Militia and Defence annual report lists a completed permanent rifle range at Kentville, Nova Scotia, described as Aldershot camp grounds, in 1904."
+        },
+        {
+          "title": "Highlights of federal infrastructure investments at 14 Wing Greenwood and Detachment Aldershot - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/news/2016/09/highlights-federal-infrastructure-investments-14-wing-greenwood-detachment-aldershot.html",
+          "note": "Canada.ca confirms current DND/CAF infrastructure at 5th Canadian Division Support Base Detachment Aldershot and specifically names the Aldershot Range Training Area."
+        }
+      ],
+      "rationale": "The 1904 official range-completion record is a conservative start for the range/training-area overlay, while current Canada.ca material confirms the modern Aldershot Range Training Area identity."
+    },
+    {
+      "source_id": "geonames:5919637",
+      "name": "Champ de tir et champ de manoeuvreAldershot",
+      "country_code": "CA",
+      "start_year": 1904,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Department of Militia and Defence for the Dominion of Canada Report for the Year Ended December 31, 1904 - Canada.ca",
+          "url": "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/reports/militia-reports/militia-defence-dominion-canada-report-1904-12-31.pdf",
+          "note": "The official annual report lists the completed permanent rifle range at the Aldershot camp grounds in 1904."
+        },
+        {
+          "title": "Highlights of federal infrastructure investments at 14 Wing Greenwood and Detachment Aldershot - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/news/2016/09/highlights-federal-infrastructure-investments-14-wing-greenwood-detachment-aldershot.html",
+          "note": "Canada.ca confirms the current Aldershot Range Training Area."
+        }
+      ],
+      "rationale": "French overlay alias of Aldershot Range and Training Area. The source-backed 1904 range date is used without trying to infer older Camp Aldershot activity into this range-specific candidate."
+    },
+    {
+      "source_id": "geonames:5926770",
+      "name": "Connaught Range",
+      "country_code": "CA",
+      "start_year": 1921,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "About - Dominion of Canada Rifle Association",
+          "url": "https://dcra.ca/about/",
+          "note": "The DCRA history says the Connaught Ranges opened in time for the DCRA annual prize meeting in 1921 and that the association was granted use of the Connaught Range in perpetuity."
+        },
+        {
+          "title": "Berm Installation - Connaught Range and Primary Training Centre - Impact Assessment Agency of Canada",
+          "url": "https://ceaa.gc.ca/050/evaluations/proj/87352",
+          "note": "The federal project registry confirms the current DND Connaught Range and Primary Training Centre military facility."
+        }
+      ],
+      "rationale": "Exact overlay range name with a dated institutional range history and current federal DND facility confirmation. Marked medium_high because the opening date source is DCRA rather than a DND history page."
+    },
+    {
+      "source_id": "geonames:5919634",
+      "name": "Champ de tir Connaught",
+      "country_code": "CA",
+      "start_year": 1921,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "About - Dominion of Canada Rifle Association",
+          "url": "https://dcra.ca/about/",
+          "note": "The DCRA history says Connaught Ranges opened in 1921."
+        },
+        {
+          "title": "Berm Installation - Connaught Range and Primary Training Centre - Impact Assessment Agency of Canada",
+          "url": "https://ceaa.gc.ca/050/evaluations/proj/87352",
+          "note": "The federal project registry confirms current DND use of Connaught Range and Primary Training Centre."
+        }
+      ],
+      "rationale": "French overlay alias for Connaught Range; the same 1921 range-opening candidate applies."
+    },
+    {
+      "source_id": "geonames:5983703",
+      "name": "Ipperwash Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": 1995,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canada and Chippewas of Kettle and Stony Point Take Key Step in their Journey Toward Healing and Reconciliation with Historic Camp Ipperwash settlement - Canada.ca",
+          "url": "https://www.canada.ca/en/indigenous-northern-affairs/news/2016/04/canada-and-chippewas-of-kettle-and-stony-point-take-key-step-in-their-journey-toward-healing-and-reconciliation-with-historic-camp-ipperwash-settlement.html",
+          "note": "Canada.ca says the former Camp Ipperwash lands were taken under the War Measures Act in 1942 and used as a military training base until 1995."
+        }
+      ],
+      "rationale": "Exact English overlay record for the Ipperwash range/training area. The candidate uses 1995 as the military-use endpoint; the 2016 settlement/return date is documented but is not treated as continued military operation."
+    },
+    {
+      "source_id": "geonames:6071501",
+      "name": "Meaford Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "4th Canadian Division Training Centre - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/4-canadian-division/4-canadian-division-training-centre.html",
+          "note": "Canada.ca confirms current 4th Canadian Division Training Centre Meaford as an active training facility."
+        },
+        {
+          "title": "Camp Borden - Canadian Military History",
+          "url": "https://militarybruce.com/camp-borden-the-birthplace-of-the-rcaf-and-the-historic-home-of-the-canadian-armoured-corps/",
+          "note": "The site history says the Meaford Armoured Fighting Vehicle Range, locally known as the Meaford Tank Range, opened in 1942 on land beside Georgian Bay."
+        }
+      ],
+      "rationale": "Exact overlay match for Meaford range/training area. Current active use is official, but the 1942 founding year comes from a site-history source rather than Canada.ca, so confidence is medium."
+    },
+    {
+      "source_id": "geonames:5919643",
+      "name": "Champ de tir et champ de manoeuvre Meaford",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "4th Canadian Division Training Centre - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/4-canadian-division/4-canadian-division-training-centre.html",
+          "note": "Canada.ca confirms the active Meaford training facility."
+        },
+        {
+          "title": "Camp Borden - Canadian Military History",
+          "url": "https://militarybruce.com/camp-borden-the-birthplace-of-the-rcaf-and-the-historic-home-of-the-canadian-armoured-corps/",
+          "note": "The site history places the Meaford tank/range origin in 1942."
+        }
+      ],
+      "rationale": "French overlay alias for Meaford Range and Training Area; included with medium confidence for the same reason as the English Meaford candidate."
+    },
+    {
+      "source_id": "geonames:11820220",
+      "name": "Wellington Barracks (historical)",
+      "country_code": "CA",
+      "start_year": 1860,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1860,
+          "end_year": 1905,
+          "label": "British garrison / Wellington Barracks phase"
+        },
+        {
+          "start_year": 1906,
+          "end_year": null,
+          "label": "Canadian military / CFB Halifax-Stadacona phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Wellington House - Parks Canada Federal Heritage Buildings Review Office",
+          "url": "https://www.pc.gc.ca/apps/dfhd/page_fhbro_eng.aspx?id=2665",
+          "note": "Parks Canada identifies Wellington House, also known as Wellington Barracks B Mess, at CFB Halifax-Stadacona, with construction from 1852 to 1860 and National Defence as custodian."
+        },
+        {
+          "title": "Wellington Barracks - FortWiki Historic U.S. and Canadian Forts",
+          "url": "https://www.fortwiki.com/Wellington_Barracks",
+          "note": "The site history describes Wellington Barracks in Halifax as established in 1860, used by the British garrison until 1905, and taken over by Canadian forces in 1906."
+        }
+      ],
+      "rationale": "Exact historical barracks overlay name. The 1860 start is supported by Parks Canada's construction range and a matching site history; intervals preserve the British-to-Canadian handover."
+    }
+  ]
+}

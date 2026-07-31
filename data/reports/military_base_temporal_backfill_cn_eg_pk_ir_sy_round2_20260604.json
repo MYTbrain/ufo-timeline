@@ -1,0 +1,282 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:11493485",
+      "name": "Zhurihe",
+      "country_code": "CN",
+      "start_year": 1958,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Military celebrates 50th anniversary of largest training base",
+          "url": "https://www.china.org.cn/english/China/225261.htm",
+          "note": "Xinhua/China.org.cn reports that construction of the Zhurihe Tactical Training Base began in 1957 and that it went into service one year later."
+        }
+      ],
+      "rationale": "The overlay name exactly matches the well-documented Zhurihe training-base site. Use 1958 as the operational start because the source separates 1957 construction from service entry one year later."
+    },
+    {
+      "source_id": "geonames:11493787",
+      "name": "Qifengling",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "Kweilin/Lijiacun wartime military airfield phase"
+        },
+        {
+          "start_year": 1958,
+          "end_year": null,
+          "label": "rebuilt Guilin Qifengling civil-military airport phase; civil service later shifted away"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Guilin Qifengling Airport",
+          "url": "https://en.wikipedia.org/wiki/Guilin_Qifengling_Airport",
+          "note": "The airport history gives a 1942 military build, a 1958 rebuild, and the 1996 shift of commercial flights to Guilin Liangjiang."
+        },
+        {
+          "title": "Li Chia Tsun Air Base (Guilin Qifengling Airport)",
+          "url": "https://www.globalmilitary.net/pt/airbases/li-chia-tsun-air-base/",
+          "note": "GlobalMilitary ties Li Chia Tsun/Kweilin wartime airfield to Guilin Qifengling Airport and repeats the 1942 and 1958 phase dates."
+        }
+      ],
+      "rationale": "The overlay name and coordinates align with Guilin Qifengling Airport. The candidate uses interval evidence because the site has a wartime military-airfield phase and a later rebuilt civil-military phase rather than one continuous, cleanly sourced opening date."
+    },
+    {
+      "source_id": "geonames:11749387",
+      "name": "Abu Suwayr Air Base",
+      "country_code": "EG",
+      "start_year": 1921,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Air Publication 3233: Flying Training, Volume I - Policy and Planning",
+          "url": "https://www.raf.mod.uk/what-we-do/our-history/air-historical-branch/second-world-war-thematic-studies/flying-training-vol-i-policy-and-planning/",
+          "note": "The RAF Air Historical Branch thematic study references Abu Sueir as formed in April 1921."
+        },
+        {
+          "title": "Abu Suweir Air Base",
+          "url": "https://en.wikipedia.org/wiki/Abu_Suweir_Air_Base",
+          "note": "The air-base article identifies the modern Abu Suweir/Abu Sueir site and its RAF Abu Sueir/LG-200/LG-206 lineage."
+        }
+      ],
+      "rationale": "The Abu Suwayr/Abu Sueir transliteration and air-base lineage are a strong exact-name match. Confidence is medium because the official RAF source supports an early RAF formation date, while continuous later Egyptian military operation is not separately dated here."
+    },
+    {
+      "source_id": "geonames:7730090",
+      "name": "Cairo West Air Base",
+      "country_code": "EG",
+      "start_year": 1942,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Stations-C - RAF Cairo West",
+          "url": "https://rafweb.org/Stations/Stations-C.htm",
+          "note": "Rafweb station history lists Kilo 26/Landing Ground 224 with 1942 station control entries and later RAF Cairo West naming."
+        },
+        {
+          "title": "Cairo West Air Base",
+          "url": "https://www.globalmilitary.net/airbases/cairo-west-air-base/",
+          "note": "GlobalMilitary describes Cairo West as established as RAF Landing Ground 224 and used by British/Commonwealth squadrons during the Second World War."
+        }
+      ],
+      "rationale": "The station-history source directly ties Cairo West to Kilo 26/LG-224 wartime RAF use. Use 1942 conservatively because the station-history control entries are more specific than secondary 1941 built claims."
+    },
+    {
+      "source_id": "geonames:11749392",
+      "name": "Beni Suef Air Base",
+      "country_code": "EG",
+      "start_year": 1985,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Beni Suef Air Base",
+          "url": "https://www.globalmilitary.net/airbases/beni-suef-air-base/",
+          "note": "GlobalMilitary lists Beni Suef Air Base as built/established in 1985 and active under the Egyptian Air Force."
+        },
+        {
+          "title": "Beni Suef Air Base",
+          "url": "https://en.wikipedia.org/wiki/Beni_Suef_Air_Base",
+          "note": "The air-base article lists the base as built in 1985 and used from 1985 to the present."
+        }
+      ],
+      "rationale": "The overlay name exactly matches the Beni Suef Air Base entry. Confidence remains medium because the 1985 date is supported by secondary airfield references rather than an official Egyptian Ministry of Defense history page."
+    },
+    {
+      "source_id": "geonames:6413491",
+      "name": "Kibrit Airfield",
+      "country_code": "EG",
+      "start_year": 1941,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "List of former Royal Air Force stations",
+          "url": "https://en.wikipedia.org/wiki/List_of_former_Royal_Air_Force_stations",
+          "note": "The former-RAF-stations list gives RAF Kabrit in Egypt as 1941-1954 and notes that it is now Kibrit Air Base."
+        },
+        {
+          "title": "Kibrit Air Base",
+          "url": "https://en.wikipedia.org/wiki/Kibrit_Air_Base",
+          "note": "The Kibrit page identifies the site as former RAF Kabrit and an operational Egyptian Air Force helicopter base."
+        }
+      ],
+      "rationale": "Kibrit/Kabrit is an exact transliteration match for the overlay airfield. Use only the 1941 start candidate; the evidence also supports a RAF phase ending in 1954, but this report does not infer the Egyptian Air Force handover year."
+    },
+    {
+      "source_id": "geonames:6300119",
+      "name": "Benazir Bhutto Air Base",
+      "country_code": "PK",
+      "start_year": 1935,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Stations-C - RAF Chaklala",
+          "url": "https://rafweb.org/Stations/Stations-C.htm",
+          "note": "Rafweb lists RAF Chaklala at Rawalpindi with No. 3 Indian Wing from 14 October 1935 and No. 5 Squadron from 15 October 1935."
+        },
+        {
+          "title": "PAF Airbase Chaklala renamed after Nur Khan",
+          "url": "https://www.brecorder.com/news/85418/paf-airbase-chaklala-renamed-after-nur-khan",
+          "note": "Business Recorder, citing a PAF press release, reports the 2012 renaming of Chaklala as Nur Khan Airbase."
+        },
+        {
+          "title": "PAF Base Nur Khan (RAF Chaklala)",
+          "url": "https://www.globalmilitary.net/airbases/paf-base-nur-khan/",
+          "note": "GlobalMilitary identifies PAF Base Nur Khan as RAF Chaklala, established in 1935, and notes the former Benazir Bhutto International Airport infrastructure connection."
+        }
+      ],
+      "rationale": "The overlay record is at the Chaklala/Nur Khan/Benazir Bhutto airfield complex. Use 1935 for the RAF Chaklala airfield lineage, with medium confidence because the exact overlay label is an airport/base alias rather than the current official PAF base name."
+    },
+    {
+      "source_id": "geonames:7046722",
+      "name": "Masroor",
+      "country_code": "PK",
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1945,
+          "label": "Mauripur Allied wartime staging and air-transport base phase"
+        },
+        {
+          "start_year": 1948,
+          "end_year": null,
+          "label": "RPAF/PAF Station Mauripur, later PAF Base Masroor phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "PAF Masroor",
+          "url": "https://www.globalsecurity.org/military/world/pakistan/masroor.htm",
+          "note": "GlobalSecurity describes Mauripur as established during World War II in 1940-1941 and says RPAF Station Mauripur was established on 1 January 1948."
+        }
+      ],
+      "rationale": "This is a duplicate-site candidate for the remaining bare 'Masroor' overlay source_id. The same source supports the Mauripur/Masroor lineage already used for the more explicit Pakistan Air Force Base Masrur record."
+    },
+    {
+      "source_id": "geonames:11648990",
+      "name": "Rafiqui",
+      "country_code": "PK",
+      "operational_intervals": [
+        {
+          "start_year": 1968,
+          "end_year": 1973,
+          "label": "PAF Shorkot satellite airfield phase"
+        },
+        {
+          "start_year": 1973,
+          "end_year": null,
+          "label": "PAF Base Rafiqui main operating base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "PAF Rafiqui / Shorkot Cantt",
+          "url": "https://www.globalsecurity.org/military/world/pakistan/rafiqui.htm",
+          "note": "GlobalSecurity says the Shorkot runway and essential facilities were completed by 1968, the airfield was a satellite for three years, and additional operational units were added in 1973."
+        },
+        {
+          "title": "Squadron Leader Sarfaraz Ahmed Rafiqui - PAF Hall of Heroes",
+          "url": "https://www.pak.airforce/heroes/sarfaraz-rafiqui",
+          "note": "The Pakistan Air Force Hall of Heroes identifies PAF Base Rafiqui as formerly Shorkot Air Base and says it was renamed in Rafiqui's honor."
+        }
+      ],
+      "rationale": "The overlay label is the short-form exact name of PAF Base Rafiqui. Use intervals because the source distinguishes initial Shorkot satellite completion from later main-operating-base development."
+    },
+    {
+      "source_id": "geonames:35790",
+      "name": "Nogeh",
+      "country_code": "IR",
+      "start_year": 1965,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "U.S. Army Corps Construction, 1947-1991",
+          "url": "https://www.scribd.com/document/161117796/CMH-45-2-1",
+          "note": "The U.S. Army Corps construction history says Hamadan/Shahrokhi Air Base facilities were officially presented to the Iranian government on 16 June 1965."
+        },
+        {
+          "title": "Shahid Nojeh Airbase, Hamadan",
+          "url": "https://www.globalsecurity.org/military/world/iran/hamadan.htm",
+          "note": "GlobalSecurity identifies Hamadan/Shahrokhi as Shahid Nojeh Airbase, operated by the Iranian Air Force."
+        },
+        {
+          "title": "Iran: The Politics of Insecurity",
+          "url": "https://fileserver-az.core.ac.uk/download/4426305.pdf",
+          "note": "The Zonis text states that Iran officially opened Shahrokhi Air Base near Hamadan in 1965."
+        }
+      ],
+      "rationale": "Nogeh is the later Shahid Nojeh name for Hamadan/Shahrokhi Air Base. The 1965 handover/opening date is supported by two independent history references and the identity link is supported by the air-base reference."
+    },
+    {
+      "source_id": "geonames:404590",
+      "name": "Doshan Tappeh",
+      "country_code": "IR",
+      "start_year": 1936,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "The Iranian Air Force 1924-1941",
+          "url": "https://www.kavehfarrokh.com/military-history-1900-present/the-iranian-air-force-1924-1941/",
+          "note": "The aviation-history article says the Shahbaz aircraft manufacturing plant at Doshan Tappeh was formally inaugurated on 12 September 1936."
+        },
+        {
+          "title": "Doshan Tappeh Air Base",
+          "url": "https://www.globalsecurity.org/military/world/iran/doshan-tappeh.htm",
+          "note": "GlobalSecurity identifies Doshan Tappeh as an Iranian Air Force headquarters and historic air-base site."
+        }
+      ],
+      "rationale": "The 1936 date anchors a documented military aviation facility at Doshan Tappeh, not a separately sourced runway opening date. Keep confidence medium and do not use this as proof of continuous airfield operation from 1936."
+    },
+    {
+      "source_id": "geonames:11864973",
+      "name": "Minakh",
+      "country_code": "SY",
+      "end_year": 2013,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Syrian anti-government forces have taken the control of an air base in northern Syria",
+          "url": "https://www.armyrecognition.com/archives/archives-land-defense/land-defense-2013/syria-7-august-2013-news-uk",
+          "note": "Army Recognition reports that anti-government forces took control of the Minakh air base in August 2013 after a prolonged fight."
+        },
+        {
+          "title": "The Danger of America's Proxy War",
+          "url": "https://www.cato.org/commentary/danger-americas-proxy-war",
+          "note": "Cato commentary from August 2013 independently references reports that Syrian rebels had seized the key Minakh air base in Aleppo."
+        },
+        {
+          "title": "Menagh Air Base",
+          "url": "https://en.wikipedia.org/wiki/Menagh_Air_Base",
+          "note": "The Menagh/Minakh air-base article summarizes the siege from August 2012 to the rebel capture on 6 August 2013."
+        }
+      ],
+      "rationale": "Use 2013 only as an end marker for the Syrian-government air-base control phase reflected in the civil-war capture sources. This does not establish the original construction date or a permanent facility closure."
+    }
+  ]
+}

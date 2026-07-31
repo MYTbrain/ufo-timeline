@@ -1,0 +1,92 @@
+{
+  "generated_at": "2026-06-04",
+  "candidate_count": 4,
+  "scope": "Second conservative local backfill from official Air National Guard, FAA/AirNav, and stable installation history sources.",
+  "candidates": [
+    {
+      "source_id": "geonames:4179334",
+      "name": "Albany Naval Air Station (historical)",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1946,
+          "label": "Turner Field / U.S. Army Air Forces"
+        },
+        {
+          "start_year": 1947,
+          "end_year": 1966,
+          "label": "Turner Air Force Base"
+        },
+        {
+          "start_year": 1967,
+          "end_year": 1974,
+          "label": "Naval Air Station Albany"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "medium",
+      "temporal_source": "conservative_local_history_backfill_20260604",
+      "source_urls": [
+        "https://www.globalsecurity.org/wmd/facility/turner.htm",
+        "https://en.wikipedia.org/wiki/Naval_Air_Station_Albany"
+      ],
+      "source_notes": "GlobalSecurity says the Navy commissioned the site as Naval Air Station Albany on July 1, 1967; installation histories list the earlier Turner Field/Turner AFB phases from 1941 onward and closure in 1974.",
+      "rationale": "Exact overlay name match; intervals preserve the Army Air Forces, Air Force, and Navy phases rather than treating the NAS label as continuous from 1941."
+    },
+    {
+      "source_id": "geonames:9036537",
+      "name": "Kellogg Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1947,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://www.110wg.ang.af.mil/About-Us/"
+      ],
+      "source_notes": "Official 110th Wing history says Kellogg Field in Battle Creek became home station for the 172nd Fighter Squadron by order of Michigan Governor Kim Siegler in 1947.",
+      "rationale": "Official unit page directly ties the Battle Creek/Kellogg military installation to the 1947 Air National Guard home-station date."
+    },
+    {
+      "source_id": "geonames:6297686",
+      "name": "Edwards Air Force Auxiliary North Base",
+      "country_code": "US",
+      "start_year": 1944,
+      "end_year": null,
+      "date_precision_start": "month",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "faa_airport_activation_backfill_20260604",
+      "source_urls": [
+        "https://www.airnav.com/airport/9L2"
+      ],
+      "source_notes": "AirNav/FAA airport record for 9L2 Edwards Air Force Auxiliary North Base lists activation date 10/1944.",
+      "rationale": "Exact overlay name and coordinates match an FAA-listed private military airfield; activation date is suitable for temporal visibility."
+    },
+    {
+      "source_id": "geonames:6298577",
+      "name": "Lawson Army Airfield",
+      "country_code": "US",
+      "start_year": 1919,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "installation_history_backfill_20260604",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/facility/lawson.htm",
+        "https://www.militarybases.us/army/lawson-army-airfield-fort-benning/"
+      ],
+      "source_notes": "Installation histories say the Army created a rudimentary landing field at Benning in 1919 and renamed the airfield Lawson in 1931; it has operated continually as Lawson Army Airfield after transfer back to the Army in 1954.",
+      "rationale": "Exact overlay name match; start year captures the first military landing-field use while source_notes preserve the 1931 Lawson naming."
+    }
+  ]
+}

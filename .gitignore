@@ -31,16 +31,25 @@ Thumbs.db
 .tmp_*
 tmp/
 backups/
-cache/
-live_probe/
+/cache/
+/live_probe/
+/.reproduction/
 
 # Generated datasets, packaged transfers, and deployment bundles
-data/
-UFO Databases/
-share_packages/
-cloudflare_bundle*/
-static_bundle*/
-canonical_web_static_payload_manifest.json
+/data/*
+!/data/canonical_web/
+/data/canonical_web/*
+!/data/canonical_web/canonical_web_manifest.json
+!/data/reports/
+/data/reports/*
+!/data/reports/airship_wave_reviewed_event_merges_v148.json
+!/data/reports/airship_wave_reviewed_event_merges_apply_v148.json
+!/data/reports/military_base_temporal_backfill_*.json
+/UFO Databases/
+/share_packages/
+/cloudflare_bundle*/
+/static_bundle*/
+/canonical_web_static_payload_manifest.json
 *.zip
 
 # Large source/reference corpora retained outside Git

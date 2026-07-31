@@ -1,0 +1,431 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_mena_africa_southasia_round10",
+  "description": "Tenth-round conservative temporal backfill candidates for MENA, Africa, and South Asia research_temporal_dates rows. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates and country_code in EG, SY, LY, SA, AE, DZ, IR, KW, MA, ZA, PK, IQ, JO, LB, BH, QA, YE were considered.",
+    "Likely real military bases and airbases were prioritized over helipad clusters, coast/signal stations, academies misclassified as airbases, and possible overlay artifacts.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Where no public establishment date was found, the row was skipped rather than assigned a current-directory documented-by year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:941772",
+      "name": "Air Force Base Waterkloof",
+      "country_code": "ZA",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The South African Air Force - Air Force Base Waterkloof",
+          "url": "https://www.saairforce.co.za/site/airforce/bases_detail.php?base_id=5",
+          "note": "The SAAF base page states that Waterkloof was officially opened on 1 August 1938 as Waterkloof Air Station and remains current."
+        },
+        {
+          "title": "Air Force Technology - Waterkloof Air Force Base",
+          "url": "https://www.airforce-technology.com/projects/waterkloofairforceba/",
+          "note": "The base profile lists Waterkloof as built in 1938 and describes it as a South African Air Force base."
+        }
+      ],
+      "rationale": "The queue row is an exact named SAAF air base. The 1938 start is a direct official-opening year; no closure is sourced."
+    },
+    {
+      "source_id": "geonames:8556243",
+      "name": "AFB Swartkop",
+      "country_code": "ZA",
+      "start_year": 1921,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The South African Air Force - AFB Swartkop (now AF MDW)",
+          "url": "https://www.saairforce.co.za/the-airforce/bases/9/zwartkop",
+          "note": "The SAAF base page says AFS Zwartkop was established in April 1921, became AFB Swartkop in 1968, was reproclaimed an Air Force Station in 1999, and remains current as AF MDW."
+        },
+        {
+          "title": "Air Force Base Swartkop",
+          "url": "https://en.wikipedia.org/wiki/Air_Force_Base_Swartkop",
+          "note": "The base history repeats the April 1921 establishment, 1968 upgrade to Air Force Base, and later continued operational use."
+        }
+      ],
+      "rationale": "The start year is the direct establishment year for the air-station predecessor at the same facility. The endpoint remains open because later status changes did not fully close the military airfield."
+    },
+    {
+      "source_id": "geonames:8504560",
+      "name": "Air Force Base Makhado",
+      "country_code": "ZA",
+      "start_year": 1987,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The South African Air Force - Air Force Base Makhado",
+          "url": "https://www.saairforce.co.za/the-airforce/bases/6/air-force-base-makhado",
+          "note": "The SAAF base page states that the base was officially opened on 14 October 1987 as AFB Louis Trichardt and renamed in 2003."
+        },
+        {
+          "title": "Air Force Base Makhado",
+          "url": "https://en.wikipedia.org/wiki/Air_Force_Base_Makhado",
+          "note": "The base article gives the same 14 October 1987 official opening and 7 November 2003 renaming."
+        }
+      ],
+      "rationale": "The queue row is the current named SAAF fighter base. The 1987 opening is explicit and no closure is indicated."
+    },
+    {
+      "source_id": "geonames:392652",
+      "name": "King Abdulaziz Air Base",
+      "country_code": "SA",
+      "start_year": 1961,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "U.S. Army - A Lasting Legacy: The Dhahran Airfield and Civil Air Terminal",
+          "url": "https://www.army.mil/article-amp/127106/a_lasting_legacy_the_dhahran_airfield_and_civil_air_terminal",
+          "note": "The U.S. Army Corps history says the Dhahran terminal was completed in September 1961, the airfield became Dhahran International Airport, and the site is now used as King Abdul Aziz Airbase."
+        },
+        {
+          "title": "King Abdulaziz Air Base",
+          "url": "https://en.wikipedia.org/wiki/King_Abdulaziz_Air_Base",
+          "note": "The base entry identifies King Abdulaziz Air Base as formerly Dhahran International Airport/Dhahran Airfield and describes it as the first Saudi airport constructed in 1961."
+        }
+      ],
+      "rationale": "The row maps to the current military successor at the Dhahran airfield site. The 1961 date is the civil-terminal/international-airport completion and named-site transition, so confidence is medium rather than high for the military-base phase."
+    },
+    {
+      "source_id": "geonames:393884",
+      "name": "Ahmed Al Jaber Air Base",
+      "country_code": "KW",
+      "start_year": 1978,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "KUNA - Today Falls 48th Anniversary of Kuwait Air Force",
+          "url": "https://www.kuna.net.kw/ArticleDetails.aspx?id=1212432&language=en",
+          "note": "Kuwait News Agency reported that Ahmad Al-Jaber Air Force Base was opened by the Amir on 26 April 1978."
+        },
+        {
+          "title": "Ahmad al-Jaber Air Base",
+          "url": "https://en.wikipedia.org/wiki/Ahmad_al-Jaber_Air_Base",
+          "note": "The base entry identifies Ahmad al-Jaber as an active Kuwait Air Force base and home to Kuwaiti F/A-18 squadrons."
+        }
+      ],
+      "rationale": "The 1978 date is a direct opening date from the Kuwaiti state news agency; no closure is sourced."
+    },
+    {
+      "source_id": "geonames:393283",
+      "name": "Ali Al Salem Airbase",
+      "country_code": "KW",
+      "start_year": 1979,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "KUNA - Today Falls 48th Anniversary of Kuwait Air Force",
+          "url": "https://www.kuna.net.kw/ArticleDetails.aspx?id=1212432&language=en",
+          "note": "Kuwait News Agency reported that the northern base, Ali Al-Salem Base, was opened in 1979."
+        },
+        {
+          "title": "Ali Al Salem Air Base",
+          "url": "https://en.wikipedia.org/wiki/Ali_Al_Salem_Air_Base",
+          "note": "The base entry identifies Ali Al Salem as a Kuwaiti military air base and describes its continuing Kuwait Air Force and coalition use."
+        }
+      ],
+      "rationale": "The 1979 date is a direct Kuwait Air Force opening year from KUNA. Later coalition use does not change the underlying Kuwait Air Force base identity."
+    },
+    {
+      "source_id": "geonames:11550722",
+      "name": "Camp Buehring",
+      "country_code": "KW",
+      "start_year": 2003,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Camp Buehring",
+          "url": "https://en.wikipedia.org/wiki/Camp_Buehring",
+          "note": "The installation profile lists the camp as built in 2002 and used from January 2003 to present."
+        },
+        {
+          "title": "GWOT.org - Camp Buehring",
+          "url": "https://gwot.org/docs/camp-buehring/",
+          "note": "The installation summary says Camp Buehring has served as a staging post since its establishment in January 2003."
+        }
+      ],
+      "rationale": "The queue classifies the feature as an air base, but the real facility is a U.S. staging post with an associated landing zone. The 2003 start is included with medium confidence for the operational camp identity, not for a standalone airbase opening."
+    },
+    {
+      "source_id": "geonames:2570477",
+      "name": "Tafaraoui",
+      "country_code": "DZ",
+      "start_year": 1940,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Algerian Ministry of National Defence - Ecole Superieure de l'Air Tafaraoui",
+          "url": "https://www.mdn.dz/site_cfa/sommaire/formation/ecoles/esair/esair_fr.php",
+          "note": "The Algerian Air Forces history says Tafaraoui had a pre-World War II landing area, became the Jean Lartigue naval-air base in 1940, was used by Anglo-American troops in 1942, and was recovered by the Direction de l'Air in 1964."
+        },
+        {
+          "title": "Tafaraoui",
+          "url": "https://en.wikipedia.org/wiki/Tafaraoui",
+          "note": "The locality is associated with the Tafaraoui air-school/base area near Oran."
+        }
+      ],
+      "rationale": "The 1940 start is the first explicit military-base transition date in the official Algerian MOD history. Earlier prewar landing-strip evidence is mentioned but not represented as a specific year."
+    },
+    {
+      "source_id": "geonames:12092465",
+      "name": "Ben Guerir",
+      "country_code": "MA",
+      "start_year": 1951,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Ben Guerir Air Base",
+          "url": "https://en.wikipedia.org/wiki/Ben_Guerir_Air_Base",
+          "note": "The base history states that Ben Guerir was established in 1951 by U.S. Strategic Air Command as part of a crash construction program that began in 1950."
+        },
+        {
+          "title": "GlobalSecurity - Ben Guerir Air Base, Morocco",
+          "url": "https://www.globalsecurity.org/wmd/facility/ben_guerir.htm",
+          "note": "GlobalSecurity describes the Ben Guerir installation among Moroccan SAC base/storage sites under construction in May 1951."
+        }
+      ],
+      "rationale": "The queue row is the modern Moroccan air base, with a directly documented SAC establishment/construction year at the same site. The current Royal Moroccan Air Force use keeps the endpoint open."
+    },
+    {
+      "source_id": "geonames:2532951",
+      "name": "Sidi Slimane",
+      "country_code": "MA",
+      "start_year": 1951,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Sidi Slimane Air Base",
+          "url": "https://en.wikipedia.org/wiki/Sidi_Slimane_Air_Base",
+          "note": "The base history states that Sidi Slimane Air Base was built in 1951 and initially used by U.S. Strategic Air Command."
+        },
+        {
+          "title": "AviationsMilitaires.net - Sidi Slimane",
+          "url": "https://aviationsmilitaires.net/v3/kb/airfield/show/1044/sidi-slimane",
+          "note": "The aviation-history profile also describes Sidi Slimane as constructed in 1951 and first used by Strategic Air Command."
+        }
+      ],
+      "rationale": "The row corresponds to the Royal Moroccan Air Force base also known as Fifth Royal Air Force Base. The 1951 build year is direct base-history evidence."
+    },
+    {
+      "source_id": "geonames:8531795",
+      "name": "First Royal Air Force Base",
+      "country_code": "MA",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Persee - Les insignes de bases aeriennes implantees au Maroc et en Tunisie avant 1963",
+          "url": "https://www.persee.fr/doc/rharm_0035-3299_1991_num_184_3_4066",
+          "note": "The historical article states that Base aerienne 151 de Rabat-Sale was created in 1938 and became fully operational in 1948."
+        },
+        {
+          "title": "Rabat-Sale Airport",
+          "url": "https://en.wikipedia.org/wiki/Rabat%E2%80%93Sal%C3%A9_Airport",
+          "note": "The airport profile identifies Rabat-Sale as a joint public/military airport hosting the First Air Base of the Royal Moroccan Air Force."
+        }
+      ],
+      "rationale": "The queue row name aligns with the Royal Moroccan First Air Base at Rabat-Sale. The 1938 French-base creation is a predecessor date at the same airfield, so confidence is medium and the note preserves that identity link."
+    },
+    {
+      "source_id": "geonames:11749473",
+      "name": "Rayak Air Base",
+      "country_code": "LB",
+      "start_year": 1917,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Goethe-Institut Lebanon - Rayak Air Base: It Began With a Sand Runway",
+          "url": "https://www.goethe.de/ins/lb/en/m/kul/sup/spu/20908781.html",
+          "note": "The historical essay says Rayak is presented by the Lebanese Air Force as its birthplace in 1949 and traces the first sand runway to Bavarian air-regiment deployment at Rayak during World War I, specifically during the 1917-1918 retreat period."
+        },
+        {
+          "title": "Rayak Air Base",
+          "url": "https://en.wikipedia.org/wiki/Rayak_Air_Base",
+          "note": "The base article says Rayak Air Base was constructed and used by German Bavarian pilots during World War I and later became central under the French Mandate and Lebanese Air Force."
+        }
+      ],
+      "rationale": "The base has a continuous named-site military aviation history, but the first-runway evidence is wartime predecessor use rather than a modern Lebanese Air Force opening. The 1917 start is the conservative explicit deployment/runway period from the stronger historical source."
+    },
+    {
+      "source_id": "geonames:13302753",
+      "name": "Dukhan Airbase",
+      "country_code": "QA",
+      "start_year": 2018,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Dukhan / Tamim Airbase",
+          "url": "https://en.wikipedia.org/wiki/Dukhan_/_Tamim_Airbase",
+          "note": "The base profile states that Dukhan/Tamim Airbase is a new Qatar Emiri Air Force base built in 2018 near Dukhan."
+        },
+        {
+          "title": "Qatar News Agency - Qatar Amiri Air Force receive 12 Squadron",
+          "url": "https://qna.org.qa/en/news/news-details?date=9%2F10%2F2022&id=0056-qatar-amiri-air-force-receive-12-squadron",
+          "note": "QNA documents Qatar Amiri Air Force activity at Dukhan Airbase in 2022 and notes the joint Qatar-UK Typhoon Squadron established on 24 July 2018."
+        }
+      ],
+      "rationale": "The 2018 start is supported as the build year for the new Qatar Emiri Air Force base, with state news confirming later operational use at Dukhan."
+    },
+    {
+      "source_id": "geonames:12164600",
+      "name": "Martubah Heliport",
+      "country_code": "LY",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Martuba Airbase",
+          "url": "https://en.wikipedia.org/wiki/Martuba_Airbase",
+          "note": "The base history says Martuba Airfield was used as a military airfield by the U.S. Army Air Force 57th Fighter Group from 16 November to 3 December 1942."
+        },
+        {
+          "title": "Libya Herald - Derna's Martuba airport control tower construction starts",
+          "url": "https://libyaherald.com/2020/06/dernas-martuba-airport-control-tower-construction-starts/",
+          "note": "The Libya Herald article describes Martuba airport as originally a military airbase used extensively during the Second World War."
+        }
+      ],
+      "rationale": "The queue row is a heliport label, but its coordinates/name align with Martuba Airbase/Martuba Airport. The 1942 start is a documented operational military-airfield year, not a proven original construction year."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:12164570",
+      "name": "Sidi Kurayr Heliport",
+      "reason": "Researched as an Egyptian heliport/airbase row, but public evidence found was limited to current map or airport-directory style listings with no establishment or operational-period date."
+    },
+    {
+      "source_id": "geonames:12164561",
+      "name": "Jabal Uwaybid Division Assembly A Helipads",
+      "reason": "Skipped as a helipad-cluster style row; no reliable public base-history or opening date was found."
+    },
+    {
+      "source_id": "geonames:12164541",
+      "name": "Al Farafirah Helipad",
+      "reason": "Skipped because available evidence did not rise above current-location/airport-directory presence and did not establish a military operational date."
+    },
+    {
+      "source_id": "geonames:12164544",
+      "name": "As Sallum Heliport South Southeast",
+      "reason": "Skipped because available sources were weak current listings, not explicit opening, establishment, activation, closure, or dated operational history."
+    },
+    {
+      "source_id": "geonames:12164551",
+      "name": "Cairo Northwest Heliport",
+      "reason": "Skipped because no credible public temporal source was found beyond current listing-style evidence."
+    },
+    {
+      "source_id": "geonames:11749483",
+      "name": "Al Qusayr Air Base",
+      "reason": "Skipped because research found conflict/current-use references but no reliable establishment or activation date."
+    },
+    {
+      "source_id": "geonames:8616953",
+      "name": "An Nasiriyah Airbase",
+      "reason": "Skipped because public evidence was limited to current airbase references and Syrian civil-war use, without a reliable start date."
+    },
+    {
+      "source_id": "geonames:11749482",
+      "name": "Khalkhalah Air Base",
+      "reason": "Skipped because available sources identify the base and later attacks, but no reliable opening or establishment year was found."
+    },
+    {
+      "source_id": "geonames:11864954",
+      "name": "Dumayr",
+      "reason": "Skipped because sources list the Syrian Air Force installation and recent conflict events, but the usage field remains unknown-present with no public start date."
+    },
+    {
+      "source_id": "geonames:11864972",
+      "name": "Marj Ruhayyil",
+      "reason": "Skipped because research found current aviation-directory and conflict references only, not a defensible operational start year."
+    },
+    {
+      "source_id": "geonames:11864985",
+      "name": "Sayqal",
+      "reason": "Skipped because no credible public establishment or activation year was found."
+    },
+    {
+      "source_id": "geonames:11749394",
+      "name": "Matan al-Sarra Air Base",
+      "reason": "Skipped despite clear 1987 operational evidence because the researched sources did not provide a reliable establishment/opening year for the base."
+    },
+    {
+      "source_id": "geonames:12164599",
+      "name": "Jufra",
+      "reason": "Skipped because available evidence documents Gaddafi-era and 1980s/2011 use, but not an opening or establishment year."
+    },
+    {
+      "source_id": "geonames:11843738",
+      "name": "King Abdul Aziz Military Academy",
+      "reason": "Skipped as a likely military academy/institution row misclassified as an air base; academy founding evidence exists but is not clean airbase/base temporal coverage for this overlay row."
+    },
+    {
+      "source_id": "geonames:12086236",
+      "name": "Shahid Vatan Pour Air Base",
+      "reason": "Skipped because research found current Iranian air-base references but no reliable public opening or establishment year."
+    },
+    {
+      "source_id": "geonames:7464437",
+      "name": "8th Shekari Air Base",
+      "reason": "Skipped because research found current/base-identity references but no source-backed operational start date."
+    },
+    {
+      "source_id": "geonames:12094087",
+      "name": "Silet Helicopter Base",
+      "reason": "Skipped because available evidence did not provide an establishment, opening, or dated operational-use year."
+    },
+    {
+      "source_id": "geonames:12094081",
+      "name": "Oran Heliport",
+      "reason": "Skipped because the row appears to be a heliport/current listing without a reliable temporal source."
+    },
+    {
+      "source_id": "geonames:11843060",
+      "name": "Sweihan Airbase",
+      "reason": "Skipped because no reliable public establishment or activation date was found beyond current-airbase listings."
+    },
+    {
+      "source_id": "geonames:11843061",
+      "name": "Sas Al Nahkil",
+      "reason": "Skipped because evidence was limited to current airfield/base listings and did not establish a temporal boundary."
+    },
+    {
+      "source_id": "geonames:13304379",
+      "name": "Ghantoot",
+      "reason": "Skipped because the public evidence found was not sufficient to confirm a dateable military base rather than a current airfield/listing row."
+    },
+    {
+      "source_id": "geonames:392735",
+      "name": "Sakhir Airbase",
+      "reason": "Skipped because available sources did not provide a reliable establishment, opening, or activation year."
+    },
+    {
+      "source_id": "geonames:11749484",
+      "name": "Al Anad Air Base",
+      "reason": "Skipped because research found current/conflict-use references, but not a reliable opening or establishment year."
+    },
+    {
+      "source_id": "geonames:11864911",
+      "name": "King Abdullah II Airbase",
+      "reason": "Skipped because no reliable public temporal source was found beyond current-base references."
+    }
+  ]
+}

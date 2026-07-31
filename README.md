@@ -15,6 +15,12 @@ Local parser + map explorer for the UFO/UAP chronology text files in this worksp
 
 The repository contains the product source, tests, documentation, configuration examples, and small static overlay assets. Large source corpora, generated datasets, caches, release bundles, and local deployment state are intentionally excluded from Git. Full-catalog parsing requires separately provisioned chronology inputs; production-scale static data should remain in external object storage such as Cloudflare R2.
 
+## Exact Reproduction
+
+The checked-in reproduction contract pins the current production Pages archive and every immutable R2 object by byte count and SHA-256 hash. A clean clone can hydrate a complete offline copy while overlaying the current Git revision's frontend source, so later committed application changes automatically appear in the reproduced tool.
+
+See [`reproduction/README.md`](reproduction/README.md) for the one-command hydration, full clean-clone acceptance workflow, integrity guarantees, and the required refresh step for future data releases.
+
 ## Setup
 
 1. Install Python 3.11+.

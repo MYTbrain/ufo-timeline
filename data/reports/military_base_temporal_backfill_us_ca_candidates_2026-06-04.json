@@ -1,0 +1,1145 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "description": "Research-only JSON-ready temporal override candidates for US and Canadian records already present in webapp/static_public/data/map_overlays/military_bases.geojson. This file is intentionally not applied to the overlay.",
+  "match_key": "source_id",
+  "default_date_precision": "year",
+  "candidate_count": 60,
+  "review_notes": [
+    "Matched by source_id from the existing GeoNames-derived military_bases.geojson overlay.",
+    "Sources are official military/government pages where available; near-official public-history sources are used only when an official page confirms part of the record or the official page was not date-complete.",
+    "Intervals are included where official histories show inactive gaps. Top-level start_year/end_year are provided for override compatibility, but interval-aware filtering should prefer operational_intervals."
+  ],
+  "overrides": [
+    {
+      "source_id": "geonames:4529293",
+      "name": "Altus Air Force Base",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1945,
+          "label": "Altus Army Air Field wartime training phase"
+        },
+        {
+          "start_year": 1953,
+          "end_year": null,
+          "label": "Postwar Air Force base phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.altus.af.mil/About-Us/Fact-Sheets/Display/Article/352069/chronology-of-altus-air-force-base/",
+        "https://www.altus.af.mil/About-Us/Fact-Sheets/Display/Article/558873/altus-air-force-base/"
+      ],
+      "source_notes": "Official Altus chronology says the War Department established Altus Army Air Field in 1942, flying training began in January 1943, the field was placed inactive/surplus in 1945, and SAC assumed control in 1953."
+    },
+    {
+      "source_id": "geonames:11379094",
+      "name": "Barksdale Air Force Base",
+      "country_code": "US",
+      "start_year": 1933,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.barksdale.af.mil/About/Fact-Sheets/Article/320178/barksdale-information/",
+        "https://www.barksdale.af.mil/News/Display/Article/320490/barksdale-celebrates-80-years/"
+      ],
+      "source_notes": "Official Barksdale sources identify the dedication/opening of Barksdale Field in 1933 and continuing active Air Force use."
+    },
+    {
+      "source_id": "geonames:6295716",
+      "name": "Keesler Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.keesler.af.mil/About-Us/Fact-Sheets/Article/360538/history-of-keesler-air-force-base/"
+      ],
+      "source_notes": "Official Keesler history says the War Department activated Army Air Corps Station No. 8 at Biloxi in June 1941 and officially designated it Keesler Army Airfield in August 1941."
+    },
+    {
+      "source_id": "geonames:6298034",
+      "name": "Cannon Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.cannon.af.mil/Portals/85/documents/27%20SOW%202022%20FACT%20SHEET.pdf?timestamp=1641333030332&ver=sScaXKVCBnjn74jPbuw63A%3D%3D"
+      ],
+      "source_notes": "Official Cannon fact-sheet material says Clovis Army Air Base began in September 1942; use the wartime base origin for temporal visibility."
+    },
+    {
+      "source_id": "geonames:6269438",
+      "name": "Cape Canaveral Air Force Station",
+      "country_code": "US",
+      "start_year": 1949,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.patrick.spaceforce.mil/history/"
+      ],
+      "source_notes": "Official Space Launch Delta 45 history places the Cape Canaveral military launch-range origin in the 1949 Joint Long Range Proving Ground period; first launch activity followed in 1950."
+    },
+    {
+      "source_id": "geonames:6297932",
+      "name": "Columbus Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.columbus.af.mil/About-Us/Fact-Sheets/"
+      ],
+      "source_notes": "Official Columbus history says the War Department approved the field in 1941, first skeleton organizations arrived in January 1942, and cadet training began in February 1942."
+    },
+    {
+      "source_id": "geonames:6298456",
+      "name": "Creech Air Force Base",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1943,
+          "end_year": 1947,
+          "label": "Indian Springs wartime auxiliary/training-field phase"
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "Reopened Air Force / Creech AFB phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.creech.af.mil/About-Us/Fact-Sheets/Display/Article/449127/"
+      ],
+      "source_notes": "Official Creech history says the site had landing strips by 1942, saw use as a divert/gunnery-training field by February 1943, inactivated with Las Vegas AAF in January 1947, and reopened in January 1949."
+    },
+    {
+      "source_id": "geonames:8085384",
+      "name": "Davis Monthan Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.dm.af.mil/About-DM/Fact-Sheets/Display/Article/313133/davis-monthan-air-force-history/"
+      ],
+      "source_notes": "Official Davis-Monthan history says Army Air Base, Tucson officially activated in April 1941 and was formally named Davis-Monthan Field in December 1941."
+    },
+    {
+      "source_id": "geonames:6298634",
+      "name": "Dobbins Air Reserve Base",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.dobbins.afrc.af.mil/About-Us/Fact-Sheets/Display/Article/170612/dobbinsarb/dobbins-air-reserve-base/"
+      ],
+      "source_notes": "Official Dobbins fact sheet says Dobbins ARB was built in 1943 as Marietta Army Airfield and was renamed Dobbins Air Reserve Base in 1992."
+    },
+    {
+      "source_id": "geonames:4687483",
+      "name": "Dyess Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1946,
+          "label": "Abilene Army Air Base / Army Airfield phase"
+        },
+        {
+          "start_year": 1955,
+          "end_year": null,
+          "label": "Abilene AFB / Dyess AFB phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.dyess.af.mil/Fact-Sheets/Display/Article/812832/dyess-history/",
+        "https://www.dyess.af.mil/Fact-Sheets/Display/Article/267607/dyess-air-force-base/"
+      ],
+      "source_notes": "Official Dyess history says Abilene Army Air Base opened in December 1942, was inactive by early 1946, and the 4021st Air Base Squadron activated at Abilene Air Force Base in January 1955 before the Dyess renaming in 1956."
+    },
+    {
+      "source_id": "geonames:5861457",
+      "name": "Eielson Air Force Base",
+      "country_code": "US",
+      "start_year": 1944,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://cms.dec.alaska.gov/spar/csp/sites/eielson/",
+        "https://www.eielson.af.mil/About-Us/Units/Search/"
+      ],
+      "source_notes": "Alaska DEC's Eielson site profile identifies Eielson AFB as an active installation established in 1944; official Eielson material confirms current active 354th Fighter Wing host status."
+    },
+    {
+      "source_id": "geonames:6301703",
+      "name": "Ellsworth Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.ellsworth.af.mil/News/Article-Display/Article/2654874/ellsworth-officially-selected-as-first-base-to-receive-b-21s/"
+      ],
+      "source_notes": "Official Air Force article describes Ellsworth's origin as Rapid City Army Air Base in 1942 and continuing active bomber-base evolution."
+    },
+    {
+      "source_id": "geonames:5861614",
+      "name": "Elmendorf Air Force Base",
+      "country_code": "US",
+      "start_year": 1940,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jber.jb.mil/Info/Fact-Sheets/Display/Article/290356/elmendorf-air-force-base-history/"
+      ],
+      "source_notes": "Official JBER history lists Elmendorf's establishment in June 1940, construction beginning in June 1940, and first Air Corps personnel arriving in August 1940."
+    },
+    {
+      "source_id": "geonames:6301718",
+      "name": "Fairchild Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.fairchild.af.mil/Information/Fact-Sheets/Display/Article/238991/fairchild-air-force-base-a-brief-history/"
+      ],
+      "source_notes": "Official Fairchild history says the base has been integral since 1942 and the depot activated at Spokane in March 1942."
+    },
+    {
+      "source_id": "geonames:5825570",
+      "name": "Francis E Warren Air Force Base",
+      "country_code": "US",
+      "start_year": 1867,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.warren.af.mil/About-Us/Fact-Sheets/Display/Article/331281/fe-warren-history/",
+        "https://www.warren.af.mil/About-Us/Base-History/"
+      ],
+      "source_notes": "Official Warren history says Fort D. A. Russell was established in 1867 and identifies F. E. Warren as the oldest continuously active military installation in the Air Force."
+    },
+    {
+      "source_id": "geonames:7262480",
+      "name": "Warren Air Force Base",
+      "country_code": "US",
+      "start_year": 1867,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.warren.af.mil/About-Us/Fact-Sheets/Display/Article/331281/fe-warren-history/",
+        "https://www.warren.af.mil/About-Us/Base-History/"
+      ],
+      "source_notes": "Duplicate GeoNames Warren record; same official Fort D. A. Russell/F. E. Warren continuity applies."
+    },
+    {
+      "source_id": "geonames:7267786",
+      "name": "Goodfellow Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.goodfellow.af.mil/About-Us/Fact-Sheets/Display/Article/372978/goodfellow-air-force-base-history/About-Us/goodfellow-air-force-base-history/",
+        "https://www.goodfellow.af.mil/Newsroom/Article-Display/Article/3131571/the-early-goodfellow-heritage/"
+      ],
+      "source_notes": "Official Goodfellow history says the airfield was established in 1940, ready for occupancy in January 1941, and first students arrived in February 1941; use 1941 for operational visibility."
+    },
+    {
+      "source_id": "geonames:8481822",
+      "name": "Grand Forks Air Force Base",
+      "country_code": "US",
+      "start_year": 1957,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.grandforks.af.mil/Portals/24/INRMP%20FINAL%202020_1.pdf",
+        "https://www.airforce-technology.com/projects/grand-forks-air-force-base/"
+      ],
+      "source_notes": "Official Grand Forks environmental history material and near-official base-history summaries place construction in the mid-1950s and operational/occupied use in early 1957."
+    },
+    {
+      "source_id": "geonames:9669830",
+      "name": "Hill Air Force Base",
+      "country_code": "US",
+      "start_year": 1940,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.hill.af.mil/About-Us/Fact-Sheets/Display/Article/397240/a-short-history-of-hill-air-force-base/",
+        "https://www.hill.af.mil/News/Article-Display/Article/2064140/hill-field-and-the-beginning-of-a-depot/"
+      ],
+      "source_notes": "Official Hill history says the first Ogden Air Depot commander arrived at Hill Field in November 1940, marking official operations at the field."
+    },
+    {
+      "source_id": "geonames:6298400",
+      "name": "Homestead Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "Homestead Army Air Field wartime phase"
+        },
+        {
+          "start_year": 1953,
+          "end_year": null,
+          "label": "Homestead Air Force Base / Air Reserve Base phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.homestead.afrc.af.mil/Portals/134/Documents/History%20of%20Homestead%20Air%20Reserve%20Base%20%204%20Apr%202018.pdf?ver=2018-07-26-132208-790"
+      ],
+      "source_notes": "Official Homestead history-office PDF references September 1942 activation/origin. The 1953 postwar reopening and continued reserve-base use are strong but should receive a second official confirmation before applying as high confidence."
+    },
+    {
+      "source_id": "geonames:4159426",
+      "name": "Hurlburt Field",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.hurlburt.af.mil/About-Us/Fact-Sheets/Fact-Sheets/Article/204585/hurlburt-field/",
+        "https://www.hurlburt.af.mil/About-Us/Fact-Sheets/Fact-Sheets/Article/204584/hurlburt-field-history/"
+      ],
+      "source_notes": "Official Hurlburt pages identify the site as Eglin Auxiliary Field No. 9, one of the 1940s auxiliary training fields, and note the Hurlburt naming after a 1943 crash. Use 1943 as a conservative candidate pending a stronger exact operational opening source."
+    },
+    {
+      "source_id": "geonames:8260366",
+      "name": "Joint Base Andrews",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jba.af.mil/About/Fact-Sheets/Display/Article/336384/joint-base-andrews-history/"
+      ],
+      "source_notes": "Official Joint Base Andrews history says Camp Springs Army Air Field became operational in May 1943 and later became Andrews Field/Air Force Base."
+    },
+    {
+      "source_id": "geonames:6298538",
+      "name": "Joint Base Langley-Eustis",
+      "country_code": "US",
+      "start_year": 1917,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jble.af.mil/About-Us/633rd-Air-Base-Wing-History/",
+        "https://www.jble.af.mil/News/Article-Display/Article/1029954/jble-celebrates-100-years-of-langley/",
+        "https://www.jble.af.mil/Portals/46/JBLE%20Virginia%20100%20Percent%20Final%20Electronic.pdf"
+      ],
+      "source_notes": "Official JBLE pages mark the Langley deed/founding in 1916; official AICUZ history describes Langley AFB as established in 1917. Use 1917 for operational facility visibility and avoid treating the 2010 joint-base name as the operational start."
+    },
+    {
+      "source_id": "geonames:7910273",
+      "name": "Kelly Field Annex",
+      "country_code": "US",
+      "start_year": 1917,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1917,
+          "end_year": 2001,
+          "label": "Kelly Field / Kelly Air Force Base phase"
+        },
+        {
+          "start_year": 2001,
+          "end_year": null,
+          "label": "Kelly Field Annex / joint-use military airfield phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jbsa.mil/News/News/Article/1055122/jbsa-lackland-port-san-antonio-celebrate-as-kelly-field-turns-100/",
+        "https://www.jbsa.mil/News/News/Article/1406806/kelly-field-the-name-is-official/"
+      ],
+      "source_notes": "Official JBSA articles say Kelly Field was founded in 1917, Kelly AFB closed in July 2001, and the Kelly Field/Annex name and joint-use military airfield role continued afterward."
+    },
+    {
+      "source_id": "geonames:5524931",
+      "name": "Laughlin Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "Laughlin Army Air Field wartime phase"
+        },
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "Reopened Laughlin Air Force Base phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.laughlin.af.mil/About-Us/Off-Limits-Locations/Travel-to-Mexico/",
+        "https://www.laughlin.af.mil/Portals/11/AFD-111019-005.pdf"
+      ],
+      "source_notes": "Official Laughlin history says Laughlin Army Air Field began in July 1942, the Army decided to close it in September 1945, and the Air Force reopened Laughlin AFB in May 1952."
+    },
+    {
+      "source_id": "geonames:9670586",
+      "name": "Luke Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1946,
+          "label": "Luke Field wartime fighter-training phase"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Reactivated Luke Air Force Base phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.luke.af.mil/About-Us/Fact-Sheets/Air-Park/index.html"
+      ],
+      "source_notes": "Official Luke air-park history says the facility became Luke Field in June 1941, closed in November 1946, and was reactivated as Luke AFB in February 1951."
+    },
+    {
+      "source_id": "geonames:6298743",
+      "name": "Marine Corps Air Station Beaufort",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.beaufort.marines.mil/Portals/53/Docs/AICUZ/130912-MCAS-Beaufort-AICUZ-Study.pdf?ver=jrDHeSM63oidWcwCarAZJw%3D%3D",
+        "https://www.beaufort.marines.mil/Portals/53/Docs/LAUREL%20BAY/Final%20MCAS%20Beaufort%20Public%20Health%20Review%20Report%20-%20NMCPHC%2029%20September%202017_reduced%20file%20size.pdf?ver=2019-09-20-085235-983"
+      ],
+      "source_notes": "Official Marine Corps environmental/history documents identify the site as Naval Air Station Beaufort commissioned in 1943 and later MCAS Beaufort."
+    },
+    {
+      "source_id": "geonames:7702013",
+      "name": "McChord Field Airport (Joint Base Lewis-McChord)",
+      "country_code": "US",
+      "start_year": 1940,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.mcchord.af.mil/News/Article-Display/Article/3563263/mcchord-air-museum-keeps-installations-legacy-alive/",
+        "https://www.historylink.org/File/9934"
+      ],
+      "source_notes": "Official McChord article confirms the 1938 McChord Field naming; near-official HistoryLink history says the military takeover occurred in 1938 and the official McChord Field dedication occurred in July 1940. Use 1940 for operational military-field visibility."
+    },
+    {
+      "source_id": "geonames:5100995",
+      "name": "McGuire Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1946,
+          "label": "Fort Dix Army Air Force Base wartime phase"
+        },
+        {
+          "start_year": 1948,
+          "end_year": null,
+          "label": "McGuire Air Force Base / JBMDL McGuire phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jbmdl.jb.mil/Mission-Partners/McGuire/",
+        "https://www.jbmdl.jb.mil/Portals/47/AICUZ/JBMDL%20AICUZ%202022%20Report%20Readers%20Spread_3.pdf?ver=xYTMjxOgRZze0HZ-u2bCqA%3D%3D"
+      ],
+      "source_notes": "Official JBMDL McGuire page says McGuire originated in 1941 as Fort Dix Army Air Force Base, closed briefly after World War II, and reopened in 1948 as McGuire AFB."
+    },
+    {
+      "source_id": "geonames:6298648",
+      "name": "Minot Air Force Base",
+      "country_code": "US",
+      "start_year": 1957,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.minot.af.mil/About-Us/Fact-Sheets/Display/Article/264277/minot-air-force-base/",
+        "https://www.minot.af.mil/About-Us/"
+      ],
+      "source_notes": "Official Minot pages say the base opened in February 1957 and the first unit activated in February 1957."
+    },
+    {
+      "source_id": "geonames:6299233",
+      "name": "Moody Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1947,
+          "label": "Moody Field wartime/postwar training-base phase"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Reactivated Moody AFB phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.moody.af.mil/About-Us/MoodyHistory/",
+        "https://www.moody.af.mil/About-Us/Units/93d-AGOW/"
+      ],
+      "source_notes": "Official Moody history says training began in February 1942, the base was inactive in November 1947, and was reactivated in May 1951."
+    },
+    {
+      "source_id": "geonames:5074379",
+      "name": "Offutt Air Force Base",
+      "country_code": "US",
+      "start_year": 1896,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.offutt.af.mil/Portals/97/Documents/AFD-130718-033.pdf?ver=2016-02-17-122154-040",
+        "https://www.offutt.af.mil/News/Article-Display/Article/3765225/offutt-afb-through-the-years/"
+      ],
+      "source_notes": "Official Offutt fact sheet traces the installation to Fort Crook construction/completion between 1894 and 1896; airfield use begins later, with Offutt Field named in 1924 and Offutt AFB in 1948."
+    },
+    {
+      "source_id": "geonames:6301689",
+      "name": "Peterson Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "Colorado Springs / Peterson Army Air Base wartime phase"
+        },
+        {
+          "start_year": 1947,
+          "end_year": 1949,
+          "label": "Short postwar reactivation periods"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Air Defense Command / Peterson AFB/SFB phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.petersonschriever.spaceforce.mil/About-Us/Fact-Sheets/Display/Article/1124362/peterson-space-force-base-history/",
+        "https://www.petersonschriever.spaceforce.mil/peterson-sfb-colorado/"
+      ],
+      "source_notes": "Official Peterson history says Colorado Springs Army Air Base was established in April 1942, inactivated at the end of 1945, reactivated briefly in 1947-1949, and reactivated again after Air Defense Command's 1951 establishment."
+    },
+    {
+      "source_id": "geonames:6301695",
+      "name": "Pope Field",
+      "country_code": "US",
+      "start_year": 1919,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.pope.af.mil/About-Us/Pope-Army-Airfield-History/",
+        "https://www.army.mil/article-amp/52441/fort_bragg_takes_over_pope_air_force_base_under_brac"
+      ],
+      "source_notes": "Official Pope and Army histories say the Camp Bragg flying field was designated/officially established as Pope Field in 1919; BRAC shifted real-property accountability to the Army while Air Force tenant operations continued."
+    },
+    {
+      "source_id": "geonames:4721483",
+      "name": "Randolph Air Force Base",
+      "country_code": "US",
+      "start_year": 1930,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.jbsa.mil/Information/JBSA-History-Fact-Sheets/Article-View/Article/2664767/jbsa-randolph/"
+      ],
+      "source_notes": "Official JBSA-Randolph history says Randolph Field was dedicated in June 1930 as a flying training base and continues that mission today."
+    },
+    {
+      "source_id": "geonames:6301753",
+      "name": "Robins Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.robins.af.mil/Portals/59/documents/History/AFD-130219-040.pdf",
+        "https://www.robins.af.mil/News/Article-Display/Article/4470383/america-250-robins-legacy-brief-history-of-robins-afb-during-wwii-era/"
+      ],
+      "source_notes": "Official Robins history material says the Georgia/Wellston depot project began in 1941 and opened/was in business as Robins Field in 1942."
+    },
+    {
+      "source_id": "geonames:6298319",
+      "name": "Seymour-Johnson Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1946,
+          "label": "Seymour Johnson Field wartime phase"
+        },
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "Reactivated Seymour Johnson Air Force Base phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.seymourjohnson.af.mil/About-Us/Fact-Sheets/Seymour-Johnson-Air-Force-Base-History/"
+      ],
+      "source_notes": "Official Seymour Johnson history says the field activated in June 1942, deactivated in May 1946, and reactivated as a Tactical Air Command base in April 1956."
+    },
+    {
+      "source_id": "geonames:6301721",
+      "name": "Shaw Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.shaw.af.mil/About-Us/Fact-Sheets/Display/Article/663885/shaw-air-force-base/",
+        "https://www.shaw.af.mil/News/Features/Display/Article/1049552/looking-back-on-seven-decades-of-difference/"
+      ],
+      "source_notes": "Official Shaw pages say Shaw Field was designated/activated in 1941 as an Army Air Corps basic flying school."
+    },
+    {
+      "source_id": "geonames:6299077",
+      "name": "Sheppard Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.sheppard.af.mil/Library/Sheppard-History/",
+        "https://www.sheppard.af.mil/Library/Sheppard-History/Air-Force-Sheppard-AFB-History/"
+      ],
+      "source_notes": "Official Sheppard history says Sheppard AFB was activated in October 1941 and provided aircrew and aircraft-mechanic training during World War II."
+    },
+    {
+      "source_id": "geonames:9670584",
+      "name": "Travis Air Force Base",
+      "country_code": "US",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.travis.af.mil/News/Article/151590/remember-when-travis-air-force-base-beginnings/",
+        "https://www.travis.af.mil/Units/Fact-Sheets/Article/150635/heritage-pamphlet/"
+      ],
+      "source_notes": "Official Travis history says Air Transport Command formally activated Fairfield-Suisun Army Air Base in May 1943; it was renamed Travis AFB in 1951."
+    },
+    {
+      "source_id": "geonames:5894520",
+      "name": "Base des Forces canadiennes Borden",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/department-national-defence/services/bases-support-units/canadian-forces-base-borden.html",
+        "https://www.canada.ca/fr/ministere-defense-nationale/services/bases-unites-de-soutien/base-des-forces-canadiennes-borden.html"
+      ],
+      "source_notes": "Official Canadian Forces Base Borden page says Camp Borden officially opened in summer 1916 and continues as a CAF training base."
+    },
+    {
+      "source_id": "geonames:5914718",
+      "name": "Canadian Forces Base Borden",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/department-national-defence/services/bases-support-units/canadian-forces-base-borden.html"
+      ],
+      "source_notes": "Duplicate English GeoNames record for Borden; official CFB Borden history supports the 1916 opening."
+    },
+    {
+      "source_id": "geonames:5905900",
+      "name": "Borden Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/department-national-defence/services/bases-support-units/canadian-forces-base-borden.html"
+      ],
+      "source_notes": "Borden range/training-area row appears to be part of the same Camp Borden training-base complex; official base history supports 1916 as the complex opening year."
+    },
+    {
+      "source_id": "geonames:5919639",
+      "name": "Champ de tir et champ de manoeuvre Borden",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/fr/ministere-defense-nationale/services/bases-unites-de-soutien/base-des-forces-canadiennes-borden.html"
+      ],
+      "source_notes": "French duplicate range/training-area row tied to the Borden complex; official French base history supports 1916 as the complex opening year."
+    },
+    {
+      "source_id": "geonames:5894524",
+      "name": "Base des Forces canadiennes Gagetown",
+      "country_code": "CA",
+      "start_year": 1958,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/5-canadian-division/5-canadian-division-support-base-gagetown.html"
+      ],
+      "source_notes": "Official 5 CDSB Gagetown page says Gagetown was officially opened in 1958 as a training facility."
+    },
+    {
+      "source_id": "geonames:5914722",
+      "name": "Canadian Forces Base Gagetown",
+      "country_code": "CA",
+      "start_year": 1958,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/5-canadian-division/5-canadian-division-support-base-gagetown.html"
+      ],
+      "source_notes": "Duplicate English GeoNames record for Gagetown; official 5 CDSB Gagetown history supports 1958."
+    },
+    {
+      "source_id": "geonames:5958949",
+      "name": "Gagetown Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1958,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/5-canadian-division/5-canadian-division-support-base-gagetown.html"
+      ],
+      "source_notes": "Official Gagetown page says the base opened in 1958 and describes its large training area; apply same start to the range/training-area row."
+    },
+    {
+      "source_id": "geonames:5919640",
+      "name": "Champ de tir et champ de manoeuvre Gagetown",
+      "country_code": "CA",
+      "start_year": 1958,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/5-canadian-division/5-canadian-division-support-base-gagetown.html"
+      ],
+      "source_notes": "French duplicate for the Gagetown range/training-area complex; official Gagetown page supports 1958."
+    },
+    {
+      "source_id": "geonames:5894525",
+      "name": "Base des Forces canadiennes Goose Bay",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/1-canadian-air-division/5-wing/history.html",
+        "https://www.canada.ca/fr/force-aerienne/organisation/escadres/5-escadre/histoire.html"
+      ],
+      "source_notes": "Official 5 Wing Goose Bay history lists 1941 as creation of 5 Wing Goose Bay and says Canada and the United States built the airfield on the present site."
+    },
+    {
+      "source_id": "geonames:5914723",
+      "name": "Canadian Forces Base Goose Bay",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/1-canadian-air-division/5-wing/history.html"
+      ],
+      "source_notes": "Duplicate English GeoNames row for Goose Bay; official 5 Wing history supports 1941."
+    },
+    {
+      "source_id": "geonames:6296334",
+      "name": "CFB Goose Bay",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/1-canadian-air-division/5-wing/history.html"
+      ],
+      "source_notes": "Air-base GeoNames row for Goose Bay; official 5 Wing history supports the 1941 origin."
+    },
+    {
+      "source_id": "geonames:5894526",
+      "name": "Base des Forces canadiennes Greenwood",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/1-canadian-air-division/14-wing/history.html"
+      ],
+      "source_notes": "Official 14 Wing Greenwood history is excerpted from History of CFB Greenwood 1942-1992 and describes RAF/RCAF wartime operations at Greenwood beginning in 1942-1943; use 1942 as the base-origin year."
+    },
+    {
+      "source_id": "geonames:5914724",
+      "name": "Canadian Forces Base Greenwood",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/1-canadian-air-division/14-wing/history.html"
+      ],
+      "source_notes": "Duplicate English GeoNames row for Greenwood; official 14 Wing history supports the 1942 wartime origin."
+    },
+    {
+      "source_id": "geonames:5894527",
+      "name": "Base des Forces canadiennes Halifax",
+      "country_code": "CA",
+      "start_year": 1759,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/navy/corporate/our-organization/structure/marlant/units.html",
+        "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/official/book-1962-naval-service-1-en.pdf"
+      ],
+      "source_notes": "Official MARLANT page says CFB Halifax has continued from the founding of the Naval Yard in 1759. Use 1759 for long-running naval-base continuity; the formal CFB naming is later."
+    },
+    {
+      "source_id": "geonames:5914725",
+      "name": "Canadian Forces Base Halifax",
+      "country_code": "CA",
+      "start_year": 1759,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/navy/corporate/our-organization/structure/marlant/units.html",
+        "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/official/book-1962-naval-service-1-en.pdf"
+      ],
+      "source_notes": "Duplicate English GeoNames row for Halifax; official MARLANT history supports 1759 naval-yard continuity."
+    },
+    {
+      "source_id": "geonames:5894535",
+      "name": "Base des Forces canadiennes Trenton",
+      "country_code": "CA",
+      "start_year": 1931,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/wings/8-wing/history.html",
+        "https://www.canada.ca/en/news/archive/2009/09/trenton-infrastructure.html"
+      ],
+      "source_notes": "Official 8 Wing Trenton history says Trenton was officially opened in August 1931 and remains a major Canadian military aviation base."
+    },
+    {
+      "source_id": "geonames:5914733",
+      "name": "Canadian Forces Base Trenton",
+      "country_code": "CA",
+      "start_year": 1931,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/wings/8-wing/history.html",
+        "https://www.canada.ca/en/news/archive/2009/09/trenton-infrastructure.html"
+      ],
+      "source_notes": "Duplicate English GeoNames row for Trenton; official 8 Wing history supports 1931."
+    },
+    {
+      "source_id": "geonames:5914719",
+      "name": "Canadian Forces Base Cold Lake",
+      "country_code": "CA",
+      "start_year": 1954,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/wings/4-wing/history.html"
+      ],
+      "source_notes": "Official 4 Wing Cold Lake history says RCAF Station Cold Lake officially opened in spring 1954."
+    },
+    {
+      "source_id": "geonames:8617281",
+      "name": "CFB Cold Lake",
+      "country_code": "CA",
+      "start_year": 1954,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/wings/4-wing/history.html"
+      ],
+      "source_notes": "Air-base GeoNames row for Cold Lake; official 4 Wing history supports 1954."
+    },
+    {
+      "source_id": "geonames:5914720",
+      "name": "Canadian Forces Base Comox",
+      "country_code": "CA",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_candidate",
+      "source_urls": [
+        "https://www.canada.ca/en/air-force/corporate/wings/19-wing.html",
+        "https://www.canada.ca/fr/force-aerienne/organisation/escadres/19-escadre/histoire.html"
+      ],
+      "source_notes": "Official 19 Wing Comox page says the Comox airfield opened as a Royal Air Force Base in 1942 and became an RCAF aerodrome in May 1943."
+    }
+  ]
+}

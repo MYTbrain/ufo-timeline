@@ -1,0 +1,475 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:11459281",
+      "name": "Alekseyevka",
+      "country_code": "RU",
+      "start_year": 1953,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": null,
+          "label": "Kamenny Ruchey / Alekseyevka naval air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kamenny Ruchey",
+          "url": "https://en.wikipedia.org/wiki/Kamenny_Ruchey",
+          "note": "Identifies Kamenny Ruchey as also known as Alekseyevka and gives built/used dates of 1953 to present, with 568th and 570th naval aviation regiments based from 1953."
+        }
+      ],
+      "rationale": "The queue coordinates and name match the Alekseyevka alias for Kamenny Ruchey air base near Mongokhto. The source gives a 1953 completion/use marker and unit basing from 1953, so 1953 is the conservative candidate start year."
+    },
+    {
+      "source_id": "geonames:11459250",
+      "name": "Borzya Northwest",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1975,
+          "end_year": 1994,
+          "label": "101st Independent Reconnaissance Aviation Regiment at Borzya-2"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Borzya-2 (air base)",
+          "url": "https://en.wikipedia.org/wiki/Borzya-2_(air_base)",
+          "note": "Identifies Borzya-2 as also called Borzya Northwest and describes the 101st Independent Reconnaissance Aviation Regiment being established there in 1975."
+        },
+        {
+          "title": "101st independent Reconnaissance Aviation Regiment",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/orap/101orap.htm",
+          "note": "Specialist unit history lists Borzya-2, Chita Oblast as the regiment's base from 1975 to 1994."
+        }
+      ],
+      "rationale": "The overlay name is an exact alias match for Borzya-2. The available sources support a dated 1975-1994 regiment-basing interval; earlier relocation evidence is inconsistent, so it is not promoted here."
+    },
+    {
+      "source_id": "geonames:11459198",
+      "name": "Chkalovsk",
+      "country_code": "RU",
+      "start_year": 1935,
+      "operational_intervals": [
+        {
+          "start_year": 1935,
+          "end_year": null,
+          "label": "Kaliningrad Chkalovsk / Prowehren naval air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kaliningrad Chkalovsk",
+          "url": "https://en.wikipedia.org/wiki/Kaliningrad_Chkalovsk",
+          "note": "Identifies the Chkalovsk naval air base at matching coordinates, with built and in-use dates from 1935 to present and construction beginning in 1935."
+        }
+      ],
+      "rationale": "The queue point is the Kaliningrad Chkalovsk air base, not the Moscow-area Chkalovsky air base. The source gives a direct 1935 built/in-use start and continuing use, so 1935 is promoted."
+    },
+    {
+      "source_id": "geonames:11458949",
+      "name": "Danilovo",
+      "country_code": "RU",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1994,
+          "label": "681st Fighter Aviation Regiment PVO at Danilovo"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Danilovo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Danilovo_(air_base)",
+          "note": "Identifies Danilovo near Yoshkar-Ola, gives built/used dates of 1952 to present, and states the 681st Fighter Aviation Regiment PVO was based there from 1952 to 1994."
+        },
+        {
+          "title": "Danilovo (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%94%D0%B0%D0%BD%D0%B8%D0%BB%D0%BE%D0%B2%D0%BE_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Russian-language page also gives the 1952-1994 681st Fighter Aviation Regiment basing interval and notes current helicopter/FSB aviation use."
+        }
+      ],
+      "rationale": "The overlay coordinates match Danilovo east of Yoshkar-Ola. Both sources support 1952 as the military airfield and regiment start marker, with a documented 1952-1994 PVO fighter-regiment interval."
+    },
+    {
+      "source_id": "geonames:11459355",
+      "name": "Dmitriyevka",
+      "country_code": "RU",
+      "start_year": 1953,
+      "operational_intervals": [
+        {
+          "start_year": 1954,
+          "end_year": 1992,
+          "label": "904th Training Aviation Regiment at Chebenki / Dmitriyevka"
+        },
+        {
+          "start_year": 1972,
+          "end_year": 2007,
+          "label": "118th Independent Helicopter Squadron at Chebenki / Dmitriyevka"
+        },
+        {
+          "start_year": 1993,
+          "end_year": 2007,
+          "label": "4215th reserve-aircraft base at Chebenki / Dmitriyevka"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Chebenki (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A7%D0%B5%D0%B1%D0%B5%D0%BD%D1%8C%D0%BA%D0%B8_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Identifies Chebenki as Dmitriyevka and says the airfield near Dmitriyevka was built in 1953-1954, with 904th regiment, 118th helicopter squadron, and 4215th reserve-aircraft-base intervals."
+        }
+      ],
+      "rationale": "The queue label Dmitriyevka matches the Chebenki (Dmitriyevka) military airfield in Orenburg Oblast. The source supplies a 1953-1954 build window and multiple dated unit/base intervals; 1953 is the conservative earliest construction marker."
+    },
+    {
+      "source_id": "geonames:11458707",
+      "name": "Doroskhovo",
+      "country_code": "RU",
+      "start_year": 1953,
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": 2009,
+          "label": "611th Fighter Aviation Regiment PVO at Dorokhovo / Bezhetsk"
+        },
+        {
+          "start_year": 2006,
+          "end_year": 2008,
+          "label": "Temporary 790th Fighter Aviation Regiment basing during Khotilovo reconstruction"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Dorokhovo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Dorokhovo_(air_base)",
+          "note": "Identifies Dorokhovo/Bezhetsk as a former air base with used dates of 1953 to 2009 and 611th Fighter Aviation Regiment basing."
+        },
+        {
+          "title": "Dorokhovo (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%94%D0%BE%D1%80%D0%BE%D1%85%D0%BE%D0%B2%D0%BE_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Russian-language page describes 1951 field-airfield infrastructure, 1953 concrete runway reconstruction, 611th regiment formation at the airfield, 2006-2008 temporary Khotilovo regiment basing, and 611th disbandment in September 2009."
+        }
+      ],
+      "rationale": "The queue spelling Doroskhovo aligns with Dorokhovo/Bezhetsk at the same Tver Oblast airbase. The sources support the concrete military airfield and resident fighter regiment from 1953, with operational closeout in 2009."
+    },
+    {
+      "source_id": "geonames:11459549",
+      "name": "Galenki Northeast",
+      "country_code": "RU",
+      "end_year": 2010,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "582nd Fighter Aviation Regiment at Galenki"
+        },
+        {
+          "start_year": 1950,
+          "end_year": 2010,
+          "label": "18th Guards aviation-regiment lineage and 6983rd aviation-base transition at Galenki"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Galenki (air base)",
+          "url": "https://en.wikipedia.org/wiki/Galenki_(air_base)",
+          "note": "Identifies Galenki as a former Russian Air Force base, gives used dates of 1952 to 2010, states 582nd Fighter Aviation Regiment basing in 1942-1945, 18th Guards regiment basing from September 1950, and transfer of 6983rd headquarters/aircraft by the end of 2010."
+        },
+        {
+          "title": "Galenki (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%93%D0%B0%D0%BB%D1%91%D0%BD%D0%BA%D0%B8_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Russian-language page supports the September 1950 18th Guards regiment basing and later conservation/doubtful use after the 2010 transfer."
+        }
+      ],
+      "rationale": "The queue point is an exact coordinate/name match to Galenki air base. Because source text includes earlier unit-basing dates that conflict with the infobox built date, this candidate promotes the explicitly dated unit intervals rather than a single construction year."
+    },
+    {
+      "source_id": "geonames:11459277",
+      "name": "Khabarovsk Nekrasovka",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": 1946,
+          "label": "254th Fighter Aviation Division at Garovka"
+        },
+        {
+          "start_year": 1981,
+          "end_year": 1999,
+          "label": "137th Civil Defense independent helicopter detachment at Garovka-2"
+        },
+        {
+          "start_year": 1982,
+          "end_year": 2010,
+          "label": "825th independent transport-combat helicopter regiment at Garovka"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Garovka (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%93%D0%B0%D1%80%D0%BE%D0%B2%D0%BA%D0%B0_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Identifies Garovka as a military airfield on the eastern edge of Khabarovsk/Garovka-2 and lists 254th Fighter Aviation Division, 137th helicopter detachment, and 825th helicopter regiment basing."
+        },
+        {
+          "title": "Khabarovsk aviation rescue center history",
+          "url": "https://xn--b1ae4ad.xn--p1ai/calendar/1981-6-23_data-obrazovaniya-khabarovskogo-aviatsionno-spasatelnogo-tsentra-mchs-rossii",
+          "note": "Institutional history says the 137th Civil Defense helicopter detachment was formed at Garovka-2 on 23 June 1981 and later transferred into emergency-ministry structures."
+        }
+      ],
+      "rationale": "The queue coordinates for Khabarovsk Nekrasovka align with Garovka Air Base near Nekrasovka/Garovka-2 rather than Khabarovsk Tsentralny. The sources provide dated Garovka military and civil-defense aviation intervals, so the candidate uses intervals instead of an unsourced construction year."
+    },
+    {
+      "source_id": "geonames:11458773",
+      "name": "Kinel Cherkassy",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1993,
+          "end_year": 2009,
+          "label": "793rd independent transport-combat helicopter regiment at Kinel-Cherkassy"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "793rd independent Helicopter Regiment",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/ovp/793ovp.htm",
+          "note": "Specialist unit history lists Kinel-Cherkassy as the regiment's base beginning in August 1993, with coordinates matching the overlay point."
+        },
+        {
+          "title": "List of military airfields in Russia",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B2%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D1%85_%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%D0%BE%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8",
+          "note": "Russian military-airfield list says Kinel-Cherkassy hosted the 793rd OTBVP after its 1993 withdrawal from Telavi and that the regiment was disbanded in 2009."
+        }
+      ],
+      "rationale": "The overlay name and coordinates match Kinel-Cherkassy/Tolkay. The strongest dated evidence is the 793rd helicopter regiment's 1993 relocation and 2009 disbandment, so the report keeps this as an interval only."
+    },
+    {
+      "source_id": "geonames:11458886",
+      "name": "Kotlas South",
+      "country_code": "RU",
+      "start_year": 1967,
+      "end_year": 2010,
+      "operational_intervals": [
+        {
+          "start_year": 1967,
+          "end_year": 1993,
+          "label": "445th Fighter Aviation Regiment PVO at Savatiya / Kotlas South"
+        },
+        {
+          "start_year": 1993,
+          "end_year": null,
+          "label": "Post-445th fighter aviation use at Savatiya"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Savatiya (air base)",
+          "url": "https://en.wikipedia.org/wiki/Savatiya_(air_base)",
+          "note": "Identifies Savatiya as also called Kotlas South and gives built/used dates of 1967 to 2010, with 445th Interceptor Aviation Regiment basing from 1967 to 1993 and later fighter-regiment use."
+        }
+      ],
+      "rationale": "The queue name Kotlas South is an alias for Savatiya air base. The source gives direct built/used dates and a dated resident-regiment interval, so 1967-2010 is promoted."
+    },
+    {
+      "source_id": "geonames:11459390",
+      "name": "Krasnodar",
+      "country_code": "RU",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1993,
+          "label": "802nd Training Aviation Regiment at Krasnodar air base"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Krasnodar (air base)",
+          "url": "https://en.wikipedia.org/wiki/Krasnodar_(air_base)",
+          "note": "Identifies the Krasnodar air base at matching coordinates, gives built/used dates of 1952 to present, and says the 802nd Training Aviation Regiment was based there from 1952 to 1993."
+        },
+        {
+          "title": "Krasnodar-Tsentralny (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%BE%D0%B4%D0%B0%D1%80-%D0%A6%D0%B5%D0%BD%D1%82%D1%80%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+          "note": "Russian-language page identifies Krasnodar-Tsentralny as a joint-basing aerodrome with Ministry of Defense, MVD, and DOSAAF use and notes later 461st assault-regiment basing before 2009."
+        }
+      ],
+      "rationale": "The queue coordinates match Krasnodar/Tsentralny air base. The English air-base page gives the clearest 1952 start and 1952-1993 training-regiment interval; later use is noted but not expanded without a clean start date."
+    },
+    {
+      "source_id": "geonames:11458897",
+      "name": "Lodeynoye Pole",
+      "country_code": "RU",
+      "start_year": 1960,
+      "end_year": 2013,
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": 2009,
+          "label": "177th Fighter Aviation Regiment PVO at Lodeynoye Pole"
+        },
+        {
+          "start_year": 2009,
+          "end_year": 2013,
+          "label": "Post-regiment military-commandant guarding phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Lodeynoye Pole (air base)",
+          "url": "https://en.wikipedia.org/wiki/Lodeynoye_Pole_(air_base)",
+          "note": "Identifies Lodeynoye Pole as a former air base with built/used dates of 1960 to 2013, the 177th Fighter Aviation Regiment PVO based from 1960 to 2009, and airfield guard responsibility through 6 September 2013."
+        }
+      ],
+      "rationale": "The overlay point is an exact name/location match to the former Lodeynoye Pole air base. The source supports the 1960 start, 2009 regiment disbandment, and 2013 final military-commandant guard marker."
+    },
+    {
+      "source_id": "geonames:11459332",
+      "name": "Marinovka",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1991,
+          "end_year": 1992,
+          "label": "168th Guards Bomber Aviation Regiment at Marinovka"
+        },
+        {
+          "start_year": 1993,
+          "end_year": 1998,
+          "label": "296th Fighter-Bomber Aviation Regiment at Marinovka"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Marinovka Air Base: Location, Units & Runway Details",
+          "url": "https://www.globalmilitary.net/airbases/marinovka/",
+          "note": "Specialist profile identifies Marinovka as a Russian Aerospace Forces air base at matching coordinates and gives 168th Guards Bomber Aviation Regiment basing in 1991-1992 and 296th Fighter-Bomber Aviation Regiment basing in 1993-1998."
+        }
+      ],
+      "rationale": "The overlay coordinates match Marinovka. The specialist profile does not provide a construction year, so this candidate reports only the sourced historical unit-basing intervals."
+    },
+    {
+      "source_id": "geonames:11459138",
+      "name": "Michurinsk Northwest",
+      "country_code": "RU",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "Michurinsk Northwest / Kozlov military training-airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Michurinsk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/michurinsk/",
+          "note": "Specialist profile identifies Michurinsk as also known as Michurinsk Northwest and Kozlov, gives year built as 1952, and states it has been in use since then as a military training airfield."
+        }
+      ],
+      "rationale": "The queue label, alias, and coordinates match the GlobalMilitary Michurinsk profile. The page provides a direct 1952 built/in-use date, so 1952 is promoted."
+    },
+    {
+      "source_id": "geonames:11459308",
+      "name": "Morozovsk Southwest",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Documented military-air-base use no later than 1940"
+        },
+        {
+          "start_year": 1993,
+          "end_year": null,
+          "label": "559th Bomber Aviation Regiment at Morozovsk"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Morozovsk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/morozovsk/",
+          "note": "Specialist profile identifies Morozovsk at matching coordinates, says the base has been in use since before 1940, and states the 559th Bomber Aviation Regiment relocated there in 1993."
+        }
+      ],
+      "rationale": "The overlay name Morozovsk Southwest aligns with the Morozovsk air base coordinates. Because the source says only that use predates 1940, this candidate uses a 1940 no-later-than operational marker and the separate dated 1993 regiment relocation rather than an exact construction year."
+    },
+    {
+      "source_id": "geonames:11459101",
+      "name": "Mozdok",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1962,
+          "end_year": 1998,
+          "label": "182nd Heavy Bomber Regiment / strategic air-base phase at Mozdok"
+        },
+        {
+          "start_year": 1999,
+          "end_year": null,
+          "label": "Chechen-campaign headquarters and military operating base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Mozdok",
+          "url": "https://www.globalsecurity.org/wmd/world/russia/mozdok.htm",
+          "note": "GlobalSecurity identifies Mozdok as the largest strategic air base in the Caucasus, home of the 182nd Heavy Bomber Regiment, states that airworthy Tu-95s were flown to Engels in 1998, and says the base remained operational for the 1999 Chechen campaign."
+        },
+        {
+          "title": "Uzyn (air base)",
+          "url": "https://en.wikipedia.org/wiki/Uzyn_(air_base)",
+          "note": "Long-range aviation history notes that in 1962 the 182nd Guards TBAP with basing at Mozdok joined the division."
+        }
+      ],
+      "rationale": "The overlay point is the Mozdok air base. The sources support a 1962 strategic-bomber basing marker, a 1998 transfer/removal of airworthy Tu-95s to Engels, and continued operational use in the 1999 Chechen campaign; no construction year is inferred."
+    },
+    {
+      "source_id": "geonames:11459116",
+      "name": "Murom",
+      "country_code": "RU",
+      "start_year": 1953,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": null,
+          "label": "Savasleyka / Murom military air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Savasleyka air base",
+          "url": "https://en.wikipedia.org/wiki/Savasleyka_air_base",
+          "note": "Identifies Savasleyka as also referred to as Murom, gives built/used dates of 1953 to present, and describes current Russian Aerospace Forces training-center aviation use."
+        },
+        {
+          "title": "The MiG-31: Foxhounds of Savasleyka",
+          "url": "https://aviationphotodigest.com/mig-31-foxhounds-savasleyka/",
+          "note": "Specialist aviation article says Savasleyka, sometimes referred to as Murom Air Base, originated in 1953 and has served education, training, retraining, and tactical-development roles."
+        }
+      ],
+      "rationale": "The queue label Murom maps to the Savasleyka/Murom air base at the same coordinate cluster. Both sources support a 1953 origin/start marker, so 1953 is promoted."
+    }
+  ]
+}

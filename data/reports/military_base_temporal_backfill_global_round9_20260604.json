@@ -1,0 +1,330 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_global_round9",
+  "description": "Ninth-round conservative temporal backfill candidates for remaining non-CN/non-CA clean research_temporal_dates rows. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates were considered.",
+    "Manual-classification, nonstandard, and possible overlay-artifact rows were excluded.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Where no public establishment date was found, start_year is a conservative documented-by operational year, not an inferred construction year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:6301616",
+      "name": "Kirtland, Kirtland Air Force Base Auxiliary Field",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kirtland Air Force Base > Base History",
+          "url": "https://www.kirtland.af.mil/About-Us/Kirtland-AFB-History/Base-History/",
+          "note": "Official Kirtland history describes Army transfer and conversion of the Albuquerque/Oxnard aviation facilities in 1941-1942."
+        },
+        {
+          "title": "Kirtland Air Force Base",
+          "url": "https://en.wikipedia.org/wiki/Kirtland_Air_Force_Base",
+          "note": "The base article lists Kirtland AFB as built in 1941 and used from 1942 to present, with auxiliary airfields used for wartime flying-school support."
+        }
+      ],
+      "rationale": "The queue row is an auxiliary-field variant tied to Kirtland AFB. The 1941 start is a conservative facility-start year for the wartime military airfield complex rather than a separately proven auxiliary-strip opening date."
+    },
+    {
+      "source_id": "geonames:11547138",
+      "name": "Rajanpur",
+      "country_code": "PK",
+      "start_year": 2026,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Pakistan Air Force - Hall of Heroes: PAF Air Bases",
+          "url": "https://www.pak.airforce/bases",
+          "note": "The PAF base directory lists PAF Base Farid at Rajanpur under Central Air Command among Pakistan Air Force bases."
+        },
+        {
+          "title": "OP22 - Rajanpur Air Base - Flight Plan Database",
+          "url": "https://flightplandatabase.com/airport/OP22",
+          "note": "The airport directory identifies OP22 as Rajanpur Air Base in Pakistan with runway and location details."
+        }
+      ],
+      "rationale": "No reliable establishment date was found. The 2026 start is only a documented-by operational year from current public base/airport directory evidence."
+    },
+    {
+      "source_id": "geonames:11786892",
+      "name": "Velhari",
+      "country_code": "PK",
+      "start_year": 2026,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Pakistan Air Force - Hall of Heroes: PAF Air Bases",
+          "url": "https://www.pak.airforce/bases",
+          "note": "The PAF base directory lists PAF Base Vehari under Central Air Command."
+        },
+        {
+          "title": "Pakistan Air Force Air Field - GeoView",
+          "url": "https://pk.geoview.info/pakistan_air_force_air_field%2C11786892",
+          "note": "GeoView mirrors the GeoNames feature as a Pakistan Air Force airbase near Vehari District and records a last-updated date in 2019."
+        }
+      ],
+      "rationale": "The queue spelling appears to be the GeoNames name for Vehari/PAF Air Force Air Field. Because no establishment date was found, the 2026 start is a conservative documented-by current-base year."
+    },
+    {
+      "source_id": "geonames:13559080",
+      "name": "Chandhar",
+      "country_code": "PK",
+      "start_year": 2006,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "PAF Base Chandhar",
+          "url": "https://en.wikipedia.org/wiki/PAF_Base_Chandhar",
+          "note": "The base entry identifies Chandhar as a Pakistan Air Force airbase and cites DAFIF data effective October 2006."
+        },
+        {
+          "title": "Pakistan Airports - GlobalSecurity.org",
+          "url": "https://www.globalsecurity.org/military/world/pakistan/airports.htm",
+          "note": "GlobalSecurity lists Chandhar Airbase as a military airport with a 9,000-foot runway."
+        }
+      ],
+      "rationale": "No establishment date was found in reliable public sources. The 2006 start is a documented-by operational date from DAFIF-linked airport data."
+    },
+    {
+      "source_id": "geonames:11506431",
+      "name": "G 510",
+      "country_code": "KR",
+      "start_year": 2010,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Icheon (G-510) Airfield runways - OurAirports",
+          "url": "https://ourairports.com/airports/RKRN/runways.html",
+          "note": "OurAirports identifies Icheon (G-510) Airfield with GPS code RKRN and runway data; the facility page was last updated in 2021."
+        },
+        {
+          "title": "Icheon Airfield (G-510) - Wikimapia",
+          "url": "https://wikimapia.org/6544938/Icheon-Airfield-%EC%9D%B4-%EC%B2%9C-G-510",
+          "note": "The mapping entry identifies Icheon Airfield/G-510 as an airport and military airbase, with runway details."
+        }
+      ],
+      "rationale": "No establishment date was found. The 2010 start is a conservative documented-by year based on long-standing airport-directory and map references rather than an opening date."
+    },
+    {
+      "source_id": "geonames:11506435",
+      "name": "G 536",
+      "country_code": "KR",
+      "start_year": 2026,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "RKUL: G 536 - Airport Nav Finder",
+          "url": "https://www.airportnavfinder.com/airport/RKUL/",
+          "note": "Airport Nav Finder identifies RKUL/G 536 at Nonsan-si with controlled status, radio frequency, and runway details."
+        },
+        {
+          "title": "Nonsan G 536 - ch-aviation",
+          "url": "https://www.ch-aviation.com/airports/RKUL",
+          "note": "ch-aviation identifies Nonsan G 536 as a military airport in the Republic of Korea."
+        }
+      ],
+      "rationale": "No public establishment date was found. The 2026 start is a conservative documented-by operational year from current airport-directory evidence."
+    },
+    {
+      "source_id": "geonames:11506406",
+      "name": "G 280",
+      "country_code": "KR",
+      "start_year": 2026,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "RKRC - Ha Nam Heliport (G-280) - Airborn.co",
+          "url": "https://www.airborn.co/Airports/Airport/RKRC",
+          "note": "Airborn identifies RKRC as Ha Nam Heliport (G-280) in South Korea with coordinates and heliport details."
+        },
+        {
+          "title": "Ha Nam (G-280) heliport - Bigorre.org",
+          "url": "https://www.bigorre.org/aero/meteo/rkrc/en",
+          "note": "Bigorre identifies Ha Nam (G-280) heliport at Choil-ro, South Korea, with ICAO RKRC and nearby aviation context."
+        }
+      ],
+      "rationale": "The queue row is a G-number airfield/heliport. No establishment date was found, so the 2026 start is only a documented-by current aviation-directory year."
+    },
+    {
+      "source_id": "geonames:11506430",
+      "name": "G 505",
+      "country_code": "KR",
+      "start_year": 2010,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "G 505 Airport - Airports-Worldwide",
+          "url": "https://www.airports-worldwide.com/korea/g_505_korea.php",
+          "note": "Airports-Worldwide identifies G 505/RKUC at Jochiwon, lists the operating agency as military, and states that the content was published in 2010."
+        },
+        {
+          "title": "G 505 Airport - Airport Guide",
+          "url": "https://airportguide.com/airport/info/RKUC",
+          "note": "Airport Guide identifies RKUC/G 505 at Jochiwon and records the airport status as operational."
+        }
+      ],
+      "rationale": "No establishment date was found. The 2010 start is a documented-by operational year from a dated airport-directory source that explicitly records military operation."
+    },
+    {
+      "source_id": "geonames:12164563",
+      "name": "Kom Awshim",
+      "country_code": "EG",
+      "start_year": 2018,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Egyptian Air Force - Helis.com",
+          "url": "https://www.helis.com/database/org/Egypt-Air-Force/",
+          "note": "Helis.com lists Kom Awshim AB among Egyptian Air Force bases and locations, with 18 Squadron associated with the base."
+        },
+        {
+          "title": "Kom Awshim Airbase - Airmate",
+          "url": "https://www.airmate.aero/php/airport_page.php?code=HE30&page=airport_page",
+          "note": "Airmate identifies HE30 as Kom Awshim Airbase in Egypt and shows operational data requiring special qualification."
+        }
+      ],
+      "rationale": "No establishment date was found. The 2018 start is a conservative documented-by operational year from contemporary aviation/military unit references, not an inferred opening year."
+    },
+    {
+      "source_id": "geonames:12164556",
+      "name": "El Maadi Heliport",
+      "country_code": "EG",
+      "start_year": 2026,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "El Maadi Heliport - Mindat",
+          "url": "https://www.mindat.org/feature-12164556.html",
+          "note": "Mindat mirrors the GeoNames feature as El Maadi Heliport, type airbase, in Cairo Governorate."
+        },
+        {
+          "title": "Maadi Armed Forces Hospital Heliport - WorldPlaces",
+          "url": "https://egypt.worldplaces.me/view-place/69525279-maadi-armed-forces-hospital-heliport.html",
+          "note": "WorldPlaces identifies a Maadi Armed Forces Hospital Heliport at coordinates matching the El Maadi heliport area."
+        }
+      ],
+      "rationale": "Only current directory/location evidence was found, not an establishment date. The 2026 start is a documented-by year for the heliport's public directory presence."
+    },
+    {
+      "source_id": "geonames:358247",
+      "name": "Deversoir Station",
+      "country_code": "EG",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Data and Station Information for DEVERSOIR - PSMSL",
+          "url": "https://psmsl.org/data/obtaining/stations/423.php",
+          "note": "PSMSL lists the Deversoir station in Egypt with a data time span of 1937-1941."
+        },
+        {
+          "title": "Abu Sultan Air Base",
+          "url": "https://en.wikipedia.org/wiki/Abu_Sultan_Air_Base",
+          "note": "The Abu Sultan/RAF Deversoir article identifies Deversoir as a RAF military airfield built in the 1930s and handed to the Egyptian Air Force in 1955."
+        }
+      ],
+      "rationale": "The GeoNames row is a Deversoir coast/signal station rather than the air base itself. The 1937 start is included only as conservative documented station presence near the historically military Deversoir area; no closure is asserted for the station feature."
+    },
+    {
+      "source_id": "geonames:3840112",
+      "name": "Puerto Belgrano Naval Air Base",
+      "country_code": "AR",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "82 anos de la Base Aeronaval Comandante Espora - Argentina.gob.ar",
+          "url": "https://www.argentina.gob.ar/node/261982",
+          "note": "The Argentine Navy article states construction began in 1936 and the base was officially inaugurated on 16 June 1939; early names included Base Aeronaval de Puerto Belgrano."
+        },
+        {
+          "title": "Base Aeronaval Comandante Espora",
+          "url": "https://es.wikipedia.org/wiki/Base_Aeronaval_Comandante_Espora",
+          "note": "The base article records 1936-1939 construction and official inauguration on 16 June 1939, with Puerto Belgrano among the earlier names."
+        }
+      ],
+      "rationale": "The queue row name aligns with an early name of what became Base Aeronaval Comandante Espora. The 1939 start is the official inauguration year; no sourced closure was found."
+    },
+    {
+      "source_id": "geonames:3965624",
+      "name": "Base Naval Ushuaia",
+      "country_code": "AR",
+      "start_year": 1950,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Base Naval Ushuaia",
+          "url": "https://es.wikipedia.org/wiki/Base_Naval_Ushuaia",
+          "note": "The article states Base Naval Ushuaia was founded in 1950 and gives decree 26424/50 as the founding instrument."
+        },
+        {
+          "title": "Base Naval Ushuaia - Moovit",
+          "url": "https://moovitapp.com/index/en/public_transit-Base_Naval_Ushuaia-Ushuaia-site_59369400-3814",
+          "note": "The transit/location entry summarizes the base as founded on 13 December 1950 for support ships operating in the southern sector."
+        }
+      ],
+      "rationale": "The 1950 date is direct founding evidence for the named naval base, with no sourced closure."
+    },
+    {
+      "source_id": "geonames:3429691",
+      "name": "Base Aeronaval Punta Indio",
+      "country_code": "AR",
+      "start_year": 1925,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Base Aeronaval Punta Indio",
+          "url": "https://es.wikipedia.org/wiki/Base_Aeronaval_Punta_Indio",
+          "note": "The Spanish article states that Base Aeronaval Punta Indio was inaugurated at the beginning of 1925 and remained a naval aviation base in 2025."
+        },
+        {
+          "title": "Punta Indio Naval Air Base",
+          "url": "https://en.wikipedia.org/wiki/Punta_Indio_Naval_Air_Base",
+          "note": "The English article states Punta Indio Naval Air Base was established in 1928, reflecting a more conservative alternate establishment year."
+        }
+      ],
+      "rationale": "Sources differ between an early-1925 inauguration and 1928 establishment language. The candidate uses 1925 because it is direct Spanish-language inauguration evidence and leaves the endpoint open."
+    },
+    {
+      "source_id": "geonames:11749420",
+      "name": "Vlore Air Base",
+      "country_code": "AL",
+      "start_year": 1950,
+      "end_year": 1997,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Vlore Air Base",
+          "url": "https://en.wikipedia.org/wiki/Vlor%C3%AB_Air_Base",
+          "note": "The air-base article states that Vlore Air Base was constructed in the 1950s, that the Air Academy was established in 1962, and that the air base was destroyed during the 1997 lottery uprising."
+        },
+        {
+          "title": "Vlore Air Base - AirportDatabase.net",
+          "url": "https://airportdatabase.net/albania/vlore-air-base_3973.html",
+          "note": "AirportDatabase identifies Vlore Air Base/LAVL in Albania with runway and location details."
+        }
+      ],
+      "rationale": "The 1950 start is decade-level construction evidence represented as the earliest year of the 1950s. The 1997 endpoint is supported as destruction of the air base, though later directory entries still preserve the airport code/location."
+    }
+  ]
+}

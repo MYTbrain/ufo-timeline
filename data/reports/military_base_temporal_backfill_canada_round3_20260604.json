@@ -1,0 +1,326 @@
+{
+  "generated_at": "2026-06-04",
+  "description": "Third-round research-only temporal candidates for Canada military/facility overlay records that remain undated after the current webapp/static_public/data/map_overlays/military_base_temporal_overrides.json file. This pass focuses on residual Arctic/radar/station/camp/training-area records and intentionally skips uncertain name matches.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json, webapp/static_public/data/map_overlays/military_bases.geojson, and webapp/static_public/data/map_overlays/military_base_temporal_overrides.json.",
+    "Only country_code CA overlay records with no current temporal override were included.",
+    "Camp-Bouchard was skipped because geonames:5914215 already has a current override.",
+    "Pelly Island/Nipterk Base was skipped because the strongest sources found in this pass tied Nipterk/Pelly to oil/exploration, weather, or generic GeoNames-style listings rather than a reliable military operational history."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:5914737",
+      "name": "Canadian Forces Station Flin Flon",
+      "country_code": "CA",
+      "start_year": 1966,
+      "end_year": 1973,
+      "operational_intervals": [
+        {
+          "start_year": 1966,
+          "end_year": 1973,
+          "label": "Canadian Forces Supplementary Radio System / CFS Flin Flon phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Semaphore to Satellite, Chapter 11 - A Story of Canadian Military Communications",
+          "url": "https://jproc.ca/radiostor/semaphore-to-satellite-chapter-11.pdf",
+          "note": "The communications-history chapter states that Stage Two of Canadian Forces integration created the Canadian Forces Supplementary Radio System in 1966, lists Flin Flon among the former RCAF stations that became CFS sites, and says CFS Flin Flon ceased operations in March 1973."
+        },
+        {
+          "title": "Gravity (CGSN) - Natural Resources Canada",
+          "url": "https://webapp.csrs-scrs.nrcan-rncan.gc.ca/geod/data-donnees/station/cgsn.php?id=99861995",
+          "note": "NRCan's geodetic station page identifies the location as FLIN FLON (CFS) and describes access at the CFS base near Creighton, supporting the exact station-site match."
+        }
+      ],
+      "rationale": "Exact English overlay record at the CFS Flin Flon coordinates. The start/end years are limited to the documented CFS phase rather than inferring an earlier RCAF start."
+    },
+    {
+      "source_id": "geonames:6155588",
+      "name": "Station des Forces canadiennes Flin Flon",
+      "country_code": "CA",
+      "start_year": 1966,
+      "end_year": 1973,
+      "operational_intervals": [
+        {
+          "start_year": 1966,
+          "end_year": 1973,
+          "label": "Canadian Forces Supplementary Radio System / Station des Forces canadiennes Flin Flon phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Semaphore to Satellite, Chapter 11 - A Story of Canadian Military Communications",
+          "url": "https://jproc.ca/radiostor/semaphore-to-satellite-chapter-11.pdf",
+          "note": "The source supports the 1966 CFSRS conversion and March 1973 cessation of operations for CFS Flin Flon."
+        },
+        {
+          "title": "Gravity (CGSN) - Natural Resources Canada",
+          "url": "https://webapp.csrs-scrs.nrcan-rncan.gc.ca/geod/data-donnees/station/cgsn.php?id=99861995",
+          "note": "NRCan confirms the CFS Flin Flon station location near the overlay coordinates."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Canadian Forces Station Flin Flon; the same CFS-phase chronology applies."
+    },
+    {
+      "source_id": "geonames:6041150",
+      "name": "Lac-Saint-Denis",
+      "country_code": "CA",
+      "start_year": 1952,
+      "end_year": 1986,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1967,
+          "label": "RCAF Station Lac St. Denis / Pinetree Line radar-station phase"
+        },
+        {
+          "start_year": 1967,
+          "end_year": 1986,
+          "label": "CFS Lac St. Denis phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "RCAF Station Lac St. Denis - FortWiki Historic U.S. and Canadian Forts",
+          "url": "https://fortwiki.com/RCAF_Station_Lac_St._Denis",
+          "note": "FortWiki identifies Lac St. Denis as a 1952-1986 Pinetree Line radar station, says it became operational on July 1, 1952, was renamed CFS Lac St. Denis after unification, and closed in 1986."
+        },
+        {
+          "title": "The Pinetree Line: CFS Lac St. Denis - Morin Heights Historical Association",
+          "url": "https://morinheightshistory.org/the-pine-tree-line/",
+          "note": "The local historical association says the base was built from 1949 to 1952, officially opened on July 1, 1952, and finally closed in 1986."
+        }
+      ],
+      "rationale": "The overlay label is shortened to the place name, but its coordinates align with the former CFS Lac St. Denis radar station. The candidate uses the documented operational radar-station span."
+    },
+    {
+      "source_id": "geonames:5914727",
+      "name": "Canadian Forces Base Montréal",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Building 42 - Parks Canada Federal Heritage Buildings Review Office",
+          "url": "https://www.pc.gc.ca/apps/dfhd/page_fhbro_eng.aspx?i=81585&id=7423",
+          "note": "Parks Canada places Building 42 at Garrison Longue Pointe (CFB Montreal), gives its construction date as 1941, and associates it with the establishment of Garrison Longue-Pointe during the Second World War as a supply depot."
+        },
+        {
+          "title": "Building 42 - Canada's Historic Places",
+          "url": "https://www.historicplaces.ca/en/rep-reg/place-lieu.aspx?id=11110",
+          "note": "Canada's Historic Places likewise identifies the CFB Montreal/Garrison Longue-Pointe administration building with a 1941 construction date and Second World War supply-depot association."
+        }
+      ],
+      "rationale": "Exact overlay coordinates match the Longue-Pointe/CFB Montreal site. The candidate uses the documented 1941 military supply-depot establishment for site visibility rather than trying to infer a later administrative renaming year."
+    },
+    {
+      "source_id": "geonames:5894529",
+      "name": "Base des Forces canadiennes Montréal",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Building 42 - Parks Canada Federal Heritage Buildings Review Office",
+          "url": "https://www.pc.gc.ca/apps/dfhd/page_fhbro_eng.aspx?i=81585&id=7423",
+          "note": "Parks Canada supports the 1941 Longue-Pointe/CFB Montreal military supply-depot origin."
+        },
+        {
+          "title": "Building 42 - Canada's Historic Places",
+          "url": "https://www.historicplaces.ca/en/rep-reg/place-lieu.aspx?id=11110",
+          "note": "The national register page confirms the same Garrison Longue-Pointe (CFB Montreal) site association."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Canadian Forces Base Montréal; the Longue-Pointe site-origin chronology applies."
+    },
+    {
+      "source_id": "geonames:5894560",
+      "name": "Base militaire de Saint-Jean",
+      "country_code": "CA",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Ville militaire, ville garnison - Ville de Saint-Jean-sur-Richelieu",
+          "url": "https://sjsr.ca/ville-militaire-ville-garnison/",
+          "note": "The municipal history says the Canadian Armed Forces arrived in 1941, that the Saint-Jean military base was built at the start of the Second World War for navigator/bomber training, and that National Defence reacquired the site in 1951 for permanent Canadian Forces use."
+        },
+        {
+          "title": "RCAF Station St Jean - RCAF.Info",
+          "url": "https://rcaf.info/rcaf-stations/quebec-rcaf-stations/rcaf-station-st-jean/",
+          "note": "RCAF.Info lists RCAF Station St Jean as in use from 1941 to present and says No. 9 Air Observer School opened at St Jean on July 7, 1941."
+        },
+        {
+          "title": "École de leadership et de recrues des Forces canadiennes - Canada.ca",
+          "url": "https://www.canada.ca/fr/ministere-defense-nationale/services/avantages-militaires/education-formation/instruction-de-base/ecole-de-recrues/elrfc-instructions-ralliement.html",
+          "note": "Canada.ca confirms the current Canadian Forces Leadership and Recruit School presence at Saint-Jean-sur-Richelieu."
+        }
+      ],
+      "rationale": "Exact French overlay label and coordinates for the Saint-Jean military-base site. The candidate uses the documented 1941 wartime military arrival and leaves the endpoint open because official current pages confirm continuing CAF training use."
+    },
+    {
+      "source_id": "geonames:6175064",
+      "name": "Wainwright Regional Training Area",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "3rd Canadian Division Support Base Detachment Wainwright - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/3-canadian-division-support-base-edmonton/detachment-wainwright.html",
+          "note": "Canada.ca identifies Detachment Wainwright as one of Canada's busiest Army bases and says CFB/ASU Wainwright pastures its bison herd in a protected part of the range and training area."
+        },
+        {
+          "title": "Bud Cotton Buffalo Paddock - Canadian Forces Morale and Welfare Services",
+          "url": "https://www.cfmws.ca/wainwright/facilities/bud-cotton-buffalo-paddock",
+          "note": "CFMWS history says Camp Wainwright was established at the former Buffalo National Park location in 1940."
+        }
+      ],
+      "rationale": "Exact English overlay record for the Wainwright range/training area. The source-backed 1940 Camp Wainwright establishment year and current Canada.ca training-area status support an open-ended candidate."
+    },
+    {
+      "source_id": "geonames:5919616",
+      "name": "Champ de manoeuvre régional Wainwright",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "3rd Canadian Division Support Base Detachment Wainwright - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/3-canadian-division-support-base-edmonton/detachment-wainwright.html",
+          "note": "Canada.ca confirms current Detachment Wainwright and its range/training-area function."
+        },
+        {
+          "title": "Bud Cotton Buffalo Paddock - Canadian Forces Morale and Welfare Services",
+          "url": "https://www.cfmws.ca/wainwright/facilities/bud-cotton-buffalo-paddock",
+          "note": "CFMWS provides the 1940 Camp Wainwright establishment year."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Wainwright Regional Training Area; the same official/CFMWS chronology applies."
+    },
+    {
+      "source_id": "geonames:6067365",
+      "name": "Mary Hill Training Area",
+      "country_code": "CA",
+      "start_year": 1939,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1939,
+          "end_year": 1956,
+          "label": "Mary Hill coastal battery phase"
+        },
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "Mary Hill training area / DND-managed CFB Esquimalt property phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Public Service Announcements - District of Metchosin / Department of National Defence and Royal Canadian Navy notices",
+          "url": "https://www.metchosin.ca/community/news/public-service-announcements",
+          "note": "DND/RCN notices identify Mary Hill Training Area in Metchosin, say the Royal Canadian Navy has used the property for military training since the 1930s, and describe current CAF dry-training use."
+        },
+        {
+          "title": "Mary Hill Battery - FortWiki Historic U.S. and Canadian Forts",
+          "url": "https://fortwiki.com/Mary_Hill_Battery",
+          "note": "FortWiki documents the Mary Hill Battery as armed in 1939, decommissioned in 1956, and still existing on the Mary Hill training area as part of CFB Esquimalt."
+        },
+        {
+          "title": "Recovery Strategy for the Rigid Apple Moss in Canada - Canada.ca",
+          "url": "https://www.canada.ca/en/environment-climate-change/services/species-risk-public-registry/recovery-strategies/rigid-apple-moss-proposed-2011.html",
+          "note": "Canada.ca identifies Mary Hill Training Area as a property managed by the Department of National Defence / CFB Esquimalt."
+        }
+      ],
+      "rationale": "Exact overlay name and coordinates match the DND-managed Mary Hill training area. The 1939 start is anchored to the battery documented at the same site, while current training-area use is separately supported by DND/RCN notices."
+    },
+    {
+      "source_id": "geonames:5883136",
+      "name": "Albert Head Battery Point Training Area",
+      "country_code": "CA",
+      "start_year": 1938,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1938,
+          "end_year": 1946,
+          "label": "Albert Head coastal artillery battery phase"
+        },
+        {
+          "start_year": 1946,
+          "end_year": null,
+          "label": "Albert Head Canadian Forces range/training-area phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Albert Head Battery Point Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZAEE&wbdisable=true",
+          "note": "NRCan identifies Albert Head Battery Point Training Area as an official Canadian Forces Range and/or Training Area sourced to National Defence."
+        },
+        {
+          "title": "British Columbia - Canadian Military History",
+          "url": "https://militarybruce.com/abandoned-canadian-military-bases/the-future/british-columbia/",
+          "note": "The site history says Albert Head was originally established as an artillery coastal battery from 1938 to 1946 and now serves as a summer training camp, Canadian Ranger site, and CFB Esquimalt range-control area."
+        },
+        {
+          "title": "Public Service Announcements - District of Metchosin / Department of National Defence and Royal Canadian Navy notices",
+          "url": "https://www.metchosin.ca/community/news/public-service-announcements",
+          "note": "DND/RCN notices describe current training activity at the Albert Head Training Area."
+        }
+      ],
+      "rationale": "Exact English overlay record for the official NRCan/DND training-area feature. The 1938 start comes from a site-history source, so confidence is medium rather than high."
+    },
+    {
+      "source_id": "geonames:5919605",
+      "name": "Champ de manoeuvre Albert Head Battery Point",
+      "country_code": "CA",
+      "start_year": 1938,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1938,
+          "end_year": 1946,
+          "label": "Albert Head coastal artillery battery phase"
+        },
+        {
+          "start_year": 1946,
+          "end_year": null,
+          "label": "Albert Head Canadian Forces range/training-area phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Albert Head Battery Point Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZAEE&wbdisable=true",
+          "note": "NRCan identifies the official Albert Head Battery Point Training Area feature and its National Defence source."
+        },
+        {
+          "title": "British Columbia - Canadian Military History",
+          "url": "https://militarybruce.com/abandoned-canadian-military-bases/the-future/british-columbia/",
+          "note": "The site history supports the 1938-1946 battery phase and later training use."
+        },
+        {
+          "title": "Public Service Announcements - District of Metchosin / Department of National Defence and Royal Canadian Navy notices",
+          "url": "https://www.metchosin.ca/community/news/public-service-announcements",
+          "note": "DND/RCN notices support current Albert Head training-area activity."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Albert Head Battery Point Training Area; the same source-backed chronology applies."
+    }
+  ]
+}

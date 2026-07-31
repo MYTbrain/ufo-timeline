@@ -1,0 +1,234 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:4419329",
+      "name": "Naval Outlying Landing Field Joe Williams",
+      "country_code": "US",
+      "start_year": 1987,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "NAVFAC Site Descriptions - Naval Outlying Landing Field (NOLF) Joe Williams",
+          "url": "https://www.navfac.navy.mil/Divisions/Environmental/Products-and-Services/Environmental-Restoration/Southeast/Meridian-NAS/Site-Descriptions/",
+          "note": "Official NAVFAC page says NOLF Joe Williams supports NAS Meridian, was formerly outlying field Bravo, was renamed in 1987, and is currently operated by NAS Meridian Air Operations."
+        },
+        {
+          "title": "Final Community Involvement Plan, Naval Air Station Meridian and Naval Outlying Landing Field Joe Williams, August 2020",
+          "url": "https://www.navfac.navy.mil/Portals/68/Documents/Business-Lines/Environmental/Environmental-Restoration/NAVFAC-Southeast/Meridian-NAS/N63043_000653.pdf",
+          "note": "Official Navy/NAVFAC plan repeats the NAS Meridian timeline and the 1987 renaming of outlying field Bravo as NOLF Joe Williams."
+        }
+      ],
+      "rationale": "The sourced year supports the current exact named feature, not the earlier outlying-field Bravo lineage. A broader pre-1987 operational start should stay unresolved until a source states when Bravo first opened."
+    },
+    {
+      "source_id": "geonames:9036531",
+      "name": "Charleston Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1947,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "130th Airlift Wing celebrates 70th Anniversary",
+          "url": "https://www.130aw.ang.af.mil/News/Article-Display/Article/1330008/130th-airlift-wing-celebrates-70th-anniversary/",
+          "note": "Official 130th Airlift Wing article says the West Virginia Air National Guard was founded at Kanawha Airport, Charleston, on Nov. 3, 1947."
+        },
+        {
+          "title": "130th Airlift Wing Fact Sheet",
+          "url": "https://www.130aw.ang.af.mil/About-Us/Fact-Sheets/Display/Article/3197098/130th-airlift-wing-fact-sheet/",
+          "note": "Official fact sheet identifies the current installation as McLaughlin Air National Guard Base in Charleston, West Virginia."
+        },
+        {
+          "title": "AirNav: KCRW - West Virginia International Yeager Airport",
+          "url": "https://www.airnav.com/airport/kcrw",
+          "note": "AirNav FAA record lists airport activation date 08/1947, matching the military presence timeline at the same airfield."
+        }
+      ],
+      "rationale": "The GeoNames coordinate matches the Charleston/Yeager field used by the West Virginia ANG. Candidate uses the sourced 1947 ANG presence, with medium confidence because the exact McLaughlin ANG Base name is later than the generic Charleston ANG base lineage."
+    },
+    {
+      "source_id": "geonames:6298716",
+      "name": "Muir Army Airfield",
+      "country_code": "US",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Fort Indiantown Gap - History",
+          "url": "https://www.ftig.ng.mil/History/Pages/default/",
+          "note": "Official Fort Indiantown Gap history says Muir Army Airfield was constructed during the World War II buildout and the reservation was dedicated March 3, 1941."
+        },
+        {
+          "title": "AirNav: KMUI - Muir (Fort Indiantown Gap) Army Heliport",
+          "url": "https://www.airnav.com/airport/KMUI",
+          "note": "AirNav FAA record identifies the current Muir military-use heliport at Fort Indiantown Gap."
+        }
+      ],
+      "rationale": "The official installation history directly ties Muir Army Airfield construction to the 1941 Fort Indiantown Gap buildout; end remains open because the current Muir heliport is active."
+    },
+    {
+      "source_id": "geonames:5787705",
+      "name": "Paine Air Force Base",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1946,
+          "label": "Army Air Corps occupation and wartime airbase improvement phase"
+        },
+        {
+          "start_year": 1951,
+          "end_year": 1966,
+          "label": "Paine Air Force Base / Air Defense Command military phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Paine Field's History - Paine Field, WA Official Website",
+          "url": "https://www.painefield.com/130/Paine-Fields-History",
+          "note": "Official airport history says the Army Air Corps occupied and manned Paine Field from 1941 to 1946; in 1951 the field was officially renamed Paine Air Force Base; in 1966 the Air Force had all but pulled out."
+        },
+        {
+          "title": "AirNav: KPAE - Seattle Paine Field International Airport",
+          "url": "https://www.airnav.com/airport/kpae",
+          "note": "AirNav FAA record lists airport activation date 11/1938 for the underlying airfield."
+        }
+      ],
+      "rationale": "This row is a historical Air Force base record rather than the modern civilian airport. The official local history supports two distinct military intervals."
+    },
+    {
+      "source_id": "geonames:9036535",
+      "name": "Salt Lake City Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1946,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History - Utah National Guard",
+          "url": "https://guard.utah.gov/history/",
+          "note": "Official Utah National Guard history says the Utah Air National Guard was founded on Nov. 18, 1946, with federal recognition of the 191st Fighter Squadron at Salt Lake City Municipal Airport."
+        },
+        {
+          "title": "Utah Air National Guard base will be renamed for war hero Roland R. Wright",
+          "url": "https://www.nationalguard.mil/News/Article/576698/utah-air-national-guard-base-will-be-renamed-for-war-hero-roland-r-wright/",
+          "note": "National Guard article identifies the Utah ANG base on the east side of Salt Lake City International Airport and notes the Nov. 18, 1946 establishment date of the Utah ANG and 191st Fighter Squadron."
+        },
+        {
+          "title": "AirNav: KSLC - Salt Lake City International Airport",
+          "url": "https://www.airnav.com/airport/SLC",
+          "note": "AirNav FAA record lists airport activation date 11/1938 and current ANG communications/operations at the same airport."
+        }
+      ],
+      "rationale": "The official Guard history anchors the Air National Guard presence at Salt Lake City Municipal Airport in 1946; the later Roland R. Wright name is a 2014 rename, not the operational start."
+    },
+    {
+      "source_id": "geonames:9036028",
+      "name": "Warfield Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1982,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History of the Maryland Air National Guard - 175th Wing",
+          "url": "https://www.175wg.ang.af.mil/About-Us/Fact-Sheets/Display/Article/448349/history-of-the-maryland-air-national-guard/",
+          "note": "Official 175th Wing history says the military facilities at Martin State Airport were formally renamed in honor of Maj. Gen. Edwin Warfield III in 1982, and the base has since been known as Warfield Air National Guard Base."
+        },
+        {
+          "title": "AirNav: KMTN - Martin State Airport",
+          "url": "https://www.airnav.com/airport/MTN",
+          "note": "AirNav FAA record lists Martin State Airport activation date 04/1940 and current 175th Wing command-post frequencies."
+        }
+      ],
+      "rationale": "The exact GeoNames name is the post-1982 Warfield ANG Base name, so 1982 is the conservative exact-name start even though military/ANG use of Martin State predates the rename."
+    },
+    {
+      "source_id": "geonames:7871241",
+      "name": "B-2 Stealth Bomber Takeoff Crash Site",
+      "country_code": "GU",
+      "operational_intervals": [
+        {
+          "start_year": 2008,
+          "end_year": 2008,
+          "label": "single B-2 crash-site event at Andersen Air Force Base"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "B-2 crashes at Andersen - Air Combat Command",
+          "url": "https://www.acc.af.mil/News/Article-Display/Article/202210/b-2-crashes-at-andersen/",
+          "note": "Official Air Combat Command article says a B-2 Spirit crashed Feb. 23, 2008, at Andersen Air Force Base, Guam."
+        },
+        {
+          "title": "B-2 accident report released - U.S. Air Force",
+          "url": "https://www.af.mil/News/Article-Display/Article/123360/b-2-accident-report-released/",
+          "note": "Official Air Force article summarizes the accident investigation and states the crash occurred on takeoff at Andersen Air Force Base, Guam, on Feb. 23, 2008."
+        }
+      ],
+      "rationale": "This is not an installation-operational interval; it is a source-backed event-only overlay row. The report marks 2008 as both start and end to keep it temporally bounded."
+    },
+    {
+      "source_id": "geonames:7874067",
+      "name": "DoD Naval Reserve Nimitz Hill COMNAVMAR",
+      "country_code": "GU",
+      "start_year": 1945,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Guam: Two Invasions and Three Military Occupations, A Historical Summary of War in the Pacific National Historical Park",
+          "url": "https://npshistory.com/publications/wapa/invasion_beach.pdf",
+          "note": "National Park Service historical summary identifies the Fonte/Nimitz Hill area in the immediate post-liberation period and says the Libugon area soon became known as COMNAVMAR in August 1945."
+        },
+        {
+          "title": "WWII Monuments and Sites Map - Guampedia",
+          "url": "https://www.guampedia.com/wwii-monuments-and-sites-map/",
+          "note": "Guampedia identifies Nimitz Hill cave communications immediately south of Route 6 near the ComNavMar Headquarters building."
+        }
+      ],
+      "rationale": "The candidate uses the source-backed COMNAVMAR/Nimitz Hill post-liberation marker rather than inferring dates for all DoD naval-reserve parcels on Guam."
+    },
+    {
+      "source_id": "geonames:8948693",
+      "name": "RAF Mona",
+      "country_code": "GB",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "20th Century Military Airfields, Gwynedd Archaeological Trust Report 1053",
+          "url": "https://walesher1974.org/her/groups/GAT/media/GAT_Reports/GATreport_1053_ptI_compressed.pdf",
+          "note": "Heritage report states that land was requisitioned in 1941 and RAF Mona opened in 1942."
+        }
+      ],
+      "rationale": "The opened-year source is specific to RAF Mona. End remains open because this pass did not find a clean official source for a complete closed/reopened interval."
+    },
+    {
+      "source_id": "geonames:7910807",
+      "name": "Arsenale",
+      "country_code": "IT",
+      "start_year": 1104,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Museo Storico Navale di Venezia - L'arsenale - Marina Militare",
+          "url": "https://www.marina.difesa.it/cosa-facciamo/storia/musei/museostoricove/Pagine/Larsenale.aspx",
+          "note": "Italian Navy page says the origins of the Arsenale date to 1104, when Doge Falier established a state shipyard."
+        },
+        {
+          "title": "Storia dell'Arsenale di Venezia - Comune di Venezia",
+          "url": "https://www.comune.venezia.it/it/content/storia-dellarsenale-venezia",
+          "note": "Venice municipal history says the Arsenale Vecchio arose in the early 12th century and cautions that the exact 1104 foundation date is conventional."
+        }
+      ],
+      "rationale": "The GeoNames point is the Venice Arsenale naval complex. The candidate records the conventional 1104 origin with medium confidence because municipal history notes that this medieval foundation date is not exact to modern precision."
+    }
+  ]
+}

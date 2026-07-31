@@ -1,0 +1,447 @@
+{
+  "generated_at": "2026-06-04T23:45:00Z",
+  "temporal_source": "manual_web_research_global_round6",
+  "description": "Sixth-round conservative temporal backfill candidates for remaining Canada range/training-area gaps and a small number of non-RU/non-CN air-base leftovers. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json and data/reports/military_base_temporal_remaining_gap_classes.csv.",
+    "Only exact source_id matches to webapp/static_public/data/map_overlays/military_bases.geojson were included.",
+    "All included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "For several active Canadian range records, the date interval is intentionally a conservative first-public-documentation interval rather than an inferred original establishment date."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:6087906",
+      "name": "Niagara-on-the-Lake Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1908,
+      "end_year": 2000,
+      "operational_intervals": [
+        {
+          "start_year": 1908,
+          "end_year": 1947,
+          "label": "Department of National Defence-owned camp/rifle-range phase"
+        },
+        {
+          "start_year": 1947,
+          "end_year": 2000,
+          "label": "DND-leased training range phase after transfer to Parks Canada"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Place names - Niagara-on-the-Lake Range and Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=FEQWC",
+          "note": "CGNDB identifies the exact feature as a Canadian Forces Range and/or Training Area sourced to National Defence, with the same coordinates as the overlay record."
+        },
+        {
+          "title": "More about bombs at the rifle range - Niagara Now",
+          "url": "https://niagaranow.com/news.phtml/536-more-about-bombs-at-the-rifle-range/",
+          "note": "The local report cites DND information that the 110-hectare property was acquired by DND in 1908, transferred to Parks Canada in 1947, leased by DND until 2000, and training then ceased."
+        }
+      ],
+      "rationale": "The overlay feature is the named Niagara-on-the-Lake range/training area. The 1908 acquisition and 2000 cessation provide a conservative operational range span, while the Parks Canada transfer is preserved as an interval boundary."
+    },
+    {
+      "source_id": "geonames:5919645",
+      "name": "Champ de tir et champ de manoeuvre Niagara-on-the-Lake",
+      "country_code": "CA",
+      "start_year": 1908,
+      "end_year": 2000,
+      "operational_intervals": [
+        {
+          "start_year": 1908,
+          "end_year": 1947,
+          "label": "Department of National Defence-owned camp/rifle-range phase"
+        },
+        {
+          "start_year": 1947,
+          "end_year": 2000,
+          "label": "DND-leased training range phase after transfer to Parks Canada"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Place names - Niagara-on-the-Lake Range and Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=FEQWC",
+          "note": "CGNDB lists the English official feature at the same coordinates and identifies it as a Canadian Forces Range and/or Training Area."
+        },
+        {
+          "title": "More about bombs at the rifle range - Niagara Now",
+          "url": "https://niagaranow.com/news.phtml/536-more-about-bombs-at-the-rifle-range/",
+          "note": "The source gives the 1908 DND acquisition, 1947 transfer to Parks Canada, and 2000 end of DND training use."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as the Niagara-on-the-Lake range/training area; the same source-backed chronology applies."
+    },
+    {
+      "source_id": "geonames:6173881",
+      "name": "Vernon Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1912,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1912,
+          "end_year": 1946,
+          "label": "Vernon Military Camp militia and wartime army training phase"
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "Reopened cadet/reserve/regular-force training camp phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Vernon Serves - Vernon Museum",
+          "url": "https://vernonmuseum.ca/vernon-serves/",
+          "note": "Museum history says the Vernon Military Camp was established in 1912, used for annual cavalry and infantry militia training, became a major wartime training centre, closed after 1946, and reopened as an army cadet camp in July 1949."
+        },
+        {
+          "title": "Historic Vernon Military Camp under renovation - iNFOnews.ca",
+          "url": "https://infonews.ca/news/30256/historic-vernon-military-camp-under-renovation/",
+          "note": "Reports that the camp has been open since 1912 and is still used by cadets, reserve forces, and regular force units."
+        }
+      ],
+      "rationale": "Exact overlay record for the Vernon range/training area. The military-camp history supports a 1912 origin, a short postwar closure, and an open current military training interval."
+    },
+    {
+      "source_id": "geonames:5919648",
+      "name": "Champ de tir et champ de manoeuvre Vernon",
+      "country_code": "CA",
+      "start_year": 1912,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1912,
+          "end_year": 1946,
+          "label": "Vernon Military Camp militia and wartime army training phase"
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "Reopened cadet/reserve/regular-force training camp phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Vernon Serves - Vernon Museum",
+          "url": "https://vernonmuseum.ca/vernon-serves/",
+          "note": "Provides the 1912 establishment, 1946 closure, and July 1949 reopening chronology for Vernon Military Camp."
+        },
+        {
+          "title": "Historic Vernon Military Camp under renovation - iNFOnews.ca",
+          "url": "https://infonews.ca/news/30256/historic-vernon-military-camp-under-renovation/",
+          "note": "Confirms the continuing use of the camp by cadet, reserve-force, and regular-force groups."
+        }
+      ],
+      "rationale": "French overlay alias for the Vernon range/training area. The source-backed Vernon Military Camp chronology is applied without inventing a separate French-record history."
+    },
+    {
+      "source_id": "geonames:5894178",
+      "name": "Barriefield Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1914,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ontario - Canadian Military History",
+          "url": "https://militarybruce.com/abandoned-canadian-military-bases/the-future/ontario/",
+          "note": "The Kingston Garrison / Camp Barriefield entry says the military site originally opened in 1914 and later expanded with Vimy Barracks in 1937."
+        },
+        {
+          "title": "Building B-39 - Parks Canada Federal Heritage Buildings Review Office",
+          "url": "https://www.pc.gc.ca/apps/dfhd/page_fhbro_eng.aspx?id=7444",
+          "note": "Parks Canada places Building B-39 at CFB Kingston / Barriefield and identifies the site as part of the Canadian Forces Base Kingston setting."
+        }
+      ],
+      "rationale": "The overlay range/training-area record sits at Barriefield/CFB Kingston coordinates. The 1914 Camp Barriefield opening is used as a conservative site-start year, with current endpoint left open because the broader military installation remains active."
+    },
+    {
+      "source_id": "geonames:5919638",
+      "name": "Champ de tir et champ de manoeuvre Barriefield",
+      "country_code": "CA",
+      "start_year": 1914,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ontario - Canadian Military History",
+          "url": "https://militarybruce.com/abandoned-canadian-military-bases/the-future/ontario/",
+          "note": "The Camp Barriefield / Kingston Garrison history gives an original opening in 1914."
+        },
+        {
+          "title": "Building B-39 - Parks Canada Federal Heritage Buildings Review Office",
+          "url": "https://www.pc.gc.ca/apps/dfhd/page_fhbro_eng.aspx?id=7444",
+          "note": "Confirms the Barriefield / CFB Kingston military setting."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Barriefield Range and Training Area; the same Barriefield military-site chronology applies."
+    },
+    {
+      "source_id": "geonames:5936341",
+      "name": "Debert Range",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1996,
+          "label": "Camp/CFS Debert military base and training-area phase"
+        },
+        {
+          "start_year": 1996,
+          "end_year": null,
+          "label": "Residual firing range used by reserve units"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "CFS Debert - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/CFS_Debert",
+          "note": "The history states that construction of Camp Debert began in August 1940, included extensive firing ranges, and military use continued until CFS Debert's removal/transfer in 1996."
+        },
+        {
+          "title": "CFS Debert facts for kids - Kiddle",
+          "url": "https://kids.kiddle.co/CFS_Debert",
+          "note": "Summarizes the site as used by Canadian Forces, notes 1938-1996 military use, and says a firing range is the only military part still used by reserve units."
+        }
+      ],
+      "rationale": "The overlay point is the Debert range at the former Camp/CFS Debert site. The start year is tied to documented camp/range construction, while the open endpoint reflects the residual range use rather than the transferred base as a whole."
+    },
+    {
+      "source_id": "geonames:5919635",
+      "name": "Champ de tir Debert",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1996,
+          "label": "Camp/CFS Debert military base and training-area phase"
+        },
+        {
+          "start_year": 1996,
+          "end_year": null,
+          "label": "Residual firing range used by reserve units"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "CFS Debert - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/CFS_Debert",
+          "note": "Provides the 1940 Camp Debert construction/range context and 1996 transfer from military control."
+        },
+        {
+          "title": "CFS Debert facts for kids - Kiddle",
+          "url": "https://kids.kiddle.co/CFS_Debert",
+          "note": "Notes continuing residual firing-range use by reserve units."
+        }
+      ],
+      "rationale": "French overlay alias at the same Debert range coordinates; the same conservative Debert range chronology applies."
+    },
+    {
+      "source_id": "geonames:5973070",
+      "name": "Heals Range",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Heals Range - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JDHVP",
+          "note": "CGNDB identifies Heals Range as an official Canadian Forces Range and/or Training Area sourced to National Defence."
+        },
+        {
+          "title": "Heals Rifle Range - Waymarking",
+          "url": "https://www.waymarking.com/waymarks/wm16EN4_Heals_Rifle_Range_Saanich_British_Columbia_Canada",
+          "note": "Summarizes local site history that part of the Heal property was leased in 1916 for an army military range and that Heals Rifle Range was created."
+        },
+        {
+          "title": "Washed Out Culvert and Roadway Repair at Heals Rifle Range - Impact Assessment Agency of Canada",
+          "url": "https://iaac-aeic.gc.ca/050/evaluations/proj/84562?culture=en-CA",
+          "note": "Federal project page identifies Heals Rifle Range at CFB Esquimalt as a current DND site with a 2023 project start and 2024 determination."
+        }
+      ],
+      "rationale": "The range is an official National Defence-sourced Canadian Forces range. The 1916 origin comes from local site-history reporting and current DND operation is separately supported by a federal project page, so confidence remains medium."
+    },
+    {
+      "source_id": "geonames:5919649",
+      "name": "Champ de tir Heals",
+      "country_code": "CA",
+      "start_year": 1916,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Heals Range - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JDHVP",
+          "note": "CGNDB confirms the official Canadian Forces range/training-area feature and National Defence source."
+        },
+        {
+          "title": "Heals Rifle Range - Waymarking",
+          "url": "https://www.waymarking.com/waymarks/wm16EN4_Heals_Rifle_Range_Saanich_British_Columbia_Canada",
+          "note": "Provides the 1916 military-range creation history."
+        },
+        {
+          "title": "Washed Out Culvert and Roadway Repair at Heals Rifle Range - Impact Assessment Agency of Canada",
+          "url": "https://iaac-aeic.gc.ca/050/evaluations/proj/84562?culture=en-CA",
+          "note": "Confirms current DND/CFB Esquimalt site activity at Heals Rifle Range."
+        }
+      ],
+      "rationale": "French overlay alias at the same coordinates as Heals Range; included with medium confidence because the origin source is local-history rather than a DND history page."
+    },
+    {
+      "source_id": "geonames:6085776",
+      "name": "Nanaimo Range",
+      "country_code": "CA",
+      "start_year": 1920,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "DND gets tough on trespassers - Pacific Navy News",
+          "url": "https://lookoutnewspaper.com/dnd-gets-tough-on-trespassers/",
+          "note": "Pacific Navy News reports that Nanaimo Range has been used by the military and other groups since the 1920s and describes it as a restricted-access military training area where live ammunition is used."
+        },
+        {
+          "title": "Infrastructure and Environment - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/corporate/reports-publications/proactive-disclosure/cow-estimates-a-2019-20/infrastructure-environment.html",
+          "note": "Canada.ca states that the Royal Canadian Navy operates the Nanaimo Rifle Range and that it is an important Canadian Armed Forces weapons-qualification training facility."
+        }
+      ],
+      "rationale": "Exact overlay range name. The 1920s historical-use statement plus current Canada.ca operational confirmation supports an open-ended candidate; the start is rounded conservatively to 1920."
+    },
+    {
+      "source_id": "geonames:5898584",
+      "name": "Bentinck Island Range",
+      "country_code": "CA",
+      "start_year": 2008,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names search results - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/search?category=O&id=&page=283&province%5B0%5D=59&q=&snrc=&wbdisable=true",
+          "note": "CGNDB search result identifies Bentinck Island Range in British Columbia as a Canadian Forces Range and/or Training Area."
+        },
+        {
+          "title": "Temporal Spacing of Demolitions to Mitigate Disturbance - LGL Limited / Race Rocks",
+          "url": "https://racerocks.ca/racerock/admin/military/bentinck2089report.pdf",
+          "note": "The 2008 report identifies the Bentinck Island Demolition Range as one of the two WQ military ranges used for ordnance-based demolitions, with CFB Esquimalt range-control context."
+        },
+        {
+          "title": "Public Service Announcements - District of Metchosin",
+          "url": "https://www.metchosin.ca/community/news/public-service-announcements",
+          "note": "DND/RCN public notices describe Bentinck Island as an above-water terrestrial demolition range used by the Canadian Armed Forces in 2024."
+        }
+      ],
+      "rationale": "Exact Bentinck Island range overlay. Because a public origin date was not found, the start year is limited to the first sourced operational study year, with current CAF operation supported by DND/RCN notices."
+    },
+    {
+      "source_id": "geonames:6126814",
+      "name": "Rocky Point Training Area",
+      "country_code": "CA",
+      "start_year": 2008,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Rocky Point Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADY",
+          "note": "CGNDB identifies Rocky Point Training Area as an official Canadian Forces Range and/or Training Area sourced to National Defence."
+        },
+        {
+          "title": "Temporal Spacing of Demolitions to Mitigate Disturbance - LGL Limited / Race Rocks",
+          "url": "https://racerocks.ca/racerock/admin/military/bentinck2089report.pdf",
+          "note": "The 2008 report places Marine Training and Exercise Area WQ at Rocky Point and says training activities there are controlled by CFB Esquimalt range standing orders."
+        },
+        {
+          "title": "Blasting Notices - District of Metchosin",
+          "url": "https://www.metchosin.ca/community/news/blasting-notices",
+          "note": "2025 notices list Canadian Forces Ammunition Depot or Fleet Dive Unit demolition training at CYR 103/WQ Rocky Point Destruction Area."
+        }
+      ],
+      "rationale": "Exact Rocky Point training-area overlay. The candidate uses a conservative 2008 first-public-operational evidence start and leaves the interval open based on recent public training notices."
+    },
+    {
+      "source_id": "geonames:5919618",
+      "name": "Champ de manoeuvre Rocky Point",
+      "country_code": "CA",
+      "start_year": 2008,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Rocky Point Training Area - Natural Resources Canada",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADY",
+          "note": "CGNDB confirms the official English feature at the same coordinates and National Defence source."
+        },
+        {
+          "title": "Temporal Spacing of Demolitions to Mitigate Disturbance - LGL Limited / Race Rocks",
+          "url": "https://racerocks.ca/racerock/admin/military/bentinck2089report.pdf",
+          "note": "Provides 2008 operational evidence for WQ/Rocky Point demolition and training-area use."
+        },
+        {
+          "title": "Blasting Notices - District of Metchosin",
+          "url": "https://www.metchosin.ca/community/news/blasting-notices",
+          "note": "Recent notices show continued Rocky Point-area CAF demolition-training activity."
+        }
+      ],
+      "rationale": "French overlay alias for Rocky Point Training Area. The interval is deliberately bounded to sourced public operational evidence instead of inferring the original establishment date."
+    },
+    {
+      "source_id": "geonames:6301237",
+      "name": "Soewondo Air Force Base",
+      "country_code": "ID",
+      "start_year": 2013,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Soewondo Air Force Base - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Soewondo_Air_Force_Base",
+          "note": "The article states that all commercial flights shifted to Kualanamu on July 25, 2013, after which Polonia Airport became Soewondo Air Force Base used by the Indonesian Air Force."
+        },
+        {
+          "title": "Medan-Soewondo Air Force Base profile - Aviation Safety Network",
+          "url": "https://asn.flightsafety.org/database/airport/airport.php?id=MES2",
+          "note": "ASN identifies the site as Medan-Soewondo Air Force Base and gives the older airport opening year as 1928."
+        }
+      ],
+      "rationale": "The overlay row is the air-force-base identity, not merely the earlier civil Polonia airport. The candidate therefore uses 2013 as the conservative start of the Soewondo Air Force Base phase rather than the 1928 civil-airport opening."
+    },
+    {
+      "source_id": "geonames:11749509",
+      "name": "Sirsa Air Force Station",
+      "country_code": "IN",
+      "start_year": 1960,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Bharat Rakshak - 2 Forward Base Support Unit, Indian Air Force Database",
+          "url": "https://www.bharat-rakshak.com/indianairforce/database/units/list.php?init=on&qappt=&qunit=2+FBSU",
+          "note": "The unit database entry says Sirsa Air Force Station was established in 1960 and notes the first aircraft landing on a PSP-sheet runway."
+        },
+        {
+          "title": "Sirsa Air Force Station - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Sirsa_Air_Force_Station",
+          "note": "Identifies Sirsa AFS as an Indian Air Force base under Western Air Command and notes operational use during the 1971 war."
+        }
+      ],
+      "rationale": "Exact overlay air-station row. Bharat Rakshak provides a direct establishment year and the broader air-force-base identity is independently confirmed."
+    }
+  ]
+}

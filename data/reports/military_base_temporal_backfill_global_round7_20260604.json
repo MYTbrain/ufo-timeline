@@ -1,0 +1,502 @@
+{
+  "generated_at": "2026-06-04T23:58:00Z",
+  "temporal_source": "manual_web_research_global_round7",
+  "description": "Seventh-round conservative temporal backfill candidates for remaining Canada and global research_temporal_dates gaps after round6. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json and data/reports/military_base_temporal_remaining_gap_classes.csv.",
+    "Only rows with recommended_action=research_temporal_dates were considered.",
+    "Included source_ids are exact overlay feature identifiers from webapp/static_public/data/map_overlays/military_bases.geojson.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "For declassified imagery-index records, start_year is a conservative documented-by year and not an inferred original construction year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:6088138",
+      "name": "Nicolet Range",
+      "country_code": "CA",
+      "start_year": 1952,
+      "end_year": 1999,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1999,
+          "label": "DND Munitions Experimental Test Centre Nicolet firing-range impact-area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Groupe S.M. International Awarded Contract - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2006/09/groupe-international-awarded-contract.html",
+          "note": "Canada.ca says the former Nicolet firing range was operated by DND's Munitions Experimental Test Centre - Nicolet from 1952 to 1999."
+        },
+        {
+          "title": "Marking of Former Firing Range - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations/marking-former-firing-range.html",
+          "note": "DND UXO notice repeats that the southern portion of Lake Saint-Pierre was used by DND from 1952 to 1999 for METC reliability tests at Nicolet."
+        }
+      ],
+      "rationale": "Exact Nicolet Range overlay row with two Canada.ca/DND sources providing the same operating interval. No open endpoint is used because the public DND sources identify the lake impact-area use as former."
+    },
+    {
+      "source_id": "geonames:6183253",
+      "name": "Winona Range",
+      "country_code": "CA",
+      "start_year": 2017,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Canadian Armed Forces Training Area Winona Range and Training Area Upgrades - Impact Assessment Agency of Canada",
+          "url": "https://iaac-aeic.gc.ca/050/evaluations/document/165752",
+          "note": "The 2017 federal notice identifies the CAFTA Winona Range and Training Area upgrade project and says DND intended to improve range infrastructure for future training requirements."
+        }
+      ],
+      "rationale": "The source directly names Winona Range and Training Area as a Canadian Armed Forces training area in a federal assessment notice. Because no earlier origin date was found, the candidate uses the 2017 public project date as a conservative operational/documented-by start."
+    },
+    {
+      "source_id": "geonames:6155744",
+      "name": "St. Charles Range",
+      "country_code": "CA",
+      "start_year": 1911,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Lest We Forget DO NOT PAY MARCH",
+          "url": "https://abcdocz.com/doc/444742/lest-we-forget-do-not-pay-march",
+          "note": "Local veterans/history newsletter text says St Charles Range was donated to the Department of National Defence in 1911 by Sir Henry Pallot."
+        }
+      ],
+      "rationale": "The overlay row is the St. Charles Range. The 1911 DND donation date is direct temporal evidence for military range status; endpoint is left open because no sourced closure date was found."
+    },
+    {
+      "source_id": "geonames:5897355",
+      "name": "Bedford Range",
+      "country_code": "CA",
+      "start_year": 1900,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1900,
+          "end_year": null,
+          "label": "Bedford Rifle Range / CFB Halifax range phase; start rounded to early-1900s evidence"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Our History - Nova Scotia Rifle Association",
+          "url": "https://www.nsrifle.org/our-history",
+          "note": "NSRA history refers to ROSS rifles used by NSRA members on the Bedford Range in the early 1900s and discusses Canadian military/civilian marksmanship context."
+        },
+        {
+          "title": "Microsoft Word - 102-5-8-Listing of City of Halifax Agreements",
+          "url": "https://7046.sydneyplus.com/archive/final/Download.aspx?field=LINKAtt&record=ec3ef189-e564-4160-ad3d-82c0a771950b&showSave=False&template=LINK",
+          "note": "Halifax agreement inventory lists Department of National Defence and Canadian Forces Base Halifax agreements for the Bedford Rifle Range."
+        },
+        {
+          "title": "FCSAP Annual Report 2007-08 - Canada.ca",
+          "url": "https://www.canada.ca/content/dam/eccc/migration/fcs-scf/B15E990A-C0A8-4780-9124-07650F3A68EA/ar-ra0708-eng.pdf",
+          "note": "Federal contaminated-sites report lists a Department of National Defence Marlant Bedford Rifle Range remediation/risk-management project."
+        }
+      ],
+      "rationale": "The overlay row is the Bedford Range. The start is rounded to 1900 because the best public historical source says early 1900s rather than a precise establishment year, while later municipal and federal records confirm DND/CFB Halifax range identity."
+    },
+    {
+      "source_id": "geonames:6053158",
+      "name": "Lethbridge Range",
+      "country_code": "CA",
+      "start_year": 2013,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Facility Report - National Pollutant Release Inventory",
+          "url": "https://pollution-waste.canada.ca/sradapi/v2/npri/Details/ReportPdf?language=en&npriId=22627&reportYear=2013",
+          "note": "Government of Canada NPRI report identifies a Department of National Defence military small-arms range used primarily by Reserve Force units on weekends at Lethbridge-area coordinates for report year 2013."
+        }
+      ],
+      "rationale": "The source provides direct DND range-use evidence for the Lethbridge area but not an original establishment date. The candidate therefore uses 2013 as a conservative documented operational year."
+    },
+    {
+      "source_id": "geonames:6076213",
+      "name": "Moncton Range",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": 1982,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Place names - Moncton Range - Natural Resources Canada",
+          "url": "https://toponymes.rncan.gc.ca/search-place-names/unique?id=DBDXQ&wbdisable=true",
+          "note": "Natural Resources Canada identifies Moncton Range as a National Defence-sourced range feature."
+        },
+        {
+          "title": "New Brunswick - Canadian Military History",
+          "url": "https://militarybruce.com/abandoned-canadian-military-bases/closed-bases-with-military-presence/new-brunswick/",
+          "note": "The Moncton military history entry says a large military supply base was constructed in 1940 and that the rifle range continued to be used until the early 1980s."
+        }
+      ],
+      "rationale": "The range name is exact, and NRCan confirms National Defence sourcing. The 1940 start is tied to the local military-base buildout and the end is rounded to 1982 because the source only gives early-1980s range closure."
+    },
+    {
+      "source_id": "geonames:6597707",
+      "name": "Atangsanjaya",
+      "country_code": "ID",
+      "start_year": 2000,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 2000,
+          "end_year": null,
+          "label": "Lanud Atang Sendjaja helicopter wing/base operational phase documented by TNI-AU history"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Profil dan Sejarah Lanud Atang Sendjaja - Koopsud I",
+          "url": "https://koopsud1.tni-au.mil.id/profil-dan-sejarah-satuan-koopsud-i/",
+          "note": "Official Indonesian Air Force regional history says Wing 4 Lanud Atang Sendjaja was activated on 28 February 2000, subordinating Air Squadron 6 and Air Squadron 8."
+        },
+        {
+          "title": "Profil Satuan - LANUD ATANG SENDJAJA",
+          "url": "https://tni-au.mil.id/tentang-kami/profilsatuan-detail/lanud-atang-sendjaja/1113",
+          "note": "TNI-AU profile identifies the current Lanud Atang Sendjaja command and mission."
+        }
+      ],
+      "rationale": "The overlay row's Atangsanjaya label corresponds to Lanud Atang Sendjaja. Because a clear base-opening year was not found, the candidate uses the official 2000 wing activation at the base as a conservative documented operational start."
+    },
+    {
+      "source_id": "geonames:7108618",
+      "name": "Murid",
+      "country_code": "PK",
+      "start_year": 1942,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 2014,
+          "label": "Royal Indian Air Force / Pakistan Air Force station phase before major UAV-base upgrade"
+        },
+        {
+          "start_year": 2014,
+          "end_year": null,
+          "label": "PAF Base Murid operational flying / UAV command-and-control base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "PAF Base Murid, Pakistan - GlobalMilitary.net",
+          "url": "https://www.globalmilitary.net/airbases/paf-base-murid/",
+          "note": "Profile says PAF Base Murid was established in 1942 by the British Raj as a Royal Indian Air Force station."
+        },
+        {
+          "title": "Indian Air Force Strikes PAF Murid Base - Indian Defence Research Wing",
+          "url": "https://idrw.org/indian-air-force-strikes-paf-murid-base-cripples-uav-command-and-control-facility/",
+          "note": "Reports that Murid was originally established as a RIAF airfield in 1942 and upgraded to a Main Operating Base in December 2014."
+        }
+      ],
+      "rationale": "The exact overlay row is Murid. Sources agree on a 1942 military-airfield origin and provide a later December 2014 upgrade boundary; endpoint remains open because the base is described as active."
+    },
+    {
+      "source_id": "geonames:9036383",
+      "name": "Bhuj Rudra Mata Air Force Base",
+      "country_code": "IN",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Bhuj Airport - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Bhuj_Airport",
+          "note": "The airport article identifies the site as an Indian Air Force base and says the Bhuj air force base commander kept the base operational during the 1971 war."
+        },
+        {
+          "title": "Bhuj Rudra Mata Air Force Station - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Bhuj_Rudra_Mata_Air_Force_Station",
+          "note": "Identifies Bhuj Rudra Mata as an Indian Air Force station sharing its runway with Bhuj Airport."
+        }
+      ],
+      "rationale": "The overlay row is the Bhuj Rudra Mata Air Force Base. Public sources clearly document IAF base operation during the 1971 war, but no clean earlier establishment year was found, so 1971 is used as a documented-by start."
+    },
+    {
+      "source_id": "geonames:11749511",
+      "name": "Udhampur Air Force Station",
+      "country_code": "IN",
+      "start_year": 1988,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Bharat Rakshak - No. 153 Helicopter Unit, Indian Air Force Database",
+          "url": "https://www.bharat-rakshak.com/indianairforce/database/units/list.php?init=on&qappt=&qunit=153+HU",
+          "note": "Unit database states that No. 153 Helicopter Unit was raised at Air Force Station Udhampur on 1 November 1988."
+        },
+        {
+          "title": "Udhampur Air Force Station - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Udhampur_Air_Force_Station",
+          "note": "Identifies Udhampur Air Force Station as an Indian Air Force station and notes current facilities."
+        }
+      ],
+      "rationale": "The exact overlay row is Udhampur Air Force Station. The unit history provides direct evidence of an IAF unit being raised at the station in 1988, so 1988 is a conservative documented operational start."
+    },
+    {
+      "source_id": "geonames:66098",
+      "name": "Vahdati AFB",
+      "country_code": "IR",
+      "start_year": 1960,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "North American F-86 F Sabre - IIAF",
+          "url": "https://www.iiaf.net/north-american-f-86-f-sabre/",
+          "note": "Iranian aviation history page says the IIAF received F-86s in April 1960 and refers to creation and establishment of the 1st Air Force Base in Dezful, Vahdati AFB."
+        },
+        {
+          "title": "Vahdati AFB, 4th Tactical Air Base - GlobalSecurity.org",
+          "url": "https://www.globalsecurity.org/military/world/iran/vahdati.htm",
+          "note": "Profile identifies Vahdati AFB at Dezful, operated by the Iranian Air Force, and describes it as home to tactical fighter squadrons before the Iran-Iraq War."
+        }
+      ],
+      "rationale": "The overlay row is Vahdati AFB at Dezful. The 1960 start is conservative but medium confidence because the historical source ties the Dezful/Vahdati base establishment to the early F-86 period rather than giving a formal commissioning date."
+    },
+    {
+      "source_id": "geonames:417839",
+      "name": "Badr Air Base",
+      "country_code": "IR",
+      "start_year": 2008,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Khatami Air Base, 8th Tactical Air Base / Badr Air Base - GlobalSecurity.org",
+          "url": "https://www.globalsecurity.org/military/world/iran/khatami-esfahan.htm",
+          "note": "Profile identifies Badr AFB/Sepah Air Base at Esfahan as a military-operated base with runway details and army aviation units; the profile references 2008 aircraft basing context."
+        },
+        {
+          "title": "Iran's Game of Drones - Washington Institute",
+          "url": "https://www.washingtoninstitute.org/pdf/view/17311/en",
+          "note": "Report identifies Shahed Aviation Industries at Badr Air Base and notes the facility shares a runway with the Army's Shahid Vatanpour Air Base."
+        }
+      ],
+      "rationale": "The exact overlay row is Badr Air Base. No clean opening year was found, so the candidate uses 2008 as a conservative public operational-context year from the GlobalSecurity profile."
+    },
+    {
+      "source_id": "geonames:11749385",
+      "name": "Birma Air Base",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Birma Airfield under United Arab Republic/Egypt air base facilities in 1971."
+        }
+      ],
+      "rationale": "The overlay row is Birma Air Base. The source supports a 1971 documented-by airfield date, but not an original construction date; endpoint remains open absent closure evidence."
+    },
+    {
+      "source_id": "geonames:11749386",
+      "name": "Gebel El Basur Air Base",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Gebel El Basur Airfield under air base facilities in 1971."
+        },
+        {
+          "title": "OAK KH-9 Mission 1208-2, 25 April - 22 May 1974 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04752a001500010011-9",
+          "note": "The 1974 declassified mission report lists Gebel El Basur Airfield with operational status."
+        }
+      ],
+      "rationale": "The candidate uses 1971 as first documented airfield evidence and retains higher confidence because a later declassified report explicitly marks the airfield operational."
+    },
+    {
+      "source_id": "geonames:12164560",
+      "name": "Inshas",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Inchas Airfield under air base facilities in 1971."
+        },
+        {
+          "title": "Air Warning Radar Facilities in Egypt, the Sinai, and Libya - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp80t00913a000100030001-5",
+          "note": "Later declassified report lists Inchas air-warning radar facilities with operational status."
+        }
+      ],
+      "rationale": "The exact overlay row is Inshas. The 1971 CIA airfield listing is used as documented-by temporal evidence, with later operational radar-facility evidence supporting continuing military-airfield context."
+    },
+    {
+      "source_id": "geonames:11749393",
+      "name": "Jiyanklis Air Base",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Jiyanklis Airfield under air base facilities in 1971."
+        },
+        {
+          "title": "Air Warning Radar Facilities in Egypt, the Sinai, and Libya - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp80t00913a000100030001-5",
+          "note": "The later radar-facilities report lists Jiyanklis Airfield AW Radar Facility with operational status."
+        }
+      ],
+      "rationale": "The row is the exact Jiyanklis Air Base overlay feature. CIA records support both 1971 airfield documentation and later operational radar-facility status."
+    },
+    {
+      "source_id": "geonames:12164542",
+      "name": "Al Mansurah",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Al Mansurah Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "The overlay name aligns with the CIA-listed Al Mansurah Airfield. The candidate uses 1971 as documented-by evidence only."
+    },
+    {
+      "source_id": "geonames:12164546",
+      "name": "Az Zaqaziq",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Az Zaqaziq Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "The exact overlay row is Az Zaqaziq. The source supports the airfield's presence in 1971 but does not provide construction or closure dates."
+    },
+    {
+      "source_id": "geonames:12164553",
+      "name": "Daraw",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Daraw Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "The candidate uses the 1971 declassified airfield listing as conservative documented-by evidence for the exact Daraw overlay row."
+    },
+    {
+      "source_id": "geonames:12164566",
+      "name": "Quwaysina",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Quwaysina Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "Exact overlay row. The date is a documented-by year from a declassified target index, not a base-opening inference."
+    },
+    {
+      "source_id": "geonames:12164574",
+      "name": "Wadi Abu Rish",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Wadi Abu Rish Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "The exact Wadi Abu Rish overlay row is supported by declassified 1971 airfield documentation. No origin or closure date is inferred."
+    },
+    {
+      "source_id": "geonames:12164575",
+      "name": "Wadi Abu Shihat",
+      "country_code": "EG",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "KH-4 Mission 1114 OAK and OAK Supplement Cumulative Index, 25 March - 8 April 1971 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04562a002300010003-0",
+          "note": "Declassified CIA imagery index lists Wadi Abu Shihat Airfield under air base facilities in 1971."
+        }
+      ],
+      "rationale": "The exact Wadi Abu Shihat overlay row is included with medium confidence because the 1971 evidence is a declassified documented-by airfield listing."
+    },
+    {
+      "source_id": "geonames:11526491",
+      "name": "Pukchang",
+      "country_code": "KP",
+      "start_year": 1974,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "OAK KH-9 Mission 1208-2, 25 April - 22 May 1974 - CIA FOIA",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t04752a001500010011-9",
+          "note": "Declassified mission report includes Pukchang air base/airfield context and operational-status air-base-facility reporting in 1974."
+        },
+        {
+          "title": "North Korea Upgrades Sunchon Airbase - Beyond Parallel",
+          "url": "https://beyondparallel.csis.org/north-korea-upgrades-sunchon-airbase/",
+          "note": "CSIS Beyond Parallel identifies Pukchang Airbase and says it hosted deployed MiG-29 aircraft from Sunchon in 2021."
+        }
+      ],
+      "rationale": "The overlay row is Pukchang. The candidate uses 1974 as the conservative declassified operational-documentation year, with modern CSIS imagery analysis confirming continued airbase identity."
+    },
+    {
+      "source_id": "geonames:11526494",
+      "name": "Sunchon",
+      "country_code": "KP",
+      "start_year": 2021,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "North Korea Upgrades Sunchon Airbase - Beyond Parallel",
+          "url": "https://beyondparallel.csis.org/north-korea-upgrades-sunchon-airbase/",
+          "note": "CSIS Beyond Parallel says Sunchon Airbase houses some of North Korea's most modern KPAF aircraft and documents major maintenance and expansion beginning in April 2021."
+        }
+      ],
+      "rationale": "The overlay row is Sunchon. A precise opening date was not found, so 2021 is used only as conservative current operational evidence from satellite-imagery analysis."
+    }
+  ]
+}

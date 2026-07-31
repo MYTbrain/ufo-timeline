@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Parallel-agent reviewed temporal backfill candidates from Europe, MENA, and Asia/Pacific buckets. Rows are source-backed and conservative; weak map/gazetteer-only findings remain excluded from candidate_overrides.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:2605387",
+      "name": "Oberfeld",
+      "country_code": "AT",
+      "start_year": 1930,
+      "end_year": 2009,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.bmlv.gv.at/cms/artikel.php?ID=6463"
+      ],
+      "source_notes": "Austrian Ministry of Defence article says the Dachstein/Oberfeld training area was founded in 1930 and military use ended in 2009."
+    },
+    {
+      "source_id": "geonames:7288334",
+      "name": "Maria Theresien Kaserne",
+      "country_code": "AT",
+      "start_year": 1940,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.denkmal-heer.at/wissenswertes/maria-theresien-kaserne",
+        "https://www.bmlv.gv.at/organisation/standorte/wien.shtml"
+      ],
+      "source_notes": "Denkmal-Heer gives military barracks naming/use from 1940; Austrian Defence current Standort page lists units at Maria Theresien-Kaserne."
+    },
+    {
+      "source_id": "geonames:2519828",
+      "name": "LLanos de Armilla",
+      "country_code": "ES",
+      "start_year": 1922,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://ejercitodelaireydelespacio.defensa.gob.es/EA/centenarioarmilla/historia.html"
+      ],
+      "source_notes": "Official Spanish Air and Space Force centenary history says Aeródromo de los Llanos de Armilla was officially inaugurated on 20 June 1922 and remains Base Aérea de Armilla."
+    },
+    {
+      "source_id": "geonames:11862194",
+      "name": "Cuartel General del Ejercito del Aire",
+      "country_code": "ES",
+      "start_year": 1954,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://es.wikipedia.org/wiki/Cuartel_General_del_Ej%C3%A9rcito_del_Aire_y_del_Espacio",
+        "https://patrimoniocultural.defensa.gob.es/es/centros/archivo-cuartel-general-ejercito-aire/portada"
+      ],
+      "source_notes": "Public architectural history says the headquarters was already fulfilling its mission in 1954; Spanish Defence heritage page confirms the current headquarters/archive location."
+    },
+    {
+      "source_id": "geonames:12670326",
+      "name": "Kaartinkasarmi",
+      "country_code": "FI",
+      "start_year": 1822,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.senaatti.fi/arvokiinteisto/kaartin-kasarmi/",
+        "https://www.finnisharchitecture.fi/projects/kaarti-barracks"
+      ],
+      "source_notes": "Senate Properties says Kaartin kasarmi was built for the Finnish training battalion; Finnish Architecture Navigator gives the officers building completion as 1822 and later Ministry of Defence use."
+    },
+    {
+      "source_id": "geonames:6951444",
+      "name": "Elias Beeckmankazerne",
+      "country_code": "NL",
+      "start_year": 1939,
+      "end_year": 2010,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.atlasvanede.nl/mooi-ede/gebouwen/eye-catchers-1/kazernegebouwen",
+        "https://www.bezoek-ede.nl/cultuur/kazerneterrein"
+      ],
+      "source_notes": "Atlas van Ede says Elias Beeckmankazerne opened in 1939; Bezoek Ede says military presence at the Ede barracks ended at the end of 2010."
+    },
+    {
+      "source_id": "geonames:6545376",
+      "name": "Setermoen leir",
+      "country_code": "NO",
+      "start_year": 1897,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.forsvarsbygg.no/no/verneplaner/landsverneplan-for-forsvaret/nord-norge/setermoen/",
+        "https://snl.no/Setermoen_leir"
+      ],
+      "source_notes": "Forsvarsbygg lists Setermoen I/II as established in 1897 with current function as training garrison; Store norske leksikon corroborates early establishment and current defence role."
+    },
+    {
+      "source_id": "geonames:7464437",
+      "name": "8th Shekari Air Base",
+      "country_code": "IR",
+      "start_year": 1976,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.iiaf.net/f14/",
+        "https://www.aereo.jor.br/2022/07/23/os-f-14-iranianos-historia-e-estado-atual-de-uma-das-estrelas-de-top-gun-maverick/"
+      ],
+      "source_notes": "Khatami/8th TFB at Isfahan is tied to Iran's F-14 infrastructure; first Tomcats reached 8th TFB on 1976-01-26. Use as operational evidence, not construction proof."
+    },
+    {
+      "source_id": "geonames:11749483",
+      "name": "Al Qusayr Air Base",
+      "country_code": "SY",
+      "start_year": 1987,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/world/syria/alqusayr.htm",
+        "https://www.globalsecurity.org/military/world/syria/airforce-orbat.htm"
+      ],
+      "source_notes": "GlobalSecurity has dated imagery for 1987-04-22 and later ORBAT listing. This is earliest observed evidence, not construction proof."
+    },
+    {
+      "source_id": "geonames:8616953",
+      "name": "An Nasiriyah Airbase",
+      "country_code": "SY",
+      "start_year": 1987,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/world/syria/annasiriyah.htm",
+        "https://www.globalsecurity.org/military/world/syria/airforce-orbat.htm"
+      ],
+      "source_notes": "GlobalSecurity dated imagery supports existence by 1987-04-22; no safe construction/end date found."
+    },
+    {
+      "source_id": "geonames:11749482",
+      "name": "Khalkhalah Air Base",
+      "country_code": "SY",
+      "start_year": 1987,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/world/syria/khalkhalah.htm",
+        "https://www.globalsecurity.org/military/world/syria/airforce-orbat.htm"
+      ],
+      "source_notes": "GlobalSecurity dated imagery supports existence by 1987-04-22; no safe construction/end date found."
+    },
+    {
+      "source_id": "geonames:11864972",
+      "name": "Marj Ruhayyil",
+      "country_code": "SY",
+      "start_year": 1987,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/world/syria/marjruhayyil.htm",
+        "https://www.globalsecurity.org/military/world/syria/airforce-orbat.htm"
+      ],
+      "source_notes": "GlobalSecurity dated imagery supports existence by 1987-04-22; no safe construction/end date found."
+    },
+    {
+      "source_id": "geonames:11864985",
+      "name": "Sayqal",
+      "country_code": "SY",
+      "start_year": 1989,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.globalsecurity.org/military/world/syria/sayqal.htm",
+        "https://www.globalsecurity.org/military/world/syria/airforce-orbat.htm"
+      ],
+      "source_notes": "GlobalSecurity dated imagery supports existence by 1989-08-22; no safe construction/end date found."
+    },
+    {
+      "source_id": "geonames:11749394",
+      "name": "Matan al-Sarra Air Base",
+      "country_code": "LY",
+      "start_year": 1987,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Maaten_al-Sarra_Air_Base",
+        "https://www.latimes.com/archives/la-xpm-1987-09-06-mn-6287-story.html"
+      ],
+      "source_notes": "Credibly documented as a major Libyan air/ground base attacked on 1987-09-05. Use 1987 as observed operational evidence, not construction date."
+    },
+    {
+      "source_id": "geonames:11843060",
+      "name": "Sweihan Airbase",
+      "country_code": "AE",
+      "start_year": 1990,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_low",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Abu_Dhabi_Northeast_Airport"
+      ],
+      "source_notes": "Public source says the facility was built around 1988-1990 and upgraded 2010-2014; 1990 is the conservative end of the build range."
+    },
+    {
+      "source_id": "geonames:392735",
+      "name": "Sakhir Airbase",
+      "country_code": "BH",
+      "start_year": 2010,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.aeroflight.co.uk/airfields/fielddetails/sakhir-air-base"
+      ],
+      "source_notes": "Construction began circa 2006; formal opening was January 2010. Treat as royal-flight/new airfield facility, not a combat base with known based units."
+    },
+    {
+      "source_id": "geonames:12081191",
+      "name": "Gukbanggwahakyeonguso",
+      "country_code": "KR",
+      "start_year": 1974,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://www.add.re.kr/board?menuId=MENU02259&siteId=SITE00003"
+      ],
+      "source_notes": "Matches ADD/Defense Science Research Institute at Daejeon; official ADD history has the Daejeon R&D Center established on 1974-02-16. Use 1974 for the mapped facility."
+    },
+    {
+      "source_id": "geonames:12033231",
+      "name": "Yukgun-hanggonghakgyo",
+      "country_code": "KR",
+      "start_year": 1995,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://armynuri.tistory.com/1769",
+        "https://www.mt.co.kr/society/2017/05/25/2017052515507441345"
+      ],
+      "source_notes": "Army Aviation School institution was created 1957-07-01, but source says it moved to the current Nonsan base in 1995; use 1995 for the coordinate-specific facility."
+    },
+    {
+      "source_id": "geonames:11749514",
+      "name": "Meiktila Air Base",
+      "country_code": "MM",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Meiktila_Air_Base",
+        "https://www.globalsecurity.org/military/world/myanmar/air-force.htm"
+      ],
+      "source_notes": "Public history identifies the site as formerly RAF Meiktila, built/used from 1942, and now Myanmar Air Force Meiktila Air Base."
+    },
+    {
+      "source_id": "geonames:11749515",
+      "name": "Nampong Air Base",
+      "country_code": "MM",
+      "start_year": 1945,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Nampong_Air_Force_Base",
+        "https://www.historyofwar.org/air/units/USAAF/4th_Combat_Cargo_Group.html"
+      ],
+      "source_notes": "Evidence ties current Nampong/West Nampong to WWII Namponmao Airfield, used by USAAF 4th Combat Cargo Group from June 1945; continuity to current military use is plausible but not richly documented."
+    },
+    {
+      "source_id": "geonames:12495391",
+      "name": "Sheikh Hasina cantonment",
+      "country_code": "BD",
+      "start_year": 2018,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605_agent",
+      "source_urls": [
+        "https://thefinancialexpress.com.bd/public/national/pm-opens-sheikh-hasina-cantonment-1518079318"
+      ],
+      "source_notes": "Public reporting says the newly set-up cantonment was inaugurated on 2018-02-08; no facility closure date found."
+    }
+  ],
+  "no_override": []
+}

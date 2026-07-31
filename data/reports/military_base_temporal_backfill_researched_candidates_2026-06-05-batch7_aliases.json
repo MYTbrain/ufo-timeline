@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Additional exact-coordinate GeoNames alias temporal candidate discovered after the batch6 Canadian alias pass.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:5919627",
+      "name": "Champ de tir aérien Chezzetcook",
+      "country_code": "CA",
+      "start_year": null,
+      "end_year": 1984,
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "medium_high",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "date_precision_start": "unknown",
+      "date_precision_end": "year",
+      "copy_from_source_id": "geonames:5921136",
+      "copy_from_name": "Chezzetcook Air Weapons Range",
+      "source_urls": [
+        "https://toponymes.rncan.gc.ca/search-place-names/unique?id=2b7866abaf4311d892e2080020a0f4c9&wbdisable=true",
+        "https://www.halifax.ca/sites/default/files/documents/about-the-city/regional-community-planning/PlanningDistricts8and9_MPS.pdf"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Chezzetcook Air Weapons Range. Existing reviewed evidence supports the 1984 DND surplus endpoint but not a safe opening year."
+    }
+  ]
+}

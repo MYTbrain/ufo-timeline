@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Third source-backed temporal override batch from focused review of remaining Canada and Eastern Europe military overlay candidates.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:5965028",
+      "name": "Granville Ferry Range and Training Area",
+      "country_code": "CA",
+      "start_year": 2009,
+      "end_year": null,
+      "date_precision_start": "documented_by_year",
+      "date_precision_end": "open",
+      "historical_status": "active_documented_by_2009",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://auroranewspaper.com/wp-content/uploads/pdf/Archive/2009/Wing%20Info%20Book%202009%20-%20low%20res.pdf",
+        "https://auroranewspaper.com/wp-content/uploads/pdf/Archive/2022/4337news.pdf"
+      ],
+      "source_notes": "14 Wing Greenwood's 2009 Wing Info Book says readiness training used the Granville Ferry Training Area and that RTF managed the Granville Ferry range and training area. A 2022 Aurora item places 14 OSS/CIS Flight training at the Granville Ferry Range training area on September 20-22. Use 2009 as documented-by operational year, not establishment year."
+    },
+    {
+      "source_id": "geonames:6081841",
+      "name": "Mount McKay Range",
+      "country_code": "CA",
+      "start_year": 1907,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "unknown",
+      "historical_status": "operational_end_not_found",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://publications.gc.ca/Collection/CP22-48-2002E.pdf",
+        "https://lurepository.lakeheadu.ca/bitstream/handle/2453/3125/EllardJ1999m-1b.pdf?isAllowed=y&sequence=1",
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations.html"
+      ],
+      "source_notes": "Indian Claims Commission reporting states a Fort William First Nation parcel was surrendered in 1907 for a rifle range and exchanged in 1914 so targets fronted on Mount McKay. A Lakehead thesis describes range shoots at Mount McKay in the 1920s-1930s and says the range continued to be used extensively into the 1990s. Canada UXO locations list Thunder Bay - Mount McKay Rifle Range as an in-assessment legacy site. End year is not pinned."
+    },
+    {
+      "source_id": "geonames:6083456",
+      "name": "Mt. St. Bruno Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1938,
+      "end_year": 2017,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations/practicing-uxo-safety-at-the-former-saint-bruno-range.html",
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations.html"
+      ],
+      "source_notes": "DND UXO page states the former Saint-Bruno Range was used for military training and weapons practice from 1938 to 1947, then used as a rifle range until closure in 2017. DND UXO location list also includes Mount St. Bruno with risk mitigation ongoing."
+    },
+    {
+      "source_id": "geonames:6094515",
+      "name": "Osborne Head Range",
+      "country_code": "CA",
+      "start_year": 1943,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_dnd_controlled_range_facility",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.inverclydesheritage.co.uk/wp-content/uploads/2012/09/Chapter-05-DEMS.pdf",
+        "https://navalandmilitarymuseum.org/wp-content/uploads/2021/08/CFB-Esquimalt-Museum-Crowsnest-Volume11-Number-06-Apr-1959.pdf",
+        "https://publications.gc.ca/site/fra/9.942571/publication.html",
+        "https://www.permadry.com/case-101-rub-r-kote/"
+      ],
+      "source_notes": "A DEMS history states a firing range was established at Osborne Head in late 1943. The April 1959 Crowsnest says Osborne Head Gunnery Range continued to operate and trained naval personnel. A Government of Canada publication record describes Osborne Head Gunnery Range data collected in November 1993. Later contractor material identifies DND as client at Osborne Head Gunnery Range. No closure year found."
+    },
+    {
+      "source_id": "geonames:6113341",
+      "name": "Prince Albert Range",
+      "country_code": "CA",
+      "start_year": 2025,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_after_reopening",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://panow.com/2026/01/31/military-conducts-first-exercises-at-newly-reopened-training-grounds-north-of-pa/",
+        "https://paherald.sk.ca/winter-survival-training-returns-to-prince-albert-training-area/",
+        "https://www.98cool.ca/2026/01/31/north-saskatchewan-and-38-combat-engineer-regiments-undergoing-winter-training/"
+      ],
+      "source_notes": "January-February 2026 local reporting says the Prince Albert training area closed in 2011, restoration began around 2018/2019, and ribbon-cutting officially reopened the improved military training area in December 2025. Use 2025 as reopened operational interval; prior original establishment date not found."
+    },
+    {
+      "source_id": "geonames:11749495",
+      "name": "Karankut Air Base",
+      "country_code": "UA",
+      "start_year": 1940,
+      "end_year": 1995,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://ru.wikipedia.org/wiki/%D0%92%D0%B5%D1%81%D1%91%D0%BB%D0%BE%D0%B5_%28%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%29",
+        "https://xn--80ada7afn3b.xn--p1ai/vypuskniki-geroi/19-nashi-garnizony/184-vesjoloe",
+        "https://airportmap.de/airport/UA-0011/info"
+      ],
+      "source_notes": "Karankut corresponds to Vesyoloye/Karankut, a former Black Sea Fleet military aerodrome in Crimea. Sources state the field was built in 1940, hosted permanent naval aviation units through November 1994, and was withdrawn from operation in April 1995; airport directory source marks UA-0011 as a closed military air base."
+    },
+    {
+      "source_id": "geonames:11269915",
+      "name": "Chervonohlinskaya",
+      "country_code": "UA",
+      "start_year": 1960,
+      "end_year": 2003,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://censor.net/en/photonews/294727/ukraine_recovers_abandoned_military_airfields_photos",
+        "https://xn--80abladnapzd0axo.xn--p1ai/37-vtap",
+        "https://www.ww2.dk/new/air%20force/regiment/shap/90oshap.htm",
+        "https://ourairports.com/airports/UA-0032/"
+      ],
+      "source_notes": "Chervonohlinskaya corresponds to Artsyz/Chervonoglinskaya Air Base. Sources place operational military units there from 1960, including the 90th regiment at Artsyz from 1960-1989 and the 37th military transport regiment from 1964 until its 1994 disbandment. A 2014 Ukrainian report says Chervonohlinske had an aviation commandant office until 2003 and the 206 Air Force Base/737 Fighter Regiment until 1998, so 2003 is used as the conservative military-facility end rather than full combat-unit basing."
+    }
+  ],
+  "no_override": [
+    {
+      "source_id": "geonames:5883484",
+      "name": "Alexandra Point Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/map/gazetteer-style Canadian Forces Range and/or Training Area label evidence found; no defensible operational start/end evidence found."
+    },
+    {
+      "source_id": "geonames:5884490",
+      "name": "Amherst Range",
+      "country_code": "CA",
+      "reason": "Found historical Amherst rifle-range references, but not enough to tie a defensible operational interval to this GeoNames Amherst Range row; otherwise only map/gazetteer label evidence."
+    },
+    {
+      "source_id": "geonames:5911420",
+      "name": "Burdick Range",
+      "country_code": "CA",
+      "reason": "1998 parliamentary evidence references Burdick range in Moose Jaw and its design for older cartridges, but no source-backed start/end interval found; CGNDB date is only a naming/status decision."
+    },
+    {
+      "source_id": "geonames:5971146",
+      "name": "Haro Strait Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/map/gazetteer-style Canadian Forces Range and/or Training Area label evidence found; Haro Strait military/sonar hits did not establish this range's operational interval."
+    },
+    {
+      "source_id": "geonames:6136946",
+      "name": "Saanich Inlet Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/map/gazetteer-style Canadian Forces Range and/or Training Area label evidence found; no defensible operational start/end evidence found."
+    },
+    {
+      "source_id": "geonames:6139418",
+      "name": "Salmon Arm Range",
+      "country_code": "CA",
+      "reason": "Local club history documents an old, long-abandoned DND rifle range near Rifle Range Road and civilian shooting activity afterward, but it does not provide a defensible military operational start/end interval for the GeoNames row."
+    },
+    {
+      "source_id": "geonames:6160770",
+      "name": "Sydney Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/weather/map/gazetteer-style label evidence found; no defensible operational start/end evidence found."
+    },
+    {
+      "source_id": "geonames:11749496",
+      "name": "Bolshoy Tokmak Air Base",
+      "country_code": "UA",
+      "reason": "Only airport/gazetteer evidence found. Sources identify UA-0029 as closed/defunct and military, but no defensible operational start or closure year evidence was found."
+    },
+    {
+      "source_id": "geonames:11269951",
+      "name": "Plonochka Air Base",
+      "country_code": "UA",
+      "reason": "Only GeoNames-derived gazetteer/map evidence found. No defensible operational dates or unit-basing history located."
+    },
+    {
+      "source_id": "geonames:11458710",
+      "name": "Nizhniy Novgorod",
+      "country_code": "RU",
+      "reason": "Likely Sormovo Airfield, but evidence found was airport-directory and broad industrial/test-field context only. No defensible operational military-base interval located."
+    },
+    {
+      "source_id": "geonames:11459395",
+      "name": "Rostov Northwest",
+      "country_code": "RU",
+      "reason": "Likely Rostov-on-Don North. Sources support current active military/experimental aviation use, but no defensible start year for operational air-base status was found."
+    },
+    {
+      "source_id": "geonames:11459002",
+      "name": "aeroport Pionernyj Katylga",
+      "country_code": "RU",
+      "reason": "Evidence points to an oilfield/settlement aerodrome serving Pionerny/Katylga, not a defensible military air-base operational interval."
+    }
+  ]
+}

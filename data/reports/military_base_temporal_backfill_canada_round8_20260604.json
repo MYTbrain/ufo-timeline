@@ -1,0 +1,335 @@
+{
+  "generated_at": "2026-06-04T23:08:03Z",
+  "temporal_source": "manual_web_research_canada_round8_20260604",
+  "description": "Round8 conservative temporal candidates for remaining Canada military range/training-area overlay gaps after round7. This pass focuses on CA rows with recommended_action=research_temporal_dates in data/reports/military_base_temporal_priority_queue.json and data/reports/military_base_temporal_remaining_gap_classes.csv. Low-confidence NRCan/GNBC candidates use the official National Defence-sourced place-name decision date only as a documented-by/existence date, not as a claimed establishment date.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input scope was limited to Canada rows with recommended_action=research_temporal_dates, especially likely_base_or_facility ranges/training areas and the remaining sourceable air-base row.",
+    "Pelly Island/Nipterk Base was skipped again because this pass did not find credible military operational/start/end date evidence beyond generic place-name or oil/exploration-style references.",
+    "Rows supported only by generic mapping/weather pages were skipped unless an official NRCan/GNBC page sourced to National Defence provided a decision date and matching Canadian Forces Range and/or Training Area classification.",
+    "For NRCan/GNBC-only rows, start_year is a conservative documented-by year derived from the official decision date; the rationale explicitly avoids treating it as original establishment/opening evidence."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:5883484",
+      "name": "Alexandra Point Range",
+      "country_code": "CA",
+      "start_year": 1991,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Alexandra Point Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=BAEWS",
+          "note": "NRCan/GNBC lists Alexandra Point Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area (C.F.T.A.), source National Defence, coordinates 46.190278, -63.05, and decision date 1991-03-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5883484: Alexandra Point Range",
+          "url": "https://www.mindat.org/feature-5883484.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Alexandra Point Range name, military-base class, and coordinates near 46.19042 N, 63.04868 W used by the overlay."
+        }
+      ],
+      "rationale": "The overlay source_id and coordinates match the official National Defence-sourced CGNDB range record. Use 1991 only as a documented-by year for official CFTA status, not as an establishment date."
+    },
+    {
+      "source_id": "geonames:5884490",
+      "name": "Amherst Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Amherst Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBTSO",
+          "note": "NRCan/GNBC lists Amherst Range as an official Canadian Forces Range and/or Training Area, source National Defence, with coordinates 45.820789, -64.170421 and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5884490: Amherst Range",
+          "url": "https://www.mindat.org/feature-5884490.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Amherst Range name, military-base class, and overlay-area coordinates."
+        }
+      ],
+      "rationale": "The official CFTA record and GeoNames overlay record align by name and location. Use 1990 as the documented official range-status year only."
+    },
+    {
+      "source_id": "geonames:5911420",
+      "name": "Burdick Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Burdick Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=HAWUL",
+          "note": "NRCan/GNBC lists Burdick Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 50.4069716, -105.3833459, and decision date 1990-09-01."
+        },
+        {
+          "title": "House of Commons NDVA evidence, 1998",
+          "url": "https://www.ourcommons.ca/documentviewer/en/36-1/NDVA/meeting-24/evidence",
+          "note": "Parliamentary evidence references the Burdick range in Moose Jaw as a Canadian Forces range designed for the old .303 cartridge, supporting the range identity but not a precise opening date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5911420: Burdick Range",
+          "url": "https://www.mindat.org/feature-5911420.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Burdick Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The CFTA identity is supported by an official National Defence-sourced place-name record and a separate parliamentary reference to Burdick range. Use 1990 as the conservative documented-by date from the official record."
+    },
+    {
+      "source_id": "geonames:5918916",
+      "name": "Cedar Springs Range",
+      "country_code": "CA",
+      "start_year": 1912,
+      "date_precision_start": "year",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canada.ca: Ranges in Ontario - Cedar Springs Range and Training Area",
+          "url": "https://www.canada.ca/en/army/corporate/4-canadian-division/4-canadian-division-ranges.html",
+          "note": "The Canadian Army page states that Cedar Springs Range and Training Area was established in 1912 and is situated on approximately 134 acres southwest of Blenheim near Chatham, Ontario."
+        },
+        {
+          "title": "Canada.ca: Highlights of New Federal Infrastructure Investments in Chatham, Ontario",
+          "url": "https://www.canada.ca/en/news/archive/2015/07/highlights-new-federal-infrastructure-investments-chatham-ontario.html",
+          "note": "The 2015 Government of Canada backgrounder repeats that Cedar Springs Range and Training Area was established in 1912 and identifies it as one of three ranges in Southern Ontario."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5918916: Cedar Springs Range",
+          "url": "https://www.mindat.org/feature-5918916.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Cedar Springs Range name, military-base class, and coordinates 42.26869, -82.02477 used by the overlay."
+        }
+      ],
+      "rationale": "Direct Canadian Army and Government of Canada sources provide the 1912 establishment year for the same Cedar Springs Range and Training Area represented by the overlay source_id."
+    },
+    {
+      "source_id": "geonames:5965028",
+      "name": "Granville Ferry Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Granville Ferry Range and Training Area",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBSCB",
+          "note": "NRCan/GNBC lists Granville Ferry Range and Training Area as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 44.75975, -65.530721, and decision date 1990-09-01."
+        },
+        {
+          "title": "Environment Canada: Important Amphibian and Reptile Areas in Canada, 2010",
+          "url": "https://publications.gc.ca/collections/collection_2019/eccc/en73-4/En73-4-21-eng.pdf",
+          "note": "The ECCC report names the Granville Ferry Rifle Range and Training Area as a nearby/place-associated location, supporting the range name but not an opening date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5965028: Granville Ferry Range and Training Area",
+          "url": "https://www.mindat.org/feature-5965028.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Granville Ferry Range and Training Area name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced CGNDB record matches the overlay name and location. Use 1990 only as an official documented-by date."
+    },
+    {
+      "source_id": "geonames:5971146",
+      "name": "Haro Strait Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Haro Strait Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADS",
+          "note": "NRCan/GNBC lists Haro Strait Range as an official Canadian Forces Range and/or Training Area, source National Defence, with coordinates 48.561111, -123.35333 and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5971146: Haro Strait Range",
+          "url": "https://www.mindat.org/feature-5971146.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Haro Strait Range name, military-base class, and coordinates near the overlay location."
+        }
+      ],
+      "rationale": "The official CFTA record matches the GeoNames overlay by name and location. Use 1990 as a documented-by official range-status date, not as a claimed opening date."
+    },
+    {
+      "source_id": "geonames:6081841",
+      "name": "Mount McKay Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Mount McKay Range",
+          "url": "https://toponymes.rncan.gc.ca/search-place-names/unique?id=FEQWX",
+          "note": "NRCan/GNBC lists Mount McKay Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 48.349722, -89.291111, and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6081841: Mount McKay Range",
+          "url": "https://www.mindat.org/feature-6081841.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Mount McKay Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced CFTA record matches the overlay feature. Use 1990 as a documented-by year for official range status only."
+    },
+    {
+      "source_id": "geonames:6083456",
+      "name": "Mt. St. Bruno Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1985,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Mt. St. Bruno Range and Training Area",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=EQJQL",
+          "note": "NRCan/GNBC lists Mt. St. Bruno Range and Training Area as an official Canadian Forces Range and/or Training Area, source National Defence, with coordinates 45.5619444, -73.3013888 and decision date 1985-04-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6083456: Mt. St. Bruno Range and Training Area",
+          "url": "https://www.mindat.org/feature-6083456.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Mt. St. Bruno Range and Training Area name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced range/training-area record matches the overlay feature. Use 1985 only as the documented-by year from the official decision date."
+    },
+    {
+      "source_id": "geonames:6094515",
+      "name": "Osborne Head Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Osborne Head Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBTSQ",
+          "note": "NRCan/GNBC lists Osborne Head Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 44.612881, -63.423131, and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6094515: Osborne Head Range",
+          "url": "https://www.mindat.org/feature-6094515.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Osborne Head Range name, alternate French name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The National Defence-sourced CFTA record and GeoNames overlay align by name and location. Use 1990 as an official documented-by date only."
+    },
+    {
+      "source_id": "geonames:6113341",
+      "name": "Prince Albert Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Prince Albert Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=HAWUN",
+          "note": "NRCan/GNBC lists Prince Albert Range as an official Canadian Forces Range and/or Training Area, source National Defence, with coordinates 53.237541, -105.7668958 and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6113341: Prince Albert Range",
+          "url": "https://www.mindat.org/feature-6113341.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Prince Albert Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced CFTA record matches the overlay feature. Use 1990 as a documented-by year, not an original establishment date."
+    },
+    {
+      "source_id": "geonames:6136946",
+      "name": "Saanich Inlet Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Saanich Inlet Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADQ",
+          "note": "NRCan/GNBC lists Saanich Inlet Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 48.639167, -123.49944, and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6136946: Saanich Inlet Range",
+          "url": "https://www.mindat.org/feature-6136946.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Saanich Inlet Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official CFTA record matches the overlay source_id by name and location. Use 1990 only as a documented official range-status year."
+    },
+    {
+      "source_id": "geonames:6139418",
+      "name": "Salmon Arm Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Salmon Arm Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADO",
+          "note": "NRCan/GNBC lists Salmon Arm Range as an official MIL-Military Area with generic term Canadian Forces Range and/or Training Area, source National Defence, coordinates 50.672778, -119.25056, and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6139418: Salmon Arm Range",
+          "url": "https://www.mindat.org/feature-6139418.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Salmon Arm Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced CFTA record matches the overlay feature. Use 1990 as a documented-by official status date, not as an opening date."
+    },
+    {
+      "source_id": "geonames:6160770",
+      "name": "Sydney Range",
+      "country_code": "CA",
+      "start_year": 1990,
+      "date_precision_start": "year",
+      "date_basis": "official_dnd_sourced_cgnb_decision_date_documents_cfta_existence_by_year",
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Sydney Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBUJE",
+          "note": "NRCan/GNBC lists Sydney Range as an official Canadian Forces Range and/or Training Area, source National Defence, with coordinates 46.130571, -60.149662 and decision date 1990-09-01."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6160770: Sydney Range",
+          "url": "https://www.mindat.org/feature-6160770.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Sydney Range name, military-base class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The official National Defence-sourced CFTA record matches the GeoNames overlay by name and Cape Breton-area location. Use 1990 as a conservative documented-by date only."
+    }
+  ],
+  "researched_not_included": [
+    {
+      "source_id": "geonames:6301413",
+      "name": "Pelly Island/Nipterk Base",
+      "country_code": "CA",
+      "reason": "Skipped: no credible military start/end/operational date source found in this pass; available hits were generic place-name/mapping-style references or non-military northern site context."
+    }
+  ]
+}

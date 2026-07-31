@@ -1,5 +1,24 @@
 # Deploying The Static UFO Map
 
+## Reproduction contract is a release gate
+
+Every production release must remain reproducible from Git plus immutable R2
+artifacts. After the final frozen Pages folder has been promoted to production,
+refresh and verify `reproduction/release.json` with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\publish_reproduction_release.ps1 `
+  -PagesRoot cloudflare_bundle_r2_NAME `
+  -PagesDeploymentId FULL-CLOUDFLARE-DEPLOYMENT-ID `
+  -ReleaseId IMMUTABLE-RELEASE-ID
+```
+
+Commit the refreshed manifest with the release. Source-only changes are
+automatically overlaid by the hydrator; data changes must produce a new
+versioned R2 prefix and manifest. GitHub's clean-clone workflow proves the full
+hydration and test suite, while the scheduled drift workflow fails if live
+production no longer matches Git and the recorded data release.
+
 ## Recommended Public Cloudflare Path
 
 For the current large canonical catalog, use Cloudflare Pages for the app shell

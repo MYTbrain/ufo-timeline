@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Second source-backed temporal override batch from focused regional review of remaining military overlay membership candidates.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:10172527",
+      "name": "93rd Brigade Headquarters",
+      "country_code": "SY",
+      "start_year": 2012,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_contested",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.hrw.org/report/2020/02/11/kidnapped-isis/failure-uncover-fate-syrias-missing",
+        "https://thedefensepost.com/2018/06/04/explosion-ayn-issa-us-france-base-syria/",
+        "https://www.syriahr.com/en/184668/"
+      ],
+      "source_notes": "Research found source evidence for Brigade 93/Ain Issa military use by 2012-2014 and later military/coallition use; no sourced closure."
+    },
+    {
+      "source_id": "geonames:10940983",
+      "name": "Alexandria Barracks",
+      "country_code": "IN",
+      "start_year": 1832,
+      "end_year": null,
+      "date_precision_start": "cantonment_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/34227644",
+        "https://belgaum.cantt.gov.in/history/"
+      ],
+      "source_notes": "Map source identifies the barracks; Belagavi Cantonment Board gives 1832 cantonment establishment and current military-installation context."
+    },
+    {
+      "source_id": "geonames:11038618",
+      "name": "Allenby Barracks",
+      "country_code": "IN",
+      "start_year": 1983,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/34422914",
+        "https://cdasecbad.ap.nic.in/aoge.html",
+        "https://www.prokerala.com/education/kendriya-vidyalaya-s2070.html"
+      ],
+      "source_notes": "Research found current Garrison Engineer presence at Allenby Lines and 1983 institutional evidence at the same lines."
+    },
+    {
+      "source_id": "geonames:11038623",
+      "name": "Gough Barracks",
+      "country_code": "IN",
+      "start_year": 1922,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.thewardrobe.org.uk/collection/search?category=7&ccm_order_by=&ccm_order_by_direction=asc&ccm_paging_p=1517&subcategory=Photographic+Print",
+        "https://www.chinditslongcloth1943.com/pte-charles-aves.html",
+        "https://mapcarta.com/34422924"
+      ],
+      "source_notes": "Research found Gough Barracks photographs from 1922-1924 and wartime unit presence in 1942; no sourced closure."
+    },
+    {
+      "source_id": "geonames:11038622",
+      "name": "Meadow’s Barracks",
+      "country_code": "IN",
+      "start_year": 1942,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.chinditslongcloth1943.com/pte-charles-aves.html",
+        "https://mapcarta.com/34422922"
+      ],
+      "source_notes": "Research found Meadows Barracks as part of Secunderabad Cantonment in 1942; no sourced closure."
+    },
+    {
+      "source_id": "geonames:11038620",
+      "name": "Roberts Barracks",
+      "country_code": "IN",
+      "start_year": 1922,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.thewardrobe.org.uk/collection/search?category=7&ccm_order_by=&ccm_order_by_direction=asc&ccm_paging_p=1517&subcategory=Photographic+Print",
+        "https://www.iete.org/files/annual-reports/Annual%20Report%201968-1969.pdf"
+      ],
+      "source_notes": "Research found Roberts Barracks photographs from 1922-1924 and later institutional address evidence; no sourced closure."
+    },
+    {
+      "source_id": "geonames:10940982",
+      "name": "Victoria Barracks",
+      "country_code": "IN",
+      "start_year": 1832,
+      "end_year": null,
+      "date_precision_start": "cantonment_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/34227642",
+        "https://belgaum.cantt.gov.in/history/"
+      ],
+      "source_notes": "Map source identifies the barracks; Belagavi Cantonment Board gives 1832 cantonment establishment and current military-installation context."
+    },
+    {
+      "source_id": "geonames:268151",
+      "name": "Caserne de Sarba",
+      "country_code": "LB",
+      "start_year": 1994,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.lebarmy.gov.lb/fr/content/le-4%C3%A8me-r%C3%A9giment-d%E2%80%99intervention",
+        "https://www.lebarmy.gov.lb/fr/content/le-commandant-en-chef-de-l%E2%80%99arm%C3%A9e-inspecte-les-unit%C3%A9s-d%C3%A9ploy%C3%A9es-%C3%A0-beyrouth-et-au-mont-liban"
+      ],
+      "source_notes": "Lebanese Army source says the 4th Intervention Regiment was created in 1994 and stationed at Raymond el-Hayek/Sarba barracks; later army inspection references Caserne de Sarba."
+    },
+    {
+      "source_id": "geonames:7038376",
+      "name": "Cambridge Barracks",
+      "country_code": "PK",
+      "start_year": 1926,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/26422430",
+        "https://mlc.gov.pk/rawalpindi-cantonment"
+      ],
+      "source_notes": "Research found Cambridge Barracks near Rawalpindi Cantonment and 1926/1927 bulletin evidence; Rawalpindi Cantonment established 1849."
+    },
+    {
+      "source_id": "geonames:7033749",
+      "name": "Govt Janbaz Force Barracks",
+      "country_code": "PK",
+      "start_year": 1973,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://nasirlawsite.com/laws/nga.htm",
+        "https://mapcarta.com/26413196"
+      ],
+      "source_notes": "National Guards Act 1973 establishes/maintains the Janbaz Force; map source places the barracks near Mirpur Khas."
+    },
+    {
+      "source_id": "geonames:1110638",
+      "name": "Khartum Barracks",
+      "country_code": "PK",
+      "start_year": 1848,
+      "end_year": null,
+      "date_precision_start": "cantonment_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/14566954",
+        "https://mlc.gov.pk/nowshera-cantonment"
+      ],
+      "source_notes": "Map source identifies Khartum Barracks in Nowshera; Nowshera Cantonment establishment year is 1848."
+    },
+    {
+      "source_id": "geonames:1388668",
+      "name": "Napier Barracks",
+      "country_code": "PK",
+      "start_year": 1911,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_renamed",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://livesofthefirstworldwar.iwm.org.uk/lifestory/68465",
+        "https://pk.geoview.info/napier_barracks%2C1388668"
+      ],
+      "source_notes": "IWM evidence places British Army employment at Napier Barracks in 1911; map/gazetteer source confirms location/alternate name."
+    },
+    {
+      "source_id": "geonames:1388659",
+      "name": "Probyn Barracks",
+      "country_code": "PK",
+      "start_year": 1850,
+      "end_year": null,
+      "date_precision_start": "cantonment_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mapcarta.com/15122996",
+        "https://mlc.gov.pk/lahore-cantonment"
+      ],
+      "source_notes": "Map source identifies Probyn Barracks; Lahore Cantonment establishment year is 1850."
+    },
+    {
+      "source_id": "geonames:11793445",
+      "name": "Myohaung Army Barracks",
+      "country_code": "GH",
+      "start_year": 1974,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://ghalii.org/akn/gh/act/li/1974/890/eng%401974-06-07/source.pdf",
+        "https://ga.mil.gh/blogs/goc-southern-command-visits-2bn"
+      ],
+      "source_notes": "1974 legal boundary includes Myohaung Barracks; Ghana Army source confirms 2Bn at Myohaung."
+    },
+    {
+      "source_id": "geonames:8608635",
+      "name": "Al Fadheel Brigade Barracks",
+      "country_code": "LY",
+      "start_year": 2011,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "low",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://api.openstreetmap.org/api/0.6/way/100636294/history",
+        "https://mapcarta.com/W100636294"
+      ],
+      "source_notes": "OSM history first maps the site as military landuse in 2011; current map source identifies the military installation."
+    },
+    {
+      "source_id": "geonames:80813",
+      "name": "Wavell Barracks",
+      "country_code": "LY",
+      "start_year": 1955,
+      "end_year": 1968,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.qaranc.co.uk/bmh-benghazi.php",
+        "https://www.rcmcollection.com/archives/5th-royal-inniskilling-dragoon-guards-journal-1967.pdf"
+      ],
+      "source_notes": "British military hospital history notes new Wavell Barracks in February 1955 and British closure in February 1968; 1967 regimental journal confirms active use."
+    },
+    {
+      "source_id": "geonames:11204677",
+      "name": "Cobbe Barracks",
+      "country_code": "MW",
+      "start_year": 1901,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mdf.gov.mw/origins",
+        "https://www.finance.gov.mw/documents/uploads/2025-07/Doc%205_2025-26%20Approved%20Program%20Based%20Budget-MDAs.pdf"
+      ],
+      "source_notes": "MDF origins trace CAR/Malawi Rifles at Cobbe Barracks; 2025-26 budget lists Cobbe Barracks as a current cost centre."
+    },
+    {
+      "source_id": "geonames:9821364",
+      "name": "Cockerill Barracks",
+      "country_code": "SL",
+      "start_year": 2000,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://researchcentre.army.gov.au/sites/default/files/conflict_theory_and_strategy_series_003_-_british_intervention_in_sierra_leone_combined.pdf",
+        "https://www.mod.gov.sl/rslaf-airwing.html"
+      ],
+      "source_notes": "British intervention paper places forces at Cockerill in 2000; RSLAF Air Wing source shows current HQ at Cockerill."
+    },
+    {
+      "source_id": "geonames:2566475",
+      "name": "Juba Barracks",
+      "country_code": "SL",
+      "start_year": 1961,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_redevelopment_pending",
+      "temporal_confidence": "low",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.premiermedia-sl.com/defence-council-approves-sale-of-juba-barracks/",
+        "https://sierraloaded.sl/news/mod-modernize-military-housing-juba-barracks/"
+      ],
+      "source_notes": "Research ties site to post-independence expansion and notes modernization/redevelopment review, not confirmed closure."
+    },
+    {
+      "source_id": "geonames:9821298",
+      "name": "Murray Town Barracks",
+      "country_code": "SL",
+      "start_year": 2011,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.slurc.org/uploads/1/6/9/1/16915440/gm_-_vol_ii_-_assessment_of_faecal_sludge_emptying_services_-_freetown_-_2011.pdf",
+        "https://sierraleone.un.org/en/304217-75-female-soldiers-begin-all-female-drivers-training-sierra-leone"
+      ],
+      "source_notes": "2011 Freetown assessment references RSLAF at Murray Town; 2025 UN Sierra Leone source confirms active RSLAF training there."
+    },
+    {
+      "source_id": "geonames:9821369",
+      "name": "Wilberforce Barracks",
+      "country_code": "SL",
+      "start_year": 1985,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Republic_of_Sierra_Leone_Armed_Forces",
+        "https://wanep.org/wanep/wp-content/uploads/2023/11/Quick-Update-November-26-Attack-in-Freetown24.pdf"
+      ],
+      "source_notes": "Research found 1st Battalion at Wilberforce Barracks in 1985-1991 and 2023 security/military relevance."
+    },
+    {
+      "source_id": "geonames:8709963",
+      "name": "Saint James Barracks",
+      "country_code": "TT",
+      "start_year": 1827,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_historic",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://citizensforconservationtt.org/home/sites/port-of-spain-general-hospital/",
+        "https://www.trinoutdoors.com/pages/other%20places.htm"
+      ],
+      "source_notes": "Heritage source says St James Barracks was built in 1827; supplemental source notes Camp Ogden/St James military continuity."
+    },
+    {
+      "source_id": "geonames:1106440",
+      "name": "Pomona Barracks",
+      "country_code": "ZW",
+      "start_year": 1999,
+      "end_year": null,
+      "date_precision_start": "earliest_confirmed_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://mg.co.za/article/1999-05-05-zim-demo-blast-kills-four/",
+        "https://www.thezimbabwean.co/2010/02/pomona-commander-transferred/",
+        "https://zimlii.org/akn/zw/act/si/2025/74/eng%402025-07-18/source.pdf"
+      ],
+      "source_notes": "1999 reporting calls Pomona a military engineering camp; later reporting identifies ZNA Engineers Corps; 2025 gazette lists Pomona Barracks land."
+    }
+  ]
+}

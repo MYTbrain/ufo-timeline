@@ -1,0 +1,275 @@
+{
+  "generated_at": "2026-06-04T19:51:30.9994006-07:00",
+  "temporal_source": "manual_web_research_canada_round9_runtime_safe_20260604",
+  "source_report_inputs": [
+    "data/reports/military_base_temporal_priority_queue.json",
+    "data/reports/military_base_temporal_remaining_gap_classes.csv"
+  ],
+  "description": "Round9 Canada temporal backfill pass limited to CA rows with recommended_action=research_temporal_dates. This runtime-safe pass excludes GNBC/NRCan documented-by or decision-date records as operational start dates unless corroborated by a credible establishment, opening, active, closure, or clearly dated official use-window source.",
+  "match_key": "source_id",
+  "candidate_count": 0,
+  "candidates": [],
+  "skipped_notes": [
+    "No new runtime-safe Canada candidates were found for the current CA research_temporal_dates rows.",
+    "The current queue/gap rows are Pelly Island/Nipterk Base plus twelve Canadian Forces range/training-area place-name records.",
+    "Round8 already identified the range rows as GNBC/NRCan decision-date/documented-by evidence; the Round9 constraint explicitly excludes those dates from operational start-date use.",
+    "Pelly Island/Nipterk Base remains skipped because available hits did not provide credible military establishment/opening/active/closure evidence, and prior passes found only generic place-name, mapping, weather, oil/exploration, or non-military northern-site context.",
+    "Cedar Springs Range has a runtime-safe 1912 establishment source from Canada.ca, but it is not in the current CA recommended_action=research_temporal_dates scope and was already isolated in the Round8 runtime-safe report."
+  ],
+  "researched_not_included": [
+    {
+      "source_id": "geonames:6301413",
+      "name": "Pelly Island/Nipterk Base",
+      "country_code": "CA",
+      "reason": "Skipped: no credible military operational/start/end date source found in this pass; available and prior-pass hits did not establish a runtime-safe military use window.",
+      "source_notes": [
+        {
+          "title": "Prior Canada Round8 note: Pelly Island/Nipterk Base",
+          "url": "data/reports/military_base_temporal_backfill_canada_round8_20260604.json",
+          "note": "Prior manual pass skipped Pelly Island/Nipterk Base because it did not find credible military operational/start/end date evidence beyond generic place-name or oil/exploration-style references."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6301413: Pelly Island/Nipterk Base",
+          "url": "https://www.mindat.org/feature-6301413.html",
+          "note": "Mapping-style GeoNames mirror can support identity/coordinates only; it does not provide establishment, opening, closure, or a dated official military use window."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:5883484",
+      "name": "Alexandra Point Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date evidence plus mapping/weather-style mirrors were found; no credible operational start or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Alexandra Point Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=BAEWS",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1991-03-01 decision date, but that is a naming/decision record rather than an operational establishment date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5883484: Alexandra Point Range",
+          "url": "https://www.mindat.org/feature-5883484.html",
+          "note": "GeoNames mirror supports feature identity and coordinates only; it does not provide a runtime-safe operational date."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:5884490",
+      "name": "Amherst Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date evidence and generic directory/mapping pages were found; no establishment/opening/closure or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Amherst Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBTSO",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date, but the date is not operational establishment evidence."
+        },
+        {
+          "title": "Rural Routes Nova Scotia: Amherst Range",
+          "url": "https://ns.ruralroutes.com/17407.html",
+          "note": "Directory-style page repeats Canadian Forces Range and/or Training Area identity but provides no operational date."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:5911420",
+      "name": "Burdick Range",
+      "country_code": "CA",
+      "reason": "Skipped: sources support Canadian Forces range identity and historical use context, but not a precise establishment/opening/closure date or a bounded official use window suitable for runtime start dates.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Burdick Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=HAWUL",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as a documented-by decision date."
+        },
+        {
+          "title": "House of Commons NDVA evidence, 1998",
+          "url": "https://www.ourcommons.ca/documentviewer/en/36-1/NDVA/meeting-24/evidence",
+          "note": "Parliamentary evidence references Burdick range as a Canadian Forces range designed for older ammunition, supporting identity/use context but not an operational start date."
+        },
+        {
+          "title": "Saskatchewan Provincial Rifle Association: History",
+          "url": "https://saskrifle.ca/history/",
+          "note": "Association history says Burdick was an active Canadian Forces range and later no longer operating, but it does not provide a precise operational date suitable for a conservative candidate."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:5965028",
+      "name": "Granville Ferry Range and Training Area",
+      "country_code": "CA",
+      "reason": "Skipped: found identity and current/training-area references, but no credible establishment/opening/closure date or bounded official use-window source beyond excluded GNBC/NRCan decision-date evidence.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Granville Ferry Range and Training Area",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBSCB",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this date is excluded as non-operational."
+        },
+        {
+          "title": "14 Wing Greenwood Wing Info Book 2009",
+          "url": "https://auroranewspaper.com/wp-content/uploads/pdf/Archive/2009/Wing%20Info%20Book%202009%20-%20low%20res.pdf",
+          "note": "Publication references Granville Ferry Training Area in 2009 context, but does not provide an establishment/opening date or bounded official use window for the overlay."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5965028: Granville Ferry Range and Training Area",
+          "url": "https://www.mindat.org/feature-5965028.html",
+          "note": "GeoNames mirror supports identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:5971146",
+      "name": "Haro Strait Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no runtime-safe operational date source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Haro Strait Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADS",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is not an operational start date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5971146: Haro Strait Range",
+          "url": "https://www.mindat.org/feature-5971146.html",
+          "note": "GeoNames mirror supports feature identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6081841",
+      "name": "Mount McKay Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no credible establishment/opening/closure or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Mount McKay Range",
+          "url": "https://toponymes.rncan.gc.ca/search-place-names/unique?id=FEQWX",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as a decision/documented-by date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6081841: Mount McKay Range",
+          "url": "https://www.mindat.org/feature-6081841.html",
+          "note": "GeoNames mirror supports feature identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6083456",
+      "name": "Mt. St. Bruno Range and Training Area",
+      "country_code": "CA",
+      "reason": "Skipped: parliamentary evidence supports range identity/design context but not a precise operational start; GNBC/NRCan decision date is excluded.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Mt. St. Bruno Range and Training Area",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=EQJQL",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1985-04-01 decision date; this is not operational establishment evidence."
+        },
+        {
+          "title": "House of Commons NDVA evidence, 1998",
+          "url": "https://www.ourcommons.ca/documentviewer/en/36-1/NDVA/meeting-24/evidence",
+          "note": "Parliamentary evidence references the St-Bruno range in Montreal as designed for older ammunition, but does not provide a runtime-safe operational date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6083456: Mt. St. Bruno Range and Training Area",
+          "url": "https://www.mindat.org/feature-6083456.html",
+          "note": "GeoNames mirror supports identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6094515",
+      "name": "Osborne Head Range",
+      "country_code": "CA",
+      "reason": "Skipped: official/non-official hits support DND property or range identity but not establishment/opening/closure or a bounded official use window suitable for start/end fields.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Osborne Head Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBTSQ",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as a documented-by decision date."
+        },
+        {
+          "title": "C-FOG: Life of Coastal Fog article",
+          "url": "https://researchgate.net/publication/344274528_C-FOG_Life_of_Coastal_Fog",
+          "note": "Research article identifies Osborne Head as a Canada DND meteorological facility during a 2018 campaign, but that is not an operational range establishment/opening date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6094515: Osborne Head Range",
+          "url": "https://www.mindat.org/feature-6094515.html",
+          "note": "GeoNames mirror supports range identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6113341",
+      "name": "Prince Albert Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no credible operational start/end or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Prince Albert Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=HAWUN",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as non-operational."
+        },
+        {
+          "title": "Mapcarta: Prince Albert Range",
+          "url": "https://mapcarta.com/24184992",
+          "note": "Mapping page supports identity and location only; it does not provide a runtime-safe temporal date."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6136946",
+      "name": "Saanich Inlet Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no credible operational date source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Saanich Inlet Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADQ",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as a decision/documented-by date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6136946: Saanich Inlet Range",
+          "url": "https://www.mindat.org/feature-6136946.html",
+          "note": "GeoNames mirror supports identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6139418",
+      "name": "Salmon Arm Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no credible operational start/end or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Salmon Arm Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=JZADO",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as non-operational."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6139418: Salmon Arm Range",
+          "url": "https://www.mindat.org/feature-6139418.html",
+          "note": "GeoNames mirror supports feature identity and coordinates only."
+        }
+      ]
+    },
+    {
+      "source_id": "geonames:6160770",
+      "name": "Sydney Range",
+      "country_code": "CA",
+      "reason": "Skipped: only GNBC/NRCan decision-date and mapping-style sources found; no credible establishment/opening/closure or dated official use-window source found.",
+      "source_notes": [
+        {
+          "title": "Natural Resources Canada CGNDB: Sydney Range",
+          "url": "https://geonames.nrcan.gc.ca/search-place-names/unique?id=CBUJE",
+          "note": "Official place-name record lists Canadian Forces Range and/or Training Area status and a 1990-09-01 decision date; this is excluded as a decision/documented-by date."
+        },
+        {
+          "title": "Mindat/GeoNames feature 6160770: Sydney Range",
+          "url": "https://www.mindat.org/feature-6160770.html",
+          "note": "GeoNames mirror supports identity and coordinates only."
+        }
+      ]
+    }
+  ]
+}

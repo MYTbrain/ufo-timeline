@@ -1,0 +1,303 @@
+{
+  "generated_at": "2026-06-04T23:52:00Z",
+  "temporal_source": "manual_web_research_china_round6_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11493942",
+      "name": "Changxing",
+      "country_code": "CN",
+      "start_year": 1970,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity.org: Changzing/Changxing Airfield",
+          "url": "https://www.globalsecurity.org/military/world/china/changzing.htm",
+          "note": "GlobalSecurity identifies Changzing/Changxing as a probable military airfield with a 7,000-foot runway and says declassified CORONA imagery showed the airfield under construction on 25 May 1970."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493942: Changxing",
+          "url": "https://www.mindat.org/feature-11493942.html",
+          "note": "Mindat mirrors the GeoNames feature ID, airbase class, coordinates near 30.96839 N, 119.72978 E, and Changxing name used by the overlay."
+        }
+      ],
+      "rationale": "The overlay coordinates and name match the Changxing/Changzing airfield. Use 1970 as a conservative construction start year, not a proven operational commissioning year; confidence remains medium because the dated evidence is imagery-derived construction status."
+    },
+    {
+      "source_id": "geonames:11493904",
+      "name": "Feidong",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "China PLANAF OOB 2012",
+          "url": "https://wiki.baloogancampaign.com/index.php?title=China_PLANAF_OOB_2012",
+          "note": "The 2012 PLANAF order of battle lists the East Sea Fleet 12th Air Regiment at Feidong with J-10AH/SH aircraft, citing Rupprecht and Cooper's Modern Chinese Warplanes."
+        },
+        {
+          "title": "AviationMilitaires: Chinese naval aviation bases",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/269/aeronavale-chinoise",
+          "note": "AviationMilitaires lists Feidong as a Chinese naval aviation base at 31 deg 54 min 34 sec N, 117 deg 39 min 32 sec E, matching the queue coordinates."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493904: Feidong",
+          "url": "https://www.mindat.org/feature-11493904.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Feidong name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The source_id and coordinates match the Feidong airbase entry. Use 2012 only as a documented-by operational OOB date because the available sources establish unit presence but not construction or commissioning."
+    },
+    {
+      "source_id": "geonames:11493889",
+      "name": "Guiping Mengxu",
+      "country_code": "CN",
+      "start_year": 2003,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Guiping/Mengshu",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble lists Guiping/Mengshu with the Southern Theater Command 8th Division and says the 1st Independent Regiment was renamed the 23rd Regiment in 2003, with H-6G/H-6DU aircraft included."
+        },
+        {
+          "title": "China PLANAF OOB 2012",
+          "url": "https://wiki.baloogancampaign.com/index.php?title=China_PLANAF_OOB_2012",
+          "note": "The 2012 PLANAF order of battle lists the 23rd Air Regiment at Guiping-Mengxu with H-6DU/G aircraft."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493889: Guiping Mengxu",
+          "url": "https://www.mindat.org/feature-11493889.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Guiping Mengxu name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "Guiping Mengxu/Mengshu name variants and coordinates align with the overlay feature. Use 2003 as the conservative documented organizational/operational date from Scramble rather than an establishment date."
+    },
+    {
+      "source_id": "geonames:11493867",
+      "name": "Jialaishi",
+      "country_code": "CN",
+      "start_year": 2020,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Jialaishi",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble lists Jialaishi at 19 deg 41 min 54 sec N, 109 deg 43 min 36 sec E with the 8th Air Brigade and states the brigade was activated in 2020 after earlier J-11 regiments merged."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493867: Jialaishi",
+          "url": "https://www.mindat.org/feature-11493867.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Jialaishi name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The coordinates and name match the Jialaishi airbase feature. Use 2020 as a documented brigade activation/operational date; earlier airfield history is likely, but this report avoids inferring a start date not supported by the cited source."
+    },
+    {
+      "source_id": "geonames:11493862",
+      "name": "Jiaozhou",
+      "country_code": "CN",
+      "start_year": 2007,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Jiaozhou",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble lists Jiaozhou at 36 deg 19 min 52 sec N, 120 deg 01 min 31 sec E with the 15th Air Regiment and says the J-8E was replaced by J-8FH in 2007, noting the regiment had earlier been based at Qingdao-Liuting."
+        },
+        {
+          "title": "AviationMilitaires: Chinese naval aviation bases",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/269/aeronavale-chinoise",
+          "note": "AviationMilitaires lists Jiaozhou as a Chinese naval aviation base at coordinates matching the overlay feature."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493862: Jiaozhou",
+          "url": "https://www.mindat.org/feature-11493862.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Jiaozhou name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The source_id and coordinates match Jiaozhou. Use 2007 as a documented-by operational date from the aircraft replacement note, with low confidence because the source does not explicitly say the move to Jiaozhou occurred exactly in 2007."
+    },
+    {
+      "source_id": "geonames:11493845",
+      "name": "Laiyang",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "China PLANAF OOB 2012",
+          "url": "https://wiki.baloogancampaign.com/index.php?title=China_PLANAF_OOB_2012",
+          "note": "The 2012 PLANAF order of battle lists the 2nd Naval Aviation Division at Laiyang and its 4th Air Regiment with Y-8J, Y-8JB, and Y-8W aircraft."
+        },
+        {
+          "title": "The War Zone: Hardened Aircraft Shelters",
+          "url": "https://www.twz.com/news-features/does-the-u-s-need-to-be-building-hardened-aircraft-shelters-for-its-combat-aircraft",
+          "note": "The War Zone describes Laiyang as a PLAN facility and notes shelter construction beginning in 2022 and wrapping up the following year, with KJ-200/KQ-200 aircraft imagery reported there."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493845: Laiyang",
+          "url": "https://www.mindat.org/feature-11493845.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Laiyang name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The overlay feature matches Laiyang airbase. The 2012 OOB provides a conservative documented operational date, while later imagery reporting supports continuing PLAN airfield activity."
+    },
+    {
+      "source_id": "geonames:11493843",
+      "name": "Ledong",
+      "country_code": "CN",
+      "start_year": 2004,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Ledong",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble lists Ledong/Foluo Northeast at 18 deg 41 min 26 sec N, 109 deg 09 min 35 sec E and says the first JH-7A aircraft for the 27th Regiment were noted in August 2004; by 2020 the regiment was transformed into the 9th Air Brigade."
+        },
+        {
+          "title": "Asia Times: PLA jet crashes in Hainan",
+          "url": "https://asiatimes.com/2019/03/pla-jet-crashes-in-hainan-leaving-two-dead/",
+          "note": "Asia Times reported in 2019 that the PLA base in Ledong serviced J-11 aircraft, supporting continued operational military use."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493843: Ledong",
+          "url": "https://www.mindat.org/feature-11493843.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Ledong name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "Ledong/Foluo Northeast coordinates match the overlay feature. Use 2004 as a documented-by operational date tied to aircraft being noted for the resident regiment, not as an airfield construction date."
+    },
+    {
+      "source_id": "geonames:11493838",
+      "name": "Liangxiang",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "China OOB Current: People's Liberation Army Naval Air Force, Order of Battle 2012",
+          "url": "https://wiki.baloogancampaign.com/index.php/China_OOB_Current",
+          "note": "The 2012 naval aviation OOB lists a direct-reporting unit at Liangxiangzhen with An-26, Y-7, Y-8C, and Yak-42 aircraft."
+        },
+        {
+          "title": "AviationMilitaires: Chinese naval aviation bases",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/269/aeronavale-chinoise",
+          "note": "AviationMilitaires lists Liangxiangzhen as a Chinese naval aviation base at 39 deg 45 min 28 sec N, 116 deg 7 min 30 sec E, matching the queue location."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493838: Liangxiang",
+          "url": "https://www.mindat.org/feature-11493838.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Liangxiang name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "Liangxiang/Liangxiangzhen name variants and coordinates align with the overlay feature. Use 2012 as a conservative documented operational OOB date."
+    },
+    {
+      "source_id": "geonames:11493852",
+      "name": "Kaiyuan",
+      "country_code": "CN",
+      "start_year": 1951,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "CASI: 70 Years of the PLAAF",
+          "url": "https://www.airuniversity.af.edu/Portals/10/CASI/documents/Research/PLAAF/2021-04-12%20CASI%20-%2070%20Years%20of%20the%20PLAAF%20-%20FINAL%20ALL.pdf",
+          "note": "CASI's PLAAF history appendix says the 3rd Air Corps was originally formed at Kaiyuan, Liaoning Province, in November 1951."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493852: Kaiyuan",
+          "url": "https://www.mindat.org/feature-11493852.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Kaiyuan name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The source_id and coordinates match Kaiyuan Air Base near Tieling. Use 1951 as a documented military aviation formation date at Kaiyuan; confidence is medium because the source documents air-corps formation at the location rather than explicit airfield construction."
+    },
+    {
+      "source_id": "geonames:11493836",
+      "name": "Linfen",
+      "country_code": "CN",
+      "start_year": 1953,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity.org: PLAAF Air Force Academies and Schools",
+          "url": "https://www.globalsecurity.org/military/library/report/1991/plaaf-ch20.htm",
+          "note": "The PLAAF schools history says the 12th Aviation School was formed at Linfen, Shanxi Province, in February 1953 to train fighter pilots."
+        },
+        {
+          "title": "AviationMilitaires: Chinese Air Force bases",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "AviationMilitaires lists Linfen as a Chinese Air Force base at 36 deg 2 min 31 sec N, 111 deg 29 min 32 sec E, matching the overlay coordinates."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493836: Linfen",
+          "url": "https://www.mindat.org/feature-11493836.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Linfen name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The overlay feature matches Linfen airbase. Use 1953 as a conservative documented military aviation school/airfield-use date, not as a construction date."
+    },
+    {
+      "source_id": "geonames:11493842",
+      "name": "Leiyang",
+      "country_code": "CN",
+      "start_year": 2022,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Heritage Foundation: Appendix E, PLAAF Top-Tier Bases for Taiwan Contingency",
+          "url": "https://www.heritage.org/tidalwave/appendices/appendix-e-plaaf-top-tier-bases-taiwan-contingency",
+          "note": "Heritage identifies the Shaodong/Leiyang cluster as hosting bomber regiments of the 8th Bomber Division and cites CASI's 2022 bomber-force study for that long-range strike role."
+        },
+        {
+          "title": "AviationMilitaires: Chinese Air Force bases",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "AviationMilitaires lists Yaotian at 26 deg 31 min 48 sec N, 112 deg 50 min 38 sec E; this corresponds to the queue's Leiyang-area airbase coordinates."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493842: Leiyang",
+          "url": "https://www.mindat.org/feature-11493842.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Leiyang name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The queue's Leiyang feature aligns with the Leiyang/Yaotian bomber-base location. Use 2022 as a documented-by operational date from the cited bomber-force analysis; confidence is low because the source does not provide an establishment date for the airfield."
+    },
+    {
+      "source_id": "geonames:11493829",
+      "name": "Longtian",
+      "country_code": "CN",
+      "start_year": 2022,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "The War Zone: China's Closest Airbase To Taipei Operational Again After Major Upgrades",
+          "url": "https://www.twz.com/chinas-closest-airbase-to-taipei-operational-again-after-major-upgrades",
+          "note": "The War Zone reported in July 2022 that Longtian was operational again after major upgrades and described Flanker-family fighters and converted J-6 drones at the upgraded base."
+        },
+        {
+          "title": "Heritage Foundation: Appendix E, PLAAF Top-Tier Bases for Taiwan Contingency",
+          "url": "https://www.heritage.org/tidalwave/appendices/appendix-e-plaaf-top-tier-bases-taiwan-contingency",
+          "note": "Heritage describes Longtian Air Base at about 25.57 N, 119.46 E, notes years-long expansion culminating around 2022, and identifies it as a primary forward fighter/UCAV launch site."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493829: Longtian",
+          "url": "https://www.mindat.org/feature-11493829.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Longtian name, airbase class, and overlay coordinates."
+        }
+      ],
+      "rationale": "The source_id and coordinates match Longtian Air Base. Use 2022 as a conservative documented post-upgrade operational/reactivation date rather than an original construction date."
+    }
+  ]
+}

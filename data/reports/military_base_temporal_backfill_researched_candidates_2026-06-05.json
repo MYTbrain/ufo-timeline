@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Source-backed temporal override candidates from focused review of remaining military overlay membership candidates.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:11995822",
+      "name": "Pollença Seaplane Base",
+      "country_code": "ES",
+      "start_year": 1937,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://ejercitodelaireydelespacio.defensa.gob.es/EA/ejercitodelaire/es/Unidades/Unidad/91ba9195-9f2a-11ee-b1b1-005056bf91c5/"
+      ],
+      "source_notes": "Official Spanish Air and Space Force page says Base Aérea de Pollensa was created in 1937 and remains an air-force unit."
+    },
+    {
+      "source_id": "geonames:12110770",
+      "name": "Coast Guard Station",
+      "country_code": "GB",
+      "start_year": 1870,
+      "end_year": 1995,
+      "date_precision_start": "decade",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.nci.org.uk/2025/04/18/nci-swanage-celebrates-30-years-of-keeping-people-safe-on-the-dorset-coast/"
+      ],
+      "source_notes": "Focused review matched the coordinates to the former Swanage/Peveril Point coastguard lookout; NCI opened there in 1995 after the former coastguard use."
+    },
+    {
+      "source_id": "geonames:12122564",
+      "name": "Deal Coast Guard Station",
+      "country_code": "GB",
+      "start_year": 1841,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.dover.gov.uk/Planning/Planning-Policy/PDF/Heritage-Strategy-Appendix-1-Theme5.pdf",
+        "https://www.findglocal.com/GB/Deal/104862649278646/Deal-HM-Coastguard"
+      ],
+      "source_notes": "Dover heritage material cites Deal coastguard presence from at least 1841; current HM Coastguard rescue-station listing confirms ongoing facility use."
+    },
+    {
+      "source_id": "geonames:12953987",
+      "name": "Kisarazu Japan Coast Guard Station",
+      "country_code": "JP",
+      "start_year": 1969,
+      "end_year": null,
+      "date_precision_start": "exact_day_in_notes",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.kaiho.mlit.go.jp/03kanku/office/",
+        "https://www.kaiho.mlit.go.jp/03kanku/chiba/hoanbu/index_1.htm"
+      ],
+      "source_notes": "Japan Coast Guard Chiba history records Kisarazu office established on 1969-04-01; JCG office list confirms current address."
+    },
+    {
+      "source_id": "geonames:11247357",
+      "name": "Philippine Coast Guard Detachment",
+      "country_code": "PH",
+      "start_year": 2019,
+      "end_year": null,
+      "date_precision_start": "month",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://ndrrmc.gov.ph/attachments/article/4183/5_NDRRMC_AMANG_2019.pdf",
+        "https://pia.gov.ph/news/pcg-icare-to-train-communities-on-sea-safety-emergency-response/"
+      ],
+      "source_notes": "CGSS Liloan is attested in 2019 PCG/NDRRMC reporting and later Southern Leyte PCG coverage."
+    },
+    {
+      "source_id": "geonames:6950849",
+      "name": "Coast Guard",
+      "country_code": "US",
+      "start_year": 1948,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.history.uscg.mil/Browse-by-Topic/Assets/Land/Stations-Units/Article/2603525/station-burlington-vermont/"
+      ],
+      "source_notes": "Official USCG history says Station Burlington was commissioned in 1948 and is still in operation."
+    },
+    {
+      "source_id": "geonames:12501143",
+      "name": "Caserne Dumont-d'Urville",
+      "country_code": "FR",
+      "start_year": 1895,
+      "end_year": 1946,
+      "date_precision_start": "circa_year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://pop.culture.gouv.fr/notice/merimee/IA00001031",
+        "https://www.falaise.fr/wp-content/uploads/2009/03/falaise_en_bref-decembre-2008.pdf"
+      ],
+      "source_notes": "French heritage record says the barracks were built circa 1895; Falaise bulletin says the city took possession in 1946 and later military reoccupation did not happen."
+    },
+    {
+      "source_id": "geonames:12501410",
+      "name": "Caserne Hamelin",
+      "country_code": "FR",
+      "start_year": 1720,
+      "end_year": 1944,
+      "date_precision_start": "range_start",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.cadomus.org/articles/la-caserne-hamelin"
+      ],
+      "source_notes": "Cadomus history says Caserne Hamelin was built from 1720 through 1835 and destroyed in the Battle of Caen, with remaining traces cleared by 1946."
+    },
+    {
+      "source_id": "geonames:12750259",
+      "name": "Caserne Pérignon",
+      "country_code": "FR",
+      "start_year": 1900,
+      "end_year": null,
+      "date_precision_start": "circa_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.archives.toulouse.fr/nous-connaitre/arcanes-la-lettre-d-informations-des-archives/les-archives-d-arcanes/dans-ma-rue?inheritRedirect=true",
+        "https://lannuaire.service-public.gouv.fr/occitanie/haute-garonne/f9b00046-ece8-492e-ad18-3859a3a86350"
+      ],
+      "source_notes": "Toulouse archives place construction in the late 19th/early 20th century; Service Public lists a current defense service at Caserne Pérignon."
+    },
+    {
+      "source_id": "geonames:13286512",
+      "name": "Caserne Teyssier",
+      "country_code": "FR",
+      "start_year": 1818,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_defense_admin",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.ladepeche.fr/article/2008/03/07/440539-albi-caserne-teyssier-les-candidats-debattent.html",
+        "https://lannuaire.service-public.gouv.fr/occitanie/tarn/ffebeb64-51d2-4c31-8dd1-7b2b66f4592b"
+      ],
+      "source_notes": "Local reporting says the site was assigned to the Ministry of War in 1818 and partly returned to the city in 2001-2002; Service Public still lists a current defense recruitment office there."
+    },
+    {
+      "source_id": "geonames:12750497",
+      "name": "Caserne Valence",
+      "country_code": "FR",
+      "start_year": 1875,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_defense_admin",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://pop.culture.gouv.fr/notice/merimee/PA00084053"
+      ],
+      "source_notes": "Mérimée record says Caserne Valence was installed from 1875 and remains assigned to the defense ministry/gendarmerie."
+    },
+    {
+      "source_id": "geonames:2411545",
+      "name": "Lathbury Barracks",
+      "country_code": "GI",
+      "start_year": 1940,
+      "end_year": 1995,
+      "date_precision_start": "decade",
+      "date_precision_end": "latest_confirmed_year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "low",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Lathbury_Barracks",
+        "https://www.gibraltar.gov.gi/press-releases/commercial-unit-at-lathbury-barracks-11879"
+      ],
+      "source_notes": "Focused review found historical/ex-military use and current civilian/government tender evidence; end year is a conservative latest-confirmed military-use marker pending stronger source review."
+    },
+    {
+      "source_id": "geonames:2411455",
+      "name": "South Barracks House",
+      "country_code": "GI",
+      "start_year": 1730,
+      "end_year": 1991,
+      "date_precision_start": "decade",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.ministryforheritage.gi/heritage-and-antiquities/18th-century-barrack-complexes-1084"
+      ],
+      "source_notes": "Gibraltar heritage page says South Barracks was the oldest British Army barracks in mainland Europe by 1990 and was handed to the Gibraltar Government in 1991."
+    },
+    {
+      "source_id": "geonames:6950867",
+      "name": "Royal Guard barracks",
+      "country_code": "NO",
+      "start_year": 1900,
+      "end_year": null,
+      "date_precision_start": "circa_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.royalcourt.no/artikkel.html?tid=29281"
+      ],
+      "source_notes": "Royal Court of Norway verifies the King's Guard current permanent duty at Huseby military camp; exact facility opening year remains approximate pending stronger source review."
+    }
+  ]
+}

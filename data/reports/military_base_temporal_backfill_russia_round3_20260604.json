@@ -1,0 +1,672 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:11458672",
+      "name": "Andreapol",
+      "country_code": "RU",
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1956,
+          "end_year": 1994,
+          "label": "28th Guards Fighter Aviation Regiment basing at Andreapol"
+        },
+        {
+          "start_year": 1998,
+          "end_year": 2009,
+          "label": "Restored 28th Guards Fighter Aviation Regiment basing interval"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Andreapol (airfield)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B0%D0%BF%D0%BE%D0%BB%D1%8C_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Andreapol as a military airfield east of Andreapol and gives 28th Guards Fighter Aviation Regiment basing from September 1956 to 2 September 1994 and from March 1998 to 2009."
+        },
+        {
+          "title": "Andreapol air base",
+          "url": "https://en.wikipedia.org/wiki/Andreapol_air_base",
+          "note": "Identifies Andreapol as a former Soviet/Russian Air Force air base and reports it inactive or closed by 2019."
+        }
+      ],
+      "rationale": "The queue point is a direct name and location match to Andreapol air base. The sources support documented regiment-basing intervals and a 2009 end for the last sourced regiment phase; no original construction year is promoted because the available sources only describe wartime use generally before 1956."
+    },
+    {
+      "source_id": "geonames:11459369",
+      "name": "Astrakhan Northwest",
+      "country_code": "RU",
+      "start_year": 1956,
+      "operational_intervals": [
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "Privolzhskiy / Astrakhan military air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Astrakhan Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/astrakhan/",
+          "note": "Specialist profile lists year built as 1956, coordinates matching the overlay point, active military-only status, and August 1956 military use by the 393rd Guards Fighter Aviation Regiment."
+        },
+        {
+          "title": "Astrakhan air base",
+          "url": "https://en.wikipedia.org/wiki/Astrakhan_air_base",
+          "note": "Identifies Privolzhskiy/Astrakhan as a Russian Aerospace Forces air base and gives the August 1956 transfer of the 393rd Guards Fighter Aviation Regiment to the airfield."
+        }
+      ],
+      "rationale": "The overlay name Astrakhan Northwest aligns with Privolzhskiy/Astrakhan by name family and close coordinates. Both sources support August 1956 as the first dated military-use marker, so the candidate uses 1956 as a conservative start year."
+    },
+    {
+      "source_id": "geonames:11459239",
+      "name": "Bada North",
+      "country_code": "RU",
+      "start_year": 1940,
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1945,
+          "label": "Documented wartime Soviet aviation regiment use at Bada"
+        },
+        {
+          "start_year": 1954,
+          "end_year": 1977,
+          "label": "Bada North training/reserve airfield and junior aviation specialist school phase"
+        },
+        {
+          "start_year": 1983,
+          "end_year": 2009,
+          "label": "21st fighter-bomber regiment and follow-on 313th reconnaissance regiment phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Bada (airfield)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%91%D0%B0%D0%B4%D0%B0_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Bada as an abandoned military airfield at 51.4067 N, 109.9000 E; says it was built during the Khalkhin Gol fighting and gives July 1940 regiment basing, a 1954 Bada North school/reserve-airfield phase, 1983-2002 fighter-bomber regiment basing, and 313th reconnaissance regiment use until 2009."
+        },
+        {
+          "title": "Bada (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%91%D0%B0%D0%B4%D0%B0_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Parallel article gives the same coordinate/location match and dated basing sequence."
+        }
+      ],
+      "rationale": "The queue name is specifically Bada North, and the source distinguishes a northern Bada training/reserve airfield while also documenting earlier military-airfield use at Bada. The candidate uses the first explicit unit-basing year, 1940, rather than inferring an exact 1939 construction date from the Khalkhin Gol reference."
+    },
+    {
+      "source_id": "geonames:11459334",
+      "name": "Balashov Southeast",
+      "country_code": "RU",
+      "start_year": 1930,
+      "operational_intervals": [
+        {
+          "start_year": 1930,
+          "end_year": null,
+          "label": "Balashov aviation-school and training-airfield lineage"
+        },
+        {
+          "start_year": 2002,
+          "end_year": null,
+          "label": "785th Balashov training aviation center / Krasnodar military aviation institute faculty phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Balashov (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%91%D0%B0%D0%BB%D0%B0%D1%88%D0%BE%D0%B2_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Balashov as the training airfield of the Balashov flight school, says the school has existed since 1930, and notes its 2002 reorganization as the 785th Balashov training aviation center."
+        },
+        {
+          "title": "Balashov Higher Military Aviation School of Pilots",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%91%D0%B0%D0%BB%D0%B0%D1%88%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B5_%D0%B2%D1%8B%D1%81%D1%88%D0%B5%D0%B5_%D0%B2%D0%BE%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5_%D0%B0%D0%B2%D0%B8%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%BE%D0%B5_%D1%83%D1%87%D0%B8%D0%BB%D0%B8%D1%89%D0%B5_%D0%BB%D1%91%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2",
+          "note": "Gives the school founding on 22 October 1930 and the September 1939 transition into a military aviation school."
+        }
+      ],
+      "rationale": "The queue record is the Balashov Southeast training airfield. The sources tie the current airfield to the Balashov aviation-school system and provide a 1930 aviation-school origin plus a documented 2002 training-center transition. This is treated as a medium-confidence facility-lineage candidate, not an exact runway-construction claim."
+    },
+    {
+      "source_id": "geonames:11459295",
+      "name": "Borisoglebsk",
+      "country_code": "RU",
+      "start_year": 1922,
+      "operational_intervals": [
+        {
+          "start_year": 1922,
+          "end_year": null,
+          "label": "Borisoglebsk military flight-school airfield use"
+        },
+        {
+          "start_year": 1990,
+          "end_year": null,
+          "label": "1080th aviation center / modern training air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Borisoglebsk (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D1%80%D0%B8%D1%81%D0%BE%D0%B3%D0%BB%D0%B5%D0%B1%D1%81%D0%BA_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Borisoglebsk as an active military airfield and states that training regiments of the Borisoglebsk Higher Military Aviation School have been based at the airfield since 1922."
+        },
+        {
+          "title": "Borisoglebsk air base",
+          "url": "https://en.wikipedia.org/wiki/Borisoglebsk_air_base",
+          "note": "Identifies Borisoglebsk East as an active Russian Aerospace Forces training air base and describes the 1990 activation of the 1080th aviation training center."
+        }
+      ],
+      "rationale": "The queue point is a direct match to Borisoglebsk East. The Russian article provides a direct 1922 airfield-basing marker, with later sources supporting continuity as a military training air base."
+    },
+    {
+      "source_id": "geonames:8030081",
+      "name": "Chita Northwest",
+      "country_code": "RU",
+      "start_year": 1920,
+      "operational_intervals": [
+        {
+          "start_year": 1920,
+          "end_year": null,
+          "label": "Chita Northwest / Cheryomushki airfield lineage"
+        },
+        {
+          "start_year": 2002,
+          "end_year": null,
+          "label": "112th Independent Helicopter Regiment at Chita Northwest"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Chita Northwest Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/chita-northwest/",
+          "note": "Specialist profile lists year built as 1920, coordinates matching the overlay point, active military-only status, and says the base was initially built in the late 1920s with World War II 12th Air Army use."
+        },
+        {
+          "title": "Chita Northwest air base",
+          "url": "https://en.wikipedia.org/wiki/Chita_Northwest_air_base",
+          "note": "Identifies Chita Northwest/Cheryomushki as an air base, gives built date as the 1920s, and reports 112th Independent Helicopter Regiment arrival in 2002."
+        }
+      ],
+      "rationale": "The queue record name and coordinates match Chita Northwest/Cheryomushki. Because the source evidence is mixed between a 1920 year-built table value and late-1920s prose, the candidate remains medium confidence and should be treated as approximate at year precision."
+    },
+    {
+      "source_id": "geonames:11458711",
+      "name": "Ivanovo North",
+      "country_code": "RU",
+      "start_year": 1935,
+      "operational_intervals": [
+        {
+          "start_year": 1935,
+          "end_year": null,
+          "label": "Ivanovo Severny military air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ivanovo Severny Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/ivanovo-severny/",
+          "note": "Specialist profile lists year built as 1935, coordinates matching the overlay point, and says the runway was built in 1935 and upgraded in 1965."
+        }
+      ],
+      "rationale": "The queue name Ivanovo North corresponds to Ivanovo Severny, and the coordinates align closely. The candidate uses the profile's 1935 runway/base construction marker with medium confidence because the source is a specialist airbase page."
+    },
+    {
+      "source_id": "geonames:11459016",
+      "name": "Kansk South",
+      "country_code": "RU",
+      "start_year": 1959,
+      "operational_intervals": [
+        {
+          "start_year": 1959,
+          "end_year": null,
+          "label": "Kansk-Dalny / Kansk South fighter air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kansk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/kansk/",
+          "note": "Specialist profile lists year built as 1959, coordinates matching the overlay point, says construction began in 1959, and states the 712th Guards Fighter Aviation Regiment arrived at Kansk in 1959."
+        }
+      ],
+      "rationale": "The overlay name Kansk South matches Kansk-Dalny by location south of Kansk and by coordinates. The 1959 construction and unit-arrival evidence supports the candidate start year."
+    },
+    {
+      "source_id": "geonames:11459325",
+      "name": "Kapustin Yar",
+      "country_code": "RU",
+      "start_year": 1954,
+      "operational_intervals": [
+        {
+          "start_year": 1954,
+          "end_year": null,
+          "label": "Kapustin Yar training-ground military airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kapustin Yar Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/kapustin-yar/",
+          "note": "Specialist profile lists year built as 1954, coordinates matching the overlay point, and describes continuous use as the military airfield serving the Kapustin Yar training ground."
+        }
+      ],
+      "rationale": "The queue source_id is a direct coordinate and name match to Kapustin Yar Air Base. The candidate records the 1954 build/use date from the specialist profile at medium confidence."
+    },
+    {
+      "source_id": "geonames:11459275",
+      "name": "Khabarovsk",
+      "country_code": "RU",
+      "start_year": 1926,
+      "operational_intervals": [
+        {
+          "start_year": 1926,
+          "end_year": null,
+          "label": "Khabarovsk Tsentralny / Bolshoy military airfield lineage"
+        },
+        {
+          "start_year": 1938,
+          "end_year": null,
+          "label": "Concrete-runway airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Khabarovsk Tsentralny Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/khabarovsk-tsentralny/",
+          "note": "Specialist profile lists year built as 1926, coordinates matching the overlay point, and says the air base history dates to formation of the 26th Separate Fighter Squadron in Khabarovsk in 1926, with a concrete runway built in 1938."
+        }
+      ],
+      "rationale": "The queue name Khabarovsk maps to Khabarovsk Tsentralny/Bolshoy by coordinates and military-base description. The candidate preserves both the 1926 aviation-unit origin and 1938 runway milestone from the source."
+    },
+    {
+      "source_id": "geonames:11459399",
+      "name": "Kushchevskaya West",
+      "country_code": "RU",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "Kushchyovskaya training aviation air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kushchyovskaya Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/kushchyovskaya/",
+          "note": "Specialist profile lists year built as 1952, coordinates matching the overlay point, continuous use, and 797th Training Aviation Regiment basing."
+        }
+      ],
+      "rationale": "The queue record's Kushchevskaya West name and coordinates align with Kushchyovskaya Air Base. The source supports a 1952 construction/start year, held at medium confidence."
+    },
+    {
+      "source_id": "geonames:11458918",
+      "name": "Levashovo",
+      "country_code": "RU",
+      "start_year": 1960,
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Levashovo military transport/composite aviation air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Levashovo Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/levashovo/",
+          "note": "Specialist profile lists year built as 1960, coordinates matching the overlay point, and says Levashovo was constructed in 1960 with the 549th Air Base based there since 1960."
+        }
+      ],
+      "rationale": "The queue source_id is a direct match to Levashovo Air Base near St. Petersburg. The source supports 1960 as both construction and unit-basing start."
+    },
+    {
+      "source_id": "geonames:11459113",
+      "name": "Lipetsk West",
+      "country_code": "RU",
+      "start_year": 1960,
+      "operational_intervals": [
+        {
+          "start_year": 1925,
+          "end_year": 1933,
+          "label": "Lipetsk fighter-pilot school predecessor at Lipetsk"
+        },
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Lipetsk-2 combat-training air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Lipetsk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/lipetsk/",
+          "note": "Specialist profile lists year built as 1960 for Lipetsk Air Base/Lipetsk-2, gives coordinates near the overlay point, and separately notes the 1925-1933 Lipetsk fighter-pilot school."
+        }
+      ],
+      "rationale": "The current overlay point aligns with Lipetsk West/Lipetsk-2 rather than simply the historical city-level aviation school. The candidate therefore uses 1960 as the start year for the current airbase while retaining the 1925-1933 predecessor interval for historical context only."
+    },
+    {
+      "source_id": "geonames:11458822",
+      "name": "Monchegorsk aerodrom",
+      "country_code": "RU",
+      "start_year": 1957,
+      "operational_intervals": [
+        {
+          "start_year": 1957,
+          "end_year": null,
+          "label": "Monchegorsk military air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Monchegorsk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/monchegorsk/",
+          "note": "Specialist profile lists year built as 1957, coordinates matching the overlay point, and says construction began in the early 1950s and the base was operational by 1957."
+        }
+      ],
+      "rationale": "The source_id coordinates match Monchegorsk Air Base. The candidate promotes the first operational year stated by the source, not the less precise early-1950s construction period."
+    },
+    {
+      "source_id": "geonames:11459560",
+      "name": "Nikolayevka",
+      "country_code": "RU",
+      "start_year": 1945,
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": null,
+          "label": "Nikolayevka / Zolotaya Dolina Russian naval aviation airbase phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Nikolayevka (air base)",
+          "url": "https://en.wikipedia.org/wiki/Nikolayevka_(air_base)",
+          "note": "Identifies Nikolayevka as a Russian Navy/Russian Naval Aviation air base in Primorsky Krai, gives built and in-use dates as 1945-present, and lists several naval aviation units."
+        }
+      ],
+      "rationale": "The queue name and coordinates match Nikolayevka/Zolotaya Dolina closely. The candidate uses the article's explicit 1945 built/in-use date at medium confidence because no official installation history was found in this pass."
+    },
+    {
+      "source_id": "geonames:11458674",
+      "name": "Ostrov Gorokhovka",
+      "country_code": "RU",
+      "start_year": 1940,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Ostrov / Veretie military air base phase"
+        },
+        {
+          "start_year": 2013,
+          "end_year": null,
+          "label": "15th Army Aviation Brigade phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ostrov Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/ostrov/",
+          "note": "Specialist profile lists year built as 1940, coordinates matching the overlay point, says the airfield was built in 1940, and notes 15th Army Aviation Brigade basing since 2013."
+        }
+      ],
+      "rationale": "The overlay name Ostrov Gorokhovka aligns with Ostrov/Veretie by coordinates and location southeast of Ostrov. The source provides a clear 1940 build marker and later active aviation-brigade phase."
+    },
+    {
+      "source_id": "geonames:11459401",
+      "name": "Primorsko Akhtarsk",
+      "country_code": "RU",
+      "start_year": 1954,
+      "operational_intervals": [
+        {
+          "start_year": 1954,
+          "end_year": null,
+          "label": "Primorsko-Akhtarsk Russian Aerospace Forces air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Primorsko-Akhtarsk Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/primorsko-akhtarsk/",
+          "note": "Specialist profile lists year built as 1954, coordinates near the overlay point, and says the base was constructed in 1954 and first used by the 1689th regiment of the Yeysk aviation school."
+        }
+      ],
+      "rationale": "The queue record is a direct name match to Primorsko-Akhtarsk. The source supports 1954 as both construction and first-use marker."
+    },
+    {
+      "source_id": "geonames:11459328",
+      "name": "Saratov West",
+      "country_code": "RU",
+      "start_year": 1940,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Saratov West / Sokol military training airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Saratov West Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/saratov-west/",
+          "note": "Specialist profile lists year built as 1940, coordinates matching the overlay point, continuous use, and current military training-airfield operation."
+        }
+      ],
+      "rationale": "The overlay point and name align with Saratov West/Sokol. The source gives a clear 1940 built date and continuous-use statement."
+    },
+    {
+      "source_id": "geonames:11459168",
+      "name": "Seshcha",
+      "country_code": "RU",
+      "start_year": 1931,
+      "operational_intervals": [
+        {
+          "start_year": 1931,
+          "end_year": null,
+          "label": "Seshcha military transport aviation air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Seshcha Air Base: Location, Units & Runway Details",
+          "url": "https://www.globalmilitary.net/airbases/seshcha/",
+          "note": "Specialist profile lists year built as 1931, coordinates matching the overlay point, and says the air base was placed in operation in 1931 and has been in continuous use since then."
+        }
+      ],
+      "rationale": "The queue point is a direct match to Seshcha Air Base. The source supports 1931 as the operational start at medium confidence."
+    },
+    {
+      "source_id": "geonames:11459156",
+      "name": "Shatalovo",
+      "country_code": "RU",
+      "start_year": 1968,
+      "operational_intervals": [
+        {
+          "start_year": 1968,
+          "end_year": null,
+          "label": "Shatalovo / Pochinok Soviet-Russian military air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Shatalovo Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/shatalovo/",
+          "note": "Specialist profile lists year built as 1968, coordinates matching the overlay point, continuous use, and 32nd Guards Fighter Aviation Regiment stationing from 1968."
+        }
+      ],
+      "rationale": "The overlay source_id maps directly to Shatalovo/Pochinok. The source gives 1968 as the current Soviet/Russian military base start, with older WWII local airfields noted separately but not promoted as the same facility start."
+    },
+    {
+      "source_id": "geonames:11459160",
+      "name": "Shaykovka",
+      "country_code": "RU",
+      "start_year": 1937,
+      "operational_intervals": [
+        {
+          "start_year": 1937,
+          "end_year": null,
+          "label": "Shaykovka / Anisovo Gorodishche military airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Shaykovka Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/shaykovka/",
+          "note": "Specialist profile lists year built as 1937, coordinates matching the overlay point, and says the airfield was built by 1937 and initially hosted the 13th Separate High-Speed Bomber Aviation Squadron."
+        }
+      ],
+      "rationale": "The overlay point is a direct match to Shaykovka Air Base. The 1937 build and initial bomber-squadron evidence supports the candidate start year."
+    },
+    {
+      "source_id": "geonames:11458677",
+      "name": "Soltsy",
+      "country_code": "RU",
+      "start_year": 1951,
+      "operational_intervals": [
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Soltsy-2 long-range aviation air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Soltsy-2 Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/soltsy-2/",
+          "note": "Specialist profile lists year built as 1951, coordinates matching the overlay point, and says the base was built in 1951 with 840th Heavy Bomber Aviation Regiment use from November 1951."
+        }
+      ],
+      "rationale": "The queue record Soltsy aligns directly with Soltsy-2 by coordinates and location north of Soltsy. The source supports a 1951 airbase start."
+    },
+    {
+      "source_id": "geonames:11459249",
+      "name": "Step",
+      "country_code": "RU",
+      "start_year": 1948,
+      "operational_intervals": [
+        {
+          "start_year": 1948,
+          "end_year": 2010,
+          "label": "Step / Olovyannaya Soviet-Russian air base phase before 2010 liquidation"
+        },
+        {
+          "start_year": 2013,
+          "end_year": null,
+          "label": "Restoration and renewed military aviation phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Step Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/step/",
+          "note": "Specialist profile lists year built as 1948, coordinates near the overlay point, describes construction in 1948, a post-2009 closure/liquidation period, and renewed basing after restoration."
+        },
+        {
+          "title": "Step (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BF%D1%8C_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Russian article describes the military airfield east of Step station and notes the August 2010 liquidation of the 320th aviation base, with later restoration reporting."
+        }
+      ],
+      "rationale": "The overlay name Step and coordinates match Step/Olovyannaya. The candidate records the 1948 construction marker and separates the post-2010 interruption/restoration so continuity is not overstated."
+    },
+    {
+      "source_id": "geonames:11459556",
+      "name": "Uglovoye Northwest",
+      "country_code": "RU",
+      "start_year": 1945,
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": null,
+          "label": "Uglovoye / Tsentralnaya Uglovaya Vladivostok air-defense air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Uglovoye Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/uglovoye/",
+          "note": "Specialist profile lists year built as 1945, coordinates matching the overlay point, and says the 6th Fighter Aviation Regiment arrived at the airfield in September 1945."
+        }
+      ],
+      "rationale": "The queue name Uglovoye Northwest matches the source's note that Uglovoye was also known as Tsentralnaya Uglovaya and Uglovoye Northwest in intelligence usage. The source supports a 1945 start."
+    },
+    {
+      "source_id": "geonames:11459543",
+      "name": "Varfolomeyevka South",
+      "country_code": "RU",
+      "start_year": 1960,
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Varfolomeyevka tactical reconnaissance air base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Varfolomeyevka Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/varfolomeyevka/",
+          "note": "Specialist profile lists year built as 1960, coordinates matching the overlay point, and says the base was built in 1960 and has been in continuous use since then."
+        }
+      ],
+      "rationale": "The overlay point corresponds to the main Varfolomeyevka Air Base area. The candidate uses the 1960 build/start date from the specialist source and does not infer dates for the nearby unpaved southwest field beyond the source text."
+    },
+    {
+      "source_id": "geonames:11459562",
+      "name": "Ussuriysk Vozdvizhenka",
+      "country_code": "RU",
+      "start_year": 1933,
+      "operational_intervals": [
+        {
+          "start_year": 1933,
+          "end_year": 2009,
+          "label": "Vozdvizhenka / Ussuriysk long-range bomber air base phase"
+        },
+        {
+          "start_year": 2009,
+          "end_year": null,
+          "label": "Post-bomber-regiment aviation commandant and aircraft repair factory phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Vozdvizhenka Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/vozdvizhenka/",
+          "note": "Specialist profile lists year built as 1933, coordinates close to the overlay point, says Vozdvizhenka has been in use since April 1933, and describes the 2009 disbandment of the 444th regiment with later commandant/repair-factory activity."
+        },
+        {
+          "title": "Vozdvizhenka (airbase)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%92%D0%BE%D0%B7%D0%B4%D0%B2%D0%B8%D0%B6%D0%B5%D0%BD%D0%BA%D0%B0_(%D0%B0%D0%B2%D0%B8%D0%B0%D0%B1%D0%B0%D0%B7%D0%B0)",
+          "note": "Russian article says several squadrons moved to Vozdvizhenka by order in April 1933 and notes the 2017 presence of the Khurba airbase commandant and 322nd aircraft repair factory."
+        }
+      ],
+      "rationale": "The queue name explicitly includes Ussuriysk Vozdvizhenka, and both sources match the location and airbase identity. The candidate separates the pre-2009 bomber-base phase from the post-2009 residual military aviation/repair presence."
+    }
+  ]
+}

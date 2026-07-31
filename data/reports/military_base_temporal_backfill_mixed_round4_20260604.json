@@ -1,0 +1,349 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:6295672",
+      "name": "CVN-65 USS Enterprise",
+      "country_code": "US",
+      "start_year": 1961,
+      "end_year": 2017,
+      "operational_intervals": [
+        {
+          "start_year": 1961,
+          "end_year": 2017,
+          "label": "commissioned U.S. Navy aircraft-carrier service"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Navy Decommissions \"The Big E\" - United States Navy",
+          "url": "https://www.navy.mil/Press-Office/Press-Releases/display-pressreleases/Article/2252799/navy-decommissions-the-big-e/",
+          "note": "Official Navy release says USS Enterprise (CVN 65) was decommissioned on February 3, 2017, and describes a more than 50-year career after putting to sea in 1961."
+        },
+        {
+          "title": "CVN-65 USS Enterprise full history - SeaForces.org",
+          "url": "https://www.seaforces.org/usnships/cvn/CVN-65-USS-Enterprise-history.htm",
+          "note": "Secondary ship-history page gives the exact commissioning date as November 25, 1961; the official Navy release supports the 2017 decommissioning endpoint."
+        }
+      ],
+      "rationale": "The GeoNames source_id is an aircraft-carrier row rather than a fixed airfield. The candidate records the ship's commissioned service span, using year precision for the overlay while preserving exact commissioning/decommissioning dates in source notes."
+    },
+    {
+      "source_id": "geonames:6295671",
+      "name": "CVN-71  USS Theodore Roosevelt",
+      "country_code": "US",
+      "start_year": 1986,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1986,
+          "end_year": null,
+          "label": "commissioned U.S. Navy aircraft-carrier service"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "USS Theodore Roosevelt (CVN-71) 1986 Command History - Naval History and Heritage Command",
+          "url": "https://www.history.navy.mil/content/dam/nhhc/research/archives/command-operation-reports/ship-command-operation-reports/t/theodore-roosevelt-cvn-71-i/1986.pdf",
+          "note": "Official command history states USS Theodore Roosevelt (CVN-71) was commissioned on October 25, 1986."
+        },
+        {
+          "title": "USS Theodore Roosevelt (CVN 71) - Naval Air Force, U.S. Pacific Fleet",
+          "url": "https://www.airpac.navy.mil/Organization/USS-Theodore-Roosevelt-CVN-71/quot/About-Us/",
+          "note": "Official current Navy unit page confirms the active USS Theodore Roosevelt command identity."
+        }
+      ],
+      "rationale": "The GeoNames source_id is a CVN ship row. The candidate records the source-backed commissioned-service start and leaves the endpoint open because current official Navy pages still list the ship as an active unit."
+    },
+    {
+      "source_id": "geonames:7267587",
+      "name": "Coast Guard Station San Diego",
+      "country_code": "US",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Air Station San Diego, California - United States Coast Guard Historian's Office",
+          "url": "https://www.history.uscg.mil/browse-by-topic/Aviation/Article/3061847/air-station-san-diego-california/",
+          "note": "Official USCG history lists the original location at Lindbergh Field, date of commission as April 1937, and fate as still in service."
+        },
+        {
+          "title": "U.S. Coast Guard Station and Lindbergh Field in 1946 - City of San Diego Digital Archives",
+          "url": "https://www.sandiego.gov/digital-archives-photos/us-coast-guard-station-and-lindbergh-field-1946",
+          "note": "City archival caption identifies the station on San Diego Bay and says it was built in 1936 with Federal Public Works Administration funds."
+        }
+      ],
+      "rationale": "Exact overlay name and coordinates align with the San Diego Coast Guard station/air-station site. The official USCG commission year provides a clean start, and USCG marks the station still in service."
+    },
+    {
+      "source_id": "geonames:11746275",
+      "name": "US Coast Guard Station Nome (historical)",
+      "country_code": "US",
+      "start_year": 1905,
+      "end_year": 1949,
+      "operational_intervals": [
+        {
+          "start_year": 1905,
+          "end_year": 1949,
+          "label": "Coast Guard / life-saving station phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Station Nome, Alaska - United States Coast Guard Historian's Office",
+          "url": "https://www.history.uscg.mil/Browse-by-Topic/Assets/Land/All/Article/2668147/station-nome-alaska/",
+          "note": "Official USCG land-asset page lists Station Nome as Coast Guard Station #335, with date of conveyance 1905, station built 1905, and fate discontinued in 1949."
+        }
+      ],
+      "rationale": "Exact historical Coast Guard station record. The official USCG asset page directly supplies both the start and discontinuance years."
+    },
+    {
+      "source_id": "geonames:12022337",
+      "name": "Klipsan Beach Life Saving Station",
+      "country_code": "US",
+      "start_year": 1889,
+      "end_year": 1947,
+      "operational_intervals": [
+        {
+          "start_year": 1889,
+          "end_year": 1915,
+          "label": "U.S. Life-Saving Service / Ilwaco Beach-Klipsan station phase"
+        },
+        {
+          "start_year": 1915,
+          "end_year": 1947,
+          "label": "U.S. Coast Guard Station No. 309 phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Klipsan Beach Life Saving Station National Register nomination - National Park Service",
+          "url": "https://npgallery.nps.gov/GetAsset/c84f7e47-807e-4591-86c1-1e74fe6c5d4b",
+          "note": "National Register form says the Klipsan Beach Station, first known as Ilwaco Beach station, was established in 1889, became Coast Guard Station #309 after the 1915 merger, and was abandoned in 1947."
+        }
+      ],
+      "rationale": "Exact historical station name. The candidate preserves the Life-Saving Service to Coast Guard transition and uses the NPS-documented abandonment year as the operational endpoint."
+    },
+    {
+      "source_id": "geonames:6297855",
+      "name": "Las Vegas, Tonopah Range #74 Nellis AFB",
+      "country_code": "US",
+      "start_year": 1957,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "History - Tonopah Test Range",
+          "url": "https://ttr.sandia.gov/history/",
+          "note": "Sandia's Tonopah Test Range history says the range was established in 1957 by Sandia Corporation for Atomic Energy Commission testing."
+        },
+        {
+          "title": "1950s - About Sandia",
+          "url": "https://www.sandia.gov/about/history/1950s/",
+          "note": "Sandia history places the Tonopah site within what was then the Nevada Bombing and Gunnery Range, now associated with the Nellis range complex, and says Tonopah became Sandia's official test range in 1960."
+        }
+      ],
+      "rationale": "The overlay label is a nonstandard Tonopah/Nellis range-airfield name. The source-backed 1957 establishment year applies to the Tonopah Test Range site at the same coordinates, while confidence is kept below high because the source does not use the exact GeoNames label."
+    },
+    {
+      "source_id": "geonames:6618032",
+      "name": "B52 Graveyard",
+      "country_code": "US",
+      "start_year": 1946,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "AMARG - History Factsheet - Davis-Monthan Air Force Base",
+          "url": "https://www.dm.af.mil/About-Us/Fact-Sheets/Display/Article/313213/amarg-history-factsheet/",
+          "note": "Official Davis-Monthan factsheet identifies the post-World War II aircraft storage facility at Davis-Monthan as today's Aerospace Maintenance and Regeneration Group."
+        },
+        {
+          "title": "AMARG at Davis-Monthan Air Force Base, the US Air Force's Boneyard - Abandoned America",
+          "url": "https://www.abandonedamerica.us/amarg",
+          "note": "Site-history article gives 1946 as the establishment year for the aircraft/missile storage and maintenance facility."
+        }
+      ],
+      "rationale": "The GeoNames label is colloquial, but the coordinates match the Davis-Monthan AMARG/boneyard area. The candidate uses the source-backed 1946 aircraft-storage origin and marks confidence medium because the exact 'B52 Graveyard' label is not the official facility name."
+    },
+    {
+      "source_id": "geonames:5921136",
+      "name": "Chezzetcook Air Weapons Range",
+      "country_code": "CA",
+      "end_year": 1984,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Champ de tir aerien Chezzetcook / Chezzetcook Air Weapons Range - Natural Resources Canada",
+          "url": "https://toponymes.rncan.gc.ca/search-place-names/unique?id=2b7866abaf4311d892e2080020a0f4c9&wbdisable=true",
+          "note": "NRCan's official geographical-names record identifies Chezzetcook Air Weapons Range as an official Canadian Forces Range and/or Training Area."
+        },
+        {
+          "title": "Municipal Planning Strategy for Planning Districts 8 and 9 - Halifax Regional Municipality",
+          "url": "https://www.halifax.ca/sites/default/files/documents/about-the-city/regional-community-planning/PlanningDistricts8and9_MPS.pdf",
+          "note": "Halifax planning document says the Department of National Defence declared the Chezzetcook Air Weapons Range surplus to its requirements in 1984."
+        }
+      ],
+      "rationale": "This pass found a strong source-backed endpoint but not a clean official opening year. The candidate therefore records only the 1984 DND surplus endpoint and leaves the start unresolved."
+    },
+    {
+      "source_id": "geonames:12122557",
+      "name": "Kalafrana Air Base (historical)",
+      "country_code": "MT",
+      "start_year": 1917,
+      "end_year": 1946,
+      "operational_intervals": [
+        {
+          "start_year": 1917,
+          "end_year": 1946,
+          "label": "RAF Kalafrana seaplane operations centre phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Air-Sea Rescue Operations At Malta And The Kalafrana Seaplane Base 1940-1943 - Heritage Malta",
+          "url": "https://heritagemalta.mt/store/air-sea-rescue-operations-at-malta-and-the-kalafrana-seaplane-base-1940-1943/",
+          "note": "Heritage Malta says RAF Kalafrana served as a seaplane operations centre from 1917 to 1946."
+        }
+      ],
+      "rationale": "Exact historical air-base label. Heritage Malta provides a clean operational span for the Kalafrana seaplane base."
+    },
+    {
+      "source_id": "geonames:11822222",
+      "name": "Base Naval de Lisboa",
+      "country_code": "PT",
+      "start_year": 1958,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Lisbon Naval Base - Portuguese Navy",
+          "url": "https://www.marinha.pt/en/os_meios/bases/Pages/BNL.aspx",
+          "note": "Official Portuguese Navy page says the present Lisbon Naval Base had its origin in the Alfeite Arsenal administration and was created by Decree-Law No. 41,989 on December 3, 1958."
+        },
+        {
+          "title": "Base Naval de Lisboa - Marinha Portuguesa",
+          "url": "https://www.marinha.pt/pt/os_meios/bases/Paginas/BNL.aspx",
+          "note": "Portuguese-language official page confirms the same December 3, 1958 creation date and current logistical-support mission."
+        }
+      ],
+      "rationale": "Exact Portuguese naval-base overlay name. The official navy page directly supports the 1958 creation year and current active status."
+    },
+    {
+      "source_id": "geonames:8015053",
+      "name": "NATO naval base",
+      "country_code": "IT",
+      "start_year": 1967,
+      "end_year": null,
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Naval Support Activity Naples Department Gaeta - MilitaryINSTALLATIONS",
+          "url": "https://installations.militaryonesource.mil/in-depth-overview/naval-support-activity-naples-department-gaeta",
+          "note": "Official MilitaryINSTALLATIONS overview says the U.S. Sixth Fleet flagship has resided in Gaeta since leaving Villefranche, France, in 1967, and that Gaeta continues to support the Sixth Fleet flagship and NATO ships."
+        },
+        {
+          "title": "U.S. 6th Fleet Celebrates 75th Anniversary, 250th Navy birthday - U.S. Naval Forces Europe and Africa / U.S. Sixth Fleet",
+          "url": "https://www.c6f.navy.mil/Press-Room/News/News-Display/Article/4064045/us-6th-fleet-celebrates-75th-anniversary-250th-navy-birthday/",
+          "note": "Official Sixth Fleet article summarizes the fleet's Gaeta association from 1967 to 2005 before consolidation with U.S. Naval Forces Europe."
+        }
+      ],
+      "rationale": "The GeoNames label is generic, but the coordinates correspond to Gaeta. The 1967 Gaeta support/homeport date is source-backed, and confidence is medium_high rather than high because the source labels the facility as Gaeta/NSA support rather than the exact 'NATO naval base' string."
+    },
+    {
+      "source_id": "geonames:7576608",
+      "name": "USAF Stopover Airbase",
+      "country_code": "UM",
+      "start_year": 1972,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Wake Atoll Rat Eradication Program Final Environmental Assessment - Department of the Air Force",
+          "url": "https://files.hawaii.gov/dbedt/erp/Other_TEN_Publications/2022-03-08-NEPA-FONSI-FONPA-FEA-Wake-Atoll-Rat-Eradication-Program.pdf",
+          "note": "Department of the Air Force environmental assessment says civil administration/facilities were transferred from FAA to the U.S. Air Force effective June 14, 1972, and describes later Wake Island Airfield support missions."
+        },
+        {
+          "title": "Wake Island Embodies Reality of America as Pacific Power - U.S. Department of Defense",
+          "url": "https://www.defense.gov/News/News-Stories/Article/Article/1431996/wake-island-embodies-reality-of-america-as-pacific-power/igphoto/wake-island-embodies-reality-of-america-as-pacific-power/",
+          "note": "DoD article identifies Wake Island Airfield as a current Pacific Air Forces-supported waystation for hundreds of military aircraft per year."
+        }
+      ],
+      "rationale": "The overlay record is a USAF stopover-airbase feature at Wake Island. The candidate uses the 1972 USAF transfer as the conservative start for the USAF operational phase rather than the earlier Pan Am, Navy, Japanese, or FAA phases."
+    },
+    {
+      "source_id": "geonames:1689874",
+      "name": "Sangley Point Naval Station",
+      "country_code": "PH",
+      "end_year": 1971,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Philippine Treaty Series No. 579 - Senate of the Philippines Legislative Reference Bureau",
+          "url": "https://ldr.senate.gov.ph/treaties/philippine-treaty-series-no-579",
+          "note": "Treaty entry records the exchange of notes accepting the return of United States Naval Station, Sangley Point, to the Republic of the Philippines, effective September 1, 1971."
+        },
+        {
+          "title": "Executive Order No. 324 - Supreme Court E-Library",
+          "url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/5/84274",
+          "note": "Philippine executive order states that the United States Naval Base at Sangley Point would be officially turned over to the Philippine Government by September 1, 1971."
+        }
+      ],
+      "rationale": "This endpoint-only candidate avoids guessing at the original U.S. naval-station start year. The 1971 transfer/closure endpoint is directly supported by Philippine legal and treaty records."
+    },
+    {
+      "source_id": "geonames:1880250",
+      "name": "Paya Lebar Airport",
+      "country_code": "SG",
+      "start_year": 1981,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": 1981,
+          "label": "Singapore International Airport civil-airport phase"
+        },
+        {
+          "start_year": 1981,
+          "end_year": null,
+          "label": "Republic of Singapore Air Force Paya Lebar Air Base phase"
+        }
+      ],
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Paya Lebar Airbase (formerly Singapore International Airport) - Roots.gov.sg",
+          "url": "https://www.roots.gov.sg/places/places-landing/Places/surveyed-sites/paya-lebar-airbase",
+          "note": "Singapore heritage page says Paya Lebar Airport was developed from 1952 to 1955 and that the Republic of Singapore Air Force took over the terminals and other buildings and integrated them into the military base."
+        },
+        {
+          "title": "Paya Lebar Air Base - Urban Redevelopment Authority Draft Master Plan",
+          "url": "https://www.uradraftmasterplan.gov.sg/regional-plans/east/paya-lebar-air-base",
+          "note": "URA page says Paya Lebar Airport officially opened on August 20, 1955, and was converted into Paya Lebar Air Base after Changi Airport opened in 1981."
+        }
+      ],
+      "rationale": "The overlay keeps the old airport name while classifying the feature as an air base. The candidate records both phases but uses 1981 as the military-base start year."
+    },
+    {
+      "source_id": "geonames:1726521",
+      "name": "Basa Air Base",
+      "country_code": "PH",
+      "start_year": 1948,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Basa Air Base - GlobalSecurity.org",
+          "url": "https://www.globalsecurity.org/military/world/philippines/basa.htm",
+          "note": "Site history says Floridablanca Airfield was transferred to Philippine control on May 2, 1947, and renamed Basa Air Base on April 20, 1948."
+        }
+      ],
+      "rationale": "The candidate uses the exact-name Basa Air Base rename year rather than the 1947 transfer of the underlying Floridablanca airfield. Confidence is medium because the date source is a secondary site history rather than a current Philippine Air Force page."
+    }
+  ]
+}

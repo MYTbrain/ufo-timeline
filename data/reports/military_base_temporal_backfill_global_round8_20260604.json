@@ -1,0 +1,365 @@
+{
+  "generated_at": "2026-06-04T00:00:00Z",
+  "temporal_source": "manual_web_research_global_round8",
+  "description": "Eighth-round conservative temporal backfill candidates for remaining non-CN/non-CA research_temporal_dates gaps. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.csv and data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates were considered.",
+    "Rows classified as manual, nonstandard, or artifact were excluded.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "For airport-directory and DAFIF-derived records, start_year is a conservative documented-by year rather than an inferred construction year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:13561278",
+      "name": "Bonn-Hardthoehe Air Base",
+      "country_code": "DE",
+      "start_year": 1956,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Hardthoehe (barracks)",
+          "url": "https://en.wikipedia.org/wiki/Hardth%C3%B6he_%28barracks%29",
+          "note": "The Hardthoehe property is identified as a German military headquarters/barracks, with barracks construction beginning in 1956 and use continuing to the present."
+        },
+        {
+          "title": "Bundesministerium der Verteidigung - Bonn.wiki",
+          "url": "https://bonn.wiki/wiki/Bundesministerium_der_Verteidigung",
+          "note": "Bonn.wiki records that relocation of the Federal Ministry of Defence from Ermekeilkaserne to Hardthoehe began in 1960."
+        }
+      ],
+      "rationale": "The queue row is named as an air-base/heliport feature, but the strongest temporal evidence is for the underlying Hardthoehe defence property rather than flight operations. The 1956 start is therefore a conservative facility start for the military site, with no sourced closure."
+    },
+    {
+      "source_id": "geonames:6300450",
+      "name": "Jungwon Air Base",
+      "country_code": "KR",
+      "start_year": 2006,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Jungwon Air Base",
+          "url": "https://en.wikipedia.org/wiki/Jungwon_Air_Base",
+          "note": "The air-base entry identifies Jungwon/Choongwon/K-75 as a Republic of Korea Air Force base and cites DAFIF airport data current as of October 2006."
+        },
+        {
+          "title": "New RoKAF Reconnaissance Wing - Scramble",
+          "url": "https://www.scramble.nl/military-news/new-rokaf-reconnaissance-wing",
+          "note": "Scramble reported in 2020 that Chungju/Jungwon (K-75) was already home base for RoKAF fighter/reconnaissance assets."
+        }
+      ],
+      "rationale": "No reliable public establishment date was found in this pass. The candidate uses 2006 as a documented-by operational date from DAFIF-linked airport data and leaves the endpoint open."
+    },
+    {
+      "source_id": "geonames:12164559",
+      "name": "Helwan",
+      "country_code": "EG",
+      "start_year": 1919,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Helwan Airfield",
+          "url": "https://en.wikipedia.org/wiki/Helwan_Airfield",
+          "note": "The airfield entry identifies Helwan as a former RAF Helwan/Egyptian Air Force airfield, built and used from 1919 to present."
+        },
+        {
+          "title": "Helwan Airfield | Military Wiki",
+          "url": "https://military-history.fandom.com/wiki/Helwan_Airfield",
+          "note": "The mirrored military-history entry repeats the RAF Helwan identity and World War II operational context."
+        }
+      ],
+      "rationale": "The queue row is Helwan, Egypt, classified as a likely air base or airfield. The 1919 date is direct built/used evidence for the named military airfield; no sourced closure was found."
+    },
+    {
+      "source_id": "geonames:12164569",
+      "name": "Sidi Barrani",
+      "country_code": "EG",
+      "start_year": 1940,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Battle of Sidi Barrani",
+          "url": "https://en.wikipedia.org/wiki/Battle_of_Sidi_Barrani",
+          "note": "The battle history records an airfield at Sollum/Sidi Barrani area in the 1940 Western Desert campaign context."
+        },
+        {
+          "title": "Luftwaffe Airfields 1935-45 - Libya and Egypt",
+          "url": "https://ww2.dk/Airfields%20-%20Libya%20and%20Egypt.pdf",
+          "note": "The Luftwaffe airfield compilation indexes Sidi Barrani-area wartime airfields, supporting a documented World War II airfield phase."
+        }
+      ],
+      "rationale": "Included conservatively because the queue row is a clean likely airfield and multiple WWII references support a Sidi Barrani-area airfield by 1940. Confidence is low because the public evidence is area-level and wartime rather than a precise modern-base establishment record."
+    },
+    {
+      "source_id": "geonames:3186083",
+      "name": "Kucova",
+      "country_code": "AL",
+      "start_year": 1955,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": 2005,
+          "label": "Albanian military air-base phase"
+        },
+        {
+          "start_year": 2024,
+          "end_year": null,
+          "label": "NATO-modernized operational hub phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "65th Anniversary of Kucova Air Base establishment - Albanian Ministry of Defence",
+          "url": "https://www.mod.gov.al/eng/newsroom/1205-65th-anniversary-of-kucova-air-base-establishment",
+          "note": "Albania's Ministry of Defence says the Aviation Regiment '23 Peza', now Kucova Air Base, was established on 15 May 1955."
+        },
+        {
+          "title": "Albania turns an old Soviet-era air base into a regional hub of NATO air operations - AP",
+          "url": "https://apnews.com/article/29ddaadba4be1ea0513055e035d7a3dc",
+          "note": "AP reported the refurbished Kucova base was inaugurated in 2024 and quotes the Albanian prime minister saying it had been officially closed in 2005."
+        }
+      ],
+      "rationale": "The queue row is Kucova, a clean likely air-base row. The Albanian MOD supplies the establishment date and AP supplies the closure/reactivation context, so intervals are included while the top-level end_year remains open due to 2024 reactivation."
+    },
+    {
+      "source_id": "geonames:12032467",
+      "name": "RAF Gibraltar",
+      "country_code": "GI",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Airport History - Gibraltar Air Terminal",
+          "url": "https://www.gibraltarairterminal.com/cms/index.php/at-the-airport/airport-history",
+          "note": "The airport history says the airfield was originally opened in 1939 as an emergency airfield for the Royal Navy's Fleet Air Arm."
+        },
+        {
+          "title": "RAF Gibraltar - Royal Air Force",
+          "url": "https://www.raf.mod.uk/our-organisation/stations/raf-gibraltar/",
+          "note": "The RAF station page identifies RAF Gibraltar as an active RAF station."
+        }
+      ],
+      "rationale": "The queue row exactly names RAF Gibraltar. The airport history gives a clear 1939 opening date and the RAF page supports continuing station status."
+    },
+    {
+      "source_id": "geonames:6294284",
+      "name": "Dübendorf Air Base",
+      "country_code": "CH",
+      "start_year": 1914,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Duebendorf Air Base",
+          "url": "https://en.wikipedia.org/wiki/D%C3%BCbendorf_Air_Base",
+          "note": "The air-base entry says Duebendorf has been used as an air base by the Swiss Air Force since 1914 and that fighter-aircraft history there ended in 2005."
+        },
+        {
+          "title": "History of the Swiss Air Force 1914-2022",
+          "url": "https://airforcecenter.ch/en/assets/files/geschichte-der-schweizer-milit%C3%A4raviatik-en-ganz-2-web.pdf",
+          "note": "The Swiss Air Force history document begins its chronology in 1914 and references Swiss Confederation acquisition of the Duebendorf area."
+        }
+      ],
+      "rationale": "The queue row exactly names Duebendorf Air Base. The start year is supported as Swiss military aviation use; no full base closure date is used because later sources indicate changed roles rather than complete closure."
+    },
+    {
+      "source_id": "geonames:3860470",
+      "name": "Comandante Espora Naval Air Base",
+      "country_code": "AR",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "82 anos de la Base Aeronaval Comandante Espora - Argentina.gob.ar",
+          "url": "https://www.argentina.gob.ar/node/261982",
+          "note": "The Argentine government anniversary article describes the late-1938/early-1939 development of the site and the conversion of the base into the region's aeronaval operations center."
+        },
+        {
+          "title": "Base Aeronaval Comandante Espora",
+          "url": "https://es.wikipedia.org/wiki/Base_Aeronaval_Comandante_Espora",
+          "note": "The base entry gives a creation date of 16 June 1939 and identifies the site as an Argentine Naval Aviation base."
+        }
+      ],
+      "rationale": "The queue row exactly names Comandante Espora Naval Air Base. The Argentine government anniversary article and secondary base entry agree on a 1939 origin, with no sourced closure."
+    },
+    {
+      "source_id": "geonames:3429689",
+      "name": "Punta Indio Naval Air Base",
+      "country_code": "AR",
+      "start_year": 1925,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Creacion de la Base Aeronaval Punta Indio - Phantom",
+          "url": "https://phantom.net.ar/noticias/creacion-de-la-base-aeronaval-punta-indio-un-hito-de-la-aviacion-naval-argentina/",
+          "note": "The article says formal creation of Base Aeronaval Punta Indio occurred on 25 February 1925 with the transfer of the Naval Aerostation School to Punta Indio."
+        },
+        {
+          "title": "Punta Indio Naval Air Base",
+          "url": "https://en.wikipedia.org/wiki/Punta_Indio_Naval_Air_Base",
+          "note": "The base entry identifies Punta Indio as a military airport operated by Argentine Naval Aviation and describes it as established in the 1920s."
+        }
+      ],
+      "rationale": "The queue row exactly names Punta Indio Naval Air Base. The 1925 start is used as a conservative formal-creation date, with medium confidence because the strongest exact-date source is a specialist news/history site rather than a current official base page."
+    },
+    {
+      "source_id": "geonames:12513137",
+      "name": "Base Aérea do Galeão",
+      "country_code": "BR",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Efemerides - INCAER",
+          "url": "https://www2.fab.mil.br/incaer/index.php/efemerides",
+          "note": "INCAER's chronology records that Decree-Law 4.915 of 5 November 1942 created air-base corps for immediate installation, including the 12th C.B. Ae. at Rio de Janeiro (Galeao)."
+        }
+      ],
+      "rationale": "The queue row exactly names Base Aerea do Galeao. The source establishes the Galeao air-base corps in 1942; no closure is used because the row represents the continuing Galeao air-base site."
+    },
+    {
+      "source_id": "geonames:8335452",
+      "name": "Galeão Air Force Base",
+      "country_code": "BR",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Efemerides - INCAER",
+          "url": "https://www2.fab.mil.br/incaer/index.php/efemerides",
+          "note": "INCAER's chronology records the 5 November 1942 creation of the 12th C.B. Ae. at Rio de Janeiro (Galeao)."
+        }
+      ],
+      "rationale": "This is a second queue source_id for the Galeao air-base site. It is included separately because the report matches on source_id and both source_ids were absent from current overrides."
+    },
+    {
+      "source_id": "geonames:6301856",
+      "name": "Manaus Air Force Base",
+      "country_code": "BR",
+      "start_year": 1944,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Regimento Interno da Base Aerea de Manaus - SISLAER/CENDOC",
+          "url": "https://www.sislaer.fab.mil.br/TerminalWebCENDOC/Busca/Download?codigoArquivo=459&tipoMidia=0",
+          "note": "The FAB internal regulation says Base Aerea de Manaus was created by Decree-Law 6.814 of 21 August 1944."
+        },
+        {
+          "title": "Base Aerea de Manaus celebra 55 anos - FAB",
+          "url": "https://www.fab.mil.br/noticias/mostra/44010/",
+          "note": "A 2025 FAB article says the modern Manaus base marked 55 years in 2025 and notes that FAB participation in Amazonia began earlier."
+        }
+      ],
+      "rationale": "The legal creation date is 1944, while the modern base anniversary source indicates later modernization/implantation context. The candidate uses the legal creation year and leaves the endpoint open."
+    },
+    {
+      "source_id": "geonames:8335365",
+      "name": "Natal Air Force Base",
+      "country_code": "BR",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Efemerides - INCAER",
+          "url": "https://www2.fab.mil.br/incaer/index.php/efemerides",
+          "note": "INCAER records the 1942 creation of air-base corps for immediate installation, including the 9th C.B. Ae. at Natal."
+        },
+        {
+          "title": "Base Aerea de Natal - Historia da Forca Aerea Brasileira",
+          "url": "https://historiadafab.rudnei.cunha.nom.br/2020/12/28/base-aerea-de-natal/",
+          "note": "The BANT history states that the Natal base nucleus was created by Decree-Law 4.142 of 2 March 1942 and officially transformed into Base Aerea de Natal on 5 November 1942."
+        }
+      ],
+      "rationale": "The queue row exactly names Natal Air Force Base. The 1942 start is well supported by FAB chronology/history material, and no sourced closure was found."
+    },
+    {
+      "source_id": "geonames:8335460",
+      "name": "Porto Velho Air Force Base",
+      "country_code": "BR",
+      "start_year": 1984,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Decreto No. 89.684, de 17 de Maio de 1984",
+          "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=detalharAto&cod_menu=7145&cod_modulo=420&desItem=&desItemFim=&nomeTitulo=codigos&numeroAto=00089684&orgao=NI&seqAto=000&tipo=DEC&valorAno=1984",
+          "note": "The decree states that Base Aerea de Porto Velho (BAPV) is created with headquarters in Porto Velho, Rondonia."
+        },
+        {
+          "title": "Base Aerea de Porto Velho - Historia da Forca Aerea Brasileira",
+          "url": "https://historiadafab.rudnei.cunha.nom.br/2020/12/28/base-aerea-de-porto-velho/",
+          "note": "The base history gives the same 17 May 1984 creation date and says the base was inaugurated on 31 October 1984."
+        }
+      ],
+      "rationale": "The queue row exactly names Porto Velho Air Force Base. A legal decree and a base-history page provide aligned 1984 creation/inauguration evidence."
+    },
+    {
+      "source_id": "geonames:7537427",
+      "name": "Santa Cruz Air Force Base",
+      "country_code": "BR",
+      "start_year": 1943,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Conheca a estrutura, o funcionamento e as acoes sociais da Base Aerea de Santa Cruz - FAB",
+          "url": "https://www.fab.mil.br/noticias/mostra/23565/AEROVIS%C3%83O%20-%20Conhe%C3%A7a%20a%20estrutura%2C%20o%20funcionamento%20e%20as%20a%C3%A7%C3%B5es%20sociais%20da%20Base%20A%C3%A9rea%20de%20Santa%20Cruz",
+          "note": "FAB says Santa Cruz became seat of the 1st Aviation Regiment after creation of the Ministry of Aeronautics and later received the 1st Fighter Aviation Group."
+        },
+        {
+          "title": "Projeto de Resolucao No. 05/2007 - ALERJ",
+          "url": "https://www3.alerj.rj.gov.br/lotus_notes/default.asp?id=39&url=L3NjcHJvMDcxMS5uc2YvMTBkNmQ0NTFiMDBmZDQyYjgzMjU2NmVjMDAxOGQ4MzYvZWQyOTY5YmI2MWQ4M2RhZDgzMjU3MjczMDA0YWUwMzA%2FT3BlbkRvY3VtZW50",
+          "note": "ALERJ states that Base Aerea de Santa Cruz was created by federal Decree-Law 5.198 of 16 January 1943, while recognizing earlier military use in 1942."
+        }
+      ],
+      "rationale": "The queue row exactly names Santa Cruz Air Force Base. The formal 1943 decree date is used instead of earlier site-use references to stay conservative."
+    },
+    {
+      "source_id": "geonames:9036538",
+      "name": "Santa Maria Air Force Base",
+      "country_code": "BR",
+      "start_year": 1970,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1970,
+          "end_year": 2016,
+          "label": "Base Aerea de Santa Maria phase"
+        },
+        {
+          "start_year": 2016,
+          "end_year": null,
+          "label": "ALA 4 / continuing FAB air-base successor phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Base Aerea de Santa Maria: Santa Maria, RS - IBGE Biblioteca",
+          "url": "https://biblioteca.ibge.gov.br/index.php/biblioteca-catalogo?id=445029&view=detalhes",
+          "note": "IBGE records that Base Aerea de Santa Maria was created on 18 December 1970 by Presidential Decree 67.877, activated on 14 July 1971, and inaugurated on 15 October 1971."
+        },
+        {
+          "title": "Base Aerea de Santa Maria",
+          "url": "https://pt.wikipedia.org/wiki/Base_A%C3%A9rea_de_Santa_Maria",
+          "note": "The base entry says the base was deactivated in 2016 and became ALA 4, while the airfield/base function continued under the new designation."
+        }
+      ],
+      "rationale": "The queue row exactly names Santa Maria Air Force Base. The legal creation date and successor designation are both documented, so intervals distinguish the named-base phase from the continuing successor phase."
+    }
+  ]
+}

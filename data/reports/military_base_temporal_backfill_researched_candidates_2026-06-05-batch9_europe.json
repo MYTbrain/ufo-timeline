@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Focused European temporal backfill pass for remaining Dutch and German barracks/training-area rows. Candidate overrides are limited to rows with public source-backed start/end years.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:6950892",
+      "name": "Boreelkazerne",
+      "country_code": "NL",
+      "start_year": 1849,
+      "end_year": 1997,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://quadraat.nu/projecten/boreelkazerne/",
+        "https://ruimtelijkeplannen.deventer.nl/manifest/NL.IMRO.0150.D140-VG01/t_NL.IMRO.0150.D140-VG01.html"
+      ],
+      "source_notes": "Deventer planning/history sources state the Boreelkazerne was built in 1849 and that the site remained military terrain until 1997, when the last military users left and the municipality took control."
+    },
+    {
+      "source_id": "geonames:6954230",
+      "name": "Generaal Majoor de Ruyter van Steveninck Kazerne",
+      "country_code": "NL",
+      "start_year": 1946,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.defensie.nl/onderwerpen/geschiedenis-regimenten-en-korpsen/historische-canon-garderegiment-fuseliers-prinses-irene/de-traditie-van-het-regiment/onder-dak",
+        "https://www.fuseliers.nl/upload/medialibrary/jaarverslag_2019.pdf"
+      ],
+      "source_notes": "Dutch Defence identifies the kazerne as the current home of the regiment; regimental material documents original 1946 buildings at the Oirschot kazerne. Use 1946 as a conservative facility start floor."
+    },
+    {
+      "source_id": "geonames:6621450",
+      "name": "Koning Willem III Kazerne",
+      "country_code": "NL",
+      "start_year": 1939,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.hetgroteverhaalvanapeldoorn.nl/gebeurtenissen/ingebruikname-van-de-koning-willem-iii-kazerne",
+        "https://www.rijksvastgoedbedrijf.nl/actueel/nieuws/2020/09/23/duurzaam-multifunctioneel-lesgebouw-koning-willem-iii-kazerne-geopend"
+      ],
+      "source_notes": "Apeldoorn history page states the Koning Willem III Kazerne was officially taken into use on 10 May 1939. Rijksvastgoedbedrijf confirms current continuing military real-estate use through recent building work."
+    },
+    {
+      "source_id": "geonames:6950967",
+      "name": "Oranje-Nassau Kazerne",
+      "country_code": "NL",
+      "start_year": 1814,
+      "end_year": 1989,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.oranjenassaukazerne.com/geschiedenis",
+        "https://onsamsterdam.nl/artikelen/oranje-nassaukazerne-deel-2"
+      ],
+      "source_notes": "Official site timeline states the kazerne was completed in 1813 and taken into use by King Willem I in 1814; it was transferred to Amsterdam in 1989 and converted to housing/offices."
+    },
+    {
+      "source_id": "geonames:11550874",
+      "name": "Mainfranken-Kaserne",
+      "country_code": "DE",
+      "start_year": 1986,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.mainpost.de/panorama/volkach-bundeswehr-in-volkach-ein-einblick-in-die-militaerischen-einrichtungen-102792315",
+        "https://www.total-lokal.de/city/volkach/data/97332_67_02_19/files/assets/common/downloads/97332_67_02_19.pdf?uni=547164c107872e1b34c95a1a128e1c1b"
+      ],
+      "source_notes": "Local and site brochure sources state the Mainfranken-Kaserne was newly built/opened in 1986 and remains a Bundeswehr location."
+    },
+    {
+      "source_id": "geonames:11592830",
+      "name": "Saaleck-Kaserne",
+      "country_code": "DE",
+      "start_year": 1895,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.ig-bac.de/projekte/bundeswehr/saaleck-kaserne-hammelburg/"
+      ],
+      "source_notes": "Engineering project page for the Hammelburg Bundeswehr site states the Saaleck-Kaserne has been used militarily since 1895 and documents current Bundeswehr development work."
+    },
+    {
+      "source_id": "geonames:3208079",
+      "name": "Lager Schwarzenborn",
+      "country_code": "DE",
+      "start_year": 1936,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1936,
+          "end_year": 1945,
+          "label": "Wehrmacht training-area and camp phase"
+        },
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "Bundeswehr training-area and camp phase"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://lagis.hessen.de/de/orte/historisches-ortslexikon/alle-eintraege/4816_lager-schwarzenborn",
+        "https://www.schwarzenborn.de/bundeswehr/historische-geschichte/"
+      ],
+      "source_notes": "Hessian historical gazetteer states Lager Schwarzenborn has existed as a military training area since 1936, was a lung sanatorium in 1948-1959, then again a military training area; local history states the Bundeswehr took over/use resumed in 1956."
+    }
+  ],
+  "no_override": []
+}

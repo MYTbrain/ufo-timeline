@@ -1,0 +1,239 @@
+{
+  "generated_at": "2026-06-04T23:42:00Z",
+  "temporal_source": "manual_web_research_russia_round6_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11458919",
+      "name": "Klyuchevoye",
+      "country_code": "RU",
+      "start_year": 1961,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1961,
+          "end_year": null,
+          "label": "Pribylovo/Klyuchevoye helicopter-regiment base phase documented from March 1961"
+        }
+      ],
+      "confidence": "medium_high",
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "332nd independent Guards Helicopter Regiment - Soviet Armed Forces 1945-1991",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/ovp/332ogvvp.htm",
+          "note": "The unit history says the 371st independent Guards Helicopter Squadron was activated at Pribylovo, Leningrad Oblast, in March 1961, renamed the 332nd independent Guards Helicopter Regiment in May 1961, and lists Pribylovo as a base from March 1961 to today at coordinates 60 27 33N, 28 44 41E."
+        },
+        {
+          "title": "Klyuchevoye / Pribylovo - Russian Airfield Index",
+          "url": "https://www.weathergraphics.com/tim/russia/Klyuchevoye.htm",
+          "note": "The airfield index matches Klyuchevoye/Pribylovo at 60.4583, 28.7467, classifies it as military, and lists 332 Gv OVPBU as the military unit."
+        },
+        {
+          "title": "Klyuchevoye Map - Mapcarta",
+          "url": "https://mapcarta.com/35263516",
+          "note": "Mapcarta mirrors the GeoNames ID 11458919, coordinates 60.45897, 28.74599, and alternate name Pribylovo Naval Air Base, supporting the exact overlay-feature match."
+        }
+      ],
+      "rationale": "The overlay row Klyuchevoye matches the Pribylovo/Klyuchevoye airfield coordinates and alternate name. The 1961 unit activation at Pribylovo is a conservative documented operational start for the airfield/base, not necessarily the original construction date."
+    },
+    {
+      "source_id": "geonames:11459245",
+      "name": "Nyangi",
+      "country_code": "RU",
+      "start_year": 1968,
+      "end_year": 2011,
+      "operational_intervals": [
+        {
+          "start_year": 1968,
+          "end_year": 2011,
+          "label": "Dzhida/Nyangi former Russian Air Force military air-base phase"
+        }
+      ],
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Dzhida (air base)",
+          "url": "https://en.wikipedia.org/wiki/Dzhida_%28air_base%29",
+          "note": "The air-base profile identifies Dzhida as a former Russian Air Force military air base, gives site history as built 1968 and in use 1968-2011, and notes that the airfield has also appeared as Nyangi."
+        },
+        {
+          "title": "Dzhida (air base) - Military Wiki",
+          "url": "https://military-history.fandom.com/wiki/Dzhida_%28air_base%29",
+          "note": "The mirrored article states that Dzhida is also given as Nyangi or Eleagnus and lists the same military air-base identity in the Lake Baikal region."
+        }
+      ],
+      "rationale": "The queue row name Nyangi is an alternate name for Dzhida air base at matching coordinates. The source provides explicit built and used dates, so the full 1968-2011 interval is included."
+    },
+    {
+      "source_id": "geonames:11459541",
+      "name": "Sandagou",
+      "country_code": "RU",
+      "start_year": 1955,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": null,
+          "label": "Chuguyevka/Sandagou Soviet and Russian air-base phase"
+        }
+      ],
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Chuguyevka (air base)",
+          "url": "https://en.wikipedia.org/wiki/Chuguyevka_%28air_base%29",
+          "note": "The air-base profile gives built 1955 and in use 1955-present, identifies the site as a Russian Air Force military air base, and lists Sandagou among alternate names."
+        },
+        {
+          "title": "Sandagou Map - Mapcarta",
+          "url": "https://mapcarta.com/35264760",
+          "note": "Mapcarta mirrors GeoNames ID 11459541 and coordinates 44.08311, 133.86882, with Chuguyevka Air Base as an alternate name."
+        },
+        {
+          "title": "Sandagou Chuguyevka Air Base - Wikimapia",
+          "url": "https://wikimapia.org/307737/Sandagou-Chuguyevka-Air-Base",
+          "note": "Wikimapia lists alternate names Chuguyevka and Sandagou, classifies it as a former air force base, and matches the overlay coordinates."
+        }
+      ],
+      "rationale": "The overlay row Sandagou is the Chuguyevka air base feature. The source gives explicit built and in-use years; the open end follows the source's used-present wording despite later unit reorganization evidence."
+    },
+    {
+      "source_id": "geonames:11459386",
+      "name": "Tikhoretsk",
+      "country_code": "RU",
+      "start_year": 1994,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "documented Tikhoretsk training-airbase phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Tikhoretsk - Russian Airfield Index",
+          "url": "https://www.weathergraphics.com/tim/russia/Tikhoretsk.htm",
+          "note": "The airfield index matches Tikhoretsk at 45.8800, 40.1050, classifies it as military, and lists AVVAUL / 627 UAPV with L-39 aircraft in 1994."
+        },
+        {
+          "title": "Tikhoretsk (air base)",
+          "url": "https://en.wikipedia.org/wiki/Tikhoretsk_%28air_base%29",
+          "note": "The air-base profile identifies Tikhoretsk as a Russian Aerospace Forces airbase and says it hosts the 627th Training Aviation Regiment with L-39 aircraft as part of the Krasnodar Higher Military Aviation School of Pilots."
+        },
+        {
+          "title": "Kommersant Photo: 80th anniversary at Tikhoretsk aerodrome",
+          "url": "https://photo.kommersant.ru/photo/photo/183224/1400721",
+          "note": "The 2020 photo report places the Krasnodar aviation school's training air-base anniversary events at Tikhoretsk aerodrome and shows L-39 aircraft at the military event."
+        }
+      ],
+      "rationale": "The sources confirm the exact Tikhoretsk airfield and training-airbase role. Because the older 80-year unit lineage does not prove the facility itself was at Tikhoretsk in 1940, the candidate uses the safer 1994 documented-by operational year."
+    },
+    {
+      "source_id": "geonames:11459241",
+      "name": "Ulan Ude East",
+      "country_code": "RU",
+      "start_year": 1967,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1967,
+          "end_year": null,
+          "label": "Ulan-Ude Vostochny / Airfield East aircraft-plant test and flyaway field documented by CIA imagery report"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "CIA FOIA: Ulan-Ude Aircraft Assembly Plant No. 99, Ulan-Ude, USSR",
+          "url": "https://www.cia.gov/readingroom/document/cia-rdp78t05161a001300010022-1",
+          "note": "The April 1967 CIA imagery report says Ulan-Ude Aircraft Assembly Plant No. 99 is adjacent to Ulan-Ude Airfield East and that the airfield serves the plant as a test and flyaway field with a serviceable concrete runway."
+        },
+        {
+          "title": "Ulan Ude / Vostochny - Russian Airfield Index",
+          "url": "https://www.weathergraphics.com/tim/russia/Ulan_Ude_Vostochny.htm",
+          "note": "The airfield index matches Ulan Ude East / Vostochny at 51.8500, 107.7350 and describes runway dimensions and use."
+        },
+        {
+          "title": "Ulan-Ude Aviation Plant - World War II Database",
+          "url": "https://ww2db.com/facility/Ulan-Ude_Aviation_Plant/",
+          "note": "The plant profile says the Ulan-Ude Aviation Plant was established in 1939 and produced military aircraft and helicopters, supporting the military-industrial context of the adjacent Vostochny field."
+        }
+      ],
+      "rationale": "The overlay row is Ulan Ude East/Vostochny. The strongest date evidence is a documented operational-by date from the April 1967 CIA imagery report; this is not treated as the construction date. Confidence is medium because the evidence is for a plant test/flyaway airfield rather than a standard line-combat airbase."
+    },
+    {
+      "source_id": "geonames:11459544",
+      "name": "Verino",
+      "country_code": "RU",
+      "start_year": 1988,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1988,
+          "end_year": null,
+          "label": "Pereyaslavka/Verino military airfield phase documented with Soviet tactical aviation units"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Pereyaslavka / Verino - Russian Airfield Index",
+          "url": "https://www.weathergraphics.com/tim/russia/Pereyaslavka.htm",
+          "note": "The airfield index lists alternate name Verino, coordinates 47.9967, 135.0883, military usage, and units 300 APIB and 302 APIB documented in 1988 and 1991."
+        },
+        {
+          "title": "Verino Map - Mapcarta",
+          "url": "https://mapcarta.com/35264766",
+          "note": "Mapcarta mirrors GeoNames ID 11459544 and coordinates 47.99756, 135.0887 for the Verino airbase feature."
+        },
+        {
+          "title": "11th Air and Air Defence Forces Army - Military Wiki",
+          "url": "https://military-history.fandom.com/wiki/11th_Air_and_Air_Defence_Forces_Army",
+          "note": "The force-structure article lists the 302nd Bomber Aviation Regiment at Verino with Su-24 until absorption into the 6988th Aviation Base on 1 September 2009."
+        }
+      ],
+      "rationale": "The overlay feature Verino matches the Pereyaslavka/Verino airfield coordinates and alternate naming. The 1988 date is used as a documented-by operational year from the airfield index, not as an opening date."
+    },
+    {
+      "source_id": "geonames:11459297",
+      "name": "Voronezh Southwest",
+      "country_code": "RU",
+      "start_year": 1954,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1954,
+          "end_year": null,
+          "label": "Voronezh-B / Baltimor military airfield phase documented by 1954 regiment relocation and land-allocation evidence"
+        }
+      ],
+      "confidence": "medium_high",
+      "temporal_confidence": "medium_high",
+      "source_notes": [
+        {
+          "title": "Aviation and Cosmonautics 2007 issue excerpt",
+          "url": "https://booksonline.com.ua/view.php?book=125688",
+          "note": "The aviation-history excerpt says that in July 1954 the regiment relocated from Tambov to Voronezh-B airfield, popularly known as Baltimor, and describes Il-28 training and research work there in 1954-1955."
+        },
+        {
+          "title": "Aerodrom kotoryy byl i kotoryy budet - TopWar",
+          "url": "https://topwar.ru/70308-aerodrom-kotoryy-byl-i-kotoryy-budet.html",
+          "note": "The article says modern Voronezh-B/Baltimor military airfield construction began in the 1950s and cites a USSR Council of Ministers land-allocation decree for airfield construction dated 1954."
+        },
+        {
+          "title": "Voronezh Malshevo / Baltimor Air Base",
+          "url": "https://en.wikipedia.org/wiki/Voronezh_Malshevo_%28air_base%29",
+          "note": "The air-base profile identifies Voronezh Malshevo, also known as Voronezh Southwest and Voronezh Baltimor, as a Russian Aerospace Forces air base."
+        }
+      ],
+      "rationale": "The overlay row Voronezh Southwest corresponds to Voronezh-B/Baltimor/Malshevo. The 1954 regiment relocation and land-allocation evidence establishes operational military use by that year; the candidate avoids asserting a more precise construction-completion date because one source describes modern construction as 1956."
+    }
+  ]
+}

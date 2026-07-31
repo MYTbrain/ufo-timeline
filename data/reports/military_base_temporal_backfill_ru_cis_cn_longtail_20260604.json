@@ -1,0 +1,741 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "report_type": "manual_source_research_temporal_backfill_candidates",
+  "match_key": "source_id",
+  "input_files": [
+    "data/reports/military_base_temporal_coverage.csv",
+    "webapp/static_public/data/map_overlays/military_bases.geojson",
+    "webapp/static_public/data/map_overlays/military_base_temporal_overrides.json"
+  ],
+  "scope": {
+    "country_codes_reviewed": [
+      "RU",
+      "CN",
+      "KZ",
+      "UA",
+      "BY",
+      "PL",
+      "RO",
+      "CZ",
+      "HU",
+      "BG"
+    ],
+    "selection_rule": "Only current military_bases.geojson records in the reviewed country set that are not already matched by military_base_temporal_overrides.json. CZ and RO had no remaining unknown records in the inspected coverage file."
+  },
+  "guardrails": [
+    "This is a candidate report only; it is not an app input and does not mutate the overlay or temporal override JSON.",
+    "Generic Barak/Kazarma records were skipped unless the researched source identified the same installation clearly enough for source_id-level review.",
+    "Where a source pins only a modern unit/base phase rather than the original airfield, the candidate uses operational_intervals and explains that limitation in rationale."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:11459230",
+      "name": "Belaya",
+      "country_code": "RU",
+      "start_year": 1946,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1946,
+          "end_year": null,
+          "label": "Belaya / Irkutsk-Srednii military air base; construction began in 1946 and source describes continuous use."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/belaya/"
+      ],
+      "source_notes": "Title: \"Belaya Air Base, Russia - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/belaya/. Source lists Year built 1946 and says construction began in 1946 with continuous use since then.",
+      "rationale": "Overlay name Belaya matches the source title and the air-base coordinates/name family. Use medium confidence because the source is an open-source aggregator rather than an official base history, but it provides a clear same-site year."
+    },
+    {
+      "source_id": "geonames:11459162",
+      "name": "Kubinka",
+      "country_code": "RU",
+      "start_year": 1935,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1935,
+          "end_year": null,
+          "label": "Kubinka Air Base; source says the base was built in 1935 and has been in continuous use."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/kubinka/"
+      ],
+      "source_notes": "Title: \"Kubinka Air Base, Russia - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/kubinka/. Source lists Year built 1935 and says the 82nd aviation detachment arrived in 1935.",
+      "rationale": "Overlay name Kubinka is an exact short-name match for Kubinka Air Base. The 1935 year is a site/base origin, not merely a later unit arrival."
+    },
+    {
+      "source_id": "geonames:11458786",
+      "name": "Olenegorsk",
+      "country_code": "RU",
+      "start_year": 1957,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1957,
+          "end_year": null,
+          "label": "Olenya / Olenegorsk-Vysokiy air-base phase; source says the base was first detected in 1957."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/olenya/"
+      ],
+      "source_notes": "Title: \"Olenya Air Base, Russia - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/olenya/. Source lists Year built 1957 and identifies Olenya as also known as Olenegorsk/Vysokiy.",
+      "rationale": "The overlay uses Olenegorsk while the source title uses Olenya with Olenegorsk as an alias, making the name match acceptable. Use medium confidence because the evidence is OSINT/aggregator-level."
+    },
+    {
+      "source_id": "geonames:11459266",
+      "name": "Ukrainka",
+      "country_code": "RU",
+      "start_year": 1955,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": null,
+          "label": "Ukrainka / Seryshevo strategic bomber air-base phase; source says construction was completed in 1955."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/ukrainka/"
+      ],
+      "source_notes": "Title: \"Ukrainka Air Base, Russia - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/ukrainka/. Source lists Year built 1955 and says construction was completed in 1955 with continuous use.",
+      "rationale": "Overlay name Ukrainka exactly matches the source title. The year is suitable as a site-operational start candidate for the strategic air-base layer."
+    },
+    {
+      "source_id": "geonames:11459119",
+      "name": "Ryazan Dyagilevo",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": null,
+          "label": "Dyagilevo strategic-bomber/training-base phase; source says Dyagilevo was one of six Soviet bases capable of handling the M-4 bomber in 1955."
+        },
+        {
+          "start_year": 1985,
+          "end_year": 1997,
+          "label": "49th Heavy Bomber Aviation Regiment at Dyagilevo, later converted to a training regiment and disbanded in 1997."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/dyagilevo/"
+      ],
+      "source_notes": "Title: \"Dyagilevo Air Base, Russia - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/dyagilevo/. Source identifies Dyagilevo near Ryazan and gives 1955 M-4-capable base evidence plus later 1985-1997 regiment history.",
+      "rationale": "The overlay name Ryazan Dyagilevo cleanly matches the Dyagilevo Air Base page. No source-supported construction year was found in this pass, so this candidate uses operational_intervals rather than a top-level start_year."
+    },
+    {
+      "source_id": "geonames:11459166",
+      "name": "Moscow Chkalovskiy Airport",
+      "country_code": "RU",
+      "start_year": 1932,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1929,
+          "end_year": 1935,
+          "label": "Decision/buildout/relocation window for the Soviet flight-test base near Moscow."
+        },
+        {
+          "start_year": 1932,
+          "end_year": null,
+          "label": "State Flight Testing Institute relocation to Chkalovsky/Chkalovskiy airfield."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Chkalovsky_(air_base)"
+      ],
+      "source_notes": "Title: \"Chkalovsky (air base)\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Chkalovsky_(air_base). Source says a 1929 decision created the test base and that the State Flight Testing Institute relocated there in 1932-1935.",
+      "rationale": "Overlay name Moscow Chkalovskiy Airport maps to Chkalovsky air base by name and location. Candidate start uses 1932, the earliest source-supported operational relocation year, rather than the 1929 planning decision."
+    },
+    {
+      "source_id": "geonames:11493968",
+      "name": "Baishiyi",
+      "country_code": "CN",
+      "start_year": 1936,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1936,
+          "end_year": null,
+          "label": "Chongqing Baishiyi / Baishiyi Air Base; source says the airport opened in 1936 and served as a wartime air-force base."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/baishiyi-air-base/"
+      ],
+      "source_notes": "Title: \"Baishiyi Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/baishiyi-air-base/. Source lists Year built 1936 and describes Baishiyi as a PLAAF facility and World War II Chinese Air Force base.",
+      "rationale": "Overlay name Baishiyi is an exact short-name match. Use medium confidence because the source is an OSINT aggregator, although the same page gives a clear year and historical context."
+    },
+    {
+      "source_id": "geonames:11493960",
+      "name": "Beijing Xijiao",
+      "country_code": "CN",
+      "start_year": 1938,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1938,
+          "end_year": 1945,
+          "label": "Imperial Japanese Army-built Xijiao airfield phase."
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "People's Liberation Army management / PLAAF military-airport phase."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/xijiao-air-base/",
+        "https://en.wikipedia.org/wiki/Beijing_Xijiao_Airport"
+      ],
+      "source_notes": "Titles: \"Xijiao Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/xijiao-air-base/; \"Beijing Xijiao Airport\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Beijing_Xijiao_Airport. Sources say the airport was constructed in 1938 and taken over by PLA aviation authorities in January 1949.",
+      "rationale": "Overlay name Beijing Xijiao and source title Xijiao Air Base identify the same military airport. Intervals preserve the pre-PRC construction phase and the later PLA/PLAAF phase."
+    },
+    {
+      "source_id": "geonames:6301358",
+      "name": "Changsha Datuopu Air Force Base",
+      "country_code": "CN",
+      "start_year": 1957,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1957,
+          "end_year": 1989,
+          "label": "Dual military/civil Datuopu airport phase."
+        },
+        {
+          "start_year": 1989,
+          "end_year": null,
+          "label": "Sole military-use Datuopu Air Base phase after civil flights transferred."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/changsha-air-base/",
+        "https://en.wikipedia.org/wiki/Changsha_Datuopu_Airport"
+      ],
+      "source_notes": "Titles: \"Changsha Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/changsha-air-base/; \"Changsha Datuopu Airport\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Changsha_Datuopu_Airport. Sources say Datuopu opened in 1957, served dual military/civil use until 1989, then reverted to military use.",
+      "rationale": "Overlay name includes Datuopu, and the source title aliases Changsha Air Base with Changsha Datuopu Airport. The start/end intervals are source-supported and name-stable."
+    },
+    {
+      "source_id": "geonames:11749371",
+      "name": "Fuzhou Air Base",
+      "country_code": "CN",
+      "start_year": 1944,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": 1945,
+          "label": "Japanese-constructed Fuzhou Yixu airfield phase."
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "People's Liberation Army / PLAAF phase."
+        },
+        {
+          "start_year": 1997,
+          "end_year": null,
+          "label": "Purely military airport phase after Fuzhou Changle opened for civilian traffic."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/fuzhou-air-base/"
+      ],
+      "source_notes": "Title: \"Fuzhou Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/fuzhou-air-base/. Source lists Year built 1944, says Japanese forces constructed Fuzhou Yixu Airport in 1944, and describes PLA takeover in 1949 and purely military use after 1997.",
+      "rationale": "Overlay name Fuzhou Air Base exactly matches the source title. Candidate separates construction/original military phase from later PLA and modern military-only phases."
+    },
+    {
+      "source_id": "geonames:11493864",
+      "name": "Jianqiao",
+      "country_code": "CN",
+      "start_year": 1931,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1922,
+          "end_year": 1931,
+          "label": "Airfield and flight-training institute development period."
+        },
+        {
+          "start_year": 1931,
+          "end_year": null,
+          "label": "Consolidated Jianqiao / Hangzhou air-force-base phase."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/jianqiao-air-base/",
+        "https://en.wikipedia.org/wiki/Hangzhou_Jianqiao_Airport",
+        "https://ww2db.com/facility/Jianqiao_Airfield"
+      ],
+      "source_notes": "Titles: \"Jianqiao Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/jianqiao-air-base/; \"Hangzhou Jianqiao Airport\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Hangzhou_Jianqiao_Airport; \"Jianqiao Airfield\" (World War II Database), URL: https://ww2db.com/facility/Jianqiao_Airfield. Sources identify Jianqiao/Hangzhou Air Base and support 1931 consolidation as an air-force base after 1922 airfield development.",
+      "rationale": "Overlay short name Jianqiao is unambiguous against the source titles. Start_year uses 1931 for the consolidated air-force-base phase, not the earlier development date."
+    },
+    {
+      "source_id": "geonames:11493809",
+      "name": "Nanchang Xiangtang",
+      "country_code": "CN",
+      "start_year": 1952,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1956,
+          "label": "PLAAF-built Xiangtang Air Base phase."
+        },
+        {
+          "start_year": 1956,
+          "end_year": 1999,
+          "label": "Dual military/civil Nanchang Xiangtang Airport phase."
+        },
+        {
+          "start_year": 1999,
+          "end_year": null,
+          "label": "Military-only Xiangtang Air Base phase after civil flights transferred to Changbei."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/xiangtang-air-base/"
+      ],
+      "source_notes": "Title: \"Xiangtang Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/xiangtang-air-base/. Source says Nanchang Xiangtang Airport, also known as Xiangtang Air Base, was built in 1952 by the PLAAF, converted to dual use in 1956, and reverted to sole military use in 1999.",
+      "rationale": "Overlay name Nanchang Xiangtang matches the source's Nanchang Xiangtang/Xiangtang Air Base alias directly."
+    },
+    {
+      "source_id": "geonames:8533073",
+      "name": "Shantou Waisha Air Base",
+      "country_code": "CN",
+      "start_year": 1956,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "PLAAF Shantou Waisha military airfield/base phase."
+        },
+        {
+          "start_year": 1974,
+          "end_year": 2011,
+          "label": "Civil passenger service co-use interval."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/shantou-waisha-air-base/",
+        "https://en.wikipedia.org/wiki/Shantou_Waisha_Airport"
+      ],
+      "source_notes": "Titles: \"Shantou Waisha Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/shantou-waisha-air-base/; \"Shantou Waisha Airport\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Shantou_Waisha_Airport. Sources say Waisha was constructed/opened in 1956 as a military airport and had civil service from 1974 until 2011.",
+      "rationale": "Overlay name exactly identifies the air base. The 1956 start is a military-origin date; the 1974-2011 interval is included only to document dual-use context."
+    },
+    {
+      "source_id": "geonames:11493839",
+      "name": "Liancheng Strip",
+      "country_code": "CN",
+      "start_year": 2004,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 2004,
+          "end_year": null,
+          "label": "Liancheng / Longyan Guanzhishan dual-use airport categorized as a Chinese Air Force base."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/liancheng-air-base/"
+      ],
+      "source_notes": "Title: \"Liancheng Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/liancheng-air-base/. Source lists Year built 2004 and says Liancheng Guanzhishan Airport commenced operations on April 25, 2004 as a dual-use airport categorized as a Chinese Air Force base.",
+      "rationale": "Overlay name Liancheng Strip is a short/feature-style name for Liancheng Air Base. Source supports a clear operations date, but confidence remains medium because the overlay does not include the Guanzhishan alias."
+    },
+    {
+      "source_id": "geonames:11493688",
+      "name": "Yancheng",
+      "country_code": "CN",
+      "start_year": 2000,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 2000,
+          "end_year": null,
+          "label": "Yancheng Nanyang / Yancheng Air Base dual-use airport phase."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/yancheng-air-base/"
+      ],
+      "source_notes": "Title: \"Yancheng Air Base, China - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/yancheng-air-base/. Source lists Year built 2000 and says commercial domestic flights began in 2000, with the facility operated by the PLAAF.",
+      "rationale": "Overlay name Yancheng maps to the Yancheng Air Base source title. Use medium confidence because the source frames the facility as dual-use and the date is tied to airport operations."
+    },
+    {
+      "source_id": "geonames:11473943",
+      "name": "Lugovoy",
+      "country_code": "KZ",
+      "operational_intervals": [
+        {
+          "start_year": 1992,
+          "end_year": null,
+          "label": "715th Training Aviation Regiment taken over by Kazakhstan and renamed 715th Air Base."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://ww2.dk/new/air%20force/regiment/uap/715uap.htm"
+      ],
+      "source_notes": "Title: \"715th Training Aviation Regiment\" (Michael Holm, Soviet Armed Forces 1945-1991), URL: https://ww2.dk/new/air%20force/regiment/uap/715uap.htm. Source says the Lugovoy-based regiment was taken over by Kazakhstan on 1 January 1992 and renamed 715th Air Base.",
+      "rationale": "Overlay name Lugovoy matches the regiment/base location in the source. No source-supported original airfield build date was found, so this candidate only proposes a Kazakhstan-era operational interval."
+    },
+    {
+      "source_id": "geonames:11473967",
+      "name": "Iliysk South",
+      "country_code": "KZ",
+      "start_year": 1996,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1996,
+          "end_year": null,
+          "label": "Zhetigen / Iliysk South as Kazakhstan's 600th Guards Air Base."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://aviationsmilitaires.net/v3/kb/airfield/show/2848/zhetigen",
+        "https://mapcarta.com/35293612"
+      ],
+      "source_notes": "Titles: \"Zhetigen\" (AviationsMilitaires.net), URL: https://aviationsmilitaires.net/v3/kb/airfield/show/2848/zhetigen; \"Iliysk South Map - Airbase - Almaty Province, Kazakhstan\" (Mapcarta), URL: https://mapcarta.com/35293612. Sources identify Iliysk South/Zhetygen as an airbase and say Zhetigen has been listed since 1996 as the 600th Guards Air Base.",
+      "rationale": "Mapcarta ties the GeoNames ID/name Iliysk South to the airbase location near Zhetygen, while AviationsMilitaires provides the 1996 base designation. Use medium confidence because the date is for Kazakhstan nomenclature, not original Soviet construction."
+    },
+    {
+      "source_id": "geonames:11269912",
+      "name": "Bagerovo",
+      "country_code": "UA",
+      "start_year": 1947,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1947,
+          "end_year": null,
+          "label": "Baherove/Bagerovo air-base and nuclear-test support aviation site established by USSR Council of Ministers resolution."
+        },
+        {
+          "start_year": 1977,
+          "end_year": null,
+          "label": "228th Training Aviation Regiment established at the base."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Baherove_(air_base)"
+      ],
+      "source_notes": "Title: \"Baherove (air base)\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Baherove_(air_base). Source says the base was established at Baherove on August 21, 1947 by USSR Council of Ministers resolution and later hosted the 228th Training Aviation Regiment from 1977.",
+      "rationale": "Overlay Bagerovo is a transliteration variant of Baherove/Bagerovo in the source title. The 1947 establishment date is explicit and site-level."
+    },
+    {
+      "source_id": "geonames:8299666",
+      "name": "Horodok Air Base",
+      "country_code": "UA",
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": 1949,
+          "label": "3rd Guards Fighter Aviation Regiment PVO based at Horodok."
+        },
+        {
+          "start_year": 1970,
+          "end_year": 1985,
+          "label": "Approximate source-described 1970s or early-1980s Su-24 regiment phase; end year is a review placeholder, not a closure claim."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Horodok_Air_Base"
+      ],
+      "source_notes": "Title: \"Horodok Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Horodok_Air_Base. Source says the 3rd Guards Fighter Aviation Regiment PVO was based there between July 1945 and June 1949, and that a Su-24 regiment was hosted during the 1970s or early 1980s.",
+      "rationale": "Overlay name exactly matches the source title. Because the source does not give a construction date, this candidate uses operational intervals and flags the later Su-24 range as approximate."
+    },
+    {
+      "source_id": "geonames:11749494",
+      "name": "Oktyabrskoe Air Base",
+      "country_code": "UA",
+      "operational_intervals": [
+        {
+          "start_year": 1958,
+          "end_year": 1960,
+          "label": "639th Fighter Aviation Regiment at Oktyabrskoye airfield."
+        },
+        {
+          "start_year": 2020,
+          "end_year": null,
+          "label": "Restored/reserve-base phase after Russian occupation of Crimea."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Oktyabrskoye_air_base"
+      ],
+      "source_notes": "Title: \"Oktyabrskoye air base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Oktyabrskoye_air_base. Source says the 639th Fighter Aviation Regiment redeployed to Oktyabrskoye in 1958, the regiment was disbanded in 1960, and the abandoned airbase was restored during 2020 as a reserve base.",
+      "rationale": "Overlay Oktyabrskoe Air Base is a spelling variant of Oktyabrskoye air base. No construction year was found, so this candidate uses source-supported operational intervals."
+    },
+    {
+      "source_id": "geonames:8299665",
+      "name": "Stryi Air Base",
+      "country_code": "UA",
+      "operational_intervals": [
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Stryi designated to host the headquarters and two regiments of the 204th Heavy Bomber Aviation Division."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://aviationsmilitaires.net/v3/kb/airfield/show/2290/stryi"
+      ],
+      "source_notes": "Title: \"Stryi\" (AviationsMilitaires.net), URL: https://aviationsmilitaires.net/v3/kb/airfield/show/2290/stryi. Source says Stryi hosted a Soviet air base during the Cold War and that in 1951 Stryi was designated for the headquarters and two regiments of the 204th Heavy Bomber Aviation Division.",
+      "rationale": "Overlay name Stryi Air Base directly matches the source title/location. The candidate is an operational interval because the source pins a unit/base role rather than construction."
+    },
+    {
+      "source_id": "geonames:11500059",
+      "name": "Baranovichi",
+      "country_code": "BY",
+      "start_year": 1950,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1950,
+          "end_year": null,
+          "label": "Baranovichi Air Base; source lists built/used from 1950 and 61st Fighter Aviation Regiment established there."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.globalmilitary.net/airbases/baranovichi-air-base/",
+        "https://en.wikipedia.org/wiki/Baranovichi_(air_base)"
+      ],
+      "source_notes": "Titles: \"Baranovichi Air Base, Belarus - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/baranovichi-air-base/; \"Baranovichi (air base)\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Baranovichi_(air_base). Sources list 1950 as built/used and say the 61st Fighter Aviation Regiment was established at the base in 1950.",
+      "rationale": "Overlay name Baranovichi maps directly to Baranovichi Air Base. The 1950 date is source-supported at both site and unit levels."
+    },
+    {
+      "source_id": "geonames:11500167",
+      "name": "Lida",
+      "country_code": "BY",
+      "operational_intervals": [
+        {
+          "start_year": 2010,
+          "end_year": null,
+          "label": "116th Guards Assault Aviation Base at Lida; source lists unit/base dates from 2010."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/116th_Guards_Assault_Air_Base",
+        "https://en.wikipedia.org/wiki/Lida_(air_base)"
+      ],
+      "source_notes": "Titles: \"116th Guards Assault Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/116th_Guards_Assault_Air_Base; \"Lida (air base)\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Lida_(air_base). Sources identify Lida as the air base/garrison for the 116th Guards Assault Aviation Base and list that base's dates from 2010.",
+      "rationale": "The current Belarusian base phase is source-supported, but the original Lida airfield is older and not dated by the located source. For that reason, this candidate provides only an operational interval and avoids a top-level start_year."
+    },
+    {
+      "source_id": "geonames:11500176",
+      "name": "Machulishchi",
+      "country_code": "BY",
+      "operational_intervals": [
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "50th Composite/Mixed Aviation Base based at Machulishchi airfield."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://ru.ruwiki.ru/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B2%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D1%85_%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%D0%BE%D0%B2_%D0%91%D0%B5%D0%BB%D0%BE%D1%80%D1%83%D1%81%D1%81%D0%B8%D0%B8",
+        "https://belinform.com/ru/news/20150517/05956.html"
+      ],
+      "source_notes": "Titles: \"List of military aerodromes of Belarus\" (Ruwiki), URL: https://ru.ruwiki.ru/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B2%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D1%85_%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%D0%BE%D0%B2_%D0%91%D0%B5%D0%BB%D0%BE%D1%80%D1%83%D1%81%D1%81%D0%B8%D0%B8; \"50th Mixed Aviation Base marked its 35th anniversary\" (Belinform), URL: https://belinform.com/ru/news/20150517/05956.html. Sources identify Machulishchi as an active military aerodrome and say the 50th mixed aviation base has been based there since 1994; Belinform/MoD reporting gives the 50th base history beginning in 1980 before the Machulishchi basing phase.",
+      "rationale": "Overlay name Machulishchi exactly matches the military aerodrome. This candidate intentionally dates only the source-supported 50th base at Machulishchi phase, not the earlier airfield origin."
+    },
+    {
+      "source_id": "geonames:3092473",
+      "name": "22nd Air Base",
+      "country_code": "PL",
+      "start_year": 2001,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1929,
+          "end_year": null,
+          "label": "Malbork/Krolewo Malborskie airfield site origin."
+        },
+        {
+          "start_year": 1952,
+          "end_year": 2001,
+          "label": "41st Fighter Aviation Regiment at the site."
+        },
+        {
+          "start_year": 2001,
+          "end_year": null,
+          "label": "22nd Air Base constituted at Malbork."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/22nd_Air_Base",
+        "https://www.globalmilitary.net/airbases/22nd-air-base-malbork/"
+      ],
+      "source_notes": "Titles: \"22nd Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/22nd_Air_Base; \"22nd Air Base, Poland - Active Military Air Base\" (GlobalMilitary.net), URL: https://www.globalmilitary.net/airbases/22nd-air-base-malbork/. Sources say the airfield was established/built in 1929, the 41st Fighter Aviation Regiment was based there from 1952, and the 22nd Air Base was constituted on 1 January 2001.",
+      "rationale": "Overlay record is named for the modern 22nd Air Base, so top-level start_year uses 2001 while intervals preserve the older airfield/site history."
+    },
+    {
+      "source_id": "geonames:11749382",
+      "name": "Minsk Mazowiecki Military Air Base",
+      "country_code": "PL",
+      "start_year": 2001,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 2001,
+          "end_year": null,
+          "label": "23rd Air Base / Minsk Mazowiecki military air-base phase after restructuring of the 1st Fighter Aviation Regiment."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://polot.net/en/23-air-base-minsk-mazowiecki-2001-3558",
+        "https://en.wikipedia.org/wiki/23rd_Air_Base"
+      ],
+      "source_notes": "Titles: \"23 Air Base Minsk Mazowiecki. 2001 - ...\" (Polot), URL: https://polot.net/en/23-air-base-minsk-mazowiecki-2001-3558; \"23rd Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/23rd_Air_Base. Sources say the 23rd Air Base was created/officially established on 1 January 2001 at Minsk Mazowiecki, replacing the prior 1st Fighter Aviation Regiment structure.",
+      "rationale": "Overlay name Minsk Mazowiecki Military Air Base matches the 23rd Air Base location. The year is a modern base/unit-structure start rather than an original airfield construction date."
+    },
+    {
+      "source_id": "geonames:11749381",
+      "name": "Miroslawiec Military Air Base",
+      "country_code": "PL",
+      "start_year": 2000,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 2000,
+          "end_year": 2010,
+          "label": "12th Air Base in Miroslawiec."
+        },
+        {
+          "start_year": 2016,
+          "end_year": null,
+          "label": "12th Unmanned Aerial Vehicles Base phase."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://polot.net/en/12-air-base-miroslawiec-2000-2010-3536",
+        "https://polot.net/en/12-the-base-of-unmanned-aerial-vehicles-2015-3537"
+      ],
+      "source_notes": "Titles: \"12 Air Base Miroslawiec. 2000-2010.\" (Polot), URL: https://polot.net/en/12-air-base-miroslawiec-2000-2010-3536; \"12 The Base of Unmanned Aerial Vehicles. 2015.\" (Polot), URL: https://polot.net/en/12-the-base-of-unmanned-aerial-vehicles-2015-3537. Sources say the 12th Air Base was established on 1 January 2000 and that the later UAV base was established on the basis of the 12th Airport Headquarters and air reconnaissance squadron.",
+      "rationale": "Overlay Miroslawiec Military Air Base is a clear location/name match. The intervals separate the 2000-2010 air-base phase from the later UAV-base continuity."
+    },
+    {
+      "source_id": "geonames:11711434",
+      "name": "Papa",
+      "country_code": "HU",
+      "start_year": 1936,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1936,
+          "end_year": null,
+          "label": "Papa Air Base founded."
+        },
+        {
+          "start_year": 2001,
+          "end_year": null,
+          "label": "NATO reserve base / Heavy Airlift Wing era."
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://installations.militaryonesource.mil/in-depth-overview/papa-air-base"
+      ],
+      "source_notes": "Title: \"Papa Air Base | Base Overview & Info | MilitaryINSTALLATIONS\" (Military OneSource), URL: https://installations.militaryonesource.mil/in-depth-overview/papa-air-base. Source says Papa Air Base was founded in 1936, had Royal Hungarian Air Force bombers in 1937, became a NATO reserve base in July 2001, and the Heavy Airlift Wing stood up in 2009.",
+      "rationale": "Overlay name Papa maps directly to Papa Air Base. Source is a U.S. DoD/Military OneSource installation profile, so confidence is high."
+    },
+    {
+      "source_id": "geonames:11500127",
+      "name": "Graf Ignatievo",
+      "country_code": "BG",
+      "start_year": 1940,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Graf Ignatievo airfield/base origin; Bulgarian aviation unit redeployed there."
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Modern fighter-regiment/base phase at Graf Ignatievo."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://bnrnews.bg/en/post/442304/graf-ignatievo-the-home-of-the-bulgarian-air-force-marks-75-years",
+        "https://en.wikipedia.org/wiki/Graf_Ignatievo_Air_Base"
+      ],
+      "source_notes": "Titles: \"Graf Ignatievo - the home of the Bulgarian Air Force marks 75 years\" (Radio Bulgaria/BNR), URL: https://bnrnews.bg/en/post/442304/graf-ignatievo-the-home-of-the-bulgarian-air-force-marks-75-years; \"Graf Ignatievo Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Graf_Ignatievo_Air_Base. Sources say the airfield history dates to 1940 and that the modern air-base history begins with the 19th Fighter Aviation Regiment in 1951.",
+      "rationale": "Overlay name exactly matches the sourced air base. Intervals preserve the distinction between the 1940 site origin and the 1951 modern fighter-base phase."
+    },
+    {
+      "source_id": "geonames:11071601",
+      "name": "Cheshnegirovo Air Base",
+      "country_code": "BG",
+      "start_year": 1951,
+      "end_year": 2002,
+      "operational_intervals": [
+        {
+          "start_year": 1951,
+          "end_year": 2002,
+          "label": "Cheshnegirovo / Sadovo Air Base operational period in source."
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Cheshnegirovo_Air_Base"
+      ],
+      "source_notes": "Title: \"Cheshnegirovo Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Cheshnegirovo_Air_Base. Source lists Used 1951-2002 and says the base was built in 1951 and later became inactive.",
+      "rationale": "Overlay name exactly matches the source title. The page gives a clear used interval, but confidence is medium because an official Bulgarian source was not located in this pass."
+    },
+    {
+      "source_id": "geonames:11749424",
+      "name": "Gabrovnitsa Air Base",
+      "country_code": "BG",
+      "end_year": 2002,
+      "operational_intervals": [
+        {
+          "start_year": null,
+          "end_year": 2002,
+          "label": "Former Gabrovnitsa Air Base; source infobox says used until 2002."
+        }
+      ],
+      "temporal_confidence": "low",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Gabrovnitsa_Air_Base"
+      ],
+      "source_notes": "Title: \"Gabrovnitsa Air Base\" (Wikipedia), URL: https://en.wikipedia.org/wiki/Gabrovnitsa_Air_Base. Source identifies Gabrovnitsa as a former Bulgarian Air Force base and lists Used until 2002; page text also says it closed in 1998, so date review is needed before promotion.",
+      "rationale": "Overlay name exactly matches the source title, but the located source has an internal 1998/2002 closure inconsistency. Candidate keeps only a low-confidence end_year for reviewer triage."
+    }
+  ]
+}

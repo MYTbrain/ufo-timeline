@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-06-04",
+  "candidate_count": 4,
+  "scope": "Conservative local backfill from official Canada.ca and U.S. Navy installation history pages.",
+  "candidates": [
+    {
+      "source_id": "geonames:6146393",
+      "name": "CFB Shilo",
+      "country_code": "CA",
+      "start_year": 1910,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-shilo.html"
+      ],
+      "source_notes": "Canada.ca says CFB Shilo has been the site of military activity in the region since 1910.",
+      "rationale": "Exact overlay name match to official Canada.ca installation page."
+    },
+    {
+      "source_id": "geonames:6296277",
+      "name": "CFB Suffield",
+      "country_code": "CA",
+      "start_year": 1972,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-suffield.html"
+      ],
+      "source_notes": "Canada.ca says CFB Suffield has been the site of military training in the region since 1972.",
+      "rationale": "Exact overlay name match to official Canada.ca installation page."
+    },
+    {
+      "source_id": "geonames:8081501",
+      "name": "Naval Air Station Fallon",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": 1946,
+          "label": "Naval Auxiliary Air Station Fallon"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Auxiliary Landing Field / reestablished NAAS / NAS Fallon"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://cnrsw.cnic.navy.mil/Installations/NAS-Fallon/About/History/"
+      ],
+      "source_notes": "Official Navy history says NAAS Fallon was commissioned June 10, 1944, went through reduced/caretaker status in 1946, became an auxiliary landing field in 1951, was reestablished Oct. 1, 1953, and NAS Fallon was commissioned Jan. 1, 1972.",
+      "rationale": "Exact overlay name match to official Navy installation history; intervals preserve the documented postwar gap."
+    },
+    {
+      "source_id": "geonames:6301663",
+      "name": "Naval Air Station Joint Reserve Base Fort Worth",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1948,
+          "end_year": 1993,
+          "label": "Carswell Air Force Base"
+        },
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "Naval Air Station Joint Reserve Base Fort Worth"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "official_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://cnrse.cnic.navy.mil/Installations/NAS-JRB-Fort-Worth/About/History/"
+      ],
+      "source_notes": "Official Navy history says the installation was mostly known as Carswell Air Force Base from 1948 to 1993, closed by September 1993, then became Naval Air Station Joint Reserve Base in October 1994.",
+      "rationale": "Exact overlay name match to official Navy installation history; intervals distinguish Carswell AFB from the NAS JRB phase."
+    }
+  ]
+}

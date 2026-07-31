@@ -1,0 +1,441 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_global_longtail_round10",
+  "description": "Tenth-round conservative temporal backfill candidates for non-CN/non-CA longtail research_temporal_dates rows outside the specified excluded country set. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates were considered.",
+    "Rows with country_code CN, CA, EG, SY, LY, SA, AE, DZ, IR, KW, MA, ZA, PK, IQ, JO, LB, BH, QA, YE were excluded.",
+    "Candidate rows prioritize real airbases and air stations with explicit opening, establishment, activation, operational, closure, or handover years from official military, government, aviation-history, or credible base-history sources.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Where the documented date belongs to a predecessor airfield or renamed base, the rationale explains the identity link and confidence is reduced when appropriate."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:11749426",
+      "name": "Armilla Air Base",
+      "country_code": "ES",
+      "start_year": 1922,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Ejercito del Aire y del Espacio - Historia del Centenario Base Aerea de Armilla",
+          "url": "https://ejercitodelaireydelespacio.defensa.gob.es/EA/centenarioarmilla/historia.html",
+          "note": "Official Spanish Air and Space Force centenary history gives the base creation date as 1922 and says the Llanos de Armilla aerodrome was officially inaugurated on 20 June 1922."
+        }
+      ],
+      "rationale": "The queue row maps directly to the current Armilla Air Base. The official base-history page provides an explicit creation/inauguration year, so 1922 is used as the operational start."
+    },
+    {
+      "source_id": "geonames:9036365",
+      "name": "Aalborg Air Base",
+      "country_code": "DK",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Forsvaret - Flyvestation Aalborg",
+          "url": "https://www.forsvaret.dk/da/organisation/tjenestesteder/flyvestation-aalborg/",
+          "note": "Danish Defence states that the air station history goes back to 29 May 1938, when the first airfield was established by Aalborg and Norresundby municipalities."
+        },
+        {
+          "title": "Aalborg Forsvars- og Garnisonsmuseum - Flyvevabnet",
+          "url": "https://forsvarsmuseum.dk/flyvevabnet/",
+          "note": "The defence museum likewise gives 29 May 1938 as the creation of Aalborg's first airfield."
+        }
+      ],
+      "rationale": "The current Aalborg Air Base is the military successor to the Aalborg airfield opened in 1938 and later militarized during World War II and NATO-era Danish Air Force use."
+    },
+    {
+      "source_id": "geonames:8335367",
+      "name": "Andoya Air Station",
+      "country_code": "NO",
+      "start_year": 1957,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Forsvaret - Andoya flystasjon vakner til liv",
+          "url": "https://www.forsvaret.no/aktuelt-og-presse/aktuelt/andoya-flystasjon-vakner-til-liv",
+          "note": "Norwegian Armed Forces describes Andoya Air Station as built in the 1950s and still used as a host-nation support station."
+        },
+        {
+          "title": "GlobalMilitary.net - Andoya Air Station",
+          "url": "https://www.globalmilitary.net/airbases/andoya-air-station/",
+          "note": "Base-history profile states that the first landing occurred in 1954 and that the air station reached operational status in late 1957."
+        }
+      ],
+      "rationale": "The official source confirms the 1950s construction window, while the aviation/base-history source gives operational status in 1957. The start is set to the operational year rather than the first landing."
+    },
+    {
+      "source_id": "geonames:9036368",
+      "name": "Bodo Main Air Station",
+      "country_code": "NO",
+      "start_year": 1953,
+      "end_year": 2022,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Store norske leksikon - Bodo hovedflystasjon",
+          "url": "https://snl.no/Bod%C3%B8_hovedflystasjon",
+          "note": "Expert-written Norwegian encyclopedia article describes Bodo Main Air Station as a former military air station and states it was closed in 2022."
+        },
+        {
+          "title": "Bodo Main Air Station",
+          "url": "https://en.wikipedia.org/wiki/Bod%C3%B8_Main_Air_Station",
+          "note": "The base history states that Parliament decided in 1952 to make Bodo the main air station for Northern Norway and that Air Force Command for Northern Norway moved there on 1 July 1953."
+        }
+      ],
+      "rationale": "Bodo's civil runway opened in 1952, but 1953 is the conservative military-main-air-station start tied to the command move. The end year follows the documented closure of the military air station."
+    },
+    {
+      "source_id": "geonames:11353113",
+      "name": "Howard Air Force Base (historical)",
+      "country_code": "PA",
+      "start_year": 1942,
+      "end_year": 1999,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Howard Air Force Base",
+          "url": "https://en.wikipedia.org/wiki/Howard_Air_Force_Base",
+          "note": "Base history lists Howard as built in 1939, used from 1942 to 1999, and discontinued military operations on 1 November 1999."
+        },
+        {
+          "title": "GlobalSecurity.org - Howard Air Force Base",
+          "url": "https://www.globalsecurity.org/military/facility/howard.htm",
+          "note": "Facility history describes Howard AFB as turned over to the Panamanian government in late 1999 as part of the Panama Canal treaty process."
+        }
+      ],
+      "rationale": "The queue row is explicitly historical Howard AFB. The used/closure years are direct facility-level dates and match the handover history."
+    },
+    {
+      "source_id": "geonames:11483580",
+      "name": "Hatserim",
+      "country_code": "IL",
+      "start_year": 1966,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Hatzerim Airbase",
+          "url": "https://en.wikipedia.org/wiki/Hatzerim_Airbase",
+          "note": "The airbase history states that Hatzerim was constructed during the 1960s and declared operational on 3 October 1966."
+        },
+        {
+          "title": "GlobalSecurity.org - Hatzerim Israel Airfields",
+          "url": "https://www.globalsecurity.org/military/world/israel/hatzerim.htm",
+          "note": "Israel airfield profile states that the modern base was built in the 1960s and used by the IAF beginning in 1966."
+        }
+      ],
+      "rationale": "The queue name is a GeoNames-shortened form of Hatzerim Airbase. Multiple base-history sources give a precise operational year."
+    },
+    {
+      "source_id": "geonames:11483577",
+      "name": "Ramat David",
+      "country_code": "IL",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Ramat David Airbase",
+          "url": "https://en.wikipedia.org/wiki/Ramat_David_Airbase",
+          "note": "The airbase history says RAF Ramat David military airfield was established by the Royal Air Force in 1942 under the British Mandate."
+        },
+        {
+          "title": "RAFWeb - RAF Stations R",
+          "url": "https://www.rafweb.org/Stations/Stations-R.htm",
+          "note": "RAF station history lists wartime RAF units at Ramat David and notes that it is now Ramat David Israeli Air Force Base."
+        }
+      ],
+      "rationale": "The current Israeli airbase is the successor to RAF Ramat David at the same site, so the 1942 military-airfield establishment year is used."
+    },
+    {
+      "source_id": "geonames:11483578",
+      "name": "Tel Nof",
+      "country_code": "IL",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Tel Nof Airbase Explained",
+          "url": "https://everything.explained.today/Tel_Nof/",
+          "note": "The airbase history states that RAF Aqir, the predecessor of Tel Nof, was established in July 1939 during the British Mandate."
+        },
+        {
+          "title": "Aviation Safety Network - Ekron-Tel Nof Air Base profile",
+          "url": "https://aviation-safety.net/database/airport/id/__590",
+          "note": "Airport profile gives the opening year for Ekron-Tel Nof Air Base as 1939."
+        }
+      ],
+      "rationale": "Tel Nof is the post-1948 Israeli name for the RAF Aqir/Ekron airfield complex. The predecessor identity is direct, but confidence remains high because the location and renaming chain are explicit."
+    },
+    {
+      "source_id": "geonames:8572195",
+      "name": "Melgar Air Base",
+      "country_code": "CO",
+      "start_year": 1954,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Colombian Aerospace Force",
+          "url": "https://en.wikipedia.org/wiki/Colombian_Aerospace_Force",
+          "note": "Air force history states that the first helicopter base was created in Melgar, Tolima, in 1954."
+        },
+        {
+          "title": "XAIRFORCES - Colombian Air Force History",
+          "url": "https://www.xairforces.net/history.asp?id=102",
+          "note": "Colombian Air Force history profile also states that the first helicopter base was created in Melgar in 1954 and is now Base Aerea Capitan Luis F. Gomez Nino."
+        }
+      ],
+      "rationale": "The queue row is the Melgar air-base feature. Sources identify the Melgar facility as the 1954 helicopter base now known as Base Aerea Capitan Luis F. Gomez Nino, so 1954 is used with medium confidence."
+    },
+    {
+      "source_id": "geonames:1609482",
+      "name": "Korat Airbase",
+      "country_code": "TH",
+      "start_year": 1955,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Korat Royal Thai Air Force Base",
+          "url": "https://en.wikipedia.org/wiki/Korat_Royal_Thai_Air_Force_Base",
+          "note": "Base profile lists Korat Royal Thai Air Force Base as built and used from 1955 to present."
+        },
+        {
+          "title": "GlobalSecurity.org - Royal Thai Air Force Bases",
+          "url": "https://www.globalsecurity.org/military/world/thailand/airbase-intro.htm",
+          "note": "Thai airbase overview states that Thai bases used by U.S. forces were constructed between 1954 and 1968 and includes Korat as a major RTAF base."
+        }
+      ],
+      "rationale": "The GeoNames row maps to Korat RTAFB. The explicit built/used year is available, but confidence is medium because the stronger supporting source gives a range rather than a Korat-specific opening date."
+    },
+    {
+      "source_id": "geonames:10286556",
+      "name": "Kant Air Base",
+      "country_code": "KG",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kant (air base)",
+          "url": "https://en.wikipedia.org/wiki/Kant_%28air_base%29",
+          "note": "Base history says the airfield history goes back to 1941, when the Odessa Military Aviation School of Pilots was evacuated to Kyrgyzstan; the Russian air base officially opened on 23 October 2003."
+        },
+        {
+          "title": "CACI Analyst - Opening of Russian Airbase in Kyrgyzstan",
+          "url": "https://www.cacianalyst.org/publications/field-reports/item/8548-field-reports-caci-analyst-2003-11-5-art-8548.html?print=1&tmpl=component",
+          "note": "Contemporary field report covers the 2003 opening of the Russian airbase at Kant."
+        }
+      ],
+      "rationale": "The physical military airfield predates the post-Soviet Russian base. The start_year uses the documented 1941 military aviation school/airfield origin, while notes preserve the 2003 opening of the current Russian basing role."
+    },
+    {
+      "source_id": "geonames:11749417",
+      "name": "Laikipia Air Base",
+      "country_code": "KE",
+      "start_year": 1974,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity.org - Kenya Air Force",
+          "url": "https://www.globalsecurity.org/military/world/kenya/air-force.htm",
+          "note": "Kenya Air Force profile states that Nanyuki Air Base opened on 25 February 1974 as the main fighter base and was later known as Laikipia Air Base."
+        },
+        {
+          "title": "Laikipia Air Base",
+          "url": "https://en.wikipedia.org/wiki/Laikipia_Air_Base",
+          "note": "Base article states that Laikipia Air Base was established in 1974 as Nanyuki Air Base and later renamed for the county."
+        }
+      ],
+      "rationale": "The candidate is directly tied to Laikipia/Nanyuki Air Base. Both sources provide the same establishment year, with one giving an exact date."
+    },
+    {
+      "source_id": "geonames:11495828",
+      "name": "Moi Air Base",
+      "country_code": "KE",
+      "start_year": 1936,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Moi Air Base",
+          "url": "https://en.wikipedia.org/wiki/Moi_Air_Base",
+          "note": "Base profile lists Moi Air Base, formerly RAF Eastleigh and Eastleigh Airport, as built and used from 1936 to present."
+        },
+        {
+          "title": "RAFWeb - RAF Stations E",
+          "url": "https://rafweb.org/Stations/Stations-E.htm",
+          "note": "RAF station history lists RAF/Nairobi Eastleigh units from the late 1930s and wartime period, supporting the predecessor identity."
+        }
+      ],
+      "rationale": "Moi Air Base is the Kenyan successor to RAF Eastleigh/Eastleigh Airport at the same site. The 1936 date is retained as the predecessor airfield build/use date and therefore assigned medium confidence."
+    },
+    {
+      "source_id": "geonames:11674335",
+      "name": "Taura",
+      "country_code": "EC",
+      "start_year": 1955,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "El Universo - La Base Aerea de Taura cumplio 47 anos de fundada",
+          "url": "https://www.eluniverso.com/2002/08/29/0001/18/F846155BEFD54EBF9256954D2F54ECB3.html/",
+          "note": "Anniversary coverage reports that in July 1955 President Jose Maria Velasco Ibarra authorized construction of a base east of Guayaquil."
+        },
+        {
+          "title": "Enciclopedia del Ecuador - Taura",
+          "url": "https://www.enciclopediadelecuador.com/taura/?print=print",
+          "note": "Encyclopedia entry states that the Taura military air base was inaugurated on 22 January 1957 when the first aircraft landed on its runway."
+        }
+      ],
+      "rationale": "The queue row is the Taura Air Base feature. The start year uses the documented 1955 construction authorization/anniversary basis; the 1957 inauguration is retained in notes, so confidence is medium."
+    },
+    {
+      "source_id": "geonames:11711330",
+      "name": "Meiringen",
+      "country_code": "CH",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Meiringen Air Base",
+          "url": "https://en.wikipedia.org/wiki/Meiringen_Air_Base",
+          "note": "Airbase history states that Meiringen Air Base started operations on 1 December 1941."
+        },
+        {
+          "title": "AirOnline - Militarflugplatz Meiringen 75-year anniversary",
+          "url": "https://www.aironline.nl/weblog/2016/06/22/1718062016-militarflugplatz-meiringen-viert-75-jarig-bestaan/",
+          "note": "Anniversary coverage states that the air base was taken into use on 1 December 1941."
+        }
+      ],
+      "rationale": "The GeoNames queue name is the short form of Meiringen Air Base. Sources give a precise operational start date."
+    },
+    {
+      "source_id": "geonames:11710906",
+      "name": "Alpnach",
+      "country_code": "CH",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Alpnach Air Base",
+          "url": "https://en.wikipedia.org/wiki/Alpnach_Air_Base",
+          "note": "Airbase history says two wooden hangars were added in 1940 and Fliegerabteilung 7 was based at Alpnach in September 1942."
+        },
+        {
+          "title": "Wings-Aviation.ch - Alpnach Airbase",
+          "url": "https://www.wings-aviation.ch/03-Reports/2014/SUI-Alpnach/Airbase-de.htm",
+          "note": "Swiss aviation-history profile says the first fighters were stationed at Alpnach in September 1942 and the first hard-surface runway followed in 1943."
+        }
+      ],
+      "rationale": "The 1940 hangars show site preparation, but 1942 is the conservative operational military aviation year because aircraft were first stationed there then."
+    },
+    {
+      "source_id": "geonames:11749498",
+      "name": "Vaziani Air Base",
+      "country_code": "GE",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kviris Palitra - Vaziani aerodrome history",
+          "url": "https://kvirispalitra.ge/article/29780-sabtcotha-periodshi-aq-inakheboda-sainzhinro-atomuri-naghmebi-vazianis-aerodromis-istoria/",
+          "note": "Georgian aviation-history article states that Vaziani aerodrome history begins in World War II and that the first Soviet aviation unit appeared there in August 1942."
+        },
+        {
+          "title": "Vaziani Military Base",
+          "url": "https://en.wikipedia.org/wiki/Vaziani_Military_Base",
+          "note": "Base profile states that Vaziani was originally established in 1941 as part of Soviet southern military infrastructure and later served as a key Georgian military site."
+        }
+      ],
+      "rationale": "The queue row is Vaziani Air Base. Because the strongest airfield-specific evidence found gives first aviation-unit presence in August 1942, 1942 is used instead of the broader 1941 military-base origin."
+    },
+    {
+      "source_id": "geonames:3936721",
+      "name": "Las Palmas",
+      "country_code": "PE",
+      "start_year": 1922,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Diario Oficial El Peruano - Aeronautica peruana: los 100 anos de Las Palmas",
+          "url": "https://elperuano.pe/noticia/171214-aeronautica-peruana-los-100-anos-de-las-palmas",
+          "note": "Official newspaper article marks 100 years of Las Palmas Air Base in 2022 and describes its role in Peruvian military aviation."
+        },
+        {
+          "title": "Origins of the Peruvian Air Force",
+          "url": "https://www.airuniversity.af.edu/Portals/10/JOTA/Journals/Volume%201%20Issue%203/07-Baca_eng.pdf",
+          "note": "Air University journal article traces the military aviation school from Maranga to Las Palmas during the early Peruvian military aviation period."
+        }
+      ],
+      "rationale": "The queue row is the Las Palmas air-base feature in Lima. The 2022 official centennial article supports 1922 as the base centennial year, while the predecessor school context is earlier and therefore not used as the base start."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:11458710",
+      "name": "Nizhniy Novgorod",
+      "reason": "Researched as likely Nizhny Novgorod/Sormovo. Public sources describe current/Western military use and suggest a 1950s bomber-base origin, but no explicit establishment or activation year meeting the evidence standard was found."
+    },
+    {
+      "source_id": "geonames:11459395",
+      "name": "Rostov Northwest",
+      "reason": "Researched as Rostov-on-Don North/Northwest air base. Available sources were current listings or sparse directory pages without an explicit operational start or closure date."
+    },
+    {
+      "source_id": "geonames:11459002",
+      "name": "aeroport Pionernyj Katylga",
+      "reason": "Researched under Pionerny/Pionernyj Katylga variants. Search results did not establish a reliable facility identity with explicit operational dates."
+    },
+    {
+      "source_id": "geonames:11749496",
+      "name": "Bolshoy Tokmak Air Base",
+      "reason": "Researched under Bolshoy Tokmak/Bilmak/Tokmak air-base variants. Found gazetteer-style pages and conflict-context mentions, but no acceptable opening, activation, or closure year."
+    },
+    {
+      "source_id": "geonames:11749495",
+      "name": "Karankut Air Base",
+      "reason": "Researched as a Ukrainian/Crimean air-base feature. Publicly accessible results did not provide a source-backed operational date distinct from current or coordinate listings."
+    },
+    {
+      "source_id": "geonames:11269951",
+      "name": "Plonochka Air Base",
+      "reason": "Researched under Plonochka/Plonochka Air Base spellings. No credible base-history source with explicit dates was found."
+    },
+    {
+      "source_id": "geonames:11269915",
+      "name": "Chervonohlinskaya",
+      "reason": "Researched as Chervonohlinskaya/Chervonoglinskoye air-base variants. Available evidence was insufficient to distinguish a real historical airbase from a sparse gazetteer entry with no dates."
+    },
+    {
+      "source_id": "geonames:12382290",
+      "name": "Sangachal Air Base",
+      "reason": "Researched under Sangachal Air Base and Azerbaijani airfield variants. Found current or directory-style references but no explicit opening or operational start year."
+    },
+    {
+      "source_id": "geonames:11749384",
+      "name": "Ozurgeti Air Base",
+      "reason": "Researched under Ozurgeti and Makharadze/Meria airfield variants. Soviet aviation references exist for nearby historical basing, but the identity link to this GeoNames row and a start year were not strong enough."
+    },
+    {
+      "source_id": "geonames:6296495",
+      "name": "Elsenborn-Butgenbach Air Base",
+      "reason": "Researched under Elsenborn-Butgenbach air-base variants. Results primarily described the broader Elsenborn military training area or current locality, not an airbase opening/closure date."
+    }
+  ]
+}
