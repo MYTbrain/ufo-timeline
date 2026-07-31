@@ -1,0 +1,1182 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="app-initializing">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
+  <title>UFO Timeline World Map</title>
+  <link rel="icon" href="data:,">
+  <link rel="dns-prefetch" href="//a.basemaps.cartocdn.com">
+  <link rel="preconnect" href="https://a.basemaps.cartocdn.com">
+  <link rel="stylesheet" href="./vendor/leaflet.css">
+  <link rel="stylesheet" href="./vendor/MarkerCluster.css">
+  <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="./styles.css?v=2026-07-31-area-lifecycle-v154">
+  <script>
+    window.setTimeout(function () {
+      document.documentElement.classList.remove("app-initializing");
+    }, 4000);
+  </script>
+</head>
+<body>
+  <div class="page-shell">
+    <div id="protocol-warning" class="protocol-warning" hidden></div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="hero-title-row">
+          <h1>UFO Timeline World Map</h1>
+          <div class="mobile-appearance-controls" aria-label="Mobile appearance controls">
+            <button
+              id="mobile-theme-toggle"
+              class="secondary-button mobile-appearance-button mobile-theme-toggle"
+              type="button"
+              data-mode="dark"
+              aria-label="Switch to light mode"
+              title="Switch to light mode"
+            >
+              <svg class="mobile-appearance-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <g class="mobile-theme-icon-sun">
+                  <circle cx="12" cy="12" r="4.1"></circle>
+                  <path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7M18.6 18.6l-1.7-1.7M7.1 7.1 5.4 5.4"></path>
+                </g>
+                <path class="mobile-theme-icon-moon" d="M15.8 3.8a8 8 0 1 0 4.4 14.8A8.8 8.8 0 0 1 15.8 3.8Z"></path>
+              </svg>
+            </button>
+            <button
+              id="mobile-font-decrease"
+              class="secondary-button mobile-appearance-button mobile-font-button"
+              type="button"
+              aria-label="Decrease font size"
+              title="Decrease font size"
+            ><span aria-hidden="true">A-</span></button>
+            <button
+              id="mobile-font-increase"
+              class="secondary-button mobile-appearance-button mobile-font-button"
+              type="button"
+              aria-label="Increase font size"
+              title="Increase font size"
+            ><span aria-hidden="true">A+</span></button>
+          </div>
+        </div>
+        <p id="hero-event-count-hook" class="hero-hook">Explore UFO events over time</p>
+        <p class="hero-subtext">Compare sightings with airports, military bases, and overlays</p>
+        <p class="hero-attribution">Sightings datasets generously provided by <a href="https://ufosint.com/" target="_blank" rel="noopener noreferrer external">UFOSINT</a>.</p>
+      </div>
+      <div class="hero-stats">
+        <div id="appearance-panel" class="hero-toolcard compact-collapsible-panel">
+          <div class="compact-panel-head">
+            <div>
+              <span class="stat-label">Settings</span>
+              <strong class="compact-panel-title">Appearance</strong>
+            </div>
+            <button
+              id="toggle-appearance-panel"
+              class="secondary-button panel-toggle-button compact-toggle-button"
+              type="button"
+              aria-expanded="false"
+              aria-label="Expand appearance settings"
+              title="Expand appearance settings"
+            >+</button>
+          </div>
+          <div id="appearance-panel-body" class="compact-panel-body" hidden>
+            <label class="field compact-field appearance-field">
+              <span>Appearance</span>
+              <select id="appearance-mode">
+                <option value="auto">Auto / system</option>
+                <option value="light">Light</option>
+                <option value="dark" selected>Dark</option>
+              </select>
+            </label>
+            <label class="field compact-field appearance-field">
+              <span>Font Size</span>
+              <select id="font-scale-mode">
+                <option value="small">Small</option>
+                <option value="default" selected>Default</option>
+                <option value="large">Large</option>
+                <option value="xlarge">Extra Large</option>
+              </select>
+            </label>
+            <button id="focus-map-toggle" class="secondary-button focus-map-button" type="button" aria-pressed="false" title="Collapse side panes and full details so the map and timeline dominate the screen.">Focus Map</button>
+          </div>
+        </div>
+        <div id="hero-guide-slot" class="hero-guide-slot"></div>
+      </div>
+    </header>
+
+    <section id="user-guide" class="user-guide" aria-live="polite">
+      <div class="user-guide-head">
+        <div>
+          <p class="eyebrow">Quick Guide</p>
+          <p class="user-guide-title">Use the map and timeline together</p>
+        </div>
+        <button
+          id="toggle-user-guide"
+          class="secondary-button panel-toggle-button compact-toggle-button"
+          type="button"
+          aria-expanded="true"
+          aria-label="Collapse quick guide"
+          title="Collapse quick guide"
+        >-</button>
+      </div>
+        <div id="user-guide-body" class="user-guide-body">
+          <div class="guide-chip"><strong>Craft Only</strong><span>Use "Craft Only" in Type to isolate concrete craft and object shapes.</span></div>
+          <div class="guide-chip"><strong>Map Modes</strong><span>Switch between Points, Clusters, and Heatmap to explore density.</span></div>
+          <div class="guide-chip"><strong>Military / Overlays</strong><span>Toggle airports and military bases to compare sightings with infrastructure.</span></div>
+          <div class="guide-chip"><strong>Timeline</strong><span>Select a date range and press Play to watch events unfold.</span></div>
+          <div class="guide-chip"><strong>Famous Flaps</strong><span>Jump to the famous-flap presets to compare major UFO waves quickly.</span></div>
+          <div class="guide-chip"><strong>Interaction</strong><span>Click any dot to inspect the event. Use "Show Description" for details.</span></div>
+          <div class="guide-chip"><strong>Trace Analysis</strong><span>Use trace controls to reveal patterns between nearby sightings.</span></div>
+          <div class="guide-chip"><strong>Disclaimer</strong><span>Playback Trace is a neutral chronological cursor between mapped events during playback, not a claimed craft route.</span></div>
+        </div>
+    </section>
+
+    <section class="status-strip" aria-live="polite">
+      <p id="app-busy-status" class="busy-status" hidden></p>
+      <div id="dataset-status-slot" class="dataset-status-slot">
+        <div id="hero-status-panel" class="hero-status-panel">
+          <div class="hero-status-head">
+            <div>
+              <span class="stat-label">Dataset Status</span>
+              <strong class="hero-status-title">Counts And Span</strong>
+            </div>
+            <button
+              id="toggle-hero-status"
+              class="secondary-button panel-toggle-button compact-toggle-button"
+              type="button"
+              aria-expanded="false"
+              aria-label="Expand dataset status"
+              title="Expand dataset status"
+            >+</button>
+          </div>
+          <div id="hero-status-grid" class="hero-status-grid" hidden>
+            <div class="hero-status-item">
+              <span class="stat-label">All Events</span>
+              <strong id="total-events-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Mapped Events</span>
+              <strong id="mapped-total-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Filtered Events</span>
+              <strong id="results-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Filtered Mapped</span>
+              <strong id="mapped-results-count">0</strong>
+            </div>
+            <div class="hero-status-item hero-status-item-span">
+              <span class="stat-label">Dataset Span</span>
+              <strong id="dataset-span">Loading...</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-panel" aria-live="polite">
+      <div class="timeline-header">
+        <div class="timeline-header-copy">
+          <p class="eyebrow">Chronology Explorer</p>
+        </div>
+      </div>
+      <p id="timeline-panel-collapsed-note" class="note-copy panel-collapsed-note" hidden>Chronology Explorer is collapsed. Expand it to view the timeline, playback controls, and date-window tools.</p>
+      <div id="timeline-panel-body">
+      <div class="timeline-canvas-shell">
+        <div id="timeline-canvas-wrap" class="timeline-canvas-wrap">
+          <canvas id="timeline-canvas" height="164"></canvas>
+          <div id="timeline-selection" class="timeline-selection" hidden>
+            <button id="timeline-handle-left" class="timeline-handle timeline-handle-left" type="button" aria-label="Resize timeline start"></button>
+            <div id="timeline-selection-body" class="timeline-selection-body"></div>
+            <button id="timeline-handle-right" class="timeline-handle timeline-handle-right" type="button" aria-label="Resize timeline end"></button>
+          </div>
+          <div id="timeline-playback-marker" class="timeline-playback-marker" hidden></div>
+        </div>
+        <div id="timeline-ticks" class="timeline-ticks"></div>
+      </div>
+
+      <div class="timeline-panel-toggle-row">
+        <button
+          id="toggle-timeline-panel"
+          class="secondary-button panel-toggle-button compact-toggle-button timeline-toggle-button"
+          type="button"
+          aria-expanded="true"
+          aria-label="Collapse chronology details"
+          title="Collapse chronology details"
+        >-</button>
+      </div>
+
+      <div id="timeline-panel-details" class="timeline-panel-details">
+      <div class="timeline-toolbar">
+        <div class="timeline-control-row timeline-primary-row">
+          <div class="timeline-media-group" role="group" aria-label="Playback and zoom controls">
+            <button id="playback-prev" class="secondary-button icon-button" type="button" aria-label="Previous playback event" title="Previous playback event">&#x23EE;</button>
+            <button id="play-pause" class="secondary-button icon-button timeline-play-button timeline-play-button-primary" type="button" aria-label="Play playback" title="Play playback">&#x25B6;</button>
+            <button id="playback-next" class="secondary-button icon-button" type="button" aria-label="Next playback event" title="Next playback event">&#x23ED;</button>
+            <button id="playback-reset" class="secondary-button icon-button" type="button" aria-label="Reset playback" title="Reset playback">&#x21BB;</button>
+            <button id="timeline-zoom-out" class="secondary-button icon-button" type="button" aria-label="Zoom timeline out" title="Zoom timeline out">&#x2212;</button>
+            <button id="timeline-zoom-in" class="secondary-button icon-button" type="button" aria-label="Zoom timeline in" title="Zoom timeline in">+</button>
+          </div>
+
+          <div id="timeline-control-strip" class="timeline-controls">
+            <label class="field compact-field timeline-select-field timeline-speed-field">
+              <span>Speed</span>
+              <select id="playback-speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="4" selected>4x</option>
+                <option value="6">6x</option>
+                <option value="8">8x</option>
+                <option value="16">16x</option>
+              </select>
+            </label>
+
+            <label class="field compact-field timeline-select-field timeline-window-field">
+              <span>Window Size</span>
+              <select id="playback-window-size">
+                <option value="30">30 days</option>
+                <option value="90">3 months</option>
+                <option value="365" selected>1 year</option>
+                <option value="1826">5 years</option>
+                <option value="3652">10 years</option>
+                <option value="9126">25 years</option>
+                <option value="18262">50 years</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+
+            <label class="field compact-field timeline-select-field timeline-color-field">
+              <span>Color By</span>
+              <select id="color-mode">
+                <option value="single">Single Color</option>
+                <option value="type">Event Type</option>
+                <option value="craft_type" selected>Craft Type</option>
+                <option value="precision">Location Precision</option>
+              </select>
+            </label>
+
+            <button id="reset-time-range" class="secondary-button icon-button timeline-all-time-button" type="button">All Time</button>
+          </div>
+        </div>
+
+        <div class="timeline-control-row timeline-range-row" aria-label="Timeline range and preset controls">
+          <div class="field compact-field timeline-date-field">
+            <label for="timeline-start-date">Window Start</label>
+            <div class="date-hybrid-control">
+              <input id="timeline-start-date" type="text" inputmode="numeric" autocomplete="off" placeholder="1947 or 1947-07-01" aria-describedby="timeline-date-feedback">
+              <button class="secondary-button date-picker-button" type="button" data-date-picker-target="timeline-start-date-picker" aria-label="Choose Window Start from a calendar" title="Choose an exact start date">Calendar</button>
+              <input id="timeline-start-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="start">
+            </div>
+          </div>
+
+          <div class="field compact-field timeline-date-field">
+            <label for="timeline-end-date">Window End</label>
+            <div class="date-hybrid-control">
+              <input id="timeline-end-date" type="text" inputmode="numeric" autocomplete="off" placeholder="2026 or 1952-07" aria-describedby="timeline-date-feedback">
+              <button class="secondary-button date-picker-button" type="button" data-date-picker-target="timeline-end-date-picker" aria-label="Choose Window End from a calendar" title="Choose an exact end date">Calendar</button>
+              <input id="timeline-end-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="end">
+            </div>
+          </div>
+
+            <label class="field compact-field timeline-preset-field">
+            <span>Rolling Window</span>
+            <select id="timeline-window-presets" class="timeline-preset-select" aria-label="Rolling timeline window presets">
+              <option value="">Custom window</option>
+            </select>
+          </label>
+
+          <label class="field compact-field timeline-preset-field timeline-flap-preset-field">
+            <span>Famous Flaps</span>
+            <select id="timeline-flap-presets" class="timeline-preset-select" aria-label="Famous UFO flap presets">
+              <option value="">Choose flap</option>
+            </select>
+          </label>
+          <p id="timeline-date-feedback" class="date-range-feedback" role="status" aria-live="polite" hidden></p>
+        </div>
+      </div>
+
+      <div id="timeline-footer-panel" class="timeline-footer">
+        <div id="timeline-footer-copy" class="timeline-footer-copy">
+          <p id="playback-status" class="status-copy">Playback paused.</p>
+          <p id="playback-current-event" class="note-copy">Current playback event: none selected.</p>
+        </div>
+        <div id="timeline-footer-actions" class="timeline-footer-actions">
+          <label class="checkbox-field inline-checkbox playback-follow-toggle">
+            <input id="follow-playback-results" type="checkbox" checked>
+            <span>Follow Results</span>
+          </label>
+          <label class="checkbox-field inline-checkbox trail-legend-toggle">
+            <input id="show-trail-legend" type="checkbox">
+            <span>Show Trail Legend</span>
+          </label>
+          <button id="open-current-event" class="secondary-button" type="button" disabled>Open Current Event</button>
+        </div>
+      </div>
+      <div id="trace-controls-panel" class="trace-controls">
+          <div class="trace-toolbar">
+            <label class="field compact-field">
+              <span>Trace Mode</span>
+              <select id="trace-mode">
+                <option value="off">None</option>
+                <option value="playback" selected>Playback</option>
+                <option value="static">Static</option>
+              </select>
+            </label>
+            <label id="trace-persistence-field" class="field compact-field">
+              <span>Playback Persistence</span>
+              <select id="trace-persistence">
+                <option value="normal">Fade</option>
+                <option value="slow">Slow Fade</option>
+                <option value="persistent" selected>Hold</option>
+              </select>
+            </label>
+            <div class="trace-width-control">
+              <label class="field compact-field trace-width-field">
+                <span>Trace Width <output id="trace-width-value" for="trace-width-scale">Auto 100%</output></span>
+                <input id="trace-width-scale" type="range" min="5" max="100" step="5" value="100" aria-label="Trace width scale">
+              </label>
+              <label class="field compact-field trace-boldness-field">
+                <span>Boldness <output id="trace-boldness-value" for="trace-boldness-scale">100%</output></span>
+                <input id="trace-boldness-scale" type="range" min="50" max="180" step="5" value="100" aria-label="Trace boldness scale">
+              </label>
+              <div class="trace-width-preview" aria-hidden="true">
+                <span id="trace-width-preview-line"></span>
+              </div>
+              <div id="trace-width-presets" class="trace-width-presets" role="group" aria-label="Trace width presets">
+                <button class="trace-width-preset-button is-active" type="button" data-trace-width-preset="auto" aria-pressed="true">Auto</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="thin" aria-pressed="false">Thin</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="hairline" aria-pressed="false">Hairline</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="default" aria-pressed="false">Default</button>
+              </div>
+            </div>
+          </div>
+        <div id="trace-bucket-controls" class="trace-bucket-controls" role="group" aria-label="Trace time-gap buckets">
+          <button class="trace-bucket-button is-active" type="button" data-trace-bucket="gap_le_1" aria-pressed="true">&le;1 day</button>
+          <button class="trace-bucket-button is-active" type="button" data-trace-bucket="gap_le_2" aria-pressed="true">&le;2 days</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_le_7" aria-pressed="false">&le;7 days</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_le_30" aria-pressed="false">&le;30 days</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_gt_30" aria-pressed="false">&gt;30 days</button>
+        </div>
+        <div id="trace-facility-filter" class="trace-facility-filter" role="group" aria-label="Trace facility proximity filter">
+          <div class="trace-facility-row">
+            <label class="checkbox-field inline-checkbox trace-facility-toggle">
+              <input id="trace-facility-filter-enabled" type="checkbox">
+              <span>Base/facility proximity</span>
+            </label>
+            <label class="field compact-field trace-facility-radius">
+              <span>Radius km</span>
+              <input id="trace-facility-radius" type="number" min="1" max="1000" step="1" value="5" disabled>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-evidence-row">
+            <label class="field compact-field trace-facility-evidence-field" for="trace-facility-evidence-mode">
+              <span>Proximity evidence</span>
+              <select id="trace-facility-evidence-mode" disabled aria-describedby="trace-facility-evidence-help">
+                <option value="source_coordinates" selected>Source-provided coordinates + exact dates</option>
+                <option value="include_generalized">Include uncertain locations/dates (exploratory)</option>
+              </select>
+            </label>
+            <p id="trace-facility-evidence-help" class="trace-facility-evidence-help">
+              Strict: only source-provided endpoint coordinates with exact event dates are included, and only when the facility's recorded operating period supports that date. Year-only opening or closing years remain uncertain.
+            </p>
+          </div>
+          <div class="trace-facility-row trace-facility-display-options">
+            <label class="trace-facility-chip trace-facility-linked-only">
+              <input id="trace-facility-linked-only" type="checkbox" checked disabled>
+              <span>Only show facilities linked to visible traces</span>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-radius-presets" role="group" aria-label="Trace proximity radius presets">
+            <span class="trace-facility-row-label">Radius</span>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="1" disabled>1 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="2" disabled>2 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="3" disabled>3 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="4" disabled>4 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="5" disabled>5 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="10" disabled>10 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="25" disabled>25 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="100" disabled>100 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="250" disabled>250 km</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="500" disabled>500 km</button>
+          </div>
+          <div class="trace-facility-row trace-facility-category-controls" role="group" aria-label="Trace proximity categories">
+            <span class="trace-facility-row-label">Class</span>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="all" disabled>All</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="none" disabled>None</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:start" disabled>Start only</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:end" disabled>End only</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:between" disabled>Between only</button>
+            <label class="trace-facility-chip trace-facility-chip-start">
+              <input type="checkbox" data-trace-facility-class="start" checked disabled>
+              <span>Start endpoint near facility</span>
+            </label>
+            <label class="trace-facility-chip trace-facility-chip-end">
+              <input type="checkbox" data-trace-facility-class="end" checked disabled>
+              <span>End endpoint near facility</span>
+            </label>
+            <label class="trace-facility-chip trace-facility-chip-between">
+              <input type="checkbox" data-trace-facility-class="between" checked disabled>
+              <span>Both endpoints near facilities</span>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-advanced" role="group" aria-label="Advanced connector intersection">
+            <span class="trace-facility-row-label">Advanced</span>
+            <label class="trace-facility-chip trace-facility-chip-passes">
+              <input type="checkbox" data-trace-facility-class="passes" disabled>
+              <span>Connector intersects facility radius</span>
+            </label>
+            <span class="trace-facility-advanced-note">Exploratory geometry only; the connector is not an observed path.</span>
+          </div>
+          <div class="trace-facility-row trace-facility-source-controls" role="group" aria-label="Trace proximity facility sources">
+            <span class="trace-facility-row-label">Sources</span>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="all" disabled>All</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="none" disabled>None</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:military" disabled>Military only</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:researchSites" disabled>Research only</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:claimedUfoBases" disabled>Claimed only</button>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="military" checked disabled>
+              <span>Military</span>
+            </label>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="researchSites" checked disabled>
+              <span>Research</span>
+            </label>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="claimedUfoBases" disabled>
+              <span>Claimed UFO (unverified)</span>
+            </label>
+          </div>
+          <p class="trace-facility-truth-note">Chronology lines connect records in date order; they are not observed travel paths.</p>
+        </div>
+        <p id="trace-status" class="trace-status" aria-live="polite"></p>
+      </div>
+      </div>
+      </div>
+    </section>
+
+    <section id="detail-stage" class="detail-stage" aria-live="polite">
+      <div class="detail-stage-header">
+        <div>
+          <p class="eyebrow">Full Event View</p>
+          <h2 id="detail-stage-title">Full preserved event record</h2>
+        </div>
+        <div class="panel-header-actions">
+          <button id="toggle-detail-panel" class="secondary-button panel-toggle-button" type="button" aria-expanded="true">Minimize</button>
+        </div>
+      </div>
+      <p id="detail-panel-collapsed-note" class="note-copy panel-collapsed-note" hidden>Full Event View is minimized. Select any event again to reopen the preserved record.</p>
+      <div id="detail-stage-body">
+        <div id="detail-panel" class="detail-panel detail-panel-stage">
+          <p class="note-copy">Select a marker or result to inspect the full preserved event record.</p>
+        </div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <div id="filters-pane-shell" class="side-pane side-pane-left">
+      <aside class="controls-panel">
+        <div class="side-pane-toolbar">
+          <button
+            id="toggle-filters-pane"
+            class="secondary-button panel-toggle-button compact-toggle-button"
+            type="button"
+            aria-expanded="true"
+            aria-label="Collapse filters"
+            title="Collapse filters"
+          >-</button>
+        </div>
+        <section id="primary-filters-section" class="panel-section primary-filters-section">
+          <div id="primary-filters-heading-row" class="section-heading-row primary-filters-heading-row">
+            <div class="primary-filters-heading-copy">
+              <h2>Filters</h2>
+              <span id="primary-filters-flap-status" class="primary-filters-flap-status" aria-live="polite">Flap: None</span>
+            </div>
+            <button
+              id="toggle-primary-filters"
+              class="secondary-button subsection-toggle-button compact-toggle-button primary-filters-toggle-button"
+              type="button"
+              aria-expanded="true"
+              aria-label="Collapse filters"
+              title="Collapse filters"
+            >-</button>
+          </div>
+          <div id="primary-filters-body" class="primary-filters-body">
+            <label class="field">
+              <span>Keyword Search</span>
+              <input id="keyword-search" type="search" placeholder="Search raw blocks, descriptions, references, extra data">
+            </label>
+            <p id="search-status" class="status-copy compact-status" hidden></p>
+            <div class="two-column filter-date-grid">
+              <div class="field">
+                <label for="start-date">Start Date</label>
+                <div class="date-hybrid-control">
+                  <input id="start-date" type="text" inputmode="numeric" autocomplete="off" placeholder="1947 or 1947-07-01" aria-describedby="filter-date-feedback">
+                  <button class="secondary-button date-picker-button" type="button" data-date-picker-target="start-date-picker" aria-label="Choose Start Date from a calendar" title="Choose an exact start date">Calendar</button>
+                  <input id="start-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="start">
+                </div>
+              </div>
+              <div class="field">
+                <label for="end-date">End Date</label>
+                <div class="date-hybrid-control">
+                  <input id="end-date" type="text" inputmode="numeric" autocomplete="off" placeholder="2026 or 1952-07" aria-describedby="filter-date-feedback">
+                  <button class="secondary-button date-picker-button" type="button" data-date-picker-target="end-date-picker" aria-label="Choose End Date from a calendar" title="Choose an exact end date">Calendar</button>
+                  <input id="end-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="end">
+                </div>
+              </div>
+            </div>
+            <p id="filter-date-feedback" class="date-range-feedback" role="status" aria-live="polite" hidden></p>
+            <div class="filter-date-quick-actions" aria-label="Date window quick actions">
+              <button id="filter-all-time" class="secondary-button compact-chip-button" type="button">All Time</button>
+              <label class="field compact-field filter-date-quick-select">
+                <span class="sr-only">Famous Flaps</span>
+                <select id="filter-flap-presets" aria-label="Famous flaps quick action">
+                  <option value="">Famous Flaps</option>
+                </select>
+              </label>
+            </div>
+            <label class="checkbox-field">
+              <input id="hide-low-precision" type="checkbox">
+              <span>Hide low-precision coordinates (country, state/province, approximate, and unknown)</span>
+            </label>
+            <label class="checkbox-field">
+              <input id="hide-non-exact-dates" type="checkbox" checked>
+              <span>Hide month/year-only and other non-exact dates</span>
+            </label>
+          </div>
+        </section>
+
+        <section id="map-settings-section" class="panel-section">
+          <h2>Map</h2>
+          <div class="overlay-panel">
+            <div class="panel-heading-row panel-heading-row-compact">
+              <h3>Map Overlays</h3>
+            </div>
+            <div class="overlay-chip-group" role="group" aria-label="Map overlays">
+              <button id="overlay-airports" class="overlay-chip" data-overlay-id="airports" data-overlay-kind="airports" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span>Airports</span>
+              </button>
+              <button id="overlay-highways" class="overlay-chip" data-overlay-id="highways" data-overlay-kind="highways" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span>Highways</span>
+              </button>
+              <button id="overlay-military" class="overlay-chip" data-overlay-id="military" data-overlay-kind="military" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span>Military bases</span>
+              </button>
+            </div>
+            <div id="military-branch-panel" class="overlay-subpanel" hidden>
+              <div class="panel-heading-row panel-heading-row-compact">
+                <h4>Military Branch</h4>
+              </div>
+              <div class="overlay-chip-group overlay-chip-group-branches" role="group" aria-label="Military base branches">
+                <button id="overlay-military-air" class="overlay-chip overlay-chip-branch" data-military-branch="air" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-air" aria-hidden="true"></span>
+                  <span>Air</span>
+                </button>
+                <button id="overlay-military-naval" class="overlay-chip overlay-chip-branch" data-military-branch="naval" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-naval" aria-hidden="true"></span>
+                  <span>Naval</span>
+                </button>
+                <button id="overlay-military-army" class="overlay-chip overlay-chip-branch" data-military-branch="army" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-army" aria-hidden="true"></span>
+                  <span>Army</span>
+                </button>
+                <button id="overlay-military-other" class="overlay-chip overlay-chip-branch" data-military-branch="other" type="button" aria-pressed="false">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-other" aria-hidden="true"></span>
+                  <span>Other</span>
+                </button>
+              </div>
+              <p id="military-branch-status" class="note-copy compact-status">Military overlay is off. Turn it on to inspect global installations by branch.</p>
+            </div>
+            <div class="overlay-chip-group" role="group" aria-label="Map overlays secondary">
+              <button id="overlay-research-sites" class="overlay-chip" data-overlay-id="researchSites" data-overlay-kind="research-sites" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span>Research Sites</span>
+              </button>
+            </div>
+            <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
+              <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
+                <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-claimed-bases" aria-hidden="true"></span>
+                  <span>Show UFO sites</span>
+                </button>
+                <div id="claimed-ufo-bases-traces-row" class="overlay-claimed-bases-traces-row" hidden>
+                  <button id="overlay-claimed-ufo-bases-traces" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-traces" type="button" aria-pressed="false">
+                    <span class="overlay-chip-swatch overlay-chip-swatch-trace" aria-hidden="true"></span>
+                    <span>Show site traces</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div hidden aria-hidden="true">
+              <p id="tile-status"></p>
+              <p id="overlay-status"></p>
+            </div>
+          </div>
+          <div class="overlay-panel overlay-panel-display">
+            <div class="panel-heading-row panel-heading-row-compact">
+              <h3>Map Display</h3>
+            </div>
+            <div class="map-settings-mode-row">
+              <label class="field compact-field">
+                <span>Basemap</span>
+                <select id="basemap-mode"></select>
+              </label>
+              <label class="field compact-field">
+                <span>Mode</span>
+                <select id="map-mode">
+                  <option value="auto">Auto</option>
+                  <option value="points">Points</option>
+                  <option value="clusters">Clusters</option>
+                  <option value="heatmap" selected>Heatmap</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div id="legend-panel" class="legend" hidden>
+            <div class="legend-head">
+              <span id="legend-title" class="legend-title">Legend</span>
+            </div>
+            <div id="legend-body" class="legend-body"></div>
+          </div>
+          <button id="fit-results" class="fit-button" type="button">Fit Map To Filtered Results</button>
+        </section>
+
+        <section id="categories-section" class="panel-section collapsible-panel-section" data-collapsible-section="categories">
+          <div class="section-heading-row">
+            <h2>Categories</h2>
+            <button id="toggle-categories-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="categories" aria-expanded="true" aria-label="Collapse categories" title="Collapse categories">-</button>
+          </div>
+          <div id="categories-section-body" class="collapsible-section-body" data-collapsible-section-body="categories">
+            <div class="field filter-field filter-subsection" data-collapsible-section="source">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Source</span>
+                <button id="toggle-source-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="source" aria-expanded="true" aria-label="Collapse source" title="Collapse source">-</button>
+              </div>
+              <div id="source-section-body" class="collapsible-section-body" data-collapsible-section-body="source">
+                <div class="filter-actions" data-filter-target="source-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                  </div>
+                  <span id="source-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="source-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="source-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Source filter options"></div>
+              </div>
+            </div>
+            <div class="field filter-field filter-subsection" data-collapsible-section="type">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Type</span>
+                <button id="toggle-type-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="type" aria-expanded="true" aria-label="Collapse type" title="Collapse type">-</button>
+              </div>
+              <div id="type-section-body" class="collapsible-section-body" data-collapsible-section-body="type">
+                <div class="filter-actions" data-filter-target="type-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                    <button class="filter-action-button" type="button" data-filter-action="craft_only">Craft Only</button>
+                  </div>
+                  <span id="type-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="type-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="type-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Type filter options"></div>
+              </div>
+            </div>
+            <div class="field filter-field filter-subsection" data-collapsible-section="precision">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Location Precision</span>
+                <button id="toggle-precision-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="precision" aria-expanded="true" aria-label="Collapse location precision" title="Collapse location precision">-</button>
+              </div>
+              <div id="precision-section-body" class="collapsible-section-body" data-collapsible-section-body="precision">
+                <div class="filter-actions" data-filter-target="precision-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                  </div>
+                  <span id="precision-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="precision-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="precision-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Location precision filter options"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <h2>Reports</h2>
+          <p class="note-copy">
+            Ranked unresolved locations: <a href="./reports/ranked_unresolved_locations.csv">CSV</a> |
+            <a href="./reports/ranked_unresolved_locations.json">JSON</a>
+          </p>
+          <p class="note-copy">
+            Full unresolved export: <a href="./reports/unresolved_locations.csv">CSV</a> |
+            <a href="./reports/unresolved_locations.json">JSON</a>
+          </p>
+        </section>
+      </aside>
+      <button id="expand-filters-pane" class="side-pane-restore side-pane-restore-left" type="button" hidden aria-expanded="false">Show Filters</button>
+      </div>
+
+      <section class="map-panel">
+        <div id="mobile-primary-filters-shell" class="mobile-primary-filters-shell" hidden>
+          <div id="mobile-primary-filters-slot" class="mobile-primary-filters-slot"></div>
+        </div>
+        <div class="map-surface">
+          <aside id="map-control-cluster" class="map-control-cluster" aria-label="Map-adjacent controls">
+            <div id="map-control-cluster-handle" class="map-control-cluster-handle">
+              <div class="map-control-cluster-heading" hidden aria-hidden="true"></div>
+              <div class="map-control-cluster-header-actions">
+                <div class="map-control-header-playback" role="group" aria-label="Playback controls">
+                  <button
+                    id="cluster-header-playback-prev"
+                    class="secondary-button compact-media-button"
+                    type="button"
+                    aria-label="Previous playback event"
+                    title="Previous playback event"
+                  >&#x23EE;</button>
+                  <button
+                    id="cluster-header-play-pause"
+                    class="secondary-button compact-media-button compact-media-button-primary"
+                    type="button"
+                    aria-label="Play playback"
+                    title="Play playback"
+                  >&#x25B6;</button>
+                  <button
+                    id="cluster-header-playback-next"
+                    class="secondary-button compact-media-button"
+                    type="button"
+                    aria-label="Next playback event"
+                    title="Next playback event"
+                  >&#x23ED;</button>
+                  <label class="map-control-header-speed" aria-label="Playback speed">
+                    <select id="cluster-playback-speed" title="Playback speed">
+                      <option value="0.25">0.25x</option>
+                      <option value="0.5">0.5x</option>
+                      <option value="1">1x</option>
+                      <option value="2">2x</option>
+                      <option value="4" selected>4x</option>
+                      <option value="6">6x</option>
+                      <option value="8">8x</option>
+                      <option value="16">16x</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="map-control-quick-controls" role="group" aria-label="Quick controls">
+                  <button
+                    id="cluster-quick-map-mode"
+                    class="secondary-button map-control-quick-button map-control-quick-button-map"
+                    type="button"
+                    data-state="points"
+                    aria-label="Cycle map mode"
+                    title="Cycle map mode"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <g class="quick-map-glyph quick-map-glyph-points">
+                        <circle cx="7" cy="8" r="2.2"></circle>
+                        <circle cx="15.5" cy="7.5" r="2"></circle>
+                        <circle cx="11.5" cy="15.5" r="2.4"></circle>
+                      </g>
+                      <g class="quick-map-glyph quick-map-glyph-heat">
+                        <circle cx="9" cy="10" r="4.4"></circle>
+                        <circle cx="15.5" cy="8.5" r="2.7"></circle>
+                        <circle cx="14" cy="15.5" r="3.6"></circle>
+                      </g>
+                      <g class="quick-map-glyph quick-map-glyph-clusters">
+                        <rect x="4.8" y="5.2" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="13" y="5.2" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="4.8" y="13.4" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="13" y="13.4" width="6.2" height="6.2" rx="1.4"></rect>
+                      </g>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-military"
+                    class="secondary-button map-control-quick-button map-control-quick-button-military"
+                    type="button"
+                    aria-label="Toggle military bases overlay"
+                    title="Toggle military bases overlay"
+                    aria-pressed="false"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M12 3 18.2 5.6v6.1c0 4.1-2.4 7.9-6.2 9.9-3.8-2-6.2-5.8-6.2-9.9V5.6L12 3Z"></path>
+                      <path d="M8.2 9.2h7.6M9.2 12h5.6M10.1 14.8h3.8" class="quick-military-detail"></path>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-research-sites"
+                    class="secondary-button map-control-quick-button map-control-quick-button-research"
+                    type="button"
+                    aria-label="Toggle Research Sites overlay"
+                    title="Toggle Research Sites overlay"
+                    aria-pressed="false"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M9 3h6M10 3v4.2l-4.3 7.3a3 3 0 0 0 2.6 4.5h7.4a3 3 0 0 0 2.6-4.5L14 7.2V3"></path>
+                      <path d="M8.2 13.4h7.6M9.4 10.7h5.2" class="quick-research-detail"></path>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-trace"
+                    class="secondary-button map-control-quick-button map-control-quick-button-trace"
+                    type="button"
+                    data-state="none"
+                    aria-label="Cycle trace mode"
+                    title="Cycle trace mode"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="8.2" class="quick-trace-ring"></circle>
+                      <path d="M10 8.8 15.4 12 10 15.2Z" class="quick-trace-play"></path>
+                      <circle cx="12" cy="12" r="3.9" class="quick-trace-static"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <div class="map-control-proximity-control" role="group" aria-label="Facility proximity quick setting">
+                  <button
+                    id="cluster-quick-facility-proximity"
+                    class="secondary-button map-control-proximity-button"
+                    type="button"
+                    data-state="off"
+                    aria-pressed="false"
+                    aria-controls="trace-facility-filter-enabled trace-facility-radius"
+                    aria-label="Facility proximity quick cycle. Current: Off. Next: 3 kilometers."
+                    title="Facility proximity is off. Click to enable at 3 kilometers."
+                  >
+                    <svg class="map-control-proximity-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="7.5"></circle>
+                      <circle cx="12" cy="12" r="2.5"></circle>
+                      <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"></path>
+                    </svg>
+                    <span class="map-control-proximity-label">Facility proximity</span>
+                    <span id="cluster-quick-facility-value" class="map-control-proximity-value" aria-hidden="true">Off</span>
+                  </button>
+                </div>
+                <div id="map-quick-control-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+                <button
+                  id="toggle-map-control-cluster"
+                  class="secondary-button panel-toggle-button map-control-collapse-button"
+                  type="button"
+                  aria-expanded="true"
+                  aria-label="Collapse controls"
+                  title="Collapse controls"
+                >-</button>
+              </div>
+            </div>
+            <div id="map-control-cluster-body" class="map-control-cluster-body">
+              <details id="map-control-section-overlay" class="map-control-section" data-map-control-section="overlay">
+                <summary>Overlays + View</summary>
+                <div id="map-control-overlay-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-trace" class="map-control-section" data-map-control-section="trace">
+                <summary>Trace</summary>
+                <div id="map-control-trace-slot" class="map-control-slot"></div>
+              </details>
+              <div class="map-control-action-row">
+                <button id="clear-traces" class="secondary-button map-control-action-button map-control-action-button-secondary" type="button">Clear Trace</button>
+                <button id="reset-view" class="secondary-button reset-view-button map-control-action-button" type="button">Reset Map</button>
+              </div>
+            </div>
+            <div
+              id="map-control-cluster-resize-handle"
+              class="map-control-cluster-resize-handle"
+              role="separator"
+              aria-label="Resize controls panel"
+              aria-orientation="vertical"
+            >
+              <span class="map-control-cluster-resize-grip" aria-hidden="true"></span>
+            </div>
+          </aside>
+          <div id="map"></div>
+          <div id="map-startup-overlay" class="map-startup-overlay" aria-live="polite">
+            <div class="map-startup-card">
+              <p class="eyebrow map-startup-eyebrow">Loading Default View</p>
+              <strong id="map-startup-title" class="map-startup-title">Preparing 1954 France Sept-Nov</strong>
+              <p id="map-startup-detail" class="map-startup-detail">Loading the France flap, facility overlays, and static trace view.</p>
+              <div class="map-startup-progress" aria-hidden="true">
+                <div class="map-startup-progress-track">
+                  <div id="map-startup-progress-fill" class="map-startup-progress-fill"></div>
+                </div>
+                <span id="map-startup-progress-label" class="map-startup-progress-label">0%</span>
+              </div>
+            </div>
+          </div>
+          <div id="area-selection-draw-surface" class="area-selection-draw-surface" hidden aria-hidden="true"></div>
+          <div id="map-legend-panel" class="map-legend">
+            <div class="map-legend-head">
+              <strong class="map-legend-title">Legend</strong>
+              <button
+                id="reset-map-legend"
+                class="map-legend-reset-button"
+                type="button"
+                aria-label="Reset legend event filters and overlays"
+                title="Reset legend event filters and overlays"
+              ><span aria-hidden="true">&#x21BA;</span></button>
+              <button
+                id="toggle-map-legend"
+                class="secondary-button panel-toggle-button compact-toggle-button"
+                type="button"
+                aria-expanded="true"
+                aria-label="Collapse map legend"
+                title="Collapse map legend"
+              >-</button>
+            </div>
+            <span id="map-legend-status" class="sr-only" role="status" aria-live="polite"></span>
+            <div id="map-legend-body" class="map-legend-body"></div>
+          </div>
+          <div id="area-selection-shell" class="area-selection-shell">
+            <button
+              id="toggle-area-selection"
+              class="secondary-button area-selection-toggle"
+              type="button"
+              aria-pressed="false"
+              title="Area Select"
+            >Area Select</button>
+            <section id="area-selection-panel" class="area-selection-panel" hidden aria-live="polite">
+              <div class="area-selection-panel-head">
+                <strong class="area-selection-panel-title">Area Filter</strong>
+                <span id="area-selection-summary" class="area-selection-summary">0 regions</span>
+              </div>
+              <div id="area-selection-empty-state" class="area-selection-empty-state" hidden>No sightings or traces selected.</div>
+              <div class="area-selection-tool-row" role="group" aria-label="Area selection drawing tools">
+                <button
+                  id="area-selection-tool-rectangle"
+                  class="secondary-button area-selection-tool-button"
+                  type="button"
+                  aria-pressed="true"
+                  title="Draw rectangle selection"
+                >Rect</button>
+                <button
+                  id="area-selection-tool-circle"
+                  class="secondary-button area-selection-tool-button"
+                  type="button"
+                  aria-pressed="false"
+                  title="Draw circle selection"
+                >Circle</button>
+                <button
+                  id="exit-area-selection"
+                  class="secondary-button area-selection-tool-button area-selection-tool-button-exit"
+                  type="button"
+                  title="Exit Area Select mode"
+                >Exit</button>
+              </div>
+              <div class="area-selection-action-row" role="group" aria-label="Area selection actions">
+                <button id="undo-area-selection" class="secondary-button area-selection-action-button" type="button">Undo</button>
+                <button id="clear-area-selection" class="secondary-button area-selection-action-button" type="button">Clear</button>
+              </div>
+              <div class="chronological-neighborhood-controls" aria-labelledby="chronological-neighborhood-title">
+                <p id="chronological-neighborhood-title" class="area-selection-option-heading">Chronological Neighborhood</p>
+                <div class="chronological-neighborhood-control-grid">
+                  <label class="field compact-field">
+                    <span>Depth</span>
+                    <select id="area-selection-depth" aria-label="Chronological Neighborhood depth">
+                      <option value="1" selected>1 hop</option>
+                      <option value="2">2 hops</option>
+                      <option value="3">3 hops</option>
+                      <option value="4">4 hops</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Direction</span>
+                    <select id="area-selection-direction" aria-label="Chronological Neighborhood direction">
+                      <option value="forward" selected>Forward</option>
+                      <option value="backward">Backward</option>
+                      <option value="both">Both</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="chronological-neighborhood-disclaimer">Exploratory chronological adjacency under the current filters only. It is not evidence of travel or that adjacent sightings involved the same craft.</p>
+              </div>
+              <div class="area-selection-option-group">
+                <p class="area-selection-option-heading">Select</p>
+                <label class="area-selection-check">
+                  <input id="area-selection-select-traces" type="checkbox" checked>
+                  <span>Traces intersecting areas</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-select-events" type="checkbox">
+                  <span>Sightings inside areas</span>
+                </label>
+              </div>
+              <div class="area-selection-option-group">
+                <p class="area-selection-option-heading">Show</p>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-selected-traces" type="checkbox" checked>
+                  <span>Selected traces</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-events-from-traces" type="checkbox" checked>
+                  <span>Sightings from traces</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-selected-events" type="checkbox">
+                  <span>Selected sightings</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-traces-from-events" type="checkbox">
+                  <span>Traces from sightings</span>
+                </label>
+              </div>
+            </section>
+          </div>
+          <section id="chronological-neighborhood-inspector" class="chronological-neighborhood-inspector" hidden aria-label="Chronological adjacency inspector" aria-live="polite">
+            <div class="chronological-neighborhood-inspector-head">
+              <strong>Chronological Adjacency</strong>
+              <button id="chronological-neighborhood-inspector-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="chronological-neighborhood-inspector-body" class="chronological-neighborhood-inspector-body"></div>
+          </section>
+          <div id="map-playback-date-badge" class="map-playback-date-badge" hidden></div>
+          <div id="map-description-panel" class="map-description-panel" hidden>
+            <div class="map-description-shell">
+              <div class="map-description-head">
+                <strong class="map-description-title">Event Description</strong>
+                <button id="map-description-close" class="secondary-button map-description-close" type="button">Close</button>
+              </div>
+              <pre id="map-description-text" class="map-description-text"></pre>
+              <div class="map-description-actions">
+                <button id="map-description-open-details" class="secondary-button" type="button">Open Full Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="map-height-resize-rail"
+          class="map-height-resize-rail"
+          role="separator"
+          tabindex="0"
+          aria-label="Resize map height"
+          aria-orientation="horizontal"
+          aria-controls="map map-control-cluster map-legend-panel"
+          aria-valuemin="0"
+          aria-valuemax="2400"
+          aria-valuenow="0"
+          title="Drag down to make the map taller. The default map height is the minimum. Double-click to reset."
+          hidden
+        >
+          <span class="map-height-resize-grip" aria-hidden="true"></span>
+          <span id="map-height-resize-label" class="map-height-resize-label">Drag down to expand map</span>
+        </div>
+        <div id="map-timeline-dock" class="map-timeline-dock"></div>
+      </section>
+
+      <div
+        id="side-column-resize-rail"
+        class="side-column-resize-rail"
+        role="separator"
+        aria-label="Resize filters and results column"
+        aria-orientation="vertical"
+        hidden
+      >
+        <span class="side-column-resize-grip" aria-hidden="true"></span>
+      </div>
+
+      <div id="results-pane-shell" class="side-pane side-pane-right">
+      <aside class="inspector-panel">
+        <section class="panel-section results-panel-section">
+          <div class="panel-heading-row panel-heading-row-compact results-heading-row">
+            <div class="results-heading-inline">
+              <h2>Results</h2>
+              <span id="result-summary" class="results-count-pill" aria-live="polite">0</span>
+            </div>
+            <div class="panel-heading-controls results-heading-controls">
+              <label class="field compact-field panel-inline-field results-sort-field">
+                <span class="sr-only">Sort results</span>
+                <select id="results-sort">
+                  <option value="date_desc">Date (newest first)</option>
+                  <option value="date_asc" selected>Date (oldest first)</option>
+                  <option value="location_asc">Location (A-Z)</option>
+                </select>
+              </label>
+              <button
+                id="toggle-results-pane"
+                class="secondary-button panel-toggle-button compact-toggle-button"
+                type="button"
+                aria-expanded="true"
+                aria-label="Collapse results"
+                title="Collapse results"
+              >-</button>
+            </div>
+          </div>
+          <div id="results-area-filter-indicator" class="results-area-filter-indicator" hidden>
+            <span id="results-area-filter-text">Area filter active</span>
+            <button id="results-area-filter-clear" class="secondary-button results-area-filter-clear" type="button">Clear</button>
+          </div>
+          <div id="result-list" class="result-list"></div>
+        </section>
+      </aside>
+      <button id="expand-results-pane" class="side-pane-restore side-pane-restore-right" type="button" hidden aria-expanded="false">Show Results</button>
+      </div>
+    </main>
+
+    <section id="startup-panel" class="startup-panel" aria-live="polite">
+      <div class="startup-header">
+        <div>
+          <p class="eyebrow">Startup Diagnostics</p>
+          <h2>Hosted Data Loader</h2>
+        </div>
+        <p id="startup-overview" class="status-copy">Preparing startup checks...</p>
+      </div>
+      <div class="startup-progress">
+        <div class="startup-progress-track">
+          <div id="startup-progress-fill" class="startup-progress-fill"></div>
+        </div>
+        <span id="startup-progress-label" class="startup-progress-label">0%</span>
+      </div>
+      <div class="startup-metrics">
+        <div class="startup-metric">
+          <span class="startup-metric-label">Phase</span>
+          <strong id="startup-phase">Idle</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Manifests</span>
+          <strong id="startup-manifest-status">Waiting</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Catalog Shards</span>
+          <strong id="startup-catalog-shards">0 / 0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Catalog Events</span>
+          <strong id="startup-catalog-events">0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Mapped Loaded</span>
+          <strong id="startup-mapped-events">0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Full Event Chunks</span>
+          <strong id="startup-full-chunks">0 / 0</strong>
+        </div>
+      </div>
+      <div class="startup-meta">
+        <p class="status-copy"><strong>Last URL:</strong> <span id="startup-last-url">Waiting...</span></p>
+        <p id="startup-error" class="startup-error" hidden></p>
+      </div>
+    </section>
+    <script id="startup-timing-export" type="application/json"></script>
+    <button
+      id="back-to-top"
+      class="secondary-button back-to-top-button"
+      type="button"
+      hidden
+      aria-label="Back to top"
+      title="Back to top"
+    >&#x2191;</button>
+  </div>
+
+  <script src="./vendor/leaflet.js"></script>
+  <script src="./vendor/leaflet.markercluster.js"></script>
+  <script src="./trace_neighborhood.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./app.js?v=2026-07-31-area-lifecycle-v154"></script>
+</body>
+</html>

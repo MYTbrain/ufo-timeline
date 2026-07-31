@@ -1,0 +1,44 @@
+inputs:
+  files:
+    - ufos up to 1949.txt
+    - ufos 1950_1959.txt
+    - ufos 1960_1969.txt
+    - ufos 1970_1979.txt
+    - ufos 1980_Present.txt
+
+outputs:
+  normalized_events: data/normalized_events.json
+  map_events: data/map_events.json
+  unresolved_locations_json: data/reports/unresolved_locations.json
+  unresolved_locations_csv: data/reports/unresolved_locations.csv
+  ranked_unresolved_locations_json: data/reports/ranked_unresolved_locations.json
+  ranked_unresolved_locations_csv: data/reports/ranked_unresolved_locations.csv
+  parse_failures: data/reports/parse_failures.jsonl
+  geocode_failures: data/reports/geocode_failures.jsonl
+  manual_overrides: data/manual_location_overrides.json
+  static_bundle_dir: static_bundle
+
+geocoder:
+  enabled: true
+  provider: nominatim
+  endpoint: https://nominatim.openstreetmap.org/search
+  user_agent: ufo-timeline-map-tool/1.0
+  email: null
+  language: en
+  country_codes: []
+  rate_limit_seconds: 1.1
+  timeout_seconds: 25
+  query_limit_per_run: 250
+  confidence_threshold: 0.15
+  description_fallback_enabled: true
+
+cache:
+  geocode_cache: cache/geocode_cache.jsonl
+
+web:
+  host: 127.0.0.1
+  port: 8000
+  tile_url: https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png
+  tile_attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  initial_center: [20, 0]
+  initial_zoom: 3

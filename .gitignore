@@ -1,0 +1,48 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+config.yaml
+config.local.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.python_packages/
+.venv/
+venv/
+
+# Node and Cloudflare local state
+node_modules/
+.wrangler/
+
+# Editor and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local logs, processes, and scratch work
+*.log
+*.pid
+.tmp/
+.tmp_*
+tmp/
+backups/
+cache/
+live_probe/
+
+# Generated datasets, packaged transfers, and deployment bundles
+data/
+UFO Databases/
+share_packages/
+cloudflare_bundle*/
+static_bundle*/
+canonical_web_static_payload_manifest.json
+*.zip
+
+# Large source/reference corpora retained outside Git
+ufos *.txt
+*.pdf

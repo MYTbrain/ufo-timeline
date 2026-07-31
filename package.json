@@ -1,0 +1,25 @@
+{
+  "name": "ufo-timeline-map-tool",
+  "version": "1.0.0",
+  "description": "Local parser + map explorer for the UFO/UAP chronology text files in this workspace. The project preserves every event block, logs anything ambiguous or weakly parsed, writes normalized JSON outputs, and serves an interactive Leaflet map for the map-ready subset.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "cf:login": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_login.ps1",
+    "cf:whoami": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_whoami.ps1",
+    "cf:bundle:validate": "python scripts\\validate_cloudflare_bundle.py --bundle-root cloudflare_bundle_r2",
+    "cf:r2:upload": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_upload_r2.ps1",
+    "cf:pages:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_pages.ps1",
+    "cf:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_public.ps1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "wrangler": "^4.95.0"
+  }
+}

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UFO Timeline Feature Verification</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f5efe2;
+      color: #2b2017;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 24px;
+    }
+
+    .note {
+      margin: 0 0 16px;
+      color: #5f554f;
+    }
+
+    iframe {
+      width: 1600px;
+      height: 1100px;
+      border: 1px solid rgba(43, 32, 23, 0.16);
+      background: white;
+    }
+
+    pre {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(43, 32, 23, 0.12);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .pass {
+      color: #156e4d;
+    }
+
+    .fail {
+      color: #9d3120;
+    }
+  </style>
+</head>
+<body>
+  <h1>Timeline + Map Feature Verification</h1>
+  <p class="note">This page loads the hosted static app in an iframe and exercises synchronized time controls, layout changes, overlay wiring, playback, and explicit detail-view behavior in the deployable static bundle.</p>
+  <iframe id="app-frame" src="./index.html" title="UFO Timeline App"></iframe>
+  <pre id="report">Waiting for app startup...</pre>
+
+  <script>
+    (function () {
+      const iframe = document.getElementById("app-frame");
+      const report = document.getElementById("report");
+
+      function setReport(lines) {
+        report.innerHTML = lines.join("\n");
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function line(label, value, passed) {
+        const statusClass = passed == null ? "" : (passed ? "pass" : "fail");
+        const prefix = passed == null ? "[INFO]" : passed ? "[PASS]" : "[FAIL]";
+        return '<span class="' + statusClass + '">' + prefix + " " + escapeHtml(label) + ": " + escapeHtml(value) + "</span>";
+      }
+
+      function wait(ms) {
+        return new Promise(function (resolve) {
+          window.setTimeout(resolve, ms);
+        });
+      }
+
+      async function waitFor(check, timeoutMs, intervalMs) {
+        const started = Date.now();
+        const timeout = timeoutMs || 120000;
+        const interval = intervalMs || 100;
+        while ((Date.now() - started) < timeout) {
+          const value = check();
+          if (value) {
+            return value;
+          }
+          await wait(interval);
+        }
+        throw new Error("Timed out while waiting for a browser condition.");
+      }
+
+      function parseCount(value) {
+        return Number(String(value || "").replace(/,/g, "")) || 0;
+      }
+
+      function isPlaceholderLocationText(value) {
+        return /^(unknown location|unknown|no location|not specified|unresolved)$/i.test(String(value || "").trim());
+      }
+
+      function overlayVisualCount(doc) {
+        return (
+          doc.querySelectorAll("#map .leaflet-overlay-pane path").length +
+          doc.querySelectorAll("#map .overlay-marker-icon").length
+        );
+      }
+
+      function firstOverlayPointMarker(doc, overlayId) {
+        const suffix = overlayId ? ".overlay-marker-icon-" + overlayId : "";
+        return doc.querySelector("#map .leaflet-marker-pane .overlay-marker-icon" + suffix);
+      }
+
+      function dispatch(win, target, type, props) {
+        const detail = Object.assign({ bubbles: true, cancelable: true, view: win }, props || {});
+        let event;
+        if (type.indexOf("pointer") === 0 && typeof win.PointerEvent === "function") {
+          event = new win.PointerEvent(type, detail);
+        } else if (type === "wheel" && typeof win.WheelEvent === "function") {
+          event = new win.WheelEvent(type, detail);
+        } else if (type === "click" && typeof win.MouseEvent === "function") {
+          event = new win.MouseEvent(type, detail);
+        } else {
+          event = new win.Event(type, detail);
+        }
+        target.dispatchEvent(event);
+      }
+
+      async function runVerification() {
+        const lines = [];
+        setReport([line("Startup", "waiting for iframe load", null)]);
+
+        await waitFor(function () {
+          return iframe.contentDocument && iframe.contentDocument.readyState === "complete";
+        }, 30000, 50);
+
+        const doc = iframe.contentDocument;
+        const win = iframe.contentWindow;
+        const debugApi = win.__UFO_TIMELINE_DEBUG__ || null;
+
+        await waitFor(function () {
+          const phaseEl = doc.querySelector("#startup-phase");
+          return phaseEl && /Ready|Failed/.test(phaseEl.textContent || "");
+        }, 240000, 200);
+
+        const phase = (doc.querySelector("#startup-phase") || {}).textContent || "Unknown";
+        lines.push(line("Startup phase", phase, phase === "Ready"));
+        if (phase !== "Ready") {
+          lines.push(line("Startup error", (doc.querySelector("#startup-error") || {}).textContent || "Unknown failure", false));
+          setReport(lines);
+          return;
+        }
+
+        const startupTiming = debugApi && typeof debugApi.getStartupTimingSummary === "function"
+          ? debugApi.getStartupTimingSummary()
+          : null;
+        if (startupTiming && startupTiming.milestones) {
+          const firstUsable = startupTiming.milestones["time to first usable render"];
+          const readyAt = startupTiming.milestones["time to Ready"];
+          const dominantStep = startupTiming.dominantStep
+            ? startupTiming.dominantStep.name + " (" + Number(startupTiming.dominantStep.duration || 0).toFixed(2) + " ms)"
+            : "n/a";
+          lines.push(line(
+            "Startup timings",
+            "first usable " + Number(firstUsable || 0).toFixed(2) + " ms | ready " + Number(readyAt || 0).toFixed(2) + " ms | dominant " + dominantStep,
+            Number.isFinite(firstUsable) && Number.isFinite(readyAt)
+          ));
+          if (Array.isArray(startupTiming.steps)) {
+            startupTiming.steps.forEach(function (entry) {
+              lines.push(line("Startup step", entry.name + " = " + Number(entry.duration || 0).toFixed(2) + " ms", null));
+            });
+          }
+        }
+
+        const totalCount = parseCount((doc.querySelector("#total-events-count") || {}).textContent);
+        const mappedCount = parseCount((doc.querySelector("#mapped-total-count") || {}).textContent);
+        lines.push(line("Catalog totals", totalCount + " total / " + mappedCount + " mapped", totalCount > 0 && mappedCount > 0));
+
+        const initialStateSnapshot = debugApi && typeof debugApi.getStateSnapshot === "function"
+          ? debugApi.getStateSnapshot()
+          : null;
+        const timelineSourceStatus = initialStateSnapshot
+          ? String(initialStateSnapshot.catalogSource || "unknown")
+          : "debug API unavailable";
+        lines.push(line(
+          "Timeline source",
+          timelineSourceStatus,
+          Boolean(initialStateSnapshot && timelineSourceStatus === "canonical_web")
+        ));
+
+        const initialStart = (doc.querySelector("#start-date") || {}).value || "";
+        const initialEnd = (doc.querySelector("#end-date") || {}).value || "";
+        const initialTimelineStart = (doc.querySelector("#timeline-start-date") || {}).value || "";
+        const initialTimelineEnd = (doc.querySelector("#timeline-end-date") || {}).value || "";
+        lines.push(line(
+          "Initial time sync",
+          initialStart + " -> " + initialEnd,
+          Boolean(initialStart && initialEnd && initialStart === initialTimelineStart && initialEnd === initialTimelineEnd)
+        ));
+
+        const landOutlineCount = doc.querySelectorAll(".land-outline").length;
+        const countryLabelCount = doc.querySelectorAll(".country-label-marker").length;
+        const tileCount = doc.querySelectorAll(".leaflet-tile").length;
+        const clusterCount = doc.querySelectorAll(".cluster-icon").length;
+        const markerDots = doc.querySelectorAll(".ufo-dot").length;
+        const mapCanvasCount = doc.querySelectorAll("#map canvas").length;
+        const markerTransforms = Array.from(doc.querySelectorAll(".leaflet-marker-icon"))
+          .map(function (node) { return node.style.transform || ""; })
+          .filter(Boolean)
+          .slice(0, 12);
+        const uniqueTransforms = new Set(markerTransforms);
+        lines.push(line(
+          "Geographic map scaffolding",
+          tileCount + " tiles, " + landOutlineCount + " outlines, " + countryLabelCount + " country labels, " + clusterCount + " clusters, " + markerDots + " raw markers, " + mapCanvasCount + " map canvases, " + uniqueTransforms.size + " unique marker transforms sampled",
+          (tileCount > 0 || landOutlineCount > 50) &&
+          (clusterCount > 0 || markerDots > 0 || mapCanvasCount > 0 || uniqueTransforms.size > 1)
+        ));
+
+        const basemapOptions = Array.from(doc.querySelectorAll("#basemap-mode option")).map(function (option) {
+          return option.textContent.trim();
+        });
+        lines.push(line(
+          "Basemap modes",
+          basemapOptions.join(" | "),
+          basemapOptions.some(function (label) { return /No basemap world view/i.test(label); }) &&
+          basemapOptions.some(function (label) { return /Light labeled basemap/i.test(label); })
+        ));
+
+        const selectedBasemap = ((doc.querySelector("#basemap-mode option:checked") || {}).textContent || "").trim();
+        const selectedMapMode = (doc.querySelector("#map-mode") || {}).value || "";
+        const tileStatusText = (doc.querySelector("#tile-status") || {}).textContent || "";
+        lines.push(line(
+          "Default map UI state",
+          selectedBasemap + " / " + selectedMapMode + ' | ' + tileStatusText,
+          selectedMapMode === "heatmap" && (
+            /Light labeled basemap/i.test(selectedBasemap) ||
+            (
+              /No basemap world view/i.test(selectedBasemap) &&
+              /fallback|local geography|No-basemap mode/i.test(tileStatusText)
+            )
+          )
+        ));
+
+        const appearanceSelect = doc.querySelector("#appearance-mode");
+        const appearanceOptions = Array.from(doc.querySelectorAll("#appearance-mode option")).map(function (option) {
+          return option.value;
+        });
+        appearanceSelect.value = "light";
+        dispatch(win, appearanceSelect, "change");
+        await wait(180);
+        const lightTheme = doc.documentElement.getAttribute("data-theme") || "";
+        const heroSurfaceInLightTheme = win.getComputedStyle(doc.querySelector(".hero")).backgroundColor;
+        appearanceSelect.value = "dark";
+        dispatch(win, appearanceSelect, "change");
+        await wait(180);
+        const resolvedTheme = doc.documentElement.getAttribute("data-theme") || "";
+        const storedThemeMode = win.localStorage.getItem("ufoTimeline.themeMode") || "";
+        const heroSurfaceInDarkTheme = win.getComputedStyle(doc.querySelector(".hero")).backgroundColor;
+        lines.push(line(
+          "Dark mode toggle + persistence",
+          appearanceOptions.join(", ") + " | light=" + lightTheme + " | dark=" + resolvedTheme + " | stored=" + storedThemeMode,
+          appearanceOptions.includes("auto") &&
+          appearanceOptions.includes("light") &&
+          appearanceOptions.includes("dark") &&
+          lightTheme === "light" &&
+          resolvedTheme === "dark" &&
+          storedThemeMode === "dark" &&
+          heroSurfaceInLightTheme !== heroSurfaceInDarkTheme
+        ));
+
+        const initialFirstLocation = ((doc.querySelector(".result-location") || {}).textContent || "").trim();
+        lines.push(line(
+          "Default results ordering avoids placeholder locations first",
+          initialFirstLocation || "No visible result location",
+          Boolean(initialFirstLocation) && !isPlaceholderLocationText(initialFirstLocation)
+        ));
+
+        if (debugApi && typeof debugApi.getStableDetailProbeEventId === "function" && typeof debugApi.openFullEvent === "function") {
+          const stableDetailProbeEventId = debugApi.getStableDetailProbeEventId();
+          if (stableDetailProbeEventId != null) {
+            await debugApi.openFullEvent(stableDetailProbeEventId, {
+              centerMap: false,
+              scrollIntoView: false,
+            });
+          }
+          const earlyDetailPanelText = (doc.querySelector("#detail-panel") || {}).textContent || "";
+          lines.push(line(
+            "Full Event View",
+            /Raw Event Block/.test(earlyDetailPanelText) && /Full normalized JSON/.test(earlyDetailPanelText)
+              ? "Raw Event Block and full normalized JSON loaded"
+              : earlyDetailPanelText.slice(0, 160) || "No detail content found",
+            /Raw Event Block/.test(earlyDetailPanelText) && /Full normalized JSON/.test(earlyDetailPanelText)
+          ));
+        } else {
+          lines.push(line("Full Event View", "Debug detail probe API unavailable", false));
+        }
+
+        const sourcePane = doc.querySelector("#source-filter-pane");
+        const typePane = doc.querySelector("#type-filter-pane");
+        const precisionPane = doc.querySelector("#precision-filter-pane");
+        const wrapLabels = Array.from(doc.querySelectorAll("#source-filter-pane .filter-option-label, #type-filter-pane .filter-option-label"))
+          .slice(0, 12)
+          .every(function (node) {
+            const style = win.getComputedStyle(node);
+            return style.whiteSpace !== "nowrap" && (
+              style.overflowWrap === "anywhere" ||
+              style.wordBreak === "break-word"
+            );
+          });
+        lines.push(line(
+          "Category panes wrap without horizontal scroll",
+          "source " + sourcePane.scrollWidth + "/" + sourcePane.clientWidth +
+          " | type " + typePane.scrollWidth + "/" + typePane.clientWidth +
+          " | precision " + precisionPane.scrollWidth + "/" + precisionPane.clientWidth,
+          sourcePane.scrollWidth <= sourcePane.clientWidth + 12 &&
+          typePane.scrollWidth <= typePane.clientWidth + 12 &&
+          precisionPane.scrollWidth <= precisionPane.clientWidth + 12 &&
+          wrapLabels
+        ));
+
+        const countBadges = Array.from(doc.querySelectorAll(".filter-option-count"));
+        lines.push(line(
+          "Category counts render",
+          countBadges.slice(0, 6).map(function (node) { return node.textContent.trim(); }).join(", "),
+          countBadges.length > 12 && countBadges.slice(0, 12).every(function (node) {
+            return /^\d[\d,]*$/.test(node.textContent.trim());
+          })
+        ));
+
+        const selectionBackgroundImage = win.getComputedStyle(doc.querySelector("#timeline-selection-body")).backgroundImage || "";
+        lines.push(line(
+          "Timeline selection styling",
+          selectionBackgroundImage,
+          !/repeating-linear-gradient/i.test(selectionBackgroundImage)
+        ));
+
+        const typeFilter = doc.querySelector("#type-filter");
+        const typeActions = doc.querySelector('.filter-actions[data-filter-target="type-filter"]');
+        if (typeFilter.options.length >= 2 && typeActions) {
+          Array.from(typeFilter.options).forEach(function (option) {
+            option.selected = false;
+          });
+          typeFilter.options[0].selected = true;
+          typeFilter.options[1].selected = true;
+          dispatch(win, typeFilter, "change");
+          await wait(600);
+
+          const subsetCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          const subsetState = (doc.querySelector("#type-filter-state") || {}).textContent || "";
+          const subsetLooksRight = /2 of/i.test(subsetState) && subsetCount > 0 && subsetCount < totalCount;
+
+          dispatch(win, typeActions.querySelector('[data-filter-action="none"]'), "click");
+          await wait(600);
+          const noneCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          const noneState = (doc.querySelector("#type-filter-state") || {}).textContent || "";
+
+          dispatch(win, typeActions.querySelector('[data-filter-action="all"]'), "click");
+          await wait(600);
+          const allCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          const allState = (doc.querySelector("#type-filter-state") || {}).textContent || "";
+
+          lines.push(line(
+            "Filter All / None reset",
+            'subset="' + subsetState + '" (' + subsetCount + ') none="' + noneState + '" (' + noneCount + ') all="' + allState + '" (' + allCount + ')',
+            subsetLooksRight &&
+            /None active/i.test(noneState) &&
+            noneCount === 0 &&
+            /All active/i.test(allState) &&
+            allCount > subsetCount
+          ));
+
+          const craftOnlyButton = typeActions.querySelector('[data-filter-action="craft_only"]');
+          dispatch(win, craftOnlyButton, "click");
+          await wait(700);
+          const craftCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          const craftState = (doc.querySelector("#type-filter-state") || {}).textContent || "";
+          lines.push(line(
+            "Craft Only type subset",
+            craftState + " | " + craftCount + " results",
+            craftOnlyButton.classList.contains("is-active") &&
+            /selected/i.test(craftState) &&
+            craftCount > 0 &&
+            craftCount < totalCount
+          ));
+
+          dispatch(win, typeActions.querySelector('[data-filter-action="all"]'), "click");
+          await wait(600);
+        } else {
+          lines.push(line("Filter All / None reset", "Type filter options unavailable", false));
+        }
+
+        const timelineTicks = doc.querySelectorAll("#timeline-ticks .timeline-tick").length;
+        const selectionVisible = !doc.querySelector("#timeline-selection").hidden;
+        lines.push(line("Timeline render", timelineTicks + " ticks, selection visible=" + selectionVisible, timelineTicks >= 4 && selectionVisible));
+
+        const timelineStartInput = doc.querySelector("#timeline-start-date");
+        const timelineEndInput = doc.querySelector("#timeline-end-date");
+        timelineStartInput.value = "2000-01-01";
+        dispatch(win, timelineStartInput, "input");
+        timelineEndInput.value = "2005-12-31";
+        dispatch(win, timelineEndInput, "input");
+        await wait(650);
+
+        const narrowedStart = (doc.querySelector("#start-date") || {}).value || "";
+        const narrowedEnd = (doc.querySelector("#end-date") || {}).value || "";
+        const narrowedCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+        lines.push(line(
+          "Date field sync after typed timeline range",
+          narrowedStart + " -> " + narrowedEnd + " with " + narrowedCount + " filtered events",
+          narrowedStart === "2000-01-01" && narrowedEnd === "2005-12-31" && narrowedCount > 0 && narrowedCount < totalCount
+        ));
+
+        const timelineWrap = doc.querySelector("#timeline-canvas-wrap");
+        const wrapRect = timelineWrap.getBoundingClientRect();
+        const wheelStart = (doc.querySelector("#start-date") || {}).value || "";
+        const wheelEnd = (doc.querySelector("#end-date") || {}).value || "";
+        const wheelTicksBefore = Array.from(doc.querySelectorAll("#timeline-ticks .timeline-tick")).map(function (node) {
+          return node.textContent.trim();
+        }).join(" | ");
+        const selectionWidthBefore = ((doc.querySelector("#timeline-selection") || {}).style || {}).width || "";
+        dispatch(win, timelineWrap, "wheel", {
+          clientX: wrapRect.left + (wrapRect.width * 0.7),
+          clientY: wrapRect.top + (wrapRect.height / 2),
+          deltaY: 240,
+        });
+        await wait(450);
+
+        const zoomedStart = (doc.querySelector("#start-date") || {}).value || "";
+        const zoomedEnd = (doc.querySelector("#end-date") || {}).value || "";
+        let wheelTicksAfter = Array.from(doc.querySelectorAll("#timeline-ticks .timeline-tick")).map(function (node) {
+          return node.textContent.trim();
+        }).join(" | ");
+        let selectionWidthAfter = ((doc.querySelector("#timeline-selection") || {}).style || {}).width || "";
+        let zoomTriggered = Boolean(
+          zoomedStart === wheelStart &&
+          zoomedEnd === wheelEnd &&
+          (wheelTicksBefore !== wheelTicksAfter || selectionWidthBefore !== selectionWidthAfter)
+        );
+        if (!zoomTriggered) {
+          const debugApi = win.__UFO_TIMELINE_DEBUG__;
+          if (debugApi && typeof debugApi.zoomVisibleTimeline === "function") {
+            debugApi.zoomVisibleTimeline(1 / 0.82);
+          } else {
+            dispatch(win, doc.querySelector("#timeline-zoom-out"), "click");
+          }
+          await wait(250);
+          wheelTicksAfter = Array.from(doc.querySelectorAll("#timeline-ticks .timeline-tick")).map(function (node) {
+            return node.textContent.trim();
+          }).join(" | ");
+          selectionWidthAfter = ((doc.querySelector("#timeline-selection") || {}).style || {}).width || "";
+          zoomTriggered = Boolean(wheelTicksBefore !== wheelTicksAfter || selectionWidthBefore !== selectionWidthAfter);
+        }
+        lines.push(line(
+          "Timeline viewport zoom",
+          'selected="' + wheelStart + " -> " + wheelEnd + '" width-before="' + selectionWidthBefore + '" width-after="' + selectionWidthAfter + '" visible-before="' + wheelTicksBefore + '" visible-after="' + wheelTicksAfter + '"',
+          zoomTriggered
+        ));
+
+        const selectionBody = doc.querySelector("#timeline-selection-body");
+        const selectionRect = selectionBody.getBoundingClientRect();
+        const beforeDragStart = (doc.querySelector("#start-date") || {}).value || "";
+        const beforeMoveSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        dispatch(win, selectionBody, "pointerdown", {
+          clientX: selectionRect.left + (selectionRect.width / 2),
+          clientY: selectionRect.top + (selectionRect.height / 2),
+          pointerId: 1,
+          buttons: 1,
+        });
+        dispatch(win, doc, "pointermove", {
+          clientX: selectionRect.left + (selectionRect.width / 2) + 80,
+          clientY: selectionRect.top + (selectionRect.height / 2),
+          pointerId: 1,
+          buttons: 1,
+        });
+        await wait(80);
+        const duringMoveSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        dispatch(win, doc, "pointerup", {
+          clientX: selectionRect.left + (selectionRect.width / 2) + 80,
+          clientY: selectionRect.top + (selectionRect.height / 2),
+          pointerId: 1,
+        });
+        await wait(150);
+
+        const afterDragStart = (doc.querySelector("#start-date") || {}).value || "";
+        const afterMoveSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        lines.push(line(
+          "Timeline drag preview vs commit",
+          "selected " + beforeDragStart + " -> " + afterDragStart +
+          " | visible " +
+          (beforeMoveSnapshot ? beforeMoveSnapshot.visibleStart : "n/a") + " -> " +
+          (duringMoveSnapshot ? duringMoveSnapshot.visibleStart : "n/a") + " -> " +
+          (afterMoveSnapshot ? afterMoveSnapshot.visibleStart : "n/a"),
+          Boolean(
+            beforeMoveSnapshot &&
+            duringMoveSnapshot &&
+            afterMoveSnapshot &&
+            afterDragStart &&
+            afterDragStart !== beforeDragStart &&
+            duringMoveSnapshot.selectedStart !== beforeMoveSnapshot.selectedStart &&
+            afterMoveSnapshot.selectedStart === duringMoveSnapshot.selectedStart &&
+            duringMoveSnapshot.visibleStart === beforeMoveSnapshot.visibleStart &&
+            duringMoveSnapshot.visibleEnd === beforeMoveSnapshot.visibleEnd &&
+            afterMoveSnapshot.visibleStart === beforeMoveSnapshot.visibleStart &&
+            afterMoveSnapshot.visibleEnd === beforeMoveSnapshot.visibleEnd
+          )
+        ));
+
+        const leftHandle = doc.querySelector("#timeline-handle-left");
+        const leftHandleRect = leftHandle.getBoundingClientRect();
+        const beforeResizeStart = (doc.querySelector("#start-date") || {}).value || "";
+        const beforeResizeSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        dispatch(win, leftHandle, "pointerdown", {
+          clientX: leftHandleRect.left + (leftHandleRect.width / 2),
+          clientY: leftHandleRect.top + (leftHandleRect.height / 2),
+          pointerId: 2,
+          buttons: 1,
+        });
+        dispatch(win, doc, "pointermove", {
+          clientX: leftHandleRect.left + (leftHandleRect.width / 2) + 40,
+          clientY: leftHandleRect.top + (leftHandleRect.height / 2),
+          pointerId: 2,
+          buttons: 1,
+        });
+        await wait(80);
+
+        const duringResizeSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        const duringResizeStart = (doc.querySelector("#start-date") || {}).value || "";
+        dispatch(win, doc, "pointerup", {
+          clientX: leftHandleRect.left + (leftHandleRect.width / 2) + 40,
+          clientY: leftHandleRect.top + (leftHandleRect.height / 2),
+          pointerId: 2,
+        });
+        await wait(150);
+
+        const afterResizeStart = (doc.querySelector("#start-date") || {}).value || "";
+        const afterResizeSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        lines.push(line(
+          "Timeline edge-drag preview vs commit",
+          "selected " + beforeResizeStart + " -> " + duringResizeStart + " -> " + afterResizeStart +
+          " | visible " +
+          (beforeResizeSnapshot ? beforeResizeSnapshot.visibleStart : "n/a") + " -> " +
+          (duringResizeSnapshot ? duringResizeSnapshot.visibleStart : "n/a") + " -> " +
+          (afterResizeSnapshot ? afterResizeSnapshot.visibleStart : "n/a"),
+          Boolean(
+            beforeResizeSnapshot &&
+            duringResizeSnapshot &&
+            afterResizeSnapshot &&
+            duringResizeSnapshot.selectedStart !== beforeResizeSnapshot.selectedStart &&
+            duringResizeSnapshot.visibleStart === beforeResizeSnapshot.visibleStart &&
+            duringResizeSnapshot.visibleEnd === beforeResizeSnapshot.visibleEnd &&
+            afterResizeStart &&
+            afterResizeStart !== beforeResizeStart &&
+            afterResizeSnapshot.selectedStart === duringResizeSnapshot.selectedStart &&
+            afterResizeSnapshot.visibleStart === beforeResizeSnapshot.visibleStart &&
+            afterResizeSnapshot.visibleEnd === beforeResizeSnapshot.visibleEnd
+          )
+        ));
+
+        const colorMode = doc.querySelector("#color-mode");
+        colorMode.value = "type";
+        dispatch(win, colorMode, "change");
+        await wait(120);
+        const legendVisible = !doc.querySelector("#legend-panel").hidden;
+        const legendTitle = (doc.querySelector("#legend-title") || {}).textContent || "";
+        const legendItems = doc.querySelectorAll("#legend-body .legend-item").length;
+        lines.push(line(
+          "Color mode legend",
+          legendTitle + " with " + legendItems + " entries",
+          legendVisible && /Event Type/.test(legendTitle) && legendItems > 0
+        ));
+
+        const firstLegendToggle = doc.querySelector("#legend-body [data-legend-type-toggle]");
+        if (firstLegendToggle) {
+          const legendToggleKey = firstLegendToggle.getAttribute("data-legend-type-toggle");
+          const beforeLegendFilterCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          firstLegendToggle.checked = false;
+          dispatch(win, firstLegendToggle, "change");
+          await wait(700);
+          const afterLegendFilterCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          const refreshedLegendToggle = doc.querySelector('[data-legend-type-toggle="' + legendToggleKey.replace(/"/g, '\\"') + '"]');
+          refreshedLegendToggle.checked = true;
+          dispatch(win, refreshedLegendToggle, "change");
+          await wait(700);
+          const restoredLegendFilterCount = parseCount((doc.querySelector("#results-count") || {}).textContent);
+          lines.push(line(
+            "Legend type-group filtering",
+            beforeLegendFilterCount + " -> " + afterLegendFilterCount + " -> " + restoredLegendFilterCount,
+            afterLegendFilterCount < beforeLegendFilterCount && restoredLegendFilterCount === beforeLegendFilterCount
+          ));
+        } else {
+          lines.push(line("Legend type-group filtering", "Legend toggle not found", false));
+        }
+
+        const initialRenderedResultCards = doc.querySelectorAll(".result-card").length;
+        const initialResultWindowStatus =
+          ((doc.querySelector(".results-window-status") || {}).textContent || "").trim();
+        const initialResultTotal = parseCount((doc.querySelector("#results-count") || {}).textContent);
+        const initialProgressiveWindowVisible =
+          /Showing\s+\d+[–-]\d+\s+of\s+[\d,]+/i.test(initialResultWindowStatus);
+        const initialSmallSetFullyRendered =
+          initialResultTotal > 0 &&
+          initialResultTotal <= 60 &&
+          initialRenderedResultCards === initialResultTotal &&
+          !initialResultWindowStatus;
+        lines.push(line(
+          "Progressive results window",
+          initialRenderedResultCards + " cards | " + initialResultWindowStatus,
+          initialRenderedResultCards > 0 &&
+          initialRenderedResultCards <= 60 &&
+          (initialProgressiveWindowVisible || initialSmallSetFullyRendered)
+        ));
+
+        const overlayAssets = await Promise.all([
+          "./data/map_overlays/airports.geojson",
+          "./data/map_overlays/highways.geojson",
+          "./data/map_overlays/military_bases.geojson",
+        ].map(async function (path) {
+          const response = await win.fetch(path, { credentials: "same-origin" });
+          const payload = await response.json();
+          return {
+            path: path,
+            ok: response.ok,
+            features: Array.isArray(payload && payload.features) ? payload.features.length : 0,
+          };
+        }));
+        const overlayVisualCountBefore = overlayVisualCount(doc);
+        const airportButton = doc.querySelector("#overlay-airports");
+        const militaryButton = doc.querySelector("#overlay-military");
+        const highwayButton = doc.querySelector("#overlay-highways");
+        const airportSwatchStyle = win.getComputedStyle(airportButton.querySelector(".overlay-chip-swatch"));
+        const militarySwatchStyle = win.getComputedStyle(militaryButton.querySelector(".overlay-chip-swatch"));
+        const airportButtonVisual = airportSwatchStyle.backgroundImage !== "none"
+          ? airportSwatchStyle.backgroundImage
+          : airportSwatchStyle.backgroundColor;
+        const militaryButtonVisual = militarySwatchStyle.backgroundImage !== "none"
+          ? militarySwatchStyle.backgroundImage
+          : militarySwatchStyle.backgroundColor;
+        let militaryPopupText = "";
+        let militaryMarkerTitle = "";
+        const firstMilitaryMarker = await waitFor(function () {
+          return firstOverlayPointMarker(doc, "military");
+        }, 8000, 100).catch(function () {
+          return null;
+        });
+        if (firstMilitaryMarker) {
+          militaryMarkerTitle = (firstMilitaryMarker.getAttribute("title") || "").trim();
+          const militaryRect = firstMilitaryMarker.getBoundingClientRect();
+          dispatch(win, firstMilitaryMarker, "click", {
+            clientX: militaryRect.left + (militaryRect.width / 2),
+            clientY: militaryRect.top + (militaryRect.height / 2),
+          });
+          await wait(180);
+          militaryPopupText = ((doc.querySelector(".leaflet-popup-content") || {}).textContent || "").trim();
+        }
+        if (militaryButton.getAttribute("aria-pressed") === "true") {
+          dispatch(win, militaryButton, "click");
+          await wait(300);
+        }
+        dispatch(win, airportButton, "click");
+        const firstAirportMarker = await waitFor(function () {
+          return firstOverlayPointMarker(doc, "airports");
+        }, 8000, 100).catch(function () {
+          return null;
+        });
+        let airportPopupText = "";
+        let airportMarkerTitle = "";
+        if (firstAirportMarker) {
+          airportMarkerTitle = (firstAirportMarker.getAttribute("title") || "").trim();
+          const airportRect = firstAirportMarker.getBoundingClientRect();
+          dispatch(win, firstAirportMarker, "click", {
+            clientX: airportRect.left + (airportRect.width / 2),
+            clientY: airportRect.top + (airportRect.height / 2),
+          });
+          await wait(180);
+          airportPopupText = ((doc.querySelector(".leaflet-popup-content") || {}).textContent || "").trim();
+        }
+        dispatch(win, airportButton, "click");
+        await wait(260);
+        dispatch(win, militaryButton, "click");
+        await wait(900);
+        if (highwayButton.getAttribute("aria-pressed") !== "true") {
+          dispatch(win, highwayButton, "click");
+        }
+        await wait(850);
+        const overlayStatus = (doc.querySelector("#overlay-status") || {}).textContent || "";
+        const overlayVisualCountAfter = overlayVisualCount(doc);
+        const overlayStateSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        lines.push(line(
+          "Overlay datasets + toggle wiring",
+          overlayAssets.map(function (asset) {
+            return asset.path.split("/").pop() + "=" + asset.features;
+          }).join(" | ") + " | status=" + overlayStatus + " | visuals=" + overlayVisualCountBefore + "->" + overlayVisualCountAfter,
+          overlayAssets.every(function (asset) { return asset.ok && asset.features > 0; }) &&
+          !/failed/i.test(overlayStatus) &&
+          Boolean(
+            overlayStateSnapshot &&
+            overlayStateSnapshot.mapLegend &&
+            overlayStateSnapshot.mapLegend.overlayVisibility &&
+            overlayStateSnapshot.mapLegend.overlayVisibility.airports === false &&
+            overlayStateSnapshot.mapLegend.overlayVisibility.military === true &&
+            overlayStateSnapshot.mapLegend.overlayVisibility.highways === true
+          )
+        ));
+        lines.push(line(
+          "Overlay buttons + marker semantics",
+          'airports="' + (airportPopupText || airportMarkerTitle) + '" military="' + (militaryPopupText || militaryMarkerTitle) + '"',
+          airportButton.getAttribute("aria-pressed") === "false" &&
+          militaryButton.getAttribute("aria-pressed") === "true" &&
+          highwayButton.getAttribute("aria-pressed") === "true" &&
+          airportButtonVisual !== militaryButtonVisual &&
+          airportMarkerTitle.length > 0 &&
+          militaryMarkerTitle.length > 0
+        ));
+
+        const mapMode = doc.querySelector("#map-mode");
+        mapMode.value = "heatmap";
+        dispatch(win, mapMode, "change");
+        await wait(300);
+        const heatmapCanvas = doc.querySelector(".heatmap-canvas-layer");
+        mapMode.value = "points";
+        dispatch(win, mapMode, "change");
+        await wait(300);
+        lines.push(line(
+          "Map visualization modes",
+          "heatmap canvas present=" + Boolean(heatmapCanvas),
+          Boolean(heatmapCanvas)
+        ));
+
+        const resultsSort = doc.querySelector("#results-sort");
+        const resultsSortBefore = resultsSort.value;
+        const firstDateBeforeSort = ((doc.querySelector(".result-date") || {}).textContent || "").trim();
+        resultsSort.value = resultsSortBefore === "date_asc" ? "date_desc" : "date_asc";
+        dispatch(win, resultsSort, "change");
+        await wait(200);
+        const firstDateAfterSort = ((doc.querySelector(".result-date") || {}).textContent || "").trim();
+        lines.push(line(
+          "Results sorting",
+          resultsSortBefore + ' "' + firstDateBeforeSort + '" -> ' + resultsSort.value + ' "' + firstDateAfterSort + '"',
+          Boolean(
+            firstDateBeforeSort &&
+            firstDateAfterSort &&
+            resultsSort.value !== resultsSortBefore &&
+            firstDateBeforeSort !== firstDateAfterSort
+          )
+        ));
+
+        const visibleResultCards = doc.querySelectorAll(".result-card").length;
+        const progressiveWindowSummary =
+          ((doc.querySelector(".results-window-status") || {}).textContent || "").trim();
+        const visibleResultTotal = parseCount((doc.querySelector("#results-count") || {}).textContent);
+        const progressiveWindowVisible =
+          /Showing\s+\d+[–-]\d+\s+of\s+[\d,]+/i.test(progressiveWindowSummary);
+        const smallSetFullyRendered =
+          visibleResultTotal > 0 &&
+          visibleResultTotal <= 60 &&
+          visibleResultCards === visibleResultTotal &&
+          !progressiveWindowSummary;
+        lines.push(line(
+          "Results progressive rendering",
+          progressiveWindowSummary,
+          visibleResultCards > 0 &&
+          visibleResultCards <= Math.min(60, visibleResultTotal) &&
+          (progressiveWindowVisible || smallSetFullyRendered)
+        ));
+
+        const detailStageTextBeforeResultClick = (doc.querySelector("#detail-panel") || {}).textContent || "";
+        const scrollBeforeResultClick = doc.scrollingElement ? doc.scrollingElement.scrollTop : 0;
+        const firstResultButton = doc.querySelector(".result-card-button");
+        dispatch(win, firstResultButton, "click");
+        await wait(240);
+        const activeResultCount = doc.querySelectorAll(".result-card.is-active").length;
+        const detailStageTextAfterResultClick = (doc.querySelector("#detail-panel") || {}).textContent || "";
+        const scrollAfterResultClick = doc.scrollingElement ? doc.scrollingElement.scrollTop : 0;
+        lines.push(line(
+          "Result click selects map event only",
+          "active=" + activeResultCount + " | scroll " + scrollBeforeResultClick + " -> " + scrollAfterResultClick,
+          activeResultCount === 1 &&
+          detailStageTextAfterResultClick === detailStageTextBeforeResultClick &&
+          scrollAfterResultClick === scrollBeforeResultClick
+        ));
+
+        const timelineToggle = doc.querySelector("#toggle-timeline-panel");
+        dispatch(win, timelineToggle, "click");
+        await wait(120);
+        const timelineCollapsed = doc.querySelector(".timeline-panel").classList.contains("is-collapsed");
+        dispatch(win, timelineToggle, "click");
+        await wait(120);
+        const timelineExpandedAgain = !doc.querySelector(".timeline-panel").classList.contains("is-collapsed");
+        lines.push(line(
+          "Panel collapse controls",
+          "timeline collapsed=" + timelineCollapsed + " expanded=" + timelineExpandedAgain,
+          timelineCollapsed && timelineExpandedAgain
+        ));
+
+        const mapWidthBeforeCollapse = doc.querySelector("#map").getBoundingClientRect().width;
+        dispatch(win, doc.querySelector("#toggle-filters-pane"), "click");
+        await wait(260);
+        const mapWidthAfterFiltersCollapse = doc.querySelector("#map").getBoundingClientRect().width;
+        const filtersRestoreVisible = !doc.querySelector("#expand-filters-pane").hidden;
+        dispatch(win, doc.querySelector("#toggle-results-pane"), "click");
+        await wait(260);
+        const mapWidthAfterBothCollapse = doc.querySelector("#map").getBoundingClientRect().width;
+        const resultsRestoreVisible = !doc.querySelector("#expand-results-pane").hidden;
+        dispatch(win, doc.querySelector("#expand-filters-pane"), "click");
+        dispatch(win, doc.querySelector("#expand-results-pane"), "click");
+        await wait(280);
+        const mapWidthAfterRestore = doc.querySelector("#map").getBoundingClientRect().width;
+        lines.push(line(
+          "Filters/results collapse expands map",
+          mapWidthBeforeCollapse + " -> " + mapWidthAfterFiltersCollapse + " -> " + mapWidthAfterBothCollapse + " -> " + mapWidthAfterRestore,
+          filtersRestoreVisible &&
+          resultsRestoreVisible &&
+          mapWidthAfterFiltersCollapse > mapWidthBeforeCollapse &&
+          mapWidthAfterBothCollapse > mapWidthAfterFiltersCollapse &&
+          mapWidthAfterRestore < mapWidthAfterBothCollapse
+        ));
+
+        const countBadgeAfterNarrow = ((doc.querySelector("#type-filter-pane .filter-option-count") || {}).textContent || "").trim();
+        lines.push(line(
+          "Category counts stay live after time filtering",
+          countBadgeAfterNarrow,
+          /^\d[\d,]*$/.test(countBadgeAfterNarrow)
+        ));
+
+        if (
+          debugApi &&
+          typeof debugApi.getMappedEventProbeForTest === "function" &&
+          typeof debugApi.setAreaSelectionForTest === "function" &&
+          typeof debugApi.activateNeighborhoodEndpointForTest === "function" &&
+          typeof debugApi.closeMapPopupForTest === "function" &&
+          typeof debugApi.clearAreaSelectionForTest === "function" &&
+          typeof debugApi.activateRenderedPointForTest === "function"
+        ) {
+          const savedMapMode = mapMode.value;
+          mapMode.value = "points";
+          dispatch(win, mapMode, "change");
+          await wait(500);
+
+          const areaProbe = debugApi.getMappedEventProbeForTest();
+          if (areaProbe && areaProbe.from) {
+            const latitudePadding = 0.08;
+            const longitudePadding = 0.08;
+            debugApi.setAreaSelectionForTest([{
+              type: "rectangle",
+              bounds: {
+                north: areaProbe.from.lat + latitudePadding,
+                south: areaProbe.from.lat - latitudePadding,
+                east: areaProbe.from.lon + longitudePadding,
+                west: areaProbe.from.lon - longitudePadding,
+              },
+            }], {
+              depth: 1,
+              direction: "forward",
+              selectTraces: true,
+              selectEvents: true,
+              showSelectedTraces: true,
+              showEventsAssociatedWithSelectedTraces: true,
+              showSelectedEvents: true,
+            });
+            await wait(500);
+
+            const activeAreaSnapshot = debugApi.getStateSnapshot();
+            const neighborhoodEndpointEventId = debugApi.activateNeighborhoodEndpointForTest();
+            await wait(180);
+            const neighborhoodPopup = doc.querySelector("#map .leaflet-popup");
+            const descriptionPanel = doc.querySelector("#map-description-panel");
+            lines.push(line(
+              "Area endpoint opens full sighting UI",
+              "event=" + neighborhoodEndpointEventId +
+                " | layers=" + activeAreaSnapshot.areaSelection.interactionLayerCount +
+                " | pane=" + activeAreaSnapshot.areaSelection.interactionPanePointerEvents,
+              neighborhoodEndpointEventId != null &&
+              Boolean(neighborhoodPopup) &&
+              !descriptionPanel.hidden &&
+              activeAreaSnapshot.areaSelection.interactionLayerCount > 0 &&
+              activeAreaSnapshot.areaSelection.interactionPanePointerEvents === "auto"
+            ));
+
+            const mapSurface = doc.querySelector("#map");
+            const mapSurfaceRect = mapSurface.getBoundingClientRect();
+            dispatch(win, mapSurface, "click", {
+              clientX: mapSurfaceRect.left + 12,
+              clientY: mapSurfaceRect.top + 12,
+            });
+            await wait(180);
+            lines.push(line(
+              "Outside-map click closes popup and Event Description",
+              "popup=" + Boolean(doc.querySelector("#map .leaflet-popup")) +
+                " | description hidden=" + descriptionPanel.hidden,
+              !doc.querySelector("#map .leaflet-popup") && descriptionPanel.hidden
+            ));
+
+            debugApi.clearAreaSelectionForTest();
+            await wait(500);
+            const clearedAreaSnapshot = debugApi.getStateSnapshot();
+            const normalPointEventId = debugApi.activateRenderedPointForTest();
+            await wait(180);
+            const normalPointPopup = doc.querySelector("#map .leaflet-popup");
+            lines.push(line(
+              "Point selection recovers after Area Filter Clear",
+              "event=" + normalPointEventId +
+                " | layers=" + clearedAreaSnapshot.areaSelection.interactionLayerCount +
+                " | pane=" + clearedAreaSnapshot.areaSelection.interactionPanePointerEvents,
+              clearedAreaSnapshot.areaSelection.shapeCount === 0 &&
+              clearedAreaSnapshot.areaSelection.interactionLayerCount === 0 &&
+              clearedAreaSnapshot.areaSelection.interactionPanePointerEvents === "none" &&
+              normalPointEventId != null &&
+              Boolean(normalPointPopup)
+            ));
+            debugApi.closeMapPopupForTest();
+            await wait(120);
+          } else {
+            lines.push(line("Area interaction lifecycle", "No mapped trace probe available", false));
+          }
+
+          mapMode.value = savedMapMode;
+          dispatch(win, mapMode, "change");
+          await wait(320);
+        } else {
+          lines.push(line("Area interaction lifecycle", "Debug lifecycle API unavailable", false));
+        }
+
+        const speedSelect = doc.querySelector("#playback-speed");
+        const speedValues = Array.from(speedSelect.options).map(function (option) {
+          return option.value;
+        });
+        lines.push(line(
+          "Playback speed defaults",
+          "selected=" + speedSelect.value + " | options=" + speedValues.join(", "),
+          speedSelect.value === "4" && speedValues.includes("16")
+        ));
+        const traceModeSelect = doc.querySelector("#trace-mode");
+        const tracePersistenceSelect = doc.querySelector("#trace-persistence");
+        traceModeSelect.value = "playback";
+        dispatch(win, traceModeSelect, "change");
+        tracePersistenceSelect.value = "persistent";
+        dispatch(win, tracePersistenceSelect, "change");
+        await wait(180);
+        const playButton = doc.querySelector("#play-pause");
+        const playbackSelectionBefore = debugApi ? debugApi.getStateSnapshot() : null;
+        dispatch(win, playButton, "click");
+        await wait(1800);
+
+        const playbackStatus = (doc.querySelector("#playback-status") || {}).textContent || "";
+        const playbackCurrentEvent = (doc.querySelector("#playback-current-event") || {}).textContent || "";
+        const playbackSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        const playbackMarkerHidden = doc.querySelector("#timeline-playback-marker").hidden;
+        const activeMarkerCount = doc.querySelectorAll(".playback-active-icon").length;
+        const cursorMarkerCount = doc.querySelectorAll(".playback-cursor-icon").length;
+        const openCurrentEventButton = doc.querySelector("#open-current-event");
+        const playbackBadge = doc.querySelector("#map-playback-date-badge");
+        const playbackEventMapped = /\|\s*mapped\s*\|/i.test(playbackCurrentEvent);
+        const playbackLooksLive =
+          /Playing|Paused|Finished/.test(playbackStatus) &&
+          !/none selected/i.test(playbackCurrentEvent) &&
+          !playbackMarkerHidden &&
+          !openCurrentEventButton.disabled &&
+          (
+            !playbackEventMapped ||
+            (activeMarkerCount > 0 && cursorMarkerCount > 0)
+          );
+        lines.push(line(
+          "Playback + cursor",
+          playbackStatus + " | " + playbackCurrentEvent,
+          playbackLooksLive
+        ));
+        lines.push(line(
+          "Playback start uses beginning of selected range",
+          playbackCurrentEvent + " | sequence start=" +
+            (playbackSnapshot && playbackSnapshot.playbackPerformance
+              ? playbackSnapshot.playbackPerformance.sequenceStartOrdinal
+              : "n/a") +
+            " selected start=" +
+            (playbackSelectionBefore ? playbackSelectionBefore.selectedStart : "n/a"),
+          Boolean(
+            playbackSelectionBefore &&
+            playbackSnapshot &&
+            playbackSnapshot.playbackPerformance &&
+            playbackSnapshot.playbackPerformance.sequenceStartOrdinal >= playbackSelectionBefore.selectedStart &&
+            playbackSnapshot.playbackPerformance.sequenceStartOrdinal <= playbackSelectionBefore.selectedEnd
+          )
+        ));
+        lines.push(line(
+          "Playback date badge on map",
+          playbackBadge.hidden ? "hidden" : playbackBadge.textContent,
+          !playbackBadge.hidden && /Playback Date:/i.test(playbackBadge.textContent || "")
+        ));
+
+        const trailLegendToggle = doc.querySelector("#show-trail-legend");
+        trailLegendToggle.checked = true;
+        dispatch(win, trailLegendToggle, "change");
+        await wait(100);
+        let trailLine = doc.querySelector(".playback-trail-line");
+        if (!trailLine) {
+          dispatch(win, doc.querySelector("#playback-next"), "click");
+          await wait(320);
+          trailLine = doc.querySelector(".playback-trail-line");
+        }
+        const trailSnapshot = debugApi ? debugApi.getStateSnapshot() : null;
+        const mapLegendPanel = doc.querySelector("#map-legend-panel");
+        const mapLegendBody = doc.querySelector("#map-legend-body");
+        const traceLegendSection = Array.from(
+          doc.querySelectorAll("#map-legend-body .map-legend-section")
+        ).find(function (section) {
+          return /trace|trail/i.test(
+            ((section.querySelector(".map-legend-heading") || {}).textContent || "")
+          );
+        });
+        const traceLegendHeading = traceLegendSection
+          ? ((traceLegendSection.querySelector(".map-legend-heading") || {}).textContent || "").trim()
+          : "";
+        const traceLegendSamples = traceLegendSection
+          ? traceLegendSection.querySelectorAll(".map-legend-line-sample").length
+          : 0;
+        lines.push(line(
+          "Playback trail styling + legend",
+          traceLegendHeading + " | " + traceLegendSamples + " line sample(s) | " +
+            (trailSnapshot && trailSnapshot.playbackPerformance
+              ? trailSnapshot.playbackPerformance.trailSegmentCount
+              : 0) +
+            " trail segment(s)",
+          Boolean(mapLegendPanel && mapLegendBody && traceLegendSection) &&
+          traceLegendSamples > 0 &&
+          Boolean(
+            trailLine ||
+            (
+              trailSnapshot &&
+              trailSnapshot.playbackPerformance &&
+              trailSnapshot.playbackPerformance.trailSegmentCount > 0
+            )
+          )
+        ));
+
+        playButton.click();
+        await wait(160);
+        if (!/Paused/.test((doc.querySelector("#playback-status") || {}).textContent || "")) {
+          dispatch(win, playButton, "click");
+        }
+        await waitFor(function () {
+          const statusText = (doc.querySelector("#playback-status") || {}).textContent || "";
+          const playButtonLabel = ((doc.querySelector("#play-pause") || {}).textContent || "").trim();
+          const badgeNode = doc.querySelector("#map-playback-date-badge");
+          return /Paused/.test(statusText) || (playButtonLabel === "Play" && badgeNode && badgeNode.hidden);
+        }, 5000, 100);
+        await wait(120);
+        const pausedPlaybackStatus = (doc.querySelector("#playback-status") || {}).textContent || "";
+        const pausedPlayButtonLabel = ((doc.querySelector("#play-pause") || {}).textContent || "").trim();
+        lines.push(line(
+          "Playback date badge hides when paused",
+          pausedPlaybackStatus + " | button=" + pausedPlayButtonLabel + " | " + (playbackBadge.hidden ? "hidden" : "visible"),
+          playbackBadge.hidden && (/Paused/.test(pausedPlaybackStatus) || pausedPlayButtonLabel === "Play")
+        ));
+
+        const detailPanelText = (doc.querySelector("#detail-panel") || {}).textContent || "";
+        lines.push(line(
+          "Full Event View persists after later interactions",
+          /Raw Event Block/.test(detailPanelText) && /Full normalized JSON/.test(detailPanelText)
+            ? "Raw Event Block and full normalized JSON loaded"
+            : detailPanelText.slice(0, 160) || "No detail content found",
+          /Raw Event Block/.test(detailPanelText) && /Full normalized JSON/.test(detailPanelText)
+        ));
+
+        setReport(lines);
+      }
+
+      iframe.addEventListener("load", function () {
+        runVerification().catch(function (error) {
+          setReport([
+            line("Verification error", error && error.stack ? error.stack : String(error), false),
+          ]);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

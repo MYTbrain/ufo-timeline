@@ -1,0 +1,54 @@
+Event Timeline
+
+Year: 1947, 3 Event(s), (Back to Top)
+
+Event 100 (ABCDEF01)
+
+Date: 7/8/1947
+Location: Roswell, New Mexico
+Description: First paragraph about a recovered debris field.
+
+Second paragraph preserves line breaks for later inspection.
+Reference: Sample Ref 1
+Reference: Sample Ref 2
+Source: SampleSource, ID: Sample_1
+Attributes: GND: Observer(s) on ground, NLT: Nightlights/points of light
+Extra Data: Country: "USA", LatLong: "33.3943 -104.5230", LocationLink: "Google Maps"
+
+Event 101 (ABCDEF02)
+
+Date: Summer 1947
+Locations: Holloman AFB; Corona, New Mexico
+Description: Witnesses near the base saw unusual lights.
+https://example.com/holloman
+Reference: Another Ref
+Source: AnotherSource, ID: Another_1
+Alternate date: Late 7/1947
+Note: Multi-location case.
+Mystery Label: Keep this line for review.
+
+Event 102 (ABCDEF03)
+
+Date: Early 5/1947
+End date: 5/12/1947
+Description: Roswell, New Mexico. Strange debris was discussed without a formal location field.
+Type: memo
+Source: MemoSource, ID: Memo_1
+
+Year: 1980, 2 Event(s), (Back to Top)
+
+Event 103 (ABCDEF04)
+
+Date: 1980's?
+Location: 36.82664 -115.95883
+Description: Numeric coordinate location.
+Type: sighting
+Source: CoordSource, ID: Coord_1
+
+Event 104 (ABCDEF05)
+
+Date: 1/7/50
+Location: USA, approx. 100 mi. SE of New York City (39' 35' N., 72' 24.5' W.)
+Description: Coordinates embedded directly in the location text.
+Type: sighting
+Reference: Embedded DMS
