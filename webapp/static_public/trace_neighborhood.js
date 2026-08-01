@@ -612,6 +612,507 @@
     return { eventIds, traceIds };
   }
 
+  const EARTH_RADIUS_KM = 6371.0088;
+
+  function coordinatePair(value) {
+    if (!Array.isArray(value) || value.length < 2) return null;
+    const lat = Number(value[0]);
+    const lon = Number(value[1]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    return [lat, lon];
+  }
+
+  function segmentCoordinates(segment) {
+    if (!segment) return null;
+    const from = coordinatePair(segment.from);
+    const to = coordinatePair(segment.to);
+    return from && to ? { from, to } : null;
+  }
+
+  function circleBounds(center, radiusKm) {
+    const centerPair = coordinatePair(center);
+    const radius = Number(radiusKm);
+    if (!centerPair || !Number.isFinite(radius) || radius <= 0) return null;
+
+    const centerLat = clamp(centerPair[0], -90, 90);
+    const centerLon = normalizeLongitude(centerPair[1]);
+    const angularRadius = Math.min(Math.PI, radius / EARTH_RADIUS_KM);
+    const latitudeRadius = angularRadius * (180 / Math.PI);
+    const boundsPadding = 1e-10;
+    const south = clamp(centerLat - latitudeRadius - boundsPadding, -90, 90);
+    const north = clamp(centerLat + latitudeRadius + boundsPadding, -90, 90);
+    const reachesPole = angularRadius >= Math.PI || south <= -90 || north >= 90;
+    const centerLatitudeRadians = centerLat * (Math.PI / 180);
+    const longitudeRadius = reachesPole
+      ? 180
+      : Math.min(
+        180,
+        (Math.asin(clamp(
+          Math.sin(angularRadius) / Math.cos(centerLatitudeRadians),
+          -1,
+          1
+        )) * (180 / Math.PI)) + boundsPadding
+      );
+    return {
+      south,
+      north,
+      west: centerLon - longitudeRadius,
+      east: centerLon + longitudeRadius,
+      referenceLongitude: centerLon,
+    };
+  }
+
+  function unwrapSegmentNearLongitude(from, to, referenceLongitude) {
+    const fromLon = normalizeLongitude(from[1]);
+    let toLon = normalizeLongitude(to[1]);
+    const normalizedReference = normalizeLongitude(referenceLongitude);
+    if (![fromLon, toLon, normalizedReference].every(Number.isFinite)) return null;
+
+    let longitudeDelta = toLon - fromLon;
+    if (longitudeDelta > 180) longitudeDelta -= 360;
+    if (longitudeDelta < -180) longitudeDelta += 360;
+    toLon = fromLon + longitudeDelta;
+    const midpointLon = (fromLon + toLon) / 2;
+    const shift = Math.round((normalizedReference - midpointLon) / 360) * 360;
+    return {
+      from: [from[0], fromLon + shift],
+      to: [to[0], toLon + shift],
+      centerLon: normalizedReference,
+    };
+  }
+
+  function pointAtFraction(from, to, fraction) {
+    return [
+      from[0] + ((to[0] - from[0]) * fraction),
+      from[1] + ((to[1] - from[1]) * fraction),
+    ];
+  }
+
+  function pointInsideCircle(point, center, radiusKm) {
+    const pointPair = coordinatePair(point);
+    const centerPair = coordinatePair(center);
+    const radius = Number(radiusKm);
+    if (!pointPair || !centerPair || !Number.isFinite(radius) || radius <= 0) return false;
+    const toleranceKm = Math.max(1e-9, radius * 1e-12);
+    const distance = haversineKm(centerPair, pointPair);
+    return distance != null && distance <= radius + toleranceKm;
+  }
+
+  function sphericalPathEvaluation(from, to, center, fraction) {
+    const radians = Math.PI / 180;
+    const latitude = (from[0] + ((to[0] - from[0]) * fraction)) * radians;
+    const longitudeDelta = (
+      from[1] + ((to[1] - from[1]) * fraction) - center[1]
+    ) * radians;
+    const latitudeDelta = (to[0] - from[0]) * radians;
+    const longitudeRate = (to[1] - from[1]) * radians;
+    const centerLatitude = center[0] * radians;
+    const sinLatitude = Math.sin(latitude);
+    const cosLatitude = Math.cos(latitude);
+    const sinLongitude = Math.sin(longitudeDelta);
+    const cosLongitude = Math.cos(longitudeDelta);
+    const sinCenter = Math.sin(centerLatitude);
+    const cosCenter = Math.cos(centerLatitude);
+    return {
+      fraction,
+      cosine: clamp(
+        (sinCenter * sinLatitude) + (cosCenter * cosLatitude * cosLongitude),
+        -1,
+        1
+      ),
+      derivative:
+        (sinCenter * latitudeDelta * cosLatitude) -
+        (cosCenter * (
+          (latitudeDelta * sinLatitude * cosLongitude) +
+          (longitudeRate * cosLatitude * sinLongitude)
+        )),
+      secondDerivative:
+        (-sinCenter * latitudeDelta * latitudeDelta * sinLatitude) -
+        (cosCenter * (
+          (((latitudeDelta * latitudeDelta) + (longitudeRate * longitudeRate)) *
+            cosLatitude * cosLongitude) -
+          (2 * latitudeDelta * longitudeRate * sinLatitude * sinLongitude)
+        )),
+    };
+  }
+
+  function safeguardedStationaryPoint(evaluate, left, right) {
+    const derivativeTolerance = 1e-14;
+    let low = left;
+    let high = right;
+    if (Math.abs(low.derivative) <= derivativeTolerance) return low;
+    if (Math.abs(high.derivative) <= derivativeTolerance) return high;
+    let current = evaluate((low.fraction + high.fraction) / 2);
+    for (let iteration = 0; iteration < 18; iteration += 1) {
+      if (Math.abs(current.derivative) <= derivativeTolerance) return current;
+      if ((low.derivative < 0) !== (current.derivative < 0)) high = current;
+      else low = current;
+      let nextFraction = current.fraction -
+        (current.derivative / current.secondDerivative);
+      if (
+        !Number.isFinite(nextFraction) ||
+        nextFraction <= low.fraction ||
+        nextFraction >= high.fraction
+      ) {
+        const denominator = high.derivative - low.derivative;
+        nextFraction = denominator
+          ? low.fraction -
+            ((low.derivative * (high.fraction - low.fraction)) / denominator)
+          : (low.fraction + high.fraction) / 2;
+      }
+      if (
+        !Number.isFinite(nextFraction) ||
+        nextFraction <= low.fraction ||
+        nextFraction >= high.fraction
+      ) {
+        nextFraction = (low.fraction + high.fraction) / 2;
+      }
+      current = evaluate(nextFraction);
+    }
+    return Math.abs(low.derivative) <= Math.abs(high.derivative) ? low : high;
+  }
+
+  function safeguardedCircleBoundary(evaluate, threshold, left, right) {
+    let low = left;
+    let high = right;
+    let lowDifference = low.cosine - threshold;
+    let highDifference = high.cosine - threshold;
+    const lowInside = lowDifference >= 0;
+    for (let iteration = 0; iteration < 22; iteration += 1) {
+      const denominator = highDifference - lowDifference;
+      let nextFraction = denominator
+        ? low.fraction -
+          ((lowDifference * (high.fraction - low.fraction)) / denominator)
+        : (low.fraction + high.fraction) / 2;
+      if (
+        !Number.isFinite(nextFraction) ||
+        nextFraction <= low.fraction + 1e-15 ||
+        nextFraction >= high.fraction - 1e-15
+      ) {
+        nextFraction = (low.fraction + high.fraction) / 2;
+      }
+      let current = evaluate(nextFraction);
+      const difference = current.cosine - threshold;
+      if (Math.abs(difference) <= 1e-15 || high.fraction - low.fraction <= 1e-13) {
+        if ((difference >= 0) === lowInside) low = current;
+        else high = current;
+        break;
+      }
+      if ((difference >= 0) === lowInside) {
+        low = current;
+        lowDifference = difference;
+      } else {
+        high = current;
+        highDifference = difference;
+      }
+      const newtonFraction = current.fraction - (difference / current.derivative);
+      if (
+        Number.isFinite(newtonFraction) &&
+        newtonFraction > low.fraction + 1e-15 &&
+        newtonFraction < high.fraction - 1e-15
+      ) {
+        current = evaluate(newtonFraction);
+        const newtonDifference = current.cosine - threshold;
+        if ((newtonDifference >= 0) === lowInside) {
+          low = current;
+          lowDifference = newtonDifference;
+        } else {
+          high = current;
+          highDifference = newtonDifference;
+        }
+      }
+    }
+    return lowInside ? low : high;
+  }
+
+  function clipSegmentToCircle(segment, center, radiusKm, options) {
+    const diagnostics = options && options.diagnostics && typeof options.diagnostics === "object"
+      ? options.diagnostics
+      : null;
+    let pathEvaluationCount = 0;
+    let exactDistanceEvaluationCount = 0;
+
+    function finish(intersection) {
+      const metrics = {
+        pathEvaluationCount,
+        exactDistanceEvaluationCount,
+        totalEvaluationCount: pathEvaluationCount + exactDistanceEvaluationCount,
+      };
+      if (diagnostics) Object.assign(diagnostics, metrics);
+      if (intersection) intersection.geometryMetrics = metrics;
+      return intersection;
+    }
+
+    const coordinates = segmentCoordinates(segment);
+    const centerPair = coordinatePair(center);
+    const radius = Number(radiusKm);
+    if (!coordinates || !centerPair || !Number.isFinite(radius) || radius <= 0) {
+      return finish(null);
+    }
+
+    const unwrapped = unwrapSegmentNearLongitude(
+      coordinates.from,
+      coordinates.to,
+      centerPair[1]
+    );
+    if (!unwrapped) return finish(null);
+    const unwrappedCenter = [centerPair[0], unwrapped.centerLon];
+    const evaluationCache = new Map();
+    const evaluate = function (fraction) {
+      const normalizedFraction = clamp(Number(fraction), 0, 1);
+      if (evaluationCache.has(normalizedFraction)) {
+        return evaluationCache.get(normalizedFraction);
+      }
+      pathEvaluationCount += 1;
+      const result = sphericalPathEvaluation(
+        unwrapped.from,
+        unwrapped.to,
+        unwrappedCenter,
+        normalizedFraction
+      );
+      evaluationCache.set(normalizedFraction, result);
+      return result;
+    };
+    const angularRadius = Math.min(Math.PI, radius / EARTH_RADIUS_KM);
+    const threshold = Math.cos(angularRadius);
+    const startValue = evaluate(0);
+    const endValue = evaluate(1);
+    const startInside = startValue.cosine >= threshold;
+    const endInside = endValue.cosine >= threshold;
+    const coordinateDelta =
+      Math.abs(unwrapped.to[0] - unwrapped.from[0]) +
+      Math.abs(unwrapped.to[1] - unwrapped.from[1]);
+
+    if (angularRadius >= Math.PI || coordinateDelta <= 1e-14) {
+      if (!startInside) return finish(null);
+      return finish({
+        startFraction: 0,
+        endFraction: 1,
+        from: unwrapped.from.slice(),
+        to: unwrapped.to.slice(),
+        startInside: true,
+        endInside: true,
+        fullyContained: true,
+        tangent: false,
+        intervals: [{
+          startFraction: 0,
+          endFraction: 1,
+          from: unwrapped.from.slice(),
+          to: unwrapped.to.slice(),
+        }],
+      });
+    }
+
+    const stationarySampleCount = 12;
+    const derivativeSamples = [];
+    for (let index = 0; index <= stationarySampleCount; index += 1) {
+      derivativeSamples.push(evaluate(index / stationarySampleCount));
+    }
+    const stationaryPoints = [];
+    const derivativeTolerance = 1e-14;
+    derivativeSamples.forEach(function (sample) {
+      if (Math.abs(sample.derivative) <= derivativeTolerance) {
+        stationaryPoints.push(sample);
+      }
+    });
+    for (let index = 1; index < derivativeSamples.length; index += 1) {
+      const previous = derivativeSamples[index - 1];
+      const current = derivativeSamples[index];
+      if (
+        Math.abs(previous.derivative) > derivativeTolerance &&
+        Math.abs(current.derivative) > derivativeTolerance &&
+        ((previous.derivative < 0) !== (current.derivative < 0))
+      ) {
+        stationaryPoints.push(safeguardedStationaryPoint(
+          evaluate,
+          previous,
+          current
+        ));
+      }
+    }
+
+    const extrema = [startValue, endValue].concat(stationaryPoints).sort(function (left, right) {
+      return left.fraction - right.fraction;
+    });
+    const knots = [];
+    extrema.forEach(function (candidate) {
+      const previous = knots[knots.length - 1];
+      if (previous && Math.abs(previous.fraction - candidate.fraction) <= 1e-14) {
+        if (candidate.cosine > previous.cosine) knots[knots.length - 1] = candidate;
+        return;
+      }
+      knots.push(candidate);
+    });
+
+    let maximum = knots[0];
+    knots.forEach(function (candidate) {
+      if (
+        candidate.cosine > maximum.cosine ||
+        (candidate.cosine === maximum.cosine && candidate.fraction < maximum.fraction)
+      ) {
+        maximum = candidate;
+      }
+    });
+    const tangentTolerance = 2e-14;
+    if (maximum.cosine < threshold - tangentTolerance) return finish(null);
+
+    const intervals = [];
+    let intervalStart = knots[0].cosine >= threshold ? 0 : null;
+    for (let index = 1; index < knots.length; index += 1) {
+      const previous = knots[index - 1];
+      const current = knots[index];
+      const previousInside = previous.cosine >= threshold;
+      const currentInside = current.cosine >= threshold;
+      if (!previousInside && currentInside) {
+        intervalStart = safeguardedCircleBoundary(
+          evaluate,
+          threshold,
+          previous,
+          current
+        ).fraction;
+      } else if (previousInside && !currentInside && intervalStart != null) {
+        intervals.push({
+          startFraction: intervalStart,
+          endFraction: safeguardedCircleBoundary(
+            evaluate,
+            threshold,
+            previous,
+            current
+          ).fraction,
+        });
+        intervalStart = null;
+      }
+    }
+    if (intervalStart != null) {
+      intervals.push({ startFraction: intervalStart, endFraction: 1 });
+    }
+
+    if (!intervals.length) {
+      if (Math.abs(maximum.cosine - threshold) > tangentTolerance) return finish(null);
+      intervals.push({
+        startFraction: maximum.fraction,
+        endFraction: maximum.fraction,
+      });
+    }
+    function exactDistanceAtFraction(fraction) {
+      exactDistanceEvaluationCount += 1;
+      return haversineKm(
+        unwrappedCenter,
+        pointAtFraction(unwrapped.from, unwrapped.to, fraction)
+      );
+    }
+    function nudgeBoundaryInside(fraction, interiorFraction) {
+      if (exactDistanceAtFraction(fraction) <= radius) return fraction;
+      const direction = Math.sign(interiorFraction - fraction);
+      if (!direction) return fraction;
+      let step = 1e-14;
+      for (let iteration = 0; iteration < 8; iteration += 1) {
+        const candidate = clamp(fraction + (direction * step), 0, 1);
+        if (exactDistanceAtFraction(candidate) <= radius) return candidate;
+        step *= 10;
+      }
+      return interiorFraction;
+    }
+    intervals.forEach(function (interval) {
+      const originalStart = interval.startFraction;
+      const originalEnd = interval.endFraction;
+      interval.startFraction = nudgeBoundaryInside(originalStart, originalEnd);
+      interval.endFraction = nudgeBoundaryInside(originalEnd, originalStart);
+    });
+    const primaryInterval = intervals.reduce(function (best, interval) {
+      const bestLength = best.endFraction - best.startFraction;
+      const intervalLength = interval.endFraction - interval.startFraction;
+      return intervalLength > bestLength ? interval : best;
+    }, intervals[0]);
+    const clippedStart = clamp(primaryInterval.startFraction, 0, 1);
+    const clippedEnd = clamp(primaryInterval.endFraction, 0, 1);
+    const fractionTolerance = 1e-10;
+    return finish({
+      startFraction: clippedStart,
+      endFraction: clippedEnd,
+      from: pointAtFraction(unwrapped.from, unwrapped.to, clippedStart),
+      to: pointAtFraction(unwrapped.from, unwrapped.to, clippedEnd),
+      startInside,
+      endInside,
+      fullyContained:
+        intervals.length === 1 &&
+        clippedStart === 0 &&
+        clippedEnd === 1,
+      tangent: Math.abs(clippedEnd - clippedStart) <= fractionTolerance,
+      intervals: intervals.map(function (interval) {
+        return {
+          startFraction: interval.startFraction,
+          endFraction: interval.endFraction,
+          from: pointAtFraction(unwrapped.from, unwrapped.to, interval.startFraction),
+          to: pointAtFraction(unwrapped.from, unwrapped.to, interval.endFraction),
+        };
+      }),
+    });
+  }
+
+  function queryCircleSpatialIndex(index, center, radiusKm) {
+    const bounds = circleBounds(center, radiusKm);
+    const eventIds = new Set();
+    const traceIds = new Set();
+    const traceIntersections = new Map();
+    const metrics = {
+      testedTraceCount: 0,
+      pathEvaluationCount: 0,
+      exactDistanceEvaluationCount: 0,
+      maxPathEvaluationsPerTrace: 0,
+      maxTotalEvaluationsPerTrace: 0,
+    };
+    if (!index || !bounds) {
+      return {
+        bounds,
+        candidateEventIds: new Set(),
+        candidateTraceIds: new Set(),
+        eventIds,
+        traceIds,
+        traceIntersections,
+        metrics,
+      };
+    }
+
+    const candidates = querySpatialIndex(index, [bounds]);
+    candidates.eventIds.forEach(function (id) {
+      const event = index.eventById.get(String(id));
+      if (!event) return;
+      if (pointInsideCircle([event.lat, event.lon], center, radiusKm)) {
+        eventIds.add(String(id));
+      }
+    });
+    candidates.traceIds.forEach(function (id) {
+      const segment = index.segmentById.get(String(id));
+      if (!segment) return;
+      const diagnostics = {};
+      const intersection = clipSegmentToCircle(segment, center, radiusKm, { diagnostics });
+      metrics.testedTraceCount += 1;
+      metrics.pathEvaluationCount += Number(diagnostics.pathEvaluationCount) || 0;
+      metrics.exactDistanceEvaluationCount += Number(diagnostics.exactDistanceEvaluationCount) || 0;
+      metrics.maxPathEvaluationsPerTrace = Math.max(
+        metrics.maxPathEvaluationsPerTrace,
+        Number(diagnostics.pathEvaluationCount) || 0
+      );
+      metrics.maxTotalEvaluationsPerTrace = Math.max(
+        metrics.maxTotalEvaluationsPerTrace,
+        Number(diagnostics.totalEvaluationCount) || 0
+      );
+      if (!intersection) return;
+      traceIds.add(String(id));
+      traceIntersections.set(String(id), intersection);
+    });
+    return {
+      bounds,
+      candidateEventIds: candidates.eventIds,
+      candidateTraceIds: candidates.traceIds,
+      eventIds,
+      traceIds,
+      traceIntersections,
+      metrics,
+    };
+  }
+
   function buildNeighborhoodIndex(segments, events, generation, options) {
     const adjacency = buildAdjacencyIndex(segments, generation);
     return Object.assign(adjacency, {
@@ -644,7 +1145,7 @@
     const sinLon = Math.sin(deltaLon / 2);
     const a = (sinLat * sinLat) +
       (Math.cos(lat1 * radians) * Math.cos(lat2 * radians) * sinLon * sinLon);
-    return 6371.0088 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(Math.max(0, 1 - a)));
+    return EARTH_RADIUS_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(Math.max(0, 1 - a)));
   }
 
   return Object.freeze({
@@ -662,6 +1163,10 @@
     buildSpatialIndex,
     buildNeighborhoodIndex,
     querySpatialIndex,
+    circleBounds,
+    pointInsideCircle,
+    clipSegmentToCircle,
+    queryCircleSpatialIndex,
     traverseNeighborhood,
     midpoint,
     haversineKm,

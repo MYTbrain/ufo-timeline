@@ -33,18 +33,23 @@
     rowById: new Map(),
     rowsByPosition: new Map(),
     detailChunkCache: new Map(),
+    visibleRecords: null,
+    visiblePositions: null,
     activeDetail: null,
+    activeRow: null,
     activePositionRows: null,
     detailRequestGeneration: 0,
     activeDiagramIndex: 0,
     lastViewKey: "",
+    lastFilterGeneration: null,
+    lastTraceContextKey: "",
     pollTimer: null,
     mapHandlersInstalled: false,
     markerHitContainer: null,
     markerHitHandler: null,
     chronology: {
       enabled: false,
-      relation: "same_day",
+      relation: "off",
       coordinateScope: "field",
       maxDistanceKm: 250,
       renderer: null,
@@ -56,6 +61,20 @@
       candidateEdges: 0,
       capped: false,
     },
+    ufoFocus: {
+      relationWindow: "off",
+      positionQuality: "source",
+      cropPositionQuality: "field",
+      radiusKm: 25,
+      traceAnalysisEnabled: false,
+      hopDepth: 1,
+      hopDirection: "both",
+      showRadius: true,
+      emphasizeIntersections: true,
+      isolation: false,
+      requestGeneration: 0,
+      lastResult: null,
+    },
   };
 
   const button = document.querySelector("#overlay-crop-circles");
@@ -64,11 +83,22 @@
   const panelBody = document.querySelector("#crop-circle-detail-body");
   const panelClose = document.querySelector("#crop-circle-detail-close");
   const chronologyPanel = document.querySelector("#crop-circle-chronology-controls");
-  const chronologyToggle = document.querySelector("#crop-circle-chronology-enabled");
   const chronologyRelation = document.querySelector("#crop-circle-chronology-relation");
   const chronologyScope = document.querySelector("#crop-circle-chronology-coordinate-scope");
   const chronologyDistance = document.querySelector("#crop-circle-chronology-max-distance");
   const chronologyStatus = document.querySelector("#crop-circle-chronology-status");
+  const selectedSummary = document.querySelector("#crop-circle-selected-summary");
+  const ufoRelationWindow = document.querySelector("#crop-circle-ufo-relation-window");
+  const ufoPositionQuality = document.querySelector("#crop-circle-ufo-position-quality");
+  const ufoCropPositionQuality = document.querySelector("#crop-circle-ufo-crop-position-quality");
+  const radiusSelect = document.querySelector("#crop-circle-radius-km");
+  const traceAnalysisToggle = document.querySelector("#crop-circle-analyze-ufo-traces");
+  const hopDepthSelect = document.querySelector("#crop-circle-ufo-hop-depth");
+  const hopDirectionSelect = document.querySelector("#crop-circle-ufo-hop-direction");
+  const showRadiusToggle = document.querySelector("#crop-circle-show-radius");
+  const emphasizeIntersectionsToggle = document.querySelector("#crop-circle-highlight-intersections");
+  const focusModeToggle = document.querySelector("#crop-circle-focus-mode");
+  const ufoRelationStatus = document.querySelector("#crop-circle-ufo-relation-status");
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -103,6 +133,19 @@
     button.disabled = Boolean(busy);
     if (busy) button.setAttribute("aria-busy", "true");
     else button.removeAttribute("aria-busy");
+    dispatchLayerState({ enabled: Boolean(enabled), busy: Boolean(busy) });
+  }
+
+  function dispatchLayerState(detail) {
+    if (!window || typeof window.dispatchEvent !== "function" || typeof window.CustomEvent !== "function") return;
+    window.dispatchEvent(new window.CustomEvent("ufo:crop-circle-statechange", {
+      detail: Object.assign({
+        enabled: state.enabled,
+        visibleRecords: state.visibleRecords,
+        visiblePositions: state.visiblePositions,
+        totalRecords: state.manifest && state.manifest.counts ? Number(state.manifest.counts.events) : null,
+      }, detail || {}),
+    }));
   }
 
   async function readJson(url, compressed, cacheMode) {
@@ -366,6 +409,9 @@
       positions.get(position).push(row);
       visibleRecords += 1;
     }
+    if (state.activeRow && !pointMatches(state.activeRow, context)) {
+      closePanel();
+    }
     state.markerById.clear();
     for (const [key, rows] of positions) state.layer.addLayer(markerForPosition(key, rows));
     if (!state.map.hasLayer(state.layer)) state.layer.addTo(state.map);
@@ -374,6 +420,8 @@
       ? " Exact-coordinate filtering is active."
       : " Solid center = exact field; dashed ring = candidate field; dotted ring = locality centroid.";
     const sourceDescriptionCount = Number(state.manifest.counts.recordsWithSourceDescriptions);
+    state.visibleRecords = visibleRecords;
+    state.visiblePositions = positions.size;
     const descriptionNote = Number.isFinite(sourceDescriptionCount)
       ? " Source narratives captured for " + sourceDescriptionCount.toLocaleString() + " of " + state.manifest.counts.events.toLocaleString() + " records."
       : "";
@@ -381,6 +429,11 @@
       visibleRecords.toLocaleString() + " records at " + positions.size.toLocaleString() + " mapped positions visible (" +
       state.manifest.counts.events.toLocaleString() + " records total)." + exactNote + descriptionNote
     );
+    dispatchLayerState({
+      enabled: true,
+      visibleRecords: visibleRecords,
+      visiblePositions: positions.size,
+    });
     renderChronology(false);
   }
 
@@ -393,26 +446,182 @@
   function syncChronologyControlState() {
     if (chronologyPanel) chronologyPanel.hidden = !state.enabled;
     const on = state.enabled && state.chronology.enabled;
-    if (chronologyToggle) {
-      chronologyToggle.checked = state.chronology.enabled;
-      chronologyToggle.disabled = !state.enabled;
-    }
-    for (const input of [chronologyRelation, chronologyScope, chronologyDistance]) {
-      if (input) input.disabled = !on;
-    }
+    if (chronologyRelation) chronologyRelation.disabled = !state.enabled;
+    for (const input of [chronologyScope, chronologyDistance]) if (input) input.disabled = !on;
     if (chronologyRelation) chronologyRelation.value = state.chronology.relation;
     if (chronologyScope) chronologyScope.value = state.chronology.coordinateScope;
     if (chronologyDistance) chronologyDistance.value = String(state.chronology.maxDistanceKm);
+    syncUfoFocusControlState();
   }
 
   function readChronologyControls() {
-    state.chronology.enabled = Boolean(chronologyToggle && chronologyToggle.checked && state.enabled);
     const relation = chronologyRelation ? chronologyRelation.value : state.chronology.relation;
-    state.chronology.relation = relation === "7" || relation === "30" ? relation : "same_day";
+    state.chronology.relation = ["off", "same_day", "7", "30"].includes(relation) ? relation : "off";
+    state.chronology.enabled = Boolean(state.enabled && state.chronology.relation !== "off");
     state.chronology.coordinateScope = chronologyScope && chronologyScope.value === "all" ? "all" : "field";
     const distance = Number(chronologyDistance && chronologyDistance.value);
     state.chronology.maxDistanceKm = [100, 250, 500, 1000].includes(distance) ? distance : 250;
     syncChronologyControlState();
+  }
+
+  function setUfoRelationStatus(message, isError) {
+    if (!ufoRelationStatus) return;
+    ufoRelationStatus.textContent = message || "";
+    ufoRelationStatus.classList.toggle("is-error", Boolean(isError));
+  }
+
+  function selectedCropLabel() {
+    if (!state.activeRow) return "";
+    const detail = state.activeDetail || {};
+    return String(detail.location || "Crop record " + String(state.activeRow[ROW.id])) + " · " + ordinalLabel(state.activeRow);
+  }
+
+  function syncUfoFocusControlState() {
+    const selected = Boolean(state.enabled && state.activeRow);
+    if (selectedSummary) {
+      selectedSummary.textContent = selected
+        ? "Selected: " + selectedCropLabel()
+        : "Select one crop spiral, then choose a specific record if that position contains a stack.";
+    }
+    if (ufoRelationWindow) {
+      ufoRelationWindow.disabled = !selected;
+      ufoRelationWindow.value = state.ufoFocus.relationWindow;
+    }
+    if (ufoPositionQuality) {
+      ufoPositionQuality.disabled = !selected || state.ufoFocus.relationWindow === "off";
+      ufoPositionQuality.value = state.ufoFocus.positionQuality;
+    }
+    if (ufoCropPositionQuality) {
+      ufoCropPositionQuality.disabled = !selected || state.ufoFocus.relationWindow === "off";
+      ufoCropPositionQuality.value = state.ufoFocus.cropPositionQuality;
+    }
+    if (radiusSelect) radiusSelect.value = String(state.ufoFocus.radiusKm);
+    if (traceAnalysisToggle) {
+      traceAnalysisToggle.checked = state.ufoFocus.traceAnalysisEnabled;
+      traceAnalysisToggle.disabled = !selected;
+    }
+    if (hopDepthSelect) hopDepthSelect.value = String(state.ufoFocus.hopDepth);
+    if (hopDirectionSelect) hopDirectionSelect.value = state.ufoFocus.hopDirection;
+    if (showRadiusToggle) showRadiusToggle.checked = state.ufoFocus.showRadius;
+    if (emphasizeIntersectionsToggle) emphasizeIntersectionsToggle.checked = state.ufoFocus.emphasizeIntersections;
+    if (focusModeToggle) focusModeToggle.checked = state.ufoFocus.isolation;
+    for (const input of [radiusSelect, showRadiusToggle]) {
+      if (input) input.disabled = !selected;
+    }
+    for (const input of [hopDepthSelect, hopDirectionSelect, emphasizeIntersectionsToggle, focusModeToggle]) {
+      if (input) input.disabled = !selected || !state.ufoFocus.traceAnalysisEnabled;
+    }
+  }
+
+  function readUfoFocusControls() {
+    const relation = ufoRelationWindow ? ufoRelationWindow.value : state.ufoFocus.relationWindow;
+    state.ufoFocus.relationWindow = ["off", "same_day", "after_1_7", "after_1_30"].includes(relation) ? relation : "off";
+    state.ufoFocus.positionQuality = ufoPositionQuality && ufoPositionQuality.value === "all" ? "all" : "source";
+    state.ufoFocus.cropPositionQuality = ufoCropPositionQuality && ufoCropPositionQuality.value === "all" ? "all" : "field";
+    const radius = Number(radiusSelect && radiusSelect.value);
+    state.ufoFocus.radiusKm = [5, 10, 25, 50, 100, 250, 500].includes(radius) ? radius : 25;
+    state.ufoFocus.traceAnalysisEnabled = Boolean(traceAnalysisToggle && traceAnalysisToggle.checked);
+    const depth = Number(hopDepthSelect && hopDepthSelect.value);
+    state.ufoFocus.hopDepth = [1, 2, 3, 4].includes(depth) ? depth : 1;
+    const direction = hopDirectionSelect ? hopDirectionSelect.value : state.ufoFocus.hopDirection;
+    state.ufoFocus.hopDirection = ["forward", "backward", "both"].includes(direction) ? direction : "both";
+    state.ufoFocus.showRadius = Boolean(showRadiusToggle && showRadiusToggle.checked);
+    state.ufoFocus.emphasizeIntersections = Boolean(emphasizeIntersectionsToggle && emphasizeIntersectionsToggle.checked);
+    state.ufoFocus.isolation = Boolean(state.ufoFocus.traceAnalysisEnabled && focusModeToggle && focusModeToggle.checked);
+    syncUfoFocusControlState();
+  }
+
+  function cropFocusConfig() {
+    if (!state.activeRow) return null;
+    const row = state.activeRow;
+    const detail = state.activeDetail || {};
+    return {
+      crop: {
+        id: String(row[ROW.id]),
+        lat: Number(row[ROW.lat]),
+        lon: Number(row[ROW.lon]),
+        startOrdinal: Number(row[ROW.start]),
+        endOrdinal: Number(row[ROW.end]),
+        datePrecisionCode: Number(row[ROW.datePrecision]),
+        coordinateCode: Number(row[ROW.coordinate]),
+        country: detail.country || "",
+        countryCode: detail.countryCode || detail.country_code || "",
+        dateRole: detail.dateRole || detail.date_role || "catalog_unspecified",
+        coordinateUncertaintyKm: detail.coordinateUncertaintyKm,
+      },
+      ufoRelation: {
+        window: state.ufoFocus.relationWindow,
+        positionQuality: state.ufoFocus.positionQuality,
+        cropPositionQuality: state.ufoFocus.cropPositionQuality,
+      },
+      radiusKm: state.ufoFocus.radiusKm,
+      traceAnalysisEnabled: state.ufoFocus.traceAnalysisEnabled,
+      showRadius: state.ufoFocus.showRadius,
+      emphasizeIntersections: state.ufoFocus.emphasizeIntersections,
+      isolation: state.ufoFocus.isolation,
+      hops: {
+        depth: state.ufoFocus.hopDepth,
+        direction: state.ufoFocus.hopDirection,
+      },
+    };
+  }
+
+  function clearUfoFocus(reason) {
+    state.ufoFocus.requestGeneration += 1;
+    state.ufoFocus.lastResult = null;
+    const bridge = window.UfoTimelineExtensions;
+    if (bridge && typeof bridge.clearCropTraceFocus === "function") bridge.clearCropTraceFocus(reason || "selection cleared");
+  }
+
+  async function refreshUfoFocus(reason) {
+    const config = cropFocusConfig();
+    if (!state.enabled || !config) {
+      clearUfoFocus(reason || "no selected crop record");
+      setUfoRelationStatus("Select a crop record to inspect nearby UFO relations and trace intersections.");
+      return null;
+    }
+    const bridge = window.UfoTimelineExtensions;
+    if (!bridge || typeof bridge.setCropTraceFocus !== "function") {
+      setUfoRelationStatus("The UFO trace runtime is not ready yet.", true);
+      return null;
+    }
+    const generation = ++state.ufoFocus.requestGeneration;
+    setUfoRelationStatus("Calculating selected-radius UFO relations and filtered trace intersections…");
+    try {
+      const result = (await bridge.setCropTraceFocus(config)) || {};
+      if (generation !== state.ufoFocus.requestGeneration || !state.activeRow) return null;
+      state.ufoFocus.lastResult = result || {};
+      const relationText = state.ufoFocus.relationWindow === "off"
+        ? "UFO-to-crop date links are off."
+        : !result.cropDateExact
+          ? "This crop record has no exact catalog day, so no date links are inferred."
+          : Number(result.relationEventCount || 0).toLocaleString() + " UFO sighting" + (Number(result.relationEventCount) === 1 ? "" : "s") + " match the selected date window and radius.";
+      const ukText = result.excludedUkInference ? " UK crop records are excluded from relationship inference." : "";
+      const capText = result.relationCapped ? " Relation display capped at 300; reduce the radius." : "";
+      const uncertaintyText = result.radiusBelowCoordinateUncertainty
+        ? " Warning: the selected radius is smaller than this record’s estimated " + Number(result.coordinateUncertaintyKm).toLocaleString() + " km coordinate uncertainty."
+        : "";
+      const cropPositionText = state.ufoFocus.relationWindow === "off"
+        ? ""
+        : result.cropPositionEligible
+          ? (result.cropPositionIncludedByOverride ? " Locality-centroid crop position included by explicit selection." : "")
+          : " UFO-to-crop date links require an exact or candidate field position unless locality centroids are explicitly included.";
+      const traceText = result.traceAnalysisEnabled
+        ? Number(result.intersectingTraceCount || 0).toLocaleString() +
+          " filtered UFO trace segment" + (Number(result.intersectingTraceCount) === 1 ? " intersects" : "s intersect") +
+          " the " + Number(result.radiusKm || state.ufoFocus.radiusKm).toLocaleString() + " km radius; " +
+          Number(result.reachedTraceCount || 0).toLocaleString() + " trace segment" + (Number(result.reachedTraceCount) === 1 ? " is" : "s are") +
+          " shown through hop " + Number(result.depth || state.ufoFocus.hopDepth) + "."
+        : "UFO trace-radius analysis is off.";
+      setUfoRelationStatus(
+        relationText + " " + traceText + ukText + cropPositionText + capText + uncertaintyText
+      );
+      return result;
+    } catch (error) {
+      if (generation !== state.ufoFocus.requestGeneration) return null;
+      setUfoRelationStatus(error && error.message ? error.message : String(error), true);
+      return null;
+    }
   }
 
   function clearChronologyLayer() {
@@ -427,18 +636,25 @@
   function installChronologyControls() {
     if (!chronologyPanel || chronologyPanel.dataset.cropCircleReady === "1") return;
     chronologyPanel.dataset.cropCircleReady = "1";
-    function change() {
+    function chronologyChange() {
       readChronologyControls();
       state.chronology.graphKey = "";
       if (!state.chronology.enabled) {
         clearChronologyLayer();
-        setChronologyStatus("Crop chronology is off. UFO traces and hops are unchanged.");
+        setChronologyStatus("Crop-to-crop progression is off.");
         return;
       }
       renderChronology(true);
     }
-    for (const input of [chronologyToggle, chronologyRelation, chronologyScope, chronologyDistance]) {
-      if (input) input.addEventListener("change", change);
+    function ufoChange() {
+      readUfoFocusControls();
+      refreshUfoFocus("controls changed");
+    }
+    for (const input of [chronologyRelation, chronologyScope, chronologyDistance]) {
+      if (input) input.addEventListener("change", chronologyChange);
+    }
+    for (const input of [ufoRelationWindow, ufoPositionQuality, ufoCropPositionQuality, radiusSelect, traceAnalysisToggle, hopDepthSelect, hopDirectionSelect, showRadiusToggle, emphasizeIntersectionsToggle, focusModeToggle]) {
+      if (input) input.addEventListener("change", ufoChange);
     }
     syncChronologyControlState();
   }
@@ -644,9 +860,10 @@
   function buildChronologyGraph(context) {
     const nodes = chronologyNodes(context);
     const maxDistanceKm = state.chronology.maxDistanceKm;
-    const edges = sameDayForest(nodes, maxDistanceKm);
     const windowDays = state.chronology.relation === "7" ? 7 : state.chronology.relation === "30" ? 30 : 0;
-    if (windowDays) edges.push.apply(edges, laterDateEdges(nodes, windowDays, maxDistanceKm));
+    const edges = state.chronology.relation === "same_day"
+      ? sameDayForest(nodes, maxDistanceKm)
+      : laterDateEdges(nodes, windowDays, maxDistanceKm);
     edges.sort(function (left, right) {
       return (left.kind === right.kind ? 0 : left.kind === "same-day" ? -1 : 1) ||
         left.left.day - right.left.day || left.dayGap - right.dayGap ||
@@ -747,7 +964,7 @@
   function renderChronology(force) {
     if (!state.enabled || !state.chronology.enabled) {
       clearChronologyLayer();
-      if (state.enabled) setChronologyStatus("Crop chronology is off. UFO traces and hops are unchanged.");
+      if (state.enabled) setChronologyStatus("Crop-to-crop progression is off.");
       return;
     }
     const context = extensionContext();
@@ -765,6 +982,16 @@
     state.pollTimer = window.setInterval(function () {
       try {
         renderPoints(false);
+        const context = extensionContext();
+        const generation = context && Number.isFinite(Number(context.filterGeneration))
+          ? Number(context.filterGeneration)
+          : null;
+        const traceContextKey = context ? String(context.traceContextKey || generation || "") : "";
+        if (state.activeRow && traceContextKey !== state.lastTraceContextKey) {
+          state.lastFilterGeneration = generation;
+          state.lastTraceContextKey = traceContextKey;
+          refreshUfoFocus("UFO filters changed");
+        }
       } catch (error) {
         console.error(error);
       }
@@ -1049,7 +1276,7 @@
       (detail.mappingNotes ? '<p class="cc-detail-warning">' + escapeHtml(detail.mappingNotes) + "</p>" : "") +
       imageMarkup +
       '<section class="cc-detail-sources"><h4>Sources and provenance</h4>' + sourceMarkup + "</section>" +
-      '<p class="cc-trace-policy"><strong>Separate chronology:</strong> this record is always excluded from UFO travel traces and chronological-hop expansion. Optional crop links show catalog-date adjacency only and do not infer formation time, causation, or travel.</p>';
+      '<p class="cc-trace-policy"><strong>Separate relationship layers:</strong> this crop record is never inserted into the UFO chronology graph. Radius analysis highlights existing filtered UFO connectors and sighting-date candidates; crop progression remains a separate catalog-date layer. None of these links establishes formation time, causation, travel, or a shared craft.</p>';
     panel.hidden = false;
     panel.setAttribute("aria-hidden", "false");
   }
@@ -1072,9 +1299,12 @@
 
   function showPositionChooser(rows) {
     state.detailRequestGeneration += 1;
+    state.activeRow = null;
+    clearUfoFocus("choose a record from the stack");
     const ordered = rows.slice().sort(compareRowsByDate);
     state.activePositionRows = ordered;
     state.activeDetail = null;
+    syncUfoFocusControlState();
     const first = ordered[0];
     panelBody.innerHTML =
       '<div class="cc-stack-heading"><p class="cc-detail-eyebrow">Shared mapped position</p><h3>' + ordered.length.toLocaleString() +
@@ -1093,6 +1323,10 @@
     const ordered = rows.slice().sort(compareRowsByDate);
     state.activePositionRows = ordered;
     if (ordered.length > 1) {
+      state.activeRow = null;
+      state.activeDetail = null;
+      clearUfoFocus("choose a record from the stack");
+      syncUfoFocusControlState();
       showPositionChooser(ordered);
       return;
     }
@@ -1120,8 +1354,11 @@
     panel.hidden = true;
     panel.setAttribute("aria-hidden", "true");
     state.activeDetail = null;
+    state.activeRow = null;
     state.activePositionRows = null;
     state.activeDiagramIndex = 0;
+    clearUfoFocus("crop detail closed");
+    syncUfoFocusControlState();
   }
 
   async function detailChunk(chunkNumber) {
@@ -1145,6 +1382,10 @@
 
   async function openDetailForPoint(row) {
     const generation = ++state.detailRequestGeneration;
+    state.activeRow = null;
+    state.activeDetail = null;
+    clearUfoFocus("switching crop record");
+    syncUfoFocusControlState();
     showPanelLoading(row);
     let chunk;
     try {
@@ -1156,8 +1397,16 @@
     if (generation !== state.detailRequestGeneration || !state.enabled) return false;
     const detail = chunk[String(row[ROW.id])];
     if (!detail) throw new Error("Crop-circle detail record was not found.");
+    state.activeRow = row;
     state.activeDiagramIndex = 0;
     renderDetail(detail);
+    syncUfoFocusControlState();
+    const context = extensionContext();
+    state.lastFilterGeneration = context && Number.isFinite(Number(context.filterGeneration))
+      ? Number(context.filterGeneration)
+      : null;
+    state.lastTraceContextKey = context ? String(context.traceContextKey || state.lastFilterGeneration || "") : "";
+    refreshUfoFocus("crop record selected");
     return true;
   }
 
@@ -1219,8 +1468,11 @@
       if (state.map && state.layer && state.map.hasLayer(state.layer)) state.map.removeLayer(state.layer);
       if (state.layer) state.layer.clearLayers();
       state.markerById.clear();
+      state.visibleRecords = null;
+      state.visiblePositions = null;
       state.lastViewKey = "";
       state.chronology.enabled = false;
+      state.chronology.relation = "off";
       state.chronology.graphKey = "";
       state.chronology.graphEdges = [];
       state.chronology.eligibleNodes = 0;
@@ -1231,7 +1483,8 @@
       closePanel();
       setButtonState(false, false);
       syncChronologyControlState();
-      setChronologyStatus("Crop chronology is off. UFO traces and hops are unchanged.");
+      setChronologyStatus("Crop-to-crop progression is off.");
+      setUfoRelationStatus("Select a crop record to inspect nearby UFO relations and trace intersections.");
       setStatus("Crop circles are off. The layer adds no startup data requests.");
       return false;
     }
@@ -1268,14 +1521,31 @@
     setEnabled,
     setChronology: function (options) {
       const settings = options || {};
-      if (Object.prototype.hasOwnProperty.call(settings, "enabled")) state.chronology.enabled = Boolean(settings.enabled && state.enabled);
-      if (settings.relation === "same_day" || settings.relation === "7" || settings.relation === "30") state.chronology.relation = settings.relation;
+      if (["off", "same_day", "7", "30"].includes(settings.relation)) state.chronology.relation = settings.relation;
+      if (Object.prototype.hasOwnProperty.call(settings, "enabled") && !settings.enabled) state.chronology.relation = "off";
+      if (settings.enabled && state.chronology.relation === "off") state.chronology.relation = "same_day";
+      state.chronology.enabled = Boolean(state.enabled && state.chronology.relation !== "off");
       if (settings.coordinateScope === "field" || settings.coordinateScope === "all") state.chronology.coordinateScope = settings.coordinateScope;
       if ([100, 250, 500, 1000].includes(Number(settings.maxDistanceKm))) state.chronology.maxDistanceKm = Number(settings.maxDistanceKm);
       state.chronology.graphKey = "";
       syncChronologyControlState();
       renderChronology(true);
       return state.chronology.enabled;
+    },
+    setUfoFocus: async function (options) {
+      const settings = options || {};
+      if (["off", "same_day", "after_1_7", "after_1_30"].includes(settings.relationWindow)) state.ufoFocus.relationWindow = settings.relationWindow;
+      if (settings.positionQuality === "source" || settings.positionQuality === "all") state.ufoFocus.positionQuality = settings.positionQuality;
+      if (settings.cropPositionQuality === "field" || settings.cropPositionQuality === "all") state.ufoFocus.cropPositionQuality = settings.cropPositionQuality;
+      if ([5, 10, 25, 50, 100, 250, 500].includes(Number(settings.radiusKm))) state.ufoFocus.radiusKm = Number(settings.radiusKm);
+      if (Object.prototype.hasOwnProperty.call(settings, "traceAnalysisEnabled")) state.ufoFocus.traceAnalysisEnabled = Boolean(settings.traceAnalysisEnabled);
+      if ([1, 2, 3, 4].includes(Number(settings.hopDepth))) state.ufoFocus.hopDepth = Number(settings.hopDepth);
+      if (["forward", "backward", "both"].includes(settings.hopDirection)) state.ufoFocus.hopDirection = settings.hopDirection;
+      if (Object.prototype.hasOwnProperty.call(settings, "showRadius")) state.ufoFocus.showRadius = Boolean(settings.showRadius);
+      if (Object.prototype.hasOwnProperty.call(settings, "emphasizeIntersections")) state.ufoFocus.emphasizeIntersections = Boolean(settings.emphasizeIntersections);
+      if (Object.prototype.hasOwnProperty.call(settings, "isolation")) state.ufoFocus.isolation = Boolean(settings.isolation && state.ufoFocus.traceAnalysisEnabled);
+      syncUfoFocusControlState();
+      return refreshUfoFocus("API settings changed");
     },
     openRecord: async function (id) {
       if (!state.enabled) throw new Error("Enable crop circles before opening a record.");
@@ -1297,6 +1567,21 @@
         renderedPositionCount: state.layer && typeof state.layer.getLayers === "function" ? state.layer.getLayers().length : 0,
         cachedDetailChunks: state.detailChunkCache.size,
         traceEligible: false,
+        traceFocusActive: Boolean(state.activeRow),
+        selectedRecordId: state.activeRow ? String(state.activeRow[ROW.id]) : null,
+        ufoFocus: {
+          relationWindow: state.ufoFocus.relationWindow,
+          positionQuality: state.ufoFocus.positionQuality,
+          cropPositionQuality: state.ufoFocus.cropPositionQuality,
+          radiusKm: state.ufoFocus.radiusKm,
+          traceAnalysisEnabled: state.ufoFocus.traceAnalysisEnabled,
+          hopDepth: state.ufoFocus.hopDepth,
+          hopDirection: state.ufoFocus.hopDirection,
+          showRadius: state.ufoFocus.showRadius,
+          emphasizeIntersections: state.ufoFocus.emphasizeIntersections,
+          isolation: state.ufoFocus.isolation,
+          result: state.ufoFocus.lastResult,
+        },
         chronology: {
           enabled: state.chronology.enabled,
           relation: state.chronology.relation,

@@ -886,6 +886,18 @@
     cityLabelMarkers: [],
     playbackLayer: null,
     playbackTrailCanvasLayer: null,
+    cropTraceRadiusLayer: null,
+    cropTraceRelationLayer: null,
+    cropTraceNetworkLayer: null,
+    cropTraceEmphasisLayer: null,
+    cropTraceFocusConfig: null,
+    cropTraceFocusResult: null,
+    cropTraceFocusRequestGeneration: 0,
+    cropTraceRelationRenderState: null,
+    cropTraceRelationZoomHandler: null,
+    cropTraceHiddenPaneStyles: new Map(),
+    cropCircleOverlayEnabled: false,
+    cropCircleOverlayVisibleCount: null,
     playbackCursorMarker: null,
     playbackActiveMarker: null,
     cursorAnimationFrameId: null,
@@ -1679,6 +1691,7 @@
     overlayClaimedUfoBasesSitesToggle: document.querySelector("#overlay-claimed-ufo-bases-sites"),
     overlayClaimedUfoBasesTracesRow: document.querySelector("#claimed-ufo-bases-traces-row"),
     overlayClaimedUfoBasesTracesToggle: document.querySelector("#overlay-claimed-ufo-bases-traces"),
+    overlayCropCirclesToggle: document.querySelector("#overlay-crop-circles"),
     militaryBranchPanel: document.querySelector("#military-branch-panel"),
     militaryBranchStatus: document.querySelector("#military-branch-status"),
     mapControlCluster: document.querySelector("#map-control-cluster"),
@@ -10193,7 +10206,9 @@
     const active = config.active !== false;
     const hasCount = Number.isFinite(Number(config.count));
     const count = hasCount ? Math.max(0, Number(config.count)) : 0;
-    const countNoun = count === 1 ? "event" : "events";
+    const singularNoun = String(config.countNounSingular || "event");
+    const pluralNoun = String(config.countNounPlural || singularNoun + "s");
+    const countNoun = count === 1 ? singularNoun : pluralNoun;
     const countHtml = hasCount
       ? '<span class="map-legend-item-count" title="' +
         escapeHtml(formatNumber(count) + " " + countNoun + " under the current filters") +
@@ -10444,6 +10459,29 @@
 
   function buildMapLegendOverlayRows() {
     const rows = [];
+    const cropCirclesActive = Boolean(runtime.cropCircleOverlayEnabled || (
+      els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true"
+    ));
+    rows.push(buildMapLegendMarkerRow(
+      "Crop circles",
+      "#d8ff3e",
+      "spiral",
+      Object.assign(
+        mapLegendOverlayToggleOptions(
+          "data-map-legend-crop-circles",
+          "crop_circles",
+          "Crop circles",
+          cropCirclesActive
+        ),
+        Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
+          ? {
+              count: Number(runtime.cropCircleOverlayVisibleCount),
+              countNounSingular: "crop record",
+              countNounPlural: "crop records",
+            }
+          : {}
+      )
+    ));
     const airportsActive = Boolean(state.overlayVisibility.airports);
     rows.push(buildMapLegendMarkerRow(
       "Airports",
@@ -10590,6 +10628,7 @@
       eventSelection.mode !== "all" ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
+      Boolean(runtime.cropCircleOverlayEnabled) ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -10776,6 +10815,9 @@
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
+    if (runtime.cropCircleOverlayEnabled && els.overlayCropCirclesToggle) {
+      els.overlayCropCirclesToggle.click();
+    }
     invalidateMapLegendEventFilterCaches();
     resetPlayback({ preserveSelection: true });
     renderOverlayControls();
@@ -16022,9 +16064,10 @@
   }
 
   function currentChronologicalNeighborhoodIndex() {
+    const appliedFilterGeneration = Number(runtime.activeFilterGeneration) || 0;
     const cacheKey = [
       "chronological-neighborhood",
-      state.filterGeneration,
+      appliedFilterGeneration,
       state.timelineDataVersion,
       state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
       state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
@@ -16039,7 +16082,7 @@
     const index = TRACE_NEIGHBORHOOD.buildNeighborhoodIndex(
       segments,
       state.filteredMappedCatalog,
-      state.filterGeneration,
+      appliedFilterGeneration,
       { cellSizeDegrees: CHRONOLOGICAL_NEIGHBORHOOD_SPATIAL_CELL_DEGREES }
     );
     runtime.neighborhoodAdjacencyCacheKey = cacheKey;
@@ -16047,7 +16090,7 @@
     runtime.neighborhoodSeedCacheKey = "";
     runtime.neighborhoodSeedCacheValue = null;
     runtime.neighborhoodBuildMetrics = {
-      generation: state.filterGeneration,
+      generation: appliedFilterGeneration,
       segmentCount: index.segments.length,
       eventCount: index.eventCount,
       durationMs: Math.round((performance.now() - startedAt) * 100) / 100,
@@ -16057,6 +16100,642 @@
     }, runtime.neighborhoodBuildMetrics));
     runtime.neighborhoodPerformanceSamples = runtime.neighborhoodPerformanceSamples.slice(-60);
     return index;
+  }
+
+  function cropTraceNeighborhoodCacheKey() {
+    return [
+      "crop-trace-neighborhood",
+      Number(runtime.activeFilterGeneration) || 0,
+      state.timelineDataVersion,
+      state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
+      catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      activeTraceBuckets().map(function (bucket) { return bucket.key; }).join(","),
+      traceFacilityFilterSignature(),
+    ].join("|");
+  }
+
+  function cropTraceCircle(config) {
+    const crop = config && config.crop ? config.crop : {};
+    const lat = Number(crop.lat);
+    const lng = Number(crop.lon);
+    const radiusKm = clamp(Number(config && config.radiusKm) || 25, 1, 1000);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return {
+      id: "crop:" + String(crop.id || "selected"),
+      type: "circle",
+      center: { lat: lat, lng: lng },
+      radiusMeters: radiusKm * 1000,
+    };
+  }
+
+  function cropCountryExcludedFromInference(crop) {
+    const value = String(crop && (crop.countryCode || crop.country) || "").trim().toLowerCase();
+    return value.indexOf("united kingdom") !== -1 || [
+      "gb", "gbr", "uk", "united kingdom", "great britain", "england", "scotland", "wales", "northern ireland",
+    ].indexOf(value) !== -1;
+  }
+
+  function ufoEventMatchesCropDate(event, crop, relationWindow) {
+    if (!eventHasExactDateEvidence(event)) return false;
+    if (Number(crop && crop.datePrecisionCode) !== 0) return false;
+    const cropOrdinal = Number(crop && crop.startOrdinal);
+    const eventOrdinal = Number(event.sort_ordinal);
+    if (!Number.isFinite(cropOrdinal) || !Number.isFinite(eventOrdinal)) return false;
+    const gapDays = cropOrdinal - eventOrdinal;
+    if (relationWindow === "same_day") return gapDays === 0;
+    if (relationWindow === "after_1_7") return gapDays >= 1 && gapDays <= 7;
+    if (relationWindow === "after_1_30") return gapDays >= 1 && gapDays <= 30;
+    return false;
+  }
+
+  function cropPointMayIntersectCircleBounds(lat, lon, bounds) {
+    const latitude = Number(lat);
+    const longitude = Number(lon);
+    if (!bounds || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return false;
+    if (latitude < Number(bounds.south) || latitude > Number(bounds.north)) return false;
+    if (Number(bounds.east) - Number(bounds.west) >= 360) return true;
+    const referenceLongitude = Number(bounds.referenceLongitude);
+    const nearbyLongitude = referenceLongitude + shortestLongitudeDelta(referenceLongitude, longitude);
+    return nearbyLongitude >= Number(bounds.west) && nearbyLongitude <= Number(bounds.east);
+  }
+
+  function cropTraceSegmentNearCircle(segment, referenceLongitude) {
+    if (!segment || !Array.isArray(segment.from) || !Array.isArray(segment.to)) return null;
+    const fromLat = Number(segment.from[0]);
+    const toLat = Number(segment.to[0]);
+    const normalizedFrom = normalizeLongitude(Number(segment.from[1]));
+    if (![fromLat, toLat, normalizedFrom, Number(segment.to[1]), referenceLongitude].every(Number.isFinite)) return null;
+    let fromLon = normalizedFrom;
+    let toLon = fromLon + shortestLongitudeDelta(fromLon, Number(segment.to[1]));
+    const midpoint = (fromLon + toLon) / 2;
+    const shift = Math.round((referenceLongitude - midpoint) / 360) * 360;
+    fromLon += shift;
+    toLon += shift;
+    return {
+      from: [fromLat, fromLon],
+      to: [toLat, toLon],
+    };
+  }
+
+  function cropTraceSegmentMayIntersectCircleBounds(segment, bounds) {
+    if (!bounds) return false;
+    const copy = cropTraceSegmentNearCircle(segment, Number(bounds.referenceLongitude));
+    if (!copy) return false;
+    const south = Math.min(copy.from[0], copy.to[0]);
+    const north = Math.max(copy.from[0], copy.to[0]);
+    if (north < Number(bounds.south) || south > Number(bounds.north)) return false;
+    if (Number(bounds.east) - Number(bounds.west) >= 360) return true;
+    const west = Math.min(copy.from[1], copy.to[1]);
+    const east = Math.max(copy.from[1], copy.to[1]);
+    return east >= Number(bounds.west) && west <= Number(bounds.east);
+  }
+
+  function cropRelationDateCandidates(crop, relationWindow) {
+    const cropOrdinal = Number(crop && crop.startOrdinal);
+    if (!Number.isFinite(cropOrdinal)) return [];
+    let minimumOrdinal = cropOrdinal;
+    let maximumOrdinal = cropOrdinal;
+    if (relationWindow === "after_1_7") {
+      minimumOrdinal = cropOrdinal - 7;
+      maximumOrdinal = cropOrdinal - 1;
+    } else if (relationWindow === "after_1_30") {
+      minimumOrdinal = cropOrdinal - 30;
+      maximumOrdinal = cropOrdinal - 1;
+    }
+    if (runtime.filteredMappedCatalogDateAsc && state.filteredMappedPlaybackEvents.length) {
+      return state.filteredMappedPlaybackEvents.slice(
+        lowerBoundTimelineEventIndex(state.filteredMappedPlaybackEvents, minimumOrdinal),
+        upperBoundTimelineEventIndex(state.filteredMappedPlaybackEvents, maximumOrdinal)
+      );
+    }
+    return state.filteredMappedCatalog;
+  }
+
+  function cropRelationEventCandidates(circle, config) {
+    const relation = config && config.ufoRelation ? config.ufoRelation : {};
+    const relationWindow = String(relation.window || "off");
+    if (relationWindow === "off" || cropCountryExcludedFromInference(config.crop)) return [];
+    if (Number(config.crop && config.crop.coordinateCode) > 1 && relation.cropPositionQuality !== "all") return [];
+    const sourceCoordinatesOnly = relation.positionQuality !== "all";
+    const bounds = TRACE_NEIGHBORHOOD.circleBounds(
+      [circle.center.lat, circle.center.lng],
+      circle.radiusMeters / 1000
+    );
+    const events = [];
+    for (const event of cropRelationDateCandidates(config.crop, relationWindow)) {
+      if (!event) continue;
+      if (sourceCoordinatesOnly && !eventHasSourceCoordinateEvidence(event)) continue;
+      if (!ufoEventMatchesCropDate(event, config.crop, relationWindow)) continue;
+      if (!cropPointMayIntersectCircleBounds(event.lat, event.lon, bounds)) continue;
+      if (!TRACE_NEIGHBORHOOD.pointInsideCircle(
+        [Number(event.lat), Number(event.lon)],
+        [circle.center.lat, circle.center.lng],
+        circle.radiusMeters / 1000
+      )) continue;
+      const distanceKm = TRACE_NEIGHBORHOOD.haversineKm(
+        [Number(event.lat), Number(event.lon)],
+        [circle.center.lat, circle.center.lng]
+      );
+      events.push({ event: event, distanceKm: Number(distanceKm) || 0 });
+    }
+    events.sort(function (left, right) {
+      return left.distanceKm - right.distanceKm ||
+        Number(left.event.sort_ordinal) - Number(right.event.sort_ordinal) ||
+        String(left.event.event_id).localeCompare(String(right.event.event_id));
+    });
+    return events.slice(0, 300);
+  }
+
+  function cropTraceSeedSegments(segments, circle) {
+    const seeds = [];
+    const bounds = TRACE_NEIGHBORHOOD.circleBounds(
+      [circle.center.lat, circle.center.lng],
+      circle.radiusMeters / 1000
+    );
+    for (const segment of segments) {
+      if (!cropTraceSegmentMayIntersectCircleBounds(segment, bounds)) continue;
+      const intersection = TRACE_NEIGHBORHOOD.clipSegmentToCircle(
+        segment,
+        [circle.center.lat, circle.center.lng],
+        circle.radiusMeters / 1000
+      );
+      if (!intersection) continue;
+      seeds.push({
+        segment: segment,
+        clips: [{
+          from: intersection.from,
+          to: intersection.to,
+          startRatio: intersection.startFraction,
+          endRatio: intersection.endFraction,
+        }],
+      });
+    }
+    seeds.sort(function (left, right) {
+      return Number(left.segment.sequenceIndex) - Number(right.segment.sequenceIndex) ||
+        String(left.segment.traceId).localeCompare(String(right.segment.traceId));
+    });
+    return seeds;
+  }
+
+  function cropTraceLocalNeighborhood(segments, seeds, depth, direction) {
+    const localSegments = new Map();
+    const neighborRadius = Math.max(0, depth - 1);
+    seeds.forEach(function (seed) {
+      const sequenceIndex = Number(seed.segment && seed.segment.sequenceIndex);
+      if (!Number.isInteger(sequenceIndex)) return;
+      const startIndex = Math.max(0, sequenceIndex - neighborRadius);
+      const endIndex = Math.min(segments.length - 1, sequenceIndex + neighborRadius);
+      for (let index = startIndex; index <= endIndex; index += 1) {
+        const segment = segments[index];
+        if (segment && segment.traceId != null) localSegments.set(String(segment.traceId), segment);
+      }
+    });
+    const index = TRACE_NEIGHBORHOOD.buildAdjacencyIndex(
+      Array.from(localSegments.values()),
+      Number(runtime.activeFilterGeneration) || 0
+    );
+    return TRACE_NEIGHBORHOOD.traverseNeighborhood({
+      index: index,
+      depth: depth,
+      direction: direction,
+      traceSeeds: seeds.map(function (seed) {
+        return { traceId: String(seed.segment.traceId), regionIds: ["crop-radius"] };
+      }),
+    });
+  }
+
+  function ensureCropTraceFocusLayers() {
+    if (!runtime.map || typeof L === "undefined") return false;
+    const paneDefinitions = [
+      ["cropCircleRadiusPane", "425"],
+      ["cropCircleRelationPane", "485"],
+      ["cropCircleTracePane", "490"],
+      ["cropCircleEmphasisPane", "500"],
+    ];
+    paneDefinitions.forEach(function (definition) {
+      if (!runtime.map.getPane(definition[0])) runtime.map.createPane(definition[0]);
+      const pane = runtime.map.getPane(definition[0]);
+      pane.style.zIndex = definition[1];
+      pane.style.pointerEvents = "none";
+    });
+    if (!runtime.cropTraceRadiusLayer) runtime.cropTraceRadiusLayer = L.layerGroup();
+    if (!runtime.cropTraceRelationLayer) runtime.cropTraceRelationLayer = L.layerGroup();
+    if (!runtime.cropTraceNetworkLayer) runtime.cropTraceNetworkLayer = L.layerGroup();
+    if (!runtime.cropTraceEmphasisLayer) runtime.cropTraceEmphasisLayer = L.layerGroup();
+    return true;
+  }
+
+  function clearCropTraceLayer(layer) {
+    if (layer && typeof layer.clearLayers === "function") layer.clearLayers();
+    if (runtime.map && layer && runtime.map.hasLayer(layer)) runtime.map.removeLayer(layer);
+  }
+
+  function cropTraceFocusSetIsolation(active) {
+    if (!runtime.map || typeof runtime.map.getContainer !== "function") return;
+    const container = runtime.map.getContainer();
+    if (container && container.classList) {
+      container.classList.toggle("crop-circle-focus-active", Boolean(active));
+    }
+    const hiddenPaneNames = [
+      "overlayPane",
+      "shadowPane",
+      "markerPane",
+      "tooltipPane",
+      "popupPane",
+      "regionSelectionPane",
+      "researchSiteAreaPane",
+      "tracePane",
+      "playbackTracePane",
+      "neighborhoodTracePane",
+      "claimedBaseTracePane",
+      "claimedBaseMarkerPane",
+      "cropCircleChronologyPane",
+    ];
+    hiddenPaneNames.forEach(function (paneName) {
+      const pane = runtime.map.getPane(paneName);
+      if (active) {
+        if (!pane || !pane.style || runtime.cropTraceHiddenPaneStyles.has(paneName)) return;
+        runtime.cropTraceHiddenPaneStyles.set(paneName, {
+          opacity: pane.style.opacity,
+          pointerEvents: pane.style.pointerEvents,
+        });
+        pane.style.opacity = "0";
+        pane.style.pointerEvents = "none";
+        return;
+      }
+      if (!runtime.cropTraceHiddenPaneStyles.has(paneName)) return;
+      const previous = runtime.cropTraceHiddenPaneStyles.get(paneName);
+      if (pane && pane.style) {
+        pane.style.opacity = previous.opacity;
+        pane.style.pointerEvents = previous.pointerEvents;
+      }
+      runtime.cropTraceHiddenPaneStyles.delete(paneName);
+    });
+  }
+
+  function cropTraceNearestCopy(segment, referenceLongitude) {
+    const copies = wrappedSegmentCopies(segment, referenceLongitude, worldIndicesNearReferenceLongitude(referenceLongitude));
+    copies.sort(function (left, right) {
+      const leftMid = (Number(left.from[1]) + Number(left.to[1])) / 2;
+      const rightMid = (Number(right.from[1]) + Number(right.to[1])) / 2;
+      return Math.abs(leftMid - referenceLongitude) - Math.abs(rightMid - referenceLongitude);
+    });
+    return copies[0] || { from: segment.from, to: segment.to };
+  }
+
+  function cropTraceAddStroke(layer, from, to, options) {
+    if (!layer || typeof L === "undefined" || typeof L.polyline !== "function") return;
+    layer.addLayer(L.polyline([from, to], Object.assign({
+      interactive: false,
+      bubblingMouseEvents: false,
+      smoothFactor: 1,
+    }, options || {})));
+  }
+
+  function cropTraceAddStyledSegment(layer, segment, referenceLongitude, options) {
+    const config = options || {};
+    const copy = config.copy || cropTraceNearestCopy(segment, referenceLongitude);
+    const from = config.from || copy.from;
+    const to = config.to || copy.to;
+    const rawOpacity = Number.isFinite(Number(config.opacity)) ? Number(config.opacity) : Number(segment.opacity || 0.75);
+    const opacity = scaledTraceOpacity(rawOpacity);
+    const rawWeight = Number.isFinite(Number(config.weight)) ? Number(config.weight) : Number(segment.weight || 2);
+    const weight = scaledTraceStrokeWeight(rawWeight);
+    const outlineWeight = scaledTraceStrokeWeight(rawWeight + Number(config.outlineExtra || 2.4));
+    const dashArray = config.dashArray != null ? config.dashArray : (segment.dashArray || "");
+    if (config.outline !== false) {
+      cropTraceAddStroke(layer, from, to, {
+        pane: config.pane || "cropCircleTracePane",
+        color: CROP_TRACE_OUTLINE_COLOR,
+        opacity: Math.min(0.92, opacity + 0.12),
+        weight: outlineWeight,
+        dashArray: dashArray,
+      });
+    }
+    if (segment.fromCraftColor && segment.toCraftColor) {
+      const startRatio = Number.isFinite(Number(config.startRatio)) ? Number(config.startRatio) : 0;
+      const endRatio = Number.isFinite(Number(config.endRatio)) ? Number(config.endRatio) : 1;
+      if (endRatio <= 0.5) {
+        cropTraceAddStroke(layer, from, to, {
+          pane: config.pane || "cropCircleTracePane",
+          color: segment.fromCraftColor,
+          opacity: opacity,
+          weight: weight,
+          dashArray: dashArray,
+        });
+        return;
+      }
+      if (startRatio >= 0.5) {
+        cropTraceAddStroke(layer, from, to, {
+          pane: config.pane || "cropCircleTracePane",
+          color: segment.toCraftColor,
+          opacity: opacity,
+          weight: weight,
+          dashArray: dashArray,
+        });
+        return;
+      }
+      const splitRatio = clamp((0.5 - startRatio) / Math.max(0.000001, endRatio - startRatio), 0, 1);
+      const midpoint = [
+        Number(from[0]) + ((Number(to[0]) - Number(from[0])) * splitRatio),
+        Number(from[1]) + ((Number(to[1]) - Number(from[1])) * splitRatio),
+      ];
+      cropTraceAddStroke(layer, from, midpoint, {
+        pane: config.pane || "cropCircleTracePane",
+        color: segment.fromCraftColor,
+        opacity: opacity,
+        weight: weight,
+        dashArray: dashArray,
+      });
+      cropTraceAddStroke(layer, midpoint, to, {
+        pane: config.pane || "cropCircleTracePane",
+        color: segment.toCraftColor,
+        opacity: opacity,
+        weight: weight,
+        dashArray: dashArray,
+      });
+      return;
+    }
+    cropTraceAddStroke(layer, from, to, {
+      pane: config.pane || "cropCircleTracePane",
+      color: segment.color || (segment.bucket && segment.bucket.color) || "#38bdf8",
+      opacity: opacity,
+      weight: weight,
+      dashArray: dashArray,
+    });
+  }
+
+  const CROP_TRACE_OUTLINE_COLOR = "#111827";
+  const CROP_RELATION_COLOR = "#ffb000";
+
+  function cropTraceDrawRadius(circle, crop, showRadius) {
+    clearCropTraceLayer(runtime.cropTraceRadiusLayer);
+    if (!showRadius) return;
+    const uncertain = Number(crop && crop.coordinateCode) >= 2;
+    runtime.cropTraceRadiusLayer.addLayer(L.circle([circle.center.lat, circle.center.lng], {
+      pane: "cropCircleRadiusPane",
+      radius: circle.radiusMeters,
+      color: CROP_TRACE_OUTLINE_COLOR,
+      opacity: 0.82,
+      weight: 5,
+      fill: false,
+      interactive: false,
+      dashArray: uncertain ? "7 6" : null,
+    }));
+    runtime.cropTraceRadiusLayer.addLayer(L.circle([circle.center.lat, circle.center.lng], {
+      pane: "cropCircleRadiusPane",
+      radius: circle.radiusMeters,
+      color: "#d8ff3e",
+      opacity: 0.94,
+      weight: 2,
+      fillColor: "#d8ff3e",
+      fillOpacity: 0.085,
+      interactive: false,
+      dashArray: uncertain ? "7 6" : null,
+    }));
+    runtime.cropTraceRadiusLayer.addTo(runtime.map);
+  }
+
+  function cropTraceDrawRelationArrow(event, circle, sameDay, uncertainCropPosition) {
+    const wrappedEventLongitudes = wrappedLongitudesNearReference(Number(event.lon), circle.center.lng);
+    wrappedEventLongitudes.sort(function (left, right) {
+      return Math.abs(left - circle.center.lng) - Math.abs(right - circle.center.lng);
+    });
+    const from = [Number(event.lat), wrappedEventLongitudes[0]];
+    const to = [circle.center.lat, circle.center.lng];
+    const dashArray = sameDay ? "2 7" : "9 7";
+    cropTraceAddStroke(runtime.cropTraceRelationLayer, from, to, {
+      pane: "cropCircleRelationPane",
+      color: CROP_TRACE_OUTLINE_COLOR,
+      opacity: uncertainCropPosition ? 0.54 : 0.88,
+      weight: 5.2,
+      dashArray: dashArray,
+    });
+    cropTraceAddStroke(runtime.cropTraceRelationLayer, from, to, {
+      pane: "cropCircleRelationPane",
+      color: CROP_RELATION_COLOR,
+      opacity: uncertainCropPosition ? 0.64 : 0.98,
+      weight: 2.2,
+      dashArray: dashArray,
+    });
+    if (sameDay || !runtime.map || typeof runtime.map.latLngToLayerPoint !== "function") return;
+    const start = runtime.map.latLngToLayerPoint(from);
+    const end = runtime.map.latLngToLayerPoint(to);
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.sqrt((dx * dx) + (dy * dy));
+    if (!Number.isFinite(length) || length < 18) return;
+    const ux = dx / length;
+    const uy = dy / length;
+    const tip = { x: end.x - (ux * 12), y: end.y - (uy * 12) };
+    const back = { x: tip.x - (ux * 10), y: tip.y - (uy * 10) };
+    const left = runtime.map.layerPointToLatLng([back.x - (uy * 5), back.y + (ux * 5)]);
+    const right = runtime.map.layerPointToLatLng([back.x + (uy * 5), back.y - (ux * 5)]);
+    const tipLatLng = runtime.map.layerPointToLatLng([tip.x, tip.y]);
+    [left, right].forEach(function (wing) {
+      cropTraceAddStroke(runtime.cropTraceRelationLayer, [wing.lat, wing.lng], [tipLatLng.lat, tipLatLng.lng], {
+        pane: "cropCircleRelationPane",
+        color: CROP_TRACE_OUTLINE_COLOR,
+        opacity: uncertainCropPosition ? 0.56 : 0.9,
+        weight: 5,
+      });
+      cropTraceAddStroke(runtime.cropTraceRelationLayer, [wing.lat, wing.lng], [tipLatLng.lat, tipLatLng.lng], {
+        pane: "cropCircleRelationPane",
+        color: CROP_RELATION_COLOR,
+        opacity: uncertainCropPosition ? 0.68 : 1,
+        weight: 2,
+      });
+    });
+  }
+
+  function removeCropTraceRelationZoomHandler() {
+    if (runtime.map && runtime.cropTraceRelationZoomHandler && typeof runtime.map.off === "function") {
+      runtime.map.off("zoomend", runtime.cropTraceRelationZoomHandler);
+    }
+    runtime.cropTraceRelationZoomHandler = null;
+  }
+
+  function installCropTraceRelationZoomHandler() {
+    removeCropTraceRelationZoomHandler();
+    if (!runtime.map || !runtime.cropTraceRelationRenderState || typeof runtime.map.on !== "function") return;
+    runtime.cropTraceRelationZoomHandler = function () {
+      const relationState = runtime.cropTraceRelationRenderState;
+      if (!relationState) return;
+      cropTraceRenderRelations(
+        relationState.events,
+        relationState.circle,
+        relationState.relationWindow,
+        relationState.crop,
+        false
+      );
+    };
+    runtime.map.on("zoomend", runtime.cropTraceRelationZoomHandler);
+  }
+
+  function cropTraceRenderRelations(events, circle, relationWindow, crop, rememberState) {
+    if (rememberState !== false) {
+      runtime.cropTraceRelationRenderState = events.length
+        ? { events: events, circle: circle, relationWindow: relationWindow, crop: crop }
+        : null;
+      if (runtime.cropTraceRelationRenderState) installCropTraceRelationZoomHandler();
+      else removeCropTraceRelationZoomHandler();
+    }
+    clearCropTraceLayer(runtime.cropTraceRelationLayer);
+    const sameDay = relationWindow === "same_day";
+    const uncertainCropPosition = Number(crop && crop.coordinateCode) > 1;
+    events.forEach(function (entry) {
+      cropTraceDrawRelationArrow(entry.event, circle, sameDay, uncertainCropPosition);
+    });
+    if (events.length) runtime.cropTraceRelationLayer.addTo(runtime.map);
+  }
+
+  function cropTraceRenderNetwork(neighborhood, seeds, circle, emphasizeIntersections, isolation) {
+    clearCropTraceLayer(runtime.cropTraceNetworkLayer);
+    clearCropTraceLayer(runtime.cropTraceEmphasisLayer);
+    const density = normalTraceDensityProfile(neighborhood.segments.length);
+    const renderBaseline = Boolean(isolation || normalizeTraceMode(state.traceMode) === "off");
+    if (renderBaseline) {
+      neighborhood.segments.forEach(function (rawSegment) {
+        const segment = styleTraceSegmentForDensity(rawSegment, density);
+        const hop = Math.max(1, Number(rawSegment.neighborhood && rawSegment.neighborhood.hop) || 1);
+        cropTraceAddStyledSegment(runtime.cropTraceNetworkLayer, segment, circle.center.lng, {
+          pane: "cropCircleTracePane",
+          opacity: Math.max(0.28, Number(segment.opacity || 0.7) * (hop === 1 ? 1 : 0.72)),
+          weight: Math.max(1.05, Number(segment.weight || 2)),
+          dashArray: hop > 1 ? "6 6" : (segment.dashArray || ""),
+          outline: false,
+        });
+      });
+      if (neighborhood.segments.length) runtime.cropTraceNetworkLayer.addTo(runtime.map);
+    }
+    if (!emphasizeIntersections) return;
+    seeds.forEach(function (seed) {
+      const segment = styleTraceSegmentForDensity(seed.segment, density);
+      seed.clips.forEach(function (clip) {
+        cropTraceAddStyledSegment(runtime.cropTraceEmphasisLayer, segment, circle.center.lng, {
+          pane: "cropCircleEmphasisPane",
+          from: clip.from,
+          to: clip.to,
+          startRatio: clip.startRatio,
+          endRatio: clip.endRatio,
+          opacity: 1,
+          weight: Math.max(4.2, Number(segment.weight || 2) + 3),
+          outlineExtra: 3.2,
+          dashArray: "",
+        });
+      });
+    });
+    if (seeds.length) runtime.cropTraceEmphasisLayer.addTo(runtime.map);
+  }
+
+  function clearCropTraceFocus(reason) {
+    runtime.cropTraceFocusRequestGeneration += 1;
+    runtime.cropTraceFocusConfig = null;
+    runtime.cropTraceFocusResult = null;
+    clearCropTraceLayer(runtime.cropTraceRadiusLayer);
+    clearCropTraceLayer(runtime.cropTraceRelationLayer);
+    runtime.cropTraceRelationRenderState = null;
+    removeCropTraceRelationZoomHandler();
+    clearCropTraceLayer(runtime.cropTraceNetworkLayer);
+    clearCropTraceLayer(runtime.cropTraceEmphasisLayer);
+    cropTraceFocusSetIsolation(false);
+    return Boolean(reason || true);
+  }
+
+  function setCropTraceFocus(config) {
+    if (!ensureCropTraceFocusLayers()) throw new Error("The map is not ready for crop-circle trace analysis.");
+    const circle = cropTraceCircle(config);
+    if (!circle) throw new Error("The selected crop record has no usable mapped position.");
+    const requestGeneration = ++runtime.cropTraceFocusRequestGeneration;
+    const depth = TRACE_NEIGHBORHOOD.normalizeDepth(config && config.hops ? config.hops.depth : 1);
+    const direction = TRACE_NEIGHBORHOOD.normalizeDirection(config && config.hops ? config.hops.direction : "both");
+    const traceAnalysisEnabled = Boolean(config && config.traceAnalysisEnabled);
+    let seeds = [];
+    let neighborhood = { segments: [], events: [] };
+    if (traceAnalysisEnabled) {
+      const segments = buildCanonicalTraceSegments();
+      seeds = cropTraceSeedSegments(segments, circle);
+      neighborhood = cropTraceLocalNeighborhood(segments, seeds, depth, direction);
+    }
+    const relationEvents = cropRelationEventCandidates(circle, config || {});
+    if (requestGeneration !== runtime.cropTraceFocusRequestGeneration) return runtime.cropTraceFocusResult;
+    runtime.cropTraceFocusConfig = Object.assign({}, config, { radiusKm: circle.radiusMeters / 1000 });
+    cropTraceDrawRadius(circle, config.crop, config.showRadius !== false);
+    cropTraceRenderRelations(
+      relationEvents,
+      circle,
+      config && config.ufoRelation ? String(config.ufoRelation.window || "off") : "off",
+      config.crop
+    );
+    cropTraceRenderNetwork(
+      neighborhood,
+      seeds,
+      circle,
+      config.emphasizeIntersections !== false,
+      Boolean(config.isolation && config.traceAnalysisEnabled)
+    );
+    cropTraceFocusSetIsolation(Boolean(config.isolation && traceAnalysisEnabled));
+    const result = {
+      generation: Number(runtime.activeFilterGeneration) || 0,
+      requestGeneration: requestGeneration,
+      radiusKm: circle.radiusMeters / 1000,
+      relationEventCount: relationEvents.length,
+      relationCapped: relationEvents.length >= 300,
+      intersectingTraceCount: seeds.length,
+      reachedTraceCount: neighborhood.segments.length,
+      reachedEventCount: neighborhood.events.length,
+      depth: depth,
+      direction: direction,
+      traceAnalysisEnabled: traceAnalysisEnabled,
+      baselineNetworkRendered: Boolean(traceAnalysisEnabled && (
+        config.isolation || normalizeTraceMode(state.traceMode) === "off"
+      )),
+      excludedUkInference: cropCountryExcludedFromInference(config.crop),
+      cropDateExact: Number(config.crop && config.crop.datePrecisionCode) === 0,
+      cropPositionEligible: Number(config.crop && config.crop.coordinateCode) <= 1 ||
+        Boolean(config.ufoRelation && config.ufoRelation.cropPositionQuality === "all"),
+      cropPositionIncludedByOverride: Number(config.crop && config.crop.coordinateCode) > 1 &&
+        Boolean(config.ufoRelation && config.ufoRelation.cropPositionQuality === "all"),
+      radiusBelowCoordinateUncertainty: Number.isFinite(Number(config.crop && config.crop.coordinateUncertaintyKm)) &&
+        Number(config.crop.coordinateUncertaintyKm) > (circle.radiusMeters / 1000),
+      coordinateUncertaintyKm: Number.isFinite(Number(config.crop && config.crop.coordinateUncertaintyKm))
+        ? Number(config.crop.coordinateUncertaintyKm)
+        : null,
+      traceModeIndependent: true,
+      warnings: [
+        "UFO traces are filtered chronological connectors, not observed flight paths.",
+        "Crop dates are catalog/report dates and may lag formation.",
+      ],
+    };
+    runtime.cropTraceFocusResult = result;
+    return result;
+  }
+
+  function cropTimelineExtensionContext() {
+    return {
+      map: runtime.map,
+      timeRangeStartOrdinal: state.timeRangeStartOrdinal,
+      timeRangeEndOrdinal: state.timeRangeEndOrdinal,
+      hideLowPrecisionCoordinates: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
+      hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
+      colorMode: state.colorMode,
+      filterGeneration: Number(runtime.activeFilterGeneration) || 0,
+      timelineDataVersion: state.timelineDataVersion,
+      traceMode: state.traceMode,
+      traceContextKey: cropTraceNeighborhoodCacheKey() + "|" + state.colorMode + "|" + state.traceMode +
+        "|width=" + traceWidthScale() + "|boldness=" + traceBoldnessScale(),
+    };
+  }
+
+  function registerCropTimelineExtensionApi() {
+    const extensions = window.UfoTimelineExtensions;
+    if (!extensions || typeof extensions.registerCoreApi !== "function") return false;
+    return extensions.registerCoreApi({
+      getContext: cropTimelineExtensionContext,
+      setCropTraceFocus: setCropTraceFocus,
+      clearCropTraceFocus: clearCropTraceFocus,
+    });
   }
 
   function regionIdsForPoint(event, shapes, shapeBounds) {
@@ -24172,6 +24851,15 @@
     if (runtime.eventHandlersAttached) return;
     runtime.eventHandlersAttached = true;
 
+    window.addEventListener("ufo:crop-circle-statechange", function (event) {
+      const detail = event && event.detail ? event.detail : {};
+      runtime.cropCircleOverlayEnabled = Boolean(detail.enabled);
+      runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
+        ? Number(detail.visibleRecords)
+        : null;
+      renderMapLegend();
+    });
+
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
         resetPlayback({ preserveSelection: true });
@@ -24388,16 +25076,25 @@
       els.mapLegendBody.addEventListener("click", function (event) {
         const eventButton = event.target.closest("[data-map-legend-event-key]");
         const overlayButton = event.target.closest("[data-map-legend-overlay]");
+        const cropCircleButton = event.target.closest("[data-map-legend-crop-circles]");
         const militaryButton = event.target.closest("[data-map-legend-military-branch]");
         const researchButton = event.target.closest("[data-map-legend-research-category]");
         const claimedButton = event.target.closest("[data-map-legend-claimed-control]");
-        const button = eventButton || overlayButton || militaryButton || researchButton || claimedButton;
+        const button = eventButton || overlayButton || cropCircleButton || militaryButton || researchButton || claimedButton;
         if (!button) return;
         event.preventDefault();
         event.stopPropagation();
 
         if (eventButton) {
           toggleMapLegendEventKey(eventButton.getAttribute("data-map-legend-event-key"));
+          return;
+        }
+        if (cropCircleButton) {
+          if (!els.overlayCropCirclesToggle) return;
+          els.overlayCropCirclesToggle.click();
+          announceMapLegendStatus(
+            "Crop circles overlay " + (runtime.cropCircleOverlayEnabled ? "shown." : "updating.")
+          );
           return;
         }
         if (overlayButton) {
@@ -25462,6 +26159,8 @@
     runtime.neighborhoodTraceLayer = L.layerGroup().addTo(runtime.map);
     runtime.selectionLayer = L.layerGroup().addTo(runtime.map);
     runtime.playbackLayer = L.layerGroup().addTo(runtime.map);
+    ensureCropTraceFocusLayers();
+    registerCropTimelineExtensionApi();
     syncMapZoomControlPlacement();
     ensureMapScaleControl();
     if (els.mapControlCluster && L.DomEvent) {
@@ -26363,6 +27062,15 @@
           traversal: runtime.neighborhoodTraversalMetrics,
           performanceSamples: runtime.neighborhoodPerformanceSamples.slice(),
         },
+        cropTraceFocus: {
+          config: runtime.cropTraceFocusConfig,
+          result: runtime.cropTraceFocusResult,
+          radiusLayerVisible: Boolean(runtime.map && runtime.cropTraceRadiusLayer && runtime.map.hasLayer(runtime.cropTraceRadiusLayer)),
+          relationLayerVisible: Boolean(runtime.map && runtime.cropTraceRelationLayer && runtime.map.hasLayer(runtime.cropTraceRelationLayer)),
+          networkLayerVisible: Boolean(runtime.map && runtime.cropTraceNetworkLayer && runtime.map.hasLayer(runtime.cropTraceNetworkLayer)),
+          emphasisLayerVisible: Boolean(runtime.map && runtime.cropTraceEmphasisLayer && runtime.map.hasLayer(runtime.cropTraceEmphasisLayer)),
+          isolation: Boolean(runtime.map && runtime.map.getContainer && runtime.map.getContainer().classList.contains("crop-circle-focus-active")),
+        },
         filterGeneration: {
           requested: state.filterGeneration,
           active: runtime.activeFilterGeneration,
@@ -26766,6 +27474,12 @@
     },
     validatePackedPointsCatalogParity: function (options) {
       return validatePackedPointsCatalogParity(options);
+    },
+    setCropTraceFocus: function (options) {
+      return setCropTraceFocus(options || {});
+    },
+    clearCropTraceFocus: function (reason) {
+      return clearCropTraceFocus(reason || "debug clear");
     },
     openFullEvent: function (eventId, options) {
       return openFullEventView(eventId, Object.assign({

@@ -7,6 +7,8 @@
 
   let loadPromise = null;
   let capturedMap = null;
+  let coreApi = null;
+  let cropFocusRequestGeneration = 0;
 
   if (window.L && typeof window.L.map === "function") {
     const createLeafletMap = window.L.map;
@@ -32,22 +34,57 @@
     return era * 146097 + dayOfEra - 719468;
   }
 
+  function fallbackContext() {
+    const startInput = document.querySelector("#start-date");
+    const endInput = document.querySelector("#end-date");
+    const lowPrecision = document.querySelector("#hide-low-precision");
+    const nonExactDates = document.querySelector("#hide-non-exact-dates");
+    const colorMode = document.querySelector("#color-mode");
+    return {
+      map: capturedMap,
+      timeRangeStartOrdinal: civilOrdinal(startInput && startInput.value),
+      timeRangeEndOrdinal: civilOrdinal(endInput && endInput.value),
+      hideLowPrecisionCoordinates: Boolean(lowPrecision && lowPrecision.checked),
+      hideNonExactDates: Boolean(nonExactDates && nonExactDates.checked),
+      colorMode: colorMode && colorMode.value ? colorMode.value : "craft_type",
+      filterGeneration: 0,
+    };
+  }
+
   window.UfoTimelineExtensions = Object.freeze({
+    registerCoreApi: function (api) {
+      if (!api || typeof api.getContext !== "function") {
+        throw new Error("The UFO timeline extension API is invalid.");
+      }
+      coreApi = api;
+      return true;
+    },
     getContext: function () {
-      const startInput = document.querySelector("#start-date");
-      const endInput = document.querySelector("#end-date");
-      const lowPrecision = document.querySelector("#hide-low-precision");
-      const nonExactDates = document.querySelector("#hide-non-exact-dates");
-      const colorMode = document.querySelector("#color-mode");
-      return {
-        map: capturedMap,
-        timeRangeStartOrdinal: civilOrdinal(startInput && startInput.value),
-        timeRangeEndOrdinal: civilOrdinal(endInput && endInput.value),
-        hideLowPrecisionCoordinates: Boolean(lowPrecision && lowPrecision.checked),
-        hideNonExactDates: Boolean(nonExactDates && nonExactDates.checked),
-        colorMode: colorMode && colorMode.value ? colorMode.value : "craft_type",
-        filterGeneration: 0,
-      };
+      return coreApi ? coreApi.getContext() : fallbackContext();
+    },
+    setCropTraceFocus: function (config) {
+      if (!coreApi || typeof coreApi.setCropTraceFocus !== "function") {
+        return Promise.reject(new Error("The UFO trace runtime is not ready yet."));
+      }
+      const generation = ++cropFocusRequestGeneration;
+      return new Promise(function (resolve, reject) {
+        window.setTimeout(function () {
+          if (generation !== cropFocusRequestGeneration) {
+            resolve(null);
+            return;
+          }
+          try {
+            Promise.resolve(coreApi.setCropTraceFocus(config || {})).then(resolve, reject);
+          } catch (error) {
+            reject(error);
+          }
+        }, 0);
+      });
+    },
+    clearCropTraceFocus: function (reason) {
+      cropFocusRequestGeneration += 1;
+      if (!coreApi || typeof coreApi.clearCropTraceFocus !== "function") return false;
+      return coreApi.clearCropTraceFocus(reason || "crop focus cleared");
     },
   });
 
@@ -67,7 +104,7 @@
     setStatus("Loading the crop-circle layer…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./crop_circle_layer.js?v=2026-08-01-crop-circles-v156";
+      script.src = "./crop_circle_layer.js?v=2026-08-01-crop-circles-v157";
       script.async = true;
       script.onload = function () {
         if (!window.UfoCropCircleLayer) {

@@ -102,7 +102,6 @@
 }
 
 .crop-circle-chronology-head,
-.crop-circle-chronology-toggle,
 .crop-circle-chronology-legend,
 .crop-circle-chronology-legend span {
   display: flex;
@@ -112,17 +111,6 @@
 .crop-circle-chronology-head {
   justify-content: space-between;
   gap: 10px;
-}
-
-.crop-circle-chronology-toggle {
-  gap: 7px;
-  color: var(--ink);
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-.crop-circle-chronology-toggle input {
-  accent-color: #8ea900;
 }
 
 .crop-circle-chronology-key {
@@ -143,20 +131,85 @@
   border-top-style: dashed;
 }
 
-.crop-circle-chronology-grid {
+.crop-circle-selected-summary {
+  margin: 0;
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: color-mix(in srgb, #d8ff3e 10%, var(--surface-muted));
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.crop-circle-relation-group {
+  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 9px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, #d8ff3e 24%, var(--panel-border));
+  border-radius: 12px;
 }
 
-.crop-circle-chronology-grid label:last-child {
-  grid-column: 1 / -1;
+.crop-circle-relation-group legend {
+  max-width: 100%;
+  padding: 0 5px;
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
-.crop-circle-chronology-grid select {
+.crop-circle-relation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.crop-circle-relation-grid .field {
+  min-width: 0;
+  margin: 0;
+}
+
+.crop-circle-relation-grid select {
   min-width: 0;
   width: 100%;
+  min-height: 44px;
   font-size: 0.76rem;
+}
+
+.crop-circle-control-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.crop-circle-check-list {
+  display: grid;
+  gap: 7px;
+}
+
+.crop-circle-check {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.crop-circle-check input {
+  flex: 0 0 auto;
+  accent-color: #8ea900;
+}
+
+.crop-circle-check:has(input:disabled) {
+  opacity: 0.58;
 }
 
 .crop-circle-chronology-legend {
@@ -194,6 +247,22 @@
 .crop-circle-chronology-legend i.is-later::after {
   border-top-color: #d8ff3e;
   border-top-style: dashed;
+}
+
+.crop-circle-ufo-legend i::after {
+  border-top-color: #ffb000;
+}
+
+.crop-circle-ufo-legend i.is-ufo-same-day::after {
+  border-top-style: dotted;
+}
+
+.crop-circle-ufo-legend i.is-ufo-later::after {
+  border-top-style: dashed;
+}
+
+.crop-circle-ufo-legend i.is-ufo-later {
+  clip-path: polygon(0 0, 78% 0, 78% 0, 100% 50%, 78% 100%, 78% 100%, 0 100%);
 }
 
 .crop-circle-chronology-controls .compact-status {
@@ -697,13 +766,6 @@
     height: 150px;
   }
 
-  .crop-circle-chronology-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .crop-circle-chronology-grid label:last-child {
-    grid-column: auto;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4936,6 +4998,34 @@ button:focus {
   box-shadow: 0 0 6px var(--overlay-marker-color, #7dd3fc);
 }
 
+.map-legend-marker-sample-spiral {
+  position: relative;
+  border: 3px solid #17191b;
+  border-radius: 50%;
+  background: #fff8df;
+  box-shadow: 0 0 0 1px #fff8df, 0 2px 6px rgba(23, 25, 27, 0.28);
+}
+
+.map-legend-marker-sample-spiral::before,
+.map-legend-marker-sample-spiral::after {
+  content: "";
+  position: absolute;
+  border: 2px solid #d8ff3e;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(35deg);
+}
+
+.map-legend-marker-sample-spiral::before {
+  inset: 1px;
+}
+
+.map-legend-marker-sample-spiral::after {
+  inset: 4px;
+  border-width: 1.5px;
+  transform: rotate(210deg);
+}
+
 .overlay-marker-shape-square::before,
 .map-legend-marker-sample-square::before {
   border-radius: 2px;
@@ -4971,6 +5061,25 @@ button:focus {
     radial-gradient(circle at 30% 20%, rgba(15, 95, 115, 0.16), transparent 22%),
     radial-gradient(circle at 75% 35%, rgba(184, 139, 74, 0.18), transparent 24%),
     var(--map-background);
+}
+
+/* Focus mode is a reversible presentation mask. It never mutates the user's
+   underlying overlay, point, trace, Area Select, or playback state. */
+.leaflet-container.crop-circle-focus-active .leaflet-overlay-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-marker-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-tooltip-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-popup-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-region-selection-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-research-site-area-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-playback-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-neighborhood-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-claimed-base-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-claimed-base-marker-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-crop-circle-chronology-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-cropcirclechronology-pane {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .map-timeline-dock {
