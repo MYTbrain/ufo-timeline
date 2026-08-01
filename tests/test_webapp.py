@@ -1637,10 +1637,14 @@ def test_map_legend_counts_and_desktop_map_height_resizer_are_wired_and_accessib
         )
 
         assert 'class="map-legend-item-count"' in marker_row
-        assert 'const countNoun = count === 1 ? "event" : "events";' in marker_row
+        assert 'const singularNoun = String(config.countNounSingular || "event");' in marker_row
+        assert 'const pluralNoun = String(config.countNounPlural || singularNoun + "s");' in marker_row
+        assert 'const countNoun = count === 1 ? singularNoun : pluralNoun;' in marker_row
         assert 'formatNumber(count) + " " + countNoun + " under the current filters"' in marker_row
         assert "escapeHtml(formatNumber(count))" in marker_row
         assert "count: entry.count" in event_rows
+        assert 'countNounSingular: "crop record"' in app_js
+        assert 'countNounPlural: "crop records"' in app_js
 
         assert 'id="map-height-resize-rail"' in index_html
         assert 'role="separator"' in index_html
@@ -2007,7 +2011,7 @@ def test_chronological_neighborhood_release_contract_is_synchronized():
     assert "Chronological Neighborhood" in index_html
     assert "not evidence of travel" in index_html
     assert (
-        "trace_neighborhood.js?v=2026-07-31-area-lifecycle-v154"
+        "trace_neighborhood.js?v=2026-08-01-crop-circles-v157"
         in index_html
     )
     assert "function currentChronologicalNeighborhoodIndex()" in app_js
