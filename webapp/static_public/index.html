@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-07-31-area-lifecycle-v154">
+  <link rel="stylesheet" href="./styles.css?v=2026-07-31-crop-circles-v155">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -597,7 +597,12 @@
                 <span class="overlay-chip-swatch" aria-hidden="true"></span>
                 <span>Research Sites</span>
               </button>
+              <button id="overlay-crop-circles" class="overlay-chip" data-overlay-kind="crop-circles" type="button" aria-pressed="false" aria-describedby="crop-circle-status">
+                <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
+                <span>Crop circles</span>
+              </button>
             </div>
+            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status">Crop circles are off. The layer adds no startup data requests.</p>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
                 <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
@@ -1045,6 +1050,13 @@
               </div>
             </div>
           </div>
+          <section id="crop-circle-detail-panel" class="crop-circle-detail-panel" hidden aria-hidden="true" aria-label="Crop-circle details" aria-live="polite">
+            <div class="crop-circle-detail-head">
+              <strong>Crop Circle</strong>
+              <button id="crop-circle-detail-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="crop-circle-detail-body" class="crop-circle-detail-body"></div>
+          </section>
         </div>
         <div
           id="map-height-resize-rail"
@@ -1177,6 +1189,7 @@
   <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-07-31-crop-circles-v1"></script>
   <script src="./app.js?v=2026-07-31-area-lifecycle-v154"></script>
 </body>
 </html>
