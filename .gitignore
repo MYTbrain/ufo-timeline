@@ -37,6 +37,7 @@ backups/
 
 # Generated datasets, packaged transfers, and deployment bundles
 /data/*
+!/data/crop_circle_description_enrichment_v1.json
 !/data/canonical_web/
 /data/canonical_web/*
 !/data/canonical_web/canonical_web_manifest.json

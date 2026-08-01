@@ -51,6 +51,746 @@
   --result-pane-gap: 10px;
 }
 
+/* Optional crop-circle layer. Its runtime and data are loaded only on demand. */
+.overlay-chip[data-overlay-kind="crop-circles"] {
+  --overlay-color: #d8ff3e;
+  --overlay-tint: rgba(216, 255, 62, 0.18);
+}
+
+.overlay-chip[data-overlay-kind="crop-circles"].is-active {
+  color: #344000;
+}
+
+.overlay-chip-swatch-crop-circles {
+  position: relative;
+  border: 2px solid #17191b;
+  border-radius: 50%;
+  background: #fff8df;
+  box-shadow: 0 0 0 1px #fff8df;
+}
+
+.overlay-chip-swatch-crop-circles::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 2px solid #d8ff3e;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(35deg);
+}
+
+.crop-circle-status {
+  margin: 8px 0 0;
+}
+
+.crop-circle-status.is-error {
+  color: var(--danger, #b42318);
+}
+
+.crop-circle-chronology-controls {
+  display: grid;
+  gap: 9px;
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px solid color-mix(in srgb, #d8ff3e 38%, var(--panel-border));
+  border-radius: 14px;
+  background: color-mix(in srgb, #17191b 6%, var(--surface-muted));
+}
+
+.crop-circle-chronology-controls[hidden] {
+  display: none;
+}
+
+.crop-circle-chronology-head,
+.crop-circle-chronology-legend,
+.crop-circle-chronology-legend span {
+  display: flex;
+  align-items: center;
+}
+
+.crop-circle-chronology-head {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.crop-circle-chronology-key {
+  display: inline-flex;
+  gap: 3px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: #17191b;
+}
+
+.crop-circle-chronology-key i {
+  width: 14px;
+  border-top: 2px solid #fff8df;
+}
+
+.crop-circle-chronology-key i:last-child {
+  border-top-color: #d8ff3e;
+  border-top-style: dashed;
+}
+
+.crop-circle-selected-summary {
+  margin: 0;
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: color-mix(in srgb, #d8ff3e 10%, var(--surface-muted));
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.crop-circle-relation-group {
+  min-width: 0;
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, #d8ff3e 24%, var(--panel-border));
+  border-radius: 12px;
+}
+
+.crop-circle-relation-group legend {
+  max-width: 100%;
+  padding: 0 5px;
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.crop-circle-relation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.crop-circle-relation-grid .field {
+  min-width: 0;
+  margin: 0;
+}
+
+.crop-circle-relation-grid select {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  font-size: 0.76rem;
+}
+
+.crop-circle-control-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.crop-circle-check-list {
+  display: grid;
+  gap: 7px;
+}
+
+.crop-circle-check {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.crop-circle-check input {
+  flex: 0 0 auto;
+  accent-color: #8ea900;
+}
+
+.crop-circle-check:has(input:disabled) {
+  opacity: 0.58;
+}
+
+.crop-circle-chronology-legend {
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.crop-circle-chronology-legend span {
+  gap: 6px;
+}
+
+.crop-circle-chronology-legend i {
+  position: relative;
+  width: 24px;
+  height: 6px;
+}
+
+.crop-circle-chronology-legend i::before,
+.crop-circle-chronology-legend i::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1px;
+  border-top: 4px solid #17191b;
+}
+
+.crop-circle-chronology-legend i::after {
+  top: 2px;
+  border-top: 2px solid #fff8df;
+}
+
+.crop-circle-chronology-legend i.is-later::after {
+  border-top-color: #d8ff3e;
+  border-top-style: dashed;
+}
+
+.crop-circle-ufo-legend i::after {
+  border-top-color: #ffb000;
+}
+
+.crop-circle-ufo-legend i.is-ufo-same-day::after {
+  border-top-style: dotted;
+}
+
+.crop-circle-ufo-legend i.is-ufo-later::after {
+  border-top-style: dashed;
+}
+
+.crop-circle-ufo-legend i.is-ufo-later {
+  clip-path: polygon(0 0, 78% 0, 78% 0, 100% 50%, 78% 100%, 78% 100%, 0 100%);
+}
+
+.crop-circle-chronology-controls .compact-status {
+  margin: 0;
+}
+
+.crop-circle-chronology-caveat {
+  margin: 0;
+  padding: 8px 9px;
+  border-left: 3px solid #9aae16;
+  border-radius: 8px;
+  background: color-mix(in srgb, #d8ff3e 12%, transparent);
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.crop-circle-detail-panel {
+  position: absolute;
+  z-index: 880;
+  right: 14px;
+  bottom: 14px;
+  width: min(430px, calc(100% - 28px));
+  max-height: min(78%, 720px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #d8ff3e 52%, var(--panel-border));
+  border-radius: 20px;
+  background: var(--panel-strong);
+  box-shadow: 0 22px 44px rgba(17, 19, 20, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.crop-circle-detail-panel[hidden] {
+  display: none;
+}
+
+.crop-circle-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.crop-circle-detail-head strong {
+  font-family: Georgia, serif;
+  font-size: 1.04rem;
+}
+
+.crop-circle-detail-head button {
+  padding: 7px 11px;
+  border-radius: 11px;
+}
+
+.crop-circle-detail-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 15px;
+  color: var(--ink);
+}
+
+.cc-detail-heading {
+  display: grid;
+  gap: 10px;
+}
+
+.cc-detail-heading h3 {
+  margin: 2px 0 4px;
+  font-family: Georgia, serif;
+  font-size: 1.12rem;
+  line-height: 1.25;
+}
+
+.cc-detail-heading p {
+  margin: 0;
+}
+
+.cc-detail-eyebrow {
+  color: #596b00;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.cc-coordinate-badge {
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 9px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.cc-coordinate-badge.is-exact {
+  color: #16794b;
+  background: rgba(22, 121, 75, 0.1);
+}
+
+.cc-coordinate-badge.is-candidate {
+  color: #a45b00;
+  border-style: dashed;
+  background: rgba(196, 118, 12, 0.1);
+}
+
+.cc-coordinate-badge.is-locality {
+  color: #4f5d00;
+  background: rgba(216, 255, 62, 0.11);
+}
+
+.cc-schematic-card {
+  margin-top: 13px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, #d8ff3e 32%, var(--panel-border));
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(216, 255, 62, 0.14), transparent 54%),
+    var(--surface-muted);
+}
+
+.cc-schematic {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+}
+
+.cc-schematic svg {
+  display: block;
+  width: 100%;
+  height: 180px;
+  color: #6f8500;
+}
+
+.cc-schematic-guide {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 20%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 3 6;
+}
+
+.cc-schematic-fill {
+  fill: currentColor;
+}
+
+.cc-schematic-soft-fill {
+  fill: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.cc-schematic-stroke,
+.cc-schematic-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cc-schematic-line {
+  stroke-width: 4;
+}
+
+.cc-schematic-question {
+  fill: currentColor;
+  font: 700 58px Georgia, serif;
+}
+
+.cc-schematic-card > p {
+  margin: 5px 4px 2px;
+  color: var(--ink-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.cc-diagram-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.cc-diagram-tabs button {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: var(--panel-strong);
+  color: var(--ink-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.cc-diagram-tabs button[aria-selected="true"] {
+  border-color: #93ad11;
+  background: rgba(216, 255, 62, 0.16);
+  color: #526300;
+}
+
+.cc-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cc-detail-field {
+  min-width: 0;
+  padding: 8px 9px;
+  border-radius: 11px;
+  background: var(--surface-muted);
+}
+
+.cc-detail-field span,
+.cc-detail-field strong {
+  display: block;
+}
+
+.cc-detail-field span {
+  margin-bottom: 2px;
+  color: var(--ink-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.cc-detail-field strong {
+  overflow-wrap: anywhere;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.cc-detail-description,
+.cc-detail-warning,
+.cc-detail-muted,
+.cc-trace-policy {
+  margin: 11px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.cc-date-caveat,
+.cc-source-description,
+.cc-catalog-summary {
+  margin: 11px 0 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.cc-source-descriptions {
+  margin-top: 11px;
+}
+
+.cc-source-descriptions > h4 {
+  margin: 0 0 6px;
+  font-size: 0.84rem;
+}
+
+.cc-source-description-list {
+  display: grid;
+  gap: 8px;
+}
+
+.cc-source-description-list .cc-source-description {
+  margin: 0;
+}
+
+.cc-source-description-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.cc-source-description-meta strong {
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.cc-source-description-meta span {
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.65rem;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.cc-date-caveat {
+  border-left: 3px solid #9aae16;
+  background: rgba(216, 255, 62, 0.1);
+}
+
+.cc-source-description {
+  border: 1px solid color-mix(in srgb, #d8ff3e 42%, var(--panel-border));
+  background: color-mix(in srgb, #d8ff3e 9%, var(--surface-muted));
+}
+
+.cc-source-description.is-missing {
+  border-style: dashed;
+  background: var(--surface-muted);
+}
+
+.cc-source-description h4,
+.cc-source-descriptions > h4,
+.cc-catalog-summary h4 {
+  margin: 0 0 5px;
+  font-size: 0.82rem;
+}
+
+.cc-source-description p,
+.cc-catalog-summary p {
+  margin: 0;
+}
+
+.cc-source-credit {
+  margin-top: 5px !important;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.cc-catalog-summary {
+  background: var(--surface-muted);
+}
+
+.cc-stack-return {
+  margin-bottom: 12px;
+}
+
+.cc-stack-heading h3 {
+  margin: 3px 0 4px;
+  font-family: Georgia, serif;
+  font-size: 1.16rem;
+}
+
+.cc-stack-heading p {
+  margin: 0;
+}
+
+.cc-stack-list {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cc-stack-list button {
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid var(--panel-border);
+  border-radius: 11px;
+  background: var(--button-bg);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.cc-stack-list button:hover,
+.cc-stack-list button:focus-visible {
+  border-color: #91a918;
+  box-shadow: 0 0 0 2px rgba(216, 255, 62, 0.2);
+}
+
+.cc-stack-list strong,
+.cc-stack-list span {
+  display: block;
+}
+
+.cc-stack-list strong {
+  font-size: 0.8rem;
+}
+
+.cc-stack-list span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.cc-detail-warning {
+  padding: 8px 10px;
+  border-left: 3px solid #c17b18;
+  border-radius: 8px;
+  background: rgba(193, 123, 24, 0.1);
+}
+
+.cc-trace-policy {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 95, 115, 0.09);
+  color: var(--ink-muted);
+}
+
+.cc-detail-sources {
+  margin-top: 14px;
+}
+
+.cc-detail-sources h4 {
+  margin: 0 0 7px;
+  font-size: 0.86rem;
+}
+
+.cc-source-list {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.78rem;
+}
+
+.cc-source-list li span {
+  display: block;
+  color: var(--ink-muted);
+  font-size: 0.7rem;
+}
+
+.cc-source-image-shell {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 13px;
+  background: var(--surface-muted);
+}
+
+.cc-source-image-shell p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+}
+
+.cc-source-image-shell img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #111;
+}
+
+.cc-source-image-shell img[hidden] {
+  display: none;
+}
+
+.cc-detail-loading {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.cc-loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(216, 255, 62, 0.22);
+  border-top-color: #94ae10;
+  border-radius: 50%;
+  animation: cc-spin 0.8s linear infinite;
+}
+
+.cc-detail-error {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(180, 35, 24, 0.1);
+  color: var(--danger, #b42318);
+}
+
+@keyframes cc-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 680px) {
+  .crop-circle-detail-panel {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    max-height: calc(100% - 16px);
+    border-radius: 16px;
+  }
+
+  .cc-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cc-schematic,
+  .cc-schematic svg {
+    min-height: 150px;
+    height: 150px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-loading-spinner {
+    animation: none;
+  }
+}
+
+:root[data-theme="dark"] .cc-detail-eyebrow,
+:root[data-theme="dark"] .cc-schematic svg {
+  color: #d8ff3e;
+}
+
+:root[data-theme="dark"] .overlay-chip[data-overlay-kind="crop-circles"].is-active {
+  color: #d8ff3e;
+}
+
+:root[data-theme="dark"] .cc-coordinate-badge.is-locality {
+  color: #e9ff8a;
+}
+
+:root[data-theme="dark"] .cc-diagram-tabs button[aria-selected="true"] {
+  color: #e9ff8a;
+}
+
 :root[data-theme="dark"] {
   --bg: #10161c;
   --bg-deep: #16212a;
@@ -4258,6 +4998,34 @@ button:focus {
   box-shadow: 0 0 6px var(--overlay-marker-color, #7dd3fc);
 }
 
+.map-legend-marker-sample-spiral {
+  position: relative;
+  border: 3px solid #17191b;
+  border-radius: 50%;
+  background: #fff8df;
+  box-shadow: 0 0 0 1px #fff8df, 0 2px 6px rgba(23, 25, 27, 0.28);
+}
+
+.map-legend-marker-sample-spiral::before,
+.map-legend-marker-sample-spiral::after {
+  content: "";
+  position: absolute;
+  border: 2px solid #d8ff3e;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(35deg);
+}
+
+.map-legend-marker-sample-spiral::before {
+  inset: 1px;
+}
+
+.map-legend-marker-sample-spiral::after {
+  inset: 4px;
+  border-width: 1.5px;
+  transform: rotate(210deg);
+}
+
 .overlay-marker-shape-square::before,
 .map-legend-marker-sample-square::before {
   border-radius: 2px;
@@ -4293,6 +5061,25 @@ button:focus {
     radial-gradient(circle at 30% 20%, rgba(15, 95, 115, 0.16), transparent 22%),
     radial-gradient(circle at 75% 35%, rgba(184, 139, 74, 0.18), transparent 24%),
     var(--map-background);
+}
+
+/* Focus mode is a reversible presentation mask. It never mutates the user's
+   underlying overlay, point, trace, Area Select, or playback state. */
+.leaflet-container.crop-circle-focus-active .leaflet-overlay-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-marker-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-tooltip-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-popup-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-region-selection-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-research-site-area-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-playback-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-neighborhood-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-claimed-base-trace-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-claimed-base-marker-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-crop-circle-chronology-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-cropcirclechronology-pane {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .map-timeline-dock {

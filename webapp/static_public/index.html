@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-07-31-area-lifecycle-v154">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-01-crop-circles-v157">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -597,6 +597,133 @@
                 <span class="overlay-chip-swatch" aria-hidden="true"></span>
                 <span>Research Sites</span>
               </button>
+              <button id="overlay-crop-circles" class="overlay-chip" data-overlay-kind="crop-circles" type="button" aria-pressed="false" aria-describedby="crop-circle-status">
+                <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
+                <span>Crop circles</span>
+              </button>
+            </div>
+            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are off. The layer adds no startup data requests.</p>
+            <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
+              <div class="crop-circle-chronology-head">
+                <strong>Crop-circle relationships</strong>
+                <span class="crop-circle-chronology-key" aria-hidden="true"><i></i><i></i></span>
+              </div>
+              <p id="crop-circle-selected-summary" class="crop-circle-selected-summary">Select one crop spiral to inspect its radius and related UFO traces.</p>
+
+              <fieldset class="crop-circle-relation-group crop-circle-ufo-relation-group">
+                <legend>UFO sighting → later crop record</legend>
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Crop record date relative to sighting</span>
+                    <select id="crop-circle-ufo-relation-window" disabled aria-describedby="crop-circle-ufo-relation-help">
+                      <option value="off" selected>Off</option>
+                      <option value="same_day">Same date (order unknown)</option>
+                      <option value="after_1_7">Crop record 1–7 days after sighting</option>
+                      <option value="after_1_30">Crop record 1–30 days after sighting</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>UFO position quality</span>
+                    <select id="crop-circle-ufo-position-quality" disabled>
+                      <option value="source" selected>Source coordinates only</option>
+                      <option value="all">Include geocoded locations</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Selected crop position quality</span>
+                    <select id="crop-circle-ufo-crop-position-quality" disabled>
+                      <option value="field" selected>Exact + candidate field only</option>
+                      <option value="all">Include locality centroid</option>
+                    </select>
+                  </label>
+                </div>
+                <p id="crop-circle-ufo-relation-help" class="crop-circle-control-help">“After” means the selected crop record’s catalog/report date is later than the UFO sighting date. Candidates must also fall inside the selected radius. Locality-centroid crop positions are excluded unless explicitly included; their relation lines are fainter. This does not establish when the formation appeared.</p>
+                <div class="crop-circle-chronology-legend crop-circle-ufo-legend" aria-label="UFO-to-crop relationship line legend">
+                  <span><i class="is-ufo-same-day" aria-hidden="true"></i>Same date (order unknown)</span>
+                  <span><i class="is-ufo-later" aria-hidden="true"></i>UFO sighting → later crop record</span>
+                </div>
+              </fieldset>
+
+              <fieldset class="crop-circle-relation-group crop-circle-crop-relation-group">
+                <legend>Crop record → later crop record</legend>
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Later crop-record window</span>
+                    <select id="crop-circle-chronology-relation">
+                      <option value="off" selected>Off</option>
+                      <option value="same_day">Same catalog date (order unknown)</option>
+                      <option value="7">Next crop record 1–7 days later</option>
+                      <option value="30">Next crop record 1–30 days later</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Crop position quality</span>
+                    <select id="crop-circle-chronology-coordinate-scope" disabled>
+                      <option value="field" selected>Exact + candidate fields</option>
+                      <option value="all">Include locality centroids</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Maximum crop-record distance</span>
+                    <select id="crop-circle-chronology-max-distance" disabled>
+                      <option value="100">100 km</option>
+                      <option value="250" selected>250 km</option>
+                      <option value="500">500 km</option>
+                      <option value="1000">1,000 km</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="crop-circle-chronology-legend" aria-label="Crop-record progression line legend">
+                  <span><i class="is-same-day" aria-hidden="true"></i>Same catalog date (undirected)</span>
+                  <span><i class="is-later" aria-hidden="true"></i>Earlier → later crop record</span>
+                </div>
+                <p id="crop-circle-chronology-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Crop-to-crop progression is off.</p>
+              </fieldset>
+
+              <fieldset class="crop-circle-relation-group crop-circle-radius-group">
+                <legend>Selected crop radius and UFO traces</legend>
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Selected crop radius</span>
+                    <select id="crop-circle-radius-km" disabled>
+                      <option value="5">5 km</option>
+                      <option value="10">10 km</option>
+                      <option value="25" selected>25 km</option>
+                      <option value="50">50 km</option>
+                      <option value="100">100 km</option>
+                      <option value="250">250 km</option>
+                      <option value="500">500 km</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Trace hops</span>
+                    <select id="crop-circle-ufo-hop-depth" disabled>
+                      <option value="1" selected>1 — intersecting segment only</option>
+                      <option value="2">2 — plus one adjacent segment</option>
+                      <option value="3">3 hops</option>
+                      <option value="4">4 hops</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Hop direction</span>
+                    <select id="crop-circle-ufo-hop-direction" disabled>
+                      <option value="forward">Forward</option>
+                      <option value="backward">Backward</option>
+                      <option value="both" selected>Both</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="crop-circle-check-list">
+                  <label class="crop-circle-check"><input id="crop-circle-show-radius" type="checkbox" checked disabled><span>Show transparent radius</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-analyze-ufo-traces" type="checkbox" disabled><span>Show intersecting UFO trace network</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-highlight-intersections" type="checkbox" checked disabled><span>Emphasize only trace sections inside radius</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-focus-mode" type="checkbox" disabled><span>Focus view: show only crop circles, selected relations, and this UFO trace network</span></label>
+                </div>
+                <p class="crop-circle-control-help">Trace analysis is off until explicitly enabled, so selecting a crop record never builds the global UFO trace network automatically. Hop 1 is an existing filtered UFO trace segment that geometrically intersects the selected radius. Outside Focus view, existing traces are left unchanged and only the section inside the radius is emphasized. This trace view is independent of the UFO-to-crop date selector above. Connectors are exploratory, not evidence of travel, causation, or a shared craft.</p>
+                <p id="crop-circle-ufo-relation-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Select a crop record to inspect nearby UFO relations and trace intersections.</p>
+              </fieldset>
+
+              <p class="crop-circle-chronology-caveat">All dates are catalog/report dates. Discovery or publication may lag formation by days or weeks, so the map never labels these links as confirmed formation order or causation.</p>
             </div>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
@@ -1045,6 +1172,13 @@
               </div>
             </div>
           </div>
+          <section id="crop-circle-detail-panel" class="crop-circle-detail-panel" hidden aria-hidden="true" aria-label="Crop-circle details" aria-live="polite">
+            <div class="crop-circle-detail-head">
+              <strong>Crop Circle</strong>
+              <button id="crop-circle-detail-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="crop-circle-detail-body" class="crop-circle-detail-body"></div>
+          </section>
         </div>
         <div
           id="map-height-resize-rail"
@@ -1173,10 +1307,11 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
-  <script src="./trace_neighborhood.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./trace_neighborhood.js?v=2026-08-01-crop-circles-v157"></script>
   <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./app.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-01-crop-circles-v157"></script>
+  <script src="./app.js?v=2026-08-01-crop-circles-v157"></script>
 </body>
 </html>

@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from scripts import reproduction, validate_cloudflare_bundle
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -451,3 +453,122 @@ def test_public_cloudflare_bundle_builder_runs_profiles_bundle_and_validation(tm
     assert "data/canonical_web/points.bin.gz" in upload_paths
     assert "data/canonical_web/summary_shards/summary_000000.json.gz" in upload_paths
     assert "data/canonical_web/summary_shards/summary_000000.json" not in upload_paths
+
+
+def test_cloudflare_bundle_validator_rejects_crop_r2_payloads_from_pages(tmp_path):
+    bundle_root = tmp_path / "cloudflare_bundle_r2"
+    crop_root = bundle_root / "data" / "crop_circles"
+    crop_root.mkdir(parents=True)
+    (bundle_root / "cloudflare_bundle_manifest.json").write_text(
+        json.dumps({"pages_safe": True}), encoding="utf-8"
+    )
+    (bundle_root / "r2_upload_manifest.json").write_text(
+        json.dumps(
+            {
+                "r2_base_url": "https://assets.example.org/releases/v1",
+                "r2_key_prefix": "releases/v1",
+                "upload_count": 1,
+                "uploads": [{"path": "data/file.json", "r2_key": "releases/v1/data/file.json"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (bundle_root / "data" / "app_config.json").write_text(
+        json.dumps({"deploymentProfile": {"largeDataBaseUrl": "https://assets.example.org/releases/v1"}}),
+        encoding="utf-8",
+    )
+    (bundle_root / "_headers").write_text(
+        "/data/startup_profiles/*\n  Cache-Control: public, max-age=31536000, immutable\n",
+        encoding="utf-8",
+    )
+    (crop_root / "manifest.json").write_text(
+        json.dumps({"points": {"path": "points.json.gz"}}), encoding="utf-8"
+    )
+    (crop_root / "points.json.gz").write_bytes(b"r2 only")
+
+    report = validate_cloudflare_bundle.validate_bundle(bundle_root)
+
+    assert report["ok"] is False
+    assert report["checks"]["crop_r2_payloads_excluded"] is False
+    assert report["crop_r2_payloads"] == ["data/crop_circles/points.json.gz"]
+    assert any("R2-only crop payloads" in error for error in report["errors"])
+
+
+def test_cloudflare_bundle_release_mode_enforces_exact_inventory(tmp_path, monkeypatch):
+    bundle_root = tmp_path / "hydrated"
+    source_root = tmp_path / "source"
+    source_root.mkdir()
+    for relative in reproduction.REQUIRED_PAGES_PATHS:
+        path = bundle_root.joinpath(*relative.parts)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("required\n", encoding="utf-8")
+    for relative in reproduction.REQUIRED_PAGES_JSON_PATHS:
+        path = bundle_root.joinpath(*relative.parts)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}\n", encoding="utf-8")
+    (bundle_root / "cloudflare_bundle_manifest.json").write_text(
+        json.dumps({"pages_safe": True}), encoding="utf-8"
+    )
+    (bundle_root / "r2_upload_manifest.json").write_text(
+        json.dumps(
+            {
+                "r2_base_url": "https://assets.example.org/releases/v1",
+                "r2_key_prefix": "releases/v1",
+                "upload_count": 1,
+                "uploads": [{"path": "data/file.json", "r2_key": "releases/v1/data/file.json"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (bundle_root / "data" / "app_config.json").write_text(
+        json.dumps({"deploymentProfile": {"largeDataBaseUrl": "https://assets.example.org/releases/v1"}}),
+        encoding="utf-8",
+    )
+    (bundle_root / "_headers").write_text(
+        "/data/startup_profiles/*\n  Cache-Control: public, max-age=31536000, immutable\n",
+        encoding="utf-8",
+    )
+    records = [reproduction.file_record(path, relative_to=bundle_root) for path in reproduction.iter_files(bundle_root)]
+    release_manifest_path = tmp_path / "release.json"
+    release_manifest_path.write_text(
+        json.dumps({"pages": {"files": records}, "source_overlay": {"files": []}}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(validate_cloudflare_bundle.reproduction, "validate_manifest", lambda manifest: None)
+
+    valid = validate_cloudflare_bundle.validate_bundle(
+        bundle_root,
+        release_manifest_path=release_manifest_path,
+        source_root=source_root,
+    )
+    assert valid["ok"] is True
+    assert valid["checks"]["exact_release_inventory"] is True
+
+    (bundle_root / "unexpected.json").write_text("{}\n", encoding="utf-8")
+    invalid = validate_cloudflare_bundle.validate_bundle(
+        bundle_root,
+        release_manifest_path=release_manifest_path,
+        source_root=source_root,
+    )
+    assert invalid["ok"] is False
+    assert invalid["checks"]["exact_release_inventory"] is False
+    assert any("unexpected=unexpected.json" in error for error in invalid["errors"])
+
+
+def test_pages_deploy_wrapper_validates_before_wrangler_and_rejects_raw_source() -> None:
+    script = (REPO_ROOT / "scripts" / "cloudflare_deploy_pages.ps1").read_text(encoding="utf-8")
+
+    assert "Refusing to deploy raw webapp/static_public" in script
+    assert "R2-only crop payload" in script
+    assert "--release-manifest" in script
+    assert script.index("validate_cloudflare_bundle.py") < script.index("cloudflare_wrangler.ps1")
+
+
+def test_custom_pages_404_disables_index_fallback_for_missing_asset_routes() -> None:
+    not_found = REPO_ROOT / "webapp" / "static_public" / "404.html"
+
+    assert not_found.is_file()
+    content = not_found.read_text(encoding="utf-8").lower()
+    assert "<!doctype html>" in content
+    assert "file not found" in content
+    assert "noindex" in content
