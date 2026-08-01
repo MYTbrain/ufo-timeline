@@ -147,3 +147,85 @@ def test_validate_manifest_rejects_duplicate_artifact_paths(tmp_path: Path) -> N
             count_key="file_count",
             bytes_key="uncompressed_bytes",
         )
+
+
+def test_pages_source_policy_excludes_manifest_declared_and_known_crop_r2_payloads(tmp_path: Path) -> None:
+    source = tmp_path / "static_public"
+    _write(source / "index.html", b"shell\n")
+    _write(source / "crop_circle_layer.js", b"runtime\n")
+    _write(source / "data" / "crop_circles" / "points.json.gz", b"known points")
+    _write(source / "data" / "crop_circles" / "future_points.bin.gz", b"future points")
+    _write(source / "data" / "crop_circles" / "details" / "chunk_000.json.gz", b"details")
+    _write(
+        source / "data" / "crop_circles" / "manifest.json",
+        json.dumps(
+            {
+                "assetBaseUrl": "https://assets.example.org/releases/crop-v1/",
+                "points": {"path": "future_points.bin.gz"},
+                "details": {"files": [{"path": "details/chunk_000.json.gz"}]},
+            }
+        ).encode("utf-8"),
+    )
+
+    records = reproduction.pages_source_records(source)
+    paths = {record["path"] for record in records}
+
+    assert "index.html" in paths
+    assert "crop_circle_layer.js" in paths
+    assert "data/crop_circles/manifest.json" in paths
+    assert "data/crop_circles/points.json.gz" not in paths
+    assert "data/crop_circles/future_points.bin.gz" not in paths
+    assert "data/crop_circles/details/chunk_000.json.gz" not in paths
+
+
+def test_exact_file_inventory_rejects_unexpected_and_changed_files(tmp_path: Path) -> None:
+    bundle = tmp_path / "bundle"
+    _write(bundle / "index.html", b"known\n")
+    expected = [reproduction.file_record(bundle / "index.html", relative_to=bundle)]
+
+    report = reproduction.verify_exact_file_inventory(bundle, expected, label="test bundle")
+    assert report["file_count"] == 1
+
+    _write(bundle / "unexpected.json", b"{}\n")
+    with pytest.raises(reproduction.ContractError, match="unexpected=unexpected.json"):
+        reproduction.verify_exact_file_inventory(bundle, expected, label="test bundle")
+
+    (bundle / "unexpected.json").unlink()
+    _write(bundle / "index.html", b"changed\n")
+    with pytest.raises(reproduction.ContractError, match="changed=index.html"):
+        reproduction.verify_exact_file_inventory(bundle, expected, label="test bundle")
+
+
+def test_required_pages_json_must_parse(tmp_path: Path) -> None:
+    bundle = tmp_path / "bundle"
+    for relative in reproduction.REQUIRED_PAGES_PATHS:
+        _write(bundle.joinpath(*relative.parts), b"required\n")
+    for relative in reproduction.REQUIRED_PAGES_JSON_PATHS:
+        _write(bundle.joinpath(*relative.parts), b"{}\n")
+    _write(bundle / "data" / "startup_profiles" / "france_1954_flap" / "manifest.json", b"{}\n")
+
+    report = reproduction.verify_required_pages_files(bundle)
+    assert "data/event_chunk_manifest.json" in report["parsed_json"]
+    assert "data/startup_profiles/france_1954_flap/manifest.json" in report["parsed_json"]
+
+    _write(bundle / "data" / "event_chunk_manifest.json", b"<!doctype html>\n")
+    with pytest.raises(reproduction.ContractError, match="Required Pages JSON is invalid: data/event_chunk_manifest.json"):
+        reproduction.verify_required_pages_files(bundle)
+
+
+def test_current_release_pages_inventory_is_baseline_plus_four_source_assets() -> None:
+    manifest = reproduction.load_json(reproduction.REPO_ROOT / "reproduction" / "release.json")
+    source_root = reproduction.REPO_ROOT / manifest["source_overlay"]["root"]
+
+    expected, source_records = reproduction.expected_pages_records(manifest, source_root)
+    expected_paths = {record["path"] for record in expected}
+    source_paths = {record["path"] for record in source_records}
+
+    assert len(manifest["pages"]["files"]) == 127
+    assert len(expected) == 131
+    assert "404.html" in expected_paths
+    assert "crop_circle_bootstrap.js" in expected_paths
+    assert "crop_circle_layer.js" in expected_paths
+    assert "data/crop_circles/manifest.json" in expected_paths
+    assert "data/crop_circles/points.json.gz" not in source_paths
+    assert not any(path.startswith("data/crop_circles/details/") for path in source_paths)

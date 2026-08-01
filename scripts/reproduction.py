@@ -39,6 +39,34 @@ SOURCE_ROOT = REPO_ROOT / "webapp" / "static_public"
 USER_AGENT = "ufo-timeline-reproducer/1.0"
 HASH_CHUNK_BYTES = 1024 * 1024
 TREE_HASH_DESCRIPTION = "ordinal path<TAB>bytes<TAB>sha256<LF>"
+CROP_CIRCLE_ROOT = PurePosixPath("data/crop_circles")
+CROP_CIRCLE_MANIFEST_PATH = CROP_CIRCLE_ROOT / "manifest.json"
+CROP_R2_ONLY_EXACT_PATHS = frozenset({CROP_CIRCLE_ROOT / "points.json.gz"})
+CROP_R2_ONLY_PREFIXES = (CROP_CIRCLE_ROOT / "details",)
+PAGES_SOURCE_ADDITION_PATHS = frozenset(
+    {
+        PurePosixPath("404.html"),
+        PurePosixPath("crop_circle_bootstrap.js"),
+        PurePosixPath("crop_circle_layer.js"),
+        CROP_CIRCLE_MANIFEST_PATH,
+    }
+)
+REQUIRED_PAGES_PATHS = (
+    PurePosixPath("404.html"),
+    PurePosixPath("index.html"),
+    PurePosixPath("_headers"),
+)
+REQUIRED_PAGES_JSON_PATHS = (
+    PurePosixPath("canonical_web_static_payload_manifest.json"),
+    PurePosixPath("cloudflare_bundle_manifest.json"),
+    PurePosixPath("r2_upload_manifest.json"),
+    PurePosixPath("data/app_config.json"),
+    PurePosixPath("data/event_catalog_manifest.json"),
+    PurePosixPath("data/event_chunk_manifest.json"),
+    PurePosixPath("data/points_meta.json"),
+    PurePosixPath("data/startup_profiles/manifest.json"),
+    CROP_CIRCLE_MANIFEST_PATH,
+)
 CLOUDFLARE_ANALYTICS_PATTERN = re.compile(
     rb"<!-- Cloudflare Pages Analytics --><script defer "
     rb"src='https://static\.cloudflareinsights\.com/beacon\.min\.js' "
@@ -101,6 +129,182 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ContractError(f"Expected a JSON object: {path}")
     return value
+
+
+def _declared_asset_paths(value: Any) -> Iterable[str]:
+    """Yield manifest-declared asset paths, including future payload sections."""
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key == "path" and isinstance(item, str):
+                yield item
+            yield from _declared_asset_paths(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _declared_asset_paths(item)
+
+
+def crop_r2_only_paths(source_root: Path) -> set[PurePosixPath]:
+    """Return crop payloads that belong in immutable R2, never in Pages."""
+    paths = set(CROP_R2_ONLY_EXACT_PATHS)
+    manifest_path = source_root.joinpath(*CROP_CIRCLE_MANIFEST_PATH.parts)
+    if not manifest_path.is_file():
+        return paths
+
+    manifest = load_json(manifest_path)
+    for declared in _declared_asset_paths(manifest):
+        relative = safe_relative_path(declared)
+        if relative.parts[: len(CROP_CIRCLE_ROOT.parts)] == CROP_CIRCLE_ROOT.parts:
+            pages_path = relative
+        else:
+            pages_path = CROP_CIRCLE_ROOT / relative
+        if pages_path == CROP_CIRCLE_MANIFEST_PATH:
+            raise ContractError("Crop-circle manifest cannot classify itself as an R2 payload")
+        paths.add(pages_path)
+    return paths
+
+
+def is_crop_r2_only_path(relative: PurePosixPath, declared_paths: set[PurePosixPath]) -> bool:
+    if relative in declared_paths or relative in CROP_R2_ONLY_EXACT_PATHS:
+        return True
+    return any(relative == prefix or relative.is_relative_to(prefix) for prefix in CROP_R2_ONLY_PREFIXES)
+
+
+def pages_source_records(
+    source_root: Path,
+    release_manifest: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Classify the Git source overlay and return only deployable Pages assets."""
+    declared_r2_paths = crop_r2_only_paths(source_root)
+    allowed_paths: set[PurePosixPath] | None = None
+    if release_manifest is not None:
+        allowed_paths = {
+            safe_relative_path(str(record["path"]))
+            for section in (release_manifest["pages"], release_manifest["source_overlay"])
+            for record in section["files"]
+        }
+        allowed_paths.update(PAGES_SOURCE_ADDITION_PATHS)
+
+    records: list[dict[str, Any]] = []
+    unclassified: list[str] = []
+    for source in iter_files(source_root):
+        relative = PurePosixPath(source.relative_to(source_root).as_posix())
+        if is_crop_r2_only_path(relative, declared_r2_paths):
+            continue
+        if allowed_paths is not None and relative not in allowed_paths:
+            unclassified.append(relative.as_posix())
+            continue
+        records.append(file_record(source, relative_to=source_root))
+    if unclassified:
+        preview = ", ".join(unclassified[:10])
+        raise ContractError(
+            "Source overlay contains unclassified Pages assets; update the release allowlist explicitly: " + preview
+        )
+    return records
+
+
+def merge_file_records(*collections: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    for collection in collections:
+        for record in collection:
+            relative = safe_relative_path(str(record["path"])).as_posix()
+            merged[relative] = {
+                "path": relative,
+                "bytes": int(record["bytes"]),
+                "sha256": str(record["sha256"]),
+            }
+    return [merged[path] for path in sorted(merged)]
+
+
+def expected_pages_records(
+    manifest: dict[str, Any],
+    source_root: Path,
+    *,
+    include_r2: bool = False,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    source_records = pages_source_records(source_root, manifest)
+    collections: list[Iterable[dict[str, Any]]] = [manifest["pages"]["files"]]
+    if include_r2:
+        collections.append(manifest["r2"]["files"])
+    collections.append(source_records)
+    return merge_file_records(*collections), source_records
+
+
+def verify_exact_file_inventory(
+    root: Path,
+    expected_records: Iterable[dict[str, Any]],
+    *,
+    label: str,
+) -> dict[str, Any]:
+    expected = {str(record["path"]): record for record in expected_records}
+    actual_records = [file_record(path, relative_to=root) for path in iter_files(root)]
+    actual = {record["path"]: record for record in actual_records}
+    missing = sorted(set(expected) - set(actual))
+    unexpected = sorted(set(actual) - set(expected))
+    changed = sorted(
+        path
+        for path in set(expected) & set(actual)
+        if int(expected[path]["bytes"]) != int(actual[path]["bytes"])
+        or str(expected[path]["sha256"]) != str(actual[path]["sha256"])
+    )
+    if missing or unexpected or changed:
+        details = []
+        if missing:
+            details.append("missing=" + ", ".join(missing[:10]))
+        if unexpected:
+            details.append("unexpected=" + ", ".join(unexpected[:10]))
+        if changed:
+            details.append("changed=" + ", ".join(changed[:10]))
+        raise ContractError(f"{label} does not match its exact allowed inventory: " + "; ".join(details))
+    return {
+        "file_count": len(actual_records),
+        "total_bytes": sum(int(record["bytes"]) for record in actual_records),
+        "tree_sha256": tree_sha256(actual_records),
+    }
+
+
+def verify_required_pages_files(root: Path) -> dict[str, Any]:
+    missing = [path.as_posix() for path in REQUIRED_PAGES_PATHS if not root.joinpath(*path.parts).is_file()]
+    json_paths = set(REQUIRED_PAGES_JSON_PATHS)
+    startup_root = root / "data" / "startup_profiles"
+    if startup_root.is_dir():
+        json_paths.update(
+            PurePosixPath(path.relative_to(root).as_posix())
+            for path in startup_root.rglob("manifest.json")
+            if path.is_file()
+        )
+    missing.extend(path.as_posix() for path in sorted(json_paths) if not root.joinpath(*path.parts).is_file())
+    if missing:
+        raise ContractError("Pages release is missing required files: " + ", ".join(sorted(missing)))
+
+    parsed: list[str] = []
+    for relative in sorted(json_paths):
+        path = root.joinpath(*relative.parts)
+        try:
+            json.loads(path.read_text(encoding="utf-8-sig"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise ContractError(f"Required Pages JSON is invalid: {relative.as_posix()}: {exc}") from exc
+        parsed.append(relative.as_posix())
+    return {"required_file_count": len(REQUIRED_PAGES_PATHS), "parsed_json": parsed}
+
+
+def find_crop_r2_payloads(root: Path) -> list[str]:
+    declared_r2_paths = crop_r2_only_paths(root)
+    return sorted(
+        path.relative_to(root).as_posix()
+        for path in iter_files(root)
+        if is_crop_r2_only_path(PurePosixPath(path.relative_to(root).as_posix()), declared_r2_paths)
+    )
+
+
+def verify_release_pages_bundle(
+    root: Path,
+    expected_records: Iterable[dict[str, Any]],
+) -> dict[str, Any]:
+    inventory = verify_exact_file_inventory(root, expected_records, label="Pages release")
+    crop_payloads = find_crop_r2_payloads(root)
+    if crop_payloads:
+        raise ContractError("Pages release contains R2-only crop payloads: " + ", ".join(crop_payloads[:10]))
+    return {"inventory": inventory, "required": verify_required_pages_files(root)}
 
 
 def write_json(path: Path, value: dict[str, Any]) -> None:
@@ -198,7 +402,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
         }
         r2_records.append(record)
 
-    source_records = [file_record(path, relative_to=source_root) for path in iter_files(source_root)]
+    source_records = pages_source_records(source_root)
     mismatches: list[str] = []
     for record in source_records:
         pages_path = pages_root / Path(record["path"])
@@ -396,13 +600,8 @@ def safe_extract_zip(archive_path: Path, output_root: Path) -> None:
 
 
 def verify_pages_tree(output_root: Path, pages: dict[str, Any]) -> None:
-    records: list[dict[str, Any]] = []
-    for expected in pages["files"]:
-        path = output_root / Path(expected["path"])
-        if not path.is_file():
-            raise ContractError(f"Pages archive is missing: {expected['path']}")
-        records.append(file_record(path, relative_to=output_root))
-    if tree_sha256(records) != pages["tree_sha256"]:
+    inventory = verify_exact_file_inventory(output_root, pages["files"], label="Pages archive")
+    if inventory["tree_sha256"] != pages["tree_sha256"]:
         raise ContractError("Extracted Pages tree does not match the frozen release")
 
 
@@ -432,14 +631,20 @@ def download_r2_files(manifest: dict[str, Any], output_root: Path, *, jobs: int,
     return results
 
 
-def overlay_source(source_root: Path, output_root: Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    for source in iter_files(source_root):
-        relative = source.relative_to(source_root)
+def overlay_source(
+    source_root: Path,
+    output_root: Path,
+    *,
+    records: list[dict[str, Any]] | None = None,
+    release_manifest: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    records = pages_source_records(source_root, release_manifest) if records is None else records
+    for record in records:
+        relative = Path(record["path"])
+        source = source_root / relative
         target = output_root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
-        records.append(file_record(source, relative_to=source_root))
     return records
 
 
@@ -515,6 +720,12 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
     safe_extract_zip(archive_path, output_root)
     verify_pages_tree(output_root, manifest["pages"])
 
+    source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
+    expected_records, source_records = expected_pages_records(
+        manifest,
+        source_root,
+        include_r2=bool(args.offline),
+    )
     r2_results = {"cached": 0, "downloaded": 0}
     if args.offline:
         r2_results = download_r2_files(
@@ -524,8 +735,8 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
             timeout=args.timeout,
         )
 
-    source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
-    source_records = overlay_source(source_root, output_root)
+    overlay_source(source_root, output_root, records=source_records)
+    release_validation = verify_release_pages_bundle(output_root, expected_records)
     localized_config_sha = None
     if args.offline:
         localized_config_sha = localize_app_config(manifest, output_root)
@@ -548,14 +759,20 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         "manifest_sha256": sha256_file(manifest_path),
         "source_tree_sha256": tree_sha256(source_records),
         "source_file_count": len(source_records),
+        "excluded_r2_source_file_count": len(iter_files(source_root)) - len(source_records),
         "offline": bool(args.offline),
         "expanded_gzip": bool(args.expand_gzip),
         "localized_app_config_sha256": localized_config_sha,
         "pages_archive": archive_status,
         "r2": r2_results,
         "gzip": gzip_results,
+        "pages_validation": release_validation,
     }
-    write_json(output_root / ".reproduction-receipt.json", receipt)
+    # Keep reproduction metadata outside the deployable directory so Wrangler
+    # receives exactly the validated Pages inventory and nothing else.
+    receipt_path = cache_root / f"{manifest['release']['id']}-reproduction-receipt.json"
+    receipt["receipt_path"] = str(receipt_path)
+    write_json(receipt_path, receipt)
     return receipt
 
 
@@ -575,7 +792,7 @@ def check_production(manifest: dict[str, Any], *, timeout: float) -> dict[str, A
         raise ContractError("Production R2 upload manifest drifted from the reproduction contract")
 
     source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
-    source_records = [file_record(path, relative_to=source_root) for path in iter_files(source_root)]
+    source_records = pages_source_records(source_root, manifest)
     for record in source_records:
         live_bytes = request_bytes(
             production_url + "/" + quote(record["path"], safe="/._-"),

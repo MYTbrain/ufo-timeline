@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts import reproduction
+except ModuleNotFoundError:  # Direct `python scripts/validate_cloudflare_bundle.py` execution.
+    import reproduction  # type: ignore[no-redef]
+
 
 PLACEHOLDER_R2_HOSTS = (
     "example-r2.invalid",
@@ -24,12 +29,28 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Allow placeholder R2 URLs. Use only for local tests, never for public deployment.",
     )
+    parser.add_argument(
+        "--release-manifest",
+        type=Path,
+        help="Enforce the exact frozen Pages baseline plus the approved Git source overlay.",
+    )
+    parser.add_argument(
+        "--source-root",
+        type=Path,
+        default=Path("webapp/static_public"),
+        help="Git Pages source overlay used with --release-manifest.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    report = validate_bundle(args.bundle_root, allow_placeholder_r2=args.allow_placeholder_r2)
+    report = validate_bundle(
+        args.bundle_root,
+        allow_placeholder_r2=args.allow_placeholder_r2,
+        release_manifest_path=args.release_manifest,
+        source_root=args.source_root,
+    )
     print(json.dumps(report, indent=2, sort_keys=True))
     if not report["ok"]:
         raise SystemExit(1)
@@ -40,9 +61,17 @@ def read_json(path: Path) -> Any:
         return json.load(handle)
 
 
-def validate_bundle(bundle_root: Path, *, allow_placeholder_r2: bool = False) -> dict[str, Any]:
+def validate_bundle(
+    bundle_root: Path,
+    *,
+    allow_placeholder_r2: bool = False,
+    release_manifest_path: Path | None = None,
+    source_root: Path | None = None,
+) -> dict[str, Any]:
+    bundle_root = bundle_root.resolve()
     checks: dict[str, bool] = {}
     errors: list[str] = []
+    inventory: dict[str, Any] | None = None
 
     bundle_manifest_path = bundle_root / "cloudflare_bundle_manifest.json"
     r2_manifest_path = bundle_root / "r2_upload_manifest.json"
@@ -58,9 +87,29 @@ def validate_bundle(bundle_root: Path, *, allow_placeholder_r2: bool = False) ->
         if not passed:
             errors.append(f"Missing required Cloudflare bundle file: {name}")
 
-    bundle_manifest = read_json(bundle_manifest_path) if bundle_manifest_path.exists() else {}
-    r2_manifest = read_json(r2_manifest_path) if r2_manifest_path.exists() else {}
-    app_config = read_json(app_config_path) if app_config_path.exists() else {}
+    parsed_json: dict[str, Any] = {}
+    for name, path in (
+        ("bundle_manifest", bundle_manifest_path),
+        ("r2_manifest", r2_manifest_path),
+        ("app_config", app_config_path),
+    ):
+        if not path.exists():
+            parsed_json[name] = {}
+            continue
+        try:
+            value = read_json(path)
+            if not isinstance(value, dict):
+                raise ValueError("expected a JSON object")
+            parsed_json[name] = value
+            checks[f"{name}_json_valid"] = True
+        except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+            parsed_json[name] = {}
+            checks[f"{name}_json_valid"] = False
+            errors.append(f"Invalid required Cloudflare JSON file {path.relative_to(bundle_root).as_posix()}: {exc}")
+
+    bundle_manifest = parsed_json["bundle_manifest"]
+    r2_manifest = parsed_json["r2_manifest"]
+    app_config = parsed_json["app_config"]
     headers = headers_path.read_text(encoding="utf-8") if headers_path.exists() else ""
 
     checks["pages_safe"] = bool(bundle_manifest.get("pages_safe"))
@@ -72,6 +121,8 @@ def validate_bundle(bundle_root: Path, *, allow_placeholder_r2: bool = False) ->
         errors.append("Cloudflare _headers is missing immutable startup profile cache rules.")
 
     deployment_profile = app_config.get("deploymentProfile") if isinstance(app_config, dict) else {}
+    if not isinstance(deployment_profile, dict):
+        deployment_profile = {}
     large_data_url = str(deployment_profile.get("largeDataBaseUrl") or "")
     r2_base_url = str(r2_manifest.get("r2_base_url") or "")
     r2_key_prefix = str(r2_manifest.get("r2_key_prefix") or "").strip("/")
@@ -110,6 +161,38 @@ def validate_bundle(bundle_root: Path, *, allow_placeholder_r2: bool = False) ->
     if not checks["r2_base_url_matches_prefix"]:
         errors.append("R2 base URL path does not end with the declared immutable key prefix.")
 
+    try:
+        crop_payloads = reproduction.find_crop_r2_payloads(bundle_root)
+    except (reproduction.ContractError, OSError, UnicodeError, json.JSONDecodeError) as exc:
+        crop_payloads = []
+        checks["crop_r2_payload_policy_valid"] = False
+        errors.append(f"Unable to validate crop-circle R2 payload policy: {exc}")
+    else:
+        checks["crop_r2_payload_policy_valid"] = True
+        checks["crop_r2_payloads_excluded"] = not crop_payloads
+        if crop_payloads:
+            errors.append("Pages bundle contains R2-only crop payloads: " + ", ".join(crop_payloads[:10]))
+
+    if release_manifest_path is not None:
+        release_manifest_path = release_manifest_path.resolve()
+        resolved_source_root = (source_root or Path("webapp/static_public")).resolve()
+        checks["not_raw_source_root"] = bundle_root != resolved_source_root
+        if not checks["not_raw_source_root"]:
+            errors.append("Pages deploy target is the raw webapp/static_public source tree.")
+        try:
+            release_manifest = reproduction.load_json(release_manifest_path)
+            reproduction.validate_manifest(release_manifest)
+            expected_records, _ = reproduction.expected_pages_records(release_manifest, resolved_source_root)
+            release_validation = reproduction.verify_release_pages_bundle(bundle_root, expected_records)
+        except (reproduction.ContractError, OSError, UnicodeError, json.JSONDecodeError) as exc:
+            checks["exact_release_inventory"] = False
+            checks["required_release_json_valid"] = False
+            errors.append(f"Exact Pages release validation failed: {exc}")
+        else:
+            inventory = release_validation["inventory"]
+            checks["exact_release_inventory"] = True
+            checks["required_release_json_valid"] = True
+
     return {
         "ok": not errors,
         "bundle_root": str(bundle_root),
@@ -117,6 +200,8 @@ def validate_bundle(bundle_root: Path, *, allow_placeholder_r2: bool = False) ->
         "r2_base_url": r2_base_url,
         "r2_key_prefix": r2_key_prefix,
         "upload_count": upload_count,
+        "inventory": inventory,
+        "crop_r2_payloads": crop_payloads,
         "errors": errors,
     }
 

@@ -65,9 +65,9 @@
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
     setStatus("Loading the crop-circle layer…");
-    loadPromise = new Promise(function (resolve, reject) {
+    const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./crop_circle_layer.js?v=2026-07-31-crop-circles-v1";
+      script.src = "./crop_circle_layer.js?v=2026-08-01-crop-circles-v156";
       script.async = true;
       script.onload = function () {
         if (!window.UfoCropCircleLayer) {
@@ -83,6 +83,10 @@
     }).finally(function () {
       button.disabled = false;
       button.removeAttribute("aria-busy");
+    });
+    loadPromise = attempt.catch(function (error) {
+      loadPromise = null;
+      throw error;
     });
     return loadPromise;
   }

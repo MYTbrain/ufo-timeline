@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-07-31-crop-circles-v155">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-01-crop-circles-v156">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -603,6 +603,47 @@
               </button>
             </div>
             <p id="crop-circle-status" class="note-copy compact-status crop-circle-status">Crop circles are off. The layer adds no startup data requests.</p>
+            <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls" hidden>
+              <div class="crop-circle-chronology-head">
+                <label class="crop-circle-chronology-toggle" for="crop-circle-chronology-enabled">
+                  <input id="crop-circle-chronology-enabled" type="checkbox">
+                  <span>Crop chronology links</span>
+                </label>
+                <span class="crop-circle-chronology-key" aria-hidden="true"><i></i><i></i></span>
+              </div>
+              <div class="crop-circle-chronology-grid">
+                <label class="field compact-field">
+                  <span>Relation</span>
+                  <select id="crop-circle-chronology-relation" disabled>
+                    <option value="same_day" selected>Same catalog day</option>
+                    <option value="7">Same day + next 7 days</option>
+                    <option value="30">Same day + next 30 days</option>
+                  </select>
+                </label>
+                <label class="field compact-field">
+                  <span>Coordinates</span>
+                  <select id="crop-circle-chronology-coordinate-scope" disabled>
+                    <option value="field" selected>Exact + candidate fields</option>
+                    <option value="all">Include locality centroids</option>
+                  </select>
+                </label>
+                <label class="field compact-field">
+                  <span>Maximum distance</span>
+                  <select id="crop-circle-chronology-max-distance" disabled>
+                    <option value="100">100 km</option>
+                    <option value="250" selected>250 km</option>
+                    <option value="500">500 km</option>
+                    <option value="1000">1,000 km</option>
+                  </select>
+                </label>
+              </div>
+              <div class="crop-circle-chronology-legend" aria-label="Crop chronology line legend">
+                <span><i class="is-same-day" aria-hidden="true"></i>Same catalog day (undirected)</span>
+                <span><i class="is-later" aria-hidden="true"></i>Earlier → later catalog date</span>
+              </div>
+              <p id="crop-circle-chronology-status" class="note-copy compact-status">Crop chronology is off. UFO traces and hops are unchanged.</p>
+              <p class="crop-circle-chronology-caveat">Exploratory catalog-date adjacency only. Lines do not establish formation time, causation, or travel; report and discovery dates may lag formation by days or weeks.</p>
+            </div>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
                 <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
@@ -1189,7 +1230,7 @@
   <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./crop_circle_bootstrap.js?v=2026-07-31-crop-circles-v1"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-01-crop-circles-v156"></script>
   <script src="./app.js?v=2026-07-31-area-lifecycle-v154"></script>
 </body>
 </html>
