@@ -1,0 +1,420 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/cattle-mutilation-cross-domain-relationship.schema.json",
+  "title": "Cattle Mutilation Cross-Domain Relationship",
+  "description": "A source-explicit or computed relationship between independently curated event domains. This contract never asserts causality.",
+  "type": "object",
+  "required": [
+    "relationship_id",
+    "subject",
+    "object",
+    "relationship_type",
+    "assertion_mode",
+    "temporal",
+    "spatial",
+    "scores",
+    "reasons",
+    "source_refs",
+    "review_state",
+    "provenance",
+    "causality"
+  ],
+  "properties": {
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^rel_[a-f0-9]{16,64}$"
+    },
+    "subject": {
+      "$ref": "#/$defs/event_ref"
+    },
+    "object": {
+      "$ref": "#/$defs/event_ref"
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": [
+        "same_incident",
+        "same_scene",
+        "reported_nearby",
+        "regional_context",
+        "topical_context",
+        "duplicate_lineage"
+      ]
+    },
+    "assertion_mode": {
+      "type": "string",
+      "enum": [
+        "explicit_source",
+        "deterministic_match",
+        "analyst_confirmed"
+      ]
+    },
+    "match_tier": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "temporal": {
+      "type": "object",
+      "required": [
+        "subject_interval",
+        "object_interval",
+        "comparison",
+        "offset_days",
+        "score"
+      ],
+      "properties": {
+        "subject_interval": {
+          "$ref": "#/$defs/date_interval"
+        },
+        "object_interval": {
+          "$ref": "#/$defs/date_interval"
+        },
+        "comparison": {
+          "type": "string",
+          "enum": [
+            "exact_day",
+            "overlapping_interval",
+            "precision_limited_overlap",
+            "within_window",
+            "incompatible",
+            "unknown"
+          ]
+        },
+        "offset_days": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "score": {
+          "$ref": "#/$defs/unit_score"
+        }
+      },
+      "additionalProperties": false
+    },
+    "spatial": {
+      "type": "object",
+      "required": [
+        "subject_precision",
+        "object_precision",
+        "comparison",
+        "distance_km",
+        "uncertainty_km",
+        "score"
+      ],
+      "properties": {
+        "subject_precision": {
+          "$ref": "#/$defs/location_precision"
+        },
+        "object_precision": {
+          "$ref": "#/$defs/location_precision"
+        },
+        "comparison": {
+          "type": "string",
+          "enum": [
+            "exact_site",
+            "same_locality",
+            "same_county",
+            "same_admin1",
+            "same_country",
+            "within_uncertainty",
+            "incompatible",
+            "unknown"
+          ]
+        },
+        "distance_km": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "uncertainty_km": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "score": {
+          "$ref": "#/$defs/unit_score"
+        }
+      },
+      "additionalProperties": false
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "relationship_compatibility",
+        "temporal_component",
+        "spatial_component",
+        "source_component"
+      ],
+      "properties": {
+        "relationship_compatibility": {
+          "$ref": "#/$defs/unit_score"
+        },
+        "temporal_component": {
+          "$ref": "#/$defs/unit_score"
+        },
+        "spatial_component": {
+          "$ref": "#/$defs/unit_score"
+        },
+        "source_component": {
+          "$ref": "#/$defs/unit_score"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source_ref"
+      }
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "machine_reviewed",
+        "needs_human_review",
+        "analyst_confirmed",
+        "rejected"
+      ]
+    },
+    "review_notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "ingestion_adapter",
+        "provenance_locator",
+        "raw_record_hash",
+        "canonicalization_version"
+      ],
+      "properties": {
+        "ingestion_adapter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provenance_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_record_hash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "canonicalization_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "causality": {
+      "const": "not_asserted"
+    }
+  },
+  "$defs": {
+    "unit_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "event_ref": {
+      "type": "object",
+      "required": [
+        "domain",
+        "dataset",
+        "external_id",
+        "native_event_id"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "enum": [
+            "cattle_mutilation",
+            "crop_circle",
+            "ufo",
+            "other"
+          ]
+        },
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "external_id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "native_event_id": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "date_interval": {
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "precision"
+      ],
+      "properties": {
+        "start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "exact_day",
+            "month",
+            "season",
+            "year",
+            "range",
+            "approximate",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "location_precision": {
+      "type": "string",
+      "enum": [
+        "exact_site",
+        "parcel",
+        "road_segment",
+        "locality",
+        "county",
+        "state",
+        "country",
+        "approximate",
+        "unknown"
+      ]
+    },
+    "source_ref": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "supports",
+        "locator",
+        "source_hash"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supports": {
+          "type": "string",
+          "enum": [
+            "explicit_relationship",
+            "endpoint_identity",
+            "temporal_component",
+            "spatial_component",
+            "duplicate_lineage",
+            "context"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_hash": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-fA-F0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "assertion_mode": {
+            "const": "deterministic_match"
+          }
+        },
+        "required": [
+          "assertion_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "review_state": {
+            "enum": [
+              "unreviewed",
+              "machine_reviewed",
+              "needs_human_review",
+              "rejected"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "assertion_mode": {
+            "const": "analyst_confirmed"
+          }
+        },
+        "required": [
+          "assertion_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "review_state": {
+            "const": "analyst_confirmed"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

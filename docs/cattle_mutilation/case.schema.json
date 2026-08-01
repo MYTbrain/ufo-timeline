@@ -1,0 +1,758 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/cattle-mutilation-case.schema.json",
+  "title": "Cattle Mutilation Mapping Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "record_type",
+    "status",
+    "dates",
+    "location",
+    "sources",
+    "provenance"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "mutilation_case",
+        "related_aerial_event",
+        "related_ground_event",
+        "investigative_event",
+        "publication_event",
+        "aggregate_report"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "documented_report",
+        "corroborated",
+        "explained_natural",
+        "explained_human",
+        "contested",
+        "unresolved",
+        "retracted"
+      ]
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "summary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dates": {
+      "type": "object",
+      "properties": {
+        "event_start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "event_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "discovery_start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "discovery_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "report_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "estimated_death_start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "estimated_death_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "exact_time",
+            "exact_day",
+            "month",
+            "season",
+            "year",
+            "range",
+            "approximate",
+            "unknown"
+          ]
+        },
+        "raw_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "precision"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "raw_text",
+        "precision",
+        "privacy_level"
+      ],
+      "properties": {
+        "raw_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "admin1": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "admin2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "locality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latitude_internal": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude_internal": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -180,
+          "maximum": 180
+        },
+        "latitude_public": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude_public": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -180,
+          "maximum": 180
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "exact_site",
+            "parcel",
+            "road_segment",
+            "locality",
+            "county",
+            "state",
+            "country",
+            "approximate",
+            "unknown"
+          ]
+        },
+        "coordinate_source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "geocode_query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "geocode_confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "privacy_level": {
+          "type": "string",
+          "enum": [
+            "public_exact",
+            "public_generalized",
+            "internal_only",
+            "withheld"
+          ]
+        },
+        "mapping_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "animals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "species": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "breed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sex": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "age_class": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "condition_before_death": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownership_public": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "anatomical_findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "scene_findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "laboratory_findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "associated_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "association_type",
+          "claim"
+        ],
+        "properties": {
+          "association_type": {
+            "type": "string",
+            "enum": [
+              "helicopter",
+              "aircraft",
+              "uap_or_light",
+              "vehicle",
+              "person",
+              "animal_behavior",
+              "communications",
+              "crop_circle",
+              "other"
+            ]
+          },
+          "claim": {
+            "$ref": "#/$defs/claim"
+          },
+          "linked_record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "temporal_offset_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "distance_km": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "investigation": {
+      "type": "object",
+      "properties": {
+        "agencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "case_numbers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "investigators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "necropsy_performed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "veterinary_review": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "official_conclusion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "disposition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contradictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "properties": {
+        "candidate_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "candidate_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incident_likelihood": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "needs_human_review": {
+          "type": "boolean"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "ingestion_adapter",
+        "raw_record_hash"
+      ],
+      "properties": {
+        "ingestion_adapter": {
+          "type": "string"
+        },
+        "source_native_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_record_hash": {
+          "type": "string"
+        },
+        "duplicate_cluster_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canonicalization_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ingested_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "review_state": {
+          "type": "string",
+          "enum": [
+            "unreviewed",
+            "machine_reviewed",
+            "human_reviewed",
+            "rejected_as_noise"
+          ]
+        },
+        "review_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "public_content_warning": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_ufo_timeline_event_ids": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      }
+    },
+    "external_event_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain",
+          "dataset",
+          "external_id",
+          "native_event_id",
+          "relationship_id"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "enum": [
+              "cattle_mutilation",
+              "crop_circle",
+              "ufo",
+              "other"
+            ]
+          },
+          "dataset": {
+            "type": "string",
+            "minLength": 1
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "native_event_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "relationship_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim_type",
+        "asserted_value",
+        "source_ids",
+        "confidence"
+      ],
+      "properties": {
+        "claim_type": {
+          "type": "string"
+        },
+        "anatomical_site": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "asserted_value": {},
+        "asserted_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observation_basis": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "direct_exam",
+            "necropsy",
+            "laboratory_test",
+            "scene_report",
+            "owner_statement",
+            "witness_statement",
+            "journalism",
+            "retelling",
+            "unknown",
+            null
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "contradicted_by_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "tier",
+        "source_type",
+        "title"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "official_record",
+            "archival_record",
+            "newspaper",
+            "periodical",
+            "book",
+            "website",
+            "interview",
+            "community_report",
+            "dataset",
+            "other"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "agency_or_publisher": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publication_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "page_or_container": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "archival_citation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rights_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "public_domain",
+            "permission_granted",
+            "licensed",
+            "fair_use_link_only",
+            "copyrighted_metadata_only",
+            "unknown",
+            null
+          ]
+        },
+        "raw_text_retention": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "public",
+            "internal_only",
+            "not_retained",
+            null
+          ]
+        },
+        "source_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
