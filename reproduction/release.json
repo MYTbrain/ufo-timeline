@@ -6,13 +6,13 @@
   },
   "pages": {
     "archive": {
-      "bytes": 8693168,
+      "bytes": 8694455,
       "format": "zip",
-      "sha256": "c3db24341a7183c6fbcc6889ed8c3bfb8d85770debc89f6e442ec51c767e53cb",
-      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-layers-default-on-v1-20260803/pages-bundle.zip"
+      "sha256": "6f3bbe200364aed283f3b1837b2ca14bea52ecde687544e161e82491b53fa9d2",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-layer-quick-toggles-v1-20260803/pages-bundle.zip"
     },
-    "base_url": "https://6b19dddf.ufo-timeline.pages.dev",
-    "deployment_id": "6b19dddf-6a6a-4609-925c-b5277ab7ce1f",
+    "base_url": "https://688e156d.ufo-timeline.pages.dev",
+    "deployment_id": "688e156d-1a4e-44d5-8a60-de1d6554ee18",
     "file_count": 134,
     "files": [
       {
@@ -41,9 +41,9 @@
         "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
       },
       {
-        "bytes": 1090567,
+        "bytes": 1093932,
         "path": "app.js",
-        "sha256": "ad564e63064381aca86d789ce400d0a6582d1016abdfca421389bdb03607a2a2"
+        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
       },
       {
         "bytes": 81571,
@@ -566,9 +566,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 85300,
+        "bytes": 86812,
         "path": "index.html",
-        "sha256": "e3c8629496a2b426d6b74e7197e8a69a2eac4f9d213466fd4ca09c7755bb28e4"
+        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
       },
       {
         "bytes": 4067,
@@ -611,9 +611,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 154741,
+        "bytes": 158370,
         "path": "styles.css",
-        "sha256": "8984a65b9202e535beb0694558b3438720ee73d9c56547cf14ecc69dfbb36ff4"
+        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
       },
       {
         "bytes": 49332,
@@ -687,8 +687,8 @@
       }
     ],
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "a9da150aa9122a01723a63eb698e3875c1b2cf8b5436a5ecbe59ae8940add441",
-    "uncompressed_bytes": 54925063
+    "tree_sha256": "465002faa4145226bae6bffabbba03473e4722317ffa91606c36f7e5270638a2",
+    "uncompressed_bytes": 54933569
   },
   "r2": {
     "base_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
@@ -3268,7 +3268,7 @@
     "asset_version": "2026-07-31T08:32:50.335399+00:00",
     "canonical_production_url": "https://ufo-timeline.pages.dev",
     "generated_at_utc": "2026-07-31T18:07:39.829315+00:00",
-    "id": "context-layers-default-on-v1-20260803",
+    "id": "context-layer-quick-toggles-v1-20260803",
     "mapped_count": 580783,
     "normalized_count": 702893
   },
@@ -3303,9 +3303,9 @@
         "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
       },
       {
-        "bytes": 1090567,
+        "bytes": 1093932,
         "path": "app.js",
-        "sha256": "ad564e63064381aca86d789ce400d0a6582d1016abdfca421389bdb03607a2a2"
+        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
       },
       {
         "bytes": 17006,
@@ -3408,9 +3408,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 85300,
+        "bytes": 86812,
         "path": "index.html",
-        "sha256": "e3c8629496a2b426d6b74e7197e8a69a2eac4f9d213466fd4ca09c7755bb28e4"
+        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
       },
       {
         "bytes": 4067,
@@ -3428,9 +3428,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 154741,
+        "bytes": 158370,
         "path": "styles.css",
-        "sha256": "8984a65b9202e535beb0694558b3438720ee73d9c56547cf14ecc69dfbb36ff4"
+        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
       },
       {
         "bytes": 49332,
@@ -3499,8 +3499,8 @@
       }
     ],
     "root": "webapp/static_public",
-    "total_bytes": 8789110,
+    "total_bytes": 8797616,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "d225ecd99c45cfadf36009b3f884c6acc86495fda2ef2aceff9b1c9e387bd3ed"
+    "tree_sha256": "86e73af25b472b4547cae82f5063fff144a78204a902177f629cc4235a1b5c22"
   }
 }
