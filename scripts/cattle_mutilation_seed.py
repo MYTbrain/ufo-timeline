@@ -1,4 +1,4 @@
-"""Build the Phase 1 global cattle-mutilation cross-domain seed catalog.
+"""Build the Phase 1 global animal-mutilation cross-domain seed catalog.
 
 The command is deliberately non-destructive: authoritative UFO and crop-circle
 inputs are opened read-only, raw third-party pages remain in a caller-provided
@@ -24,7 +24,7 @@ import sys
 import unicodedata
 import zipfile
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from html.parser import HTMLParser
 from importlib.metadata import PackageNotFoundError, version as package_version
@@ -53,11 +53,21 @@ from scripts.cattle_mutilation_pdf import (  # noqa: E402
     PINNED_COMBINED_PDF_SHA256,
     scan_catalog_pdf,
 )
+from scripts.animal_mutilation_taxonomy import (  # noqa: E402
+    AnimalAssertion,
+    GENERIC_ANIMAL_TERMS,
+    TAXA,
+    analyze_incident_animals,
+    assertion_to_public_row,
+    has_any_animal_term,
+    taxonomy_manifest,
+    victim_labels,
+)
 
 
-PIPELINE_VERSION = "cattle-mutilation-cross-domain-seed-v1.0.2"
-CANONICALIZATION_VERSION = "1.0.0"
-VALIDATION_PROVENANCE_SCHEMA_VERSION = "cattle-mutilation-validation-provenance-v1.0.0"
+PIPELINE_VERSION = "animal-mutilation-cross-domain-seed-v1.1.12"
+CANONICALIZATION_VERSION = "1.1.12"
+VALIDATION_PROVENANCE_SCHEMA_VERSION = "animal-mutilation-validation-provenance-v1.1.12"
 PINNED_BASE_COMMIT = "d0c8341c9b4785db40f7da74369c750770b0d21f"
 PINNED_STARTER_PACK_SHA256 = (
     "578F9A6E2E6B1EFDC4634EF5421F3079A5E169ADE89EF65F9CA181BC506AE611"
@@ -85,8 +95,8 @@ DEFAULT_DEDUPED_EVENTS = REPO_ROOT / "data" / "canonical_full" / "deduped_events
 DEFAULT_OUTPUT_DIR = (
     Path(r"C:\Users\jarod\Documents\Cattle Mutilation Map")
     / "outputs"
-    / "phase1"
-    / "global_seed_v1"
+    / "phase1_1"
+    / "global_animal_seed_v1_1"
 )
 DEFAULT_PRIVATE_CACHE = (
     Path(r"C:\Users\jarod\Documents\Cattle Mutilation Map")
@@ -152,13 +162,8 @@ DUPLICATE_PAIR_FIELDS = (
 
 
 ANIMAL_TERMS: Mapping[str, tuple[str, ...]] = {
-    "cattle": ("cattle", "cow", "cows", "calf", "calves", "bull", "bulls", "steer", "steers", "heifer", "heifers", "bovine", "ganado", "vaca", "vacas", "boi", "bois", "gado", "rund", "rinder", "kuh", "kuhe", "koe", "koeien"),
-    "horse": ("horse", "horses", "mare", "mares", "stallion", "equine", "caballo", "caballos", "cavalo", "cavalos", "paard", "paarden", "pferd", "pferde"),
-    "sheep": ("sheep", "ewe", "ewes", "ram", "rams", "cordero", "oveja", "ovejas", "ovelha", "ovelhas", "schaap", "schapen", "schaf", "schafe"),
-    "goat": ("goat", "goats", "kid", "kids", "cabra", "cabras", "geit", "geiten", "ziege", "ziegen"),
-    "burro": ("burro", "burros", "donkey", "donkeys", "mule", "mules", "asno", "asnos"),
-    "dog": ("dog", "dogs", "canine", "perro", "perros", "cao", "cachorro", "hond", "hunde"),
-    "animal": ("animal", "animals", "livestock", "stock animal", "animales", "animais", "dieren", "tiere"),
+    **{taxon.normalized_common_name: taxon.terms for taxon in TAXA},
+    "animal": GENERIC_ANIMAL_TERMS,
 }
 
 MUTILATION_TERMS = (
@@ -297,6 +302,8 @@ NOISE_TERMS = (
     "book",
     "article",
     "publication",
+    "edition",
+    "publisher",
     "conference",
     "researcher",
     "theory",
@@ -333,19 +340,107 @@ NEGATIVE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
         r"\bno\s+(?:evidence\s+of\s+)?(?:cattle\s+|animal\s+|livestock\s+)?mutilat",
+        r"\bnot\s+(?:been\s+)?mutilat\w*\b",
+        r"\b(?:no|none\s+of\s+the)\s+(?:[a-z0-9-]+\s+){0,5}(?:was|were|had\s+been)?\s*mutilat\w*\b",
         r"\bnot\s+(?:a\s+)?(?:classic\s+)?mutilation\b",
         r"\black(?:ed|s|ing)?\s+(?:the\s+)?(?:classic\s+)?mutilation\s+features\b",
         r"\bdid\s+not\s+(?:have|show)\s+(?:the\s+)?(?:classic\s+)?mutilation\s+features\b",
         r"\bno\s+mutilations?\s+(?:occurred|were\s+found|reported)\b",
+        r"\bno\s+mutilation\s+(?:connection|link|association)\b",
         r"\bno\s+(?:obvious\s+)?(?:marks?|injur(?:y|ies)|wounds?)\s+(?:on|at|were|found|visible)\b",
         r"\bno\s+(?:obvious\s+)?(?:marks?|injur(?:y|ies)|wounds?)(?:\s+or\s+(?:marks?|injur(?:y|ies)|wounds?))?.{0,35}\b(?:initial\s+find|visible|observed)\b",
         r"\b(?:likely|possibly|probably)\s+(?:coyotes?|predators?|scavengers?)\b",
         r"\b(?:coyotes?|predators?|scavengers?)\s+(?:likely|possibly|probably)\b",
+        r"\bno\s+(?:organs?|tissue|hide|skin|tongue|eyes?|ears?|udder|genitals?|sexual\s+organs?|rectum|anus|jaw|head|neck|torso|limbs?|legs?)\s+(?:(?:was|were|are|is)\s+)?(?:missing|absent|removed|excised|severed|cut\s+out|stripped|cored)\b",
+        r"\b(?:organs?|tissue|hide|skin|tongue|eyes?|ears?|udder|genitals?|sexual\s+organs?|rectum|anus|jaw|head|neck|torso|limbs?|legs?)\s+(?:(?:was|were|are|is)\s+)?(?:not|never)\s+(?:missing|absent|removed|excised|severed|cut\s+out|stripped|cored)\b",
     )
 )
 
 PRIVATE_LOCATION_RE = re.compile(
     r"\b(?:ranch|farm|homestead|residence|home|private property|\d{1,6}\s+[A-Za-z].*(?:road|rd\.?|street|st\.?|avenue|ave\.?|lane|ln\.?|drive|dr\.?))\b",
+    re.IGNORECASE,
+)
+
+PUBLIC_EXCERPT_PRIVATE_PATTERNS: tuple[tuple[str, str], ...] = (
+    (r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", "[email withheld]"),
+    (
+        r"(?<!\d)[+-]?\d{1,2}\.\d{3,}\s*[,/]\s*[+-]?\d{1,3}\.\d{3,}(?!\d)",
+        "[coordinates withheld]",
+    ),
+    (
+        r"\b\d{1,6}(?:\s*[-\N{EN DASH}\N{EM DASH}]\s*\d{1,6})?\s+"
+        r"(?!(?:mutilated|mutilation|dead|died|injured|year|month|day|animal|animals|"
+        r"cattle|cow|calf|steer|bull|horse|dog|dogs|cat|cats|sheep|goat|pig)\b)"
+        r"(?:[A-Za-z][A-Za-z0-9.'\N{RIGHT SINGLE QUOTATION MARK}-]*\s+){1,6}"
+        r"(?:Road|Rd\.?|Street|St\.?|Avenue|Ave\.?|Lane|Ln\.?|Drive|Dr\.?|Highway|Hwy\.?)\b",
+        "[street address withheld]",
+    ),
+    (
+        r"(?<!\d)(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}(?!\d)",
+        "[phone withheld]",
+    ),
+)
+
+_PRIVATE_PROPERTY_NONNAME_TOKENS = (
+    "at|near|the|on|from|inside|outside|a|an|private|family|local|nearby|working|"
+    "small|large|old|new|this|that|his|her|their|our|was|were|is|are|found|"
+    "discovered|located|reported|mutilated|mutilation|mutilations|gutted|"
+    "eviscerated|bloodless|decapitated|beheaded|drained|skinned|dissected|"
+    "excised|severed|removed|missing|killed|dead|died|injured|wounded|"
+    "slaughtered|carcass|carcasses|corpse|animal|animals|livestock|pet|pets|"
+    "mammal|mammals|cow|cows|cattle|calf|calves|steer|steers|bull|bulls|"
+    "ox|oxen|horse|horses|donkey|donkeys|mule|mules|sheep|ewe|ewes|ram|rams|"
+    "lamb|lambs|goat|goats|pig|pigs|hog|hogs|boar|boars|bison|buffalo|yak|"
+    "yaks|llama|llamas|alpaca|alpacas|cat|cats|dog|dogs|bird|birds|chicken|"
+    "chickens|hen|hens|rooster|roosters|turkey|turkeys|duck|ducks|goose|geese|"
+    "fish|deer|elk|moose|antelope|pronghorn|rabbit|rabbits|hare|hares|whale|"
+    "whales|dolphin|dolphins|reptile|reptiles|lizard|lizards|frog|frogs|"
+    "amphibian|amphibians"
+)
+_CAPITALIZED_PRIVATE_PROPERTY_TOKEN = (
+    rf"(?!(?i:(?:{_PRIVATE_PROPERTY_NONNAME_TOKENS}))\b)"
+    r"[A-Z][A-Za-z0-9&.'\N{RIGHT SINGLE QUOTATION MARK}-]*"
+)
+_LOWERCASE_PRIVATE_PROPERTY_TOKEN = (
+    rf"(?!(?:{_PRIVATE_PROPERTY_NONNAME_TOKENS})\b)"
+    r"[a-z][a-z0-9&.'\N{RIGHT SINGLE QUOTATION MARK}-]*"
+)
+NAMED_PRIVATE_PROPERTY_LABEL_RE = re.compile(
+    rf"(?:\b{_CAPITALIZED_PRIVATE_PROPERTY_TOKEN}"
+    rf"(?:\s+(?:(?:and|&)\s+)?{_CAPITALIZED_PRIVATE_PROPERTY_TOKEN}){{0,3}}"
+    r"\s+(?i:ranch|farm|homestead)\b|"
+    rf"\b{_LOWERCASE_PRIVATE_PROPERTY_TOKEN}"
+    rf"(?:\s+(?:(?:and|&)\s+)?{_LOWERCASE_PRIVATE_PROPERTY_TOKEN}){{0,3}}"
+    r"\s+(?i:ranch|farm|homestead)\b)",
+)
+
+_PUBLIC_URL_START = r"(?:https?:(?:/{0,2})?|www\.)"
+_PUBLIC_MARKDOWN_URL_START = r"(?:https?(?::/{0,2})?|www\.)"
+PUBLIC_INLINE_MARKDOWN_LINK_START_RE = re.compile(
+    rf"\[(?P<label>[^\]\r\n]{{1,240}})\]\(\s*<?(?={_PUBLIC_MARKDOWN_URL_START})",
+    re.IGNORECASE,
+)
+PUBLIC_MARKDOWN_LINK_RE = re.compile(
+    rf"\[[^\]\r\n]{{1,240}}\]\s*(?:\(\s*<?{_PUBLIC_MARKDOWN_URL_START}|\[[^\]\r\n]{{0,120}}\])",
+    re.IGNORECASE,
+)
+PUBLIC_REFERENCE_DEFINITION_RE = re.compile(
+    rf"^[ \t]{{0,3}}\[(?P<label>[^\]\r\n]{{1,120}})\]:[ \t]*<?{_PUBLIC_URL_START}[^\r\n]*(?:\r?\n|$)",
+    re.IGNORECASE | re.MULTILINE,
+)
+PUBLIC_REFERENCE_LINK_RE = re.compile(
+    r"\[([^\]\r\n]{1,240})\]\s*\[[^\]\r\n]{0,120}\]"
+)
+PUBLIC_AUTOLINK_RE = re.compile(
+    rf"<\s*{_PUBLIC_URL_START}[^>\r\n]*(?:>|$)",
+    re.IGNORECASE,
+)
+PUBLIC_ORPHAN_MARKDOWN_DESTINATION_RE = re.compile(
+    rf"\]?\(\s*<?{_PUBLIC_MARKDOWN_URL_START}[^\s<>\[\]]*",
+    re.IGNORECASE,
+)
+PUBLIC_BARE_URL_RE = re.compile(
+    rf"(?<![\w@]){_PUBLIC_URL_START}[^\s<>\[\]]*",
     re.IGNORECASE,
 )
 
@@ -371,11 +466,16 @@ class Analysis:
     disposition: str
     needs_human_review: bool
     animal_terms: tuple[str, ...]
+    animal_assertions: tuple[AnimalAssertion, ...]
+    context_animal_assertions: tuple[AnimalAssertion, ...]
+    incident_evidence_mode: str
+    incident_evidence_sentences: tuple[str, ...]
     finding_terms: tuple[str, ...]
     association_terms: tuple[str, ...]
     explicit_aerial_association_terms: tuple[str, ...]
     noise_terms: tuple[str, ...]
     explicit_negative: bool
+    negative_only: bool
     crop_signal: bool
     explicit_crop_mutilation_link: bool
     crop_relationship_type: str | None
@@ -437,6 +537,85 @@ def canonical_json(record: Mapping[str, Any]) -> str:
 
 def normalize_space(value: object) -> str:
     return re.sub(r"\s+", " ", "" if value is None else str(value)).strip()
+
+
+def _strip_balanced_inline_markdown_urls(value: str) -> str:
+    """Keep link labels while removing complete or truncated URL destinations."""
+
+    output: list[str] = []
+    cursor = 0
+    while match := PUBLIC_INLINE_MARKDOWN_LINK_START_RE.search(value, cursor):
+        output.append(value[cursor : match.start()])
+        output.append(match.group("label"))
+        destination_start = match.end()
+        depth = 1
+        position = destination_start
+        while position < len(value):
+            char = value[position]
+            if char == "(" and (position == 0 or value[position - 1] != "\\"):
+                depth += 1
+            elif char == ")" and (position == 0 or value[position - 1] != "\\"):
+                depth -= 1
+                if depth == 0:
+                    cursor = position + 1
+                    break
+            position += 1
+        else:
+            # The source or an upstream evidence window may already have cut
+            # the Markdown link. Drop the URL-shaped token but retain later
+            # prose so an animal/harm assertion is not lost with the locator.
+            whitespace = re.search(r"\s", value[destination_start:])
+            cursor = (
+                destination_start + whitespace.start()
+                if whitespace is not None
+                else len(value)
+            )
+    output.append(value[cursor:])
+    return "".join(output)
+
+
+def strip_public_link_locators(value: object) -> str:
+    """Remove Web locators from evidence without removing factual link labels."""
+
+    text = html.unescape("" if value is None else str(value))
+    reference_labels: set[str] = set()
+
+    def remove_definition(match: re.Match[str]) -> str:
+        reference_labels.add(normalize_space(match.group("label")).casefold())
+        return " "
+
+    text = PUBLIC_REFERENCE_DEFINITION_RE.sub(remove_definition, text)
+    text = _strip_balanced_inline_markdown_urls(text)
+    text = PUBLIC_REFERENCE_LINK_RE.sub(r"\1", text)
+    if reference_labels:
+        shortcut_reference_re = re.compile(r"\[([^\]\r\n]{1,120})\]")
+
+        def replace_shortcut_reference(match: re.Match[str]) -> str:
+            label = normalize_space(match.group(1))
+            return label if label.casefold() in reference_labels else match.group(0)
+
+        text = shortcut_reference_re.sub(replace_shortcut_reference, text)
+    text = PUBLIC_AUTOLINK_RE.sub("", text)
+    text = PUBLIC_ORPHAN_MARKDOWN_DESTINATION_RE.sub("", text)
+    text = PUBLIC_BARE_URL_RE.sub("", text)
+    return normalize_space(text)
+
+
+def contains_public_link_locator(value: object) -> bool:
+    """Detect complete and truncated link forms forbidden in public evidence."""
+
+    text = "" if value is None else str(value)
+    return any(
+        pattern.search(text) is not None
+        for pattern in (
+            PUBLIC_MARKDOWN_LINK_RE,
+            PUBLIC_REFERENCE_DEFINITION_RE,
+            PUBLIC_REFERENCE_LINK_RE,
+            PUBLIC_AUTOLINK_RE,
+            PUBLIC_ORPHAN_MARKDOWN_DESTINATION_RE,
+            PUBLIC_BARE_URL_RE,
+        )
+    )
 
 
 def normalize_for_match(value: object) -> str:
@@ -551,16 +730,14 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
     type_text = normalize_for_match(" ".join(unique_strings([record.get("type_raw"), record.get("type_normalized")])))
     structured_type_signal = "mutilation related" in type_text or "mutilation_related" in type_text
     structured_code_signal = {"ANI", "INJ"}.issubset(set(structured_codes))
+    animal_analysis = analyze_incident_animals(narrative)
     animal_lexicon = tuple(term for terms in ANIMAL_TERMS.values() for term in terms)
+    animals = victim_labels(animal_analysis)
+    all_animals = animal_analysis.all_animal_terms
     broad_relevant = (
         _contains_terms(narrative_match, MUTILATION_TERMS)
-        or (
-            _contains_terms(narrative_match, animal_lexicon)
-            and (
-                _contains_terms(narrative_match, DISTINCTIVE_HARM_TERMS)
-                or _contains_terms(narrative_match, ANATOMY_TERMS)
-            )
-        )
+        or animal_analysis.evidence_mode != "none"
+        or (has_any_animal_term(narrative) and animal_analysis.nonclassic_harm_only)
         or structured_type_signal
         or structured_code_signal
     )
@@ -573,11 +750,16 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
             disposition="not_candidate",
             needs_human_review=False,
             animal_terms=(),
+            animal_assertions=(),
+            context_animal_assertions=(),
+            incident_evidence_mode="none",
+            incident_evidence_sentences=(),
             finding_terms=(),
             association_terms=(),
             explicit_aerial_association_terms=(),
             noise_terms=(),
             explicit_negative=False,
+            negative_only=False,
             crop_signal=False,
             explicit_crop_mutilation_link=False,
             crop_relationship_type=None,
@@ -585,58 +767,139 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
             reference_text=references,
             structured_codes=structured_codes,
         )
-    animals = animal_matches(narrative)
     mutilation = matched_terms(narrative, MUTILATION_TERMS)
     harm = matched_terms(narrative, HARM_TERMS)
-    anatomy = matched_terms(narrative, ANATOMY_TERMS)
     incidents = matched_terms(narrative, INCIDENT_TERMS)
     crops = matched_terms(narrative, CROP_TERMS)
     associations = matched_terms(narrative, UFO_ASSOCIATION_TERMS)
     noise = matched_terms(narrative, NOISE_TERMS)
     investigation = matched_terms(narrative, INVESTIGATION_TERMS)
     explicit_negative = any(pattern.search(narrative) for pattern in NEGATIVE_PATTERNS)
+    explicit_phrase = bool(animals and animal_analysis.evidence_mode == "explicit_mutilation")
+    distinctive_injury = bool(animals and animal_analysis.evidence_mode == "distinctive_injury")
+    sentence_local_incident = bool(explicit_phrase or distinctive_injury)
+    record_year_match = re.match(r"^(\d{4})", normalize_space(record.get("date_iso")))
+    record_year = int(record_year_match.group(1)) if record_year_match else None
 
-    direct_animal_mutilation = bool(animals and mutilation) and terms_within(
-        narrative, animal_lexicon, MUTILATION_TERMS, 220
+    def is_current_positive_evidence(sentence: str) -> bool:
+        normalized = normalize_for_match(sentence)
+        relative_unit = r"(?:day|week|month|year)(?:s|\s+s)?"
+        relative_quantity = (
+            r"(?:(?:a|the)\s+)?"
+            r"(?:(?:\d+(?:\s+to\s+\d+)?|one|two|three|four|five|six|seven|"
+            r"eight|nine|ten|few|several|many|multiple|couple\s+of|number\s+of)\s+)?"
+        )
+        # The outer record date belongs to the UFO/source record.  A separate
+        # animal report described only as earlier, later, historical, or
+        # recalled from news cannot inherit that date and enter deterministic
+        # cross-domain matching as an exact animal event. Scope the temporal
+        # cue to the animal/harm clause: in "helicopters flew the day before a
+        # mutilated cow was discovered", the cow discovery is the reference
+        # event and remains current rather than inheriting the helicopter cue.
+        relative_marker = re.compile(
+            rf"\b{relative_quantity}{relative_unit}\s+"
+            r"(?:before|after|later|earlier|prior\s+to|following)\b|"
+            rf"\b(?:in|during)\s+(?:the\s+)?{relative_quantity}{relative_unit}\s+"
+            r"(?:before|after|prior\s+to|following)\b|"
+            r"\b(?:the\s+)?next\s+(?:morning|day|night|afternoon|evening)\b|"
+            r"\bback\s+in\s+the\s+day\b|"
+            r"\bpreviously\b|"
+            rf"\b(?:in|during|over)\s+(?:the\s+)?past\s+{relative_quantity}{relative_unit}\b"
+        )
+        harm_anchor = re.compile(
+            r"\b(?:mutilat\w*|gutted|dissected|drained|bloodless|decapitated|"
+            r"skinned|carcasses?|deaths?|dead|missing\s+(?:parts?|organs?|eyes?|"
+            r"ears?|tongue|udder|head|limbs?))\b"
+        )
+        introductory_only = re.compile(
+            r"(?:(?:about|roughly|approximately|around|some|in|during|over|the|past)\s*)*"
+        )
+        for relative_match in relative_marker.finditer(normalized):
+            prefix = normalized[: relative_match.start()].strip()
+            suffix = normalized[relative_match.end() :]
+            marker_text = relative_match.group(0)
+            shifts_following_animal_clause = bool(
+                re.search(r"\b(?:later|after|following|next)\b", marker_text)
+                and harm_anchor.search(suffix)
+            )
+            if (
+                introductory_only.fullmatch(prefix)
+                or harm_anchor.search(prefix)
+                or shifts_following_animal_clause
+            ):
+                return False
+        if re.search(
+            r"\b(?:prior|previous|historical(?:ly)?)\b.{0,60}\bmutilat\w*\b|"
+            r"\bmutilat\w*\b.{0,60}\b(?:in\s+the\s+past|years?\s+ago|decades?\s+ago)\b",
+            normalized,
+        ):
+            return False
+        if re.search(
+            r"\bmutilat\w*\b.{0,140}\b(?:(?:were|was|have\s+been|had\s+been|being)?\s*"
+            r"consistently\s+reported|reported\s+consistently|"
+            r"for\s+(?:well\s+)?over\s+(?:a\s+)?decade|"
+            r"throughout\s+(?:the\s+)?(?:area|region))\b",
+            normalized,
+        ):
+            return False
+        mentioned_decade = re.search(r"\bin\s+(?:the\s+)?((?:18|19|20)\d0)s\b", normalized)
+        if mentioned_decade and record_year is not None:
+            decade_start = int(mentioned_decade.group(1))
+            if not decade_start <= record_year <= decade_start + 9:
+                return False
+        return True
+
+    current_positive_evidence = any(
+        is_current_positive_evidence(sentence)
+        for sentence in animal_analysis.evidence_sentences
     )
-    animal_harm_near = bool(animals and (matched_terms(narrative, DISTINCTIVE_HARM_TERMS) or anatomy)) and terms_within(
-        narrative, animal_lexicon, (*DISTINCTIVE_HARM_TERMS, *ANATOMY_TERMS), 300
+    background_without_incident = bool(
+        not sentence_local_incident
+        and re.search(
+            r"\b(?:historical(?:ly)?|prior|previous)\b.{0,80}\bmutilat\w*\b|"
+            r"\bmutilat\w*\b.{0,80}\b(?:in\s+the\s+past|years?\s+ago|decades?\s+ago)\b",
+            narrative_match,
+        )
     )
-    explicit_phrase = bool(
-        re.search(r"\b(?:cattle|animal|livestock|cow|sheep|horse)\s+mutilat", narrative_match)
-        or re.search(r"\bmutilat\w*\s+(?:cattle|animal|livestock|cow|sheep|horse)", narrative_match)
+    background_only = bool(
+        sentence_local_incident and not current_positive_evidence
+        or background_without_incident
     )
+    negative_only = bool(explicit_negative and not current_positive_evidence)
 
     score = 0.0
     reasons: list[str] = []
     if explicit_phrase:
-        score += 0.65
-        reasons.append("explicit_animal_mutilation_phrase")
-    elif direct_animal_mutilation:
-        score += 0.55
-        reasons.append("animal_near_mutilation_term")
-    elif animals and mutilation:
-        score += 0.38
-        reasons.append("animal_and_mutilation_terms")
-    if animal_harm_near:
-        score += 0.34
-        reasons.append("animal_near_harm_or_anatomy_term")
+        score += 0.78
+        reasons.append("sentence_local_animal_mutilation")
+    elif distinctive_injury:
+        score += 0.62
+        reasons.append("sentence_local_distinctive_animal_injury")
+    elif all_animals and mutilation:
+        score += 0.24
+        reasons.append("animal_and_mutilation_context_without_victim_binding")
+    elif animal_analysis.nonclassic_harm_only:
+        score += 0.12
+        reasons.append("nonclassic_animal_harm_context")
     if structured_type_signal:
-        score += 0.32
+        score += 0.22
         reasons.append("mutilation_related_source_type")
     if structured_code_signal:
-        score += 0.18
-        reasons.append("structured_animal_injury_codes_review_only")
-    if incidents and animals and (mutilation or animal_harm_near):
         score += 0.12
-        reasons.append("incident_verb_in_animal_context")
+        reasons.append("structured_animal_injury_codes_review_only")
+    if incidents and sentence_local_incident:
+        score += 0.12
+        reasons.append("incident_verb_in_sentence_local_animal_context")
     if crops:
         reasons.append("crop_circle_narrative_signal")
     if associations:
         reasons.append("ufo_or_aerial_narrative_signal")
     if explicit_negative:
-        score -= 0.30
         reasons.append("explicit_negative_or_nonclassic_statement")
+        if negative_only:
+            score -= 0.30
+    if background_only:
+        reasons.append("historical_or_background_context_only")
     if noise and not incidents:
         score -= 0.18
         reasons.append("research_or_publication_context")
@@ -646,106 +909,69 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
         score >= 0.20
         or structured_type_signal
         or structured_code_signal
-        or explicit_negative and (animals or mutilation)
+        or explicit_negative and (all_animals or mutilation)
     )
     publication_or_biography_context = bool(
         noise
         and (
             re.search(
-                r"\b(?:researcher|author|writer|skeptic|biograph\w*|book|article|film|conference)\b.{0,180}\b(?:mutilat\w*|claims?|theor\w*)\b",
+                r"\b(?:researcher|author|writer|skeptic|biograph\w*|book|article|"
+                r"edition|publisher|film|conference)\b.{0,180}\b(?:mutilat\w*|claims?|theor\w*)\b",
                 narrative_match,
             )
             or re.search(
-                r"\b(?:mutilat\w*|claims?|theor\w*)\b.{0,180}\b(?:researcher|author|writer|skeptic|biograph\w*|book|article|film|conference|hoax)\b",
+                r"\b(?:mutilat\w*|claims?|theor\w*)\b.{0,180}\b(?:researcher|author|"
+                r"writer|skeptic|biograph\w*|book|article|edition|publisher|film|conference|hoax)\b",
                 narrative_match,
             )
         )
     )
     has_incident_sentence = any(
-        _contains_terms(sentence, animal_lexicon)
-        and (
-            _contains_terms(sentence, MUTILATION_TERMS)
-            or _contains_terms(sentence, DISTINCTIVE_HARM_TERMS)
-            or _contains_terms(sentence, ANATOMY_TERMS)
+        re.search(
+            r"\b(?:found|discovered|located|recovered|killed|died|hallado|hallada|encontrado|encontrada|gevonden|gefunden)\b",
+            normalize_for_match(sentence),
         )
-        and _contains_terms(
-            sentence,
-            ("found", "discovered", "located", "recovered", "killed", "died", "hallado", "encontrado", "encontrada", "gevonden", "gefunden"),
-        )
-        for sentence in re.split(r"(?<=[.!?])\s+|[\r\n]+", narrative_match)
-        if sentence
+        for sentence in animal_analysis.evidence_sentences
     )
     if has_incident_sentence:
         publication_or_biography_context = False
-    occurrence_terms = matched_terms(
-        narrative,
-        (
-            "found",
-            "discovered",
-            "located",
-            "recovered",
-            "killed",
-            "died",
-            "occurred",
-            "hallado",
-            "encontrado",
-            "encontrados",
-            "encontrada",
-            "encontradas",
-            "gevonden",
-            "gefunden",
-        ),
-    )
-    report_of_distinctive_harm = bool(
-        "reported" in incidents and animal_harm_near and not publication_or_biography_context
+    aggregate_match_text = (
+        normalize_for_match(" ".join(animal_analysis.evidence_sentences))
+        or narrative_match
     )
     has_individual_incident_anchor = bool(
         has_incident_sentence
         or re.search(
-            r"\b(?:one|a|an|the)\s+(?:animal|cow|calf|bull|steer|heifer|sheep|horse|dog|carcass)?\s*(?:was|were)?\s*(?:found|discovered|located|recovered)\b",
-            narrative_match,
+            r"\b(?:one|a|an|the)\b.{0,80}\b(?:was|were)?\s*(?:found|discovered|located|recovered)\b",
+            aggregate_match_text,
         )
     )
-    quantified_incident_pattern = re.compile(
+    quantified_case_pattern = re.compile(
         r"\b(?:there\s+(?:were|are|have\s+been)\s+|a\s+total\s+of\s+)?"
         r"(?:about\s+|approximately\s+|more\s+than\s+|at\s+least\s+)?"
         r"(?:\d[\d,.]*|dozens?|scores?|hundreds?|thousands?|many|multiple|numerous)\s+"
-        r"(?:(?:cattle|animals?|livestock|cows?|calves|bulls?|steers?|heifers?|sheep|horses?|dogs?)\s+mutilat\w*"
-        r"|mutilat\w*\s+(?:cattle|animals?|livestock|cows?|calves|bulls?|steers?|heifers?|sheep|horses?|dogs?)"
-        r"|(?:cattle|animal|livestock)\s+mutilation\s+cases?)\b"
+        r"[^.!?;]{0,90}\b(?:mutilation\s+)?(?:cases?|incidents?|reports?|mutilations)\b"
+    )
+    aggregate_scope_signal = re.search(
+        r"\b(?:series|wave|overview|across|throughout|nationwide|regionwide|"
+        r"cases?\s+(?:were|have|reported)|total\s+(?:number|count|of\s+cases?))\b",
+        aggregate_match_text,
     )
     aggregate_context = bool(
-        (
-            quantified_incident_pattern.search(narrative_match)
-            or re.search(
-                r"\b(?:series|wave|overview|total|across|throughout|cases?\s+(?:were|have|reported))\b",
-                narrative_match,
-            )
-        )
+        (quantified_case_pattern.search(aggregate_match_text) or aggregate_scope_signal)
         and not has_individual_incident_anchor
-    )
-    existential_distinctive_harm = bool(
-        animal_harm_near
-        and re.search(r"\b(?:there\s+(?:were|was|are)|where\s+there\s+were|area\s+had)\b", narrative_match)
-        and not aggregate_context
-        and not publication_or_biography_context
     )
     direct_incident = bool(
         animals
-        and (direct_animal_mutilation or animal_harm_near)
-        and (
-            occurrence_terms
-            or report_of_distinctive_harm
-            or existential_distinctive_harm
-            or (explicit_phrase and not noise)
-        )
-        and not explicit_negative
+        and sentence_local_incident
+        and not negative_only
+        and not background_only
         and not aggregate_context
         and not publication_or_biography_context
     )
     if direct_incident and not aggregate_context:
         record_type = "mutilation_case"
-    elif aggregate_context and (animals or mutilation):
+    elif aggregate_context and (all_animals or mutilation):
         record_type = "aggregate_report"
     elif noise and not incidents:
         record_type = "publication_event"
@@ -758,10 +984,12 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
 
     if not plausible_signal:
         disposition = "not_candidate"
-    elif structured_code_signal and not (animals or mutilation or animal_harm_near):
+    elif structured_code_signal and not (animals or mutilation or distinctive_injury):
         disposition = "structured_code_review"
-    elif explicit_negative:
+    elif negative_only:
         disposition = "explicit_negative_context"
+    elif background_only:
+        disposition = "context_or_noise_candidate"
     elif noise and not direct_incident:
         disposition = "context_or_noise_candidate"
     else:
@@ -770,7 +998,7 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
     incident_likelihood = score
     if record_type != "mutilation_case":
         incident_likelihood = min(incident_likelihood, 0.49)
-    if explicit_negative:
+    if negative_only:
         incident_likelihood = min(incident_likelihood, 0.20)
     incident_likelihood = round(incident_likelihood, 4)
     crop_relationship_type = classify_explicit_crop_relationship(
@@ -791,11 +1019,16 @@ def analyze_source_record(record: Mapping[str, Any]) -> Analysis:
         disposition=disposition,
         needs_human_review=plausible_signal,
         animal_terms=animals,
-        finding_terms=tuple(sorted(set((*mutilation, *harm, *anatomy)))),
+        animal_assertions=animal_analysis.victim_assertions,
+        context_animal_assertions=animal_analysis.context_assertions,
+        incident_evidence_mode=animal_analysis.evidence_mode,
+        incident_evidence_sentences=animal_analysis.evidence_sentences,
+        finding_terms=tuple(sorted(set((*mutilation, *animal_analysis.evidence_terms)))),
         association_terms=tuple(sorted(set((*crops, *associations)))),
         explicit_aerial_association_terms=explicit_aerial_terms,
         noise_terms=tuple(sorted(set(noise))),
         explicit_negative=explicit_negative,
+        negative_only=negative_only,
         crop_signal=bool(crops),
         explicit_crop_mutilation_link=explicit_crop_link,
         crop_relationship_type=crop_relationship_type,
@@ -909,8 +1142,18 @@ def locally_linked_aerial_terms(text: str, *, direct_incident: bool) -> tuple[st
     return tuple(sorted(linked_terms))
 
 
-def short_evidence_excerpt(text: str, terms: Sequence[str], *, max_words: int = 24, max_chars: int = 240) -> str | None:
-    cleaned = normalize_space(html.unescape(text))
+def short_evidence_excerpt(
+    text: str,
+    terms: Sequence[str],
+    *,
+    max_words: int = 24,
+    max_chars: int = 240,
+    withhold_named_private_property: bool = False,
+) -> str | None:
+    # Strip locators from the complete source string before selecting and
+    # truncating the evidence window. This prevents a long URL from becoming a
+    # leaking fragment or displacing the animal/harm words the excerpt needs.
+    cleaned = strip_public_link_locators(text)
     if not cleaned:
         return None
     normalized = normalize_for_match(cleaned)
@@ -927,7 +1170,97 @@ def short_evidence_excerpt(text: str, terms: Sequence[str], *, max_words: int = 
         excerpt = "... " + excerpt
     if start + max_words < len(words):
         excerpt += " ..."
-    return excerpt[:max_chars].rstrip()
+    return sanitize_public_excerpt(
+        excerpt[:max_chars].rstrip(),
+        withhold_named_private_property=withhold_named_private_property,
+    )
+
+
+def source_explicit_human_staging(text: object) -> bool:
+    """Identify a narrow source statement that people deliberately staged a carcass."""
+
+    normalized = normalize_for_match(text)
+    return bool(
+        re.search(
+            r"\b(?:they|we|he|she|people|hoaxers?|pranksters?)\b"
+            r"(?:\s+[a-z0-9-]+){0,3}\s+"
+            r"(?:planted|placed|staged)\b.{0,45}\bmutilat\w*\b",
+            normalized,
+        )
+    )
+
+
+def _private_property_evidence_redaction_required(
+    location: Mapping[str, Any] | None,
+    *evidence_values: object,
+) -> bool:
+    if isinstance(location, Mapping):
+        if location.get("privacy_level") == "internal_only":
+            return True
+        for value in location.values():
+            text = normalize_space(value)
+            if text and (
+                PRIVATE_LOCATION_RE.search(text)
+                or NAMED_PRIVATE_PROPERTY_LABEL_RE.search(text)
+            ):
+                return True
+    return any(
+        NAMED_PRIVATE_PROPERTY_LABEL_RE.search(normalize_space(value))
+        for value in evidence_values
+        if normalize_space(value)
+    )
+
+
+def _public_crop_candidate_location(
+    location: Mapping[str, Any] | None,
+    *,
+    withhold_named_private_property: bool,
+) -> dict[str, Any]:
+    public_location = dict(location or {})
+    if not withhold_named_private_property:
+        return public_location
+    for key in ("raw_text", "place", "locality", "county", "region", "admin1", "admin2"):
+        value = normalize_space(public_location.get(key))
+        if value and NAMED_PRIVATE_PROPERTY_LABEL_RE.search(value):
+            public_location[key] = None
+    return public_location
+
+
+def sanitize_public_excerpt(
+    value: object,
+    *,
+    withhold_named_private_property: bool = False,
+) -> str | None:
+    """Remove common private locators from short public evidence text."""
+
+    text = strip_public_link_locators(value)
+    if not text:
+        return None
+    if withhold_named_private_property:
+        text = NAMED_PRIVATE_PROPERTY_LABEL_RE.sub(
+            "[private property withheld]",
+            text,
+        )
+    for pattern, replacement in PUBLIC_EXCERPT_PRIVATE_PATTERNS:
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    return normalize_space(text) or None
+
+
+def contains_public_private_locator(value: object) -> bool:
+    """Return true for a private property, address, or Web locator."""
+
+    text = normalize_space(value)
+    return bool(
+        text
+        and (
+            NAMED_PRIVATE_PROPERTY_LABEL_RE.search(text)
+            or contains_public_link_locator(text)
+            or any(
+                re.search(pattern, text, flags=re.IGNORECASE)
+                for pattern, _replacement in PUBLIC_EXCERPT_PRIVATE_PATTERNS
+            )
+        )
+    )
 
 
 def finding_claims(analysis: Analysis, source_id: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -938,7 +1271,7 @@ def finding_claims(analysis: Analysis, source_id: str) -> tuple[list[dict[str, A
     vocabulary from being promoted to veterinary or laboratory evidence.
     """
 
-    if analysis.explicit_negative:
+    if analysis.negative_only:
         return [], [
             {
                 "claim_type": "reported_classic_mutilation_features",
@@ -1097,14 +1430,26 @@ def project_location(record: Mapping[str, Any]) -> dict[str, Any]:
     year_text = normalize_space(record.get("date_iso"))[:4]
     modern = year_text.isdigit() and int(year_text) >= 1990
     private_signal = bool(raw and PRIVATE_LOCATION_RE.search(raw))
+    named_private_signal = any(
+        NAMED_PRIVATE_PROPERTY_LABEL_RE.search(value)
+        for value in (raw, city)
+        if value
+    )
     precise_signal = precision in {"exact_site", "parcel", "road_segment"}
-    suppress_public = private_signal and (modern or precise_signal)
+    suppress_public = named_private_signal or (
+        private_signal and (modern or precise_signal)
+    )
     # Some upstream records put a ranch/farm name in the city field. A
     # generalized public projection must not reintroduce the private property
     # label through that nominal locality after suppressing the raw location.
     public_city = (
         None
-        if suppress_public and city and PRIVATE_LOCATION_RE.search(city)
+        if suppress_public
+        and city
+        and (
+            PRIVATE_LOCATION_RE.search(city)
+            or NAMED_PRIVATE_PROPERTY_LABEL_RE.search(city)
+        )
         else city
     )
     public_lat = None if suppress_public else lat
@@ -1136,7 +1481,7 @@ def project_location(record: Mapping[str, Any]) -> dict[str, Any]:
         "geocode_confidence": None,
         "privacy_level": "internal_only" if suppress_public else "public_generalized",
         "mapping_notes": (
-            "Public coordinates suppressed because the source may identify a modern private property."
+            "Public coordinates suppressed because the source may identify a named or modern private property."
             if suppress_public
             else "Coordinates retain the upstream precision label; centroids are not exact sites."
         ),
@@ -1154,7 +1499,10 @@ def _enforce_private_public_location(record: Mapping[str, Any]) -> None:
 
     def safe_component(value: object) -> str | None:
         text = normalize_space(value) or None
-        if text and PRIVATE_LOCATION_RE.search(text):
+        if text and (
+            PRIVATE_LOCATION_RE.search(text)
+            or NAMED_PRIVATE_PROPERTY_LABEL_RE.search(text)
+        ):
             return None
         return text
 
@@ -1191,7 +1539,29 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
     precision = interval["precision"]
     start = interval["start"]
     end = interval["end"]
-    animal_rows = [{"species": term, "breed": None, "sex": None, "age_class": None, "count": None, "condition_before_death": None, "ownership_public": None} for term in analysis.animal_terms if term != "animal"]
+    location = project_location(record)
+    withhold_named_private_property = _private_property_evidence_redaction_required(
+        location,
+        analysis.narrative_text,
+    )
+    animal_rows = [
+        assertion_to_public_row(assertion, source_id)
+        for assertion in analysis.animal_assertions
+    ]
+    animal_context_rows = [
+        assertion_to_public_row(assertion, source_id)
+        for assertion in analysis.context_animal_assertions
+    ]
+    for animal in [*animal_rows, *animal_context_rows]:
+        animal["evidence_excerpt"] = sanitize_public_excerpt(
+            animal.get("evidence_excerpt"),
+            withhold_named_private_property=withhold_named_private_property,
+        )
+    public_incident_evidence = unique_strings(
+        animal.get("evidence_excerpt")
+        for animal in animal_rows
+        if animal.get("evidence_excerpt")
+    )
     associated_events: list[dict[str, Any]] = []
     if analysis.crop_signal:
         associated_events.append(
@@ -1238,13 +1608,38 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
     excerpt = short_evidence_excerpt(
         analysis.narrative_text,
         (*analysis.animal_terms, *analysis.finding_terms, *analysis.association_terms),
+        withhold_named_private_property=withhold_named_private_property,
     )
+    victim_excerpts = [
+        normalize_space(animal.get("evidence_excerpt"))
+        for animal in animal_rows
+        if normalize_space(animal.get("evidence_excerpt"))
+    ]
+    if victim_excerpts:
+        excerpt = sanitize_public_excerpt(
+            min(victim_excerpts, key=lambda value: (len(value), value)),
+            withhold_named_private_property=withhold_named_private_property,
+        )
+    elif analysis.incident_evidence_sentences:
+        excerpt = sanitize_public_excerpt(
+            min(
+                analysis.incident_evidence_sentences,
+                key=lambda sentence: (len(sentence), sentence),
+            ),
+            withhold_named_private_property=withhold_named_private_property,
+        )
+    human_staging = source_explicit_human_staging(analysis.narrative_text)
     source_title = f"{normalize_space(record.get('source_name')) or 'UFO Timeline'} record {source_native_id or canonical_input_id}"
     return {
+        "event_domain": "animal_mutilation",
         "record_id": record_id,
         "canonical_incident_id": None,
         "record_type": analysis.record_type,
-        "status": "contested" if analysis.explicit_negative else "lead",
+        "status": (
+            "contested"
+            if analysis.explicit_negative or human_staging
+            else "lead"
+        ),
         "title": source_title,
         "summary": excerpt,
         "dates": {
@@ -1258,8 +1653,9 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
             "precision": precision,
             "raw_text": normalize_space(record.get("date_raw")) or None,
         },
-        "location": project_location(record),
+        "location": location,
         "animals": animal_rows,
+        "animal_context": animal_context_rows,
         "anatomical_findings": anatomical_findings,
         "scene_findings": scene_findings,
         "laboratory_findings": [],
@@ -1271,7 +1667,11 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
             "necropsy_performed": None,
             "veterinary_review": None,
             "official_conclusion": None,
-            "disposition": None,
+            "disposition": (
+                "source_explicit_deliberate_placement_of_mutilated_animal"
+                if human_staging
+                else None
+            ),
             "contradictions": [],
         },
         "sources": [
@@ -1295,6 +1695,8 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
             "candidate_reasons": list(analysis.candidate_reasons),
             "incident_likelihood": analysis.incident_likelihood,
             "needs_human_review": analysis.needs_human_review,
+            "incident_evidence_mode": analysis.incident_evidence_mode,
+            "incident_evidence_sentences": public_incident_evidence,
         },
         "provenance": {
             "ingestion_adapter": "ufo_timeline_source_records_v1",
@@ -1316,6 +1718,7 @@ def build_candidate_record(record: Mapping[str, Any], analysis: Analysis, source
         "noise_terms": list(analysis.noise_terms),
         "structured_codes": list(analysis.structured_codes),
         "explicit_negative": analysis.explicit_negative,
+        "negative_only": analysis.negative_only,
         "explicit_crop_mutilation_link": analysis.explicit_crop_mutilation_link,
         "crop_relationship_type": analysis.crop_relationship_type,
         "raw_record_pointer": {
@@ -1382,9 +1785,37 @@ def _case_public_location_projection(case: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _expected_case_projection(case: Mapping[str, Any]) -> dict[str, Any]:
+    animal_fields = (
+        "reported_text",
+        "reported_taxon_key",
+        "normalized_common_name",
+        "species_group",
+        "domestic_context",
+        "incident_role",
+        "identification_basis",
+        "identification_confidence",
+        "source_ids",
+    )
+
+    def animal_projection(field: str) -> list[dict[str, Any]]:
+        rows = case.get(field, []) if isinstance(case.get(field), list) else []
+        return sorted(
+            [
+                {key: row.get(key) for key in animal_fields}
+                for row in rows
+                if isinstance(row, Mapping)
+            ],
+            key=canonical_json,
+        )
+
     return {
+        "event_domain": case.get("event_domain"),
+        "explicit_negative": bool(case.get("explicit_negative")),
+        "negative_only": bool(case.get("negative_only")),
         "dates": _case_date_projection(case),
         "public_location": _case_public_location_projection(case),
+        "animals": animal_projection("animals"),
+        "animal_context": animal_projection("animal_context"),
     }
 
 
@@ -1404,10 +1835,16 @@ def _build_ufo_validation_decision(
     record: Mapping[str, Any], case: Mapping[str, Any]
 ) -> dict[str, Any]:
     raw_location = normalize_space(record.get("location_raw"))
+    source_city = normalize_space(record.get("city"))
     source_precision = map_location_precision(record.get("location_precision"))
     year_text = normalize_space(record.get("date_iso"))[:4]
     modern = year_text.isdigit() and int(year_text) >= 1990
     private_signal = bool(raw_location and PRIVATE_LOCATION_RE.search(raw_location))
+    named_private_signal = any(
+        NAMED_PRIVATE_PROPERTY_LABEL_RE.search(value)
+        for value in (raw_location, source_city)
+        if value
+    )
     precise_signal = source_precision in {"exact_site", "parcel", "road_segment"}
     return _finish_validation_decision(
         {
@@ -1426,8 +1863,10 @@ def _build_ufo_validation_decision(
                 ),
                 "precision": source_precision,
                 "private_signal": private_signal,
+                "named_private_signal": named_private_signal,
                 "public_suppression_required": bool(
-                    private_signal and (modern or precise_signal)
+                    named_private_signal
+                    or (private_signal and (modern or precise_signal))
                 ),
             },
         },
@@ -1512,7 +1951,7 @@ def scan_ufo_source_records(
         if checkpoint.get("checkpoint_schema_version") != 2:
             raise SeedPipelineError("Cannot resume: UFO scan checkpoint format changed")
         if checkpoint.get("pipeline_version") != PIPELINE_VERSION:
-            raise SeedPipelineError("Cannot resume: cattle-mutilation pipeline version changed")
+            raise SeedPipelineError("Cannot resume: animal-mutilation pipeline version changed")
         if checkpoint.get("source_identity") != source_identity:
             raise SeedPipelineError("Cannot resume: UFO source corpus identity changed")
         try:
@@ -1857,6 +2296,51 @@ def _fallback_cluster_key(candidate: Mapping[str, Any]) -> str:
     return stable_id("block-unique", candidate.get("record_id"), length=20)
 
 
+def _merge_animal_rows(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """Merge source-local animal assertions without losing role provenance."""
+
+    merged: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
+    for raw_row in sorted((dict(row) for row in rows), key=canonical_json):
+        key = (
+            normalize_space(raw_row.get("normalized_common_name") or raw_row.get("species")),
+            normalize_space(raw_row.get("reported_taxon_key")),
+            normalize_space(raw_row.get("species_group")),
+            normalize_space(raw_row.get("domestic_context")),
+            normalize_space(raw_row.get("incident_role")),
+        )
+        if key not in merged:
+            merged[key] = raw_row
+            merged[key]["source_ids"] = sorted(
+                {normalize_space(value) for value in raw_row.get("source_ids", []) if normalize_space(value)}
+            )
+            continue
+        current = merged[key]
+        current["source_ids"] = sorted(
+            {
+                *current.get("source_ids", []),
+                *(
+                    normalize_space(value)
+                    for value in raw_row.get("source_ids", [])
+                    if normalize_space(value)
+                ),
+            }
+        )
+        current["identification_confidence"] = max(
+            float(current.get("identification_confidence") or 0),
+            float(raw_row.get("identification_confidence") or 0),
+        )
+        for field in ("reported_text", "evidence_excerpt", "identification_basis"):
+            values = sorted(
+                {
+                    normalize_space(current.get(field)),
+                    normalize_space(raw_row.get(field)),
+                }
+                - {""}
+            )
+            current[field] = values[0] if values else None
+    return [merged[key] for key in sorted(merged)]
+
+
 def cluster_candidates(
     candidate_wrappers: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, str]]:
@@ -1897,6 +2381,32 @@ def cluster_candidates(
             [source for item in members for source in item["candidate"].get("sources", [])],
             key=lambda source: source.get("source_id", ""),
         )
+        incident["animals"] = _merge_animal_rows(
+            animal
+            for item in members
+            for animal in item["candidate"].get("animals", [])
+        )
+        incident["animal_context"] = _merge_animal_rows(
+            animal
+            for item in members
+            for animal in item["candidate"].get("animal_context", [])
+        )
+        for field in (
+            "direct_animal_terms",
+            "finding_terms",
+            "association_terms",
+            "explicit_aerial_association_terms",
+            "noise_terms",
+            "structured_codes",
+        ):
+            incident[field] = sorted(
+                {
+                    normalize_space(value)
+                    for item in members
+                    for value in item["candidate"].get(field, [])
+                    if normalize_space(value)
+                }
+            )
         incident["related_ufo_timeline_event_ids"] = sorted(
             {
                 str(event_id)
@@ -2160,6 +2670,40 @@ def _crop_source_candidate(
     location: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     candidate_id = stable_id("ccsc", source_kind, source_id, source_hash, "crop_mutilation_claim")
+    human_staging = source_explicit_human_staging(text)
+    withhold_named_private_property = _private_property_evidence_redaction_required(
+        location,
+        text,
+    )
+    public_location = _public_crop_candidate_location(
+        location,
+        withhold_named_private_property=withhold_named_private_property,
+    )
+    candidate_reasons = set(analysis.candidate_reasons)
+    if human_staging:
+        candidate_reasons.add("source_explicit_deliberate_human_staging")
+
+    def public_assertion(assertion: AnimalAssertion) -> dict[str, Any]:
+        row = asdict(assertion)
+        row["evidence_excerpt"] = sanitize_public_excerpt(
+            row.get("evidence_excerpt"),
+            withhold_named_private_property=withhold_named_private_property,
+        )
+        return row
+
+    public_animal_assertions = [
+        public_assertion(assertion) for assertion in analysis.animal_assertions
+    ]
+    public_context_animal_assertions = [
+        public_assertion(assertion)
+        for assertion in analysis.context_animal_assertions
+    ]
+    public_incident_evidence = unique_strings(
+        assertion.get("evidence_excerpt")
+        for assertion in public_animal_assertions
+        if assertion.get("evidence_excerpt")
+    )
+
     return {
         "crop_source_candidate_id": candidate_id,
         "event_domain": "crop_circle",
@@ -2172,19 +2716,26 @@ def _crop_source_candidate(
         "source_hash": source_hash,
         "provenance_locator": provenance_locator,
         "dates": dict(dates or {}),
-        "location": dict(location or {}),
+        "location": public_location,
         "classification": analysis.disposition,
         "record_type": analysis.record_type,
         "crop_relationship_type": analysis.crop_relationship_type,
         "candidate_score": analysis.candidate_score,
-        "candidate_reasons": list(analysis.candidate_reasons),
+        "candidate_reasons": sorted(candidate_reasons),
         "direct_animal_terms": list(analysis.animal_terms),
+        "animal_assertions": public_animal_assertions,
+        "context_animal_assertions": public_context_animal_assertions,
+        "incident_evidence_mode": analysis.incident_evidence_mode,
+        "incident_evidence_sentences": public_incident_evidence,
         "finding_terms": list(analysis.finding_terms),
         "explicit_aerial_association_terms": list(analysis.explicit_aerial_association_terms),
         "explicit_negative": analysis.explicit_negative,
+        "negative_only": analysis.negative_only,
+        "source_explicit_human_staging": human_staging,
         "evidence_excerpt": short_evidence_excerpt(
             text,
             (*analysis.animal_terms, *analysis.finding_terms, *analysis.association_terms),
+            withhold_named_private_property=withhold_named_private_property,
         ),
         "review_state": "needs_human_review",
         "causality": "not_asserted",
@@ -2248,8 +2799,35 @@ def build_crop_cattle_candidate(
                 else _date_interval_from_crop(event or {})
             )
 
-    crop_details = event.get("crop_circle", {}) if event else {}
-    supplied_location = source_candidate.get("location", {})
+    raw_crop_details = event.get("crop_circle", {}) if event else {}
+    if not isinstance(raw_crop_details, Mapping):
+        raw_crop_details = {}
+    raw_supplied_location = source_candidate.get("location", {})
+    if not isinstance(raw_supplied_location, Mapping):
+        raw_supplied_location = {}
+    evidence_values = [
+        source_candidate.get("evidence_excerpt"),
+        *source_candidate.get("incident_evidence_sentences", []),
+        *[
+            assertion.get("evidence_excerpt")
+            for field in ("animal_assertions", "context_animal_assertions")
+            for assertion in source_candidate.get(field, [])
+            if isinstance(assertion, Mapping)
+        ],
+    ]
+    withhold_named_private_property = _private_property_evidence_redaction_required(
+        raw_supplied_location,
+        *raw_crop_details.values(),
+        *evidence_values,
+    )
+    supplied_location = _public_crop_candidate_location(
+        raw_supplied_location,
+        withhold_named_private_property=withhold_named_private_property,
+    )
+    crop_details = _public_crop_candidate_location(
+        raw_crop_details,
+        withhold_named_private_property=withhold_named_private_property,
+    )
     place = supplied_location.get("place") or crop_details.get("place")
     region = supplied_location.get("region") or crop_details.get("region")
     country = (
@@ -2289,13 +2867,60 @@ def build_crop_cattle_candidate(
         source_hash = sha256_bytes(canonical_json(dict(source_candidate)).encode("utf-8"))
     source_kind = normalize_space(source_candidate.get("source_kind"))
     source_type = "website" if source_candidate.get("source_url") else "dataset"
+    human_staging = source_candidate.get("source_explicit_human_staging") is True
+    animal_rows = []
+    for assertion in source_candidate.get("animal_assertions", []):
+        animal_rows.append(
+            {
+                "species": assertion.get("normalized_common_name"),
+                "reported_text": assertion.get("reported_text"),
+                "reported_taxon_key": assertion.get("reported_taxon_key"),
+                "normalized_common_name": assertion.get("normalized_common_name"),
+                "species_group": assertion.get("species_group"),
+                "domestic_context": assertion.get("domestic_context"),
+                "incident_role": assertion.get("incident_role"),
+                "identification_basis": assertion.get("identification_basis"),
+                "identification_confidence": assertion.get("identification_confidence"),
+                "source_ids": [source_id],
+                "evidence_excerpt": assertion.get("evidence_excerpt"),
+                "breed": None,
+                "sex": None,
+                "age_class": None,
+                "count": None,
+                "condition_before_death": None,
+                "ownership_public": None,
+            }
+        )
+    animal_context_rows = [
+        {
+            **dict(assertion),
+            "species": assertion.get("normalized_common_name"),
+            "source_ids": [source_id],
+            "breed": None,
+            "sex": None,
+            "age_class": None,
+            "count": None,
+            "condition_before_death": None,
+            "ownership_public": None,
+        }
+        for assertion in source_candidate.get("context_animal_assertions", [])
+    ]
+    for animal in [*animal_rows, *animal_context_rows]:
+        animal["evidence_excerpt"] = sanitize_public_excerpt(
+            animal.get("evidence_excerpt"),
+            withhold_named_private_property=withhold_named_private_property,
+        )
     return {
+        "event_domain": "animal_mutilation",
         "record_id": record_id,
         "canonical_incident_id": None,
         "record_type": "mutilation_case",
-        "status": "lead",
+        "status": "contested" if human_staging else "lead",
         "title": f"Crop-linked source animal incident {source_candidate_id}",
-        "summary": source_candidate.get("evidence_excerpt"),
+        "summary": sanitize_public_excerpt(
+            source_candidate.get("evidence_excerpt"),
+            withhold_named_private_property=withhold_named_private_property,
+        ),
         "dates": {
             "event_start": dates.get("start"),
             "event_end": dates.get("end"),
@@ -2308,19 +2933,8 @@ def build_crop_cattle_candidate(
             "raw_text": None,
         },
         "location": location,
-        "animals": [
-            {
-                "species": term,
-                "breed": None,
-                "sex": None,
-                "age_class": None,
-                "count": None,
-                "condition_before_death": None,
-                "ownership_public": None,
-            }
-            for term in source_candidate.get("direct_animal_terms", [])
-            if term != "animal"
-        ],
+        "animals": animal_rows,
+        "animal_context": animal_context_rows,
         "anatomical_findings": anatomical,
         "scene_findings": scene,
         "laboratory_findings": [],
@@ -2349,7 +2963,11 @@ def build_crop_cattle_candidate(
             "necropsy_performed": None,
             "veterinary_review": None,
             "official_conclusion": None,
-            "disposition": None,
+            "disposition": (
+                "source_explicit_deliberate_placement_of_mutilated_animal"
+                if human_staging
+                else None
+            ),
             "contradictions": [],
         },
         "sources": [
@@ -2373,6 +2991,17 @@ def build_crop_cattle_candidate(
             "candidate_reasons": list(source_candidate.get("candidate_reasons", [])),
             "incident_likelihood": min(0.79, float(source_candidate.get("candidate_score") or 0.5)),
             "needs_human_review": True,
+            "incident_evidence_mode": source_candidate.get("incident_evidence_mode"),
+            "incident_evidence_sentences": [
+                sanitized
+                for sentence in source_candidate.get("incident_evidence_sentences", [])
+                if (
+                    sanitized := sanitize_public_excerpt(
+                        sentence,
+                        withhold_named_private_property=withhold_named_private_property,
+                    )
+                )
+            ],
         },
         "provenance": {
             "ingestion_adapter": "crop_circle_source_narrative_v1",
@@ -2395,7 +3024,8 @@ def build_crop_cattle_candidate(
         ),
         "noise_terms": [],
         "structured_codes": [],
-        "explicit_negative": False,
+        "explicit_negative": bool(source_candidate.get("explicit_negative")),
+        "negative_only": bool(source_candidate.get("negative_only")),
         "explicit_crop_mutilation_link": relationship_type in {"same_scene", "reported_nearby", "topical_context"},
         "crop_relationship_type": relationship_type,
         "raw_record_pointer": {
@@ -2425,7 +3055,7 @@ def promote_crop_source_cases(
                 if normalize_space(item) in crop_events_by_id
             }
         )
-        if row.get("record_type") != "mutilation_case" or row.get("explicit_negative") or not formation_ids:
+        if row.get("record_type") != "mutilation_case" or row.get("negative_only") or not formation_ids:
             continue
         candidate = build_crop_cattle_candidate(row, crop_events_by_id)
         wrappers.append(
@@ -3134,8 +3764,11 @@ def compare_locations(case: Mapping[str, Any], crop: Mapping[str, Any]) -> tuple
     if left_admin and right_admin and left_admin != right_admin:
         return "incompatible", 0.0, None, None, warnings + ["admin1_conflict"]
 
-    left_lat = left.get("latitude_internal")
-    left_lon = left.get("longitude_internal")
+    # Cross-domain candidates and their public distance components may use
+    # only the public projection. Internal/private coordinates are retained
+    # for custody but can neither select a match nor triangulate its scene.
+    left_lat = left.get("latitude_public")
+    left_lon = left.get("longitude_public")
     right_lat = crop.get("lat")
     right_lon = crop.get("lon")
     distance = None
@@ -3272,8 +3905,8 @@ def _same_event_spatial(case: Mapping[str, Any]) -> dict[str, Any]:
 
 def _case_endpoint(case: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "domain": "cattle_mutilation",
-        "dataset": "cattle_mutilation_phase1_global_seed_v1",
+        "domain": "animal_mutilation",
+        "dataset": "animal_mutilation_phase1_global_seed_v1_1",
         "external_id": case["record_id"],
         "native_event_id": case.get("canonical_incident_id") or case["record_id"],
     }
@@ -3293,25 +3926,62 @@ def _relationship_source_refs(case: Mapping[str, Any], supports: str) -> list[di
 
 
 def _merge_relationship_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
-    merged: dict[str, dict[str, Any]] = {}
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
-        relationship_id = row["relationship_id"]
-        if relationship_id not in merged:
-            merged[relationship_id] = row
-            continue
-        current = merged[relationship_id]
-        current["reasons"] = sorted(set((*current["reasons"], *row["reasons"])))
+        grouped[row["relationship_id"]].append(row)
+
+    merged: list[dict[str, Any]] = []
+    for relationship_id in sorted(grouped):
+        group = grouped[relationship_id]
+        best = max(
+            group,
+            key=lambda item: (
+                float(item.get("scores", {}).get("relationship_compatibility") or 0.0),
+                float(item.get("scores", {}).get("temporal_component") or 0.0),
+                float(item.get("scores", {}).get("spatial_component") or 0.0),
+                float(item.get("scores", {}).get("source_component") or 0.0),
+                canonical_json(item),
+            ),
+        )
+        current = json.loads(canonical_json(best))
+        current["reasons"] = sorted(
+            {
+                normalize_space(reason)
+                for item in group
+                for reason in item.get("reasons", [])
+                if normalize_space(reason)
+            }
+        )
         current["source_refs"] = _dedupe_dicts(
-            [*current["source_refs"], *row["source_refs"]],
+            [
+                source_ref
+                for item in group
+                for source_ref in item.get("source_refs", [])
+            ],
             key_fields=("source_id", "supports", "locator"),
         )
-        current["scores"]["source_component"] = max(
-            current["scores"]["source_component"], row["scores"]["source_component"]
+        source_component = max(
+            float(item.get("scores", {}).get("source_component") or 0.0)
+            for item in group
         )
-        current["scores"]["relationship_compatibility"] = max(
-            current["scores"]["relationship_compatibility"], row["scores"]["relationship_compatibility"]
-        )
-    return [merged[key] for key in sorted(merged)]
+        temporal_component = float(current["temporal"]["score"])
+        spatial_component = float(current["spatial"]["score"])
+        current["scores"] = {
+            "relationship_compatibility": round(
+                min(
+                    1.0,
+                    0.42 * temporal_component
+                    + 0.42 * spatial_component
+                    + 0.16 * source_component,
+                ),
+                4,
+            ),
+            "temporal_component": round(temporal_component, 4),
+            "spatial_component": round(spatial_component, 4),
+            "source_component": round(source_component, 4),
+        }
+        merged.append(current)
+    return merged
 
 
 def build_relationships(
@@ -3828,6 +4498,42 @@ def build_seed_report(
         candidates, lambda row: row.get("location", {}).get("privacy_level")
     )
     false_positive_lanes = _count_by(rejected, _false_positive_lane)
+    victim_species: Counter[str] = Counter()
+    victim_groups: Counter[str] = Counter()
+    for incident in canonical_incidents:
+        for animal in incident.get("animals", []):
+            victim_species[
+                normalize_space(animal.get("reported_taxon_key"))
+                or normalize_space(animal.get("normalized_common_name"))
+                or "unknown"
+            ] += 1
+            victim_groups[normalize_space(animal.get("species_group")) or "unknown"] += 1
+    incident_evidence_modes = _count_by(
+        canonical_incidents,
+        lambda row: row.get("extraction", {}).get("incident_evidence_mode"),
+    )
+    bovine_incidents = sum(
+        1
+        for row in canonical_incidents
+        if any(animal.get("species_group") == "bovine" for animal in row.get("animals", []))
+    )
+    non_bovine_incidents = sum(
+        1
+        for row in canonical_incidents
+        if any(animal.get("species_group") not in {"bovine", "unknown"} for animal in row.get("animals", []))
+    )
+    mixed_species_incidents = sum(
+        1
+        for row in canonical_incidents
+        if len(
+            {
+                animal.get("reported_taxon_key")
+                or animal.get("normalized_common_name")
+                for animal in row.get("animals", [])
+            }
+        )
+        > 1
+    )
 
     internal_mapped = sum(1 for row in candidates if _has_coordinates(row, "internal"))
     public_mapped = sum(1 for row in candidates if _has_coordinates(row, "public"))
@@ -3865,9 +4571,9 @@ def build_seed_report(
     missing_lineage = lineage_summary.get("candidate_input_ids_without_lineage")
     malformed_count = scan_summary.get("malformed")
     lines = [
-        "# Phase 1 Global Cattle-Mutilation Cross-Domain Seed Report",
+        "# Phase 1.1 Global Animal-Mutilation Cross-Domain Seed Report",
         "",
-        "This report is a deterministic discovery and correlation artifact. It does not establish the authenticity of crop formations, anomalous causes, or causation between event domains.",
+        "This report is a deterministic, species-inclusive discovery and correlation artifact. It does not establish that a reported incident occurred, the authenticity of crop formations, an anomalous cause, or causation between event domains.",
         "",
         "## Coverage",
         "",
@@ -3889,6 +4595,26 @@ def build_seed_report(
         f"- Provisional duplicate pairs: {len(duplicate_pairs):,}",
         f"- Crop-source narrative candidates: {len(crop_source_candidates):,}",
         f"- Cross-domain relationships: {len(relationships):,}",
+        "",
+        "## Inclusive animal coverage",
+        "",
+        "Species never determines eligibility. A source-local victim or possible-victim assertion is required; pets, predators, scavengers, and other contextual animals remain separately labeled.",
+        "",
+        f"- Incidents with a bovine victim assertion: {bovine_incidents:,}",
+        f"- Incidents with a non-bovine victim assertion: {non_bovine_incidents:,}",
+        f"- Mixed-species incidents: {mixed_species_incidents:,}",
+        "",
+        "### Victim species",
+        "",
+        *_distribution_lines(dict(sorted(victim_species.items()))),
+        "",
+        "### Victim animal group",
+        "",
+        *_distribution_lines(dict(sorted(victim_groups.items()))),
+        "",
+        "### Incident evidence mode",
+        "",
+        *_distribution_lines(incident_evidence_modes),
         "",
         "## Explicit source relationships",
         "",
@@ -4007,6 +4733,9 @@ def build_seed_report(
         "## Known controls and gaps",
         "",
         "- Structured taxonomy/glossary text is isolated from narrative evidence and cannot independently establish a case.",
+        "- Species labels are sentence-local victim assertions; page-wide animal co-occurrence is retained only as context.",
+        "- Non-bovine animals are fully eligible and are never rejected for species.",
+        "- Ambiguous human or technical words such as `kids` and `RAM` are not species aliases.",
         "- Animal place names such as Cow Down and Fort Keogh Livestock Laboratory remain false-positive controls.",
         "- Missing, blocked, or rights-limited source pages remain coverage gaps, never negative evidence.",
         "- The catalog PDF is index/diagram-only; its absence of mutilation prose is not evidence of no relationship.",
@@ -4359,6 +5088,33 @@ def run_extract(args: argparse.Namespace) -> dict[str, Any]:
         "crop_circle_source_candidates": len(crop_source_candidates),
         "crop_access_audit_rows": len(crop_audit_rows),
         "public_locations_generalized": sum(1 for row in candidates if row["location"]["privacy_level"] == "internal_only"),
+        "canonical_incidents_with_bovine_victim": sum(
+            1
+            for row in canonical_incidents
+            if any(animal.get("species_group") == "bovine" for animal in row.get("animals", []))
+        ),
+        "canonical_incidents_with_non_bovine_victim": sum(
+            1
+            for row in canonical_incidents
+            if any(animal.get("species_group") not in {"bovine", "unknown"} for animal in row.get("animals", []))
+        ),
+        "canonical_incidents_with_unknown_animal_victim": sum(
+            1
+            for row in canonical_incidents
+            if any(animal.get("species_group") == "unknown" for animal in row.get("animals", []))
+        ),
+        "canonical_mixed_species_incidents": sum(
+            1
+            for row in canonical_incidents
+            if len(
+                {
+                    animal.get("reported_taxon_key")
+                    or animal.get("normalized_common_name")
+                    for animal in row.get("animals", [])
+                }
+            )
+            > 1
+        ),
     }
     output_hashes = {
         name: {
@@ -4369,7 +5125,8 @@ def run_extract(args: argparse.Namespace) -> dict[str, Any]:
         if name != "run_manifest.json"
     }
     scoring_configuration = {
-        "animal_terms": ANIMAL_TERMS,
+        "animal_taxonomy": taxonomy_manifest(),
+        "generic_animal_terms": list(GENERIC_ANIMAL_TERMS),
         "mutilation_terms": MUTILATION_TERMS,
         "harm_terms": HARM_TERMS,
         "distinctive_harm_terms": DISTINCTIVE_HARM_TERMS,
@@ -4390,7 +5147,7 @@ def run_extract(args: argparse.Namespace) -> dict[str, Any]:
         crop_source_candidates,
     )
     manifest = {
-        "schema_version": "cattle-mutilation-seed-run-manifest-v1.0.0",
+        "schema_version": "animal-mutilation-seed-run-manifest-v1.1.12",
         "pipeline_version": PIPELINE_VERSION,
         "canonicalization_version": CANONICALIZATION_VERSION,
         "base_commit": PINNED_BASE_COMMIT,
@@ -4409,7 +5166,10 @@ def run_extract(args: argparse.Namespace) -> dict[str, Any]:
                 canonical_json(scoring_configuration).encode("utf-8")
             ),
             "source_scan_checkpoint_version": PIPELINE_VERSION,
-            "privacy_policy": "generalize_modern_or_precise_private_locations",
+            "privacy_policy": (
+                "redact_all_named_private_properties_and_generalize_"
+                "modern_or_precise_unnamed_private_locations"
+            ),
             "computed_relationship_policy": "retain_all_tier_3_to_5_review_leads",
         },
         "causality": "not_asserted",
@@ -4467,6 +5227,18 @@ def _validate_case_decision(
     actual_location = _case_public_location_projection(case)
     if actual_location != expected.get("public_location"):
         raise SeedPipelineError(f"Case public-location decision mismatch: {record_id}")
+    actual_projection = _expected_case_projection(case)
+    for field in (
+        "event_domain",
+        "explicit_negative",
+        "negative_only",
+        "animals",
+        "animal_context",
+    ):
+        if actual_projection.get(field) != expected.get(field):
+            raise SeedPipelineError(
+                f"Case {field.replace('_', '-')} decision mismatch: {record_id}"
+            )
 
     basis = normalize_space(decision.get("basis"))
     source_date = (
@@ -4781,6 +5553,69 @@ def validate_outputs(output_dir: Path, *, crop_zip_path: Path | None = None) -> 
     for row in [*candidates, *incidents]:
         if not row.get("sources"):
             raise SeedPipelineError(f"Case record lacks sources: {row.get('record_id')}")
+        if row.get("event_domain") != "animal_mutilation":
+            raise SeedPipelineError(
+                f"Case record has the wrong event domain: {row.get('record_id')}"
+            )
+        if row.get("negative_only") is True and row.get("explicit_negative") is not True:
+            raise SeedPipelineError(
+                f"Case negative-only invariant failed: {row.get('record_id')}"
+            )
+        source_ids = {
+            normalize_space(source.get("source_id"))
+            for source in row.get("sources", [])
+            if normalize_space(source.get("source_id"))
+        }
+        if row.get("record_type") == "mutilation_case" and not row.get("animals"):
+            raise SeedPipelineError(
+                f"Mutilation case lacks a source-local victim assertion: {row.get('record_id')}"
+            )
+        for field, permitted_roles in (
+            ("animals", {"reported_victim", "possible_victim"}),
+            (
+                "animal_context",
+                {
+                    "predator_or_scavenger",
+                    "witness_companion",
+                    "nearby_unaffected",
+                    "context_only",
+                },
+            ),
+        ):
+            for animal in row.get(field, []):
+                animal_source_ids = {
+                    normalize_space(value)
+                    for value in animal.get("source_ids", [])
+                    if normalize_space(value)
+                }
+                if not animal_source_ids or not animal_source_ids <= source_ids:
+                    raise SeedPipelineError(
+                        f"Animal assertion source does not resolve: {row.get('record_id')}"
+                    )
+                if animal.get("incident_role") not in permitted_roles:
+                    raise SeedPipelineError(
+                        f"Animal assertion is in the wrong role lane: {row.get('record_id')}"
+                    )
+        public_evidence_values = [row.get("title"), row.get("summary")]
+        public_evidence_values.extend(
+            source.get(field)
+            for source in row.get("sources", [])
+            for field in ("title", "agency_or_publisher")
+            if isinstance(source, Mapping)
+        )
+        public_evidence_values.extend(
+            animal.get("evidence_excerpt")
+            for field in ("animals", "animal_context")
+            for animal in row.get(field, [])
+        )
+        public_evidence_values.extend(
+            row.get("extraction", {}).get("incident_evidence_sentences", [])
+        )
+        for value in public_evidence_values:
+            if contains_public_private_locator(value):
+                raise SeedPipelineError(
+                    f"Public evidence excerpt contains a private locator: {row.get('record_id')}"
+                )
         _validate_case_decision(row, decisions_by_id[row["record_id"]])
         if row.get("location", {}).get("privacy_level") == "internal_only" and (
             row["location"].get("latitude_public") is not None
@@ -4813,6 +5648,34 @@ def validate_outputs(output_dir: Path, *, crop_zip_path: Path | None = None) -> 
     for row in crop_candidates:
         if row.get("trace_eligible") is not False or row.get("trace_role") != "context_only":
             raise SeedPipelineError(f"Crop trace invariant failed: {row.get('crop_source_candidate_id')}")
+        public_evidence_values = [row.get("evidence_excerpt")]
+        public_evidence_values.extend(
+            row.get("incident_evidence_sentences", [])
+        )
+        public_evidence_values.extend(
+            animal.get("evidence_excerpt")
+            for field in ("animal_assertions", "context_animal_assertions")
+            for animal in row.get(field, [])
+            if isinstance(animal, Mapping)
+        )
+        public_evidence_values.extend(
+            row.get("location", {}).get(field)
+            for field in (
+                "raw_text",
+                "place",
+                "locality",
+                "county",
+                "region",
+                "admin2",
+                "admin1",
+            )
+        )
+        for value in public_evidence_values:
+            if contains_public_private_locator(value):
+                raise SeedPipelineError(
+                    "Crop source candidate public evidence contains a private locator: "
+                    f"{row.get('crop_source_candidate_id')}"
+                )
 
     try:
         from jsonschema import Draft202012Validator

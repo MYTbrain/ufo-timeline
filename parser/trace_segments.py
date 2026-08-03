@@ -453,7 +453,8 @@ def _cell_for_point(lat: Any, lon: Any, cell_size_degrees: float) -> tuple[int, 
 
 def _is_traceable_event(event: Mapping[str, Any]) -> bool:
     return (
-        event.get("coordinate_source") != "unresolved"
+        event.get("trace_eligible") is not False
+        and event.get("coordinate_source") != "unresolved"
         and _finite_float(event.get("lat")) is not None
         and _finite_float(event.get("lon")) is not None
         and _ordinal(event.get("sort_date_iso")) is not None

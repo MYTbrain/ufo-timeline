@@ -68,9 +68,141 @@ def test_oregon_nonclassic_deaths_remain_negative_context():
         )
     )
     assert analysis.explicit_negative is True
+    assert analysis.negative_only is True
     assert analysis.record_type != "mutilation_case"
     assert analysis.disposition == "explicit_negative_context"
     assert analysis.incident_likelihood <= 0.2
+
+
+def test_positive_incident_survives_a_separate_negative_statement():
+    analysis = seed.analyze_source_record(
+        source_record("A cow was mutilated. Another cow was not mutilated.")
+    )
+    assert analysis.explicit_negative is True
+    assert analysis.negative_only is False
+    assert analysis.record_type == "mutilation_case"
+    assert analysis.disposition == "candidate"
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "A cow was mutilated, but another cow was not mutilated.",
+        "Calf found mutilated Chama Canyon, another 2 cows found dead, not mutilated E.",
+    ],
+)
+def test_positive_incident_survives_same_sentence_negative_clause(description):
+    analysis = seed.analyze_source_record(source_record(description))
+    assert analysis.explicit_negative is True
+    assert analysis.negative_only is False
+    assert analysis.record_type == "mutilation_case"
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "No mutilation connection in this particular incident (although animal "
+        "mutilations have been reported consistently for well over a decade in the area).",
+        "This region is historically a mutilation-prone area (the Snippy the Horse "
+        "event occurred here in 1967).",
+    ],
+)
+def test_negative_or_historical_topical_context_is_not_a_discrete_case(description):
+    analysis = seed.analyze_source_record(source_record(description))
+    assert analysis.record_type != "mutilation_case"
+    assert analysis.disposition in {
+        "explicit_negative_context",
+        "context_or_noise_candidate",
+    }
+
+
+@pytest.mark.parametrize(
+    ("native_id", "description"),
+    [
+        (
+            "live_weeks_before_news",
+            "Week(s) before the incident I watched a local news broadcast about a "
+            "farmers animals being mutilated in a county south of El Paso County.",
+        ),
+        (
+            "live_period_background",
+            "It should be noted that this Montana flap occurred during a period in "
+            "which livestock mutilations were being consistently reported.",
+        ),
+        (
+            "live_next_morning",
+            "One of Irey's calves was found mutilated the next morning.",
+        ),
+        (
+            "live_past_three_years",
+            "In the past three years, we have lost two cows with missing parts.",
+        ),
+        (
+            "live_previous_deaths",
+            "There were strange cattle deaths in close timing to seeing these things "
+            "previously, with the cattle missing eyes.",
+        ),
+        (
+            "live_years_later",
+            "Several years later there were numerous cow mutilations on local farms.",
+        ),
+        (
+            "live_few_days_later_news",
+            "A few days later I read about cow mutilations in the counties nearby.",
+        ),
+        (
+            "live_mid_sentence_few_days_later",
+            "It asked me to report this and a few days later my prize bull was dead "
+            "with no blood and a perfect cut.",
+        ),
+        (
+            "live_mid_sentence_year_later",
+            "Then about a year later I saw an orange ball, then there was a cattle "
+            "mutilation happen about that time.",
+        ),
+        (
+            "live_news_day_before",
+            "We remembered having heard about cattle mutilations on the news the day before.",
+        ),
+        ("Hatch_UDB_16884", "Cattle mutilated / day before."),
+        (
+            "live_days_prior",
+            "Several reports of missing and mutilated cats were in the news in the "
+            "days prior to this event.",
+        ),
+        ("live_back_in_the_day", "Cattle mutilation happened back in the day."),
+    ],
+)
+def test_relative_or_historical_animal_mentions_do_not_inherit_ufo_event_date(
+    native_id, description
+):
+    analysis = seed.analyze_source_record(
+        source_record(description, source_native_id=native_id)
+    )
+    assert analysis.record_type != "mutilation_case"
+    if analysis.candidate_reasons:
+        assert "historical_or_background_context_only" in analysis.candidate_reasons
+
+
+def test_source_dated_direct_incident_remains_canonicalizable():
+    analysis = seed.analyze_source_record(
+        source_record(
+            "A cow was found mutilated on the reported date. Several days later, "
+            "investigators arrived."
+        )
+    )
+    assert analysis.record_type == "mutilation_case"
+    assert "historical_or_background_context_only" not in analysis.candidate_reasons
+
+
+def test_relative_cue_for_ufo_clause_does_not_demote_current_animal_discovery():
+    analysis = seed.analyze_source_record(
+        source_record(
+            "Helicopters flew over the ranch the day before a mutilated cow was discovered."
+        )
+    )
+    assert analysis.record_type == "mutilation_case"
+    assert "historical_or_background_context_only" not in analysis.candidate_reasons
 
 
 def test_plain_animal_death_without_mutilation_or_distinctive_findings_is_not_case():
@@ -165,6 +297,48 @@ def test_global_country_name_conflict_fails_closed():
     assert seed.compare_locations(case, crop)[0] == "incompatible"
 
 
+def test_private_internal_coordinates_cannot_select_or_quantify_crop_match():
+    record = source_record(
+        "A mutilated horse was found at Smith Ranch.",
+        date_raw="1975",
+        date_iso="1975-01-01",
+        end_date_iso="1975-12-31",
+        date_precision="year",
+        location_raw="Smith Ranch",
+        city=None,
+        state_province=None,
+        country="US",
+        lat=39.7392,
+        lon=-104.9903,
+        location_precision="unknown",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    crop = {
+        "lat": 39.7392,
+        "lon": -104.9903,
+        "location_precision": "exact_site",
+        "coordinate_uncertainty_km": 1,
+        "crop_circle": {
+            "place": None,
+            "region": None,
+            "country": "US",
+            "country_code": "US",
+            "county": None,
+        },
+    }
+
+    assert case["location"]["privacy_level"] == "internal_only"
+    assert case["location"]["latitude_internal"] == 39.7392
+    assert case["location"]["latitude_public"] is None
+    comparison, score, distance, _uncertainty, _warnings = seed.compare_locations(
+        case,
+        crop,
+    )
+    assert comparison == "same_country"
+    assert score == 0.20
+    assert distance is None
+
+
 def test_anatomical_term_without_animal_context_is_not_candidate():
     analysis = seed.analyze_source_record(source_record("The witness injured an eye and jaw."))
     assert analysis.disposition == "not_candidate"
@@ -228,6 +402,63 @@ def test_structured_glossary_never_becomes_narrative_case():
     assert analysis.explicit_crop_mutilation_link is False
 
 
+def test_crop_source_candidate_scrubs_nested_animal_evidence():
+    text = (
+        "A mutilated pig was found at 1234 Ranch Road; contact "
+        "rancher@example.com or 303-555-1212 near 39.7392, -104.9903."
+    )
+    analysis = seed.analyze_source_record(source_record(text))
+    candidate = seed._crop_source_candidate(
+        source_kind="crop_linked_source_page",
+        source_id="https://example.invalid/private-evidence",
+        formation_ids=["cc_private_fixture"],
+        source_url="https://example.invalid/private-evidence",
+        source_hash=seed.sha256_bytes(text.encode("utf-8")),
+        text=text,
+        analysis=analysis,
+        provenance_locator="fixture",
+    )
+    public_text = json.dumps(candidate, ensure_ascii=False)
+    assert "1234 Ranch Road" not in public_text
+    assert "rancher@example.com" not in public_text
+    assert "303-555-1212" not in public_text
+    assert "39.7392" not in public_text
+    assert "[street address withheld]" in public_text
+
+
+def test_crop_source_deliberate_staging_is_contested_without_assigning_injury_cause():
+    text = (
+        "They planted a mutilated bird near the circle to create an eerie touch and "
+        "to evoke memories of cattle mutilations."
+    )
+    analysis = seed.analyze_source_record(source_record(text))
+    ufo_case = seed.build_candidate_record(source_record(text), analysis, 1)
+    assert ufo_case["status"] == "contested"
+    assert ufo_case["investigation"]["disposition"] == (
+        "source_explicit_deliberate_placement_of_mutilated_animal"
+    )
+    candidate = seed._crop_source_candidate(
+        source_kind="crop_linked_source_page",
+        source_id="https://example.invalid/staged-bird",
+        formation_ids=[],
+        source_url="https://example.invalid/staged-bird",
+        source_hash=seed.sha256_bytes(text.encode("utf-8")),
+        text=text,
+        analysis=analysis,
+        provenance_locator="fixture",
+    )
+    assert candidate["source_explicit_human_staging"] is True
+    assert "source_explicit_deliberate_human_staging" in candidate["candidate_reasons"]
+    case = seed.build_crop_cattle_candidate(candidate, {})
+    assert case["record_type"] == "mutilation_case"
+    assert case["status"] == "contested"
+    assert case["investigation"]["disposition"] == (
+        "source_explicit_deliberate_placement_of_mutilated_animal"
+    )
+    assert [row["reported_taxon_key"] for row in case["animals"]] == ["bird"]
+    assert [row["reported_taxon_key"] for row in case["animal_context"]] == ["cattle"]
+
+
 @pytest.mark.parametrize(
     "description",
     [
@@ -264,6 +495,328 @@ def test_approximate_date_and_private_location_are_not_inflated():
     assert candidate["location"]["longitude_public"] is None
     assert candidate["location"]["raw_text"] == "Westport, NY, US"
     assert candidate["location"]["locality"] == "Westport"
+
+
+def test_named_private_property_is_removed_from_all_public_case_evidence():
+    text = "A mutilated cow was found at smith ranch after a light was reported."
+    record = source_record(
+        text,
+        date_raw="2013-08-01",
+        date_iso="2013-08-01",
+        end_date_iso="2013-08-01",
+        location_raw="smith ranch, Westport, New York",
+        city="Westport",
+        state_province="NY",
+        country="US",
+        location_precision="exact_site",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    public_text = json.dumps(case, ensure_ascii=False)
+    assert case["location"]["privacy_level"] == "internal_only"
+    assert "smith ranch" not in public_text.casefold()
+    assert "[private property withheld]" in public_text
+    assert "smith ranch" not in (case["summary"] or "").casefold()
+    assert all(
+        "smith ranch" not in (animal.get("evidence_excerpt") or "").casefold()
+        for animal in [*case["animals"], *case["animal_context"]]
+    )
+    assert all(
+        "smith ranch" not in sentence.casefold()
+        for sentence in case["extraction"]["incident_evidence_sentences"]
+    )
+
+
+def test_named_private_property_is_removed_from_crop_candidate_and_promoted_case():
+    text = (
+        "A mutilated sheep was found at jesse and frank ranch beside the crop "
+        "formation."
+    )
+    analysis = seed.analyze_source_record(source_record(text))
+    candidate = seed._crop_source_candidate(
+        source_kind="crop_linked_source_page",
+        source_id="https://example.invalid/private-crop-case",
+        formation_ids=[],
+        source_url="https://example.invalid/private-crop-case",
+        source_hash=seed.sha256_bytes(text.encode("utf-8")),
+        text=text,
+        analysis=analysis,
+        provenance_locator="fixture",
+        location={
+            "raw_text": "jesse and frank ranch, Wiltshire",
+            "place": "jesse and frank ranch",
+            "region": "Wiltshire",
+            "country_code": "GB",
+        },
+    )
+    promoted = seed.build_crop_cattle_candidate(candidate, {})
+    for row in (candidate, promoted):
+        public_text = json.dumps(row, ensure_ascii=False)
+        assert "jesse and frank ranch" not in public_text.casefold()
+        assert "jesse" not in public_text.casefold()
+        assert "frank ranch" not in public_text.casefold()
+        assert "[private property withheld]" in public_text
+
+
+def test_multi_name_private_property_is_redacted_as_one_label():
+    excerpt = seed.sanitize_public_excerpt(
+        "A mutilated cow was found at Jesse and Frank Ranch.",
+        withhold_named_private_property=True,
+    )
+    assert excerpt == "A mutilated cow was found at [private property withheld]."
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        (
+            "Black calf mutilated John Catalano ranch, 6 miles south of Alamosa.",
+            "Black calf mutilated [private property withheld], 6 miles south of Alamosa.",
+        ),
+        (
+            "Black calf mutilated john catalano ranch, 6 miles south of Alamosa.",
+            "Black calf mutilated [private property withheld], 6 miles south of Alamosa.",
+        ),
+        (
+            "Calf Mutilated John Catalano Ranch.",
+            "Calf Mutilated [private property withheld].",
+        ),
+        (
+            "Steer found mutilated Medano Ranch Classic Ted Carpenter.",
+            "Steer found mutilated [private property withheld] Classic Ted Carpenter.",
+        ),
+        (
+            "Horse mutilations reported on the farm that same year.",
+            "Horse mutilations reported on the farm that same year.",
+        ),
+        (
+            "2 mutilated dogs were found near 1234 Ranch Road.",
+            "2 mutilated dogs were found near [street address withheld].",
+        ),
+        (
+            "Mutilated black calf at Mitchell Ranch.",
+            "Mutilated black calf at [private property withheld].",
+        ),
+        (
+            "2 year old steer mutilation at Medano Ranch.",
+            "2 year old steer mutilation at [private property withheld].",
+        ),
+        (
+            "Cat Taylor Ranch was found mutilated.",
+            "Cat [private property withheld] was found mutilated.",
+        ),
+        (
+            "Horse Gutted Medano Ranch during the incident.",
+            "Horse Gutted [private property withheld] during the incident.",
+        ),
+        (
+            "Bird bloodless at Hollenbeck Ranch after discovery.",
+            "Bird bloodless at [private property withheld] after discovery.",
+        ),
+        (
+            "Taylor Ranch horse was found mutilated.",
+            "[private property withheld] horse was found mutilated.",
+        ),
+        (
+            "john catalano ranch horse was found mutilated.",
+            "[private property withheld] horse was found mutilated.",
+        ),
+        (
+            "Two mutilated dogs were recovered at 12-14 Smith Road.",
+            "Two mutilated dogs were recovered at [street address withheld].",
+        ),
+    ],
+)
+def test_private_locator_redaction_preserves_animal_and_harm_anchors(text, expected):
+    assert (
+        seed.sanitize_public_excerpt(
+            text,
+            withhold_named_private_property=True,
+        )
+        == expected
+    )
+
+
+def test_markdown_locator_is_removed_before_named_property_redaction():
+    excerpt = seed.sanitize_public_excerpt(
+        "A horse at [Harry King](https://example.invalid/memorial/123) Ranch was mutilated.",
+        withhold_named_private_property=True,
+    )
+    assert excerpt == "A horse at [private property withheld] was mutilated."
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        (
+            "A horse at [Harry King](https://example.invalid/a_(nested)/memorial) Ranch was mutilated.",
+            "A horse at [private property withheld] was mutilated.",
+        ),
+        (
+            "A horse at [Harry King][owner] Ranch was mutilated.\n"
+            "[owner]: https://example.invalid/a_(nested)/memorial",
+            "A horse at [private property withheld] was mutilated.",
+        ),
+        (
+            "A horse at [Harry King][] Ranch was mutilated.",
+            "A horse at [private property withheld] was mutilated.",
+        ),
+        (
+            "A horse was mutilated; see <https://example.invalid/a_(nested)> for the report.",
+            "A horse was mutilated; see for the report.",
+        ),
+        (
+            "A horse was mutilated; see https://example.invalid/a_(nested) for the report.",
+            "A horse was mutilated; see for the report.",
+        ),
+        (
+            "A horse at [Harry King](https://example.invalid/truncated was mutilated.",
+            "A horse at Harry King was mutilated.",
+        ),
+        (
+            "A horse ](https://example.invalid/truncated was mutilated.",
+            "A horse was mutilated.",
+        ),
+    ],
+)
+def test_all_public_link_forms_are_removed_without_losing_incident_anchors(
+    text, expected
+):
+    excerpt = seed.sanitize_public_excerpt(
+        text,
+        withhold_named_private_property=True,
+    )
+    assert excerpt == expected
+    assert "horse" in excerpt.casefold()
+    assert "mutilat" in excerpt.casefold()
+    assert not seed.contains_public_link_locator(excerpt)
+
+
+def test_short_evidence_strips_urls_before_truncating_the_evidence_window():
+    text = (
+        "Background [source](https://example.invalid/" + "x" * 500 + ") "
+        "then a horse was found mutilated beside the road."
+    )
+    excerpt = seed.short_evidence_excerpt(
+        text,
+        ("horse", "mutilated"),
+        max_words=12,
+        max_chars=120,
+    )
+    assert excerpt is not None
+    assert "horse" in excerpt.casefold()
+    assert "mutilat" in excerpt.casefold()
+    assert not seed.contains_public_link_locator(excerpt)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "A mutilated cat was found at john catalano ranch.",
+        "A horse at [Harry King](https://example.invalid/a_(nested)) Ranch was mutilated.",
+        "A bird was found at 12-14 Smith Road; see <https://example.invalid/report>.",
+        "A dog ](https://example.invalid/truncated was found mutilated.",
+    ],
+)
+def test_public_excerpt_sanitization_is_idempotent(text):
+    once = seed.sanitize_public_excerpt(
+        text,
+        withhold_named_private_property=True,
+    )
+    twice = seed.sanitize_public_excerpt(
+        once,
+        withhold_named_private_property=True,
+    )
+    assert once == twice
+
+
+def test_lowercase_multiword_property_is_removed_from_ufo_case_end_to_end():
+    text = "A mutilated calf was found at john catalano ranch after a light appeared."
+    record = source_record(
+        text,
+        location_raw="john catalano ranch, Alamosa, Colorado",
+        city="Alamosa",
+        state_province="CO",
+        country="US",
+        location_precision="unknown",
+        date_iso="1975-01-01",
+        date_precision="year",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    public_text = json.dumps(case, ensure_ascii=False).casefold()
+    assert "john catalano ranch" not in public_text
+    assert "john catalano" not in public_text
+    assert "calf" in (case["summary"] or "").casefold()
+    assert "mutilat" in (case["summary"] or "").casefold()
+    assert case["location"]["privacy_level"] == "internal_only"
+    assert case["location"]["latitude_public"] is None
+    assert case["location"]["longitude_public"] is None
+
+
+def test_public_incident_evidence_uses_bounded_victim_assertions_only():
+    text = (
+        "A horse at [Harry King](https://example.invalid/memorial/123) Ranch was "
+        "found mutilated. [Nellie Lewis](https://example.invalid/person/456) later "
+        "discussed the report."
+    )
+    record = source_record(
+        text,
+        location_raw="Harry King Ranch, Alamosa, Colorado",
+        city="Alamosa",
+        state_province="CO",
+        country="US",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    evidence = case["extraction"]["incident_evidence_sentences"]
+    assert evidence
+    assert all("horse" in value.casefold() for value in evidence)
+    assert all("mutilat" in value.casefold() for value in evidence)
+    assert all("http" not in value.casefold() for value in evidence)
+    assert all("ranch" not in value.casefold() for value in evidence)
+
+
+def test_historical_named_property_always_suppresses_public_coordinates():
+    record = source_record(
+        "A mutilated horse was found at Taylor Ranch.",
+        date_raw="1967",
+        date_iso="1967-01-01",
+        end_date_iso="1967-12-31",
+        date_precision="year",
+        location_raw="Taylor Ranch, Alamosa, Colorado",
+        city="Alamosa",
+        state_province="CO",
+        country="US",
+        location_precision="unknown",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    location = case["location"]
+    assert location["privacy_level"] == "internal_only"
+    assert location["latitude_public"] is None
+    assert location["longitude_public"] is None
+    assert location["locality"] == "Alamosa"
+    assert location["raw_text"] == "Alamosa, CO, US"
+    assert "taylor ranch" not in json.dumps(case, ensure_ascii=False).casefold()
+
+
+def test_historical_named_property_validation_provenance_requires_suppression():
+    record = source_record(
+        "A mutilated horse was found at Smith Ranch.",
+        date_raw="1975",
+        date_iso="1975-01-01",
+        end_date_iso="1975-12-31",
+        date_precision="year",
+        location_raw="Smith Ranch",
+        city=None,
+        location_precision="unknown",
+    )
+    case = seed.build_candidate_record(record, seed.analyze_source_record(record), 1)
+    decision = seed._build_ufo_validation_decision(record, case)
+
+    assert decision["source_location"]["named_private_signal"] is True
+    assert decision["source_location"]["public_suppression_required"] is True
+    assert case["location"]["privacy_level"] == "internal_only"
+    assert case["location"]["latitude_public"] is None
+    assert case["location"]["longitude_public"] is None
+    seed._validate_case_decision(case, decision)
 
 
 def test_private_property_name_in_city_field_is_not_republished():
@@ -386,6 +939,91 @@ def test_known_crop_country_assignment_error_is_corrected_for_matching_only():
     code, warning = seed.normalize_country("US", region="Cambridgeshire", place="Fulbourn")
     assert code == "GB"
     assert warning == "country_assignment_corrected_from_US_to_GB"
+
+
+def test_duplicate_relationship_merge_keeps_coherent_components_and_recomputes_score():
+    subject = {
+        "domain": "animal_mutilation",
+        "dataset": "fixture",
+        "external_id": "cmi_fixture",
+        "native_event_id": "cmi_fixture",
+    }
+    object_ref = {
+        "domain": "ufo",
+        "dataset": "fixture",
+        "external_id": "evt_fixture",
+        "native_event_id": "evt_fixture",
+    }
+
+    def relationship(*, temporal_score, spatial_score, source_score, locator, source_id):
+        return seed.make_relationship(
+            subject=subject,
+            object_ref=object_ref,
+            relationship_type="duplicate_lineage",
+            assertion_mode="explicit_source",
+            match_tier=2,
+            temporal={
+                "subject_interval": {"start": None, "end": None, "precision": "unknown"},
+                "object_interval": {"start": None, "end": None, "precision": "unknown"},
+                "comparison": "exact_day" if temporal_score else "unknown",
+                "offset_days": 0.0 if temporal_score else None,
+                "score": temporal_score,
+            },
+            spatial={
+                "subject_precision": "locality" if spatial_score else "unknown",
+                "object_precision": "locality" if spatial_score else "unknown",
+                "comparison": "same_locality" if spatial_score else "unknown",
+                "distance_km": 0.0 if spatial_score else None,
+                "uncertainty_km": 15.0 if spatial_score else None,
+                "score": spatial_score,
+            },
+            source_refs=[
+                {
+                    "source_id": source_id,
+                    "supports": "explicit_relationship",
+                    "locator": locator,
+                    "source_hash": None,
+                }
+            ],
+            reasons=["native_ufo_event_lineage"],
+            source_component=source_score,
+            review_state="needs_human_review",
+            provenance_locator=locator,
+        )
+
+    source_strong = relationship(
+        temporal_score=0.0,
+        spatial_score=0.0,
+        source_score=1.0,
+        locator="low-components",
+        source_id="source:low",
+    )
+    component_strong = relationship(
+        temporal_score=1.0,
+        spatial_score=1.0,
+        source_score=0.2,
+        locator="high-components",
+        source_id="source:high",
+    )
+    assert source_strong["relationship_id"] == component_strong["relationship_id"]
+
+    forward = seed._merge_relationship_rows([source_strong, component_strong])
+    reverse = seed._merge_relationship_rows([component_strong, source_strong])
+    assert forward == reverse
+    assert len(forward) == 1
+    merged = forward[0]
+    assert merged["temporal"]["score"] == 1.0
+    assert merged["spatial"]["score"] == 1.0
+    assert merged["scores"] == {
+        "relationship_compatibility": 1.0,
+        "temporal_component": 1.0,
+        "spatial_component": 1.0,
+        "source_component": 1.0,
+    }
+    assert {row["source_id"] for row in merged["source_refs"]} == {
+        "source:high",
+        "source:low",
+    }
 
 
 def test_relationship_contract_keeps_explicit_and_computed_lanes_separate():
@@ -613,6 +1251,7 @@ def test_oregon_nonclassic_death_source_is_negative_context():
         )
     )
     assert analysis.explicit_negative is True
+    assert analysis.negative_only is True
     assert analysis.record_type != "mutilation_case"
     assert analysis.explicit_crop_mutilation_link is False
 
@@ -1206,6 +1845,10 @@ def test_partial_end_to_end_uses_real_pinned_crop_inputs_when_available(
     assert all(ref["relationship_id"] for ref in context_case["external_event_refs"])
     manifest_text = (output_dir / "run_manifest.json").read_text(encoding="utf-8")
     assert "validation_provenance" in result["manifest"]
+    assert result["manifest"]["configuration"]["privacy_policy"] == (
+        "redact_all_named_private_properties_and_generalize_"
+        "modern_or_precise_unnamed_private_locations"
+    )
     assert "123 Ranch Road" not in manifest_text
 
 
@@ -1290,6 +1933,89 @@ def test_validate_rejects_private_raw_address_and_public_coordinates(
     _refresh_manifest_output_identities(output_dir, "candidate_records.jsonl")
 
     with pytest.raises(seed.SeedPipelineError, match="public-location decision"):
+        seed.validate_outputs(output_dir, crop_zip_path=seed.DEFAULT_CROP_ZIP)
+
+
+@pytest.mark.parametrize("field", ["explicit_negative", "negative_only"])
+def test_validate_rejects_negative_flag_provenance_mutation(
+    validation_output_with_real_pinned_crop_inputs, tmp_path, field
+):
+    base_output, _ = validation_output_with_real_pinned_crop_inputs
+    output_dir = _copy_validation_output(base_output, tmp_path)
+    candidates = list(seed.read_jsonl(output_dir / "candidate_records.jsonl"))
+    case = _ufo_source_case(candidates)
+    case[field] = not bool(case.get(field))
+    seed.write_jsonl(output_dir / "candidate_records.jsonl", candidates)
+    _refresh_manifest_output_identities(output_dir, "candidate_records.jsonl")
+
+    with pytest.raises(seed.SeedPipelineError, match=field.replace("_", "-")):
+        seed.validate_outputs(output_dir, crop_zip_path=seed.DEFAULT_CROP_ZIP)
+
+
+@pytest.mark.parametrize(
+    "residual_locator",
+    [
+        "A report came from 1234 Ranch Road.",
+        "A report came from 12-14 Smith Road.",
+        "A cow at john catalano ranch was mutilated.",
+        "A [cow](https://example.invalid/a_(nested)) was mutilated.",
+        "A [cow][case-source] was mutilated.",
+        "[case-source]: https://example.invalid/report",
+        "A cow was mutilated; see <https://example.invalid/report>.",
+        "A cow was mutilated; see https://example.invalid/report.",
+        "A [cow](https://example.invalid/truncated was mutilated.",
+    ],
+)
+def test_validate_rejects_every_residual_private_or_link_locator_form(
+    validation_output_with_real_pinned_crop_inputs, tmp_path, residual_locator
+):
+    base_output, _ = validation_output_with_real_pinned_crop_inputs
+    output_dir = _copy_validation_output(base_output, tmp_path)
+    crop_candidates = list(
+        seed.read_jsonl(output_dir / "crop_circle_source_candidates.jsonl")
+    )
+    crop_candidates[0].setdefault("animal_assertions", []).append(
+        {"evidence_excerpt": residual_locator}
+    )
+    seed.write_jsonl(
+        output_dir / "crop_circle_source_candidates.jsonl", crop_candidates
+    )
+    _refresh_manifest_output_identities(
+        output_dir, "crop_circle_source_candidates.jsonl"
+    )
+
+    with pytest.raises(seed.SeedPipelineError, match="Crop source candidate public evidence"):
+        seed.validate_outputs(output_dir, crop_zip_path=seed.DEFAULT_CROP_ZIP)
+
+
+@pytest.mark.parametrize(
+    ("target", "residual_locator"),
+    [
+        ("case_title", "Animal incident at john catalano ranch"),
+        ("source_title", "Report from 12-14 Smith Road"),
+        ("source_publisher", "Archive <https://example.invalid/private>"),
+    ],
+)
+def test_validate_rejects_locators_in_public_titles_and_source_metadata(
+    validation_output_with_real_pinned_crop_inputs,
+    tmp_path,
+    target,
+    residual_locator,
+):
+    base_output, _ = validation_output_with_real_pinned_crop_inputs
+    output_dir = _copy_validation_output(base_output, tmp_path)
+    candidates = list(seed.read_jsonl(output_dir / "candidate_records.jsonl"))
+    case = _ufo_source_case(candidates)
+    if target == "case_title":
+        case["title"] = residual_locator
+    elif target == "source_title":
+        case["sources"][0]["title"] = residual_locator
+    else:
+        case["sources"][0]["agency_or_publisher"] = residual_locator
+    seed.write_jsonl(output_dir / "candidate_records.jsonl", candidates)
+    _refresh_manifest_output_identities(output_dir, "candidate_records.jsonl")
+
+    with pytest.raises(seed.SeedPipelineError, match="Public evidence excerpt"):
         seed.validate_outputs(output_dir, crop_zip_path=seed.DEFAULT_CROP_ZIP)
 
 

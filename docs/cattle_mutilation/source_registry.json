@@ -2,10 +2,10 @@
   "generated_at": "2026-08-01",
   "policy": {
     "default_ingestion": "Extract factual metadata and claim-level provenance; do not mirror mixed-rights documents by default.",
-    "privacy": "Generalize modern private-ranch locations and suppress personal addresses.",
+    "privacy": "Suppress public coordinates for every named private property, generalize modern or precise unnamed private locations, and suppress personal locators.",
     "verification": "Discovery sources create leads; they do not by themselves establish a verified case.",
     "cross_domain": "Crop-circle and UFO events remain independent contextual records. Relationships must be labeled as source-explicit, deterministic candidates, or analyst-confirmed and never assert causality.",
-    "raw_content": "Retain fetched third-party pages only in a private content-addressed cache; public outputs may contain source links, hashes, locators, and short factual extracts."
+    "raw_content": "Retain fetched third-party pages only in a private content-addressed cache. Seed case JSONL files are restricted review artifacts because they retain internal custody fields. Only the public-safe Timeline GeoJSON is designed for public use; it labels source reports as reported_unreviewed and may contain source links, hashes, locators, and short factual extracts after privacy validation."
   },
   "input_pins": {
     "starter_pack": {

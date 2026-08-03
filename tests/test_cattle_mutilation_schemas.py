@@ -43,11 +43,14 @@ def _validation_errors(schema: dict, instance: dict) -> list:
 
 def _representative_case() -> dict:
     return {
+        "event_domain": "animal_mutilation",
         "record_id": "cm_ufo_hatch_udb_11636_a1",
         "canonical_incident_id": "cm_whiteface_tx_1975_03_10",
         "record_type": "mutilation_case",
         "status": "documented_report",
         "title": "Whiteface cattle and crop-circle report",
+        "explicit_negative": False,
+        "negative_only": False,
         "dates": {
             "event_start": "1975-03-10",
             "event_end": "1975-03-10",
@@ -61,7 +64,22 @@ def _representative_case() -> dict:
             "precision": "locality",
             "privacy_level": "public_generalized",
         },
-        "animals": [{"species": "cattle", "count": 1}],
+        "animals": [
+            {
+                "species": "cattle",
+                "reported_text": "cow",
+                "reported_taxon_key": "cattle",
+                "normalized_common_name": "cattle",
+                "species_group": "bovine",
+                "domestic_context": "livestock",
+                "incident_role": "reported_victim",
+                "identification_basis": "sentence_local_explicit_mutilation",
+                "identification_confidence": 0.94,
+                "source_ids": ["ufo_hatch_udb_11636"],
+                "evidence_excerpt": "A mutilated cow was found.",
+                "count": 1,
+            }
+        ],
         "associated_events": [
             {
                 "association_type": "crop_circle",
@@ -110,8 +128,8 @@ def _representative_relationship() -> dict:
     return {
         "relationship_id": "rel_0123456789abcdef",
         "subject": {
-            "domain": "cattle_mutilation",
-            "dataset": "cattle_mutilation_phase1",
+            "domain": "animal_mutilation",
+            "dataset": "animal_mutilation_phase1",
             "external_id": "cm_whiteface_tx_1975_03_10",
             "native_event_id": "Hatch_UDB_11636",
         },
@@ -212,12 +230,23 @@ def test_case_schema_preserves_starter_contract_and_adds_crop_refs() -> None:
         "relationship_id",
     }
     assert set(external_ref["properties"]["domain"]["enum"]) == {
+        "animal_mutilation",
         "cattle_mutilation",
         "crop_circle",
         "ufo",
         "other",
     }
     _validate_when_available(CASE_SCHEMA, _representative_case())
+
+
+def test_case_schema_requires_consistent_negative_flags() -> None:
+    candidate = _representative_case()
+    candidate["negative_only"] = True
+    candidate["explicit_negative"] = False
+    if Draft202012Validator is not None:
+        assert _validation_errors(CASE_SCHEMA, candidate)
+    else:
+        assert candidate["negative_only"] and not candidate["explicit_negative"]
 
 
 def test_relationship_schema_has_closed_scientific_enums_and_required_fields() -> None:

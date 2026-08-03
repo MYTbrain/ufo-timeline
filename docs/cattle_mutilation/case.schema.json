@@ -1,18 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/schemas/cattle-mutilation-case.schema.json",
-  "title": "Cattle Mutilation Mapping Record",
+  "$id": "https://example.invalid/schemas/animal-mutilation-case.schema.json",
+  "title": "Animal Mutilation Mapping Record",
+  "description": "Inclusive non-human animal-mutilation discovery record. Species does not determine eligibility, and no anomalous cause is implied.",
   "type": "object",
   "required": [
+    "event_domain",
     "record_id",
     "record_type",
     "status",
     "dates",
     "location",
     "sources",
-    "provenance"
+    "provenance",
+    "animals",
+    "explicit_negative",
+    "negative_only"
   ],
   "properties": {
+    "event_domain": {
+      "const": "animal_mutilation"
+    },
     "record_id": {
       "type": "string",
       "minLength": 1
@@ -58,6 +66,12 @@
         "string",
         "null"
       ]
+    },
+    "explicit_negative": {
+      "type": "boolean"
+    },
+    "negative_only": {
+      "type": "boolean"
     },
     "dates": {
       "type": "object",
@@ -259,52 +273,13 @@
     "animals": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "species": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "breed": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "sex": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "age_class": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "count": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "minimum": 1
-          },
-          "condition_before_death": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "ownership_public": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
+        "$ref": "#/$defs/animal_assertion"
+      }
+    },
+    "animal_context": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/animal_assertion"
       }
     },
     "anatomical_findings": {
@@ -546,6 +521,7 @@
           "domain": {
             "type": "string",
             "enum": [
+              "animal_mutilation",
               "cattle_mutilation",
               "crop_circle",
               "ufo",
@@ -578,7 +554,234 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "mutilation_case"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "animals": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "negative_only": {
+            "const": true
+          }
+        },
+        "required": [
+          "negative_only"
+        ]
+      },
+      "then": {
+        "properties": {
+          "explicit_negative": {
+            "const": true
+          }
+        },
+        "required": [
+          "explicit_negative"
+        ]
+      }
+    }
+  ],
   "$defs": {
+    "animal_assertion": {
+      "type": "object",
+      "required": [
+        "reported_text",
+        "reported_taxon_key",
+        "normalized_common_name",
+        "species_group",
+        "domestic_context",
+        "incident_role",
+        "identification_basis",
+        "identification_confidence",
+        "source_ids"
+      ],
+      "properties": {
+        "species": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reported_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reported_taxon_key": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "normalized_common_name": {
+          "type": "string",
+          "enum": [
+            "cattle",
+            "bison",
+            "other_bovine",
+            "horse",
+            "donkey",
+            "mule",
+            "sheep",
+            "goat",
+            "pig",
+            "camelid",
+            "deer",
+            "other_ungulate",
+            "dog",
+            "wild_canid",
+            "cat",
+            "wild_felid",
+            "rabbit_hare",
+            "rodent",
+            "poultry",
+            "wild_bird",
+            "fish",
+            "marine_mammal",
+            "reptile",
+            "amphibian",
+            "invertebrate",
+            "other_named",
+            "unknown_animal"
+          ]
+        },
+        "species_group": {
+          "type": "string",
+          "enum": [
+            "bovine",
+            "equine",
+            "ovine",
+            "caprine",
+            "porcine",
+            "camelid",
+            "cervid",
+            "other_ungulate",
+            "canid",
+            "felid",
+            "lagomorph",
+            "rodent",
+            "avian",
+            "fish",
+            "marine_mammal",
+            "reptile",
+            "amphibian",
+            "invertebrate",
+            "other_mammal",
+            "other_animal",
+            "unknown"
+          ]
+        },
+        "domestic_context": {
+          "type": "string",
+          "enum": [
+            "livestock",
+            "companion",
+            "companion_or_working",
+            "livestock_or_companion",
+            "livestock_or_wildlife",
+            "wildlife",
+            "wildlife_or_livestock",
+            "wildlife_or_companion",
+            "wildlife_or_captive",
+            "captive",
+            "feral",
+            "unknown"
+          ]
+        },
+        "incident_role": {
+          "type": "string",
+          "enum": [
+            "reported_victim",
+            "possible_victim",
+            "predator_or_scavenger",
+            "witness_companion",
+            "nearby_unaffected",
+            "context_only"
+          ]
+        },
+        "identification_basis": {
+          "type": "string",
+          "enum": [
+            "sentence_local_explicit_mutilation",
+            "sentence_local_distinctive_injury",
+            "sentence_local_context",
+            "analyst_confirmed"
+          ]
+        },
+        "identification_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_excerpt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 500
+        },
+        "breed": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sex": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "age_class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "condition_before_death": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ownership_public": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "claim": {
       "type": "object",
       "required": [

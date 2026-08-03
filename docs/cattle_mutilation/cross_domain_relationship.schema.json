@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/schemas/cattle-mutilation-cross-domain-relationship.schema.json",
-  "title": "Cattle Mutilation Cross-Domain Relationship",
+  "$id": "https://example.invalid/schemas/animal-mutilation-cross-domain-relationship.schema.json",
+  "title": "Animal Mutilation Cross-Domain Relationship",
   "description": "A source-explicit or computed relationship between independently curated event domains. This contract never asserts causality.",
   "type": "object",
   "required": [
@@ -255,6 +255,7 @@
         "domain": {
           "type": "string",
           "enum": [
+            "animal_mutilation",
             "cattle_mutilation",
             "crop_circle",
             "ufo",
