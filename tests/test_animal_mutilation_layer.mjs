@@ -179,7 +179,10 @@ async function createHarness({ maliciousDetail = false } = {}) {
     createdLayerGroups.push(group);
     return group;
   }
-  function circleMarker(latlng, options) {
+  function divIcon(options) {
+    return { options: { ...options } };
+  }
+  function marker(latlng, options) {
     const marker = {
       latlng,
       options: { ...options },
@@ -271,9 +274,9 @@ async function createHarness({ maliciousDetail = false } = {}) {
   }
   const windowObject = {
     L: {
-      canvas() { return { _container: { style: {} } }; },
       layerGroup,
-      circleMarker,
+      divIcon,
+      marker,
     },
     UfoTimelineExtensions: { getContext() { return view; } },
     CustomEvent: MockCustomEvent,
@@ -318,6 +321,7 @@ async function createHarness({ maliciousDetail = false } = {}) {
     createdLayerGroups,
     mapLayers,
     mapContainer,
+    mapContainerListeners,
     intervals,
     dispatchedEvents,
     consoleErrors,
@@ -356,7 +360,13 @@ assert.doesNotMatch(layerSource, /polyline|setCropTraceFocus|traceNeighborhood/i
 assert.match(layerSource, /Reported animal mutilation — unreviewed/, "every detail uses the fixed unreviewed label");
 assert.match(layerSource, /Withheld for privacy/, "internal-only locations render explicit privacy copy");
 assert.match(layerSource, /No public map point supplied/, "null public geometry is explained explicitly");
-assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations[\s\S]*?border:\s*2px dashed #9a6500/, "animal marker key is a high-contrast neutral amber, hollow, and dashed");
+assert.match(layerSource, /window\.L\.divIcon[\s\S]*?animal-mutilation-map-cow[\s\S]*?aria-hidden="true"/, "animal markers use a decorative cow icon");
+assert.doesNotMatch(layerSource + stylesheetSource, /1F404|Emoji/, "cow rendering is deterministic and does not depend on platform emoji");
+assert.match(stylesheetSource, /--animal-cow-mask:\s*url\("data:image\/svg\+xml/, "one inline SVG silhouette defines the cow shape without an extra request");
+assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations::before[\s\S]*?background:\s*#9a6500[\s\S]*?mask:[\s\S]*?rotate\(180deg\)/, "the layer key shows a neutral-amber upside-down cow");
+assert.match(stylesheetSource, /animal-mutilation-map-cow\s*\{[\s\S]*?width:\s*100%[\s\S]*?height:\s*100%[\s\S]*?background:\s*#9a6500[\s\S]*?rotate\(180deg\)/, "map cows fill their computed stack size and render upside down");
+assert.match(appSource, /"Animal Mutilation Reports",\s*"#9a6500",\s*"cow"/, "the map legend uses the cow silhouette rather than the old ring");
+assert.match(stylesheetSource, /map-legend-marker-sample-cow::before[\s\S]*?animal-cow-mask[\s\S]*?rotate\(180deg\)/, "the map legend cow matches the layer marker");
 
 {
   const harness = await createHarness();
@@ -431,10 +441,16 @@ assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations[\s\S]*?bo
   assert.equal(harness.api.getStatus().visiblePositions, 400);
   assert.equal(harness.createdMarkers.length, 400, "shared generalized positions are grouped into one marker");
   assert.equal(harness.createdMarkers.reduce((sum, marker) => sum + marker.options.animalStackCount, 0), 518);
-  assert.ok(harness.createdMarkers.every((marker) => marker.options.interactive === false));
-  assert.ok(harness.createdMarkers.every((marker) => marker.options.fill === false && marker.options.dashArray === "4 3"));
+  assert.ok(harness.createdMarkers.every((marker) => marker.options.interactive === false && marker.options.keyboard === false && marker.options.bubblingMouseEvents === false));
+  assert.ok(harness.createdMarkers.every((marker) => marker.options.icon.options.className === "animal-mutilation-map-icon"));
+  assert.ok(harness.createdMarkers.every((marker) => marker.options.icon.options.html.includes("animal-mutilation-map-cow")));
+  assert.ok(harness.createdMarkers.every((marker) => Number(marker.options.animalHitRadius) > 0));
 
+  const singletonMarker = harness.createdMarkers.find((marker) => marker.options.animalStackCount === 1);
   const groupedMarker = harness.createdMarkers.find((marker) => marker.options.animalStackCount > 1);
+  assert.ok(groupedMarker.options.icon.options.iconSize[0] > singletonMarker.options.icon.options.iconSize[0], "shared-position cow markers remain visibly larger");
+  const outsideClick = harness.mapContainer.dispatchClick({ x: 100000, y: 100000 });
+  assert.equal(outsideClick.immediatePropagationStopped, false, "clicks outside cow hit radii remain available to the map");
   const point = {
     x: groupedMarker.getLatLng().lng * 3,
     y: groupedMarker.getLatLng().lat * -3,
@@ -450,6 +466,7 @@ assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations[\s\S]*?bo
   harness.view.filterGeneration += 1;
   harness.tick();
   assert.equal(harness.api.getStatus().visibleRecords, 0);
+  assert.equal(harness.createdLayerGroups[0].getLayers().length, 0, "exact-coordinate filtering removes every cow marker layer");
   assert.match(harness.elements.get("#animal-mutilation-status").textContent, /zero reviewed exact coordinates/);
   harness.view.hideLowPrecisionCoordinates = false;
   harness.view.hideNonExactDates = true;
@@ -466,6 +483,7 @@ assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations[\s\S]*?bo
   assert.equal(harness.api.getStatus().enabled, false);
   assert.equal(harness.mapLayers.size, 0, "disable removes the animal layer");
   assert.equal(harness.createdLayerGroups[0].getLayers().length, 0, "disable releases all retained marker objects");
+  assert.equal(harness.mapContainerListeners.size, 0, "disable removes the cow marker capture listener");
   assert.equal(harness.intervals.size, 0, "disable clears filter polling");
   assert.equal(harness.elements.get("#animal-mutilation-detail-panel").hidden, true, "disable closes detail UI");
   const requestsBeforeReenable = harness.requests.length;

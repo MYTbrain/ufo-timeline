@@ -30,7 +30,7 @@
     setStatus("Loading Animal Mutilation Reports…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./animal_mutilation_layer.js?v=2026-08-02-animal-mutilations-v1";
+      script.src = "./animal_mutilation_layer.js?v=2026-08-03-animal-mutilation-cow-v1";
       script.async = true;
       script.onload = function () {
         if (!window.UfoAnimalMutilationLayer) {

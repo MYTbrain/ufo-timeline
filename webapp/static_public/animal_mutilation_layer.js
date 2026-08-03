@@ -5,7 +5,6 @@
   const POLL_INTERVAL_MS = 250;
   const MAX_DETAIL_CHUNKS = 5;
   const BROWSER_PAGE_SIZE = 100;
-  const AMBER = "#9a6500";
   const ROW = Object.freeze({
     id: 0, lat: 1, lon: 2, start: 3, end: 4, datePrecision: 5, species: 6, chunk: 7,
   });
@@ -29,7 +28,6 @@
     catalogController: null,
     catalogById: new Map(),
     map: null,
-    renderer: null,
     layer: null,
     markers: [],
     rowsByPosition: new Map(),
@@ -381,10 +379,6 @@
       pane.style.zIndex = "608";
       pane.style.pointerEvents = "none";
     }
-    state.renderer = window.L.canvas({ pane: "animalMutilationPane", padding: 0.25, tolerance: 0 });
-    if (state.renderer && state.renderer._container && state.renderer._container.style) {
-      state.renderer._container.style.pointerEvents = "none";
-    }
     state.layer = window.L.layerGroup();
     installMapHitHandler();
   }
@@ -413,19 +407,21 @@
   function markerForRows(rows) {
     const representative = rows[0];
     const radius = 6.5 + Math.min(5, Math.log2(Math.max(1, rows.length)) * 1.6);
-    const marker = window.L.circleMarker([representative[ROW.lat], representative[ROW.lon]], {
+    const iconSize = Math.round((radius + 4) * 2);
+    const icon = window.L.divIcon({
+      className: "animal-mutilation-map-icon",
+      html: '<span class="animal-mutilation-map-cow" aria-hidden="true"></span>',
+      iconSize: [iconSize, iconSize],
+      iconAnchor: [iconSize / 2, iconSize / 2],
+    });
+    const marker = window.L.marker([representative[ROW.lat], representative[ROW.lon]], {
       pane: "animalMutilationPane",
-      renderer: state.renderer,
-      radius: radius,
-      color: AMBER,
-      weight: 2,
+      icon: icon,
       opacity: 0.94,
-      fill: false,
-      fillOpacity: 0,
-      dashArray: "4 3",
-      lineCap: "butt",
       interactive: false,
+      keyboard: false,
       bubblingMouseEvents: false,
+      animalHitRadius: radius,
     });
     marker._animalRows = rows.slice();
     marker.options.animalStackCount = rows.length;
@@ -474,7 +470,7 @@
       const dx = Number(markerPoint.x) - Number(point.x);
       const dy = Number(markerPoint.y) - Number(point.y);
       const distance = Math.sqrt(dx * dx + dy * dy);
-      const hitRadius = Number(marker.options.radius || 7) + 6;
+      const hitRadius = Number(marker.options.animalHitRadius || 10) + 6;
       if (distance <= hitRadius && distance < bestDistance) {
         best = marker;
         bestDistance = distance;

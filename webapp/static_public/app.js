@@ -10491,7 +10491,7 @@
     rows.push(buildMapLegendMarkerRow(
       "Animal Mutilation Reports",
       "#9a6500",
-      "ring",
+      "cow",
       Object.assign(
         mapLegendOverlayToggleOptions(
           "data-map-legend-animal-mutilations",
