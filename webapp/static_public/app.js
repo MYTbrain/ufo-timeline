@@ -10460,11 +10460,21 @@
     };
   }
 
-  function buildMapLegendOverlayRows() {
-    const rows = [];
-    const cropCirclesActive = Boolean(runtime.cropCircleOverlayEnabled || (
+  function cropCircleOverlayActive() {
+    return Boolean(runtime.cropCircleOverlayEnabled || (
       els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true"
     ));
+  }
+
+  function animalMutilationOverlayActive() {
+    return Boolean(runtime.animalMutilationOverlayEnabled || (
+      els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true"
+    ));
+  }
+
+  function buildMapLegendOverlayRows() {
+    const rows = [];
+    const cropCirclesActive = cropCircleOverlayActive();
     rows.push(buildMapLegendMarkerRow(
       "Crop circles",
       "#d8ff3e",
@@ -10485,12 +10495,10 @@
           : {}
       )
     ));
-    const animalMutilationsActive = Boolean(runtime.animalMutilationOverlayEnabled || (
-      els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true"
-    ));
+    const animalMutilationsActive = animalMutilationOverlayActive();
     rows.push(buildMapLegendMarkerRow(
       "Animal Mutilation Reports",
-      "#9a6500",
+      "#101417",
       "cow",
       Object.assign(
         mapLegendOverlayToggleOptions(
@@ -10654,8 +10662,8 @@
       eventSelection.mode !== "all" ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
-      Boolean(runtime.cropCircleOverlayEnabled) ||
-      Boolean(runtime.animalMutilationOverlayEnabled) ||
+      !cropCircleOverlayActive() ||
+      !animalMutilationOverlayActive() ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -10842,10 +10850,12 @@
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
-    if (runtime.cropCircleOverlayEnabled && els.overlayCropCirclesToggle) {
+    if (cropCircleOverlayActive() && window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.resetControls === "function") {
+      window.UfoCropCircleLayer.resetControls();
+    } else if (!cropCircleOverlayActive() && els.overlayCropCirclesToggle) {
       els.overlayCropCirclesToggle.click();
     }
-    if (runtime.animalMutilationOverlayEnabled && els.overlayAnimalMutilationsToggle) {
+    if (!animalMutilationOverlayActive() && els.overlayAnimalMutilationsToggle) {
       els.overlayAnimalMutilationsToggle.click();
     }
     invalidateMapLegendEventFilterCaches();
@@ -27048,6 +27058,9 @@
     }
     startup.initialViewReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
+    window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", {
+      detail: { phase: "Ready" },
+    }));
     recordStartupMilestone("time to Ready");
     finalizeStartupTimingSummary();
     logStartupTimingSummary();

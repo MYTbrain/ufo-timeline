@@ -14,6 +14,9 @@ const bootstrapSource = await fs.readFile(path.join(staticRoot, "animal_mutilati
 const indexSource = await fs.readFile(path.join(staticRoot, "index.html"), "utf8");
 const appSource = await fs.readFile(path.join(staticRoot, "app.js"), "utf8");
 const stylesheetSource = await fs.readFile(path.join(staticRoot, "styles.css"), "utf8");
+const cowArtMatch = /--animal-cow-art:\s*url\("data:image\/svg\+xml,([^"]+)"\)/.exec(stylesheetSource);
+assert.ok(cowArtMatch, "the cow is embedded as one self-contained SVG data URI");
+const cowArtSvg = decodeURIComponent(cowArtMatch[1]);
 
 
 class MockClassList {
@@ -349,28 +352,116 @@ function resultTarget(recordId, chunk) {
 }
 
 
+function createAnimalBootstrapHarness() {
+  const toggle = new MockElement({ tagName: "BUTTON" });
+  const browse = new MockElement({ tagName: "BUTTON" });
+  const status = new MockElement();
+  const readyHandlers = [];
+  const enableCalls = [];
+  let appendCount = 0;
+  const bootstrapWindow = {
+    addEventListener(name, handler) {
+      if (name === "ufo:timeline-ready") readyHandlers.push(handler);
+    },
+  };
+  const bootstrapDocument = {
+    baseURI: "https://example.test/",
+    querySelector(selector) {
+      if (selector === "#overlay-animal-mutilations") return toggle;
+      if (selector === "#animal-mutilation-browser-open") return browse;
+      if (selector === "#animal-mutilation-status") return status;
+      return null;
+    },
+    createElement() { return {}; },
+    head: {
+      appendChild(script) {
+        appendCount += 1;
+        bootstrapWindow.UfoAnimalMutilationLayer = {
+          setEnabled(value) {
+            enableCalls.push(Boolean(value));
+            return Promise.resolve(Boolean(value));
+          },
+          openBrowser() { return Promise.resolve(1177); },
+        };
+        queueMicrotask(() => script.onload());
+      },
+    },
+  };
+  vm.runInContext(bootstrapSource, vm.createContext({
+    window: bootstrapWindow,
+    document: bootstrapDocument,
+    URL,
+    console: { error() {} },
+    setTimeout,
+    clearTimeout,
+  }), { filename: "animal_mutilation_bootstrap.js" });
+  return {
+    toggle,
+    status,
+    readyHandlers,
+    enableCalls,
+    get appendCount() { return appendCount; },
+  };
+}
+
+
 assert.match(indexSource, /id="overlay-animal-mutilations"[\s\S]*?<span>Animal Mutilation Reports<\/span>/, "toggle uses the exact layer name");
+assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*data-default-enabled="true"[^>]*aria-pressed="true"/, "animal reports are enabled by default in the accessible initial state");
 assert.match(indexSource, /id="animal-mutilation-browser"[\s\S]*?role="dialog"[\s\S]*?aria-modal="true"/, "all-record browser is an accessible modal dialog");
 assert.doesNotMatch(indexSource, /<script src="\.\/animal_mutilation_layer\.js/, "heavy animal runtime is not a startup script");
 assert.match(bootstrapSource, /animal_mutilation_layer\.js/, "bootstrap lazily loads the animal runtime");
+assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-03-context-layers-default-on-v1/, "default-on animal runtime uses a release-specific cache key");
+assert.match(bootstrapSource, /addEventListener\("ufo:timeline-ready"[\s\S]*?enableDesiredLayer\(\)/, "default activation waits for the core timeline Ready event");
 assert.match(bootstrapSource, /openBrowser\(browse\)/, "Browse action has an independent lazy entry point");
+assert.match(appSource, /CustomEvent\("ufo:timeline-ready"/, "the core app announces the post-startup activation boundary");
 assert.match(appSource, /timeRangeIsAllTime:\s*state\.timeRangeMode === "full"/, "extension context distinguishes All Time for undated records");
 assert.match(appSource, /data-map-legend-animal-mutilations/, "map legend exposes the animal context layer");
+assert.match(appSource, /!animalMutilationOverlayActive\(\)/, "legend reset treats the default-on animal layer as clean and restores it when disabled");
 assert.doesNotMatch(layerSource, /polyline|setCropTraceFocus|traceNeighborhood/i, "animal runtime cannot construct or enter traces and relationships");
 assert.match(layerSource, /Reported animal mutilation — unreviewed/, "every detail uses the fixed unreviewed label");
 assert.match(layerSource, /Withheld for privacy/, "internal-only locations render explicit privacy copy");
 assert.match(layerSource, /No public map point supplied/, "null public geometry is explained explicitly");
 assert.match(layerSource, /window\.L\.divIcon[\s\S]*?animal-mutilation-map-cow[\s\S]*?aria-hidden="true"/, "animal markers use a decorative cow icon");
 assert.doesNotMatch(layerSource + stylesheetSource, /1F404|Emoji/, "cow rendering is deterministic and does not depend on platform emoji");
-assert.match(stylesheetSource, /--animal-cow-mask:\s*url\("data:image\/svg\+xml/, "one inline SVG silhouette defines the cow shape without an extra request");
-assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations::before[\s\S]*?background:\s*#9a6500[\s\S]*?mask:[\s\S]*?rotate\(180deg\)/, "the layer key shows a neutral-amber upside-down cow");
-assert.match(stylesheetSource, /animal-mutilation-map-cow\s*\{[\s\S]*?width:\s*100%[\s\S]*?height:\s*100%[\s\S]*?background:\s*#9a6500[\s\S]*?rotate\(180deg\)/, "map cows fill their computed stack size and render upside down");
-assert.match(appSource, /"Animal Mutilation Reports",\s*"#9a6500",\s*"cow"/, "the map legend uses the cow silhouette rather than the old ring");
-assert.match(stylesheetSource, /map-legend-marker-sample-cow::before[\s\S]*?animal-cow-mask[\s\S]*?rotate\(180deg\)/, "the map legend cow matches the layer marker");
+assert.doesNotMatch(stylesheetSource, /--animal-cow-mask/, "the obsolete single-color cow mask is removed");
+assert.match(cowArtSvg, /viewBox='0 0 48 32'/, "the cow art has a compact map-scale view box");
+assert.match(cowArtSvg, /#101417/i, "the cow art contains a warm near-black outline and patches");
+assert.match(cowArtSvg, /#e9f2ff/i, "the cow art uses a cool off-white distinct from the map background");
+assert.match(cowArtSvg, /stroke-width='2'/, "the cow outline remains legible at the smallest marker size");
+assert.doesNotMatch(cowArtSvg, /<(?:script|image|foreignObject)\b|href=|url\(/i, "cow art is self-contained and inert");
+assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations::before[\s\S]*?background:\s*var\(--animal-cow-art\)[\s\S]*?rotate\(180deg\)/, "the layer key shows the shared black-and-off-white upside-down cow");
+assert.match(stylesheetSource, /animal-mutilation-map-cow\s*\{[\s\S]*?width:\s*100%[\s\S]*?height:\s*100%[\s\S]*?background:\s*var\(--animal-cow-art\)[\s\S]*?rotate\(180deg\)/, "map cows fill their computed stack size and render upside down");
+assert.match(appSource, /"Animal Mutilation Reports",\s*"#101417",\s*"cow"/, "the map legend uses the two-tone cow rather than the old amber ring");
+assert.match(stylesheetSource, /map-legend-marker-sample-cow::before[\s\S]*?var\(--animal-cow-art\)[\s\S]*?rotate\(180deg\)/, "the map legend cow reuses the exact layer art");
+
+{
+  const defaultBootstrap = createAnimalBootstrapHarness();
+  assert.equal(defaultBootstrap.toggle.getAttribute("aria-pressed"), "true");
+  assert.equal(defaultBootstrap.appendCount, 0, "animal runtime injection is deferred until the core Ready boundary");
+  assert.equal(defaultBootstrap.readyHandlers.length, 1);
+  defaultBootstrap.readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(defaultBootstrap.appendCount, 1);
+  assert.deepEqual(defaultBootstrap.enableCalls, [true], "Ready enables the animal map exactly once");
+  defaultBootstrap.readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(defaultBootstrap.appendCount, 1, "repeated Ready events do not reinject the runtime");
+  assert.deepEqual(defaultBootstrap.enableCalls, [true]);
+}
+
+{
+  const optedOutBootstrap = createAnimalBootstrapHarness();
+  await optedOutBootstrap.toggle.dispatch("click");
+  assert.equal(optedOutBootstrap.toggle.getAttribute("aria-pressed"), "false");
+  optedOutBootstrap.readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(optedOutBootstrap.appendCount, 0, "a pre-Ready user opt-out prevents default animal activation");
+  assert.deepEqual(optedOutBootstrap.enableCalls, []);
+}
 
 {
   const harness = await createHarness();
-  assert.equal(harness.requests.length, 0, "loading the animal runtime makes zero data requests");
+  assert.equal(harness.requests.length, 0, "importing the heavy animal runtime has no fetch side effects before bootstrap activation");
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
@@ -449,6 +540,9 @@ assert.match(stylesheetSource, /map-legend-marker-sample-cow::before[\s\S]*?anim
   const singletonMarker = harness.createdMarkers.find((marker) => marker.options.animalStackCount === 1);
   const groupedMarker = harness.createdMarkers.find((marker) => marker.options.animalStackCount > 1);
   assert.ok(groupedMarker.options.icon.options.iconSize[0] > singletonMarker.options.icon.options.iconSize[0], "shared-position cow markers remain visibly larger");
+  const cowSizes = harness.createdMarkers.map((marker) => marker.options.icon.options.iconSize[0]);
+  assert.equal(Math.min(...cowSizes), 21, "singleton cows retain the tested minimum size");
+  assert.ok(Math.max(...cowSizes) <= 31, "the largest grouped cow remains compact");
   const outsideClick = harness.mapContainer.dispatchClick({ x: 100000, y: 100000 });
   assert.equal(outsideClick.immediatePropagationStopped, false, "clicks outside cow hit radii remain available to the map");
   const point = {

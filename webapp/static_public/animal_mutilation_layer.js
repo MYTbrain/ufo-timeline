@@ -840,13 +840,13 @@
       closeDetail({ restoreFocus: false });
       cancelUnusedManifestRequest();
       setToggleState(false, false);
-      setStatus("Animal Mutilation Reports are off. The layer adds no startup data requests; all reports remain available through Browse all reports.");
+      setStatus("Animal Mutilation Reports are off. Turn the layer on to show generalized positions; all reports remain available through Browse all reports.");
       return Promise.resolve(false);
     }
     if (state.enabled && !state.loading) return Promise.resolve(true);
     const generation = ++state.enableGeneration;
     state.loading = true;
-    setToggleState(false, true);
+    setToggleState(true, true);
     setStatus("Loading mapped Animal Mutilation Reports…");
     return Promise.all([ensurePoints(), waitForMap()]).then(function (values) {
       if (generation !== state.enableGeneration || !state.loading) return false;

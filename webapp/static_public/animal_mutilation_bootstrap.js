@@ -7,6 +7,8 @@
   if (!toggle && !browse) return;
 
   let loadPromise = null;
+  let desiredEnabled = true;
+  let defaultActivationStarted = false;
 
   function setStatus(message, isError) {
     if (!status) return;
@@ -23,6 +25,12 @@
     });
   }
 
+  function setDesiredToggleState(enabled) {
+    if (!toggle) return;
+    toggle.setAttribute("aria-pressed", enabled ? "true" : "false");
+    toggle.classList.toggle("is-active", Boolean(enabled));
+  }
+
   function ensureRuntime() {
     if (window.UfoAnimalMutilationLayer) return Promise.resolve(window.UfoAnimalMutilationLayer);
     if (loadPromise) return loadPromise;
@@ -30,7 +38,7 @@
     setStatus("Loading Animal Mutilation Reports…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./animal_mutilation_layer.js?v=2026-08-03-animal-mutilation-cow-v1";
+      script.src = "./animal_mutilation_layer.js?v=2026-08-03-context-layers-default-on-v1";
       script.async = true;
       script.onload = function () {
         if (!window.UfoAnimalMutilationLayer) {
@@ -54,24 +62,37 @@
   }
 
   function reportError(error) {
-    if (toggle) {
-      toggle.setAttribute("aria-pressed", "false");
-      toggle.classList.remove("is-active");
-    }
+    desiredEnabled = false;
+    setDesiredToggleState(false);
     setStatus(error && error.message ? error.message : String(error), true);
     console.error(error);
   }
 
+  function enableDesiredLayer() {
+    if (!desiredEnabled) return Promise.resolve(false);
+    setDesiredToggleState(true);
+    return ensureRuntime().then(function (layer) {
+      if (!desiredEnabled) return false;
+      return layer.setEnabled(true);
+    }).catch(function (error) {
+      reportError(error);
+      return false;
+    });
+  }
+
   if (toggle) {
     toggle.addEventListener("click", function () {
-      const nextEnabled = toggle.getAttribute("aria-pressed") !== "true";
-      if (!nextEnabled && window.UfoAnimalMutilationLayer) {
-        window.UfoAnimalMutilationLayer.setEnabled(false).catch(reportError);
+      desiredEnabled = !desiredEnabled;
+      setDesiredToggleState(desiredEnabled);
+      if (!desiredEnabled) {
+        if (window.UfoAnimalMutilationLayer) {
+          window.UfoAnimalMutilationLayer.setEnabled(false).catch(reportError);
+        } else {
+          setStatus("Animal Mutilation Reports are off. Browse all reports remains available.");
+        }
         return;
       }
-      ensureRuntime().then(function (layer) {
-        return layer.setEnabled(true);
-      }).catch(reportError);
+      enableDesiredLayer();
     });
   }
 
@@ -82,4 +103,11 @@
       }).catch(reportError);
     });
   }
+
+  setDesiredToggleState(true);
+  window.addEventListener("ufo:timeline-ready", function () {
+    if (defaultActivationStarted) return;
+    defaultActivationStarted = true;
+    enableDesiredLayer();
+  }, { once: true });
 })();

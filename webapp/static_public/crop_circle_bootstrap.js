@@ -9,6 +9,8 @@
   let capturedMap = null;
   let coreApi = null;
   let cropFocusRequestGeneration = 0;
+  let desiredEnabled = true;
+  let defaultActivationStarted = false;
 
   if (window.L && typeof window.L.map === "function") {
     const createLeafletMap = window.L.map;
@@ -94,6 +96,11 @@
     status.classList.toggle("is-error", Boolean(isError));
   }
 
+  function setDesiredButtonState(enabled) {
+    button.setAttribute("aria-pressed", enabled ? "true" : "false");
+    button.classList.toggle("is-active", Boolean(enabled));
+  }
+
   function ensureLayerLoaded() {
     if (window.UfoCropCircleLayer) {
       return Promise.resolve(window.UfoCropCircleLayer);
@@ -104,7 +111,7 @@
     setStatus("Loading the crop-circle layer…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./crop_circle_layer.js?v=2026-08-01-crop-circles-v157";
+      script.src = "./crop_circle_layer.js?v=2026-08-03-context-layers-default-on-v1";
       script.async = true;
       script.onload = function () {
         if (!window.UfoCropCircleLayer) {
@@ -128,21 +135,43 @@
     return loadPromise;
   }
 
+  function reportError(error) {
+    desiredEnabled = false;
+    setDesiredButtonState(false);
+    setStatus(error && error.message ? error.message : String(error), true);
+    console.error(error);
+  }
+
+  function enableDesiredLayer() {
+    if (!desiredEnabled) return Promise.resolve(false);
+    setDesiredButtonState(true);
+    return ensureLayerLoaded().then(function (layer) {
+      if (!desiredEnabled) return false;
+      return layer.setEnabled(true);
+    }).catch(function (error) {
+      reportError(error);
+      return false;
+    });
+  }
+
   button.addEventListener("click", function () {
-    const nextEnabled = button.getAttribute("aria-pressed") !== "true";
-    if (!nextEnabled && window.UfoCropCircleLayer) {
-      window.UfoCropCircleLayer.setEnabled(false);
+    desiredEnabled = !desiredEnabled;
+    setDesiredButtonState(desiredEnabled);
+    if (!desiredEnabled) {
+      if (window.UfoCropCircleLayer) {
+        Promise.resolve(window.UfoCropCircleLayer.setEnabled(false)).catch(reportError);
+      } else {
+        setStatus("Crop circles are off. Turn the layer on to show catalog positions.");
+      }
       return;
     }
-    ensureLayerLoaded()
-      .then(function (layer) {
-        return layer.setEnabled(true);
-      })
-      .catch(function (error) {
-        button.setAttribute("aria-pressed", "false");
-        button.classList.remove("is-active");
-        setStatus(error && error.message ? error.message : String(error), true);
-        console.error(error);
-      });
+    enableDesiredLayer();
   });
+
+  setDesiredButtonState(true);
+  window.addEventListener("ufo:timeline-ready", function () {
+    if (defaultActivationStarted) return;
+    defaultActivationStarted = true;
+    enableDesiredLayer();
+  }, { once: true });
 })();

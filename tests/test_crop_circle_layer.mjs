@@ -278,9 +278,12 @@ assert.match(indexSource, /<legend>UFO sighting → later crop record<\/legend>/
 assert.match(indexSource, /<legend>Crop record → later crop record<\/legend>/, "crop-to-crop relationship selector is explicitly separate");
 assert.match(indexSource, /id="crop-circle-ufo-crop-position-quality"/, "UFO-to-crop inference has an explicit selected-crop position-quality control");
 assert.match(indexSource, /id="crop-circle-analyze-ufo-traces"/, "trace-radius analysis requires an explicit opt-in control");
+assert.match(indexSource, /id="overlay-crop-circles"[^>]*data-default-enabled="true"[^>]*aria-pressed="true"/, "crop circles are enabled by default in the accessible initial state");
 assert.match(indexSource, /Focus view: show only crop circles, selected relations, and this UFO trace network/, "focus copy truthfully describes the isolated crop relationship result");
 assert.doesNotMatch(indexSource, /Same day \+ (?:7|30) days/i, "ambiguous cumulative date-window wording is removed");
 assert.match(appSource, /data-map-legend-crop-circles/, "the selectable map legend includes Crop circles under overlays");
+assert.match(appSource, /!cropCircleOverlayActive\(\)/, "legend reset treats default-on crop circles as clean and restores them when disabled");
+assert.match(appSource, /UfoCropCircleLayer\.resetControls\(\)/, "legend reset preserves the default-on layer while clearing optional scientific analysis controls");
 assert.match(appSource, /coordinateCode\) > 1 && relation\.cropPositionQuality !== "all"/, "locality-centroid crops are excluded from UFO-to-crop inference by default");
 assert.match(appSource, /filterGeneration:\s*Number\(runtime\.activeFilterGeneration\)/, "crop focus polls the applied—not merely requested—filter generation");
 assert.match(appSource, /TRACE_NEIGHBORHOOD\.clipSegmentToCircle/, "selected-radius traces use the tested exact circle clipper");
@@ -299,7 +302,7 @@ const pointRowsFixture = JSON.parse(gunzipSync(await fs.readFile(path.join(stati
 const pointRowByIdFixture = new Map(pointRowsFixture.map((row) => [String(row[0]), row]));
 
 const layerApi = windowObject.UfoCropCircleLayer;
-assert.equal(requests.length, 0, "loading the runtime must not request crop data before enable");
+assert.equal(requests.length, 0, "importing the heavy crop runtime has no fetch side effects before bootstrap activation");
 assert.ok(layerApi, "runtime API is exposed");
 
 await layerApi.setEnabled(true);
@@ -594,6 +597,20 @@ delayedDetailPaths.delete(firstRacePath);
 const winningDetail = await localDetailForRow(raceRows[1]);
 assert.ok(elements.get("#crop-circle-detail-body").innerHTML.includes(escapeFixture(winningDetail.location)), "newer detail remains visible after stale request resolves");
 
+assert.equal(layerApi.resetControls(), true, "legend reset can clear crop analysis without disabling the default-on markers");
+status = layerApi.getStatus();
+assert.equal(status.enabled, true);
+assert.equal(status.selectedRecordId, null);
+assert.equal(status.chronology.relation, "off");
+assert.equal(status.ufoFocus.relationWindow, "off");
+assert.equal(status.ufoFocus.traceAnalysisEnabled, false);
+assert.equal(status.ufoFocus.radiusKm, 25);
+assert.equal(status.ufoFocus.hopDepth, 1);
+assert.equal(status.ufoFocus.hopDirection, "both");
+assert.equal(status.ufoFocus.isolation, false);
+assert.equal(elements.get("#crop-circle-detail-panel").hidden, true);
+assert.equal(mapContainer.classList.contains("crop-circle-focus-active"), false);
+
 const disableRacePath = detailPathForRow(raceRows[2]);
 delayedDetailPaths.add(disableRacePath);
 const pendingAtDisable = layerApi.openRecord(raceRows[2][0]);
@@ -627,6 +644,7 @@ assert.equal(mapContainerListeners.size, 0, "bounded crop click capture listener
 assert.ok(requestCaches.slice(1).every((mode) => mode === "force-cache"), "all immutable point/detail payload requests remain force-cache");
 
 await testBootstrapRetry();
+await testBootstrapPreReadyOptOut();
 
 console.log(JSON.stringify({
   ok: true,
@@ -769,10 +787,14 @@ async function testBootstrapRetry() {
   let lastScriptSrc = "";
   const forwardedFocusConfigs = [];
   const forwardedFocusClears = [];
+  const readyHandlers = [];
   const retryWindow = {
     L: { map() { return map; } },
     setTimeout,
     clearTimeout,
+    addEventListener(name, handler) {
+      if (name === "ufo:timeline-ready") readyHandlers.push(handler);
+    },
   };
   const retryDocument = {
     baseURI: "https://example.test/",
@@ -823,13 +845,56 @@ async function testBootstrapRetry() {
   assert.equal(forwardedFocusConfigs.length, 1);
   assert.equal(retryWindow.UfoTimelineExtensions.clearCropTraceFocus("test cleanup"), true);
   assert.deepEqual(forwardedFocusClears, ["test cleanup"]);
-  assert.equal(appendCount, 0, "bootstrap makes no crop request or runtime injection before user action");
-  await retryButton.dispatch("click");
+  assert.equal(retryButton.getAttribute("aria-pressed"), "true", "bootstrap exposes the intended default-on state immediately");
+  assert.equal(appendCount, 0, "bootstrap makes no crop request or runtime injection before the core Ready boundary");
+  assert.equal(readyHandlers.length, 1);
+  readyHandlers[0]();
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.equal(appendCount, 1);
+  assert.equal(appendCount, 1, "Ready starts the first default activation attempt");
+  assert.equal(retryButton.getAttribute("aria-pressed"), "false", "a failed default activation is exposed as off and retryable");
+  readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(appendCount, 1, "repeated Ready events are idempotent");
   await retryButton.dispatch("click");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(appendCount, 2, "transient runtime load failure can be retried without reloading the app");
-  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-01-crop-circles-v157$/);
+  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-03-context-layers-default-on-v1$/);
   assert.equal(enables, 1);
+}
+
+async function testBootstrapPreReadyOptOut() {
+  const optOutButton = new MockElement();
+  const readyHandlers = [];
+  let appendCount = 0;
+  const optOutWindow = {
+    L: { map() { return map; } },
+    setTimeout,
+    clearTimeout,
+    addEventListener(name, handler) {
+      if (name === "ufo:timeline-ready") readyHandlers.push(handler);
+    },
+  };
+  const optOutDocument = {
+    querySelector(selector) { return selector === "#overlay-crop-circles" ? optOutButton : null; },
+    createElement() { return {}; },
+    head: { appendChild() { appendCount += 1; } },
+  };
+  vm.runInContext(
+    await fs.readFile(path.join(staticRoot, "crop_circle_bootstrap.js"), "utf8"),
+    vm.createContext({
+      window: optOutWindow,
+      document: optOutDocument,
+      URL,
+      console: { error() {} },
+      setTimeout,
+      clearTimeout,
+    }),
+    { filename: "crop_circle_bootstrap.js" },
+  );
+  assert.equal(optOutButton.getAttribute("aria-pressed"), "true");
+  await optOutButton.dispatch("click");
+  assert.equal(optOutButton.getAttribute("aria-pressed"), "false");
+  readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(appendCount, 0, "a pre-Ready user opt-out prevents default crop runtime injection");
 }

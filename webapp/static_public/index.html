@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-03-animal-mutilation-cow-v1">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-03-context-layers-default-on-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -597,16 +597,16 @@
                 <span class="overlay-chip-swatch" aria-hidden="true"></span>
                 <span>Research Sites</span>
               </button>
-              <button id="overlay-crop-circles" class="overlay-chip" data-overlay-kind="crop-circles" type="button" aria-pressed="false" aria-describedby="crop-circle-status">
+              <button id="overlay-crop-circles" class="overlay-chip is-active" data-overlay-kind="crop-circles" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="crop-circle-status">
                 <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
                 <span>Crop circles</span>
               </button>
-              <button id="overlay-animal-mutilations" class="overlay-chip" data-overlay-kind="animal-mutilations" type="button" aria-pressed="false" aria-describedby="animal-mutilation-status">
+              <button id="overlay-animal-mutilations" class="overlay-chip is-active" data-overlay-kind="animal-mutilations" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="animal-mutilation-status">
                 <span class="overlay-chip-swatch overlay-chip-swatch-animal-mutilations" aria-hidden="true"></span>
                 <span>Animal Mutilation Reports</span>
               </button>
             </div>
-            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are off. The layer adds no startup data requests.</p>
+            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
             <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
               <div class="crop-circle-chronology-head">
                 <strong>Crop-circle relationships</strong>
@@ -732,7 +732,7 @@
             <div class="animal-mutilation-actions">
               <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
             </div>
-            <p id="animal-mutilation-status" class="note-copy compact-status animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are off. The layer adds no startup data requests; Browse all reports includes mapped, unmapped, and undated records.</p>
+            <p id="animal-mutilation-status" class="note-copy compact-status animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
                 <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
@@ -1352,8 +1352,8 @@
   <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./crop_circle_bootstrap.js?v=2026-08-01-crop-circles-v157"></script>
-  <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-animal-mutilation-cow-v1"></script>
-  <script src="./app.js?v=2026-08-03-animal-mutilation-cow-v1"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./app.js?v=2026-08-03-context-layers-default-on-v1"></script>
 </body>
 </html>

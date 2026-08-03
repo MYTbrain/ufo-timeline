@@ -23,6 +23,7 @@
   const state = {
     enabled: false,
     loading: false,
+    enableGeneration: 0,
     manifest: null,
     points: null,
     map: null,
@@ -1361,6 +1362,33 @@
     syncUfoFocusControlState();
   }
 
+  function resetControls() {
+    state.chronology.enabled = false;
+    state.chronology.relation = "off";
+    state.chronology.coordinateScope = "field";
+    state.chronology.maxDistanceKm = 250;
+    state.chronology.graphKey = "";
+    state.chronology.graphEdges = [];
+    state.chronology.eligibleNodes = 0;
+    state.chronology.candidateEdges = 0;
+    state.ufoFocus.relationWindow = "off";
+    state.ufoFocus.positionQuality = "source";
+    state.ufoFocus.cropPositionQuality = "field";
+    state.ufoFocus.radiusKm = 25;
+    state.ufoFocus.traceAnalysisEnabled = false;
+    state.ufoFocus.hopDepth = 1;
+    state.ufoFocus.hopDirection = "both";
+    state.ufoFocus.showRadius = true;
+    state.ufoFocus.emphasizeIntersections = true;
+    state.ufoFocus.isolation = false;
+    clearChronologyLayer();
+    closePanel();
+    syncChronologyControlState();
+    setChronologyStatus("Crop-to-crop progression is off.");
+    setUfoRelationStatus("Select a crop record to inspect nearby UFO relations and trace intersections.");
+    return true;
+  }
+
   async function detailChunk(chunkNumber) {
     if (state.detailChunkCache.has(chunkNumber)) {
       const cached = state.detailChunkCache.get(chunkNumber);
@@ -1463,7 +1491,9 @@
 
   async function setEnabled(enabled) {
     if (!enabled) {
+      state.enableGeneration += 1;
       state.enabled = false;
+      state.loading = false;
       stopPolling();
       if (state.map && state.layer && state.map.hasLayer(state.layer)) state.map.removeLayer(state.layer);
       if (state.layer) state.layer.clearLayers();
@@ -1485,16 +1515,19 @@
       syncChronologyControlState();
       setChronologyStatus("Crop-to-crop progression is off.");
       setUfoRelationStatus("Select a crop record to inspect nearby UFO relations and trace intersections.");
-      setStatus("Crop circles are off. The layer adds no startup data requests.");
+      setStatus("Crop circles are off. Turn the layer on to show catalog positions.");
       return false;
     }
     if (state.loading) return true;
+    const generation = ++state.enableGeneration;
     state.loading = true;
     setButtonState(true, true);
     setStatus("Loading compact crop-circle locations…");
     try {
       const context = await waitForMap();
+      if (generation !== state.enableGeneration || !state.loading) return false;
       await ensureData();
+      if (generation !== state.enableGeneration || !state.loading) return false;
       ensureMapLayer(context);
       installPanelInteractions();
       state.enabled = true;
@@ -1508,17 +1541,19 @@
       setButtonState(true, false);
       return true;
     } catch (error) {
+      if (generation !== state.enableGeneration) return false;
       state.enabled = false;
       setButtonState(false, false);
       setStatus(error && error.message ? error.message : String(error), true);
       throw error;
     } finally {
-      state.loading = false;
+      if (generation === state.enableGeneration) state.loading = false;
     }
   }
 
   window.UfoCropCircleLayer = Object.freeze({
     setEnabled,
+    resetControls,
     setChronology: function (options) {
       const settings = options || {};
       if (["off", "same_day", "7", "30"].includes(settings.relation)) state.chronology.relation = settings.relation;
