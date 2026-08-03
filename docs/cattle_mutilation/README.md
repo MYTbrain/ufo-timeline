@@ -194,15 +194,35 @@ relationship artifacts:
 ```powershell
 python scripts/build_animal_mutilation_timeline_layer.py `
   --seed-output-dir "C:\Users\jarod\Documents\Cattle Mutilation Map\outputs\phase1_1\global_animal_seed_v1_1" `
-  --output-dir "C:\Users\jarod\Documents\Cattle Mutilation Map\outputs\timeline_layer_v1"
+  --output-dir "C:\Users\jarod\Documents\Cattle Mutilation Map\outputs\timeline_layer_v1_1"
 ```
 
 With no `--review-decisions` ledger, the adapter publishes every eligible case
 as `reported_unreviewed` and also places it in the non-blocking review queue.
-The bridge writes only `timeline_review_queue.jsonl`,
-`animal_mutilations.geojson`, and
-`animal_mutilations_import_manifest.json`. An optional review ledger remains
-available for later accepted, rejected, or unresolved adjudication.
+The bridge writes four deterministic artifacts:
+`timeline_review_queue.jsonl`, `animal_mutilations.geojson`,
+`animal_mutilation_coordinate_normalization_audit.jsonl`, and
+`animal_mutilations_import_manifest.json`. The audit preserves each original
+public geometry, output geometry, source scope, transformation rule, semantic
+geography result, canonical incident hash, and stable `ami_*` identity. The
+frozen seed incidents are never rewritten. The adapter applies the documented
+UFOCAT west-positive/east-negative convention only to the public projection;
+Majestic coordinates already use standard signed longitude and remain
+unchanged. Unknown provenance or a post-transform geography mismatch fails
+closed by retaining the report with null public geometry, never by guessing.
+The emitted GeoJSON is already normalized, so downstream products must not
+apply another sign transformation. An optional review ledger remains available
+for later accepted, rejected, or unresolved adjudication. Queue rows and audit
+rows are validated against `timeline_review_queue.schema.json` and
+`timeline_coordinate_normalization_audit.schema.json`, respectively.
+
+The original `Animal_Mutilation_Reports_UFO_Timeline_Handoff_v1.zip`
+(`CAECFB0B2F94F7F361AB0782D4097FEE31711073EDE3B8A1B2AD071AE28F1048`)
+is retained unchanged as a historical, rejected map release because 479 public
+longitudes used the wrong signed convention. The v1.1 handoff supersedes it for
+mapping by rebuilding only the deterministic Timeline projection from the same
+frozen 1,177 canonical reports; extraction, crawling, classification, and
+deduplication are not rerun.
 
 Extraction `cmi_*` identifiers remain mutable lineage because clustering can
 change. The unreviewed release derives one deterministic opaque

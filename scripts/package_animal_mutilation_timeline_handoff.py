@@ -20,14 +20,30 @@ from typing import Any, Mapping, Sequence
 from urllib.parse import unquote_plus, urlsplit
 
 
-HANDOFF_VERSION = "animal-mutilation-timeline-handoff-v1.0.0"
+HANDOFF_VERSION = "animal-mutilation-timeline-handoff-v1.1.0"
 LAYER_NAME = "Animal Mutilation Reports"
 REPORTED_UNREVIEWED = "reported_unreviewed"
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
 OVERLAY_NAME = "animal_mutilations.geojson"
 QUEUE_NAME = "timeline_review_queue.jsonl"
+COORDINATE_AUDIT_NAME = "animal_mutilation_coordinate_normalization_audit.jsonl"
 IMPORT_MANIFEST_NAME = "animal_mutilations_import_manifest.json"
+COORDINATE_AUDIT_SCHEMA_VERSION = (
+    "animal-mutilation-timeline-coordinate-normalization-audit-v1.0.0"
+)
+
+EXPECTED_RELEASE_FEATURES = 1177
+EXPECTED_RELEASE_MAPPED = 518
+EXPECTED_RELEASE_UNMAPPED = 659
+EXPECTED_RELEASE_CORRECTIONS = 479
+EXPECTED_RELEASE_UNCHANGED_COORDINATES = 39
+EXPECTED_RELEASE_AMBIGUOUS_SUPPRESSIONS = 0
+EXPECTED_RELEASE_ORIGINAL_MIRRORED_PAIRS = 35
+EXPECTED_RELEASE_OUTPUT_MIRRORED_PAIRS = 0
+EXPECTED_RELEASE_EXACT_DAY = 921
+EXPECTED_RELEASE_MAPPED_EXACT_DAY = 339
+EXPECTED_RELEASE_UNDATED = 28
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_PAYLOADS: tuple[tuple[str, Path, str], ...] = (
@@ -50,6 +66,19 @@ REPOSITORY_PAYLOADS: tuple[tuple[str, Path, str], ...] = (
         "optional_review_decision_schema",
     ),
     (
+        "schemas/timeline_review_queue.schema.json",
+        REPO_ROOT / "docs" / "cattle_mutilation" / "timeline_review_queue.schema.json",
+        "review_queue_schema",
+    ),
+    (
+        "schemas/timeline_coordinate_normalization_audit.schema.json",
+        REPO_ROOT
+        / "docs"
+        / "cattle_mutilation"
+        / "timeline_coordinate_normalization_audit.schema.json",
+        "coordinate_normalization_audit_schema",
+    ),
+    (
         "schemas/case.schema.json",
         REPO_ROOT / "docs" / "cattle_mutilation" / "case.schema.json",
         "seed_case_schema",
@@ -58,6 +87,11 @@ REPOSITORY_PAYLOADS: tuple[tuple[str, Path, str], ...] = (
 ADAPTER_PAYLOADS: tuple[tuple[str, str, str], ...] = (
     (f"data/{OVERLAY_NAME}", OVERLAY_NAME, "timeline_context_layer"),
     (f"data/{QUEUE_NAME}", QUEUE_NAME, "optional_review_queue"),
+    (
+        f"data/{COORDINATE_AUDIT_NAME}",
+        COORDINATE_AUDIT_NAME,
+        "coordinate_normalization_audit",
+    ),
     (
         f"manifest/{IMPORT_MANIFEST_NAME}",
         IMPORT_MANIFEST_NAME,
@@ -76,6 +110,28 @@ PIPELINE_VERSION_RE = re.compile(
 ADAPTER_VERSION_RE = re.compile(
     r"^animal-mutilation-timeline-adapter-v\d+\.\d+\.\d+$"
 )
+EXPECTED_COORDINATE_ANCHORS: Mapping[str, tuple[str, tuple[float, float]]] = {
+    "cmi_d421ceddb7d6bfc2e8cc2bae": (
+        "ami_01a458ccd33f5c9dd4381259",
+        (-121.74, 48.04),
+    ),
+    "cmi_d98032c4d5e2f8d775f77778": (
+        "ami_0ba99d51d4f2e2388b51afde",
+        (-107.25, 40.5),
+    ),
+    "cmi_8355d615f6fea4ceadecc88a": (
+        "ami_aac9acbae4228d150f1a4d45",
+        (6.62, 48.35),
+    ),
+    "cmi_c7d4e6c9ec6154196fa16377": (
+        "ami_5229ce30dd19f07b40917d41",
+        (34.97, 32.27),
+    ),
+    "cmi_d88c425a9d6dab2590a131cf": (
+        "ami_4faea6659e87554536a5160f",
+        (-61.98, -33.67),
+    ),
+}
 CORRUPT_TEXT_MARKERS = (
     "\N{REPLACEMENT CHARACTER}",
     "\N{GREEK CAPITAL LETTER GAMMA}\N{LATIN CAPITAL LETTER C WITH CEDILLA}",
@@ -162,6 +218,45 @@ def _load_jsonl(data: bytes, *, label: str) -> list[dict[str, Any]]:
         row = _load_json(raw_line, label=f"{label} line {line_number}")
         rows.append(row)
     return rows
+
+
+def _validator_from_schema(schema_bytes: bytes, *, label: str) -> Any:
+    try:
+        from jsonschema import Draft202012Validator, FormatChecker
+    except ImportError as exc:  # pragma: no cover - pinned by the production lock.
+        raise HandoffPackagingError("jsonschema is required for handoff validation") from exc
+    schema = _load_json(schema_bytes, label=f"{label} schema")
+    try:
+        Draft202012Validator.check_schema(schema)
+        return Draft202012Validator(schema, format_checker=FormatChecker())
+    except Exception as exc:
+        raise HandoffPackagingError(f"invalid {label} schema: {exc}") from exc
+
+
+def _validate_with_validator(value: Any, validator: Any, *, label: str) -> None:
+    errors = sorted(
+        validator.iter_errors(value),
+        key=lambda error: tuple(str(item) for item in error.absolute_path),
+    )
+    if not errors:
+        return
+    error = errors[0]
+    pointer = "/" + "/".join(str(item) for item in error.absolute_path)
+    if pointer == "/":
+        pointer = "<root>"
+    raise HandoffPackagingError(
+        f"{label} schema validation failed at {pointer}: {error.message}"
+    )
+
+
+def _validate_against_schema(
+    value: Any,
+    schema_bytes: bytes,
+    *,
+    label: str,
+) -> None:
+    validator = _validator_from_schema(schema_bytes, label=label)
+    _validate_with_validator(value, validator, label=label)
 
 
 def _required_nonnegative_int(value: Any, *, label: str) -> int:
@@ -294,6 +389,53 @@ def _validate_source_refs(
     return len(identities)
 
 
+MIRRORED_PAIR_IGNORED_LOCATION_TOKENS = frozenset(
+    {"US", "USA", "CN", "CA", "SA", "EU", "ME", "AU", "ARG", "BRA", "FRA", "ISR"}
+)
+
+
+def _location_tokens(value: Any) -> set[str]:
+    normalized = re.sub(r"\s+", " ", "" if value is None else str(value)).strip()
+    return {
+        token
+        for raw_token in normalized.upper().split(",")
+        if len(token := raw_token.strip()) >= 3
+        and token not in MIRRORED_PAIR_IGNORED_LOCATION_TOKENS
+    }
+
+
+def _opposite_sign_near_duplicate_pair_count(
+    projections: Sequence[Mapping[str, Any]],
+    *,
+    geometry_field: str,
+) -> int:
+    points: list[tuple[float, float, set[str]]] = []
+    for projection in projections:
+        geometry = projection.get(geometry_field)
+        if geometry is None:
+            continue
+        longitude, latitude = geometry["coordinates"]
+        points.append(
+            (
+                longitude,
+                latitude,
+                _location_tokens(projection.get("location_label")),
+            )
+        )
+    pair_count = 0
+    for index, left in enumerate(points):
+        for right in points[index + 1 :]:
+            if left[0] * right[0] >= 0:
+                continue
+            if abs(abs(left[0]) - abs(right[0])) > 0.02:
+                continue
+            if abs(left[1] - right[1]) > 0.1:
+                continue
+            if left[2] & right[2]:
+                pair_count += 1
+    return pair_count
+
+
 def _validate_overlay(overlay: Mapping[str, Any]) -> dict[str, Any]:
     corrupt_path = _corrupt_text_path(overlay)
     if corrupt_path is not None:
@@ -322,6 +464,10 @@ def _validate_overlay(overlay: Mapping[str, Any]) -> dict[str, Any]:
     source_ref_count = 0
     geometry_count = 0
     lineage: dict[str, str] = {}
+    projections: dict[str, dict[str, Any]] = {}
+    exact_day_count = 0
+    mapped_exact_day_count = 0
+    undated_count = 0
     for index, feature in enumerate(features):
         if not isinstance(feature, Mapping) or feature.get("type") != "Feature":
             raise HandoffPackagingError(f"overlay feature {index} is not a Feature")
@@ -377,12 +523,24 @@ def _validate_overlay(overlay: Mapping[str, Any]) -> dict[str, Any]:
         source_ids.add(source_id)
         incident_hashes.add(incident_hash)
         lineage[source_id] = incident_hash
+        geometry = feature.get("geometry")
+        projections[source_id] = {
+            "animal_mutilation_event_id": event_id,
+            "output_geometry": geometry,
+            "location_label": properties.get("location_label"),
+        }
         source_ref_count += _validate_source_refs(
             properties.get("source_refs"),
             source_incident_id=source_id,
         )
-        if feature.get("geometry") is not None:
+        if geometry is not None:
             geometry_count += 1
+        if properties.get("date_precision") == "exact_day":
+            exact_day_count += 1
+            if geometry is not None:
+                mapped_exact_day_count += 1
+        if properties.get("date_start") is None and properties.get("date_end") is None:
+            undated_count += 1
 
     return {
         "features": len(features),
@@ -390,6 +548,10 @@ def _validate_overlay(overlay: Mapping[str, Any]) -> dict[str, Any]:
         "features_without_geometry": len(features) - geometry_count,
         "source_refs": source_ref_count,
         "lineage": lineage,
+        "projections": projections,
+        "exact_day_features": exact_day_count,
+        "mapped_exact_day_features": mapped_exact_day_count,
+        "undated_features": undated_count,
     }
 
 
@@ -434,6 +596,161 @@ def _validate_queue(
         )
 
 
+def _validate_coordinate_audit(
+    audit_rows: Sequence[Mapping[str, Any]],
+    *,
+    overlay_summary: Mapping[str, Any],
+) -> dict[str, int]:
+    projections = overlay_summary["projections"]
+    lineage = overlay_summary["lineage"]
+    if len(audit_rows) != len(projections):
+        raise HandoffPackagingError(
+            "coordinate audit row count must equal emitted feature count"
+        )
+
+    audit_by_source: dict[str, Mapping[str, Any]] = {}
+    action_counts: dict[str, int] = {}
+    mirrored_projections: list[dict[str, Any]] = []
+    for index, row in enumerate(audit_rows):
+        source_id = row.get("source_incident_id")
+        if not isinstance(source_id, str) or not CMI_RE.fullmatch(source_id):
+            raise HandoffPackagingError(
+                f"coordinate audit row {index} has an invalid source incident id"
+            )
+        if source_id in audit_by_source:
+            raise HandoffPackagingError(
+                f"duplicate coordinate audit source incident id: {source_id}"
+            )
+        audit_by_source[source_id] = row
+        projection = projections.get(source_id)
+        if projection is None:
+            raise HandoffPackagingError(
+                f"coordinate audit source is absent from overlay: {source_id}"
+            )
+        if row.get("source_incident_sha256") != lineage[source_id]:
+            raise HandoffPackagingError(
+                f"coordinate audit canonical hash mismatch for {source_id}"
+            )
+        if row.get("animal_mutilation_event_id") != projection[
+            "animal_mutilation_event_id"
+        ]:
+            raise HandoffPackagingError(
+                f"coordinate audit event lineage mismatch for {source_id}"
+            )
+        if row.get("output_geometry") != projection["output_geometry"]:
+            raise HandoffPackagingError(
+                f"coordinate audit output geometry mismatch for {source_id}"
+            )
+
+        action = row.get("action")
+        if not isinstance(action, str):
+            raise HandoffPackagingError(
+                f"coordinate audit row {source_id} has no action"
+            )
+        action_counts[action] = action_counts.get(action, 0) + 1
+        original_geometry = row.get("original_geometry")
+        output_geometry = row.get("output_geometry")
+        if action == "longitude_sign_corrected":
+            if not isinstance(original_geometry, Mapping) or not isinstance(
+                output_geometry, Mapping
+            ):
+                raise HandoffPackagingError(
+                    f"corrected coordinate audit row {source_id} lacks both geometries"
+                )
+            original_longitude, original_latitude = original_geometry["coordinates"]
+            output_longitude, output_latitude = output_geometry["coordinates"]
+            if output_longitude != -original_longitude or output_latitude != original_latitude:
+                raise HandoffPackagingError(
+                    f"corrected coordinate audit row {source_id} does not apply exact sign inversion"
+                )
+            if row.get("source_publishers") != ["ufocat"]:
+                raise HandoffPackagingError(
+                    f"corrected coordinate audit row {source_id} is outside UFOCAT provenance"
+                )
+        elif action == "unchanged_standard_signed":
+            if original_geometry != output_geometry:
+                raise HandoffPackagingError(
+                    f"unchanged coordinate audit row {source_id} altered geometry"
+                )
+            if row.get("source_publishers") != ["majestic"]:
+                raise HandoffPackagingError(
+                    f"unchanged coordinate audit row {source_id} has unexpected provenance"
+                )
+        elif action == "no_public_geometry":
+            if original_geometry is not None or output_geometry is not None:
+                raise HandoffPackagingError(
+                    f"no-geometry audit row {source_id} contains public geometry"
+                )
+        elif action in {
+            "geometry_suppressed_ambiguous_provenance",
+            "geometry_suppressed_ambiguous_geography",
+        }:
+            if original_geometry is None or output_geometry is not None:
+                raise HandoffPackagingError(
+                    f"ambiguous coordinate audit row {source_id} is not fail-closed"
+                )
+        else:
+            raise HandoffPackagingError(
+                f"coordinate audit row {source_id} has unknown action {action!r}"
+            )
+
+        mirrored_projections.append(
+            {
+                "original_geometry": original_geometry,
+                "output_geometry": output_geometry,
+                "location_label": projection["location_label"],
+            }
+        )
+
+    if set(audit_by_source) != set(projections):
+        raise HandoffPackagingError(
+            "coordinate audit and overlay source incident sets do not match"
+        )
+
+    for source_id, (expected_event_id, expected_coordinates) in (
+        EXPECTED_COORDINATE_ANCHORS.items()
+    ):
+        projection = projections.get(source_id)
+        if projection is None:
+            raise HandoffPackagingError(
+                f"coordinate regression anchor is missing: {source_id}"
+            )
+        if projection["animal_mutilation_event_id"] != expected_event_id:
+            raise HandoffPackagingError(
+                f"coordinate regression anchor changed stable event id: {source_id}"
+            )
+        geometry = projection["output_geometry"]
+        if geometry is None or tuple(geometry["coordinates"]) != expected_coordinates:
+            raise HandoffPackagingError(
+                f"coordinate regression anchor has the wrong output geometry: {source_id}"
+            )
+
+    return {
+        "records": len(audit_rows),
+        "longitude_sign_corrected": action_counts.get(
+            "longitude_sign_corrected", 0
+        ),
+        "coordinates_unchanged": action_counts.get("unchanged_standard_signed", 0),
+        "coordinates_suppressed_ambiguous": action_counts.get(
+            "geometry_suppressed_ambiguous_provenance", 0
+        )
+        + action_counts.get("geometry_suppressed_ambiguous_geography", 0),
+        "no_public_geometry": action_counts.get("no_public_geometry", 0),
+        "original_opposite_sign_near_duplicate_pairs": (
+            _opposite_sign_near_duplicate_pair_count(
+                mirrored_projections,
+                geometry_field="original_geometry",
+            )
+        ),
+        "output_opposite_sign_near_duplicate_pairs": (
+            _opposite_sign_near_duplicate_pair_count(
+                mirrored_projections,
+                geometry_field="output_geometry",
+            )
+        ),
+    }
+
+
 def _output_claim(
     adapter_manifest: Mapping[str, Any],
     *,
@@ -467,8 +784,10 @@ def _validate_adapter_manifest(
     *,
     overlay_bytes: bytes,
     queue_bytes: bytes,
+    coordinate_audit_bytes: bytes,
     overlay_summary: Mapping[str, Any],
     queue_count: int,
+    coordinate_audit_summary: Mapping[str, int],
     repository_payloads: Mapping[str, bytes],
 ) -> dict[str, str]:
     corrupt_path = _corrupt_text_path(adapter_manifest)
@@ -504,6 +823,22 @@ def _validate_adapter_manifest(
         count_key="records",
         expected_count=queue_count,
     )
+    _verify_output_claim(
+        adapter_manifest,
+        name=COORDINATE_AUDIT_NAME,
+        data=coordinate_audit_bytes,
+        count_key="records",
+        expected_count=coordinate_audit_summary["records"],
+    )
+    audit_claim = _output_claim(adapter_manifest, name=COORDINATE_AUDIT_NAME)
+    for claim_name in (
+        "longitude_sign_corrected",
+        "coordinates_suppressed_ambiguous",
+    ):
+        if audit_claim.get(claim_name) != coordinate_audit_summary[claim_name]:
+            raise HandoffPackagingError(
+                f"adapter manifest coordinate audit {claim_name} mismatch"
+            )
 
     counts = adapter_manifest.get("counts")
     if not isinstance(counts, Mapping):
@@ -521,7 +856,32 @@ def _validate_adapter_manifest(
         "queued_for_review": queue_count,
         "features_with_geometry": overlay_summary["features_with_geometry"],
         "features_without_geometry": overlay_summary["features_without_geometry"],
-        "generated_artifacts": 3,
+        "exact_day_features": overlay_summary["exact_day_features"],
+        "mapped_exact_day_features": overlay_summary["mapped_exact_day_features"],
+        "undated_features": overlay_summary["undated_features"],
+        "coordinate_audit_records": coordinate_audit_summary["records"],
+        "longitude_sign_corrected": coordinate_audit_summary[
+            "longitude_sign_corrected"
+        ],
+        "coordinates_unchanged": coordinate_audit_summary["coordinates_unchanged"],
+        "coordinates_suppressed_ambiguous": coordinate_audit_summary[
+            "coordinates_suppressed_ambiguous"
+        ],
+        "no_public_geometry": coordinate_audit_summary["no_public_geometry"],
+        "semantic_geography_passed": (
+            coordinate_audit_summary["longitude_sign_corrected"]
+            + coordinate_audit_summary["coordinates_unchanged"]
+        ),
+        "semantic_geography_failed_closed": coordinate_audit_summary[
+            "coordinates_suppressed_ambiguous"
+        ],
+        "original_opposite_sign_near_duplicate_pairs": coordinate_audit_summary[
+            "original_opposite_sign_near_duplicate_pairs"
+        ],
+        "output_opposite_sign_near_duplicate_pairs": coordinate_audit_summary[
+            "output_opposite_sign_near_duplicate_pairs"
+        ],
+        "generated_artifacts": 4,
     }
     for name, expected in exact_counts.items():
         actual = _required_nonnegative_int(
@@ -532,6 +892,93 @@ def _validate_adapter_manifest(
             raise HandoffPackagingError(
                 f"adapter manifest counts.{name}={actual} does not reconcile {expected}"
             )
+
+    release_exact_counts = {
+        "total_source_incidents": EXPECTED_RELEASE_FEATURES,
+        "reported_unreviewed": EXPECTED_RELEASE_FEATURES,
+        "mapped_incidents": EXPECTED_RELEASE_MAPPED,
+        "unmapped_incidents": EXPECTED_RELEASE_UNMAPPED,
+        "exact_day_features": EXPECTED_RELEASE_EXACT_DAY,
+        "mapped_exact_day_features": EXPECTED_RELEASE_MAPPED_EXACT_DAY,
+        "undated_features": EXPECTED_RELEASE_UNDATED,
+        "coordinate_audit_records": EXPECTED_RELEASE_FEATURES,
+        "longitude_sign_corrected": EXPECTED_RELEASE_CORRECTIONS,
+        "coordinates_unchanged": EXPECTED_RELEASE_UNCHANGED_COORDINATES,
+        "coordinates_suppressed_ambiguous": EXPECTED_RELEASE_AMBIGUOUS_SUPPRESSIONS,
+        "no_public_geometry": EXPECTED_RELEASE_UNMAPPED,
+        "semantic_geography_passed": EXPECTED_RELEASE_MAPPED,
+        "semantic_geography_failed_closed": EXPECTED_RELEASE_AMBIGUOUS_SUPPRESSIONS,
+        "original_opposite_sign_near_duplicate_pairs": (
+            EXPECTED_RELEASE_ORIGINAL_MIRRORED_PAIRS
+        ),
+        "output_opposite_sign_near_duplicate_pairs": (
+            EXPECTED_RELEASE_OUTPUT_MIRRORED_PAIRS
+        ),
+    }
+    for name, expected in release_exact_counts.items():
+        if counts.get(name) != expected:
+            raise HandoffPackagingError(
+                f"v1.1 release requires counts.{name}={expected}, got {counts.get(name)!r}"
+            )
+
+    normalization = adapter_manifest.get("coordinate_normalization")
+    if not isinstance(normalization, Mapping):
+        raise HandoffPackagingError("adapter manifest has no coordinate_normalization policy")
+    if normalization.get("policy_version") != (
+        "animal-mutilation-timeline-coordinate-normalization-v1.0.0"
+    ):
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization policy version is invalid"
+        )
+    if normalization.get("audit_artifact") != COORDINATE_AUDIT_NAME:
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization audit path is invalid"
+        )
+    if normalization.get("correction_count") != coordinate_audit_summary[
+        "longitude_sign_corrected"
+    ]:
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization correction_count is invalid"
+        )
+    if normalization.get("semantic_validation_passed") is not True:
+        raise HandoffPackagingError(
+            "adapter manifest semantic coordinate validation did not pass"
+        )
+    semantic_validation = normalization.get("semantic_geography_validation")
+    expected_semantic_validation = {
+        "status": "passed",
+        "validated_output_geometries": overlay_summary["features_with_geometry"],
+        "failed_closed_geometries": coordinate_audit_summary[
+            "coordinates_suppressed_ambiguous"
+        ],
+        "unvalidated_output_geometries": 0,
+    }
+    if semantic_validation != expected_semantic_validation:
+        raise HandoffPackagingError(
+            "adapter manifest semantic geography validation does not reconcile"
+        )
+
+    audit_identity = normalization.get("audit")
+    if not isinstance(audit_identity, Mapping):
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization audit identity is missing"
+        )
+    expected_audit_identity = {
+        "path": COORDINATE_AUDIT_NAME,
+        "schema_version": COORDINATE_AUDIT_SCHEMA_VERSION,
+        "schema_sha256": sha256_bytes(
+            repository_payloads[
+                "schemas/timeline_coordinate_normalization_audit.schema.json"
+            ]
+        ),
+        "sha256": sha256_bytes(coordinate_audit_bytes),
+        "size_bytes": len(coordinate_audit_bytes),
+        "record_count": coordinate_audit_summary["records"],
+    }
+    if audit_identity != expected_audit_identity:
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization audit identity does not reconcile"
+        )
 
     pending_relationships = adapter_manifest.get("pending_relationships")
     if not isinstance(pending_relationships, Mapping) or pending_relationships.get(
@@ -547,6 +994,10 @@ def _validate_adapter_manifest(
     schema_paths = {
         "overlay": "schemas/timeline_overlay.schema.json",
         "review_decision": "schemas/timeline_review_decision.schema.json",
+        "review_queue": "schemas/timeline_review_queue.schema.json",
+        "coordinate_normalization_audit": (
+            "schemas/timeline_coordinate_normalization_audit.schema.json"
+        ),
         "source_case": "schemas/case.schema.json",
     }
     for claim_name, archive_path in schema_paths.items():
@@ -556,6 +1007,13 @@ def _validate_adapter_manifest(
             raise HandoffPackagingError(
                 f"adapter manifest schema hash mismatch for {claim_name}"
             )
+    schema_versions = adapter_manifest.get("schema_versions")
+    if not isinstance(schema_versions, Mapping) or schema_versions.get(
+        "coordinate_normalization_audit"
+    ) != COORDINATE_AUDIT_SCHEMA_VERSION:
+        raise HandoffPackagingError(
+            "adapter manifest coordinate normalization audit schema version is invalid"
+        )
 
     adapter_version = adapter_manifest.get("adapter_version")
     source_commit = adapter_manifest.get("source_commit")
@@ -587,6 +1045,8 @@ def _validate_adapter_manifest(
         "adapter_version": adapter_version,
         "seed_source_commit": source_commit,
         "seed_pipeline_version": seed_pipeline_version,
+        "coordinate_normalization_policy": str(normalization["policy_version"]),
+        "coordinate_audit_schema_version": COORDINATE_AUDIT_SCHEMA_VERSION,
     }
 
 
@@ -595,6 +1055,7 @@ def _handoff_markdown(
     release_commit: str,
     identities: Mapping[str, str],
     overlay_summary: Mapping[str, Any],
+    coordinate_audit_summary: Mapping[str, int],
 ) -> bytes:
     return (
         "# Animal Mutilation Reports - UFO Timeline Handoff\n\n"
@@ -606,12 +1067,33 @@ def _handoff_markdown(
         f"- Seed source commit: `{identities['seed_source_commit']}`\n"
         f"- Seed pipeline: `{identities['seed_pipeline_version']}`\n"
         f"- Timeline adapter: `{identities['adapter_version']}`\n"
+        "- Coordinate normalization policy: "
+        f"`{identities['coordinate_normalization_policy']}`\n"
         f"- Report features: {overlay_summary['features']}\n"
         f"- Features with public geometry: {overlay_summary['features_with_geometry']}\n"
-        f"- Features without public geometry: {overlay_summary['features_without_geometry']}\n\n"
+        f"- Features without public geometry: {overlay_summary['features_without_geometry']}\n"
+        "- Provenance-scoped longitude sign corrections: "
+        f"{coordinate_audit_summary['longitude_sign_corrected']}\n"
+        "- Unchanged standard-signed coordinates: "
+        f"{coordinate_audit_summary['coordinates_unchanged']}\n"
+        "- Ambiguous coordinates suppressed: "
+        f"{coordinate_audit_summary['coordinates_suppressed_ambiguous']}\n"
+        "- Semantic geography validation: passed (all emitted geometries validated; "
+        "zero ambiguous geometries emitted)\n"
+        "- Coordinate audit schema: "
+        f"`{identities['coordinate_audit_schema_version']}`\n\n"
+        "## Coordinate normalization\n\n"
+        "The frozen canonical incidents remain byte-identical and each feature's "
+        "`source_incident_sha256` continues to identify the untouched canonical "
+        "incident. The Timeline adapter applies the documented UFOCAT longitude "
+        "convention only to the public projection. "
+        f"`data/{COORDINATE_AUDIT_NAME}` preserves the original public geometry, "
+        "output geometry, source scope, transformation rule, and stable event "
+        "lineage for every report. The supplied GeoJSON is already normalized; "
+        "downstream products must not apply another sign transformation.\n\n"
         "## Custody and privacy\n\n"
         "The ZIP contains only bounded public evidence, deterministic lineage, "
-        "schemas, adapter source, and the review queue. Raw third-party pages, "
+        "schemas, adapter source, the review queue, and the coordinate audit. Raw third-party pages, "
         "images, private caches, internal coordinates, and private-property "
         "locators are not included. Continue to honor each feature's privacy and "
         "uncertainty fields; never infer a more precise place or date.\n\n"
@@ -627,7 +1109,8 @@ def _handoff_markdown(
         "manifest intentionally excludes its own digest from its file table because "
         "a file cannot contain its final SHA-256 without a recursive identity. ZIP "
         "entry names, timestamps, permissions, and order are fixed for reproducible "
-        "builds.\n"
+        "builds. The release validator requires all 35 previously observed mirrored "
+        "near-duplicate coordinate pairs to be absent from the output.\n"
     ).encode("utf-8")
 
 
@@ -645,7 +1128,10 @@ def _import_prompt(*, release_commit: str) -> bytes:
         "`trace_role=context_only`, and `causality=not_asserted`; never infer or "
         "display causation. Verify all payload hashes and counts in "
         "`handoff_manifest.json` before making product changes. Do not mutate the "
-        "seed outputs. The handoff release commit is "
+        "seed outputs. The supplied GeoJSON coordinates are already normalized; do "
+        "not reapply longitude sign correction in the frontend. Retain "
+        f"`data/{COORDINATE_AUDIT_NAME}` as release provenance, not as a browser "
+        "runtime dependency. The handoff release commit is "
         f"`{release_commit}`.\n"
     ).encode("utf-8")
 
@@ -734,21 +1220,57 @@ def package_handoff(
 
     overlay_bytes = payloads[f"data/{OVERLAY_NAME}"]
     queue_bytes = payloads[f"data/{QUEUE_NAME}"]
+    coordinate_audit_bytes = payloads[f"data/{COORDINATE_AUDIT_NAME}"]
     adapter_manifest_bytes = payloads[f"manifest/{IMPORT_MANIFEST_NAME}"]
     overlay = _load_json(overlay_bytes, label=OVERLAY_NAME)
     queue = _load_jsonl(queue_bytes, label=QUEUE_NAME)
+    coordinate_audit = _load_jsonl(
+        coordinate_audit_bytes,
+        label=COORDINATE_AUDIT_NAME,
+    )
     adapter_manifest = _load_json(
         adapter_manifest_bytes,
         label=IMPORT_MANIFEST_NAME,
     )
+    _validate_against_schema(
+        overlay,
+        payloads["schemas/timeline_overlay.schema.json"],
+        label=OVERLAY_NAME,
+    )
+    queue_validator = _validator_from_schema(
+        payloads["schemas/timeline_review_queue.schema.json"],
+        label=QUEUE_NAME,
+    )
+    for index, row in enumerate(queue):
+        _validate_with_validator(
+            row,
+            queue_validator,
+            label=f"{QUEUE_NAME} row {index}",
+        )
+    coordinate_audit_validator = _validator_from_schema(
+        payloads["schemas/timeline_coordinate_normalization_audit.schema.json"],
+        label=COORDINATE_AUDIT_NAME,
+    )
+    for index, row in enumerate(coordinate_audit):
+        _validate_with_validator(
+            row,
+            coordinate_audit_validator,
+            label=f"{COORDINATE_AUDIT_NAME} row {index}",
+        )
     overlay_summary = _validate_overlay(overlay)
     _validate_queue(queue, feature_lineage=overlay_summary["lineage"])
+    coordinate_audit_summary = _validate_coordinate_audit(
+        coordinate_audit,
+        overlay_summary=overlay_summary,
+    )
     identities = _validate_adapter_manifest(
         adapter_manifest,
         overlay_bytes=overlay_bytes,
         queue_bytes=queue_bytes,
+        coordinate_audit_bytes=coordinate_audit_bytes,
         overlay_summary=overlay_summary,
         queue_count=len(queue),
+        coordinate_audit_summary=coordinate_audit_summary,
         repository_payloads=payloads,
     )
 
@@ -756,6 +1278,7 @@ def package_handoff(
         release_commit=release_commit,
         identities=identities,
         overlay_summary=overlay_summary,
+        coordinate_audit_summary=coordinate_audit_summary,
     )
     roles["HANDOFF.md"] = "custody_and_limitations_handoff"
     payloads["IMPORT_PROMPT.md"] = _import_prompt(release_commit=release_commit)
@@ -780,6 +1303,74 @@ def package_handoff(
             "features_with_geometry": overlay_summary["features_with_geometry"],
             "features_without_geometry": overlay_summary["features_without_geometry"],
             "source_references": overlay_summary["source_refs"],
+            "coordinate_audit_records": coordinate_audit_summary["records"],
+            "longitude_sign_corrected": coordinate_audit_summary[
+                "longitude_sign_corrected"
+            ],
+            "coordinates_unchanged": coordinate_audit_summary[
+                "coordinates_unchanged"
+            ],
+            "coordinates_suppressed_ambiguous": coordinate_audit_summary[
+                "coordinates_suppressed_ambiguous"
+            ],
+            "no_public_geometry": coordinate_audit_summary["no_public_geometry"],
+            "semantic_geography_passed": (
+                coordinate_audit_summary["longitude_sign_corrected"]
+                + coordinate_audit_summary["coordinates_unchanged"]
+            ),
+            "semantic_geography_failed_closed": coordinate_audit_summary[
+                "coordinates_suppressed_ambiguous"
+            ],
+            "original_opposite_sign_near_duplicate_pairs": (
+                coordinate_audit_summary[
+                    "original_opposite_sign_near_duplicate_pairs"
+                ]
+            ),
+            "output_opposite_sign_near_duplicate_pairs": (
+                coordinate_audit_summary[
+                    "output_opposite_sign_near_duplicate_pairs"
+                ]
+            ),
+        },
+        "coordinate_normalization": {
+            "policy_version": identities["coordinate_normalization_policy"],
+            "correction_count": coordinate_audit_summary[
+                "longitude_sign_corrected"
+            ],
+            "semantic_validation_passed": True,
+            "semantic_geography_validation": {
+                "status": "passed",
+                "validated_output_geometries": overlay_summary[
+                    "features_with_geometry"
+                ],
+                "failed_closed_geometries": coordinate_audit_summary[
+                    "coordinates_suppressed_ambiguous"
+                ],
+                "unvalidated_output_geometries": 0,
+            },
+            "audit_path": f"data/{COORDINATE_AUDIT_NAME}",
+            "audit": {
+                "path": f"data/{COORDINATE_AUDIT_NAME}",
+                "schema_path": (
+                    "schemas/timeline_coordinate_normalization_audit.schema.json"
+                ),
+                "schema_version": identities["coordinate_audit_schema_version"],
+                "schema_sha256": file_inventory[
+                    "schemas/timeline_coordinate_normalization_audit.schema.json"
+                ]["sha256"],
+                "schema_size_bytes": file_inventory[
+                    "schemas/timeline_coordinate_normalization_audit.schema.json"
+                ]["size_bytes"],
+                "sha256": file_inventory[f"data/{COORDINATE_AUDIT_NAME}"][
+                    "sha256"
+                ],
+                "size_bytes": file_inventory[f"data/{COORDINATE_AUDIT_NAME}"][
+                    "size_bytes"
+                ],
+                "record_count": coordinate_audit_summary["records"],
+            },
+            "canonical_incident_hashes_preserved": True,
+            "downstream_reapplication_forbidden": True,
         },
         "trace_policy": {
             "trace_eligible": False,
@@ -816,7 +1407,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--adapter-output-dir",
         type=Path,
         required=True,
-        help="Directory containing the three deterministic Timeline adapter outputs.",
+        help="Directory containing the four deterministic Timeline adapter outputs.",
     )
     parser.add_argument(
         "--output-zip",
@@ -847,6 +1438,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "Packaged Animal Mutilation Reports handoff: "
         f"features={manifest['record_counts']['reported_unreviewed_features']} "
         f"queue={manifest['record_counts']['review_queue_records']} "
+        f"longitude_sign_corrected={manifest['record_counts']['longitude_sign_corrected']} "
         f"zip={Path(args.output_zip).resolve()}"
     )
     return 0

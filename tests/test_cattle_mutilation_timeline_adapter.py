@@ -34,6 +34,10 @@ def _incident(
     latitude_internal: float | None = 40.123456,
     evidence: str | None = "A source reports the animal was found mutilated.",
     source_url: str | None = "https://records.example.test/case/1",
+    source_publisher: str | None = "majestic",
+    country_code: str = "US",
+    admin1: str = "CO",
+    coordinate_source: str = "source_coordinates",
 ) -> dict:
     source_id = f"src:{suffix}"
     source_hash = hashlib.sha256(source_id.encode()).hexdigest()
@@ -80,8 +84,8 @@ def _incident(
         },
         "location": {
             "raw_text": location_label,
-            "country_code": "US",
-            "admin1": "CO",
+            "country_code": country_code,
+            "admin1": admin1,
             "admin2": "Test County",
             "locality": "Test",
             "latitude_internal": latitude_internal,
@@ -89,7 +93,7 @@ def _incident(
             "latitude_public": latitude_public,
             "longitude_public": longitude_public,
             "precision": location_precision,
-            "coordinate_source": "fixture",
+            "coordinate_source": coordinate_source,
             "geocode_query": None,
             "geocode_confidence": None,
             "privacy_level": privacy_level,
@@ -103,7 +107,7 @@ def _incident(
                 "tier": "D",
                 "source_type": "dataset",
                 "title": "Fixture source",
-                "agency_or_publisher": None,
+                "agency_or_publisher": source_publisher,
                 "publication_date": None,
                 "url": source_url,
                 "page_or_container": "fixture.jsonl line 1",
@@ -325,12 +329,44 @@ def test_missing_decision_is_queued_and_output_is_confined(tmp_path: Path) -> No
         "queued_for_review": 1,
         "features_with_geometry": 1,
         "features_without_geometry": 0,
-        "generated_artifacts": 3,
+        "exact_day_features": 0,
+        "mapped_exact_day_features": 0,
+        "undated_features": 0,
+        "coordinate_audit_records": 1,
+        "longitude_sign_corrected": 0,
+        "coordinates_unchanged": 1,
+        "coordinates_suppressed_ambiguous": 0,
+        "no_public_geometry": 0,
+        "semantic_geography_passed": 1,
+        "semantic_geography_failed_closed": 0,
+        "original_opposite_sign_near_duplicate_pairs": 0,
+        "output_opposite_sign_near_duplicate_pairs": 0,
+        "generated_artifacts": 4,
     }
     assert manifest["layer_name"] == "Animal Mutilation Reports"
     assert manifest["source_commit"] == "d0c8341c9b4785db40f7da74369c750770b0d21f"
     assert manifest["seed_pipeline_version"] == "animal-mutilation-cross-domain-seed-v1.1.12"
     assert manifest["inputs"]["review_decision_ledger"]["sha256"] == hashlib.sha256(b"").hexdigest()
+    normalization = manifest["coordinate_normalization"]
+    assert normalization["correction_count"] == 0
+    assert normalization["semantic_validation_passed"] is True
+    assert normalization["semantic_geography_validation"] == {
+        "status": "passed",
+        "validated_output_geometries": 1,
+        "failed_closed_geometries": 0,
+        "unvalidated_output_geometries": 0,
+    }
+    audit_claim = manifest["outputs"][adapter.COORDINATE_AUDIT_NAME]
+    assert normalization["audit"] == {
+        "path": adapter.COORDINATE_AUDIT_NAME,
+        "schema_version": adapter.COORDINATE_AUDIT_SCHEMA_VERSION,
+        "schema_sha256": manifest["schema_sha256"][
+            "coordinate_normalization_audit"
+        ],
+        "sha256": audit_claim["sha256"],
+        "size_bytes": audit_claim["size_bytes"],
+        "record_count": audit_claim["records"],
+    }
 
 
 def test_accepted_projection_preserves_stable_lineage_and_trace_safety(tmp_path: Path) -> None:
@@ -364,6 +400,231 @@ def test_accepted_projection_preserves_stable_lineage_and_trace_safety(tmp_path:
     assert "trace_segments" not in public_bytes
     assert manifest["pending_relationships"]["total_pending"] == 5
     assert manifest["pending_relationships"]["emitted"] == 0
+
+
+def test_locked_source_scoped_longitude_normalization_preserves_anchor_lineage(
+    tmp_path: Path,
+) -> None:
+    anchors = [
+        (
+            "d421ceddb7d6bfc2e8cc2bae",
+            "ami_01a458ccd33f5c9dd4381259",
+            "ufocat",
+            "US",
+            "WA",
+            121.74,
+            48.04,
+            -121.74,
+            "SNOHOMISH COUNTY, WA, US",
+        ),
+        (
+            "d98032c4d5e2f8d775f77778",
+            "ami_0ba99d51d4f2e2388b51afde",
+            "ufocat",
+            "US",
+            "CO",
+            107.25,
+            40.5,
+            -107.25,
+            "HAYDEN, CO, US",
+        ),
+        (
+            "25cca204f415bfc2bdd1f40a",
+            "ami_5648067fd81836ca20201e5c",
+            "majestic",
+            "USA",
+            "Colorado",
+            -107.255561,
+            40.494446,
+            -107.255561,
+            "HAYDEN, CO, Colorado, USA",
+        ),
+        (
+            "8355d615f6fea4ceadecc88a",
+            "ami_aac9acbae4228d150f1a4d45",
+            "ufocat",
+            "EU",
+            "FRA",
+            -6.62,
+            48.35,
+            6.62,
+            "RAMBERVILLERS, FRA, EU",
+        ),
+        (
+            "9b1917ab5732223bb1e20c79",
+            "ami_49b95d6fd4ce1e20be3cb8db",
+            "majestic",
+            "France",
+            "Vosges",
+            6.616667,
+            48.350002,
+            6.616667,
+            "RAMBERVILLERS, FR, Vosges, France",
+        ),
+        (
+            "c7d4e6c9ec6154196fa16377",
+            "ami_5229ce30dd19f07b40917d41",
+            "ufocat",
+            "ME",
+            "ISR",
+            -34.97,
+            32.27,
+            34.97,
+            "PORAT, KADINA E, ISR, ME",
+        ),
+        (
+            "299497498f1b3c9041ed2659",
+            "ami_5e96d7313164880f55ebbe25",
+            "majestic",
+            "Israel",
+            "KDM",
+            34.966668,
+            32.266668,
+            34.966668,
+            "PORAT, EAST / KADIMA, ISR, KDM, Israel",
+        ),
+        (
+            "d88c425a9d6dab2590a131cf",
+            "ami_4faea6659e87554536a5160f",
+            "ufocat",
+            "SA",
+            "ARG",
+            61.98,
+            -33.67,
+            -61.98,
+            "VENADO TUERTO, ARG, SA",
+        ),
+        (
+            "81f23d6a88b96fe556c04404",
+            "ami_a999927a9077a4f635352f61",
+            "majestic",
+            "Argentina",
+            "STF",
+            -61.983336,
+            -33.750002,
+            -61.983336,
+            "VENADO TUERTO, ARG, STF, Argentina",
+        ),
+    ]
+    incidents = [
+        _incident(
+            suffix,
+            source_publisher=publisher,
+            country_code=country,
+            admin1=admin1,
+            longitude_public=longitude,
+            latitude_public=latitude,
+            location_label=label,
+        )
+        for (
+            suffix,
+            _ami,
+            publisher,
+            country,
+            admin1,
+            longitude,
+            latitude,
+            _expected_longitude,
+            label,
+        ) in anchors
+    ]
+
+    _, output, manifest = _build(tmp_path, incidents, None)
+    features = {
+        feature["properties"]["source_incident_id"]: feature
+        for feature in _load_json(output / adapter.OVERLAY_NAME)["features"]
+    }
+    audit = {
+        row["source_incident_id"]: row
+        for row in _load_jsonl(output / adapter.COORDINATE_AUDIT_NAME)
+    }
+    for (
+        suffix,
+        expected_ami,
+        publisher,
+        _country,
+        _admin1,
+        original_longitude,
+        latitude,
+        expected_longitude,
+        _label,
+    ) in anchors:
+        source_id = f"cmi_{suffix}"
+        feature = features[source_id]
+        row = audit[source_id]
+        assert feature["id"] == f"animal_mutilation:{expected_ami}"
+        assert feature["properties"]["animal_mutilation_event_id"] == expected_ami
+        assert feature["geometry"] == {
+            "type": "Point",
+            "coordinates": [expected_longitude, latitude],
+        }
+        assert row["animal_mutilation_event_id"] == expected_ami
+        assert row["original_geometry"] == {
+            "type": "Point",
+            "coordinates": [original_longitude, latitude],
+        }
+        assert row["output_geometry"] == feature["geometry"]
+        assert row["action"] == (
+            "longitude_sign_corrected"
+            if publisher == "ufocat"
+            else "unchanged_standard_signed"
+        )
+
+    assert manifest["counts"]["longitude_sign_corrected"] == 5
+    assert manifest["counts"]["coordinates_unchanged"] == 4
+    assert manifest["counts"]["coordinates_suppressed_ambiguous"] == 0
+    assert manifest["counts"]["semantic_geography_passed"] == 9
+    assert manifest["counts"]["semantic_geography_failed_closed"] == 0
+    assert manifest["counts"]["original_opposite_sign_near_duplicate_pairs"] == 4
+    assert manifest["counts"]["output_opposite_sign_near_duplicate_pairs"] == 0
+    assert manifest["coordinate_normalization"]["correction_count"] == 5
+    assert manifest["coordinate_normalization"]["semantic_validation_passed"] is True
+
+
+@pytest.mark.parametrize(
+    ("publisher", "country", "longitude", "expected_action"),
+    [
+        (None, "US", -105.2, "geometry_suppressed_ambiguous_provenance"),
+        ("unknown-catalog", "US", -105.2, "geometry_suppressed_ambiguous_provenance"),
+        ("majestic", "US", 105.2, "geometry_suppressed_ambiguous_geography"),
+        ("ufocat", "unknown-region", 105.2, "geometry_suppressed_ambiguous_geography"),
+    ],
+)
+def test_ambiguous_coordinate_is_retained_with_null_geometry_and_audit(
+    tmp_path: Path,
+    publisher: str | None,
+    country: str,
+    longitude: float,
+    expected_action: str,
+) -> None:
+    incident = _incident(
+        "19" * 12,
+        source_publisher=publisher,
+        country_code=country,
+        longitude_public=longitude,
+    )
+    _, output, manifest = _build(tmp_path, [incident], None)
+
+    feature = _load_json(output / adapter.OVERLAY_NAME)["features"][0]
+    row = _load_jsonl(output / adapter.COORDINATE_AUDIT_NAME)[0]
+    assert feature["geometry"] is None
+    assert row["original_geometry"] == {
+        "type": "Point",
+        "coordinates": [longitude, 40.1],
+    }
+    assert row["output_geometry"] is None
+    assert row["action"] == expected_action
+    assert row["semantic_validation"] == "failed_closed"
+    assert manifest["counts"]["total_source_incidents"] == 1
+    assert manifest["counts"]["features_without_geometry"] == 1
+    assert manifest["counts"]["coordinates_suppressed_ambiguous"] == 1
+    assert manifest["coordinate_normalization"]["semantic_validation_passed"] is False
+    assert manifest["coordinate_normalization"]["semantic_geography_validation"] == {
+        "status": "failed_closed",
+        "validated_output_geometries": 0,
+        "failed_closed_geometries": 1,
+        "unvalidated_output_geometries": 0,
+    }
 
 
 def test_unreviewed_projection_omits_private_url_and_corrupt_evidence(
@@ -819,7 +1080,11 @@ def test_two_runs_are_byte_identical_and_manifest_hashes_subordinate_outputs(tmp
     for name in adapter.OUTPUT_NAMES:
         assert (outputs[0] / name).read_bytes() == (outputs[1] / name).read_bytes()
     manifest = _load_json(outputs[0] / adapter.IMPORT_MANIFEST_NAME)
-    for subordinate in (adapter.QUEUE_NAME, adapter.OVERLAY_NAME):
+    for subordinate in (
+        adapter.QUEUE_NAME,
+        adapter.OVERLAY_NAME,
+        adapter.COORDINATE_AUDIT_NAME,
+    ):
         data = (outputs[0] / subordinate).read_bytes()
         assert manifest["outputs"][subordinate]["sha256"] == hashlib.sha256(data).hexdigest()
         assert manifest["outputs"][subordinate]["size_bytes"] == len(data)

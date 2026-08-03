@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/animal-mutilation-timeline-review-queue.schema.json",
+  "title": "Animal Mutilation Timeline Review Queue Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "animal_mutilation_event_id",
+    "source_incident_id",
+    "source_incident_sha256",
+    "queue_state",
+    "evidence_status",
+    "review_decision_id",
+    "record_type",
+    "status",
+    "negative_only",
+    "provenance_review_state",
+    "victim_assertion_count",
+    "normalized_common_names",
+    "reported_taxon_keys",
+    "species_groups",
+    "date_start",
+    "date_end",
+    "date_precision",
+    "location_precision",
+    "privacy_level",
+    "source_count",
+    "requested_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "animal-mutilation-timeline-review-queue-v1.1.0"
+    },
+    "animal_mutilation_event_id": {
+      "type": ["string", "null"],
+      "pattern": "^ami_[0-9a-f]{24}$"
+    },
+    "source_incident_id": {
+      "type": "string",
+      "pattern": "^cmi_[0-9a-f]{24}$"
+    },
+    "source_incident_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "queue_state": {
+      "type": "string",
+      "enum": [
+        "reported_unreviewed",
+        "missing_review_decision",
+        "review_unresolved"
+      ]
+    },
+    "evidence_status": {
+      "type": "string",
+      "enum": [
+        "reported_unreviewed",
+        "missing_review_decision",
+        "review_unresolved"
+      ]
+    },
+    "review_decision_id": {
+      "type": ["string", "null"],
+      "pattern": "^amrd_[0-9a-f]{24}$"
+    },
+    "record_type": {
+      "const": "mutilation_case"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "documented_report",
+        "corroborated",
+        "explained_natural",
+        "explained_human",
+        "contested",
+        "unresolved",
+        "retracted"
+      ]
+    },
+    "negative_only": {
+      "type": "boolean"
+    },
+    "provenance_review_state": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+    "victim_assertion_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "normalized_common_names": {
+      "$ref": "#/$defs/string_set"
+    },
+    "reported_taxon_keys": {
+      "$ref": "#/$defs/string_set"
+    },
+    "species_groups": {
+      "$ref": "#/$defs/string_set"
+    },
+    "date_start": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "date_end": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "date_precision": {
+      "type": "string",
+      "enum": [
+        "exact_time",
+        "exact_day",
+        "month",
+        "season",
+        "year",
+        "range",
+        "approximate",
+        "unknown"
+      ]
+    },
+    "location_precision": {
+      "type": "string",
+      "enum": [
+        "exact_site",
+        "parcel",
+        "road_segment",
+        "locality",
+        "county",
+        "state",
+        "country",
+        "approximate",
+        "unknown"
+      ]
+    },
+    "privacy_level": {
+      "type": "string",
+      "enum": [
+        "public_exact",
+        "public_generalized",
+        "internal_only",
+        "withheld"
+      ]
+    },
+    "source_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requested_action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "queue_state": {"const": "reported_unreviewed"}
+        },
+        "required": ["queue_state"]
+      },
+      "then": {
+        "properties": {
+          "animal_mutilation_event_id": {"type": "string"},
+          "evidence_status": {"const": "reported_unreviewed"},
+          "review_decision_id": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "queue_state": {"const": "missing_review_decision"}
+        },
+        "required": ["queue_state"]
+      },
+      "then": {
+        "properties": {
+          "animal_mutilation_event_id": {"type": "null"},
+          "evidence_status": {"const": "missing_review_decision"},
+          "review_decision_id": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "queue_state": {"const": "review_unresolved"}
+        },
+        "required": ["queue_state"]
+      },
+      "then": {
+        "properties": {
+          "animal_mutilation_event_id": {"type": "null"},
+          "evidence_status": {"const": "review_unresolved"},
+          "review_decision_id": {"type": "string"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "string_set": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
