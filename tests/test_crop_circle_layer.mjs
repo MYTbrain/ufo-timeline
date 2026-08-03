@@ -270,17 +270,47 @@ vm.runInContext(source, context, { filename: "crop_circle_layer.js" });
 const stylesheetSource = await fs.readFile(path.join(staticRoot, "styles.css"), "utf8");
 const indexSource = await fs.readFile(path.join(staticRoot, "index.html"), "utf8");
 const appSource = await fs.readFile(path.join(staticRoot, "app.js"), "utf8");
+const cropArtMatch = /--crop-circle-art:\s*url\("data:image\/svg\+xml,([^"]+)"\)/.exec(stylesheetSource);
+assert.ok(cropArtMatch, "the shared crop spiral is embedded as one self-contained SVG data URI");
+const cropArtSvg = decodeURIComponent(cropArtMatch[1]);
 assert.match(stylesheetSource, /\.overlay-chip\[data-overlay-kind="crop-circles"\]\.is-active\s*\{\s*color:\s*#344000;/, "active crop chip uses readable dark text in the light theme");
 assert.match(stylesheetSource, /:root\[data-theme="dark"\] \.overlay-chip\[data-overlay-kind="crop-circles"\]\.is-active\s*\{\s*color:\s*#d8ff3e;/, "dark theme retains the acid-lime crop label");
+assert.match(cropArtSvg, /viewBox='0 0 24 24'/, "shared crop art uses the Canvas marker coordinate scale");
+assert.match(cropArtSvg, /#17191b/i, "shared crop art retains the Canvas charcoal outline");
+assert.match(cropArtSvg, /#fff8df/i, "shared crop art retains the Canvas ivory uncertainty ring");
+assert.match(cropArtSvg, /#d8ff3e/i, "shared crop art retains the Canvas acid-lime spiral");
+assert.match(cropArtSvg, /<circle cx='12' cy='12' r='8\.3' stroke='#17191b' stroke-width='4\.6'\/?>/i, "shared crop art retains the Canvas singleton radius and outer outline weight");
+assert.match(cropArtSvg, /<circle cx='12' cy='12' r='8\.3' stroke='#fff8df' stroke-width='2'\/?>/i, "shared crop art retains the Canvas inner ivory ring weight");
+assert.match(cropArtSvg, /stroke-width='4\.2'/, "shared crop art retains the Canvas spiral outline weight");
+assert.match(cropArtSvg, /stroke-width='1\.9'/, "shared crop art retains the Canvas spiral accent weight");
+assert.match(cropArtSvg, /d='M 12\.00 11\.65[\s\S]*L 6\.21 14\.84'/, "shared crop art retains the Canvas singleton spiral extent");
+assert.match(cropArtSvg, /<circle cx='12' cy='12' r='1\.8' fill='#d8ff3e'\/?>/i, "shared crop art retains the exact-coordinate center dot");
+assert.match(source, /const radius = Math\.max\(7\.5,[\s\S]*?\|\| 8\.3\);/, "map renderer singleton radius remains the shared-art reference");
+assert.match(source, /context\.lineWidth = 4\.6;[\s\S]*?context\.lineWidth = 2;/, "map renderer ring weights remain the shared-art reference");
+assert.equal((cropArtSvg.match(/<path\b/g) || []).length, 2, "charcoal and lime strokes share the same spiral path");
+assert.doesNotMatch(cropArtSvg, /<(?:script|image|foreignObject)\b|href=|url\(/i, "shared crop art is self-contained and inert");
+assert.match(stylesheetSource, /overlay-chip \.overlay-chip-swatch-crop-circles[\s\S]*?background:\s*var\(--crop-circle-art\)/, "Overlays + View reuses the shared map spiral");
+assert.match(stylesheetSource, /map-legend-marker-sample-spiral::before[\s\S]*?background:\s*var\(--crop-circle-art\)/, "the selectable legend reuses the shared map spiral");
+assert.match(stylesheetSource, /map-control-context-button-crop\[aria-pressed="true"\][\s\S]*?border-color:\s*#596b00/, "the light-theme crop quick-toggle boundary remains visible");
+assert.match(stylesheetSource, /:root\[data-theme="dark"\] \.map-control-context-button-crop\[aria-pressed="true"\][\s\S]*?rgba\(216, 255, 62, 0\.72\)/, "the dark-theme crop quick toggle retains its lime boundary");
+assert.match(indexSource, /id="cluster-quick-crop-circles"[\s\S]*?aria-pressed="true"[\s\S]*?aria-controls="map crop-circle-status"[\s\S]*?map-legend-marker-sample-spiral/, "the quick crop toggle starts on, controls the map status, and uses the exact legend icon class");
+assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelector\("#cluster-quick-crop-circles"\)/, "the quick crop toggle is registered with the core UI");
+assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
+assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
+assert.match(indexSource, /styles\.css\?v=2026-08-03-context-layer-quick-toggles-v1/, "shared icon CSS uses a cache-safe release key");
+assert.match(indexSource, /app\.js\?v=2026-08-03-context-layer-quick-toggles-v1/, "quick-toggle behavior uses a cache-safe release key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
 assert.match(indexSource, /<legend>UFO sighting → later crop record<\/legend>/, "UFO-to-crop relationship selector is explicitly separate");
 assert.match(indexSource, /<legend>Crop record → later crop record<\/legend>/, "crop-to-crop relationship selector is explicitly separate");
 assert.match(indexSource, /id="crop-circle-ufo-crop-position-quality"/, "UFO-to-crop inference has an explicit selected-crop position-quality control");
 assert.match(indexSource, /id="crop-circle-analyze-ufo-traces"/, "trace-radius analysis requires an explicit opt-in control");
+assert.match(indexSource, /id="overlay-crop-circles"[^>]*data-default-enabled="true"[^>]*aria-pressed="true"/, "crop circles are enabled by default in the accessible initial state");
 assert.match(indexSource, /Focus view: show only crop circles, selected relations, and this UFO trace network/, "focus copy truthfully describes the isolated crop relationship result");
 assert.doesNotMatch(indexSource, /Same day \+ (?:7|30) days/i, "ambiguous cumulative date-window wording is removed");
 assert.match(appSource, /data-map-legend-crop-circles/, "the selectable map legend includes Crop circles under overlays");
+assert.match(appSource, /!cropCircleOverlayActive\(\)/, "legend reset treats default-on crop circles as clean and restores them when disabled");
+assert.match(appSource, /UfoCropCircleLayer\.resetControls\(\)/, "legend reset preserves the default-on layer while clearing optional scientific analysis controls");
 assert.match(appSource, /coordinateCode\) > 1 && relation\.cropPositionQuality !== "all"/, "locality-centroid crops are excluded from UFO-to-crop inference by default");
 assert.match(appSource, /filterGeneration:\s*Number\(runtime\.activeFilterGeneration\)/, "crop focus polls the applied—not merely requested—filter generation");
 assert.match(appSource, /TRACE_NEIGHBORHOOD\.clipSegmentToCircle/, "selected-radius traces use the tested exact circle clipper");
@@ -299,7 +329,7 @@ const pointRowsFixture = JSON.parse(gunzipSync(await fs.readFile(path.join(stati
 const pointRowByIdFixture = new Map(pointRowsFixture.map((row) => [String(row[0]), row]));
 
 const layerApi = windowObject.UfoCropCircleLayer;
-assert.equal(requests.length, 0, "loading the runtime must not request crop data before enable");
+assert.equal(requests.length, 0, "importing the heavy crop runtime has no fetch side effects before bootstrap activation");
 assert.ok(layerApi, "runtime API is exposed");
 
 await layerApi.setEnabled(true);
@@ -594,6 +624,20 @@ delayedDetailPaths.delete(firstRacePath);
 const winningDetail = await localDetailForRow(raceRows[1]);
 assert.ok(elements.get("#crop-circle-detail-body").innerHTML.includes(escapeFixture(winningDetail.location)), "newer detail remains visible after stale request resolves");
 
+assert.equal(layerApi.resetControls(), true, "legend reset can clear crop analysis without disabling the default-on markers");
+status = layerApi.getStatus();
+assert.equal(status.enabled, true);
+assert.equal(status.selectedRecordId, null);
+assert.equal(status.chronology.relation, "off");
+assert.equal(status.ufoFocus.relationWindow, "off");
+assert.equal(status.ufoFocus.traceAnalysisEnabled, false);
+assert.equal(status.ufoFocus.radiusKm, 25);
+assert.equal(status.ufoFocus.hopDepth, 1);
+assert.equal(status.ufoFocus.hopDirection, "both");
+assert.equal(status.ufoFocus.isolation, false);
+assert.equal(elements.get("#crop-circle-detail-panel").hidden, true);
+assert.equal(mapContainer.classList.contains("crop-circle-focus-active"), false);
+
 const disableRacePath = detailPathForRow(raceRows[2]);
 delayedDetailPaths.add(disableRacePath);
 const pendingAtDisable = layerApi.openRecord(raceRows[2][0]);
@@ -627,6 +671,7 @@ assert.equal(mapContainerListeners.size, 0, "bounded crop click capture listener
 assert.ok(requestCaches.slice(1).every((mode) => mode === "force-cache"), "all immutable point/detail payload requests remain force-cache");
 
 await testBootstrapRetry();
+await testBootstrapPreReadyOptOut();
 
 console.log(JSON.stringify({
   ok: true,
@@ -769,10 +814,14 @@ async function testBootstrapRetry() {
   let lastScriptSrc = "";
   const forwardedFocusConfigs = [];
   const forwardedFocusClears = [];
+  const readyHandlers = [];
   const retryWindow = {
     L: { map() { return map; } },
     setTimeout,
     clearTimeout,
+    addEventListener(name, handler) {
+      if (name === "ufo:timeline-ready") readyHandlers.push(handler);
+    },
   };
   const retryDocument = {
     baseURI: "https://example.test/",
@@ -823,13 +872,56 @@ async function testBootstrapRetry() {
   assert.equal(forwardedFocusConfigs.length, 1);
   assert.equal(retryWindow.UfoTimelineExtensions.clearCropTraceFocus("test cleanup"), true);
   assert.deepEqual(forwardedFocusClears, ["test cleanup"]);
-  assert.equal(appendCount, 0, "bootstrap makes no crop request or runtime injection before user action");
-  await retryButton.dispatch("click");
+  assert.equal(retryButton.getAttribute("aria-pressed"), "true", "bootstrap exposes the intended default-on state immediately");
+  assert.equal(appendCount, 0, "bootstrap makes no crop request or runtime injection before the core Ready boundary");
+  assert.equal(readyHandlers.length, 1);
+  readyHandlers[0]();
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.equal(appendCount, 1);
+  assert.equal(appendCount, 1, "Ready starts the first default activation attempt");
+  assert.equal(retryButton.getAttribute("aria-pressed"), "false", "a failed default activation is exposed as off and retryable");
+  readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(appendCount, 1, "repeated Ready events are idempotent");
   await retryButton.dispatch("click");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(appendCount, 2, "transient runtime load failure can be retried without reloading the app");
-  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-01-crop-circles-v157$/);
+  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-03-context-layers-default-on-v1$/);
   assert.equal(enables, 1);
+}
+
+async function testBootstrapPreReadyOptOut() {
+  const optOutButton = new MockElement();
+  const readyHandlers = [];
+  let appendCount = 0;
+  const optOutWindow = {
+    L: { map() { return map; } },
+    setTimeout,
+    clearTimeout,
+    addEventListener(name, handler) {
+      if (name === "ufo:timeline-ready") readyHandlers.push(handler);
+    },
+  };
+  const optOutDocument = {
+    querySelector(selector) { return selector === "#overlay-crop-circles" ? optOutButton : null; },
+    createElement() { return {}; },
+    head: { appendChild() { appendCount += 1; } },
+  };
+  vm.runInContext(
+    await fs.readFile(path.join(staticRoot, "crop_circle_bootstrap.js"), "utf8"),
+    vm.createContext({
+      window: optOutWindow,
+      document: optOutDocument,
+      URL,
+      console: { error() {} },
+      setTimeout,
+      clearTimeout,
+    }),
+    { filename: "crop_circle_bootstrap.js" },
+  );
+  assert.equal(optOutButton.getAttribute("aria-pressed"), "true");
+  await optOutButton.dispatch("click");
+  assert.equal(optOutButton.getAttribute("aria-pressed"), "false");
+  readyHandlers[0]();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(appendCount, 0, "a pre-Ready user opt-out prevents default crop runtime injection");
 }

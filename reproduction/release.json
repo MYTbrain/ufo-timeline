@@ -6,14 +6,14 @@
   },
   "pages": {
     "archive": {
-      "bytes": 8638202,
+      "bytes": 8694455,
       "format": "zip",
-      "sha256": "bfbcdde12d6791f476c8380366e5047b6d3c0c81aa441500632079a34f923e97",
-      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/area-lifecycle-v154-20260731/pages-bundle.zip"
+      "sha256": "6f3bbe200364aed283f3b1837b2ca14bea52ecde687544e161e82491b53fa9d2",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-layer-quick-toggles-v1-20260803/pages-bundle.zip"
     },
-    "base_url": "https://35673440.ufo-timeline.pages.dev",
-    "deployment_id": "35673440-926d-4dfd-a030-96c947d3615c",
-    "file_count": 127,
+    "base_url": "https://688e156d.ufo-timeline.pages.dev",
+    "deployment_id": "688e156d-1a4e-44d5-8a60-de1d6554ee18",
+    "file_count": 134,
     "files": [
       {
         "bytes": 0,
@@ -21,14 +21,29 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       {
-        "bytes": 822,
-        "path": "_headers",
-        "sha256": "7d74a27ef016d28ef778a00a8e429a84e832ec647e98d750beb6f15deb6dfe9a"
+        "bytes": 411,
+        "path": "404.html",
+        "sha256": "98ea475f3dec0f1854a6e94d18da9381ca9eb5410cec76e246ef61baceb0044c"
       },
       {
-        "bytes": 1056356,
+        "bytes": 1316,
+        "path": "_headers",
+        "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
+      },
+      {
+        "bytes": 3579,
+        "path": "animal_mutilation_bootstrap.js",
+        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
+      },
+      {
+        "bytes": 43787,
+        "path": "animal_mutilation_layer.js",
+        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
+      },
+      {
+        "bytes": 1093932,
         "path": "app.js",
-        "sha256": "073bae0db0000f0924dcfef16cd762f5e0b39fa47e9c69da02617135e27c8dd3"
+        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
       },
       {
         "bytes": 81571,
@@ -44,6 +59,21 @@
         "bytes": 129100,
         "path": "cloudflare_bundle_manifest.json",
         "sha256": "ce30bf17276bd92c0c8b401515c6ae33db608c565c0bc617f2241632b6433250"
+      },
+      {
+        "bytes": 6155,
+        "path": "crop_circle_bootstrap.js",
+        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
+      },
+      {
+        "bytes": 78476,
+        "path": "crop_circle_layer.js",
+        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
+      },
+      {
+        "bytes": 4210,
+        "path": "data/animal_mutilations/manifest.json",
+        "sha256": "342de15d439f8270069e697c605fd48915198497bfd16b65a65564a9881ce0d4"
       },
       {
         "bytes": 3689,
@@ -99,6 +129,11 @@
         "bytes": 4818,
         "path": "data/claimed_ufo_bases.json",
         "sha256": "a809d616bdf19d4265003ad23614a6906f55663131c43bacc712395008b8d29d"
+      },
+      {
+        "bytes": 7301,
+        "path": "data/crop_circles/manifest.json",
+        "sha256": "961530d02cfe6d73cd55b938acc4e7c67398de9163e02089367eca3f673b285d"
       },
       {
         "bytes": 1533,
@@ -531,9 +566,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 70487,
+        "bytes": 86812,
         "path": "index.html",
-        "sha256": "97882ba6f88330681188d33955ac3546000edebdafa25d03eb47bd8519886c34"
+        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
       },
       {
         "bytes": 4067,
@@ -576,9 +611,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 131622,
+        "bytes": 158370,
         "path": "styles.css",
-        "sha256": "6c7ed41df0e3f49246714dbe99b9af911fd2489cfff178d06327c36c1944fbe8"
+        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
       },
       {
         "bytes": 49332,
@@ -586,9 +621,9 @@
         "sha256": "62d6286544667a9bd9692eb4d5fc5253f98f7836e88a35a437dc26a995a719e2"
       },
       {
-        "bytes": 22690,
+        "bytes": 40860,
         "path": "trace_neighborhood.js",
-        "sha256": "16ccd6d50f963a6235281bdb5f47eca3ef80fedde62ed341103b372bf848f5fe"
+        "sha256": "d43e12e464983517adab078ec3f42af0f38e84d0e8ed64e955be50f2775cf029"
       },
       {
         "bytes": 119923,
@@ -652,8 +687,8 @@
       }
     ],
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "abb0134e0ae6ec4bd74a4d159e645bd1096c37a9d3834076788e7c19fe1fdfa1",
-    "uncompressed_bytes": 54690337
+    "tree_sha256": "465002faa4145226bae6bffabbba03473e4722317ffa91606c36f7e5270638a2",
+    "uncompressed_bytes": 54933569
   },
   "r2": {
     "base_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
@@ -3233,7 +3268,7 @@
     "asset_version": "2026-07-31T08:32:50.335399+00:00",
     "canonical_production_url": "https://ufo-timeline.pages.dev",
     "generated_at_utc": "2026-07-31T18:07:39.829315+00:00",
-    "id": "area-lifecycle-v154-20260731",
+    "id": "context-layer-quick-toggles-v1-20260803",
     "mapped_count": 580783,
     "normalized_count": 702893
   },
@@ -3245,12 +3280,32 @@
   },
   "schema_version": 1,
   "source_overlay": {
-    "file_count": 35,
+    "file_count": 43,
     "files": [
       {
-        "bytes": 1056356,
+        "bytes": 411,
+        "path": "404.html",
+        "sha256": "98ea475f3dec0f1854a6e94d18da9381ca9eb5410cec76e246ef61baceb0044c"
+      },
+      {
+        "bytes": 1316,
+        "path": "_headers",
+        "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
+      },
+      {
+        "bytes": 3579,
+        "path": "animal_mutilation_bootstrap.js",
+        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
+      },
+      {
+        "bytes": 43787,
+        "path": "animal_mutilation_layer.js",
+        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
+      },
+      {
+        "bytes": 1093932,
         "path": "app.js",
-        "sha256": "073bae0db0000f0924dcfef16cd762f5e0b39fa47e9c69da02617135e27c8dd3"
+        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
       },
       {
         "bytes": 17006,
@@ -3258,9 +3313,29 @@
         "sha256": "dd3359364d0a21b6d8c841e194e6972a19d491afa17e66cb6b10aa06720c4cb1"
       },
       {
+        "bytes": 6155,
+        "path": "crop_circle_bootstrap.js",
+        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
+      },
+      {
+        "bytes": 78476,
+        "path": "crop_circle_layer.js",
+        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
+      },
+      {
+        "bytes": 4210,
+        "path": "data/animal_mutilations/manifest.json",
+        "sha256": "342de15d439f8270069e697c605fd48915198497bfd16b65a65564a9881ce0d4"
+      },
+      {
         "bytes": 4818,
         "path": "data/claimed_ufo_bases.json",
         "sha256": "a809d616bdf19d4265003ad23614a6906f55663131c43bacc712395008b8d29d"
+      },
+      {
+        "bytes": 7301,
+        "path": "data/crop_circles/manifest.json",
+        "sha256": "961530d02cfe6d73cd55b938acc4e7c67398de9163e02089367eca3f673b285d"
       },
       {
         "bytes": 784,
@@ -3333,9 +3408,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 70487,
+        "bytes": 86812,
         "path": "index.html",
-        "sha256": "97882ba6f88330681188d33955ac3546000edebdafa25d03eb47bd8519886c34"
+        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
       },
       {
         "bytes": 4067,
@@ -3353,9 +3428,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 131622,
+        "bytes": 158370,
         "path": "styles.css",
-        "sha256": "6c7ed41df0e3f49246714dbe99b9af911fd2489cfff178d06327c36c1944fbe8"
+        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
       },
       {
         "bytes": 49332,
@@ -3363,9 +3438,9 @@
         "sha256": "62d6286544667a9bd9692eb4d5fc5253f98f7836e88a35a437dc26a995a719e2"
       },
       {
-        "bytes": 22690,
+        "bytes": 40860,
         "path": "trace_neighborhood.js",
-        "sha256": "16ccd6d50f963a6235281bdb5f47eca3ef80fedde62ed341103b372bf848f5fe"
+        "sha256": "d43e12e464983517adab078ec3f42af0f38e84d0e8ed64e955be50f2775cf029"
       },
       {
         "bytes": 1287,
@@ -3424,8 +3499,8 @@
       }
     ],
     "root": "webapp/static_public",
-    "total_bytes": 8553562,
+    "total_bytes": 8797616,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "f2ed6304802d0437faf0100ed1d7bb43c548856f08ae202137b6be50fe3b8d53"
+    "tree_sha256": "86e73af25b472b4547cae82f5063fff144a78204a902177f629cc4235a1b5c22"
   }
 }

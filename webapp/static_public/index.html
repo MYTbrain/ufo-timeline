@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-01-crop-circles-v157">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-03-context-layer-quick-toggles-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -597,12 +597,16 @@
                 <span class="overlay-chip-swatch" aria-hidden="true"></span>
                 <span>Research Sites</span>
               </button>
-              <button id="overlay-crop-circles" class="overlay-chip" data-overlay-kind="crop-circles" type="button" aria-pressed="false" aria-describedby="crop-circle-status">
+              <button id="overlay-crop-circles" class="overlay-chip is-active" data-overlay-kind="crop-circles" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="crop-circle-status">
                 <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
                 <span>Crop circles</span>
               </button>
+              <button id="overlay-animal-mutilations" class="overlay-chip is-active" data-overlay-kind="animal-mutilations" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="animal-mutilation-status">
+                <span class="overlay-chip-swatch overlay-chip-swatch-animal-mutilations" aria-hidden="true"></span>
+                <span>Animal Mutilation Reports</span>
+              </button>
             </div>
-            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are off. The layer adds no startup data requests.</p>
+            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
             <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
               <div class="crop-circle-chronology-head">
                 <strong>Crop-circle relationships</strong>
@@ -725,6 +729,10 @@
 
               <p class="crop-circle-chronology-caveat">All dates are catalog/report dates. Discovery or publication may lag formation by days or weeks, so the map never labels these links as confirmed formation order or causation.</p>
             </div>
+            <div class="animal-mutilation-actions">
+              <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
+            </div>
+            <p id="animal-mutilation-status" class="note-copy compact-status animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
                 <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
@@ -896,7 +904,8 @@
                     </select>
                   </label>
                 </div>
-                <div class="map-control-quick-controls" role="group" aria-label="Quick controls">
+                <div class="map-control-quick-row">
+                  <div class="map-control-quick-controls" role="group" aria-label="Map and trace quick controls">
                   <button
                     id="cluster-quick-map-mode"
                     class="secondary-button map-control-quick-button map-control-quick-button-map"
@@ -964,6 +973,31 @@
                       <circle cx="12" cy="12" r="3.9" class="quick-trace-static"></circle>
                     </svg>
                   </button>
+                  </div>
+                  <div class="map-control-context-controls" role="group" aria-label="Context layer quick toggles">
+                  <button
+                    id="cluster-quick-crop-circles"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-crop"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map crop-circle-status"
+                    aria-label="Hide Crop circles overlay"
+                    title="Hide Crop circles overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-spiral" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    id="cluster-quick-animal-mutilations"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-animal"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map animal-mutilation-status"
+                    aria-label="Hide Animal Mutilation Reports overlay"
+                    title="Hide Animal Mutilation Reports overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-cow" aria-hidden="true"></span>
+                  </button>
+                  </div>
                 </div>
                 <div class="map-control-proximity-control" role="group" aria-label="Facility proximity quick setting">
                   <button
@@ -1179,6 +1213,13 @@
             </div>
             <div id="crop-circle-detail-body" class="crop-circle-detail-body"></div>
           </section>
+          <section id="animal-mutilation-detail-panel" class="animal-mutilation-detail-panel" hidden aria-hidden="true" aria-label="Animal mutilation report details" aria-live="polite">
+            <div class="animal-mutilation-detail-head">
+              <strong>Animal Mutilation Report</strong>
+              <button id="animal-mutilation-detail-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="animal-mutilation-detail-body" class="animal-mutilation-detail-body"></div>
+          </section>
         </div>
         <div
           id="map-height-resize-rail"
@@ -1198,6 +1239,32 @@
           <span id="map-height-resize-label" class="map-height-resize-label">Drag down to expand map</span>
         </div>
         <div id="map-timeline-dock" class="map-timeline-dock"></div>
+      </section>
+      <section id="animal-mutilation-browser" class="animal-mutilation-browser" role="dialog" aria-modal="true" aria-labelledby="animal-mutilation-browser-title" aria-describedby="animal-mutilation-browser-intro" aria-hidden="true" tabindex="-1" hidden>
+        <div class="animal-browser-shell">
+          <div class="animal-browser-head">
+            <div>
+              <p class="animal-detail-eyebrow">Context layer · reported_unreviewed</p>
+              <h2 id="animal-mutilation-browser-title">Animal Mutilation Reports</h2>
+            </div>
+            <button id="animal-mutilation-browser-close" class="secondary-button" type="button">Close browser</button>
+          </div>
+          <p id="animal-mutilation-browser-intro" class="animal-science-warning"><strong>Scientific limitation:</strong> These are unreviewed source reports. They assert no UFO cause, never enter craft traces or relationships, and may contain disturbing animal-death descriptions.</p>
+          <div class="animal-browser-filters" role="group" aria-label="Filter animal mutilation reports">
+            <label class="field"><span>Search reports</span><input id="animal-mutilation-search" type="search" autocomplete="off" placeholder="Location, species, report label, or source ID"></label>
+            <label class="field"><span>Species group</span><select id="animal-mutilation-species-filter"><option value="all">All species groups</option></select></label>
+            <label class="field"><span>Map availability</span><select id="animal-mutilation-mapped-filter"><option value="all">Mapped and unmapped</option><option value="mapped">Mapped only</option><option value="unmapped">Unmapped only</option></select></label>
+            <label class="field"><span>Date precision</span><select id="animal-mutilation-date-filter"><option value="all_time">All Time (includes undated)</option><option value="exact_day">Exact day only</option><option value="dated">All dated reports</option><option value="undated">Undated only</option></select></label>
+            <label class="field"><span>From (report interval ends on or after)</span><input id="animal-mutilation-date-start" type="date"></label>
+            <label class="field"><span>Through (report interval starts on or before)</span><input id="animal-mutilation-date-end" type="date"></label>
+          </div>
+          <div class="animal-browser-toolbar">
+            <p id="animal-mutilation-browser-summary" role="status" aria-live="polite" aria-atomic="true">Choose Browse all reports to load the searchable catalog.</p>
+            <button id="animal-mutilation-browser-reset" class="secondary-button" type="button">Reset filters</button>
+          </div>
+          <ol id="animal-mutilation-browser-results" class="animal-browser-results"></ol>
+          <button id="animal-mutilation-browser-more" class="secondary-button animal-browser-more" type="button" hidden>Show more reports</button>
+        </div>
       </section>
 
       <div
@@ -1311,7 +1378,8 @@
   <script src="./legend_controls.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./crop_circle_bootstrap.js?v=2026-08-01-crop-circles-v157"></script>
-  <script src="./app.js?v=2026-08-01-crop-circles-v157"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./app.js?v=2026-08-03-context-layer-quick-toggles-v1"></script>
 </body>
 </html>

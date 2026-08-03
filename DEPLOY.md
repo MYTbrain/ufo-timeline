@@ -107,8 +107,13 @@ This repo also includes local Cloudflare wrappers that do not require `npm`,
 powershell -ExecutionPolicy Bypass -File scripts\cloudflare_login.ps1
 powershell -ExecutionPolicy Bypass -File scripts\cloudflare_whoami.ps1
 powershell -ExecutionPolicy Bypass -File scripts\cloudflare_deploy_pages.ps1 `
-  -ProjectName YOUR_PAGES_PROJECT_NAME
+  -ProjectName YOUR_PAGES_PROJECT_NAME `
+  -Branch YOUR_EXPLICIT_PREVIEW_OR_PRODUCTION_BRANCH
 ```
+
+`-Branch` is mandatory. Use a non-production branch for preview QA and pass
+the production branch only when promoting the same already-validated frozen
+`BundleRoot`; the wrapper never infers or defaults the promotion target.
 
 If OAuth login prints a URL, keep that PowerShell command running while you
 authorize in the browser. Wrangler's OAuth redirect uses
@@ -128,6 +133,7 @@ with the account's public `r2.dev` bucket URL:
 powershell -ExecutionPolicy Bypass -File scripts\cloudflare_deploy_public.ps1 `
   -BucketName ufo-timeline-data `
   -ProjectName ufo-timeline `
+  -Branch YOUR_EXPLICIT_PREVIEW_BRANCH `
   -UseR2DevUrl
 ```
 
@@ -137,8 +143,20 @@ For a custom R2 domain, pass the public base URL explicitly instead:
 powershell -ExecutionPolicy Bypass -File scripts\cloudflare_deploy_public.ps1 `
   -BucketName ufo-timeline-data `
   -ProjectName ufo-timeline `
+  -Branch YOUR_EXPLICIT_PREVIEW_OR_PRODUCTION_BRANCH `
   -R2BaseUrl https://assets.example.com/ufo-timeline
 ```
+
+The npm wrapper also fails closed unless its branch is supplied explicitly:
+
+```powershell
+$env:CLOUDFLARE_PAGES_BRANCH = 'YOUR_EXPLICIT_PREVIEW_BRANCH'
+npm run cf:deploy
+```
+
+Unset `CLOUDFLARE_PAGES_BRANCH` after the operation. The package wrapper passes
+that value to the same mandatory, validated `-Branch` parameter; it never
+defaults to the production branch.
 
 The generated script uploads from `static_bundle\data\canonical_web\...` and
 uses the minimized R2 upload set: small canonical manifests/metadata are

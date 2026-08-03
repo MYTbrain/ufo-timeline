@@ -898,6 +898,9 @@
     cropTraceHiddenPaneStyles: new Map(),
     cropCircleOverlayEnabled: false,
     cropCircleOverlayVisibleCount: null,
+    animalMutilationOverlayEnabled: false,
+    animalMutilationOverlayVisibleCount: null,
+    quickContextButtonObservers: [],
     playbackCursorMarker: null,
     playbackActiveMarker: null,
     cursorAnimationFrameId: null,
@@ -1668,6 +1671,8 @@
     clusterQuickMilitaryButton: document.querySelector("#cluster-quick-military"),
     clusterQuickResearchSitesButton: document.querySelector("#cluster-quick-research-sites"),
     clusterQuickTraceButton: document.querySelector("#cluster-quick-trace"),
+    clusterQuickCropCirclesButton: document.querySelector("#cluster-quick-crop-circles"),
+    clusterQuickAnimalMutilationsButton: document.querySelector("#cluster-quick-animal-mutilations"),
     clusterQuickFacilityProximityButton: document.querySelector("#cluster-quick-facility-proximity"),
     clusterQuickFacilityValue: document.querySelector("#cluster-quick-facility-value"),
     mapQuickControlStatus: document.querySelector("#map-quick-control-status"),
@@ -1692,6 +1697,7 @@
     overlayClaimedUfoBasesTracesRow: document.querySelector("#claimed-ufo-bases-traces-row"),
     overlayClaimedUfoBasesTracesToggle: document.querySelector("#overlay-claimed-ufo-bases-traces"),
     overlayCropCirclesToggle: document.querySelector("#overlay-crop-circles"),
+    overlayAnimalMutilationsToggle: document.querySelector("#overlay-animal-mutilations"),
     militaryBranchPanel: document.querySelector("#military-branch-panel"),
     militaryBranchStatus: document.querySelector("#military-branch-status"),
     mapControlCluster: document.querySelector("#map-control-cluster"),
@@ -5515,6 +5521,39 @@
     button.classList.toggle("is-active", Boolean(pressed));
   }
 
+  function setQuickContextButtonState(button, canonicalButton, active, label) {
+    if (!button) return;
+    const busy = Boolean(canonicalButton && (
+      canonicalButton.disabled || canonicalButton.getAttribute("aria-busy") === "true"
+    ));
+    setQuickButtonPressedState(button, active);
+    button.disabled = busy;
+    if (busy) button.setAttribute("aria-busy", "true");
+    else button.removeAttribute("aria-busy");
+    const actionLabel = busy
+      ? label + " are loading"
+      : (active ? "Hide " + label + " overlay" : "Show " + label + " overlay");
+    button.setAttribute("aria-label", actionLabel);
+    button.title = actionLabel;
+  }
+
+  function observeQuickContextCanonicalButton(canonicalButton) {
+    if (!canonicalButton || typeof window.MutationObserver !== "function") return;
+    const observer = new window.MutationObserver(function (mutations) {
+      renderMapControlQuickButtons();
+      if (mutations.some(function (mutation) {
+        return mutation.attributeName === "aria-pressed";
+      })) {
+        renderMapLegend();
+      }
+    });
+    observer.observe(canonicalButton, {
+      attributes: true,
+      attributeFilter: ["aria-pressed", "aria-busy", "disabled"],
+    });
+    runtime.quickContextButtonObservers.push(observer);
+  }
+
   function renderMapControlQuickButtons() {
     if (els.clusterQuickMapModeButton) {
       const mapState = currentQuickMapModeState();
@@ -5590,6 +5629,26 @@
       );
       els.clusterQuickTraceButton.title =
         "Trace mode: " + traceModeLabel + ". Click to switch to " + nextTraceLabel + ".";
+    }
+
+    if (els.clusterQuickCropCirclesButton) {
+      const cropActive = cropCircleOverlayActive();
+      setQuickContextButtonState(
+        els.clusterQuickCropCirclesButton,
+        els.overlayCropCirclesToggle,
+        cropActive,
+        "Crop circles"
+      );
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      const animalActive = animalMutilationOverlayActive();
+      setQuickContextButtonState(
+        els.clusterQuickAnimalMutilationsButton,
+        els.overlayAnimalMutilationsToggle,
+        animalActive,
+        "Animal Mutilation Reports"
+      );
     }
 
     if (els.clusterQuickFacilityProximityButton) {
@@ -10457,11 +10516,21 @@
     };
   }
 
-  function buildMapLegendOverlayRows() {
-    const rows = [];
-    const cropCirclesActive = Boolean(runtime.cropCircleOverlayEnabled || (
+  function cropCircleOverlayActive() {
+    return Boolean(runtime.cropCircleOverlayEnabled || (
       els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true"
     ));
+  }
+
+  function animalMutilationOverlayActive() {
+    return Boolean(runtime.animalMutilationOverlayEnabled || (
+      els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true"
+    ));
+  }
+
+  function buildMapLegendOverlayRows() {
+    const rows = [];
+    const cropCirclesActive = cropCircleOverlayActive();
     rows.push(buildMapLegendMarkerRow(
       "Crop circles",
       "#d8ff3e",
@@ -10478,6 +10547,27 @@
               count: Number(runtime.cropCircleOverlayVisibleCount),
               countNounSingular: "crop record",
               countNounPlural: "crop records",
+            }
+          : {}
+      )
+    ));
+    const animalMutilationsActive = animalMutilationOverlayActive();
+    rows.push(buildMapLegendMarkerRow(
+      "Animal Mutilation Reports",
+      "#101417",
+      "cow",
+      Object.assign(
+        mapLegendOverlayToggleOptions(
+          "data-map-legend-animal-mutilations",
+          "animal_mutilations",
+          "Animal Mutilation Reports",
+          animalMutilationsActive
+        ),
+        Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+          ? {
+              count: Number(runtime.animalMutilationOverlayVisibleCount),
+              countNounSingular: "mapped report",
+              countNounPlural: "mapped reports",
             }
           : {}
       )
@@ -10628,7 +10718,8 @@
       eventSelection.mode !== "all" ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
-      Boolean(runtime.cropCircleOverlayEnabled) ||
+      !cropCircleOverlayActive() ||
+      !animalMutilationOverlayActive() ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -10815,8 +10906,13 @@
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
-    if (runtime.cropCircleOverlayEnabled && els.overlayCropCirclesToggle) {
+    if (cropCircleOverlayActive() && window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.resetControls === "function") {
+      window.UfoCropCircleLayer.resetControls();
+    } else if (!cropCircleOverlayActive() && els.overlayCropCirclesToggle) {
       els.overlayCropCirclesToggle.click();
+    }
+    if (!animalMutilationOverlayActive() && els.overlayAnimalMutilationsToggle) {
+      els.overlayAnimalMutilationsToggle.click();
     }
     invalidateMapLegendEventFilterCaches();
     resetPlayback({ preserveSelection: true });
@@ -16717,6 +16813,7 @@
       map: runtime.map,
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
       timeRangeEndOrdinal: state.timeRangeEndOrdinal,
+      timeRangeIsAllTime: state.timeRangeMode === "full",
       hideLowPrecisionCoordinates: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
       hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
       colorMode: state.colorMode,
@@ -24857,8 +24954,23 @@
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
+      renderMapControlQuickButtons();
       renderMapLegend();
     });
+
+    window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
+      const detail = event && event.detail ? event.detail : {};
+      runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
+      runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
+        ? Number(detail.visibleRecords)
+        : null;
+      renderMapControlQuickButtons();
+      renderMapLegend();
+    });
+
+    [els.overlayCropCirclesToggle, els.overlayAnimalMutilationsToggle].forEach(
+      observeQuickContextCanonicalButton
+    );
 
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
@@ -25077,10 +25189,11 @@
         const eventButton = event.target.closest("[data-map-legend-event-key]");
         const overlayButton = event.target.closest("[data-map-legend-overlay]");
         const cropCircleButton = event.target.closest("[data-map-legend-crop-circles]");
+        const animalMutilationButton = event.target.closest("[data-map-legend-animal-mutilations]");
         const militaryButton = event.target.closest("[data-map-legend-military-branch]");
         const researchButton = event.target.closest("[data-map-legend-research-category]");
         const claimedButton = event.target.closest("[data-map-legend-claimed-control]");
-        const button = eventButton || overlayButton || cropCircleButton || militaryButton || researchButton || claimedButton;
+        const button = eventButton || overlayButton || cropCircleButton || animalMutilationButton || militaryButton || researchButton || claimedButton;
         if (!button) return;
         event.preventDefault();
         event.stopPropagation();
@@ -25094,6 +25207,14 @@
           els.overlayCropCirclesToggle.click();
           announceMapLegendStatus(
             "Crop circles overlay " + (runtime.cropCircleOverlayEnabled ? "shown." : "updating.")
+          );
+          return;
+        }
+        if (animalMutilationButton) {
+          if (!els.overlayAnimalMutilationsToggle) return;
+          els.overlayAnimalMutilationsToggle.click();
+          announceMapLegendStatus(
+            "Animal Mutilation Reports overlay " + (runtime.animalMutilationOverlayEnabled ? "shown." : "updating.")
           );
           return;
         }
@@ -25194,6 +25315,32 @@
             ? "static"
             : "off";
         setTraceMode(nextMode);
+      });
+    }
+
+    if (els.clusterQuickCropCirclesButton) {
+      els.clusterQuickCropCirclesButton.addEventListener("click", function () {
+        if (!els.overlayCropCirclesToggle) return;
+        els.overlayCropCirclesToggle.click();
+        renderMapControlQuickButtons();
+        const nextActive = els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true";
+        announceMapQuickControl(
+          nextActive ? "Crop circles are turning on." : "Crop circles hidden."
+        );
+      });
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      els.clusterQuickAnimalMutilationsButton.addEventListener("click", function () {
+        if (!els.overlayAnimalMutilationsToggle) return;
+        els.overlayAnimalMutilationsToggle.click();
+        renderMapControlQuickButtons();
+        const nextActive = els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true";
+        announceMapQuickControl(
+          nextActive
+            ? "Animal Mutilation Reports are turning on."
+            : "Animal Mutilation Reports hidden."
+        );
       });
     }
 
@@ -26999,6 +27146,9 @@
     }
     startup.initialViewReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
+    window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", {
+      detail: { phase: "Ready" },
+    }));
     recordStartupMilestone("time to Ready");
     finalizeStartupTimingSummary();
     logStartupTimingSummary();

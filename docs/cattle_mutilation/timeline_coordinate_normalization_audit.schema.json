@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/animal-mutilation-timeline-coordinate-normalization-audit.schema.json",
+  "title": "Animal Mutilation Timeline Coordinate Normalization Audit Record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_incident_id",
+    "source_incident_sha256",
+    "animal_mutilation_event_id",
+    "coordinate_source",
+    "source_publishers",
+    "country_code",
+    "admin1",
+    "privacy_level",
+    "original_geometry",
+    "output_geometry",
+    "action",
+    "rule_id",
+    "source_longitude_convention",
+    "transformation",
+    "semantic_region",
+    "semantic_validation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "animal-mutilation-timeline-coordinate-normalization-audit-v1.0.0"
+    },
+    "source_incident_id": {
+      "type": "string",
+      "pattern": "^cmi_[0-9a-f]{24}$"
+    },
+    "source_incident_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "animal_mutilation_event_id": {
+      "type": "string",
+      "pattern": "^ami_[0-9a-f]{24}$"
+    },
+    "coordinate_source": {
+      "type": ["string", "null"],
+      "maxLength": 200
+    },
+    "source_publishers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "uniqueItems": true
+    },
+    "country_code": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+    "admin1": {
+      "type": ["string", "null"],
+      "maxLength": 200
+    },
+    "privacy_level": {
+      "type": "string",
+      "enum": [
+        "public_exact",
+        "public_generalized",
+        "internal_only",
+        "withheld"
+      ]
+    },
+    "original_geometry": {
+      "$ref": "#/$defs/nullable_point"
+    },
+    "output_geometry": {
+      "$ref": "#/$defs/nullable_point"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "no_public_geometry",
+        "longitude_sign_corrected",
+        "unchanged_standard_signed",
+        "geometry_suppressed_ambiguous_provenance",
+        "geometry_suppressed_ambiguous_geography"
+      ]
+    },
+    "rule_id": {
+      "type": "string",
+      "enum": [
+        "no_public_geometry_v1",
+        "ufocat_legacy_longitude_sign_v1",
+        "standard_signed_longitude_v1",
+        "fail_closed_ambiguous_provenance_v1",
+        "fail_closed_semantic_geography_v1"
+      ]
+    },
+    "source_longitude_convention": {
+      "type": ["string", "null"],
+      "enum": [
+        "west_positive_east_negative",
+        "geojson_signed_longitude",
+        null
+      ]
+    },
+    "transformation": {
+      "type": ["string", "null"],
+      "enum": [
+        "longitude_out=-longitude_in",
+        "identity",
+        null
+      ]
+    },
+    "semantic_region": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+    "semantic_validation": {
+      "type": "string",
+      "enum": [
+        "not_applicable_no_public_geometry",
+        "passed",
+        "failed_closed"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {"const": "no_public_geometry"}
+        },
+        "required": ["action"]
+      },
+      "then": {
+        "properties": {
+          "original_geometry": {"type": "null"},
+          "output_geometry": {"type": "null"},
+          "rule_id": {"const": "no_public_geometry_v1"},
+          "source_longitude_convention": {"type": "null"},
+          "transformation": {"type": "null"},
+          "semantic_region": {"type": "null"},
+          "semantic_validation": {"const": "not_applicable_no_public_geometry"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {"const": "longitude_sign_corrected"}
+        },
+        "required": ["action"]
+      },
+      "then": {
+        "properties": {
+          "original_geometry": {"type": "object"},
+          "output_geometry": {"type": "object"},
+          "source_publishers": {"const": ["ufocat"]},
+          "rule_id": {"const": "ufocat_legacy_longitude_sign_v1"},
+          "source_longitude_convention": {"const": "west_positive_east_negative"},
+          "transformation": {"const": "longitude_out=-longitude_in"},
+          "semantic_region": {"type": "string"},
+          "semantic_validation": {"const": "passed"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {"const": "unchanged_standard_signed"}
+        },
+        "required": ["action"]
+      },
+      "then": {
+        "properties": {
+          "original_geometry": {"type": "object"},
+          "output_geometry": {"type": "object"},
+          "source_publishers": {"const": ["majestic"]},
+          "rule_id": {"const": "standard_signed_longitude_v1"},
+          "source_longitude_convention": {"const": "geojson_signed_longitude"},
+          "transformation": {"const": "identity"},
+          "semantic_region": {"type": "string"},
+          "semantic_validation": {"const": "passed"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "enum": [
+              "geometry_suppressed_ambiguous_provenance",
+              "geometry_suppressed_ambiguous_geography"
+            ]
+          }
+        },
+        "required": ["action"]
+      },
+      "then": {
+        "properties": {
+          "original_geometry": {"type": "object"},
+          "output_geometry": {"type": "null"},
+          "semantic_validation": {"const": "failed_closed"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "point": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": {"const": "Point"},
+        "coordinates": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            }
+          ],
+          "items": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "nullable_point": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/point"}
+      ]
+    }
+  },
+  "additionalProperties": false
+}

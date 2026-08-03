@@ -1182,6 +1182,62 @@ def test_facility_proximity_quick_cycle_is_visible_accessible_and_synchronized()
             assert fragment in styles_css
 
 
+def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
+    for root in (Path("webapp/static_public"), Path("static_bundle")):
+        app_js = (root / "app.js").read_text(encoding="utf-8")
+        index_html = (root / "index.html").read_text(encoding="utf-8")
+        styles_css = (root / "styles.css").read_text(encoding="utf-8")
+
+        trace_button = index_html.index('id="cluster-quick-trace"')
+        context_group = index_html.index('<div class="map-control-context-controls"')
+        crop_button = index_html.index('id="cluster-quick-crop-circles"')
+        animal_button = index_html.index('id="cluster-quick-animal-mutilations"')
+        proximity_group = index_html.index('<div class="map-control-proximity-control"')
+        assert trace_button < context_group < crop_button < animal_button < proximity_group
+
+        required_index_fragments = [
+            'class="map-control-quick-row"',
+            'role="group" aria-label="Context layer quick toggles"',
+            'aria-controls="map crop-circle-status"',
+            'aria-controls="map animal-mutilation-status"',
+            'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
+            'class="map-legend-marker-sample map-legend-marker-sample-cow"',
+            'styles.css?v=2026-08-03-context-layer-quick-toggles-v1',
+            'app.js?v=2026-08-03-context-layer-quick-toggles-v1',
+        ]
+        for fragment in required_index_fragments:
+            assert fragment in index_html
+
+        required_app_fragments = [
+            'clusterQuickCropCirclesButton: document.querySelector("#cluster-quick-crop-circles")',
+            'clusterQuickAnimalMutilationsButton: document.querySelector("#cluster-quick-animal-mutilations")',
+            'els.overlayCropCirclesToggle.click();',
+            'els.overlayAnimalMutilationsToggle.click();',
+            'function setQuickContextButtonState(button, canonicalButton, active, label)',
+            'canonicalButton.getAttribute("aria-busy") === "true"',
+            'nextActive ? "Crop circles are turning on." : "Crop circles hidden."',
+            '? "Animal Mutilation Reports are turning on."',
+            ': "Animal Mutilation Reports hidden."',
+            'function observeQuickContextCanonicalButton(canonicalButton)',
+            'attributeFilter: ["aria-pressed", "aria-busy", "disabled"]',
+        ]
+        for fragment in required_app_fragments:
+            assert fragment in app_js
+
+        required_style_fragments = [
+            '--crop-circle-art: url("data:image/svg+xml,',
+            'background: var(--crop-circle-art) center / contain no-repeat;',
+            '.map-control-quick-row',
+            '.map-control-context-controls',
+            '.map-control-context-button-crop[aria-pressed="true"]',
+            '.map-control-context-button-animal[aria-pressed="true"]',
+            '.map-control-context-button[aria-pressed="false"] .map-legend-marker-sample',
+            '.map-control-cluster.is-collapsed .map-control-context-controls',
+        ]
+        for fragment in required_style_fragments:
+            assert fragment in styles_css
+
+
 def test_shell_assets_match_the_rebuilt_static_bundle():
     for filename in (
         "app.js",

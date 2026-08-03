@@ -1,4 +1,5 @@
 import gzip
+import hashlib
 import json
 import subprocess
 import sys
@@ -482,16 +483,87 @@ def test_cloudflare_bundle_validator_rejects_crop_r2_payloads_from_pages(tmp_pat
         encoding="utf-8",
     )
     (crop_root / "manifest.json").write_text(
-        json.dumps({"points": {"path": "points.json.gz"}}), encoding="utf-8"
+        json.dumps(
+            {
+                "releaseId": "crop-v1",
+                "assetBaseUrl": "https://assets.example.org/releases/crop-v1/",
+                "points": {
+                    "path": "points.json.gz",
+                    "bytes": len(b"r2 only"),
+                    "sha256": hashlib.sha256(b"r2 only").hexdigest(),
+                },
+            }
+        ),
+        encoding="utf-8",
     )
     (crop_root / "points.json.gz").write_bytes(b"r2 only")
 
     report = validate_cloudflare_bundle.validate_bundle(bundle_root)
 
     assert report["ok"] is False
+    assert report["checks"]["optional_layer_r2_payloads_excluded"] is False
     assert report["checks"]["crop_r2_payloads_excluded"] is False
+    assert report["optional_layer_r2_payloads"] == ["data/crop_circles/points.json.gz"]
     assert report["crop_r2_payloads"] == ["data/crop_circles/points.json.gz"]
-    assert any("R2-only crop payloads" in error for error in report["errors"])
+    assert any("R2-only optional-layer payloads" in error for error in report["errors"])
+
+
+def test_cloudflare_bundle_validator_rejects_undeclared_animal_review_queue(tmp_path):
+    bundle_root = tmp_path / "cloudflare_bundle_r2"
+    animal_root = bundle_root / "data" / "animal_mutilations"
+    animal_root.mkdir(parents=True)
+    (bundle_root / "cloudflare_bundle_manifest.json").write_text(
+        json.dumps({"pages_safe": True}), encoding="utf-8"
+    )
+    (bundle_root / "r2_upload_manifest.json").write_text(
+        json.dumps(
+            {
+                "r2_base_url": "https://assets.example.org/releases/v1",
+                "r2_key_prefix": "releases/v1",
+                "upload_count": 1,
+                "uploads": [{"path": "data/file.json", "r2_key": "releases/v1/data/file.json"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (bundle_root / "data" / "app_config.json").write_text(
+        json.dumps({"deploymentProfile": {"largeDataBaseUrl": "https://assets.example.org/releases/v1"}}),
+        encoding="utf-8",
+    )
+    (bundle_root / "_headers").write_text(
+        "/data/startup_profiles/*\n  Cache-Control: public, max-age=31536000, immutable\n",
+        encoding="utf-8",
+    )
+    payload = b"r2 only"
+    (animal_root / "manifest.json").write_text(
+        json.dumps(
+            {
+                "releaseId": "animal-v1",
+                "assetBaseUrl": "https://assets.example.org/releases/animal-v1/",
+                "delivery": {
+                    "pagesFiles": ["manifest.json"],
+                    "immutablePrefix": "releases/animal-v1/",
+                    "r2OnlyPaths": ["catalog.json.gz"],
+                },
+                "catalog": {
+                    "path": "catalog.json.gz",
+                    "bytes": len(payload),
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "r2Only": True,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (animal_root / "timeline_review_queue.jsonl").write_text("{}\n", encoding="utf-8")
+
+    report = validate_cloudflare_bundle.validate_bundle(bundle_root)
+
+    assert report["ok"] is False
+    assert report["undeclared_optional_layer_files"] == [
+        "data/animal_mutilations/timeline_review_queue.jsonl"
+    ]
+    assert any("undeclared optional-layer files" in error for error in report["errors"])
 
 
 def test_cloudflare_bundle_release_mode_enforces_exact_inventory(tmp_path, monkeypatch):
@@ -559,9 +631,25 @@ def test_pages_deploy_wrapper_validates_before_wrangler_and_rejects_raw_source()
     script = (REPO_ROOT / "scripts" / "cloudflare_deploy_pages.ps1").read_text(encoding="utf-8")
 
     assert "Refusing to deploy raw webapp/static_public" in script
-    assert "R2-only crop payload" in script
     assert "--release-manifest" in script
+    assert "[string]$Branch" in script
+    assert "--branch $Branch" in script
     assert script.index("validate_cloudflare_bundle.py") < script.index("cloudflare_wrangler.ps1")
+
+
+def test_public_deploy_wrapper_and_package_script_require_and_forward_explicit_branch() -> None:
+    script = (REPO_ROOT / "scripts" / "cloudflare_deploy_public.ps1").read_text(encoding="utf-8")
+    package = json.loads((REPO_ROOT / "package.json").read_text(encoding="utf-8"))
+
+    branch_parameter = script.index("[string]$Branch")
+    branch_forward = script.index("-Branch $Branch")
+    assert "[Parameter(Mandatory = $true)]" in script[:branch_parameter]
+    assert "[ValidatePattern('^[A-Za-z0-9._/-]+$')]" in script[:branch_parameter]
+    assert branch_forward > branch_parameter
+    assert "cloudflare_deploy_pages.ps1" in script
+    deploy_command = package["scripts"]["cf:deploy"]
+    assert "CLOUDFLARE_PAGES_BRANCH" in deploy_command
+    assert "-Branch $env:CLOUDFLARE_PAGES_BRANCH" in deploy_command
 
 
 def test_custom_pages_404_disables_index_fallback_for_missing_asset_routes() -> None:
