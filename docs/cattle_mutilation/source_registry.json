@@ -1,0 +1,248 @@
+{
+  "generated_at": "2026-08-01",
+  "policy": {
+    "default_ingestion": "Extract factual metadata and claim-level provenance; do not mirror mixed-rights documents by default.",
+    "privacy": "Suppress public coordinates for every named private property, generalize modern or precise unnamed private locations, and suppress personal locators.",
+    "verification": "Discovery sources create leads; they do not by themselves establish a verified case.",
+    "cross_domain": "Crop-circle and UFO events remain independent contextual records. Relationships must be labeled as source-explicit, deterministic candidates, or analyst-confirmed and never assert causality.",
+    "raw_content": "Retain fetched third-party pages only in a private content-addressed cache. Seed case JSONL files are restricted review artifacts because they retain internal custody fields. Only the public-safe Timeline GeoJSON is designed for public use; it labels source reports as reported_unreviewed and may contain source links, hashes, locators, and short factual extracts after privacy validation."
+  },
+  "input_pins": {
+    "starter_pack": {
+      "filename": "cattle_mutilation_mapping_starter_pack.zip",
+      "sha256": "578F9A6E2E6B1EFDC4634EF5421F3079A5E169ADE89EF65F9CA181BC506AE611"
+    },
+    "crop_circle_atlas_export": {
+      "filename": "Crop_Circle_UFO_Timeline_Export_v1.zip",
+      "sha256": "7F552F66A197B96C838475B5CAEAB7C78C1AEE5544C81D658A10335687CB2DF6",
+      "source_commit": "0086e3b86ceefeaa5c12422ea28a3fed05e8e260",
+      "schema_version": "crop-circle-timeline-export-v1.0.0",
+      "event_count": 7745,
+      "source_assertion_count": 8391,
+      "unique_linked_source_url_count": 2345
+    },
+    "crop_circle_catalog_pdf": {
+      "filename": "COMBINED.pdf",
+      "sha256": "F51718F1EEB1C3F06F3A154D02EB7AB24DCEFEBB201E3ACE04C6E8F79DCC65E7",
+      "page_count": 309
+    }
+  },
+  "sources": [
+    {
+      "source_id": "ufo_timeline_seed",
+      "priority": 0,
+      "name": "MYTbrain UFO Timeline normalized corpus",
+      "category": "existing_internal_corpus",
+      "coverage": "Global chronology; especially strong 1970s U.S. mutilation and mystery-helicopter material",
+      "url": null,
+      "access": "Existing project data / R2",
+      "ingestion": "Full normalized-event scan; classify direct cases separately from related and research-history events",
+      "rights": "Preserve original citations; do not assume source prose is republishable",
+      "notes": "Seed source, not final authority"
+    },
+    {
+      "source_id": "crop_circle_atlas_export_v1",
+      "priority": 0,
+      "name": "MYTbrain Crop Circle Atlas — UFO Timeline Export v1",
+      "category": "existing_internal_corpus",
+      "coverage": "Global crop-circle context: 7,745 events, 8,391 source assertions, and 2,345 unique linked source URLs",
+      "url": "https://github.com/MYTbrain/crop-circle-atlas/tree/0086e3b86ceefeaa5c12422ea28a3fed05e8e260",
+      "access": "Pinned local export package with manifest and schema validation",
+      "ingestion": "Examine every event and assertion; search narrative values rather than field names or taxonomy glosses; preserve formation IDs and context-only trace role",
+      "rights": "Public tables provide metadata, source URLs, and hashes; do not treat linked prose or imagery as republishable",
+      "notes": "Archive SHA-256 7F552F66A197B96C838475B5CAEAB7C78C1AEE5544C81D658A10335687CB2DF6; source commit 0086e3b86ceefeaa5c12422ea28a3fed05e8e260"
+    },
+    {
+      "source_id": "crop_circle_atlas_catalog_pdf",
+      "priority": 0,
+      "name": "Crop Circle Atlas combined formation catalog",
+      "category": "reference_catalog",
+      "coverage": "309-page formation index and diagram catalog associated with the pinned Atlas export",
+      "url": null,
+      "access": "Pinned local PDF",
+      "ingestion": "Record page and slot provenance; use as an index rather than a complete narrative source",
+      "rights": "Metadata and source-locator use only unless a specific item permits broader reuse",
+      "notes": "PDF SHA-256 F51718F1EEB1C3F06F3A154D02EB7AB24DCEFEBB201E3ACE04C6E8F79DCC65E7"
+    },
+    {
+      "source_id": "crop_circle_atlas_linked_pages",
+      "priority": 1,
+      "name": "Crop Circle Atlas linked source-page discovery program",
+      "category": "source_discovery_program",
+      "coverage": "All 2,345 unique source-record URLs referenced by 2,413 Atlas assertions",
+      "url": "https://raw.githubusercontent.com/MYTbrain/crop-circle-atlas/0086e3b86ceefeaa5c12422ea28a3fed05e8e260/docs/SOURCE_EXPANSION.md",
+      "access": "Rate-limited live retrieval with archive fallback where permitted; deterministic per-URL disposition",
+      "ingestion": "Strip navigation and boilerplate, scan narrative content for animal-mutilation claims, and retain raw page bodies only in a private content-addressed cache",
+      "rights": "Honor the originating page and Atlas rights policies; public artifacts contain links, hashes, locators, access status, and short factual extracts only",
+      "notes": "Blocked, unavailable, and narrative-free pages are coverage gaps, never negative evidence"
+    },
+    {
+      "source_id": "fbi_vault_animal_mutilation",
+      "priority": 1,
+      "name": "FBI Vault — Animal Mutilation",
+      "category": "federal_records",
+      "coverage": "Primarily 1974–1978 correspondence and press material; federal jurisdiction was limited",
+      "url": "https://vault.fbi.gov/Animal%20Mutilation",
+      "access": "Five downloadable PDFs",
+      "ingestion": "Extract case leads, dates, places, agencies, document/page citations, and document relationships",
+      "rights": "Government-created records may be public domain; embedded third-party clippings require separate rights review",
+      "notes": "Do not treat every clipping assertion as an FBI finding"
+    },
+    {
+      "source_id": "illume_umbra_cattle_archive",
+      "priority": 1,
+      "name": "Illume Umbra Cattle Mutilation Archive",
+      "category": "curated_primary_source_archive",
+      "coverage": "U.S., 1970s–present; state indexes, public-records releases, clippings, agency responses",
+      "url": "https://illumeumbra.org/archive/cattle/map",
+      "access": "Public HTML and linked documents",
+      "ingestion": "Partner or request permission; ingest metadata/index first and link to documents",
+      "rights": "Mixed; some documents carry explicit fair-use notices",
+      "notes": "Highest-value collaboration target"
+    },
+    {
+      "source_id": "mss370_schmitt",
+      "priority": 1,
+      "name": "Schmitt Conference Files (MSS 370)",
+      "category": "archival_records",
+      "coverage": "1979 animal-mutilation conference, Operation Animal Mutilation, Southwest helicopter reports",
+      "url": "https://illumeumbra.org/archive/state/NM/drop/schmitt_conference_files",
+      "access": "Digitized container-faithful PDFs through Illume Umbra; originating collection at UNM",
+      "ingestion": "Document-level index plus page/container citations; extract distinct incidents and agency correspondence",
+      "rights": "Mixed; rights notice must be honored",
+      "notes": "Includes transcript, papers, grant records, memoranda, reports, and correspondence"
+    },
+    {
+      "source_id": "colorado_historic_newspapers",
+      "priority": 1,
+      "name": "Colorado Historic Newspapers Collection",
+      "category": "state_newspapers",
+      "coverage": "Colorado, 1859–2025, more than 8 million digitized pages",
+      "url": "https://www.coloradohistoricnewspapers.org/",
+      "access": "Free full-text search",
+      "ingestion": "Search adapter or controlled query export; capture issue/page metadata and short factual extracts",
+      "rights": "Issue-specific; do not bulk republish copyrighted pages",
+      "notes": "Critical for the 1970s Colorado wave"
+    },
+    {
+      "source_id": "new_mexico_newspapers",
+      "priority": 1,
+      "name": "New Mexico State Library and NM Digital Newspapers",
+      "category": "state_newspapers",
+      "coverage": "New Mexico newspapers and microfilm from 1849 onward; digital coverage varies",
+      "url": "https://nmstatelibrary.org/research-and-collections/collections/newspaper-collection/",
+      "access": "Public digital collections, databases, reference requests, and microfilm",
+      "ingestion": "Search and bibliographic extraction; request missing issues through library/reference channels",
+      "rights": "Issue-specific",
+      "notes": "Critical for Dulce, Rio Arriba County, and Operation Animal Mutilation follow-up"
+    },
+    {
+      "source_id": "historic_oregon_newspapers",
+      "priority": 2,
+      "name": "Historic Oregon Newspapers",
+      "category": "state_newspapers",
+      "coverage": "Oregon, 1846–2026, approximately 3.3 million pages",
+      "url": "https://oregonnews.uoregon.edu/",
+      "access": "Free full-text search",
+      "ingestion": "Capture metadata and source citations; respect publisher participation and issue rights",
+      "rights": "Issue-specific",
+      "notes": "High value for modern Oregon cattle-death waves"
+    },
+    {
+      "source_id": "utah_digital_newspapers",
+      "priority": 2,
+      "name": "Utah Digital Newspapers",
+      "category": "state_newspapers",
+      "coverage": "All 29 Utah counties; more than 6.3 million digitized pages",
+      "url": "https://digitalnewspapers.org/",
+      "access": "Keyword-searchable public repository",
+      "ingestion": "Metadata and factual extraction",
+      "rights": "Issue-specific",
+      "notes": "Useful for Uintah Basin and surrounding areas"
+    },
+    {
+      "source_id": "loc_chronicling_america",
+      "priority": 2,
+      "name": "Library of Congress — Chronicling America via loc.gov API",
+      "category": "newspaper_api",
+      "coverage": "Historic U.S. newspapers; strongest before the main 1970s wave",
+      "url": "https://www.loc.gov/apis/additional-apis/chronicling-america-api/",
+      "access": "Keyless loc.gov API plus OCR and image services",
+      "ingestion": "Automated keyword/date/state discovery with page-level citation",
+      "rights": "Many items are public domain; verify item rights",
+      "notes": "Best for pre-1963 terminology and precursor incidents"
+    },
+    {
+      "source_id": "internet_archive",
+      "priority": 2,
+      "name": "Internet Archive",
+      "category": "digital_library",
+      "coverage": "Government reports, books, newsletters, periodicals, audio, and scans",
+      "url": "https://archive.org/developers/",
+      "access": "Advanced Search API, metadata, OCR/full-text search where available",
+      "ingestion": "Discover items, retain metadata, and ingest full text only when rights permit",
+      "rights": "Item-specific",
+      "notes": "Useful for bibliographic and public-domain report discovery"
+    },
+    {
+      "source_id": "gdelt",
+      "priority": 2,
+      "name": "GDELT",
+      "category": "current_news_discovery",
+      "coverage": "Global news monitoring and historical event/news datasets",
+      "url": "https://www.gdeltproject.org/",
+      "access": "Open datasets and APIs",
+      "ingestion": "Use as a lead alert; resolve each lead to the publisher or official record",
+      "rights": "Do not republish article text",
+      "notes": "Not an authoritative case source"
+    },
+    {
+      "source_id": "google_books",
+      "priority": 3,
+      "name": "Google Books API",
+      "category": "bibliographic_discovery",
+      "coverage": "Books and periodicals with metadata and variable preview/full-view access",
+      "url": "https://developers.google.com/books/docs/v1/using",
+      "access": "API key or OAuth for public requests",
+      "ingestion": "Bibliographic discovery only unless full-view rights permit more",
+      "rights": "Volume-specific",
+      "notes": "Locate indexes, page references, and source lineage"
+    },
+    {
+      "source_id": "rice_vallee_b13",
+      "priority": 3,
+      "name": "Jacques Vallée Papers — Cattle mutilations (B13), Rice University",
+      "category": "restricted_special_collection",
+      "coverage": "Primarily U.S. 1970s–1980s reports, press documents, and research notes",
+      "url": "https://archives.library.rice.edu/repositories/2/archival_objects/320228",
+      "access": "Restricted; Series I/II opens 2028 and case files later, per finding aid",
+      "ingestion": "Track as a future research source; contact repository for conditions",
+      "rights": "Collection-specific and restricted",
+      "notes": "Do not plan the MVP around immediate access"
+    },
+    {
+      "source_id": "usda_nass_quickstats",
+      "priority": 1,
+      "name": "USDA NASS Quick Stats and bulk datasets",
+      "category": "analytical_denominator",
+      "coverage": "Official livestock statistics by geography and time",
+      "url": "https://www.nass.usda.gov/quick_stats/",
+      "access": "API, web query, and downloadable bulk files",
+      "ingestion": "Build county-year cattle head-year denominator and retain suppression/missing-value flags",
+      "rights": "U.S. government data",
+      "notes": "Required before publishing hotspot rankings"
+    },
+    {
+      "source_id": "local_public_records",
+      "priority": 1,
+      "name": "State and local public-records requests",
+      "category": "records_acquisition_program",
+      "coverage": "Sheriffs, state police, livestock boards, veterinary labs, agriculture agencies, AG/governor offices",
+      "url": null,
+      "access": "Targeted FOIA/state public-records requests",
+      "ingestion": "Request incident indexes first, then selected full reports; log request, response, exemptions, and fees",
+      "rights": "Jurisdiction- and record-specific; publish only lawful redacted versions",
+      "notes": "Use seed catalog to create agency/date/county request batches"
+    }
+  ]
+}

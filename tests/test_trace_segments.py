@@ -95,6 +95,37 @@ def test_export_trace_artifacts_writes_filterable_event_index_and_diagnostic_seg
     assert (tmp_path / "trace_aggregate_bins_meta.json").exists()
 
 
+def test_trace_eligible_false_excludes_context_layer_events(tmp_path):
+    events = [
+        _event(10, "2001-01-01", 10.0, 10.0, source="ufo"),
+        {
+            **_event(20, "2001-01-02", 20.0, 20.0, source="Animal Mutilation Dataset v1"),
+            "event_domain": "animal_mutilation",
+            "trace_eligible": False,
+            "trace_role": "context_only",
+        },
+        _event(30, "2001-01-03", 30.0, 30.0, source="ufo"),
+    ]
+
+    metadata = export_trace_artifacts(events, tmp_path)
+
+    trace_events = _read_rows(
+        tmp_path / "trace_event_index.bin",
+        metadata["trace_events"],
+        TRACE_EVENT_ROW_STRUCT,
+    )
+    trace_segments = _read_rows(
+        tmp_path / "trace_segments.bin",
+        metadata["trace_segments"],
+    )
+    assert [row["event_id"] for row in trace_events] == [10, 30]
+    assert [
+        (row["from_event_id"], row["to_event_id"])
+        for row in trace_segments
+    ] == [(10, 30)]
+    assert metadata["trace_segments"]["counts"]["mapped_trace_events"] == 2
+
+
 def _event(event_id, sort_date_iso, lat, lon, *, source="nuforc", playback_sort_key=None):
     return {
         "event_id": event_id,

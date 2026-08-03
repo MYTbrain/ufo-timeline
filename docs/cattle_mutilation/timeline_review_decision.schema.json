@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/animal-mutilation-timeline-review-decision.schema.json",
+  "title": "Animal Mutilation Timeline Review Decision",
+  "description": "Human review authority for promoting one mutable extraction incident into a persistent Timeline event. The persistent AMI identifier is reviewer-assigned and is never derived by the adapter.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_decision_id",
+    "source_incident_id",
+    "source_incident_sha256",
+    "disposition",
+    "reviewer_id",
+    "reviewed_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "animal-mutilation-timeline-review-decision-v1.0.0"
+    },
+    "review_decision_id": {
+      "type": "string",
+      "pattern": "^amrd_[0-9a-f]{24}$"
+    },
+    "source_incident_id": {
+      "type": "string",
+      "pattern": "^cmi_[0-9a-f]{24}$"
+    },
+    "source_incident_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "unresolved"
+      ]
+    },
+    "animal_mutilation_event_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^ami_[0-9a-f]{24}$"
+    },
+    "reviewer_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2000
+    },
+    "supersedes_source_incident_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^cmi_[0-9a-f]{24}$"
+      }
+    },
+    "approved_public_fields": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 1000
+        },
+        "location_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "evidence_excerpts": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "content_warning": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "const": "accepted"
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "required": [
+          "animal_mutilation_event_id"
+        ],
+        "properties": {
+          "animal_mutilation_event_id": {
+            "type": "string",
+            "pattern": "^ami_[0-9a-f]{24}$"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "animal_mutilation_event_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
