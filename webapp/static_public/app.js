@@ -900,6 +900,7 @@
     cropCircleOverlayVisibleCount: null,
     animalMutilationOverlayEnabled: false,
     animalMutilationOverlayVisibleCount: null,
+    quickContextButtonObservers: [],
     playbackCursorMarker: null,
     playbackActiveMarker: null,
     cursorAnimationFrameId: null,
@@ -1670,6 +1671,8 @@
     clusterQuickMilitaryButton: document.querySelector("#cluster-quick-military"),
     clusterQuickResearchSitesButton: document.querySelector("#cluster-quick-research-sites"),
     clusterQuickTraceButton: document.querySelector("#cluster-quick-trace"),
+    clusterQuickCropCirclesButton: document.querySelector("#cluster-quick-crop-circles"),
+    clusterQuickAnimalMutilationsButton: document.querySelector("#cluster-quick-animal-mutilations"),
     clusterQuickFacilityProximityButton: document.querySelector("#cluster-quick-facility-proximity"),
     clusterQuickFacilityValue: document.querySelector("#cluster-quick-facility-value"),
     mapQuickControlStatus: document.querySelector("#map-quick-control-status"),
@@ -5518,6 +5521,39 @@
     button.classList.toggle("is-active", Boolean(pressed));
   }
 
+  function setQuickContextButtonState(button, canonicalButton, active, label) {
+    if (!button) return;
+    const busy = Boolean(canonicalButton && (
+      canonicalButton.disabled || canonicalButton.getAttribute("aria-busy") === "true"
+    ));
+    setQuickButtonPressedState(button, active);
+    button.disabled = busy;
+    if (busy) button.setAttribute("aria-busy", "true");
+    else button.removeAttribute("aria-busy");
+    const actionLabel = busy
+      ? label + " are loading"
+      : (active ? "Hide " + label + " overlay" : "Show " + label + " overlay");
+    button.setAttribute("aria-label", actionLabel);
+    button.title = actionLabel;
+  }
+
+  function observeQuickContextCanonicalButton(canonicalButton) {
+    if (!canonicalButton || typeof window.MutationObserver !== "function") return;
+    const observer = new window.MutationObserver(function (mutations) {
+      renderMapControlQuickButtons();
+      if (mutations.some(function (mutation) {
+        return mutation.attributeName === "aria-pressed";
+      })) {
+        renderMapLegend();
+      }
+    });
+    observer.observe(canonicalButton, {
+      attributes: true,
+      attributeFilter: ["aria-pressed", "aria-busy", "disabled"],
+    });
+    runtime.quickContextButtonObservers.push(observer);
+  }
+
   function renderMapControlQuickButtons() {
     if (els.clusterQuickMapModeButton) {
       const mapState = currentQuickMapModeState();
@@ -5593,6 +5629,26 @@
       );
       els.clusterQuickTraceButton.title =
         "Trace mode: " + traceModeLabel + ". Click to switch to " + nextTraceLabel + ".";
+    }
+
+    if (els.clusterQuickCropCirclesButton) {
+      const cropActive = cropCircleOverlayActive();
+      setQuickContextButtonState(
+        els.clusterQuickCropCirclesButton,
+        els.overlayCropCirclesToggle,
+        cropActive,
+        "Crop circles"
+      );
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      const animalActive = animalMutilationOverlayActive();
+      setQuickContextButtonState(
+        els.clusterQuickAnimalMutilationsButton,
+        els.overlayAnimalMutilationsToggle,
+        animalActive,
+        "Animal Mutilation Reports"
+      );
     }
 
     if (els.clusterQuickFacilityProximityButton) {
@@ -24898,6 +24954,7 @@
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
+      renderMapControlQuickButtons();
       renderMapLegend();
     });
 
@@ -24907,8 +24964,13 @@
       runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
+      renderMapControlQuickButtons();
       renderMapLegend();
     });
+
+    [els.overlayCropCirclesToggle, els.overlayAnimalMutilationsToggle].forEach(
+      observeQuickContextCanonicalButton
+    );
 
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
@@ -25253,6 +25315,32 @@
             ? "static"
             : "off";
         setTraceMode(nextMode);
+      });
+    }
+
+    if (els.clusterQuickCropCirclesButton) {
+      els.clusterQuickCropCirclesButton.addEventListener("click", function () {
+        if (!els.overlayCropCirclesToggle) return;
+        els.overlayCropCirclesToggle.click();
+        renderMapControlQuickButtons();
+        const nextActive = els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true";
+        announceMapQuickControl(
+          nextActive ? "Crop circles are turning on." : "Crop circles hidden."
+        );
+      });
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      els.clusterQuickAnimalMutilationsButton.addEventListener("click", function () {
+        if (!els.overlayAnimalMutilationsToggle) return;
+        els.overlayAnimalMutilationsToggle.click();
+        renderMapControlQuickButtons();
+        const nextActive = els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true";
+        announceMapQuickControl(
+          nextActive
+            ? "Animal Mutilation Reports are turning on."
+            : "Animal Mutilation Reports hidden."
+        );
       });
     }
 

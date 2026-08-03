@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-03-context-layers-default-on-v1">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-03-context-layer-quick-toggles-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -904,7 +904,8 @@
                     </select>
                   </label>
                 </div>
-                <div class="map-control-quick-controls" role="group" aria-label="Quick controls">
+                <div class="map-control-quick-row">
+                  <div class="map-control-quick-controls" role="group" aria-label="Map and trace quick controls">
                   <button
                     id="cluster-quick-map-mode"
                     class="secondary-button map-control-quick-button map-control-quick-button-map"
@@ -972,6 +973,31 @@
                       <circle cx="12" cy="12" r="3.9" class="quick-trace-static"></circle>
                     </svg>
                   </button>
+                  </div>
+                  <div class="map-control-context-controls" role="group" aria-label="Context layer quick toggles">
+                  <button
+                    id="cluster-quick-crop-circles"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-crop"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map crop-circle-status"
+                    aria-label="Hide Crop circles overlay"
+                    title="Hide Crop circles overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-spiral" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    id="cluster-quick-animal-mutilations"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-animal"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map animal-mutilation-status"
+                    aria-label="Hide Animal Mutilation Reports overlay"
+                    title="Hide Animal Mutilation Reports overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-cow" aria-hidden="true"></span>
+                  </button>
+                  </div>
                 </div>
                 <div class="map-control-proximity-control" role="group" aria-label="Facility proximity quick setting">
                   <button
@@ -1354,6 +1380,6 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
-  <script src="./app.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./app.js?v=2026-08-03-context-layer-quick-toggles-v1"></script>
 </body>
 </html>

@@ -433,6 +433,13 @@ assert.match(stylesheetSource, /overlay-chip-swatch-animal-mutilations::before[\
 assert.match(stylesheetSource, /animal-mutilation-map-cow\s*\{[\s\S]*?width:\s*100%[\s\S]*?height:\s*100%[\s\S]*?background:\s*var\(--animal-cow-art\)[\s\S]*?rotate\(180deg\)/, "map cows fill their computed stack size and render upside down");
 assert.match(appSource, /"Animal Mutilation Reports",\s*"#101417",\s*"cow"/, "the map legend uses the two-tone cow rather than the old amber ring");
 assert.match(stylesheetSource, /map-legend-marker-sample-cow::before[\s\S]*?var\(--animal-cow-art\)[\s\S]*?rotate\(180deg\)/, "the map legend cow reuses the exact layer art");
+assert.match(indexSource, /id="cluster-quick-animal-mutilations"[\s\S]*?aria-pressed="true"[\s\S]*?aria-controls="map animal-mutilation-status"[\s\S]*?map-legend-marker-sample-cow/, "the quick animal toggle starts on, controls the map status, and uses the exact legend cow class");
+assert.match(stylesheetSource, /map-control-context-button-animal\[aria-pressed="true"\][\s\S]*?rgba\(233, 242, 255, 0\.2\)/, "the active quick cow has a distinct cool-white state treatment");
+assert.match(stylesheetSource, /map-control-context-button-animal\[aria-pressed="true"\][\s\S]*?border-color:\s*#33404a/, "the light-theme animal quick-toggle boundary remains visible");
+assert.match(stylesheetSource, /:root\[data-theme="dark"\] \.map-control-context-button-animal\[aria-pressed="true"\][\s\S]*?rgba\(233, 242, 255, 0\.76\)/, "the dark-theme animal quick toggle retains its cool-white boundary");
+assert.match(appSource, /clusterQuickAnimalMutilationsButton:\s*document\.querySelector\("#cluster-quick-animal-mutilations"\)/, "the quick animal toggle is registered with the core UI");
+assert.match(appSource, /clusterQuickAnimalMutilationsButton\.addEventListener\("click"[\s\S]*?overlayAnimalMutilationsToggle\.click\(\)/, "the quick animal toggle delegates to the canonical overlay control");
+assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "animal runtime state synchronizes the quick toggle and legend");
 
 {
   const defaultBootstrap = createAnimalBootstrapHarness();
