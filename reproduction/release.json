@@ -6,13 +6,13 @@
   },
   "pages": {
     "archive": {
-      "bytes": 8692340,
+      "bytes": 8693168,
       "format": "zip",
-      "sha256": "e74be365087f6fa3e4ebbdb069e045a5d58c81ea75f24bb62fe113354d09d05c",
-      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/animal-mutilation-cow-v1-20260803/pages-bundle.zip"
+      "sha256": "c3db24341a7183c6fbcc6889ed8c3bfb8d85770debc89f6e442ec51c767e53cb",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-layers-default-on-v1-20260803/pages-bundle.zip"
     },
-    "base_url": "https://2f372d2d.ufo-timeline.pages.dev",
-    "deployment_id": "2f372d2d-6625-4f5d-8eca-425fb624b06d",
+    "base_url": "https://6b19dddf.ufo-timeline.pages.dev",
+    "deployment_id": "6b19dddf-6a6a-4609-925c-b5277ab7ce1f",
     "file_count": 134,
     "files": [
       {
@@ -31,19 +31,19 @@
         "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
       },
       {
-        "bytes": 2731,
+        "bytes": 3579,
         "path": "animal_mutilation_bootstrap.js",
-        "sha256": "eb79cfada9f800518906fec48a6d08ce7f8906ff5b53f63c20c5d5ed93f9e690"
+        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
       },
       {
-        "bytes": 43780,
+        "bytes": 43787,
         "path": "animal_mutilation_layer.js",
-        "sha256": "9695cfdfcc3e6e61c5ad02fa9ef4e877931836175b1232be8c4594ebc158931a"
+        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
       },
       {
-        "bytes": 1090131,
+        "bytes": 1090567,
         "path": "app.js",
-        "sha256": "50eaf34f20a34bcd3421f89d66e94976a620ef72687dc1280f8eea23785912b5"
+        "sha256": "ad564e63064381aca86d789ce400d0a6582d1016abdfca421389bdb03607a2a2"
       },
       {
         "bytes": 81571,
@@ -61,14 +61,14 @@
         "sha256": "ce30bf17276bd92c0c8b401515c6ae33db608c565c0bc617f2241632b6433250"
       },
       {
-        "bytes": 5285,
+        "bytes": 6155,
         "path": "crop_circle_bootstrap.js",
-        "sha256": "cca93d3a2f05a82438caa467b9369dfb3318c249fb6845661f871096de120581"
+        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
       },
       {
-        "bytes": 77002,
+        "bytes": 78476,
         "path": "crop_circle_layer.js",
-        "sha256": "1906ed52b68d6aac955928ab223b07c26ddececd4438518ff751d2bb4f41165e"
+        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
       },
       {
         "bytes": 4210,
@@ -566,9 +566,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 85171,
+        "bytes": 85300,
         "path": "index.html",
-        "sha256": "8638423240d0c37a914c38a76ab3c373608d3b3fb7ef9c6f7e84075e3fff4b03"
+        "sha256": "e3c8629496a2b426d6b74e7197e8a69a2eac4f9d213466fd4ca09c7755bb28e4"
       },
       {
         "bytes": 4067,
@@ -611,9 +611,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 154565,
+        "bytes": 154741,
         "path": "styles.css",
-        "sha256": "f86909ede5cc69e172c51b41cf0f78bc948f388b90ab4300f4be908a7d62c614"
+        "sha256": "8984a65b9202e535beb0694558b3438720ee73d9c56547cf14ecc69dfbb36ff4"
       },
       {
         "bytes": 49332,
@@ -687,8 +687,8 @@
       }
     ],
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "76ce86e6f64837c61eccb95260b8037fe068301ed2650f32ceef178f7394a272",
-    "uncompressed_bytes": 54921123
+    "tree_sha256": "a9da150aa9122a01723a63eb698e3875c1b2cf8b5436a5ecbe59ae8940add441",
+    "uncompressed_bytes": 54925063
   },
   "r2": {
     "base_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
@@ -3268,7 +3268,7 @@
     "asset_version": "2026-07-31T08:32:50.335399+00:00",
     "canonical_production_url": "https://ufo-timeline.pages.dev",
     "generated_at_utc": "2026-07-31T18:07:39.829315+00:00",
-    "id": "animal-mutilation-cow-v1-20260803",
+    "id": "context-layers-default-on-v1-20260803",
     "mapped_count": 580783,
     "normalized_count": 702893
   },
@@ -3293,19 +3293,19 @@
         "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
       },
       {
-        "bytes": 2731,
+        "bytes": 3579,
         "path": "animal_mutilation_bootstrap.js",
-        "sha256": "eb79cfada9f800518906fec48a6d08ce7f8906ff5b53f63c20c5d5ed93f9e690"
+        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
       },
       {
-        "bytes": 43780,
+        "bytes": 43787,
         "path": "animal_mutilation_layer.js",
-        "sha256": "9695cfdfcc3e6e61c5ad02fa9ef4e877931836175b1232be8c4594ebc158931a"
+        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
       },
       {
-        "bytes": 1090131,
+        "bytes": 1090567,
         "path": "app.js",
-        "sha256": "50eaf34f20a34bcd3421f89d66e94976a620ef72687dc1280f8eea23785912b5"
+        "sha256": "ad564e63064381aca86d789ce400d0a6582d1016abdfca421389bdb03607a2a2"
       },
       {
         "bytes": 17006,
@@ -3313,14 +3313,14 @@
         "sha256": "dd3359364d0a21b6d8c841e194e6972a19d491afa17e66cb6b10aa06720c4cb1"
       },
       {
-        "bytes": 5285,
+        "bytes": 6155,
         "path": "crop_circle_bootstrap.js",
-        "sha256": "cca93d3a2f05a82438caa467b9369dfb3318c249fb6845661f871096de120581"
+        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
       },
       {
-        "bytes": 77002,
+        "bytes": 78476,
         "path": "crop_circle_layer.js",
-        "sha256": "1906ed52b68d6aac955928ab223b07c26ddececd4438518ff751d2bb4f41165e"
+        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
       },
       {
         "bytes": 4210,
@@ -3408,9 +3408,9 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 85171,
+        "bytes": 85300,
         "path": "index.html",
-        "sha256": "8638423240d0c37a914c38a76ab3c373608d3b3fb7ef9c6f7e84075e3fff4b03"
+        "sha256": "e3c8629496a2b426d6b74e7197e8a69a2eac4f9d213466fd4ca09c7755bb28e4"
       },
       {
         "bytes": 4067,
@@ -3428,9 +3428,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 154565,
+        "bytes": 154741,
         "path": "styles.css",
-        "sha256": "f86909ede5cc69e172c51b41cf0f78bc948f388b90ab4300f4be908a7d62c614"
+        "sha256": "8984a65b9202e535beb0694558b3438720ee73d9c56547cf14ecc69dfbb36ff4"
       },
       {
         "bytes": 49332,
@@ -3499,8 +3499,8 @@
       }
     ],
     "root": "webapp/static_public",
-    "total_bytes": 8785170,
+    "total_bytes": 8789110,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "650c0992ae63c82d0953a5671047a9e56acf0312d8deaa5a522dee87babd8160"
+    "tree_sha256": "d225ecd99c45cfadf36009b3f884c6acc86495fda2ef2aceff9b1c9e387bd3ed"
   }
 }
