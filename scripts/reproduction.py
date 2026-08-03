@@ -16,6 +16,7 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
+import ssl
 import sys
 import time
 from typing import Any, Iterable
@@ -31,6 +32,15 @@ else:
     truststore.inject_into_ssl()
 
 
+VERIFIED_SSL_CONTEXT = ssl.create_default_context()
+# Python 3.14 enables OpenSSL's strict-X509 mode by default. Some valid public
+# Cloudflare chains still omit the strict-only critical marker on an
+# intermediate CA. Keep certificate and hostname verification enabled while
+# disabling only that extra compatibility-breaking flag.
+if hasattr(ssl, "VERIFY_X509_STRICT"):
+    VERIFIED_SSL_CONTEXT.verify_flags &= ~ssl.VERIFY_X509_STRICT
+
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = REPO_ROOT / "reproduction" / "release.json"
 DEFAULT_SITE_ROOT = REPO_ROOT / ".reproduction" / "site"
@@ -39,16 +49,25 @@ SOURCE_ROOT = REPO_ROOT / "webapp" / "static_public"
 USER_AGENT = "ufo-timeline-reproducer/1.0"
 HASH_CHUNK_BYTES = 1024 * 1024
 TREE_HASH_DESCRIPTION = "ordinal path<TAB>bytes<TAB>sha256<LF>"
-CROP_CIRCLE_ROOT = PurePosixPath("data/crop_circles")
-CROP_CIRCLE_MANIFEST_PATH = CROP_CIRCLE_ROOT / "manifest.json"
-CROP_R2_ONLY_EXACT_PATHS = frozenset({CROP_CIRCLE_ROOT / "points.json.gz"})
-CROP_R2_ONLY_PREFIXES = (CROP_CIRCLE_ROOT / "details",)
+OPTIONAL_LAYER_SPECS = (
+    {
+        "name": "crop_circles",
+        "root": PurePosixPath("data/crop_circles"),
+        "manifest": PurePosixPath("data/crop_circles/manifest.json"),
+    },
+    {
+        "name": "animal_mutilations",
+        "root": PurePosixPath("data/animal_mutilations"),
+        "manifest": PurePosixPath("data/animal_mutilations/manifest.json"),
+    },
+)
 PAGES_SOURCE_ADDITION_PATHS = frozenset(
     {
         PurePosixPath("404.html"),
         PurePosixPath("crop_circle_bootstrap.js"),
         PurePosixPath("crop_circle_layer.js"),
-        CROP_CIRCLE_MANIFEST_PATH,
+        PurePosixPath("animal_mutilation_bootstrap.js"),
+        PurePosixPath("animal_mutilation_layer.js"),
     }
 )
 REQUIRED_PAGES_PATHS = (
@@ -65,7 +84,6 @@ REQUIRED_PAGES_JSON_PATHS = (
     PurePosixPath("data/event_chunk_manifest.json"),
     PurePosixPath("data/points_meta.json"),
     PurePosixPath("data/startup_profiles/manifest.json"),
-    CROP_CIRCLE_MANIFEST_PATH,
 )
 CLOUDFLARE_ANALYTICS_PATTERN = re.compile(
     rb"<!-- Cloudflare Pages Analytics --><script defer "
@@ -131,42 +149,171 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def _declared_asset_paths(value: Any) -> Iterable[str]:
-    """Yield manifest-declared asset paths, including future payload sections."""
+def _payload_declarations(value: Any) -> Iterable[dict[str, Any]]:
+    """Yield nested browser payload declarations without assuming field names."""
     if isinstance(value, dict):
-        for key, item in value.items():
-            if key == "path" and isinstance(item, str):
-                yield item
-            yield from _declared_asset_paths(item)
+        path = value.get("path")
+        if isinstance(path, str) and (
+            value.get("r2Only") is True
+            or "sha256" in value
+            or "bytes" in value
+            or "sizeBytes" in value
+        ):
+            yield value
+        for item in value.values():
+            yield from _payload_declarations(item)
     elif isinstance(value, list):
         for item in value:
-            yield from _declared_asset_paths(item)
+            yield from _payload_declarations(item)
 
 
-def crop_r2_only_paths(source_root: Path) -> set[PurePosixPath]:
-    """Return crop payloads that belong in immutable R2, never in Pages."""
-    paths = set(CROP_R2_ONLY_EXACT_PATHS)
-    manifest_path = source_root.joinpath(*CROP_CIRCLE_MANIFEST_PATH.parts)
-    if not manifest_path.is_file():
-        return paths
-
-    manifest = load_json(manifest_path)
-    for declared in _declared_asset_paths(manifest):
-        relative = safe_relative_path(declared)
-        if relative.parts[: len(CROP_CIRCLE_ROOT.parts)] == CROP_CIRCLE_ROOT.parts:
-            pages_path = relative
-        else:
-            pages_path = CROP_CIRCLE_ROOT / relative
-        if pages_path == CROP_CIRCLE_MANIFEST_PATH:
-            raise ContractError("Crop-circle manifest cannot classify itself as an R2 payload")
-        paths.add(pages_path)
-    return paths
+def _layer_relative_path(root: PurePosixPath, value: str) -> PurePosixPath:
+    relative = safe_relative_path(value)
+    if relative.parts[: len(root.parts)] == root.parts:
+        resolved = relative
+    else:
+        resolved = root / relative
+    if not resolved.is_relative_to(root):
+        raise ContractError(f"Optional-layer path escapes {root.as_posix()}: {value!r}")
+    return resolved
 
 
-def is_crop_r2_only_path(relative: PurePosixPath, declared_paths: set[PurePosixPath]) -> bool:
-    if relative in declared_paths or relative in CROP_R2_ONLY_EXACT_PATHS:
-        return True
-    return any(relative == prefix or relative.is_relative_to(prefix) for prefix in CROP_R2_ONLY_PREFIXES)
+def _manifest_payload_path_values(manifest: dict[str, Any]) -> list[str]:
+    delivery = manifest.get("delivery")
+    if isinstance(delivery, dict) and "r2OnlyPaths" in delivery:
+        paths = delivery.get("r2OnlyPaths")
+        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+            raise ContractError("Optional-layer delivery.r2OnlyPaths must be a list of paths")
+        return list(paths)
+    return [str(record["path"]) for record in _payload_declarations(manifest)]
+
+
+def optional_layer_contracts(
+    root: Path,
+    *,
+    validate_local_payloads: bool = False,
+) -> list[dict[str, Any]]:
+    """Load known optional-layer manifests and classify Pages versus R2 files."""
+    contracts: list[dict[str, Any]] = []
+    for spec in OPTIONAL_LAYER_SPECS:
+        layer_root = spec["root"]
+        manifest_relative = spec["manifest"]
+        manifest_path = root.joinpath(*manifest_relative.parts)
+        if not manifest_path.is_file():
+            continue
+        manifest = load_json(manifest_path)
+        release_id = str(manifest.get("releaseId") or "").strip()
+        asset_base_url = str(manifest.get("assetBaseUrl") or "").strip()
+        if not release_id:
+            raise ContractError(f"Optional-layer manifest has no releaseId: {manifest_relative.as_posix()}")
+        parsed_base = urlparse(asset_base_url)
+        prefix = parsed_base.path.strip("/")
+        if parsed_base.scheme != "https" or not parsed_base.netloc or not prefix:
+            raise ContractError(
+                f"Optional-layer assetBaseUrl must be absolute HTTPS: {manifest_relative.as_posix()}"
+            )
+        if prefix.split("/")[-1] != release_id:
+            raise ContractError(
+                f"Optional-layer assetBaseUrl must end with releaseId: {manifest_relative.as_posix()}"
+            )
+
+        delivery = manifest.get("delivery")
+        delivery = delivery if isinstance(delivery, dict) else {}
+        immutable_prefix = str(delivery.get("immutablePrefix") or "").strip("/")
+        if immutable_prefix and immutable_prefix != prefix:
+            raise ContractError(
+                f"Optional-layer immutablePrefix disagrees with assetBaseUrl: {manifest_relative.as_posix()}"
+            )
+
+        page_values = delivery.get("pagesFiles", ["manifest.json"])
+        if not isinstance(page_values, list) or not all(isinstance(path, str) for path in page_values):
+            raise ContractError("Optional-layer delivery.pagesFiles must be a list of paths")
+        pages_paths = {_layer_relative_path(layer_root, value) for value in page_values}
+        pages_paths.add(manifest_relative)
+
+        payload_values = _manifest_payload_path_values(manifest)
+        if not payload_values:
+            raise ContractError(f"Optional-layer manifest declares no R2 payloads: {manifest_relative.as_posix()}")
+        r2_paths = [_layer_relative_path(layer_root, value) for value in payload_values]
+        if len(set(r2_paths)) != len(r2_paths):
+            raise ContractError(f"Optional-layer manifest has duplicate R2 paths: {manifest_relative.as_posix()}")
+        if set(r2_paths) & pages_paths:
+            raise ContractError(f"Optional-layer file cannot be both Pages and R2: {manifest_relative.as_posix()}")
+
+        declarations: dict[PurePosixPath, dict[str, Any]] = {}
+        for declaration in _payload_declarations(manifest):
+            relative = _layer_relative_path(layer_root, str(declaration["path"]))
+            if relative in declarations:
+                raise ContractError(
+                    f"Optional-layer payload integrity is declared twice: {relative.as_posix()}"
+                )
+            declarations[relative] = declaration
+
+        records: list[dict[str, Any]] = []
+        for relative in r2_paths:
+            declaration = declarations.get(relative)
+            if declaration is None:
+                raise ContractError(
+                    f"Optional-layer R2 path has no integrity declaration: {relative.as_posix()}"
+                )
+            expected_bytes = declaration.get("bytes", declaration.get("sizeBytes", -1))
+            expected_sha = str(declaration.get("sha256") or "")
+            try:
+                expected_bytes = int(expected_bytes)
+            except (TypeError, ValueError) as exc:
+                raise ContractError(f"Invalid optional-layer byte count: {relative.as_posix()}") from exc
+            if expected_bytes < 0 or not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
+                raise ContractError(f"Invalid optional-layer integrity declaration: {relative.as_posix()}")
+            local_path = root.joinpath(*relative.parts)
+            if validate_local_payloads:
+                if not local_path.is_file():
+                    raise ContractError(f"Missing optional-layer R2 payload: {relative.as_posix()}")
+                actual_bytes = local_path.stat().st_size
+                actual_sha = sha256_file(local_path)
+                if actual_bytes != expected_bytes or actual_sha != expected_sha:
+                    raise ContractError(
+                        f"Optional-layer R2 payload failed local integrity: {relative.as_posix()}"
+                    )
+            payload_from_root = relative.relative_to(layer_root).as_posix()
+            records.append(
+                {
+                    "path": relative.as_posix(),
+                    "bytes": expected_bytes,
+                    "sha256": expected_sha,
+                    "url": asset_base_url.rstrip("/") + "/" + quote(payload_from_root, safe="/._-"),
+                }
+            )
+
+        contracts.append(
+            {
+                "name": spec["name"],
+                "root": layer_root,
+                "manifest_path": manifest_relative,
+                "manifest": manifest,
+                "pages_paths": pages_paths,
+                "r2_paths": set(r2_paths),
+                "r2_records": records,
+            }
+        )
+    return contracts
+
+
+def optional_layer_undeclared_files(root: Path, contracts: list[dict[str, Any]] | None = None) -> list[str]:
+    contracts = optional_layer_contracts(root) if contracts is None else contracts
+    by_root = {contract["root"]: contract for contract in contracts}
+    undeclared: list[str] = []
+    for spec in OPTIONAL_LAYER_SPECS:
+        layer_root = spec["root"]
+        absolute_root = root.joinpath(*layer_root.parts)
+        if not absolute_root.exists():
+            continue
+        contract = by_root.get(layer_root)
+        allowed = set() if contract is None else contract["pages_paths"] | contract["r2_paths"]
+        for path in iter_files(absolute_root):
+            relative = PurePosixPath(path.relative_to(root).as_posix())
+            if relative not in allowed:
+                undeclared.append(relative.as_posix())
+    return sorted(undeclared)
 
 
 def pages_source_records(
@@ -174,7 +321,20 @@ def pages_source_records(
     release_manifest: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Classify the Git source overlay and return only deployable Pages assets."""
-    declared_r2_paths = crop_r2_only_paths(source_root)
+    layer_contracts = optional_layer_contracts(source_root, validate_local_payloads=True)
+    declared_r2_paths = {
+        path for contract in layer_contracts for path in contract["r2_paths"]
+    }
+    declared_pages_paths = {
+        path for contract in layer_contracts for path in contract["pages_paths"]
+    }
+    undeclared_layer_files = optional_layer_undeclared_files(source_root, layer_contracts)
+    if undeclared_layer_files:
+        raise ContractError(
+            "Optional-layer source contains undeclared files; keep review queues, raw inputs, "
+            "caches, images, and provenance-only artifacts out of browser delivery: "
+            + ", ".join(undeclared_layer_files[:10])
+        )
     allowed_paths: set[PurePosixPath] | None = None
     if release_manifest is not None:
         allowed_paths = {
@@ -183,12 +343,13 @@ def pages_source_records(
             for record in section["files"]
         }
         allowed_paths.update(PAGES_SOURCE_ADDITION_PATHS)
+        allowed_paths.update(declared_pages_paths)
 
     records: list[dict[str, Any]] = []
     unclassified: list[str] = []
     for source in iter_files(source_root):
         relative = PurePosixPath(source.relative_to(source_root).as_posix())
-        if is_crop_r2_only_path(relative, declared_r2_paths):
+        if relative in declared_r2_paths:
             continue
         if allowed_paths is not None and relative not in allowed_paths:
             unclassified.append(relative.as_posix())
@@ -225,6 +386,7 @@ def expected_pages_records(
     collections: list[Iterable[dict[str, Any]]] = [manifest["pages"]["files"]]
     if include_r2:
         collections.append(manifest["r2"]["files"])
+        collections.append(optional_layer_r2_records(source_root))
     collections.append(source_records)
     return merge_file_records(*collections), source_records
 
@@ -265,6 +427,7 @@ def verify_exact_file_inventory(
 def verify_required_pages_files(root: Path) -> dict[str, Any]:
     missing = [path.as_posix() for path in REQUIRED_PAGES_PATHS if not root.joinpath(*path.parts).is_file()]
     json_paths = set(REQUIRED_PAGES_JSON_PATHS)
+    json_paths.update(contract["manifest_path"] for contract in optional_layer_contracts(root))
     startup_root = root / "data" / "startup_profiles"
     if startup_root.is_dir():
         json_paths.update(
@@ -287,24 +450,59 @@ def verify_required_pages_files(root: Path) -> dict[str, Any]:
     return {"required_file_count": len(REQUIRED_PAGES_PATHS), "parsed_json": parsed}
 
 
-def find_crop_r2_payloads(root: Path) -> list[str]:
-    declared_r2_paths = crop_r2_only_paths(root)
+def optional_layer_r2_records(source_root: Path) -> list[dict[str, Any]]:
+    return [
+        record
+        for contract in optional_layer_contracts(source_root, validate_local_payloads=True)
+        for record in contract["r2_records"]
+    ]
+
+
+def find_optional_layer_r2_payloads(root: Path) -> list[str]:
+    declared = {
+        path
+        for contract in optional_layer_contracts(root)
+        for path in contract["r2_paths"]
+    }
     return sorted(
         path.relative_to(root).as_posix()
         for path in iter_files(root)
-        if is_crop_r2_only_path(PurePosixPath(path.relative_to(root).as_posix()), declared_r2_paths)
+        if PurePosixPath(path.relative_to(root).as_posix()) in declared
     )
+
+
+def find_crop_r2_payloads(root: Path) -> list[str]:
+    """Backward-compatible crop-only report for existing tooling and tests."""
+    crop_root = PurePosixPath("data/crop_circles")
+    return [
+        path
+        for path in find_optional_layer_r2_payloads(root)
+        if PurePosixPath(path).is_relative_to(crop_root)
+    ]
 
 
 def verify_release_pages_bundle(
     root: Path,
     expected_records: Iterable[dict[str, Any]],
+    *,
+    allow_optional_r2_payloads: bool = False,
 ) -> dict[str, Any]:
     inventory = verify_exact_file_inventory(root, expected_records, label="Pages release")
-    crop_payloads = find_crop_r2_payloads(root)
-    if crop_payloads:
-        raise ContractError("Pages release contains R2-only crop payloads: " + ", ".join(crop_payloads[:10]))
-    return {"inventory": inventory, "required": verify_required_pages_files(root)}
+    contracts = optional_layer_contracts(root)
+    undeclared = optional_layer_undeclared_files(root, contracts)
+    if undeclared:
+        raise ContractError("Pages release contains undeclared optional-layer files: " + ", ".join(undeclared[:10]))
+    optional_payloads = find_optional_layer_r2_payloads(root)
+    if optional_payloads and not allow_optional_r2_payloads:
+        raise ContractError(
+            "Pages release contains R2-only optional-layer payloads: "
+            + ", ".join(optional_payloads[:10])
+        )
+    return {
+        "inventory": inventory,
+        "required": verify_required_pages_files(root),
+        "optional_layer_payloads": optional_payloads,
+    }
 
 
 def write_json(path: Path, value: dict[str, Any]) -> None:
@@ -537,7 +735,7 @@ def request_bytes(url: str, *, timeout: float, retries: int = 3) -> bytes:
     for attempt in range(1, retries + 1):
         try:
             request = Request(url, headers={"User-Agent": USER_AGENT})
-            with urlopen(request, timeout=timeout) as response:
+            with urlopen(request, timeout=timeout, context=VERIFIED_SSL_CONTEXT) as response:
                 return response.read()
         except Exception as exc:  # noqa: BLE001 - report the final transport error with context
             last_error = exc
@@ -561,7 +759,7 @@ def download_to_path(record: dict[str, Any], target: Path, *, timeout: float) ->
     last_error: Exception | None = None
     for attempt in range(1, 4):
         try:
-            with urlopen(request, timeout=timeout) as response, temp.open("wb") as output:
+            with urlopen(request, timeout=timeout, context=VERIFIED_SSL_CONTEXT) as response, temp.open("wb") as output:
                 for chunk in iter(lambda: response.read(HASH_CHUNK_BYTES), b""):
                     output.write(chunk)
                     digest.update(chunk)
@@ -648,6 +846,36 @@ def overlay_source(
     return records
 
 
+def hydrate_optional_layer_payloads(source_root: Path, output_root: Path) -> dict[str, Any]:
+    """Copy locally pinned optional-layer R2 payloads into an offline reproduction."""
+    records = optional_layer_r2_records(source_root)
+    for record in records:
+        source = source_root / Path(record["path"])
+        target = output_root / Path(record["path"])
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        if target.stat().st_size != int(record["bytes"]) or sha256_file(target) != record["sha256"]:
+            raise ContractError(f"Optional-layer payload copy failed integrity: {record['path']}")
+    return {
+        "file_count": len(records),
+        "total_bytes": sum(int(record["bytes"]) for record in records),
+        "tree_sha256": tree_sha256(records),
+    }
+
+
+def localize_optional_layer_manifests(source_root: Path, output_root: Path) -> list[dict[str, str]]:
+    """Point hydrated optional-layer manifests at their local payload directories."""
+    localized: list[dict[str, str]] = []
+    for contract in optional_layer_contracts(source_root, validate_local_payloads=True):
+        relative = contract["manifest_path"]
+        target = output_root.joinpath(*relative.parts)
+        manifest = load_json(target)
+        manifest["assetBaseUrl"] = "./" + contract["root"].as_posix() + "/"
+        write_json(target, manifest)
+        localized.append({"path": relative.as_posix(), "sha256": sha256_file(target)})
+    return localized
+
+
 def replace_url_prefix(value: Any, old: str, new: str) -> Any:
     if isinstance(value, str):
         if value == old:
@@ -727,6 +955,7 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         include_r2=bool(args.offline),
     )
     r2_results = {"cached": 0, "downloaded": 0}
+    optional_layer_results = {"file_count": 0, "total_bytes": 0, "tree_sha256": tree_sha256([])}
     if args.offline:
         r2_results = download_r2_files(
             manifest,
@@ -734,16 +963,9 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
             jobs=max(1, args.jobs),
             timeout=args.timeout,
         )
+        optional_layer_results = hydrate_optional_layer_payloads(source_root, output_root)
 
     overlay_source(source_root, output_root, records=source_records)
-    release_validation = verify_release_pages_bundle(output_root, expected_records)
-    localized_config_sha = None
-    if args.offline:
-        localized_config_sha = localize_app_config(manifest, output_root)
-    gzip_results = {"expanded": 0, "skipped_existing": 0}
-    if args.expand_gzip:
-        gzip_results = expand_gzip_files(output_root)
-
     for record in source_records:
         output_path = output_root / Path(record["path"])
         if sha256_file(output_path) != record["sha256"]:
@@ -752,6 +974,20 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         output_path = output_root / Path(record["path"])
         if output_path.stat().st_size != int(record["bytes"]) or sha256_file(output_path) != record["sha256"]:
             raise ContractError(f"R2 artifact verification failed after hydration: {record['path']}")
+
+    release_validation = verify_release_pages_bundle(
+        output_root,
+        expected_records,
+        allow_optional_r2_payloads=bool(args.offline),
+    )
+    localized_config_sha = None
+    localized_optional_manifests: list[dict[str, str]] = []
+    if args.offline:
+        localized_config_sha = localize_app_config(manifest, output_root)
+        localized_optional_manifests = localize_optional_layer_manifests(source_root, output_root)
+    gzip_results = {"expanded": 0, "skipped_existing": 0}
+    if args.expand_gzip:
+        gzip_results = expand_gzip_files(output_root)
 
     receipt = {
         "schema_version": 1,
@@ -763,8 +999,10 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         "offline": bool(args.offline),
         "expanded_gzip": bool(args.expand_gzip),
         "localized_app_config_sha256": localized_config_sha,
+        "localized_optional_layer_manifests": localized_optional_manifests,
         "pages_archive": archive_status,
         "r2": r2_results,
+        "optional_layer_r2": optional_layer_results,
         "gzip": gzip_results,
         "pages_validation": release_validation,
     }
@@ -802,6 +1040,12 @@ def check_production(manifest: dict[str, Any], *, timeout: float) -> dict[str, A
         live_sha = hashlib.sha256(live_bytes).hexdigest()
         if len(live_bytes) != record["bytes"] or live_sha != record["sha256"]:
             raise ContractError(f"Production source asset drifted from Git: {record['path']}")
+    optional_records = optional_layer_r2_records(source_root)
+    for record in optional_records:
+        live_bytes = request_bytes(record["url"], timeout=timeout)
+        live_sha = hashlib.sha256(live_bytes).hexdigest()
+        if len(live_bytes) != int(record["bytes"]) or live_sha != record["sha256"]:
+            raise ContractError(f"Production optional-layer R2 payload drifted: {record['path']}")
     return {
         "production_url": production_url,
         "r2_base_url": live_r2,
@@ -810,20 +1054,25 @@ def check_production(manifest: dict[str, Any], *, timeout: float) -> dict[str, A
         "r2_manifest_sha256": live_manifest_sha,
         "source_file_count": len(source_records),
         "source_tree_sha256": tree_sha256(source_records),
+        "optional_layer_r2_file_count": len(optional_records),
+        "optional_layer_r2_tree_sha256": tree_sha256(optional_records),
     }
 
 
 def verify(args: argparse.Namespace) -> dict[str, Any]:
     manifest = load_json(args.manifest.resolve())
     validate_manifest(manifest)
+    source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
+    optional_records = optional_layer_r2_records(source_root)
     result: dict[str, Any] = {
         "ok": True,
         "release_id": manifest["release"]["id"],
         "pages_tree_sha256": manifest["pages"]["tree_sha256"],
         "r2_tree_sha256": manifest["r2"]["tree_sha256"],
+        "optional_layer_r2_file_count": len(optional_records),
+        "optional_layer_r2_tree_sha256": tree_sha256(optional_records),
     }
     if args.check_baseline_source:
-        source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
         records = [file_record(path, relative_to=source_root) for path in iter_files(source_root)]
         if tree_sha256(records) != manifest["source_overlay"]["tree_sha256"]:
             raise ContractError("Current source differs from the release baseline; hydrate will overlay the current source")

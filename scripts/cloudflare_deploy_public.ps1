@@ -1,6 +1,9 @@
 param(
   [string]$BucketName = 'ufo-timeline-data',
   [string]$ProjectName = 'ufo-timeline',
+  [Parameter(Mandatory = $true)]
+  [ValidatePattern('^[A-Za-z0-9._/-]+$')]
+  [string]$Branch,
   [string]$R2BaseUrl = '',
   [switch]$UseR2DevUrl,
   [string]$Python = 'C:\Users\jarod\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
@@ -64,5 +67,7 @@ Write-Host "Uploading R2 artifacts..."
 Write-Host "Configuring R2 CORS for Pages origins..."
 & (Join-Path $PSScriptRoot 'cloudflare_configure_r2_cors.ps1') -BucketName $BucketName
 
-Write-Host "Deploying Cloudflare Pages project: $ProjectName"
-& (Join-Path $PSScriptRoot 'cloudflare_deploy_pages.ps1') -ProjectName $ProjectName
+Write-Host "Deploying Cloudflare Pages project: $ProjectName on explicit branch: $Branch"
+& (Join-Path $PSScriptRoot 'cloudflare_deploy_pages.ps1') `
+  -ProjectName $ProjectName `
+  -Branch $Branch

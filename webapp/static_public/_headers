@@ -24,10 +24,19 @@
 /crop_circle_layer.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/animal_mutilation_bootstrap.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/animal_mutilation_layer.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /data/app_config.json
   Cache-Control: public, max-age=0, must-revalidate
 
 /data/crop_circles/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/animal_mutilations/manifest.json
   Cache-Control: public, max-age=0, must-revalidate
 
 /data/startup_profiles/*

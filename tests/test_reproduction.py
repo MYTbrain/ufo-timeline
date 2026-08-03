@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from argparse import Namespace
+import gzip
+import hashlib
 import json
 from pathlib import Path
+import ssl
 
 import pytest
 
@@ -63,6 +66,15 @@ def test_production_normalization_removes_only_cloudflare_pages_analytics() -> N
 
     assert reproduction.normalize_production_source("index.html", served) == source
     assert reproduction.normalize_production_source("app.js", served) == served
+
+
+def test_cloudflare_tls_compatibility_keeps_certificate_and_hostname_verification() -> None:
+    context = reproduction.VERIFIED_SSL_CONTEXT
+
+    assert context.verify_mode == ssl.CERT_REQUIRED
+    assert context.check_hostname is True
+    if hasattr(ssl, "VERIFY_X509_STRICT"):
+        assert not context.verify_flags & ssl.VERIFY_X509_STRICT
 
 
 def test_build_manifest_pins_pages_r2_and_source_overlay(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -149,23 +161,36 @@ def test_validate_manifest_rejects_duplicate_artifact_paths(tmp_path: Path) -> N
         )
 
 
-def test_pages_source_policy_excludes_manifest_declared_and_known_crop_r2_payloads(tmp_path: Path) -> None:
+def test_pages_source_policy_excludes_manifest_declared_optional_layer_payloads(tmp_path: Path) -> None:
     source = tmp_path / "static_public"
     _write(source / "index.html", b"shell\n")
     _write(source / "crop_circle_layer.js", b"runtime\n")
-    _write(source / "data" / "crop_circles" / "points.json.gz", b"known points")
-    _write(source / "data" / "crop_circles" / "future_points.bin.gz", b"future points")
-    _write(source / "data" / "crop_circles" / "details" / "chunk_000.json.gz", b"details")
-    _write(
-        source / "data" / "crop_circles" / "manifest.json",
-        json.dumps(
-            {
-                "assetBaseUrl": "https://assets.example.org/releases/crop-v1/",
-                "points": {"path": "future_points.bin.gz"},
-                "details": {"files": [{"path": "details/chunk_000.json.gz"}]},
-            }
-        ).encode("utf-8"),
-    )
+    for layer, release_id, payload_name in (
+        ("crop_circles", "crop-v1", "points.json.gz"),
+        ("animal_mutilations", "animal-v1", "catalog.json.gz"),
+    ):
+        payload = gzip.compress(b"[]", mtime=0)
+        payload_path = source / "data" / layer / payload_name
+        _write(payload_path, payload)
+        manifest = {
+            "releaseId": release_id,
+            "assetBaseUrl": f"https://assets.example.org/releases/{release_id}/",
+            "delivery": {
+                "pagesFiles": ["manifest.json"],
+                "immutablePrefix": f"releases/{release_id}/",
+                "r2OnlyPaths": [payload_name],
+            },
+            "payload": {
+                "path": payload_name,
+                "bytes": len(payload),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "r2Only": True,
+            },
+        }
+        _write(
+            source / "data" / layer / "manifest.json",
+            json.dumps(manifest).encode("utf-8"),
+        )
 
     records = reproduction.pages_source_records(source)
     paths = {record["path"] for record in records}
@@ -173,9 +198,39 @@ def test_pages_source_policy_excludes_manifest_declared_and_known_crop_r2_payloa
     assert "index.html" in paths
     assert "crop_circle_layer.js" in paths
     assert "data/crop_circles/manifest.json" in paths
+    assert "data/animal_mutilations/manifest.json" in paths
     assert "data/crop_circles/points.json.gz" not in paths
-    assert "data/crop_circles/future_points.bin.gz" not in paths
-    assert "data/crop_circles/details/chunk_000.json.gz" not in paths
+    assert "data/animal_mutilations/catalog.json.gz" not in paths
+
+
+def test_optional_layer_source_rejects_review_queue_raw_cache_and_images(tmp_path: Path) -> None:
+    source = tmp_path / "static_public"
+    payload = gzip.compress(b"[]", mtime=0)
+    _write(source / "data" / "animal_mutilations" / "catalog.json.gz", payload)
+    _write(
+        source / "data" / "animal_mutilations" / "manifest.json",
+        json.dumps(
+            {
+                "releaseId": "animal-v1",
+                "assetBaseUrl": "https://assets.example.org/releases/animal-v1/",
+                "delivery": {
+                    "pagesFiles": ["manifest.json"],
+                    "immutablePrefix": "releases/animal-v1/",
+                    "r2OnlyPaths": ["catalog.json.gz"],
+                },
+                "catalog": {
+                    "path": "catalog.json.gz",
+                    "bytes": len(payload),
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "r2Only": True,
+                },
+            }
+        ).encode("utf-8"),
+    )
+    _write(source / "data" / "animal_mutilations" / "timeline_review_queue.jsonl", b"{}\n")
+
+    with pytest.raises(reproduction.ContractError, match="undeclared files"):
+        reproduction.pages_source_records(source)
 
 
 def test_exact_file_inventory_rejects_unexpected_and_changed_files(tmp_path: Path) -> None:
@@ -213,7 +268,7 @@ def test_required_pages_json_must_parse(tmp_path: Path) -> None:
         reproduction.verify_required_pages_files(bundle)
 
 
-def test_current_release_pages_inventory_is_baseline_plus_four_source_assets() -> None:
+def test_current_release_pages_inventory_is_exact_baseline_plus_approved_source_assets() -> None:
     manifest = reproduction.load_json(reproduction.REPO_ROOT / "reproduction" / "release.json")
     source_root = reproduction.REPO_ROOT / manifest["source_overlay"]["root"]
 
@@ -222,10 +277,156 @@ def test_current_release_pages_inventory_is_baseline_plus_four_source_assets() -
     source_paths = {record["path"] for record in source_records}
 
     assert len(manifest["pages"]["files"]) == 127
-    assert len(expected) == 131
+    assert len(expected) == len({record["path"] for record in [*manifest["pages"]["files"], *source_records]})
     assert "404.html" in expected_paths
     assert "crop_circle_bootstrap.js" in expected_paths
     assert "crop_circle_layer.js" in expected_paths
     assert "data/crop_circles/manifest.json" in expected_paths
+    assert "animal_mutilation_bootstrap.js" in expected_paths
+    assert "animal_mutilation_layer.js" in expected_paths
+    assert "data/animal_mutilations/manifest.json" in expected_paths
     assert "data/crop_circles/points.json.gz" not in source_paths
     assert not any(path.startswith("data/crop_circles/details/") for path in source_paths)
+    assert "data/animal_mutilations/points.json.gz" not in source_paths
+    assert "data/animal_mutilations/catalog.json.gz" not in source_paths
+    assert not any(path.startswith("data/animal_mutilations/details/") for path in source_paths)
+
+
+def test_offline_hydration_copies_and_localizes_manifest_declared_optional_payloads(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo = tmp_path / "repo"
+    pages = repo / "pages"
+    source = repo / "webapp" / "static_public"
+    cache = repo / "cache"
+    output = repo / "hydrated"
+    _write(repo / "requirements.lock", b"locked\n")
+    _write(repo / "package-lock.json", b"{}\n")
+
+    for relative in reproduction.REQUIRED_PAGES_PATHS:
+        content = b"/data/startup_profiles/*\n  Cache-Control: immutable\n" if relative.name == "_headers" else b"required\n"
+        _write(pages.joinpath(*relative.parts), content)
+    for relative in reproduction.REQUIRED_PAGES_JSON_PATHS:
+        _write(pages.joinpath(*relative.parts), b"{}\n")
+    app_config = {
+        "deploymentProfile": {
+            "largeDataBaseUrl": "https://assets.example.test/releases/core-v1",
+            "target": "cloudflare_pages_r2",
+        }
+    }
+    _write(pages / "data" / "app_config.json", json.dumps(app_config).encode("utf-8"))
+    _write(source / "index.html", (pages / "index.html").read_bytes())
+
+    optional_data = gzip.compress(b"[]", mtime=0)
+    optional_relative = Path("data/animal_mutilations/catalog.json.gz")
+    _write(source / optional_relative, optional_data)
+    optional_manifest = {
+        "releaseId": "animal-mutilations-test-v1",
+        "assetBaseUrl": "https://assets.example.test/releases/animal-mutilations-test-v1/",
+        "delivery": {
+            "pagesFiles": ["manifest.json"],
+            "immutablePrefix": "releases/animal-mutilations-test-v1/",
+            "r2OnlyPaths": ["catalog.json.gz"],
+        },
+        "catalog": {
+            "path": "catalog.json.gz",
+            "bytes": len(optional_data),
+            "sha256": hashlib.sha256(optional_data).hexdigest(),
+            "r2Only": True,
+        },
+    }
+    _write(
+        source / "data" / "animal_mutilations" / "manifest.json",
+        json.dumps(optional_manifest).encode("utf-8"),
+    )
+
+    canonical_data = gzip.compress(b"{}", mtime=0)
+    canonical_record = {
+        "path": "data/canonical_web/core.json.gz",
+        "bytes": len(canonical_data),
+        "sha256": hashlib.sha256(canonical_data).hexdigest(),
+        "url": "https://assets.example.test/releases/core-v1/data/canonical_web/core.json.gz",
+    }
+    archive = repo / "pages.zip"
+    archive_summary = reproduction.deterministic_zip(pages, archive)
+    pages_records = [reproduction.file_record(path, relative_to=pages) for path in reproduction.iter_files(pages)]
+    source_records = reproduction.pages_source_records(source)
+    release = {
+        "schema_version": 1,
+        "release": {
+            "id": "offline-test-v1",
+            "canonical_production_url": "https://ufo-timeline.pages.dev",
+        },
+        "runtime": {
+            "python_lockfile": "requirements.lock",
+            "node_lockfile": "package-lock.json",
+        },
+        "source_overlay": {
+            "root": "webapp/static_public",
+            "file_count": len(source_records),
+            "total_bytes": sum(record["bytes"] for record in source_records),
+            "tree_sha256": reproduction.tree_sha256(source_records),
+            "files": source_records,
+        },
+        "pages": {
+            "deployment_id": "12345678-0000-0000-0000-000000000000",
+            "base_url": "https://12345678.ufo-timeline.pages.dev",
+            "file_count": len(pages_records),
+            "uncompressed_bytes": sum(record["bytes"] for record in pages_records),
+            "tree_sha256": reproduction.tree_sha256(pages_records),
+            "archive": {
+                "url": "https://assets.example.test/releases/reproduction/pages.zip",
+                "bytes": archive.stat().st_size,
+                "sha256": reproduction.sha256_file(archive),
+            },
+            "files": pages_records,
+        },
+        "r2": {
+            "base_url": "https://assets.example.test/releases/core-v1",
+            "key_prefix": "releases/core-v1",
+            "file_count": 1,
+            "total_bytes": len(canonical_data),
+            "tree_sha256": reproduction.tree_sha256([canonical_record]),
+            "files": [canonical_record],
+        },
+        "offline_localization": {
+            "app_config_path": "data/app_config.json",
+            "replace_url_prefix": "https://assets.example.test/releases/core-v1",
+            "replacement": ".",
+        },
+    }
+    release_path = repo / "reproduction" / "release.json"
+    _write(release_path, json.dumps(release).encode("utf-8"))
+    monkeypatch.setattr(reproduction, "REPO_ROOT", repo)
+
+    def fake_download(record, target, *, timeout):
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if record["path"] == "pages-bundle.zip":
+            target.write_bytes(archive.read_bytes())
+        elif record["path"] == canonical_record["path"]:
+            target.write_bytes(canonical_data)
+        else:  # pragma: no cover - the fixture has only the two pinned downloads
+            raise AssertionError(record["path"])
+        return "downloaded"
+
+    monkeypatch.setattr(reproduction, "download_to_path", fake_download)
+    report = reproduction.hydrate(
+        Namespace(
+            manifest=release_path,
+            output=output,
+            cache=cache,
+            offline=True,
+            expand_gzip=False,
+            jobs=1,
+            timeout=1,
+        )
+    )
+
+    assert (output / optional_relative).read_bytes() == optional_data
+    localized = json.loads(
+        (output / "data" / "animal_mutilations" / "manifest.json").read_text(encoding="utf-8")
+    )
+    assert localized["assetBaseUrl"] == "./data/animal_mutilations/"
+    assert report["optional_layer_r2"]["file_count"] == 1
+    assert report["pages_validation"]["optional_layer_payloads"] == [optional_relative.as_posix()]

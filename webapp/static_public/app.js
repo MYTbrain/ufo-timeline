@@ -898,6 +898,8 @@
     cropTraceHiddenPaneStyles: new Map(),
     cropCircleOverlayEnabled: false,
     cropCircleOverlayVisibleCount: null,
+    animalMutilationOverlayEnabled: false,
+    animalMutilationOverlayVisibleCount: null,
     playbackCursorMarker: null,
     playbackActiveMarker: null,
     cursorAnimationFrameId: null,
@@ -1692,6 +1694,7 @@
     overlayClaimedUfoBasesTracesRow: document.querySelector("#claimed-ufo-bases-traces-row"),
     overlayClaimedUfoBasesTracesToggle: document.querySelector("#overlay-claimed-ufo-bases-traces"),
     overlayCropCirclesToggle: document.querySelector("#overlay-crop-circles"),
+    overlayAnimalMutilationsToggle: document.querySelector("#overlay-animal-mutilations"),
     militaryBranchPanel: document.querySelector("#military-branch-panel"),
     militaryBranchStatus: document.querySelector("#military-branch-status"),
     mapControlCluster: document.querySelector("#map-control-cluster"),
@@ -10482,6 +10485,29 @@
           : {}
       )
     ));
+    const animalMutilationsActive = Boolean(runtime.animalMutilationOverlayEnabled || (
+      els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true"
+    ));
+    rows.push(buildMapLegendMarkerRow(
+      "Animal Mutilation Reports",
+      "#9a6500",
+      "ring",
+      Object.assign(
+        mapLegendOverlayToggleOptions(
+          "data-map-legend-animal-mutilations",
+          "animal_mutilations",
+          "Animal Mutilation Reports",
+          animalMutilationsActive
+        ),
+        Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+          ? {
+              count: Number(runtime.animalMutilationOverlayVisibleCount),
+              countNounSingular: "mapped report",
+              countNounPlural: "mapped reports",
+            }
+          : {}
+      )
+    ));
     const airportsActive = Boolean(state.overlayVisibility.airports);
     rows.push(buildMapLegendMarkerRow(
       "Airports",
@@ -10629,6 +10655,7 @@
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
       Boolean(runtime.cropCircleOverlayEnabled) ||
+      Boolean(runtime.animalMutilationOverlayEnabled) ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -10817,6 +10844,9 @@
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
     if (runtime.cropCircleOverlayEnabled && els.overlayCropCirclesToggle) {
       els.overlayCropCirclesToggle.click();
+    }
+    if (runtime.animalMutilationOverlayEnabled && els.overlayAnimalMutilationsToggle) {
+      els.overlayAnimalMutilationsToggle.click();
     }
     invalidateMapLegendEventFilterCaches();
     resetPlayback({ preserveSelection: true });
@@ -16717,6 +16747,7 @@
       map: runtime.map,
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
       timeRangeEndOrdinal: state.timeRangeEndOrdinal,
+      timeRangeIsAllTime: state.timeRangeMode === "full",
       hideLowPrecisionCoordinates: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
       hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
       colorMode: state.colorMode,
@@ -24860,6 +24891,15 @@
       renderMapLegend();
     });
 
+    window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
+      const detail = event && event.detail ? event.detail : {};
+      runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
+      runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
+        ? Number(detail.visibleRecords)
+        : null;
+      renderMapLegend();
+    });
+
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
         resetPlayback({ preserveSelection: true });
@@ -25077,10 +25117,11 @@
         const eventButton = event.target.closest("[data-map-legend-event-key]");
         const overlayButton = event.target.closest("[data-map-legend-overlay]");
         const cropCircleButton = event.target.closest("[data-map-legend-crop-circles]");
+        const animalMutilationButton = event.target.closest("[data-map-legend-animal-mutilations]");
         const militaryButton = event.target.closest("[data-map-legend-military-branch]");
         const researchButton = event.target.closest("[data-map-legend-research-category]");
         const claimedButton = event.target.closest("[data-map-legend-claimed-control]");
-        const button = eventButton || overlayButton || cropCircleButton || militaryButton || researchButton || claimedButton;
+        const button = eventButton || overlayButton || cropCircleButton || animalMutilationButton || militaryButton || researchButton || claimedButton;
         if (!button) return;
         event.preventDefault();
         event.stopPropagation();
@@ -25094,6 +25135,14 @@
           els.overlayCropCirclesToggle.click();
           announceMapLegendStatus(
             "Crop circles overlay " + (runtime.cropCircleOverlayEnabled ? "shown." : "updating.")
+          );
+          return;
+        }
+        if (animalMutilationButton) {
+          if (!els.overlayAnimalMutilationsToggle) return;
+          els.overlayAnimalMutilationsToggle.click();
+          announceMapLegendStatus(
+            "Animal Mutilation Reports overlay " + (runtime.animalMutilationOverlayEnabled ? "shown." : "updating.")
           );
           return;
         }

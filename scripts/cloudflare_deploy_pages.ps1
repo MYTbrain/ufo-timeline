@@ -2,6 +2,10 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$ProjectName,
 
+  [Parameter(Mandatory = $true)]
+  [ValidatePattern('^[A-Za-z0-9._/-]+$')]
+  [string]$Branch,
+
   [string]$BundleRoot = 'cloudflare_bundle_r2',
 
   [string]$Python = 'python'
@@ -24,17 +28,6 @@ if ([StringComparer]::OrdinalIgnoreCase.Equals($BundlePath, $RawSourcePath)) {
   throw 'Refusing to deploy raw webapp/static_public. Hydrate the frozen Pages release first.'
 }
 
-$CropRoot = Join-Path $BundlePath 'data\crop_circles'
-$CropPoints = Join-Path $CropRoot 'points.json.gz'
-$CropDetails = Join-Path $CropRoot 'details'
-if (Test-Path -LiteralPath $CropPoints -PathType Leaf) {
-  throw "Refusing Pages deploy containing R2-only crop payload: $CropPoints"
-}
-if ((Test-Path -LiteralPath $CropDetails -PathType Container) -and
-    (Get-ChildItem -LiteralPath $CropDetails -File -Recurse | Select-Object -First 1)) {
-  throw "Refusing Pages deploy containing R2-only crop detail payloads: $CropDetails"
-}
-
 $Validator = Join-Path $RepoRoot 'scripts\validate_cloudflare_bundle.py'
 $ReleaseManifest = Join-Path $RepoRoot 'reproduction\release.json'
 & $Python $Validator `
@@ -45,4 +38,4 @@ if ($LASTEXITCODE -ne 0) {
   throw "Pages release validation failed with exit code $LASTEXITCODE. Wrangler was not invoked."
 }
 
-& (Join-Path $PSScriptRoot 'cloudflare_wrangler.ps1') pages deploy $BundlePath --project-name $ProjectName
+& (Join-Path $PSScriptRoot 'cloudflare_wrangler.ps1') pages deploy $BundlePath --project-name $ProjectName --branch $Branch

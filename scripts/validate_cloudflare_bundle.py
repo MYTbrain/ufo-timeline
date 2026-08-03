@@ -10,7 +10,7 @@ from typing import Any
 
 try:
     from scripts import reproduction
-except ModuleNotFoundError:  # Direct `python scripts/validate_cloudflare_bundle.py` execution.
+except (ModuleNotFoundError, ImportError):  # Direct `python scripts/validate_cloudflare_bundle.py` execution.
     import reproduction  # type: ignore[no-redef]
 
 
@@ -162,16 +162,32 @@ def validate_bundle(
         errors.append("R2 base URL path does not end with the declared immutable key prefix.")
 
     try:
-        crop_payloads = reproduction.find_crop_r2_payloads(bundle_root)
+        layer_contracts = reproduction.optional_layer_contracts(bundle_root)
+        optional_payloads = reproduction.find_optional_layer_r2_payloads(bundle_root)
+        undeclared_layer_files = reproduction.optional_layer_undeclared_files(bundle_root, layer_contracts)
     except (reproduction.ContractError, OSError, UnicodeError, json.JSONDecodeError) as exc:
+        optional_payloads = []
+        undeclared_layer_files = []
         crop_payloads = []
+        checks["optional_layer_r2_payload_policy_valid"] = False
         checks["crop_r2_payload_policy_valid"] = False
-        errors.append(f"Unable to validate crop-circle R2 payload policy: {exc}")
+        errors.append(f"Unable to validate optional-layer R2 payload policy: {exc}")
     else:
+        crop_payloads = [path for path in optional_payloads if path.startswith("data/crop_circles/")]
+        checks["optional_layer_r2_payload_policy_valid"] = not undeclared_layer_files
+        checks["optional_layer_r2_payloads_excluded"] = not optional_payloads
         checks["crop_r2_payload_policy_valid"] = True
         checks["crop_r2_payloads_excluded"] = not crop_payloads
-        if crop_payloads:
-            errors.append("Pages bundle contains R2-only crop payloads: " + ", ".join(crop_payloads[:10]))
+        if optional_payloads:
+            errors.append(
+                "Pages bundle contains R2-only optional-layer payloads: "
+                + ", ".join(optional_payloads[:10])
+            )
+        if undeclared_layer_files:
+            errors.append(
+                "Pages bundle contains undeclared optional-layer files: "
+                + ", ".join(undeclared_layer_files[:10])
+            )
 
     if release_manifest_path is not None:
         release_manifest_path = release_manifest_path.resolve()
@@ -201,6 +217,8 @@ def validate_bundle(
         "r2_key_prefix": r2_key_prefix,
         "upload_count": upload_count,
         "inventory": inventory,
+        "optional_layer_r2_payloads": optional_payloads,
+        "undeclared_optional_layer_files": undeclared_layer_files,
         "crop_r2_payloads": crop_payloads,
         "errors": errors,
     }
