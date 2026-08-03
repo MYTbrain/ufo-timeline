@@ -68,6 +68,66 @@ def test_production_normalization_removes_only_cloudflare_pages_analytics() -> N
     assert reproduction.normalize_production_source("app.js", served) == served
 
 
+def test_production_check_skips_non_public_pages_control_files(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo = tmp_path / "repo"
+    source = repo / "webapp" / "static_public"
+    _write(source / "index.html", b"<body>tool</body>")
+    _write(source / "_headers", b"/*\n  Cache-Control: public\n")
+    source_records = [
+        reproduction.file_record(path, relative_to=source)
+        for path in reproduction.iter_files(source)
+    ]
+    r2_manifest = b'{"uploads": []}'
+    manifest = {
+        "release": {
+            "canonical_production_url": "https://ufo-timeline.pages.dev",
+            "normalized_count": 2,
+            "mapped_count": 1,
+        },
+        "source_overlay": {
+            "root": "webapp/static_public",
+            "files": source_records,
+        },
+        "pages": {"files": source_records},
+        "r2": {
+            "base_url": "https://assets.example.test/releases/core-v1",
+            "source_manifest_sha256": hashlib.sha256(r2_manifest).hexdigest(),
+        },
+    }
+    requested: list[str] = []
+
+    def fake_request(url: str, *, timeout: float) -> bytes:
+        requested.append(url)
+        if url.endswith("/data/app_config.json"):
+            return json.dumps(
+                {
+                    "normalizedCount": 2,
+                    "mappedCount": 1,
+                    "deploymentProfile": {
+                        "largeDataBaseUrl": "https://assets.example.test/releases/core-v1"
+                    },
+                }
+            ).encode("utf-8")
+        if url.endswith("/r2_upload_manifest.json"):
+            return r2_manifest
+        if url.endswith("/index.html"):
+            return b"<body>tool</body>"
+        raise AssertionError(url)
+
+    monkeypatch.setattr(reproduction, "REPO_ROOT", repo)
+    monkeypatch.setattr(reproduction, "request_bytes", fake_request)
+
+    report = reproduction.check_production(manifest, timeout=1)
+
+    assert not any(url.endswith("/_headers") for url in requested)
+    assert report["source_file_count"] == 2
+    assert report["public_source_file_count"] == 1
+    assert report["non_public_pages_control_paths"] == ["_headers"]
+
+
 def test_cloudflare_tls_compatibility_keeps_certificate_and_hostname_verification() -> None:
     context = reproduction.VERIFIED_SSL_CONTEXT
 
@@ -203,6 +263,61 @@ def test_pages_source_policy_excludes_manifest_declared_optional_layer_payloads(
     assert "data/animal_mutilations/catalog.json.gz" not in paths
 
 
+def test_verify_baseline_uses_pages_source_policy(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    repo = tmp_path / "repo"
+    source = repo / "webapp" / "static_public"
+    _write(source / "index.html", b"shell\n")
+    payload = gzip.compress(b"[]", mtime=0)
+    _write(source / "data" / "animal_mutilations" / "catalog.json.gz", payload)
+    _write(
+        source / "data" / "animal_mutilations" / "manifest.json",
+        json.dumps(
+            {
+                "releaseId": "animal-v1",
+                "assetBaseUrl": "https://assets.example.org/releases/animal-v1/",
+                "delivery": {
+                    "pagesFiles": ["manifest.json"],
+                    "immutablePrefix": "releases/animal-v1/",
+                    "r2OnlyPaths": ["catalog.json.gz"],
+                },
+                "catalog": {
+                    "path": "catalog.json.gz",
+                    "bytes": len(payload),
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "r2Only": True,
+                },
+            }
+        ).encode("utf-8"),
+    )
+    source_records = reproduction.pages_source_records(source)
+    manifest = {
+        "release": {"id": "test-v1"},
+        "source_overlay": {
+            "root": "webapp/static_public",
+            "tree_sha256": reproduction.tree_sha256(source_records),
+            "files": source_records,
+        },
+        "pages": {"tree_sha256": "0" * 64, "files": []},
+        "r2": {"tree_sha256": "1" * 64},
+    }
+    manifest_path = repo / "reproduction" / "release.json"
+    _write(manifest_path, json.dumps(manifest).encode("utf-8"))
+    monkeypatch.setattr(reproduction, "REPO_ROOT", repo)
+    monkeypatch.setattr(reproduction, "validate_manifest", lambda value: None)
+
+    report = reproduction.verify(
+        Namespace(
+            manifest=manifest_path,
+            check_baseline_source=True,
+            check_production=False,
+            timeout=1,
+        )
+    )
+
+    assert report["baseline_source_matches"] is True
+    assert report["optional_layer_r2_file_count"] == 1
+
+
 def test_optional_layer_source_rejects_review_queue_raw_cache_and_images(tmp_path: Path) -> None:
     source = tmp_path / "static_public"
     payload = gzip.compress(b"[]", mtime=0)
@@ -276,7 +391,7 @@ def test_current_release_pages_inventory_is_exact_baseline_plus_approved_source_
     expected_paths = {record["path"] for record in expected}
     source_paths = {record["path"] for record in source_records}
 
-    assert len(manifest["pages"]["files"]) == 127
+    assert len(manifest["pages"]["files"]) == 134
     assert len(expected) == len({record["path"] for record in [*manifest["pages"]["files"], *source_records]})
     assert "404.html" in expected_paths
     assert "crop_circle_bootstrap.js" in expected_paths

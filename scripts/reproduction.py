@@ -75,6 +75,7 @@ REQUIRED_PAGES_PATHS = (
     PurePosixPath("index.html"),
     PurePosixPath("_headers"),
 )
+NON_PUBLIC_PAGES_CONTROL_PATHS = frozenset({PurePosixPath("_headers")})
 REQUIRED_PAGES_JSON_PATHS = (
     PurePosixPath("canonical_web_static_payload_manifest.json"),
     PurePosixPath("cloudflare_bundle_manifest.json"),
@@ -1031,7 +1032,12 @@ def check_production(manifest: dict[str, Any], *, timeout: float) -> dict[str, A
 
     source_root = REPO_ROOT / Path(manifest["source_overlay"]["root"])
     source_records = pages_source_records(source_root, manifest)
-    for record in source_records:
+    public_source_records = [
+        record
+        for record in source_records
+        if safe_relative_path(str(record["path"])) not in NON_PUBLIC_PAGES_CONTROL_PATHS
+    ]
+    for record in public_source_records:
         live_bytes = request_bytes(
             production_url + "/" + quote(record["path"], safe="/._-"),
             timeout=timeout,
@@ -1053,6 +1059,8 @@ def check_production(manifest: dict[str, Any], *, timeout: float) -> dict[str, A
         "mapped_count": app_config.get("mappedCount"),
         "r2_manifest_sha256": live_manifest_sha,
         "source_file_count": len(source_records),
+        "public_source_file_count": len(public_source_records),
+        "non_public_pages_control_paths": sorted(path.as_posix() for path in NON_PUBLIC_PAGES_CONTROL_PATHS),
         "source_tree_sha256": tree_sha256(source_records),
         "optional_layer_r2_file_count": len(optional_records),
         "optional_layer_r2_tree_sha256": tree_sha256(optional_records),
@@ -1073,7 +1081,7 @@ def verify(args: argparse.Namespace) -> dict[str, Any]:
         "optional_layer_r2_tree_sha256": tree_sha256(optional_records),
     }
     if args.check_baseline_source:
-        records = [file_record(path, relative_to=source_root) for path in iter_files(source_root)]
+        records = pages_source_records(source_root, manifest)
         if tree_sha256(records) != manifest["source_overlay"]["tree_sha256"]:
             raise ContractError("Current source differs from the release baseline; hydrate will overlay the current source")
         result["baseline_source_matches"] = True
