@@ -61,6 +61,32 @@
         <p id="hero-event-count-hook" class="hero-hook">Explore UFO events over time</p>
         <p class="hero-subtext">Compare sightings with airports, military bases, and overlays</p>
         <p class="hero-attribution">Sightings datasets generously provided by <a href="https://ufosint.com/" target="_blank" rel="noopener noreferrer external">UFOSINT</a>.</p>
+        <div class="hero-view-switcher">
+          <div id="analysis-view-tablist" class="hero-view-tablist" role="tablist" aria-label="Primary data view">
+            <button
+              id="view-tab-map"
+              class="hero-view-tab is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="map-explorer-panel"
+              tabindex="0"
+            >Map Explorer</button>
+            <button
+              id="view-tab-analysis"
+              class="hero-view-tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="analysis-panel"
+              aria-disabled="true"
+              tabindex="-1"
+              disabled
+              title="Analysis becomes available when the core catalog is ready."
+            >Analysis</button>
+          </div>
+          <span id="analysis-tab-status" class="hero-view-status" role="status" aria-live="polite">Analysis is waiting for the core catalog.</span>
+        </div>
       </div>
       <div class="hero-stats">
         <div id="appearance-panel" class="hero-toolcard compact-collapsible-panel">
@@ -864,6 +890,7 @@
         <div id="mobile-primary-filters-shell" class="mobile-primary-filters-shell" hidden>
           <div id="mobile-primary-filters-slot" class="mobile-primary-filters-slot"></div>
         </div>
+        <section id="map-explorer-panel" class="map-explorer-panel" role="tabpanel" aria-labelledby="view-tab-map" tabindex="0">
         <div class="map-surface">
           <aside id="map-control-cluster" class="map-control-cluster" aria-label="Map-adjacent controls">
             <div id="map-control-cluster-handle" class="map-control-cluster-handle">
@@ -1238,6 +1265,227 @@
           <span class="map-height-resize-grip" aria-hidden="true"></span>
           <span id="map-height-resize-label" class="map-height-resize-label">Drag down to expand map</span>
         </div>
+        </section>
+        <section id="analysis-panel" class="analysis-panel" role="tabpanel" aria-labelledby="view-tab-analysis" tabindex="0" hidden inert aria-hidden="true">
+          <header class="analysis-header">
+            <div class="analysis-header-copy">
+              <p class="eyebrow">Evidence-first exploration</p>
+              <h2 id="analysis-title">Statistical Analysis</h2>
+              <p id="analysis-scope-summary" class="analysis-scope-summary">Patterns describe the reports matching the current timeline and filters. They do not establish travel, causation, authenticity, or phenomenon incidence.</p>
+            </div>
+            <div class="analysis-header-actions">
+              <label class="field compact-field analysis-baseline-field">
+                <span>Reference baseline</span>
+                <select id="analysis-baseline" aria-describedby="analysis-baseline-note">
+                  <option value="other_dates_balanced" selected>Other dates, balanced</option>
+                  <option value="previous_equal_duration">Previous equal-duration period</option>
+                  <option value="full_catalog">Full catalog (descriptive)</option>
+                </select>
+              </label>
+              <div class="analysis-context-controls" aria-label="Context catalogs included in Analysis">
+                <div class="analysis-context-control">
+                  <button id="analysis-include-crop-circles" class="secondary-button analysis-context-switch" type="button" role="switch" aria-checked="true" aria-describedby="analysis-crop-control-status">
+                    <span>Include Crop Circles</span><span class="analysis-switch-track" aria-hidden="true"><span></span></span>
+                  </button>
+                  <a id="analysis-view-crop-analysis" class="analysis-context-view-link" href="#analysis-crop-context">View Crop Analysis</a>
+                  <span id="analysis-crop-control-status" class="analysis-context-control-status" role="status" aria-live="polite">Included</span>
+                </div>
+                <div class="analysis-context-control">
+                  <button id="analysis-include-animal-reports" class="secondary-button analysis-context-switch" type="button" role="switch" aria-checked="true" aria-describedby="analysis-animal-control-status">
+                    <span>Include Animal Reports</span><span class="analysis-switch-track" aria-hidden="true"><span></span></span>
+                  </button>
+                  <a id="analysis-view-animal-analysis" class="analysis-context-view-link" href="#analysis-animal-context">View Animal Analysis</a>
+                  <span id="analysis-animal-control-status" class="analysis-context-control-status" role="status" aria-live="polite">Included</span>
+                </div>
+              </div>
+              <div class="analysis-export-controls" role="group" aria-label="Download Analysis evidence package">
+                <button id="analysis-export-json" class="secondary-button" type="button" disabled>Download JSON</button>
+                <button id="analysis-export-csv" class="secondary-button" type="button" disabled>Download CSV</button>
+              </div>
+            </div>
+          </header>
+          <p id="analysis-baseline-note" class="analysis-baseline-note">Reference reports preserve the active non-date filters and exclude the selected date window.</p>
+          <p id="analysis-computation-status" class="analysis-computation-status" role="status" aria-live="polite" hidden></p>
+
+          <nav id="analysis-section-nav" class="analysis-section-nav" aria-label="Analysis sections">
+            <a class="is-active" aria-current="location" href="#analysis-section-overview">Overview</a>
+            <a href="#analysis-section-time">Time</a>
+            <a href="#analysis-section-craft">Craft</a>
+            <a href="#analysis-section-geography">Geography</a>
+            <a href="#analysis-section-spatial">Spatial Evidence</a>
+            <a href="#analysis-section-sources-quality">Sources &amp; Quality</a>
+            <a href="#analysis-section-context">Context</a>
+          </nav>
+
+          <div id="analysis-state-region" class="analysis-state-region" aria-live="polite" aria-atomic="true">
+            <div id="analysis-loading" class="analysis-state-card analysis-state-loading" role="status">
+              <span class="analysis-loading-indicator" aria-hidden="true"></span>
+              <div><strong>Preparing analysis</strong><p id="analysis-loading-message">Waiting for the first analysis request.</p></div>
+            </div>
+            <div id="analysis-empty" class="analysis-state-card" role="status" hidden>
+              <strong>No reports match this cohort</strong>
+              <p id="analysis-empty-message">Adjust the shared timeline or filters to compare a larger cohort.</p>
+            </div>
+            <div id="analysis-error" class="analysis-state-card analysis-state-error" role="alert" hidden>
+              <strong>Analysis could not be computed</strong>
+              <p id="analysis-error-message">The map and shared filters are still available.</p>
+              <button id="analysis-error-retry" class="secondary-button" type="button">Retry analysis</button>
+            </div>
+          </div>
+
+          <div id="analysis-content" class="analysis-content" hidden inert>
+            <section id="analysis-section-overview" class="analysis-section" aria-labelledby="analysis-overview-title" tabindex="-1">
+              <div class="analysis-section-heading">
+                <div><p class="eyebrow">Cohort overview</p><h3 id="analysis-overview-title">Coverage and comparison</h3></div>
+                <p class="analysis-exploratory-label">Exploratory · descriptive, not causal</p>
+              </div>
+              <div id="analysis-cohort-banner" class="analysis-cohort-banner" aria-label="Active analysis cohort">
+                <div id="analysis-summary-grid" class="analysis-summary-grid">
+                <article class="analysis-summary-card"><span>Active reports</span><strong id="analysis-active-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Reference reports</span><strong id="analysis-reference-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Mapped</span><strong id="analysis-mapped-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Unmapped</span><strong id="analysis-unmapped-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Missing required fields</span><strong id="analysis-missing-count">—</strong></article>
+                </div>
+              </div>
+              <details id="analysis-methodology" class="analysis-methodology">
+                <summary>Methodology &amp; data quality</summary>
+                <div class="analysis-methodology-body">
+                  <dl class="analysis-metadata-grid">
+                    <div><dt>Unit</dt><dd id="analysis-unit-label">Reports</dd></div>
+                    <div><dt>Source mix</dt><dd id="analysis-source-mix">Waiting</dd></div>
+                    <div><dt>Date precision</dt><dd id="analysis-date-precision">Waiting</dd></div>
+                    <div><dt>Location precision</dt><dd id="analysis-location-precision">Waiting</dd></div>
+                    <div><dt>Dataset hash</dt><dd id="analysis-dataset-hash">Waiting</dd></div>
+                  </dl>
+                  <p id="analysis-policy-warning" class="analysis-policy-warning">Generalized coordinates remain separated from exact source coordinates. Chronology connectors never enter travel or proximity statistics.</p>
+                </div>
+              </details>
+              <div class="analysis-card-grid analysis-card-grid-two">
+                <article class="analysis-card" aria-labelledby="analysis-coverage-title"><h4 id="analysis-coverage-title">Eligibility funnel</h4><p class="analysis-card-question">How much of the active cohort can support each analytical claim?</p><div id="analysis-coverage-chart" class="analysis-chart" data-analysis-chart="coverage"></div></article>
+                <article class="analysis-card" aria-labelledby="analysis-comparison-title"><h4 id="analysis-comparison-title">Adjusted evidence summary</h4><p class="analysis-card-question">Which qualified differences are largest, and how uncertain are they?</p><div id="analysis-comparison-chart" class="analysis-chart" data-analysis-chart="comparison"></div></article>
+              </div>
+              <article class="analysis-card analysis-pattern-card" aria-labelledby="analysis-pattern-title">
+                <div class="analysis-card-heading"><div><p class="eyebrow">Guarded Pattern Finder</p><h4 id="analysis-pattern-title">Qualified exploratory shifts</h4></div><span id="analysis-pattern-count" class="results-count-pill">0</span></div>
+                <p class="analysis-card-note">Only findings that pass the configured sample, expected-cell, effect-size, interval, false-discovery, and source-sensitivity gates appear here.</p>
+                <ol id="analysis-pattern-list" class="analysis-pattern-list"><li class="analysis-pattern-empty">No qualified findings have been computed yet.</li></ol>
+              </article>
+            </section>
+
+            <section id="analysis-section-time" class="analysis-section" aria-labelledby="analysis-time-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Time</p><h3 id="analysis-time-title">Reporting activity through time</h3></div><p class="analysis-section-note">Comparisons are reporting-pattern signals, not incidence estimates.</p></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide"><h4>Adaptive balanced timeline</h4><p class="analysis-card-question">Does the cohort depart from its balanced reference through time?</p><div id="analysis-time-series-chart" class="analysis-chart" data-analysis-chart="time-series"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Recurring month-by-craft signal</h4><p class="analysis-card-question">Which supported craft and month combinations recur beyond their adjusted expectation?</p><div id="analysis-month-year-chart" class="analysis-chart" data-analysis-chart="month-craft"></div></article>
+                <article class="analysis-card"><h4 id="analysis-rolling-title">Observed vs. reference envelope</h4><div id="analysis-rolling-chart" class="analysis-chart" data-analysis-chart="rolling"></div></article>
+                <details class="analysis-card analysis-supporting-details"><summary>Supporting cohort volume</summary><div id="analysis-decade-chart" class="analysis-chart" data-analysis-chart="decades"></div><div id="analysis-bursts-chart" class="analysis-chart analysis-legacy-chart" data-analysis-chart="bursts" hidden></div></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-craft" class="analysis-section" aria-labelledby="analysis-craft-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Craft</p><h3 id="analysis-craft-title">Reported craft categories</h3></div><p class="analysis-section-note">Unknown and low-confidence classifications stay visible.</p></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide"><h4>Adjusted craft share</h4><p class="analysis-card-question">Which craft categories differ after balancing common source, era, and geography support?</p><div id="analysis-craft-distribution-chart" class="analysis-chart" data-analysis-chart="craft-distribution"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Craft by era</h4><div id="analysis-craft-era-chart" class="analysis-chart" data-analysis-chart="craft-era"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Craft by geography</h4><div id="analysis-craft-geography-chart" class="analysis-chart" data-analysis-chart="craft-geography"></div></article>
+                <article class="analysis-card"><h4>Classification confidence</h4><div id="analysis-craft-confidence-chart" class="analysis-chart" data-analysis-chart="craft-confidence"></div></article>
+                <article class="analysis-card"><h4>Reported event type</h4><div id="analysis-report-type-chart" class="analysis-chart" data-analysis-chart="report-type"></div></article>
+                <details class="analysis-card analysis-card-wide analysis-supporting-details"><summary>Source dependence and descriptive trend</summary><div id="analysis-craft-residual-chart" class="analysis-chart" data-analysis-chart="craft-residuals"></div><div id="analysis-craft-trends-chart" class="analysis-chart" data-analysis-chart="craft-trends"></div></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-geography" class="analysis-section" aria-labelledby="analysis-geography-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Geography</p><h3 id="analysis-geography-title">Report density and enrichment</h3></div><p class="analysis-section-note">Density is not incidence or risk.</p></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide"><h4>Equal-area adjusted enrichment</h4><p class="analysis-card-question">Where is the active share higher or lower than its balanced reference?</p><div id="analysis-geography-grid-chart" class="analysis-chart" data-analysis-chart="geography-grid"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Geography by era</h4><div id="analysis-geography-time-chart" class="analysis-chart" data-analysis-chart="geography-time"></div></article>
+              </div>
+            </section>
+
+            <section id="analysis-section-spatial" class="analysis-section" aria-labelledby="analysis-spatial-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Spatial Evidence</p><h3 id="analysis-spatial-title">Qualified point-based associations</h3></div><p class="analysis-section-note">Report-marker associations only. Chronology connectors are never analyzed.</p></div>
+              <p id="analysis-spatial-status" class="analysis-readiness-summary" role="status">Spatial evidence loads only when this section is requested.</p>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide"><h4>Craft co-occurrence</h4><p class="analysis-card-question">Which craft categories appear near one another more or less often than a stratified null expects?</p><div id="analysis-cooccurrence-chart" class="analysis-chart" data-analysis-chart="cooccurrence"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Facility context</h4><p class="analysis-card-question">Does reported craft composition differ near temporally active, qualified facility markers?</p><div id="analysis-facility-context-chart" class="analysis-chart" data-analysis-chart="facility-context"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Cross-domain readiness</h4><p class="analysis-card-question">Which crop and animal associations are estimable under the provenance and uncertainty gates?</p><div id="analysis-cross-domain-readiness-chart" class="analysis-chart" data-analysis-chart="cross-domain-readiness"></div></article>
+              </div>
+            </section>
+
+            <section id="analysis-section-sources-quality" class="analysis-section" aria-labelledby="analysis-sources-quality-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Sources &amp; Quality</p><h3 id="analysis-sources-quality-title">Collection and missingness</h3></div></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card"><h4>Source composition</h4><div id="analysis-source-composition-chart" class="analysis-chart" data-analysis-chart="source-composition"></div></article>
+                <article class="analysis-card"><h4>Source mix over time</h4><div id="analysis-source-time-chart" class="analysis-chart" data-analysis-chart="source-time"></div></article>
+                <article class="analysis-card"><h4>Missingness and coverage</h4><div id="analysis-quality-missingness-chart" class="analysis-chart" data-analysis-chart="quality-missingness"></div></article>
+                <article class="analysis-card analysis-card-wide"><h4>Classifier consistency audit</h4><div id="analysis-quality-audit-chart" class="analysis-chart" data-analysis-chart="quality-audit"></div></article>
+              </div>
+            </section>
+
+            <section id="analysis-section-context" class="analysis-section" aria-labelledby="analysis-context-title" tabindex="-1">
+              <div class="analysis-section-heading"><div><p class="eyebrow">Context</p><h3 id="analysis-context-title">Context catalogs and evidence gates</h3></div><p class="analysis-section-note">An association appears only when its preregistered evidence gates pass.</p></div>
+              <article class="analysis-card analysis-card-wide analysis-relationship-readiness-card">
+                <h4>Relationship reconciliation</h4>
+                <p class="analysis-card-question">Which inherited relationship records are explicit-source, computed candidates, analyst-reviewed, reconciled, quarantined, or eligible for independent association testing?</p>
+                <div id="analysis-relationship-readiness-chart" class="analysis-chart" data-analysis-chart="relationship-readiness"></div>
+              </article>
+              <article id="analysis-crop-context" class="analysis-context-group" aria-labelledby="analysis-crop-context-title">
+                <div class="analysis-context-heading"><div><h4 id="analysis-crop-context-title">Crop-circle records</h4><p id="analysis-crop-context-status">Waiting for the enabled context projection.</p></div><span class="analysis-context-badge">Descriptive</span></div>
+                <div id="analysis-crop-excluded" class="analysis-context-excluded" role="status" hidden>
+                  <strong>Crop circles are excluded from this analysis.</strong>
+                  <p>The catalog remains available. Use “Include Crop Circles” above to recompute its descriptive and gated evidence.</p>
+                </div>
+                <div id="analysis-crop-content" class="analysis-context-content">
+                <div class="analysis-card-grid">
+                  <article class="analysis-card analysis-card-wide"><h5>Rehabilitation readiness</h5><p class="analysis-card-question">Are provenance, date-role, coordinate uncertainty, lineage, and sample gates sufficient for an association estimate?</p><div id="analysis-crop-readiness-chart" class="analysis-chart" data-analysis-chart="crop-readiness"></div></article>
+                  <article class="analysis-card"><h5>Records over time</h5><div id="analysis-crop-time-chart" class="analysis-chart" data-analysis-chart="crop-time"></div></article>
+                  <article class="analysis-card"><h5>Provisional morphology</h5><div id="analysis-crop-morphology-chart" class="analysis-chart" data-analysis-chart="crop-morphology"></div></article>
+                  <article class="analysis-card"><h5>Crop type</h5><div id="analysis-crop-type-chart" class="analysis-chart" data-analysis-chart="crop-type"></div></article>
+                  <article class="analysis-card"><h5>Coordinate class</h5><div id="analysis-crop-coordinate-chart" class="analysis-chart" data-analysis-chart="crop-coordinate"></div></article>
+                  <article class="analysis-card"><h5>Field coverage</h5><div id="analysis-crop-coverage-chart" class="analysis-chart" data-analysis-chart="crop-coverage"></div></article>
+                </div>
+                </div>
+              </article>
+              <article id="analysis-animal-context" class="analysis-context-group" aria-labelledby="analysis-animal-context-title">
+                <div class="analysis-context-heading"><div><h4 id="analysis-animal-context-title">Animal mutilation reports</h4><p id="analysis-animal-context-status">Waiting for the enabled context projection.</p></div><span class="analysis-context-badge">Reported · unreviewed</span></div>
+                <div id="analysis-animal-excluded" class="analysis-context-excluded" role="status" hidden>
+                  <strong>Animal reports are excluded from this analysis.</strong>
+                  <p>The catalog remains available. Use “Include Animal Reports” above to recompute its descriptive and gated evidence.</p>
+                </div>
+                <div id="analysis-animal-content" class="analysis-context-content">
+                <div class="analysis-card-grid">
+                  <article class="analysis-card analysis-card-wide"><h5>Rehabilitation readiness</h5><p class="analysis-card-question">Are exact coordinates, uncertainty, lineage reconciliation, review state, and sample gates sufficient for an association estimate?</p><div id="analysis-animal-readiness-chart" class="analysis-chart" data-analysis-chart="animal-readiness"></div></article>
+                  <article class="analysis-card"><h5>Reports over time</h5><div id="analysis-animal-time-chart" class="analysis-chart" data-analysis-chart="animal-time"></div></article>
+                  <article class="analysis-card"><h5>Species groups</h5><div id="analysis-animal-species-chart" class="analysis-chart" data-analysis-chart="animal-species"></div></article>
+                  <article class="analysis-card"><h5>Review status</h5><div id="analysis-animal-status-chart" class="analysis-chart" data-analysis-chart="animal-status"></div></article>
+                  <article class="analysis-card"><h5>Date precision</h5><div id="analysis-animal-date-precision-chart" class="analysis-chart" data-analysis-chart="animal-date-precision"></div></article>
+                  <article class="analysis-card"><h5>Field coverage</h5><div id="analysis-animal-coverage-chart" class="analysis-chart" data-analysis-chart="animal-coverage"></div></article>
+                </div>
+                </div>
+              </article>
+            </section>
+          </div>
+
+          <aside id="analysis-preview-drawer" class="analysis-preview-drawer" aria-labelledby="analysis-preview-title" hidden inert aria-hidden="true">
+            <div class="analysis-preview-heading">
+              <div><p id="analysis-preview-kind" class="eyebrow">Local chart preview</p><h3 id="analysis-preview-title" tabindex="-1">Preview selection</h3></div>
+              <button id="analysis-preview-cancel-top" class="secondary-button analysis-preview-close" type="button" aria-label="Close preview">Close</button>
+            </div>
+            <p id="analysis-preview-summary" class="analysis-preview-summary">Review the proposed cohort before changing the shared filters.</p>
+            <dl class="analysis-preview-metrics">
+              <div><dt>Cohort</dt><dd id="analysis-preview-cohort">—</dd></div>
+              <div><dt>Missingness</dt><dd id="analysis-preview-missingness">—</dd></div>
+              <div><dt>Comparison</dt><dd id="analysis-preview-comparison">—</dd></div>
+            </dl>
+            <div class="analysis-preview-criteria-block"><h4>Changed criteria</h4><ul id="analysis-preview-criteria"></ul></div>
+            <p id="analysis-preview-feedback" class="analysis-preview-feedback" role="status" aria-live="polite"></p>
+            <div class="analysis-preview-actions">
+              <button id="analysis-preview-apply-filters" class="analysis-primary-button" type="button">Apply to filters</button>
+              <button id="analysis-preview-apply-area" class="analysis-primary-button" type="button" hidden>Apply as Area Filter</button>
+              <button id="analysis-preview-cancel" class="secondary-button" type="button">Cancel</button>
+            </div>
+          </aside>
+        </section>
         <div id="map-timeline-dock" class="map-timeline-dock"></div>
       </section>
       <section id="animal-mutilation-browser" class="animal-mutilation-browser" role="dialog" aria-modal="true" aria-labelledby="animal-mutilation-browser-title" aria-describedby="animal-mutilation-browser-intro" aria-hidden="true" tabindex="-1" hidden>
@@ -1380,6 +1628,7 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./analysis_view.js?v=2026-08-03-analysis-evidence-lab-v2"></script>
   <script src="./app.js?v=2026-08-03-context-layer-quick-toggles-v1"></script>
 </body>
 </html>

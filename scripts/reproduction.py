@@ -68,6 +68,29 @@ PAGES_SOURCE_ADDITION_PATHS = frozenset(
         PurePosixPath("crop_circle_layer.js"),
         PurePosixPath("animal_mutilation_bootstrap.js"),
         PurePosixPath("animal_mutilation_layer.js"),
+        PurePosixPath("analysis_stats.js"),
+        PurePosixPath("analysis_view.js"),
+        PurePosixPath("analysis_spatial.js"),
+        PurePosixPath("analysis_spatial_worker.js"),
+        PurePosixPath("data/analysis_v1/manifest.json"),
+        PurePosixPath("data/analysis_v1/crop_circles.json"),
+        PurePosixPath("data/analysis_v1/crop_circles.json.gz"),
+        PurePosixPath("data/analysis_v1/animal_reports.json"),
+        PurePosixPath("data/analysis_v1/animal_reports.json.gz"),
+        PurePosixPath("data/analysis_v2/manifest.json"),
+        PurePosixPath("data/analysis_v2/ufo_point_neighbors_v1.json"),
+        PurePosixPath("data/analysis_v2/ufo_point_neighbors_v1.json.gz"),
+        PurePosixPath("data/analysis_v2/facility_analysis_v1.json"),
+        PurePosixPath("data/analysis_v2/facility_analysis_v1.json.gz"),
+        PurePosixPath("data/analysis_v2/crop_context_readiness.json"),
+        PurePosixPath("data/analysis_v2/crop_context_readiness.json.gz"),
+        PurePosixPath("data/analysis_v2/animal_context_readiness.json"),
+        PurePosixPath("data/analysis_v2/animal_context_readiness.json.gz"),
+        PurePosixPath("data/analysis_v2/relationship_reconciliation.json"),
+        PurePosixPath("data/analysis_v2/relationship_reconciliation.json.gz"),
+        PurePosixPath("data/analysis_v2/relationship_source_snapshot.json"),
+        PurePosixPath("data/analysis_v2/relationship_source_snapshot.json.gz"),
+        PurePosixPath("data/analysis_v2/relationship_source_snapshot.meta.json"),
     }
 )
 REQUIRED_PAGES_PATHS = (
@@ -85,6 +108,8 @@ REQUIRED_PAGES_JSON_PATHS = (
     PurePosixPath("data/event_chunk_manifest.json"),
     PurePosixPath("data/points_meta.json"),
     PurePosixPath("data/startup_profiles/manifest.json"),
+    PurePosixPath("data/analysis_v1/manifest.json"),
+    PurePosixPath("data/analysis_v2/manifest.json"),
 )
 CLOUDFLARE_ANALYTICS_PATTERN = re.compile(
     rb"<!-- Cloudflare Pages Analytics --><script defer "

@@ -1013,13 +1013,37 @@
     catalogFacetWorkerRowsQueued: 0,
     catalogFacetWorkerLastError: "",
     catalogFacetWorkerStorage: null,
+    analysisViewController: null,
+    analysisRequestId: 0,
+    analysisDebounceTimerId: null,
+    analysisFullInferenceTimerId: null,
+    analysisPendingRequest: null,
+    analysisLastResult: null,
+    analysisLastError: "",
+    analysisCache: new Map(),
+    analysisContextPromise: null,
+    analysisContextManifest: null,
+    analysisContextLoaded: false,
+    analysisContextWorkerReady: false,
+    analysisSpatialPromise: null,
+    analysisSpatialManifest: null,
+    analysisSpatialWorkerReady: false,
+    analysisSpatialRequested: false,
+    analysisCancellationGeneration: 0,
+    analysisMapControlState: new Map(),
+    analysisRestoreFocusElement: null,
+    analysisPerformanceSamples: [],
+    analysisComputationPhase: "idle",
+    analysisMapRenderPending: false,
+    analysisContextEnabledState: { crops: null, animals: null },
+    analysisContextMutationPromises: { crops: null, animals: null },
     catalogSummaryMemory: {
       prunedEvents: 0,
       fallbackPlaybackKeysReleased: 0,
       compactPlaybackKeys: 0,
       unusedPropertiesReleased: 0,
       summaryShardCachesReleased: 0,
-      pooledStringFields: 13,
+      pooledStringFields: 15,
       uniqueStringValues: 0,
       stringPoolReleased: false,
     },
@@ -1229,6 +1253,8 @@
     filterGeneration: 0,
     currentTileLayer: null,
     currentTileProviderId: "configured",
+    activeView: "map",
+    analysisBaselineMode: "other_dates_balanced",
     lastKeyword: "",
     lastKeywordMatches: null,
     keywordActive: false,
@@ -1395,6 +1421,7 @@
       modeActive: false,
       tool: "rectangle",
       shapes: [],
+      pointOnly: false,
       selectTraces: true,
       selectEvents: false,
       showSelectedTraces: true,
@@ -1673,6 +1700,8 @@
     clusterQuickTraceButton: document.querySelector("#cluster-quick-trace"),
     clusterQuickCropCirclesButton: document.querySelector("#cluster-quick-crop-circles"),
     clusterQuickAnimalMutilationsButton: document.querySelector("#cluster-quick-animal-mutilations"),
+    analysisCropCirclesButton: document.querySelector("#analysis-toggle-crop-circles"),
+    analysisAnimalReportsButton: document.querySelector("#analysis-toggle-animal-reports"),
     clusterQuickFacilityProximityButton: document.querySelector("#cluster-quick-facility-proximity"),
     clusterQuickFacilityValue: document.querySelector("#cluster-quick-facility-value"),
     mapQuickControlStatus: document.querySelector("#map-quick-control-status"),
@@ -2509,6 +2538,9 @@
     const visibleSightings = Array.isArray(result.visibleCatalog)
       ? currentVisibleDisplayCatalog(result.visibleCatalog).length
       : result.visibleEventCount;
+    if (state.regionSelection.pointOnly) {
+      return regionLabel + " · " + visibleSightings + " mapped report points · point-only";
+    }
     const depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
     const direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
     return regionLabel + " - " + visibleSightings + " sightings - " + result.visibleTraceCount +
@@ -2641,11 +2673,14 @@
     if (!config.skipResults) {
       renderResults({ preserveScroll: true });
     }
-    if (!config.skipMap) {
+    if (!config.skipMap && state.activeView !== "analysis") {
       renderMap();
+    } else if (!config.skipMap && state.activeView === "analysis") {
+      runtime.analysisMapRenderPending = true;
     }
     renderStats();
     renderPlaybackStatus();
+    scheduleAnalysisCompute("area filter changed");
   }
 
   function setRegionSelectionPanelOpen(open, options) {
@@ -2721,6 +2756,7 @@
   function clearAllRegionSelectionShapes() {
     const hadShapes = regionSelectionHasActiveShapes();
     state.regionSelection.shapes = [];
+    state.regionSelection.pointOnly = false;
     clearChronologicalNeighborhoodInteractionLayer();
     setRegionSelectionDrawingActive(false, { skipRender: true });
     setRegionSelectionPanelOpen(false, { skipRender: true });
@@ -2796,6 +2832,7 @@
     }
 
     state.regionSelection.shapes = state.regionSelection.shapes.concat([nextShape]);
+    state.regionSelection.pointOnly = false;
     setRegionSelectionDrawingActive(false, { skipRender: true });
     setRegionSelectionPanelOpen(false, { skipRender: true });
     refreshRegionSelectionRenderState();
@@ -5651,6 +5688,24 @@
       );
     }
 
+    if (els.analysisCropCirclesButton) {
+      setQuickContextButtonState(
+        els.analysisCropCirclesButton,
+        els.overlayCropCirclesToggle,
+        cropCircleOverlayActive(),
+        "Crop circles"
+      );
+    }
+
+    if (els.analysisAnimalReportsButton) {
+      setQuickContextButtonState(
+        els.analysisAnimalReportsButton,
+        els.overlayAnimalMutilationsToggle,
+        animalMutilationOverlayActive(),
+        "Animal reports"
+      );
+    }
+
     if (els.clusterQuickFacilityProximityButton) {
       const facilityState = currentQuickFacilityProximityState();
       els.clusterQuickFacilityProximityButton.dataset.state = facilityState.key;
@@ -8116,10 +8171,1073 @@
       type: event.type || "",
       visualTypeGroup: eventLegendKeyForMode(event, "type"),
       craftType: eventLegendKeyForMode(event, "craft_type"),
+      craftConfidence: event.craft_type_confidence || "none",
+      craftSource: event.craft_type_source || "none",
+      sameDayMatchStrength: event.same_day_match_strength || "none",
+      shape: event.shape_normalized || event.type || "",
       precision: event.location_precision || "",
       datePrecision: event.date_precision || "",
+      coordinateSource: event.coordinate_source || "unresolved",
+      country: event.country || "unknown",
+      adminRegion: event.state_province || event.admin_region || "unknown",
+      duplicateLineage: event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || "",
+      mapped: Boolean(event.has_coordinates),
+      lat: Number.isFinite(Number(event.lat)) ? Number(event.lat) : null,
+      lon: Number.isFinite(Number(event.lon)) ? Number(event.lon) : null,
       sortOrdinal: Number.isFinite(Number(event.sort_ordinal)) ? Number(event.sort_ordinal) : null,
     };
+  }
+
+  const ANALYSIS_BASELINE_MODES = new Set([
+    "other_dates_balanced",
+    "other_dates_matched",
+    "previous_equal_duration",
+    "full_catalog",
+  ]);
+  // Identity of the sealed 702,893-row catalog actually served to the browser.
+  // The larger pre-merge source corpus is recorded separately in the manifest.
+  const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b";
+
+  const ANALYSIS_MAP_ONLY_CONTROL_SELECTOR = [
+    "#focus-map-toggle",
+    "#basemap-mode",
+    "#map-mode",
+    "#fit-results",
+    "#overlay-airports",
+    "#overlay-highways",
+    "#overlay-military",
+    "#overlay-research-sites",
+    "#overlay-claimed-ufo-bases-sites",
+    "#overlay-claimed-ufo-bases-traces",
+    "#military-branch-panel button",
+    "#crop-circle-chronology-controls button",
+    "#crop-circle-chronology-controls input",
+    "#crop-circle-chronology-controls select",
+    "#trace-controls-panel button",
+    "#trace-controls-panel input",
+    "#trace-controls-panel select",
+  ].join(",");
+
+  function contextLayerAnalysisStatus(globalName, toggleElement) {
+    const layer = window[globalName];
+    let status = null;
+    if (layer && typeof layer.getStatus === "function") {
+      try {
+        status = layer.getStatus();
+      } catch (error) {
+        status = null;
+      }
+    }
+    return Object.assign({
+      enabled: Boolean(toggleElement && toggleElement.getAttribute("aria-pressed") === "true"),
+      loaded: false,
+    }, status || {});
+  }
+
+  function analysisRegionShapesSnapshot() {
+    return (state.regionSelection && Array.isArray(state.regionSelection.shapes)
+      ? state.regionSelection.shapes
+      : []).map(function (shape) {
+      if (shape && shape.type === "circle") {
+        return {
+          id: String(shape.id || ""),
+          type: "circle",
+          center: shape.center ? {
+            lat: Number(shape.center.lat),
+            lng: Number(shape.center.lng),
+          } : null,
+          radiusMeters: Number(shape.radiusMeters),
+        };
+      }
+      return {
+        id: String(shape && shape.id ? shape.id : ""),
+        type: "rectangle",
+        bounds: shape && shape.bounds ? {
+          north: Number(shape.bounds.north),
+          south: Number(shape.bounds.south),
+          east: Number(shape.bounds.east),
+          west: Number(shape.bounds.west),
+        } : null,
+      };
+    });
+  }
+
+  function getAnalysisFilterSnapshot() {
+    const filters = currentFilterSelections();
+    const cropStatus = contextLayerAnalysisStatus("UfoCropCircleLayer", els.overlayCropCirclesToggle);
+    const animalStatus = contextLayerAnalysisStatus("UfoAnimalMutilationLayer", els.overlayAnimalMutilationsToggle);
+    const contextManifest = runtime.analysisContextManifest || {};
+    return {
+      generation: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+      requestedGeneration: Number(state.filterGeneration) || 0,
+      activeView: state.activeView,
+      baselineMode: state.analysisBaselineMode,
+      timeRange: {
+        mode: state.timeRangeMode,
+        startOrdinal: state.timeRangeStartOrdinal,
+        endOrdinal: state.timeRangeEndOrdinal,
+        startIso: state.timeRangeStartOrdinal == null ? null : ordinalToIso(state.timeRangeStartOrdinal),
+        endIso: state.timeRangeEndOrdinal == null ? null : ordinalToIso(state.timeRangeEndOrdinal),
+      },
+      filters: {
+        keyword: filters.keyword,
+        sourceMode: filters.sourceMode,
+        typeMode: filters.typeMode,
+        precisionMode: filters.precisionMode,
+        selectedSources: Array.from(filters.selectedSources).sort(),
+        selectedTypes: Array.from(filters.selectedTypes).sort(),
+        selectedPrecisions: Array.from(filters.selectedPrecisions).sort(),
+        legendEventMode: filters.legendEventMode,
+        legendColorMode: filters.legendColorMode,
+        selectedLegendEventKeys: Array.from(filters.selectedLegendEventKeys).sort(),
+        hideLowPrecision: filters.hideLowPrecision,
+        hideNonExactDates: filters.hideNonExactDates,
+      },
+      areaFilter: {
+        active: regionSelectionHasActiveShapes(),
+        pointOnly: Boolean(state.regionSelection.pointOnly),
+        shapes: analysisRegionShapesSnapshot(),
+      },
+      contextLayers: {
+        crops: cropStatus,
+        animals: animalStatus,
+      },
+      contextReleaseHashes: analysisContextReleaseHashes(contextManifest),
+      denominatorCounts: {
+        catalogReports: catalog.length,
+        catalogMapped: Number(startup.mappedCatalogEventsLoaded) || 0,
+        matchedNonDateReports: state.timelineCatalog.length,
+        activeReports: state.filteredCatalog.length,
+        activeMapped: state.filteredMappedCatalog.length,
+        activeUnmapped: Math.max(0, state.filteredCatalog.length - state.filteredMappedCatalog.length),
+        activeDated: state.filteredPlaybackEventCount,
+        activeSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
+        activeExactDates: state.filteredExactDateEventIdSet.size,
+      },
+    };
+  }
+
+  function applyAnalysisMultiSelectValues(filterKey, rawValues) {
+    if (rawValues == null) return false;
+    const selectElement = filterSelectByKey(filterKey);
+    if (!selectElement) return false;
+    const values = Array.isArray(rawValues) ? rawValues : [rawValues];
+    const requested = new Set(values.map(String));
+    const available = allOptionValues(selectElement);
+    const selected = available.filter(function (value) { return requested.has(value); });
+    setOptionSelection(selectElement, false);
+    if (!selected.length) {
+      setMultiSelectMode(filterKey, "none");
+    } else if (selected.length === available.length) {
+      setMultiSelectMode(filterKey, "all");
+    } else {
+      const selectedSet = new Set(selected);
+      Array.from(selectElement.options).forEach(function (option) {
+        option.selected = selectedSet.has(option.value);
+      });
+      setMultiSelectMode(filterKey, "subset");
+    }
+    renderMultiSelectState(filterKey);
+    return true;
+  }
+
+  function analysisOrdinalValue(value, side) {
+    if (typeof value === "number" && Number.isFinite(value)) return Math.round(value);
+    const normalized = normalizeDateBoundary(String(value || ""), side);
+    return normalized ? isoToOrdinal(normalized) : null;
+  }
+
+  function applyAnalysisAreaFilter(area) {
+    const candidate = area && area.area ? area.area : area;
+    if (!candidate) return false;
+    let shape = null;
+    const rawBounds = candidate.bounds || candidate;
+    if (
+      Number.isFinite(Number(rawBounds.north)) &&
+      Number.isFinite(Number(rawBounds.south)) &&
+      Number.isFinite(Number(rawBounds.east)) &&
+      Number.isFinite(Number(rawBounds.west))
+    ) {
+      shape = {
+        id: nextRegionSelectionShapeId(),
+        type: "rectangle",
+        bounds: {
+          north: clamp(Number(rawBounds.north), -90, 90),
+          south: clamp(Number(rawBounds.south), -90, 90),
+          east: Number(rawBounds.east),
+          west: Number(rawBounds.west),
+        },
+      };
+    } else if (
+      candidate.center &&
+      Number.isFinite(Number(candidate.center.lat)) &&
+      Number.isFinite(Number(candidate.center.lng)) &&
+      Number.isFinite(Number(candidate.radiusMeters))
+    ) {
+      shape = {
+        id: nextRegionSelectionShapeId(),
+        type: "circle",
+        center: {
+          lat: clamp(Number(candidate.center.lat), -90, 90),
+          lng: Number(candidate.center.lng),
+        },
+        radiusMeters: Math.max(1, Number(candidate.radiusMeters)),
+      };
+    }
+    if (!shape) return false;
+    state.regionSelection.shapes = [shape];
+    Object.assign(state.regionSelection, {
+      panelOpen: false,
+      drawingActive: false,
+      modeActive: false,
+      selectTraces: false,
+      selectEvents: true,
+      showSelectedTraces: false,
+      showSelectedEvents: true,
+      showEventsAssociatedWithSelectedTraces: false,
+      showTracesAssociatedWithSelectedEvents: false,
+      combineMode: "any",
+      displayMode: "hide-unselected",
+      pointOnly: true,
+    });
+    refreshRegionSelectionRenderState();
+    return true;
+  }
+
+  function applyAnalysisFilterPatch(rawPatch) {
+    const patch = rawPatch && rawPatch.patch ? rawPatch.patch : (rawPatch || {});
+    let changed = false;
+    const filterPatch = patch.filters && typeof patch.filters === "object" ? patch.filters : patch;
+    const datePatch = patch.dateRange || patch.timeRange || (
+      patch.startOrdinal != null && patch.endOrdinal != null ? patch : null
+    );
+    if (datePatch) {
+      const startOrdinal = analysisOrdinalValue(
+        datePatch.startOrdinal != null ? datePatch.startOrdinal : (datePatch.start || datePatch.startIso),
+        "start"
+      );
+      const endOrdinal = analysisOrdinalValue(
+        datePatch.endOrdinal != null ? datePatch.endOrdinal : (datePatch.end || datePatch.endIso),
+        "end"
+      );
+      if (startOrdinal != null && endOrdinal != null) {
+        invalidatePlaybackForTimeChange();
+        setTimeRange(startOrdinal, endOrdinal, { mode: "custom", autofitVisible: false });
+        changed = true;
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "keyword") && els.keywordInput) {
+      els.keywordInput.value = String(filterPatch.keyword || "");
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "sources") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedSources")) {
+      changed = applyAnalysisMultiSelectValues(
+        "source",
+        Object.prototype.hasOwnProperty.call(filterPatch, "sources") ? filterPatch.sources : filterPatch.selectedSources
+      ) || changed;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "types") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedTypes")) {
+      changed = applyAnalysisMultiSelectValues(
+        "type",
+        Object.prototype.hasOwnProperty.call(filterPatch, "types") ? filterPatch.types : filterPatch.selectedTypes
+      ) || changed;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "precisions") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedPrecisions")) {
+      changed = applyAnalysisMultiSelectValues(
+        "precision",
+        Object.prototype.hasOwnProperty.call(filterPatch, "precisions") ? filterPatch.precisions : filterPatch.selectedPrecisions
+      ) || changed;
+    }
+    const craftValues = Object.prototype.hasOwnProperty.call(filterPatch, "craftTypes")
+      ? filterPatch.craftTypes
+      : filterPatch.selectedCraftTypes;
+    if (craftValues != null) {
+      const selectedCraftTypes = (Array.isArray(craftValues) ? craftValues : [craftValues]).map(String);
+      state.colorMode = "craft_type";
+      if (els.colorModeSelect) els.colorModeSelect.value = "craft_type";
+      state.mapLegendEventSelection = selectedCraftTypes.length
+        ? { mode: "subset", colorMode: "craft_type", selectedKeys: selectedCraftTypes }
+        : { mode: "none", colorMode: "craft_type", selectedKeys: [] };
+      invalidateMapLegendEventFilterCaches();
+      renderMapLegend();
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "hideLowPrecision") && els.hideLowPrecisionToggle) {
+      els.hideLowPrecisionToggle.checked = Boolean(filterPatch.hideLowPrecision);
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "hideNonExactDates") && els.hideNonExactDatesToggle) {
+      els.hideNonExactDatesToggle.checked = Boolean(filterPatch.hideNonExactDates);
+      changed = true;
+    }
+    const areaCandidate = patch.area || patch.areaFilter || (patch.kind === "area" ? patch : null);
+    const areaChanged = areaCandidate ? applyAnalysisAreaFilter(areaCandidate) : false;
+    if (!changed) {
+      if (areaChanged) scheduleAnalysisCompute("analysis area filter applied", { immediate: true });
+      if (areaChanged) return Promise.resolve({ applied: true, areaApplied: true });
+      return Promise.reject(new Error("This preview does not contain an applicable shared-filter change."));
+    }
+    window.clearTimeout(scheduleRefresh._timer);
+    return refreshFilters().then(function () {
+      return { applied: true, areaApplied: areaChanged, generation: state.filterGeneration };
+    });
+  }
+
+  function setAnalysisMapOnlyControlsAvailable(available) {
+    const controls = Array.from(document.querySelectorAll(ANALYSIS_MAP_ONLY_CONTROL_SELECTOR));
+    controls.forEach(function (control) {
+      if (available) {
+        const prior = runtime.analysisMapControlState.get(control);
+        if (!prior) return;
+        control.disabled = prior.disabled;
+        if (prior.ariaDisabled == null) control.removeAttribute("aria-disabled");
+        else control.setAttribute("aria-disabled", prior.ariaDisabled);
+        if (prior.title == null) control.removeAttribute("title");
+        else control.setAttribute("title", prior.title);
+        control.removeAttribute("data-analysis-unavailable");
+        runtime.analysisMapControlState.delete(control);
+        return;
+      }
+      if (!runtime.analysisMapControlState.has(control)) {
+        runtime.analysisMapControlState.set(control, {
+          disabled: Boolean(control.disabled),
+          ariaDisabled: control.getAttribute("aria-disabled"),
+          title: control.getAttribute("title"),
+        });
+      }
+      control.disabled = true;
+      control.setAttribute("aria-disabled", "true");
+      control.setAttribute("data-analysis-unavailable", "true");
+      control.title = "Available in Map Explorer.";
+    });
+  }
+
+  function restoreMapAfterAnalysis() {
+    if (!runtime.map) return;
+    window.requestAnimationFrame(function () {
+      if (runtime.analysisMapRenderPending) {
+        renderMap();
+        refreshActiveTimeFilteredOverlayLayers();
+        runtime.analysisMapRenderPending = false;
+      }
+      runtime.map.invalidateSize({ animate: false, pan: false });
+      scheduleMapProjectionRefresh();
+      scheduleMapInvalidate();
+      renderRegionSelectionShapes();
+      renderMapSelectionOverlay();
+      if (currentPlaybackEvent()) syncPlaybackOverlayToCurrentEvent();
+    });
+  }
+
+  function handleAnalysisViewChange(nextView) {
+    const normalized = nextView === "analysis" ? "analysis" : "map";
+    if (state.activeView === normalized) return;
+    state.activeView = normalized;
+    if (normalized === "analysis") {
+      if (state.playbackState === "playing") pausePlayback();
+      setAnalysisMapOnlyControlsAvailable(false);
+      scheduleAnalysisCompute("analysis opened", { immediate: true });
+      return;
+    }
+    runtime.analysisPendingRequest = null;
+    window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    runtime.analysisFullInferenceTimerId = null;
+    setAnalysisMapOnlyControlsAvailable(true);
+    restoreMapAfterAnalysis();
+  }
+
+  function analysisContextLayerConfig(domainValue) {
+    const domain = String(domainValue || "").toLowerCase();
+    if (domain === "crops" || domain === "crop" || domain === "cropcircles") {
+      return {
+        domain: "crops",
+        label: "Crop Circles",
+        button: els.overlayCropCirclesToggle,
+        bootstrapName: "UfoCropCircleBootstrap",
+        layerName: "UfoCropCircleLayer",
+      };
+    }
+    if (domain === "animals" || domain === "animal" || domain === "animalreports") {
+      return {
+        domain: "animals",
+        label: "Animal Reports",
+        button: els.overlayAnimalMutilationsToggle,
+        bootstrapName: "UfoAnimalMutilationBootstrap",
+        layerName: "UfoAnimalMutilationLayer",
+      };
+    }
+    throw new Error("Unknown Analysis context domain: " + domainValue);
+  }
+
+  function setContextLayerEnabled(domainValue, enabledValue, originValue) {
+    const config = analysisContextLayerConfig(domainValue);
+    const enabled = Boolean(enabledValue);
+    const origin = String(originValue || "analysis");
+    const existing = runtime.analysisContextMutationPromises[config.domain];
+    const operation = Promise.resolve(existing).catch(function () {}).then(function () {
+      if (config.button) {
+        config.button.setAttribute("aria-pressed", enabled ? "true" : "false");
+        config.button.classList.toggle("is-active", enabled);
+        config.button.setAttribute("aria-busy", "true");
+      }
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: enabled,
+          busy: true,
+          message: (enabled ? "Including " : "Excluding ") + config.label + "...",
+        });
+      }
+      const bootstrap = window[config.bootstrapName];
+      const layer = window[config.layerName];
+      if (bootstrap && typeof bootstrap.setEnabled === "function") {
+        return bootstrap.setEnabled(enabled, origin);
+      }
+      if (layer && typeof layer.setEnabled === "function") {
+        return layer.setEnabled(enabled);
+      }
+      throw new Error(config.label + " runtime is not available.");
+    }).then(function (result) {
+      runtime.analysisContextEnabledState[config.domain] = enabled;
+      renderMapControlQuickButtons();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: enabled,
+          busy: false,
+          message: config.label + (enabled ? " included in shared context." : " excluded from shared context."),
+        });
+      }
+      return { domain: config.domain, enabled: enabled, origin: origin, result: result };
+    }).catch(function (error) {
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: !enabled,
+          busy: false,
+          error: error && error.message ? error.message : String(error),
+        });
+      }
+      throw error;
+    }).finally(function () {
+      if (config.button) config.button.removeAttribute("aria-busy");
+      if (runtime.analysisContextMutationPromises[config.domain] === operation) {
+        runtime.analysisContextMutationPromises[config.domain] = null;
+      }
+    });
+    runtime.analysisContextMutationPromises[config.domain] = operation;
+    return operation;
+  }
+
+  function initializeAnalysisView() {
+    if (!window.UfoAnalysisView || typeof window.UfoAnalysisView.AnalysisViewController !== "function") {
+      console.warn("Analysis view controls are unavailable.");
+      return null;
+    }
+    const controller = new window.UfoAnalysisView.AnalysisViewController({
+      document: document,
+      onViewChange: function (viewChange) {
+        handleAnalysisViewChange(
+          viewChange && typeof viewChange === "object" ? viewChange.activeView : viewChange
+        );
+      },
+      onBaselineChange: function (baselineChange) {
+        const requestedMode = baselineChange && typeof baselineChange === "object"
+          ? baselineChange.baselineMode
+          : baselineChange;
+        const nextMode = ANALYSIS_BASELINE_MODES.has(String(requestedMode))
+          ? String(requestedMode)
+          : "other_dates_balanced";
+        state.analysisBaselineMode = nextMode;
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("baseline changed", { immediate: true });
+      },
+      onApplyFilterPreview: function (preview) {
+        return applyAnalysisFilterPatch(preview);
+      },
+      onApplyAreaPreview: function (preview) {
+        return applyAnalysisFilterPatch({ area: preview && (preview.area || preview.patch || preview) });
+      },
+      onCancelPreview: function () {},
+      onRetryAnalysis: function () {
+        scheduleAnalysisCompute("manual retry", { immediate: true });
+      },
+      onContextLayerChange: function (change) {
+        return setContextLayerEnabled(
+          change && change.domain,
+          change && change.enabled,
+          change && change.origin ? change.origin : "analysis"
+        );
+      },
+      onSpatialEvidenceRequested: function () {
+        return ensureAnalysisSpatialArtifacts().catch(function () { return null; });
+      },
+      getFilterSnapshot: getAnalysisFilterSnapshot,
+    });
+    runtime.analysisViewController = controller;
+    controller.setAnalysisEnabled(false, "Analysis becomes available when the core catalog is ready.");
+    controller.setActiveView("map", { source: "startup" });
+    window.AnalysisViewController = controller;
+    window.getAnalysisFilterSnapshot = getAnalysisFilterSnapshot;
+    window.applyAnalysisFilterPatch = applyAnalysisFilterPatch;
+    window.setContextLayerEnabled = setContextLayerEnabled;
+    window.UfoTimelineAnalysis = Object.freeze({
+      setActiveView: function (view) { return controller.setActiveView(view, { source: "api" }); },
+      getAnalysisFilterSnapshot: getAnalysisFilterSnapshot,
+      applyAnalysisFilterPatch: applyAnalysisFilterPatch,
+      setContextLayerEnabled: setContextLayerEnabled,
+    });
+    return controller;
+  }
+
+  function analysisManifestArtifact(manifest, domain) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const aliases = domain === "cropCircles"
+      ? ["cropCircles", "crop_circles", "crops"]
+      : ["animalReports", "animal_reports", "animals", "animalMutilations"];
+    for (const key of aliases) {
+      if (artifacts[key]) return artifacts[key];
+    }
+    const projections = manifest && manifest.projections && typeof manifest.projections === "object"
+      ? manifest.projections
+      : {};
+    for (const key of aliases) {
+      if (projections[key]) return projections[key];
+    }
+    return null;
+  }
+
+  function analysisArtifactFile(artifact) {
+    if (typeof artifact === "string") return artifact;
+    if (!artifact || typeof artifact !== "object") return "";
+    return String(artifact.gzipFile || artifact.gzip_file || artifact.file || artifact.path || artifact.url || artifact.href || "");
+  }
+
+  function analysisArtifactSha256(artifact) {
+    if (!artifact || typeof artifact !== "object") return "";
+    return String(artifact.sha256 || artifact.sha_256 || artifact.hash || "");
+  }
+
+  function analysisContextReleaseHashes(manifest) {
+    if (!manifest || typeof manifest !== "object") return {};
+    const cropArtifact = analysisManifestArtifact(manifest, "cropCircles");
+    const animalArtifact = analysisManifestArtifact(manifest, "animalReports");
+    const explicit = manifest.releaseHashes || manifest.hashes || {};
+    return {
+      cropCircles: String(explicit.cropCircles || explicit.crop_circles || analysisArtifactSha256(cropArtifact) || ""),
+      animalReports: String(explicit.animalReports || explicit.animal_reports || analysisArtifactSha256(animalArtifact) || ""),
+      manifest: String(explicit.manifest || manifest.sha256 || manifest.manifest_sha256 || ""),
+    };
+  }
+
+  function analysisCatalogDatasetHash() {
+    const manifest = runtime.analysisContextManifest || {};
+    const candidates = [
+      manifest.ufoCatalog,
+      manifest.ufo_catalog,
+      manifest.catalog,
+      manifest.sources && (manifest.sources.ufoCatalog || manifest.sources.ufo_catalog || manifest.sources.catalog),
+      manifest.datasets && (manifest.datasets.ufoCatalog || manifest.datasets.ufo_catalog || manifest.datasets.catalog),
+    ];
+    for (const candidate of candidates) {
+      if (!candidate || typeof candidate !== "object") continue;
+      const hash = candidate.sha256 || candidate.sha_256 || candidate.hash;
+      if (hash) return String(hash);
+    }
+    const canonicalManifest = runtime.canonicalWebArtifacts && runtime.canonicalWebArtifacts.manifest;
+    if (canonicalManifest && typeof canonicalManifest === "object") {
+      const hash = canonicalManifest.sha256 || canonicalManifest.sha_256 || canonicalManifest.dataset_hash;
+      if (hash) return String(hash);
+    }
+    return ANALYSIS_CATALOG_DATASET_SHA256;
+  }
+
+  function analysisContextArtifactUrl(manifestUrl, artifact) {
+    const file = analysisArtifactFile(artifact);
+    if (!file) return "";
+    try {
+      if (/^(?:\.\/)?data\//.test(file)) {
+        return new URL(resolveAssetPath("./" + file.replace(/^\.\//, "")), document.baseURI).toString();
+      }
+      return new URL(file, manifestUrl).toString();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function setAnalysisContextProjectionsInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.resolve(false);
+    const cropArtifact = analysisManifestArtifact(manifest, "cropCircles");
+    const animalArtifact = analysisManifestArtifact(manifest, "animalReports");
+    const urls = {
+      manifest: manifestUrl,
+      cropCircles: analysisContextArtifactUrl(manifestUrl, cropArtifact),
+      animalReports: analysisContextArtifactUrl(manifestUrl, animalArtifact),
+    };
+    if (!urls.cropCircles || !urls.animalReports) {
+      return Promise.reject(new Error("Analysis context manifest does not identify both compact projections."));
+    }
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-context-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Analysis context projections timed out."));
+      }, 15000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisContextProjectionsSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisContextWorkerReady = true;
+          resolve(message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Analysis context projection setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisContextProjections",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        contextReleaseHashes: analysisContextReleaseHashes(manifest),
+        manifest: manifest,
+        urls: urls,
+      });
+    });
+  }
+
+  function ensureAnalysisContextProjections() {
+    if (runtime.analysisContextWorkerReady) return Promise.resolve(runtime.analysisContextManifest);
+    if (runtime.analysisContextPromise) return runtime.analysisContextPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v1/manifest.json"), document.baseURI).toString();
+    runtime.analysisContextPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Analysis manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisContextManifest = manifest;
+        runtime.analysisContextLoaded = true;
+        return setAnalysisContextProjectionsInWorker(manifest, manifestUrl).then(function () {
+          return manifest;
+        });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("context projections ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisContextPromise = null;
+        runtime.analysisLastError = error && error.message ? error.message : String(error);
+        console.warn("[analysis] " + runtime.analysisLastError);
+        return null;
+      });
+    return runtime.analysisContextPromise;
+  }
+
+  function analysisV2ArtifactHashes(manifest) {
+    const hashes = {};
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      hashes[key] = String(artifacts[key] && artifacts[key].sha256 || "");
+    });
+    hashes.manifest = String(manifest && manifest.releaseId || "") + ":" + String(manifest && manifest.schemaVersion || "");
+    return hashes;
+  }
+
+  function setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-spatial-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Spatial evidence artifacts timed out."));
+      }, 20000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisSpatialArtifactsSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisSpatialWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Spatial evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisSpatialArtifacts",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisSpatialArtifacts() {
+    runtime.analysisSpatialRequested = true;
+    if (runtime.analysisSpatialWorkerReady) return Promise.resolve(runtime.analysisSpatialManifest);
+    if (runtime.analysisSpatialPromise) return runtime.analysisSpatialPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("spatial", "loading", "Loading spatial evidence artifacts...");
+    }
+    runtime.analysisSpatialPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Analysis v2 manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisSpatialManifest = manifest;
+        return setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("spatial", "ready", "Spatial evidence artifacts ready.");
+        }
+        scheduleAnalysisCompute("spatial evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisSpatialPromise = null;
+        runtime.analysisSpatialWorkerReady = false;
+        runtime.analysisSpatialRequested = false;
+        const message = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("spatial", "error", message);
+        }
+        console.error("[analysis spatial]", error);
+        throw error;
+      });
+    return runtime.analysisSpatialPromise;
+  }
+
+  function analysisComputeCacheKey(snapshot) {
+    const filters = snapshot && snapshot.filters ? snapshot.filters : {};
+    const area = snapshot && snapshot.areaFilter ? snapshot.areaFilter : {};
+    const context = snapshot && snapshot.contextLayers ? snapshot.contextLayers : {};
+    return JSON.stringify({
+      generation: snapshot ? snapshot.generation : 0,
+      baselineMode: snapshot ? snapshot.baselineMode : "other_dates_balanced",
+      timeRange: snapshot ? snapshot.timeRange : null,
+      filters: filters,
+      areaPointOnly: Boolean(area.pointOnly),
+      areaShapes: area.shapes || [],
+      crops: Boolean(context.crops && context.crops.enabled),
+      animals: Boolean(context.animals && context.animals.enabled),
+      contextHashes: snapshot && snapshot.contextReleaseHashes
+        ? snapshot.contextReleaseHashes
+        : analysisContextReleaseHashes(runtime.analysisContextManifest),
+      spatialRequested: Boolean(runtime.analysisSpatialRequested),
+      spatialReady: Boolean(runtime.analysisSpatialWorkerReady),
+      artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+      datasetHash: analysisCatalogDatasetHash(),
+    });
+  }
+
+  function analysisResponseEnvelopeMatchesCurrentState(pending, message, snapshotOrSignature) {
+    const currentSignature = typeof snapshotOrSignature === "string"
+      ? snapshotOrSignature
+      : analysisComputeCacheKey(snapshotOrSignature || getAnalysisFilterSnapshot());
+    return Boolean(
+      pending &&
+      Number(pending.cancellationGeneration || 0) === Number(message && message.cancellationGeneration || 0) &&
+      window.UfoAnalysisView &&
+      typeof window.UfoAnalysisView.analysisRequestEnvelopeMatches === "function" &&
+      window.UfoAnalysisView.analysisRequestEnvelopeMatches(pending, message, currentSignature)
+    );
+  }
+
+  function trimAnalysisResultCache() {
+    while (runtime.analysisCache.size > 24) {
+      const oldestKey = runtime.analysisCache.keys().next().value;
+      runtime.analysisCache.delete(oldestKey);
+    }
+  }
+
+  function computeAnalysisViaWorker(snapshot, optionsValue) {
+    const options = optionsValue || {};
+    const analysisPhase = options.quickMode ? "quick" : "full";
+    const worker = ensureCatalogFacetWorker();
+    if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) {
+      return Promise.reject(new Error("The analysis worker is still indexing the catalog."));
+    }
+    const generation = Number(snapshot.generation) || 0;
+    const analysisSignature = analysisComputeCacheKey(snapshot);
+    const workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, generation);
+    const requestId = "analysis-compute-" + analysisPhase + "-" + (++runtime.analysisRequestId) + "-" + Date.now();
+    const cancellationGeneration = ++runtime.analysisCancellationGeneration;
+    runtime.analysisPendingRequest = {
+      requestId: requestId,
+      generation: generation,
+      baselineMode: snapshot.baselineMode,
+      signature: analysisSignature,
+      timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+      timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+      cancellationGeneration: cancellationGeneration,
+      analysisPhase: analysisPhase,
+    };
+    return new Promise(function (resolve, reject) {
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        finish();
+        if (!runtime.analysisPendingRequest || runtime.analysisPendingRequest.requestId !== requestId) {
+          resolve(null);
+        } else {
+          reject(new Error("Analysis computation timed out."));
+        }
+      }, options.quickMode ? 8000 : (runtime.analysisSpatialRequested ? 30000 : 15000));
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisComputed") {
+          if (settled) return;
+          settled = true;
+          finish();
+          const envelopeMatches = analysisResponseEnvelopeMatchesCurrentState(
+            runtime.analysisPendingRequest,
+            message
+          );
+          if (!envelopeMatches || state.activeView !== "analysis") {
+            runtime.discardedWorkerResults += 1;
+            resolve(null);
+            return;
+          }
+          resolve(message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          if (!runtime.analysisPendingRequest || runtime.analysisPendingRequest.requestId !== requestId) {
+            resolve(null);
+          } else {
+            reject(new Error(message.error || message.message || "Analysis computation failed."));
+          }
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "computeAnalysis",
+        requestId: requestId,
+        analysisSignature: analysisSignature,
+        filterGeneration: generation,
+        generation: generation,
+        cancellationGeneration: cancellationGeneration,
+        baselineMode: snapshot.baselineMode,
+        datasetHash: analysisCatalogDatasetHash(),
+        contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
+        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.0.0",
+        analysisPhase: analysisPhase,
+        quickMode: Boolean(options.quickMode),
+        selectedDomains: Array.isArray(options.selectedDomains)
+          ? options.selectedDomains.slice()
+          : (runtime.analysisSpatialRequested
+            ? ["overview", "time", "craft", "geography", "spatial", "sources_quality", "context"]
+            : ["overview", "time", "craft", "geography", "sources_quality", "context"]),
+        spatialPermutationCount: 499,
+        spatialBootstrapCount: 199,
+        spatialMinimumStratumSize: 20,
+        contextLayers: {
+          cropCirclesEnabled: Boolean(snapshot.contextLayers.crops && snapshot.contextLayers.crops.enabled),
+          animalMutilationsEnabled: Boolean(snapshot.contextLayers.animals && snapshot.contextLayers.animals.enabled),
+        },
+        filters: workerFilters,
+        keywordEventIds: workerFilters.keywordEventIds,
+        areaFilterEventIds: null,
+        areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+        timeRangeMode: snapshot.timeRange.mode,
+        fullTimeRange: snapshot.timeRange.mode === "full",
+        timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+        timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+        lowPrecisionValues: workerFilters.lowPrecisionValues,
+      });
+    });
+  }
+
+  function setAnalysisComputationPhase(phase, message) {
+    runtime.analysisComputationPhase = String(phase || "idle");
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setComputationPhase === "function") {
+      runtime.analysisViewController.setComputationPhase(runtime.analysisComputationPhase, message || "");
+    }
+  }
+
+  function renderAnalysisWorkerResult(message, cacheKey, startedAt, optionsValue) {
+    const options = optionsValue || {};
+    if (!message || !message.result || !runtime.analysisViewController) return false;
+    if (runtime.analysisPendingRequest && runtime.analysisPendingRequest.requestId === message.requestId) {
+      runtime.analysisPendingRequest = null;
+    }
+    const result = message.result;
+    runtime.analysisLastResult = result;
+    runtime.analysisLastError = "";
+    if (options.cacheResult !== false) {
+      runtime.analysisCache.set(cacheKey, result);
+      trimAnalysisResultCache();
+    }
+    const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
+    runtime.analysisPerformanceSamples.push({
+      generation: message.filterGeneration,
+      baselineMode: message.baselineMode,
+      durationMs: durationMs,
+      cacheHit: Boolean(message.cacheHit),
+      analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
+      inferenceDeferred: Boolean(result.inferenceDeferred),
+      recordedAt: Date.now(),
+    });
+    if (runtime.analysisPerformanceSamples.length > 50) runtime.analysisPerformanceSamples.shift();
+    runtime.analysisViewController.renderAnalysisResult(result, {
+      baselineMode: message.baselineMode,
+      datasetHash: message.datasetHash,
+      estimatorVersion: message.estimatorVersion,
+      artifactHashes: message.artifactHashes || analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+      filterSnapshot: getAnalysisFilterSnapshot(),
+      durationMs: durationMs,
+      analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
+    });
+    runtime.analysisViewController.setAnalysisState(
+      result.summary && Number(result.summary.activeCount) === 0 ? "empty" : "ready",
+      result.summary && Number(result.summary.activeCount) === 0
+        ? "No reports match the active cohort. Adjust filters or the timeline range."
+        : ""
+    );
+    if (result.inferenceDeferred) {
+      setAnalysisComputationPhase(
+        "inference",
+        "Core cohort view ready. Computing adjusted effects, 95% intervals, and bias-sensitivity checks off the main thread."
+      );
+    } else {
+      setAnalysisComputationPhase("ready", "Adjusted evidence computation complete.");
+    }
+    return true;
+  }
+
+  function computeAnalysisForCurrentView(reason) {
+    if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
+      return Promise.resolve(null);
+    }
+    ensureAnalysisContextProjections();
+    const snapshot = getAnalysisFilterSnapshot();
+    const cacheKey = analysisComputeCacheKey(snapshot);
+    const cached = runtime.analysisCache.get(cacheKey);
+    if (cached) {
+      runtime.analysisPendingRequest = null;
+      runtime.analysisLastResult = cached;
+      runtime.analysisViewController.renderAnalysisResult(cached, {
+        baselineMode: snapshot.baselineMode,
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.0.0",
+        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+        filterSnapshot: snapshot,
+        cacheHit: true,
+      });
+      runtime.analysisViewController.setAnalysisState(
+        cached.summary && Number(cached.summary.activeCount) === 0 ? "empty" : "ready",
+        cached.summary && Number(cached.summary.activeCount) === 0
+          ? "No reports match the active cohort. Adjust filters or the timeline range."
+          : ""
+      );
+      setAnalysisComputationPhase("ready", "Adjusted evidence computation restored from cache.");
+      return Promise.resolve(cached);
+    }
+    if (!runtime.analysisLastResult) {
+      runtime.analysisViewController.setAnalysisState("loading", "Computing the first evidence summary...");
+    } else {
+      setAnalysisComputationPhase("updating", "Updating the cohort view for the active filters...");
+    }
+    const quickStartedAt = performance.now();
+    return computeAnalysisViaWorker(snapshot, {
+      quickMode: true,
+      selectedDomains: ["overview", "time", "sources_quality", "context"],
+    }).then(function (quickMessage) {
+      if (!quickMessage) return null;
+      renderAnalysisWorkerResult(quickMessage, cacheKey, quickStartedAt, { cacheResult: false });
+      if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
+      window.clearTimeout(runtime.analysisFullInferenceTimerId);
+      runtime.analysisFullInferenceTimerId = window.setTimeout(function () {
+        runtime.analysisFullInferenceTimerId = null;
+        if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
+        const fullStartedAt = performance.now();
+        computeAnalysisViaWorker(snapshot).then(function (fullMessage) {
+          if (!fullMessage) return;
+          renderAnalysisWorkerResult(fullMessage, cacheKey, fullStartedAt, { cacheResult: true });
+        }).catch(function (error) {
+          runtime.analysisLastError = error && error.message ? error.message : String(error);
+          if (runtime.analysisViewController && state.activeView === "analysis") {
+            setAnalysisComputationPhase("error", "Adjusted evidence update failed: " + runtime.analysisLastError);
+          }
+          console.error("[analysis] " + (reason || "full inference") + ":", error);
+        });
+      }, 900);
+      return quickMessage.result;
+    }).catch(function (error) {
+      runtime.analysisLastError = error && error.message ? error.message : String(error);
+      if (runtime.analysisViewController && state.activeView === "analysis") {
+        if (runtime.analysisLastResult) {
+          setAnalysisComputationPhase("error", "Adjusted evidence update failed: " + runtime.analysisLastError);
+        } else {
+          runtime.analysisViewController.setAnalysisState("error", runtime.analysisLastError);
+        }
+      }
+      console.error("[analysis] " + (reason || "compute") + ":", error);
+      return null;
+    });
+  }
+
+  function scheduleAnalysisCompute(reason, options) {
+    if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
+    runtime.analysisPendingRequest = null;
+    window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    runtime.analysisFullInferenceTimerId = null;
+    window.clearTimeout(runtime.analysisDebounceTimerId);
+    const delay = options && options.immediate ? 0 : 180;
+    runtime.analysisDebounceTimerId = window.setTimeout(function () {
+      runtime.analysisDebounceTimerId = null;
+      computeAnalysisForCurrentView(reason || "state changed");
+    }, delay);
+    return true;
   }
 
   function postCatalogFacetWorkerRows(events) {
@@ -14370,6 +15488,7 @@
       regionState.showSelectedEvents ? "1" : "0",
       regionState.showEventsAssociatedWithSelectedTraces ? "1" : "0",
       regionState.showTracesAssociatedWithSelectedEvents ? "1" : "0",
+      regionState.pointOnly ? "1" : "0",
       TRACE_NEIGHBORHOOD.normalizeDepth(regionState.depth),
       TRACE_NEIGHBORHOOD.normalizeDirection(regionState.direction),
     ].join("");
@@ -16858,6 +17977,47 @@
     return regionIds;
   }
 
+  function currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds) {
+    const cacheKey = [
+      "point-only-region-seeds",
+      Number(runtime.activeFilterGeneration) || 0,
+      state.filterGeneration,
+      state.timelineDataVersion,
+      state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
+      catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      regionSelectionShapesSignature(),
+    ].join("|");
+    if (runtime.neighborhoodSeedCacheKey === cacheKey && runtime.neighborhoodSeedCacheValue) {
+      return runtime.neighborhoodSeedCacheValue;
+    }
+    const eventSeeds = [];
+    let candidateEventCount = 0;
+    for (const event of state.filteredMappedCatalog) {
+      if (!event || event.event_id == null) continue;
+      if (event.lat == null || event.lon == null || event.lat === "" || event.lon === "") continue;
+      const lat = Number(event.lat);
+      const lon = Number(event.lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+      if (!pointMayIntersectAnyRegionShape(lat, lon, shapeBounds)) continue;
+      candidateEventCount += 1;
+      const regionIds = regionIdsForPoint({ lat: lat, lon: lon }, shapes, shapeBounds);
+      if (regionIds.length) {
+        eventSeeds.push({ eventId: String(event.event_id), regionIds: regionIds });
+      }
+    }
+    const seeds = {
+      eventSeeds: eventSeeds,
+      traceSeeds: [],
+      candidateEventCount: candidateEventCount,
+      candidateTraceCount: 0,
+      source: "mapped_report_points_only",
+    };
+    runtime.neighborhoodSeedCacheKey = cacheKey;
+    runtime.neighborhoodSeedCacheValue = seeds;
+    return seeds;
+  }
+
   function currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds) {
     const cacheKey = [
       runtime.neighborhoodAdjacencyCacheKey,
@@ -16911,8 +18071,11 @@
     const selectedTraceIds = new Set();
     const visibleEventIds = new Set();
     const visibleTraceIds = new Set();
-    const index = currentChronologicalNeighborhoodIndex();
-    const seeds = currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);
+    const pointOnly = Boolean(state.regionSelection.pointOnly);
+    const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();
+    const seeds = pointOnly
+      ? currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds)
+      : currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);
     const eventSeeds = seeds.eventSeeds;
     const traceSeeds = state.regionSelection.selectTraces ? seeds.traceSeeds : [];
 
@@ -16921,13 +18084,25 @@
     }
     traceSeeds.forEach(function (seed) { selectedTraceIds.add(seed.traceId); });
 
-    const neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({
-      index: index,
-      depth: state.regionSelection.depth,
-      direction: state.regionSelection.direction,
-      eventSeeds: eventSeeds,
-      traceSeeds: traceSeeds,
-    });
+    const neighborhood = pointOnly
+      ? {
+          depth: 0,
+          direction: "point_only",
+          eventIds: new Set(selectedEventIds),
+          segmentIds: new Set(),
+          segments: [],
+          metrics: {
+            reachedSegments: 0,
+            reachedEvents: selectedEventIds.size,
+          },
+        }
+      : TRACE_NEIGHBORHOOD.traverseNeighborhood({
+          index: index,
+          depth: state.regionSelection.depth,
+          direction: state.regionSelection.direction,
+          eventSeeds: eventSeeds,
+          traceSeeds: traceSeeds,
+        });
 
     if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
       selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
@@ -16936,31 +18111,32 @@
       (state.regionSelection.selectTraces && state.regionSelection.showSelectedTraces) ||
       (state.regionSelection.selectEvents && state.regionSelection.showTracesAssociatedWithSelectedEvents)
     );
-    if (showsReachedTraces) {
+    if (!pointOnly && showsReachedTraces) {
       neighborhood.segmentIds.forEach(function (traceId) { visibleTraceIds.add(traceId); });
     }
     const showsReachedEvents = Boolean(
       (state.regionSelection.selectTraces && state.regionSelection.showEventsAssociatedWithSelectedTraces) ||
       (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents)
     );
-    if (showsReachedEvents) {
+    if (!pointOnly && showsReachedEvents) {
       neighborhood.eventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
     }
 
     const traversalDurationMs = Math.round((performance.now() - startedAt) * 100) / 100;
     const metrics = {
       active: true,
-      reason: "computed cached chronological neighborhood",
+      reason: pointOnly ? "computed point-only area selection" : "computed cached chronological neighborhood",
       generation: state.filterGeneration,
       shapeCount: shapes.length,
       eventPointsAvailable: state.filteredMappedCatalog.length,
       eventPointsBroadPhaseRejected: Math.max(0, state.filteredMappedCatalog.length - seeds.candidateEventCount),
       eventPointsExactTested: seeds.candidateEventCount,
-      traceSegmentsAvailable: index.segments.length,
-      traceSegmentsBroadPhaseRejected: Math.max(0, index.segments.length - seeds.candidateTraceCount),
+      traceSegmentsAvailable: pointOnly ? 0 : index.segments.length,
+      traceSegmentsBroadPhaseRejected: pointOnly ? 0 : Math.max(0, index.segments.length - seeds.candidateTraceCount),
       traceSegmentsExactTested: seeds.candidateTraceCount,
       associatedTraceIndexEntries: neighborhood.metrics.reachedSegments,
-      needsTraceSegments: true,
+      needsTraceSegments: !pointOnly,
+      chronologyIndexUsed: !pointOnly,
       depth: neighborhood.depth,
       direction: neighborhood.direction,
       reachedTraceCount: neighborhood.metrics.reachedSegments,
@@ -17012,7 +18188,7 @@
       visibleTraceIds: visibleTraceIds,
       visibleCatalog: visibleCatalog,
       visibleMappedCatalog: visibleMappedCatalog,
-      traceSegments: index.segments,
+      traceSegments: pointOnly ? [] : index.segments,
       visibleTraceSegments: visibleTraceSegments,
       neighborhoodSegments: neighborhood.segments,
       neighborhoodEventIds: neighborhood.eventIds,
@@ -17021,8 +18197,12 @@
       selectedTraceCount: selectedTraceIds.size,
       visibleEventCount: visibleEventIds.size,
       visibleTraceCount: visibleTraceIds.size,
+      pointOnly: pointOnly,
+      chronologyIndexUsed: !pointOnly,
       emptyMessage: (!visibleEventIds.size && !visibleTraceIds.size)
-        ? "No sightings or chronological adjacencies match the current filters and regions."
+        ? (pointOnly
+          ? "No mapped report points match the current filters and area."
+          : "No sightings or chronological adjacencies match the current filters and regions.")
         : "",
     };
   }
@@ -22774,9 +23954,6 @@
       "time_sort_kind",
       "time_sort_confidence",
       "craft_type_label",
-      "craft_type_confidence",
-      "craft_type_source",
-      "same_day_match_strength",
     ];
     for (const propertyName of unusedSummaryProperties) {
       if (Object.prototype.hasOwnProperty.call(event, propertyName)) {
@@ -22810,6 +23987,12 @@
       shape_normalized: internCanonicalSummaryString(event.shape_normalized),
       visual_type_group: internCanonicalSummaryString(event.visual_type_group),
       craft_type_inferred: internCanonicalSummaryString(event.craft_type_inferred),
+      craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence),
+      craft_type_source: internCanonicalSummaryString(event.craft_type_source),
+      same_day_match_strength: internCanonicalSummaryString(event.same_day_match_strength || "none"),
+      country: internCanonicalSummaryString(event.country || "unknown"),
+      state_province: internCanonicalSummaryString(event.state_province || event.admin_region || "unknown"),
+      duplicate_lineage_id: internCanonicalSummaryString(event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || ""),
       sort_ordinal: event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null,
     };
   }
@@ -23553,13 +24736,17 @@
             "live density preview \u00b7 release the timeline to refresh exact result cards and traces."
         );
       }
-      renderMap({
-        interactiveTimeRange: true,
-        forceTimelineDensityPreview: true,
-        deferNonEssentialDecorations: true,
-        overrideMappedCount: densityPreview.mappedCount,
-        overrideHeatmapEvents: densityPreview.events,
-      });
+      if (state.activeView === "analysis") {
+        runtime.analysisMapRenderPending = true;
+      } else {
+        renderMap({
+          interactiveTimeRange: true,
+          forceTimelineDensityPreview: true,
+          deferNonEssentialDecorations: true,
+          overrideMappedCount: densityPreview.mappedCount,
+          overrideHeatmapEvents: densityPreview.events,
+        });
+      }
       renderPlaybackStatus({ playbackStep: true });
       runtime.lastInteractiveTimelinePreviewMetrics = {
         generation: rangeGeneration,
@@ -23585,6 +24772,7 @@
           formatNumber(densityPreview.mappedCount) +
           " mapped. Release the timeline for exact results and trace-linked visibility."
       );
+      scheduleAnalysisCompute("interactive date preview");
       return;
     }
 
@@ -23609,11 +24797,15 @@
     const deferLargeWindowDecorations = !interactive &&
       !regionSelectionAffectsRendering() &&
       state.filteredMappedCatalog.length > MAP_INTERACTIVE_TIMELINE_EXACT_THRESHOLD;
-    renderMap({
-      interactiveTimeRange: interactive,
-      deferNonEssentialDecorations: useInteractiveDensityPreview || deferLargeWindowDecorations,
-    });
-    if (deferLargeWindowDecorations) {
+    if (state.activeView === "analysis") {
+      runtime.analysisMapRenderPending = true;
+    } else {
+      renderMap({
+        interactiveTimeRange: interactive,
+        deferNonEssentialDecorations: useInteractiveDensityPreview || deferLargeWindowDecorations,
+      });
+    }
+    if (deferLargeWindowDecorations && state.activeView !== "analysis") {
       runtime.largeWindowTraceRefinementMetrics = {
         generation: rangeGeneration,
         renderedSegments: 0,
@@ -23621,7 +24813,7 @@
       };
       scheduleLargeWindowTraceRefinement(rangeGeneration);
     }
-    if (!interactive) {
+    if (!interactive && state.activeView !== "analysis") {
       refreshActiveTimeFilteredOverlayLayers();
     }
     renderPlaybackStatus(interactive ? { playbackStep: true } : null);
@@ -23635,9 +24827,15 @@
     if (interactive) {
       clearBusyState("timelineSync");
     } else {
-      setBusyState("timelineSync", "Map updated. Refreshing exact filter and legend counts...");
+      setBusyState(
+        "timelineSync",
+        state.activeView === "analysis"
+          ? "Timeline updated. Refreshing exact filter, legend, and analysis counts..."
+          : "Map updated. Refreshing exact filter and legend counts..."
+      );
       scheduleTimeRangeFacetRefresh(rangeGeneration);
     }
+    scheduleAnalysisCompute(interactive ? "interactive date change" : "date change");
   }
 
   function scheduleCurrentTimeRangeState() {
@@ -23842,10 +25040,13 @@
         });
       }
 
-      if (!config.secondaryOnly && !config.skipMap) {
+      if (!config.secondaryOnly && !config.skipMap && state.activeView !== "analysis") {
         measureStep("renderMap()", function () {
           renderMap(config.mapOptions);
         });
+        runtime.analysisMapRenderPending = false;
+      } else if (!config.secondaryOnly && !config.skipMap && state.activeView === "analysis") {
+        runtime.analysisMapRenderPending = true;
       }
 
       if (!config.secondaryOnly) {
@@ -23906,6 +25107,7 @@
     });
     finalizeFilteredCatalogState(keywordMatches);
     renderFilteredState();
+    scheduleAnalysisCompute("filter generation applied");
     return true;
   }
 
@@ -24950,22 +26152,46 @@
 
     window.addEventListener("ufo:crop-circle-statechange", function (event) {
       const detail = event && event.detail ? event.detail : {};
+      const priorEnabled = runtime.analysisContextEnabledState.crops;
       runtime.cropCircleOverlayEnabled = Boolean(detail.enabled);
+      runtime.analysisContextEnabledState.crops = runtime.cropCircleOverlayEnabled;
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
       renderMapControlQuickButtons();
       renderMapLegend();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState("crops", {
+          enabled: runtime.cropCircleOverlayEnabled,
+          busy: Boolean(detail.busy),
+        });
+      }
+      if (priorEnabled !== null && priorEnabled !== runtime.cropCircleOverlayEnabled) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("crop context layer changed");
+      }
     });
 
     window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
       const detail = event && event.detail ? event.detail : {};
+      const priorEnabled = runtime.analysisContextEnabledState.animals;
       runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
+      runtime.analysisContextEnabledState.animals = runtime.animalMutilationOverlayEnabled;
       runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
       renderMapControlQuickButtons();
       renderMapLegend();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState("animals", {
+          enabled: runtime.animalMutilationOverlayEnabled,
+          busy: Boolean(detail.busy),
+        });
+      }
+      if (priorEnabled !== null && priorEnabled !== runtime.animalMutilationOverlayEnabled) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("animal context layer changed");
+      }
     });
 
     [els.overlayCropCirclesToggle, els.overlayAnimalMutilationsToggle].forEach(
@@ -25341,6 +26567,22 @@
             ? "Animal Mutilation Reports are turning on."
             : "Animal Mutilation Reports hidden."
         );
+      });
+    }
+
+    if (els.analysisCropCirclesButton) {
+      els.analysisCropCirclesButton.addEventListener("click", function () {
+        if (!els.overlayCropCirclesToggle) return;
+        els.overlayCropCirclesToggle.click();
+        renderMapControlQuickButtons();
+      });
+    }
+
+    if (els.analysisAnimalReportsButton) {
+      els.analysisAnimalReportsButton.addEventListener("click", function () {
+        if (!els.overlayAnimalMutilationsToggle) return;
+        els.overlayAnimalMutilationsToggle.click();
+        renderMapControlQuickButtons();
       });
     }
 
@@ -27072,6 +28314,7 @@
     applyMobileLandscapeResultsColumnWidth();
     bindMapControlClusterResizing();
     initializeMapSurfaceHeightResize();
+    initializeAnalysisView();
     document.documentElement.classList.remove("app-initializing");
     renderStartupDiagnostics();
 
@@ -27146,6 +28389,9 @@
     }
     startup.initialViewReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
+    if (runtime.analysisViewController) {
+      runtime.analysisViewController.setAnalysisEnabled(true, "");
+    }
     window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", {
       detail: { phase: "Ready" },
     }));
@@ -27196,6 +28442,8 @@
           selectedTraceCount: regionResult.selectedTraceCount,
           visibleEventCount: regionResult.visibleEventCount,
           visibleTraceCount: regionResult.visibleTraceCount,
+          pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
+          chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
           depth: TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth),
           direction: TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction),
           neighborhoodEventCount: regionResult.neighborhoodEventIds ? regionResult.neighborhoodEventIds.size : 0,
@@ -27320,8 +28568,36 @@
         heatmapPerformance: runtime.heatmapLayer && runtime.heatmapLayer._dataBuildMetrics
           ? Object.assign({}, runtime.heatmapLayer._dataBuildMetrics)
           : null,
+        analysis: {
+          activeView: state.activeView,
+          baselineMode: state.analysisBaselineMode,
+          contextLoaded: runtime.analysisContextLoaded,
+          contextWorkerReady: runtime.analysisContextWorkerReady,
+          mapRenderPending: runtime.analysisMapRenderPending,
+          cacheEntries: runtime.analysisCache.size,
+          pendingRequest: runtime.analysisPendingRequest,
+          lastError: runtime.analysisLastError,
+          computationPhase: runtime.analysisComputationPhase,
+          performanceSamples: runtime.analysisPerformanceSamples.slice(),
+        },
         browserPerformanceProfile: runtime.browserPerformanceProfile,
       };
+    },
+    getAnalysisFilterSnapshot: getAnalysisFilterSnapshot,
+    getAnalysisRequestSignatureForTest: function (snapshot) {
+      return analysisComputeCacheKey(snapshot || getAnalysisFilterSnapshot());
+    },
+    analysisResponseEnvelopeMatchesForTest: function (pending, message, snapshotOrSignature) {
+      return analysisResponseEnvelopeMatchesCurrentState(pending, message, snapshotOrSignature);
+    },
+    scheduleAnalysisComputeForTest: scheduleAnalysisCompute,
+    setActiveAnalysisViewForTest: function (view) {
+      if (!runtime.analysisViewController) return false;
+      return runtime.analysisViewController.setActiveView(view, { source: "test" });
+    },
+    applyAnalysisFilterPatchForTest: applyAnalysisFilterPatch,
+    computeAnalysisForTest: function () {
+      return computeAnalysisForCurrentView("test");
     },
     getFilterParitySnapshot: function () {
       const regionResult = currentRegionSelectionResult();
@@ -27331,7 +28607,11 @@
         filteredEventIds: state.filteredCatalog.map(function (event) { return String(event.event_id); }).sort(),
         filteredMappedEventIds: state.filteredMappedCatalog.map(function (event) { return String(event.event_id); }).sort(),
         visibleEventIds: Array.from(regionResult.visibleEventIds || []).map(String).sort(),
+        visibleMappedEventIds: (regionResult.visibleMappedCatalog || []).map(function (event) { return String(event.event_id); }).sort(),
+        resultEventIds: currentVisibleResultsCatalog().map(function (event) { return String(event.event_id); }).sort(),
         visibleTraceIds: Array.from(regionResult.visibleTraceIds || []).map(String).sort(),
+        pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
+        chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
         neighborhoodTraceIds: (regionResult.neighborhoodSegments || []).map(function (segment) {
           return String(segment.traceId);
         }).sort(),
@@ -27353,6 +28633,9 @@
         return Object.assign({ id: "test-region-" + (index + 1) }, shape);
       });
       Object.assign(state.regionSelection, options || {});
+      if (!options || !Object.prototype.hasOwnProperty.call(options, "pointOnly")) {
+        state.regionSelection.pointOnly = false;
+      }
       state.regionSelection.depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
       state.regionSelection.direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
       refreshRegionSelectionRenderState();

@@ -349,6 +349,16 @@ assert.equal(status.chronology.coordinateScope, "field");
 assert.equal(status.chronology.maxDistanceKm, 250);
 assert.equal(status.selectedRecordId, null, "enabling the layer does not silently select a crop record");
 assert.equal(elements.get("#crop-circle-chronology-relation").disabled, false, "crop-to-crop relation selection does not require a selected record");
+elements.get("#crop-circle-chronology-relation").setAttribute("data-analysis-unavailable", "true");
+layerApi.setChronology({ relation: "off" });
+assert.equal(
+  elements.get("#crop-circle-chronology-relation").disabled,
+  true,
+  "crop-layer control sync cannot re-enable map-only controls while Analysis is active"
+);
+elements.get("#crop-circle-chronology-relation").removeAttribute("data-analysis-unavailable");
+layerApi.setChronology({ relation: "off" });
+assert.equal(elements.get("#crop-circle-chronology-relation").disabled, false, "Map Explorer restores the available crop chronology selector");
 assert.equal(elements.get("#crop-circle-chronology-coordinate-scope").disabled, true, "crop chronology refinements remain disabled while its independent selector is off");
 assert.equal(elements.get("#crop-circle-ufo-relation-window").disabled, true, "UFO-to-crop selection requires one specific crop record");
 assert.equal(elements.get("#crop-circle-ufo-position-quality").disabled, true);

@@ -74,25 +74,48 @@
     return ensureRuntime().then(function (layer) {
       if (!desiredEnabled) return false;
       return layer.setEnabled(true);
-    }).catch(function (error) {
-      reportError(error);
-      return false;
     });
   }
 
+  function setEnabled(enabled, origin) {
+    desiredEnabled = Boolean(enabled);
+    setDesiredToggleState(desiredEnabled);
+    if (toggle) toggle.dataset.contextChangeOrigin = String(origin || "shared-control");
+    if (!desiredEnabled) {
+      const disablePromise = window.UfoAnimalMutilationLayer
+        ? Promise.resolve(window.UfoAnimalMutilationLayer.setEnabled(false))
+        : Promise.resolve(false);
+      return disablePromise.then(function (result) {
+        setStatus("Animal reports are excluded from the shared context. Browse remains available.");
+        return result;
+      }).catch(function (error) {
+        reportError(error);
+        throw error;
+      }).finally(function () {
+        if (toggle) delete toggle.dataset.contextChangeOrigin;
+      });
+    }
+    return enableDesiredLayer().catch(function (error) {
+      reportError(error);
+      throw error;
+    }).finally(function () {
+      if (toggle) delete toggle.dataset.contextChangeOrigin;
+    });
+  }
+
+  window.UfoAnimalMutilationBootstrap = Object.freeze({
+    setEnabled: setEnabled,
+    getDesiredEnabled: function () { return desiredEnabled; },
+    ensureLoaded: ensureRuntime,
+  });
+
   if (toggle) {
     toggle.addEventListener("click", function () {
-      desiredEnabled = !desiredEnabled;
-      setDesiredToggleState(desiredEnabled);
-      if (!desiredEnabled) {
-        if (window.UfoAnimalMutilationLayer) {
-          window.UfoAnimalMutilationLayer.setEnabled(false).catch(reportError);
-        } else {
-          setStatus("Animal Mutilation Reports are off. Browse all reports remains available.");
-        }
+      if (typeof window.setContextLayerEnabled === "function") {
+        window.setContextLayerEnabled("animals", !desiredEnabled, "map-control").catch(function () {});
         return;
       }
-      enableDesiredLayer();
+      setEnabled(!desiredEnabled, "map-control").catch(function () {});
     });
   }
 
@@ -108,6 +131,12 @@
   window.addEventListener("ufo:timeline-ready", function () {
     if (defaultActivationStarted) return;
     defaultActivationStarted = true;
-    enableDesiredLayer();
+    if (typeof window.setContextLayerEnabled === "function") {
+      window.setContextLayerEnabled("animals", true, "startup-default").catch(function (error) {
+        if (desiredEnabled) reportError(error);
+      });
+      return;
+    }
+    enableDesiredLayer().catch(reportError);
   }, { once: true });
 })();

@@ -499,7 +499,11 @@ def test_static_trace_render_metrics_debug_snapshot_is_exposed():
     assert "const visibleMappedCatalog = []" in app_js
     assert "visibleMappedCatalog.push(event)" in app_js
     assert "state.filteredMappedCatalog.filter(function (event) {" not in app_js
-    assert "const neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({" in app_js
+    region_result_body = _extract_js_function_body(app_js, "computeRegionSelectionResult")
+    assert "const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();" in region_result_body
+    assert ": TRACE_NEIGHBORHOOD.traverseNeighborhood({" in region_result_body
+    assert "if (!pointOnly && showsReachedTraces)" in region_result_body
+    assert "if (!pointOnly && showsReachedEvents)" in region_result_body
     assert "state.regionSelection.showTracesAssociatedWithSelectedEvents" in app_js
     assert "neighborhood.segmentIds.forEach(function (traceId)" in app_js
     assert "neighborhood.eventIds.forEach(function (eventId)" in app_js
@@ -1246,10 +1250,171 @@ def test_shell_assets_match_the_rebuilt_static_bundle():
         "legend_controls.js",
         "flap_preset_labels.js",
         "playback_performance.js",
+        "catalog_filter_worker.js",
+        "analysis_stats.js",
+        "analysis_view.js",
+        "analysis_spatial.js",
+        "analysis_spatial_worker.js",
+        "_headers",
     ):
         assert (Path("webapp/static_public") / filename).read_bytes() == (
             Path("static_bundle") / filename
         ).read_bytes()
+
+    for filename in (
+        "manifest.json",
+        "crop_circles.json",
+        "crop_circles.json.gz",
+        "animal_reports.json",
+        "animal_reports.json.gz",
+    ):
+        assert (Path("webapp/static_public/data/analysis_v1") / filename).read_bytes() == (
+            Path("static_bundle/data/analysis_v1") / filename
+        ).read_bytes()
+
+    for filename in (
+        "manifest.json",
+        "ufo_point_neighbors_v1.json",
+        "ufo_point_neighbors_v1.json.gz",
+        "facility_analysis_v1.json",
+        "facility_analysis_v1.json.gz",
+        "crop_context_readiness.json",
+        "crop_context_readiness.json.gz",
+        "animal_context_readiness.json",
+        "animal_context_readiness.json.gz",
+        "relationship_reconciliation.json",
+        "relationship_reconciliation.json.gz",
+        "relationship_source_snapshot.json",
+        "relationship_source_snapshot.json.gz",
+        "relationship_source_snapshot.meta.json",
+    ):
+        assert (Path("webapp/static_public/data/analysis_v2") / filename).read_bytes() == (
+            Path("static_bundle/data/analysis_v2") / filename
+        ).read_bytes()
+
+
+def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifecycle():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    worker_js = Path("webapp/static_public/catalog_filter_worker.js").read_text(encoding="utf-8")
+    stats_js = Path("webapp/static_public/analysis_stats.js").read_text(encoding="utf-8")
+
+    for fragment in (
+        'activeView: "map"',
+        "function getAnalysisFilterSnapshot()",
+        "function applyAnalysisFilterPatch(rawPatch)",
+        "function handleAnalysisViewChange(nextView)",
+        "function restoreMapAfterAnalysis()",
+        'controller.setAnalysisEnabled(false, "Analysis becomes available when the core catalog is ready.")',
+        "runtime.map.invalidateSize({ animate: false, pan: false })",
+        'type: "computeAnalysis"',
+        'message.type === "analysisComputed"',
+        'quickMode: true',
+        'selectedDomains: ["overview", "time", "sources_quality", "context"]',
+        'runtime.analysisFullInferenceTimerId = window.setTimeout(function ()',
+        'areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : []',
+        'craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence)',
+        'craft_type_source: internCanonicalSummaryString(event.craft_type_source)',
+        'const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"',
+    ):
+        assert fragment in app_js
+
+    for fragment in (
+        'message.type === "setAnalysisContextProjections"',
+        'message.type === "computeAnalysis"',
+        'type: "analysisComputed"',
+        "pointInsideAnyAnalysisShape",
+        "verifyAnalysisBytes",
+        "analysisCacheKey",
+        "quickMode: Boolean(message.quickMode)",
+    ):
+        assert fragment in worker_js
+
+    for prohibited in (
+        "traceSegments",
+        "trace_segments",
+        "chronologySegments",
+        "flight path",
+    ):
+        assert prohibited not in stats_js
+
+
+def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    apply_area_body = _extract_js_function_body(app_js, "applyAnalysisAreaFilter")
+    assert "pointOnly: true" in apply_area_body
+    assert "selectTraces: false" in apply_area_body
+    assert "selectEvents: true" in apply_area_body
+
+    seed_body = _extract_js_function_body(app_js, "currentPointOnlyRegionSelectionSeeds")
+    assert "for (const event of state.filteredMappedCatalog)" in seed_body
+    assert 'source: "mapped_report_points_only"' in seed_body
+    for prohibited in (
+        "currentChronologicalNeighborhoodIndex",
+        "currentChronologicalNeighborhoodSeeds",
+        "TRACE_NEIGHBORHOOD",
+        "segment",
+    ):
+        assert prohibited not in seed_body
+
+    result_body = _extract_js_function_body(app_js, "computeRegionSelectionResult")
+    assert "const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();" in result_body
+    assert "? currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds)" in result_body
+    assert ": currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);" in result_body
+    assert "if (!pointOnly && showsReachedEvents)" in result_body
+    assert "if (!pointOnly && showsReachedTraces)" in result_body
+    assert "chronologyIndexUsed: !pointOnly" in result_body
+    assert "traceSegments: pointOnly ? [] : index.segments" in result_body
+
+    assert "pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly)" in app_js
+    assert "chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed)" in app_js
+    assert "visibleMappedEventIds: (regionResult.visibleMappedCatalog || [])" in app_js
+    assert "resultEventIds: currentVisibleResultsCatalog().map(function (event)" in app_js
+
+
+def test_analysis_worker_envelope_invalidates_before_debounce_and_rechecks_full_signature():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    signature_body = _extract_js_function_body(app_js, "analysisComputeCacheKey")
+    for fragment in (
+        "generation:",
+        "baselineMode:",
+        "timeRange:",
+        "filters:",
+        "areaPointOnly:",
+        "areaShapes:",
+        "crops:",
+        "animals:",
+        "contextHashes:",
+        "datasetHash:",
+    ):
+        assert fragment in signature_body
+
+    response_guard_body = _extract_js_function_body(
+        app_js, "analysisResponseEnvelopeMatchesCurrentState"
+    )
+    assert "analysisComputeCacheKey(snapshotOrSignature || getAnalysisFilterSnapshot())" in response_guard_body
+    assert "window.UfoAnalysisView.analysisRequestEnvelopeMatches(pending, message, currentSignature)" in response_guard_body
+
+    worker_body = _extract_js_function_body(app_js, "computeAnalysisViaWorker")
+    assert "const analysisSignature = analysisComputeCacheKey(snapshot);" in worker_body
+    assert "signature: analysisSignature" in worker_body
+    assert "analysisSignature: analysisSignature" in worker_body
+    assert "analysisResponseEnvelopeMatchesCurrentState(" in worker_body
+    assert 'const analysisPhase = options.quickMode ? "quick" : "full";' in worker_body
+    assert "quickMode: Boolean(options.quickMode)" in worker_body
+
+    schedule_body = _extract_js_function_body(app_js, "scheduleAnalysisCompute")
+    invalidation_index = schedule_body.index("runtime.analysisPendingRequest = null;")
+    debounce_index = schedule_body.index("window.setTimeout(function ()")
+    assert invalidation_index < debounce_index
+
+    for hook in (
+        "getAnalysisRequestSignatureForTest:",
+        "analysisResponseEnvelopeMatchesForTest:",
+        "scheduleAnalysisComputeForTest:",
+    ):
+        assert hook in app_js
 
 
 def test_trace_facility_proximity_filter_is_wired_into_trace_rendering():

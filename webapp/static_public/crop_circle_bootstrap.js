@@ -148,30 +148,59 @@
     return ensureLayerLoaded().then(function (layer) {
       if (!desiredEnabled) return false;
       return layer.setEnabled(true);
-    }).catch(function (error) {
-      reportError(error);
-      return false;
     });
   }
 
-  button.addEventListener("click", function () {
-    desiredEnabled = !desiredEnabled;
+  function setEnabled(enabled, origin) {
+    desiredEnabled = Boolean(enabled);
     setDesiredButtonState(desiredEnabled);
+    button.dataset.contextChangeOrigin = String(origin || "shared-control");
     if (!desiredEnabled) {
-      if (window.UfoCropCircleLayer) {
-        Promise.resolve(window.UfoCropCircleLayer.setEnabled(false)).catch(reportError);
-      } else {
-        setStatus("Crop circles are off. Turn the layer on to show catalog positions.");
-      }
+      const disablePromise = window.UfoCropCircleLayer
+        ? Promise.resolve(window.UfoCropCircleLayer.setEnabled(false))
+        : Promise.resolve(false);
+      return disablePromise.then(function (result) {
+        setStatus("Crop circles are excluded from the shared context.");
+        return result;
+      }).catch(function (error) {
+        reportError(error);
+        throw error;
+      }).finally(function () {
+        delete button.dataset.contextChangeOrigin;
+      });
+    }
+    return enableDesiredLayer().catch(function (error) {
+      reportError(error);
+      throw error;
+    }).finally(function () {
+      delete button.dataset.contextChangeOrigin;
+    });
+  }
+
+  window.UfoCropCircleBootstrap = Object.freeze({
+    setEnabled: setEnabled,
+    getDesiredEnabled: function () { return desiredEnabled; },
+    ensureLoaded: ensureLayerLoaded,
+  });
+
+  button.addEventListener("click", function () {
+    if (typeof window.setContextLayerEnabled === "function") {
+      window.setContextLayerEnabled("crops", !desiredEnabled, "map-control").catch(function () {});
       return;
     }
-    enableDesiredLayer();
+    setEnabled(!desiredEnabled, "map-control").catch(function () {});
   });
 
   setDesiredButtonState(true);
   window.addEventListener("ufo:timeline-ready", function () {
     if (defaultActivationStarted) return;
     defaultActivationStarted = true;
-    enableDesiredLayer();
+    if (typeof window.setContextLayerEnabled === "function") {
+      window.setContextLayerEnabled("crops", true, "startup-default").catch(function (error) {
+        if (desiredEnabled) reportError(error);
+      });
+      return;
+    }
+    enableDesiredLayer().catch(reportError);
   }, { once: true });
 })();

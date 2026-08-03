@@ -12,6 +12,18 @@
 /catalog_filter_worker.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/analysis_stats.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analysis_view.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analysis_spatial.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analysis_spatial_worker.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /trace_facility_worker.js
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -38,6 +50,27 @@
 
 /data/animal_mutilations/manifest.json
   Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_v1/crop_circles.json
+  Cache-Control: public, max-age=31536000, immutable
+
+/data/analysis_v1/crop_circles.json.gz
+  Cache-Control: public, max-age=31536000, immutable
+
+/data/analysis_v1/animal_reports.json
+  Cache-Control: public, max-age=31536000, immutable
+
+/data/analysis_v1/animal_reports.json.gz
+  Cache-Control: public, max-age=31536000, immutable
+
+/data/analysis_v2/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_v2/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /data/startup_profiles/*
   Cache-Control: public, max-age=31536000, immutable

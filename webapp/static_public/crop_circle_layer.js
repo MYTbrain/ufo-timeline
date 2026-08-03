@@ -447,7 +447,10 @@
   function syncChronologyControlState() {
     if (chronologyPanel) chronologyPanel.hidden = !state.enabled;
     const on = state.enabled && state.chronology.enabled;
-    if (chronologyRelation) chronologyRelation.disabled = !state.enabled;
+    if (chronologyRelation) {
+      chronologyRelation.disabled = !state.enabled
+        || chronologyRelation.getAttribute("data-analysis-unavailable") === "true";
+    }
     for (const input of [chronologyScope, chronologyDistance]) if (input) input.disabled = !on;
     if (chronologyRelation) chronologyRelation.value = state.chronology.relation;
     if (chronologyScope) chronologyScope.value = state.chronology.coordinateScope;
