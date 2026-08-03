@@ -70,6 +70,12 @@ separate pill, wrap them as a unit when needed, and stack them in collapsed mode
 - Two independent builds produced byte-identical archive and manifest hashes.
 - The new R2 key was proven absent before upload; online hydration then
   downloaded the published archive and reproduced the exact Pages tree.
+- A clean clone at `170d54ab4c725506c3bacfb5cbe9ebd4463929ad`
+  rehydrated and revalidated the 134-file Pages candidate, then verified all
+  366 canonical R2 objects and all 39 optional-layer objects. Its localized
+  offline site contained 530 files, 970,466,284 bytes, with tree SHA-256
+  `0db2c8cabcc66bf7cc848dce1ba2ad9264bb6635ac39d7f9cd41ffae86422e0c`;
+  the clean clone remained unmodified.
 - Production verification passed baseline-source identity, canonical production
   drift, all optional-layer R2 hashes, and source/generated parity.
 - Local, immutable-preview, immutable-production, and canonical-production
