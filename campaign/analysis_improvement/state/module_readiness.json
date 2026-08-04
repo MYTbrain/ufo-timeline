@@ -46,15 +46,18 @@
                 "missingRows": 557604
             },
             "estimators": [
-                "descriptive_distribution",
-                "source_era_region_standardized_comparison"
+                "descriptive_witness_count_distribution",
+                "comparisons_suppressed_while_single_source"
             ],
-            "minimumCoveragePct": 5.0,
+            "minimumCoveragePct": 16.53,
             "moduleId": "witness_count",
             "negativeControls": [
-                "source_composition_holdout",
-                "era_holdout",
-                "region_holdout"
+                "missing_value_exclusion_lane",
+                "approximate_and_range_holdout",
+                "qualitative_plural_holdout",
+                "extreme_count_audit",
+                "duplicate_lineage_holdout",
+                "single_source_comparison_suppression"
             ],
             "requiredFields": [
                 "witness_count_raw",
@@ -62,12 +65,12 @@
                 "independent_source_identity"
             ],
             "sourceIndependenceScore": 1,
-            "status": "not_ready",
+            "status": "in_progress",
             "supportedSources": [
                 "nuforc"
             ],
-            "suppressionPolicy": "suppress_inference_until_common_support_and_typed_normalization_pass",
-            "uncertaintyTreatment": "typed_parser_uncertainty_and_bootstrap_interval_required",
+            "suppressionPolicy": "publish descriptive readiness only; suppress active/reference inference, source holdouts, Pattern Finder, and credibility or incidence interpretations while evidence remains single-source",
+            "uncertaintyTreatment": "original text, exact counts, approximate counts, ranges, lower bounds, qualitative plural language, party-size language, missing values, and invalid formats remain distinct",
             "version": "0.1.0-candidate"
         },
         {
@@ -159,31 +162,45 @@
                 "missingRows": 574880
             },
             "estimators": [
-                "descriptive_distribution",
-                "source_era_region_standardized_comparison"
+                "descriptive_source_clock_distribution",
+                "source_era_macroregion_common_support_comparison"
             ],
-            "minimumCoveragePct": 5.0,
+            "minimumCoveragePct": 14.56,
             "moduleId": "time_of_day",
             "negativeControls": [
-                "source_composition_holdout",
-                "era_holdout",
-                "region_holdout"
+                "missing_time_exclusion_lane",
+                "approximate_and_range_holdout",
+                "midnight_and_noon_sentinel_audit",
+                "leave_one_source_out",
+                "unknown_timezone_holdout"
             ],
             "requiredFields": [
-                "time_of_day_normalized",
+                "time_raw",
+                "time_measurement_class",
+                "exact_source_clock_minutes_when_supported",
+                "timezone_semantics",
                 "exact_date",
                 "independent_source_identity"
             ],
-            "sourceIndependenceScore": 3,
-            "status": "in_progress",
+            "sourceIndependenceScore": 5,
+            "materialRelease": {
+                "releaseId": "analysis-time-of-day-v1-20260804",
+                "typedCatalogPct": 74.417728,
+                "typedRows": 523077,
+                "exactInferentialRows": 511394,
+                "productionDeploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4"
+            },
+            "status": "ready_descriptive",
             "supportedSources": [
                 "majestic",
                 "mufon",
+                "nuforc",
+                "phenomenainon_updb",
                 "ufocat"
             ],
-            "suppressionPolicy": "suppress_inference_until_common_support_and_typed_normalization_pass",
-            "uncertaintyTreatment": "typed_parser_uncertainty_and_bootstrap_interval_required",
-            "version": "0.1.0-candidate"
+            "suppressionPolicy": "suppress comparisons when integrity, exact-clock support, common support, bin support, or holdout stability fails; Pattern Finder, timezone, solar, UTC, incidence, and causal promotion remain forbidden",
+            "uncertaintyTreatment": "original clock text, exact clocks, approximate and range values, qualitative periods, midnight and noon sentinels, invalid formats, and unknown timezone semantics remain distinct; no location, timezone, UTC, solar, or twilight inference is applied",
+            "version": "1.0.0"
         },
         {
             "baselineCoverage": {
@@ -356,7 +373,7 @@
         {
             "moduleId": "time",
             "status": "production_ready",
-            "version": "2.4.0"
+            "version": "2.6.0"
         },
         {
             "moduleId": "craft",

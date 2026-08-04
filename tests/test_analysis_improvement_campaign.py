@@ -67,15 +67,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     wave_one_receipt = load("waves/wave-001-duration-assessment/wave_receipt.json")
     wave_two_receipt = load("waves/wave-002-reporting-delay-assessment/wave_receipt.json")
     wave_three_receipt = load("waves/wave-003-coordinate-evidence-repair/wave_receipt.json")
+    wave_four_receipt = load("waves/wave-004-time-of-day-assessment/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
-    assert current["currentProduction"]["deploymentId"] == wave_three_receipt["production"]["deploymentId"]
-    assert current["currentProduction"]["frozenTreeSha256"] == wave_three_receipt["artifacts"]["frozenPagesTreeSha256"]
-    assert current["rollbackTarget"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
+    assert current["currentProduction"]["deploymentId"] == wave_four_receipt["production"]["deploymentId"]
+    assert current["currentProduction"]["frozenTreeSha256"] == wave_four_receipt["artifacts"]["frozenPagesTreeSha256"]
+    assert current["rollbackTarget"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
     assert current["consecutiveNoGainFrontierPasses"] == 0
     assert current["status"] == "active"
-    assert len(completed["waves"]) == 3
+    assert len(completed["waves"]) == 4
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
     assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
@@ -84,9 +85,13 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert completed["waves"][2]["waveId"] == "wave-003-coordinate-evidence-repair"
     assert completed["waves"][2]["status"] == "accepted_and_promoted"
     assert completed["waves"][2]["productionDeploymentId"] == wave_three_receipt["production"]["deploymentId"]
+    assert completed["waves"][3]["waveId"] == "wave-004-time-of-day-assessment"
+    assert completed["waves"][3]["status"] == "accepted_and_promoted"
+    assert completed["waves"][3]["productionDeploymentId"] == wave_four_receipt["production"]["deploymentId"]
     assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert wave_two_receipt["production"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
-    assert current["activeWave"]["waveId"] == "wave-004-time-of-day-assessment"
+    assert wave_three_receipt["production"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
+    assert current["activeWave"]["waveId"] == "wave-005-witness-count-assessment"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
@@ -101,6 +106,11 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/preview_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/build_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/before_after_metrics.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/preview_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -184,6 +194,24 @@ def test_coordinate_receipt_and_time_of_day_wave_transition_are_pinned() -> None
     assert time_of_day["expectedMaterialGain"]["minimumIndependentSources"] == 3
     assert time_of_day["expectedMaterialGain"]["timezoneSemanticsRemainUnknownUnlessExplicit"] is True
     assert "timezone inference or UTC conversion" in time_of_day["interventionBoundary"]["outOfScope"]
+
+
+def test_time_of_day_receipt_and_witness_count_wave_transition_are_pinned() -> None:
+    receipt = load("waves/wave-004-time-of-day-assessment/wave_receipt.json")
+    witness = load("waves/wave-005-witness-count-assessment/preregistration.json")
+    assert receipt["releaseGate"] == "accepted_and_promoted"
+    assert receipt["materialGain"]["passed"] is True
+    assert receipt["materialGain"]["evidence"]["typedRows"] == 523_077
+    assert receipt["materialGain"]["evidence"]["sentinelAmbiguousRows"] == 70_199
+    assert receipt["materialGain"]["evidence"]["timezoneSemanticsSeparated"] is True
+    assert receipt["rollback"]["tested"] is True
+    assert witness["candidateId"] == "witness_count_assessment"
+    assert witness["baselineCommit"] == receipt["artifacts"]["candidateCommit"]
+    assert witness["beforeMetrics"]["rawWitnessCountRows"] == 145_289
+    assert witness["expectedMaterialGain"]["minimumNormalizedRows"] == 116_231
+    assert witness["expectedMaterialGain"]["minimumIndependentSources"] == 1
+    assert witness["expectedMaterialGain"]["singleSourceComparisonsSuppressed"] is True
+    assert "treating missing witness count as zero or one" in witness["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

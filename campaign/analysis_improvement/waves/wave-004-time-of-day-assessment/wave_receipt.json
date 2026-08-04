@@ -1,0 +1,107 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-004-time-of-day-assessment",
+  "generatedAt": "2026-08-04T22:11:00Z",
+  "primaryObjective": "Make explicit time-of-day evidence a typed, provenance-preserving Analysis assessment while keeping local clock text, uncertainty, and absent timezone semantics distinct.",
+  "preregisteredOutcome": "accepted_material_gain_and_promoted",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "catalogRows": 702893,
+      "rawTimeRows": 626438,
+      "typedRows": 523077,
+      "typedCatalogPct": 74.417728,
+      "exactInferentialRows": 511394,
+      "descriptiveBinnedRows": 512354,
+      "sentinelAmbiguousRows": 70199,
+      "supportedSources": ["majestic", "mufon", "nuforc", "phenomenainon_updb", "ufocat"],
+      "originalClockTextPreserved": true,
+      "timezoneSemanticsSeparated": true,
+      "solarOrUtcInferenceApplied": false,
+      "canonicalEventRecordsMutated": false,
+      "status": "ready_descriptive"
+    }
+  },
+  "beforeMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/preregistration.json",
+    "timeOfDayAssessmentStatus": "unavailable",
+    "browserTypedTimeOfDayEvidenceRows": 0
+  },
+  "afterMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/before_after_metrics.json",
+    "timeOfDayAssessmentStatus": "ready_descriptive",
+    "typedRows": 523077,
+    "typedCatalogPct": 74.417728
+  },
+  "tests": {
+    "python": {"passed": 1303, "subtestsPassed": 4, "warnings": 1},
+    "javascript": {"passed": 38, "failed": 0},
+    "deterministicReconstructionPassed": true,
+    "browserQaPassed": true,
+    "r2ReadbackPassed": true,
+    "servedPreviewProductionCanonicalHashParityPassed": true
+  },
+  "artifacts": {
+    "candidateCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
+    "sourceTreeSha256": "edd480c4ae6264c799328d3f898ce6aa45ae26c7",
+    "timeOfDayReleaseId": "analysis-time-of-day-v1-20260804",
+    "timeOfDayR2Prefix": "releases/analysis-time-of-day-v1-20260804",
+    "timeOfDayR2TreeSha256": "27a8ed0c596bd2546267830476036a928a00731345f99f52164eb8ddfbfc5af5",
+    "timeOfDayManifestSha256": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa",
+    "timeOfDayValueDictionarySha256": "7abd31656e4461eb740c27fb2bd6acb11d9644e72d88ffeda782f250bf3fe3e1",
+    "timeOfDayValueDictionaryGzipSha256": "1002cee1040008153a6c5889e12ca74b28eff8699aecd9b9ac2f0d2aaf58ad8e",
+    "timeOfDayProjectionSha256": [
+      "05c635d2490b8cabe18a7acb29358ca03386fec279d6449dec00e2063ee8e1bd",
+      "2b8444de4adb63bf172db82d94b7d559c295cebbd2985654e07a0e792c915097",
+      "046c127a4a85200c5dc4bb22c44a04dd3d182002c060c6e97a55a64fa2f3cc37",
+      "6237efb1cec8969d22eafbf8a884fcfa2ca5b8ed2b50e1624d0d7db96e8a26b1"
+    ],
+    "frozenPagesPath": "cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804",
+    "frozenPagesFileCount": 171,
+    "frozenPagesTotalBytes": 107414644,
+    "frozenPagesTreeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04",
+    "frozenAssetSha256": {
+      "index.html": "dd53c255b3319031b48cb2b293702e7fe60fd476877da8af2673f956d596a3ce",
+      "app.js": "af792aaba388dd617944acf63a4b28470b3496a9455f56eb21a39e3b43471db4",
+      "analysis_view.js": "fa8e2d5d00b7a9db5c596b9d90b9df3085e06418d0af92323929ee196fc06217",
+      "analysis_stats.js": "8dce8f0b4938c5ec058f8196706226702266db6a92300c7a35518d554253ecc1",
+      "catalog_filter_worker.js": "2ad77db76d0206089dbd25c3b82406476a188def8c9d99f5a0aed3a40af13113",
+      "styles.css": "c4d601ec77310f646273f6fc20ecf4a05171ee76a6367fe21d5050ab3ef9f00e",
+      "time_of_day_manifest.json": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa"
+    }
+  },
+  "preview": {
+    "deploymentId": "467efd9d-4062-49cd-81a8-4688b20c74f1",
+    "immutableUrl": "https://467efd9d.ufo-timeline.pages.dev",
+    "branch": "analysis-time-of-day-v1-preview-qa1-20260804",
+    "sourceLabel": "7810a93",
+    "qaPassed": true,
+    "consoleErrorsAndWarnings": 0
+  },
+  "production": {
+    "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+    "immutableUrl": "https://d8f53fd9.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceLabel": "7810a93",
+    "smokePassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "previewProductionCanonicalHashesIdentical": true,
+    "uploadedNewContentFilesAfterPreview": 0
+  },
+  "rollback": {
+    "deploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
+    "immutableUrl": "https://1e1a5d8f.ufo-timeline.pages.dev",
+    "instructions": "Validate the accepted Wave 3 receipt and frozen tree 80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69, then deploy cloudflare_bundle_r2_analysis-coordinate-evidence-v1-frozen-pages-qa2_20260804 to branch main.",
+    "tested": true,
+    "testMethod": "isolated_preview_redeployment_and_served_hash_comparison",
+    "testDeploymentId": "f6335e38-ed41-4fc3-880a-60174a7e1645",
+    "testImmutableUrl": "https://f6335e38.ufo-timeline.pages.dev",
+    "validatedTreeSha256": "80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69",
+    "servedHashesMatchedPriorProduction": true,
+    "timeOfDayManifestAbsentFromRollback": true,
+    "currentProductionRemainedHealthy": true
+  },
+  "releaseGate": "accepted_and_promoted"
+}

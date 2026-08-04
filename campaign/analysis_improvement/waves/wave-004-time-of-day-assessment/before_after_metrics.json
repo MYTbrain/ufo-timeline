@@ -1,0 +1,96 @@
+{
+  "schemaId": "ufo-timeline-analysis-before-after-metrics-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "measurementId": "wave-004-time-of-day-assessment-final-20260804",
+  "generatedAt": "2026-08-04T22:11:00Z",
+  "catalog": {
+    "beforeRows": 702893,
+    "afterRows": 702893,
+    "canonicalEventRecordsMutated": false,
+    "rawTimeRows": 626438,
+    "typedRows": 523077,
+    "typedCatalogPct": 74.417728,
+    "exactInferentialRows": 511394,
+    "descriptiveBinnedRows": 512354,
+    "sentinelAmbiguousRows": 70199,
+    "uniqueSourceRawValues": 8715,
+    "supportedSources": ["majestic", "mufon", "nuforc", "phenomenainon_updb", "ufocat"],
+    "supportedSourceRows": {
+      "majestic": 14098,
+      "mufon": 95647,
+      "nuforc": 123468,
+      "phenomenainon_updb": 121405,
+      "ufocat": 168459
+    },
+    "timezoneSemantics": {
+      "explicitLabelNotConverted": 8,
+      "localLabelWithoutOffset": 127707,
+      "unknown": 498723
+    }
+  },
+  "statisticalReadiness": {
+    "before": "unavailable",
+    "after": "ready_descriptive",
+    "materialCriterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumTypedRows": 102410,
+    "minimumCatalogCoveragePct": 14.56,
+    "minimumIndependentSources": 3,
+    "originalClockTextPreserved": true,
+    "timezoneSemanticsRemainUnknownUnlessExplicit": true,
+    "midnightAndNoonSentinelsFailClosed": true,
+    "qualitativePeriodsRemainMinuteFree": true,
+    "approximateAndRangeValuesRemainDescriptive": true,
+    "allPreregisteredMaterialGatesPassed": true,
+    "patternFinderPromotionAuthorized": false,
+    "solarOrUtcClaimsAuthorized": false,
+    "causalClaimsAuthorized": false
+  },
+  "performance": {
+    "desktopFirstUsefulMs": 469.8,
+    "constrainedFirstUsefulMs": 1617,
+    "desktopColdSpatialMs": 3062,
+    "constrainedColdSpatialMs": 298.4,
+    "desktopWarmBaselineP95Ms": 57,
+    "constrainedWarmBaselineP95Ms": 43,
+    "maximumObservedAnalysisMainThreadTaskMs": 0,
+    "constrainedCpu4xMaximumObservedAnalysisTaskMs": 137,
+    "constrainedCpu4xNormalizedMaximumAnalysisTaskMs": 34.25,
+    "warmDashboardNewResources": 0,
+    "timeArtifactLoading": "lazy_on_time_dashboard",
+    "catalogContextTileOrLayerReloadsDuringStableSwitching": 0
+  },
+  "accessibility": {
+    "desktopKeyboardNavigationPassed": true,
+    "mobileNoPageOverflowPassed": true,
+    "mobileViewport": "390x844",
+    "mobileDocumentClientAndScrollWidth": [390, 390],
+    "mobileAnalysisClientAndScrollWidth": [346, 346],
+    "lightThemePassed": true,
+    "darkThemePassed": true,
+    "reducedMotionPassed": true,
+    "jsonExportPassed": true,
+    "csvExportPassed": true,
+    "jsonExportBytes": 117465823,
+    "jsonExportSha256": "b9d7bfe65f4e871bbeb0231354f6396bbd649eec68d23ac66d3221004359a3e9",
+    "csvExportBytes": 114702361,
+    "csvExportSha256": "98f801a4db0ac970ad0de9691a99416127a2332428b670af6fbbfb90b327eb8e",
+    "timeReleaseAndArtifactHashesPresentInBothExports": true,
+    "previewConsoleErrorsAndWarnings": 0,
+    "productionConsoleErrorsAndWarnings": 0
+  },
+  "visualDensity": {
+    "referenceViewport": "1440x720",
+    "maximumOrdinaryDashboardPx": 900,
+    "dashboardHeightsPx": {
+      "overview": 754.73,
+      "time": 874.86,
+      "craft": 548.36,
+      "geography": 885.22,
+      "spatial": 587.72,
+      "context": 855.89,
+      "sourcesQuality": 576.44
+    },
+    "allOrdinaryDashboardsWithinBound": true,
+    "maximumObservedOrdinaryDashboardPx": 885.22
+  }
+}

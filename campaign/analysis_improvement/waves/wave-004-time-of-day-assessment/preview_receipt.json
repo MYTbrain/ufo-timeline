@@ -1,0 +1,78 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-004-time-of-day-assessment",
+  "generatedAt": "2026-08-04T22:11:00Z",
+  "candidateCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "catalogRows": 702893,
+    "rawTimeRows": 626438,
+    "typedRows": 523077,
+    "typedCatalogPct": 74.417728,
+    "exactInferentialRows": 511394,
+    "sentinelAmbiguousRows": 70199,
+    "supportedSources": ["majestic", "mufon", "nuforc", "phenomenainon_updb", "ufocat"],
+    "originalClockTextPreserved": true,
+    "timezoneOrSolarInferenceApplied": false,
+    "status": "ready_descriptive"
+  },
+  "tests": {
+    "python": {"passed": 1303, "subtestsPassed": 4, "warnings": 1},
+    "javascript": {"passed": 38, "failed": 0},
+    "focusedTimeOfDay": {"passed": 12, "failed": 0},
+    "deterministicBuildAndProjectionParityPassed": true,
+    "frozenInventoryPassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-time-of-day-v1-20260804",
+    "prefix": "releases/analysis-time-of-day-v1-20260804",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-time-of-day-v1-20260804",
+    "payloadCount": 10,
+    "payloadBytes": 30254104,
+    "treeSha256": "27a8ed0c596bd2546267830476036a928a00731345f99f52164eb8ddfbfc5af5",
+    "manifestSha256": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa",
+    "uploaded": 10,
+    "verified": 10
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804",
+    "fileCount": 171,
+    "totalBytes": 107414644,
+    "treeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04",
+    "optionalLayerPayloadsInPages": 0,
+    "exactFrozenInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "467efd9d-4062-49cd-81a8-4688b20c74f1",
+    "immutableUrl": "https://467efd9d.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-time-of-day-v1-prev.ufo-timeline.pages.dev",
+    "branch": "analysis-time-of-day-v1-preview-qa1-20260804",
+    "sourceLabel": "7810a93",
+    "networkSmokePassed": true,
+    "timeManifestSha256": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopFirstUsefulMs": 469.8,
+    "constrainedFirstUsefulMs": 1617,
+    "desktopWarmP95Ms": 57,
+    "constrainedWarmP95Ms": 43,
+    "desktopColdSpatialMs": 3062,
+    "constrainedColdSpatialMs": 298.4,
+    "maximumOrdinaryDashboardPx": 885.22,
+    "mobileNoOverflow": true,
+    "keyboardThemesReducedMotionPassed": true,
+    "jsonAndCsvExportsPassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
+    "immutableUrl": "https://1e1a5d8f.ufo-timeline.pages.dev",
+    "sourceLabel": "6958a17"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}

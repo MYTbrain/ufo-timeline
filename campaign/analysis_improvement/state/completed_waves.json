@@ -46,6 +46,19 @@
             "productionDeploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
             "rollbackTestDeploymentId": "132e4a4b-9729-4920-a0f9-e674ae2f7154",
             "materialGain": true
+        },
+        {
+            "waveId": "wave-004-time-of-day-assessment",
+            "candidateId": "time_of_day_assessment",
+            "status": "accepted_and_promoted",
+            "completedAt": "2026-08-04T22:11:00Z",
+            "sourceCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
+            "receipt": "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/wave_receipt.json",
+            "beforeAfterMetrics": "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/before_after_metrics.json",
+            "previewDeploymentId": "467efd9d-4062-49cd-81a8-4688b20c74f1",
+            "productionDeploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+            "rollbackTestDeploymentId": "f6335e38-ed41-4fc3-880a-60174a7e1645",
+            "materialGain": true
         }
     ]
 }

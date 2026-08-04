@@ -1,0 +1,114 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-005-witness-count-assessment",
+  "candidateId": "witness_count_assessment",
+  "generatedAt": "2026-08-04T22:11:00Z",
+  "baselineCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-time-of-day-v1-20260804",
+    "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+    "frozenTreeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04"
+  },
+  "primaryObjective": "Make explicit witness-count evidence a typed, provenance-preserving descriptive assessment without treating missing, approximate, range, group, or party-size language as exact independent witnesses.",
+  "hypothesis": "At least 116,231 NUFORC records can retain a typed witness-count evidence class with original text and uncertainty preserved, making a single-source descriptive assessment safely estimable while all cross-source and Pattern Finder comparisons remain suppressed.",
+  "interventionBoundary": {
+    "inScope": [
+      "immutable event-aligned witness-count sidecar preserving original value and source role",
+      "typed exact count, approximate count, bounded range, lower bound, qualitative plural, missing, invalid, and unresolved classes",
+      "single-source descriptive witness-count distribution with explicit source limitation",
+      "compact Analysis disclosure plus JSON and CSV evidence export",
+      "deterministic provenance, release, preview, production, and rollback receipts"
+    ],
+    "outOfScope": [
+      "canonical event mutation",
+      "treating missing witness count as zero or one",
+      "extracting witness counts from narrative descriptions",
+      "coercing couple, few, several, crowd, group, family, or party language to an exact count",
+      "treating party size as independently corroborating witnesses",
+      "cross-source comparison, incidence, credibility, authenticity, risk, or causal claims",
+      "Pattern Finder promotion or any assessment other than explicit witness-count evidence"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "rawWitnessCountRows": 145289,
+    "rawWitnessCountCoveragePct": 20.670145,
+    "coveredSources": ["nuforc"],
+    "browserTypedWitnessCountEvidenceRows": 0,
+    "witnessCountAssessmentStatus": "unavailable"
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 116231,
+    "minimumTypedRows": 116231,
+    "minimumCatalogCoveragePct": 16.53,
+    "minimumIndependentSources": 1,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalWitnessTextPreserved": true,
+    "missingAndQualitativeValuesFailClosed": true,
+    "singleSourceComparisonsSuppressed": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "original witness-count text",
+      "typed measurement class and exact count only when explicit",
+      "lower and upper bounds only when explicitly supported",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "typedCatalogPct": 16.53,
+      "supportedSources": 1,
+      "minimumRowsPerSupportedSource": 1000,
+      "comparisonSupportedSources": 2,
+      "minimumActiveAndReferenceBinN": 20
+    },
+    "estimators": [
+      "descriptive provenance-preserving witness-count distribution",
+      "source-era-region comparison only if a future immutable release supplies at least two independently supported sources"
+    ],
+    "negativeControls": [
+      "missing-value exclusion lane",
+      "approximate-and-range holdout",
+      "qualitative-plural holdout",
+      "extreme-count audit",
+      "duplicate-lineage holdout",
+      "single-source comparison suppression"
+    ],
+    "uncertaintyTreatment": "Original text, exact counts, approximate counts, ranges, lower bounds, qualitative plural language, party-size language, missing values, and invalid formats remain distinct. Only an explicit unambiguous integer becomes an exact witness count.",
+    "suppressionPolicy": "Publish descriptive readiness and failure counts only. Suppress active/reference inference, source holdouts, Pattern Finder, and credibility or incidence interpretations while the evidence is limited to one source."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_witness_count_disclosure_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedFirstUsefulMs": 5000,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "original-value preservation, typed uncertainty separation, and idempotence",
+    "sidecar-to-projection parity and deterministic hashes",
+    "exact, approximate, range, lower-bound, qualitative, missing, invalid, and extreme-value tests",
+    "single-source descriptive-only enforcement and Pattern Finder isolation",
+    "no narrative count extraction, missing-as-zero, credibility, incidence, or causal promotion",
+    "complete Python and JavaScript suites",
+    "Pages and R2 separation with immutable versioned R2 keys",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 116231 rows retain typed witness-count evidence without canonical repair or narrative extraction",
+    "exact counts cannot remain distinct from approximate, range, qualitative, party-size, missing, and invalid values",
+    "a material product gain would require cross-source or credibility inference from the one-source corpus",
+    "scientific gates would need weakening",
+    "rights or provenance cannot be resolved",
+    "performance or existing Analysis behavior regresses beyond release gates"
+  ]
+}
