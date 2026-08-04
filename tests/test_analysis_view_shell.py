@@ -238,6 +238,7 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
 
 def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
+    card_pattern = re.compile(r'<(?:article|details)\b[^>]*class="[^"]*\banalysis-card\b[^"]*"', re.I)
 
     time_shell = index_html.split('id="analysis-section-time"', 1)[1].split('id="analysis-section-craft"', 1)[0]
     craft_shell = index_html.split('id="analysis-section-craft"', 1)[1].split('id="analysis-section-geography"', 1)[0]
@@ -249,14 +250,14 @@ def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     animal_shell = context_shell.split('id="analysis-animal-context"', 1)[1].split('id="analysis-relationship-context"', 1)[0]
     sources_shell = index_html.split('id="analysis-section-sources-quality"', 1)[1].split('id="analysis-preview-drawer"', 1)[0]
 
-    assert time_shell.count('<article class="analysis-card') == 3
+    assert len(card_pattern.findall(time_shell)) == 3
     assert 'id="analysis-duration-status"' in time_shell
     assert 'id="analysis-duration-chart"' in time_shell
     assert 'id="analysis-duration-comparison-chart"' in time_shell
     assert 'analysis-rolling' not in time_shell
     assert 'analysis-decade-chart' not in time_shell
     assert 'analysis-bursts-chart' not in time_shell
-    assert craft_shell.count('<article class="analysis-card') == 3
+    assert len(card_pattern.findall(craft_shell)) == 3
     assert 'id="analysis-craft-geography-chart"' not in craft_shell
     assert 'id="analysis-report-type-chart"' not in craft_shell
     assert 'id="analysis-craft-residual-chart"' not in craft_shell
@@ -266,18 +267,18 @@ def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     assert '<h3 id="analysis-geography-title">Country evidence</h3>' in geography_shell
     assert 'id="analysis-geography-sensitivity-chart"' in geography_shell
     assert '<summary>Advanced equal-area sensitivity</summary>' in geography_shell
-    assert overview_shell.count('<article class="analysis-card') == 1
+    assert len(card_pattern.findall(overview_shell)) == 1
     cohort_shell = overview_shell.split('id="analysis-cohort-banner"', 1)[1].split('id="analysis-methodology"', 1)[0]
     assert 'id="analysis-coverage-chart"' in cohort_shell
     assert 'id="analysis-comparison-chart"' in overview_shell
     assert 'id="analysis-pattern-list"' in overview_shell
-    assert spatial_shell.count('<article class="analysis-card') == 3
+    assert len(card_pattern.findall(spatial_shell)) == 3
     assert 'id="analysis-cross-domain-readiness-chart"' not in spatial_shell
     assert 'id="analysis-context-category-card" class="analysis-card-subsection' in spatial_shell
     assert 'id="analysis-cross-domain-readiness-chart"' in context_shell
-    assert crop_shell.count('<article class="analysis-card') == 3
-    assert animal_shell.count('<article class="analysis-card') == 3
-    assert sources_shell.count('<article class="analysis-card') == 3
+    assert len(card_pattern.findall(crop_shell)) == 3
+    assert len(card_pattern.findall(animal_shell)) == 3
+    assert len(card_pattern.findall(sources_shell)) == 3
     assert 'id="analysis-spatial-eligibility-chart"' in index_html
 
 
