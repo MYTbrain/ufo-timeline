@@ -3293,7 +3293,10 @@
 
     _renderEligibilityFunnel(chartId, items, summary, options) {
       const config = options || {};
-      const stages = asArray(items).filter(isObject).slice(0, config.limit || 8);
+      const allStages = asArray(items).filter(isObject);
+      const stages = config.endpointsOnly && allStages.length > 2
+        ? [allStages[0], allStages[allStages.length - 1]]
+        : allStages.slice(0, config.limit || 8);
       const container = this._prepareChart(chartId, stages, summary, config.emptyMessage || "Eligibility stages are unavailable for this cohort.");
       if (!container) return;
       const firstInput = firstDefined(stages[0], ["inputN", "input_n", "totalN", "total_n", "count", "passedN", "passed_n"], summary.activeCount);
@@ -5665,7 +5668,7 @@
       const spatialCooccurrenceJob = () => this._renderCooccurrenceEvidence("analysis-cooccurrence-chart", data.cooccurrence, summary, { caption: "Point-based craft co-occurrence evidence", defaultKind: "filter", primaryCountLabel: "Observed", comparisonCountLabel: "Expected", primaryCountKeys: ["observedCount", "observed_count"], comparisonCountKeys: ["expectedCount", "expected_count"], effectLabel: "Log2 observed/expected enrichment", valueKeys: ["log2Enrichment", "log2_enrichment"], nullValue: 0, axisLimit: 6, emptyMessage: "Not estimable until the qualified point-neighbor artifact and stratified null results are available." });
       spatialJobs.push(() => {
         if (!this.document.getElementById("analysis-spatial-eligibility-chart")) return;
-        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", limit: 4 });
+        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", endpointsOnly: true });
       });
       const spatialContextJobs = [
         () => this._renderContextAssociations("analysis-context-neighborhood-chart", data.contextAssociations, summary, { emptyMessage: "Context-marker neighborhood evidence loads with the pinned point-neighbor artifact." }),
