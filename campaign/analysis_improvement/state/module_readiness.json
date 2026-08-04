@@ -65,13 +65,19 @@
                 "independent_source_identity"
             ],
             "sourceIndependenceScore": 1,
-            "status": "in_progress",
+            "materialRelease": {
+                "releaseId": "analysis-witness-count-v1-20260804",
+                "typedCatalogPct": 19.329827,
+                "typedRows": 135868,
+                "productionDeploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6"
+            },
+            "status": "ready_descriptive",
             "supportedSources": [
                 "nuforc"
             ],
             "suppressionPolicy": "publish descriptive readiness only; suppress active/reference inference, source holdouts, Pattern Finder, and credibility or incidence interpretations while evidence remains single-source",
             "uncertaintyTreatment": "original text, exact counts, approximate counts, ranges, lower bounds, qualitative plural language, party-size language, missing values, and invalid formats remain distinct",
-            "version": "0.1.0-candidate"
+            "version": "1.0.0"
         },
         {
             "baselineCoverage": {

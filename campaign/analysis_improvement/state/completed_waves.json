@@ -59,6 +59,19 @@
             "productionDeploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
             "rollbackTestDeploymentId": "f6335e38-ed41-4fc3-880a-60174a7e1645",
             "materialGain": true
+        },
+        {
+            "waveId": "wave-005-witness-count-assessment",
+            "candidateId": "witness_count_assessment",
+            "status": "accepted_and_promoted",
+            "completedAt": "2026-08-04T23:25:36Z",
+            "sourceCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+            "receipt": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/wave_receipt.json",
+            "beforeAfterMetrics": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/before_after_metrics.json",
+            "previewDeploymentId": "814b480b-cf4f-4998-926d-746461af56b4",
+            "productionDeploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+            "rollbackTestDeploymentId": "38036c22-3c69-4913-bc49-916c1888d28b",
+            "materialGain": true
         }
     ]
 }

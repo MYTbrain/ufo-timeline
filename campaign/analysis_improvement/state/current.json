@@ -1,31 +1,31 @@
 {
     "activeWave": {
-        "candidateId": "witness_count_assessment",
-        "preregistration": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preregistration.json",
-        "primaryObjective": "Make explicit witness-count evidence a typed, provenance-preserving descriptive assessment without treating missing, approximate, range, group, or party-size language as exact independent witnesses.",
+        "candidateId": "analysis_projection_encoding",
+        "preregistration": "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preregistration.json",
+        "primaryObjective": "Determine whether an independently releasable projection encoding can reduce measured Analysis startup transfer or cold spatial latency by at least 10% without changing any event, estimator, evidence gate, or decoded value.",
         "status": "in_progress",
-        "waveId": "wave-005-witness-count-assessment"
+        "waveId": "wave-006-analysis-projection-encoding"
     },
     "campaignId": "analysis-improvement-campaign-20260804",
     "consecutiveNoGainFrontierPasses": 0,
     "currentProduction": {
-        "analysisReleaseId": "analysis-time-of-day-v1-20260804",
+        "analysisReleaseId": "analysis-witness-count-v1-20260804",
         "baselineCommit": "f64c7ab3b3a5efb297500365d883f0c5a26d2c25",
         "baselineTag": "analysis-v2.2.0-production",
         "canonicalUrl": "https://ufo-timeline.pages.dev",
-        "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
-        "deploymentSourceLabel": "7810a93",
-        "estimatorVersion": "ufo-analysis-evidence-lab-v2.6.0",
-        "frozenBundle": "cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804",
-        "frozenTreeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04",
-        "immutableUrl": "https://d8f53fd9.ufo-timeline.pages.dev",
-        "previewDeploymentId": "467efd9d-4062-49cd-81a8-4688b20c74f1",
-        "r2BaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-time-of-day-v1-20260804",
-        "r2TreeSha256": "27a8ed0c596bd2546267830476036a928a00731345f99f52164eb8ddfbfc5af5",
-        "sourceCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
-        "sourceTreeSha256": "edd480c4ae6264c799328d3f898ce6aa45ae26c7"
+        "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+        "deploymentSourceLabel": "e696749",
+        "estimatorVersion": "ufo-analysis-evidence-lab-v2.7.0",
+        "frozenBundle": "cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804",
+        "frozenTreeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa",
+        "immutableUrl": "https://022a9b4d.ufo-timeline.pages.dev",
+        "previewDeploymentId": "814b480b-cf4f-4998-926d-746461af56b4",
+        "r2BaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-witness-count-v1-20260804",
+        "r2TreeSha256": "43df295152c0c2558f2465fb028f422dd87d219bd524a66fede35059dc8d538c",
+        "sourceCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+        "sourceTreeSha256": "fa0e518284a2665b7d80c0fb0df36e741c80697a"
     },
-    "nextCandidate": "witness_count_assessment",
+    "nextCandidate": "analysis_projection_encoding",
     "objective": "continuously_improve_analysis_data_first_with_evidence_gated_auto_deployments",
     "packageArtifacts": {
         "campaign/analysis_improvement/contracts/v1/before_after_metrics.schema.json": {
@@ -65,16 +65,16 @@
             "sha256": "12d5d76857b36d2500425eed7bb4ac05b55e897a77fda22f1123a92c2302464e"
         },
         "campaign/analysis_improvement/state/completed_waves.json": {
-            "bytes": 3728,
-            "sha256": "792b2da46511ca68dba5ed39d0026c8319151f109984c7a366268ad98da94dfa"
+            "bytes": 4546,
+            "sha256": "46bb5eeb888b97725483cd766f39c287c40685ac6a4eb0de7cffc184fa94878c"
         },
         "campaign/analysis_improvement/state/module_readiness.json": {
-            "bytes": 15779,
-            "sha256": "46242394443ac31716a20c935151ee03f1669e5e99a0d01792d14cde85f80089"
+            "bytes": 16054,
+            "sha256": "f4abaa30fd21a3f79474093e07911967d998b7ea2709afa3f57e076f59ba69a2"
         },
         "campaign/analysis_improvement/state/ranked_backlog.json": {
-            "bytes": 11223,
-            "sha256": "6def57f24cadc59bef0fd9ef6d4fd68f6dc06f6dff9fccf0935359e556b903f6"
+            "bytes": 11240,
+            "sha256": "45ef7acd77358126b2adc6df34769fc28cefc1c8ecf3bd02d602cff4a6f37110"
         },
         "campaign/analysis_improvement/state/source_provenance_ledger.json": {
             "bytes": 12242,
@@ -163,20 +163,36 @@
         "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preregistration.json": {
             "bytes": 6060,
             "sha256": "613a37d985e7bec31f66e163a270cbae73cbbacdf1110f8fc569fd468f6740e1"
+        },
+        "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/before_after_metrics.json": {
+            "bytes": 2818,
+            "sha256": "d32d7f2ed66ba1525dcb49ed550f993b8ece27721855f805e767e8407f54e456"
+        },
+        "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preview_receipt.json": {
+            "bytes": 3094,
+            "sha256": "41ee3be70c624102b330a93c1ed3d6cfa81e8dbe2dfbd5b4b887d52f42514f6d"
+        },
+        "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/wave_receipt.json": {
+            "bytes": 5003,
+            "sha256": "d190fca7512b7257a1909868302263e415273eb92568f930b372b287ea6770d0"
+        },
+        "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preregistration.json": {
+            "bytes": 5412,
+            "sha256": "1b07e1406eee20f9c58c3b33da0219f7355d8ff0769c1ee0f5d56c67732263d3"
         }
     },
     "rollbackTarget": {
-        "deploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
-        "immutableUrl": "https://1e1a5d8f.ufo-timeline.pages.dev",
-        "baselineCommit": "6958a176103c8ad8d6b81ed0d8e47f2dad02e329",
-        "frozenBundle": "cloudflare_bundle_r2_analysis-coordinate-evidence-v1-frozen-pages-qa2_20260804",
-        "frozenTreeSha256": "80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69",
-        "reconstructionManifest": "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/wave_receipt.json",
-        "releaseId": "analysis-coordinate-evidence-v1-20260804",
-        "rollbackInstruction": "validate the accepted Wave 3 receipt and frozen tree, then deploy cloudflare_bundle_r2_analysis-coordinate-evidence-v1-frozen-pages-qa2_20260804 to branch main",
+        "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+        "immutableUrl": "https://d8f53fd9.ufo-timeline.pages.dev",
+        "baselineCommit": "7810a9357f76c964a067c2eb86524f2e8253c982",
+        "frozenBundle": "cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804",
+        "frozenTreeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04",
+        "reconstructionManifest": "campaign/analysis_improvement/waves/wave-004-time-of-day-assessment/wave_receipt.json",
+        "releaseId": "analysis-time-of-day-v1-20260804",
+        "rollbackInstruction": "validate the accepted Wave 4 receipt and frozen tree, then deploy cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804 to branch main",
         "tested": true,
-        "testDeploymentId": "f6335e38-ed41-4fc3-880a-60174a7e1645",
-        "secondaryFallbackDeploymentId": "132e4a4b-9729-4920-a0f9-e674ae2f7154"
+        "testDeploymentId": "38036c22-3c69-4913-bc49-916c1888d28b",
+        "secondaryFallbackDeploymentId": "f6335e38-ed41-4fc3-880a-60174a7e1645"
     },
     "schemaId": "ufo-timeline-analysis-improvement-campaign-v1.0.0",
     "status": "active",

@@ -1,0 +1,77 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-005-witness-count-assessment",
+  "generatedAt": "2026-08-04T23:25:36Z",
+  "candidateCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+  "candidateTree": "fa0e518284a2665b7d80c0fb0df36e741c80697a",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "catalogRows": 702893,
+    "rawWitnessCountRows": 145289,
+    "typedRows": 135868,
+    "typedCatalogPct": 19.329827,
+    "supportedSources": ["nuforc"],
+    "status": "ready_descriptive",
+    "singleSourceComparisonsSuppressed": true,
+    "patternFinderEligible": false
+  },
+  "tests": {
+    "python": {"passed": 1315, "subtestsPassed": 4, "warnings": 1},
+    "javascriptSuites": {"passed": 16, "failed": 0},
+    "deterministicBuildAndProjectionParityPassed": true,
+    "frozenInventoryPassed": true,
+    "qa1RejectedForReferenceCountPercentFormatting": true,
+    "qa2RegressionFixAndCompleteAcceptancePassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-witness-count-v1-20260804",
+    "prefix": "releases/analysis-witness-count-v1-20260804",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-witness-count-v1-20260804",
+    "payloadCount": 4,
+    "payloadBytes": 6358272,
+    "treeSha256": "43df295152c0c2558f2465fb028f422dd87d219bd524a66fede35059dc8d538c",
+    "manifestSha256": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2",
+    "uploaded": 4,
+    "verified": 4,
+    "publicReadbackPassed": true
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804",
+    "fileCount": 172,
+    "totalBytes": 107456540,
+    "treeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa",
+    "optionalLayerPayloadsInPages": 0,
+    "exactFrozenInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "814b480b-cf4f-4998-926d-746461af56b4",
+    "immutableUrl": "https://814b480b.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-witness-count-v1-pr-yeyv.ufo-timeline.pages.dev",
+    "branch": "analysis-witness-count-v1-preview-qa2-20260804",
+    "sourceLabel": "e696749",
+    "networkSmokePassed": true,
+    "witnessManifestSha256": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopFirstUsefulMs": 505.5,
+    "constrainedFirstUsefulMs": 1660,
+    "desktopWarmP95Ms": 9,
+    "constrainedWarmP95Ms": 17.2,
+    "maximumOrdinaryDashboardPx": 885.219,
+    "mobileNoOverflow": true,
+    "keyboardThemesReducedMotionPassed": true,
+    "exportSchemaAndControlsPassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+    "immutableUrl": "https://d8f53fd9.ufo-timeline.pages.dev",
+    "sourceLabel": "7810a93"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}

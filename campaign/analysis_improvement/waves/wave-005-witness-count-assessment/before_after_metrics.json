@@ -1,0 +1,78 @@
+{
+  "schemaId": "ufo-timeline-analysis-before-after-metrics-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "measurementId": "wave-005-witness-count-assessment-final-20260804",
+  "generatedAt": "2026-08-04T23:25:36Z",
+  "catalog": {
+    "beforeRows": 702893,
+    "afterRows": 702893,
+    "canonicalEventRecordsMutated": false,
+    "rawWitnessCountRows": 145289,
+    "rawWitnessCountCoveragePct": 20.670145,
+    "typedRows": 135868,
+    "typedCatalogPct": 19.329827,
+    "zeroSentinelRows": 9332,
+    "negativeSentinelRows": 89,
+    "counts100Plus": 446,
+    "counts1000Plus": 84,
+    "maximumExplicitCount": 20000,
+    "credentialTaggedRows": 1710,
+    "supportedSources": ["nuforc"]
+  },
+  "statisticalReadiness": {
+    "before": "unavailable",
+    "after": "ready_descriptive",
+    "materialCriterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumTypedRows": 116231,
+    "minimumCatalogCoveragePct": 16.53,
+    "originalWitnessTextPreserved": true,
+    "missingApproximateRangeAndQualitativeValuesRemainDistinct": true,
+    "singleSourceComparisonSuppressed": true,
+    "patternFinderPromotionAuthorized": false,
+    "credibilityIncidenceOrCausalClaimsAuthorized": false,
+    "allPreregisteredMaterialGatesPassed": true
+  },
+  "performance": {
+    "desktopFirstUsefulMs": 505.5,
+    "constrainedCpu4xFirstUsefulMs": 1660,
+    "desktopWarmRecomputationP95Ms": 9,
+    "constrainedCpu4xWarmRecomputationP95Ms": 17.2,
+    "maximumObservedSettledWarmAnalysisMainThreadTaskMs": 0,
+    "warmDashboardNewResources": 0,
+    "catalogContextTileOrLayerReloadsDuringStableSwitching": 0,
+    "lastAcceptedColdSpatialMs": 3062,
+    "cachedSpatialRouteRegressionCheckMs": 60,
+    "spatialArtifactsChanged": false,
+    "witnessArtifactLoading": "lazy_on_sources_quality_dashboard"
+  },
+  "accessibility": {
+    "desktopKeyboardNavigationPassed": true,
+    "mobileNoPageOverflowPassed": true,
+    "mobileViewport": "390x844",
+    "mobileDocumentClientAndScrollWidth": [375, 375],
+    "mobileAnalysisClientAndScrollWidth": [307, 307],
+    "lightThemePassed": true,
+    "darkThemePassed": true,
+    "reducedMotionPassed": true,
+    "jsonAndCsvExportSchemaTestsPassed": true,
+    "liveJsonExportControlTriggered": true,
+    "witnessReleaseAndArtifactHashesPresentInExports": true,
+    "previewConsoleErrorsAndWarnings": 0,
+    "productionConsoleErrorsAndWarnings": 0
+  },
+  "visualDensity": {
+    "referenceViewport": "1440x720",
+    "maximumOrdinaryDashboardPx": 900,
+    "dashboardHeightsPx": {
+      "overview": 754.734,
+      "time": 874.859,
+      "craft": 548.359,
+      "geography": 885.219,
+      "spatial": 587.719,
+      "context": 855.891,
+      "sourcesQuality": 613.438
+    },
+    "allOrdinaryDashboardsWithinBound": true,
+    "maximumObservedOrdinaryDashboardPx": 885.219
+  }
+}

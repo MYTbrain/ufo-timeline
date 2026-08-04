@@ -1,0 +1,106 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-006-analysis-projection-encoding",
+  "candidateId": "analysis_projection_encoding",
+  "generatedAt": "2026-08-04T23:25:36Z",
+  "baselineCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-witness-count-v1-20260804",
+    "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+    "frozenTreeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa"
+  },
+  "primaryObjective": "Determine whether an independently releasable projection encoding can reduce measured Analysis startup transfer or cold spatial latency by at least 10% without changing any event, estimator, evidence gate, or decoded value.",
+  "hypothesis": "At least one currently immutable JSON projection contains enough repeated structure for a deterministic encoding prototype to improve compressed transfer or cold decode latency by 10% while retaining byte-accounted, value-exact decoder parity and all scientific safeguards.",
+  "interventionBoundary": {
+    "inScope": [
+      "fresh desktop and constrained transfer, fetch, decode, and first-use baselines",
+      "one bounded encoding prototype for the highest-cost eligible immutable projection",
+      "deterministic decoded-value parity and manifest-integrity checks",
+      "deployment only if a preregistered performance metric improves by at least 10% with no material regression"
+    ],
+    "outOfScope": [
+      "canonical event mutation or scientific estimator changes",
+      "lossy numeric quantization, dropped provenance, or changed null and sentinel semantics",
+      "combining logically distinct evidence lanes",
+      "broad compression cleanup without a measured user-facing gain",
+      "overwriting any existing immutable R2 release",
+      "promotion based only on local file-size reduction"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "pagesFileCount": 172,
+    "pagesTotalBytes": 107456540,
+    "desktopAnalysisFirstUsefulMs": 505.5,
+    "constrainedCpu4xAnalysisFirstUsefulMs": 1660,
+    "lastAcceptedDesktopColdSpatialMs": 3062,
+    "freshProjectionTransferAndDecodeBaselineStatus": "required_before_prototype_selection"
+  },
+  "expectedMaterialGain": {
+    "criterion": "performance_metric_improves_at_least_10_percent",
+    "minimumNormalizedRows": 0,
+    "minimumCatalogCoveragePct": 0,
+    "minimumIndependentSources": 0,
+    "minimumCompressedTransferReductionPct": 10,
+    "minimumColdDecodeOrFirstUseReductionPct": 10,
+    "decodedValueParityRequired": true,
+    "scientificOutputParityRequired": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "frozen source projection manifest and hashes",
+      "compressed and uncompressed byte counts",
+      "desktop and constrained fetch and decode timings",
+      "deterministic decoded-value parity receipt",
+      "scientific output parity receipt"
+    ],
+    "minimumCoverage": {
+      "eligibleProjectionRows": 1,
+      "decodedParityPct": 100,
+      "scientificOutputParityPct": 100,
+      "minimumMeasuredPerformanceGainPct": 10
+    },
+    "estimators": [
+      "median and p95 fetch-plus-decode latency over bounded repeated profiles",
+      "compressed transfer byte delta",
+      "first-use Analysis latency delta"
+    ],
+    "negativeControls": [
+      "existing encoding decode parity",
+      "cold-cache and warm-cache separation",
+      "desktop and constrained profile separation",
+      "null, sentinel, extreme-value, and provenance-field parity",
+      "unchanged estimator-output hash comparison"
+    ],
+    "uncertaintyTreatment": "Report transfer, fetch, decode, and render phases separately. Do not attribute network variance to encoding, and do not combine incompatible cold and warm measurements.",
+    "suppressionPolicy": "Reject deployment unless one preregistered user-facing metric improves by at least 10%, all decoded and scientific outputs remain exact, and no existing release, accessibility, performance, or provenance gate regresses."
+  },
+  "performanceBudget": {
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "desktopWarmRecomputationP95Ms": 750,
+    "desktopColdSpatialMs": 6000,
+    "constrainedFirstUsefulMs": 5000,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "constrainedColdSpatialMs": 12000,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "fresh baseline recorded before prototype selection",
+    "deterministic encoded artifact and value-exact decoder parity",
+    "at least 10% improvement in one preregistered user-facing performance metric",
+    "no scientific output, provenance, missingness, sentinel, or uncertainty change",
+    "complete Python and JavaScript suites",
+    "desktop and constrained browser QA with zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "no eligible projection shows a credible path to at least 10% user-facing improvement",
+    "an encoding improvement requires lossy values, provenance loss, or scientific output changes",
+    "decode cost erases transfer savings",
+    "performance variance prevents a stable 10% result",
+    "rights, integrity, accessibility, or existing release gates would weaken"
+  ]
+}

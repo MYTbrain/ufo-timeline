@@ -1,0 +1,100 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-005-witness-count-assessment",
+  "generatedAt": "2026-08-04T23:25:36Z",
+  "primaryObjective": "Make explicit witness-count evidence a typed, provenance-preserving descriptive assessment without treating missing, approximate, range, group, or party-size language as exact independent witnesses.",
+  "preregisteredOutcome": "accepted_material_gain_and_promoted",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "catalogRows": 702893,
+      "rawWitnessCountRows": 145289,
+      "typedRows": 135868,
+      "typedCatalogPct": 19.329827,
+      "zeroSentinelRows": 9332,
+      "negativeSentinelRows": 89,
+      "counts1000Plus": 84,
+      "supportedSources": ["nuforc"],
+      "originalWitnessTextPreserved": true,
+      "singleSourceComparisonsSuppressed": true,
+      "patternFinderEligible": false,
+      "canonicalEventRecordsMutated": false,
+      "status": "ready_descriptive"
+    }
+  },
+  "beforeMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preregistration.json",
+    "witnessCountAssessmentStatus": "unavailable",
+    "browserTypedWitnessCountEvidenceRows": 0
+  },
+  "afterMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/before_after_metrics.json",
+    "witnessCountAssessmentStatus": "ready_descriptive",
+    "typedRows": 135868,
+    "typedCatalogPct": 19.329827
+  },
+  "tests": {
+    "python": {"passed": 1315, "subtestsPassed": 4, "warnings": 1},
+    "javascriptSuites": {"passed": 16, "failed": 0},
+    "deterministicReconstructionPassed": true,
+    "browserQaPassed": true,
+    "r2ReadbackPassed": true,
+    "servedPreviewProductionCanonicalHashParityPassed": true,
+    "qa1PresentationDefectBlockedPromotionAndWasRemediated": true
+  },
+  "artifacts": {
+    "candidateCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+    "sourceTreeSha256": "fa0e518284a2665b7d80c0fb0df36e741c80697a",
+    "witnessCountReleaseId": "analysis-witness-count-v1-20260804",
+    "witnessCountR2Prefix": "releases/analysis-witness-count-v1-20260804",
+    "witnessCountR2TreeSha256": "43df295152c0c2558f2465fb028f422dd87d219bd524a66fede35059dc8d538c",
+    "witnessCountManifestSha256": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2",
+    "frozenPagesPath": "cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804",
+    "frozenPagesFileCount": 172,
+    "frozenPagesTotalBytes": 107456540,
+    "frozenPagesTreeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa",
+    "frozenAssetSha256": {
+      "index.html": "47b96c23a30b133b464f345a24bf177417143ea209afec52799726a9bb888485",
+      "app.js": "062b854f7426b47d0f3879716321948cdcb13ba162342e87633c58766678dd13",
+      "analysis_view.js": "9140637ccafd8d99c3b7dacda002e43715d54bfd9da65776570fba17b6a46c17",
+      "analysis_stats.js": "12414b013ef67ff780e6547df29c80174c2c02f558ae564d1eb77117b46ea2a8",
+      "catalog_filter_worker.js": "6edf0e02912ff56bc77b9ab04cb17f87cfabca871abda2a95839d21caccc460f",
+      "styles.css": "c4d601ec77310f646273f6fc20ecf4a05171ee76a6367fe21d5050ab3ef9f00e",
+      "witness_count_manifest.json": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2"
+    }
+  },
+  "preview": {
+    "deploymentId": "814b480b-cf4f-4998-926d-746461af56b4",
+    "immutableUrl": "https://814b480b.ufo-timeline.pages.dev",
+    "branch": "analysis-witness-count-v1-preview-qa2-20260804",
+    "sourceLabel": "e696749",
+    "qaPassed": true,
+    "consoleErrorsAndWarnings": 0
+  },
+  "production": {
+    "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+    "immutableUrl": "https://022a9b4d.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceLabel": "e696749",
+    "smokePassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "previewProductionCanonicalHashesIdentical": true,
+    "uploadedNewContentFilesAfterPreview": 0
+  },
+  "rollback": {
+    "deploymentId": "d8f53fd9-edc9-490c-88d3-8a9ed1c0fef4",
+    "immutableUrl": "https://d8f53fd9.ufo-timeline.pages.dev",
+    "instructions": "Validate the accepted Wave 4 receipt and frozen tree e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04, then deploy cloudflare_bundle_r2_analysis-time-of-day-v1-frozen-pages-qa1_20260804 to branch main.",
+    "tested": true,
+    "testMethod": "isolated_preview_redeployment_and_served_hash_comparison",
+    "testDeploymentId": "38036c22-3c69-4913-bc49-916c1888d28b",
+    "testImmutableUrl": "https://38036c22.ufo-timeline.pages.dev",
+    "validatedTreeSha256": "e7c083875ee3c62ea3ad1cde95efb4943494cbce8f5b03b0ec18d107747f8e04",
+    "servedHashesMatchedPriorProduction": true,
+    "witnessCountManifestAbsentFromRollback": true,
+    "currentProductionRemainedHealthy": true
+  },
+  "releaseGate": "accepted_and_promoted"
+}
