@@ -16,6 +16,8 @@
     "cf:crop:r2:publish": "python scripts/publish_crop_circle_r2_release.py",
     "cf:animal:r2:validate": "python scripts/publish_animal_mutilation_r2_release.py --validate-only",
     "cf:animal:r2:publish": "python scripts/publish_animal_mutilation_r2_release.py",
+    "cf:duration:r2:validate": "python scripts/publish_analysis_duration_r2_release.py --validate-only",
+    "cf:duration:r2:publish": "python scripts/publish_analysis_duration_r2_release.py",
     "cf:pages:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_pages.ps1",
     "cf:deploy": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (-not $env:CLOUDFLARE_PAGES_BRANCH) { throw 'Set CLOUDFLARE_PAGES_BRANCH explicitly.' }; & './scripts/cloudflare_deploy_public.ps1' -Branch $env:CLOUDFLARE_PAGES_BRANCH\"",
     "repro:verify": "python scripts\\reproduction.py verify",

@@ -1379,6 +1379,96 @@ assert.equal(orderedContextAnalysis.context.animals.referenceCount, 0);
 assert.ok(orderedContextAnalysis.overview.evidenceSummary.every((item) => item.patternFinderEligible === false));
 assert.deepEqual(orderedContextAnalysis.patternGroups.withinCorpusAssociation, []);
 
+const durationRows = [];
+for (const source of ["duration-source-a", "duration-source-b"]) {
+  for (const cohort of ["active", "reference"]) {
+    const activeCohort = cohort === "active";
+    const year = activeCohort ? 2018 : 2017;
+    const shortCount = activeCohort ? 30 : 20;
+    const mediumCount = activeCohort ? 20 : 30;
+    for (const [durationBin, count] of [["1_4_minutes", shortCount], ["5_14_minutes", mediumCount]]) {
+      for (let index = 0; index < count; index += 1) {
+        durationRows.push({
+          eventId: `${source}-${cohort}-${durationBin}-${index}`,
+          source,
+          type: "unknown",
+          craftType: "unknown",
+          shape: "unknown",
+          sortOrdinal: stats.ordinalFromCivil(year, 6, 15),
+          datePrecision: "exact_day",
+          analysisDurationAvailable: true,
+          analysisDurationStatus: "exact",
+          analysisDurationDescriptiveBin: durationBin,
+          analysisDurationInferentialBin: durationBin,
+          analysisDurationMacroregion: "northern_america",
+        });
+      }
+    }
+  }
+}
+durationRows.push({
+  eventId: "duration-approximate-descriptive-only",
+  source: "ufocat",
+  type: "unknown",
+  craftType: "unknown",
+  shape: "unknown",
+  sortOrdinal: stats.ordinalFromCivil(2018, 6, 15),
+  datePrecision: "exact_day",
+  analysisDurationAvailable: true,
+  analysisDurationStatus: "approximate",
+  analysisDurationDescriptiveBin: "1_4_minutes",
+  analysisDurationInferentialBin: "unknown",
+  analysisDurationMacroregion: "northern_america",
+});
+const durationArtifact = {
+  releaseId: "analysis-duration-v1-fixture",
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_runtime_gated_comparisons" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceBinN: 20 },
+  negativeControls: { leaveOneSourceOut: { interpretation: "fixture" } },
+  artifactHashes: { durationProjection: "a".repeat(64), durationValueDictionary: "b".repeat(64) },
+};
+const durationAnalysis = stats.computeAnalysis({
+  rows: durationRows,
+  baselineMode: "other_dates_balanced",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(2018, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2018, 12, 31),
+  selectedDomains: ["time"],
+  durationProjectionLoaded: true,
+  durationArtifact,
+  bootstrapReplicates: 31,
+  datasetHash: "duration-fixture",
+});
+assert.equal(durationAnalysis.time.duration.status, "ready_descriptive_with_inferential_comparison");
+assert.equal(durationAnalysis.time.duration.patternFinderEligible, false);
+assert.equal(durationAnalysis.time.duration.coverage.active.descriptiveBinnedRows, 101);
+assert.equal(durationAnalysis.time.duration.coverage.active.inferentialBinnedRows, 100);
+assert.equal(durationAnalysis.time.duration.comparisonMetadata.fdrFamily, "duration_bins_v1");
+const shortDurationComparison = durationAnalysis.time.duration.comparisons.find((row) => row.key === "1_4_minutes");
+assert.equal(shortDurationComparison.inferenceEligible, true);
+assert.equal(shortDurationComparison.activeIndependentSources, 2);
+assert.equal(shortDurationComparison.patternFinderEligible, false);
+assert.equal(shortDurationComparison.interval.method, "deterministic_aggregated_stratum_bootstrap");
+assert.equal(
+  durationAnalysis.patterns.some((pattern) => pattern.family === "duration"),
+  false,
+  "duration v1 never enters Pattern Finder"
+);
+
+const singleSourceDuration = stats.computeAnalysis({
+  rows: durationRows.filter((row) => row.source !== "duration-source-b"),
+  baselineMode: "other_dates_balanced",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(2018, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2018, 12, 31),
+  selectedDomains: ["time"],
+  durationProjectionLoaded: true,
+  durationArtifact,
+  bootstrapReplicates: 7,
+  datasetHash: "duration-single-source-fixture",
+});
+assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.inferenceEligible === false));
+assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.pValue === null && row.qValue === null));
+assert.ok(singleSourceDuration.time.duration.comparisons.some((row) => row.suppressionReasons.includes("minimum_independent_sources")));
+
 const statsSource = fs.readFileSync("webapp/static_public/analysis_stats.js", "utf8");
 assert.doesNotMatch(statsSource, /traceSegments|trace_segments|chronologySegments|flight path/i);
 

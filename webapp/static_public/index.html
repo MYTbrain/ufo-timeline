@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-04-analysis-duration-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -1424,8 +1424,10 @@
 
             <section id="analysis-section-time" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-time" aria-hidden="true" tabindex="0" hidden inert>
               <div class="analysis-section-heading"><div><p class="eyebrow">Time</p><h3 id="analysis-time-title">Reporting activity through time</h3></div><p class="analysis-section-note">Comparisons are reporting-pattern signals, not incidence estimates.</p></div>
+              <p id="analysis-duration-status" class="analysis-readiness-summary" role="status">Typed duration evidence loads only when Time is requested.</p>
               <div class="analysis-card-grid">
                 <article class="analysis-card analysis-card-wide analysis-time-series-card"><h4 id="analysis-time-series-title">Adaptive reporting timeline</h4><p id="analysis-time-series-question" class="analysis-card-question">Switch between report volume with uncertainty, source-balanced activity, and collection-change diagnostics on one ordered time axis.</p><div id="analysis-time-series-chart" class="analysis-chart" data-analysis-chart="time-series"></div></article>
+                <article class="analysis-card analysis-card-wide analysis-duration-card"><h4>Reported observation duration</h4><p class="analysis-card-question">How are explicit or source-documented observation durations distributed after exact, approximate, censored, and unresolved values are kept distinct?</p><div id="analysis-duration-chart" class="analysis-chart" data-analysis-chart="duration"></div><details class="analysis-supporting-details"><summary>Adjusted duration comparison</summary><p class="analysis-card-note">Only exact values and closed ranges contained within one duration bin can enter source–era–macroregion adjusted comparisons. Approximate UFOCAT codes remain descriptive.</p><div id="analysis-duration-comparison-chart" class="analysis-chart" data-analysis-chart="duration-comparison"></div></details></article>
                 <article class="analysis-card analysis-card-wide analysis-month-craft-card"><h4>Recurring month-by-craft signal</h4><p class="analysis-card-question">Which supported craft and month combinations recur beyond their adjusted expectation?</p><div id="analysis-month-year-chart" class="analysis-chart" data-analysis-chart="month-craft"></div></article>
               </div>
             </section>
@@ -1675,7 +1677,7 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
-  <script src="./analysis_view.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4"></script>
-  <script src="./app.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4"></script>
+  <script src="./analysis_view.js?v=2026-08-04-analysis-duration-v1"></script>
+  <script src="./app.js?v=2026-08-04-analysis-duration-v1"></script>
 </body>
 </html>

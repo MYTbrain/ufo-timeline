@@ -41,13 +41,19 @@ def main() -> None:
         shutil.rmtree(args.output_root)
     args.output_root.mkdir(parents=True)
 
+    optional_r2_paths = discover_optional_r2_paths(args.static_root)
     copied: list[dict[str, Any]] = []
     omitted: list[dict[str, Any]] = []
     for source in args.static_root.rglob("*"):
       if not source.is_file():
           continue
       relative = source.relative_to(args.static_root)
-      decision = classify_file(relative, source.stat().st_size, include_gzip_data=args.include_gzip_data)
+      decision = classify_file(
+          relative,
+          source.stat().st_size,
+          include_gzip_data=args.include_gzip_data,
+          optional_r2_paths=optional_r2_paths,
+      )
       if decision["copy"]:
           target = args.output_root / relative
           target.parent.mkdir(parents=True, exist_ok=True)
@@ -101,9 +107,40 @@ def main() -> None:
     }, indent=2))
 
 
-def classify_file(relative: Path, size: int, *, include_gzip_data: bool) -> dict[str, Any]:
+def discover_optional_r2_paths(static_root: Path) -> set[str]:
+    result: set[str] = set()
+    data_root = static_root / "data"
+    if not data_root.is_dir():
+        return result
+    for manifest_path in sorted(data_root.glob("*/manifest.json")):
+        try:
+            manifest = read_json(manifest_path)
+        except (OSError, json.JSONDecodeError):
+            continue
+        delivery = manifest.get("delivery") if isinstance(manifest, dict) else None
+        paths = delivery.get("r2OnlyPaths") if isinstance(delivery, dict) else None
+        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+            continue
+        layer_relative = manifest_path.parent.relative_to(static_root)
+        for path in paths:
+            candidate = Path(path)
+            if candidate.is_absolute() or any(part in {"", ".", ".."} for part in candidate.parts):
+                raise ValueError(f"Unsafe optional-layer R2 path in {manifest_path}: {path!r}")
+            result.add((layer_relative / candidate).as_posix())
+    return result
+
+
+def classify_file(
+    relative: Path,
+    size: int,
+    *,
+    include_gzip_data: bool,
+    optional_r2_paths: set[str] | None = None,
+) -> dict[str, Any]:
     parts = relative.parts
     path_text = str(relative).replace("\\", "/")
+    if path_text in (optional_r2_paths or set()):
+        return {"copy": False, "reason": "optional_layer_immutable_r2_payload"}
     if size > PAGES_FILE_LIMIT_BYTES:
         return {"copy": False, "reason": "exceeds_cloudflare_pages_25_mib_limit"}
     if len(parts) >= 2 and parts[0] == "data" and parts[1] == "canonical_web":

@@ -52,6 +52,7 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert current["status"] == "active"
     assert current["activeWave"]["waveId"] == "wave-001-duration-assessment"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
+    assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]

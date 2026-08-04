@@ -936,6 +936,8 @@
       if (!context.lane && /\.sameSource(?:\.|\[|$)/.test(section)) context.lane = "same_source";
       context.policyId = firstDefined(item, ["policyId", "policy_id"], context.policyId || "");
       context.evidenceHash = firstDefined(item, ["evidenceHash", "evidence_hash"], context.evidenceHash || "");
+      context.durationReleaseId = firstDefined(item, ["releaseId", "release_id"], context.durationReleaseId || "");
+      context.durationAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.durationAssessmentLane || "");
       return context;
     };
     const appendRow = function (section, item, index, inherited) {
@@ -968,6 +970,8 @@
         supported_active_n: firstDefined(item, ["supportedActiveN", "supported_active_n", "supportedCount", "supported_count", "supportedN", "supported_n"], ""),
         supported_reference_n: firstDefined(item, ["supportedReferenceN", "supported_reference_n"], ""),
         common_support_rate: firstDefined(item, ["commonSupportRate", "common_support_rate"], ""),
+        active_share: firstDefined(item, ["activeShare", "active_share", "observedShare", "observed_share"], ""),
+        reference_share: firstDefined(item, ["referenceShare", "reference_share"], ""),
         adjusted_effect: comparativeEffect(item),
         interval_lower: interval ? interval.lower : "",
         interval_upper: interval ? interval.upper : "",
@@ -989,7 +993,7 @@
         suppression_reason: suppressionReason(item),
         gate_id: firstDefined(item, ["gateId", "gate_id"], ""),
         gate_label: firstDefined(item, ["gateLabel", "gate_label", "label", "name"], ""),
-        readiness_status: firstDefined(item, ["status", "evidenceStatus", "evidence_status"], ""),
+        readiness_status: firstDefined(item, ["readinessStatus", "readiness_status", "status", "evidenceStatus", "evidence_status"], ""),
         applicability: firstDefined(item, ["applicability"], ""),
         input_n: firstDefined(item, ["inputN", "input_n"], ""),
         passed_n: firstDefined(item, ["passedN", "passed_n"], ""),
@@ -998,6 +1002,10 @@
         policy_id: context.policyId,
         evidence_hash: context.evidenceHash,
         reason_codes: firstDefined(item, ["reasonCodes", "reason_codes"], []),
+        duration_bin: /(?:^|\.)duration(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "durationBin", "duration_bin"], "") : "",
+        duration_measurement_class: firstDefined(item, ["measurementClass", "measurement_class"], ""),
+        duration_release_id: context.durationReleaseId || "",
+        duration_assessment_lane: context.durationAssessmentLane || "",
         geography_country: firstDefined(item, ["country", "countryName", "country_name"], ""),
         geography_macroregion: firstDefined(item, ["macroregion", "analysisMacroregion", "analysis_macroregion"], ""),
         geography_assignment_source: firstDefined(item, ["geographyAssignmentSource", "geography_assignment_source", "assignmentSource", "assignment_source"], ""),
@@ -1040,7 +1048,7 @@
     const payload = isObject(result) ? result : {};
     const metadata = Object.assign({}, isObject(payload.meta) ? payload.meta : {}, isObject(meta) ? meta : {});
     return {
-      schemaVersion: "ufo-timeline-analysis-evidence-v2.2",
+      schemaVersion: "ufo-timeline-analysis-evidence-v2.3",
       generatedAt: new Date().toISOString(),
       estimatorVersion: cleanText(firstDefined(metadata, ["estimatorVersion", "estimator_version"], firstDefined(payload, ["estimatorVersion", "estimator_version"], "not reported"))),
       baselineMode: cleanText(firstDefined(metadata, ["baselineMode", "baseline_mode"], firstDefined(payload.summary || {}, ["baselineMode", "baseline_mode"], "not reported"))),
@@ -1065,9 +1073,9 @@
     const columns = [
       "schema_version", "generated_at", "analysis_mode", "comparison_state", "baseline_mode", "package_estimator_version", "filter_snapshot", "package_artifact_hashes",
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
-      "common_support_rate", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
+      "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5293,6 +5301,68 @@
       if (cells.length) this._appendChartPolicy(chartId, "Counts describe inherited relationship records and reconciliation state. Recomputed proximity evidence is kept separate.");
     }
 
+    _renderDurationEvidence(value, summary) {
+      const duration = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(duration, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const statusElement = this.document.getElementById("analysis-duration-status");
+      const coverage = isObject(duration.coverage) ? duration.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const normalizedRows = finiteNumber(active.normalizedRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const descriptiveRows = finiteNumber(active.descriptiveBinnedRows, 0);
+      const inferentialRows = finiteNumber(active.inferentialBinnedRows, 0);
+      const sourceCount = asArray(active.normalizedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Typed duration evidence loads only when Time is requested. No duration chart is shown until its immutable artifact passes integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Duration is not estimable for this cohort. Normalized values remain missing—not zero—and the readiness result is retained instead of an empty chart.";
+        } else {
+          statusElement.textContent = formatCount(normalizedRows) + " normalized duration records across " + formatCount(sourceCount)
+            + " sources (" + formatPercent(catalogRows > 0 ? normalizedRows / catalogRows : 0) + " of matched reports). "
+            + formatCount(descriptiveRows) + " occupy one conservative display bin; " + formatCount(inferentialRows)
+            + " exact or closed-range records are eligible for comparison gates.";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        const message = status === "data_unavailable"
+          ? "Readiness pending: select Time to integrity-check and load the typed duration projection."
+          : "Readiness failed for this cohort; missing, ambiguous, and bin-spanning values remain suppressed.";
+        this._renderBars("analysis-duration-chart", [], summary, { emptyMessage: message });
+        this._renderForestPlot("analysis-duration-comparison-chart", [], summary, {
+          emptyMessage: "No adjusted duration comparison is available until the duration readiness gates pass.",
+        });
+        return;
+      }
+      const distribution = firstArray(duration, ["distribution", "bins"]);
+      this._renderBars("analysis-duration-chart", distribution, summary, {
+        caption: "Conservative reported-duration distribution",
+        valueKeys: ["activeShare"],
+        valueFormat: "percent",
+        valueLabel: "Active share",
+        referenceLabel: "Reference share",
+        scaleActual: true,
+        emptyMessage: "No duration interval falls wholly within one conservative display bin for this cohort.",
+      });
+      this._appendChartPolicy(
+        "analysis-duration-chart",
+        "Approximate source codes are descriptive. Censored, ambiguous, unresolved, and bin-spanning values never become zero or silently gain precision."
+      );
+      const comparisons = firstArray(duration, ["comparisons", "adjustedComparisons", "adjusted_comparisons"]);
+      this._renderForestPlot("analysis-duration-comparison-chart", comparisons, summary, {
+        caption: "Source–era–macroregion adjusted duration-bin differences",
+        defaultKind: "filter",
+        valueKeys: ["adjustedDifference", "adjustedEffect"],
+        primaryCountLabel: "Active bin",
+        comparisonCountLabel: "Reference bin",
+        primaryCountKeys: ["observedCount"],
+        comparisonCountKeys: ["referenceCount"],
+        emptyMessage: "The descriptive duration distribution is ready. Adjusted comparisons require an independent reference cohort and all support gates.",
+      });
+    }
+
     _sectionData(result) {
       const overview = isObject(result.overview) ? result.overview : {};
       const time = isObject(result.time) ? result.time : {};
@@ -5320,6 +5390,7 @@
         adaptiveBinning: isObject(time.adaptiveBinning) ? time.adaptiveBinning : (isObject(time.adaptive_binning) ? time.adaptive_binning : {}),
         sourceBalanced: sourceBalancedSeries,
         sourceBalancedPolicy: cleanText(firstDefined(time, ["sourceBalancedPolicy", "source_balanced_policy"], "")),
+        duration: firstDefined(time, ["duration", "durationAssessment", "duration_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
@@ -5484,6 +5555,7 @@
           defaultKind: "filter",
         });
       });
+      timeJobs.push(() => this._renderDurationEvidence(data.duration, summary));
       timeJobs.push(() => this._renderHeatmap("analysis-month-year-chart", data.monthYear, summary, { caption: "Recurring month by craft adjusted effects", rowHeading: "Craft", defaultKind: "filter", columnAxisKind: "month", axisColumns: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], craftRows: true, effectOnly: true, valueKeys: ["adjustedResidual", "adjusted_residual", "standardizedResidual", "residual", "difference", "value"] }));
       craftJobs.push(() => {
         this._renderCraftMosaic("analysis-craft-distribution-chart", data.craftDistribution, summary, { caption: "Craft category mosaic", defaultKind: "filter", limit: 12 });
@@ -5588,7 +5660,7 @@
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
-        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-month-year-chart"] }],
+        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart"] }],

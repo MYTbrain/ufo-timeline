@@ -215,6 +215,7 @@ function createShellDocument() {
     "analysis-unit-label", "analysis-source-mix", "analysis-date-precision",
     "analysis-location-precision", "analysis-dataset-hash", "analysis-policy-warning",
     "analysis-coverage-chart", "analysis-comparison-chart", "analysis-time-series-chart",
+    "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
     "analysis-report-type-chart", "analysis-craft-confidence-chart", "analysis-craft-residual-chart", "analysis-geography-grid-chart", "analysis-geography-sensitivity-chart",
     "analysis-geography-time-chart", "analysis-source-composition-chart",
@@ -1111,6 +1112,32 @@ const result = {
     rolling: [{ label: "1952", observed: 120, reference: 60 }],
     bursts: [{ label: "1952", observed: 120, baselineMean: 40, standardizedExcess: 12.6, preview: { kind: "filter", patch: { dateRange: { year: 1952 } } } }],
     burstPolicy: "Exploratory burst gate passed; not a causal or incidence claim.",
+    duration: {
+      releaseId: "analysis-duration-v1-fixture",
+      assessmentLane: "descriptive_with_runtime_gated_comparisons",
+      status: "ready_descriptive",
+      readinessStatus: "ready_descriptive",
+      coverage: {
+        active: {
+          catalogRows: 400,
+          normalizedRows: 160,
+          descriptiveBinnedRows: 155,
+          inferentialBinnedRows: 80,
+          normalizedSources: [{ source: "nuforc", rows: 85 }, { source: "ufocat", rows: 75 }],
+        },
+        reference: { catalogRows: 300, normalizedRows: 120, descriptiveBinnedRows: 118, inferentialBinnedRows: 60 },
+      },
+      distribution: [
+        { key: "1_4_minutes", label: "1–4 minutes", activeCount: 80, referenceCount: 55, activeShare: 80 / 155, referenceShare: 55 / 118, measurementClass: "descriptive_includes_source_declared_approximate_values" },
+        { key: "5_14_minutes", label: "5–14 minutes", activeCount: 75, referenceCount: 63, activeShare: 75 / 155, referenceShare: 63 / 118, measurementClass: "descriptive_includes_source_declared_approximate_values" },
+      ],
+      comparisons: [
+        { key: "1_4_minutes", label: "1–4 minutes", observedCount: 45, referenceCount: 32, adjustedDifference: 0.04, interval: { lower: 0.01, upper: 0.07 }, qValue: 0.04, inferenceEligible: true, measurementClass: "exact_or_closed_range_same_bin_only" },
+        { key: "5_14_minutes", label: "5–14 minutes", observedCount: 35, referenceCount: 28, adjustedDifference: -0.04, suppressionReasons: ["minimum_independent_sources"], inferenceEligible: false, measurementClass: "exact_or_closed_range_same_bin_only" },
+      ],
+      comparisonMetadata: { fdrFamily: "duration_bins_v1" },
+      patternFinderEligible: false,
+    },
   },
   craft: {
     distribution: [
@@ -1307,6 +1334,16 @@ const result = {
   },
 };
 
+const durationEvidencePackage = analysis.buildEvidencePackage(result, { estimatorVersion: "duration-export-fixture" });
+const durationDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "time.duration.distribution" && row.duration_bin === "1_4_minutes");
+assert.equal(durationDistributionRow.duration_release_id, "analysis-duration-v1-fixture");
+assert.equal(durationDistributionRow.duration_assessment_lane, "descriptive_with_runtime_gated_comparisons");
+assert.equal(durationDistributionRow.duration_measurement_class, "descriptive_includes_source_declared_approximate_values");
+assert.equal(durationDistributionRow.active_share, 80 / 155);
+const durationEvidenceCsv = analysis.evidencePackageToCsv(durationEvidencePackage);
+assert.match(durationEvidenceCsv, /duration_bin,duration_measurement_class,duration_release_id,duration_assessment_lane/);
+assert.match(durationEvidenceCsv, /1_4_minutes,descriptive_includes_source_declared_approximate_values,analysis-duration-v1-fixture,descriptive_with_runtime_gated_comparisons/);
+
 controller.setBaselineMode("other_dates_balanced", { notify: false });
 controller.setActiveSection("analysis-section-overview", { source: "test" });
 controller.renderAnalysisResult(result);
@@ -1358,6 +1395,10 @@ const refreshedTimelineButtons = descendants(document.getElementById("analysis-t
 refreshedTimelineButtons[2].emit("click");
 assert.match(descendants(document.getElementById("analysis-time-series-chart")).map((element) => element.textContent).join(" "), /Source A.*Source B.*Largest displayed source-composition shift/i, "collection-change diagnostics reuse the existing source-composition evidence in the same card");
 assert.ok(document.getElementById("analysis-month-year-chart").children.length >= 2);
+assert.match(document.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources.*40% of matched reports/i);
+assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*51\.6%.*5–14 minutes.*48\.4%/i);
+assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*\+4%.*95%/i);
+assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /minimum independent sources/i);
 assert.match(descendants(document.getElementById("analysis-month-year-chart")).map((element) => element.textContent).join(" "), /07\/JUL/, "month heatmaps use unambiguous chronological number/name labels");
 const monthHeatmapHeaders = descendants(document.getElementById("analysis-month-year-chart"))
   .filter((element) => element.tagName === "TH" && /^\d{2}\/[A-Z]{3}$/.test(element.textContent))
@@ -2154,7 +2195,9 @@ assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").ch
 progressiveController.setActiveSection("analysis-section-time", { source: "test" });
 assert.equal(frameHarness.pendingCount(), 1, "activating Time schedules its first deferred chart job");
 const timeFrames = frameHarness.flushAll();
-assert.ok(timeFrames >= 3 && timeFrames <= 5, "Time renders only its two primary charts plus completion and alignment work");
+assert.ok(timeFrames >= 4 && timeFrames <= 6, "Time renders its timeline, duration readiness, and month-by-craft charts plus completion and alignment work");
+assert.match(progressiveDocument.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources/i);
+assert.ok(progressiveDocument.getElementById("analysis-duration-chart").children.length > 0, "duration materializes with the rest of the requested Time dashboard");
 
 const progressiveTimeChart = progressiveDocument.getElementById("analysis-time-series-chart");
 const plottedPoints = descendants(progressiveTimeChart).filter((element) => element.tagName === "CIRCLE");

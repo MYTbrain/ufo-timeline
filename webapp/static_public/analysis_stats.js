@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_2_visual_evidence_dashboard_1";
+  const ESTIMATOR_VERSION = "analysis_v2_3_duration_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -39,6 +39,24 @@
   const MONTH_AXIS_ORDER = Object.freeze(Array.from({ length: 12 }, function (_unused, index) {
     return String(index + 1).padStart(2, "0");
   }));
+  const DURATION_BIN_ORDER = Object.freeze([
+    "under_10_seconds",
+    "10_59_seconds",
+    "1_4_minutes",
+    "5_14_minutes",
+    "15_59_minutes",
+    "1_5_hours",
+    "over_5_hours",
+  ]);
+  const DURATION_BIN_LABELS = Object.freeze({
+    under_10_seconds: "Under 10 seconds",
+    "10_59_seconds": "10–59 seconds",
+    "1_4_minutes": "1–4 minutes",
+    "5_14_minutes": "5–14 minutes",
+    "15_59_minutes": "15–59 minutes",
+    "1_5_hours": "1–5 hours",
+    over_5_hours: "Over 5 hours",
+  });
   const FAMILY_ORDER = Object.freeze([
     "craft",
     "time_month",
@@ -1596,6 +1614,59 @@
     };
   }
 
+  function durationEra(yearValue) {
+    const year = finiteInteger(yearValue);
+    if (year == null) return "unknown";
+    if (year < 1945) return "pre_1945";
+    if (year < 1960) return "1945_1959";
+    if (year < 1980) return "1960_1979";
+    if (year < 2000) return "1980_1999";
+    if (year < 2020) return "2000_2019";
+    return "2020_plus";
+  }
+
+  function durationStratum(source, yearValue, macroregionValue) {
+    return [
+      category(source, "unknown"),
+      durationEra(yearValue),
+      category(macroregionValue, "unknown"),
+    ].join("\u001f");
+  }
+
+  function addDurationRow(accumulator, row, source, civil) {
+    if (!row || row.analysisDurationAvailable !== true) return;
+    const status = category(row.analysisDurationStatus, "unparsed");
+    const descriptiveBin = category(row.analysisDurationDescriptiveBin, "unknown");
+    const inferentialBin = category(row.analysisDurationInferentialBin, "unknown");
+    const macroregion = category(row.analysisDurationMacroregion, "unknown");
+    const stratum = durationStratum(source, civil && civil.year, macroregion);
+    accumulator.durationRawRows += 1;
+    incrementRaw(accumulator.durationStatusCounts, status, 1);
+    if (["unparsed", "ambiguous", "unavailable"].indexOf(status) === -1) {
+      accumulator.durationNormalizedRows += 1;
+      incrementRaw(accumulator.durationNormalizedSources, source, 1);
+    }
+    if (descriptiveBin !== "unknown") {
+      accumulator.durationDescriptiveRows += 1;
+      incrementRaw(accumulator.durationDescriptiveBins, descriptiveBin, 1);
+      incrementRaw(accumulator.durationDescriptiveStrataTotals, stratum, 1);
+      if (!accumulator.durationDescriptiveBinStrata.has(descriptiveBin)) {
+        accumulator.durationDescriptiveBinStrata.set(descriptiveBin, new Map());
+      }
+      incrementRaw(accumulator.durationDescriptiveBinStrata.get(descriptiveBin), stratum, 1);
+    }
+    if (inferentialBin !== "unknown") {
+      accumulator.durationInferentialRows += 1;
+      incrementRaw(accumulator.durationInferentialBins, inferentialBin, 1);
+      incrementRaw(accumulator.durationInferentialSources, source, 1);
+      incrementRaw(accumulator.durationInferentialStrataTotals, stratum, 1);
+      if (!accumulator.durationInferentialBinStrata.has(inferentialBin)) {
+        accumulator.durationInferentialBinStrata.set(inferentialBin, new Map());
+      }
+      incrementRaw(accumulator.durationInferentialBinStrata.get(inferentialBin), stratum, 1);
+    }
+  }
+
   function addStratifiedMatrixCount(container, stratum, rowKey, columnKey) {
     if (!container.has(stratum)) container.set(stratum, new Map());
     addMatrixCount(container.get(stratum), rowKey, columnKey);
@@ -1683,6 +1754,19 @@
       geographyStrataTotalsByRegion: new Map(),
       geographyCategoryStrataByRegion: new Map(),
       regions: new Map(),
+      durationRawRows: 0,
+      durationNormalizedRows: 0,
+      durationDescriptiveRows: 0,
+      durationInferentialRows: 0,
+      durationStatusCounts: new Map(),
+      durationNormalizedSources: new Map(),
+      durationDescriptiveBins: new Map(),
+      durationInferentialBins: new Map(),
+      durationInferentialSources: new Map(),
+      durationDescriptiveStrataTotals: new Map(),
+      durationDescriptiveBinStrata: new Map(),
+      durationInferentialStrataTotals: new Map(),
+      durationInferentialBinStrata: new Map(),
     };
     accumulator.familyCounts = {
       craft: accumulator.crafts,
@@ -1963,6 +2047,7 @@
       coarseRegion,
       familyStrata.geography
     );
+    addDurationRow(accumulator, row, source, civil);
   }
 
   // The staged first render needs coverage, time, source, and quality summaries only.
@@ -2039,6 +2124,7 @@
       incrementRaw(accumulator.missingAnyBy.crafts, craft, 1);
       incrementRaw(accumulator.missingAnyBy.locationPrecisions, locationPrecision, 1);
     }
+    addDurationRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
       return;
@@ -5144,6 +5230,191 @@
     };
   }
 
+  function durationComparisonStrata(active, reference, key) {
+    const activeTotals = active.durationInferentialStrataTotals || new Map();
+    const referenceTotals = reference.durationInferentialStrataTotals || new Map();
+    const activeCounts = active.durationInferentialBinStrata.get(key) || new Map();
+    const referenceCounts = reference.durationInferentialBinStrata.get(key) || new Map();
+    const strata = new Set([].concat(sortedKeys(activeTotals), sortedKeys(referenceTotals)));
+    return Array.from(strata).map(function (stratum) {
+      return {
+        key: stratum,
+        activeCount: mapCount(activeCounts, stratum),
+        activeTotal: mapCount(activeTotals, stratum),
+        referenceCount: mapCount(referenceCounts, stratum),
+        referenceTotal: mapCount(referenceTotals, stratum),
+      };
+    });
+  }
+
+  function durationCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      rawDurationRows: accumulator.durationRawRows,
+      rawDurationCoverage: round(rate(accumulator.durationRawRows, accumulator.total), 8),
+      normalizedRows: accumulator.durationNormalizedRows,
+      normalizedCoverage: round(rate(accumulator.durationNormalizedRows, accumulator.total), 8),
+      descriptiveBinnedRows: accumulator.durationDescriptiveRows,
+      inferentialBinnedRows: accumulator.durationInferentialRows,
+      normalizedSources: mapEntriesByCount(accumulator.durationNormalizedSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      inferentialSources: mapEntriesByCount(accumulator.durationInferentialSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.durationStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+    };
+  }
+
+  function suppressDurationComparison(comparison, reasonsValue) {
+    const reasons = Array.from(new Set((comparison.suppressionReasons || []).concat(reasonsValue || [])));
+    comparison.inferenceEligible = false;
+    comparison.suppressionStatus = "suppressed";
+    comparison.suppressionReasons = reasons;
+    comparison.suppression = { status: "suppressed", reasons: reasons.slice() };
+    comparison.pValue = null;
+    comparison.qValue = null;
+    comparison.interval = null;
+    comparison.uncertainty = null;
+    return comparison;
+  }
+
+  function buildDurationAssessment(active, reference, descriptor, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.durationArtifact && typeof options.durationArtifact === "object"
+      ? options.durationArtifact
+      : null;
+    const loaded = options.durationProjectionLoaded === true && artifact;
+    const activeCoverage = durationCoverage(active);
+    const referenceCoverage = durationCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-duration-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: [],
+      comparisons: [],
+      comparisonMetadata: {
+        status: "data_unavailable",
+        covariates: ["source", "era", "macroregion"],
+        fdrFamily: "duration_bins_v1",
+      },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["duration_artifact_not_loaded"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const policy = artifact.policy || {};
+    const distribution = DURATION_BIN_ORDER.map(function (key) {
+      const activeCount = mapCount(active.durationDescriptiveBins, key);
+      const referenceCount = mapCount(reference.durationDescriptiveBins, key);
+      return {
+        key,
+        label: DURATION_BIN_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.durationDescriptiveRows), 8),
+        referenceShare: round(rate(referenceCount, reference.durationDescriptiveRows), 8),
+        measurementClass: "descriptive_includes_source_declared_approximate_values",
+        inferenceEligible: false,
+      };
+    });
+    const comparisonUnavailable = [
+      COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+      COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE,
+      COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+    ].indexOf(descriptor.comparisonState) !== -1;
+    let comparisons = [];
+    let comparisonStatus = descriptor.comparisonState;
+    if (options.inferenceDeferred) {
+      comparisonStatus = "deferred";
+    } else if (!comparisonUnavailable) {
+      const activeSources = active.durationInferentialSources.size;
+      const referenceSources = reference.durationInferentialSources.size;
+      const minimumBinN = Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20);
+      const minimumSources = 2;
+      comparisons = DURATION_BIN_ORDER.map(function (key) {
+        const comparison = balancedCommonSupportComparison(durationComparisonStrata(active, reference, key), {
+          activeN: active.durationInferentialRows,
+          referenceN: reference.durationInferentialRows,
+          descriptive: descriptor.descriptive,
+          covariates: ["source", "era", "macroregion"],
+          minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+          bootstrapReplicates: options.bootstrapReplicates,
+          seed: [options.datasetHash || "not_provided", descriptor.mode, "duration", key].join("|"),
+        });
+        comparison.family = "duration";
+        comparison.key = key;
+        comparison.label = DURATION_BIN_LABELS[key] || key;
+        comparison.fdrFamily = "duration_bins_v1";
+        comparison.patternFinderEligible = false;
+        comparison.measurementClass = "exact_or_closed_range_same_bin_only";
+        const reasons = [];
+        if (comparison.observedCount < minimumBinN) reasons.push("active_bin_n_below_" + minimumBinN);
+        if (comparison.referenceCount < minimumBinN) reasons.push("reference_bin_n_below_" + minimumBinN);
+        if (activeSources < minimumSources || referenceSources < minimumSources) {
+          reasons.push("minimum_independent_sources");
+        }
+        if (reasons.length) suppressDurationComparison(comparison, reasons);
+        comparison.minimumActiveAndReferenceBinN = minimumBinN;
+        comparison.minimumIndependentSources = minimumSources;
+        comparison.activeIndependentSources = activeSources;
+        comparison.referenceIndependentSources = referenceSources;
+        return comparison;
+      });
+      assignEligibleBenjaminiHochberg(comparisons);
+      comparisonStatus = comparisons.some(function (comparison) { return comparison.inferenceEligible; })
+        ? "ready_inferential"
+        : "suppressed";
+    }
+
+    const globalReady = String(readiness.status || "") === "ready_descriptive";
+    const activeReady = active.durationDescriptiveRows > 0 && active.durationNormalizedRows > 0;
+    const anyInference = comparisons.some(function (comparison) { return comparison.inferenceEligible; });
+    const status = !globalReady || !activeReady
+      ? "not_estimable"
+      : (anyInference ? "ready_descriptive_with_inferential_comparison" : "ready_descriptive");
+    const suppressionReasons = [];
+    if (!globalReady) suppressionReasons.push("global_duration_readiness_failed");
+    if (!active.durationNormalizedRows) suppressionReasons.push("no_normalized_duration_in_active_cohort");
+    if (!active.durationDescriptiveRows) suppressionReasons.push("no_single_bin_duration_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-duration-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "descriptive_with_runtime_gated_comparisons"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution,
+      comparisons,
+      comparisonMetadata: {
+        status: comparisonStatus,
+        comparisonState: descriptor.comparisonState,
+        covariates: ["source", "era", "macroregion"],
+        minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+        minimumActiveAndReferenceBinN: Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20),
+        fdrFamily: "duration_bins_v1",
+        approximateValuesExcludedFromInference: true,
+        binSpanningIntervalsExcludedFromInference: true,
+      },
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, policy),
+    };
+  }
+
   function computeAnalysis(optionsValue) {
     const options = optionsValue || {};
     const inferenceDeferred = options.quickMode === true || String(options.analysisPhase || "").trim().toLowerCase() === "quick";
@@ -5246,6 +5517,13 @@
     const time = inferenceDeferred && !domainRequested(requestedDomains, "time")
       ? deferredTimeSection()
       : buildTime(active, reference, sectionOptions);
+    time.duration = buildDurationAssessment(active, reference, descriptor, {
+      durationProjectionLoaded: options.durationProjectionLoaded,
+      durationArtifact: options.durationArtifact,
+      inferenceDeferred,
+      bootstrapReplicates: options.bootstrapReplicates,
+      datasetHash,
+    });
     time.monthComparison = balancedFamilies.time_month.comparisons;
     time.comparisonMetadata = balancedFamilies.time_month.metadata;
     time.bursts.forEach(function (burst) {
@@ -5479,6 +5757,8 @@
     ANALYSIS_MODES,
     COMPARISON_STATES,
     MONTH_AXIS_ORDER,
+    DURATION_BIN_ORDER,
+    DURATION_BIN_LABELS,
     FAMILY_ORDER,
     FAMILY_COVARIATES,
     EXPLORATORY_POLICY,
@@ -5504,6 +5784,7 @@
     equalAreaMapCell6x12,
     equalAreaMapCell6x12FromIndexes,
     normalizeContextProjections,
+    buildDurationAssessment,
     computeAnalysis,
   });
 });

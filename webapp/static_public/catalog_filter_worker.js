@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-duration-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -49,6 +49,14 @@
     appliedRows: 0,
     artifactHash: "",
   };
+  let analysisDurationArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    normalizedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisSpatialExecutor = null;
   let analysisSpatialExecutorEpoch = 0;
   let analysisSpatialPending = null;
@@ -90,6 +98,7 @@
       adminRegion: createDictionary(),
       analysisCountry: createDictionary(),
       analysisMacroregion: createDictionary(),
+      durationMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
       geographyBoundaryStatus: createDictionary(),
@@ -224,7 +233,16 @@
       analysisGeographyAssignmentSourceCodes: new Uint16Array(length),
       analysisGeographyAssignmentConfidenceCodes: new Uint16Array(length),
       analysisGeographyBoundaryStatusCodes: new Uint16Array(length),
+      analysisDurationValueCodes: new Uint32Array(length),
+      analysisDurationStatusCodes: new Uint8Array(length),
+      analysisDurationDescriptiveBinCodes: new Uint8Array(length),
+      analysisDurationInferentialBinCodes: new Uint8Array(length),
+      analysisDurationMacroregionCodes: new Uint16Array(length),
+      analysisDurationLowerSeconds: new Float64Array(length),
+      analysisDurationUpperSeconds: new Float64Array(length),
     };
+    chunk.analysisDurationLowerSeconds.fill(Number.NaN);
+    chunk.analysisDurationUpperSeconds.fill(Number.NaN);
 
     for (let index = 0; index < length; index += 1) {
       const row = nextRows[index] || {};
@@ -320,7 +338,14 @@
       chunk.analysisMacroregionCodes.byteLength +
       chunk.analysisGeographyAssignmentSourceCodes.byteLength +
       chunk.analysisGeographyAssignmentConfidenceCodes.byteLength +
-      chunk.analysisGeographyBoundaryStatusCodes.byteLength;
+      chunk.analysisGeographyBoundaryStatusCodes.byteLength +
+      chunk.analysisDurationValueCodes.byteLength +
+      chunk.analysisDurationStatusCodes.byteLength +
+      chunk.analysisDurationDescriptiveBinCodes.byteLength +
+      chunk.analysisDurationInferentialBinCodes.byteLength +
+      chunk.analysisDurationMacroregionCodes.byteLength +
+      chunk.analysisDurationLowerSeconds.byteLength +
+      chunk.analysisDurationUpperSeconds.byteLength;
     return chunk;
   }
 
@@ -479,6 +504,27 @@
       dictionaries.geographyBoundaryStatus,
       chunk.analysisGeographyBoundaryStatusCodes && chunk.analysisGeographyBoundaryStatusCodes[index]
     ) || "unavailable";
+    const durationValueCode = chunk.analysisDurationValueCodes && chunk.analysisDurationValueCodes[index];
+    values.analysisDurationAvailable = Boolean(durationValueCode);
+    values.analysisDurationValueCode = durationValueCode ? durationValueCode - 1 : null;
+    values.analysisDurationStatus = durationValueCode
+      ? String((analysisDurationArtifact.manifest.codes.status || [])[chunk.analysisDurationStatusCodes[index] - 1] || "unparsed")
+      : "unavailable";
+    values.analysisDurationDescriptiveBin = durationValueCode
+      ? String((analysisDurationArtifact.manifest.codes.durationBin || [])[chunk.analysisDurationDescriptiveBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisDurationInferentialBin = durationValueCode
+      ? String((analysisDurationArtifact.manifest.codes.durationBin || [])[chunk.analysisDurationInferentialBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisDurationMacroregion = durationValueCode
+      ? dictionaryValue(dictionaries.durationMacroregion, chunk.analysisDurationMacroregionCodes[index]) || "unknown"
+      : "unknown";
+    values.analysisDurationLowerSeconds = durationValueCode && Number.isFinite(chunk.analysisDurationLowerSeconds[index])
+      ? chunk.analysisDurationLowerSeconds[index]
+      : null;
+    values.analysisDurationUpperSeconds = durationValueCode && Number.isFinite(chunk.analysisDurationUpperSeconds[index])
+      ? chunk.analysisDurationUpperSeconds[index]
+      : null;
     values.duplicateLineage = dictionaryValue(dictionaries.duplicateLineage, chunk.duplicateLineageCodes[index]);
     values.sortOrdinal = sortOrdinalAt(chunk, index);
     values.lat = Number.isFinite(chunk.latitudes[index]) ? chunk.latitudes[index] : null;
@@ -1429,9 +1475,21 @@
         analysisSpatialArtifacts.artifactHashes || {},
         analysisGeographyArtifact.loaded
           ? { ufoGeography: String(analysisGeographyArtifact.artifactHash || "") }
+          : {},
+        analysisDurationArtifact.loaded
+          ? Object.assign({}, analysisDurationArtifact.artifactHashes || {})
           : {}
       ),
       geographyProjectionLoaded: Boolean(analysisGeographyArtifact.loaded),
+      durationProjectionLoaded: Boolean(analysisDurationArtifact.loaded),
+      durationArtifact: analysisDurationArtifact.loaded ? {
+        releaseId: analysisDurationArtifact.releaseId,
+        counts: Object.assign({}, analysisDurationArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisDurationArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisDurationArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisDurationArtifact.manifest.negativeControls || {}),
+        artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes || {}),
+      } : null,
       estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
@@ -2122,6 +2180,162 @@
     );
   }
 
+  function analysisDurationManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-duration-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts &&
+      manifest.codes &&
+      manifest.readiness
+    );
+  }
+
+  function validateDurationArtifact(manifest, key) {
+    const entry = manifestArtifactEntry(manifest, key);
+    if (!entry) throw new Error("Duration manifest is missing required artifact " + key + ".");
+    if (!normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+      throw new Error("Duration artifact " + key + " is missing pinned raw or gzip integrity.");
+    }
+    if (!Number.isInteger(Number(entry.rowCount)) || Number(entry.rowCount) < 0) {
+      throw new Error("Duration artifact " + key + " has an invalid row count.");
+    }
+    if (!Array.isArray(entry.rowSchema) || !entry.rowSchema.length) {
+      throw new Error("Duration artifact " + key + " has an invalid row schema.");
+    }
+    return entry;
+  }
+
+  function validateDurationRows(rowsValue, manifest, key) {
+    const rows = rowsValue;
+    const entry = validateDurationArtifact(manifest, key);
+    if (!Array.isArray(rows) || rows.length !== Number(entry.rowCount)) {
+      throw new Error("Duration artifact " + key + " row-count mismatch.");
+    }
+    const width = entry.rowSchema.length;
+    const invalidIndex = rows.findIndex(function (row) { return !Array.isArray(row) || row.length !== width; });
+    if (invalidIndex !== -1) {
+      throw new Error("Duration artifact " + key + " row " + invalidIndex + " has an invalid width.");
+    }
+    return rows;
+  }
+
+  function applyDurationProjection(dictionaryRows, projectionRows, manifest) {
+    const statusCodes = manifest.codes.status || [];
+    const binCodes = manifest.codes.durationBin || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    const occurrences = new Uint32Array(dictionaryRows.length);
+    let previousRowIndex = -1;
+    let normalizedRows = 0;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const valueCode = Number(projection[2]);
+      const macroregionCode = Number(projection[3]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Duration projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Duration projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Duration projection event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(valueCode) || valueCode < 0 || valueCode >= dictionaryRows.length) {
+        throw new Error("Duration projection has an invalid value code at row " + projectionIndex + ".");
+      }
+      if (!Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length) {
+        throw new Error("Duration projection has an invalid macroregion code at row " + projectionIndex + ".");
+      }
+      const value = dictionaryRows[valueCode];
+      const statusCode = Number(value[3]);
+      const descriptiveBinCode = Number(value[7]);
+      const inferentialBinCode = Number(value[8]);
+      if (!Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(descriptiveBinCode) || descriptiveBinCode < 0 || descriptiveBinCode >= binCodes.length ||
+          !Number.isInteger(inferentialBinCode) || inferentialBinCode < 0 || inferentialBinCode >= binCodes.length) {
+        throw new Error("Duration dictionary code is out of range for value " + valueCode + ".");
+      }
+      location.chunk.analysisDurationValueCodes[location.index] = valueCode + 1;
+      location.chunk.analysisDurationStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisDurationDescriptiveBinCodes[location.index] = descriptiveBinCode + 1;
+      location.chunk.analysisDurationInferentialBinCodes[location.index] = inferentialBinCode + 1;
+      location.chunk.analysisDurationMacroregionCodes[location.index] = categoryCode(
+        dictionaries.durationMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+      location.chunk.analysisDurationLowerSeconds[location.index] = value[5] == null ? Number.NaN : Number(value[5]);
+      location.chunk.analysisDurationUpperSeconds[location.index] = value[6] == null ? Number.NaN : Number(value[6]);
+      occurrences[valueCode] += 1;
+      if (["unparsed", "ambiguous"].indexOf(String(statusCodes[statusCode] || "unparsed")) === -1) normalizedRows += 1;
+    });
+    dictionaryRows.forEach(function (value, valueCode) {
+      if (occurrences[valueCode] !== Number(value[10])) {
+        throw new Error("Duration dictionary occurrence parity failed for value " + valueCode + ".");
+      }
+    });
+    return { appliedRows: projectionRows.length, normalizedRows };
+  }
+
+  async function loadAnalysisDurationArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_duration_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisDurationManifestSupported(manifest)) {
+      throw new Error("Analysis duration manifest is invalid or unsupported.");
+    }
+    validateDurationArtifact(manifest, "durationValueDictionary");
+    validateDurationArtifact(manifest, "durationProjection");
+    const dictionaryRows = validateDurationRows(
+      await fetchAnalysisJson(
+        urls.dictionary || manifestArtifactUrl(manifest, "durationValueDictionary", manifestUrl),
+        manifestArtifactIntegrity(manifest, "durationValueDictionary")
+      ),
+      manifest,
+      "durationValueDictionary"
+    );
+    const projectionRows = validateDurationRows(
+      await fetchAnalysisJson(
+        urls.projection || manifestArtifactUrl(manifest, "durationProjection", manifestUrl),
+        manifestArtifactIntegrity(manifest, "durationProjection")
+      ),
+      manifest,
+      "durationProjection"
+    );
+    const applied = applyDurationProjection(dictionaryRows, projectionRows, manifest);
+    analysisDurationArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      normalizedRows: applied.normalizedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes: {
+        durationValueDictionary: String(manifest.artifacts.durationValueDictionary.sha256 || ""),
+        durationProjection: String(manifest.artifacts.durationProjection.sha256 || ""),
+      },
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      normalizedRows: applied.normalizedRows,
+      releaseId: analysisDurationArtifact.releaseId,
+      artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
   function applyGeographyRowsToCatalog(rowsValue, manifest) {
     const rows = Array.isArray(rowsValue) ? rowsValue : [];
     const codes = manifest && manifest.codes && manifest.codes.ufoGeography || {};
@@ -2575,11 +2789,19 @@
         geographyAssignmentConfidence: dictionaries.geographyAssignmentConfidence.values.length,
         geographyBoundaryStatus: dictionaries.geographyBoundaryStatus.values.length,
         duplicateLineage: dictionaries.duplicateLineage.values.length,
+        durationMacroregion: dictionaries.durationMacroregion.values.length,
       },
       geographyProjection: {
         loaded: Boolean(analysisGeographyArtifact.loaded),
         appliedRows: Number(analysisGeographyArtifact.appliedRows) || 0,
         artifactHash: String(analysisGeographyArtifact.artifactHash || ""),
+      },
+      durationProjection: {
+        loaded: Boolean(analysisDurationArtifact.loaded),
+        appliedRows: Number(analysisDurationArtifact.appliedRows) || 0,
+        normalizedRows: Number(analysisDurationArtifact.normalizedRows) || 0,
+        releaseId: String(analysisDurationArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes || {}),
       },
     };
   }
@@ -2595,6 +2817,9 @@
     analysisCoordinatePileCounts = new Map();
     analysisGeographyArtifact = {
       manifest: null, rows: null, codes: {}, loaded: false, appliedRows: 0, artifactHash: "",
+    };
+    analysisDurationArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, normalizedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCache.clear();
     analysisMatchCache.clear();
@@ -2682,6 +2907,26 @@
         loadAnalysisGeographyArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisGeographyArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisDurationArtifact") {
+        loadAnalysisDurationArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisDurationArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),

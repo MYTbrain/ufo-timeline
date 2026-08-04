@@ -170,13 +170,14 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 85);
+assert.equal(added.storage.typedBytes, rows.length * 110);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
 assert.ok(added.storage.dictionaries.sameDayMatchStrength >= 2);
 assert.ok(added.storage.dictionaries.country >= 2);
 assert.equal(added.storage.geographyProjection.loaded, false);
+assert.equal(added.storage.durationProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
 const filters = {
@@ -302,6 +303,125 @@ const misorderedSetup = await misorderedWorker.sendAsync({
 assert.equal(misorderedSetup.type, "catalogFacetWorkerError");
 assert.match(misorderedSetup.error, /does not match the served mapped-event order/i);
 
+const durationStatusCodes = ["unparsed", "exact", "closed_range", "approximate", "lower_censored", "upper_censored", "ambiguous"];
+const durationBinCodes = ["unknown", "under_10_seconds", "10_59_seconds", "1_4_minutes", "5_14_minutes", "15_59_minutes", "1_5_hours", "over_5_hours"];
+const rawHash = (value) => createHash("sha256").update(value).digest("hex");
+const durationDictionaryRows = [
+  [1, rawHash("2 Minutes"), "2 Minutes", 1, 0, 120, 120, 3, 3, 1, 1],
+  [2, rawHash("5"), "5", 3, 0, 300, 300, 4, 0, 2, 1],
+];
+const durationProjectionRows = [
+  [0, "2606225892387599", 1, 1],
+  [1, "city-event", 0, 1],
+];
+const durationDictionaryText = JSON.stringify(durationDictionaryRows);
+const durationProjectionText = JSON.stringify(durationProjectionRows);
+const durationManifest = {
+  schemaId: "ufo-timeline-analysis-duration-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-duration-v1-fixture",
+  artifacts: {
+    durationValueDictionary: {
+      file: "data/analysis_duration_v1/duration_value_dictionary_v1.json",
+      sha256: rawHash(durationDictionaryText),
+      gzipSha256: "a".repeat(64),
+      rowCount: durationDictionaryRows.length,
+      rowSchema: ["sourceCode", "rawValueSha256", "rawValue", "statusCode", "reasonCode", "lowerSeconds", "upperSeconds", "descriptiveBinCode", "inferentialBinCode", "sourceContractCode", "occurrenceCount"],
+    },
+    durationProjection: {
+      file: "data/analysis_duration_v1/duration_projection_v1.json",
+      sha256: rawHash(durationProjectionText),
+      gzipSha256: "b".repeat(64),
+      rowCount: durationProjectionRows.length,
+      rowSchema: ["catalogRowIndex", "eventId", "valueCode", "macroregionCode"],
+    },
+  },
+  codes: {
+    source: ["unknown", "nuforc", "ufocat"],
+    status: durationStatusCodes,
+    reason: ["fixture"],
+    durationBin: durationBinCodes,
+    sourceContract: ["none", "explicit_unit_text_v1", "ufocat_2023_codebook_dur"],
+    macroregion: ["unknown", "europe"],
+  },
+  counts: { catalogRows: rows.length, rawDurationRows: 2, normalizedRows: 2 },
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_runtime_gated_comparisons" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceBinN: 20 },
+  negativeControls: { leaveOneSourceOut: { interpretation: "fixture" } },
+};
+const durationWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => {
+    const url = String(urlValue);
+    if (url.includes("duration_value_dictionary")) return new Response(durationDictionaryText, { status: 200 });
+    if (url.includes("duration_projection")) return new Response(durationProjectionText, { status: 200 });
+    return new Response("not found", { status: 404 });
+  },
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+durationWorker.send({ type: "addCatalogFacetRows", requestId: "duration-catalog", rows });
+const durationSetup = await durationWorker.sendAsync({
+  type: "setAnalysisDurationArtifact",
+  requestId: "duration-setup",
+  filterGeneration: 4,
+  manifest: durationManifest,
+  urls: { manifest: "https://example.test/data/analysis_duration_v1/manifest.json" },
+});
+assert.equal(durationSetup.type, "analysisDurationArtifactSet");
+assert.equal(durationSetup.snapshot.appliedRows, 2);
+assert.equal(durationSetup.snapshot.normalizedRows, 2);
+assert.equal(durationSetup.snapshot.readinessStatus, "ready_descriptive");
+const durationFullCorpus = durationWorker.send({
+  type: "computeAnalysis",
+  requestId: "duration-full-corpus",
+  filterGeneration: 4,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "duration-worker-fixture",
+  selectedDomains: ["time"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(durationFullCorpus.type, "analysisComputed");
+assert.equal(durationFullCorpus.result.time.duration.status, "ready_descriptive");
+assert.equal(durationFullCorpus.result.time.duration.coverage.active.normalizedRows, 2);
+assert.equal(durationFullCorpus.result.time.duration.coverage.active.descriptiveBinnedRows, 2);
+assert.deepEqual(durationFullCorpus.result.time.duration.artifactHashes, {
+  durationProjection: rawHash(durationProjectionText),
+  durationValueDictionary: rawHash(durationDictionaryText),
+});
+
+const misorderedDurationProjection = durationProjectionRows.map((row) => row.slice());
+misorderedDurationProjection[0][1] = "wrong-duration-event";
+const misorderedDurationText = JSON.stringify(misorderedDurationProjection);
+const misorderedDurationManifest = structuredClone(durationManifest);
+misorderedDurationManifest.artifacts.durationProjection.sha256 = rawHash(misorderedDurationText);
+const misorderedDurationWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => new Response(
+    String(urlValue).includes("duration_value_dictionary") ? durationDictionaryText : misorderedDurationText,
+    { status: 200 }
+  ),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+misorderedDurationWorker.send({ type: "addCatalogFacetRows", requestId: "misordered-duration-catalog", rows });
+const misorderedDurationSetup = await misorderedDurationWorker.sendAsync({
+  type: "setAnalysisDurationArtifact",
+  requestId: "misordered-duration-setup",
+  filterGeneration: 5,
+  manifest: misorderedDurationManifest,
+  urls: { manifest: "https://example.test/data/analysis_duration_v1/manifest.json" },
+});
+assert.equal(misorderedDurationSetup.type, "catalogFacetWorkerError");
+assert.match(misorderedDurationSetup.error, /event ID does not match the served catalog/i);
+
 const isolatedDisc = worker.send({
   type: "computeFilteredCatalogIds",
   requestId: "filter-disc",
@@ -400,7 +520,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 85);
+assert.equal(numericAdded.storage.typedBytes, 110);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1249,6 +1369,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   runtime: signatureRuntime,
   analysisContextReleaseHashes: () => ({ cropCircles: "crop-a", animalReports: "animal-a" }),
   analysisV2ArtifactHashes: () => ({}),
+  analysisDurationArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });
 const baseSnapshot = {

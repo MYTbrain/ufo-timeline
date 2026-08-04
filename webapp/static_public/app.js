@@ -1034,6 +1034,11 @@
     analysisGeographyManifest: null,
     analysisGeographyWorkerReady: false,
     analysisGeographyRequested: false,
+    analysisDurationPromise: null,
+    analysisDurationManifest: null,
+    analysisDurationWorkerReady: false,
+    analysisDurationRequested: false,
+    analysisDurationError: "",
     analysisRelationshipPromise: null,
     analysisRelationshipWorkerReady: false,
     analysisRelationshipRequested: false,
@@ -8203,7 +8208,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-duration-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8776,6 +8781,10 @@
       },
       onCancelPreview: function () {},
       onRetryAnalysis: function () {
+        if (runtime.analysisDurationError) {
+          ensureAnalysisDurationArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisContextEvidenceError) {
           ensureAnalysisContextEvidence().catch(function () { return null; });
           return;
@@ -8796,6 +8805,9 @@
         return ensureAnalysisGeographyArtifact().catch(function () { return null; });
       },
       onSectionActivate: function (change) {
+        if (change && change.sectionKey === "time") {
+          ensureAnalysisDurationArtifact().catch(function () { return null; });
+        }
         if (change && change.sectionKey === "context") {
           ensureAnalysisContextEvidence().catch(function () { return null; });
         }
@@ -9152,6 +9164,104 @@
     return runtime.analysisGeographyPromise;
   }
 
+  function analysisDurationArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    ["durationValueDictionary", "durationProjection"].forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.durationManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisDurationArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-duration-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed duration projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisDurationArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisDurationWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed duration setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisDurationArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisDurationArtifact() {
+    runtime.analysisDurationRequested = true;
+    if (runtime.analysisDurationWorkerReady) return Promise.resolve(runtime.analysisDurationManifest);
+    if (runtime.analysisDurationPromise) return runtime.analysisDurationPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_duration_v1/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("time", "loading", "Loading typed duration evidence...");
+    }
+    runtime.analysisDurationPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Duration manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisDurationManifest = manifest;
+        return setAnalysisDurationArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisDurationError = "";
+        runtime.analysisCache.clear();
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("time", "ready", "Typed duration evidence ready.");
+        }
+        scheduleAnalysisCompute("typed duration evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisDurationPromise = null;
+        runtime.analysisDurationWorkerReady = false;
+        runtime.analysisDurationRequested = false;
+        runtime.analysisDurationError = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("time", "error", runtime.analysisDurationError);
+        }
+        console.error("[analysis duration]", error);
+        throw error;
+      });
+    return runtime.analysisDurationPromise;
+  }
+
   function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
     const worker = ensureCatalogFacetWorker();
     if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
@@ -9453,11 +9563,18 @@
       spatialReady: Boolean(runtime.analysisSpatialWorkerReady),
       geographyRequested: Boolean(runtime.analysisGeographyRequested),
       geographyReady: Boolean(runtime.analysisGeographyWorkerReady),
+      durationRequested: Boolean(runtime.analysisDurationRequested),
+      durationReady: Boolean(runtime.analysisDurationWorkerReady),
+      durationHashes: analysisDurationArtifactHashes(runtime.analysisDurationManifest),
       relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
       relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
       contextSpatialRequested: Boolean(runtime.analysisContextSpatialRequested),
       contextSpatialReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
-      artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+      artifactHashes: Object.assign(
+        {},
+        analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        analysisDurationArtifactHashes(runtime.analysisDurationManifest)
+      ),
       datasetHash: analysisCatalogDatasetHash(),
     });
   }
@@ -9561,8 +9678,12 @@
         baselineMode: snapshot.baselineMode,
         datasetHash: analysisCatalogDatasetHash(),
         contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
-        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.2.0",
+        artifactHashes: Object.assign(
+          {},
+          analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+          analysisDurationArtifactHashes(runtime.analysisDurationManifest)
+        ),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.3.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -9634,6 +9755,7 @@
         {},
         analysisContextReleaseHashes(runtime.analysisContextManifest),
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
       ),
@@ -9673,11 +9795,12 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.2.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.3.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+          analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           cached.artifactHashes || {}
         ),
         filterSnapshot: snapshot,

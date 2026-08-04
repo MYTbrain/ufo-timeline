@@ -853,7 +853,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         state_dir / "completed_waves.json",
     ]
     tracked.extend(sorted((output_root / "contracts" / "v1").glob("*.json")))
-    tracked.extend(preregistration_paths)
+    tracked.extend(sorted((output_root / "waves").glob("*/*.json")))
     active_wave = None
     if active_registration:
         active_wave = {
