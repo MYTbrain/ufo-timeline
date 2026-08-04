@@ -2763,6 +2763,7 @@
       this._enforceDeferredRenderIsolation(this.resultRenderVersion);
       this.activeRenderPlanKeys = [];
       this.activeRenderTargetIds = [];
+      if (this.els.content) this.els.content.setAttribute("aria-busy", "false");
       this._applyAnalysisState(finalState, finalMessage);
       if (this.callbacks.onRenderComplete) {
         this.callbacks.onRenderComplete({

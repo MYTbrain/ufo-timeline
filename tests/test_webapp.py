@@ -1426,6 +1426,15 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     ):
         assert f'id="{primary_chart_id}"' in index_html
 
+    assert (
+        '<details class="analysis-supporting-details analysis-spatial-matrix-support">'
+        '<summary>Craft co-occurrence matrix</summary>'
+        '<div id="analysis-cooccurrence-chart"'
+    ) in index_html
+    assert (
+        'analysis-spatial-matrix-support" open'
+    ) not in index_html
+
 
 def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")

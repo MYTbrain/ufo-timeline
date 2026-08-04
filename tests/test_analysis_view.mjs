@@ -2188,6 +2188,7 @@ const flushedFrames = frameHarness.flushAll();
 assert.ok(flushedFrames >= 4 && flushedFrames <= 6, "only the active Overview dashboard should render in its bounded frame batch; observed " + flushedFrames + "; state " + progressiveController.analysisState + "; error " + progressiveDocument.getElementById("analysis-error-message").textContent);
 assert.equal(progressiveController.renderPending, false);
 assert.equal(progressiveController.analysisState, "ready");
+assert.equal(progressiveDocument.getElementById("analysis-content").getAttribute("aria-busy"), "false", "completed chart batches clear their accessibility busy state");
 assert.equal(progressiveDocument.getElementById("analysis-content").hidden, false);
 assert.equal(progressiveDocument.getElementById("analysis-active-count").textContent, "401");
 assert.equal(progressiveDocument.getElementById("analysis-time-series-chart").children.length, 0, "the hidden Time dashboard remains unmaterialized after Overview finishes");
