@@ -630,8 +630,13 @@
     return finiteNumber(firstDefined(item, keys, 0));
   }
 
-  function datumReference(item) {
-    const value = firstDefined(item, ["reference", "referenceCount", "baseline", "expected", "referenceShare"], null);
+  function datumReference(item, preferredKeys) {
+    const explicitKeys = asArray(preferredKeys);
+    const value = firstDefined(
+      item,
+      explicitKeys.length ? explicitKeys : ["reference", "referenceCount", "baseline", "expected", "referenceShare"],
+      null
+    );
     return value == null ? null : finiteNumber(value, 0);
   }
 
@@ -660,20 +665,35 @@
     return output;
   }
 
-  function intervalBounds(item) {
-    const interval = firstDefined(item, ["interval", "effectInterval", "effect_interval", "confidenceInterval", "confidence_interval", "differenceInterval", "difference_interval", "oddsRatioInterval", "odds_ratio_interval"], null);
+  function intervalBounds(item, optionsValue) {
+    const options = optionsValue || {};
+    const effectIntervalKeys = ["interval", "effectInterval", "effect_interval", "confidenceInterval", "confidence_interval", "differenceInterval", "difference_interval"];
+    const interval = firstDefined(
+      item,
+      options.ratioScale === true
+        ? ["oddsRatioInterval", "odds_ratio_interval"].concat(effectIntervalKeys)
+        : effectIntervalKeys,
+      null
+    );
+    const validated = function (lowerValue, upperValue) {
+      const lower = Number(lowerValue);
+      const upper = Number(upperValue);
+      return Number.isFinite(lower) && Number.isFinite(upper) && lower <= upper
+        ? { lower, upper }
+        : null;
+    };
     if (Array.isArray(interval) && interval.length >= 2 && interval[0] != null && interval[1] != null) {
-      return { lower: finiteNumber(interval[0]), upper: finiteNumber(interval[1]) };
+      return validated(interval[0], interval[1]);
     }
     if (isObject(interval)) {
       const lower = firstDefined(interval, ["lower", "low", "minimum", "min"], null);
       const upper = firstDefined(interval, ["upper", "high", "maximum", "max"], null);
-      if (lower != null && upper != null) return { lower: finiteNumber(lower), upper: finiteNumber(upper) };
+      if (lower != null && upper != null) return validated(lower, upper);
     }
     const lower = firstDefined(item, ["lower", "ciLower", "ci_lower"], null);
     const upper = firstDefined(item, ["upper", "ciUpper", "ci_upper"], null);
     return lower != null && upper != null
-      ? { lower: finiteNumber(lower), upper: finiteNumber(upper) }
+      ? validated(lower, upper)
       : null;
   }
 
@@ -696,7 +716,7 @@
   function conservativeEffectMagnitude(item, preferredKeys, nullValue) {
     const nullPoint = Number.isFinite(Number(nullValue)) ? Number(nullValue) : 0;
     const effect = comparativeEffect(item, preferredKeys);
-    const interval = intervalBounds(item);
+    const interval = intervalBounds(item, { ratioScale: nullPoint === 1 });
     let boundary = effect;
     if (interval) {
       const lower = Math.min(interval.lower, interval.upper);
@@ -3116,6 +3136,7 @@
 
     _renderForestPlot(chartId, items, summary, options) {
       const config = options || {};
+      const ratioScale = config.scale === "ratio" || finiteNumber(config.nullValue, 0) === 1;
       const ranked = asArray(items).filter(isObject).slice();
       if (config.rankByEvidence) {
         ranked.sort(function (left, right) {
@@ -3127,7 +3148,6 @@
       const data = ranked.slice(0, config.limit || 24);
       const container = this._prepareChart(chartId, data, summary, config.emptyMessage || "No qualified adjusted effects are available for this cohort.");
       if (!container) return;
-      const ratioScale = config.scale === "ratio" || finiteNumber(config.nullValue, 0) === 1;
       const transform = function (value) {
         const numeric = finiteNumber(value, ratioScale ? 1 : 0);
         return ratioScale ? Math.log2(Math.max(Number.EPSILON, numeric)) : numeric;
@@ -3135,7 +3155,7 @@
       const values = [];
       data.forEach(function (item) {
         const effect = comparativeEffect(item, config.valueKeys);
-        const interval = intervalBounds(item);
+        const interval = intervalBounds(item, { ratioScale });
         values.push(Math.abs(transform(effect)));
         if (interval) values.push(Math.abs(transform(interval.lower)), Math.abs(transform(interval.upper)));
       });
@@ -3156,7 +3176,8 @@
       data.forEach((item, index) => {
         const label = datumLabel(item, index);
         const effect = comparativeEffect(item, config.valueKeys);
-        const interval = intervalBounds(item) || { lower: effect, upper: effect };
+        const interval = intervalBounds(item, { ratioScale });
+        const plotInterval = interval || { lower: effect, upper: effect };
         const itemSuppression = suppressionReason(item);
         const selectable = estimateAvailable(item, config.valueKeys) && datumHasPreview(item);
         const row = this._element(selectable ? "button" : "div", "analysis-forest-row" + (config.compact ? " analysis-signal-spectrum-row" : ""));
@@ -3166,13 +3187,13 @@
         row.appendChild(this._element("span", "analysis-forest-label", label));
         const track = this._element("span", "analysis-forest-track");
         const intervalMark = this._element("span", "analysis-forest-interval");
-        const lower = Math.min(interval.lower, interval.upper);
-        const upper = Math.max(interval.lower, interval.upper);
+        const lower = plotInterval.lower;
+        const upper = plotInterval.upper;
         intervalMark.style.setProperty("--analysis-ci-left", position(lower).toFixed(2) + "%");
         intervalMark.style.setProperty("--analysis-ci-width", Math.max(0.8, position(upper) - position(lower)).toFixed(2) + "%");
         const point = this._element("span", "analysis-forest-point");
         point.style.setProperty("--analysis-point-left", position(effect).toFixed(2) + "%");
-        track.appendChild(intervalMark);
+        if (interval) track.appendChild(intervalMark);
         track.appendChild(point);
         row.appendChild(track);
         const qValue = firstDefined(item, ["qValue", "q_value", "q"], null);
@@ -3180,13 +3201,16 @@
         const comparisonCount = firstDefined(item, asArray(config.comparisonCountKeys), null);
         const countText = primaryCount == null && comparisonCount == null ? "" : cleanText(config.primaryCountLabel, "Observed") + " n=" + formatCount(primaryCount)
           + " · " + cleanText(config.comparisonCountLabel, "Expected") + " n=" + formatCount(comparisonCount);
+        const intervalLabel = interval
+          ? (ratioScale ? formatInterval(interval) : formatPercentInterval(interval))
+          : "unavailable";
         const valueLabel = (ratioScale ? cleanText(config.effectLabel, "Odds ratio") + " " + formatDecimal(effect, 3) : formatSignedPercent(effect))
-          + " · 95% CI " + (ratioScale ? formatInterval(interval) : formatPercentInterval(interval))
+          + " · 95% CI " + intervalLabel
           + (qValue == null ? "" : " · q=" + formatDecimal(qValue, 3));
         const faceValueLabel = config.compact
           ? (ratioScale
-            ? formatDecimal(effect, 2) + " · " + formatInterval(interval)
-            : formatSignedPercent(effect) + " · " + formatPercentInterval(interval))
+            ? formatDecimal(effect, 2) + " · " + intervalLabel
+            : formatSignedPercent(effect) + " · " + intervalLabel)
           : valueLabel;
         row.appendChild(this._element("span", "analysis-forest-value", faceValueLabel));
         if (countText) row.appendChild(this._element("span", "analysis-forest-counts", countText));
@@ -3200,7 +3224,7 @@
         const tableRow = [
           label,
           ratioScale ? formatDecimal(effect, 3) : formatSignedPercent(effect),
-          ratioScale ? formatInterval(interval) : formatPercentInterval(interval),
+          interval ? (ratioScale ? formatInterval(interval) : formatPercentInterval(interval)) : "—",
           qValue == null ? "—" : formatDecimal(qValue, 3),
           inferenceEligible(item) ? "Inferentially qualified" : (suppressionReason(item) ? "Descriptive · " + suppressionReason(item) : "Descriptive"),
         ];
@@ -3345,10 +3369,10 @@
       const container = this._prepareChart(chartId, data, summary, config.emptyMessage);
       if (!container) return;
       const magnitudes = data.map(function (item) {
-        return Math.max(Math.abs(datumValue(item, config.valueKeys)), hideReference ? 0 : Math.abs(datumReference(item) || 0));
+        return Math.max(Math.abs(datumValue(item, config.valueKeys)), hideReference ? 0 : Math.abs(datumReference(item, config.referenceKeys) || 0));
       });
       const maximum = config.scaleActual ? positiveSeriesMaximum(magnitudes) : Math.max(1, ...magnitudes);
-      const includeReference = !hideReference && data.some(function (item) { return datumReference(item) != null; });
+      const includeReference = !hideReference && data.some(function (item) { return datumReference(item, config.referenceKeys) != null; });
       const hasIntervals = data.some(function (item) {
         return firstDefined(item, ["interval", "confidenceInterval", "intervalLabel"], null) != null;
       });
@@ -3357,7 +3381,7 @@
       data.forEach((item, index) => {
         const label = datumLabel(item, index);
         const value = datumValue(item, config.valueKeys);
-        const reference = hideReference ? null : datumReference(item);
+        const reference = hideReference ? null : datumReference(item, config.referenceKeys);
         const listItem = this._element("li", "analysis-bar-item");
         const selectable = datumHasPreview(item);
         const row = this._element(selectable ? "button" : "div", "analysis-bar-row");
@@ -5340,6 +5364,7 @@
       this._renderBars("analysis-duration-chart", distribution, summary, {
         caption: "Conservative reported-duration distribution",
         valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
         valueFormat: "percent",
         valueLabel: "Active share",
         referenceLabel: "Reference share",

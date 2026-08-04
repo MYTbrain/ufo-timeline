@@ -1133,7 +1133,7 @@ const result = {
       ],
       comparisons: [
         { key: "1_4_minutes", label: "1–4 minutes", observedCount: 45, referenceCount: 32, adjustedDifference: 0.04, interval: { lower: 0.01, upper: 0.07 }, qValue: 0.04, inferenceEligible: true, measurementClass: "exact_or_closed_range_same_bin_only" },
-        { key: "5_14_minutes", label: "5–14 minutes", observedCount: 35, referenceCount: 28, adjustedDifference: -0.04, suppressionReasons: ["minimum_independent_sources"], inferenceEligible: false, measurementClass: "exact_or_closed_range_same_bin_only" },
+        { key: "5_14_minutes", label: "5–14 minutes", observedCount: 35, referenceCount: 28, adjustedDifference: -0.04, oddsRatioInterval: { lower: 0.7, upper: 1.4 }, suppressionReasons: ["minimum_independent_sources"], inferenceEligible: false, measurementClass: "exact_or_closed_range_same_bin_only" },
       ],
       comparisonMetadata: { fdrFamily: "duration_bins_v1" },
       patternFinderEligible: false,
@@ -1397,8 +1397,10 @@ assert.match(descendants(document.getElementById("analysis-time-series-chart")).
 assert.ok(document.getElementById("analysis-month-year-chart").children.length >= 2);
 assert.match(document.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources.*40% of matched reports/i);
 assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*51\.6%.*5–14 minutes.*48\.4%/i);
+assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*46\.6%.*5–14 minutes.*53\.4%/i, "duration reference bars use reference shares, not reference counts formatted as percentages");
 assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*\+4%.*95%/i);
 assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /minimum independent sources/i);
+assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /5–14 minutes.*-4%.*95% CI unavailable/i, "suppressed share differences do not relabel an odds-ratio interval as a percent interval");
 assert.match(descendants(document.getElementById("analysis-month-year-chart")).map((element) => element.textContent).join(" "), /07\/JUL/, "month heatmaps use unambiguous chronological number/name labels");
 const monthHeatmapHeaders = descendants(document.getElementById("analysis-month-year-chart"))
   .filter((element) => element.tagName === "TH" && /^\d{2}\/[A-Z]{3}$/.test(element.textContent))

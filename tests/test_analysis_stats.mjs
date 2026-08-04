@@ -1448,6 +1448,7 @@ assert.equal(shortDurationComparison.inferenceEligible, true);
 assert.equal(shortDurationComparison.activeIndependentSources, 2);
 assert.equal(shortDurationComparison.patternFinderEligible, false);
 assert.equal(shortDurationComparison.interval.method, "deterministic_aggregated_stratum_bootstrap");
+assert.ok(shortDurationComparison.interval.lower <= shortDurationComparison.interval.upper, "duration bootstrap interval endpoints stay ordered");
 assert.equal(
   durationAnalysis.patterns.some((pattern) => pattern.family === "duration"),
   false,
@@ -1467,6 +1468,7 @@ const singleSourceDuration = stats.computeAnalysis({
 });
 assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.inferenceEligible === false));
 assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.pValue === null && row.qValue === null));
+assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.interval === null), "suppressed duration comparisons expose no inferential interval");
 assert.ok(singleSourceDuration.time.duration.comparisons.some((row) => row.suppressionReasons.includes("minimum_independent_sources")));
 
 const statsSource = fs.readFileSync("webapp/static_public/analysis_stats.js", "utf8");
