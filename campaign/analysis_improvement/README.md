@@ -22,3 +22,9 @@ For a new campaign baseline, run `python scripts/build_analysis_improvement_camp
 Advance an active campaign by adding the next preregistration, the completed wave's before/after metrics and receipt, then updating `state/completed_waves.json`, `state/ranked_backlog.json`, `state/module_readiness.json`, and `state/current.json` with verified artifact hashes.
 
 The generated state is validated by `tests/test_analysis_improvement_campaign.py`. Per-wave preregistrations and receipts live under `waves/<wave-id>/` and must validate against the schemas under `contracts/v1/`.
+
+## Current status
+
+Wave 2 made role-preserving reporting-delay evidence estimable for 261,331 catalog rows (37.179343%) across MUFON and NUFORC. The exact frozen package passed preview, production, served-hash parity, and isolated rollback reconstruction, and is deployed as production deployment `ecaefd00-cdb6-47b0-8abc-910e29a1a229`.
+
+Wave 3 is active under its pre-implementation registration. It is limited to provenance-preserving coordinate evidence repair: source coordinates, generalized public markers, and unresolved conflicts must remain separate, and no geocoding, canonical repair, or inferred precision upgrade is permitted.

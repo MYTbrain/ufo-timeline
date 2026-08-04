@@ -1,0 +1,88 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-002-reporting-delay-assessment",
+  "generatedAt": "2026-08-04T19:34:24Z",
+  "candidateCommit": "4af76a358c0f6104705837753480deee2c7699f9",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "catalogRows": 702893,
+    "dateRoleEvidenceRows": 270461,
+    "typedRows": 261331,
+    "typedCatalogPct": 37.179343,
+    "supportedSources": {
+      "mufon": 113016,
+      "nuforc": 148315
+    },
+    "dateRolesPreserved": true,
+    "negativeAndAmbiguousIntervalsFailClosed": true,
+    "status": "ready_descriptive"
+  },
+  "tests": {
+    "python": {
+      "passed": 1278,
+      "subtestsPassed": 4,
+      "warnings": 1
+    },
+    "javascript": {
+      "passed": 38,
+      "failed": 0,
+      "files": 17
+    },
+    "targetedPythonPassed": 78,
+    "analysisViewInteractionFilesPassed": 1,
+    "deterministicBuildAndProjectionParityPassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-reporting-delay-v1-20260804",
+    "prefix": "releases/analysis-reporting-delay-v1-20260804",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-reporting-delay-v1-20260804",
+    "payloadCount": 14,
+    "payloadBytes": 49629719,
+    "payloadTreeSha256": "ab3a241aff8f1dd302edf83d0e511c1f03bc451f0cab746c343569f29a52109d",
+    "uploaded": 14,
+    "verified": 14,
+    "projectionGzipSha256": "ad89299c693bf0fd9fb7deb350028cffb1aee6006807f51ced0c7e69286b10e3",
+    "previewCorsStatus": 200,
+    "previewCorsOrigin": "https://b441a480.ufo-timeline.pages.dev"
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-reporting-delay-v1-frozen-pages-qa5_20260804",
+    "fileCount": 169,
+    "totalBytes": 107282225,
+    "treeSha256": "cb0c580f214dc5bfefac0bdcac429f642e8cbb76a7af3a6475c5243e7bef505a",
+    "optionalLayerPayloadsInPages": 0,
+    "exactReleaseInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "b441a480-980b-4a11-9b1e-f984536f5abd",
+    "immutableUrl": "https://b441a480.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-reporting-delay-v1-u705.ufo-timeline.pages.dev",
+    "branch": "analysis-reporting-delay-v1-preview-qa5-20260804",
+    "sourceLabel": "4af76a3",
+    "networkSmokePassed": true,
+    "rootStatus": 200,
+    "reportingDelayManifestStatus": 200,
+    "reportingDelayManifestSha256": "332c2b39a17715cd255d6c3a39ac0d175db1d379b6327ddb91c2499aa6e53fd9"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopFirstUsefulMs": 1986.2,
+    "constrainedFirstUsefulMs": 2143.9,
+    "desktopWarmP95Ms": 40.6,
+    "constrainedWarmP95Ms": 112.6,
+    "desktopColdSpatialMs": 996.6,
+    "maximumOrdinaryDashboardPx": 882.953125,
+    "mobileNoOverflow": true,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "dd6f6335-7549-4c45-9c83-ed22eea00c0b",
+    "immutableUrl": "https://dd6f6335.ufo-timeline.pages.dev",
+    "sourceLabel": "c6d0615"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}

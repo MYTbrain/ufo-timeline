@@ -1,0 +1,116 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-003-coordinate-evidence-repair",
+  "candidateId": "coordinate_evidence_repair",
+  "generatedAt": "2026-08-04T19:34:24Z",
+  "baselineCommit": "4af76a358c0f6104705837753480deee2c7699f9",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-reporting-delay-v1-20260804",
+    "deploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229",
+    "frozenTreeSha256": "cb0c580f214dc5bfefac0bdcac429f642e8cbb76a7af3a6475c5243e7bef505a"
+  },
+  "primaryObjective": "Make coordinate evidence a defensible, provenance-preserving Analysis assessment that separates source-provided coordinates, generalized public markers, and unresolved conflicts without upgrading precision by inference.",
+  "hypothesis": "The 110,352 rows with source-coordinate evidence across Majestic and UFOCAT can support an immutable coordinate audit lane with explicit origin, precision, country-consistency, and failure status while retaining generalized and unresolved markers as separate non-inferential states.",
+  "interventionBoundary": {
+    "inScope": [
+      "immutable event-aligned coordinate evidence sidecar with original latitude, longitude, source role, and precision class",
+      "typed coordinate validity, country-consistency, dateline, high-latitude, duplicate-lineage, and unresolved-conflict statuses",
+      "descriptive source-era-region coverage and conservative quality comparison",
+      "compact Sources and Spatial evidence disclosure plus JSON and CSV evidence export",
+      "deterministic provenance, release, preview, production, and rollback receipts"
+    ],
+    "outOfScope": [
+      "canonical event mutation",
+      "external geocoding or reverse-geocoding",
+      "promoting country, state, city, centroid, or generalized public markers to source-coordinate precision",
+      "silently repairing swapped, zero, out-of-range, or country-inconsistent coordinates",
+      "facility, crop, animal, incidence, risk, authenticity, travel, or causal claims",
+      "any assessment other than coordinate evidence"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "sourceCoordinateRows": 110352,
+    "sourceCoordinateCoveragePct": 15.699687,
+    "coveredSources": ["majestic", "ufocat"],
+    "browserTypedCoordinateEvidenceRows": 0,
+    "coordinateEvidenceAssessmentStatus": "unavailable"
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 88281,
+    "minimumCatalogCoveragePct": 12.55,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalCoordinatesPreserved": true,
+    "generalizedMarkersRemainSeparate": true,
+    "unresolvedConflictsFailClosed": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "original latitude and longitude when present",
+      "coordinate source role",
+      "location precision class",
+      "country label and consistency status",
+      "coordinate validity status and reason",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "typedCatalogPct": 12.55,
+      "supportedSources": 2,
+      "commonSupportRate": 0.8,
+      "minimumActiveAndReferenceBinN": 20
+    },
+    "estimators": [
+      "descriptive provenance-preserving coordinate quality distribution",
+      "source-era-region common-support standardized active/reference share difference",
+      "deterministic 95 percent bootstrap interval"
+    ],
+    "negativeControls": [
+      "generalized-marker exclusion lane",
+      "country-boundary consistency holdout",
+      "dateline and high-latitude holdout",
+      "leave-one-source-out",
+      "duplicate-lineage holdout",
+      "unresolved and invalid coordinates remain excluded"
+    ],
+    "uncertaintyTreatment": "Original coordinates, coordinate origin, precision, generalized public markers, and country-consistency conflicts remain distinct. Invalid, ambiguous, missing, swapped, zero-sentinel, or unresolved values fail closed and are never upgraded by inference.",
+    "suppressionPolicy": "Show readiness and descriptive failure counts instead of inferential comparisons whenever typed coverage, provenance integrity, common support, bin support, or stability gates fail. Never treat missing coordinates as zero or generalized markers as exact sites."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_sources_or_spatial_dashboard_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedFirstUsefulMs": 5000,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "coordinate-origin separation, original-value preservation, and idempotence",
+    "sidecar-to-projection parity and deterministic hashes",
+    "country-consistency, dateline, high-latitude, zero-sentinel, and duplicate-lineage tests",
+    "statistical determinism, common support, FDR isolation, and holdout stability",
+    "no geocoding, precision promotion, raw-count-driven inference, or Pattern Finder promotion in v1",
+    "complete Python and JavaScript suites",
+    "Pages and R2 separation with immutable versioned R2 keys",
+    "clean-clone reconstruction",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 88281 rows retain typed source-coordinate evidence without geocoding or canonical repair",
+    "fewer than two sources retain at least 1000 typed rows",
+    "source coordinates and generalized public markers cannot remain distinct",
+    "the assessment requires a second browser event model",
+    "scientific gates would need weakening",
+    "rights or provenance cannot be resolved",
+    "performance or existing Analysis behavior regresses beyond release gates"
+  ]
+}

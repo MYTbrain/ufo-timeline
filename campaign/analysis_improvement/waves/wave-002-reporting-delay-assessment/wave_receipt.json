@@ -1,0 +1,109 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-002-reporting-delay-assessment",
+  "generatedAt": "2026-08-04T19:34:24Z",
+  "primaryObjective": "Make reporting delay a defensible, role-preserving, source-aware Analysis assessment without conflating occurrence, report, and posting dates.",
+  "preregisteredOutcome": "accepted_material_gain_and_promoted",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "catalogRows": 702893,
+      "dateRoleEvidenceRows": 270461,
+      "typedRows": 261331,
+      "typedCatalogPct": 37.179343,
+      "supportedSources": ["mufon", "nuforc"],
+      "reportedAndPostedRolesRemainSeparate": true,
+      "negativeAndAmbiguousIntervalsFailClosed": true,
+      "originalValuesPreserved": true,
+      "canonicalEventRecordsMutated": false,
+      "status": "ready_descriptive"
+    }
+  },
+  "beforeMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/preregistration.json",
+    "reportingDelayAssessmentStatus": "unavailable",
+    "browserTypedReportingDelayRows": 0
+  },
+  "afterMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/before_after_metrics.json",
+    "reportingDelayAssessmentStatus": "ready_descriptive",
+    "typedRows": 261331,
+    "typedCatalogPct": 37.179343
+  },
+  "tests": {
+    "python": {
+      "passed": 1278,
+      "subtestsPassed": 4,
+      "warnings": 1
+    },
+    "javascript": {
+      "passed": 38,
+      "failed": 0,
+      "files": 17
+    },
+    "deterministicReconstructionPassed": true,
+    "browserQaPassed": true,
+    "r2CorsPassed": true,
+    "servedPreviewProductionHashParityPassed": true
+  },
+  "artifacts": {
+    "candidateCommit": "4af76a358c0f6104705837753480deee2c7699f9",
+    "sourceTreeSha256": "63f4b03c45275f7f15ba3d263a6c63f6092178a5276dd7dfbe7a59153024b63f",
+    "reportingDelayReleaseId": "analysis-reporting-delay-v1-20260804",
+    "reportingDelayR2Prefix": "releases/analysis-reporting-delay-v1-20260804",
+    "reportingDelayPayloadTreeSha256": "ab3a241aff8f1dd302edf83d0e511c1f03bc451f0cab746c343569f29a52109d",
+    "reportingDelayProjectionGzipSha256": "ad89299c693bf0fd9fb7deb350028cffb1aee6006807f51ced0c7e69286b10e3",
+    "frozenPagesPath": "cloudflare_bundle_r2_analysis-reporting-delay-v1-frozen-pages-qa5_20260804",
+    "frozenPagesFileCount": 169,
+    "frozenPagesTotalBytes": 107282225,
+    "frozenPagesTreeSha256": "cb0c580f214dc5bfefac0bdcac429f642e8cbb76a7af3a6475c5243e7bef505a",
+    "frozenAssetSha256": {
+      "index.html": "d3ef9591f6b14038a9f8e228282757b13db07f6756dd20cf1aaf13156cc83acb",
+      "app.js": "b9d6f9bc06c6e82b4b8c0487e91550ad56a789260ae0b93804099eef258ccc16",
+      "analysis_view.js": "f6bfb910a60077f0237bb159503a9e31aeca3ae7a2d8a8b7269b2a5a85d3543d",
+      "styles.css": "c4d601ec77310f646273f6fc20ecf4a05171ee76a6367fe21d5050ab3ef9f00e",
+      "reporting_delay_manifest.json": "332c2b39a17715cd255d6c3a39ac0d175db1d379b6327ddb91c2499aa6e53fd9"
+    },
+    "servedAssetSha256": {
+      "index.html_with_cloudflare_analytics": "e8afa522fd31c53e5923530f5a6deb753ecdeef81d2345132805a0493b814734",
+      "app.js": "b9d6f9bc06c6e82b4b8c0487e91550ad56a789260ae0b93804099eef258ccc16",
+      "analysis_view.js": "f6bfb910a60077f0237bb159503a9e31aeca3ae7a2d8a8b7269b2a5a85d3543d",
+      "styles.css": "c4d601ec77310f646273f6fc20ecf4a05171ee76a6367fe21d5050ab3ef9f00e",
+      "reporting_delay_manifest.json": "332c2b39a17715cd255d6c3a39ac0d175db1d379b6327ddb91c2499aa6e53fd9"
+    }
+  },
+  "preview": {
+    "deploymentId": "b441a480-980b-4a11-9b1e-f984536f5abd",
+    "immutableUrl": "https://b441a480.ufo-timeline.pages.dev",
+    "branch": "analysis-reporting-delay-v1-preview-qa5-20260804",
+    "sourceLabel": "4af76a3",
+    "qaPassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "r2CorsStatus": 200
+  },
+  "production": {
+    "deploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229",
+    "immutableUrl": "https://ecaefd00.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceLabel": "4af76a3",
+    "smokePassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "previewProductionCanonicalHashesIdentical": true,
+    "uploadedNewContentFilesAfterPreview": 0
+  },
+  "rollback": {
+    "deploymentId": "dd6f6335-7549-4c45-9c83-ed22eea00c0b",
+    "immutableUrl": "https://dd6f6335.ufo-timeline.pages.dev",
+    "instructions": "Validate cloudflare_bundle_r2_analysis-duration-v1-frozen-pages-qa8_20260804 against the accepted Wave 1 receipt and tree 6376f3ede7393775b44980958b3efcdfc26d818d4ea8ca93b47df023732ad494, then deploy that frozen folder to branch main.",
+    "tested": true,
+    "testMethod": "isolated_preview_redeployment_and_served_hash_comparison",
+    "testDeploymentId": "1eb86fe5-4e49-47fc-b40c-4eb93cfa70f9",
+    "testImmutableUrl": "https://1eb86fe5.ufo-timeline.pages.dev",
+    "validatedTreeSha256": "6376f3ede7393775b44980958b3efcdfc26d818d4ea8ca93b47df023732ad494",
+    "servedHashesMatchedPriorProduction": true,
+    "secondaryFallbackDeploymentId": "9da4781b-7363-49d6-a9e6-fa1152c983f1"
+  },
+  "releaseGate": "accepted_and_promoted"
+}

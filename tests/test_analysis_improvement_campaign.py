@@ -64,22 +64,33 @@ def test_era_policy_is_deterministic() -> None:
 def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     current = load("state/current.json")
     completed = load("state/completed_waves.json")
-    wave_receipt = load("waves/wave-001-duration-assessment/wave_receipt.json")
+    wave_one_receipt = load("waves/wave-001-duration-assessment/wave_receipt.json")
+    wave_two_receipt = load("waves/wave-002-reporting-delay-assessment/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
-    assert current["currentProduction"]["deploymentId"] == wave_receipt["production"]["deploymentId"]
-    assert current["currentProduction"]["frozenTreeSha256"] == wave_receipt["artifacts"]["frozenPagesTreeSha256"]
-    assert current["rollbackTarget"]["deploymentId"] == wave_receipt["rollback"]["deploymentId"]
+    assert current["currentProduction"]["deploymentId"] == wave_two_receipt["production"]["deploymentId"]
+    assert current["currentProduction"]["frozenTreeSha256"] == wave_two_receipt["artifacts"]["frozenPagesTreeSha256"]
+    assert current["rollbackTarget"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
     assert current["consecutiveNoGainFrontierPasses"] == 0
     assert current["status"] == "active"
+    assert len(completed["waves"]) == 2
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
-    assert current["activeWave"]["waveId"] == "wave-002-reporting-delay-assessment"
+    assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
+    assert completed["waves"][1]["status"] == "accepted_and_promoted"
+    assert completed["waves"][1]["productionDeploymentId"] == wave_two_receipt["production"]["deploymentId"]
+    assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
+    assert current["activeWave"]["waveId"] == "wave-003-coordinate-evidence-repair"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/build_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/before_after_metrics.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/preview_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -128,6 +139,23 @@ def test_reporting_delay_wave_is_preregistered_before_implementation() -> None:
     assert preregistration["expectedMaterialGain"]["dateRolesPreserved"] is True
     assert "treating occurrence date as report or posting date" in preregistration["interventionBoundary"]["outOfScope"]
     assert "coercing negative or ambiguous delays to zero" in preregistration["interventionBoundary"]["outOfScope"]
+
+
+def test_reporting_delay_receipt_and_coordinate_wave_transition_are_pinned() -> None:
+    receipt = load("waves/wave-002-reporting-delay-assessment/wave_receipt.json")
+    coordinate = load("waves/wave-003-coordinate-evidence-repair/preregistration.json")
+    assert receipt["releaseGate"] == "accepted_and_promoted"
+    assert receipt["materialGain"]["passed"] is True
+    assert receipt["materialGain"]["evidence"]["typedRows"] == 261_331
+    assert receipt["materialGain"]["evidence"]["reportedAndPostedRolesRemainSeparate"] is True
+    assert receipt["rollback"]["tested"] is True
+    assert coordinate["candidateId"] == "coordinate_evidence_repair"
+    assert coordinate["baselineCommit"] == receipt["artifacts"]["candidateCommit"]
+    assert coordinate["beforeMetrics"]["sourceCoordinateRows"] == 110_352
+    assert coordinate["expectedMaterialGain"]["minimumNormalizedRows"] == 88_281
+    assert coordinate["expectedMaterialGain"]["minimumIndependentSources"] == 2
+    assert coordinate["expectedMaterialGain"]["generalizedMarkersRemainSeparate"] is True
+    assert "external geocoding or reverse-geocoding" in coordinate["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

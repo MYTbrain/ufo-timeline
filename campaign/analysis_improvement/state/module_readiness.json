@@ -93,13 +93,57 @@
                 "independent_source_identity"
             ],
             "sourceIndependenceScore": 2,
-            "status": "in_progress",
+            "materialRelease": {
+                "releaseId": "analysis-reporting-delay-v1-20260804",
+                "typedCatalogPct": 37.179343,
+                "typedRows": 261331,
+                "productionDeploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229"
+            },
+            "status": "ready_descriptive",
             "supportedSources": [
                 "mufon",
                 "nuforc"
             ],
             "suppressionPolicy": "suppress_inference_until_common_support_and_typed_normalization_pass",
             "uncertaintyTreatment": "typed_parser_uncertainty_and_bootstrap_interval_required",
+            "version": "1.0.0"
+        },
+        {
+            "baselineCoverage": {
+                "coveragePct": 15.699687,
+                "coveredRows": 110352,
+                "missingRows": 592541
+            },
+            "estimators": [
+                "descriptive_coordinate_evidence_distribution",
+                "source_era_region_common_support_comparison"
+            ],
+            "minimumCoveragePct": 12.55,
+            "moduleId": "coordinate_evidence",
+            "negativeControls": [
+                "generalized_marker_exclusion_lane",
+                "country_boundary_consistency_holdout",
+                "dateline_and_high_latitude_holdout",
+                "leave_one_source_out",
+                "duplicate_lineage_holdout"
+            ],
+            "requiredFields": [
+                "source_coordinate_latitude",
+                "source_coordinate_longitude",
+                "coordinate_source_role",
+                "location_precision_class",
+                "country_consistency_status",
+                "coordinate_validity_status",
+                "independent_source_identity"
+            ],
+            "sourceIndependenceScore": 2,
+            "status": "in_progress",
+            "supportedSources": [
+                "majestic",
+                "ufocat"
+            ],
+            "suppressionPolicy": "suppress inference whenever provenance integrity, typed coverage, common support, bin support, or stability gates fail; generalized markers never count as exact source sites",
+            "uncertaintyTreatment": "original coordinates, coordinate origin, precision, generalized public markers, and unresolved conflicts remain distinct; invalid, ambiguous, missing, swapped, zero-sentinel, or unresolved values fail closed",
             "version": "0.1.0-candidate"
         },
         {
@@ -306,7 +350,7 @@
         {
             "moduleId": "time",
             "status": "production_ready",
-            "version": "2.2.0"
+            "version": "2.4.0"
         },
         {
             "moduleId": "craft",
@@ -326,7 +370,7 @@
         {
             "moduleId": "sources_quality",
             "status": "production_ready",
-            "version": "2.2.0"
+            "version": "2.4.0"
         },
         {
             "moduleId": "context",
