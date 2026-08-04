@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_5_coordinate_evidence_assessment_1";
+  const ESTIMATOR_VERSION = "analysis_v2_6_time_of_day_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -76,6 +76,18 @@
     thirty_one_to_ninety_days: "31–90 days",
     ninety_one_to_365_days: "91–365 days",
     over_365_days: "Over 365 days",
+  });
+  const TIME_OF_DAY_BIN_ORDER = Object.freeze([
+    "night_00_05",
+    "morning_06_11",
+    "afternoon_12_17",
+    "evening_18_23",
+  ]);
+  const TIME_OF_DAY_BIN_LABELS = Object.freeze({
+    night_00_05: "00:01–05:59 source clock",
+    morning_06_11: "06:00–11:59 source clock",
+    afternoon_12_17: "12:01–17:59 source clock",
+    evening_18_23: "18:00–23:59 source clock",
   });
   const COORDINATE_QUALITY_BIN_ORDER = Object.freeze([
     "country_consistent",
@@ -1722,6 +1734,35 @@
     incrementRaw(accumulator.reportingDelayBinStrata.get(delayBin), stratum, 1);
   }
 
+  function addTimeOfDayRow(accumulator, row, source, civil) {
+    if (!row || row.analysisTimeOfDayAvailable !== true) return;
+    const status = category(row.analysisTimeOfDayStatus, "unparsed");
+    const descriptiveBin = category(row.analysisTimeOfDayDescriptiveBin, "unknown");
+    const inferentialBin = category(row.analysisTimeOfDayInferentialBin, "unknown");
+    const macroregion = category(row.analysisTimeOfDayMacroregion, "unknown");
+    const stratum = durationStratum(source, civil && civil.year, macroregion);
+    accumulator.timeOfDayRawRows += 1;
+    incrementRaw(accumulator.timeOfDayStatusCounts, status, 1);
+    if (["exact_clock", "approximate_clock", "clock_range", "qualitative_period"].indexOf(status) !== -1) {
+      accumulator.timeOfDayTypedRows += 1;
+      incrementRaw(accumulator.timeOfDayTypedSources, source, 1);
+    }
+    if (descriptiveBin !== "unknown") {
+      accumulator.timeOfDayDescriptiveRows += 1;
+      incrementRaw(accumulator.timeOfDayDescriptiveBins, descriptiveBin, 1);
+    }
+    if (inferentialBin !== "unknown") {
+      accumulator.timeOfDayExactRows += 1;
+      incrementRaw(accumulator.timeOfDayExactBins, inferentialBin, 1);
+      incrementRaw(accumulator.timeOfDayExactSources, source, 1);
+      incrementRaw(accumulator.timeOfDayExactStrataTotals, stratum, 1);
+      if (!accumulator.timeOfDayExactBinStrata.has(inferentialBin)) {
+        accumulator.timeOfDayExactBinStrata.set(inferentialBin, new Map());
+      }
+      incrementRaw(accumulator.timeOfDayExactBinStrata.get(inferentialBin), stratum, 1);
+    }
+  }
+
   function addCoordinateEvidenceRow(accumulator, row, source, civil) {
     if (!row || row.analysisCoordinateEvidenceAvailable !== true) return;
     const status = category(row.analysisCoordinateEvidenceStatus, "unavailable");
@@ -1853,6 +1894,17 @@
       reportingDelayBins: new Map(),
       reportingDelayStrataTotals: new Map(),
       reportingDelayBinStrata: new Map(),
+      timeOfDayRawRows: 0,
+      timeOfDayTypedRows: 0,
+      timeOfDayDescriptiveRows: 0,
+      timeOfDayExactRows: 0,
+      timeOfDayStatusCounts: new Map(),
+      timeOfDayTypedSources: new Map(),
+      timeOfDayDescriptiveBins: new Map(),
+      timeOfDayExactBins: new Map(),
+      timeOfDayExactSources: new Map(),
+      timeOfDayExactStrataTotals: new Map(),
+      timeOfDayExactBinStrata: new Map(),
       coordinateEvidenceRows: 0,
       coordinateEvidenceTypedRows: 0,
       coordinateEvidenceStatusCounts: new Map(),
@@ -2145,6 +2197,7 @@
     );
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
+    addTimeOfDayRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
   }
 
@@ -2224,6 +2277,7 @@
     }
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
+    addTimeOfDayRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
@@ -5682,6 +5736,178 @@
     };
   }
 
+  function timeOfDayComparisonStrata(active, reference, key) {
+    const activeTotals = active.timeOfDayExactStrataTotals || new Map();
+    const referenceTotals = reference.timeOfDayExactStrataTotals || new Map();
+    const activeCounts = active.timeOfDayExactBinStrata.get(key) || new Map();
+    const referenceCounts = reference.timeOfDayExactBinStrata.get(key) || new Map();
+    const strata = new Set([].concat(sortedKeys(activeTotals), sortedKeys(referenceTotals)));
+    return Array.from(strata).map(function (stratum) {
+      return {
+        key: stratum,
+        activeCount: mapCount(activeCounts, stratum),
+        activeTotal: mapCount(activeTotals, stratum),
+        referenceCount: mapCount(referenceCounts, stratum),
+        referenceTotal: mapCount(referenceTotals, stratum),
+      };
+    });
+  }
+
+  function timeOfDayCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      rawTimeRows: accumulator.timeOfDayRawRows,
+      rawTimeCoverage: round(rate(accumulator.timeOfDayRawRows, accumulator.total), 8),
+      typedRows: accumulator.timeOfDayTypedRows,
+      typedCoverage: round(rate(accumulator.timeOfDayTypedRows, accumulator.total), 8),
+      descriptiveBinnedRows: accumulator.timeOfDayDescriptiveRows,
+      exactInferentialRows: accumulator.timeOfDayExactRows,
+      typedSources: mapEntriesByCount(accumulator.timeOfDayTypedSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      exactSources: mapEntriesByCount(accumulator.timeOfDayExactSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.timeOfDayStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+    };
+  }
+
+  function buildTimeOfDayAssessment(active, reference, descriptor, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.timeOfDayArtifact && typeof options.timeOfDayArtifact === "object"
+      ? options.timeOfDayArtifact
+      : null;
+    const loaded = options.timeOfDayProjectionLoaded === true && artifact;
+    const activeCoverage = timeOfDayCoverage(active);
+    const referenceCoverage = timeOfDayCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-time-of-day-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: [],
+      comparisons: [],
+      comparisonMetadata: {
+        status: "data_unavailable",
+        covariates: ["source", "era", "macroregion"],
+        fdrFamily: "time_of_day_bins_v1",
+      },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["time_of_day_artifact_not_loaded"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const policy = artifact.policy || {};
+    const distribution = TIME_OF_DAY_BIN_ORDER.map(function (key) {
+      const activeCount = mapCount(active.timeOfDayDescriptiveBins, key);
+      const referenceCount = mapCount(reference.timeOfDayDescriptiveBins, key);
+      return {
+        key,
+        label: TIME_OF_DAY_BIN_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.timeOfDayDescriptiveRows), 8),
+        referenceShare: round(rate(referenceCount, reference.timeOfDayDescriptiveRows), 8),
+        measurementClass: "explicit_source_clock_exact_or_approximate",
+        inferenceEligible: false,
+      };
+    });
+    const comparisonUnavailable = [
+      COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+      COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE,
+      COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+    ].indexOf(descriptor.comparisonState) !== -1;
+    let comparisons = [];
+    let comparisonStatus = descriptor.comparisonState;
+    if (options.inferenceDeferred) {
+      comparisonStatus = "deferred";
+    } else if (!comparisonUnavailable) {
+      const activeSources = active.timeOfDayExactSources.size;
+      const referenceSources = reference.timeOfDayExactSources.size;
+      const minimumBinN = Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20);
+      const minimumSources = 3;
+      comparisons = TIME_OF_DAY_BIN_ORDER.map(function (key) {
+        const comparison = balancedCommonSupportComparison(timeOfDayComparisonStrata(active, reference, key), {
+          activeN: active.timeOfDayExactRows,
+          referenceN: reference.timeOfDayExactRows,
+          descriptive: descriptor.descriptive,
+          covariates: ["source", "era", "macroregion"],
+          minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+          bootstrapReplicates: options.bootstrapReplicates,
+          seed: [options.datasetHash || "not_provided", descriptor.mode, "time_of_day", key].join("|"),
+        });
+        comparison.family = "time_of_day";
+        comparison.key = key;
+        comparison.label = TIME_OF_DAY_BIN_LABELS[key] || key;
+        comparison.fdrFamily = "time_of_day_bins_v1";
+        comparison.patternFinderEligible = false;
+        comparison.measurementClass = "exact_source_clock_only_unknown_timezone_not_solar_time";
+        const reasons = [];
+        if (comparison.observedCount < minimumBinN) reasons.push("active_bin_n_below_" + minimumBinN);
+        if (comparison.referenceCount < minimumBinN) reasons.push("reference_bin_n_below_" + minimumBinN);
+        if (activeSources < minimumSources || referenceSources < minimumSources) reasons.push("minimum_independent_sources");
+        if (reasons.length) suppressDurationComparison(comparison, reasons);
+        comparison.minimumActiveAndReferenceBinN = minimumBinN;
+        comparison.minimumIndependentSources = minimumSources;
+        comparison.activeIndependentSources = activeSources;
+        comparison.referenceIndependentSources = referenceSources;
+        return comparison;
+      });
+      assignEligibleBenjaminiHochberg(comparisons);
+      comparisonStatus = comparisons.some(function (comparison) { return comparison.inferenceEligible; })
+        ? "ready_inferential"
+        : "suppressed";
+    }
+
+    const globalReady = String(readiness.status || "") === "ready_descriptive";
+    const activeReady = active.timeOfDayTypedRows > 0 && active.timeOfDayDescriptiveRows > 0;
+    const anyInference = comparisons.some(function (comparison) { return comparison.inferenceEligible; });
+    const status = !globalReady || !activeReady
+      ? "not_estimable"
+      : (anyInference ? "ready_descriptive_with_inferential_comparison" : "ready_descriptive");
+    const suppressionReasons = [];
+    if (!globalReady) suppressionReasons.push("global_time_of_day_readiness_failed");
+    if (!active.timeOfDayTypedRows) suppressionReasons.push("no_typed_time_of_day_in_active_cohort");
+    if (!active.timeOfDayDescriptiveRows) suppressionReasons.push("no_clock_binned_time_of_day_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-time-of-day-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "descriptive_with_exact_clock_runtime_gated_comparisons"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution,
+      comparisons,
+      comparisonMetadata: {
+        status: comparisonStatus,
+        comparisonState: descriptor.comparisonState,
+        covariates: ["source", "era", "macroregion"],
+        minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+        minimumActiveAndReferenceBinN: Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20),
+        minimumIndependentSources: 3,
+        fdrFamily: "time_of_day_bins_v1",
+        approximateRangeAndQualitativeExcludedFromInference: true,
+        midnightAndNoonSentinelsExcluded: true,
+        unknownTimezoneNotSolarOrUtc: true,
+      },
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, policy),
+    };
+  }
+
   function coordinateEvidenceComparisonStrata(active, reference, key) {
     const activeTotals = active.coordinateEvidenceStrataTotals || new Map();
     const referenceTotals = reference.coordinateEvidenceStrataTotals || new Map();
@@ -5971,6 +6197,13 @@
       bootstrapReplicates: options.bootstrapReplicates,
       datasetHash,
     });
+    time.timeOfDay = buildTimeOfDayAssessment(active, reference, descriptor, {
+      timeOfDayProjectionLoaded: options.timeOfDayProjectionLoaded,
+      timeOfDayArtifact: options.timeOfDayArtifact,
+      inferenceDeferred,
+      bootstrapReplicates: options.bootstrapReplicates,
+      datasetHash,
+    });
     time.monthComparison = balancedFamilies.time_month.comparisons;
     time.comparisonMetadata = balancedFamilies.time_month.metadata;
     time.bursts.forEach(function (burst) {
@@ -6215,6 +6448,8 @@
     DURATION_BIN_LABELS,
     REPORTING_DELAY_BIN_ORDER,
     REPORTING_DELAY_BIN_LABELS,
+    TIME_OF_DAY_BIN_ORDER,
+    TIME_OF_DAY_BIN_LABELS,
     COORDINATE_QUALITY_BIN_ORDER,
     COORDINATE_QUALITY_BIN_LABELS,
     FAMILY_ORDER,
@@ -6243,6 +6478,7 @@
     equalAreaMapCell6x12FromIndexes,
     normalizeContextProjections,
     buildDurationAssessment,
+    buildTimeOfDayAssessment,
     computeAnalysis,
   });
 });

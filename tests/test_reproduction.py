@@ -80,6 +80,20 @@ def _write_coordinate_evidence_manifest_stub(root: Path) -> None:
     _write(root / "data" / "analysis_coordinate_evidence_v1" / "manifest.json", json.dumps(value).encode("utf-8"))
 
 
+def _write_time_of_day_manifest_stub(root: Path) -> None:
+    value = {
+        "releaseId": "analysis-time-of-day-test-v1",
+        "assetBaseUrl": "https://assets.example.test/releases/analysis-time-of-day-test-v1",
+        "delivery": {
+            "pagesFiles": ["manifest.json"],
+            "immutablePrefix": "releases/analysis-time-of-day-test-v1",
+            "r2OnlyPaths": ["projection.json.gz"],
+        },
+        "payloads": {"projection": {"path": "projection.json.gz", "bytes": 2, "sha256": "0" * 64, "r2Only": True}},
+    }
+    _write(root / "data" / "analysis_time_of_day_v1" / "manifest.json", json.dumps(value).encode("utf-8"))
+
+
 def test_deterministic_pages_archive_and_tree_hash(tmp_path: Path) -> None:
     source = tmp_path / "pages"
     _write(source / "index.html", b"<h1>UFO Timeline</h1>\n")
@@ -438,6 +452,7 @@ def test_required_pages_json_must_parse(tmp_path: Path) -> None:
     _write_duration_manifest_stub(bundle)
     _write_reporting_delay_manifest_stub(bundle)
     _write_coordinate_evidence_manifest_stub(bundle)
+    _write_time_of_day_manifest_stub(bundle)
     _write(bundle / "data" / "startup_profiles" / "france_1954_flap" / "manifest.json", b"{}\n")
 
     report = reproduction.verify_required_pages_files(bundle)
@@ -493,6 +508,7 @@ def test_offline_hydration_copies_and_localizes_manifest_declared_optional_paylo
     _write_duration_manifest_stub(pages)
     _write_reporting_delay_manifest_stub(pages)
     _write_coordinate_evidence_manifest_stub(pages)
+    _write_time_of_day_manifest_stub(pages)
     app_config = {
         "deploymentProfile": {
             "largeDataBaseUrl": "https://assets.example.test/releases/core-v1",

@@ -170,7 +170,7 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 127);
+assert.equal(added.storage.typedBytes, rows.length * 138);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
@@ -179,6 +179,7 @@ assert.ok(added.storage.dictionaries.country >= 2);
 assert.equal(added.storage.geographyProjection.loaded, false);
 assert.equal(added.storage.durationProjection.loaded, false);
 assert.equal(added.storage.reportingDelayProjection.loaded, false);
+assert.equal(added.storage.timeOfDayProjection.loaded, false);
 assert.equal(added.storage.coordinateEvidenceProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
@@ -536,6 +537,103 @@ const misorderedReportingDelaySetup = await misorderedReportingDelayWorker.sendA
 assert.equal(misorderedReportingDelaySetup.type, "catalogFacetWorkerError");
 assert.match(misorderedReportingDelaySetup.error, /event ID does not match the served catalog/i);
 
+const timeOfDayStatusCodes = ["unparsed", "exact_clock", "approximate_clock", "clock_range", "qualitative_period", "sentinel_ambiguous", "invalid_clock"];
+const timeOfDayBinCodes = ["unknown", "night_00_05", "morning_06_11", "afternoon_12_17", "evening_18_23"];
+const timeOfDayDictionaryRows = [
+  [1, rawHash("21:40 Local"), "21:40 Local", 1, 0, 1300, 1300, 4, 4, 1, 0, 1, 1, 1],
+  [2, rawHash("0000"), "0000", 5, 1, null, null, 0, 0, 1, 0, 0, 0, 1],
+];
+const timeOfDayProjectionRows = [
+  [0, "2606225892387599", 1, 1],
+  [1, "city-event", 0, 1],
+];
+const timeOfDayDictionaryText = JSON.stringify(timeOfDayDictionaryRows);
+const timeOfDayProjectionText = JSON.stringify(timeOfDayProjectionRows);
+const timeOfDayManifest = {
+  schemaId: "ufo-timeline-analysis-time-of-day-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-time-of-day-v1-fixture",
+  artifacts: {
+    timeOfDayValueDictionary: {
+      file: "data/analysis_time_of_day_v1/time_of_day_value_dictionary_v1.json",
+      sha256: rawHash(timeOfDayDictionaryText),
+      gzipSha256: "f".repeat(64),
+      rowCount: 2,
+      rowSchema: ["sourceCode", "rawValueSha256", "rawValue", "statusCode", "reasonCode", "lowerMinute", "upperMinute", "descriptiveBinCode", "inferentialBinCode", "precisionCode", "qualitativePeriodCode", "timezoneLabelCode", "timezoneSemanticsCode", "occurrenceCount"],
+    },
+    timeOfDayProjectionShard000: {
+      file: "data/analysis_time_of_day_v1/time_of_day_projection_v1_000.json",
+      sha256: rawHash(timeOfDayProjectionText),
+      gzipSha256: "e".repeat(64),
+      rowCount: 2,
+      rowSchema: ["catalogRowIndex", "eventId", "valueCode", "macroregionCode"],
+    },
+  },
+  artifactGroups: { timeProjectionShards: ["timeOfDayProjectionShard000"] },
+  codes: {
+    source: ["unknown", "nuforc", "ufocat"],
+    status: timeOfDayStatusCodes,
+    reason: ["explicit_clock", "midnight_or_noon_source_sentinel"],
+    timeBin: timeOfDayBinCodes,
+    precision: ["unknown", "minute"],
+    qualitativePeriod: [""],
+    timezoneLabel: ["", "Local"],
+    timezoneSemantics: ["unknown", "local_label_without_offset"],
+    macroregion: ["unknown", "europe"],
+  },
+  counts: { catalogRows: rows.length, rawTimeRows: 2, typedRows: 1 },
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_exact_clock_runtime_gated_comparisons" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceBinN: 20 },
+  negativeControls: { midnightAndNoonSentinelAudit: { excludedRows: 1 } },
+};
+const timeOfDayWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => new Response(
+    String(urlValue).includes("value_dictionary") ? timeOfDayDictionaryText : timeOfDayProjectionText,
+    { status: 200 }
+  ),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+timeOfDayWorker.send({ type: "addCatalogFacetRows", requestId: "time-of-day-catalog", rows });
+const timeOfDaySetup = await timeOfDayWorker.sendAsync({
+  type: "setAnalysisTimeOfDayArtifact",
+  requestId: "time-of-day-setup",
+  filterGeneration: 8,
+  manifest: timeOfDayManifest,
+  urls: { manifest: "https://example.test/data/analysis_time_of_day_v1/manifest.json" },
+});
+assert.equal(timeOfDaySetup.type, "analysisTimeOfDayArtifactSet");
+assert.equal(timeOfDaySetup.snapshot.appliedRows, 2);
+assert.equal(timeOfDaySetup.snapshot.typedRows, 1);
+assert.equal(timeOfDaySetup.snapshot.readinessStatus, "ready_descriptive");
+const timeOfDayFullCorpus = timeOfDayWorker.send({
+  type: "computeAnalysis",
+  requestId: "time-of-day-full-corpus",
+  filterGeneration: 8,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "time-of-day-worker-fixture",
+  selectedDomains: ["time"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(timeOfDayFullCorpus.type, "analysisComputed");
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.status, "ready_descriptive");
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.coverage.active.rawTimeRows, 2);
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.coverage.active.typedRows, 1);
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.coverage.active.exactInferentialRows, 1);
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.coverage.active.statusCounts.find((item) => item.status === "sentinel_ambiguous").rows, 1);
+assert.equal(timeOfDayFullCorpus.result.time.timeOfDay.patternFinderEligible, false);
+assert.deepEqual(timeOfDayFullCorpus.result.time.timeOfDay.artifactHashes, {
+  timeOfDayProjectionShard000: rawHash(timeOfDayProjectionText),
+  timeOfDayValueDictionary: rawHash(timeOfDayDictionaryText),
+});
+
 const coordinateEvidenceProjectionRows = [
   [0, "2606225892387599", 1, 1, 1, 0, 0, 0, 0, 48.8566, 2.3522],
 ];
@@ -750,7 +848,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 127);
+assert.equal(numericAdded.storage.typedBytes, 138);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1601,6 +1699,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   analysisV2ArtifactHashes: () => ({}),
   analysisDurationArtifactHashes: () => ({}),
   analysisReportingDelayArtifactHashes: () => ({}),
+  analysisTimeOfDayArtifactHashes: () => ({}),
   analysisCoordinateEvidenceArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });

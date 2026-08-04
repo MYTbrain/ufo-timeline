@@ -220,6 +220,7 @@ function createShellDocument() {
     "analysis-coverage-chart", "analysis-comparison-chart", "analysis-time-series-chart",
     "analysis-reporting-delay-status", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart",
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
+    "analysis-time-of-day-status", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart",
     "analysis-coordinate-evidence-status", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart",
     "analysis-coordinate-evidence-spatial-status", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
@@ -1169,6 +1170,33 @@ const result = {
       comparisonMetadata: { fdrFamily: "duration_bins_v1" },
       patternFinderEligible: false,
     },
+    timeOfDay: {
+      releaseId: "analysis-time-of-day-v1-fixture",
+      assessmentLane: "descriptive_with_exact_clock_runtime_gated_comparisons",
+      status: "ready_descriptive",
+      readinessStatus: "ready_descriptive",
+      coverage: {
+        active: {
+          catalogRows: 400,
+          rawTimeRows: 360,
+          typedRows: 300,
+          descriptiveBinnedRows: 290,
+          exactInferentialRows: 260,
+          typedSources: [{ source: "mufon", rows: 100 }, { source: "nuforc", rows: 100 }, { source: "ufocat", rows: 100 }],
+          statusCounts: [{ status: "sentinel_ambiguous", rows: 20 }, { status: "invalid_clock", rows: 40 }],
+        },
+        reference: { catalogRows: 300, rawTimeRows: 270, typedRows: 220, descriptiveBinnedRows: 210, exactInferentialRows: 190 },
+      },
+      distribution: [
+        { key: "morning_06_11", label: "06:00–11:59 source clock", activeCount: 120, referenceCount: 90, activeShare: 120 / 290, referenceShare: 90 / 210, measurementClass: "explicit_source_clock_exact_or_approximate" },
+        { key: "evening_18_23", label: "18:00–23:59 source clock", activeCount: 170, referenceCount: 120, activeShare: 170 / 290, referenceShare: 120 / 210, measurementClass: "explicit_source_clock_exact_or_approximate" },
+      ],
+      comparisons: [
+        { key: "evening_18_23", label: "18:00–23:59 source clock", observedCount: 150, referenceCount: 105, adjustedDifference: 0.06, interval: { lower: 0.02, upper: 0.10 }, qValue: 0.03, inferenceEligible: true, measurementClass: "exact_source_clock_only_unknown_timezone_not_solar_time" },
+      ],
+      comparisonMetadata: { fdrFamily: "time_of_day_bins_v1", unknownTimezoneNotSolarOrUtc: true },
+      patternFinderEligible: false,
+    },
   },
   craft: {
     distribution: [
@@ -1412,6 +1440,12 @@ assert.equal(reportingDelayDistributionRow.reporting_delay_measurement_class, "e
 assert.equal(reportingDelayDistributionRow.active_share, 0.6);
 assert.match(durationEvidenceCsv, /reporting_delay_bin,reporting_delay_measurement_class,reporting_delay_release_id,reporting_delay_assessment_lane/);
 assert.match(durationEvidenceCsv, /same_day,exact_day_nonnegative_role_preserving,analysis-reporting-delay-v1-fixture,descriptive_with_runtime_gated_comparisons/);
+const timeOfDayDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "time.timeOfDay.distribution" && row.time_of_day_bin === "morning_06_11");
+assert.equal(timeOfDayDistributionRow.time_of_day_release_id, "analysis-time-of-day-v1-fixture");
+assert.equal(timeOfDayDistributionRow.time_of_day_assessment_lane, "descriptive_with_exact_clock_runtime_gated_comparisons");
+assert.equal(timeOfDayDistributionRow.time_of_day_measurement_class, "explicit_source_clock_exact_or_approximate");
+assert.match(durationEvidenceCsv, /time_of_day_bin,time_of_day_measurement_class,time_of_day_release_id,time_of_day_assessment_lane/);
+assert.match(durationEvidenceCsv, /morning_06_11,explicit_source_clock_exact_or_approximate,analysis-time-of-day-v1-fixture,descriptive_with_exact_clock_runtime_gated_comparisons/);
 const coordinateDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "sourcesQuality.coordinateEvidence.distribution" && row.coordinate_quality_bin === "country_consistent");
 assert.equal(coordinateDistributionRow.coordinate_release_id, "analysis-coordinate-evidence-v1-fixture");
 assert.equal(coordinateDistributionRow.coordinate_assessment_lane, "descriptive_with_runtime_gated_comparisons");
@@ -1479,6 +1513,9 @@ assert.match(descendants(document.getElementById("analysis-duration-chart")).map
 assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*46\.6%.*5–14 minutes.*53\.4%/i, "duration reference bars use reference shares, not reference counts formatted as percentages");
 assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*\+4%.*95%/i);
 assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /minimum independent sources/i);
+assert.match(document.getElementById("analysis-time-of-day-status").textContent, /300 typed source-clock records across 3 sources.*75% of matched reports.*260 exact non-sentinel clocks.*20 midnight\/noon sentinels/i);
+assert.match(descendants(document.getElementById("analysis-time-of-day-chart")).map((element) => element.textContent).join(" "), /06:00–11:59 source clock.*41\.4%.*18:00–23:59 source clock.*58\.6%/i);
+assert.match(descendants(document.getElementById("analysis-time-of-day-comparison-chart")).map((element) => element.textContent).join(" "), /18:00–23:59 source clock.*\+6%.*95%/i);
 assert.match(descendants(document.getElementById("analysis-duration-comparison-chart")).map((element) => element.textContent).join(" "), /5–14 minutes.*-4%.*95% CI unavailable/i, "suppressed share differences do not relabel an odds-ratio interval as a percent interval");
 assert.match(descendants(document.getElementById("analysis-month-year-chart")).map((element) => element.textContent).join(" "), /07\/JUL/, "month heatmaps use unambiguous chronological number/name labels");
 const monthHeatmapHeaders = descendants(document.getElementById("analysis-month-year-chart"))
@@ -2295,11 +2332,13 @@ assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").ch
 progressiveController.setActiveSection("analysis-section-time", { source: "test" });
 assert.equal(frameHarness.pendingCount(), 1, "activating Time schedules its first deferred chart job");
 const timeFrames = frameHarness.flushAll();
-assert.ok(timeFrames >= 5 && timeFrames <= 7, "Time renders its timeline, reporting-delay and duration readiness, and month-by-craft charts plus completion and alignment work");
+assert.ok(timeFrames >= 6 && timeFrames <= 8, "Time renders its timeline, reporting-delay, duration, source-clock readiness, and month-by-craft charts plus completion and alignment work");
 assert.match(progressiveDocument.getElementById("analysis-reporting-delay-status").textContent, /150 typed occurrence-to-report intervals across 2 sources/i);
 assert.ok(progressiveDocument.getElementById("analysis-reporting-delay-chart").children.length > 0, "reporting delay materializes with the rest of the requested Time dashboard");
 assert.match(progressiveDocument.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources/i);
 assert.ok(progressiveDocument.getElementById("analysis-duration-chart").children.length > 0, "duration materializes with the rest of the requested Time dashboard");
+assert.match(progressiveDocument.getElementById("analysis-time-of-day-status").textContent, /300 typed source-clock records across 3 sources/i);
+assert.ok(progressiveDocument.getElementById("analysis-time-of-day-chart").children.length > 0, "source-clock evidence materializes with the requested Time dashboard");
 
 const progressiveTimeChart = progressiveDocument.getElementById("analysis-time-series-chart");
 const plottedPoints = descendants(progressiveTimeChart).filter((element) => element.tagName === "CIRCLE");

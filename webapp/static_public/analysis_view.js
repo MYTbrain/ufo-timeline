@@ -959,6 +959,9 @@
       if (/(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section)) {
         context.reportingDelayReleaseId = firstDefined(item, ["releaseId", "release_id"], context.reportingDelayReleaseId || "");
         context.reportingDelayAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.reportingDelayAssessmentLane || "");
+      } else if (/(?:^|\.)timeOfDay(?:\.|\[|$)/.test(section)) {
+        context.timeOfDayReleaseId = firstDefined(item, ["releaseId", "release_id"], context.timeOfDayReleaseId || "");
+        context.timeOfDayAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.timeOfDayAssessmentLane || "");
       } else if (/(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section)) {
         context.coordinateEvidenceReleaseId = firstDefined(item, ["releaseId", "release_id"], context.coordinateEvidenceReleaseId || "");
         context.coordinateEvidenceAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.coordinateEvidenceAssessmentLane || "");
@@ -1038,6 +1041,10 @@
         reporting_delay_measurement_class: /(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         reporting_delay_release_id: context.reportingDelayReleaseId || "",
         reporting_delay_assessment_lane: context.reportingDelayAssessmentLane || "",
+        time_of_day_bin: /(?:^|\.)timeOfDay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "timeOfDayBin", "time_of_day_bin"], "") : "",
+        time_of_day_measurement_class: /(?:^|\.)timeOfDay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
+        time_of_day_release_id: context.timeOfDayReleaseId || "",
+        time_of_day_assessment_lane: context.timeOfDayAssessmentLane || "",
         coordinate_quality_bin: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "coordinateQualityBin", "coordinate_quality_bin"], "") : "",
         coordinate_measurement_class: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         coordinate_release_id: context.coordinateEvidenceReleaseId || "",
@@ -1111,7 +1118,7 @@
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
       "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "time_of_day_bin", "time_of_day_measurement_class", "time_of_day_release_id", "time_of_day_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5526,6 +5533,76 @@
       );
     }
 
+    _renderTimeOfDayEvidence(value, summary) {
+      const assessment = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const statusElement = this.document.getElementById("analysis-time-of-day-status");
+      const coverage = isObject(assessment.coverage) ? assessment.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const typedRows = finiteNumber(active.typedRows, 0);
+      const rawRows = finiteNumber(active.rawTimeRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const exactRows = finiteNumber(active.exactInferentialRows, 0);
+      const sourceCount = asArray(active.typedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      const sentinelRows = asArray(active.statusCounts).reduce(function (total, item) {
+        return cleanText(item && item.status) === "sentinel_ambiguous" ? total + finiteNumber(item.rows, 0) : total;
+      }, 0);
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Typed source-clock evidence loads only when Time is requested. No clock chart is shown until its immutable artifacts pass integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Time of day is not estimable for this cohort. Missing, invalid, qualitative, sentinel, and unknown-timezone evidence remain explicit—not midnight or solar time.";
+        } else {
+          statusElement.textContent = formatCount(typedRows) + " typed source-clock records across " + formatCount(sourceCount)
+            + " sources (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
+            + formatCount(exactRows) + " exact non-sentinel clocks enter comparison gates, "
+            + formatCount(sentinelRows) + " midnight/noon sentinels remain excluded, and "
+            + formatCount(Math.max(0, rawRows - typedRows)) + " other time-bearing values remain untyped.";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        const message = status === "data_unavailable"
+          ? "Readiness pending: select Time to integrity-check and load the source-clock projection."
+          : "Readiness failed for this cohort; sentinel, invalid, qualitative, range, and timezone-unknown lanes remain fail-closed.";
+        this._renderBars("analysis-time-of-day-chart", [], summary, { emptyMessage: message });
+        this._renderForestPlot("analysis-time-of-day-comparison-chart", [], summary, {
+          emptyMessage: "No adjusted source-clock comparison is available until the exact-clock and support gates pass.",
+        });
+        return;
+      }
+      this._renderBars("analysis-time-of-day-chart", firstArray(assessment, ["distribution", "bins"]), summary, {
+        caption: "Explicit source-clock time-of-day distribution",
+        valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
+        valueFormat: "percent",
+        valueLabel: "Active share",
+        referenceLabel: "Reference share",
+        scaleActual: true,
+        emptyMessage: "No explicit source clock falls in a conservative display bin for this cohort.",
+      });
+      this._appendChartPolicy(
+        "analysis-time-of-day-chart",
+        "Clock bins retain source-local meaning. Exact-looking midnight and noon defaults, qualitative periods, missing values, and invalid clocks remain separate; no timezone, UTC, solar, or twilight inference is applied."
+      );
+      this._renderForestPlot(
+        "analysis-time-of-day-comparison-chart",
+        firstArray(assessment, ["comparisons", "adjustedComparisons", "adjusted_comparisons"]),
+        summary,
+        {
+          caption: "Source–era–macroregion adjusted exact source-clock differences",
+          defaultKind: "filter",
+          valueKeys: ["adjustedDifference", "adjustedEffect"],
+          primaryCountLabel: "Active bin",
+          comparisonCountLabel: "Reference bin",
+          primaryCountKeys: ["observedCount"],
+          comparisonCountKeys: ["referenceCount"],
+          emptyMessage: "The descriptive source-clock distribution is ready. Adjusted comparisons require an independent reference cohort and all exact-clock support gates.",
+        }
+      );
+    }
+
     _renderCoordinateEvidence(value, summary, spatialVariant) {
       const assessment = isObject(value) ? value : {};
       const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
@@ -5627,6 +5704,7 @@
         sourceBalancedPolicy: cleanText(firstDefined(time, ["sourceBalancedPolicy", "source_balanced_policy"], "")),
         duration: firstDefined(time, ["duration", "durationAssessment", "duration_assessment"], {}),
         reportingDelay: firstDefined(time, ["reportingDelay", "reporting_delay", "reportingDelayAssessment", "reporting_delay_assessment"], {}),
+        timeOfDay: firstDefined(time, ["timeOfDay", "time_of_day", "timeOfDayAssessment", "time_of_day_assessment"], {}),
         coordinateEvidence: firstDefined(sourcesQuality, ["coordinateEvidence", "coordinate_evidence", "coordinateEvidenceAssessment", "coordinate_evidence_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
@@ -5794,6 +5872,7 @@
       });
       timeJobs.push(() => this._renderReportingDelayEvidence(data.reportingDelay, summary));
       timeJobs.push(() => this._renderDurationEvidence(data.duration, summary));
+      timeJobs.push(() => this._renderTimeOfDayEvidence(data.timeOfDay, summary));
       timeJobs.push(() => this._renderHeatmap("analysis-month-year-chart", data.monthYear, summary, { caption: "Recurring month by craft adjusted effects", rowHeading: "Craft", defaultKind: "filter", columnAxisKind: "month", axisColumns: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], craftRows: true, effectOnly: true, valueKeys: ["adjustedResidual", "adjusted_residual", "standardizedResidual", "residual", "difference", "value"] }));
       craftJobs.push(() => {
         this._renderCraftMosaic("analysis-craft-distribution-chart", data.craftDistribution, summary, { caption: "Craft category mosaic", defaultKind: "filter", limit: 12 });
@@ -5905,7 +5984,7 @@
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
-        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-month-year-chart"] }],
+        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],

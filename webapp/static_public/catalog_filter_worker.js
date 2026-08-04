@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-coordinate-evidence-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-time-of-day-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -65,6 +65,14 @@
     artifactHashes: {},
     releaseId: "",
   };
+  let analysisTimeOfDayArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    typedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisCoordinateEvidenceArtifact = {
     manifest: null,
     loaded: false,
@@ -116,6 +124,7 @@
       analysisMacroregion: createDictionary(),
       durationMacroregion: createDictionary(),
       reportingDelayMacroregion: createDictionary(),
+      timeOfDayMacroregion: createDictionary(),
       coordinateEvidenceMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
@@ -264,6 +273,13 @@
       analysisReportingDelayBinCodes: new Uint8Array(length),
       analysisReportingDelayMacroregionCodes: new Uint16Array(length),
       analysisReportingDelayDays: new Uint32Array(length),
+      analysisTimeOfDayValueCodes: new Uint16Array(length),
+      analysisTimeOfDayStatusCodes: new Uint8Array(length),
+      analysisTimeOfDayDescriptiveBinCodes: new Uint8Array(length),
+      analysisTimeOfDayInferentialBinCodes: new Uint8Array(length),
+      analysisTimeOfDayMacroregionCodes: new Uint16Array(length),
+      analysisTimeOfDayLowerMinutes: new Uint16Array(length),
+      analysisTimeOfDayUpperMinutes: new Uint16Array(length),
       analysisCoordinateEvidenceProjectionStates: new Uint8Array(length),
       analysisCoordinateEvidenceStatusCodes: new Uint8Array(length),
       analysisCoordinateEvidenceConsistencyCodes: new Uint8Array(length),
@@ -273,6 +289,8 @@
     };
     chunk.analysisDurationLowerSeconds.fill(Number.NaN);
     chunk.analysisDurationUpperSeconds.fill(Number.NaN);
+    chunk.analysisTimeOfDayLowerMinutes.fill(65535);
+    chunk.analysisTimeOfDayUpperMinutes.fill(65535);
 
     for (let index = 0; index < length; index += 1) {
       const row = nextRows[index] || {};
@@ -382,6 +400,13 @@
       chunk.analysisReportingDelayBinCodes.byteLength +
       chunk.analysisReportingDelayMacroregionCodes.byteLength +
       chunk.analysisReportingDelayDays.byteLength;
+    typedStorageBytes += chunk.analysisTimeOfDayValueCodes.byteLength +
+      chunk.analysisTimeOfDayStatusCodes.byteLength +
+      chunk.analysisTimeOfDayDescriptiveBinCodes.byteLength +
+      chunk.analysisTimeOfDayInferentialBinCodes.byteLength +
+      chunk.analysisTimeOfDayMacroregionCodes.byteLength +
+      chunk.analysisTimeOfDayLowerMinutes.byteLength +
+      chunk.analysisTimeOfDayUpperMinutes.byteLength;
     typedStorageBytes += chunk.analysisCoordinateEvidenceProjectionStates.byteLength +
       chunk.analysisCoordinateEvidenceStatusCodes.byteLength +
       chunk.analysisCoordinateEvidenceConsistencyCodes.byteLength +
@@ -585,6 +610,26 @@
       : "unknown";
     values.analysisReportingDelayDays = reportingDelayProjected && ["reported_valid", "posted_fallback_valid"].indexOf(values.analysisReportingDelayStatus) !== -1
       ? chunk.analysisReportingDelayDays[index]
+      : null;
+    const timeOfDayValueCode = chunk.analysisTimeOfDayValueCodes && chunk.analysisTimeOfDayValueCodes[index];
+    values.analysisTimeOfDayAvailable = Boolean(timeOfDayValueCode);
+    values.analysisTimeOfDayStatus = timeOfDayValueCode
+      ? String((analysisTimeOfDayArtifact.manifest.codes.status || [])[chunk.analysisTimeOfDayStatusCodes[index] - 1] || "unparsed")
+      : "unavailable";
+    values.analysisTimeOfDayDescriptiveBin = timeOfDayValueCode
+      ? String((analysisTimeOfDayArtifact.manifest.codes.timeBin || [])[chunk.analysisTimeOfDayDescriptiveBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisTimeOfDayInferentialBin = timeOfDayValueCode
+      ? String((analysisTimeOfDayArtifact.manifest.codes.timeBin || [])[chunk.analysisTimeOfDayInferentialBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisTimeOfDayMacroregion = timeOfDayValueCode
+      ? dictionaryValue(dictionaries.timeOfDayMacroregion, chunk.analysisTimeOfDayMacroregionCodes[index]) || "unknown"
+      : "unknown";
+    values.analysisTimeOfDayLowerMinute = timeOfDayValueCode && chunk.analysisTimeOfDayLowerMinutes[index] !== 65535
+      ? chunk.analysisTimeOfDayLowerMinutes[index]
+      : null;
+    values.analysisTimeOfDayUpperMinute = timeOfDayValueCode && chunk.analysisTimeOfDayUpperMinutes[index] !== 65535
+      ? chunk.analysisTimeOfDayUpperMinutes[index]
       : null;
     const coordinateEvidenceProjected = Boolean(
       chunk.analysisCoordinateEvidenceProjectionStates && chunk.analysisCoordinateEvidenceProjectionStates[index]
@@ -1564,6 +1609,9 @@
         analysisReportingDelayArtifact.loaded
           ? Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {})
           : {},
+        analysisTimeOfDayArtifact.loaded
+          ? Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {})
+          : {},
         analysisCoordinateEvidenceArtifact.loaded
           ? Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {})
           : {}
@@ -1586,6 +1634,15 @@
         policy: Object.assign({}, analysisReportingDelayArtifact.manifest.policy || {}),
         negativeControls: Object.assign({}, analysisReportingDelayArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
+      } : null,
+      timeOfDayProjectionLoaded: Boolean(analysisTimeOfDayArtifact.loaded),
+      timeOfDayArtifact: analysisTimeOfDayArtifact.loaded ? {
+        releaseId: analysisTimeOfDayArtifact.releaseId,
+        counts: Object.assign({}, analysisTimeOfDayArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisTimeOfDayArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisTimeOfDayArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisTimeOfDayArtifact.manifest.negativeControls || {}),
+        artifactHashes: Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {}),
       } : null,
       coordinateEvidenceProjectionLoaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
       coordinateEvidenceArtifact: analysisCoordinateEvidenceArtifact.loaded ? {
@@ -2442,6 +2499,174 @@
     };
   }
 
+  function analysisTimeOfDayManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-time-of-day-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts && manifest.artifacts.timeOfDayValueDictionary &&
+      manifest.artifactGroups && Array.isArray(manifest.artifactGroups.timeProjectionShards) &&
+      manifest.artifactGroups.timeProjectionShards.length > 0 &&
+      manifest.codes && manifest.readiness
+    );
+  }
+
+  function validateTimeOfDayRows(rows, manifest, key, width) {
+    const entry = manifestArtifactEntry(manifest, key);
+    if (!entry || !normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+      throw new Error("Time-of-day artifact " + key + " is missing pinned integrity.");
+    }
+    if (!Array.isArray(entry.rowSchema) || entry.rowSchema.length !== width) {
+      throw new Error("Time-of-day artifact " + key + " has an invalid row schema.");
+    }
+    if (!Array.isArray(rows) || rows.length !== Number(entry.rowCount)) {
+      throw new Error("Time-of-day artifact " + key + " row-count mismatch.");
+    }
+    const invalidIndex = rows.findIndex(function (row) { return !Array.isArray(row) || row.length !== width; });
+    if (invalidIndex !== -1) {
+      throw new Error("Time-of-day artifact " + key + " row " + invalidIndex + " has an invalid width.");
+    }
+    return rows;
+  }
+
+  function applyTimeOfDayProjection(dictionaryRows, projectionRows, manifest) {
+    const sourceCodes = manifest.codes.source || [];
+    const statusCodes = manifest.codes.status || [];
+    const binCodes = manifest.codes.timeBin || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    const occurrences = new Uint32Array(dictionaryRows.length);
+    let previousRowIndex = -1;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    let typedRows = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const valueCode = Number(projection[2]);
+      const macroregionCode = Number(projection[3]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Time-of-day projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Time-of-day projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Time-of-day projection event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(valueCode) || valueCode < 0 || valueCode >= dictionaryRows.length ||
+          !Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length) {
+        throw new Error("Time-of-day projection contains an out-of-range code at row " + projectionIndex + ".");
+      }
+      const value = dictionaryRows[valueCode];
+      const sourceCode = Number(value[0]);
+      const statusCode = Number(value[3]);
+      const descriptiveBinCode = Number(value[7]);
+      const inferentialBinCode = Number(value[8]);
+      if (!Number.isInteger(sourceCode) || sourceCode < 0 || sourceCode >= sourceCodes.length ||
+          !Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(descriptiveBinCode) || descriptiveBinCode < 0 || descriptiveBinCode >= binCodes.length ||
+          !Number.isInteger(inferentialBinCode) || inferentialBinCode < 0 || inferentialBinCode >= binCodes.length) {
+        throw new Error("Time-of-day dictionary code is out of range for value " + valueCode + ".");
+      }
+      const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource) {
+        throw new Error("Time-of-day dictionary source does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      const status = String(statusCodes[statusCode] || "unparsed");
+      const lowerMinute = value[5] == null ? null : Number(value[5]);
+      const upperMinute = value[6] == null ? null : Number(value[6]);
+      const typed = ["exact_clock", "approximate_clock", "clock_range", "qualitative_period"].indexOf(status) !== -1;
+      if (status === "exact_clock") {
+        if (!Number.isInteger(lowerMinute) || lowerMinute < 0 || lowerMinute >= 1440 || lowerMinute !== upperMinute || String(binCodes[inferentialBinCode]) === "unknown") {
+          throw new Error("Exact time-of-day row has invalid minutes at row " + projectionIndex + ".");
+        }
+      } else if (["sentinel_ambiguous", "qualitative_period", "invalid_clock", "unparsed"].indexOf(status) !== -1 &&
+          (lowerMinute != null || upperMinute != null || String(binCodes[inferentialBinCode]) !== "unknown")) {
+        throw new Error("Excluded time-of-day value silently retains inferential minutes for value " + valueCode + ".");
+      }
+      location.chunk.analysisTimeOfDayValueCodes[location.index] = valueCode + 1;
+      location.chunk.analysisTimeOfDayStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisTimeOfDayDescriptiveBinCodes[location.index] = descriptiveBinCode + 1;
+      location.chunk.analysisTimeOfDayInferentialBinCodes[location.index] = inferentialBinCode + 1;
+      location.chunk.analysisTimeOfDayMacroregionCodes[location.index] = categoryCode(
+        dictionaries.timeOfDayMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+      location.chunk.analysisTimeOfDayLowerMinutes[location.index] = lowerMinute == null ? 65535 : lowerMinute;
+      location.chunk.analysisTimeOfDayUpperMinutes[location.index] = upperMinute == null ? 65535 : upperMinute;
+      occurrences[valueCode] += 1;
+      if (typed) typedRows += 1;
+    });
+    dictionaryRows.forEach(function (value, valueCode) {
+      if (occurrences[valueCode] !== Number(value[13])) {
+        throw new Error("Time-of-day dictionary occurrence parity failed for value " + valueCode + ".");
+      }
+    });
+    if (typedRows !== Number(manifest.counts && manifest.counts.typedRows)) {
+      throw new Error("Time-of-day typed-row parity failed.");
+    }
+    return { appliedRows: projectionRows.length, typedRows };
+  }
+
+  async function loadAnalysisTimeOfDayArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_time_of_day_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisTimeOfDayManifestSupported(manifest)) {
+      throw new Error("Analysis time-of-day manifest is invalid or unsupported.");
+    }
+    const dictionaryRows = validateTimeOfDayRows(
+      await fetchAnalysisJson(
+        urls.dictionary || manifestArtifactUrl(manifest, "timeOfDayValueDictionary", manifestUrl),
+        manifestArtifactIntegrity(manifest, "timeOfDayValueDictionary")
+      ),
+      manifest,
+      "timeOfDayValueDictionary",
+      14
+    );
+    const projectionRows = [];
+    for (const key of manifest.artifactGroups.timeProjectionShards) {
+      const shardRows = validateTimeOfDayRows(
+        await fetchAnalysisJson(manifestArtifactUrl(manifest, key, manifestUrl), manifestArtifactIntegrity(manifest, key)),
+        manifest,
+        key,
+        4
+      );
+      shardRows.forEach(function (row) { projectionRows.push(row); });
+    }
+    const applied = applyTimeOfDayProjection(dictionaryRows, projectionRows, manifest);
+    const artifactHashes = {};
+    Object.keys(manifest.artifacts).sort().forEach(function (key) {
+      artifactHashes[key] = String(manifest.artifacts[key].sha256 || "");
+    });
+    analysisTimeOfDayArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes,
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: analysisTimeOfDayArtifact.releaseId,
+      artifactHashes: Object.assign({}, artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
   function analysisReportingDelayManifestSupported(manifest) {
     return Boolean(
       manifest &&
@@ -3221,6 +3446,7 @@
         duplicateLineage: dictionaries.duplicateLineage.values.length,
         durationMacroregion: dictionaries.durationMacroregion.values.length,
         reportingDelayMacroregion: dictionaries.reportingDelayMacroregion.values.length,
+        timeOfDayMacroregion: dictionaries.timeOfDayMacroregion.values.length,
         coordinateEvidenceMacroregion: dictionaries.coordinateEvidenceMacroregion.values.length,
       },
       geographyProjection: {
@@ -3241,6 +3467,13 @@
         typedRows: Number(analysisReportingDelayArtifact.typedRows) || 0,
         releaseId: String(analysisReportingDelayArtifact.releaseId || ""),
         artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
+      },
+      timeOfDayProjection: {
+        loaded: Boolean(analysisTimeOfDayArtifact.loaded),
+        appliedRows: Number(analysisTimeOfDayArtifact.appliedRows) || 0,
+        typedRows: Number(analysisTimeOfDayArtifact.typedRows) || 0,
+        releaseId: String(analysisTimeOfDayArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {}),
       },
       coordinateEvidenceProjection: {
         loaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
@@ -3268,6 +3501,9 @@
       manifest: null, loaded: false, appliedRows: 0, normalizedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisReportingDelayArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
+    };
+    analysisTimeOfDayArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCoordinateEvidenceArtifact = {
@@ -3399,6 +3635,26 @@
         loadAnalysisReportingDelayArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisReportingDelayArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisTimeOfDayArtifact") {
+        loadAnalysisTimeOfDayArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisTimeOfDayArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),

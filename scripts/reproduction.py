@@ -75,6 +75,11 @@ OPTIONAL_LAYER_SPECS = (
         "root": PurePosixPath("data/analysis_coordinate_evidence_v1"),
         "manifest": PurePosixPath("data/analysis_coordinate_evidence_v1/manifest.json"),
     },
+    {
+        "name": "analysis_time_of_day_v1",
+        "root": PurePosixPath("data/analysis_time_of_day_v1"),
+        "manifest": PurePosixPath("data/analysis_time_of_day_v1/manifest.json"),
+    },
 )
 PAGES_SOURCE_ADDITION_PATHS = frozenset(
     {
@@ -119,6 +124,7 @@ PAGES_SOURCE_ADDITION_PATHS = frozenset(
         PurePosixPath("data/analysis_duration_v1/manifest.json"),
         PurePosixPath("data/analysis_reporting_delay_v1/manifest.json"),
         PurePosixPath("data/analysis_coordinate_evidence_v1/manifest.json"),
+        PurePosixPath("data/analysis_time_of_day_v1/manifest.json"),
     }
 )
 REQUIRED_PAGES_PATHS = (
@@ -141,6 +147,7 @@ REQUIRED_PAGES_JSON_PATHS = (
     PurePosixPath("data/analysis_duration_v1/manifest.json"),
     PurePosixPath("data/analysis_reporting_delay_v1/manifest.json"),
     PurePosixPath("data/analysis_coordinate_evidence_v1/manifest.json"),
+    PurePosixPath("data/analysis_time_of_day_v1/manifest.json"),
 )
 CLOUDFLARE_ANALYTICS_PATTERN = re.compile(
     rb"<!-- Cloudflare Pages Analytics --><script defer "

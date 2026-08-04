@@ -1044,6 +1044,11 @@
     analysisReportingDelayWorkerReady: false,
     analysisReportingDelayRequested: false,
     analysisReportingDelayError: "",
+    analysisTimeOfDayPromise: null,
+    analysisTimeOfDayManifest: null,
+    analysisTimeOfDayWorkerReady: false,
+    analysisTimeOfDayRequested: false,
+    analysisTimeOfDayError: "",
     analysisCoordinateEvidencePromise: null,
     analysisCoordinateEvidenceManifest: null,
     analysisCoordinateEvidenceWorkerReady: false,
@@ -8220,7 +8225,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-coordinate-evidence-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-time-of-day-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8803,6 +8808,10 @@
           ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
           return;
         }
+        if (runtime.analysisTimeOfDayError) {
+          ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisDurationError) {
           ensureAnalysisDurationArtifact().catch(function () { return null; });
           return;
@@ -8833,7 +8842,7 @@
           } else {
             // On first activation, section navigation runs before the core
             // Analysis request is queued. Let the useful dashboard render
-            // first, then hydrate the two optional Time sidecars.
+            // first, then hydrate the optional Time sidecars.
             runtime.analysisTimeEvidenceLoadPending = true;
           }
         }
@@ -9399,9 +9408,103 @@
     return runtime.analysisReportingDelayPromise;
   }
 
+  function analysisTimeOfDayArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.timeOfDayManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisTimeOfDayArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-time-of-day-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed time-of-day projection timed out."));
+      }, 45000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisTimeOfDayArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisTimeOfDayWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed time-of-day setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisTimeOfDayArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisTimeOfDayArtifact() {
+    runtime.analysisTimeOfDayRequested = true;
+    if (runtime.analysisTimeOfDayWorkerReady) return Promise.resolve(runtime.analysisTimeOfDayManifest);
+    if (runtime.analysisTimeOfDayPromise) return runtime.analysisTimeOfDayPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_time_of_day_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-time-of-day-status");
+    if (statusElement) statusElement.textContent = "Loading provenance-preserving source-clock evidence...";
+    runtime.analysisTimeOfDayPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Time-of-day manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisTimeOfDayManifest = manifest;
+        return setAnalysisTimeOfDayArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisTimeOfDayError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Source-clock evidence ready; timezone and sentinel safeguards remain explicit.";
+        scheduleAnalysisCompute("typed time-of-day evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisTimeOfDayPromise = null;
+        runtime.analysisTimeOfDayWorkerReady = false;
+        runtime.analysisTimeOfDayRequested = false;
+        runtime.analysisTimeOfDayError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Time-of-day evidence failed closed: " + runtime.analysisTimeOfDayError;
+        console.error("[analysis time of day]", error);
+        throw error;
+      });
+    return runtime.analysisTimeOfDayPromise;
+  }
+
   function requestAnalysisTimeEvidence() {
     ensureAnalysisDurationArtifact().catch(function () { return null; });
     ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
+    ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
   }
 
   function analysisCoordinateEvidenceArtifactHashes(manifest) {
@@ -9813,6 +9916,9 @@
       reportingDelayRequested: Boolean(runtime.analysisReportingDelayRequested),
       reportingDelayReady: Boolean(runtime.analysisReportingDelayWorkerReady),
       reportingDelayHashes: analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+      timeOfDayRequested: Boolean(runtime.analysisTimeOfDayRequested),
+      timeOfDayReady: Boolean(runtime.analysisTimeOfDayWorkerReady),
+      timeOfDayHashes: analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
       coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
       coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
       coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
@@ -9825,6 +9931,7 @@
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
       ),
       datasetHash: analysisCatalogDatasetHash(),
@@ -9935,9 +10042,10 @@
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
         ),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.5.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.6.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -10011,6 +10119,7 @@
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
@@ -10051,13 +10160,14 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.5.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.6.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
           cached.artifactHashes || {}
         ),
