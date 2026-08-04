@@ -1044,6 +1044,12 @@
     analysisReportingDelayWorkerReady: false,
     analysisReportingDelayRequested: false,
     analysisReportingDelayError: "",
+    analysisCoordinateEvidencePromise: null,
+    analysisCoordinateEvidenceManifest: null,
+    analysisCoordinateEvidenceWorkerReady: false,
+    analysisCoordinateEvidenceRequested: false,
+    analysisCoordinateEvidenceError: "",
+    analysisCoordinateEvidenceLoadPending: false,
     analysisTimeEvidenceLoadPending: false,
     analysisRelationshipPromise: null,
     analysisRelationshipWorkerReady: false,
@@ -8214,7 +8220,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-reporting-delay-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-coordinate-evidence-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8789,6 +8795,10 @@
       },
       onCancelPreview: function () {},
       onRetryAnalysis: function () {
+        if (runtime.analysisCoordinateEvidenceError) {
+          ensureAnalysisCoordinateEvidenceArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisReportingDelayError) {
           ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
           return;
@@ -8830,11 +8840,22 @@
         if (change && change.sectionKey === "context") {
           ensureAnalysisContextEvidence().catch(function () { return null; });
         }
+        if (change && ["spatial", "sources_quality"].indexOf(change.sectionKey) !== -1) {
+          if (state.activeView === "analysis") {
+            requestAnalysisCoordinateEvidence();
+          } else {
+            runtime.analysisCoordinateEvidenceLoadPending = true;
+          }
+        }
       },
       onRenderComplete: function () {
         if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {
           runtime.analysisTimeEvidenceLoadPending = false;
           requestAnalysisTimeEvidence();
+        }
+        if (runtime.analysisCoordinateEvidenceLoadPending && state.activeView === "analysis") {
+          runtime.analysisCoordinateEvidenceLoadPending = false;
+          requestAnalysisCoordinateEvidence();
         }
         if (runtime.analysisContextEvidenceRenderPending) {
           runtime.analysisContextEvidenceRenderPending = false;
@@ -9383,6 +9404,108 @@
     ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
   }
 
+  function analysisCoordinateEvidenceArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.coordinateEvidenceManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisCoordinateEvidenceStatus(message) {
+    ["analysis-coordinate-evidence-status", "analysis-coordinate-evidence-spatial-status"].forEach(function (id) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = String(message || "");
+    });
+  }
+
+  function setAnalysisCoordinateEvidenceArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-coordinate-evidence-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed coordinate-evidence projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisCoordinateEvidenceArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisCoordinateEvidenceWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed coordinate-evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisCoordinateEvidenceArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisCoordinateEvidenceArtifact() {
+    runtime.analysisCoordinateEvidenceRequested = true;
+    if (runtime.analysisCoordinateEvidenceWorkerReady) return Promise.resolve(runtime.analysisCoordinateEvidenceManifest);
+    if (runtime.analysisCoordinateEvidencePromise) return runtime.analysisCoordinateEvidencePromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_coordinate_evidence_v1/manifest.json"), document.baseURI).toString();
+    setAnalysisCoordinateEvidenceStatus("Loading provenance-preserving coordinate evidence...");
+    runtime.analysisCoordinateEvidencePromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Coordinate-evidence manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisCoordinateEvidenceManifest = manifest;
+        return setAnalysisCoordinateEvidenceArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCoordinateEvidenceError = "";
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("typed coordinate evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisCoordinateEvidencePromise = null;
+        runtime.analysisCoordinateEvidenceWorkerReady = false;
+        runtime.analysisCoordinateEvidenceRequested = false;
+        runtime.analysisCoordinateEvidenceError = error && error.message ? error.message : String(error);
+        setAnalysisCoordinateEvidenceStatus("Coordinate evidence failed closed: " + runtime.analysisCoordinateEvidenceError);
+        console.error("[analysis coordinate evidence]", error);
+        throw error;
+      });
+    return runtime.analysisCoordinateEvidencePromise;
+  }
+
+  function requestAnalysisCoordinateEvidence() {
+    ensureAnalysisCoordinateEvidenceArtifact().catch(function () { return null; });
+  }
+
   function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
     const worker = ensureCatalogFacetWorker();
     if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
@@ -9690,6 +9813,9 @@
       reportingDelayRequested: Boolean(runtime.analysisReportingDelayRequested),
       reportingDelayReady: Boolean(runtime.analysisReportingDelayWorkerReady),
       reportingDelayHashes: analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+      coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
+      coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
+      coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
       relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
       relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
       contextSpatialRequested: Boolean(runtime.analysisContextSpatialRequested),
@@ -9698,7 +9824,8 @@
         {},
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
-        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest)
+        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
       ),
       datasetHash: analysisCatalogDatasetHash(),
     });
@@ -9807,9 +9934,10 @@
           {},
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
-          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest)
+          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
         ),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.4.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.5.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -9883,6 +10011,7 @@
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
       ),
@@ -9922,13 +10051,14 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.4.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.5.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
           cached.artifactHashes || {}
         ),
         filterSnapshot: snapshot,

@@ -170,7 +170,7 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 120);
+assert.equal(added.storage.typedBytes, rows.length * 127);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
@@ -179,6 +179,7 @@ assert.ok(added.storage.dictionaries.country >= 2);
 assert.equal(added.storage.geographyProjection.loaded, false);
 assert.equal(added.storage.durationProjection.loaded, false);
 assert.equal(added.storage.reportingDelayProjection.loaded, false);
+assert.equal(added.storage.coordinateEvidenceProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
 const filters = {
@@ -535,6 +536,122 @@ const misorderedReportingDelaySetup = await misorderedReportingDelayWorker.sendA
 assert.equal(misorderedReportingDelaySetup.type, "catalogFacetWorkerError");
 assert.match(misorderedReportingDelaySetup.error, /event ID does not match the served catalog/i);
 
+const coordinateEvidenceProjectionRows = [
+  [0, "2606225892387599", 1, 1, 1, 0, 0, 0, 0, 48.8566, 2.3522],
+];
+const coordinateEvidenceProjectionText = JSON.stringify(coordinateEvidenceProjectionRows);
+const coordinateEvidenceManifest = {
+  schemaId: "ufo-timeline-analysis-coordinate-evidence-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-coordinate-evidence-v1-fixture",
+  artifacts: {
+    coordinateEvidenceProjection: {
+      file: "data/analysis_coordinate_evidence_v1/coordinate_evidence_projection_v1.json",
+      sha256: rawHash(coordinateEvidenceProjectionText),
+      gzipSha256: "1".repeat(64),
+      rowCount: 1,
+      rowSchema: ["catalogRowIndex", "eventId", "sourceCode", "eraCode", "macroregionCode", "statusCode", "countryConsistencyCode", "qualityBinCode", "riskFlags", "latitude", "longitude"],
+    },
+    originalEvidenceShard000: {
+      file: "data/analysis_coordinate_evidence_v1/coordinate_original_evidence_v1_000.json",
+      sha256: "2".repeat(64),
+      gzipSha256: "3".repeat(64),
+      rowCount: 1,
+      rowSchema: Array.from({ length: 18 }, (_, index) => `field${index}`),
+    },
+  },
+  artifactGroups: { originalEvidenceShards: ["originalEvidenceShard000"] },
+  codes: {
+    source: ["unknown", "ufocat"],
+    era: ["unknown", "1945_1959"],
+    macroregion: ["unknown", "europe"],
+    status: ["typed_country_consistent", "typed_country_unchecked", "unresolved_lineage_conflict", "country_inconsistent", "invalid_zero_sentinel", "invalid_out_of_range", "invalid_non_numeric", "precision_incompatible", "origin_incompatible"],
+    countryConsistency: ["consistent", "inconsistent", "unchecked_no_explicit_country", "unchecked_no_pinned_bounds", "not_applicable_invalid"],
+    qualityBin: ["country_consistent", "country_unchecked", "lineage_conflict", "country_inconsistent", "invalid_or_incompatible"],
+  },
+  counts: {
+    catalogRows: rows.length,
+    sourceCoordinateRows: 1,
+    typedRows: 1,
+    byCoordinateOrigin: { geocoded: 1, raw_latlong: 1, unresolved: lowPrecisionValues.length },
+  },
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_runtime_gated_comparisons" },
+  policy: {
+    canonicalEventsMutated: false,
+    externalGeocodingUsed: false,
+    precisionPromotionAllowed: false,
+    generalizedMarkersCountAsSourceCoordinates: false,
+    minimumCommonSupport: 0.8,
+    minimumActiveAndReferenceBinN: 20,
+  },
+  negativeControls: { generalizedMarkerExclusion: { rows: 1 }, unresolvedMarkerExclusion: { rows: lowPrecisionValues.length } },
+};
+const coordinateEvidenceWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(coordinateEvidenceProjectionText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+coordinateEvidenceWorker.send({ type: "addCatalogFacetRows", requestId: "coordinate-evidence-catalog", rows });
+const coordinateEvidenceSetup = await coordinateEvidenceWorker.sendAsync({
+  type: "setAnalysisCoordinateEvidenceArtifact",
+  requestId: "coordinate-evidence-setup",
+  filterGeneration: 8,
+  manifest: coordinateEvidenceManifest,
+  urls: { manifest: "https://example.test/data/analysis_coordinate_evidence_v1/manifest.json" },
+});
+assert.equal(coordinateEvidenceSetup.type, "analysisCoordinateEvidenceArtifactSet");
+assert.equal(coordinateEvidenceSetup.snapshot.appliedRows, 1);
+assert.equal(coordinateEvidenceSetup.snapshot.typedRows, 1);
+assert.equal(coordinateEvidenceSetup.snapshot.readinessStatus, "ready_descriptive");
+const coordinateEvidenceFullCorpus = coordinateEvidenceWorker.send({
+  type: "computeAnalysis",
+  requestId: "coordinate-evidence-full-corpus",
+  filterGeneration: 8,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "coordinate-evidence-worker-fixture",
+  selectedDomains: ["sources_quality"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(coordinateEvidenceFullCorpus.type, "analysisComputed");
+assert.equal(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.status, "ready_descriptive");
+assert.equal(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.coverage.active.sourceCoordinateRows, 1);
+assert.equal(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.coverage.active.typedRows, 1);
+assert.equal(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.distribution.find((item) => item.key === "country_consistent").activeCount, 1);
+assert.equal(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.patternFinderEligible, false);
+assert.deepEqual(coordinateEvidenceFullCorpus.result.sourcesQuality.coordinateEvidence.artifactHashes, {
+  coordinateEvidenceProjection: rawHash(coordinateEvidenceProjectionText),
+  originalEvidenceShard000: "2".repeat(64),
+});
+
+const mismatchedCoordinateProjection = [[0, "2606225892387599", 1, 1, 1, 0, 0, 0, 0, 47, 2.3522]];
+const mismatchedCoordinateText = JSON.stringify(mismatchedCoordinateProjection);
+const mismatchedCoordinateManifest = structuredClone(coordinateEvidenceManifest);
+mismatchedCoordinateManifest.artifacts.coordinateEvidenceProjection.sha256 = rawHash(mismatchedCoordinateText);
+const mismatchedCoordinateWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(mismatchedCoordinateText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+mismatchedCoordinateWorker.send({ type: "addCatalogFacetRows", requestId: "mismatched-coordinate-catalog", rows });
+const mismatchedCoordinateSetup = await mismatchedCoordinateWorker.sendAsync({
+  type: "setAnalysisCoordinateEvidenceArtifact",
+  requestId: "mismatched-coordinate-setup",
+  filterGeneration: 9,
+  manifest: mismatchedCoordinateManifest,
+  urls: { manifest: "https://example.test/data/analysis_coordinate_evidence_v1/manifest.json" },
+});
+assert.equal(mismatchedCoordinateSetup.type, "catalogFacetWorkerError");
+assert.match(mismatchedCoordinateSetup.error, /values do not match the served catalog/i);
+
 const isolatedDisc = worker.send({
   type: "computeFilteredCatalogIds",
   requestId: "filter-disc",
@@ -633,7 +750,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 120);
+assert.equal(numericAdded.storage.typedBytes, 127);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1484,6 +1601,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   analysisV2ArtifactHashes: () => ({}),
   analysisDurationArtifactHashes: () => ({}),
   analysisReportingDelayArtifactHashes: () => ({}),
+  analysisCoordinateEvidenceArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });
 const baseSnapshot = {

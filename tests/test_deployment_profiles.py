@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scripts import reproduction, validate_cloudflare_bundle
+from scripts import build_cloudflare_bundle, reproduction, validate_cloudflare_bundle
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -63,6 +63,29 @@ def write_reporting_delay_manifest_stub(root: Path) -> None:
         },
     }
     path = root / "data" / "analysis_reporting_delay_v1" / "manifest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+
+
+def write_coordinate_evidence_manifest_stub(root: Path) -> None:
+    manifest = {
+        "releaseId": "analysis-coordinate-evidence-test-v1",
+        "assetBaseUrl": "https://assets.example.org/releases/analysis-coordinate-evidence-test-v1",
+        "delivery": {
+            "pagesFiles": ["manifest.json"],
+            "immutablePrefix": "releases/analysis-coordinate-evidence-test-v1",
+            "r2OnlyPaths": ["projection.json.gz"],
+        },
+        "payloads": {
+            "projection": {
+                "path": "projection.json.gz",
+                "bytes": 2,
+                "sha256": "0" * 64,
+                "r2Only": True,
+            }
+        },
+    }
+    path = root / "data" / "analysis_coordinate_evidence_v1" / "manifest.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(manifest), encoding="utf-8")
 
@@ -662,6 +685,7 @@ def test_cloudflare_bundle_release_mode_enforces_exact_inventory(tmp_path, monke
         path.write_text("{}\n", encoding="utf-8")
     write_duration_manifest_stub(bundle_root)
     write_reporting_delay_manifest_stub(bundle_root)
+    write_coordinate_evidence_manifest_stub(bundle_root)
     (bundle_root / "cloudflare_bundle_manifest.json").write_text(
         json.dumps({"pages_safe": True}), encoding="utf-8"
     )
@@ -709,6 +733,37 @@ def test_cloudflare_bundle_release_mode_enforces_exact_inventory(tmp_path, monke
     assert invalid["ok"] is False
     assert invalid["checks"]["exact_release_inventory"] is False
     assert any("unexpected=unexpected.json" in error for error in invalid["errors"])
+
+
+def test_optional_layer_pages_allowlist_omits_undeclared_working_files(tmp_path):
+    static_root = tmp_path / "static"
+    layer_root = static_root / "data" / "fixture_layer"
+    layer_root.mkdir(parents=True)
+    manifest = {
+        "delivery": {
+            "pagesFiles": ["manifest.json", "public-note.json"],
+            "r2OnlyPaths": ["payload.json.gz"],
+        },
+        "payloads": {
+            "payload": {"path": "payload.json.gz", "bytes": 2, "sha256": "0" * 64, "r2Only": True}
+        },
+    }
+    (layer_root / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    pages_paths, layer_roots = build_cloudflare_bundle.discover_optional_pages_paths(static_root)
+    r2_paths = build_cloudflare_bundle.discover_optional_r2_paths(static_root)
+
+    assert "data/fixture_layer/manifest.json" in pages_paths
+    assert "data/fixture_layer/public-note.json" in pages_paths
+    assert layer_roots == {"data/fixture_layer"}
+    decision = build_cloudflare_bundle.classify_file(
+        Path("data/fixture_layer/raw-review.json"),
+        10,
+        include_gzip_data=False,
+        optional_r2_paths=r2_paths,
+        optional_pages_paths=pages_paths,
+        optional_layer_roots=layer_roots,
+    )
+    assert decision == {"copy": False, "reason": "optional_layer_undeclared_source_file"}
 
 
 def test_pages_deploy_wrapper_validates_before_wrangler_and_rejects_raw_source() -> None:

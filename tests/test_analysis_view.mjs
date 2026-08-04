@@ -220,6 +220,8 @@ function createShellDocument() {
     "analysis-coverage-chart", "analysis-comparison-chart", "analysis-time-series-chart",
     "analysis-reporting-delay-status", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart",
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
+    "analysis-coordinate-evidence-status", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart",
+    "analysis-coordinate-evidence-spatial-status", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
     "analysis-report-type-chart", "analysis-craft-confidence-chart", "analysis-craft-residual-chart", "analysis-geography-grid-chart", "analysis-geography-sensitivity-chart",
     "analysis-geography-time-chart", "analysis-source-composition-chart",
@@ -1308,6 +1310,37 @@ const result = {
     audit: [{ row: "Fallback", column: "Fallback", count: 1 }],
     classifierAudit: [{ row: "Disk", column: "Disk", count: 50 }],
     classifierAuditPolicy: "Agreement audit only; classifier output is not ground truth.",
+    coordinateEvidence: {
+      releaseId: "analysis-coordinate-evidence-v1-fixture",
+      assessmentLane: "descriptive_with_runtime_gated_comparisons",
+      status: "ready_descriptive_with_inferential_comparison",
+      readinessStatus: "ready_descriptive_with_inferential_comparison",
+      globalCounts: {
+        byCoordinateOrigin: { geocoded: 470431, raw_latlong: 110352, unresolved: 122110 },
+      },
+      coverage: {
+        active: {
+          catalogRows: 400,
+          sourceCoordinateRows: 100,
+          typedRows: 98,
+          typedSources: [{ source: "majestic", rows: 18 }, { source: "ufocat", rows: 80 }],
+        },
+        reference: { catalogRows: 300, sourceCoordinateRows: 80, typedRows: 76 },
+      },
+      distribution: [
+        { key: "country_consistent", label: "Country-consistent source coordinates", activeCount: 90, referenceCount: 68, activeShare: 0.9, referenceShare: 0.85, measurementClass: "source_coordinate_provenance_quality" },
+        { key: "country_unchecked", label: "Country unchecked", activeCount: 8, referenceCount: 8, activeShare: 0.08, referenceShare: 0.1, measurementClass: "source_coordinate_provenance_quality" },
+      ],
+      comparisons: [
+        { key: "country_consistent", label: "Country-consistent source coordinates", observedCount: 90, referenceCount: 68, adjustedDifference: 0.05, interval: { lower: 0.01, upper: 0.09 }, qValue: 0.03, inferenceEligible: true, measurementClass: "source_coordinate_provenance_quality" },
+      ],
+      comparisonMetadata: {
+        fdrFamily: "coordinate_quality_bins_v1",
+        generalizedMarkersExcluded: true,
+        unresolvedConflictsExcluded: true,
+      },
+      patternFinderEligible: false,
+    },
   },
   context: {
     crops: {
@@ -1379,6 +1412,13 @@ assert.equal(reportingDelayDistributionRow.reporting_delay_measurement_class, "e
 assert.equal(reportingDelayDistributionRow.active_share, 0.6);
 assert.match(durationEvidenceCsv, /reporting_delay_bin,reporting_delay_measurement_class,reporting_delay_release_id,reporting_delay_assessment_lane/);
 assert.match(durationEvidenceCsv, /same_day,exact_day_nonnegative_role_preserving,analysis-reporting-delay-v1-fixture,descriptive_with_runtime_gated_comparisons/);
+const coordinateDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "sourcesQuality.coordinateEvidence.distribution" && row.coordinate_quality_bin === "country_consistent");
+assert.equal(coordinateDistributionRow.coordinate_release_id, "analysis-coordinate-evidence-v1-fixture");
+assert.equal(coordinateDistributionRow.coordinate_assessment_lane, "descriptive_with_runtime_gated_comparisons");
+assert.equal(coordinateDistributionRow.coordinate_measurement_class, "source_coordinate_provenance_quality");
+assert.equal(coordinateDistributionRow.active_share, 0.9);
+assert.match(durationEvidenceCsv, /coordinate_quality_bin,coordinate_measurement_class,coordinate_release_id,coordinate_assessment_lane/);
+assert.match(durationEvidenceCsv, /country_consistent,source_coordinate_provenance_quality,analysis-coordinate-evidence-v1-fixture,descriptive_with_runtime_gated_comparisons/);
 
 controller.setBaselineMode("other_dates_balanced", { notify: false });
 controller.setActiveSection("analysis-section-overview", { source: "test" });
@@ -1595,6 +1635,9 @@ assert.match(readinessText, /Crop circles.*10 \/ 7,745.*Blocked.*Animal reports.
 assert.match(readinessText, /Fewer than 25 qualifying records.*No exact coordinates.*Unresolved identifiers remain quarantined/i);
 controller.setActiveSection("analysis-section-sources-quality", { source: "test" });
 assert.ok(document.getElementById("analysis-report-type-chart").children.length >= 2);
+assert.match(document.getElementById("analysis-coordinate-evidence-status").textContent, /98 typed source-coordinate rows across 2 sources.*24\.5% of matched reports.*2 source-coordinate rows remain excluded.*470,431 generalized markers.*122,110 unresolved rows/i);
+assert.ok(document.getElementById("analysis-coordinate-evidence-chart").children.length > 0);
+assert.match(descendants(document.getElementById("analysis-coordinate-evidence-comparison-chart")).map((element) => element.textContent).join(" "), /Country-consistent source coordinates.*\+5%.*95%/i);
 assert.equal(document.getElementById("analysis-craft-trends-chart"), null, "the standalone craft trend duplicate is not rendered after classifier consistency");
 assert.match(
   descendants(document.getElementById("analysis-craft-residual-chart")).map((element) => element.textContent).join(" "),

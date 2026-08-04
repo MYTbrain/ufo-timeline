@@ -1471,6 +1471,80 @@ assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.pVal
 assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.interval === null), "suppressed duration comparisons expose no inferential interval");
 assert.ok(singleSourceDuration.time.duration.comparisons.some((row) => row.suppressionReasons.includes("minimum_independent_sources")));
 
+const coordinateRows = [];
+for (const year of [2017, 2018]) {
+  for (const source of ["coordinate-source-a", "coordinate-source-b"]) {
+    for (let index = 0; index < 100; index += 1) {
+      const consistent = year === 2018 ? index < 80 : index < 60;
+      coordinateRows.push(row({
+        eventId: `coordinate-${year}-${source}-${index}`,
+        source,
+        sortOrdinal: stats.ordinalFromCivil(year, 6, 15),
+        analysisCoordinateEvidenceAvailable: true,
+        analysisCoordinateEvidenceTyped: true,
+        analysisCoordinateEvidenceStatus: consistent ? "typed_country_consistent" : "typed_country_unchecked",
+        analysisCoordinateCountryConsistency: consistent ? "consistent" : "unchecked_no_explicit_country",
+        analysisCoordinateQualityBin: consistent ? "country_consistent" : "country_unchecked",
+        analysisCoordinateMacroregion: "northern_america",
+        analysisCoordinateRiskFlags: index === 0 ? 5 : 0,
+      }));
+    }
+  }
+}
+coordinateRows.push(row({
+  eventId: "coordinate-excluded-country-inconsistent",
+  source: "coordinate-source-a",
+  sortOrdinal: stats.ordinalFromCivil(2018, 7, 1),
+  analysisCoordinateEvidenceAvailable: true,
+  analysisCoordinateEvidenceTyped: false,
+  analysisCoordinateEvidenceStatus: "country_inconsistent",
+  analysisCoordinateCountryConsistency: "inconsistent",
+  analysisCoordinateQualityBin: "country_inconsistent",
+  analysisCoordinateMacroregion: "northern_america",
+  analysisCoordinateRiskFlags: 0,
+}));
+const coordinateArtifact = {
+  releaseId: "analysis-coordinate-evidence-v1-fixture",
+  counts: {
+    catalogRows: 702893,
+    sourceCoordinateRows: 110352,
+    typedRows: 110055,
+    byCoordinateOrigin: { geocoded: 470431, raw_latlong: 110352, unresolved: 122110 },
+  },
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_runtime_gated_comparisons" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceBinN: 20 },
+  negativeControls: { generalizedMarkerExclusion: { rows: 470431 } },
+  artifactHashes: { coordinateEvidenceProjection: "c".repeat(64) },
+};
+const coordinateAnalysis = stats.computeAnalysis({
+  rows: coordinateRows,
+  baselineMode: "other_dates_balanced",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(2018, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2018, 12, 31),
+  selectedDomains: ["sources_quality"],
+  coordinateEvidenceProjectionLoaded: true,
+  coordinateEvidenceArtifact: coordinateArtifact,
+  bootstrapReplicates: 31,
+  datasetHash: "coordinate-fixture",
+});
+const coordinateAssessment = coordinateAnalysis.sourcesQuality.coordinateEvidence;
+assert.equal(coordinateAssessment.status, "ready_descriptive_with_inferential_comparison");
+assert.equal(coordinateAssessment.patternFinderEligible, false);
+assert.equal(coordinateAssessment.coverage.active.sourceCoordinateRows, 201);
+assert.equal(coordinateAssessment.coverage.active.typedRows, 200);
+assert.equal(coordinateAssessment.globalCounts.byCoordinateOrigin.geocoded, 470431);
+assert.equal(coordinateAssessment.comparisonMetadata.generalizedMarkersExcluded, true);
+assert.equal(coordinateAssessment.comparisonMetadata.unresolvedConflictsExcluded, true);
+const consistentCoordinateComparison = coordinateAssessment.comparisons.find((entry) => entry.key === "country_consistent");
+assert.equal(consistentCoordinateComparison.inferenceEligible, true);
+assert.equal(consistentCoordinateComparison.activeIndependentSources, 2);
+assert.equal(consistentCoordinateComparison.patternFinderEligible, false);
+assert.equal(
+  coordinateAnalysis.patterns.some((pattern) => pattern.family === "coordinate_evidence"),
+  false,
+  "coordinate-evidence v1 never enters Pattern Finder"
+);
+
 const statsSource = fs.readFileSync("webapp/static_public/analysis_stats.js", "utf8");
 assert.doesNotMatch(statsSource, /traceSegments|trace_segments|chronologySegments|flight path/i);
 

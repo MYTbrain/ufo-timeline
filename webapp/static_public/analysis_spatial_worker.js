@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-reporting-delay-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-coordinate-evidence-v1";
 
   let spatialApi = self.UfoAnalysisSpatial || null;
   let executionEpoch = 0;

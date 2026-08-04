@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_4_reporting_delay_assessment_1";
+  const ESTIMATOR_VERSION = "analysis_v2_5_coordinate_evidence_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -76,6 +76,20 @@
     thirty_one_to_ninety_days: "31–90 days",
     ninety_one_to_365_days: "91–365 days",
     over_365_days: "Over 365 days",
+  });
+  const COORDINATE_QUALITY_BIN_ORDER = Object.freeze([
+    "country_consistent",
+    "country_unchecked",
+    "lineage_conflict",
+    "country_inconsistent",
+    "invalid_or_incompatible",
+  ]);
+  const COORDINATE_QUALITY_BIN_LABELS = Object.freeze({
+    country_consistent: "Inside pinned broad country review bounds",
+    country_unchecked: "Country bounds unavailable or country unresolved",
+    lineage_conflict: "Unresolved coordinate lineage conflict",
+    country_inconsistent: "Outside pinned broad country review bounds",
+    invalid_or_incompatible: "Invalid or incompatible coordinate evidence",
   });
   const FAMILY_ORDER = Object.freeze([
     "craft",
@@ -1708,6 +1722,29 @@
     incrementRaw(accumulator.reportingDelayBinStrata.get(delayBin), stratum, 1);
   }
 
+  function addCoordinateEvidenceRow(accumulator, row, source, civil) {
+    if (!row || row.analysisCoordinateEvidenceAvailable !== true) return;
+    const status = category(row.analysisCoordinateEvidenceStatus, "unavailable");
+    const qualityBin = category(row.analysisCoordinateQualityBin, "invalid_or_incompatible");
+    const macroregion = category(row.analysisCoordinateMacroregion, "unknown");
+    const riskFlags = Math.max(0, finiteInteger(row.analysisCoordinateRiskFlags) || 0);
+    const stratum = durationStratum(source, civil && civil.year, macroregion);
+    accumulator.coordinateEvidenceRows += 1;
+    incrementRaw(accumulator.coordinateEvidenceStatusCounts, status, 1);
+    incrementRaw(accumulator.coordinateEvidenceQualityBins, qualityBin, 1);
+    if (riskFlags & 1) accumulator.coordinateEvidenceHighLatitudeRows += 1;
+    if (riskFlags & 2) accumulator.coordinateEvidenceDatelineRows += 1;
+    if (riskFlags & 4) accumulator.coordinateEvidenceDuplicateLineageRows += 1;
+    if (row.analysisCoordinateEvidenceTyped !== true) return;
+    accumulator.coordinateEvidenceTypedRows += 1;
+    incrementRaw(accumulator.coordinateEvidenceSources, source, 1);
+    incrementRaw(accumulator.coordinateEvidenceStrataTotals, stratum, 1);
+    if (!accumulator.coordinateEvidenceBinStrata.has(qualityBin)) {
+      accumulator.coordinateEvidenceBinStrata.set(qualityBin, new Map());
+    }
+    incrementRaw(accumulator.coordinateEvidenceBinStrata.get(qualityBin), stratum, 1);
+  }
+
   function addStratifiedMatrixCount(container, stratum, rowKey, columnKey) {
     if (!container.has(stratum)) container.set(stratum, new Map());
     addMatrixCount(container.get(stratum), rowKey, columnKey);
@@ -1816,6 +1853,16 @@
       reportingDelayBins: new Map(),
       reportingDelayStrataTotals: new Map(),
       reportingDelayBinStrata: new Map(),
+      coordinateEvidenceRows: 0,
+      coordinateEvidenceTypedRows: 0,
+      coordinateEvidenceStatusCounts: new Map(),
+      coordinateEvidenceQualityBins: new Map(),
+      coordinateEvidenceSources: new Map(),
+      coordinateEvidenceStrataTotals: new Map(),
+      coordinateEvidenceBinStrata: new Map(),
+      coordinateEvidenceHighLatitudeRows: 0,
+      coordinateEvidenceDatelineRows: 0,
+      coordinateEvidenceDuplicateLineageRows: 0,
     };
     accumulator.familyCounts = {
       craft: accumulator.crafts,
@@ -2098,6 +2145,7 @@
     );
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
+    addCoordinateEvidenceRow(accumulator, row, source, civil);
   }
 
   // The staged first render needs coverage, time, source, and quality summaries only.
@@ -2176,6 +2224,7 @@
     }
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
+    addCoordinateEvidenceRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
       return;
@@ -5633,6 +5682,179 @@
     };
   }
 
+  function coordinateEvidenceComparisonStrata(active, reference, key) {
+    const activeTotals = active.coordinateEvidenceStrataTotals || new Map();
+    const referenceTotals = reference.coordinateEvidenceStrataTotals || new Map();
+    const activeCounts = active.coordinateEvidenceBinStrata.get(key) || new Map();
+    const referenceCounts = reference.coordinateEvidenceBinStrata.get(key) || new Map();
+    const keys = new Set();
+    activeTotals.forEach(function (_count, stratum) { keys.add(stratum); });
+    referenceTotals.forEach(function (_count, stratum) { keys.add(stratum); });
+    return Array.from(keys).sort().map(function (stratum) {
+      return {
+        stratum,
+        activeCount: mapCount(activeCounts, stratum),
+        activeTotal: mapCount(activeTotals, stratum),
+        referenceCount: mapCount(referenceCounts, stratum),
+        referenceTotal: mapCount(referenceTotals, stratum),
+      };
+    });
+  }
+
+  function coordinateEvidenceCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      sourceCoordinateRows: accumulator.coordinateEvidenceRows,
+      sourceCoordinateCoverage: round(rate(accumulator.coordinateEvidenceRows, accumulator.total), 8),
+      typedRows: accumulator.coordinateEvidenceTypedRows,
+      typedCoverage: round(rate(accumulator.coordinateEvidenceTypedRows, accumulator.total), 8),
+      typedSources: mapEntriesByCount(accumulator.coordinateEvidenceSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.coordinateEvidenceStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+      sensitivityRows: {
+        highLatitude: accumulator.coordinateEvidenceHighLatitudeRows,
+        dateline: accumulator.coordinateEvidenceDatelineRows,
+        duplicateLineage: accumulator.coordinateEvidenceDuplicateLineageRows,
+      },
+    };
+  }
+
+  function buildCoordinateEvidenceAssessment(active, reference, descriptor, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.coordinateEvidenceArtifact && typeof options.coordinateEvidenceArtifact === "object"
+      ? options.coordinateEvidenceArtifact
+      : null;
+    const loaded = options.coordinateEvidenceProjectionLoaded === true && artifact;
+    const activeCoverage = coordinateEvidenceCoverage(active);
+    const referenceCoverage = coordinateEvidenceCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-coordinate-evidence-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      globalCounts: artifact ? Object.assign({}, artifact.counts || {}) : {},
+      distribution: [],
+      comparisons: [],
+      comparisonMetadata: {
+        status: "data_unavailable",
+        covariates: ["source", "era", "macroregion"],
+        fdrFamily: "coordinate_quality_bins_v1",
+      },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["coordinate_evidence_artifact_not_loaded"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const policy = artifact.policy || {};
+    const distribution = COORDINATE_QUALITY_BIN_ORDER.map(function (key) {
+      const activeCount = mapCount(active.coordinateEvidenceQualityBins, key);
+      const referenceCount = mapCount(reference.coordinateEvidenceQualityBins, key);
+      return {
+        key,
+        label: COORDINATE_QUALITY_BIN_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.coordinateEvidenceRows), 8),
+        referenceShare: round(rate(referenceCount, reference.coordinateEvidenceRows), 8),
+        measurementClass: "source_coordinate_provenance_quality",
+        inferenceEligible: false,
+      };
+    });
+    const comparisonUnavailable = [
+      COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+      COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE,
+      COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+    ].indexOf(descriptor.comparisonState) !== -1;
+    let comparisons = [];
+    let comparisonStatus = descriptor.comparisonState;
+    if (options.inferenceDeferred) {
+      comparisonStatus = "deferred";
+    } else if (!comparisonUnavailable) {
+      const activeSources = active.coordinateEvidenceSources.size;
+      const referenceSources = reference.coordinateEvidenceSources.size;
+      const minimumBinN = Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20);
+      comparisons = ["country_consistent", "country_unchecked"].map(function (key) {
+        const comparison = balancedCommonSupportComparison(coordinateEvidenceComparisonStrata(active, reference, key), {
+          activeN: active.coordinateEvidenceTypedRows,
+          referenceN: reference.coordinateEvidenceTypedRows,
+          descriptive: descriptor.descriptive,
+          covariates: ["source", "era", "macroregion"],
+          minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+          bootstrapReplicates: options.bootstrapReplicates,
+          seed: [options.datasetHash || "not_provided", descriptor.mode, "coordinate_evidence", key].join("|"),
+        });
+        comparison.family = "coordinate_evidence";
+        comparison.key = key;
+        comparison.label = COORDINATE_QUALITY_BIN_LABELS[key] || key;
+        comparison.fdrFamily = "coordinate_quality_bins_v1";
+        comparison.patternFinderEligible = false;
+        comparison.measurementClass = "source_coordinate_provenance_quality";
+        const reasons = [];
+        if (comparison.observedCount < minimumBinN) reasons.push("active_bin_n_below_" + minimumBinN);
+        if (comparison.referenceCount < minimumBinN) reasons.push("reference_bin_n_below_" + minimumBinN);
+        if (activeSources < 2 || referenceSources < 2) reasons.push("minimum_independent_sources");
+        if (reasons.length) suppressDurationComparison(comparison, reasons);
+        comparison.minimumActiveAndReferenceBinN = minimumBinN;
+        comparison.minimumIndependentSources = 2;
+        comparison.activeIndependentSources = activeSources;
+        comparison.referenceIndependentSources = referenceSources;
+        return comparison;
+      });
+      assignEligibleBenjaminiHochberg(comparisons);
+      comparisonStatus = comparisons.some(function (comparison) { return comparison.inferenceEligible; })
+        ? "ready_inferential"
+        : "suppressed";
+    }
+
+    const globalReady = String(readiness.status || "") === "ready_descriptive";
+    const activeReady = active.coordinateEvidenceTypedRows > 0;
+    const anyInference = comparisons.some(function (comparison) { return comparison.inferenceEligible; });
+    const status = !globalReady || !activeReady
+      ? "not_estimable"
+      : (anyInference ? "ready_descriptive_with_inferential_comparison" : "ready_descriptive");
+    const suppressionReasons = [];
+    if (!globalReady) suppressionReasons.push("global_coordinate_evidence_readiness_failed");
+    if (!active.coordinateEvidenceTypedRows) suppressionReasons.push("no_typed_source_coordinates_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-coordinate-evidence-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "descriptive_with_runtime_gated_comparisons"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      globalCounts: Object.assign({}, artifact.counts || {}),
+      distribution,
+      comparisons,
+      comparisonMetadata: {
+        status: comparisonStatus,
+        comparisonState: descriptor.comparisonState,
+        covariates: ["source", "era", "macroregion"],
+        minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+        minimumActiveAndReferenceBinN: Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20),
+        fdrFamily: "coordinate_quality_bins_v1",
+        generalizedMarkersExcluded: true,
+        unresolvedConflictsExcluded: true,
+        countryBoundsAreExactBoundaries: false,
+      },
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, policy),
+    };
+  }
+
   function computeAnalysis(optionsValue) {
     const options = optionsValue || {};
     const inferenceDeferred = options.quickMode === true || String(options.analysisPhase || "").trim().toLowerCase() === "quick";
@@ -5801,6 +6023,13 @@
     const sourcesQuality = inferenceDeferred && !domainRequested(requestedDomains, "sources_quality")
       ? deferredSourcesQualitySection()
       : buildSourcesQuality(active, reference, sectionOptions);
+    sourcesQuality.coordinateEvidence = buildCoordinateEvidenceAssessment(active, reference, descriptor, {
+      coordinateEvidenceProjectionLoaded: options.coordinateEvidenceProjectionLoaded,
+      coordinateEvidenceArtifact: options.coordinateEvidenceArtifact,
+      inferenceDeferred,
+      bootstrapReplicates: options.bootstrapReplicates,
+      datasetHash,
+    });
     applyComparisonSchema(sourcesQuality.sourceComposition, balancedFamilies.source);
     const qualityFamilyByRow = {
       "Date precision": "date_precision",
@@ -5986,6 +6215,8 @@
     DURATION_BIN_LABELS,
     REPORTING_DELAY_BIN_ORDER,
     REPORTING_DELAY_BIN_LABELS,
+    COORDINATE_QUALITY_BIN_ORDER,
+    COORDINATE_QUALITY_BIN_LABELS,
     FAMILY_ORDER,
     FAMILY_COVARIATES,
     EXPLORATORY_POLICY,

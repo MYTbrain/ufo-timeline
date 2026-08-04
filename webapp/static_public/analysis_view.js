@@ -959,6 +959,9 @@
       if (/(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section)) {
         context.reportingDelayReleaseId = firstDefined(item, ["releaseId", "release_id"], context.reportingDelayReleaseId || "");
         context.reportingDelayAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.reportingDelayAssessmentLane || "");
+      } else if (/(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section)) {
+        context.coordinateEvidenceReleaseId = firstDefined(item, ["releaseId", "release_id"], context.coordinateEvidenceReleaseId || "");
+        context.coordinateEvidenceAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.coordinateEvidenceAssessmentLane || "");
       } else if (/(?:^|\.)duration(?:\.|\[|$)/.test(section)) {
         context.durationReleaseId = firstDefined(item, ["releaseId", "release_id"], context.durationReleaseId || "");
         context.durationAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.durationAssessmentLane || "");
@@ -1035,6 +1038,10 @@
         reporting_delay_measurement_class: /(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         reporting_delay_release_id: context.reportingDelayReleaseId || "",
         reporting_delay_assessment_lane: context.reportingDelayAssessmentLane || "",
+        coordinate_quality_bin: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "coordinateQualityBin", "coordinate_quality_bin"], "") : "",
+        coordinate_measurement_class: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
+        coordinate_release_id: context.coordinateEvidenceReleaseId || "",
+        coordinate_assessment_lane: context.coordinateEvidenceAssessmentLane || "",
         geography_country: firstDefined(item, ["country", "countryName", "country_name"], ""),
         geography_macroregion: firstDefined(item, ["macroregion", "analysisMacroregion", "analysis_macroregion"], ""),
         geography_assignment_source: firstDefined(item, ["geographyAssignmentSource", "geography_assignment_source", "assignmentSource", "assignment_source"], ""),
@@ -1104,7 +1111,7 @@
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
       "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5519,6 +5526,78 @@
       );
     }
 
+    _renderCoordinateEvidence(value, summary, spatialVariant) {
+      const assessment = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const suffix = spatialVariant ? "-spatial" : "";
+      const statusId = spatialVariant ? "analysis-coordinate-evidence-spatial-status" : "analysis-coordinate-evidence-status";
+      const chartId = "analysis-coordinate-evidence" + suffix + "-chart";
+      const comparisonId = "analysis-coordinate-evidence" + suffix + "-comparison-chart";
+      const statusElement = this.document.getElementById(statusId);
+      const coverage = isObject(assessment.coverage) ? assessment.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const globalCounts = isObject(assessment.globalCounts) ? assessment.globalCounts : {};
+      const origins = isObject(globalCounts.byCoordinateOrigin) ? globalCounts.byCoordinateOrigin : {};
+      const typedRows = finiteNumber(active.typedRows, 0);
+      const evidenceRows = finiteNumber(active.sourceCoordinateRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const sourceCount = asArray(active.typedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Source-coordinate evidence loads only when Spatial Evidence or Sources & Quality is requested. No coordinate-quality chart is shown until its immutable artifact passes integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Coordinate evidence is not estimable for this cohort. Generalized markers, unresolved rows, broad-country inconsistencies, and lineage conflicts remain separate—not upgraded.";
+        } else {
+          statusElement.textContent = formatCount(typedRows) + " typed source-coordinate rows across " + formatCount(sourceCount)
+            + " sources (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
+            + formatCount(evidenceRows - typedRows) + " source-coordinate rows remain excluded. The catalog globally keeps "
+            + formatCount(finiteNumber(origins.geocoded, 0)) + " generalized markers and "
+            + formatCount(finiteNumber(origins.unresolved, 0)) + " unresolved rows outside this lane.";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        const message = status === "data_unavailable"
+          ? "Readiness pending: open Spatial Evidence or Sources & Quality to integrity-check and load the coordinate projection."
+          : "Readiness failed for this cohort; incompatible, inconsistent, and unresolved coordinate evidence remains suppressed.";
+        this._renderBars(chartId, [], summary, { emptyMessage: message });
+        this._renderForestPlot(comparisonId, [], summary, {
+          emptyMessage: "No adjusted coordinate-quality comparison is available until provenance and support gates pass.",
+        });
+        return;
+      }
+      this._renderBars(chartId, firstArray(assessment, ["distribution", "bins"]), summary, {
+        caption: "Source-coordinate provenance and quality distribution",
+        valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
+        valueFormat: "percent",
+        valueLabel: "Active share",
+        referenceLabel: "Reference share",
+        scaleActual: true,
+        emptyMessage: "No source-coordinate evidence is available for this cohort.",
+      });
+      this._appendChartPolicy(
+        chartId,
+        "Broad country bounds are conservative QA checks, not exact borders. No geocoding, repair, coordinate swapping, or precision promotion is performed; generalized and unresolved markers remain separate."
+      );
+      this._renderForestPlot(
+        comparisonId,
+        firstArray(assessment, ["comparisons", "adjustedComparisons", "adjusted_comparisons"]),
+        summary,
+        {
+          caption: "Source–era–macroregion adjusted coordinate-quality differences",
+          defaultKind: "filter",
+          valueKeys: ["adjustedDifference", "adjustedEffect"],
+          primaryCountLabel: "Active quality bin",
+          comparisonCountLabel: "Reference quality bin",
+          primaryCountKeys: ["observedCount"],
+          comparisonCountKeys: ["referenceCount"],
+          emptyMessage: "The descriptive coordinate-quality distribution is ready. Adjusted comparisons require an independent reference cohort and all support gates.",
+        }
+      );
+    }
+
     _sectionData(result) {
       const overview = isObject(result.overview) ? result.overview : {};
       const time = isObject(result.time) ? result.time : {};
@@ -5548,6 +5627,7 @@
         sourceBalancedPolicy: cleanText(firstDefined(time, ["sourceBalancedPolicy", "source_balanced_policy"], "")),
         duration: firstDefined(time, ["duration", "durationAssessment", "duration_assessment"], {}),
         reportingDelay: firstDefined(time, ["reportingDelay", "reporting_delay", "reportingDelayAssessment", "reporting_delay_assessment"], {}),
+        coordinateEvidence: firstDefined(sourcesQuality, ["coordinateEvidence", "coordinate_evidence", "coordinateEvidenceAssessment", "coordinate_evidence_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
@@ -5754,6 +5834,7 @@
       spatialJobs.push(() => {
         if (this.els.spatialStatus) this.els.spatialStatus.textContent = data.spatialStatus || "Spatial evidence is associative, point-based, uncertainty-aware, and never uses chronology connectors.";
       });
+      spatialJobs.push(() => this._renderCoordinateEvidence(data.coordinateEvidence, summary, true));
       sourcesQualityJobs.push(() => this._renderBars("analysis-source-composition-chart", data.sourceComposition, summary, { caption: "Source composition", defaultKind: "filter" }));
       sourcesQualityJobs.push(() => this._renderStackedComposition("analysis-source-time-chart", data.sourceByTime, summary, {
         caption: "100% stacked source composition by period",
@@ -5764,6 +5845,7 @@
         this._renderHeatmap("analysis-quality-audit-chart", data.audit, summary, { caption: "Classifier consistency audit", rowHeading: "Recorded class", defaultKind: "filter", effectOnly: true, craftRows: true, craftColumns: true });
         this._appendChartPolicy("analysis-quality-audit-chart", data.auditPolicy);
       });
+      sourcesQualityJobs.push(() => this._renderCoordinateEvidence(data.coordinateEvidence, summary, false));
       relationshipContextJobs.push(() => this._renderRelationshipEvidence("analysis-relationship-readiness-chart", data.relationshipReadiness, summary, { emptyMessage: "Relationship reconciliation details load with Spatial Evidence; unresolved identifiers remain quarantined." }));
 
       const crops = data.crops;
@@ -5826,12 +5908,12 @@
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
-        ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart"] }],
+        ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
         ["analysis-section-context", { jobs: contextOverviewJobs, targets: ["analysis-cross-domain-readiness-chart"] }],
         ["analysis-crop-context", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
         ["analysis-animal-context", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
         ["analysis-relationship-context", { jobs: relationshipContextJobs, targets: ["analysis-relationship-readiness-chart"] }],
-        ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart"] }],
+        ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart"] }],
       ]);
       this._clearRenderTargets(Array.from(this.renderPlans.values()).reduce(function (ids, plan) {
         return ids.concat(asArray(plan && plan.targets));

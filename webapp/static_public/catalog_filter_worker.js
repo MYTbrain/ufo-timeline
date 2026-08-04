@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-reporting-delay-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-coordinate-evidence-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -65,6 +65,14 @@
     artifactHashes: {},
     releaseId: "",
   };
+  let analysisCoordinateEvidenceArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    typedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisSpatialExecutor = null;
   let analysisSpatialExecutorEpoch = 0;
   let analysisSpatialPending = null;
@@ -108,6 +116,7 @@
       analysisMacroregion: createDictionary(),
       durationMacroregion: createDictionary(),
       reportingDelayMacroregion: createDictionary(),
+      coordinateEvidenceMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
       geographyBoundaryStatus: createDictionary(),
@@ -255,6 +264,12 @@
       analysisReportingDelayBinCodes: new Uint8Array(length),
       analysisReportingDelayMacroregionCodes: new Uint16Array(length),
       analysisReportingDelayDays: new Uint32Array(length),
+      analysisCoordinateEvidenceProjectionStates: new Uint8Array(length),
+      analysisCoordinateEvidenceStatusCodes: new Uint8Array(length),
+      analysisCoordinateEvidenceConsistencyCodes: new Uint8Array(length),
+      analysisCoordinateEvidenceQualityBinCodes: new Uint8Array(length),
+      analysisCoordinateEvidenceRiskFlags: new Uint8Array(length),
+      analysisCoordinateEvidenceMacroregionCodes: new Uint16Array(length),
     };
     chunk.analysisDurationLowerSeconds.fill(Number.NaN);
     chunk.analysisDurationUpperSeconds.fill(Number.NaN);
@@ -367,6 +382,12 @@
       chunk.analysisReportingDelayBinCodes.byteLength +
       chunk.analysisReportingDelayMacroregionCodes.byteLength +
       chunk.analysisReportingDelayDays.byteLength;
+    typedStorageBytes += chunk.analysisCoordinateEvidenceProjectionStates.byteLength +
+      chunk.analysisCoordinateEvidenceStatusCodes.byteLength +
+      chunk.analysisCoordinateEvidenceConsistencyCodes.byteLength +
+      chunk.analysisCoordinateEvidenceQualityBinCodes.byteLength +
+      chunk.analysisCoordinateEvidenceRiskFlags.byteLength +
+      chunk.analysisCoordinateEvidenceMacroregionCodes.byteLength;
     return chunk;
   }
 
@@ -565,6 +586,27 @@
     values.analysisReportingDelayDays = reportingDelayProjected && ["reported_valid", "posted_fallback_valid"].indexOf(values.analysisReportingDelayStatus) !== -1
       ? chunk.analysisReportingDelayDays[index]
       : null;
+    const coordinateEvidenceProjected = Boolean(
+      chunk.analysisCoordinateEvidenceProjectionStates && chunk.analysisCoordinateEvidenceProjectionStates[index]
+    );
+    values.analysisCoordinateEvidenceAvailable = coordinateEvidenceProjected;
+    values.analysisCoordinateEvidenceStatus = coordinateEvidenceProjected
+      ? String((analysisCoordinateEvidenceArtifact.manifest.codes.status || [])[chunk.analysisCoordinateEvidenceStatusCodes[index] - 1] || "unavailable")
+      : "unavailable";
+    values.analysisCoordinateCountryConsistency = coordinateEvidenceProjected
+      ? String((analysisCoordinateEvidenceArtifact.manifest.codes.countryConsistency || [])[chunk.analysisCoordinateEvidenceConsistencyCodes[index] - 1] || "not_applicable_invalid")
+      : "not_applicable_invalid";
+    values.analysisCoordinateQualityBin = coordinateEvidenceProjected
+      ? String((analysisCoordinateEvidenceArtifact.manifest.codes.qualityBin || [])[chunk.analysisCoordinateEvidenceQualityBinCodes[index] - 1] || "invalid_or_incompatible")
+      : "invalid_or_incompatible";
+    values.analysisCoordinateRiskFlags = coordinateEvidenceProjected
+      ? chunk.analysisCoordinateEvidenceRiskFlags[index]
+      : 0;
+    values.analysisCoordinateMacroregion = coordinateEvidenceProjected
+      ? dictionaryValue(dictionaries.coordinateEvidenceMacroregion, chunk.analysisCoordinateEvidenceMacroregionCodes[index]) || "unknown"
+      : "unknown";
+    values.analysisCoordinateEvidenceTyped = coordinateEvidenceProjected &&
+      ["typed_country_consistent", "typed_country_unchecked"].indexOf(values.analysisCoordinateEvidenceStatus) !== -1;
     values.duplicateLineage = dictionaryValue(dictionaries.duplicateLineage, chunk.duplicateLineageCodes[index]);
     values.sortOrdinal = sortOrdinalAt(chunk, index);
     values.lat = Number.isFinite(chunk.latitudes[index]) ? chunk.latitudes[index] : null;
@@ -1521,6 +1563,9 @@
           : {},
         analysisReportingDelayArtifact.loaded
           ? Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {})
+          : {},
+        analysisCoordinateEvidenceArtifact.loaded
+          ? Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {})
           : {}
       ),
       geographyProjectionLoaded: Boolean(analysisGeographyArtifact.loaded),
@@ -1542,7 +1587,16 @@
         negativeControls: Object.assign({}, analysisReportingDelayArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
       } : null,
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.4.0"),
+      coordinateEvidenceProjectionLoaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
+      coordinateEvidenceArtifact: analysisCoordinateEvidenceArtifact.loaded ? {
+        releaseId: analysisCoordinateEvidenceArtifact.releaseId,
+        counts: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.negativeControls || {}),
+        artifactHashes: Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {}),
+      } : null,
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.5.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
@@ -2545,6 +2599,173 @@
     };
   }
 
+  function analysisCoordinateEvidenceManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-coordinate-evidence-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts &&
+      manifest.artifacts.coordinateEvidenceProjection &&
+      manifest.artifactGroups &&
+      Array.isArray(manifest.artifactGroups.originalEvidenceShards) &&
+      manifest.codes &&
+      manifest.readiness &&
+      manifest.policy &&
+      manifest.policy.canonicalEventsMutated === false &&
+      manifest.policy.externalGeocodingUsed === false &&
+      manifest.policy.precisionPromotionAllowed === false &&
+      manifest.policy.generalizedMarkersCountAsSourceCoordinates === false
+    );
+  }
+
+  function validateCoordinateEvidenceManifest(manifest) {
+    const projectionEntry = manifestArtifactEntry(manifest, "coordinateEvidenceProjection");
+    if (!projectionEntry || !normalizedSha256(projectionEntry.sha256) || !normalizedSha256(projectionEntry.gzipSha256)) {
+      throw new Error("Coordinate-evidence projection is missing pinned raw or gzip integrity.");
+    }
+    if (!Array.isArray(projectionEntry.rowSchema) || projectionEntry.rowSchema.length !== 11) {
+      throw new Error("Coordinate-evidence projection schema is invalid.");
+    }
+    let evidenceRows = 0;
+    manifest.artifactGroups.originalEvidenceShards.forEach(function (key) {
+      const entry = manifestArtifactEntry(manifest, key);
+      if (!entry || !normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+        throw new Error("Coordinate original-evidence shard " + key + " is invalid.");
+      }
+      if (!Array.isArray(entry.rowSchema) || entry.rowSchema.length !== 18) {
+        throw new Error("Coordinate original-evidence shard " + key + " has an invalid schema.");
+      }
+      evidenceRows += Number(entry.rowCount) || 0;
+    });
+    if (evidenceRows !== Number(projectionEntry.rowCount) ||
+        evidenceRows !== Number(manifest.counts && manifest.counts.sourceCoordinateRows)) {
+      throw new Error("Coordinate projection and original-evidence row counts disagree.");
+    }
+    return projectionEntry;
+  }
+
+  function applyCoordinateEvidenceProjection(projectionRows, manifest) {
+    const sourceCodes = manifest.codes.source || [];
+    const eraCodes = manifest.codes.era || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    const statusCodes = manifest.codes.status || [];
+    const consistencyCodes = manifest.codes.countryConsistency || [];
+    const qualityCodes = manifest.codes.qualityBin || [];
+    let previousRowIndex = -1;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    let typedRows = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const sourceCode = Number(projection[2]);
+      const eraCode = Number(projection[3]);
+      const macroregionCode = Number(projection[4]);
+      const statusCode = Number(projection[5]);
+      const consistencyCode = Number(projection[6]);
+      const qualityCode = Number(projection[7]);
+      const riskFlags = Number(projection[8]);
+      const latitude = Number(projection[9]);
+      const longitude = Number(projection[10]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Coordinate-evidence projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Coordinate-evidence projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Coordinate-evidence event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(sourceCode) || sourceCode < 0 || sourceCode >= sourceCodes.length ||
+          !Number.isInteger(eraCode) || eraCode < 0 || eraCode >= eraCodes.length ||
+          !Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length ||
+          !Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(consistencyCode) || consistencyCode < 0 || consistencyCode >= consistencyCodes.length ||
+          !Number.isInteger(qualityCode) || qualityCode < 0 || qualityCode >= qualityCodes.length ||
+          !Number.isInteger(riskFlags) || riskFlags < 0 || riskFlags > 255 ||
+          !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+          !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+        throw new Error("Coordinate-evidence projection contains an invalid code or value at row " + projectionIndex + ".");
+      }
+      const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
+      const canonicalCoordinateSource = dictionaryValue(
+        dictionaries.coordinateSource,
+        location.chunk.coordinateSourceCodes[location.index]
+      ) || "unresolved";
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource || canonicalCoordinateSource !== "raw_latlong") {
+        throw new Error("Coordinate-evidence origin does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (Math.abs(location.chunk.latitudes[location.index] - latitude) > 1e-9 ||
+          Math.abs(location.chunk.longitudes[location.index] - longitude) > 1e-9) {
+        throw new Error("Coordinate-evidence values do not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      const status = String(statusCodes[statusCode] || "unavailable");
+      if (["typed_country_consistent", "typed_country_unchecked"].indexOf(status) !== -1) typedRows += 1;
+      location.chunk.analysisCoordinateEvidenceProjectionStates[location.index] = 1;
+      location.chunk.analysisCoordinateEvidenceStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisCoordinateEvidenceConsistencyCodes[location.index] = consistencyCode + 1;
+      location.chunk.analysisCoordinateEvidenceQualityBinCodes[location.index] = qualityCode + 1;
+      location.chunk.analysisCoordinateEvidenceRiskFlags[location.index] = riskFlags;
+      location.chunk.analysisCoordinateEvidenceMacroregionCodes[location.index] = categoryCode(
+        dictionaries.coordinateEvidenceMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+    });
+    if (typedRows !== Number(manifest.counts && manifest.counts.typedRows)) {
+      throw new Error("Coordinate-evidence typed-row parity failed.");
+    }
+    return { appliedRows: projectionRows.length, typedRows };
+  }
+
+  async function loadAnalysisCoordinateEvidenceArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_coordinate_evidence_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisCoordinateEvidenceManifestSupported(manifest)) {
+      throw new Error("Analysis coordinate-evidence manifest is invalid or unsupported.");
+    }
+    const projectionEntry = validateCoordinateEvidenceManifest(manifest);
+    const projectionRows = await fetchAnalysisJson(
+      urls.projection || manifestArtifactUrl(manifest, "coordinateEvidenceProjection", manifestUrl),
+      manifestArtifactIntegrity(manifest, "coordinateEvidenceProjection")
+    );
+    if (!Array.isArray(projectionRows) || projectionRows.length !== Number(projectionEntry.rowCount) ||
+        projectionRows.some(function (row) { return !Array.isArray(row) || row.length !== 11; })) {
+      throw new Error("Coordinate-evidence projection row-count or schema mismatch.");
+    }
+    const applied = applyCoordinateEvidenceProjection(projectionRows, manifest);
+    const artifactHashes = {};
+    Object.keys(manifest.artifacts).sort().forEach(function (key) {
+      artifactHashes[key] = String(manifest.artifacts[key].sha256 || "");
+    });
+    analysisCoordinateEvidenceArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes,
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: analysisCoordinateEvidenceArtifact.releaseId,
+      artifactHashes: Object.assign({}, artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
   function applyGeographyRowsToCatalog(rowsValue, manifest) {
     const rows = Array.isArray(rowsValue) ? rowsValue : [];
     const codes = manifest && manifest.codes && manifest.codes.ufoGeography || {};
@@ -3000,6 +3221,7 @@
         duplicateLineage: dictionaries.duplicateLineage.values.length,
         durationMacroregion: dictionaries.durationMacroregion.values.length,
         reportingDelayMacroregion: dictionaries.reportingDelayMacroregion.values.length,
+        coordinateEvidenceMacroregion: dictionaries.coordinateEvidenceMacroregion.values.length,
       },
       geographyProjection: {
         loaded: Boolean(analysisGeographyArtifact.loaded),
@@ -3020,6 +3242,13 @@
         releaseId: String(analysisReportingDelayArtifact.releaseId || ""),
         artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
       },
+      coordinateEvidenceProjection: {
+        loaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
+        appliedRows: Number(analysisCoordinateEvidenceArtifact.appliedRows) || 0,
+        typedRows: Number(analysisCoordinateEvidenceArtifact.typedRows) || 0,
+        releaseId: String(analysisCoordinateEvidenceArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {}),
+      },
     };
   }
 
@@ -3039,6 +3268,9 @@
       manifest: null, loaded: false, appliedRows: 0, normalizedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisReportingDelayArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
+    };
+    analysisCoordinateEvidenceArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCache.clear();
@@ -3167,6 +3399,26 @@
         loadAnalysisReportingDelayArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisReportingDelayArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisCoordinateEvidenceArtifact") {
+        loadAnalysisCoordinateEvidenceArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisCoordinateEvidenceArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),
