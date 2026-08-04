@@ -5,7 +5,7 @@
 })(typeof self !== "undefined" ? self : globalThis, function () {
   "use strict";
 
-  const ESTIMATOR_VERSION = "ufo-analysis-spatial-v2.1.0";
+  const ESTIMATOR_VERSION = "ufo-analysis-spatial-v2.2.0";
   const DEFAULT_WINDOWS = Object.freeze([
     Object.freeze({ id: "near_25km_7d", label: "25 km / +/-7 days", radiusKm: 25, dayWindow: 7, primary: true }),
     Object.freeze({ id: "near_50km_7d", label: "50 km / +/-7 days", radiusKm: 50, dayWindow: 7 }),
@@ -26,6 +26,35 @@
     "activeIntervals", "statusCode", "countryCode", "provenanceCode",
     "inferentialEligible", "exclusionReasonCodes",
   ]);
+  const PACKED_UFO_SPATIAL_POINT_SCHEMA = Object.freeze([
+    "eventId", "lat", "lon", "ordinal", "year", "sourceCode", "craftCode",
+    "craftConfidenceCode", "sameDayMatchStrengthCode", "coordinateEvidenceCode",
+    "coordinatePileGroup", "coordinatePileCount", "fineSpatialStratumCode",
+    "coarseSpatialStratumCode", "fiveYearBand", "decade", "duplicateLineageCode",
+  ]);
+  const PACKED_UFO_CONFIGURATION_POINT_SCHEMA = Object.freeze([
+    "eventId", "lat", "lon", "ordinal", "year", "sourceCode", "configurationCode",
+    "configurationConfidenceCode", "configurationSourceCode", "sameDayMatchStrengthCode",
+    "coordinateEvidenceCode", "coordinatePileGroup", "coordinatePileCount",
+    "fineSpatialStratumCode", "coarseSpatialStratumCode", "fiveYearBand", "decade",
+    "duplicateLineageCode",
+  ]);
+  const PACKED_CONTEXT_NEIGHBOR_SCHEMA = Object.freeze([
+    "contextDomainCode", "contextLaneCode", "contextId", "contextClusterId",
+    "contextOrdinal", "ufoEventId", "distanceDecameters", "dayLag",
+    "distanceRingCode", "dayLagBandCode", "uncertaintyClassCode",
+    "contextUncertaintyKm", "ufoCraftCode", "ufoSourceCode",
+    "ufoFineSpatialStratumCode", "ufoCoarseSpatialStratumCode", "featureGroupCode",
+    "originUfoExcluded", "originPublisherExcluded", "independentAssociationEligible",
+    "dateRoleCode",
+  ]);
+  const PACKED_RELATIONSHIP_SCHEMA = Object.freeze([
+    "relationshipId", "subjectAnalysisId", "objectDomainCode", "objectAnalysisId",
+    "assertionModeCode", "relationshipTypeCode", "reviewStateCode", "currentUfoEventId",
+    "reconciliationStatusCode", "associationEligible", "sourceInputCount", "exclusionReasonCodes",
+  ]);
+  const CONTEXT_DISTANCE_RING_ORDER = Object.freeze(["0_25_km", "25_50_km", "50_100_km", "100_250_km"]);
+  const CONTEXT_DAY_LAG_ORDER = Object.freeze(["same_day", "1_3_days", "4_7_days", "8_30_days"]);
 
   function finite(value, fallback) {
     if (value === null || value === undefined || value === "") return fallback;
@@ -717,6 +746,701 @@
       : text(value, fallback);
   }
 
+  function normalizeSpatialPoint(value, codebookValue) {
+    if (Array.isArray(value)) {
+      return {
+        eventId: text(value[0]),
+        lat: finite(value[1], null),
+        lon: finite(value[2], null),
+        ordinal: finite(value[3], null),
+        year: finite(value[4], null),
+        source: codeLabel(codebookValue, "source", value[5], "unknown").toLowerCase(),
+        craft: codeLabel(codebookValue, "craft", value[6], "unknown").toLowerCase(),
+        craftConfidence: codeLabel(codebookValue, "craftConfidence", value[7], "unknown").toLowerCase(),
+        sameDayMatchStrength: codeLabel(codebookValue, "sameDayMatchStrength", value[8], "unknown").toLowerCase(),
+        coordinateEvidence: codeLabel(codebookValue, "coordinateEvidence", value[9], "unknown").toLowerCase(),
+        pileGroup: text(value[10]),
+        pileCount: Math.max(0, finite(value[11], 0)),
+        fine: codeLabel(codebookValue, "fineSpatialStratum", value[12], "unmapped"),
+        coarse: codeLabel(codebookValue, "coarseSpatialStratum", value[13], "unmapped"),
+        fiveYearBand: finite(value[14], null),
+        decade: finite(value[15], null),
+        duplicateLineage: codeLabel(codebookValue, "duplicateLineage", value[16], "canonical_deduped_event"),
+        packed: true,
+      };
+    }
+    const row = value || {};
+    return {
+      eventId: text(firstDefined(row.eventId, row.event_id)),
+      lat: finite(row.lat, null),
+      lon: finite(row.lon, null),
+      ordinal: finite(firstDefined(row.ordinal, row.sortOrdinal), null),
+      year: finite(firstDefined(row.year, row.analysisYear), null),
+      source: text(firstDefined(row.source, row.sourceCode), "unknown").toLowerCase(),
+      craft: text(firstDefined(row.craft, row.craftCode, row.craftType), "unknown").toLowerCase(),
+      craftConfidence: text(firstDefined(row.craftConfidence, row.craftConfidenceCode), "unknown").toLowerCase(),
+      sameDayMatchStrength: text(firstDefined(row.sameDayMatchStrength, row.sameDayMatchStrengthCode), "unknown").toLowerCase(),
+      coordinateEvidence: text(firstDefined(row.coordinateEvidence, row.coordinateEvidenceCode), "unknown").toLowerCase(),
+      pileGroup: text(firstDefined(row.coordinatePileGroup, row.pileGroup)),
+      pileCount: Math.max(0, finite(firstDefined(row.coordinatePileCount, row.pileCount), 0)),
+      fine: text(firstDefined(row.fineSpatialStratum, row.fineSpatialStratumCode), "unmapped"),
+      coarse: text(firstDefined(row.coarseSpatialStratum, row.coarseSpatialStratumCode), "unmapped"),
+      fiveYearBand: finite(row.fiveYearBand, null),
+      decade: finite(row.decade, null),
+      duplicateLineage: text(firstDefined(row.duplicateLineage, row.duplicateLineageCode), "canonical_deduped_event"),
+      packed: false,
+    };
+  }
+
+  function normalizeConfigurationPoint(value, codebookValue) {
+    if (Array.isArray(value)) {
+      return {
+        eventId: text(value[0]),
+        lat: finite(value[1], null),
+        lon: finite(value[2], null),
+        ordinal: finite(value[3], null),
+        year: finite(value[4], null),
+        source: codeLabel(codebookValue, "source", value[5], "unknown").toLowerCase(),
+        craft: codeLabel(codebookValue, "configuration", value[6], "formation").toLowerCase(),
+        configuration: codeLabel(codebookValue, "configuration", value[6], "formation").toLowerCase(),
+        craftConfidence: codeLabel(codebookValue, "configurationConfidence", value[7], "unknown").toLowerCase(),
+        configurationSource: codeLabel(codebookValue, "configurationSource", value[8], "unknown").toLowerCase(),
+        sameDayMatchStrength: codeLabel(codebookValue, "sameDayMatchStrength", value[9], "unknown").toLowerCase(),
+        coordinateEvidence: codeLabel(codebookValue, "coordinateEvidence", value[10], "unknown").toLowerCase(),
+        pileGroup: text(value[11]),
+        pileCount: Math.max(0, finite(value[12], 0)),
+        fine: codeLabel(codebookValue, "fineSpatialStratum", value[13], "unmapped"),
+        coarse: codeLabel(codebookValue, "coarseSpatialStratum", value[14], "unmapped"),
+        fiveYearBand: finite(value[15], null),
+        decade: finite(value[16], null),
+        duplicateLineage: codeLabel(codebookValue, "duplicateLineage", value[17], "canonical_deduped_event"),
+        packed: true,
+        configurationPoint: true,
+      };
+    }
+    const row = value || {};
+    return {
+      eventId: text(firstDefined(row.eventId, row.event_id)),
+      lat: finite(row.lat, null),
+      lon: finite(row.lon, null),
+      ordinal: finite(firstDefined(row.ordinal, row.sortOrdinal), null),
+      year: finite(firstDefined(row.year, row.analysisYear), null),
+      source: text(firstDefined(row.source, row.sourceCode), "unknown").toLowerCase(),
+      craft: text(firstDefined(row.configuration, row.configurationCode), "formation").toLowerCase(),
+      configuration: text(firstDefined(row.configuration, row.configurationCode), "formation").toLowerCase(),
+      craftConfidence: text(firstDefined(row.configurationConfidence, row.configurationConfidenceCode), "unknown").toLowerCase(),
+      configurationSource: text(firstDefined(row.configurationSource, row.configurationSourceCode), "unknown").toLowerCase(),
+      sameDayMatchStrength: text(firstDefined(row.sameDayMatchStrength, row.sameDayMatchStrengthCode), "unknown").toLowerCase(),
+      coordinateEvidence: text(firstDefined(row.coordinateEvidence, row.coordinateEvidenceCode), "unknown").toLowerCase(),
+      pileGroup: text(firstDefined(row.coordinatePileGroup, row.pileGroup)),
+      pileCount: Math.max(0, finite(firstDefined(row.coordinatePileCount, row.pileCount), 0)),
+      fine: text(firstDefined(row.fineSpatialStratum, row.fineSpatialStratumCode), "unmapped"),
+      coarse: text(firstDefined(row.coarseSpatialStratum, row.coarseSpatialStratumCode), "unmapped"),
+      fiveYearBand: finite(row.fiveYearBand, null),
+      decade: finite(row.decade, null),
+      duplicateLineage: text(firstDefined(row.duplicateLineage, row.duplicateLineageCode), "canonical_deduped_event"),
+      packed: false,
+      configurationPoint: true,
+    };
+  }
+
+  function pinnedConfigurationRowsForActiveCohort(activeRowsValue, spatialPointsValue, configurationPointsValue, codebooksValue) {
+    const activeRows = Array.isArray(activeRowsValue) ? activeRowsValue : [];
+    const activeIds = new Set(activeRows.map(function (row) {
+      return text(firstDefined(row && row.eventId, row && row.event_id));
+    }));
+    const codebooks = codebooksValue || {};
+    const byEventId = new Map();
+    (Array.isArray(spatialPointsValue) ? spatialPointsValue : []).forEach(function (value) {
+      const point = normalizeSpatialPoint(value, codebooks.ufoSpatialPoints);
+      if (activeIds.has(point.eventId)) byEventId.set(point.eventId, point);
+    });
+    (Array.isArray(configurationPointsValue) ? configurationPointsValue : []).forEach(function (value) {
+      const point = normalizeConfigurationPoint(value, codebooks.ufoConfigurationPoints);
+      if (activeIds.has(point.eventId)) byEventId.set(point.eventId, point);
+    });
+    return Array.from(byEventId.values()).map(function (point) {
+      return {
+        eventId: point.eventId,
+        mapped: true,
+        lat: point.lat,
+        lon: point.lon,
+        analysisCoordinateClass: point.coordinateEvidence,
+        coordinateSource: "raw_latlong",
+        datePrecision: "exact_day",
+        craftType: point.craft,
+        craftConfidence: point.craftConfidence,
+        sameDayMatchStrength: point.sameDayMatchStrength,
+        duplicateLineage: "",
+        source: point.source,
+        analysisYear: point.year,
+        sortOrdinal: point.ordinal,
+        analysisFiveYearBand: point.fiveYearBand,
+        analysisDecade: point.decade,
+        analysisFineSpatialStratum: point.fine,
+        analysisCoarseSpatialStratum: point.coarse,
+        analysisCoordinatePileGroup: point.pileGroup,
+        analysisCoordinatePileCount: point.pileCount,
+        configurationPoint: Boolean(point.configurationPoint),
+      };
+    });
+  }
+
+  function pinnedRowsForActiveCohort(activeRowsValue, spatialPointsValue, codebookValue) {
+    const activeRows = Array.isArray(activeRowsValue) ? activeRowsValue : [];
+    const spatialPoints = Array.isArray(spatialPointsValue) ? spatialPointsValue : [];
+    if (!spatialPoints.length) return activeRows;
+    const activeIds = new Set(activeRows.map(function (row) {
+      return text(firstDefined(row && row.eventId, row && row.event_id));
+    }));
+    return spatialPoints.map(function (value) {
+      return normalizeSpatialPoint(value, codebookValue);
+    }).filter(function (point) {
+      return activeIds.has(point.eventId);
+    }).map(function (point) {
+      return {
+        eventId: point.eventId,
+        mapped: true,
+        lat: point.lat,
+        lon: point.lon,
+        analysisCoordinateClass: point.coordinateEvidence,
+        coordinateSource: "raw_latlong",
+        datePrecision: "exact_day",
+        craftType: point.craft,
+        craftConfidence: point.craftConfidence,
+        sameDayMatchStrength: point.sameDayMatchStrength,
+        duplicateLineage: "",
+        source: point.source,
+        analysisYear: point.year,
+        sortOrdinal: point.ordinal,
+        analysisFiveYearBand: point.fiveYearBand,
+        analysisDecade: point.decade,
+        analysisFineSpatialStratum: point.fine,
+        analysisCoarseSpatialStratum: point.coarse,
+        analysisCoordinatePileGroup: point.pileGroup,
+        analysisCoordinatePileCount: point.pileCount,
+      };
+    });
+  }
+
+  function normalizeContextNeighbor(value, codebookValue) {
+    if (Array.isArray(value)) {
+      return {
+        domain: codeLabel(codebookValue, "contextDomain", value[0], "unknown"),
+        lane: codeLabel(codebookValue, "contextLane", value[1], "unknown"),
+        contextId: text(value[2]),
+        clusterId: text(value[3]),
+        contextOrdinal: finite(value[4], null),
+        ufoEventId: text(value[5]),
+        distanceDecameters: finite(value[6], null),
+        dayLag: finite(value[7], null),
+        distanceRing: codeLabel(codebookValue, "distanceRing", value[8], "unknown"),
+        dayLagBand: codeLabel(codebookValue, "dayLagBand", value[9], "unknown"),
+        uncertaintyClass: codeLabel(codebookValue, "uncertaintyClass", value[10], "unknown"),
+        contextUncertaintyKm: finite(value[11], null),
+        craft: codeLabel(codebookValue, "ufoCraft", value[12], "unknown"),
+        source: codeLabel(codebookValue, "ufoSource", value[13], "unknown"),
+        fine: codeLabel(codebookValue, "ufoFineSpatialStratum", value[14], "unmapped"),
+        coarse: codeLabel(codebookValue, "ufoCoarseSpatialStratum", value[15], "unmapped"),
+        featureGroup: codeLabel(codebookValue, "featureGroup", value[16], "unknown"),
+        originUfoExcluded: Boolean(value[17]),
+        originPublisherExcluded: Boolean(value[18]),
+        independentEligible: Boolean(value[19]),
+        dateRole: codeLabel(codebookValue, "dateRole", value[20], "unknown"),
+        packed: true,
+      };
+    }
+    const row = value || {};
+    return {
+      domain: text(firstDefined(row.domain, row.contextDomain, row.contextDomainCode), "unknown"),
+      lane: text(firstDefined(row.lane, row.contextLane, row.contextLaneCode), "unknown"),
+      contextId: text(row.contextId),
+      clusterId: text(firstDefined(row.clusterId, row.contextClusterId)),
+      contextOrdinal: finite(row.contextOrdinal, null),
+      ufoEventId: text(row.ufoEventId),
+      distanceDecameters: finite(row.distanceDecameters, null),
+      dayLag: finite(row.dayLag, null),
+      distanceRing: text(firstDefined(row.distanceRing, row.distanceRingCode), "unknown"),
+      dayLagBand: text(firstDefined(row.dayLagBand, row.dayLagBandCode), "unknown"),
+      uncertaintyClass: text(firstDefined(row.uncertaintyClass, row.uncertaintyClassCode), "unknown"),
+      contextUncertaintyKm: finite(row.contextUncertaintyKm, null),
+      craft: text(firstDefined(row.craft, row.ufoCraft, row.ufoCraftCode), "unknown"),
+      source: text(firstDefined(row.source, row.ufoSource, row.ufoSourceCode), "unknown"),
+      fine: text(firstDefined(row.fine, row.ufoFineSpatialStratum, row.ufoFineSpatialStratumCode), "unmapped"),
+      coarse: text(firstDefined(row.coarse, row.ufoCoarseSpatialStratum, row.ufoCoarseSpatialStratumCode), "unmapped"),
+      featureGroup: text(firstDefined(row.featureGroup, row.featureGroupCode), "unknown"),
+      originUfoExcluded: Boolean(row.originUfoExcluded),
+      originPublisherExcluded: Boolean(row.originPublisherExcluded),
+      independentEligible: row.independentAssociationEligible == null
+        ? Boolean(row.independentEligible)
+        : Boolean(row.independentAssociationEligible),
+      dateRole: text(firstDefined(row.dateRole, row.dateRoleCode), "unknown"),
+      packed: false,
+    };
+  }
+
+  function contextCellIndex(row) {
+    const distance = CONTEXT_DISTANCE_RING_ORDER.indexOf(row.distanceRing);
+    const lag = CONTEXT_DAY_LAG_ORDER.indexOf(row.dayLagBand);
+    return distance < 0 || lag < 0 ? -1 : (distance * CONTEXT_DAY_LAG_ORDER.length) + lag;
+  }
+
+  function contextClusterRoles(rowsValue, observedRole) {
+    const roles = [
+      observedRole,
+      "matched_control_minus_2y",
+      "matched_control_minus_1y",
+      "matched_control_plus_1y",
+      "matched_control_plus_2y",
+    ];
+    const clusters = new Map();
+    (Array.isArray(rowsValue) ? rowsValue : []).forEach(function (row) {
+      const cell = contextCellIndex(row);
+      if (roles.indexOf(row.dateRole) === -1 || !row.clusterId) return;
+      if (!clusters.has(row.clusterId)) clusters.set(row.clusterId, new Map());
+      if (cell < 0) return;
+      const roleMap = clusters.get(row.clusterId);
+      if (!roleMap.has(row.dateRole)) roleMap.set(row.dateRole, new Set());
+      roleMap.get(row.dateRole).add(cell);
+    });
+    return { roles, clusters: Array.from(clusters.entries()).sort(function (left, right) { return left[0].localeCompare(right[0]); }) };
+  }
+
+  function contextTotals(clusterEntries, roles) {
+    const observed = new Int32Array(16);
+    const controls = Array.from({ length: roles.length - 1 }, function () { return new Int32Array(16); });
+    clusterEntries.forEach(function (entry) {
+      const roleMap = entry[1];
+      const observedSet = roleMap.get(roles[0]);
+      if (observedSet) observedSet.forEach(function (cell) { observed[cell] += 1; });
+      for (let roleIndex = 1; roleIndex < roles.length; roleIndex += 1) {
+        const values = roleMap.get(roles[roleIndex]);
+        if (values) values.forEach(function (cell) { controls[roleIndex - 1][cell] += 1; });
+      }
+    });
+    const expected = new Float64Array(16);
+    for (let cell = 0; cell < 16; cell += 1) {
+      expected[cell] = controls.reduce(function (sum, values) { return sum + values[cell]; }, 0) / Math.max(1, controls.length);
+    }
+    return { observed, controls, expected };
+  }
+
+  function contextHoldoutSensitivity(rows, observedRole, baseEffects, selector, minimumN) {
+    const groupCounts = new Map();
+    rows.filter(function (row) { return row.dateRole === observedRole && row.ufoEventId; }).forEach(function (row) {
+      const key = text(selector(row), "unknown");
+      groupCounts.set(key, (groupCounts.get(key) || 0) + 1);
+    });
+    const total = Array.from(groupCounts.values()).reduce(function (sum, value) { return sum + value; }, 0);
+    const groups = Array.from(groupCounts.entries()).filter(function (entry) {
+      return entry[1] >= minimumN && total - entry[1] >= minimumN;
+    }).sort(function (left, right) { return left[0].localeCompare(right[0]); });
+    const effects = Array.from({ length: 16 }, function () { return []; });
+    groups.forEach(function (entry) {
+      const remaining = rows.filter(function (row) { return text(selector(row), "unknown") !== entry[0]; });
+      const prepared = contextClusterRoles(remaining, observedRole);
+      const totals = contextTotals(prepared.clusters, prepared.roles);
+      for (let cell = 0; cell < 16; cell += 1) {
+        effects[cell].push({
+          omitted: entry[0],
+          omittedN: entry[1],
+          log2Enrichment: effectValue(totals.observed[cell], totals.expected[cell]),
+        });
+      }
+    });
+    return effects.map(function (values, cell) {
+      return summarizeHoldoutEffects(baseEffects[cell], values);
+    });
+  }
+
+  function contextFeatureAssociation(rowsValue, lane, observedRole, optionsValue) {
+    const options = optionsValue || {};
+    const rows = (Array.isArray(rowsValue) ? rowsValue : []).filter(function (row) {
+      return row.ufoEventId && row.craft && row.craft !== "none";
+    });
+    const observedFeatureClusters = new Map();
+    rows.filter(function (row) { return row.dateRole === observedRole; }).forEach(function (row) {
+      const feature = text(row.featureGroup, "unknown");
+      if (!observedFeatureClusters.has(feature)) observedFeatureClusters.set(feature, new Set());
+      observedFeatureClusters.get(feature).add(row.clusterId);
+    });
+    const sparseLabel = lane === "animal_public_marker" ? "other_sparse_species" : "other_sparse_morphology";
+    const featureMap = new Map();
+    observedFeatureClusters.forEach(function (clusters, feature) {
+      featureMap.set(feature, feature === "unknown" || clusters.size >= 25 ? feature : sparseLabel);
+    });
+    function prepare(mapper) {
+      const crafts = Array.from(new Set(rows.map(function (row) { return row.craft; }))).sort();
+      const features = Array.from(new Set(rows.map(function (row) {
+        return mapper(text(row.featureGroup, "unknown"));
+      }))).sort(function (left, right) {
+        if (left === "unknown") return 1;
+        if (right === "unknown") return -1;
+        if (left === sparseLabel) return 1;
+        if (right === sparseLabel) return -1;
+        return left.localeCompare(right);
+      });
+      const craftIndex = new Map(crafts.map(function (value, index) { return [value, index]; }));
+      const featureIndex = new Map(features.map(function (value, index) { return [value, index]; }));
+      const roles = [
+        observedRole, "matched_control_minus_2y", "matched_control_minus_1y",
+        "matched_control_plus_1y", "matched_control_plus_2y",
+      ];
+      const clusters = new Map();
+      rows.forEach(function (row) {
+        if (roles.indexOf(row.dateRole) === -1) return;
+        const cell = (craftIndex.get(row.craft) * features.length) + featureIndex.get(mapper(text(row.featureGroup, "unknown")));
+        if (!clusters.has(row.clusterId)) clusters.set(row.clusterId, new Map());
+        const roleMap = clusters.get(row.clusterId);
+        if (!roleMap.has(row.dateRole)) roleMap.set(row.dateRole, new Set());
+        roleMap.get(row.dateRole).add(cell);
+      });
+      return {
+        crafts, features, roles,
+        clusters: Array.from(clusters.entries()).sort(function (left, right) { return left[0].localeCompare(right[0]); }),
+        cellCount: crafts.length * features.length,
+      };
+    }
+    function totals(prepared) {
+      const observed = new Int32Array(prepared.cellCount);
+      const controls = Array.from({ length: 4 }, function () { return new Int32Array(prepared.cellCount); });
+      prepared.clusters.forEach(function (entry) {
+        const roleMap = entry[1];
+        const actual = roleMap.get(observedRole);
+        if (actual) actual.forEach(function (cell) { observed[cell] += 1; });
+        for (let roleIndex = 1; roleIndex < prepared.roles.length; roleIndex += 1) {
+          const values = roleMap.get(prepared.roles[roleIndex]);
+          if (values) values.forEach(function (cell) { controls[roleIndex - 1][cell] += 1; });
+        }
+      });
+      const expected = new Float64Array(prepared.cellCount);
+      for (let cell = 0; cell < prepared.cellCount; cell += 1) {
+        expected[cell] = controls.reduce(function (sum, values) { return sum + values[cell]; }, 0) / 4;
+      }
+      return { observed, expected };
+    }
+    function descriptiveCells(prepared, summary) {
+      const cells = [];
+      prepared.crafts.forEach(function (craft, craftIndex) {
+        prepared.features.forEach(function (feature, featureIndex) {
+          const index = (craftIndex * prepared.features.length) + featureIndex;
+          cells.push({
+            row: craft,
+            column: feature,
+            observedClusterCount: summary.observed[index],
+            expectedClusterCount: round(summary.expected[index], 4),
+            log2Enrichment: round(effectValue(summary.observed[index], summary.expected[index]), 6),
+          });
+        });
+      });
+      return cells;
+    }
+    const pooled = prepare(function (feature) { return featureMap.get(feature) || feature; });
+    const pooledTotals = totals(pooled);
+    const permutationCount = Math.max(0, Math.trunc(finite(options.permutationCount, 499)));
+    const random = seededRandom(text(options.seed, ESTIMATOR_VERSION + "|feature|" + lane));
+    const nullCounts = Array.from({ length: pooled.cellCount }, function () { return []; });
+    for (let replicate = 0; replicate < permutationCount; replicate += 1) {
+      const counts = new Int32Array(pooled.cellCount);
+      pooled.clusters.forEach(function (entry) {
+        const selectedRole = pooled.roles[Math.floor(random() * pooled.roles.length)];
+        const values = entry[1].get(selectedRole);
+        if (values) values.forEach(function (cell) { counts[cell] += 1; });
+      });
+      for (let cell = 0; cell < pooled.cellCount; cell += 1) nullCounts[cell].push(counts[cell]);
+    }
+    const inferenceEnabled = options.inferenceEnabled !== false;
+    const cells = descriptiveCells(pooled, pooledTotals);
+    cells.forEach(function (cell, index) {
+      const observed = cell.observedClusterCount;
+      const expected = cell.expectedClusterCount;
+      const nullValues = nullCounts[index];
+      const difference = observed - expected;
+      const extreme = nullValues.filter(function (value) {
+        return Math.abs(value - expected) >= Math.abs(difference) - 1e-12;
+      }).length;
+      const reasons = [];
+      if (observed < 25) reasons.push("observed_clusters_below_25");
+      if (expected < 10) reasons.push("expected_clusters_below_10");
+      if (Math.abs(cell.log2Enrichment) < Math.log2(1.25)) reasons.push("effect_below_1_25x");
+      cell.pValue = inferenceEnabled && nullValues.length ? round((extreme + 1) / (nullValues.length + 1), 8) : null;
+      cell.qValue = null;
+      cell.estimateAvailable = observed > 0 || expected > 0;
+      cell.inferenceEligible = false;
+      cell.evidenceStatus = reasons.length ? "low_support" : "candidate";
+      cell.supportReasons = reasons;
+      cell.patternFinderEligible = false;
+    });
+    if (inferenceEnabled) benjaminiHochberg(cells);
+    cells.forEach(function (cell) {
+      if (cell.evidenceStatus === "candidate" && finite(cell.qValue, 1) <= 0.05) {
+        cell.evidenceStatus = "qualified_exploratory";
+        cell.inferenceEligible = true;
+        cell.patternFinderEligible = lane === "crop_bounded";
+      } else if (cell.evidenceStatus === "candidate") {
+        cell.evidenceStatus = "not_statistically_qualified";
+        cell.supportReasons.push("q_above_0_05");
+      }
+    });
+    const complete = prepare(function (feature) { return feature; });
+    return {
+      unitOfAnalysis: "unique context location-date cluster by neighboring craft and context feature",
+      axes: { rows: pooled.crafts, columns: pooled.features },
+      cells,
+      permutationCount,
+      poolingThreshold: 25,
+      pooledFeatureGroups: Array.from(featureMap.entries()).filter(function (entry) {
+        return entry[0] !== entry[1];
+      }).map(function (entry) { return entry[0]; }).sort(),
+      completeAccessibleTable: {
+        axes: { rows: complete.crafts, columns: complete.features },
+        cells: descriptiveCells(complete, totals(complete)),
+      },
+    };
+  }
+
+  function computeContextLane(laneValue, optionsValue) {
+    const options = optionsValue || {};
+    const rows = Array.isArray(options.rows) ? options.rows : [];
+    const lane = text(laneValue);
+    const laneRows = rows.filter(function (row) { return row.lane === lane && row.independentEligible; });
+    const observedRole = lane === "animal_public_marker" ? "observed_reported_date" : "observed_catalog_date";
+    const prepared = contextClusterRoles(laneRows, observedRole);
+    const totals = contextTotals(prepared.clusters, prepared.roles);
+    const random = seededRandom(text(options.seed, ESTIMATOR_VERSION + "|context|" + lane));
+    const permutationCount = Math.max(0, Math.trunc(finite(options.permutationCount, 499)));
+    const bootstrapCount = Math.max(0, Math.trunc(finite(options.bootstrapCount, 199)));
+    const nullCounts = Array.from({ length: 16 }, function () { return []; });
+    for (let replicate = 0; replicate < permutationCount; replicate += 1) {
+      const counts = new Int32Array(16);
+      prepared.clusters.forEach(function (entry) {
+        const role = prepared.roles[Math.floor(random() * prepared.roles.length)];
+        const values = entry[1].get(role);
+        if (values) values.forEach(function (cell) { counts[cell] += 1; });
+      });
+      for (let cell = 0; cell < 16; cell += 1) nullCounts[cell].push(counts[cell]);
+    }
+    const bootstrapEffects = Array.from({ length: 16 }, function () { return []; });
+    if (prepared.clusters.length) {
+      for (let replicate = 0; replicate < bootstrapCount; replicate += 1) {
+        const sampled = [];
+        for (let draw = 0; draw < prepared.clusters.length; draw += 1) {
+          sampled.push(prepared.clusters[Math.floor(random() * prepared.clusters.length)]);
+        }
+        const sampledTotals = contextTotals(sampled, prepared.roles);
+        for (let cell = 0; cell < 16; cell += 1) {
+          bootstrapEffects[cell].push(effectValue(sampledTotals.observed[cell], sampledTotals.expected[cell]));
+        }
+      }
+    }
+    const baseEffects = Array.from({ length: 16 }, function (_unused, cell) {
+      return effectValue(totals.observed[cell], totals.expected[cell]);
+    });
+    const sourceSensitivity = contextHoldoutSensitivity(laneRows, observedRole, baseEffects, function (row) { return row.source; }, 25);
+    const regionSensitivity = contextHoldoutSensitivity(laneRows, observedRole, baseEffects, function (row) { return row.coarse; }, 25);
+    const inferential = options.inferenceEnabled !== false;
+    const cells = [];
+    for (let distanceIndex = 0; distanceIndex < CONTEXT_DISTANCE_RING_ORDER.length; distanceIndex += 1) {
+      for (let lagIndex = 0; lagIndex < CONTEXT_DAY_LAG_ORDER.length; lagIndex += 1) {
+        const cellIndex = (distanceIndex * CONTEXT_DAY_LAG_ORDER.length) + lagIndex;
+        const observed = totals.observed[cellIndex];
+        const expected = totals.expected[cellIndex];
+        const nullValues = nullCounts[cellIndex];
+        const difference = observed - expected;
+        const extreme = nullValues.filter(function (value) {
+          return Math.abs(value - expected) >= Math.abs(difference) - 1e-12;
+        }).length;
+        const effect = baseEffects[cellIndex];
+        const reasons = [];
+        if (prepared.clusters.length < 25) reasons.push("context_clusters_below_25");
+        if (observed < 25) reasons.push("observed_clusters_below_25");
+        if (expected < 10) reasons.push("expected_clusters_below_10");
+        if (Math.abs(effect) < Math.log2(1.25)) reasons.push("effect_below_1_25x");
+        cells.push({
+          estimatorVersion: ESTIMATOR_VERSION,
+          row: CONTEXT_DISTANCE_RING_ORDER[distanceIndex],
+          column: CONTEXT_DAY_LAG_ORDER[lagIndex],
+          observedClusterCount: observed,
+          expectedClusterCount: round(expected, 4),
+          log2Enrichment: round(effect, 6),
+          effectInterval: bootstrapEffects[cellIndex].length
+            ? [round(quantile(bootstrapEffects[cellIndex], 0.025), 6), round(quantile(bootstrapEffects[cellIndex], 0.975), 6)]
+            : [null, null],
+          pValue: inferential && nullValues.length ? round((extreme + 1) / (nullValues.length + 1), 8) : null,
+          qValue: null,
+          estimateAvailable: observed > 0 || expected > 0,
+          inferenceEligible: false,
+          evidenceStatus: reasons.length ? "low_support" : "candidate",
+          supportReasons: reasons,
+          sourceSensitivity: sourceSensitivity[cellIndex],
+          regionSensitivity: regionSensitivity[cellIndex],
+          patternFinderEligible: false,
+        });
+      }
+    }
+    if (inferential) benjaminiHochberg(cells);
+    cells.forEach(function (cell) {
+      if (cell.evidenceStatus === "candidate" && finite(cell.qValue, 1) <= 0.05) {
+        cell.evidenceStatus = "qualified_exploratory";
+        cell.inferenceEligible = true;
+        cell.patternFinderEligible = lane === "crop_bounded" &&
+          cell.sourceSensitivity.signStable === true && cell.regionSensitivity.signStable === true;
+      } else if (cell.evidenceStatus === "candidate") {
+        cell.evidenceStatus = "not_statistically_qualified";
+        cell.supportReasons.push("q_above_0_05");
+      }
+    });
+    const observedRows = laneRows.filter(function (row) { return row.dateRole === observedRole && row.ufoEventId; });
+    const allLaneRows = rows.filter(function (row) { return row.lane === lane; });
+    const uncertaintyCounts = {};
+    observedRows.forEach(function (row) {
+      uncertaintyCounts[row.uncertaintyClass] = (uncertaintyCounts[row.uncertaintyClass] || 0) + 1;
+    });
+    return {
+      estimatorVersion: ESTIMATOR_VERSION,
+      lane,
+      evidenceClass: lane === "crop_bounded" ? "bounded_location" : "rough_public_marker",
+      observedDateRole: observedRole,
+      unitOfAnalysis: "unique context location-date cluster with at least one eligible UFO report marker",
+      contextClusterN: prepared.clusters.length,
+      observedContextClusterN: prepared.clusters.filter(function (entry) {
+        const values = entry[1].get(observedRole);
+        return values && values.size;
+      }).length,
+      observedPairN: observedRows.length,
+      excludedObservedPairN: allLaneRows.filter(function (row) {
+        return row.dateRole === observedRole && row.ufoEventId && !row.independentEligible;
+      }).length,
+      permutationCount,
+      bootstrapCount,
+      axes: { rows: CONTEXT_DISTANCE_RING_ORDER.slice(), columns: CONTEXT_DAY_LAG_ORDER.slice() },
+      cells,
+      featureAssociation: contextFeatureAssociation(laneRows, lane, observedRole, {
+        permutationCount,
+        inferenceEnabled: inferential,
+        seed: text(options.seed) + "|feature",
+      }),
+      uncertaintyCounts,
+      definiteNearEligible: lane === "crop_bounded",
+      patternFinderLaneEligible: lane === "crop_bounded",
+      policyWarnings: lane === "animal_public_marker"
+        ? ["Public-marker association only; generalized animal markers never establish definite proximity."]
+        : lane === "crop_locality"
+          ? ["Crop-locality centroid association only; distances do not locate a formation site.", "Time is catalog date, not established formation time."]
+          : ["Bounded crop-marker association uses catalog dates, not established formation times."],
+    };
+  }
+
+  function computeContextAssociations(optionsValue) {
+    const options = optionsValue || {};
+    const activeIds = new Set((Array.isArray(options.activeRows) ? options.activeRows : []).map(function (row) {
+      return text(firstDefined(row && row.eventId, row && row.event_id));
+    }));
+    const codebook = options.codebook || {};
+    const includeAllWhenNoActiveRows = options.includeAllWhenNoActiveRows === true;
+    const normalized = (Array.isArray(options.neighbors) ? options.neighbors : []).map(function (row) {
+      return normalizeContextNeighbor(row, codebook);
+    }).filter(function (row) {
+      return !row.ufoEventId || activeIds.has(row.ufoEventId) || (includeAllWhenNoActiveRows && !activeIds.size);
+    });
+    return {
+      estimatorVersion: ESTIMATOR_VERSION,
+      traceInputsRead: false,
+      matchedNull: "same-location same-season controls at -2, -1, +1, and +2 years",
+      lanes: ["crop_bounded", "crop_locality", "animal_public_marker"].map(function (lane) {
+        return computeContextLane(lane, {
+          rows: normalized,
+          seed: text(options.seed) + "|" + lane,
+          permutationCount: options.permutationCount,
+          bootstrapCount: options.bootstrapCount,
+          inferenceEnabled: options.inferenceEnabled,
+        });
+      }),
+      policyWarnings: [
+        "Point-marker associations are exploratory and non-causal.",
+        "Chronology connectors are prohibited estimator inputs.",
+        "Originating UFO events and animal-record publishers are excluded from independent animal lanes.",
+      ],
+    };
+  }
+
+  function normalizeRelationship(value, codebookValue) {
+    if (Array.isArray(value)) {
+      return {
+        relationshipId: text(value[0]),
+        subjectId: text(value[1]),
+        objectDomain: codeLabel(codebookValue, "objectDomain", value[2], "unknown"),
+        objectId: text(value[3]),
+        lane: codeLabel(codebookValue, "assertionMode", value[4], "unknown"),
+        relationshipType: codeLabel(codebookValue, "relationshipType", value[5], "unknown"),
+        reviewState: codeLabel(codebookValue, "reviewState", value[6], "unknown"),
+        currentUfoEventId: value[7] == null ? "" : text(value[7]),
+        reconciliation: codeLabel(codebookValue, "reconciliationStatus", value[8], "unknown"),
+        associationEligible: Boolean(value[9]),
+        sourceInputCount: finite(value[10], 0),
+      };
+    }
+    const row = value || {};
+    return {
+      relationshipId: text(row.relationshipId),
+      subjectId: text(row.subjectAnalysisId),
+      objectDomain: text(firstDefined(row.objectDomain, row.objectDomainCode), "unknown"),
+      objectId: text(row.objectAnalysisId),
+      lane: text(firstDefined(row.lane, row.assertionMode, row.assertionModeCode), "unknown"),
+      relationshipType: text(firstDefined(row.relationshipType, row.relationshipTypeCode), "unknown"),
+      reviewState: text(firstDefined(row.reviewState, row.reviewStateCode), "unknown"),
+      currentUfoEventId: row.currentUfoEventId == null ? "" : text(row.currentUfoEventId),
+      reconciliation: text(firstDefined(row.reconciliation, row.reconciliationStatus, row.reconciliationStatusCode), "unknown"),
+      associationEligible: Boolean(row.associationEligible),
+      sourceInputCount: finite(row.sourceInputCount, 0),
+    };
+  }
+
+  function computeRelationshipSummary(rowsValue, codebookValue, activeRowsValue, optionsValue) {
+    const options = optionsValue || {};
+    const includeAllWhenNoActiveRows = options.includeAllWhenNoActiveRows === true;
+    const activeIds = new Set((Array.isArray(activeRowsValue) ? activeRowsValue : []).map(function (row) {
+      return text(firstDefined(row && row.eventId, row && row.event_id));
+    }));
+    const rows = (Array.isArray(rowsValue) ? rowsValue : []).map(function (row) {
+      return normalizeRelationship(row, codebookValue);
+    }).filter(function (row) {
+      return !row.currentUfoEventId || activeIds.has(row.currentUfoEventId) || (includeAllWhenNoActiveRows && !activeIds.size);
+    });
+    const lanes = Array.from(new Set(rows.map(function (row) { return row.lane; }))).sort();
+    const relationshipTypes = Array.from(new Set(rows.map(function (row) { return row.relationshipType; }))).sort();
+    const reconciliations = Array.from(new Set(rows.map(function (row) { return row.reconciliation; }))).sort();
+    const counts = new Map();
+    rows.forEach(function (row) {
+      const key = row.lane + "|" + row.relationshipType + "|" + row.reconciliation;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    const cells = [];
+    lanes.forEach(function (lane) {
+      relationshipTypes.forEach(function (relationshipType) {
+        reconciliations.forEach(function (reconciliation) {
+          const count = counts.get(lane + "|" + relationshipType + "|" + reconciliation) || 0;
+          if (!count) return;
+          cells.push({ lane, row: relationshipType, column: reconciliation, count, descriptiveOnly: true });
+        });
+      });
+    });
+    return {
+      estimatorVersion: ESTIMATOR_VERSION,
+      unitOfAnalysis: "provenance-bearing relationship record",
+      totalN: rows.length,
+      lanes,
+      relationshipTypes,
+      reconciliations,
+      cells,
+      descriptiveOnly: true,
+      policyWarnings: [
+        "Explicit-source and deterministic-candidate lanes remain separate.",
+        "Relationship records are descriptive and are not recomputed proximity evidence.",
+      ],
+    };
+  }
+
   function normalizeFacility(facilityValue, codebookValue) {
     if (Array.isArray(facilityValue)) {
       return {
@@ -1194,6 +1918,15 @@
     const rows = allRows.filter(function (row) { return spatialEligibilityReason(row) === "eligible"; }).map(spatialRow);
     const facilities = Array.isArray(options.facilities) ? options.facilities : [];
     const facilityCodes = options.facilityCodes || options.facilityCodebook || {};
+    const normalizedFacilityCatalog = facilities.map(function (facility) {
+      return normalizeFacility(facility, facilityCodes);
+    });
+    const catalogByClass = {};
+    const catalogByPrecision = {};
+    normalizedFacilityCatalog.forEach(function (facility) {
+      catalogByClass[facility.facilityClass] = (catalogByClass[facility.facilityClass] || 0) + 1;
+      catalogByPrecision[facility.coordinatePrecision] = (catalogByPrecision[facility.coordinatePrecision] || 0) + 1;
+    });
     const nearRadius = Math.max(0, finite(options.nearRadiusKm, 25) * 1000);
     const comparisonMinimum = Math.max(nearRadius, finite(options.comparisonMinimumKm, 100) * 1000);
     const comparisonMaximum = Math.max(comparisonMinimum, finite(options.comparisonMaximumKm, 250) * 1000);
@@ -1270,6 +2003,18 @@
       eligibleN: rows.length,
       inferentialFacilityN: facilityIndex.facilities.length,
       claimedFacilityN: descriptiveClaimed,
+      catalogSummary: {
+        totalN: normalizedFacilityCatalog.length,
+        inferentialEligibleN: normalizedFacilityCatalog.filter(function (facility) {
+          return facilityIsInferential(facility);
+        }).length,
+        descriptiveOnlyN: normalizedFacilityCatalog.filter(function (facility) {
+          return !facilityIsInferential(facility);
+        }).length,
+        byFacilityClass: catalogByClass,
+        byCoordinatePrecision: catalogByPrecision,
+        coverageLimitations: ["research_test_supplements_concentrated_in_northern_europe_and_new_zealand"],
+      },
       nearBandKm: [0, nearRadius / 1000],
       comparisonBandKm: [comparisonMinimum / 1000, comparisonMaximum / 1000],
       nearTotal: primary.nearTotal,
@@ -1297,7 +2042,9 @@
         "Craft composition among observed reports only; this is not an incidence or facility-influence estimate.",
         "Distances are report-marker to facility-marker distances, not site-boundary distances.",
         "Claimed UFO sites are descriptive and excluded from inference.",
+        "Research/test-site coverage is strongly limited to the Northern Europe and New Zealand supplements.",
       ],
+      coverageLimitations: ["research_test_supplements_concentrated_in_northern_europe_and_new_zealand"],
     };
   }
 
@@ -1305,14 +2052,15 @@
     const context = contextValue || {};
     const rows = [];
     const defaults = [
-      ["ufoCraftPoints", "UFO craft points", "exploratory_ready"],
-      ["militaryFacilities", "Military facilities", "exploratory_ready"],
-      ["researchFacilities", "Research/test sites", "coverage_limited"],
-      ["claimedUfoSites", "Claimed UFO sites", "descriptive_only"],
-      ["cropCircles", "Crop circles", "not_estimable"],
-      ["animalReports", "Animal reports", "not_estimable"],
-      ["relationshipReconciliation", "Relationship reconciliation", "not_estimable"],
-      ["chronologyConnectors", "Chronology connectors", "prohibited"],
+      ["ufoCraftPoints", "High-precision co-occurrence pool", "data_unavailable"],
+      ["militaryFacilities", "Verified military facilities", "data_unavailable"],
+      ["researchFacilities", "Research/test facilities", "data_unavailable"],
+      ["claimedUfoSites", "Claimed UFO sites", "ready_descriptive"],
+      ["cropBounded", "Crop circles — bounded markers", "data_unavailable"],
+      ["cropLocality", "Crop circles — locality markers", "data_unavailable"],
+      ["cropCircles", "Crop circles", "data_unavailable"],
+      ["animalReports", "Animal reports — public markers", "data_unavailable"],
+      ["relationshipReconciliation", "Relationship reconciliation", "data_unavailable"],
     ];
     defaults.forEach(function (definition) {
       const value = context[definition[0]] || {};
@@ -1323,7 +2071,25 @@
         eligibleN: finite(value.eligibleN, 0),
         totalN: finite(value.totalN, 0),
         reasons: Array.isArray(value.reasons) ? value.reasons.map(String) : [],
+        reasonCodes: Array.isArray(value.reasonCodes) ? value.reasonCodes.map(String) : [],
         releaseHash: text(value.releaseHash),
+        evidenceHash: text(firstDefined(value.evidenceHash, value.releaseHash)),
+        applicability: text(value.applicability, "applicable"),
+        inputN: finite(firstDefined(value.inputN, value.totalN), 0),
+        passedN: finite(firstDefined(value.passedN, value.eligibleN), 0),
+        failedN: finite(value.failedN, Math.max(0, finite(value.totalN, 0) - finite(value.eligibleN, 0))),
+        unknownN: finite(value.unknownN, 0),
+        denominatorLabel: text(value.denominatorLabel, "domain records"),
+        policyId: text(value.policyId, "analysis_v2_2_domain_readiness"),
+        gates: (Array.isArray(value.gates) ? value.gates : []).map(function (gate) {
+          return Object.assign({}, gate, {
+            gateId: text(gate && gate.gateId),
+            label: text(gate && gate.label, gate && gate.gateId),
+            status: text(gate && gate.status, "not_evaluated"),
+            applicability: text(gate && gate.applicability, "applicable"),
+            reasonCodes: Array.isArray(gate && gate.reasonCodes) ? gate.reasonCodes.map(String) : [],
+          });
+        }),
       };
       const laneCounts = value.laneCounts || value.lane_counts || value.details || null;
       if (laneCounts && typeof laneCounts === "object") row.laneCounts = Object.assign({}, laneCounts);
@@ -1365,8 +2131,12 @@
       cell.status = "descriptive_only";
       cell.inferenceEligible = false;
       cell.patternFinderEligible = false;
+      if (Object.prototype.hasOwnProperty.call(cell, "evidenceStatus")) cell.evidenceStatus = "descriptive_only";
       appendUniqueReason(cell, "full_catalog_overlap_descriptive_no_inference");
     });
+    if (lane.featureAssociation && lane.featureAssociation !== lane) {
+      markEvidenceLaneDescriptive(lane.featureAssociation);
+    }
   }
 
   function enforceDescriptiveOnlyBaseline(resultValue) {
@@ -1376,11 +2146,17 @@
     ["crossSource", "sameSource"].forEach(function (key) {
       (Array.isArray(cooccurrence[key]) ? cooccurrence[key] : []).forEach(markEvidenceLaneDescriptive);
     });
+    const configuration = cooccurrence.configuration || {};
+    ["crossSource", "sameSource"].forEach(function (key) {
+      (Array.isArray(configuration[key]) ? configuration[key] : []).forEach(markEvidenceLaneDescriptive);
+    });
     const facility = result.facility || {};
     markEvidenceLaneDescriptive(facility);
     markEvidenceLaneDescriptive(facility.primary);
     markEvidenceLaneDescriptive(facility.inactiveNegativeControl);
     (Array.isArray(facility.sensitivity) ? facility.sensitivity : []).forEach(markEvidenceLaneDescriptive);
+    const contextAssociations = result.contextAssociations || {};
+    (Array.isArray(contextAssociations.lanes) ? contextAssociations.lanes : []).forEach(markEvidenceLaneDescriptive);
     result.baselineMode = "full_catalog";
     result.inferenceEnabled = false;
     appendUniqueReason(result, "full_catalog_overlap_descriptive_no_inference");
@@ -1393,34 +2169,67 @@
 
   function computeSpatialAnalysis(optionsValue) {
     const options = optionsValue || {};
+    const analysisMode = text(options.analysisMode, "comparative");
+    const comparisonState = text(options.comparisonState, "inferential");
+    const wholeCorpusStructure = analysisMode === "whole_corpus_structure" || comparisonState === "whole_corpus_structure";
     const rows = Array.isArray(options.rows) ? options.rows : [];
+    const codebooks = options.codebooks || {};
+    const analysisRows = pinnedRowsForActiveCohort(
+      rows,
+      options.spatialPoints,
+      options.spatialPointCodes || codebooks.ufoSpatialPoints
+    );
+    const configurationRows = pinnedConfigurationRowsForActiveCohort(
+      rows,
+      options.spatialPoints,
+      options.configurationPoints,
+      codebooks
+    );
     const windows = Array.isArray(options.windows) && options.windows.length ? options.windows : DEFAULT_WINDOWS;
-    function computeLane(sourceLane) {
+    function computeLane(sourceLane, laneRowsValue, laneEdgesValue, seedSuffix) {
       return windows.map(function (windowConfig) {
         return computeCraftCooccurrence({
-          rows,
-          edges: options.edges,
+          rows: laneRowsValue,
+          edges: laneEdgesValue,
           window: windowConfig,
           sourceLane,
           permutationCount: options.permutationCount,
           bootstrapCount: options.bootstrapCount,
           minimumStratumSize: options.minimumStratumSize,
-          seed: text(options.seed) + "|" + sourceLane + "|" + windowConfig.id,
+          seed: text(options.seed) + "|" + text(seedSuffix, "craft") + "|" + sourceLane + "|" + windowConfig.id,
           artifactHashes: options.artifactHashes,
         });
       });
     }
     const result = {
       estimatorVersion: ESTIMATOR_VERSION,
+      analysisMode,
+      comparisonState,
       baselineMode: text(options.baselineMode, "other_dates_balanced"),
       inferenceEnabled: options.inferenceEnabled !== false,
-      eligibility: buildEligibilityFunnel(rows),
+      eligibility: options.eligibilityFunnel && typeof options.eligibilityFunnel === "object"
+        ? Object.assign({}, options.eligibilityFunnel)
+        : buildEligibilityFunnel(analysisRows),
       cooccurrence: {
-        crossSource: computeLane("cross"),
-        sameSource: computeLane("same"),
+        crossSource: computeLane("cross", analysisRows, options.edges, "craft_shape"),
+        sameSource: computeLane("same", analysisRows, options.edges, "craft_shape"),
+        configuration: {
+          status: configurationRows.length ? "available" : "data_unavailable",
+          unitOfAnalysis: "eligible Formation/configuration report exposed to a neighboring recognized craft shape or Formation report",
+          crossSource: configurationRows.length
+            ? computeLane("cross", configurationRows, options.configurationEdges, "formation_configuration")
+            : [],
+          sameSource: configurationRows.length
+            ? computeLane("same", configurationRows, options.configurationEdges, "formation_configuration")
+            : [],
+          policyWarnings: [
+            "Formation is a multi-object configuration lane and is never relabeled from dumbbell/barbell craft shape.",
+            "This point-neighborhood estimator does not read chronology connectors or infer observed travel.",
+          ],
+        },
       },
       facility: computeFacilityContext({
-        rows,
+        rows: analysisRows,
         facilities: options.facilities,
         facilityCodes: options.facilityCodes || (options.codebooks && options.codebooks.facilityAnalysis),
         nearRadiusKm: 25,
@@ -1431,6 +2240,20 @@
         seed: text(options.seed) + "|facility",
         artifactHashes: options.artifactHashes,
       }),
+      contextAssociations: computeContextAssociations({
+        activeRows: rows,
+        neighbors: options.contextNeighbors,
+        codebook: options.contextNeighborCodes || codebooks.contextUfoNeighbors,
+        permutationCount: firstDefined(options.contextPermutationCount, options.permutationCount),
+        bootstrapCount: firstDefined(options.contextBootstrapCount, options.bootstrapCount),
+        inferenceEnabled: options.inferenceEnabled,
+        seed: text(options.seed) + "|context",
+      }),
+      relationshipSummary: computeRelationshipSummary(
+        options.relationships,
+        options.relationshipCodes || codebooks.relationshipReconciliation,
+        rows
+      ),
       readiness: contextReadiness(options.readiness),
       traceInvariant: true,
       traceInputsRead: false,
@@ -1438,11 +2261,18 @@
         packedNeighborSchema: PACKED_EDGE_SCHEMA.slice(),
         packedNeighborDistanceUnit: "decameters",
         packedFacilitySchema: PACKED_FACILITY_SCHEMA.slice(),
+        packedUfoSpatialPointSchema: PACKED_UFO_SPATIAL_POINT_SCHEMA.slice(),
+        packedUfoConfigurationPointSchema: PACKED_UFO_CONFIGURATION_POINT_SCHEMA.slice(),
+        packedUfoConfigurationNeighborSchema: PACKED_EDGE_SCHEMA.slice(),
+        packedContextNeighborSchema: PACKED_CONTEXT_NEIGHBOR_SCHEMA.slice(),
+        packedRelationshipSchema: PACKED_RELATIONSHIP_SCHEMA.slice(),
         chronologyInputs: "prohibited",
       },
+      pinnedSpatialPointN: Array.isArray(options.spatialPoints) ? options.spatialPoints.length : 0,
+      activePinnedSpatialPointN: analysisRows.length,
       artifactHashes: Object.assign({}, options.artifactHashes || {}),
     };
-    return options.inferenceEnabled === false || result.baselineMode === "full_catalog"
+    return options.inferenceEnabled === false || (result.baselineMode === "full_catalog" && !wholeCorpusStructure)
       ? enforceDescriptiveOnlyBaseline(result)
       : result;
   }
@@ -1456,6 +2286,11 @@
     spatialEligibilityReason,
     buildEligibilityFunnel,
     normalizeEdge,
+    normalizeSpatialPoint,
+    pinnedRowsForActiveCohort,
+    normalizeContextNeighbor,
+    computeContextAssociations,
+    computeRelationshipSummary,
     normalizeFacility,
     facilityActiveAt,
     facilityIsInferential,

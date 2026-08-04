@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
-import { webcrypto } from "node:crypto";
+import { createHash, webcrypto } from "node:crypto";
 
 class ControlledSpatialWorker {
   static instances = [];
@@ -78,10 +78,22 @@ function createHarness(fetch) {
 
 const neighborsText = JSON.stringify([]);
 const facilitiesText = JSON.stringify([]);
+const spatialPointsText = JSON.stringify([]);
+const contextNeighborsText = JSON.stringify([]);
+const relationshipsText = JSON.stringify([]);
+const fixtureArtifact = (file, text, rowSchema) => ({
+  file,
+  rowCount: 0,
+  rowSchema,
+  sha256: createHash("sha256").update(text).digest("hex"),
+});
 const fetch = async (urlValue) => {
   const url = String(urlValue);
   if (url.endsWith("neighbors.json")) return new Response(neighborsText, { status: 200 });
   if (url.endsWith("facilities.json")) return new Response(facilitiesText, { status: 200 });
+  if (url.endsWith("spatial-points.json")) return new Response(spatialPointsText, { status: 200 });
+  if (url.endsWith("context-neighbors.json")) return new Response(contextNeighborsText, { status: 200 });
+  if (url.endsWith("relationships.json")) return new Response(relationshipsText, { status: 200 });
   return new Response("not found", { status: 404 });
 };
 
@@ -131,10 +143,15 @@ harness.post({
   cancellationGeneration: 0,
   manifest: {
     schemaVersion: 2,
+    schemaId: "ufo-timeline-analysis-evidence-artifacts-v2.1.0",
+    manifestVersion: "2.1.0",
     releaseId: "concurrency-fixture",
     artifacts: {
-      ufoPointNeighbors: { file: "neighbors.json" },
-      facilityAnalysis: { file: "facilities.json" },
+      ufoPointNeighbors: fixtureArtifact("neighbors.json", neighborsText, ["left", "right"]),
+      facilityAnalysis: fixtureArtifact("facilities.json", facilitiesText, ["id"]),
+      ufoSpatialPoints: fixtureArtifact("spatial-points.json", spatialPointsText, ["eventId"]),
+      contextUfoNeighbors: fixtureArtifact("context-neighbors.json", contextNeighborsText, ["contextId"]),
+      relationshipReconciliation: fixtureArtifact("relationships.json", relationshipsText, ["relationshipId"]),
     },
     counts: {},
   },
@@ -142,12 +159,20 @@ harness.post({
     manifest: "https://example.test/data/analysis_v2/manifest.json",
     neighbors: "https://example.test/neighbors.json",
     facilities: "https://example.test/facilities.json",
+    spatialPoints: "https://example.test/spatial-points.json",
+    contextNeighbors: "https://example.test/context-neighbors.json",
+    relationships: "https://example.test/relationships.json",
   },
 });
 await harness.waitFor((message) => message.requestId === "setup", "spatial setup");
 assert.equal(harness.take("setup").type, "analysisSpatialArtifactsSet");
 assert.equal(ControlledSpatialWorker.instances.length, 1);
 const coldWorker = ControlledSpatialWorker.instances[0];
+assert.match(
+  coldWorker.url,
+  /analysis_spatial_worker\.js\?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4$/,
+  "the dedicated worker URL pins the v2.2 analytical runtime instead of reusing stale browser code"
+);
 
 function computeMessage(requestId, cancellationGeneration, selectedDomains) {
   return {
@@ -249,6 +274,39 @@ assert.equal(freshSpatial.result.spatialEvidence.traceInputsRead, false);
 assert.equal(freshSpatial.result.spatialEvidence.baselineMode, "full_catalog");
 assert.equal(freshSpatial.result.spatialEvidence.inferenceEnabled, false);
 
+harness.post({
+  ...computeMessage("whole-corpus-spatial", 4, ["overview", "spatial"]),
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+});
+for (let attempt = 0; attempt < 30 && !freshWorker.messages.some((message) => message.jobId?.includes("whole-corpus-spatial")); attempt += 1) {
+  await new Promise((resolve) => setTimeout(resolve, 2));
+}
+const wholeCorpusJob = freshWorker.messages.find((message) => message.jobId?.includes("whole-corpus-spatial"));
+assert.ok(wholeCorpusJob, "All Time spatial work must remain delegated");
+assert.equal(wholeCorpusJob.analysisMode, "whole_corpus_structure");
+assert.equal(wholeCorpusJob.comparisonState, "whole_corpus_structure");
+assert.equal(wholeCorpusJob.inferenceEnabled, true, "All Time overrides a retained full-catalog selector token");
+freshWorker.onmessage({
+  data: {
+    type: "spatialAnalysisComputed",
+    jobId: wholeCorpusJob.jobId,
+    cancellationGeneration: 4,
+    result: {
+      traceInputsRead: false,
+      analysisMode: "whole_corpus_structure",
+      comparisonState: "whole_corpus_structure",
+      cells: [{ pValue: 0.01, qValue: 0.02 }],
+    },
+  },
+});
+const wholeCorpusSpatial = harness.take("whole-corpus-spatial");
+assert.equal(wholeCorpusSpatial.type, "analysisComputed");
+assert.equal(wholeCorpusSpatial.result.spatialEvidence.inferenceEnabled, true);
+assert.equal(wholeCorpusSpatial.result.spatialEvidence.cells[0].pValue, 0.01);
+assert.equal(wholeCorpusSpatial.result.spatialEvidence.cells[0].qValue, 0.02);
+
 // Exercise the production subordinate-worker envelope independently from the
 // controlled concurrency double above.
 const subordinateMessages = [];
@@ -259,7 +317,11 @@ const subordinateSelf = {
       return {
         rowCount: options.rows.length,
         edgeCount: options.edges.length,
+        spatialPointCount: options.spatialPoints.length,
+        contextNeighborCount: options.contextNeighbors.length,
         facilityCount: options.facilities.length,
+        relationshipCount: options.relationships.length,
+        codebookCount: Object.keys(options.codebooks).length,
         receivedBaselineMode: options.baselineMode,
         receivedInferenceEnabled: options.inferenceEnabled,
         receivedPermutationCount: options.permutationCount,
@@ -285,7 +347,11 @@ subordinateSelf.onmessage({
     type: "initializeSpatialAnalysis",
     executionEpoch: 9,
     edges: [["1", "2"]],
+    spatialPoints: [["1"]],
+    contextNeighbors: [["crop", "1"]],
     facilities: [{ id: "facility-1" }],
+    relationships: [["relationship-1"]],
+    codebooks: { fixture: { values: ["one"] } },
     readiness: {},
     artifactHashes: { fixture: "hash" },
   },
@@ -294,7 +360,15 @@ assert.deepEqual(subordinateMessages.shift(), {
   type: "spatialAnalysisReady",
   executionEpoch: 9,
   estimatorVersion: "subordinate-fixture-v2",
-  rowCounts: { neighbors: 1, facilities: 1 },
+    rowCounts: {
+      neighbors: 1,
+      spatialPoints: 1,
+      configurationPoints: 0,
+      configurationNeighbors: 0,
+      contextNeighbors: 1,
+      facilities: 1,
+      relationships: 1,
+  },
 });
 subordinateSelf.onmessage({
   data: {
@@ -318,13 +392,19 @@ assert.deepEqual(subordinateMessages.shift(), {
   result: {
     rowCount: 1,
     edgeCount: 1,
+    spatialPointCount: 1,
+    contextNeighborCount: 1,
     facilityCount: 1,
+    relationshipCount: 1,
+    codebookCount: 1,
     receivedBaselineMode: "full_catalog",
     receivedInferenceEnabled: false,
     receivedPermutationCount: 499,
     receivedBootstrapCount: 199,
     traceInputsRead: false,
     baselineMode: "full_catalog",
+    analysisMode: "cohort_comparison",
+    comparisonState: "descriptive_overlap",
     inferenceEnabled: false,
   },
 });

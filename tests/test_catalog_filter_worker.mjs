@@ -29,6 +29,23 @@ function loadWorker(workerPath, contextOverrides = {}) {
   vm.runInContext(fs.readFileSync(workerPath, "utf8"), context, { filename: workerPath });
   assert.equal(typeof self.onmessage, "function");
   return {
+    clearMessages() {
+      messages.length = 0;
+    },
+    dispatch(message) {
+      self.onmessage({ data: message });
+    },
+    async waitFor(requestId) {
+      for (let attempt = 0; attempt < 200; attempt += 1) {
+        const index = messages.findIndex((message) => message && message.requestId === requestId);
+        if (index !== -1) {
+          const message = messages.splice(index, 1)[0];
+          return JSON.parse(JSON.stringify(message));
+        }
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+      assert.fail(`worker response timed out for ${requestId}`);
+    },
     send(message) {
       messages.length = 0;
       self.onmessage({ data: message });
@@ -153,12 +170,13 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 75);
+assert.equal(added.storage.typedBytes, rows.length * 85);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
 assert.ok(added.storage.dictionaries.sameDayMatchStrength >= 2);
 assert.ok(added.storage.dictionaries.country >= 2);
+assert.equal(added.storage.geographyProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
 const filters = {
@@ -184,6 +202,105 @@ assert.equal(filtered.type, "filteredCatalogIdsComputed");
 assert.deepEqual(filtered.result.eventIds, ["2606225892387599", "city-event"]);
 assert.deepEqual(filtered.result.legendEventCounts, { light: 1, disc_saucer: 1 });
 assert.equal(filtered.result.legendColorMode, "craft_type");
+
+const countryFiltered = worker.send({
+  type: "computeFilteredCatalogIds",
+  requestId: "filter-country",
+  filters,
+  lowPrecisionValues,
+  selectedAreaCountry: "France",
+  catalogExactDayAscending: true,
+});
+assert.deepEqual(countryFiltered.result.eventIds, ["2606225892387599"], "country Area Filter routes through the worker-owned geography assignment");
+
+const geographyRows = [
+  [0, "2606225892387599", 1, 1, 1, 1, 1, 1],
+  [1, "city-event", 2, 1, 1, 1, 1, 2],
+];
+const geographyText = JSON.stringify(geographyRows);
+const geographyHash = createHash("sha256").update(geographyText).digest("hex");
+const geographyManifest = {
+  schemaVersion: 2,
+  manifestVersion: "2.2.0",
+  schemaId: "ufo-timeline-analysis-evidence-artifacts-v2.2.0",
+  releaseId: "geography-runtime-fixture-v1",
+  artifacts: {
+    ufoGeography: {
+      file: "data/analysis_v2/ufo_geography_v1.json",
+      sha256: geographyHash,
+      rowCount: geographyRows.length,
+      rowSchema: [
+        "pointRowIndex", "eventId", "countryCode", "macroregionCode",
+        "assignmentSourceCode", "assignmentConfidenceCode", "boundaryStatusCode",
+        "coordinateEvidenceCode",
+      ],
+    },
+  },
+  codes: {
+    ufoGeography: {
+      country: ["unknown", "France", "Germany"],
+      macroregion: ["unknown", "europe"],
+      assignmentSource: ["unknown", "pinned_country_polygon"],
+      assignmentConfidence: ["unknown", "inside_polygon"],
+      boundaryStatus: ["unknown", "inside_country"],
+      coordinateEvidence: ["unknown", "source_coordinates", "generalized_coordinates"],
+    },
+  },
+};
+const geographyWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(geographyText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+geographyWorker.send({ type: "addCatalogFacetRows", requestId: "geography-catalog", rows });
+const geographySetup = await geographyWorker.sendAsync({
+  type: "setAnalysisGeographyArtifact",
+  requestId: "geography-setup",
+  filterGeneration: 2,
+  manifest: geographyManifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(geographySetup.type, "analysisGeographyArtifactSet");
+assert.equal(geographySetup.snapshot.appliedRows, 2);
+assert.equal(geographySetup.snapshot.rowOrder, "packed_points_input_order_mapped_catalog_subsequence");
+const projectedCountryFilter = geographyWorker.send({
+  type: "computeFilteredCatalogIds",
+  requestId: "filter-projected-country",
+  filters,
+  lowPrecisionValues,
+  selectedAreaCountry: "Germany",
+  catalogExactDayAscending: true,
+});
+assert.deepEqual(
+  projectedCountryFilter.result.eventIds,
+  ["city-event"],
+  "the pinned geography projection is merged into the worker-owned catalog and drives Area Filter selection"
+);
+
+const misorderedGeographyRows = geographyRows.map((row) => row.slice());
+misorderedGeographyRows[0][1] = "wrong-first-event";
+const misorderedText = JSON.stringify(misorderedGeographyRows);
+const misorderedManifest = structuredClone(geographyManifest);
+misorderedManifest.artifacts.ufoGeography.sha256 = createHash("sha256").update(misorderedText).digest("hex");
+const misorderedWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(misorderedText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+misorderedWorker.send({ type: "addCatalogFacetRows", requestId: "misordered-geography-catalog", rows });
+const misorderedSetup = await misorderedWorker.sendAsync({
+  type: "setAnalysisGeographyArtifact",
+  requestId: "misordered-geography-setup",
+  filterGeneration: 3,
+  manifest: misorderedManifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(misorderedSetup.type, "catalogFacetWorkerError");
+assert.match(misorderedSetup.error, /does not match the served mapped-event order/i);
 
 const isolatedDisc = worker.send({
   type: "computeFilteredCatalogIds",
@@ -283,7 +400,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 75);
+assert.equal(numericAdded.storage.typedBytes, 85);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -611,12 +728,329 @@ const spatialFetch = async (urlValue) => {
   if (!fs.existsSync(path)) return new Response("not found", { status: 404 });
   return new Response(fs.readFileSync(path), { status: 200 });
 };
-const spatialWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+const relationshipOnlyWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
   Response,
   TextDecoder,
   URL,
   fetch: spatialFetch,
   self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+const relationshipOnlySetup = await relationshipOnlyWorker.sendAsync({
+  type: "setAnalysisRelationshipArtifact",
+  requestId: "relationship-only-artifact",
+  filterGeneration: 30,
+  manifest: analysisV2Manifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(relationshipOnlySetup.type, "analysisRelationshipArtifactSet");
+assert.equal(relationshipOnlySetup.snapshot.rowCount, 1_804);
+const relationshipOnlyAnalysis = relationshipOnlyWorker.send({
+  type: "computeAnalysis",
+  requestId: "relationship-only-analysis",
+  filterGeneration: 30,
+  cancellationGeneration: 1,
+  baselineMode: "whole_corpus_structure",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "relationship-only-fixture",
+  selectedDomains: ["context"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(relationshipOnlyAnalysis.type, "analysisComputed");
+assert.equal(
+  relationshipOnlyAnalysis.result.spatialEvidence.status,
+  "context_evidence_ready_spatial_not_loaded",
+  "Context can render relationship evidence without cold-loading the point-neighborhood artifacts"
+);
+assert.equal(relationshipOnlyAnalysis.result.spatialEvidence.relationshipSummary.totalN, 1_804);
+assert.equal(relationshipOnlyAnalysis.result.spatialEvidence.traceInputsRead, false);
+
+const contextOnlyRequests = [];
+const contextOnlyWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => {
+    contextOnlyRequests.push(String(urlValue));
+    return spatialFetch(urlValue);
+  },
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+const contextOnlySetup = await contextOnlyWorker.sendAsync({
+  type: "setAnalysisContextSpatialArtifact",
+  requestId: "context-neighbors-only-artifact",
+  filterGeneration: 30,
+  manifest: analysisV2Manifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(contextOnlySetup.type, "analysisContextSpatialArtifactSet");
+assert.equal(contextOnlySetup.snapshot.rowCount, 63_753);
+assert.equal(contextOnlySetup.snapshot.fullSpatialLoaded, false);
+assert.equal(contextOnlyRequests.length, 1, "Context loads only its point-neighbor projection");
+assert.match(contextOnlyRequests[0], /context_ufo_neighbors_v1\.json(?:\?|$)/);
+assert.equal(
+  contextOnlyRequests.some((url) => /ufo_(?:configuration_(?:points|neighbors)|point_neighbors|spatial_points)|facility_analysis|relationship_reconciliation/.test(url)),
+  false,
+  "Context-only setup never fetches co-occurrence, Formation, facility, point-pool, or relationship artifacts"
+);
+const contextOnlyAnalysis = contextOnlyWorker.send({
+  type: "computeAnalysis",
+  requestId: "context-neighbors-only-analysis",
+  filterGeneration: 30,
+  cancellationGeneration: 1,
+  baselineMode: "whole_corpus_structure",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "context-neighbors-only-fixture",
+  selectedDomains: ["context"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+  spatialPermutationCount: 3,
+  spatialBootstrapCount: 3,
+});
+assert.equal(contextOnlyAnalysis.type, "analysisComputed");
+assert.equal(contextOnlyAnalysis.result.spatialEvidence.status, "context_evidence_ready_spatial_not_loaded");
+assert.deepEqual(
+  contextOnlyAnalysis.result.spatialEvidence.contextAssociations.lanes.map((lane) => lane.lane),
+  ["crop_bounded", "crop_locality", "animal_public_marker"]
+);
+assert.equal(contextOnlyAnalysis.result.spatialEvidence.traceInputsRead, false);
+assert.equal("cooccurrence" in contextOnlyAnalysis.result.spatialEvidence, false);
+assert.equal("facility" in contextOnlyAnalysis.result.spatialEvidence, false);
+assert.equal(contextOnlyAnalysis.result.spatialEvidence.inferenceEnabled, true);
+
+contextOnlyWorker.send({
+  type: "addCatalogFacetRows",
+  requestId: "context-filter-catalog",
+  rows,
+});
+const noMatchContextAnalysis = contextOnlyWorker.send({
+  type: "computeAnalysis",
+  requestId: "context-no-match-analysis",
+  filterGeneration: 31,
+  cancellationGeneration: 2,
+  baselineMode: "whole_corpus_structure",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "context-no-match-fixture",
+  selectedDomains: ["context"],
+  filters: {
+    ...filters,
+    sourceMode: "subset",
+    hideLowPrecision: false,
+    selectedSources: ["source-with-no-reports"],
+  },
+  lowPrecisionValues,
+  spatialPermutationCount: 3,
+  spatialBootstrapCount: 3,
+});
+assert.equal(noMatchContextAnalysis.result.summary.activeCount, 0);
+assert.ok(
+  noMatchContextAnalysis.result.spatialEvidence.contextAssociations.lanes.every((lane) => (
+    lane.observedPairN === 0 && lane.cells.every((cell) => cell.observedClusterCount === 0)
+  )),
+  "an All Time filter with zero matching reports stays empty instead of falling back to every context neighbor"
+);
+const retunedContextAnalysis = contextOnlyWorker.send({
+  type: "computeAnalysis",
+  requestId: "context-no-match-analysis-retuned",
+  filterGeneration: 31,
+  cancellationGeneration: 2,
+  baselineMode: "whole_corpus_structure",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "context-no-match-fixture",
+  selectedDomains: ["context"],
+  filters: {
+    ...filters,
+    sourceMode: "subset",
+    hideLowPrecision: false,
+    selectedSources: ["source-with-no-reports"],
+  },
+  lowPrecisionValues,
+  spatialPermutationCount: 5,
+  spatialBootstrapCount: 4,
+});
+assert.equal(retunedContextAnalysis.cacheHit, false, "spatial tuning parameters participate in the Analysis cache key");
+assert.ok(retunedContextAnalysis.result.spatialEvidence.contextAssociations.lanes.every((lane) => (
+  lane.permutationCount === 5 && lane.bootstrapCount === 4
+)));
+
+const descriptiveContextAnalysis = contextOnlyWorker.send({
+  type: "computeAnalysis",
+  requestId: "context-descriptive-overlap-analysis",
+  filterGeneration: 32,
+  cancellationGeneration: 3,
+  baselineMode: "full_catalog",
+  fullTimeRange: false,
+  timeRangeMode: "bounded",
+  timeRangeStartOrdinal: APP_DAY_1955_08_20,
+  timeRangeEndOrdinal: APP_DAY_1955_08_20,
+  datasetHash: "context-descriptive-overlap-fixture",
+  selectedDomains: ["context"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+  spatialPermutationCount: 3,
+  spatialBootstrapCount: 3,
+});
+assert.equal(descriptiveContextAnalysis.result.spatialEvidence.inferenceEnabled, false);
+assert.ok(descriptiveContextAnalysis.result.spatialEvidence.suppressionReasons.includes("full_catalog_overlap_descriptive_no_inference"));
+assert.ok(descriptiveContextAnalysis.result.spatialEvidence.contextAssociations.lanes.every((lane) => (
+  lane.cells.every((cell) => cell.pValue === null && cell.qValue === null && cell.patternFinderEligible === false)
+)));
+
+let releaseDelayedContextFetch;
+let delayedContextFetchStarted = false;
+const delayedContextFetchGate = new Promise((resolve) => {
+  releaseDelayedContextFetch = resolve;
+});
+const raceWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => {
+    if (String(urlValue).includes("delayed-context-only.json")) {
+      delayedContextFetchStarted = true;
+      await delayedContextFetchGate;
+      return spatialFetch(new URL(analysisV2Manifest.artifacts.contextUfoNeighbors.file, "https://example.test/"));
+    }
+    return spatialFetch(urlValue);
+  },
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+raceWorker.clearMessages();
+raceWorker.dispatch({
+  type: "setAnalysisContextSpatialArtifact",
+  requestId: "context-race-partial",
+  filterGeneration: 40,
+  manifest: analysisV2Manifest,
+  urls: { contextNeighbors: "https://example.test/delayed-context-only.json" },
+});
+assert.equal(delayedContextFetchStarted, true);
+raceWorker.dispatch({
+  type: "setAnalysisSpatialArtifacts",
+  requestId: "context-race-full",
+  filterGeneration: 40,
+  cancellationGeneration: 10,
+  manifest: analysisV2Manifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+const raceFullSetup = await raceWorker.waitFor("context-race-full");
+assert.equal(raceFullSetup.type, "analysisSpatialArtifactsSet");
+assert.equal(raceFullSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+releaseDelayedContextFetch();
+const racePartialSetup = await raceWorker.waitFor("context-race-partial");
+assert.equal(racePartialSetup.type, "catalogFacetWorkerError");
+assert.match(racePartialSetup.error, /superseded by a newer spatial release request/i);
+
+const fullLoadedContextOnly = raceWorker.send({
+  type: "computeAnalysis",
+  requestId: "full-loaded-context-only",
+  filterGeneration: 41,
+  cancellationGeneration: 11,
+  baselineMode: "whole_corpus_structure",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "full-loaded-context-only-fixture",
+  selectedDomains: ["context"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+  spatialPermutationCount: 3,
+  spatialBootstrapCount: 3,
+});
+assert.equal(fullLoadedContextOnly.result.spatialEvidence.status, "context_evidence_ready");
+assert.equal("cooccurrence" in fullLoadedContextOnly.result.spatialEvidence, false);
+assert.equal("facility" in fullLoadedContextOnly.result.spatialEvidence, false);
+assert.equal(fullLoadedContextOnly.result.spatialEvidence.contextAssociations.lanes.length, 3);
+const incompatibleContextManifest = structuredClone(analysisV2Manifest);
+incompatibleContextManifest.releaseId = analysisV2Manifest.releaseId + "-different-release";
+const incompatibleContextSetup = await raceWorker.sendAsync({
+  type: "setAnalysisContextSpatialArtifact",
+  requestId: "context-incompatible-release",
+  filterGeneration: 42,
+  manifest: incompatibleContextManifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(incompatibleContextSetup.type, "catalogFacetWorkerError");
+assert.match(incompatibleContextSetup.error, /does not match the spatial release already loaded/i);
+
+let releaseDelayedFullFetch;
+let delayedFullFetchStarted = false;
+const delayedFullFetchGate = new Promise((resolve) => {
+  releaseDelayedFullFetch = resolve;
+});
+const fullFirstRaceRequests = [];
+const fullFirstRaceWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => {
+    const urlText = String(urlValue);
+    fullFirstRaceRequests.push(urlText);
+    if (urlText.includes("delayed-full-neighbors.json")) {
+      delayedFullFetchStarted = true;
+      await delayedFullFetchGate;
+      return spatialFetch(new URL(analysisV2Manifest.artifacts.ufoPointNeighbors.file, "https://example.test/"));
+    }
+    return spatialFetch(urlValue);
+  },
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+fullFirstRaceWorker.clearMessages();
+fullFirstRaceWorker.dispatch({
+  type: "setAnalysisSpatialArtifacts",
+  requestId: "full-first-race-spatial",
+  filterGeneration: 43,
+  cancellationGeneration: 12,
+  manifest: analysisV2Manifest,
+  urls: { neighbors: "https://example.test/delayed-full-neighbors.json" },
+});
+assert.equal(delayedFullFetchStarted, true);
+fullFirstRaceWorker.dispatch({
+  type: "setAnalysisContextSpatialArtifact",
+  requestId: "full-first-race-context",
+  filterGeneration: 43,
+  manifest: analysisV2Manifest,
+  urls: { contextNeighbors: "https://example.test/should-not-fetch-context.json" },
+});
+const fullFirstPartialSetup = await fullFirstRaceWorker.waitFor("full-first-race-context");
+assert.equal(fullFirstPartialSetup.type, "catalogFacetWorkerError");
+assert.match(fullFirstPartialSetup.error, /deferred while the full spatial release is loading/i);
+assert.equal(
+  fullFirstRaceRequests.some((url) => url.includes("should-not-fetch-context.json")),
+  false,
+  "a Context request arriving during the full load does not start a competing artifact fetch"
+);
+releaseDelayedFullFetch();
+const fullFirstSpatialSetup = await fullFirstRaceWorker.waitFor("full-first-race-spatial");
+assert.equal(fullFirstSpatialSetup.type, "analysisSpatialArtifactsSet");
+assert.equal(fullFirstSpatialSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+
+const spatialWorkerRequests = [];
+const spatialWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => {
+    spatialWorkerRequests.push(String(urlValue));
+    return spatialFetch(urlValue);
+  },
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+await spatialWorker.sendAsync({
+  type: "setAnalysisRelationshipArtifact",
+  requestId: "spatial-preload-relationship",
+  filterGeneration: 31,
+  manifest: analysisV2Manifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+await spatialWorker.sendAsync({
+  type: "setAnalysisContextSpatialArtifact",
+  requestId: "spatial-preload-context",
+  filterGeneration: 31,
+  manifest: analysisV2Manifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
 });
 const spatialArtifactSetup = await spatialWorker.sendAsync({
   type: "setAnalysisSpatialArtifacts",
@@ -631,8 +1065,20 @@ assert.equal(spatialArtifactSetup.cancellationGeneration, 7);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.neighbors, 42_575);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.facilities, 1_800);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.relationships, 1_804);
-assert.equal(spatialArtifactSetup.snapshot.releaseId, "analysis-evidence-lab-v2-20260803");
+assert.equal(spatialArtifactSetup.snapshot.rowCounts.spatialPoints, 33_801);
+assert.equal(spatialArtifactSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+assert.equal(spatialArtifactSetup.snapshot.releaseId, analysisV2Manifest.releaseId);
 assert.equal(spatialArtifactSetup.snapshot.artifactHashes.ufoPointNeighbors, analysisV2Manifest.artifacts.ufoPointNeighbors.sha256);
+assert.equal(
+  spatialWorkerRequests.filter((url) => /relationship_reconciliation\.json(?:\?|$)/.test(url)).length,
+  1,
+  "Full Spatial reuses the relationship projection already loaded by Context"
+);
+assert.equal(
+  spatialWorkerRequests.filter((url) => /context_ufo_neighbors_v1\.json(?:\?|$)/.test(url)).length,
+  1,
+  "Full Spatial reuses the context-neighbor projection already loaded by Context"
+);
 assert.deepEqual(spatialArtifactSetup.snapshot.relationshipReadiness, {
   key: "relationshipReconciliation",
   label: "Cross-domain relationship reconciliation",
@@ -703,13 +1149,20 @@ assert.equal(spatialComputed.cancellationGeneration, 8);
 assert.equal(spatialComputed.result.spatialEvidence.traceInputsRead, false);
 assert.equal(spatialComputed.result.spatialEvidence.cooccurrence.crossSource.length, 3);
 assert.equal(spatialComputed.result.spatialEvidence.cooccurrence.sameSource.length, 3);
-assert.equal(spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "cropCircles").status, "not_estimable");
-assert.equal(spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "animalReports").status, "not_estimable");
-assert.deepEqual(
-  spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "relationshipReconciliation"),
-  spatialArtifactSetup.snapshot.relationshipReadiness,
-  "decoded relationship lanes and quarantine counts must reach the runtime readiness payload"
-);
+const cropReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "cropCircles");
+const animalReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "animalReports");
+assert.equal(cropReadiness.status, "ready_sensitivity");
+assert.equal(cropReadiness.eligibleN, 3_655, "bounded and locality crop lanes remain distinct but both contribute usable markers");
+assert.equal(animalReadiness.status, "ready_sensitivity");
+assert.equal(animalReadiness.eligibleN, 339, "rough animal markers remain usable for public-marker association analysis");
+const relationshipRuntimeReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "relationshipReconciliation");
+assert.equal(relationshipRuntimeReadiness.status, "ready_descriptive");
+assert.equal(relationshipRuntimeReadiness.inferenceEnabled, false);
+assert.equal(relationshipRuntimeReadiness.explicitSourceN, spatialArtifactSetup.snapshot.relationshipReadiness.explicitSourceN);
+assert.equal(relationshipRuntimeReadiness.computedCandidateN, spatialArtifactSetup.snapshot.relationshipReadiness.computedCandidateN);
+assert.equal(relationshipRuntimeReadiness.quarantinedSubjectN, spatialArtifactSetup.snapshot.relationshipReadiness.quarantinedSubjectN);
+assert.equal(relationshipRuntimeReadiness.quarantinedObjectN, spatialArtifactSetup.snapshot.relationshipReadiness.quarantinedObjectN);
+assert.ok(relationshipRuntimeReadiness.gates.some((gate) => gate.gateId === "relationship_inference" && gate.status === "blocked"));
 
 const fullCatalogSpatial = spatialWorker.send({
   type: "computeAnalysis",

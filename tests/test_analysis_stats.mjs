@@ -89,7 +89,7 @@ assert.equal(insufficientSupport.inferenceEligible, false);
 assert.equal(insufficientSupport.pValue, null);
 assert.ok(insufficientSupport.suppressionReasons.includes("common_support"));
 
-const adjustedResiduals = stats.adjustedStandardizedResiduals([
+const adjustedResidualFixture = [
   { stratum: "north", row: "disk", column: "source-a", count: 50 },
   { stratum: "north", row: "disk", column: "source-b", count: 10 },
   { stratum: "north", row: "triangle", column: "source-a", count: 10 },
@@ -98,11 +98,34 @@ const adjustedResiduals = stats.adjustedStandardizedResiduals([
   { stratum: "south", row: "disk", column: "source-b", count: 10 },
   { stratum: "south", row: "triangle", column: "source-a", count: 10 },
   { stratum: "south", row: "triangle", column: "source-b", count: 50 },
-]);
+];
+const adjustedResiduals = stats.adjustedStandardizedResiduals(adjustedResidualFixture);
 assert.equal(adjustedResiduals.metadata.eligible, true);
 assert.equal(adjustedResiduals.metadata.estimatorVersion, stats.ESTIMATOR_VERSION);
 assert.equal(adjustedResiduals.cells.length, 4);
 assert.ok(adjustedResiduals.cells.every((cell) => cell.qValue <= 0.05 && cell.displayEligible));
+assert.equal(adjustedResiduals.metadata.pValueMethod, "deterministic_stratified_permutation");
+assert.equal(adjustedResiduals.metadata.permutationCount, 499);
+assert.ok(adjustedResiduals.fullCells.every((cell) => (
+  !cell.tested || (
+    cell.pValueMethod === "deterministic_stratified_permutation" &&
+    cell.permutationCount === 499 &&
+    Math.abs((cell.pValue * 500) - Math.round(cell.pValue * 500)) < 1e-8
+  )
+)), "association p-values come from the 499-permutation empirical null, not a normal CDF");
+assert.deepEqual(
+  stats.adjustedStandardizedResiduals(adjustedResidualFixture.slice().reverse()),
+  adjustedResiduals,
+  "stratified association permutations are deterministic and invariant to aggregate input order"
+);
+const eligiblePermutationCells = adjustedResiduals.fullCells.filter((cell) => cell.inferenceEligible);
+const expectedPermutationQ = stats.benjaminiHochberg(eligiblePermutationCells, (cell) => cell.pValue)
+  .map((value) => Number(value.toFixed(12)));
+assert.deepEqual(
+  eligiblePermutationCells.map((cell) => cell.qValue),
+  expectedPermutationQ,
+  "association q-values are calculated only from eligible empirical permutation p-values"
+);
 
 const sparseHeatmap = stats.qualifySparseHeatmapCells([
   { key: "empty", row: "r1", column: "c1", observed: 0, referenceCount: 0, expected: 0, commonSupportRate: 1 },
@@ -111,8 +134,37 @@ const sparseHeatmap = stats.qualifySparseHeatmapCells([
 ]);
 assert.equal(sparseHeatmap.fullCells.find((cell) => cell.key === "empty").displayStatus, "structurally_empty");
 assert.equal(sparseHeatmap.fullCells.find((cell) => cell.key === "depletion").zeroObservedQualifiedDepletion, true);
-assert.equal(sparseHeatmap.fullCells.find((cell) => cell.key === "sparse").displayStatus, "suppressed");
-assert.deepEqual(sparseHeatmap.visibleCells.map((cell) => cell.key), ["depletion"]);
+assert.equal(sparseHeatmap.fullCells.find((cell) => cell.key === "sparse").displayStatus, "low_support");
+assert.equal(sparseHeatmap.fullCells.find((cell) => cell.key === "sparse").estimateAvailable, true);
+assert.deepEqual(
+  sparseHeatmap.visibleCells.map((cell) => cell.key).sort(),
+  ["depletion", "sparse"],
+  "low-support estimates remain visible instead of becoming suppression labels"
+);
+
+const mixedSupportResiduals = stats.adjustedStandardizedResiduals([
+  { stratum: "all", row: "common", column: "a", count: 90 },
+  { stratum: "all", row: "common", column: "b", count: 30 },
+  { stratum: "all", row: "rare", column: "a", count: 1 },
+  { stratum: "all", row: "rare", column: "b", count: 0 },
+]);
+assert.ok(mixedSupportResiduals.metadata.cramersV >= 0 && mixedSupportResiduals.metadata.cramersV <= 1);
+assert.equal(mixedSupportResiduals.fullCells.length, 4, "the selected contingency table materializes observed zeroes");
+assert.ok(mixedSupportResiduals.fullCells.every((cell) => cell.estimateAvailable));
+const rareZeroCell = mixedSupportResiduals.fullCells.find((cell) => cell.row === "rare" && cell.column === "b");
+assert.equal(rareZeroCell.observedCount, 0);
+assert.ok(rareZeroCell.expectedCount > 0);
+assert.equal(rareZeroCell.tested, true, "a positive-expectation zero observation receives a cell-wise permutation test");
+assert.equal(rareZeroCell.pValueMethod, "deterministic_stratified_permutation");
+assert.equal(rareZeroCell.permutationCount, stats.DEFAULT_ASSOCIATION_PERMUTATIONS);
+assert.ok(rareZeroCell.pValue > 0 && rareZeroCell.pValue <= 1);
+assert.equal(rareZeroCell.qValue, null, "low-support cells do not enter the BH family");
+assert.ok(mixedSupportResiduals.fullCells.some((cell) => cell.inferenceEligible), "a rare cell cannot table-suppress supported cells");
+assert.equal(
+  mixedSupportResiduals.metadata.fdrFamilySize,
+  mixedSupportResiduals.fullCells.filter((cell) => cell.inferenceEligible).length,
+  "BH includes only individually testable, supported cells"
+);
 
 function row(overrides = {}) {
   return {
@@ -127,6 +179,12 @@ function row(overrides = {}) {
     precision: "exact_coords",
     datePrecision: "exact_day",
     coordinateSource: "raw_latlong",
+    country: "United States of America",
+    analysisCountry: "United States of America",
+    analysisMacroregion: "Northern America",
+    analysisGeographyAssignmentSource: "pinned_country_polygon",
+    analysisGeographyAssignmentConfidence: "inside_polygon",
+    analysisGeographyBoundaryStatus: "inside_country",
     sortOrdinal: stats.ordinalFromCivil(2000, 6, 15),
     lat: 40,
     lon: -100,
@@ -134,6 +192,92 @@ function row(overrides = {}) {
     ...overrides,
   };
 }
+
+const decadeLocalGeographyRows = [
+  ...Array.from({ length: 2 }, (_value, index) => row({
+    eventId: `geo-1990-us-a-${index}`,
+    source: "source-a",
+    sortOrdinal: stats.ordinalFromCivil(1992, 6, index + 1),
+  })),
+  ...Array.from({ length: 2 }, (_value, index) => row({
+    eventId: `geo-1990-ca-a-${index}`,
+    source: "source-a",
+    country: "Canada",
+    analysisCountry: "Canada",
+    analysisMacroregion: "Northern America",
+    sortOrdinal: stats.ordinalFromCivil(1992, 7, index + 1),
+  })),
+  row({ eventId: "geo-1990-us-b", source: "source-b", sortOrdinal: stats.ordinalFromCivil(1992, 8, 1) }),
+  row({
+    eventId: "geo-1990-ca-b",
+    source: "source-b",
+    country: "Canada",
+    analysisCountry: "Canada",
+    analysisMacroregion: "Northern America",
+    sortOrdinal: stats.ordinalFromCivil(1992, 8, 2),
+  }),
+  ...Array.from({ length: 3 }, (_value, index) => row({
+    eventId: `geo-2000-us-a-${index}`,
+    source: "source-a",
+    sortOrdinal: stats.ordinalFromCivil(2002, 6, index + 1),
+  })),
+  row({
+    eventId: "geo-2000-ca-a",
+    source: "source-a",
+    country: "Canada",
+    analysisCountry: "Canada",
+    analysisMacroregion: "Northern America",
+    sortOrdinal: stats.ordinalFromCivil(2002, 7, 1),
+  }),
+  ...Array.from({ length: 4 }, (_value, index) => row({
+    eventId: `geo-2000-ca-b-${index}`,
+    source: "source-b",
+    country: "Canada",
+    analysisCountry: "Canada",
+    analysisMacroregion: "Northern America",
+    sortOrdinal: stats.ordinalFromCivil(2002, 8, index + 1),
+  })),
+];
+const decadeLocalGeography = stats.computeAnalysis({
+  rows: decadeLocalGeographyRows,
+  baselineMode: "other_dates_matched",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(1990, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2009, 12, 31),
+  datasetHash: "decade-local-geography-fixture",
+  selectedDomains: ["geography"],
+});
+const us2000Geography = decadeLocalGeography.geography.byTime.find((cell) => (
+  cell.country === "United States of America" && cell.period === "2000"
+));
+assert.ok(us2000Geography, "the selected-decade country evidence is materialized");
+assert.deepEqual(us2000Geography.sourceMix, [
+  { source: "source-a", count: 3, share: 1 },
+], "decade evidence never reuses the country's whole-corpus source mix");
+assert.equal(us2000Geography.geographyAssignmentProvenance.assignmentSources[0].count, 3, "assignment provenance is decade-local");
+assert.equal(us2000Geography.decadeFacetActiveN, 8);
+assert.equal(us2000Geography.reportShare, 0.375);
+assert.equal(us2000Geography.sourceBalancedReportShare, 0.375);
+assert.equal(us2000Geography.preview.cohortSize, 3, "the country drawer uses the selected country-decade N");
+
+const allTimeDecadeGeography = stats.computeAnalysis({
+  rows: decadeLocalGeographyRows,
+  baselineMode: "other_dates_matched",
+  fullTimeRange: true,
+  datasetHash: "all-time-decade-geography-fixture",
+  selectedDomains: ["geography"],
+});
+const allTimeUs2000Geography = allTimeDecadeGeography.geography.byTime.find((cell) => (
+  cell.country === "United States of America" && cell.period === "2000"
+));
+assert.ok(allTimeUs2000Geography, "All-Time geography retains populated country-decade structure");
+assert.equal(allTimeDecadeGeography.comparisonState, stats.COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE);
+assert.equal(allTimeUs2000Geography.referenceCount, null, "All-Time country-decade evidence never fabricates a zero reference cohort");
+assert.equal(allTimeUs2000Geography.referenceReportShare, null);
+assert.equal(allTimeUs2000Geography.referenceSourceBalancedReportShare, null);
+assert.equal(allTimeUs2000Geography.adjustedDifference, null, "a descriptive source-balanced share is never relabeled as an effect");
+assert.equal(allTimeUs2000Geography.log2Enrichment, null);
+assert.equal(allTimeUs2000Geography.sourceBalancedReportShare, 0.375);
+assert.doesNotMatch(allTimeUs2000Geography.preview.comparison, /reference|vs\./i);
 
 const rows = [];
 for (let index = 0; index < 400; index += 1) {
@@ -189,6 +333,7 @@ assert.deepEqual(quickAnalysis.inference, {
   deferred: true,
   reason: "quick_core_inference_deferred",
   estimatorVersion: stats.ESTIMATOR_VERSION,
+  comparisonState: stats.COMPARISON_STATES.INFERENTIAL,
 });
 assert.equal(quickAnalysis.summary.activeCount, analysis.summary.activeCount);
 assert.equal(quickAnalysis.summary.referenceCount, analysis.summary.referenceCount);
@@ -235,6 +380,7 @@ assert.deepEqual(fullAfterQuick.inference, {
   deferred: false,
   reason: "",
   estimatorVersion: stats.ESTIMATOR_VERSION,
+  comparisonState: stats.COMPARISON_STATES.INFERENTIAL,
 });
 assert.equal(analysis.overview.active.sourceCoordinates, 400);
 assert.equal(analysis.overview.active.generalizedCoordinates, 0);
@@ -243,7 +389,30 @@ assert.ok(analysis.overview.evidenceSummary.every((item) => (
   Number.isFinite(item.adjustedEffect) && item.interval && item.estimatorVersion === stats.ESTIMATOR_VERSION
 )), "each evidence-summary mark carries an adjusted effect, uncertainty, and estimator identity");
 assert.ok(analysis.overview.evidenceSummary.some((item) => item.family === "craft"));
-assert.equal(analysis.geography.gridDefinition.equalArea, true);
+assert.equal(analysis.geography.gridDefinition.geographyKind, "country");
+assert.ok(analysis.geography.cells.some((cell) => cell.country === "United States of America"));
+assert.ok(analysis.geography.cells.every((cell) => !String(cell.label).includes("ea6x12:")));
+const unitedStatesCountryEvidence = analysis.geography.cells.find((cell) => cell.country === "United States of America");
+assert.deepEqual(unitedStatesCountryEvidence.sourceMix, [
+  { source: "source-a", count: 200, share: 0.5 },
+  { source: "source-b", count: 200, share: 0.5 },
+]);
+assert.equal(unitedStatesCountryEvidence.sourceMixLabel, "source-a 50%, source-b 50%");
+assert.equal(unitedStatesCountryEvidence.geographyAssignmentSource, "pinned_country_polygon");
+assert.equal(unitedStatesCountryEvidence.geographyAssignmentConfidence, "inside_polygon");
+assert.equal(unitedStatesCountryEvidence.geographyBoundaryStatus, "inside_country");
+assert.equal(unitedStatesCountryEvidence.geographyUnknownStatus, "assigned_country");
+assert.equal(unitedStatesCountryEvidence.macroregion, "Northern America");
+assert.deepEqual(unitedStatesCountryEvidence.geographyAssignmentProvenance.assignmentSources, [
+  { value: "pinned_country_polygon", count: 400, share: 1 },
+]);
+assert.ok(analysis.geography.byTime.every((cell) => Array.isArray(cell.sourceMix) && cell.geographyAssignmentProvenance), "country decade evidence retains source mix and pinned assignment provenance");
+assert.ok(analysis.geography.byTime.length > 0, "country-by-decade evidence is available to the choropleth decade selector");
+assert.ok(analysis.geography.byTime.every((cell) => cell.country && /^\d+$/.test(String(cell.period))), "country decades use human country names and numeric semantic periods");
+assert.ok(Array.isArray(analysis.geography.craftByCountry.fullCells));
+assert.ok(analysis.geography.craftByCountry.fullCells.some((cell) => cell.country === "United States of America" && cell.craft), "selected-craft country evidence is materialized with human geography labels");
+assert.ok(analysis.geography.craftByCountry.fullCells.every((cell) => !/ea6x12:/i.test(String(cell.displayColumn))), "selected-craft country evidence never exposes canonical equal-area IDs");
+assert.ok(Array.isArray(analysis.geography.equalAreaSensitivity), "equal-area bins remain an advanced sensitivity lane");
 assert.ok(Array.isArray(analysis.geography.byEra.fullCells));
 assert.deepEqual(
   analysis.geography.byEra.metadata.adjustmentCovariates,
@@ -564,6 +733,23 @@ assert.ok(fullCatalog.comparisons.craft.results.every((comparison) => (
   comparison.pValue === null && comparison.qValue === null && comparison.suppressionReasons.includes("descriptive_baseline")
 )), "overlapping full-catalog comparisons remain descriptive and emit no inferential significance values");
 
+const fullCatalogSelfComparison = stats.computeAnalysis({
+  rows: [
+    row({ eventId: "self-comparison-a", sortOrdinal: stats.ordinalFromCivil(2000, 2, 1) }),
+    row({ eventId: "self-comparison-b", sortOrdinal: stats.ordinalFromCivil(2000, 9, 1) }),
+  ],
+  baselineMode: "full_catalog",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(1999, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2001, 12, 31),
+});
+assert.equal(fullCatalogSelfComparison.analysisMode, stats.ANALYSIS_MODES.COHORT_COMPARISON);
+assert.equal(
+  fullCatalogSelfComparison.comparisonState,
+  stats.COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+  "a finite range that contains every matched row collapses a duplicate full-catalog self-comparison"
+);
+assert.equal(fullCatalogSelfComparison.summary.activeCount, fullCatalogSelfComparison.summary.referenceCount);
+
 const noSourceSupportRows = [];
 for (let index = 0; index < 200; index += 1) {
   noSourceSupportRows.push(row({
@@ -635,6 +821,31 @@ const allTime = stats.computeAnalysis({
 });
 assert.equal(allTime.summary.activeCount, 801, "All Time includes filtered undated rows");
 assert.equal(allTime.summary.referenceCount, 0, "Other dates is empty and disjoint when All Time is active");
+assert.equal(allTime.analysisMode, stats.ANALYSIS_MODES.WHOLE_CORPUS_STRUCTURE);
+assert.equal(allTime.comparisonState, stats.COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE);
+assert.equal(allTime.baseline.mode, stats.BASELINE_MODES.INTERNAL_STRUCTURE);
+assert.equal(allTime.baseline.label, "All records — internal structure");
+assert.ok(allTime.time.series.length > 0 && allTime.time.series.every((datum) => datum.referenceCount === 0));
+assert.deepEqual(
+  allTime.time.series.map((datum) => datum.startYear),
+  allTime.time.series.map((datum) => datum.startYear).slice().sort((left, right) => left - right),
+  "the single All Time activity series is chronological before any UI sampling"
+);
+assert.ok(allTime.time.monthByCraft.fullCells.some((cell) => cell.estimateAvailable && cell.expectedCount > 0));
+assert.ok(allTime.craft.byEra.fullCells.some((cell) => cell.estimateAvailable && cell.expectedCount > 0));
+assert.ok(allTime.craft.byGeography.fullCells.some((cell) => cell.estimateAvailable && cell.expectedCount > 0));
+assert.ok(allTime.geography.byEra.fullCells.some((cell) => cell.estimateAvailable && cell.expectedCount > 0));
+assert.ok(
+  allTime.geography.equalAreaMap.cells.some((cell) => cell.observed > 0 && cell.displayStatus === "descriptive"),
+  "whole-corpus geography exposes source-balanced descriptive estimates without inventing a reference"
+);
+const classifierObservedZero = allTime.sourcesQuality.classifierAudit.find((cell) => (
+  cell.observedCount === 0 && cell.expectedCount > 0
+));
+assert.ok(classifierObservedZero, "the classifier audit materializes zero-observation cells with positive expectation");
+assert.equal(classifierObservedZero.tested, true);
+assert.equal(classifierObservedZero.pValue != null, true);
+assert.ok(allTime.sourcesQuality.classifierAuditMetadata.cramersV >= 0 && allTime.sourcesQuality.classifierAuditMetadata.cramersV <= 1);
 assert.equal(allTime.summary.missingCount, 1, "missingCount is a row union, not a sum that can exceed N");
 assert.deepEqual(allTime.summary.missingnessPolicy.requiredFields, [
   "known date ordinal",
@@ -707,7 +918,8 @@ const sparseMapOccupiedCell = sparseMapAnalysis.geography.equalAreaMap.byCoordin
   (cell) => cell.observed === 1 && cell.referenceCount === 1
 );
 assert.ok(sparseMapOccupiedCell);
-assert.equal(sparseMapOccupiedCell.displayStatus, "suppressed");
+assert.equal(sparseMapOccupiedCell.displayStatus, "low_support");
+assert.equal(sparseMapOccupiedCell.estimateAvailable, true);
 assert.ok(sparseMapOccupiedCell.suppressionReasons.includes("expected_cell"));
 assert.equal(
   sparseMapAnalysis.geography.equalAreaMap.byCoordinateClass.sourceCoordinates.structurallyEmptyCells.length,
@@ -781,14 +993,12 @@ assert.ok(outputConformance.geography.byTime.some((datum) => datum.observed === 
 assert.ok(outputConformance.geography.byTime.some((datum) => datum.observed === 2 && datum.referenceCount === 0), "active-only geography-time cells must be emitted");
 assert.ok(outputConformance.geography.byTime.every((datum) => (
   datum.coordinateClass &&
-  Number.isFinite(datum.latMinimum) && Number.isFinite(datum.latMaximum) &&
-  Number.isFinite(datum.lonMinimum) && Number.isFinite(datum.lonMaximum) &&
-  datum.gridMetadata?.definitionId === outputConformance.geography.gridDefinition.id &&
+  datum.country &&
   datum.label.includes(datum.column) &&
   datum.preview?.kind === "area" &&
-  datum.preview.area.bounds.south === datum.latMinimum &&
-  datum.preview.area.bounds.north === datum.latMaximum
-)), "every geography-time datum must be independently interpretable and area-selectable");
+  datum.preview.area.type === "country" &&
+  datum.preview.area.country === datum.country
+)), "every geography-time datum must be independently interpretable and country-selectable");
 
 assert.equal(outputConformance.sourcesQuality.sourceByTime.length, 4, "source-by-period composition exposes the complete source-period grid");
 const zeroSourcePeriod = outputConformance.sourcesQuality.sourceByTime.find((datum) => datum.source === "source-b" && datum.period === "2000");
@@ -827,7 +1037,7 @@ const eligibleCraftSource = stats.computeAnalysis({
 assert.equal(eligibleCraftSource.craft.sourceAssociation.eligible, true);
 assert.ok(eligibleCraftSource.craft.sourceAssociation.minimumExpectedCell >= 10);
 assert.ok(eligibleCraftSource.craft.sourceAssociation.cramersV >= 0.10);
-assert.match(eligibleCraftSource.craft.sourceAssociation.policyWarning, /every expected cell is at least 10/i);
+assert.match(eligibleCraftSource.craft.sourceAssociation.policyWarning, /every estimable cell is displayed/i);
 assert.equal(eligibleCraftSource.craft.residuals.length, 4);
 assert.ok(eligibleCraftSource.craft.residuals.every((cell) => cell.expected >= 10));
 
@@ -836,20 +1046,22 @@ const weakCraftSource = stats.computeAnalysis({
   baselineMode: "full_catalog",
   timeRangeMode: "full",
 });
-assert.equal(weakCraftSource.craft.sourceAssociation.eligible, false);
+assert.equal(weakCraftSource.craft.sourceAssociation.eligible, true);
 assert.ok(weakCraftSource.craft.sourceAssociation.minimumExpectedCell >= 10);
 assert.ok(weakCraftSource.craft.sourceAssociation.cramersV < 0.10);
-assert.deepEqual(weakCraftSource.craft.residuals, []);
+assert.equal(weakCraftSource.craft.sourceAssociation.associationConclusion, "no_material_association_detected");
+assert.equal(weakCraftSource.craft.residuals.length, 4, "a supported negative result remains visible");
 
 const sparseCraftSource = stats.computeAnalysis({
   rows: craftSourceRows({ "disk|source-a": 8, "disk|source-b": 2, "triangle|source-a": 2, "triangle|source-b": 8 }, "sparse"),
   baselineMode: "full_catalog",
   timeRangeMode: "full",
 });
-assert.equal(sparseCraftSource.craft.sourceAssociation.eligible, false);
+assert.equal(sparseCraftSource.craft.sourceAssociation.eligible, true);
 assert.ok(sparseCraftSource.craft.sourceAssociation.minimumExpectedCell < 10);
 assert.ok(sparseCraftSource.craft.sourceAssociation.cramersV >= 0.10);
-assert.deepEqual(sparseCraftSource.craft.residuals, []);
+assert.equal(sparseCraftSource.craft.residuals.length, 4);
+assert.ok(sparseCraftSource.craft.residuals.every((cell) => cell.lowSupport && cell.qValue === null));
 
 const burstRows = [];
 for (let year = 1990; year <= 1995; year += 1) {
@@ -1088,6 +1300,84 @@ assert.equal(
 );
 assert.equal(longSpanAnalysis.time.annualSeries.reduce((sum, year) => sum + year.observed, 0), 4);
 assert.ok(longSpanAnalysis.time.series.length < longSpanAnalysis.time.adaptiveBinning.spanYears);
+
+const numericAxisRows = [2020, 190, 815, 1992, 2001].flatMap((year, yearIndex) => (
+  Array.from({ length: 30 }, (_, index) => row({
+    eventId: `numeric-axis-${year}-${index}`,
+    source: index % 2 ? "source-a" : "source-b",
+    craftType: index < 15 ? "triangle" : "disk",
+    shape: index < 15 ? "Triangle" : "Disk",
+    sortOrdinal: stats.ordinalFromCivil(year, (index % 12) + 1, 15),
+    lat: 10 + yearIndex,
+    lon: -100 + yearIndex,
+  }))
+));
+const numericAxisAnalysis = stats.computeAnalysis({
+  rows: numericAxisRows,
+  baselineMode: "full_catalog",
+  timeRangeMode: "full",
+});
+assert.deepEqual(
+  numericAxisAnalysis.time.annualSeries.map((datum) => datum.year),
+  [190, 815, 1992, 2001, 2020],
+  "three- and four-digit years are ordered numerically"
+);
+assert.deepEqual(
+  numericAxisAnalysis.craft.byEra.metadata.columnAxis.order,
+  ["190", "810", "1990", "2000", "2020"],
+  "decade heatmap columns are chronological rather than lexicographic or frequency-ranked"
+);
+assert.deepEqual(
+  numericAxisAnalysis.time.monthByCraft.metadata.columnAxis.order,
+  stats.MONTH_AXIS_ORDER,
+  "month heatmap columns remain January through December"
+);
+assert.equal(numericAxisAnalysis.summary.referenceCount, 0);
+assert.ok(numericAxisAnalysis.time.series.every((datum) => datum.referenceCount === 0));
+
+const orderedContextProjection = stats.normalizeContextProjections({
+  cropCircles: [2020, 190, 815, 1992, 2001].map((year) => ({
+    id: `ordered-crop-${year}`,
+    year,
+    startOrdinal: stats.ordinalFromCivil(year, 6, 1),
+    endOrdinal: stats.ordinalFromCivil(year, 6, 1),
+    datePrecision: "exact_day",
+    morphology: ["unknown"],
+    crop: "unknown",
+    mapped: true,
+  })),
+  animalReports: [2025, 1950, 1969, 1975, 1984, 1991, 1996, 2012, 2014].map((year) => ({
+    id: `ordered-animal-${year}`,
+    year,
+    startOrdinal: stats.ordinalFromCivil(year, 7, 1),
+    endOrdinal: stats.ordinalFromCivil(year, 7, 1),
+    datePrecision: "exact_day",
+    species: ["unknown"],
+    status: "unknown",
+    mapped: true,
+  })),
+});
+const orderedContextAnalysis = stats.computeAnalysis({
+  rows: [],
+  baselineMode: "full_catalog",
+  timeRangeMode: "full",
+  contextLayers: { cropCirclesEnabled: true, animalMutilationsEnabled: true },
+  contextProjections: orderedContextProjection,
+});
+assert.deepEqual(
+  orderedContextAnalysis.context.crops.time.map((datum) => Number(datum.key)),
+  [190, 815, 1992, 2001, 2020],
+  "crop context time is chronological"
+);
+assert.deepEqual(
+  orderedContextAnalysis.context.animals.time.map((datum) => Number(datum.key)),
+  [1950, 1969, 1975, 1984, 1991, 1996, 2012, 2014, 2025],
+  "animal context time is chronological"
+);
+assert.equal(orderedContextAnalysis.context.crops.referenceCount, 0);
+assert.equal(orderedContextAnalysis.context.animals.referenceCount, 0);
+assert.ok(orderedContextAnalysis.overview.evidenceSummary.every((item) => item.patternFinderEligible === false));
+assert.deepEqual(orderedContextAnalysis.patternGroups.withinCorpusAssociation, []);
 
 const statsSource = fs.readFileSync("webapp/static_public/analysis_stats.js", "utf8");
 assert.doesNotMatch(statsSource, /traceSegments|trace_segments|chronologySegments|flight path/i);

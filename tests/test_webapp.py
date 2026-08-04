@@ -1206,8 +1206,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-            'styles.css?v=2026-08-03-context-layer-quick-toggles-v1',
-            'app.js?v=2026-08-03-context-layer-quick-toggles-v1',
+            'styles.css?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4',
+            'app.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -1276,6 +1276,16 @@ def test_shell_assets_match_the_rebuilt_static_bundle():
         "manifest.json",
         "ufo_point_neighbors_v1.json",
         "ufo_point_neighbors_v1.json.gz",
+        "ufo_spatial_points_v2.json",
+        "ufo_spatial_points_v2.json.gz",
+        "context_ufo_neighbors_v1.json",
+        "context_ufo_neighbors_v1.json.gz",
+        "ufo_geography_v1.json",
+        "ufo_geography_v1.json.gz",
+        "ufo_configuration_points_v1.json",
+        "ufo_configuration_points_v1.json.gz",
+        "ufo_configuration_neighbors_v1.json",
+        "ufo_configuration_neighbors_v1.json.gz",
         "facility_analysis_v1.json",
         "facility_analysis_v1.json.gz",
         "crop_context_readiness.json",
@@ -1315,17 +1325,33 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
         'craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence)',
         'craft_type_source: internCanonicalSummaryString(event.craft_type_source)',
         'const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"',
+        'catalog_filter_worker.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4',
+        "Promise.all([manifestPromise, ensureWorldReferenceData()])",
+        "getWorldReferenceData: function () { return runtime.worldReferenceData; }",
+        "function ensureAnalysisContextEvidence()",
+        'type: "setAnalysisContextSpatialArtifact"',
+        'message.type === "analysisContextSpatialArtifactSet"',
+        'ensureAnalysisRelationshipArtifact({ deferCompute: true })',
+        'ensureAnalysisContextSpatialArtifact({ deferCompute: true })',
     ):
         assert fragment in app_js
 
     for fragment in (
         'message.type === "setAnalysisContextProjections"',
+        'message.type === "setAnalysisContextSpatialArtifact"',
         'message.type === "computeAnalysis"',
         'type: "analysisComputed"',
         "pointInsideAnyAnalysisShape",
         "verifyAnalysisBytes",
+        "validateSpatialManifestArtifact",
+        "validateLoadedSpatialArtifact",
+        'url.searchParams.set("sha256", sha256)',
+        "analysisSpatialArtifactLoadEpoch",
         "analysisCacheKey",
         "quickMode: Boolean(message.quickMode)",
+        'importScripts("./analysis_stats.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY)',
+        'importScripts("./analysis_spatial.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY)',
+        'analysis_spatial_worker.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY',
     ):
         assert fragment in worker_js
 
@@ -1345,6 +1371,18 @@ def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index(
     assert "pointOnly: true" in apply_area_body
     assert "selectTraces: false" in apply_area_body
     assert "selectEvents: true" in apply_area_body
+    assert 'String(candidate.type || "").toLowerCase() === "country"' in apply_area_body
+    assert "state.analysisCountryAreaFilter = country;" in apply_area_body
+    assert "skipAnalysis: true" in apply_area_body
+
+    render_state_body = _extract_js_function_body(app_js, "refreshRegionSelectionRenderState")
+    assert "if (!config.skipAnalysis)" in render_state_body
+    assert 'scheduleAnalysisCompute("area filter changed")' in render_state_body
+
+    patch_body = _extract_js_function_body(app_js, "applyAnalysisFilterPatch")
+    assert "if (areaChanged)" in patch_body
+    assert "return refreshFilters().then(function ()" in patch_body
+    assert patch_body.count("refreshFilters().then(function ()") == 2
 
     seed_body = _extract_js_function_body(app_js, "currentPointOnlyRegionSelectionSeeds")
     assert "for (const event of state.filteredMappedCatalog)" in seed_body
@@ -1370,6 +1408,174 @@ def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index(
     assert "chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed)" in app_js
     assert "visibleMappedEventIds: (regionResult.visibleMappedCatalog || [])" in app_js
     assert "resultEventIds: currentVisibleResultsCatalog().map(function (event)" in app_js
+
+
+def test_analysis_v2_manifest_is_versioned_with_the_app_shell_release():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    versioned_asset_body = _normalize_js_body(
+        _extract_js_function_body(app_js, "shouldVersionStaticAsset")
+    )
+    resolve_asset_body = _normalize_js_body(
+        _extract_js_function_body(app_js, "resolveAssetPath")
+    )
+
+    assert 'path.indexOf("/data/analysis_v2/")!==-1' in versioned_asset_body
+    assert 'url.searchParams.set("v",versionToken)' in resolve_asset_body
+    for loader_name in (
+        "ensureAnalysisGeographyArtifact",
+        "ensureAnalysisRelationshipArtifact",
+        "ensureAnalysisContextSpatialArtifact",
+        "ensureAnalysisSpatialArtifacts",
+    ):
+        loader_body = _extract_js_function_body(app_js, loader_name)
+        assert 'resolveAssetPath("./data/analysis_v2/manifest.json")' in loader_body
+
+
+def test_country_area_filter_is_visible_human_labeled_clearable_and_atomic():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    active_body = _extract_js_function_body(app_js, "areaFilterHasActiveSelection")
+    assert "regionSelectionHasActiveShapes() || analysisCountryAreaFilterActive()" in active_body
+
+    affects_rendering_body = _extract_js_function_body(app_js, "regionSelectionAffectsRendering")
+    assert "return areaFilterHasActiveSelection();" in affects_rendering_body
+
+    ui_body = _extract_js_function_body(app_js, "renderRegionSelectionUi")
+    for fragment in (
+        "const countryLabel = analysisCountryAreaFilterLabel();",
+        '"Area Filter \u00b7 " + countryLabel',
+        '"Country Area Filter active: " + countryLabel',
+        "els.undoAreaSelectionButton.disabled = !hasAreaFilter;",
+        "els.clearAreaSelectionButton.disabled = !hasAreaFilter;",
+        "els.resultsAreaFilterIndicator.hidden = !hasAreaFilter;",
+        "els.resultsAreaFilterClearButton.disabled = !hasAreaFilter;",
+    ):
+        assert fragment in ui_body
+
+    summary_body = _extract_js_function_body(app_js, "regionSelectionSummaryText")
+    assert '"Country: " + countryLabel' in summary_body
+    assert '" mapped report points \u00b7 point-only"' in summary_body
+
+    country_result_body = _extract_js_function_body(app_js, "countryAreaFilterResult")
+    for fragment in (
+        'reason: "worker-filtered country report points only"',
+        "traceSegments: []",
+        "visibleTraceSegments: []",
+        "neighborhoodSegments: []",
+        "pointOnly: true",
+        "chronologyIndexUsed: false",
+        "needsTraceSegments: false",
+    ):
+        assert fragment in country_result_body
+    for prohibited in (
+        "currentChronologicalNeighborhoodIndex",
+        "currentChronologicalNeighborhoodSeeds",
+        "buildCanonicalTraceSegments",
+    ):
+        assert prohibited not in country_result_body
+
+    trace_visibility_body = _extract_js_function_body(app_js, "traceLinkedVisibilityAffectsRendering")
+    assert "if (areaFilterHasActiveSelection() && state.regionSelection.pointOnly) return false;" in trace_visibility_body
+
+    clear_body = _extract_js_function_body(app_js, "clearAllRegionSelectionShapes")
+    assert "const hadCountryArea = Boolean(state.analysisCountryAreaFilter);" in clear_body
+    assert 'state.analysisCountryAreaFilter = "";' in clear_body
+    assert "state.regionSelection.pointOnly = false;" in clear_body
+    assert clear_body.count("refreshFilters().catch(function (error)") == 1
+
+    undo_body = _extract_js_function_body(app_js, "undoLastRegionSelectionShape")
+    assert 'state.analysisCountryAreaFilter = "";' in undo_body
+    assert undo_body.count("refreshFilters().catch(function (error)") == 1
+
+    bind_body = _extract_js_function_body(app_js, "attachEventHandlers")
+    assert bind_body.count("clearAllRegionSelectionShapes();") >= 2
+
+
+def test_context_only_evidence_loader_is_deduplicated_retryable_and_cache_safe():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    layer_status_body = _extract_js_function_body(app_js, "contextLayerAnalysisStatus")
+    assert "const requestedEnabled = Boolean(" in layer_status_body
+    assert "const merged = Object.assign({ loaded: false }, status || {});" in layer_status_body
+    assert "merged.enabled = requestedEnabled;" in layer_status_body
+    assert layer_status_body.index("Object.assign({ loaded: false }, status || {})") < layer_status_body.index("merged.enabled = requestedEnabled")
+
+    initialize_body = _extract_js_function_body(app_js, "initializeAnalysisView")
+    assert 'change && change.sectionKey === "context"' in initialize_body
+    assert "ensureAnalysisContextEvidence().catch(function () { return null; });" in initialize_body
+    assert "if (runtime.analysisContextEvidenceError)" in initialize_body
+    assert "onRenderComplete: function ()" in initialize_body
+    assert "if (!runtime.analysisContextEvidenceRenderPending) return;" in initialize_body
+    assert 'setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");' in initialize_body
+
+    result_context_body = _extract_js_function_body(app_js, "analysisResultHasContextEvidence")
+    assert 'status.indexOf("context_evidence_ready") !== -1' in result_context_body
+    assert "Array.isArray(associations.lanes)" in result_context_body
+    assert "Array.isArray(relationships.cells)" in result_context_body
+
+    render_result_body = _extract_js_function_body(app_js, "renderAnalysisWorkerResult")
+    assert "runtime.analysisContextEvidenceRenderPending = true;" in render_result_body
+    assert 'setAnalysisContextEvidenceSectionState("loading", "Context evidence computed; rendering the selected Context view...");' in render_result_body
+    assert render_result_body.index("runtime.analysisContextEvidenceRenderPending = true;") < render_result_body.index("runtime.analysisViewController.renderAnalysisResult(result")
+
+    context_body = _extract_js_function_body(app_js, "ensureAnalysisContextEvidence")
+    for fragment in (
+        "runtime.analysisContextEvidenceRequested = true;",
+        "if (analysisContextEvidenceArtifactsReady())",
+        "if (runtime.analysisContextEvidencePromise) return runtime.analysisContextEvidencePromise;",
+        "ensureAnalysisRelationshipArtifact({ deferCompute: true })",
+        "ensureAnalysisContextSpatialArtifact({ deferCompute: true })",
+        "runtime.analysisCache.clear();",
+        'setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");',
+        "if (!runtime.analysisSpatialRequested)",
+        'scheduleAnalysisCompute("context evidence ready", { immediate: true });',
+        "runtime.analysisContextEvidencePromise = null;",
+        "runtime.analysisContextEvidenceRequested = false;",
+        'setAnalysisContextEvidenceSectionState("error"',
+    ):
+        assert fragment in context_body
+    assert context_body.count('scheduleAnalysisCompute("context evidence ready", { immediate: true });') == 1
+    for prohibited in (
+        "ensureAnalysisSpatialArtifacts(",
+        "runtime.analysisSpatialRequested = true",
+        "ufo_configuration",
+        "Formation",
+    ):
+        assert prohibited not in context_body
+
+    relationship_body = _extract_js_function_body(app_js, "setAnalysisRelationshipArtifactInWorker")
+    context_spatial_body = _extract_js_function_body(app_js, "setAnalysisContextSpatialArtifactInWorker")
+    assert 'type: "setAnalysisRelationshipArtifact"' in relationship_body
+    assert 'type: "setAnalysisContextSpatialArtifact"' in context_spatial_body
+    assert 'type: "setAnalysisSpatialArtifacts"' not in relationship_body
+    assert 'type: "setAnalysisSpatialArtifacts"' not in context_spatial_body
+
+    manifest_body = _extract_js_function_body(app_js, "ensureAnalysisV2Manifest")
+    assert "if (runtime.analysisV2ManifestPromise) return runtime.analysisV2ManifestPromise;" in manifest_body
+    assert 'fetch(manifestUrl, { cache: "force-cache" })' in manifest_body
+    assert "runtime.analysisV2ManifestPromise = null;" in manifest_body
+
+    full_spatial_body = _extract_js_function_body(app_js, "ensureAnalysisSpatialArtifacts")
+    for fragment in (
+        "runtime.analysisRelationshipPromise",
+        "runtime.analysisContextSpatialPromise",
+        "contextPartialSetupsSettled",
+        "ensureAnalysisV2Manifest(manifestUrl)",
+        "Promise.all([",
+        "setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl)",
+    ):
+        assert fragment in full_spatial_body
+    assert full_spatial_body.index("contextPartialSetupsSettled") < full_spatial_body.index("setAnalysisSpatialArtifactsInWorker")
+
+    cache_key_body = _extract_js_function_body(app_js, "analysisComputeCacheKey")
+    for fragment in (
+        "relationshipRequested:",
+        "relationshipReady:",
+        "contextSpatialRequested:",
+        "contextSpatialReady:",
+        "artifactHashes:",
+    ):
+        assert fragment in cache_key_body
 
 
 def test_analysis_worker_envelope_invalidates_before_debounce_and_rechecks_full_signature():
@@ -1567,6 +1773,7 @@ def test_trace_facility_location_evidence_policy_is_conservative_and_truthful():
     worker_url_body = _normalize_js_body(_extract_js_function_body(app_js, "traceFacilityWorkerUrl"))
     assert "returnconfiguredValue||APP_SHELL_RELEASE_TOKEN" in static_version_body
     assert 'url.pathname.endsWith("/data/app_config.json")' in resolve_asset_body
+    assert 'url.pathname.indexOf("/data/analysis_v2/")!==-1' in resolve_asset_body
     assert "APP_SHELL_RELEASE_TOKEN||staticAssetVersionToken()" in resolve_asset_body
     assert 'newURL("./trace_facility_worker.js",document.baseURI)' in worker_url_body
     assert "APP_SHELL_RELEASE_TOKEN||staticAssetVersionToken()" in worker_url_body

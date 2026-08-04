@@ -1025,10 +1025,26 @@
     analysisContextManifest: null,
     analysisContextLoaded: false,
     analysisContextWorkerReady: false,
+    analysisV2ManifestPromise: null,
     analysisSpatialPromise: null,
     analysisSpatialManifest: null,
     analysisSpatialWorkerReady: false,
     analysisSpatialRequested: false,
+    analysisGeographyPromise: null,
+    analysisGeographyManifest: null,
+    analysisGeographyWorkerReady: false,
+    analysisGeographyRequested: false,
+    analysisRelationshipPromise: null,
+    analysisRelationshipWorkerReady: false,
+    analysisRelationshipRequested: false,
+    analysisContextSpatialPromise: null,
+    analysisContextSpatialWorkerReady: false,
+    analysisContextSpatialRequested: false,
+    analysisContextEvidencePromise: null,
+    analysisContextEvidenceWorkerReady: false,
+    analysisContextEvidenceRequested: false,
+    analysisContextEvidenceError: "",
+    analysisContextEvidenceRenderPending: false,
     analysisCancellationGeneration: 0,
     analysisMapControlState: new Map(),
     analysisRestoreFocusElement: null,
@@ -1037,6 +1053,8 @@
     analysisMapRenderPending: false,
     analysisContextEnabledState: { crops: null, animals: null },
     analysisContextMutationPromises: { crops: null, animals: null },
+    analysisDatePopoverOpen: false,
+    analysisDateMediaQuery: null,
     catalogSummaryMemory: {
       prunedEvents: 0,
       fallbackPlaybackKeysReleased: 0,
@@ -1255,6 +1273,7 @@
     currentTileProviderId: "configured",
     activeView: "map",
     analysisBaselineMode: "other_dates_balanced",
+    analysisCountryAreaFilter: "",
     lastKeyword: "",
     lastKeywordMatches: null,
     keywordActive: false,
@@ -1603,14 +1622,27 @@
     endDateInput: document.querySelector("#end-date"),
     timelineStartDateInput: document.querySelector("#timeline-start-date"),
     timelineEndDateInput: document.querySelector("#timeline-end-date"),
+    analysisStartDateInput: document.querySelector("#analysis-start-date"),
+    analysisEndDateInput: document.querySelector("#analysis-end-date"),
     startDatePicker: document.querySelector("#start-date-picker"),
     endDatePicker: document.querySelector("#end-date-picker"),
     timelineStartDatePicker: document.querySelector("#timeline-start-date-picker"),
     timelineEndDatePicker: document.querySelector("#timeline-end-date-picker"),
+    analysisStartDatePicker: document.querySelector("#analysis-start-date-picker"),
+    analysisEndDatePicker: document.querySelector("#analysis-end-date-picker"),
     datePickerButtons: Array.from(document.querySelectorAll("[data-date-picker-target]")),
     filterDateFeedback: document.querySelector("#filter-date-feedback"),
     timelineDateFeedback: document.querySelector("#timeline-date-feedback"),
+    analysisDateFeedback: document.querySelector("#analysis-date-feedback"),
     filterAllTimeButton: document.querySelector("#filter-all-time"),
+    analysisAllTimeButton: document.querySelector("#analysis-all-time"),
+    analysisApplyDateButton: document.querySelector("#analysis-apply-date-range"),
+    analysisDateRangeChip: document.querySelector("#analysis-date-range-chip"),
+    analysisDateRangeChipLabel: document.querySelector("#analysis-date-range-chip-label"),
+    analysisDateRangeChipMode: document.querySelector("#analysis-date-range-chip-mode"),
+    analysisDatePopover: document.querySelector("#analysis-date-popover"),
+    analysisWorkspaceToolbar: document.querySelector("#analysis-workspace-toolbar"),
+    analysisModeLabel: document.querySelector("#analysis-mode-label"),
     filterFlapPresets: document.querySelector("#filter-flap-presets"),
     sourceFilter: document.querySelector("#source-filter"),
     sourceFilterPane: document.querySelector("#source-filter-pane"),
@@ -2531,6 +2563,11 @@
   }
 
   function regionSelectionSummaryText(result) {
+    const countryLabel = analysisCountryAreaFilterLabel();
+    if (countryLabel) {
+      const mappedCount = Array.isArray(state.filteredMappedCatalog) ? state.filteredMappedCatalog.length : 0;
+      return "Country: " + countryLabel + " · " + formatNumber(mappedCount) + " mapped report points · point-only";
+    }
     if (!result || !result.active) {
       return regionSelectionDrawingActive() ? "Drawing active" : "No regions";
     }
@@ -2545,7 +2582,6 @@
     const direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
     return regionLabel + " - " + visibleSightings + " sightings - " + result.visibleTraceCount +
       " traces - " + depth + " hop" + (depth === 1 ? "" : "s") + " " + direction;
-    return regionLabel + " · " + result.visibleEventCount + " sightings · " + result.visibleTraceCount + " traces";
   }
 
   function syncRegionSelectionMapInteraction() {
@@ -2565,22 +2601,29 @@
 
   function renderRegionSelectionUi() {
     const hasShapes = regionSelectionHasActiveShapes();
+    const countryLabel = analysisCountryAreaFilterLabel();
+    const hasCountryArea = Boolean(countryLabel);
+    const hasAreaFilter = hasShapes || hasCountryArea;
     const panelOpen = regionSelectionPanelOpen();
     const drawingActive = regionSelectionDrawingActive();
-    const result = hasShapes ? currentRegionSelectionResult() : emptyRegionSelectionResult();
+    const result = hasAreaFilter ? currentRegionSelectionResult() : emptyRegionSelectionResult();
 
     if (els.toggleAreaSelectionButton) {
-      const buttonLabel = hasShapes
-        ? "Area Filter · " + result.shapeCount
-        : "Area Select";
+      const buttonLabel = hasCountryArea
+        ? "Area Filter · " + countryLabel
+        : hasShapes
+          ? "Area Filter · " + result.shapeCount
+          : "Area Select";
       els.toggleAreaSelectionButton.textContent = buttonLabel;
-      els.toggleAreaSelectionButton.classList.toggle("is-active", panelOpen || hasShapes);
+      els.toggleAreaSelectionButton.classList.toggle("is-active", panelOpen || hasAreaFilter);
       els.toggleAreaSelectionButton.setAttribute("aria-pressed", panelOpen ? "true" : "false");
       els.toggleAreaSelectionButton.title = panelOpen
         ? "Close Area Filter"
-        : hasShapes
-          ? "Area filter active"
-          : "Area Select";
+        : hasCountryArea
+          ? "Country Area Filter active: " + countryLabel
+          : hasShapes
+            ? "Area filter active"
+            : "Area Select";
     }
 
     if (els.areaSelectionPanel) {
@@ -2615,10 +2658,10 @@
       els.exitAreaSelectionButton.disabled = !panelOpen;
     }
     if (els.undoAreaSelectionButton) {
-      els.undoAreaSelectionButton.disabled = !hasShapes;
+      els.undoAreaSelectionButton.disabled = !hasAreaFilter;
     }
     if (els.clearAreaSelectionButton) {
-      els.clearAreaSelectionButton.disabled = !hasShapes;
+      els.clearAreaSelectionButton.disabled = !hasAreaFilter;
     }
 
     if (els.areaSelectionSelectTracesToggle) {
@@ -2651,15 +2694,15 @@
     }
 
     if (els.resultsAreaFilterIndicator) {
-      els.resultsAreaFilterIndicator.hidden = !hasShapes;
+      els.resultsAreaFilterIndicator.hidden = !hasAreaFilter;
     }
     if (els.resultsAreaFilterText) {
-      els.resultsAreaFilterText.textContent = hasShapes
+      els.resultsAreaFilterText.textContent = hasAreaFilter
         ? "Area filter active · " + regionSelectionSummaryText(result)
         : "Area filter active";
     }
     if (els.resultsAreaFilterClearButton) {
-      els.resultsAreaFilterClearButton.disabled = !hasShapes;
+      els.resultsAreaFilterClearButton.disabled = !hasAreaFilter;
     }
 
     syncRegionSelectionMapInteraction();
@@ -2680,7 +2723,9 @@
     }
     renderStats();
     renderPlaybackStatus();
-    scheduleAnalysisCompute("area filter changed");
+    if (!config.skipAnalysis) {
+      scheduleAnalysisCompute("area filter changed");
+    }
   }
 
   function setRegionSelectionPanelOpen(open, options) {
@@ -2746,6 +2791,16 @@
     setRegionSelectionDrawingActive(false, { skipRender: true });
     setRegionSelectionPanelOpen(true, { skipRender: true });
     if (!regionSelectionHasActiveShapes()) {
+      if (state.analysisCountryAreaFilter) {
+        state.analysisCountryAreaFilter = "";
+        state.regionSelection.pointOnly = false;
+        refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+        window.clearTimeout(scheduleRefresh._timer);
+        refreshFilters().catch(function (error) {
+          console.error("[analysis country area clear]", error);
+        });
+        return;
+      }
       renderRegionSelectionUi();
       return;
     }
@@ -2754,14 +2809,24 @@
   }
 
   function clearAllRegionSelectionShapes() {
-    const hadShapes = regionSelectionHasActiveShapes();
+    const hadCountryArea = Boolean(state.analysisCountryAreaFilter);
+    const hadShapes = regionSelectionHasActiveShapes() || hadCountryArea;
     state.regionSelection.shapes = [];
+    state.analysisCountryAreaFilter = "";
     state.regionSelection.pointOnly = false;
     clearChronologicalNeighborhoodInteractionLayer();
     setRegionSelectionDrawingActive(false, { skipRender: true });
     setRegionSelectionPanelOpen(false, { skipRender: true });
     if (!hadShapes) {
       renderRegionSelectionUi();
+      return;
+    }
+    if (hadCountryArea) {
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      window.clearTimeout(scheduleRefresh._timer);
+      refreshFilters().catch(function (error) {
+        console.error("[analysis country area clear]", error);
+      });
       return;
     }
     refreshRegionSelectionRenderState();
@@ -2831,11 +2896,21 @@
       return true;
     }
 
+    const replacedCountryArea = Boolean(state.analysisCountryAreaFilter);
+    state.analysisCountryAreaFilter = "";
     state.regionSelection.shapes = state.regionSelection.shapes.concat([nextShape]);
     state.regionSelection.pointOnly = false;
     setRegionSelectionDrawingActive(false, { skipRender: true });
     setRegionSelectionPanelOpen(false, { skipRender: true });
-    refreshRegionSelectionRenderState();
+    if (replacedCountryArea) {
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      window.clearTimeout(scheduleRefresh._timer);
+      refreshFilters().catch(function (error) {
+        console.error("[analysis country area replace]", error);
+      });
+    } else {
+      refreshRegionSelectionRenderState();
+    }
     event.preventDefault();
     return true;
   }
@@ -6029,6 +6104,7 @@
     const path = url.pathname || "";
     return (
       path.indexOf("/data/canonical_web/") !== -1 ||
+      path.indexOf("/data/analysis_v2/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
       path.endsWith("/data/app_config.json") ||
       path.endsWith("/data/points.bin") ||
@@ -6040,7 +6116,9 @@
 
   function resolveAssetPath(relativePath) {
     const url = new URL(relativePath, document.baseURI);
-    const versionToken = url.pathname.endsWith("/data/app_config.json")
+    const shellPinnedAsset = url.pathname.endsWith("/data/app_config.json") ||
+      url.pathname.indexOf("/data/analysis_v2/") !== -1;
+    const versionToken = shellPinnedAsset
       ? (APP_SHELL_RELEASE_TOKEN || staticAssetVersionToken())
       : staticAssetVersionToken();
     if (versionToken && shouldVersionStaticAsset(url) && !url.searchParams.has("v")) {
@@ -8125,7 +8203,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8220,6 +8298,7 @@
 
   function contextLayerAnalysisStatus(globalName, toggleElement) {
     const layer = window[globalName];
+    const requestedEnabled = Boolean(toggleElement && toggleElement.getAttribute("aria-pressed") === "true");
     let status = null;
     if (layer && typeof layer.getStatus === "function") {
       try {
@@ -8228,14 +8307,18 @@
         status = null;
       }
     }
-    return Object.assign({
-      enabled: Boolean(toggleElement && toggleElement.getAttribute("aria-pressed") === "true"),
-      loaded: false,
-    }, status || {});
+    const merged = Object.assign({ loaded: false }, status || {});
+    // The shared toggle is the requested context state and the sole state that
+    // Analysis may send to the worker. A lazily mounting layer can briefly
+    // report its prior runtime state after the shared control has already
+    // changed; allowing that stale value to win produces a checked Analysis
+    // switch beside an "excluded" result panel.
+    merged.enabled = requestedEnabled;
+    return merged;
   }
 
   function analysisRegionShapesSnapshot() {
-    return (state.regionSelection && Array.isArray(state.regionSelection.shapes)
+    const shapes = (state.regionSelection && Array.isArray(state.regionSelection.shapes)
       ? state.regionSelection.shapes
       : []).map(function (shape) {
       if (shape && shape.type === "circle") {
@@ -8260,6 +8343,14 @@
         } : null,
       };
     });
+    if (state.analysisCountryAreaFilter) {
+      shapes.unshift({
+        id: "analysis-country-area",
+        type: "country",
+        country: String(state.analysisCountryAreaFilter),
+      });
+    }
+    return shapes;
   }
 
   function getAnalysisFilterSnapshot() {
@@ -8294,8 +8385,9 @@
         hideNonExactDates: filters.hideNonExactDates,
       },
       areaFilter: {
-        active: regionSelectionHasActiveShapes(),
+        active: regionSelectionHasActiveShapes() || Boolean(state.analysisCountryAreaFilter),
         pointOnly: Boolean(state.regionSelection.pointOnly),
+        country: state.analysisCountryAreaFilter || null,
         shapes: analysisRegionShapesSnapshot(),
       },
       contextLayers: {
@@ -8350,6 +8442,27 @@
   function applyAnalysisAreaFilter(area) {
     const candidate = area && area.area ? area.area : area;
     if (!candidate) return false;
+    const country = String(candidate.country || candidate.countryName || "").trim();
+    if (String(candidate.type || "").toLowerCase() === "country" && country) {
+      state.analysisCountryAreaFilter = country;
+      state.regionSelection.shapes = [];
+      Object.assign(state.regionSelection, {
+        panelOpen: false,
+        drawingActive: false,
+        modeActive: false,
+        selectTraces: false,
+        selectEvents: true,
+        showSelectedTraces: false,
+        showSelectedEvents: true,
+        showEventsAssociatedWithSelectedTraces: false,
+        showTracesAssociatedWithSelectedEvents: false,
+        combineMode: "any",
+        displayMode: "hide-unselected",
+        pointOnly: true,
+      });
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      return true;
+    }
     let shape = null;
     const rawBounds = candidate.bounds || candidate;
     if (
@@ -8385,6 +8498,7 @@
       };
     }
     if (!shape) return false;
+    state.analysisCountryAreaFilter = "";
     state.regionSelection.shapes = [shape];
     Object.assign(state.regionSelection, {
       panelOpen: false,
@@ -8400,7 +8514,7 @@
       displayMode: "hide-unselected",
       pointOnly: true,
     });
-    refreshRegionSelectionRenderState();
+    refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
     return true;
   }
 
@@ -8473,8 +8587,12 @@
     const areaCandidate = patch.area || patch.areaFilter || (patch.kind === "area" ? patch : null);
     const areaChanged = areaCandidate ? applyAnalysisAreaFilter(areaCandidate) : false;
     if (!changed) {
-      if (areaChanged) scheduleAnalysisCompute("analysis area filter applied", { immediate: true });
-      if (areaChanged) return Promise.resolve({ applied: true, areaApplied: true });
+      if (areaChanged) {
+        window.clearTimeout(scheduleRefresh._timer);
+        return refreshFilters().then(function () {
+          return { applied: true, areaApplied: true, generation: state.filterGeneration };
+        });
+      }
       return Promise.reject(new Error("This preview does not contain an applicable shared-filter change."));
     }
     window.clearTimeout(scheduleRefresh._timer);
@@ -8646,6 +8764,7 @@
           ? String(requestedMode)
           : "other_dates_balanced";
         state.analysisBaselineMode = nextMode;
+        syncAnalysisDateRangeSummary();
         runtime.analysisCache.clear();
         scheduleAnalysisCompute("baseline changed", { immediate: true });
       },
@@ -8657,6 +8776,10 @@
       },
       onCancelPreview: function () {},
       onRetryAnalysis: function () {
+        if (runtime.analysisContextEvidenceError) {
+          ensureAnalysisContextEvidence().catch(function () { return null; });
+          return;
+        }
         scheduleAnalysisCompute("manual retry", { immediate: true });
       },
       onContextLayerChange: function (change) {
@@ -8669,7 +8792,21 @@
       onSpatialEvidenceRequested: function () {
         return ensureAnalysisSpatialArtifacts().catch(function () { return null; });
       },
+      onGeographyRequested: function () {
+        return ensureAnalysisGeographyArtifact().catch(function () { return null; });
+      },
+      onSectionActivate: function (change) {
+        if (change && change.sectionKey === "context") {
+          ensureAnalysisContextEvidence().catch(function () { return null; });
+        }
+      },
+      onRenderComplete: function () {
+        if (!runtime.analysisContextEvidenceRenderPending) return;
+        runtime.analysisContextEvidenceRenderPending = false;
+        setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+      },
       getFilterSnapshot: getAnalysisFilterSnapshot,
+      getWorldReferenceData: function () { return runtime.worldReferenceData; },
     });
     runtime.analysisViewController = controller;
     controller.setAnalysisEnabled(false, "Analysis becomes available when the core catalog is ready.");
@@ -8862,6 +8999,26 @@
     return hashes;
   }
 
+  function ensureAnalysisV2Manifest(manifestUrl) {
+    const existing = runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+    if (existing) return Promise.resolve(existing);
+    if (runtime.analysisV2ManifestPromise) return runtime.analysisV2ManifestPromise;
+    runtime.analysisV2ManifestPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Analysis v2 manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        if (!runtime.analysisGeographyManifest) runtime.analysisGeographyManifest = manifest;
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisV2ManifestPromise = null;
+        throw error;
+      });
+    return runtime.analysisV2ManifestPromise;
+  }
+
   function setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl) {
     const worker = ensureCatalogFacetWorker();
     if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
@@ -8886,6 +9043,8 @@
           settled = true;
           finish();
           runtime.analysisSpatialWorkerReady = true;
+          runtime.analysisRelationshipWorkerReady = true;
+          runtime.analysisContextSpatialWorkerReady = true;
           resolve(message.snapshot || message);
           return;
         }
@@ -8908,6 +9067,316 @@
     });
   }
 
+  function setAnalysisGeographyArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-geography-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Country geography projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisGeographyArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisGeographyWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Country geography setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisGeographyArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisGeographyArtifact() {
+    runtime.analysisGeographyRequested = true;
+    if (runtime.analysisGeographyWorkerReady) return Promise.resolve(runtime.analysisGeographyManifest);
+    if (runtime.analysisGeographyPromise) return runtime.analysisGeographyPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("geography", "loading", "Loading country assignments...");
+    }
+    const manifestPromise = ensureAnalysisV2Manifest(manifestUrl);
+    runtime.analysisGeographyPromise = Promise.all([manifestPromise, ensureWorldReferenceData()])
+      .then(function (values) {
+        return values[0];
+      })
+      .then(function (manifest) {
+        runtime.analysisGeographyManifest = manifest;
+        return setAnalysisGeographyArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("geography", "ready", "Country geography ready.");
+        }
+        scheduleAnalysisCompute("country geography ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisGeographyPromise = null;
+        runtime.analysisGeographyWorkerReady = false;
+        runtime.analysisGeographyRequested = false;
+        const message = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("geography", "error", message);
+        }
+        console.error("[analysis geography]", error);
+        throw error;
+      });
+    return runtime.analysisGeographyPromise;
+  }
+
+  function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-relationships-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Relationship evidence timed out."));
+      }, 15000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisRelationshipArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisRelationshipWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Relationship evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisRelationshipArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisRelationshipArtifact(optionsValue) {
+    const options = optionsValue || {};
+    runtime.analysisRelationshipRequested = true;
+    if (runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady) {
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisRelationshipPromise) return runtime.analysisRelationshipPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    runtime.analysisRelationshipPromise = ensureAnalysisV2Manifest(manifestUrl)
+      .then(function (manifest) {
+        return setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (!options.deferCompute) scheduleAnalysisCompute("relationship evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisRelationshipPromise = null;
+        runtime.analysisRelationshipWorkerReady = false;
+        runtime.analysisRelationshipRequested = false;
+        console.error("[analysis relationships]", error);
+        throw error;
+      });
+    return runtime.analysisRelationshipPromise;
+  }
+
+  function setAnalysisContextSpatialArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-context-spatial-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Context point-neighborhood evidence timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisContextSpatialArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisContextSpatialWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Context point-neighborhood setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisContextSpatialArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisContextSpatialArtifact(optionsValue) {
+    const options = optionsValue || {};
+    runtime.analysisContextSpatialRequested = true;
+    if (runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady) {
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisContextSpatialPromise) return runtime.analysisContextSpatialPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    runtime.analysisContextSpatialPromise = ensureAnalysisV2Manifest(manifestUrl)
+      .then(function (manifest) {
+        return setAnalysisContextSpatialArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (!options.deferCompute) scheduleAnalysisCompute("context point-neighborhood evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisContextSpatialPromise = null;
+        runtime.analysisContextSpatialWorkerReady = false;
+        runtime.analysisContextSpatialRequested = false;
+        console.error("[analysis context spatial]", error);
+        throw error;
+      });
+    return runtime.analysisContextSpatialPromise;
+  }
+
+  function analysisContextEvidenceArtifactsReady() {
+    return Boolean(
+      runtime.analysisSpatialWorkerReady ||
+      (runtime.analysisRelationshipWorkerReady && runtime.analysisContextSpatialWorkerReady)
+    );
+  }
+
+  function analysisResultHasContextEvidence(resultValue) {
+    const result = resultValue && typeof resultValue === "object" ? resultValue : {};
+    const spatial = result.spatialEvidence && typeof result.spatialEvidence === "object"
+      ? result.spatialEvidence
+      : (result.spatial && typeof result.spatial === "object" ? result.spatial : {});
+    const status = String(spatial.status || "").trim().toLowerCase();
+    const associations = spatial.contextAssociations && typeof spatial.contextAssociations === "object"
+      ? spatial.contextAssociations
+      : spatial.context_associations;
+    const relationships = spatial.relationshipSummary && typeof spatial.relationshipSummary === "object"
+      ? spatial.relationshipSummary
+      : spatial.relationship_summary;
+    return status.indexOf("context_evidence_ready") !== -1
+      || Boolean(associations && Array.isArray(associations.lanes))
+      || Boolean(relationships && Array.isArray(relationships.cells));
+  }
+
+  function setAnalysisContextEvidenceSectionState(stateValue, messageValue) {
+    if (!runtime.analysisViewController || typeof runtime.analysisViewController.setSectionState !== "function") return;
+    runtime.analysisViewController.setSectionState("context", stateValue, messageValue);
+  }
+
+  function ensureAnalysisContextEvidence() {
+    runtime.analysisContextEvidenceRequested = true;
+    if (analysisContextEvidenceArtifactsReady()) {
+      runtime.analysisContextEvidenceWorkerReady = true;
+      runtime.analysisContextEvidenceError = "";
+      if (analysisResultHasContextEvidence(runtime.analysisLastResult) && !runtime.analysisContextEvidenceRenderPending) {
+        setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+      } else {
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");
+        scheduleAnalysisCompute("context evidence render pending", { immediate: true });
+      }
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisContextEvidencePromise) return runtime.analysisContextEvidencePromise;
+    setAnalysisContextEvidenceSectionState("loading", "Loading relationship and point-neighborhood evidence...");
+    runtime.analysisContextEvidencePromise = Promise.all([
+      ensureAnalysisRelationshipArtifact({ deferCompute: true }),
+      ensureAnalysisContextSpatialArtifact({ deferCompute: true }),
+    ]).then(function (values) {
+      if (!analysisContextEvidenceArtifactsReady()) {
+        throw new Error("Context evidence setup completed without both required worker artifacts.");
+      }
+      runtime.analysisContextEvidenceWorkerReady = true;
+      runtime.analysisContextEvidenceError = "";
+      runtime.analysisCache.clear();
+      setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");
+      if (!runtime.analysisSpatialRequested) {
+        scheduleAnalysisCompute("context evidence ready", { immediate: true });
+      }
+      return values[0] || values[1] || null;
+    }).catch(function (error) {
+      // A concurrent full Spatial load supersedes these narrow worker requests.
+      // In that case Spatial owns the recomputation and already contains both
+      // Context artifacts, so this narrow loader should converge to ready.
+      if (analysisContextEvidenceArtifactsReady()) {
+        runtime.analysisContextEvidenceWorkerReady = true;
+        runtime.analysisContextEvidenceError = "";
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded from Spatial Evidence; updating the selected date and filters...");
+        return runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+      }
+      runtime.analysisContextEvidencePromise = null;
+      runtime.analysisContextEvidenceWorkerReady = false;
+      runtime.analysisContextEvidenceRequested = false;
+      runtime.analysisContextEvidenceError = error && error.message ? error.message : String(error);
+      runtime.analysisContextEvidenceRenderPending = false;
+      setAnalysisContextEvidenceSectionState("error", runtime.analysisContextEvidenceError + " Select Context or Retry to try again.");
+      console.error("[analysis context evidence]", error);
+      throw error;
+    });
+    return runtime.analysisContextEvidencePromise;
+  }
+
   function ensureAnalysisSpatialArtifacts() {
     runtime.analysisSpatialRequested = true;
     if (runtime.analysisSpatialWorkerReady) return Promise.resolve(runtime.analysisSpatialManifest);
@@ -8916,17 +9385,27 @@
     if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
       runtime.analysisViewController.setSectionState("spatial", "loading", "Loading spatial evidence artifacts...");
     }
-    runtime.analysisSpatialPromise = fetch(manifestUrl, { cache: "force-cache" })
-      .then(function (response) {
-        if (!response.ok) throw new Error("Analysis v2 manifest request failed (" + response.status + ").");
-        return response.json();
-      })
+    const contextPartialSetups = [
+      runtime.analysisRelationshipPromise,
+      runtime.analysisContextSpatialPromise,
+    ].filter(Boolean);
+    const contextPartialSetupsSettled = Promise.all(contextPartialSetups.map(function (promise) {
+      return Promise.resolve(promise).catch(function () { return null; });
+    }));
+    runtime.analysisSpatialPromise = Promise.all([
+      ensureAnalysisV2Manifest(manifestUrl),
+      contextPartialSetupsSettled,
+    ])
+      .then(function (values) { return values[0]; })
       .then(function (manifest) {
         runtime.analysisSpatialManifest = manifest;
         return setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl).then(function () { return manifest; });
       })
       .then(function (manifest) {
         runtime.analysisCache.clear();
+        runtime.analysisContextEvidenceWorkerReady = true;
+        runtime.analysisContextEvidenceError = "";
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded from Spatial Evidence; updating the selected date and filters...");
         if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
           runtime.analysisViewController.setSectionState("spatial", "ready", "Spatial evidence artifacts ready.");
         }
@@ -8940,6 +9419,13 @@
         const message = error && error.message ? error.message : String(error);
         if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
           runtime.analysisViewController.setSectionState("spatial", "error", message);
+        }
+        if (analysisContextEvidenceArtifactsReady()) {
+          runtime.analysisContextEvidenceWorkerReady = true;
+          runtime.analysisContextEvidenceError = "";
+          runtime.analysisCache.clear();
+          setAnalysisContextEvidenceSectionState("loading", "Context evidence remains available; updating the selected date and filters...");
+          scheduleAnalysisCompute("context evidence ready after spatial setup failure", { immediate: true });
         }
         console.error("[analysis spatial]", error);
         throw error;
@@ -8965,7 +9451,13 @@
         : analysisContextReleaseHashes(runtime.analysisContextManifest),
       spatialRequested: Boolean(runtime.analysisSpatialRequested),
       spatialReady: Boolean(runtime.analysisSpatialWorkerReady),
-      artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+      geographyRequested: Boolean(runtime.analysisGeographyRequested),
+      geographyReady: Boolean(runtime.analysisGeographyWorkerReady),
+      relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
+      relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
+      contextSpatialRequested: Boolean(runtime.analysisContextSpatialRequested),
+      contextSpatialReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
+      artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
       datasetHash: analysisCatalogDatasetHash(),
     });
   }
@@ -9023,7 +9515,7 @@
         } else {
           reject(new Error("Analysis computation timed out."));
         }
-      }, options.quickMode ? 8000 : (runtime.analysisSpatialRequested ? 30000 : 15000));
+      }, options.quickMode ? 8000 : ((runtime.analysisSpatialRequested || runtime.analysisContextSpatialRequested) ? 30000 : 15000));
       function finish() {
         window.clearTimeout(timeoutId);
         worker.removeEventListener("message", onMessage);
@@ -9069,8 +9561,8 @@
         baselineMode: snapshot.baselineMode,
         datasetHash: analysisCatalogDatasetHash(),
         contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
-        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.0.0",
+        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.2.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -9121,7 +9613,8 @@
     const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
     runtime.analysisPerformanceSamples.push({
       generation: message.filterGeneration,
-      baselineMode: message.baselineMode,
+      baselineMode: String(result.baseline && result.baseline.mode || message.baselineMode),
+      requestedBaselineMode: message.baselineMode,
       durationMs: durationMs,
       cacheHit: Boolean(message.cacheHit),
       analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
@@ -9129,14 +9622,26 @@
       recordedAt: Date.now(),
     });
     if (runtime.analysisPerformanceSamples.length > 50) runtime.analysisPerformanceSamples.shift();
+    if (analysisContextEvidenceArtifactsReady() && analysisResultHasContextEvidence(result)) {
+      runtime.analysisContextEvidenceRenderPending = true;
+      setAnalysisContextEvidenceSectionState("loading", "Context evidence computed; rendering the selected Context view...");
+    }
     runtime.analysisViewController.renderAnalysisResult(result, {
-      baselineMode: message.baselineMode,
+      baselineMode: String(result.baseline && result.baseline.mode || message.baselineMode),
       datasetHash: message.datasetHash,
       estimatorVersion: message.estimatorVersion,
-      artifactHashes: message.artifactHashes || analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+      artifactHashes: Object.assign(
+        {},
+        analysisContextReleaseHashes(runtime.analysisContextManifest),
+        analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        result.artifactHashes || {},
+        message.artifactHashes || {}
+      ),
       filterSnapshot: getAnalysisFilterSnapshot(),
       durationMs: durationMs,
       analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
+      analysisMode: String(message.analysisMode || result.analysisMode || "cohort_comparison"),
+      comparisonState: String(message.comparisonState || result.comparisonState || result.baseline && result.baseline.comparisonState || "inferential"),
     });
     runtime.analysisViewController.setAnalysisState(
       result.summary && Number(result.summary.activeCount) === 0 ? "empty" : "ready",
@@ -9167,11 +9672,18 @@
       runtime.analysisPendingRequest = null;
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
-        baselineMode: snapshot.baselineMode,
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.0.0",
-        artifactHashes: analysisV2ArtifactHashes(runtime.analysisSpatialManifest),
+        baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.2.0",
+        artifactHashes: Object.assign(
+          {},
+          analysisContextReleaseHashes(runtime.analysisContextManifest),
+          analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+          cached.artifactHashes || {}
+        ),
         filterSnapshot: snapshot,
         cacheHit: true,
+        analysisMode: String(cached.analysisMode || "cohort_comparison"),
+        comparisonState: String(cached.comparisonState || cached.baseline && cached.baseline.comparisonState || "inferential"),
       });
       runtime.analysisViewController.setAnalysisState(
         cached.summary && Number(cached.summary.activeCount) === 0 ? "empty" : "ready",
@@ -9282,6 +9794,7 @@
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
       timeRangeEndOrdinal: state.timeRangeEndOrdinal,
       lowPrecisionValues: Array.from(LOW_PRECISION_VALUES),
+      selectedAreaCountry: state.analysisCountryAreaFilter || "",
       generation: Number.isFinite(Number(generation)) ? Number(generation) : state.filterGeneration,
     };
   }
@@ -15390,6 +15903,18 @@
     );
   }
 
+  function analysisCountryAreaFilterLabel() {
+    return String(state.analysisCountryAreaFilter || "").trim();
+  }
+
+  function analysisCountryAreaFilterActive() {
+    return Boolean(analysisCountryAreaFilterLabel());
+  }
+
+  function areaFilterHasActiveSelection() {
+    return regionSelectionHasActiveShapes() || analysisCountryAreaFilterActive();
+  }
+
   function regionSelectionModeActive() {
     return regionSelectionDrawingActive();
   }
@@ -15407,7 +15932,7 @@
   }
 
   function regionSelectionAffectsRendering() {
-    return regionSelectionHasActiveShapes();
+    return areaFilterHasActiveSelection();
   }
 
   function nextRegionSelectionShapeId() {
@@ -15603,6 +16128,59 @@
       visibleEventCount: state.filteredCatalog.length,
       visibleTraceCount: 0,
       emptyMessage: "",
+    };
+  }
+
+  function countryAreaFilterResult() {
+    const countryLabel = analysisCountryAreaFilterLabel();
+    const visibleCatalog = Array.isArray(state.filteredCatalog) ? state.filteredCatalog : [];
+    const visibleMappedCatalog = Array.isArray(state.filteredMappedCatalog) ? state.filteredMappedCatalog : [];
+    const visibleEventCount = visibleCatalog.length;
+    const visibleMappedCount = visibleMappedCatalog.length;
+    updateRegionSelectionMetrics({
+      active: true,
+      reason: "worker-filtered country report points only",
+      shapeCount: 0,
+      eventPointsAvailable: visibleMappedCount,
+      eventPointsBroadPhaseRejected: 0,
+      eventPointsExactTested: visibleMappedCount,
+      traceSegmentsAvailable: 0,
+      traceSegmentsBroadPhaseRejected: 0,
+      traceSegmentsExactTested: 0,
+      associatedTraceIndexEntries: 0,
+      selectedTraceCount: 0,
+      selectedEventCount: visibleMappedCount,
+      visibleTraceCount: 0,
+      visibleEventCount: visibleEventCount,
+      needsTraceSegments: false,
+      chronologyIndexUsed: false,
+      country: countryLabel,
+    });
+    return {
+      active: true,
+      areaKind: "country",
+      country: countryLabel,
+      shapeCount: 0,
+      selectedEventIds: new Set(),
+      selectedTraceIds: new Set(),
+      visibleEventIds: new Set(),
+      visibleTraceIds: new Set(),
+      visibleCatalog: visibleCatalog,
+      visibleMappedCatalog: visibleMappedCatalog,
+      traceSegments: [],
+      visibleTraceSegments: [],
+      neighborhoodSegments: [],
+      neighborhoodEventIds: new Set(),
+      neighborhood: null,
+      selectedEventCount: visibleMappedCount,
+      selectedTraceCount: 0,
+      visibleEventCount: visibleEventCount,
+      visibleTraceCount: 0,
+      pointOnly: true,
+      chronologyIndexUsed: false,
+      emptyMessage: visibleEventCount
+        ? ""
+        : "No reports match the active Country Area Filter and shared filters.",
     };
   }
 
@@ -18208,8 +18786,28 @@
   }
 
   function currentRegionSelectionResult() {
-    if (!regionSelectionHasActiveShapes()) {
+    if (!areaFilterHasActiveSelection()) {
       return emptyRegionSelectionResult();
+    }
+
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      const countryCacheKey = [
+        "country",
+        analysisCountryAreaFilterLabel(),
+        state.timelineDataVersion,
+        state.filterGeneration,
+        catalogEventIdIdentityKey(state.filteredCatalog),
+        catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      ].join("|");
+      if (runtime.regionSelectionResultCacheKey === countryCacheKey && runtime.regionSelectionResultCacheValue) {
+        runtime.regionSelectionResultCacheHits += 1;
+        return runtime.regionSelectionResultCacheValue;
+      }
+      runtime.regionSelectionResultCacheMisses += 1;
+      const countryResult = countryAreaFilterResult();
+      runtime.regionSelectionResultCacheKey = countryCacheKey;
+      runtime.regionSelectionResultCacheValue = countryResult;
+      return countryResult;
     }
 
     const cacheKey = [
@@ -18237,6 +18835,7 @@
   }
 
   function traceLinkedVisibilityAffectsRendering() {
+    if (areaFilterHasActiveSelection() && state.regionSelection.pointOnly) return false;
     if (!traceModeIncludesStatic()) return false;
     // Facility proximity classifies traces and facility markers only. Sighting
     // hotspots and result rows must continue to use the normal filtered catalog.
@@ -19155,12 +19754,21 @@
     if (!regionSelectionAffectsRendering()) {
       return true;
     }
+    // Country assignment is already applied atomically by the worker-owned
+    // catalog filter, so every event reaching this renderer is in-country.
+    // Avoid materializing a second browser-sized event-id set.
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      return true;
+    }
     return currentRegionSelectionResult().visibleEventIds.has(String(eventId));
   }
 
   function traceVisibleUnderRegionSelection(traceId) {
     if (!regionSelectionAffectsRendering()) {
       return true;
+    }
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      return false;
     }
     return currentRegionSelectionResult().visibleTraceIds.has(String(traceId));
   }
@@ -19829,8 +20437,10 @@
     return [
       els.startDateInput,
       els.timelineStartDateInput,
+      els.analysisStartDateInput,
       els.endDateInput,
       els.timelineEndDateInput,
+      els.analysisEndDateInput,
     ].filter(Boolean);
   }
 
@@ -19838,14 +20448,16 @@
     return [
       els.startDatePicker,
       els.timelineStartDatePicker,
+      els.analysisStartDatePicker,
       els.endDatePicker,
       els.timelineEndDatePicker,
+      els.analysisEndDatePicker,
     ].filter(Boolean);
   }
 
   function setDateRangeFeedback(message) {
     const text = String(message || "");
-    [els.filterDateFeedback, els.timelineDateFeedback].forEach(function (feedback) {
+    [els.filterDateFeedback, els.timelineDateFeedback, els.analysisDateFeedback].forEach(function (feedback) {
       if (!feedback) return;
       feedback.textContent = text;
       feedback.hidden = !text;
@@ -19860,6 +20472,95 @@
     });
   }
 
+  function setAnalysisDateRangeFeedback(message) {
+    const text = String(message || "");
+    if (els.analysisDateFeedback) {
+      els.analysisDateFeedback.textContent = text;
+      els.analysisDateFeedback.hidden = !text;
+    }
+    [els.analysisStartDateInput, els.analysisEndDateInput].forEach(function (input) {
+      if (!input) return;
+      if (text) {
+        input.setAttribute("aria-invalid", "true");
+      } else {
+        input.removeAttribute("aria-invalid");
+      }
+    });
+  }
+
+  function analysisDateRangeUsesPopover() {
+    if (!runtime.analysisDateMediaQuery && typeof window.matchMedia === "function") {
+      runtime.analysisDateMediaQuery = window.matchMedia("(max-width: 760px)");
+    }
+    return Boolean(runtime.analysisDateMediaQuery && runtime.analysisDateMediaQuery.matches);
+  }
+
+  function analysisModeLabelForState() {
+    if (state.timeRangeMode === "full") return "Internal structure";
+    if (state.analysisBaselineMode === "full_catalog") return "Descriptive overlap";
+    if (state.analysisBaselineMode === "previous_equal_duration") return "Prior-period comparison";
+    return "Balanced comparison";
+  }
+
+  function syncAnalysisDateRangeSummary(startValue, endValue) {
+    const startText = String(startValue == null
+      ? (state.timeRangeStartOrdinal == null ? "" : ordinalToIso(state.timeRangeStartOrdinal))
+      : startValue);
+    const endText = String(endValue == null
+      ? (state.timeRangeEndOrdinal == null ? "" : ordinalToIso(state.timeRangeEndOrdinal))
+      : endValue);
+    const fullRange = state.timeRangeMode === "full";
+    const rangeLabel = fullRange
+      ? "All time"
+      : (startText && endText ? startText + " – " + endText : "Choose dates");
+    const modeLabel = analysisModeLabelForState();
+    if (els.analysisDateRangeChipLabel) els.analysisDateRangeChipLabel.textContent = rangeLabel;
+    if (els.analysisDateRangeChipMode) els.analysisDateRangeChipMode.textContent = modeLabel;
+    if (els.analysisModeLabel) els.analysisModeLabel.textContent = modeLabel;
+    if (els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.setAttribute(
+        "aria-label",
+        "Analysis date range: " + rangeLabel + ". Mode: " + modeLabel + "."
+      );
+    }
+  }
+
+  function syncAnalysisDatePopoverState() {
+    if (!els.analysisDatePopover || !els.analysisDateRangeChip) return;
+    const mobile = analysisDateRangeUsesPopover();
+    const expanded = !mobile || runtime.analysisDatePopoverOpen;
+    els.analysisDateRangeChip.setAttribute("aria-expanded", expanded ? "true" : "false");
+    els.analysisDatePopover.hidden = !expanded;
+    els.analysisDatePopover.inert = !expanded;
+    els.analysisDatePopover.setAttribute("aria-hidden", expanded ? "false" : "true");
+    els.analysisDatePopover.classList.toggle("is-mobile-open", mobile && expanded);
+  }
+
+  function setAnalysisDatePopoverOpen(open, options) {
+    runtime.analysisDatePopoverOpen = Boolean(open);
+    syncAnalysisDatePopoverState();
+    if (options && options.restoreFocus && els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.focus({ preventScroll: true });
+    }
+  }
+
+  function initializeAnalysisDateRangeControls() {
+    analysisDateRangeUsesPopover();
+    syncAnalysisDatePopoverState();
+    syncAnalysisDateRangeSummary();
+    const mediaQuery = runtime.analysisDateMediaQuery;
+    if (!mediaQuery) return;
+    const handleViewportChange = function () {
+      if (!mediaQuery.matches) runtime.analysisDatePopoverOpen = false;
+      syncAnalysisDatePopoverState();
+    };
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleViewportChange);
+    } else if (typeof mediaQuery.addListener === "function") {
+      mediaQuery.addListener(handleViewportChange);
+    }
+  }
+
   function nativePickerValueForIso(value) {
     const normalized = String(value || "");
     return /^(?!0000)\d{4}-\d{2}-\d{2}$/.test(normalized) ? normalized : "";
@@ -19868,16 +20569,20 @@
   function syncNativeDatePickers(startValue, endValue) {
     const startNative = nativePickerValueForIso(startValue);
     const endNative = nativePickerValueForIso(endValue);
-    [els.startDatePicker, els.timelineStartDatePicker].forEach(function (picker) {
+    [els.startDatePicker, els.timelineStartDatePicker, els.analysisStartDatePicker].forEach(function (picker) {
       if (picker) picker.value = startNative;
     });
-    [els.endDatePicker, els.timelineEndDatePicker].forEach(function (picker) {
+    [els.endDatePicker, els.timelineEndDatePicker, els.analysisEndDatePicker].forEach(function (picker) {
       if (picker) picker.value = endNative;
     });
   }
 
   function isDateInputElement(element) {
     return dateInputElements().indexOf(element) !== -1;
+  }
+
+  function isAnalysisDateInputElement(element) {
+    return element === els.analysisStartDateInput || element === els.analysisEndDateInput;
   }
 
   function markDateInputPending(input) {
@@ -19910,7 +20615,10 @@
     setDateInputValueFromState(els.endDateInput, endValue);
     setDateInputValueFromState(els.timelineStartDateInput, startValue);
     setDateInputValueFromState(els.timelineEndDateInput, endValue);
+    setDateInputValueFromState(els.analysisStartDateInput, startValue);
+    setDateInputValueFromState(els.analysisEndDateInput, endValue);
     syncNativeDatePickers(startValue, endValue);
+    syncAnalysisDateRangeSummary(startValue, endValue);
   }
 
   function applyStartupPreviewTimeRangeInputs() {
@@ -20020,8 +20728,8 @@
 
   function mirrorDateFieldValue(group, value, sourceElement) {
     const inputs = group === "start"
-      ? [els.startDateInput, els.timelineStartDateInput]
-      : [els.endDateInput, els.timelineEndDateInput];
+      ? [els.startDateInput, els.timelineStartDateInput, els.analysisStartDateInput]
+      : [els.endDateInput, els.timelineEndDateInput, els.analysisEndDateInput];
 
     for (const input of inputs) {
       if (input !== sourceElement) {
@@ -20036,27 +20744,66 @@
     mirrorDateFieldValue(group, input.value, input);
   }
 
-  function commitDateInputs() {
-    window.clearTimeout(runtime.timeInputTimerId);
-    runtime.timeInputTimerId = null;
-    const startIso = normalizeDateBoundary(els.startDateInput.value, "start");
-    const endIso = normalizeDateBoundary(els.endDateInput.value, "end");
+  function validateDateRangeCandidate(startValue, endValue) {
+    const startIso = normalizeDateBoundary(startValue, "start");
+    const endIso = normalizeDateBoundary(endValue, "end");
     if (!startIso || !endIso) {
-      setDateRangeFeedback("Use YYYY, YYYY-MM, or a valid YYYY-MM-DD date.");
-      return false;
+      return {
+        valid: false,
+        message: "Use YYYY, YYYY-MM, or a valid YYYY-MM-DD date.",
+      };
     }
     const startOrdinal = isoToOrdinal(startIso);
     const endOrdinal = isoToOrdinal(endIso);
     if (startOrdinal > endOrdinal) {
-      setDateRangeFeedback("Start date must be on or before End date. The last valid range is still active.");
+      return {
+        valid: false,
+        message: "Start date must be on or before End date. The last valid range is still active.",
+      };
+    }
+    return {
+      valid: true,
+      startIso: startIso,
+      endIso: endIso,
+      startOrdinal: startOrdinal,
+      endOrdinal: endOrdinal,
+      message: "",
+    };
+  }
+
+  function commitDateInputs(options) {
+    window.clearTimeout(runtime.timeInputTimerId);
+    runtime.timeInputTimerId = null;
+    const candidate = validateDateRangeCandidate(
+      options && Object.prototype.hasOwnProperty.call(options, "startValue")
+        ? options.startValue
+        : els.startDateInput.value,
+      options && Object.prototype.hasOwnProperty.call(options, "endValue")
+        ? options.endValue
+        : els.endDateInput.value
+    );
+    if (!candidate.valid) {
+      if (options && options.feedbackScope === "analysis") {
+        setAnalysisDateRangeFeedback(candidate.message);
+      } else {
+        setDateRangeFeedback(candidate.message);
+      }
       return false;
     }
     setDateRangeFeedback("");
     clearPendingDateInputEdits();
     invalidatePlaybackForTimeChange();
-    setTimeRange(startOrdinal, endOrdinal, { mode: "custom", autofitVisible: false });
+    setTimeRange(candidate.startOrdinal, candidate.endOrdinal, { mode: "custom", autofitVisible: false });
     scheduleCurrentTimeRangeState();
     return true;
+  }
+
+  function commitAnalysisDateInputs() {
+    return commitDateInputs({
+      startValue: els.analysisStartDateInput ? els.analysisStartDateInput.value : els.startDateInput.value,
+      endValue: els.analysisEndDateInput ? els.analysisEndDateInput.value : els.endDateInput.value,
+      feedbackScope: "analysis",
+    });
   }
 
   function getCurrentKeyword() {
@@ -21018,7 +21765,10 @@
       let emptyMessage = traceVisibilityPending
         ? "Refining exact trace-linked sightings. Results will appear automatically while the map remains usable."
         : "No matching events are currently visible. Adjust the time window or filters to repopulate the result set.";
-      if (regionSelectionAffectsRendering() && regionSelectionHasActiveShapes()) {
+      if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+        emptyMessage = "No reports match the active Country Area Filter for " +
+          analysisCountryAreaFilterLabel() + ". Adjust the shared filters or clear the Area Filter.";
+      } else if (regionSelectionAffectsRendering() && regionSelectionHasActiveShapes()) {
         const regionResult = currentRegionSelectionResult();
         emptyMessage = regionResult.visibleTraceCount > 0
           ? "No sightings are currently visible for the active area filter. Adjust the display toggles or drawn regions."
@@ -23308,6 +24058,11 @@
     }
     setChronologicalNeighborhoodPaneInteractive(true);
     const result = currentRegionSelectionResult();
+    if (result.pointOnly) {
+      setChronologicalNeighborhoodPaneInteractive(false);
+      closeChronologicalNeighborhoodInspector();
+      return;
+    }
     const segments = result.visibleTraceSegments || [];
     const endpointIds = new Set();
     const densityProfile = normalTraceDensityProfile(Math.max(1, segments.length));
@@ -26255,19 +27010,34 @@
     [
       [els.startDateInput, "start"],
       [els.timelineStartDateInput, "start"],
+      [els.analysisStartDateInput, "start"],
       [els.endDateInput, "end"],
       [els.timelineEndDateInput, "end"],
+      [els.analysisEndDateInput, "end"],
     ].forEach(function (entry) {
       const input = entry[0];
       const group = entry[1];
       if (!input) return;
       input.addEventListener("input", function () {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          setAnalysisDateRangeFeedback("");
+          return;
+        }
         handleDateInputEdit(input, group);
       });
       input.addEventListener("change", function () {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          return;
+        }
         handleDateInputEdit(input, group);
       });
       input.addEventListener("blur", function (event) {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          return;
+        }
         handleDateInputEdit(input, group);
         if (isDateInputElement(event.relatedTarget)) return;
         commitDateInputs();
@@ -26275,6 +27045,11 @@
       input.addEventListener("keydown", function (event) {
         if (event.key !== "Enter") return;
         event.preventDefault();
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          commitAnalysisDateInputs();
+          return;
+        }
         handleDateInputEdit(input, group);
         commitDateInputs();
       });
@@ -26301,9 +27076,19 @@
       picker.addEventListener("change", function () {
         if (!picker.value) return;
         const group = picker.getAttribute("data-date-group") === "end" ? "end" : "start";
+        const analysisPicker = picker === els.analysisStartDatePicker || picker === els.analysisEndDatePicker;
+        if (analysisPicker) {
+          const analysisInput = group === "start" ? els.analysisStartDateInput : els.analysisEndDateInput;
+          if (analysisInput) {
+            analysisInput.value = picker.value;
+            markDateInputPending(analysisInput);
+          }
+          commitAnalysisDateInputs();
+          return;
+        }
         const inputs = group === "start"
-          ? [els.startDateInput, els.timelineStartDateInput]
-          : [els.endDateInput, els.timelineEndDateInput];
+          ? [els.startDateInput, els.timelineStartDateInput, els.analysisStartDateInput]
+          : [els.endDateInput, els.timelineEndDateInput, els.analysisEndDateInput];
         clearPendingDateInputEdits();
         inputs.forEach(function (input) {
           if (!input) return;
@@ -26313,6 +27098,47 @@
         commitDateInputs();
       });
     });
+
+    if (els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.addEventListener("click", function () {
+        if (!analysisDateRangeUsesPopover()) return;
+        setAnalysisDatePopoverOpen(!runtime.analysisDatePopoverOpen);
+        if (runtime.analysisDatePopoverOpen && els.analysisStartDateInput) {
+          window.setTimeout(function () { els.analysisStartDateInput.focus({ preventScroll: true }); }, 0);
+        }
+      });
+    }
+
+    if (els.analysisDatePopover) {
+      els.analysisDatePopover.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !analysisDateRangeUsesPopover()) return;
+        event.preventDefault();
+        setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+      });
+    }
+
+    document.addEventListener("pointerdown", function (event) {
+      if (!runtime.analysisDatePopoverOpen || !analysisDateRangeUsesPopover()) return;
+      if (els.analysisWorkspaceToolbar && els.analysisWorkspaceToolbar.contains(event.target)) return;
+      setAnalysisDatePopoverOpen(false);
+    });
+
+    if (els.analysisApplyDateButton) {
+      els.analysisApplyDateButton.addEventListener("click", function () {
+        if (commitAnalysisDateInputs() && analysisDateRangeUsesPopover()) {
+          setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+        }
+      });
+    }
+
+    if (els.analysisAllTimeButton) {
+      els.analysisAllTimeButton.addEventListener("click", function () {
+        applyFullTimeRange();
+        if (analysisDateRangeUsesPopover()) {
+          setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+        }
+      });
+    }
 
     els.basemapMode.addEventListener("change", function () {
       setBasemap(els.basemapMode.value);
@@ -28315,6 +29141,7 @@
     bindMapControlClusterResizing();
     initializeMapSurfaceHeightResize();
     initializeAnalysisView();
+    initializeAnalysisDateRangeControls();
     document.documentElement.classList.remove("app-initializing");
     renderStartupDiagnostics();
 
@@ -28434,6 +29261,8 @@
         fontScaleMode: state.fontScaleMode,
         userGuideCollapsed: state.userGuideCollapsed,
         areaSelection: {
+          active: areaFilterHasActiveSelection(),
+          country: analysisCountryAreaFilterLabel() || null,
           panelOpen: regionSelectionPanelOpen(),
           drawingActive: regionSelectionDrawingActive(),
           modeActive: regionSelectionModeActive(),
@@ -28578,6 +29407,15 @@
           pendingRequest: runtime.analysisPendingRequest,
           lastError: runtime.analysisLastError,
           computationPhase: runtime.analysisComputationPhase,
+          contextEvidence: {
+            requested: Boolean(runtime.analysisContextEvidenceRequested),
+            ready: analysisContextEvidenceArtifactsReady(),
+            relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
+            relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
+            neighborhoodRequested: Boolean(runtime.analysisContextSpatialRequested),
+            neighborhoodReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
+            error: runtime.analysisContextEvidenceError || "",
+          },
           performanceSamples: runtime.analysisPerformanceSamples.slice(),
         },
         browserPerformanceProfile: runtime.browserPerformanceProfile,
@@ -28606,7 +29444,11 @@
         activeGeneration: runtime.activeFilterGeneration,
         filteredEventIds: state.filteredCatalog.map(function (event) { return String(event.event_id); }).sort(),
         filteredMappedEventIds: state.filteredMappedCatalog.map(function (event) { return String(event.event_id); }).sort(),
-        visibleEventIds: Array.from(regionResult.visibleEventIds || []).map(String).sort(),
+        visibleEventIds: (
+          analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()
+            ? state.filteredCatalog.map(function (event) { return String(event.event_id); })
+            : Array.from(regionResult.visibleEventIds || []).map(String)
+        ).sort(),
         visibleMappedEventIds: (regionResult.visibleMappedCatalog || []).map(function (event) { return String(event.event_id); }).sort(),
         resultEventIds: currentVisibleResultsCatalog().map(function (event) { return String(event.event_id); }).sort(),
         visibleTraceIds: Array.from(regionResult.visibleTraceIds || []).map(String).sort(),

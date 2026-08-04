@@ -5,6 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-03-analysis-visual-evidence-dashboard-v2-2-r4";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -29,15 +30,32 @@
   let analysisSpatialArtifacts = {
     manifest: null,
     neighbors: null,
+    spatialPoints: null,
+    configurationPoints: null,
+    configurationNeighbors: null,
+    contextNeighbors: null,
     facilities: null,
+    relationshipRows: null,
     relationships: null,
+    codebooks: {},
     loaded: false,
     artifactHashes: {},
+  };
+  let analysisGeographyArtifact = {
+    manifest: null,
+    rows: null,
+    codes: {},
+    loaded: false,
+    appliedRows: 0,
+    artifactHash: "",
   };
   let analysisSpatialExecutor = null;
   let analysisSpatialExecutorEpoch = 0;
   let analysisSpatialPending = null;
   let analysisSpatialCancellationGeneration = 0;
+  let analysisSpatialArtifactLoadEpoch = 0;
+  let analysisPartialArtifactLoadEpoch = { relationship: 0, context: 0 };
+  let analysisFullSpatialLoadsInFlight = 0;
 
   const SPATIAL_SOURCE_COORDINATE_CLASSES = new Set([
     "source_coordinates", "source-provided", "source_provided",
@@ -70,6 +88,11 @@
       coordinateSource: createDictionary(),
       country: createDictionary(),
       adminRegion: createDictionary(),
+      analysisCountry: createDictionary(),
+      analysisMacroregion: createDictionary(),
+      geographyAssignmentSource: createDictionary(),
+      geographyAssignmentConfidence: createDictionary(),
+      geographyBoundaryStatus: createDictionary(),
       duplicateLineage: createDictionary(),
     };
   }
@@ -77,7 +100,7 @@
   function ensureAnalysisStats() {
     if (analysisStatsApi && typeof analysisStatsApi.computeAnalysis === "function") return analysisStatsApi;
     if (typeof importScripts === "function") {
-      importScripts("./analysis_stats.js");
+      importScripts("./analysis_stats.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
       analysisStatsApi = self.UfoAnalysisStats || null;
     }
     if (!analysisStatsApi || typeof analysisStatsApi.computeAnalysis !== "function") {
@@ -89,7 +112,7 @@
   function ensureAnalysisSpatial() {
     if (analysisSpatialApi && typeof analysisSpatialApi.computeSpatialAnalysis === "function") return analysisSpatialApi;
     if (typeof importScripts === "function") {
-      importScripts("./analysis_spatial.js");
+      importScripts("./analysis_spatial.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
       analysisSpatialApi = self.UfoAnalysisSpatial || null;
     }
     if (!analysisSpatialApi || typeof analysisSpatialApi.computeSpatialAnalysis !== "function") {
@@ -196,6 +219,11 @@
       analysisCoordinateClasses: new Uint8Array(length),
       analysisGridKeyCodes: new Uint16Array(length),
       analysisCoordinatePileKeyCodes: new Uint32Array(length),
+      analysisCountryCodes: new Uint16Array(length),
+      analysisMacroregionCodes: new Uint16Array(length),
+      analysisGeographyAssignmentSourceCodes: new Uint16Array(length),
+      analysisGeographyAssignmentConfidenceCodes: new Uint16Array(length),
+      analysisGeographyBoundaryStatusCodes: new Uint16Array(length),
     };
 
     for (let index = 0; index < length; index += 1) {
@@ -287,6 +315,12 @@
       chunk.analysisCoordinateClasses.byteLength +
       chunk.analysisGridKeyCodes.byteLength +
       chunk.analysisCoordinatePileKeyCodes.byteLength;
+    typedStorageBytes +=
+      chunk.analysisCountryCodes.byteLength +
+      chunk.analysisMacroregionCodes.byteLength +
+      chunk.analysisGeographyAssignmentSourceCodes.byteLength +
+      chunk.analysisGeographyAssignmentConfidenceCodes.byteLength +
+      chunk.analysisGeographyBoundaryStatusCodes.byteLength;
     return chunk;
   }
 
@@ -421,8 +455,30 @@
     values.precision = dictionaryValue(dictionaries.precision, chunk.precisionCodes[index]);
     values.datePrecision = dictionaryValue(dictionaries.datePrecision, chunk.datePrecisionCodes[index]);
     values.coordinateSource = dictionaryValue(dictionaries.coordinateSource, chunk.coordinateSourceCodes[index]);
-    values.country = dictionaryValue(dictionaries.country, chunk.countryCodes[index]) || "unknown";
+    values.country = dictionaryValue(
+      dictionaries.analysisCountry,
+      chunk.analysisCountryCodes && chunk.analysisCountryCodes[index]
+        ? chunk.analysisCountryCodes[index]
+        : chunk.countryCodes[index]
+    ) || dictionaryValue(dictionaries.country, chunk.countryCodes[index]) || "unknown";
     values.adminRegion = dictionaryValue(dictionaries.adminRegion, chunk.adminRegionCodes[index]) || "unknown";
+    values.analysisCountry = values.country;
+    values.analysisMacroregion = dictionaryValue(
+      dictionaries.analysisMacroregion,
+      chunk.analysisMacroregionCodes && chunk.analysisMacroregionCodes[index]
+    ) || "unknown";
+    values.analysisGeographyAssignmentSource = dictionaryValue(
+      dictionaries.geographyAssignmentSource,
+      chunk.analysisGeographyAssignmentSourceCodes && chunk.analysisGeographyAssignmentSourceCodes[index]
+    ) || "unavailable";
+    values.analysisGeographyAssignmentConfidence = dictionaryValue(
+      dictionaries.geographyAssignmentConfidence,
+      chunk.analysisGeographyAssignmentConfidenceCodes && chunk.analysisGeographyAssignmentConfidenceCodes[index]
+    ) || "unavailable";
+    values.analysisGeographyBoundaryStatus = dictionaryValue(
+      dictionaries.geographyBoundaryStatus,
+      chunk.analysisGeographyBoundaryStatusCodes && chunk.analysisGeographyBoundaryStatusCodes[index]
+    ) || "unavailable";
     values.duplicateLineage = dictionaryValue(dictionaries.duplicateLineage, chunk.duplicateLineageCodes[index]);
     values.sortOrdinal = sortOrdinalAt(chunk, index);
     values.lat = Number.isFinite(chunk.latitudes[index]) ? chunk.latitudes[index] : null;
@@ -475,6 +531,7 @@
     let preserveDateAscending = Boolean(payload.catalogExactDayAscending);
     const eventIds = [];
     const values = {};
+    const selectedAreaCountry = String(payload && payload.selectedAreaCountry || "").trim().toLowerCase();
 
     for (const chunk of chunks) {
       for (let index = 0; index < chunk.length; index += 1) {
@@ -497,6 +554,13 @@
         }
         if (!eventMatchesNonDateFilters(values, filters, keywordIds, lowPrecisionValues)) {
           continue;
+        }
+        if (selectedAreaCountry) {
+          const analysisCountry = String(values.analysisCountry || "").trim().toLowerCase();
+          const assignedCountry = analysisCountry && analysisCountry !== "unavailable" && analysisCountry !== "unknown"
+            ? analysisCountry
+            : String(values.country || "").trim().toLowerCase();
+          if (assignedCountry !== selectedAreaCountry) continue;
         }
         eventIds.push(values.eventId);
         if (preserveDateAscending && (values.datePrecision !== "exact_day" || !Number.isFinite(rowOrdinal))) {
@@ -688,6 +752,23 @@
     });
   }
 
+  function analysisRowInsideAnyShape(values, shapes) {
+    if (!Array.isArray(shapes)) return true;
+    if (!shapes.length) return false;
+    return shapes.some(function (shape) {
+      const type = String(shape && shape.type || "").toLowerCase();
+      if (type === "country") {
+        const requested = String(shape && (shape.country || shape.countryName) || "").trim().toLowerCase();
+        const projected = String(values && values.analysisCountry || "").trim().toLowerCase();
+        const assigned = projected && projected !== "unavailable" && projected !== "unknown"
+          ? projected
+          : String(values && values.country || "").trim().toLowerCase();
+        return Boolean(requested && assigned && requested === assigned);
+      }
+      return pointInsideAnyAnalysisShape(values && values.lat, values && values.lon, [shape]);
+    });
+  }
+
   function analysisCacheKey(message) {
     const filters = normalizedFilters(message || {});
     const shapeSignature = Array.isArray(message.areaFilterShapes) ? message.areaFilterShapes : null;
@@ -711,6 +792,15 @@
       estimatorVersion: String(message.estimatorVersion || "analysis-v2"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
+      spatialPermutationCount: Number.isFinite(Number(message.spatialPermutationCount))
+        ? Number(message.spatialPermutationCount)
+        : null,
+      spatialBootstrapCount: Number.isFinite(Number(message.spatialBootstrapCount))
+        ? Number(message.spatialBootstrapCount)
+        : null,
+      spatialMinimumStratumSize: Number.isFinite(Number(message.spatialMinimumStratumSize))
+        ? Number(message.spatialMinimumStratumSize)
+        : null,
       callerKey: String(message.analysisCacheKey || ""),
     });
   }
@@ -744,7 +834,7 @@
   function analysisRowMatches(values, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
     if (!eventMatchesNonDateFilters(values, filters, keywordIds, lowPrecisionValues)) return false;
     if (areaEventIds && !areaEventIds.has(String(values.eventId))) return false;
-    if (areaShapes && !pointInsideAnyAnalysisShape(values.lat, values.lon, areaShapes)) return false;
+    if (areaShapes && !analysisRowInsideAnyShape(values, areaShapes)) return false;
     return true;
   }
 
@@ -882,68 +972,217 @@
     return rows;
   }
 
+  function activeAnalysisIdRows(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
+    const range = analysisActiveRange(message);
+    const rows = [];
+    const collect = function (row) {
+      if (range && (!Number.isFinite(row.sortOrdinal) || row.sortOrdinal < range[0] || row.sortOrdinal > range[1])) return;
+      rows.push({ eventId: String(row.eventId == null ? "" : row.eventId) });
+    };
+    if (matched) {
+      forEachMatchedAnalysisRow(matched, collect);
+      return rows;
+    }
+    forEachAnalysisRow(function (row) {
+      if (!analysisRowMatches(row, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues)) return;
+      collect(row);
+    });
+    return rows;
+  }
+
   function spatialReadinessFromManifest(manifest) {
     const counts = manifest && manifest.counts || {};
     const hashes = analysisSpatialArtifacts.artifactHashes || {};
-    return {
-      ufoCraftPoints: {
-        status: Number(counts.ufoNeighborEligiblePoints || 0) >= 25 ? "exploratory_ready" : "not_estimable",
-        eligibleN: Number(counts.ufoNeighborEligiblePoints || 0),
-        totalN: Number(manifest && manifest.sources && manifest.sources.ufoPointNeighbors &&
-          manifest.sources.ufoPointNeighbors.counts && manifest.sources.ufoPointNeighbors.counts.packedRows || 0),
-        releaseHash: hashes.ufoPointNeighbors || "",
-        reasons: [
-          "Eligible points are limited to UFOCAT and Majestic after raw-coordinate, date, craft-confidence, same-day, and coordinate-pile gates.",
-          "Source-balanced estimates and leave-one-source-out sensitivity are mandatory; this is not population coverage.",
-        ],
-      },
-      militaryFacilities: {
-        status: Number(counts.facilityInferentialEligible || 0) >= 25 ? "exploratory_ready" : "not_estimable",
-        eligibleN: Number(counts.facilityInferentialEligible || 0),
-        totalN: Number(counts.facilityMarkers || 0),
-        releaseHash: hashes.facilityAnalysis || "",
-        reasons: ["Only verified facility markers with adequate coordinate and temporal confidence are inferential."],
-      },
-      researchFacilities: {
-        status: "coverage_limited",
-        eligibleN: Number(counts.facilityInferentialEligible || 0),
-        totalN: Number(counts.facilityMarkers || 0),
-        releaseHash: hashes.facilityAnalysis || "",
-        reasons: ["Facility-class-specific support is reported in the facility evidence result."],
-      },
-      claimedUfoSites: {
-        status: "descriptive_only",
-        eligibleN: 0,
-        totalN: Number(manifest && manifest.sources && manifest.sources.facilities &&
-          manifest.sources.facilities.counts && manifest.sources.facilities.counts.claimedDescriptive || 0),
-        releaseHash: hashes.facilityAnalysis || "",
-        reasons: ["Claimed sites are excluded from inference and Pattern Finder."],
-      },
-      cropCircles: {
-        status: Number(counts.cropKilometerEligible || 0) >= 25 ? "exploratory_ready" : "not_estimable",
-        eligibleN: Number(counts.cropKilometerEligible || 0),
-        totalN: Number(counts.cropContextRecords || 0),
-        releaseHash: hashes.cropContextReadiness || "",
-        reasons: [
-          "No crop record currently passes exact-site, formation-date, and review gates together.",
-          "Catalog dates cannot substitute for formation dates.",
-        ],
-      },
-      animalReports: {
-        status: Number(counts.animalKilometerEligible || 0) >= 25 ? "exploratory_ready" : "not_estimable",
-        eligibleN: Number(counts.animalKilometerEligible || 0),
-        totalN: Number(counts.animalContextRecords || 0),
-        releaseHash: hashes.animalContextReadiness || "",
-        reasons: ["Generalized animal markers cannot enter kilometer analysis."],
-      },
-      relationshipReconciliation: relationshipReconciliationReadiness(manifest || {}),
-      chronologyConnectors: {
-        status: "prohibited",
-        eligibleN: 0,
-        totalN: 0,
+    const neighborSource = manifest && manifest.sources && manifest.sources.ufoPointNeighbors || {};
+    const neighborCounts = neighborSource.counts || {};
+    const neighborExclusions = neighborSource.exclusions || {};
+    const spatialPointCount = Number(counts.ufoSpatialPoints || counts.ufoNeighborEligiblePoints || 0);
+    const cropBoundedCount = Number(counts.cropBoundedAnalysisRecords || 0);
+    const cropLocalityCount = Number(counts.cropLocalityAnalysisRecords || 0);
+    const animalMarkerCount = Number(counts.animalPublicMarkerAnalysisRecords || 0);
+    const mappedCount = Number(neighborCounts.packedRows || 0);
+    const sourceCoordinateCount = Math.max(0, mappedCount - Number(neighborExclusions.not_source_provided_coordinate || 0));
+    const exactDayCount = Math.max(0, sourceCoordinateCount - Number(neighborExclusions.date_not_exact_day || 0));
+    const confidenceCount = Math.max(0, exactDayCount - Number(neighborExclusions.craft_confidence_below_medium || 0));
+    const sameDayCount = Math.max(0, confidenceCount - Number(neighborExclusions.same_day_suitability_below_medium || 0));
+    const recognizedCount = Math.max(0, sameDayCount - Number(neighborExclusions.craft_class_not_recognized || 0));
+    const makeGate = function (gateId, label, status, inputN, passedN, reasonCodes, policyId, denominatorLabel) {
+      const input = Math.max(0, Number(inputN) || 0);
+      const passed = Math.max(0, Math.min(input, Number(passedN) || 0));
+      return {
+        gateId,
+        label,
+        applicability: "applicable",
+        status,
+        inputN: input,
+        passedN: passed,
+        failedN: Math.max(0, input - passed),
+        unknownN: 0,
+        denominatorLabel: denominatorLabel || "records entering this gate",
+        reasonCodes: Array.isArray(reasonCodes) ? reasonCodes.slice() : [],
+        policyId: policyId || "analysis_v2_2_evidence_gate",
+        evidenceHash: String(hashes.ufoPointNeighbors || ""),
+      };
+    };
+    const domain = function (key, label, status, eligibleN, totalN, gates, extra) {
+      const total = Math.max(0, Number(totalN) || 0);
+      const eligible = Math.max(0, Number(eligibleN) || 0);
+      return Object.assign({
+        key,
+        label,
+        status,
+        applicability: "applicable",
+        inputN: total,
+        passedN: eligible,
+        failedN: Math.max(0, total - eligible),
+        unknownN: 0,
+        eligibleN: eligible,
+        totalN: total,
+        denominatorLabel: "domain catalog records",
+        reasonCodes: [],
+        policyId: "analysis_v2_2_domain_readiness",
+        evidenceHash: "",
         releaseHash: "",
-        reasons: ["Chronology connectors are display-only and are never read by spatial estimators."],
-      },
+        gates: Array.isArray(gates) ? gates : [],
+        reasons: [],
+      }, extra || {});
+    };
+    const relationship = relationshipReconciliationReadiness(manifest || {});
+    const sourceGates = function (sourceKey) {
+      const readiness = manifest && manifest.sources && manifest.sources[sourceKey] &&
+        manifest.sources[sourceKey].readiness;
+      return Array.isArray(readiness && readiness.gates)
+        ? readiness.gates.map(function (gate) { return Object.assign({}, gate); })
+        : [];
+    };
+    const relationshipGates = Array.isArray(
+      manifest && manifest.sources && manifest.sources.relationshipReconciliation &&
+      manifest.sources.relationshipReconciliation.readiness &&
+      manifest.sources.relationshipReconciliation.readiness.gates
+    ) ? manifest.sources.relationshipReconciliation.readiness.gates : [];
+    return {
+      ufoCraftPoints: domain("ufoCraftPoints", "High-precision co-occurrence pool",
+        spatialPointCount >= 25 ? "ready_inferential" : "blocked", spatialPointCount, mappedCount, [
+          makeGate("source_coordinates", "Source-provided coordinates", "ready_inferential", mappedCount, sourceCoordinateCount, ["generalized_coordinates_excluded"], "ufo_point_neighbors_v2", "mapped report markers"),
+          makeGate("exact_day", "Exact-day date", "ready_inferential", sourceCoordinateCount, exactDayCount, ["non_exact_dates_excluded"], "ufo_point_neighbors_v2"),
+          makeGate("classification_confidence", "Medium/high classification confidence", "ready_inferential", exactDayCount, confidenceCount, ["low_confidence_excluded"], "ufo_point_neighbors_v2"),
+          makeGate("same_day_suitability", "Medium/strong same-day suitability", "ready_inferential", confidenceCount, sameDayCount, ["weak_same_day_evidence_excluded"], "ufo_point_neighbors_v2"),
+          makeGate("recognized_shape", "Recognized craft shape", "ready_inferential", sameDayCount, recognizedCount, ["unrecognized_shape_excluded"], "ufo_point_neighbors_v2"),
+          makeGate("coordinate_piles", "Coordinate-pile exclusion", "ready_inferential", recognizedCount, spatialPointCount, ["repeated_coordinate_piles_excluded"], "ufo_point_neighbors_v2"),
+        ], {
+          evidenceHash: hashes.ufoPointNeighbors || "",
+          releaseHash: hashes.ufoPointNeighbors || "",
+          reasonCodes: ["strict_high_trust_point_neighborhood_pool", "not_total_analysis_eligibility"],
+        }),
+      militaryFacilities: domain("militaryFacilities", "Verified military facilities", "limited",
+        Number(counts.facilityInferentialEligible || 0), Number(counts.facilityMarkers || 0), sourceGates("facilities"), {
+          evidenceHash: hashes.facilityAnalysis || "", releaseHash: hashes.facilityAnalysis || "",
+          reasonCodes: ["verified_coordinate_and_temporal_contract", "coverage_limited"],
+        }),
+      researchFacilities: domain("researchFacilities", "Research/test facilities", "limited",
+        Number(counts.facilityInferentialEligible || 0), Number(counts.facilityMarkers || 0), sourceGates("facilities"), {
+          evidenceHash: hashes.facilityAnalysis || "", releaseHash: hashes.facilityAnalysis || "",
+          reasonCodes: ["northern_europe_new_zealand_coverage_concentration"],
+        }),
+      claimedUfoSites: domain("claimedUfoSites", "Claimed UFO sites", "ready_descriptive", 0,
+        Number(manifest && manifest.sources && manifest.sources.facilities &&
+          manifest.sources.facilities.counts && manifest.sources.facilities.counts.claimedDescriptive || 0), [], {
+          evidenceHash: hashes.facilityAnalysis || "", releaseHash: hashes.facilityAnalysis || "",
+          reasonCodes: ["descriptive_only_prohibited_from_inference"],
+        }),
+      cropBounded: domain("cropBounded", "Crop circles — bounded markers", "ready_sensitivity",
+        cropBoundedCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
+          evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          reasonCodes: ["catalog_date_not_formation_date", "bounded_marker_uncertainty_applied"],
+        }),
+      cropLocality: domain("cropLocality", "Crop circles — locality markers", "ready_descriptive",
+        cropLocalityCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
+          evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          reasonCodes: ["rough_marker_lane", "not_exact_site"],
+        }),
+      cropCircles: domain("cropCircles", "Crop circles", "ready_sensitivity",
+        cropBoundedCount + cropLocalityCount, Number(counts.cropContextRecords || 0), [], {
+          evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
+          reasonCodes: ["bounded_and_locality_lanes_separate"],
+        }),
+      animalReports: domain("animalReports", "Animal reports — public markers", "ready_sensitivity",
+        animalMarkerCount, Number(counts.animalContextRecords || 0), sourceGates("animalContext"), {
+          evidenceHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
+          releaseHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
+          reasonCodes: ["public_marker_association", "origin_publisher_excluded", "not_exact_site"],
+        }),
+      relationshipReconciliation: Object.assign({}, relationship, {
+        status: "ready_descriptive",
+        applicability: "descriptive_only",
+        inputN: Number(relationship.totalN || 0),
+        passedN: Number(relationship.reconciledN || 0),
+        failedN: Math.max(0, Number(relationship.totalN || 0) - Number(relationship.reconciledN || 0)),
+        unknownN: 0,
+        denominatorLabel: "relationship records",
+        reasonCodes: ["inference_blocked_but_descriptive_relationships_available"],
+        policyId: "relationship_reconciliation_v2_2",
+        evidenceHash: String(relationship.releaseHash || ""),
+        gates: relationshipGates,
+      }),
+    };
+  }
+
+  function spatialEligibilityFunnelFromManifest(manifest) {
+    const source = manifest && manifest.sources && manifest.sources.ufoPointNeighbors || {};
+    const counts = source.counts || {};
+    const exclusions = source.exclusions || {};
+    const mapped = Math.max(0, Number(counts.packedRows) || 0);
+    const sourceCoordinates = Math.max(0, mapped - Number(exclusions.not_source_provided_coordinate || 0));
+    const exactDay = Math.max(0, sourceCoordinates - Number(exclusions.date_not_exact_day || 0));
+    const confidence = Math.max(0, exactDay - Number(exclusions.craft_confidence_below_medium || 0));
+    const sameDay = Math.max(0, confidence - Number(exclusions.same_day_suitability_below_medium || 0));
+    const recognized = Math.max(0, sameDay - Number(exclusions.craft_class_not_recognized || 0));
+    const eligible = Math.max(0, Number(counts.eligiblePoints) || 0);
+    const catalogTotal = Math.max(
+      mapped,
+      Number(counts.catalogRows || counts.catalogRecords ||
+        manifest && manifest.counts && (manifest.counts.catalogRows || manifest.counts.catalogRecords) || 702893)
+    );
+    const stages = [
+      ["catalog", "All catalog reports", catalogTotal],
+      ["mapped", "Mapped reports", mapped],
+      ["source_coordinates", "Source-provided coordinates", sourceCoordinates],
+      ["exact_day", "Exact-day dates", exactDay],
+      ["classification_confidence", "Medium/high classification confidence", confidence],
+      ["same_day_suitability", "Medium/strong same-day suitability", sameDay],
+      ["recognized_shape", "Recognized craft shapes", recognized],
+      ["coordinate_pile_exclusion", "After coordinate-pile exclusions", eligible],
+    ].map(function (entry, index, all) {
+      const prior = index ? all[index - 1][2] : entry[2];
+      return {
+        key: entry[0],
+        label: entry[1],
+        count: entry[2],
+        excludedN: Math.max(0, prior - entry[2]),
+        retentionRate: prior > 0 ? entry[2] / prior : 0,
+      };
+    });
+    return {
+      label: "High-precision co-occurrence pool",
+      scope: "sealed_full_catalog",
+      unitOfAnalysis: "UFO report markers",
+      catalogReports: catalogTotal,
+      mappedReports: mapped,
+      sourceCoordinateReports: sourceCoordinates,
+      exactDayReports: exactDay,
+      confidenceQualifiedReports: confidence,
+      sameDayQualifiedReports: sameDay,
+      recognizedCraftReports: recognized,
+      inferentiallyEligibleReports: eligible,
+      stages,
+      exclusions: Object.assign({}, exclusions),
+      eligibleSources: Object.assign({}, source.readiness && source.readiness.eligiblePointsBySource || {}),
+      eligibilityRate: catalogTotal ? eligible / catalogTotal : 0,
+      explanation: "This is a deliberately strict point-neighborhood pool, not the number of reports usable by Analysis generally.",
+      evidenceHash: String(analysisSpatialArtifacts.artifactHashes.ufoPointNeighbors || ""),
     };
   }
 
@@ -984,8 +1223,10 @@
     const result = resultValue && typeof resultValue === "object" ? resultValue : {};
     const readiness = readinessValue && typeof readinessValue === "object" ? readinessValue : {};
     const baselineMode = ensureAnalysisStats().normalizeBaselineMode(baselineModeValue);
+    const wholeCorpusStructure = String(result.analysisMode || "") === "whole_corpus_structure" ||
+      String(result.comparisonState || "") === "whole_corpus_structure";
     const inferenceEnabled = inferenceEnabledValue !== false &&
-      baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG;
+      (wholeCorpusStructure || baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG);
     result.baselineMode = baselineMode;
     result.inferenceEnabled = inferenceEnabled;
     const relationship = readiness.relationshipReconciliation;
@@ -1007,6 +1248,12 @@
         markSpatialLaneDescriptive(lane);
       });
     });
+    const configuration = cooccurrence.configuration || {};
+    ["crossSource", "sameSource"].forEach(function (key) {
+      (Array.isArray(configuration[key]) ? configuration[key] : []).forEach(function (lane) {
+        markSpatialLaneDescriptive(lane);
+      });
+    });
     const facility = result.facility;
     if (facility && typeof facility === "object") {
       facility.inferenceEnabled = false;
@@ -1021,15 +1268,53 @@
     return result;
   }
 
-  function computeSpatialEvidence(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
+  function computeSpatialEvidence(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues, optionsValue) {
+    const options = optionsValue || {};
     const baselineMode = ensureAnalysisStats().normalizeBaselineMode(message.baselineMode);
-    const inferenceEnabled = baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG;
+    const wholeCorpusStructure = Boolean(message.fullTimeRange) || ["full", "all", "all_time"].indexOf(
+      String(message.timeRangeMode || "").trim().toLowerCase()
+    ) !== -1;
+    const inferenceEnabled = wholeCorpusStructure || baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG;
     const readiness = spatialReadinessFromManifest(analysisSpatialArtifacts.manifest || {});
-    if (!analysisSpatialArtifacts.loaded) {
+    if (!analysisSpatialArtifacts.loaded || options.contextOnly === true) {
+      const relationshipRows = analysisSpatialArtifacts.relationshipRows || analysisSpatialArtifacts.relationships || [];
+      const contextNeighbors = analysisSpatialArtifacts.contextNeighbors || [];
+      const hasContextEvidence = relationshipRows.length || contextNeighbors.length;
+      const fullSpatialLoaded = Boolean(analysisSpatialArtifacts.loaded);
+      const activeRows = hasContextEvidence
+        ? activeAnalysisIdRows(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues)
+        : [];
+      const includeAllWithoutCatalogRows = Boolean(message.fullTimeRange) && rowCount === 0;
       return finalizeSpatialEvidenceResult({
         estimatorVersion: ensureAnalysisSpatial().ESTIMATOR_VERSION,
-        status: "artifacts_not_loaded",
-        suppressionReasons: ["spatial_artifacts_not_loaded"],
+        status: hasContextEvidence
+          ? (fullSpatialLoaded ? "context_evidence_ready" : "context_evidence_ready_spatial_not_loaded")
+          : "artifacts_not_loaded",
+        suppressionReasons: hasContextEvidence
+          ? (fullSpatialLoaded ? [] : ["point_neighborhood_artifacts_not_loaded"])
+          : ["spatial_artifacts_not_loaded"],
+        readiness: Object.keys(readiness).map(function (key) { return Object.assign({}, readiness[key]); }),
+        contextAssociations: contextNeighbors.length
+          ? ensureAnalysisSpatial().computeContextAssociations({
+              activeRows,
+              neighbors: contextNeighbors,
+              codebook: analysisSpatialArtifacts.codebooks && analysisSpatialArtifacts.codebooks.contextUfoNeighbors,
+              includeAllWhenNoActiveRows: includeAllWithoutCatalogRows,
+              permutationCount: message.spatialPermutationCount,
+              bootstrapCount: message.spatialBootstrapCount,
+              inferenceEnabled,
+              seed: String(message.datasetHash || "catalog") + "|" + analysisFilterGeneration(message) + "|context-only",
+            })
+          : null,
+        relationshipSummary: relationshipRows.length
+          ? ensureAnalysisSpatial().computeRelationshipSummary(
+              relationshipRows,
+              analysisSpatialArtifacts.codebooks && analysisSpatialArtifacts.codebooks.relationshipReconciliation,
+              activeRows,
+              { includeAllWhenNoActiveRows: includeAllWithoutCatalogRows }
+            )
+          : null,
+        eligibility: spatialEligibilityFunnelFromManifest(analysisSpatialArtifacts.manifest || {}),
         traceInputsRead: false,
       }, readiness, baselineMode, inferenceEnabled);
     }
@@ -1037,16 +1322,31 @@
     const result = ensureAnalysisSpatial().computeSpatialAnalysis({
       rows,
       edges: analysisSpatialArtifacts.neighbors || [],
+      spatialPoints: analysisSpatialArtifacts.spatialPoints || [],
+      configurationPoints: analysisSpatialArtifacts.configurationPoints || [],
+      configurationEdges: analysisSpatialArtifacts.configurationNeighbors || [],
+      contextNeighbors: analysisSpatialArtifacts.contextNeighbors || [],
       facilities: analysisSpatialArtifacts.facilities || [],
+      relationships: analysisSpatialArtifacts.relationshipRows || analysisSpatialArtifacts.relationships || [],
+      codebooks: analysisSpatialArtifacts.codebooks || {},
       readiness,
+      eligibilityFunnel: spatialEligibilityFunnelFromManifest(analysisSpatialArtifacts.manifest || {}),
       artifactHashes: Object.assign({}, analysisSpatialArtifacts.artifactHashes || {}),
       seed: String(message.datasetHash || "catalog") + "|" + analysisFilterGeneration(message),
       baselineMode,
+      analysisMode: wholeCorpusStructure ? "whole_corpus_structure" : "cohort_comparison",
+      comparisonState: wholeCorpusStructure
+        ? "whole_corpus_structure"
+        : (baselineMode === ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG ? "descriptive_overlap" : "inferential"),
       inferenceEnabled,
       permutationCount: message.spatialPermutationCount,
       bootstrapCount: message.spatialBootstrapCount,
       minimumStratumSize: message.spatialMinimumStratumSize,
     });
+    result.analysisMode = wholeCorpusStructure ? "whole_corpus_structure" : "cohort_comparison";
+    result.comparisonState = wholeCorpusStructure
+      ? "whole_corpus_structure"
+      : (baselineMode === ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG ? "descriptive_overlap" : "inferential");
     return finalizeSpatialEvidenceResult(result, readiness, baselineMode, inferenceEnabled);
   }
 
@@ -1126,15 +1426,24 @@
       artifactHashes: Object.assign(
         {},
         normalizedHashObject(message.artifactHashes),
-        analysisSpatialArtifacts.artifactHashes || {}
+        analysisSpatialArtifacts.artifactHashes || {},
+        analysisGeographyArtifact.loaded
+          ? { ufoGeography: String(analysisGeographyArtifact.artifactHash || "") }
+          : {}
       ),
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-v2"),
+      geographyProjectionLoaded: Boolean(analysisGeographyArtifact.loaded),
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
     });
+    const contextEvidenceRequested = selectedDomains.indexOf("context") !== -1 &&
+      ((Array.isArray(analysisSpatialArtifacts.relationshipRows) && analysisSpatialArtifacts.relationshipRows.length > 0) ||
+        (Array.isArray(analysisSpatialArtifacts.contextNeighbors) && analysisSpatialArtifacts.contextNeighbors.length > 0));
+    const spatialEvidenceRequested = selectedDomains.indexOf("spatial") !== -1 ||
+      selectedDomains.indexOf("spatial_evidence") !== -1;
     if (!options.deferSpatial &&
-        (selectedDomains.indexOf("spatial") !== -1 || selectedDomains.indexOf("spatial_evidence") !== -1)) {
+        (spatialEvidenceRequested || contextEvidenceRequested)) {
       result.spatialEvidence = computeSpatialEvidence(
         message,
         matched,
@@ -1142,7 +1451,8 @@
         keywordIds,
         areaEventIds,
         areaShapes,
-        lowPrecisionValues
+        lowPrecisionValues,
+        { contextOnly: contextEvidenceRequested && !spatialEvidenceRequested }
       );
     }
     return analysisResultForTimeline(result);
@@ -1277,10 +1587,62 @@
 
   function manifestArtifactFile(manifest, key) {
     const entry = manifestArtifactEntry(manifest, key) || {};
-    // Raw JSON is deliberately preferred here. The v2 artifacts are lazy and
-    // compact, and this avoids making browser decompression support a release
-    // requirement while retaining deterministic gzip delivery twins.
-    return entry.file || entry.path || entry.gzipFile || entry.gzip_file || "";
+    const gzipFile = entry.gzipFile || entry.gzip_file || "";
+    if (gzipFile && typeof DecompressionStream === "function") return gzipFile;
+    return entry.file || entry.path || gzipFile || "";
+  }
+
+  function manifestArtifactUrl(manifest, key, manifestUrl) {
+    const resolved = resolveAnalysisUrl(manifestArtifactFile(manifest, key), manifestUrl);
+    const sha256 = normalizedSha256((manifestArtifactEntry(manifest, key) || {}).sha256);
+    if (!resolved || !sha256) return resolved;
+    try {
+      const url = new URL(resolved, manifestUrl);
+      url.searchParams.set("sha256", sha256);
+      return url.toString();
+    } catch (_error) {
+      return resolved + (resolved.indexOf("?") === -1 ? "?" : "&") + "sha256=" + sha256;
+    }
+  }
+
+  function validateSpatialManifestArtifact(manifest, key) {
+    const entry = manifestArtifactEntry(manifest, key);
+    if (!entry) throw new Error("Analysis v2 manifest is missing required artifact " + key + ".");
+    if (!normalizedSha256(entry.sha256)) {
+      throw new Error("Analysis v2 artifact " + key + " is missing a valid raw SHA-256.");
+    }
+    if (!Number.isInteger(Number(entry.rowCount)) || Number(entry.rowCount) < 0) {
+      throw new Error("Analysis v2 artifact " + key + " has an invalid declared row count.");
+    }
+    if (!Array.isArray(entry.rowSchema) || !entry.rowSchema.length ||
+        new Set(entry.rowSchema.map(String)).size !== entry.rowSchema.length) {
+      throw new Error("Analysis v2 artifact " + key + " has an invalid row schema.");
+    }
+    if (!manifestArtifactFile(manifest, key)) {
+      throw new Error("Analysis v2 artifact " + key + " has no loadable file.");
+    }
+    const gzipFile = entry.gzipFile || entry.gzip_file || "";
+    if (gzipFile && !normalizedSha256(entry.gzipSha256 || entry.gzip_sha256)) {
+      throw new Error("Analysis v2 artifact " + key + " is missing a valid gzip SHA-256.");
+    }
+    return entry;
+  }
+
+  function validateLoadedSpatialArtifact(rowsValue, manifest, key) {
+    const rows = rowsValue;
+    const entry = manifestArtifactEntry(manifest, key) || {};
+    if (!Array.isArray(rows)) throw new Error("Analysis v2 artifact " + key + " is not a row array.");
+    if (rows.length !== Number(entry.rowCount)) {
+      throw new Error("Analysis v2 artifact " + key + " row-count mismatch: expected " +
+        Number(entry.rowCount) + ", received " + rows.length + ".");
+    }
+    const width = Array.isArray(entry.rowSchema) ? entry.rowSchema.length : 0;
+    const invalidIndex = rows.findIndex(function (row) { return !Array.isArray(row) || row.length !== width; });
+    if (invalidIndex !== -1) {
+      throw new Error("Analysis v2 artifact " + key + " row " + invalidIndex +
+        " does not match the declared " + width + "-field schema.");
+    }
+    return rows;
   }
 
   function decodeCode(codes, key, value) {
@@ -1417,11 +1779,46 @@
     return result;
   }
 
+  function spatialManifestReleaseIdentity(manifest) {
+    const value = manifest && typeof manifest === "object" ? manifest : {};
+    return [
+      String(value.schemaId || ""),
+      String(value.schemaVersion || ""),
+      String(value.manifestVersion || ""),
+      String(value.releaseId || ""),
+    ].join("|");
+  }
+
+  function assertPartialSpatialManifestCompatible(manifest) {
+    const current = analysisSpatialArtifacts.manifest;
+    if (!current) return;
+    const currentIdentity = spatialManifestReleaseIdentity(current);
+    const requestedIdentity = spatialManifestReleaseIdentity(manifest);
+    if (currentIdentity !== requestedIdentity) {
+      throw new Error("Analysis context artifact release does not match the spatial release already loaded in this worker.");
+    }
+    const currentHashes = analysisSpatialArtifacts.artifactHashes || {};
+    Object.keys(currentHashes).forEach(function (key) {
+      if (key === "manifest") return;
+      const currentHash = String(currentHashes[key] || "");
+      const requestedHash = String(
+        manifest && manifest.artifacts && manifest.artifacts[key] && manifest.artifacts[key].sha256 || ""
+      );
+      if (currentHash && requestedHash && currentHash !== requestedHash) {
+        throw new Error("Analysis context artifact hash does not match the spatial release already loaded in this worker.");
+      }
+    });
+  }
+
   function analysisSpatialSnapshot() {
     return {
       loaded: Boolean(analysisSpatialArtifacts.loaded),
       rowCounts: {
         neighbors: Array.isArray(analysisSpatialArtifacts.neighbors) ? analysisSpatialArtifacts.neighbors.length : 0,
+        spatialPoints: Array.isArray(analysisSpatialArtifacts.spatialPoints) ? analysisSpatialArtifacts.spatialPoints.length : 0,
+        configurationPoints: Array.isArray(analysisSpatialArtifacts.configurationPoints) ? analysisSpatialArtifacts.configurationPoints.length : 0,
+        configurationNeighbors: Array.isArray(analysisSpatialArtifacts.configurationNeighbors) ? analysisSpatialArtifacts.configurationNeighbors.length : 0,
+        contextNeighbors: Array.isArray(analysisSpatialArtifacts.contextNeighbors) ? analysisSpatialArtifacts.contextNeighbors.length : 0,
         facilities: Array.isArray(analysisSpatialArtifacts.facilities) ? analysisSpatialArtifacts.facilities.length : 0,
         relationships: Array.isArray(analysisSpatialArtifacts.relationships) ? analysisSpatialArtifacts.relationships.length : 0,
       },
@@ -1432,7 +1829,7 @@
         ? analysisSpatialExecutor.estimatorVersion
         : (analysisSpatialApi && analysisSpatialApi.ESTIMATOR_VERSION
           ? analysisSpatialApi.ESTIMATOR_VERSION
-          : "ufo-analysis-spatial-v2"),
+          : "ufo-analysis-spatial-v2.2.0"),
     };
   }
 
@@ -1442,9 +1839,9 @@
 
   function dedicatedSpatialWorkerUrl() {
     try {
-      return new URL("./analysis_spatial_worker.js", self.location && self.location.href || undefined).toString();
+      return new URL("./analysis_spatial_worker.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY, self.location && self.location.href || undefined).toString();
     } catch (_error) {
-      return "./analysis_spatial_worker.js";
+      return "./analysis_spatial_worker.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY;
     }
   }
 
@@ -1464,10 +1861,12 @@
         normalizedHashObject(message.artifactHashes),
         analysisSpatialArtifacts.artifactHashes || {}
       ),
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-v2"),
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       inferenceDeferred: Boolean(result && result.inferenceDeferred),
+      analysisMode: String(result && result.analysisMode || "cohort_comparison"),
+      comparisonState: String(result && result.comparisonState || result && result.baseline && result.baseline.comparisonState || "inferential"),
       cancellationGeneration: Number(message.cancellationGeneration) || 0,
       ordinalEpoch: "unix_day",
       cacheHit: Boolean(cacheHit),
@@ -1487,7 +1886,7 @@
       datasetHash: String(message && message.datasetHash || ""),
       contextReleaseHashes: normalizedHashObject(message && message.contextReleaseHashes),
       artifactHashes: Object.assign({}, analysisSpatialArtifacts.artifactHashes || {}),
-      estimatorVersion: String(message && message.estimatorVersion || "ufo-analysis-v2"),
+      estimatorVersion: String(message && message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
       cancellationGeneration: Number(message && message.cancellationGeneration) || 0,
       errorCode: String(codeValue || "spatial_analysis_failed"),
       cancelled: Boolean(cancelled),
@@ -1522,7 +1921,7 @@
     const message = event && event.data || {};
     if (message.type === "spatialAnalysisReady") {
       executor.ready = true;
-      executor.estimatorVersion = String(message.estimatorVersion || "ufo-analysis-spatial-v2");
+      executor.estimatorVersion = String(message.estimatorVersion || "ufo-analysis-spatial-v2.2.0");
       const resolveReady = executor.resolveReady;
       executor.resolveReady = null;
       executor.rejectReady = null;
@@ -1538,11 +1937,16 @@
     analysisSpatialPending = null;
     if (message.type === "spatialAnalysisComputed") {
       const baselineMode = ensureAnalysisStats().normalizeBaselineMode(pending.message.baselineMode);
+      const wholeCorpusStructure = String(message.result && message.result.analysisMode || "") === "whole_corpus_structure" ||
+        String(message.result && message.result.comparisonState || "") === "whole_corpus_structure" ||
+        Boolean(pending.message.fullTimeRange) || ["full", "all", "all_time"].indexOf(
+          String(pending.message.timeRangeMode || "").trim().toLowerCase()
+        ) !== -1;
       pending.result.spatialEvidence = finalizeSpatialEvidenceResult(
         message.result,
         spatialReadinessFromManifest(analysisSpatialArtifacts.manifest || {}),
         baselineMode,
-        baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG
+        wholeCorpusStructure || baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG
       );
       cacheAnalysisResult(pending.cacheKey, pending.result);
       self.postMessage(analysisComputedEnvelope(pending.message, pending.result, false));
@@ -1604,7 +2008,13 @@
       type: "initializeSpatialAnalysis",
       executionEpoch: epoch,
       edges: analysisSpatialArtifacts.neighbors || [],
+      spatialPoints: analysisSpatialArtifacts.spatialPoints || [],
+      configurationPoints: analysisSpatialArtifacts.configurationPoints || [],
+      configurationEdges: analysisSpatialArtifacts.configurationNeighbors || [],
+      contextNeighbors: analysisSpatialArtifacts.contextNeighbors || [],
       facilities: analysisSpatialArtifacts.facilities || [],
+      relationships: analysisSpatialArtifacts.relationshipRows || analysisSpatialArtifacts.relationships || [],
+      codebooks: analysisSpatialArtifacts.codebooks || {},
       readiness: spatialReadinessFromManifest(analysisSpatialArtifacts.manifest || {}),
       artifactHashes: Object.assign({}, analysisSpatialArtifacts.artifactHashes || {}),
     });
@@ -1614,7 +2024,10 @@
   function spatialExecutionPayload(message) {
     const stats = ensureAnalysisStats();
     const baselineMode = stats.normalizeBaselineMode(message.baselineMode);
-    const inferenceEnabled = baselineMode !== stats.BASELINE_MODES.FULL_CATALOG;
+    const wholeCorpusStructure = Boolean(message.fullTimeRange) || ["full", "all", "all_time"].indexOf(
+      String(message.timeRangeMode || "").trim().toLowerCase()
+    ) !== -1;
+    const inferenceEnabled = wholeCorpusStructure || baselineMode !== stats.BASELINE_MODES.FULL_CATALOG;
     const filters = normalizedFilters(message || {});
     const keywordIds = keywordIdSet(message || {});
     const areaEventIds = Array.isArray(message.areaFilterEventIds)
@@ -1633,7 +2046,12 @@
       rows: activeSpatialRows(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues),
       seed: String(message.datasetHash || "catalog") + "|" + analysisFilterGeneration(message),
       baselineMode,
+      analysisMode: wholeCorpusStructure ? "whole_corpus_structure" : "cohort_comparison",
+      comparisonState: wholeCorpusStructure
+        ? "whole_corpus_structure"
+        : (baselineMode === stats.BASELINE_MODES.FULL_CATALOG ? "descriptive_overlap" : "inferential"),
       inferenceEnabled,
+      eligibilityFunnel: spatialEligibilityFunnelFromManifest(analysisSpatialArtifacts.manifest || {}),
       permutationCount: message.spatialPermutationCount,
       bootstrapCount: message.spatialBootstrapCount,
       minimumStratumSize: message.spatialMinimumStratumSize,
@@ -1691,46 +2109,358 @@
     return true;
   }
 
-  async function loadAnalysisSpatialArtifacts(message) {
+  function analysisV2ManifestSupported(manifest) {
+    const version = String(manifest && manifest.manifestVersion || "");
+    const schemaId = String(manifest && manifest.schemaId || "");
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 2 &&
+      (version === "2.1.0" || version === "2.2.0") &&
+      (schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.1.0" ||
+        schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.2.0") &&
+      manifest.artifacts
+    );
+  }
+
+  function applyGeographyRowsToCatalog(rowsValue, manifest) {
+    const rows = Array.isArray(rowsValue) ? rowsValue : [];
+    const codes = manifest && manifest.codes && manifest.codes.ufoGeography || {};
+    let cursor = 0;
+    chunks.forEach(function (chunk) {
+      for (let index = 0; index < chunk.length; index += 1) {
+        if (chunk.mappedStates[index] !== 2) continue;
+        const packed = rows[cursor];
+        if (!Array.isArray(packed)) {
+          throw new Error("The geography projection ended before the mapped catalog subsequence.");
+        }
+        if (Number(packed[0]) !== cursor) {
+          throw new Error("The geography projection row index is not contiguous at mapped row " + cursor + ".");
+        }
+        const catalogEventId = String(eventIdAt(chunk, index));
+        const geographyEventId = String(packed[1] == null ? "" : packed[1]);
+        if (!catalogEventId || catalogEventId !== geographyEventId) {
+          throw new Error(
+            "The geography projection does not match the served mapped-event order at row " + cursor + "."
+          );
+        }
+        chunk.analysisCountryCodes[index] = categoryCode(
+          dictionaries.analysisCountry,
+          decodeCode(codes, "country", packed[2]) || "unknown"
+        );
+        chunk.analysisMacroregionCodes[index] = categoryCode(
+          dictionaries.analysisMacroregion,
+          decodeCode(codes, "macroregion", packed[3]) || "unknown"
+        );
+        chunk.analysisGeographyAssignmentSourceCodes[index] = categoryCode(
+          dictionaries.geographyAssignmentSource,
+          decodeCode(codes, "assignmentSource", packed[4]) || "unknown"
+        );
+        chunk.analysisGeographyAssignmentConfidenceCodes[index] = categoryCode(
+          dictionaries.geographyAssignmentConfidence,
+          decodeCode(codes, "assignmentConfidence", packed[5]) || "unknown"
+        );
+        chunk.analysisGeographyBoundaryStatusCodes[index] = categoryCode(
+          dictionaries.geographyBoundaryStatus,
+          decodeCode(codes, "boundaryStatus", packed[6]) || "unknown"
+        );
+        cursor += 1;
+      }
+    });
+    if (cursor !== rows.length) {
+      throw new Error(
+        "The geography projection contains " + rows.length +
+        " mapped rows but the served catalog contains " + cursor + "."
+      );
+    }
+    return cursor;
+  }
+
+  async function loadAnalysisGeographyArtifact(message) {
     const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
     const manifestUrl = String(urls.manifest || "./data/analysis_v2/manifest.json");
     const manifest = message.manifest && typeof message.manifest === "object"
       ? message.manifest
       : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
-    if (!manifest || Number(manifest.schemaVersion) !== 2 || !manifest.artifacts) {
+    if (!analysisV2ManifestSupported(manifest)) {
+      throw new Error("Analysis v2 geography manifest is invalid or unsupported.");
+    }
+    validateSpatialManifestArtifact(manifest, "ufoGeography");
+    const artifactUrl = urls.geography || urls.ufoGeography ||
+      manifestArtifactUrl(manifest, "ufoGeography", manifestUrl);
+    if (!artifactUrl) throw new Error("Analysis v2.2 manifest is missing the geography projection URL.");
+    const payload = await fetchAnalysisJson(
+      artifactUrl,
+      manifestArtifactIntegrity(manifest, "ufoGeography")
+    );
+    const rows = validateLoadedSpatialArtifact(payload, manifest, "ufoGeography");
+    const appliedRows = applyGeographyRowsToCatalog(rows, manifest);
+    analysisGeographyArtifact = {
+      manifest,
+      rows: null,
+      codes: manifest.codes && manifest.codes.ufoGeography || {},
+      loaded: true,
+      appliedRows,
+      artifactHash: String(manifest.artifacts.ufoGeography.sha256 || ""),
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHash: analysisGeographyArtifact.artifactHash,
+      rowOrder: "packed_points_input_order_mapped_catalog_subsequence",
+    };
+  }
+
+  async function loadAnalysisSpatialArtifactsInternal(message) {
+    const loadEpoch = ++analysisSpatialArtifactLoadEpoch;
+    analysisPartialArtifactLoadEpoch.relationship += 1;
+    analysisPartialArtifactLoadEpoch.context += 1;
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_v2/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisV2ManifestSupported(manifest)) {
       throw new Error("Analysis v2 spatial manifest is invalid or unsupported.");
     }
-    const neighborUrl = urls.neighbors || resolveAnalysisUrl(
-      manifestArtifactFile(manifest, "ufoPointNeighbors"),
-      manifestUrl
+    const requiredArtifactKeys = [
+      "ufoPointNeighbors", "facilityAnalysis", "relationshipReconciliation",
+      "ufoSpatialPoints", "contextUfoNeighbors",
+    ];
+    const configurationAvailable = Boolean(
+      manifest.artifacts.ufoConfigurationPoints && manifest.artifacts.ufoConfigurationNeighbors
     );
-    const facilityUrl = urls.facilities || resolveAnalysisUrl(
-      manifestArtifactFile(manifest, "facilityAnalysis"),
-      manifestUrl
-    );
-    const relationshipUrl = urls.relationshipReconciliation || urls.relationships || resolveAnalysisUrl(
-      manifestArtifactFile(manifest, "relationshipReconciliation"),
-      manifestUrl
-    );
-    const loaded = await Promise.all([
+    if (String(manifest.manifestVersion || "") === "2.2.0" && !configurationAvailable) {
+      throw new Error("Analysis v2.2 manifest is missing Formation/configuration artifacts.");
+    }
+    if (configurationAvailable) {
+      requiredArtifactKeys.push("ufoConfigurationPoints", "ufoConfigurationNeighbors");
+    }
+    requiredArtifactKeys.forEach(function (key) { validateSpatialManifestArtifact(manifest, key); });
+    const neighborUrl = urls.neighbors || manifestArtifactUrl(manifest, "ufoPointNeighbors", manifestUrl);
+    const facilityUrl = urls.facilities || manifestArtifactUrl(manifest, "facilityAnalysis", manifestUrl);
+    const relationshipUrl = urls.relationshipReconciliation || urls.relationships ||
+      manifestArtifactUrl(manifest, "relationshipReconciliation", manifestUrl);
+    const spatialPointsUrl = urls.spatialPoints || urls.ufoSpatialPoints ||
+      manifestArtifactUrl(manifest, "ufoSpatialPoints", manifestUrl);
+    const contextNeighborsUrl = urls.contextNeighbors || urls.contextUfoNeighbors ||
+      manifestArtifactUrl(manifest, "contextUfoNeighbors", manifestUrl);
+    const configurationPointsUrl = configurationAvailable
+      ? (urls.configurationPoints || urls.ufoConfigurationPoints ||
+        manifestArtifactUrl(manifest, "ufoConfigurationPoints", manifestUrl))
+      : "";
+    const configurationNeighborsUrl = configurationAvailable
+      ? (urls.configurationNeighbors || urls.ufoConfigurationNeighbors ||
+        manifestArtifactUrl(manifest, "ufoConfigurationNeighbors", manifestUrl))
+      : "";
+    if (!neighborUrl || !facilityUrl || !relationshipUrl || !spatialPointsUrl || !contextNeighborsUrl) {
+      throw new Error("Analysis v2 manifest is missing one or more required artifact URLs.");
+    }
+    const cachedRelationshipRows = !analysisSpatialArtifacts.loaded &&
+      Array.isArray(analysisSpatialArtifacts.relationshipRows) &&
+      analysisSpatialArtifacts.relationshipRows.length > 0 &&
+      String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.relationshipReconciliation || "") ===
+        String(manifest.artifacts.relationshipReconciliation.sha256 || "")
+      ? analysisSpatialArtifacts.relationshipRows
+      : null;
+    const cachedContextNeighborRows = !analysisSpatialArtifacts.loaded &&
+      Array.isArray(analysisSpatialArtifacts.contextNeighbors) &&
+      analysisSpatialArtifacts.contextNeighbors.length > 0 &&
+      String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.contextUfoNeighbors || "") ===
+        String(manifest.artifacts.contextUfoNeighbors.sha256 || "")
+      ? analysisSpatialArtifacts.contextNeighbors
+      : null;
+    const loadRequests = [
       fetchAnalysisJson(neighborUrl, manifestArtifactIntegrity(manifest, "ufoPointNeighbors")),
       fetchAnalysisJson(facilityUrl, manifestArtifactIntegrity(manifest, "facilityAnalysis")),
-      relationshipUrl
-        ? fetchAnalysisJson(relationshipUrl, manifestArtifactIntegrity(manifest, "relationshipReconciliation"))
-        : Promise.resolve([]),
-    ]);
+      cachedRelationshipRows || fetchAnalysisJson(relationshipUrl, manifestArtifactIntegrity(manifest, "relationshipReconciliation")),
+      fetchAnalysisJson(spatialPointsUrl, manifestArtifactIntegrity(manifest, "ufoSpatialPoints")),
+      cachedContextNeighborRows || fetchAnalysisJson(contextNeighborsUrl, manifestArtifactIntegrity(manifest, "contextUfoNeighbors")),
+    ];
+    if (configurationAvailable) {
+      loadRequests.push(
+        fetchAnalysisJson(configurationPointsUrl, manifestArtifactIntegrity(manifest, "ufoConfigurationPoints")),
+        fetchAnalysisJson(configurationNeighborsUrl, manifestArtifactIntegrity(manifest, "ufoConfigurationNeighbors"))
+      );
+    }
+    const loaded = await Promise.all(loadRequests);
+    if (loadEpoch !== analysisSpatialArtifactLoadEpoch) {
+      throw new Error("Analysis spatial artifact setup was superseded by a newer release request.");
+    }
+    const neighborRows = validateLoadedSpatialArtifact(loaded[0], manifest, "ufoPointNeighbors");
+    const facilityRows = validateLoadedSpatialArtifact(loaded[1], manifest, "facilityAnalysis");
+    const relationshipRows = cachedRelationshipRows || validateLoadedSpatialArtifact(loaded[2], manifest, "relationshipReconciliation");
+    const spatialPointRows = validateLoadedSpatialArtifact(loaded[3], manifest, "ufoSpatialPoints");
+    const contextNeighborRows = cachedContextNeighborRows || validateLoadedSpatialArtifact(loaded[4], manifest, "contextUfoNeighbors");
+    const configurationPointRows = configurationAvailable
+      ? validateLoadedSpatialArtifact(loaded[5], manifest, "ufoConfigurationPoints")
+      : [];
+    const configurationNeighborRows = configurationAvailable
+      ? validateLoadedSpatialArtifact(loaded[6], manifest, "ufoConfigurationNeighbors")
+      : [];
     analysisSpatialArtifacts = {
       manifest,
-      neighbors: Array.isArray(loaded[0]) ? loaded[0] : [],
-      facilities: decodeFacilityRows(loaded[1], manifest),
-      relationships: decodeRelationshipRows(loaded[2], manifest),
+      neighbors: neighborRows,
+      spatialPoints: spatialPointRows,
+      configurationPoints: configurationPointRows,
+      configurationNeighbors: configurationNeighborRows,
+      contextNeighbors: contextNeighborRows,
+      facilities: decodeFacilityRows(facilityRows, manifest),
+      relationshipRows,
+      relationships: decodeRelationshipRows(relationshipRows, manifest),
+      codebooks: manifest.codes && typeof manifest.codes === "object" ? manifest.codes : {},
       loaded: true,
       artifactHashes: spatialArtifactHashes(manifest),
     };
     analysisCache.clear();
     terminateDedicatedSpatialExecutor("Spatial evidence artifacts were replaced.", true);
     if (dedicatedSpatialWorkerSupported()) await initializeDedicatedSpatialExecutor();
+    if (loadEpoch !== analysisSpatialArtifactLoadEpoch) {
+      throw new Error("Analysis spatial artifact setup was superseded by a newer release request.");
+    }
     return analysisSpatialSnapshot();
+  }
+
+  async function loadAnalysisSpatialArtifacts(message) {
+    analysisFullSpatialLoadsInFlight += 1;
+    try {
+      return await loadAnalysisSpatialArtifactsInternal(message);
+    } finally {
+      analysisFullSpatialLoadsInFlight = Math.max(0, analysisFullSpatialLoadsInFlight - 1);
+    }
+  }
+
+  async function loadAnalysisRelationshipArtifact(message) {
+    const loadEpoch = ++analysisPartialArtifactLoadEpoch.relationship;
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_v2/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisV2ManifestSupported(manifest)) {
+      throw new Error("Analysis v2 relationship manifest is invalid or unsupported.");
+    }
+    validateSpatialManifestArtifact(manifest, "relationshipReconciliation");
+    assertPartialSpatialManifestCompatible(manifest);
+    if (analysisSpatialArtifacts.loaded && Array.isArray(analysisSpatialArtifacts.relationshipRows)) {
+      return {
+        loaded: true,
+        rowCount: analysisSpatialArtifacts.relationshipRows.length,
+        releaseId: String(analysisSpatialArtifacts.manifest && analysisSpatialArtifacts.manifest.releaseId || ""),
+        artifactHash: String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.relationshipReconciliation || ""),
+        descriptiveOnly: true,
+      };
+    }
+    if (analysisFullSpatialLoadsInFlight > 0) {
+      throw new Error("Analysis relationship artifact setup is deferred while the full spatial release is loading.");
+    }
+    const artifactUrl = urls.relationshipReconciliation || urls.relationships ||
+      manifestArtifactUrl(manifest, "relationshipReconciliation", manifestUrl);
+    if (!artifactUrl) throw new Error("Analysis v2 manifest is missing the relationship projection URL.");
+    const payload = await fetchAnalysisJson(
+      artifactUrl,
+      manifestArtifactIntegrity(manifest, "relationshipReconciliation")
+    );
+    const rows = validateLoadedSpatialArtifact(payload, manifest, "relationshipReconciliation");
+    if (loadEpoch !== analysisPartialArtifactLoadEpoch.relationship) {
+      throw new Error("Analysis relationship artifact setup was superseded by a newer spatial release request.");
+    }
+    assertPartialSpatialManifestCompatible(manifest);
+    if (analysisSpatialArtifacts.loaded && Array.isArray(analysisSpatialArtifacts.relationshipRows)) {
+      return {
+        loaded: true,
+        rowCount: analysisSpatialArtifacts.relationshipRows.length,
+        releaseId: String(analysisSpatialArtifacts.manifest && analysisSpatialArtifacts.manifest.releaseId || ""),
+        artifactHash: String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.relationshipReconciliation || ""),
+        descriptiveOnly: true,
+      };
+    }
+    if (!analysisSpatialArtifacts.loaded) {
+      analysisSpatialArtifacts.manifest = manifest;
+      analysisSpatialArtifacts.relationshipRows = rows;
+      analysisSpatialArtifacts.relationships = decodeRelationshipRows(rows, manifest);
+      analysisSpatialArtifacts.codebooks = manifest.codes && typeof manifest.codes === "object" ? manifest.codes : {};
+      analysisSpatialArtifacts.artifactHashes = Object.assign(
+        {},
+        analysisSpatialArtifacts.artifactHashes || {},
+        { relationshipReconciliation: String(manifest.artifacts.relationshipReconciliation.sha256 || "") }
+      );
+      analysisCache.clear();
+    }
+    return {
+      loaded: true,
+      rowCount: rows.length,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHash: String(manifest.artifacts.relationshipReconciliation.sha256 || ""),
+      descriptiveOnly: true,
+    };
+  }
+
+  async function loadAnalysisContextSpatialArtifact(message) {
+    const loadEpoch = ++analysisPartialArtifactLoadEpoch.context;
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_v2/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisV2ManifestSupported(manifest)) {
+      throw new Error("Analysis v2 context-neighbor manifest is invalid or unsupported.");
+    }
+    validateSpatialManifestArtifact(manifest, "contextUfoNeighbors");
+    assertPartialSpatialManifestCompatible(manifest);
+    if (Array.isArray(analysisSpatialArtifacts.contextNeighbors) && analysisSpatialArtifacts.contextNeighbors.length) {
+      return {
+        loaded: true,
+        rowCount: analysisSpatialArtifacts.contextNeighbors.length,
+        releaseId: String(analysisSpatialArtifacts.manifest && analysisSpatialArtifacts.manifest.releaseId || ""),
+        artifactHash: String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.contextUfoNeighbors || ""),
+        fullSpatialLoaded: Boolean(analysisSpatialArtifacts.loaded),
+      };
+    }
+    if (analysisFullSpatialLoadsInFlight > 0) {
+      throw new Error("Analysis context-neighbor artifact setup is deferred while the full spatial release is loading.");
+    }
+    const artifactUrl = urls.contextNeighbors || urls.contextUfoNeighbors ||
+      manifestArtifactUrl(manifest, "contextUfoNeighbors", manifestUrl);
+    if (!artifactUrl) throw new Error("Analysis v2 manifest is missing the context-neighbor projection URL.");
+    const payload = await fetchAnalysisJson(
+      artifactUrl,
+      manifestArtifactIntegrity(manifest, "contextUfoNeighbors")
+    );
+    const rows = validateLoadedSpatialArtifact(payload, manifest, "contextUfoNeighbors");
+    if (loadEpoch !== analysisPartialArtifactLoadEpoch.context) {
+      throw new Error("Analysis context-neighbor artifact setup was superseded by a newer spatial release request.");
+    }
+    assertPartialSpatialManifestCompatible(manifest);
+    if (Array.isArray(analysisSpatialArtifacts.contextNeighbors) && analysisSpatialArtifacts.contextNeighbors.length) {
+      return {
+        loaded: true,
+        rowCount: analysisSpatialArtifacts.contextNeighbors.length,
+        releaseId: String(analysisSpatialArtifacts.manifest && analysisSpatialArtifacts.manifest.releaseId || ""),
+        artifactHash: String(analysisSpatialArtifacts.artifactHashes && analysisSpatialArtifacts.artifactHashes.contextUfoNeighbors || ""),
+        fullSpatialLoaded: Boolean(analysisSpatialArtifacts.loaded),
+      };
+    }
+    if (!analysisSpatialArtifacts.loaded) {
+      analysisSpatialArtifacts.manifest = manifest;
+      analysisSpatialArtifacts.contextNeighbors = rows;
+      analysisSpatialArtifacts.codebooks = manifest.codes && typeof manifest.codes === "object" ? manifest.codes : {};
+      analysisSpatialArtifacts.artifactHashes = Object.assign(
+        {},
+        analysisSpatialArtifacts.artifactHashes || {},
+        { contextUfoNeighbors: String(manifest.artifacts.contextUfoNeighbors.sha256 || "") }
+      );
+      analysisCache.clear();
+    }
+    return {
+      loaded: true,
+      rowCount: rows.length,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHash: String(manifest.artifacts.contextUfoNeighbors.sha256 || ""),
+      fullSpatialLoaded: Boolean(analysisSpatialArtifacts.loaded),
+    };
   }
 
   function manifestDomainEntry(manifest, domain) {
@@ -1839,7 +2569,17 @@
         coordinateSource: dictionaries.coordinateSource.values.length,
         country: dictionaries.country.values.length,
         adminRegion: dictionaries.adminRegion.values.length,
+        analysisCountry: dictionaries.analysisCountry.values.length,
+        analysisMacroregion: dictionaries.analysisMacroregion.values.length,
+        geographyAssignmentSource: dictionaries.geographyAssignmentSource.values.length,
+        geographyAssignmentConfidence: dictionaries.geographyAssignmentConfidence.values.length,
+        geographyBoundaryStatus: dictionaries.geographyBoundaryStatus.values.length,
         duplicateLineage: dictionaries.duplicateLineage.values.length,
+      },
+      geographyProjection: {
+        loaded: Boolean(analysisGeographyArtifact.loaded),
+        appliedRows: Number(analysisGeographyArtifact.appliedRows) || 0,
+        artifactHash: String(analysisGeographyArtifact.artifactHash || ""),
       },
     };
   }
@@ -1853,6 +2593,9 @@
     analysisGridKeys = createDictionary();
     analysisCoordinatePileKeys = createDictionary();
     analysisCoordinatePileCounts = new Map();
+    analysisGeographyArtifact = {
+      manifest: null, rows: null, codes: {}, loaded: false, appliedRows: 0, artifactHash: "",
+    };
     analysisCache.clear();
     analysisMatchCache.clear();
   }
@@ -1930,6 +2673,66 @@
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),
             cancellationGeneration: Number(message.cancellationGeneration) || 0,
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisGeographyArtifact") {
+        loadAnalysisGeographyArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisGeographyArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisRelationshipArtifact") {
+        loadAnalysisRelationshipArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisRelationshipArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisContextSpatialArtifact") {
+        loadAnalysisContextSpatialArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisContextSpatialArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
             error: error && error.message ? error.message : String(error),
           });
         });

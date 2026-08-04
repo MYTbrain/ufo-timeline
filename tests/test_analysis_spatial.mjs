@@ -208,6 +208,10 @@ test("facility candidate indexing prefilters the 70-record inferential pool", ()
     bootstrapCount: 0,
   });
   assert.equal(result.inferentialFacilityN, 70);
+  assert.equal(result.catalogSummary.totalN, 70);
+  assert.equal(result.catalogSummary.inferentialEligibleN, 70);
+  assert.equal(result.catalogSummary.byFacilityClass.military, 70);
+  assert.match(result.catalogSummary.coverageLimitations.join(" "), /northern_europe.*new_zealand/);
   assert.equal(result.prefilter.naiveDistanceEvaluationN, 14_000);
   assert.ok(result.prefilter.distanceEvaluationN < result.prefilter.naiveDistanceEvaluationN / 5, JSON.stringify(result.prefilter));
   assert.equal(result.prefilter.packedFacilitySchema[13], "inferentialEligible");
@@ -346,6 +350,21 @@ test("full catalog spatial output is overlap-descriptive and emits no inferentia
   })(result);
 });
 
+test("whole-corpus internal structure is not downgraded by the legacy full-catalog token", () => {
+  const rows = [];
+  for (let index = 0; index < 30; index += 1) {
+    rows.push(eligibleRow({ eventId: String(index + 1), source: index % 2 ? "a" : "b" }));
+  }
+  const result = spatial.computeSpatialAnalysis({
+    rows, edges: [], facilities: [], baselineMode: "full_catalog",
+    analysisMode: "whole_corpus_structure", comparisonState: "whole_corpus_structure",
+    inferenceEnabled: true, permutationCount: 0, bootstrapCount: 0,
+  });
+  assert.equal(result.analysisMode, "whole_corpus_structure");
+  assert.equal(result.inferenceEnabled, true);
+  assert.notEqual(result.cooccurrence.crossSource[0].status, "descriptive_only");
+});
+
 test("co-occurrence audits packed edges and publishes source and region holdouts", () => {
   const rows = [];
   for (let index = 0; index < 120; index += 1) {
@@ -379,4 +398,141 @@ test("co-occurrence audits packed edges and publishes source and region holdouts
   assert.equal(result.sourceStability.evaluatedHoldouts.length, 2);
   assert.equal(result.regionStability.evaluatedHoldouts.length, 2);
   assert.ok(result.cells.every((cell) => "sourceSensitivity" in cell && "regionSensitivity" in cell));
+});
+
+test("pinned spatial points replace mutable runtime endpoint fields", () => {
+  const codes = {
+    source: ["ufocat"], craft: ["triangle"], craftConfidence: ["high"],
+    sameDayMatchStrength: ["strong"], coordinateEvidence: ["source_coordinates"],
+    fineSpatialStratum: ["ea12x24:8:4"], coarseSpatialStratum: ["ea6x12:4:2"],
+    duplicateLineage: ["canonical_deduped_event"],
+  };
+  const packed = [
+    1, 35, -117, 730486, 2000, 0, 0, 0, 0, 0, "pile-a", 1, 0, 0, 2000, 2000, 0,
+  ];
+  const rows = spatial.pinnedRowsForActiveCohort(
+    [{ eventId: "1", craftType: "disc_saucer", source: "mutated-runtime" }],
+    [packed],
+    codes
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].craftType, "triangle");
+  assert.equal(rows[0].source, "ufocat");
+  assert.equal(rows[0].analysisFineSpatialStratum, "ea12x24:8:4");
+});
+
+test("rough-marker context estimates are tested while exact-site claims remain prohibited", () => {
+  const rows = [];
+  const activeRows = [];
+  for (let cluster = 0; cluster < 40; cluster += 1) {
+    const eventId = String(cluster + 1);
+    activeRows.push({ eventId });
+    const shared = {
+      contextDomainCode: "animal",
+      contextLaneCode: "animal_public_marker",
+      contextId: `animal-${cluster}`,
+      contextClusterId: `cluster-${cluster}`,
+      contextOrdinal: 730486,
+      ufoEventId: eventId,
+      distanceDecameters: 100,
+      dayLag: 0,
+      distanceRingCode: "0_25_km",
+      dayLagBandCode: "same_day",
+      uncertaintyClassCode: "public_marker_ambiguous",
+      contextUncertaintyKm: null,
+      ufoCraftCode: "triangle",
+      ufoSourceCode: cluster % 2 ? "source-b" : "source-a",
+      ufoFineSpatialStratumCode: "fine-1",
+      ufoCoarseSpatialStratumCode: cluster % 2 ? "region-b" : "region-a",
+      featureGroupCode: cluster < 5 ? "equine" : "bovine",
+      originUfoExcluded: false,
+      originPublisherExcluded: false,
+      independentAssociationEligible: true,
+    };
+    if (cluster < 30) rows.push({ ...shared, dateRoleCode: "observed_reported_date" });
+    if (cluster < 12) {
+      for (const role of [
+        "matched_control_minus_2y", "matched_control_minus_1y",
+        "matched_control_plus_1y", "matched_control_plus_2y",
+      ]) rows.push({ ...shared, dateRoleCode: role });
+    }
+  }
+  rows.push({
+    ...rows[0], contextId: "excluded-origin", originPublisherExcluded: true,
+    independentAssociationEligible: false,
+  });
+  const options = {
+    activeRows, neighbors: rows, permutationCount: 499, bootstrapCount: 49,
+    inferenceEnabled: true, seed: "context-marker-fixture",
+  };
+  const first = spatial.computeContextAssociations(options);
+  const second = spatial.computeContextAssociations(options);
+  assert.deepEqual(first, second);
+  const lane = first.lanes.find((value) => value.lane === "animal_public_marker");
+  const cell = lane.cells.find((value) => value.row === "0_25_km" && value.column === "same_day");
+  assert.equal(cell.observedClusterCount, 30);
+  assert.equal(cell.expectedClusterCount, 12);
+  assert.equal(cell.estimateAvailable, true);
+  assert.equal(cell.inferenceEligible, true);
+  assert.equal(cell.patternFinderEligible, false);
+  assert.equal(lane.definiteNearEligible, false);
+  assert.equal(lane.excludedObservedPairN, 1);
+  assert.match(lane.policyWarnings.join(" "), /Public-marker association only/i);
+  assert.ok(lane.featureAssociation.axes.columns.includes("other_sparse_species"));
+  assert.ok(lane.featureAssociation.completeAccessibleTable.axes.columns.includes("equine"));
+  assert.ok(lane.featureAssociation.cells.every((value) => "observedClusterCount" in value && "qValue" in value));
+});
+
+test("empty active cohort retains context sentinels but admits no real neighbors", () => {
+  const shared = {
+    contextDomainCode: "crop", contextLaneCode: "crop_locality", contextId: "crop-1",
+    contextClusterId: "cluster-1", contextOrdinal: 730486,
+    uncertaintyClassCode: "no_neighbor_in_window", contextUncertaintyKm: 15,
+    featureGroupCode: "single_disc_or_circle", originUfoExcluded: false,
+    originPublisherExcluded: false, independentAssociationEligible: true,
+    dateRoleCode: "observed_catalog_date",
+  };
+  const result = spatial.computeContextAssociations({
+    activeRows: [],
+    neighbors: [
+      {
+        ...shared, ufoEventId: "99", distanceDecameters: 100, dayLag: 0,
+        distanceRingCode: "0_25_km", dayLagBandCode: "same_day",
+        ufoCraftCode: "triangle", ufoSourceCode: "source-a",
+        ufoFineSpatialStratumCode: "fine-a", ufoCoarseSpatialStratumCode: "coarse-a",
+      },
+      {
+        ...shared, ufoEventId: null, distanceDecameters: null, dayLag: null,
+        distanceRingCode: "none", dayLagBandCode: "none", ufoCraftCode: "none",
+        ufoSourceCode: "none", ufoFineSpatialStratumCode: "none",
+        ufoCoarseSpatialStratumCode: "none",
+      },
+    ],
+    permutationCount: 0, bootstrapCount: 0,
+  });
+  const lane = result.lanes.find((value) => value.lane === "crop_locality");
+  assert.equal(lane.contextClusterN, 1);
+  assert.equal(lane.observedPairN, 0);
+  assert.equal(lane.observedContextClusterN, 0);
+});
+
+test("relationship summaries preserve provenance lanes and reconciliation states", () => {
+  const result = spatial.computeRelationshipSummary([
+    { relationshipId: "r1", assertionMode: "explicit_source", relationshipType: "reported_nearby", reconciliationStatus: "reconciled_current" },
+    { relationshipId: "r2", assertionMode: "deterministic_match", relationshipType: "regional_context", reconciliationStatus: "quarantined_object" },
+    { relationshipId: "r3", assertionMode: "deterministic_match", relationshipType: "regional_context", reconciliationStatus: "quarantined_object" },
+  ]);
+  assert.equal(result.totalN, 3);
+  assert.equal(result.descriptiveOnly, true);
+  assert.deepEqual(result.lanes, ["deterministic_match", "explicit_source"]);
+  assert.equal(result.cells.find((cell) => cell.lane === "deterministic_match").count, 2);
+});
+
+test("empty active cohort excludes current-UFO relationships unless include-all is explicit", () => {
+  const rows = [
+    { relationshipId: "current", currentUfoEventId: "99", assertionMode: "explicit_source", relationshipType: "reported_nearby", reconciliationStatus: "reconciled_current" },
+    { relationshipId: "unresolved", currentUfoEventId: null, assertionMode: "deterministic_match", relationshipType: "regional_context", reconciliationStatus: "quarantined_object" },
+  ];
+  assert.equal(spatial.computeRelationshipSummary(rows, {}, []).totalN, 1);
+  assert.equal(spatial.computeRelationshipSummary(rows, {}, [], { includeAllWhenNoActiveRows: true }).totalN, 2);
 });

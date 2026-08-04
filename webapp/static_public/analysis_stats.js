@@ -12,9 +12,10 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_balanced_common_support_2";
+  const ESTIMATOR_VERSION = "analysis_v2_2_visual_evidence_dashboard_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
+  const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
   const BASELINE_MODES = Object.freeze({
     OTHER_DATES_BALANCED: "other_dates_balanced",
     // Public compatibility key; the legacy input is normalized immediately
@@ -22,7 +23,22 @@
     OTHER_DATES_MATCHED: "other_dates_balanced",
     PREVIOUS_EQUAL_DURATION: "previous_equal_duration",
     FULL_CATALOG: "full_catalog",
+    INTERNAL_STRUCTURE: "internal_structure",
   });
+  const ANALYSIS_MODES = Object.freeze({
+    COHORT_COMPARISON: "cohort_comparison",
+    WHOLE_CORPUS_STRUCTURE: "whole_corpus_structure",
+  });
+  const COMPARISON_STATES = Object.freeze({
+    INFERENTIAL: "inferential",
+    DESCRIPTIVE_OVERLAP: "descriptive_overlap",
+    WHOLE_CORPUS_STRUCTURE: "whole_corpus_structure",
+    UNAVAILABLE_NO_REFERENCE: "unavailable_no_reference",
+    UNAVAILABLE_SELF_COMPARISON: "unavailable_self_comparison",
+  });
+  const MONTH_AXIS_ORDER = Object.freeze(Array.from({ length: 12 }, function (_unused, index) {
+    return String(index + 1).padStart(2, "0");
+  }));
   const FAMILY_ORDER = Object.freeze([
     "craft",
     "time_month",
@@ -101,6 +117,46 @@
     return Array.from(map.keys()).sort(function (left, right) {
       return String(left).localeCompare(String(right));
     });
+  }
+
+  function semanticAxisRank(value, axisType) {
+    const text = String(value == null ? "" : value);
+    if (axisType === "month") {
+      const monthIndex = MONTH_AXIS_ORDER.indexOf(text.padStart(2, "0"));
+      return monthIndex === -1 ? Number.POSITIVE_INFINITY : monthIndex;
+    }
+    if (axisType === "year" || axisType === "decade" || axisType === "numeric") {
+      const numeric = finiteNumber(text.replace(/s$/i, ""));
+      return numeric == null ? Number.POSITIVE_INFINITY : numeric;
+    }
+    if (axisType === "geography") {
+      const match = /(?:ea(?:6x12|12x24):)?(\d+):(\d+)$/.exec(text);
+      if (match) return (Number(match[1]) * 1000) + Number(match[2]);
+    }
+    return null;
+  }
+
+  function semanticAxisCompare(leftValue, rightValue, axisType) {
+    const leftRank = semanticAxisRank(leftValue, axisType);
+    const rightRank = semanticAxisRank(rightValue, axisType);
+    if (leftRank != null && rightRank != null && leftRank !== rightRank) return leftRank - rightRank;
+    if (leftRank != null && rightRank == null) return -1;
+    if (leftRank == null && rightRank != null) return 1;
+    return String(leftValue).localeCompare(String(rightValue), undefined, { numeric: true });
+  }
+
+  function semanticAxisMetadata(valuesValue, axisTypeValue) {
+    const axisType = category(axisTypeValue, "category");
+    const values = Array.from(new Set(Array.from(valuesValue || []).map(function (value) { return String(value); })))
+      .sort(function (left, right) { return semanticAxisCompare(left, right, axisType); });
+    return {
+      type: axisType,
+      order: values,
+      direction: axisType === "year" || axisType === "decade" || axisType === "month" || axisType === "numeric"
+        ? "ascending"
+        : (axisType === "geography" ? "spatial" : "categorical"),
+      orderedBeforeSampling: true,
+    };
   }
 
   function mapCount(map, key) {
@@ -340,6 +396,133 @@
       value = Math.imul(value ^ (value >>> 15), value | 1);
       value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
       return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function hypergeometricSampler(populationValue, successPopulationValue, drawsValue) {
+    const population = Math.max(0, Math.round(finiteNumber(populationValue) || 0));
+    const successPopulation = clamp(
+      Math.round(finiteNumber(successPopulationValue) || 0),
+      0,
+      population
+    );
+    const draws = clamp(Math.round(finiteNumber(drawsValue) || 0), 0, population);
+    const lower = Math.max(0, draws - (population - successPopulation));
+    const upper = Math.min(draws, successPopulation);
+    if (lower >= upper) {
+      return function () { return lower; };
+    }
+
+    // Construct the finite hypergeometric CDF relative to its mode.  This is
+    // the exact conditional distribution produced by permuting column labels
+    // inside one stratum while holding both margins fixed.  Starting at the
+    // mode keeps the recurrence numerically stable even for the full catalog.
+    const mode = clamp(
+      Math.floor(((draws + 1) * (successPopulation + 1)) / (population + 2)),
+      lower,
+      upper
+    );
+    const leftValues = [mode];
+    const leftWeights = [1];
+    let value = mode;
+    let weight = 1;
+    while (value > lower) {
+      const numerator = value * (population - successPopulation - draws + value);
+      const denominator = (successPopulation - value + 1) * (draws - value + 1);
+      weight *= denominator > 0 ? numerator / denominator : 0;
+      value -= 1;
+      if (!(weight > 0) || !Number.isFinite(weight)) break;
+      leftValues.push(value);
+      leftWeights.push(weight);
+    }
+    const rightValues = [];
+    const rightWeights = [];
+    value = mode;
+    weight = 1;
+    while (value < upper) {
+      const numerator = (successPopulation - value) * (draws - value);
+      const denominator = (value + 1) * (population - successPopulation - draws + value + 1);
+      weight *= denominator > 0 ? numerator / denominator : 0;
+      value += 1;
+      if (!(weight > 0) || !Number.isFinite(weight)) break;
+      rightValues.push(value);
+      rightWeights.push(weight);
+    }
+
+    const values = leftValues.slice().reverse().concat(rightValues);
+    const weights = leftWeights.slice().reverse().concat(rightWeights);
+    const totalWeight = weights.reduce(function (sum, item) { return sum + item; }, 0);
+    const cumulative = new Array(weights.length);
+    let running = 0;
+    weights.forEach(function (item, index) {
+      running += item / totalWeight;
+      cumulative[index] = running;
+    });
+    cumulative[cumulative.length - 1] = 1;
+    return function (random) {
+      const target = random();
+      let low = 0;
+      let high = cumulative.length - 1;
+      while (low < high) {
+        const middle = (low + high) >>> 1;
+        if (target <= cumulative[middle]) high = middle;
+        else low = middle + 1;
+      }
+      return values[low];
+    };
+  }
+
+  function deterministicStratifiedCellPermutation(strataValue, optionsValue) {
+    const options = optionsValue || {};
+    const strata = (Array.isArray(strataValue) ? strataValue : []).filter(function (entry) {
+      return entry && entry.population > 0 && entry.expected > 0;
+    });
+    const replicateCount = Math.max(
+      1,
+      finiteInteger(options.replicates) || DEFAULT_ASSOCIATION_PERMUTATIONS
+    );
+    const seed = String(options.seed == null ? "analysis-v2.2-association" : options.seed);
+    const observed = strata.reduce(function (sum, entry) { return sum + entry.observed; }, 0);
+    const expected = strata.reduce(function (sum, entry) { return sum + entry.expected; }, 0);
+    if (!(expected > 0) || !strata.length) {
+      return {
+        pValue: null,
+        method: "deterministic_stratified_permutation",
+        permutations: 0,
+        seed,
+        status: "not_estimable",
+      };
+    }
+    const samplerCache = options.samplerCache instanceof Map ? options.samplerCache : new Map();
+    const samplers = strata.map(function (entry) {
+      const population = Math.round(entry.population);
+      const successPopulation = Math.round(entry.columnTotal);
+      const draws = Math.round(entry.rowTotal);
+      const cacheKey = population + "|" + successPopulation + "|" + draws;
+      if (!samplerCache.has(cacheKey)) {
+        samplerCache.set(cacheKey, hypergeometricSampler(population, successPopulation, draws));
+      }
+      return samplerCache.get(cacheKey);
+    });
+    const random = deterministicRandom(seed);
+    const observedDistance = Math.abs(observed - expected);
+    let asOrMoreExtreme = 0;
+    for (let replicate = 0; replicate < replicateCount; replicate += 1) {
+      let permutedObserved = 0;
+      for (let index = 0; index < samplers.length; index += 1) {
+        permutedObserved += samplers[index](random);
+      }
+      if (Math.abs(permutedObserved - expected) + 1e-12 >= observedDistance) {
+        asOrMoreExtreme += 1;
+      }
+    }
+    return {
+      pValue: (asOrMoreExtreme + 1) / (replicateCount + 1),
+      method: "deterministic_stratified_permutation",
+      permutations: replicateCount,
+      seed,
+      extremeReplicates: asOrMoreExtreme,
+      status: "estimated",
     };
   }
 
@@ -675,12 +858,17 @@
       const cell = Object.assign({}, cellValue || {});
       const observed = Math.max(0, finiteNumber(cell.observed != null ? cell.observed : cell.activeCount) || 0);
       const referenceCount = Math.max(0, finiteNumber(cell.referenceCount != null ? cell.referenceCount : cell.reference) || 0);
-      const expected = finiteNumber(cell.expected != null ? cell.expected : cell.minimumExpectedCell);
+      const expected = finiteNumber(cell.expectedCount != null ? cell.expectedCount
+        : (cell.expected != null ? cell.expected : cell.minimumExpectedCell));
       const commonSupportRate = finiteNumber(cell.commonSupportRate);
       const reasons = [];
-      let status = "eligible";
-      if (observed === 0 && referenceCount === 0) {
-        status = "structurally_empty";
+      const explicitEstimateAvailable = typeof cell.estimateAvailable === "boolean" ? cell.estimateAvailable : null;
+      const estimateAvailable = explicitEstimateAvailable == null
+        ? (observed > 0 || referenceCount > 0 || (expected != null && expected > 0))
+        : explicitEstimateAvailable;
+      const structurallyEmpty = cell.structurallyEmpty === true || !estimateAvailable;
+      let inferenceEligible = cell.inferenceEligible === true;
+      if (structurallyEmpty) {
         reasons.push("both_zero");
       } else {
         if (expected != null && expected < minimumExpectedCell) reasons.push("expected_cell");
@@ -690,7 +878,10 @@
             if (reasons.indexOf(reason) === -1) reasons.push(reason);
           });
         }
-        if (reasons.length) status = "suppressed";
+        if (cell.inferenceEligible == null) {
+          inferenceEligible = (expected == null || expected >= minimumExpectedCell) &&
+            (commonSupportRate == null || commonSupportRate >= minimumCommonSupport);
+        }
       }
       const effect = finiteNumber(
         cell.conservativeEffect != null ? cell.conservativeEffect
@@ -700,17 +891,25 @@
       cell.key = category(cell.key, "cell-" + index);
       cell.row = category(cell.row, "row");
       cell.column = category(cell.column, "column");
-      cell.displayStatus = status;
-      cell.displayEligible = status === "eligible";
+      cell.observed = observed;
+      cell.activeCount = finiteNumber(cell.activeCount) == null ? observed : cell.activeCount;
+      cell.expectedCount = expected;
+      cell.estimateAvailable = !structurallyEmpty;
+      cell.tested = cell.tested === true;
+      cell.inferenceEligible = !structurallyEmpty && inferenceEligible && reasons.length === 0;
+      cell.lowSupport = !structurallyEmpty && !cell.inferenceEligible;
+      cell.displayStatus = structurallyEmpty ? "structurally_empty"
+        : (cell.inferenceEligible ? "eligible" : (cell.comparisonState === COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE ? "descriptive" : "low_support"));
+      cell.displayEligible = !structurallyEmpty;
       cell.suppressionReasons = reasons;
       cell.conservativeEffect = finiteNumber(cell.conservativeEffect) == null ? Math.abs(effect || 0) : Math.abs(finiteNumber(cell.conservativeEffect));
-      cell.zeroObservedQualifiedDepletion = status === "eligible" && observed === 0 && referenceCount > 0;
+      cell.zeroObservedQualifiedDepletion = cell.inferenceEligible && observed === 0 && (referenceCount > 0 || (expected != null && expected > 0));
       return cell;
     });
-    const eligible = fullCells.filter(function (cell) { return cell.displayEligible; });
+    const estimable = fullCells.filter(function (cell) { return cell.estimateAvailable; });
     const rowScores = new Map();
     const columnScores = new Map();
-    eligible.forEach(function (cell) {
+    estimable.forEach(function (cell) {
       rowScores.set(cell.row, Math.max(mapCount(rowScores, cell.row), cell.conservativeEffect));
       columnScores.set(cell.column, Math.max(mapCount(columnScores, cell.column), cell.conservativeEffect));
     });
@@ -721,10 +920,11 @@
     }
     const selectedRows = selectedKeys(rowScores, maximumRows);
     const selectedColumns = selectedKeys(columnScores, maximumColumns);
-    const visibleCells = eligible.filter(function (cell) {
+    const visibleCells = estimable.filter(function (cell) {
       return selectedRows.has(cell.row) && selectedColumns.has(cell.column);
     }).sort(function (left, right) {
-      return String(left.row).localeCompare(String(right.row)) || String(left.column).localeCompare(String(right.column));
+      return semanticAxisCompare(left.row, right.row, options.rowAxisType) ||
+        semanticAxisCompare(left.column, right.column, options.columnAxisType);
     });
     return {
       visibleCells,
@@ -736,12 +936,16 @@
         minimumCommonSupport,
         inputCellCount: input.length,
         visibleCellCount: visibleCells.length,
-        eligibleCellCount: eligible.length,
-        suppressedCellCount: fullCells.filter(function (cell) { return cell.displayStatus === "suppressed"; }).length,
+        estimateAvailableCellCount: estimable.length,
+        eligibleCellCount: fullCells.filter(function (cell) { return cell.inferenceEligible; }).length,
+        lowSupportCellCount: fullCells.filter(function (cell) { return cell.lowSupport; }).length,
+        suppressedCellCount: fullCells.filter(function (cell) { return cell.suppressionReasons.length > 0; }).length,
         structuralEmptyCellCount: fullCells.filter(function (cell) { return cell.displayStatus === "structurally_empty"; }).length,
-        selectedRows: Array.from(selectedRows).sort(),
-        selectedColumns: Array.from(selectedColumns).sort(),
-        policy: "Both-zero cells are omitted; qualified zero observations remain visible as depletions; suppressed cells are never encoded as zero.",
+        selectedRows: Array.from(selectedRows).sort(function (left, right) { return semanticAxisCompare(left, right, options.rowAxisType); }),
+        selectedColumns: Array.from(selectedColumns).sort(function (left, right) { return semanticAxisCompare(left, right, options.columnAxisType); }),
+        rowAxis: semanticAxisMetadata(selectedRows, options.rowAxisType),
+        columnAxis: semanticAxisMetadata(selectedColumns, options.columnAxisType),
+        policy: "Structurally empty cells are omitted. Every estimable cell remains visible; low support limits inference but never replaces a numeric estimate with a suppression label.",
       },
     };
   }
@@ -784,11 +988,30 @@
 
   function adjustedStandardizedResiduals(inputValue, optionsValue) {
     const options = optionsValue || {};
+    const comparisonState = options.comparisonState || COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE;
     const stratified = normalizedStratifiedMatrix(inputValue);
+    const orderedStrata = Array.from(stratified.entries()).sort(function (left, right) {
+      return String(left[0]).localeCompare(String(right[0]));
+    });
+    let inputSignature = 2166136261;
+    orderedStrata.forEach(function (entry) {
+      const matrixEntries = Array.from(entry[1].entries()).sort(function (left, right) {
+        return String(left[0]).localeCompare(String(right[0]));
+      });
+      const signaturePart = String(entry[0]) + "\u001e" + matrixEntries.map(function (cell) {
+        return String(cell[0]) + "=" + String(cell[1]);
+      }).join("\u001d");
+      for (let index = 0; index < signaturePart.length; index += 1) {
+        inputSignature ^= signaturePart.charCodeAt(index);
+        inputSignature = Math.imul(inputSignature, 16777619);
+      }
+    });
+    inputSignature >>>= 0;
     const rowTotalsAll = new Map();
     const columnTotalsAll = new Map();
     let totalReportCount = 0;
-    stratified.forEach(function (matrix) {
+    orderedStrata.forEach(function (stratumEntry) {
+      const matrix = stratumEntry[1];
       matrix.forEach(function (count, composite) {
         const parts = composite.split("\u0000");
         incrementRaw(rowTotalsAll, parts[0], count);
@@ -800,7 +1023,9 @@
     const columnSelection = selectedAssociationCategories(columnTotalsAll, options.maximumColumns);
     const aggregates = new Map();
     let includedReportCount = 0;
-    stratified.forEach(function (matrix) {
+    orderedStrata.forEach(function (stratumEntry) {
+      const stratumKey = stratumEntry[0];
+      const matrix = stratumEntry[1];
       const pooled = new Map();
       matrix.forEach(function (count, composite) {
         const parts = composite.split("\u0000");
@@ -830,18 +1055,57 @@
           const columnShare = rate(columnTotal, stratumTotal);
           const variance = expected * Math.max(0, (1 - rowShare) * (1 - columnShare));
           if (!aggregates.has(composite)) {
-            aggregates.set(composite, { row, column, observed: 0, expected: 0, variance: 0 });
+            aggregates.set(composite, {
+              row,
+              column,
+              observed: 0,
+              expected: 0,
+              variance: 0,
+              supportingStrataCount: 0,
+              permutationStrata: [],
+            });
           }
           const aggregate = aggregates.get(composite);
           aggregate.observed += observed;
           aggregate.expected += expected;
           aggregate.variance += variance;
+          if (expected > 0) {
+            aggregate.supportingStrataCount += 1;
+            aggregate.permutationStrata.push({
+              key: stratumKey,
+              population: stratumTotal,
+              rowTotal,
+              columnTotal,
+              observed,
+              expected,
+            });
+          }
         });
       });
     });
+    const permutationCount = Math.max(
+      1,
+      finiteInteger(options.permutationCount) || DEFAULT_ASSOCIATION_PERMUTATIONS
+    );
+    const permutationSeed = String(options.permutationSeed == null
+      ? [
+        "analysis-v2.2-adjusted-association",
+        category(options.associationLabel, "association"),
+        comparisonState,
+        inputSignature.toString(16).padStart(8, "0"),
+      ].join("|")
+      : options.permutationSeed);
+    const samplerCache = new Map();
     const cells = Array.from(aggregates.values()).map(function (entry) {
       const residual = entry.variance > 0 ? (entry.observed - entry.expected) / Math.sqrt(entry.variance) : 0;
-      const pValue = entry.variance > 0 ? clamp(2 * (1 - normalCdf(Math.abs(residual))), 0, 1) : 1;
+      const estimateAvailable = entry.expected > 0 || entry.observed > 0;
+      const tested = estimateAvailable && entry.expected > 0;
+      const permutation = tested ? deterministicStratifiedCellPermutation(entry.permutationStrata, {
+        replicates: permutationCount,
+        seed: permutationSeed + "|" + entry.row + "\u0000" + entry.column,
+        samplerCache,
+      }) : null;
+      const enrichment = entry.expected > 0 ? entry.observed / entry.expected : null;
       return {
         key: entry.row + "\u0000" + entry.column,
         label: entry.row + " / " + entry.column,
@@ -850,61 +1114,107 @@
         value: round(residual, 6),
         count: entry.observed,
         observed: entry.observed,
+        observedCount: entry.observed,
         expected: round(entry.expected, 6),
+        expectedCount: round(entry.expected, 6),
+        conditionalExpectedCount: round(entry.expected, 6),
+        observedExpectedRatio: enrichment == null ? null : round(enrichment, 8),
+        log2ObservedExpected: enrichment != null && enrichment > 0 ? round(Math.log2(enrichment), 8) : null,
         standardizedResidual: round(residual, 6),
-        pValue: round(pValue, 12),
-        qValue: 1,
+        variance: round(entry.variance, 8),
+        supportingStrataCount: entry.supportingStrataCount,
+        comparisonState,
+        comparisonBasis: "conditional_expectation",
+        estimateAvailable,
+        structurallyEmpty: !estimateAvailable,
+        tested,
+        pValue: tested && permutation ? round(permutation.pValue, 12) : null,
+        pValueMethod: tested && permutation ? permutation.method : null,
+        permutationCount: tested && permutation ? permutation.permutations : 0,
+        permutationSeed: tested && permutation ? permutation.seed : null,
+        permutationExtremeReplicates: tested && permutation ? permutation.extremeReplicates : null,
+        qValue: null,
       };
     });
-    const qValues = benjaminiHochberg(cells);
-    cells.forEach(function (cell, index) { cell.qValue = round(qValues[index], 12); });
-    const minimumExpectedCell = cells.length ? Math.min.apply(null, cells.map(function (cell) { return cell.expected; })) : 0;
+    const estimableCells = cells.filter(function (cell) { return cell.estimateAvailable; });
+    const minimumExpectedCell = estimableCells.length
+      ? Math.min.apply(null, estimableCells.map(function (cell) { return cell.expectedCount; }))
+      : 0;
     const chiSquared = cells.reduce(function (sum, cell) {
-      return sum + (cell.standardizedResidual * cell.standardizedResidual);
+      return sum + (cell.expectedCount > 0 ? Math.pow(cell.observedCount - cell.expectedCount, 2) / cell.expectedCount : 0);
     }, 0);
     const rowCount = rowSelection.selected.size;
     const columnCount = columnSelection.selected.size;
     const dimension = Math.min(Math.max(0, rowCount - 1), Math.max(0, columnCount - 1));
     const cramersV = includedReportCount > 0 && dimension > 0
-      ? Math.sqrt(chiSquared / (includedReportCount * dimension))
+      ? clamp(Math.sqrt(chiSquared / (includedReportCount * dimension)), 0, 1)
       : 0;
-    const tableEligible = rowCount >= 2 && columnCount >= 2 && minimumExpectedCell >= 10 && cramersV >= 0.10;
+    const tableTestable = rowCount >= 2 && columnCount >= 2 && includedReportCount > 0;
     cells.forEach(function (cell) {
       const reasons = [];
-      if (!tableEligible) {
-        if (minimumExpectedCell < 10) reasons.push("expected_cell");
-        if (cramersV < 0.10) reasons.push("cramers_v");
-      }
-      if (cell.qValue > 0.05) reasons.push("q_value");
-      cell.displayStatus = reasons.length ? "suppressed" : "eligible";
-      cell.displayEligible = reasons.length === 0;
+      if (!cell.estimateAvailable) reasons.push("structurally_empty");
+      if (!tableTestable) reasons.push("table_structure");
+      if (!(cell.variance > 0)) reasons.push("zero_variance");
+      if (cell.expectedCount < 10) reasons.push("expected_cell");
+      cell.inferenceEligible = cell.estimateAvailable && tableTestable && cell.tested && cell.variance > 0 && cell.expectedCount >= 10;
+      cell.lowSupport = cell.estimateAvailable && !cell.inferenceEligible;
+      cell.displayStatus = !cell.estimateAvailable ? "structurally_empty" : (cell.inferenceEligible ? "estimated" : "low_support");
+      cell.displayEligible = cell.estimateAvailable;
       cell.suppressionReasons = reasons;
+      cell.suppressionStatus = reasons.length ? "limited" : "eligible";
+      cell.suppression = { status: cell.suppressionStatus, reasons: reasons.slice() };
       cell.estimatorVersion = ESTIMATOR_VERSION;
     });
-    const eligibleCells = tableEligible ? cells.filter(function (cell) { return cell.displayEligible; }) : [];
+    assignEligibleBenjaminiHochberg(cells);
+    cells.forEach(function (cell) {
+      const findingReasons = cell.suppressionReasons.slice();
+      if (cramersV < 0.10) findingReasons.push("cramers_v");
+      if (cell.inferenceEligible && (cell.qValue == null || cell.qValue > 0.05)) findingReasons.push("q_value");
+      cell.statisticallyQualified = cell.inferenceEligible && cramersV >= 0.10 && cell.qValue != null && cell.qValue <= 0.05;
+      cell.findingEligible = cell.statisticallyQualified;
+      cell.qualificationReasons = findingReasons;
+      cell.tableCramersV = round(cramersV, 8);
+    });
+    const orderedCells = cells.sort(function (left, right) {
+      return semanticAxisCompare(left.row, right.row, options.rowAxisType) ||
+        semanticAxisCompare(left.column, right.column, options.columnAxisType);
+    });
     const associationLabel = category(options.associationLabel, "craft-by-source");
-    const policyWarning = "Adjusted " + associationLabel + " association. Residual cells are emitted only when every expected cell is at least 10, table-level Cramer's V is at least 0.10, and the cell-wise BH q-value is at most 0.05; neither axis is evidence of craft identity or cause.";
+    const policyWarning = "Adjusted " + associationLabel + " association. Every estimable cell is displayed with its conditional expected count and receives a deterministic stratified permutation test when expected support is positive. Expected count, FDR, and effect gates qualify inference and findings but never erase descriptive estimates; neither axis is evidence of craft identity or cause.";
     return {
-      cells: eligibleCells.sort(function (left, right) {
-        return String(left.row).localeCompare(String(right.row)) || String(left.column).localeCompare(String(right.column));
-      }),
-      fullCells: cells,
+      cells: orderedCells.filter(function (cell) { return cell.estimateAvailable; }),
+      fullCells: orderedCells,
       metadata: {
-        eligible: tableEligible,
-        status: tableEligible ? "eligible" : "suppressed",
+        eligible: tableTestable,
+        status: tableTestable ? "estimated" : "not_estimable",
         estimatorVersion: ESTIMATOR_VERSION,
+        comparisonState,
+        comparisonBasis: "conditional_expectation",
+        pValueMethod: "deterministic_stratified_permutation",
+        permutationCount,
+        permutationSeed,
+        permutationInputHash: inputSignature.toString(16).padStart(8, "0"),
         adjustmentCovariates: Array.isArray(options.covariates) ? options.covariates.slice() : ["coarse_geography", "coordinate_class", "era"],
         cramersV: round(cramersV, 8),
+        materialAssociationDetected: cramersV >= 0.10,
+        associationConclusion: cramersV >= 0.10 ? "material_association_detected" : "no_material_association_detected",
         minimumExpectedCell: round(minimumExpectedCell, 6),
         chiSquared: round(chiSquared, 8),
         degreesOfFreedom: Math.max(0, rowCount - 1) * Math.max(0, columnCount - 1),
         rowCount,
         columnCount,
-        rows: Array.from(rowSelection.selected).sort(),
-        columns: Array.from(columnSelection.selected).sort(),
+        rows: semanticAxisMetadata(rowSelection.selected, options.rowAxisType).order,
+        columns: semanticAxisMetadata(columnSelection.selected, options.columnAxisType).order,
+        rowAxis: semanticAxisMetadata(rowSelection.selected, options.rowAxisType),
+        columnAxis: semanticAxisMetadata(columnSelection.selected, options.columnAxisType),
         includedReportCount,
         excludedReportCount: Math.max(0, totalReportCount - includedReportCount),
         totalReportCount,
+        estimateAvailableCellCount: cells.filter(function (cell) { return cell.estimateAvailable; }).length,
+        testedCellCount: cells.filter(function (cell) { return cell.tested; }).length,
+        inferenceEligibleCellCount: cells.filter(function (cell) { return cell.inferenceEligible; }).length,
+        qualifiedCellCount: cells.filter(function (cell) { return cell.statisticallyQualified; }).length,
+        fdrFamilySize: cells.filter(function (cell) { return cell.inferenceEligible; }).length,
         thresholds: { minimumExpectedCell: 10, minimumCramersV: 0.10, maximumQValue: 0.05 },
         policyWarning,
       },
@@ -1060,6 +1370,7 @@
 
   function explicitCoarseRegion(row) {
     const candidates = [
+      row && row.analysisMacroregion,
       row && row.analysisCoarseSpatialStratum,
       row && row.coarseSpatialStratum,
       row && row.analysisRegionId,
@@ -1072,6 +1383,172 @@
       if (value) return value;
     }
     return "";
+  }
+
+  function countryForRow(row, mapped) {
+    if (!mapped) return "Unmapped";
+    const rawCountry = row && row.analysisCountry != null
+      ? row.analysisCountry
+      : (row && row.country != null ? row.country : row && row.countryName);
+    const value = category(
+      rawCountry,
+      "Unknown country"
+    );
+    return isKnown(value) ? value : "Unknown country";
+  }
+
+  function countryGeographyKey(row, mapped, coordClass) {
+    return category(coordClass, "unmapped") + "|country:" + countryForRow(row, mapped);
+  }
+
+  function countryGeographyMetadata(keyValue) {
+    const key = String(keyValue || "");
+    const match = /^([^|]+)\|country:(.*)$/.exec(key);
+    const coordinate = match ? match[1] : "unmapped";
+    const country = match ? (match[2] || "Unknown country") : "Unknown country";
+    return {
+      key,
+      country,
+      displayLabel: country,
+      coordinateClass: coordinate,
+      label: country + " · " + (coordinate === "source_coordinates" ? "source coordinates" :
+        (coordinate === "generalized_coordinates" ? "generalized coordinates" : "unmapped")),
+    };
+  }
+
+  function createCountryProvenanceAccumulator() {
+    return {
+      assignmentSources: new Map(),
+      assignmentConfidences: new Map(),
+      boundaryStatuses: new Map(),
+      unknownStatuses: new Map(),
+      macroregions: new Map(),
+    };
+  }
+
+  function addCountryProvenanceToMap(provenanceMap, key, row, country) {
+    if (!provenanceMap.has(key)) {
+      provenanceMap.set(key, createCountryProvenanceAccumulator());
+    }
+    const provenance = provenanceMap.get(key);
+    const assignmentSource = category(row && row.analysisGeographyAssignmentSource, "unavailable");
+    const assignmentConfidence = category(row && row.analysisGeographyAssignmentConfidence, "unavailable");
+    const boundaryStatus = category(row && row.analysisGeographyBoundaryStatus, "unavailable");
+    const macroregion = category(row && row.analysisMacroregion, "unknown");
+    const unknownStatus = country === "Unknown country"
+      ? "unknown_country"
+      : ((!isKnown(assignmentSource) || assignmentSource === "unavailable" ||
+          !isKnown(assignmentConfidence) || assignmentConfidence === "unavailable" ||
+          !isKnown(boundaryStatus) || boundaryStatus === "unavailable")
+        ? "provenance_incomplete"
+        : "assigned_country");
+    incrementRaw(provenance.assignmentSources, assignmentSource, 1);
+    incrementRaw(provenance.assignmentConfidences, assignmentConfidence, 1);
+    incrementRaw(provenance.boundaryStatuses, boundaryStatus, 1);
+    incrementRaw(provenance.unknownStatuses, unknownStatus, 1);
+    incrementRaw(provenance.macroregions, macroregion, 1);
+  }
+
+  function addCountryProvenance(accumulator, key, row, country) {
+    addCountryProvenanceToMap(accumulator.countryProvenance, key, row, country);
+  }
+
+  function nestedCategoryMap(container, key) {
+    if (!container.has(key)) container.set(key, new Map());
+    return container.get(key);
+  }
+
+  function evidenceCountRows(map, total, labelKey) {
+    return mapEntriesByCount(map || new Map()).map(function (entry) {
+      const value = { count: Number(entry[1]) || 0, share: round(rate(Number(entry[1]) || 0, total), 10) };
+      value[labelKey || "label"] = entry[0];
+      return value;
+    });
+  }
+
+  function primaryEvidenceValue(rows, labelKey) {
+    if (!rows.length) return "unavailable";
+    return rows.length === 1 ? rows[0][labelKey || "label"] : "mixed";
+  }
+
+  function countryEvidenceMetadataFromMaps(activeSourceMap, referenceSourceMap, activeProvenance, referenceProvenance) {
+    const activeSourceN = Array.from(activeSourceMap.values()).reduce(function (sum, value) { return sum + Number(value || 0); }, 0);
+    const referenceSourceN = Array.from(referenceSourceMap.values()).reduce(function (sum, value) { return sum + Number(value || 0); }, 0);
+    const sourceMix = evidenceCountRows(activeSourceMap, activeSourceN, "source");
+    const referenceSourceMix = evidenceCountRows(referenceSourceMap, referenceSourceN, "source");
+    const provenance = activeProvenance || referenceProvenance || createCountryProvenanceAccumulator();
+    const provenanceTotal = activeProvenance ? activeSourceN : referenceSourceN;
+    const assignmentSources = evidenceCountRows(provenance.assignmentSources, provenanceTotal, "value");
+    const assignmentConfidences = evidenceCountRows(provenance.assignmentConfidences, provenanceTotal, "value");
+    const boundaryStatuses = evidenceCountRows(provenance.boundaryStatuses, provenanceTotal, "value");
+    const unknownStatuses = evidenceCountRows(provenance.unknownStatuses, provenanceTotal, "value");
+    const macroregions = evidenceCountRows(provenance.macroregions, provenanceTotal, "value");
+    return {
+      sourceMix,
+      referenceSourceMix,
+      sourceMixLabel: sourceMix.length ? sourceMix.slice(0, 3).map(function (entry) {
+        return entry.source + " " + Math.round(entry.share * 100) + "%";
+      }).join(", ") : "No active reports",
+      geographyAssignmentSource: primaryEvidenceValue(assignmentSources, "value"),
+      geographyAssignmentConfidence: primaryEvidenceValue(assignmentConfidences, "value"),
+      geographyBoundaryStatus: primaryEvidenceValue(boundaryStatuses, "value"),
+      geographyUnknownStatus: primaryEvidenceValue(unknownStatuses, "value"),
+      macroregion: primaryEvidenceValue(macroregions, "value"),
+      geographyAssignmentProvenance: {
+        assignmentSources,
+        assignmentConfidences,
+        boundaryStatuses,
+        unknownStatuses,
+        macroregions,
+      },
+    };
+  }
+
+  function countryEvidenceMetadata(active, reference, key) {
+    return countryEvidenceMetadataFromMaps(
+      active.familyBySource.geography.get(key) || new Map(),
+      reference.familyBySource.geography.get(key) || new Map(),
+      active.countryProvenance.get(key),
+      reference.countryProvenance.get(key)
+    );
+  }
+
+  function countryDecadeKey(countryKey, decade) {
+    return String(countryKey) + "\u001e" + String(decade);
+  }
+
+  function countryDecadeFacetKey(countryKey, decade) {
+    const metadata = countryGeographyMetadata(countryKey);
+    return String(metadata.coordinateClass) + "\u001e" + String(decade);
+  }
+
+  function countryDecadeEvidenceMetadata(active, reference, countryKey, decade) {
+    const key = countryDecadeKey(countryKey, decade);
+    return countryEvidenceMetadataFromMaps(
+      active.countryDecadeSources.get(key) || new Map(),
+      reference.countryDecadeSources.get(key) || new Map(),
+      active.countryDecadeProvenance.get(key),
+      reference.countryDecadeProvenance.get(key)
+    );
+  }
+
+  function sourceBalancedCountryDecadeShare(accumulator, countryKey, decade) {
+    const sourceCounts = accumulator.countryDecadeSources.get(countryDecadeKey(countryKey, decade)) || new Map();
+    const sourceTotals = accumulator.countryDecadeFacetSourceTotals.get(countryDecadeFacetKey(countryKey, decade)) || new Map();
+    const sources = sortedKeys(sourceTotals).filter(function (source) {
+      return mapCount(sourceTotals, source) > 0;
+    });
+    const share = sources.reduce(function (sum, source) {
+      return sum + rate(mapCount(sourceCounts, source), mapCount(sourceTotals, source));
+    }, 0);
+    const facetTotal = Array.from(sourceTotals.values()).reduce(function (sum, value) {
+      return sum + Number(value || 0);
+    }, 0);
+    return {
+      share: sources.length ? share / sources.length : 0,
+      sourceCount: sources.length,
+      facetTotal,
+    };
   }
 
   function coarseRegionForRow(row, mapped, gridCell) {
@@ -1161,6 +1638,12 @@
       mapGrid6Metadata: new Map(),
       mapGrid6CategoryStrata: new Map(),
       gridDecades: new Map(),
+      countryDecades: new Map(),
+      countryDecadeSources: new Map(),
+      countryDecadeFacetSourceTotals: new Map(),
+      countryDecadeProvenance: new Map(),
+      countryMetadata: new Map(),
+      countryProvenance: new Map(),
       craftDecades: new Map(),
       craftMonths: new Map(),
       craftRegions: new Map(),
@@ -1171,8 +1654,10 @@
       craftMonthStrataMatrix: new Map(),
       craftEraStrataMatrix: new Map(),
       craftRegionStrataMatrix: new Map(),
+      craftCountryStrataMatrix: new Map(),
       regionEraStrataMatrix: new Map(),
       craftShapesMatrix: new Map(),
+      craftShapeStrataMatrix: new Map(),
       patternGeography: new Map(),
       missingAnyBy: {
         years: new Map(),
@@ -1184,6 +1669,7 @@
         locationPrecisions: new Map(),
         grid: new Map(),
         gridDecades: new Map(),
+        countryDecades: new Map(),
         craftDecades: new Map(),
         craftMonths: new Map(),
         craftRegions: new Map(),
@@ -1229,6 +1715,7 @@
     const craftSource = category(row.craftSource, "unknown");
     const mapped = rowMapped(row);
     const coordClass = coordinateClass(row);
+    const countryKey = mapped ? countryGeographyKey(row, true, coordClass) : null;
     const ordinal = finiteInteger(row.sortOrdinal);
     const derivedYear = finiteInteger(row.analysisYear);
     const derivedMonth = finiteInteger(row.analysisMonth);
@@ -1344,6 +1831,20 @@
         addMatrixCount(accumulator.gridDecades, analysisGridKey, decade);
         if (missingAny) addMatrixCount(accumulator.missingAnyBy.gridDecades, analysisGridKey, decade);
       }
+      if (countryKey) {
+        addMatrixCount(accumulator.countryDecades, countryKey, decade);
+        const decadeEvidenceKey = countryDecadeKey(countryKey, decade);
+        const decadeFacetKey = countryDecadeFacetKey(countryKey, decade);
+        incrementRaw(nestedCategoryMap(accumulator.countryDecadeSources, decadeEvidenceKey), source, 1);
+        incrementRaw(nestedCategoryMap(accumulator.countryDecadeFacetSourceTotals, decadeFacetKey), source, 1);
+        addCountryProvenanceToMap(
+          accumulator.countryDecadeProvenance,
+          decadeEvidenceKey,
+          row,
+          countryForRow(row, mapped)
+        );
+        if (missingAny) addMatrixCount(accumulator.missingAnyBy.countryDecades, countryKey, decade);
+      }
     } else {
       familyValues.time_month = "unknown";
       incrementRaw(accumulator.months, "unknown", 1);
@@ -1359,9 +1860,13 @@
           label: coordClass + " / " + gridCell.key,
         }));
       }
-      familyValues.geography = analysisGridKey;
-    } else {
-      familyValues.geography = "unmapped";
+    }
+    familyValues.geography = countryKey || "unmapped";
+    if (countryKey) {
+      if (!accumulator.countryMetadata.has(countryKey)) {
+        accumulator.countryMetadata.set(countryKey, countryGeographyMetadata(countryKey));
+      }
+      addCountryProvenance(accumulator, countryKey, row, countryForRow(row, mapped));
     }
     if (mapGrid6Key) {
       incrementRaw(accumulator.mapGrid6, mapGrid6Key, 1);
@@ -1374,7 +1879,7 @@
         }));
       }
     }
-    incrementRaw(accumulator.patternGeography, familyValues.geography, 1);
+    if (countryKey) incrementRaw(accumulator.patternGeography, countryKey, 1);
     const coarseRegion = coarseRegionForRow(row, mapped, gridCell);
     const stratumValues = {
       source,
@@ -1419,6 +1924,14 @@
         craft,
         coarseRegion
       );
+      if (countryKey) {
+        addStratifiedMatrixCount(
+          accumulator.craftCountryStrataMatrix,
+          source + "\u001f" + analysisDecade,
+          craft,
+          countryKey
+        );
+      }
       addStratifiedMatrixCount(
         accumulator.regionEraStrataMatrix,
         source + "\u001f" + coordClass + "\u001f" + craft,
@@ -1427,6 +1940,12 @@
       );
     }
     addMatrixCount(accumulator.craftShapesMatrix, craft, shape);
+    addStratifiedMatrixCount(
+      accumulator.craftShapeStrataMatrix,
+      source + "\u001f" + coarseRegion + "\u001f" + coordClass + "\u001f" + analysisDecade,
+      craft,
+      shape
+    );
     addFamilySourceCount(accumulator, "craft", familyValues.craft, source);
     addFamilySourceCount(accumulator, "time_month", familyValues.time_month, source);
     addFamilySourceCount(accumulator, "geography", familyValues.geography, source);
@@ -1570,7 +2089,21 @@
     return { start: activeRange.start - duration, end: activeRange.start - 1 };
   }
 
-  function baselineDescriptor(mode, activeRange) {
+  function baselineDescriptor(mode, activeRange, wholeCorpusStructure) {
+    if (wholeCorpusStructure) {
+      return {
+        mode: BASELINE_MODES.INTERNAL_STRUCTURE,
+        requestedMode: mode,
+        label: "All records \u2014 internal structure",
+        descriptive: false,
+        disjoint: true,
+        internalStructure: true,
+        activeRange: null,
+        referenceRange: null,
+        comparisonState: COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+        warning: "All Time uses within-corpus conditional expectations; no duplicate or fabricated reference cohort is constructed.",
+      };
+    }
     if (mode === BASELINE_MODES.PREVIOUS_EQUAL_DURATION) {
       return {
         mode,
@@ -1579,6 +2112,7 @@
         disjoint: true,
         activeRange,
         referenceRange: previousRange(activeRange),
+        comparisonState: COMPARISON_STATES.INFERENTIAL,
         warning: activeRange ? "" : "A finite active date range is required for this baseline.",
       };
     }
@@ -1590,6 +2124,7 @@
         disjoint: false,
         activeRange,
         referenceRange: null,
+        comparisonState: COMPARISON_STATES.DESCRIPTIVE_OVERLAP,
         warning: "The full-catalog reference can overlap the active cohort and can have a different source composition.",
       };
     }
@@ -1600,6 +2135,7 @@
       disjoint: true,
       activeRange,
       referenceRange: null,
+      comparisonState: COMPARISON_STATES.INFERENTIAL,
       warning: activeRange ? "" : "A finite active date range is required to construct a disjoint other-dates reference.",
     };
   }
@@ -1610,7 +2146,9 @@
       : true;
     const active = matchesNonDate && rowInRange(row, descriptor.activeRange);
     let reference = false;
-    if (descriptor.mode === BASELINE_MODES.FULL_CATALOG) {
+    if (descriptor.internalStructure) {
+      reference = false;
+    } else if (descriptor.mode === BASELINE_MODES.FULL_CATALOG) {
       reference = true;
     } else if (descriptor.mode === BASELINE_MODES.PREVIOUS_EQUAL_DURATION) {
       reference = matchesNonDate && Boolean(descriptor.referenceRange) && rowInRange(row, descriptor.referenceRange);
@@ -1619,6 +2157,16 @@
       reference = matchesNonDate && ordinal != null && !rowInRange(row, descriptor.activeRange);
     }
     return { active, reference };
+  }
+
+  function resolveComparisonState(descriptor, active, reference) {
+    if (descriptor && descriptor.internalStructure) return COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE;
+    if (!reference || reference.total <= 0) return COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE;
+    if (descriptor && descriptor.descriptive && active && active.total === reference.total) {
+      return COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON;
+    }
+    if (descriptor && descriptor.descriptive) return COMPARISON_STATES.DESCRIPTIVE_OVERLAP;
+    return COMPARISON_STATES.INFERENTIAL;
   }
 
   function countDatum(label, activeCount, referenceCount, activeTotal, referenceTotal, extra) {
@@ -2127,6 +2675,9 @@
         maximumColumns: 12,
         covariates: ["source", "coarse_geography", "coordinate_class", "era"],
         associationLabel: "recurring month-by-craft",
+        comparisonState: options.comparisonState,
+        rowAxisType: "category",
+        columnAxisType: "month",
       });
     if (!options.inferenceDeferred) {
       decorateAssociationResult(monthByCraft, active.total, function (cell) {
@@ -2142,6 +2693,18 @@
       series,
       annualSeries,
       adaptiveBinning,
+      axisMetadata: {
+        annual: semanticAxisMetadata(annualSeries.map(function (datum) { return datum.year; }), "year"),
+        adaptive: semanticAxisMetadata(series.map(function (datum) { return datum.startYear; }), "year"),
+        monthYear: {
+          type: "year_month",
+          order: monthYear.map(function (datum) { return datum.label; }),
+          direction: "ascending",
+          orderedBeforeSampling: true,
+        },
+        decades: semanticAxisMetadata(decades.map(function (datum) { return datum.decade; }), "decade"),
+        months: semanticAxisMetadata(MONTH_AXIS_ORDER, "month"),
+      },
       decades,
       monthYear,
       monthByCraft,
@@ -2177,7 +2740,7 @@
     const allCells = Array.isArray(association.fullCells) ? association.fullCells : [];
     allCells.forEach(function (cell) {
       cell.activeCount = cell.observed;
-      cell.referenceCount = round(cell.expected, 6);
+      cell.expectedCount = round(cell.expectedCount != null ? cell.expectedCount : cell.expected, 6);
       cell.adjustedResidual = cell.standardizedResidual;
       cell.unitOfAnalysis = "reports";
       cell.activeN = Number(activeTotal) || 0;
@@ -2186,12 +2749,16 @@
         if (preview) cell.preview = preview;
       }
     });
-    association.cells = allCells.filter(function (cell) { return cell.displayEligible; }).sort(function (left, right) {
-      return String(left.row).localeCompare(String(right.row)) || String(left.column).localeCompare(String(right.column));
+    const rowAxisType = association.metadata && association.metadata.rowAxis && association.metadata.rowAxis.type;
+    const columnAxisType = association.metadata && association.metadata.columnAxis && association.metadata.columnAxis.type;
+    association.cells = allCells.filter(function (cell) { return cell.estimateAvailable; }).sort(function (left, right) {
+      return semanticAxisCompare(left.row, right.row, rowAxisType) || semanticAxisCompare(left.column, right.column, columnAxisType);
     });
     association.metadata = Object.assign({}, association.metadata || {}, {
       activeN: Number(activeTotal) || 0,
-      status: association.metadata && association.metadata.status || "suppressed",
+      expectedCountLabel: "conditional expected count",
+      comparisonCountKind: "conditional_expectation",
+      status: association.metadata && association.metadata.status || "not_estimable",
     });
     return association;
   }
@@ -2208,21 +2775,32 @@
     const columns = new Set(mapEntriesByCount(columnTotals).slice(0, columnLimit || 12).map(function (entry) { return entry[0]; }));
     const total = Array.from(matrix.values()).reduce(function (sum, count) { return sum + count; }, 0);
     const result = [];
-    matrix.forEach(function (count, composite) {
-      const parts = composite.split("\u0000");
-      const row = parts[0];
-      const column = parts[1];
-      if (!rows.has(row) || !columns.has(column)) return;
-      const expected = total > 0 ? (mapCount(rowTotals, row) * mapCount(columnTotals, column)) / total : 0;
-      result.push({
-        label: row + " / " + column,
-        row,
-        column,
-        value: count,
-        count,
-        observed: count,
-        expected: round(expected, 6),
-        standardizedResidual: expected > 0 ? round((count - expected) / Math.sqrt(expected), 6) : 0,
+    rows.forEach(function (row) {
+      columns.forEach(function (column) {
+        const count = mapCount(matrix, row + "\u0000" + column);
+        const expected = total > 0 ? (mapCount(rowTotals, row) * mapCount(columnTotals, column)) / total : 0;
+        result.push({
+          key: row + "\u0000" + column,
+          label: row + " / " + column,
+          row,
+          column,
+          value: expected > 0 ? round((count - expected) / Math.sqrt(expected), 6) : 0,
+          count,
+          observed: count,
+          observedCount: count,
+          expected: round(expected, 6),
+          expectedCount: round(expected, 6),
+          conditionalExpectedCount: round(expected, 6),
+          standardizedResidual: expected > 0 ? round((count - expected) / Math.sqrt(expected), 6) : 0,
+          estimateAvailable: expected > 0 || count > 0,
+          tested: false,
+          inferenceEligible: false,
+          displayStatus: expected > 0 || count > 0 ? "descriptive" : "structurally_empty",
+          displayEligible: expected > 0 || count > 0,
+          suppressionReasons: ["inference_deferred"],
+          pValue: null,
+          qValue: null,
+        });
       });
     });
     return result.sort(function (left, right) {
@@ -2367,7 +2945,7 @@
     const series = [];
     sortedKeys(byCraft).forEach(function (craft) {
       const craftCells = byCraft.get(craft).slice().sort(function (left, right) {
-        return String(left.column).localeCompare(String(right.column));
+        return semanticAxisCompare(left.column, right.column, "decade");
       });
       ["active", "reference"].forEach(function (cohort) {
         const seriesKey = cohort + "\u0000" + craft;
@@ -2430,6 +3008,10 @@
       maximumRows: 12,
       maximumColumns: 12,
       covariates: ["coarse_geography", "coordinate_class", "era"],
+      associationLabel: "craft-by-source",
+      comparisonState: options.comparisonState,
+      rowAxisType: "category",
+      columnAxisType: "category",
     });
     if (!options.inferenceDeferred) {
       decorateAssociationResult(sourceAssociation, active.total, function (cell) {
@@ -2444,6 +3026,9 @@
       maximumColumns: 12,
       covariates: ["source", "coarse_geography", "coordinate_class"],
       associationLabel: "craft-by-era",
+      comparisonState: options.comparisonState,
+      rowAxisType: "category",
+      columnAxisType: "decade",
     });
     if (!options.inferenceDeferred) {
       decorateAssociationResult(byEra, active.total, function (cell) {
@@ -2469,6 +3054,9 @@
       maximumColumns: 12,
       covariates: ["source", "era", "coordinate_class"],
       associationLabel: "craft-by-geography",
+      comparisonState: options.comparisonState,
+      rowAxisType: "category",
+      columnAxisType: "geography",
     });
     if (!options.inferenceDeferred) {
       decorateAssociationResult(byGeography, active.total, function (cell) {
@@ -2486,6 +3074,14 @@
       residuals: sourceAssociation.cells,
       residualAudit: sourceAssociation.fullCells,
       sourceAssociation: sourceAssociation.metadata,
+      axisMetadata: {
+        trends: semanticAxisMetadata(new Set([].concat(
+          sortedKeys(active.decades),
+          sortedKeys(reference.decades)
+        )), "decade"),
+        byEra: byEra.metadata && byEra.metadata.columnAxis,
+        byGeography: byGeography.metadata && byGeography.metadata.columnAxis,
+      },
     };
   }
 
@@ -2515,39 +3111,109 @@
     });
   }
 
+  function sourceBalancedCountryShares(accumulator) {
+    const sourceTotals = new Map();
+    const byCountry = new Map();
+    (accumulator.familyStrataTotals.geography || new Map()).forEach(function (count, stratum) {
+      const source = String(stratum).split("\u001f")[0] || "unknown";
+      incrementRaw(sourceTotals, source, count);
+    });
+    (accumulator.familyCategoryStrata.geography || new Map()).forEach(function (strataCounts, key) {
+      const sourceCounts = new Map();
+      strataCounts.forEach(function (count, stratum) {
+        const source = String(stratum).split("\u001f")[0] || "unknown";
+        incrementRaw(sourceCounts, source, count);
+      });
+      byCountry.set(key, sourceCounts);
+    });
+    const sources = sortedKeys(sourceTotals).filter(function (source) {
+      return mapCount(sourceTotals, source) > 0;
+    });
+    const result = new Map();
+    byCountry.forEach(function (sourceCounts, key) {
+      const share = sources.reduce(function (sum, source) {
+        return sum + rate(mapCount(sourceCounts, source), mapCount(sourceTotals, source));
+      }, 0);
+      result.set(key, sources.length ? share / sources.length : 0);
+    });
+    return { shares: result, sourceCount: sources.length };
+  }
+
   function buildGeography(active, reference, optionsValue) {
     const options = optionsValue || {};
-    const keys = new Set([].concat(sortedKeys(active.grid), sortedKeys(reference.grid)));
+    const wholeCorpus = options.comparisonState === COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE;
+    const sourceBalanced = sourceBalancedCountryShares(active);
+    const keys = new Set([].concat(sortedKeys(active.patternGeography), sortedKeys(reference.patternGeography)));
     const cells = Array.from(keys).map(function (key) {
-      const metadata = geographyDatumMetadata(active, reference, key);
-      const activeCount = mapCount(active.grid, key);
-      return countDatum(metadata.label || key, activeCount, mapCount(reference.grid, key), active.total, reference.total, Object.assign({}, metadata, {
+      const metadata = active.countryMetadata.get(key) || reference.countryMetadata.get(key) || countryGeographyMetadata(key);
+      const activeCount = mapCount(active.patternGeography, key);
+      const datum = countDatum(metadata.label || metadata.country, activeCount, mapCount(reference.patternGeography, key), active.total, reference.total, Object.assign({}, metadata, {
         key,
-      }, previewMissingness(active.missingAnyBy.grid, key, activeCount)));
+        geographyKind: "country",
+        preview: metadata.country === "Unknown country" || metadata.country === "Unmapped"
+          ? null
+          : { kind: "area", area: { type: "country", country: metadata.country } },
+      }));
+      datum.sourceBalancedReportShare = round(mapCount(sourceBalanced.shares, key), 10);
+      datum.sourceBalancedShare = datum.sourceBalancedReportShare;
+      datum.sourceBalancedSourceN = sourceBalanced.sourceCount;
+      datum.reportShare = round(rate(activeCount, active.mapped), 10);
+      datum.logCount = activeCount > 0 ? round(Math.log2(activeCount + 1), 8) : 0;
+      Object.assign(datum, countryEvidenceMetadata(active, reference, key));
+      return datum;
     }).sort(function (left, right) {
       return (right.observed - left.observed) || String(left.key).localeCompare(String(right.key));
     });
-    const topCells = new Set(cells.slice().sort(function (left, right) {
-      return ((right.observed + right.referenceCount) - (left.observed + left.referenceCount)) || String(left.key).localeCompare(String(right.key));
-    }).slice(0, 24).map(function (cell) { return cell.key; }));
-    const byTime = pairedMatrixCells(active.gridDecades, reference.gridDecades, Number.MAX_SAFE_INTEGER, 30).filter(function (cell) {
-      return topCells.has(cell.row);
-    }).map(function (cell) {
-      const metadata = geographyDatumMetadata(active, reference, cell.row);
-      const activeGridCount = mapCount(active.grid, cell.row);
-      const referenceGridCount = mapCount(reference.grid, cell.row);
-      const missing = previewMissingness(active.missingAnyBy.grid, cell.row, activeGridCount);
-      return Object.assign({}, cell, metadata, {
+    const byTime = pairedMatrixCells(active.countryDecades, reference.countryDecades, Number.MAX_SAFE_INTEGER, 30).map(function (cell) {
+      const metadata = active.countryMetadata.get(cell.row) || reference.countryMetadata.get(cell.row) || countryGeographyMetadata(cell.row);
+      const activeBalanced = sourceBalancedCountryDecadeShare(active, cell.row, cell.column);
+      const referenceBalanced = wholeCorpus ? null : sourceBalancedCountryDecadeShare(reference, cell.row, cell.column);
+      const activeShare = rate(cell.activeCount, activeBalanced.facetTotal);
+      const referenceShare = referenceBalanced ? rate(cell.referenceCount, referenceBalanced.facetTotal) : null;
+      const adjustedDifference = referenceBalanced ? activeBalanced.share - referenceBalanced.share : null;
+      const log2Enrichment = referenceBalanced && activeBalanced.facetTotal > 0 && referenceBalanced.facetTotal > 0
+        ? Math.log2(
+          ((cell.activeCount + 0.5) / (activeBalanced.facetTotal + 1)) /
+          ((cell.referenceCount + 0.5) / (referenceBalanced.facetTotal + 1))
+        )
+        : null;
+      return Object.assign({}, cell, wholeCorpus ? {
+        reference: null,
+        referenceCount: null,
+        referenceAbsoluteCount: null,
+      } : {}, metadata, countryDecadeEvidenceMetadata(active, reference, cell.row, cell.column), {
         key: cell.row + "\u0000" + cell.column,
         row: cell.row,
         column: cell.column,
         period: cell.column,
-        label: (metadata.label || cell.row) + " / " + cell.column,
-        preview: Object.assign({}, metadata.preview, missing, {
-          cohortSize: activeGridCount,
-          comparison: activeGridCount + " active vs. " + referenceGridCount + " reference reports in this area under the current date window",
-        }),
+        label: metadata.country + " / " + cell.column,
+        displayRow: metadata.country,
+        reportShare: round(activeShare, 10),
+        referenceReportShare: referenceShare == null ? null : round(referenceShare, 10),
+        sourceBalancedReportShare: round(activeBalanced.share, 10),
+        sourceBalancedShare: round(activeBalanced.share, 10),
+        referenceSourceBalancedReportShare: referenceBalanced ? round(referenceBalanced.share, 10) : null,
+        adjustedDifference: adjustedDifference == null ? null : round(adjustedDifference, 10),
+        difference: adjustedDifference == null ? null : round(adjustedDifference, 10),
+        log2Enrichment: log2Enrichment == null ? null : round(log2Enrichment, 8),
+        sourceBalancedSourceN: activeBalanced.sourceCount,
+        referenceSourceBalancedSourceN: referenceBalanced ? referenceBalanced.sourceCount : null,
+        decadeFacetActiveN: activeBalanced.facetTotal,
+        decadeFacetReferenceN: referenceBalanced ? referenceBalanced.facetTotal : null,
+        comparisonState: options.comparisonState,
+        estimateAvailable: cell.activeCount > 0 || (!wholeCorpus && cell.referenceCount > 0),
+        inferenceEligible: false,
+        preview: metadata.country === "Unknown country" || metadata.country === "Unmapped" ? null : {
+          kind: "area",
+          area: { type: "country", country: metadata.country },
+          cohortSize: cell.activeCount,
+          comparison: wholeCorpus
+            ? cell.activeCount + " reports assigned to " + metadata.country + " during the " + cell.column + "s"
+            : cell.activeCount + " active vs. " + cell.referenceCount + " reference reports assigned to " + metadata.country + " during the " + cell.column + "s",
+        },
       });
+    }).sort(function (left, right) {
+      return String(left.country).localeCompare(String(right.country)) || semanticAxisCompare(left.period, right.period, "decade");
     });
     const byEra = options.inferenceDeferred ? deferredAssociation(
       "geography-by-era",
@@ -2557,41 +3223,136 @@
       maximumColumns: 12,
       covariates: ["source", "coordinate_class", "craft"],
       associationLabel: "geography-by-era",
+      comparisonState: options.comparisonState,
+      rowAxisType: "geography",
+      columnAxisType: "decade",
     });
     if (!options.inferenceDeferred) {
       decorateAssociationResult(byEra, active.total, function (cell) {
-        const preview = coarseAreaPreview(cell.row);
-        if (!preview) return null;
         const decade = finiteInteger(cell.column);
-        if (decade != null) {
-          preview.patch = {
+        return {
+          kind: "filter",
+          patch: decade == null ? {} : {
             dateRange: {
               startOrdinal: ordinalFromCivil(decade, 1, 1),
               endOrdinal: ordinalFromCivil(decade + 9, 12, 31),
             },
-          };
-          preview.comparison = "Geographic bin for the " + decade + "s; Area Filter application changes only the geographic bin.";
-        }
-        return preview;
+          },
+          comparison: category(cell.row, "Unknown macroregion") + (decade == null ? "" : " during the " + decade + "s"),
+        };
       });
     }
+    const craftByCountry = options.inferenceDeferred ? deferredAssociation(
+      "craft-by-country",
+      ["source", "era"]
+    ) : adjustedStandardizedResiduals(active.craftCountryStrataMatrix, {
+      maximumRows: 12,
+      maximumColumns: 400,
+      covariates: ["source", "era"],
+      associationLabel: "craft-by-country",
+      comparisonState: options.comparisonState,
+      rowAxisType: "category",
+      columnAxisType: "geography",
+    });
+    if (!options.inferenceDeferred) {
+      [craftByCountry.cells, craftByCountry.fullCells].forEach(function (collection) {
+        (Array.isArray(collection) ? collection : []).forEach(function (cell) {
+          const metadata = active.countryMetadata.get(cell.column) || reference.countryMetadata.get(cell.column) || countryGeographyMetadata(cell.column);
+          Object.assign(cell, metadata, countryEvidenceMetadata(active, reference, cell.column), {
+            craft: cell.row,
+            countryKey: cell.column,
+            country: metadata.country,
+            coordinateClass: metadata.coordinateClass,
+            displayRow: category(cell.row, "Unknown craft"),
+            displayColumn: metadata.country,
+            preview: metadata.country === "Unknown country" || metadata.country === "Unmapped" ? {
+              kind: "filter",
+              patch: { craftTypes: [cell.row] },
+            } : {
+              kind: "filter",
+              patch: {
+                craftTypes: [cell.row],
+                area: { type: "country", country: metadata.country },
+              },
+            },
+          });
+        });
+      });
+    }
+    const sensitivityCells = new Set([].concat(sortedKeys(active.grid), sortedKeys(reference.grid)));
+    const equalAreaSensitivity = Array.from(sensitivityCells).map(function (key) {
+      const metadata = geographyDatumMetadata(active, reference, key);
+      const activeCount = mapCount(active.grid, key);
+      const latitudeLabel = round(metadata.latMinimum, 1) + "° to " + round(metadata.latMaximum, 1) + "°";
+      const longitudeLabel = round(metadata.lonMinimum, 1) + "° to " + round(metadata.lonMaximum, 1) + "°";
+      return countDatum(latitudeLabel + " / " + longitudeLabel, activeCount, mapCount(reference.grid, key), active.total, reference.total, Object.assign({}, metadata, {
+        key,
+        canonicalGridId: metadata.gridMetadata && metadata.gridMetadata.key,
+        displayLabel: latitudeLabel + " · " + longitudeLabel,
+      }, previewMissingness(active.missingAnyBy.grid, key, activeCount)));
+    }).filter(function (cell) { return cell.observed > 0 || cell.referenceCount > 0; });
     return {
       gridDefinition: {
-        id: "sin_latitude_12_by_longitude_24_v1",
-        latitudeBands: 12,
-        longitudeBands: 24,
-        equalArea: true,
+        id: "country_assignment_v1",
+        geographyKind: "country",
         unit: "report points",
-        warning: "Counts are report density, not incidence or risk. Generalized coordinates are not exact sites.",
+        warning: "Country assignment describes report-marker geography, not incidence or risk. Generalized coordinates remain a separate facet.",
       },
       cells,
+      countryMap: {
+        cells,
+        byDecade: byTime,
+        craftAssociations: craftByCountry,
+        coordinateClasses: ["source_coordinates", "generalized_coordinates"],
+        metrics: ["source_balanced_share", "adjusted_difference", "selected_craft_association", "report_counts"],
+        defaultMetric: options.analysisMode === ANALYSIS_MODES.WHOLE_CORPUS_STRUCTURE
+          ? "source_balanced_share"
+          : "adjusted_difference",
+      },
+      equalAreaSensitivity,
       byTime,
       byEra,
+      craftByCountry,
+      axisMetadata: {
+        byTimeRows: semanticAxisMetadata(byTime.map(function (datum) { return datum.row; }), "geography"),
+        byTimeColumns: semanticAxisMetadata(byTime.map(function (datum) { return datum.column; }), "decade"),
+        byEraRows: byEra.metadata && byEra.metadata.rowAxis,
+        byEraColumns: byEra.metadata && byEra.metadata.columnAxis,
+      },
     };
+  }
+
+  function sourceBalancedMapGridShares(accumulator) {
+    const sourceTotals = new Map();
+    const cellBySource = new Map();
+    accumulator.mapGrid6CategoryStrata.forEach(function (strataCounts, key) {
+      const bySource = new Map();
+      strataCounts.forEach(function (count, stratum) {
+        const source = String(stratum).split("\u001f")[0] || "unknown";
+        incrementRaw(bySource, source, count);
+        incrementRaw(sourceTotals, source, count);
+      });
+      cellBySource.set(key, bySource);
+    });
+    const sourceKeys = sortedKeys(sourceTotals).filter(function (source) { return mapCount(sourceTotals, source) > 0; });
+    const shares = new Map();
+    cellBySource.forEach(function (bySource, key) {
+      let sum = 0;
+      sourceKeys.forEach(function (source) {
+        sum += rate(mapCount(bySource, source), mapCount(sourceTotals, source));
+      });
+      shares.set(key, sourceKeys.length ? sum / sourceKeys.length : 0);
+    });
+    return { shares, sourceCount: sourceKeys.length, unit: "mean within-source mapped report share" };
   }
 
   function buildLambertEqualAreaMap6x12(active, reference, comparisonFamily) {
     const coordinateClasses = ["source_coordinates", "generalized_coordinates"];
+    const comparisonState = comparisonFamily && comparisonFamily.metadata && comparisonFamily.metadata.comparisonState
+      ? comparisonFamily.metadata.comparisonState
+      : (reference.total > 0 ? COMPARISON_STATES.INFERENTIAL : COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE);
+    const internalStructure = comparisonState === COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE;
+    const sourceBalancedShares = sourceBalancedMapGridShares(active);
     const allCells = [];
     const facets = coordinateClasses.map(function (coordinateClass) {
       const cells = [];
@@ -2638,7 +3399,28 @@
               preview: { kind: "area", area: { bounds } },
               defaultMetric: "adjusted_share_difference",
             }
-          ), comparisonSchemaFields(comparison));
+          ), comparisonSchemaFields(comparison, comparisonState));
+          datum.sourceBalancedReportShare = round(mapCount(sourceBalancedShares.shares, key), 10);
+          datum.reportShare = round(rate(observedCount, active.mapped), 10);
+          datum.logCount = observedCount > 0 ? round(Math.log2(observedCount + 1), 8) : 0;
+          datum.comparisonState = comparisonState;
+          datum.estimateAvailable = observedCount > 0 || referenceCount > 0 || Boolean(comparison);
+          datum.tested = Boolean(comparison && comparison.pValue != null);
+          datum.inferenceEligible = Boolean(comparison && comparison.inferenceEligible);
+          if (internalStructure) {
+            datum.value = datum.sourceBalancedReportShare;
+            datum.reference = null;
+            datum.referenceShare = null;
+            datum.difference = null;
+            datum.activeN = active.total;
+            datum.referenceN = 0;
+            datum.cohortNs = { active: active.total, reference: 0 };
+          }
+          if (!comparison && datum.estimateAvailable) {
+            datum.suppressionReasons = [comparisonState];
+            datum.suppressionStatus = "descriptive";
+            datum.suppression = { status: "descriptive", reasons: [comparisonState] };
+          }
           const adjustedActiveShare = finiteNumber(datum.adjustedActiveShare);
           const adjustedReferenceShare = finiteNumber(datum.adjustedReferenceShare);
           datum.signedAdjustedShareDifference = finiteNumber(datum.adjustedDifference);
@@ -2646,7 +3428,9 @@
             ? round(Math.log2(adjustedActiveShare / adjustedReferenceShare), 8)
             : null;
           datum.log2EnrichmentUnbounded = adjustedActiveShare != null && adjustedActiveShare > 0 && adjustedReferenceShare === 0;
-          datum.expected = comparison ? comparison.minimumExpectedCell : 0;
+          datum.expected = comparison ? comparison.minimumExpectedCell : null;
+          datum.expectedCount = null;
+          datum.defaultMetric = internalStructure ? "source_balanced_report_share" : datum.defaultMetric;
           cells.push(datum);
           allCells.push(datum);
         }
@@ -2675,7 +3459,9 @@
         label: coordinateClass === "source_coordinates" ? "Source-provided coordinates" : "Generalized coordinates",
         cells,
         qualifiedCells: cells.filter(function (cell) { return cell.displayStatus === "eligible"; }),
-        suppressedCells: cells.filter(function (cell) { return cell.displayStatus === "suppressed"; }),
+        descriptiveCells: cells.filter(function (cell) { return cell.displayStatus === "descriptive"; }),
+        lowSupportCells: cells.filter(function (cell) { return cell.displayStatus === "low_support"; }),
+        suppressedCells: cells.filter(function (cell) { return cell.suppressionReasons.length > 0 && cell.displayStatus !== "structurally_empty"; }),
         structurallyEmptyCells: cells.filter(function (cell) { return cell.displayStatus === "structurally_empty"; }),
         displayMetadata: qualified.metadata,
       };
@@ -2689,8 +3475,10 @@
         equalArea: true,
         cellCountPerFacet: 72,
         coordinateFacets: coordinateClasses.slice(),
-        defaultMetric: "adjusted_share_difference",
-        alternateMetrics: ["log2_enrichment", "counts"],
+        defaultMetric: internalStructure ? "source_balanced_report_share" : "adjusted_share_difference",
+        alternateMetrics: internalStructure ? ["log_count", "counts"] : ["log2_enrichment", "counts"],
+        sourceBalancedDenominator: sourceBalancedShares.sourceCount,
+        sourceBalancedUnit: sourceBalancedShares.unit,
         unit: "report points",
       },
       facets,
@@ -2700,7 +3488,10 @@
       },
       cells: allCells,
       comparisonMetadata: comparisonFamily.metadata,
-      policyWarning: "Signed adjusted share differences compare reports, not incidence or risk. Generalized coordinates are a separate facet and never imply exact sites.",
+      comparisonState,
+      policyWarning: internalStructure
+        ? "Whole-corpus geography shows source-balanced shares of mapped report points; it is report density, not incidence or risk. Generalized coordinates remain a separate facet."
+        : "Signed adjusted share differences compare reports, not incidence or risk. Generalized coordinates are a separate facet and never imply exact sites.",
     };
   }
 
@@ -2740,7 +3531,9 @@
       incrementRaw(referenceColumnTotals, column, count);
     });
     const rows = [];
-    Array.from(periods).sort().forEach(function (period) {
+    Array.from(periods).sort(function (left, right) {
+      return semanticAxisCompare(left, right, "decade");
+    }).forEach(function (period) {
       Array.from(sources).sort().forEach(function (source) {
         const composite = source + "\u0000" + period;
         const activeCount = mapCount(activeMatrix, composite);
@@ -2791,7 +3584,8 @@
     return rows;
   }
 
-  function buildSourcesQuality(active, reference) {
+  function buildSourcesQuality(active, reference, optionsValue) {
+    const options = optionsValue || {};
     const fieldAudit = [];
     [
       ["Date precision", active.datePrecisions, reference.datePrecisions, "", null],
@@ -2805,15 +3599,47 @@
         fieldAudit.push(Object.assign({}, datum, { row: dimension[0], column: datum.key }));
       });
     });
-    const classifierAudit = matrixCells(active.craftShapesMatrix, 12, 12);
+    const classifierAssociation = options.inferenceDeferred
+      ? {
+        cells: matrixCells(active.craftShapesMatrix, 12, 12),
+        fullCells: matrixCells(active.craftShapesMatrix, 12, 12),
+        metadata: {
+          eligible: false,
+          status: "deferred",
+          inferenceDeferred: true,
+          adjustmentCovariates: ["source", "coarse_geography", "coordinate_class", "era"],
+          policyWarning: "Classifier consistency estimates are descriptive until the full evidence computation completes.",
+        },
+      }
+      : adjustedStandardizedResiduals(active.craftShapeStrataMatrix, {
+        maximumRows: 12,
+        maximumColumns: 12,
+        covariates: ["source", "coarse_geography", "coordinate_class", "era"],
+        associationLabel: "classifier consistency",
+        comparisonState: options.comparisonState,
+        rowAxisType: "category",
+        columnAxisType: "category",
+      });
+    if (!options.inferenceDeferred) decorateAssociationResult(classifierAssociation, active.total);
+    const classifierAudit = classifierAssociation.fullCells;
     return {
       sourceComposition: unionMapDatums(active.sources, reference.sources, active.total, reference.total, "source", active.missingAnyBy.sources),
       sourceByTime: sourceCompositionByTime(active, reference),
       missingness: missingnessRows(active, reference),
       audit: classifierAudit,
       classifierAudit,
+      classifierAuditAssociation: classifierAssociation,
+      classifierAuditMetadata: classifierAssociation.metadata,
+      axisMetadata: {
+        sourceByTime: semanticAxisMetadata(new Set([].concat(
+          sortedKeys(active.decades),
+          sortedKeys(reference.decades)
+        )), "decade"),
+        classifierRows: classifierAssociation.metadata && classifierAssociation.metadata.rowAxis,
+        classifierColumns: classifierAssociation.metadata && classifierAssociation.metadata.columnAxis,
+      },
       fieldAudit,
-      classifierAuditPolicy: "Inferred craft category compared with normalized reported shape for consistency auditing; neither axis is ground truth.",
+      classifierAuditPolicy: "Inferred craft category is compared with normalized reported shape using conditional expected counts and cell-wise tests; neither axis is ground truth.",
     };
   }
 
@@ -2907,6 +3733,7 @@
           minimumCommonSupport: finiteNumber(options.minimumCommonSupport) == null ? MINIMUM_COMMON_SUPPORT : finiteNumber(options.minimumCommonSupport),
           bootstrapReplicates: Math.max(1, finiteInteger(options.bootstrapReplicates) || DEFAULT_BOOTSTRAP_REPLICATES),
           descriptive: descriptor.descriptive,
+          comparisonState: descriptor.comparisonState || (descriptor.descriptive ? COMPARISON_STATES.DESCRIPTIVE_OVERLAP : COMPARISON_STATES.INFERENTIAL),
         },
       };
     });
@@ -2935,6 +3762,29 @@
     return result;
   }
 
+  function unavailableBalancedFamilyComparisons(descriptor, comparisonState, optionsValue) {
+    const options = optionsValue || {};
+    const result = {};
+    FAMILY_ORDER.forEach(function (family) {
+      result[family] = {
+        comparisons: [],
+        byKey: new Map(),
+        metadata: {
+          estimatorVersion: ESTIMATOR_VERSION,
+          covariates: (FAMILY_COVARIATES[family] || []).slice(),
+          minimumCommonSupport: finiteNumber(options.minimumCommonSupport) == null ? MINIMUM_COMMON_SUPPORT : finiteNumber(options.minimumCommonSupport),
+          bootstrapReplicates: 0,
+          descriptive: Boolean(descriptor && descriptor.descriptive),
+          inferenceDeferred: false,
+          comparisonState,
+          status: comparisonState,
+          suppressionReasons: [comparisonState],
+        },
+      };
+    });
+    return result;
+  }
+
   function deferredMapGrid6Comparisons(descriptor, optionsValue) {
     const options = optionsValue || {};
     return {
@@ -2950,6 +3800,26 @@
         inferenceDeferred: true,
         status: "deferred",
         suppressionReasons: ["quick_core_inference_deferred"],
+      },
+    };
+  }
+
+  function unavailableMapGrid6Comparisons(descriptor, comparisonState, optionsValue) {
+    const options = optionsValue || {};
+    return {
+      comparisons: [],
+      byKey: new Map(),
+      metadata: {
+        estimatorVersion: ESTIMATOR_VERSION,
+        covariates: FAMILY_COVARIATES.geography.slice(),
+        minimumCommonSupport: finiteNumber(options.minimumCommonSupport) == null ? MINIMUM_COMMON_SUPPORT : finiteNumber(options.minimumCommonSupport),
+        bootstrapReplicates: 0,
+        fdrFamily: "none_without_independent_reference",
+        descriptive: Boolean(descriptor && descriptor.descriptive),
+        inferenceDeferred: false,
+        comparisonState,
+        status: comparisonState,
+        suppressionReasons: [comparisonState],
       },
     };
   }
@@ -3001,33 +3871,43 @@
         bootstrapReplicates: Math.max(1, finiteInteger(options.bootstrapReplicates) || DEFAULT_BOOTSTRAP_REPLICATES),
         fdrFamily: "all_nonempty_6x12_cells_across_coordinate_facets",
         descriptive: descriptor.descriptive,
+        comparisonState: descriptor.comparisonState || (descriptor.descriptive ? COMPARISON_STATES.DESCRIPTIVE_OVERLAP : COMPARISON_STATES.INFERENTIAL),
       },
     };
   }
 
-  function comparisonSchemaFields(comparison) {
+  function comparisonSchemaFields(comparison, comparisonStateValue) {
+    const comparisonState = comparisonStateValue || (comparison && comparison.comparisonState) || COMPARISON_STATES.INFERENTIAL;
     if (!comparison) {
       return {
         estimatorVersion: ESTIMATOR_VERSION,
+        comparisonState,
+        comparisonAvailable: false,
+        estimateAvailable: false,
+        tested: false,
         inferenceEligible: false,
-        suppressionStatus: "suppressed",
-        suppressionReasons: ["comparison_not_available"],
+        suppressionStatus: "unavailable",
+        suppressionReasons: [comparisonState === COMPARISON_STATES.INFERENTIAL ? "comparison_not_available" : comparisonState],
         supportedActiveN: 0,
         supportedReferenceN: 0,
         supportedNs: { active: 0, reference: 0 },
         cohortNs: { active: 0, reference: 0 },
-        commonSupportRate: 0,
+        commonSupportRate: null,
         adjustedEffect: null,
         effectSize: { measure: "adjusted_share_difference", estimate: null, unit: "proportion" },
         interval: null,
         pValue: null,
         qValue: null,
         covariates: [],
-        suppression: { status: "suppressed", reasons: ["comparison_not_available"] },
+        suppression: { status: "unavailable", reasons: [comparisonState === COMPARISON_STATES.INFERENTIAL ? "comparison_not_available" : comparisonState] },
       };
     }
     return {
       estimatorVersion: comparison.estimatorVersion,
+      comparisonState,
+      comparisonAvailable: true,
+      estimateAvailable: comparison.adjustedEffect != null,
+      tested: comparison.pValue != null,
       activeN: comparison.activeN,
       referenceN: comparison.referenceN,
       cohortNs: Object.assign({}, comparison.cohortNs),
@@ -3068,7 +3948,7 @@
     const accessor = typeof keyAccessor === "function" ? keyAccessor : function (datum) { return datum && datum.key; };
     input.forEach(function (datum) {
       const comparison = byKey.get(accessor(datum));
-      Object.assign(datum, comparisonSchemaFields(comparison));
+      Object.assign(datum, comparisonSchemaFields(comparison, comparisonFamily && comparisonFamily.metadata && comparisonFamily.metadata.comparisonState));
     });
     return input;
   }
@@ -3799,15 +4679,23 @@
     };
   }
 
-  function contextCounts(rows, descriptor, dimensionAccessor) {
+  function contextCounts(rows, descriptor, dimensionAccessor, axisType) {
     const aggregation = contextCountAggregation(rows, descriptor, dimensionAccessor);
-    return unionMapDatums(
+    const values = unionMapDatums(
       aggregation.active,
       aggregation.reference,
       aggregation.activeMembershipCount,
       aggregation.referenceMembershipCount,
       "context"
     );
+    if (axisType) {
+      values.sort(function (left, right) { return semanticAxisCompare(left.key, right.key, axisType); });
+      values.forEach(function (datum, index) {
+        datum.axisType = axisType;
+        datum.axisIndex = index;
+      });
+    }
+    return values;
   }
 
   function multiLabelContextCounts(rows, descriptor, dimensionAccessor, membershipUnit, membershipPolicy) {
@@ -3938,7 +4826,7 @@
         referenceCount: cropCohorts.reference.length,
         totalProjectionRows: projections.cropCircles.length,
         summary: cropSummary,
-        time: contextCounts(projections.cropCircles, descriptor, function (row) { return row.year == null ? "unknown" : String(row.year); }),
+        time: contextCounts(projections.cropCircles, descriptor, function (row) { return row.year == null ? "unknown" : String(row.year); }, "year"),
         morphology: morphologyMembership.values,
         morphologyMembership: morphologyMembership.metadata,
         morphologyMembershipUnit: morphologyMembership.metadata.membershipUnit,
@@ -3996,7 +4884,7 @@
         referenceCount: animalCohorts.reference.length,
         totalProjectionRows: projections.animalReports.length,
         summary: animalSummary,
-        time: contextCounts(projections.animalReports, descriptor, function (row) { return row.year == null ? "unknown" : String(row.year); }),
+        time: contextCounts(projections.animalReports, descriptor, function (row) { return row.year == null ? "unknown" : String(row.year); }, "year"),
         species: speciesMembership.values,
         speciesMembership: speciesMembership.metadata,
         speciesMembershipUnit: speciesMembership.metadata.membershipUnit,
@@ -4078,6 +4966,121 @@
     }).slice(0, 16);
   }
 
+  function internalAssociationOutputs(active, associationsValue, datasetHash, artifactHashes) {
+    const associations = Array.isArray(associationsValue) ? associationsValue : [];
+    const evidence = [];
+    const patterns = [];
+    associations.forEach(function (definition) {
+      const association = definition && definition.result;
+      const metadata = association && association.metadata || {};
+      const covariates = Array.isArray(metadata.adjustmentCovariates) ? metadata.adjustmentCovariates.slice() : [];
+      (association && Array.isArray(association.fullCells) ? association.fullCells : []).forEach(function (cell) {
+        if (!cell.estimateAvailable || cell.expectedCount == null || cell.expectedCount <= 0) return;
+        const ratioValue = cell.observedCount / cell.expectedCount;
+        const log2Effect = ratioValue > 0 ? Math.log2(ratioValue) : null;
+        const interval = cell.observedCount > 0 && ratioValue > 0 ? {
+          lower: round((Math.log(ratioValue) - (1.959963984540054 / Math.sqrt(cell.observedCount))) / Math.LN2, 8),
+          upper: round((Math.log(ratioValue) + (1.959963984540054 / Math.sqrt(cell.observedCount))) / Math.LN2, 8),
+          level: 0.95,
+          method: "conditional_count_log_ratio_normal",
+        } : null;
+        const base = {
+          family: definition.family,
+          key: cell.key,
+          label: definition.label + ": " + cell.row + " / " + cell.column,
+          title: definition.label + ": " + cell.row + " / " + cell.column,
+          chartId: definition.chartId,
+          row: cell.row,
+          column: cell.column,
+          observed: cell.observedCount,
+          observedCount: cell.observedCount,
+          expected: cell.expectedCount,
+          expectedCount: cell.expectedCount,
+          conditionalExpectedCount: cell.expectedCount,
+          value: log2Effect == null ? 0 : round(log2Effect, 8),
+          adjustedEffect: log2Effect == null ? null : round(log2Effect, 8),
+          effectSize: {
+            measure: "log2_observed_expected_enrichment",
+            estimate: log2Effect == null ? null : round(log2Effect, 8),
+            unit: "log2 ratio",
+          },
+          observedExpectedRatio: round(ratioValue, 8),
+          standardizedResidual: cell.standardizedResidual,
+          interval,
+          uncertainty: interval,
+          pValue: cell.pValue,
+          pValueMethod: cell.pValueMethod,
+          permutationCount: cell.permutationCount,
+          permutationSeed: cell.permutationSeed,
+          qValue: cell.qValue,
+          cramersV: metadata.cramersV,
+          tableCramersV: metadata.cramersV,
+          activeN: active.total,
+          referenceN: 0,
+          supportedActiveN: active.total,
+          supportedReferenceN: 0,
+          commonSupportRate: null,
+          supportingStrataCount: cell.supportingStrataCount,
+          estimateAvailable: true,
+          tested: cell.tested,
+          inferenceEligible: cell.inferenceEligible,
+          statisticallyQualified: cell.statisticallyQualified,
+          patternFinderEligible: false,
+          sensitivityStatus: "not_assessed_for_internal_cell",
+          suppressionStatus: cell.suppressionStatus,
+          suppressionReasons: cell.suppressionReasons.slice(),
+          covariates,
+          comparisonState: COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+          comparisonBasis: "conditional_expectation",
+          estimatorVersion: ESTIMATOR_VERSION,
+          datasetHash: datasetHash || "not_provided",
+          artifactHashes: Object.assign({}, artifactHashes || {}),
+          exploratory: true,
+          policyLabel: EXPLORATORY_POLICY,
+        };
+        evidence.push(base);
+        const nontrivialEffect = ratioValue >= 1.25 || ratioValue <= 0.80;
+        if (
+          definition.sensitivityAssessed === true &&
+          active.total >= 200 &&
+          cell.observedCount >= 25 &&
+          cell.expectedCount >= 10 &&
+          cell.statisticallyQualified &&
+          nontrivialEffect
+        ) {
+          const direction = ratioValue >= 1 ? "higher" : "lower";
+          const finding = Object.assign({}, base, {
+            summary: base.label + " has " + cell.observedCount + " observed reports versus " + round(cell.expectedCount, 1) + " conditionally expected.",
+            effectLabel: round(ratioValue, 2) + "\u00d7 conditional expectation",
+            intervalLabel: interval
+              ? "95% log2-ratio interval " + interval.lower + " to " + interval.upper
+              : "No stable ratio interval is available.",
+            direction,
+            relativeEnrichment: round(ratioValue, 8),
+            conservativeEffect: interval
+              ? round(direction === "higher" ? Math.max(0, interval.lower) : Math.max(0, -interval.upper), 8)
+              : 0,
+            nontrivialEffect: true,
+            findingLane: "within_corpus_association",
+            sourceStability: { status: "not_assessed_for_internal_cell", stable: false, sourcesTested: 0 },
+            regionStability: { status: "not_assessed_for_internal_cell", stable: false, regionsTested: 0 },
+          });
+          patterns.push(finding);
+        }
+      });
+    });
+    evidence.sort(function (left, right) {
+      return Number(Boolean(right.statisticallyQualified)) - Number(Boolean(left.statisticallyQualified)) ||
+        Math.abs(right.standardizedResidual || 0) - Math.abs(left.standardizedResidual || 0) ||
+        String(left.family).localeCompare(String(right.family)) || String(left.key).localeCompare(String(right.key));
+    });
+    patterns.sort(function (left, right) {
+      return right.conservativeEffect - left.conservativeEffect ||
+        String(left.family).localeCompare(String(right.family)) || String(left.key).localeCompare(String(right.key));
+    });
+    return { evidence: evidence.slice(0, 16), patterns };
+  }
+
   function precisionLabel(map, total) {
     const first = mapEntriesByCount(map)[0];
     if (!first) return "No reports";
@@ -4145,12 +5148,14 @@
     const options = optionsValue || {};
     const inferenceDeferred = options.quickMode === true || String(options.analysisPhase || "").trim().toLowerCase() === "quick";
     const requestedDomains = requestedDomainSet(options);
+    const geographyProjectionLoaded = options.geographyProjectionLoaded !== false;
     const mode = normalizeBaselineMode(options.baselineMode);
     const fullTimeRange = Boolean(options.fullTimeRange) || ["full", "all", "all_time"].indexOf(
       String(options.timeRangeMode || "").trim().toLowerCase()
     ) !== -1;
     const activeRange = fullTimeRange ? null : normalizeRange(options.timeRangeStartOrdinal, options.timeRangeEndOrdinal);
-    const descriptor = baselineDescriptor(mode, activeRange);
+    const wholeCorpusStructure = fullTimeRange || !activeRange;
+    const descriptor = baselineDescriptor(mode, activeRange, wholeCorpusStructure);
     const active = createAccumulator("active");
     const reference = createAccumulator("reference");
     const quickCoreAccumulator = inferenceDeferred &&
@@ -4163,6 +5168,12 @@
       if (membership.reference) (quickCoreAccumulator ? addQuickCoreRow : addRow)(reference, row);
     });
 
+    const analysisMode = wholeCorpusStructure
+      ? ANALYSIS_MODES.WHOLE_CORPUS_STRUCTURE
+      : ANALYSIS_MODES.COHORT_COMPARISON;
+    const comparisonState = resolveComparisonState(descriptor, active, reference);
+    descriptor.comparisonState = comparisonState;
+
     const datasetHash = category(options.datasetHash, "not_provided");
     const artifactHashes = Object.assign({}, options.contextReleaseHashes || {}, options.artifactHashes || {});
     const coverage = buildCoverage(active, reference);
@@ -4172,17 +5183,32 @@
       minimumCommonSupport: options.minimumCommonSupport,
       bootstrapReplicates: options.bootstrapReplicates,
     };
+    const comparisonUnavailable = comparisonState === COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE ||
+      comparisonState === COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE ||
+      comparisonState === COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON;
     const balancedFamilies = inferenceDeferred
       ? deferredBalancedFamilyComparisons(descriptor, comparisonOptions)
-      : buildBalancedFamilyComparisons(active, reference, descriptor, comparisonOptions);
+      : (comparisonUnavailable
+        ? unavailableBalancedFamilyComparisons(descriptor, comparisonState, comparisonOptions)
+        : buildBalancedFamilyComparisons(active, reference, descriptor, comparisonOptions));
     const mapGrid6Comparisons = inferenceDeferred
       ? deferredMapGrid6Comparisons(descriptor, comparisonOptions)
-      : buildMapGrid6Comparisons(active, reference, descriptor, comparisonOptions);
+      : (comparisonUnavailable
+        ? unavailableMapGrid6Comparisons(descriptor, comparisonState, comparisonOptions)
+        : buildMapGrid6Comparisons(active, reference, descriptor, comparisonOptions));
     const patternFamilies = inferenceDeferred
       ? FAMILY_ORDER.reduce(function (families, family) { families[family] = []; return families; }, {})
       : buildPatternFamilies(active, reference, datasetHash, descriptor, balancedFamilies, artifactHashes);
     const evidenceSummary = inferenceDeferred ? [] : adjustedEvidenceSummary(balancedFamilies);
     if (!inferenceDeferred) populatePatternSourceSensitivity(active, reference, patternFamilies);
+    if (!geographyProjectionLoaded) {
+      patternFamilies.geography = [];
+      for (let index = evidenceSummary.length - 1; index >= 0; index -= 1) {
+        if (String(evidenceSummary[index] && evidenceSummary[index].family || "") === "geography") {
+          evidenceSummary.splice(index, 1);
+        }
+      }
+    }
     const patterns = [];
     FAMILY_ORDER.forEach(function (family) {
       (patternFamilies[family] || []).forEach(function (pattern) { patterns.push(pattern); });
@@ -4216,9 +5242,10 @@
     if (descriptor.warning) policyWarnings.push(descriptor.warning);
     if (datasetHash === "not_provided") policyWarnings.push("Catalog dataset hash was not provided for this computation.");
 
+    const sectionOptions = { inferenceDeferred, comparisonState, analysisMode };
     const time = inferenceDeferred && !domainRequested(requestedDomains, "time")
       ? deferredTimeSection()
-      : buildTime(active, reference, { inferenceDeferred });
+      : buildTime(active, reference, sectionOptions);
     time.monthComparison = balancedFamilies.time_month.comparisons;
     time.comparisonMetadata = balancedFamilies.time_month.metadata;
     time.bursts.forEach(function (burst) {
@@ -4227,29 +5254,50 @@
     });
     const craft = inferenceDeferred && !domainRequested(requestedDomains, "craft")
       ? deferredCraftSection()
-      : buildCraft(active, reference, { inferenceDeferred });
+      : buildCraft(active, reference, sectionOptions);
     applyComparisonSchema(craft.distribution, balancedFamilies.craft);
     craft.comparisons = balancedFamilies.craft.comparisons;
     craft.comparisonMetadata = balancedFamilies.craft.metadata;
     const geography = inferenceDeferred && !domainRequested(requestedDomains, "geography")
       ? deferredGeographySection()
-      : buildGeography(active, reference, { inferenceDeferred });
+      : (!geographyProjectionLoaded
+        ? Object.assign(deferredGeographySection(), {
+            status: "data_unavailable",
+            inferenceDeferred: false,
+            loadingReason: "country_projection_not_loaded",
+            message: "Country geography loads when the Geography dashboard is first opened.",
+          })
+        : buildGeography(active, reference, sectionOptions));
     applyComparisonSchema(geography.cells, balancedFamilies.geography);
+    if (geography.countryMap) {
+      geography.countryChoropleth = Object.assign({}, geography.countryMap, {
+        countries: geography.cells,
+      });
+    }
     geography.heatmap = qualifySparseHeatmapCells(geography.cells.map(function (cell) {
       return Object.assign({}, cell, {
         row: cell.coordinateClass,
-        column: cell.gridMetadata && cell.gridMetadata.key ? cell.gridMetadata.key : cell.key,
+        column: cell.country || cell.displayLabel || "Unknown country",
         expected: cell.minimumExpectedCell,
+        expectedCount: cell.minimumExpectedCell,
+        estimateAvailable: cell.observed > 0 || cell.referenceCount > 0 || cell.adjustedEffect != null,
+        comparisonState,
       });
-    }), { maximumRows: 12, maximumColumns: 12, minimumExpectedCell: 10 });
+    }), {
+      maximumRows: 12,
+      maximumColumns: 12,
+      minimumExpectedCell: 10,
+      rowAxisType: "category",
+      columnAxisType: "geography",
+    });
     geography.comparisons = balancedFamilies.geography.comparisons;
     geography.comparisonMetadata = balancedFamilies.geography.metadata;
-    geography.equalAreaMap = geography.status === "not_requested"
+    geography.equalAreaMap = geography.status === "not_requested" || geography.status === "data_unavailable"
       ? null
       : buildLambertEqualAreaMap6x12(active, reference, mapGrid6Comparisons);
     const sourcesQuality = inferenceDeferred && !domainRequested(requestedDomains, "sources_quality")
       ? deferredSourcesQualitySection()
-      : buildSourcesQuality(active, reference);
+      : buildSourcesQuality(active, reference, sectionOptions);
     applyComparisonSchema(sourcesQuality.sourceComposition, balancedFamilies.source);
     const qualityFamilyByRow = {
       "Date precision": "date_precision",
@@ -4259,7 +5307,11 @@
     };
     sourcesQuality.fieldAudit.forEach(function (datum) {
       const family = qualityFamilyByRow[datum.row];
-      Object.assign(datum, comparisonSchemaFields(family ? balancedFamilies[family].byKey.get(datum.column) : null));
+      const comparisonFamily = family ? balancedFamilies[family] : null;
+      Object.assign(datum, comparisonSchemaFields(
+        comparisonFamily ? comparisonFamily.byKey.get(datum.column) : null,
+        comparisonFamily && comparisonFamily.metadata && comparisonFamily.metadata.comparisonState
+      ));
     });
     sourcesQuality.comparisonFamilies = {
       source: balancedFamilies.source.comparisons,
@@ -4268,6 +5320,24 @@
       coordinateSource: balancedFamilies.coordinate_source.comparisons,
       craftConfidence: balancedFamilies.craft_confidence.comparisons,
     };
+    if (!inferenceDeferred && analysisMode === ANALYSIS_MODES.WHOLE_CORPUS_STRUCTURE) {
+      const internalDescriptors = [
+        { family: "month_by_craft", label: "Recurring month by craft", chartId: "analysis-month-year", result: time.monthByCraft },
+        { family: "craft_by_era", label: "Craft by era", chartId: "analysis-craft-era", result: craft.byEra },
+        { family: "craft_by_geography", label: "Craft by geography", chartId: "analysis-craft-geography", result: craft.byGeography },
+        { family: "geography_by_era", label: "Geography by era", chartId: "analysis-geography-time", result: geography.byEra },
+        { family: "classifier_consistency", label: "Classifier consistency", chartId: "analysis-classifier-audit", result: sourcesQuality.classifierAuditAssociation },
+      ].filter(function (entry) {
+        return geographyProjectionLoaded || ["craft_by_geography", "geography_by_era"].indexOf(entry.family) === -1;
+      });
+      const internalOutputs = internalAssociationOutputs(active, internalDescriptors, datasetHash, artifactHashes);
+      evidenceSummary.splice(0, evidenceSummary.length, ...internalOutputs.evidence);
+      patternFamilies.internal_structure = internalOutputs.patterns;
+      internalOutputs.patterns.forEach(function (pattern) { patterns.push(pattern); });
+      patternGroups.withinCorpusAssociation = internalOutputs.patterns.slice();
+    } else {
+      patternGroups.withinCorpusAssociation = [];
+    }
     const comparisonCatalog = {};
     FAMILY_ORDER.forEach(function (family) {
       comparisonCatalog[family] = {
@@ -4282,6 +5352,13 @@
     const result = {
       schemaVersion: SCHEMA_VERSION,
       estimatorVersion: ESTIMATOR_VERSION,
+      analysisMode,
+      comparisonState,
+      geographyProjection: {
+        loaded: geographyProjectionLoaded,
+        status: geographyProjectionLoaded ? "ready" : "data_unavailable",
+        artifactHash: String(artifactHashes.ufoGeography || ""),
+      },
       unitOfAnalysis: "reports",
       selectedDomains: Array.isArray(options.selectedDomains) ? options.selectedDomains.slice() : [],
       analysisPhase: inferenceDeferred ? "quick" : "full",
@@ -4291,6 +5368,7 @@
         deferred: inferenceDeferred,
         reason: inferenceDeferred ? "quick_core_inference_deferred" : "",
         estimatorVersion: ESTIMATOR_VERSION,
+        comparisonState,
       },
       baseline: descriptor,
       artifactHashes,
@@ -4312,6 +5390,8 @@
         datasetHash,
         estimatorVersion: ESTIMATOR_VERSION,
         artifactHashes,
+        analysisMode,
+        comparisonState,
         missingnessPolicy: {
           unit: "rows missing any required analysis field",
           aggregation: "set union; each report contributes at most once",
@@ -4323,29 +5403,40 @@
         eligibilityFunnel: coverage.eligibilityFunnel,
         evidenceSummary,
         comparison: coverage.rows.map(function (row) {
-          const interval = newcombeDifferenceInterval(row.observed, active.total, row.referenceCount, reference.total);
-          const difference = row.observedShare - row.referenceShare;
+          const comparisonAvailable = !comparisonUnavailable;
+          const interval = comparisonAvailable
+            ? newcombeDifferenceInterval(row.observed, active.total, row.referenceCount, reference.total)
+            : null;
+          const difference = comparisonAvailable ? row.observedShare - row.referenceShare : null;
           return {
             label: row.label,
-            value: round(difference, 8),
-            observed: round(difference, 8),
-            reference: 0,
+            value: comparisonAvailable ? round(difference, 8) : row.observedShare,
+            observed: comparisonAvailable ? round(difference, 8) : row.observedShare,
+            reference: comparisonAvailable ? 0 : null,
             observedCount: row.observed,
             referenceCount: row.referenceCount,
             observedShare: row.observedShare,
-            referenceShare: row.referenceShare,
-            difference: round(difference, 8),
-            interval: inferenceDeferred ? null : {
+            referenceShare: comparisonAvailable ? row.referenceShare : null,
+            difference: comparisonAvailable ? round(difference, 8) : null,
+            interval: inferenceDeferred || !interval ? null : {
               lower: round(interval.lower, 8),
               upper: round(interval.upper, 8),
               level: 0.95,
               method: interval.method,
             },
-            effectLabel: (difference >= 0 ? "+" : "") + round(difference * 100, 1) + " percentage points",
+            effectLabel: comparisonAvailable
+              ? (difference >= 0 ? "+" : "") + round(difference * 100, 1) + " percentage points"
+              : round(row.observedShare * 100, 1) + "% of all matched reports",
             intervalLabel: inferenceDeferred
               ? "Inferential uncertainty deferred until the full evidence computation completes."
-              : "95% interval " + round(interval.lower * 100, 1) + " to " + round(interval.upper * 100, 1) + " percentage points",
+              : (interval
+                ? "95% interval " + round(interval.lower * 100, 1) + " to " + round(interval.upper * 100, 1) + " percentage points"
+                : "No independent reference cohort is used in whole-corpus structure mode."),
             estimatorVersion: "unadjusted_coverage_descriptor_1",
+            comparisonState,
+            comparisonAvailable,
+            estimateAvailable: true,
+            tested: false,
             inferenceEligible: false,
             suppressionStatus: "descriptive",
             suppressionReasons: ["coverage_descriptor"],
@@ -4383,11 +5474,16 @@
     ESTIMATOR_VERSION,
     MINIMUM_COMMON_SUPPORT,
     DEFAULT_BOOTSTRAP_REPLICATES,
+    DEFAULT_ASSOCIATION_PERMUTATIONS,
     BASELINE_MODES,
+    ANALYSIS_MODES,
+    COMPARISON_STATES,
+    MONTH_AXIS_ORDER,
     FAMILY_ORDER,
     FAMILY_COVARIATES,
     EXPLORATORY_POLICY,
     normalizeBaselineMode,
+    semanticAxisMetadata,
     civilFromOrdinal,
     ordinalFromCivil,
     wilsonInterval,
