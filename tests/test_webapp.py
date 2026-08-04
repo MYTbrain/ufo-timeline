@@ -1383,6 +1383,50 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
         assert prohibited not in stats_js
 
 
+def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    supporting_cards = {
+        "Reported observation duration": "analysis-duration-chart",
+        "Recurring month-by-craft signal": "analysis-month-year-chart",
+        "Craft by era": "analysis-craft-era-chart",
+        "Classification confidence": "analysis-craft-confidence-chart",
+        "Geography by era": "analysis-geography-time-chart",
+        "Context-marker neighborhoods": "analysis-context-neighborhood-chart",
+        "Facility context": "analysis-facility-context-chart",
+        "Cross-domain readiness": "analysis-cross-domain-readiness-chart",
+        "Catalog composition": "analysis-crop-morphology-chart",
+        "Location, coverage, and point evidence": "analysis-crop-coordinate-chart",
+        "Report composition": "analysis-animal-species-chart",
+        "Date, coverage, and public-marker evidence": "analysis-animal-date-precision-chart",
+        "Coverage and event taxonomy": "analysis-quality-missingness-chart",
+        "Craft classification and source dependence": "analysis-craft-residual-chart",
+    }
+
+    disclosures = re.findall(
+        r'<details class="[^"]*analysis-dashboard-support[^"]*"[^>]*>',
+        index_html,
+    )
+    assert len(disclosures) == len(supporting_cards)
+    assert all(" open" not in disclosure for disclosure in disclosures)
+
+    for summary, chart_id in supporting_cards.items():
+        pattern = (
+            r'<details class="[^"]*analysis-dashboard-support[^"]*"[^>]*>'
+            rf'<summary>{re.escape(summary)}</summary>.*?id="{re.escape(chart_id)}"'
+        )
+        assert re.search(pattern, index_html, flags=re.DOTALL), summary
+
+    for primary_chart_id in (
+        "analysis-time-series-chart",
+        "analysis-craft-distribution-chart",
+        "analysis-geography-grid-chart",
+        "analysis-cooccurrence-chart",
+        "analysis-crop-time-chart",
+        "analysis-source-composition-chart",
+    ):
+        assert f'id="{primary_chart_id}"' in index_html
+
+
 def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
 
