@@ -5665,7 +5665,7 @@
       const spatialCooccurrenceJob = () => this._renderCooccurrenceEvidence("analysis-cooccurrence-chart", data.cooccurrence, summary, { caption: "Point-based craft co-occurrence evidence", defaultKind: "filter", primaryCountLabel: "Observed", comparisonCountLabel: "Expected", primaryCountKeys: ["observedCount", "observed_count"], comparisonCountKeys: ["expectedCount", "expected_count"], effectLabel: "Log2 observed/expected enrichment", valueKeys: ["log2Enrichment", "log2_enrichment"], nullValue: 0, axisLimit: 6, emptyMessage: "Not estimable until the qualified point-neighbor artifact and stratified null results are available." });
       spatialJobs.push(() => {
         if (!this.document.getElementById("analysis-spatial-eligibility-chart")) return;
-        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", limit: 8 });
+        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", limit: 4 });
       });
       const spatialContextJobs = [
         () => this._renderContextAssociations("analysis-context-neighborhood-chart", data.contextAssociations, summary, { emptyMessage: "Context-marker neighborhood evidence loads with the pinned point-neighbor artifact." }),

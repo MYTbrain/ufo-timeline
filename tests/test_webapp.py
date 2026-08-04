@@ -1436,6 +1436,9 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     ) not in index_html
     assert 'id="analysis-spatial-context-disclosure"' in index_html
     assert 'id="analysis-spatial-facility-disclosure"' in index_html
+    assert 'caption: "High-precision co-occurrence pool", limit: 4' in Path(
+        "webapp/static_public/analysis_view.js"
+    ).read_text(encoding="utf-8")
 
 
 def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():
