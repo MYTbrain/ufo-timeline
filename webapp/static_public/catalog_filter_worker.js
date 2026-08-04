@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-time-of-day-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-witness-count-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -73,6 +73,14 @@
     artifactHashes: {},
     releaseId: "",
   };
+  let analysisWitnessCountArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    typedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisCoordinateEvidenceArtifact = {
     manifest: null,
     loaded: false,
@@ -125,6 +133,7 @@
       durationMacroregion: createDictionary(),
       reportingDelayMacroregion: createDictionary(),
       timeOfDayMacroregion: createDictionary(),
+      witnessCountMacroregion: createDictionary(),
       coordinateEvidenceMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
@@ -280,6 +289,11 @@
       analysisTimeOfDayMacroregionCodes: new Uint16Array(length),
       analysisTimeOfDayLowerMinutes: new Uint16Array(length),
       analysisTimeOfDayUpperMinutes: new Uint16Array(length),
+      analysisWitnessCountValueCodes: new Uint16Array(length),
+      analysisWitnessCountStatusCodes: new Uint8Array(length),
+      analysisWitnessCountBinCodes: new Uint8Array(length),
+      analysisWitnessCountMacroregionCodes: new Uint16Array(length),
+      analysisWitnessCountExactCounts: new Uint32Array(length),
       analysisCoordinateEvidenceProjectionStates: new Uint8Array(length),
       analysisCoordinateEvidenceStatusCodes: new Uint8Array(length),
       analysisCoordinateEvidenceConsistencyCodes: new Uint8Array(length),
@@ -407,6 +421,11 @@
       chunk.analysisTimeOfDayMacroregionCodes.byteLength +
       chunk.analysisTimeOfDayLowerMinutes.byteLength +
       chunk.analysisTimeOfDayUpperMinutes.byteLength;
+    typedStorageBytes += chunk.analysisWitnessCountValueCodes.byteLength +
+      chunk.analysisWitnessCountStatusCodes.byteLength +
+      chunk.analysisWitnessCountBinCodes.byteLength +
+      chunk.analysisWitnessCountMacroregionCodes.byteLength +
+      chunk.analysisWitnessCountExactCounts.byteLength;
     typedStorageBytes += chunk.analysisCoordinateEvidenceProjectionStates.byteLength +
       chunk.analysisCoordinateEvidenceStatusCodes.byteLength +
       chunk.analysisCoordinateEvidenceConsistencyCodes.byteLength +
@@ -630,6 +649,20 @@
       : null;
     values.analysisTimeOfDayUpperMinute = timeOfDayValueCode && chunk.analysisTimeOfDayUpperMinutes[index] !== 65535
       ? chunk.analysisTimeOfDayUpperMinutes[index]
+      : null;
+    const witnessCountValueCode = chunk.analysisWitnessCountValueCodes && chunk.analysisWitnessCountValueCodes[index];
+    values.analysisWitnessCountAvailable = Boolean(witnessCountValueCode);
+    values.analysisWitnessCountStatus = witnessCountValueCode
+      ? String((analysisWitnessCountArtifact.manifest.codes.status || [])[chunk.analysisWitnessCountStatusCodes[index] - 1] || "unresolved_text")
+      : "unavailable";
+    values.analysisWitnessCountBin = witnessCountValueCode
+      ? String((analysisWitnessCountArtifact.manifest.codes.witnessCountBin || [])[chunk.analysisWitnessCountBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisWitnessCountMacroregion = witnessCountValueCode
+      ? dictionaryValue(dictionaries.witnessCountMacroregion, chunk.analysisWitnessCountMacroregionCodes[index]) || "unknown"
+      : "unknown";
+    values.analysisWitnessCountExactCount = witnessCountValueCode && values.analysisWitnessCountStatus === "exact_count"
+      ? chunk.analysisWitnessCountExactCounts[index]
       : null;
     const coordinateEvidenceProjected = Boolean(
       chunk.analysisCoordinateEvidenceProjectionStates && chunk.analysisCoordinateEvidenceProjectionStates[index]
@@ -1612,6 +1645,9 @@
         analysisTimeOfDayArtifact.loaded
           ? Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {})
           : {},
+        analysisWitnessCountArtifact.loaded
+          ? Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {})
+          : {},
         analysisCoordinateEvidenceArtifact.loaded
           ? Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {})
           : {}
@@ -1644,6 +1680,15 @@
         negativeControls: Object.assign({}, analysisTimeOfDayArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {}),
       } : null,
+      witnessCountProjectionLoaded: Boolean(analysisWitnessCountArtifact.loaded),
+      witnessCountArtifact: analysisWitnessCountArtifact.loaded ? {
+        releaseId: analysisWitnessCountArtifact.releaseId,
+        counts: Object.assign({}, analysisWitnessCountArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisWitnessCountArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisWitnessCountArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisWitnessCountArtifact.manifest.negativeControls || {}),
+        artifactHashes: Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {}),
+      } : null,
       coordinateEvidenceProjectionLoaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
       coordinateEvidenceArtifact: analysisCoordinateEvidenceArtifact.loaded ? {
         releaseId: analysisCoordinateEvidenceArtifact.releaseId,
@@ -1653,7 +1698,7 @@
         negativeControls: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {}),
       } : null,
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.5.0"),
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.7.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
@@ -2667,6 +2712,168 @@
     };
   }
 
+  function analysisWitnessCountManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-witness-count-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts && manifest.artifacts.witnessCountValueDictionary &&
+      manifest.artifactGroups && Array.isArray(manifest.artifactGroups.witnessCountProjectionShards) &&
+      manifest.artifactGroups.witnessCountProjectionShards.length > 0 &&
+      manifest.codes && manifest.readiness
+    );
+  }
+
+  function validateWitnessCountRows(rows, manifest, key, width) {
+    const entry = manifestArtifactEntry(manifest, key);
+    if (!entry || !normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+      throw new Error("Witness-count artifact " + key + " is missing pinned integrity.");
+    }
+    if (!Array.isArray(entry.rowSchema) || entry.rowSchema.length !== width) {
+      throw new Error("Witness-count artifact " + key + " has an invalid row schema.");
+    }
+    if (!Array.isArray(rows) || rows.length !== Number(entry.rowCount)) {
+      throw new Error("Witness-count artifact " + key + " row-count mismatch.");
+    }
+    const invalidIndex = rows.findIndex(function (row) { return !Array.isArray(row) || row.length !== width; });
+    if (invalidIndex !== -1) {
+      throw new Error("Witness-count artifact " + key + " row " + invalidIndex + " has an invalid width.");
+    }
+    return rows;
+  }
+
+  function applyWitnessCountProjection(dictionaryRows, projectionRows, manifest) {
+    const sourceCodes = manifest.codes.source || [];
+    const statusCodes = manifest.codes.status || [];
+    const binCodes = manifest.codes.witnessCountBin || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    const occurrences = new Uint32Array(dictionaryRows.length);
+    let previousRowIndex = -1;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    let typedRows = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const valueCode = Number(projection[2]);
+      const macroregionCode = Number(projection[3]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Witness-count projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Witness-count projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Witness-count projection event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(valueCode) || valueCode < 0 || valueCode >= dictionaryRows.length ||
+          !Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length) {
+        throw new Error("Witness-count projection contains an out-of-range code at row " + projectionIndex + ".");
+      }
+      const value = dictionaryRows[valueCode];
+      const sourceCode = Number(value[0]);
+      const statusCode = Number(value[3]);
+      const descriptiveBinCode = Number(value[8]);
+      if (!Number.isInteger(sourceCode) || sourceCode < 0 || sourceCode >= sourceCodes.length ||
+          !Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(descriptiveBinCode) || descriptiveBinCode < 0 || descriptiveBinCode >= binCodes.length) {
+        throw new Error("Witness-count dictionary code is out of range for value " + valueCode + ".");
+      }
+      const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource || canonicalSource !== "nuforc") {
+        throw new Error("Witness-count dictionary source is not the explicit NUFORC lane at row " + catalogRowIndex + ".");
+      }
+      const status = String(statusCodes[statusCode] || "unresolved_text");
+      const exactCount = value[5] == null ? null : Number(value[5]);
+      const typed = ["exact_count", "approximate_count", "bounded_range", "lower_bound", "qualitative_plural"].indexOf(status) !== -1;
+      if (status === "exact_count") {
+        if (!Number.isInteger(exactCount) || exactCount <= 0 || exactCount > 4294967295 || String(binCodes[descriptiveBinCode]) === "unknown") {
+          throw new Error("Exact witness-count row has an invalid positive integer at row " + projectionIndex + ".");
+        }
+      } else if (exactCount != null || String(binCodes[descriptiveBinCode]) !== "unknown") {
+        throw new Error("Excluded witness-count value silently retains an exact count for value " + valueCode + ".");
+      }
+      location.chunk.analysisWitnessCountValueCodes[location.index] = valueCode + 1;
+      location.chunk.analysisWitnessCountStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisWitnessCountBinCodes[location.index] = descriptiveBinCode + 1;
+      location.chunk.analysisWitnessCountMacroregionCodes[location.index] = categoryCode(
+        dictionaries.witnessCountMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+      location.chunk.analysisWitnessCountExactCounts[location.index] = exactCount == null ? 0 : exactCount;
+      occurrences[valueCode] += 1;
+      if (typed) typedRows += 1;
+    });
+    dictionaryRows.forEach(function (value, valueCode) {
+      if (occurrences[valueCode] !== Number(value[12])) {
+        throw new Error("Witness-count dictionary occurrence parity failed for value " + valueCode + ".");
+      }
+    });
+    if (typedRows !== Number(manifest.counts && manifest.counts.typedRows)) {
+      throw new Error("Witness-count typed-row parity failed.");
+    }
+    return { appliedRows: projectionRows.length, typedRows };
+  }
+
+  async function loadAnalysisWitnessCountArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_witness_count_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisWitnessCountManifestSupported(manifest)) {
+      throw new Error("Analysis witness-count manifest is invalid or unsupported.");
+    }
+    const dictionaryRows = validateWitnessCountRows(
+      await fetchAnalysisJson(
+        urls.dictionary || manifestArtifactUrl(manifest, "witnessCountValueDictionary", manifestUrl),
+        manifestArtifactIntegrity(manifest, "witnessCountValueDictionary")
+      ),
+      manifest,
+      "witnessCountValueDictionary",
+      13
+    );
+    const projectionRows = [];
+    for (const key of manifest.artifactGroups.witnessCountProjectionShards) {
+      const shardRows = validateWitnessCountRows(
+        await fetchAnalysisJson(manifestArtifactUrl(manifest, key, manifestUrl), manifestArtifactIntegrity(manifest, key)),
+        manifest,
+        key,
+        4
+      );
+      shardRows.forEach(function (row) { projectionRows.push(row); });
+    }
+    const applied = applyWitnessCountProjection(dictionaryRows, projectionRows, manifest);
+    const artifactHashes = {};
+    Object.keys(manifest.artifacts).sort().forEach(function (key) {
+      artifactHashes[key] = String(manifest.artifacts[key].sha256 || "");
+    });
+    analysisWitnessCountArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes,
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: analysisWitnessCountArtifact.releaseId,
+      artifactHashes: Object.assign({}, artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
   function analysisReportingDelayManifestSupported(manifest) {
     return Boolean(
       manifest &&
@@ -3447,6 +3654,7 @@
         durationMacroregion: dictionaries.durationMacroregion.values.length,
         reportingDelayMacroregion: dictionaries.reportingDelayMacroregion.values.length,
         timeOfDayMacroregion: dictionaries.timeOfDayMacroregion.values.length,
+        witnessCountMacroregion: dictionaries.witnessCountMacroregion.values.length,
         coordinateEvidenceMacroregion: dictionaries.coordinateEvidenceMacroregion.values.length,
       },
       geographyProjection: {
@@ -3474,6 +3682,13 @@
         typedRows: Number(analysisTimeOfDayArtifact.typedRows) || 0,
         releaseId: String(analysisTimeOfDayArtifact.releaseId || ""),
         artifactHashes: Object.assign({}, analysisTimeOfDayArtifact.artifactHashes || {}),
+      },
+      witnessCountProjection: {
+        loaded: Boolean(analysisWitnessCountArtifact.loaded),
+        appliedRows: Number(analysisWitnessCountArtifact.appliedRows) || 0,
+        typedRows: Number(analysisWitnessCountArtifact.typedRows) || 0,
+        releaseId: String(analysisWitnessCountArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {}),
       },
       coordinateEvidenceProjection: {
         loaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
@@ -3504,6 +3719,9 @@
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisTimeOfDayArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
+    };
+    analysisWitnessCountArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCoordinateEvidenceArtifact = {
@@ -3655,6 +3873,26 @@
         loadAnalysisTimeOfDayArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisTimeOfDayArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisWitnessCountArtifact") {
+        loadAnalysisWitnessCountArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisWitnessCountArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),

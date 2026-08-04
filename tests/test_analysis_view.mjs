@@ -221,6 +221,7 @@ function createShellDocument() {
     "analysis-reporting-delay-status", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart",
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
     "analysis-time-of-day-status", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart",
+    "analysis-witness-count-status", "analysis-witness-count-chart",
     "analysis-coordinate-evidence-status", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart",
     "analysis-coordinate-evidence-spatial-status", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
@@ -1369,6 +1370,33 @@ const result = {
       },
       patternFinderEligible: false,
     },
+    witnessCount: {
+      releaseId: "analysis-witness-count-v1-fixture",
+      assessmentLane: "single_source_descriptive_only",
+      status: "ready_descriptive",
+      readinessStatus: "ready_descriptive",
+      coverage: {
+        active: {
+          catalogRows: 400,
+          rawWitnessCountRows: 120,
+          typedRows: 110,
+          exactCountRows: 110,
+          extremeCountRows1000Plus: 2,
+          typedSources: [{ source: "nuforc", rows: 110 }],
+          statusCounts: [{ status: "exact_count", rows: 110 }, { status: "invalid_count", rows: 10 }],
+        },
+        reference: { catalogRows: 300, rawWitnessCountRows: 90, typedRows: 80, exactCountRows: 80 },
+      },
+      distribution: [
+        { key: "one", label: "1 witness", activeCount: 55, referenceCount: 40, activeShare: 0.5, referenceShare: 0.5, measurementClass: "explicit_nuforc_integer_only", inferenceEligible: false },
+        { key: "two", label: "2 witnesses", activeCount: 40, referenceCount: 30, activeShare: 40 / 110, referenceShare: 30 / 80, measurementClass: "explicit_nuforc_integer_only", inferenceEligible: false },
+        { key: "three_to_four", label: "3\u20134 witnesses", activeCount: 15, referenceCount: 10, activeShare: 15 / 110, referenceShare: 10 / 80, measurementClass: "explicit_nuforc_integer_only", inferenceEligible: false },
+      ],
+      exactSummary: { median: 1, p90: 3, maximum: 20000 },
+      comparisons: [],
+      comparisonMetadata: { status: "suppressed_single_source", minimumIndependentSources: 2 },
+      patternFinderEligible: false,
+    },
   },
   context: {
     crops: {
@@ -1453,6 +1481,13 @@ assert.equal(coordinateDistributionRow.coordinate_measurement_class, "source_coo
 assert.equal(coordinateDistributionRow.active_share, 0.9);
 assert.match(durationEvidenceCsv, /coordinate_quality_bin,coordinate_measurement_class,coordinate_release_id,coordinate_assessment_lane/);
 assert.match(durationEvidenceCsv, /country_consistent,source_coordinate_provenance_quality,analysis-coordinate-evidence-v1-fixture,descriptive_with_runtime_gated_comparisons/);
+const witnessCountDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "sourcesQuality.witnessCount.distribution" && row.witness_count_bin === "one");
+assert.equal(witnessCountDistributionRow.witness_count_release_id, "analysis-witness-count-v1-fixture");
+assert.equal(witnessCountDistributionRow.witness_count_assessment_lane, "single_source_descriptive_only");
+assert.equal(witnessCountDistributionRow.witness_count_measurement_class, "explicit_nuforc_integer_only");
+assert.equal(witnessCountDistributionRow.active_share, 0.5);
+assert.match(durationEvidenceCsv, /witness_count_bin,witness_count_measurement_class,witness_count_release_id,witness_count_assessment_lane/);
+assert.match(durationEvidenceCsv, /one,explicit_nuforc_integer_only,analysis-witness-count-v1-fixture,single_source_descriptive_only/);
 
 controller.setBaselineMode("other_dates_balanced", { notify: false });
 controller.setActiveSection("analysis-section-overview", { source: "test" });
@@ -1679,6 +1714,9 @@ assert.equal(
 assert.ok(document.getElementById("analysis-report-type-chart").children.length >= 2);
 assert.match(document.getElementById("analysis-coordinate-evidence-status").textContent, /98 typed source-coordinate rows across 2 sources.*24\.5% of matched reports.*2 source-coordinate rows remain excluded.*470,431 generalized markers.*122,110 unresolved rows/i);
 assert.ok(document.getElementById("analysis-coordinate-evidence-chart").children.length > 0);
+assert.match(document.getElementById("analysis-witness-count-status").textContent, /110 typed explicit-field rows from 1 source.*27\.5% of matched reports.*110 retain positive integer counts.*10 source sentinels remain excluded.*2 counts of 1,000\+.*median 1.*p90 3/i);
+assert.ok(document.getElementById("analysis-witness-count-chart").children.length > 0);
+assert.match(descendants(document.getElementById("analysis-witness-count-chart")).map((element) => element.textContent).join(" "), /1 witness.*50%.*2 witnesses.*36\.4%.*NUFORC.*never coerced.*Credential suffixes are metadata/i);
 assert.match(descendants(document.getElementById("analysis-coordinate-evidence-comparison-chart")).map((element) => element.textContent).join(" "), /Country-consistent source coordinates.*\+5%.*95%/i);
 assert.equal(document.getElementById("analysis-craft-trends-chart"), null, "the standalone craft trend duplicate is not rendered after classifier consistency");
 assert.match(

@@ -170,7 +170,7 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 138);
+assert.equal(added.storage.typedBytes, rows.length * 148);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
@@ -180,6 +180,7 @@ assert.equal(added.storage.geographyProjection.loaded, false);
 assert.equal(added.storage.durationProjection.loaded, false);
 assert.equal(added.storage.reportingDelayProjection.loaded, false);
 assert.equal(added.storage.timeOfDayProjection.loaded, false);
+assert.equal(added.storage.witnessCountProjection.loaded, false);
 assert.equal(added.storage.coordinateEvidenceProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
@@ -634,6 +635,105 @@ assert.deepEqual(timeOfDayFullCorpus.result.time.timeOfDay.artifactHashes, {
   timeOfDayValueDictionary: rawHash(timeOfDayDictionaryText),
 });
 
+const witnessCountRows = rows.map((row, index) => index < 2 ? { ...row, source: "nuforc" } : row);
+const witnessCountStatusCodes = ["missing", "exact_count", "approximate_count", "bounded_range", "lower_bound", "qualitative_plural", "invalid_count", "unresolved_text"];
+const witnessCountBinCodes = ["unknown", "one", "two", "three_to_four", "five_to_nine", "ten_to_nineteen", "twenty_to_forty_nine", "fifty_to_ninety_nine", "hundred_to_999", "thousand_plus"];
+const witnessCountDictionaryRows = [
+  [1, rawHash("2 - Pilot"), "2 - Pilot", 1, 0, 2, 2, 2, 2, 1, 1, 0, 1],
+  [1, rawHash("0"), "0", 6, 1, null, null, null, 0, 2, 0, 0, 1],
+];
+const witnessCountProjectionRows = [
+  [0, "2606225892387599", 0, 1],
+  [1, "city-event", 1, 1],
+];
+const witnessCountDictionaryText = JSON.stringify(witnessCountDictionaryRows);
+const witnessCountProjectionText = JSON.stringify(witnessCountProjectionRows);
+const witnessCountManifest = {
+  schemaId: "ufo-timeline-analysis-witness-count-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-witness-count-v1-fixture",
+  artifacts: {
+    witnessCountValueDictionary: {
+      file: "data/analysis_witness_count_v1/witness_count_value_dictionary_v1.json",
+      sha256: rawHash(witnessCountDictionaryText),
+      gzipSha256: "a".repeat(64),
+      rowCount: 2,
+      rowSchema: ["sourceCode", "rawValueSha256", "rawValue", "statusCode", "reasonCode", "exactCount", "lowerCount", "upperCount", "descriptiveBinCode", "precisionCode", "credentialProfileCode", "extremeAuditFlag", "occurrenceCount"],
+    },
+    witnessCountProjectionShard000: {
+      file: "data/analysis_witness_count_v1/witness_count_projection_v1_000.json",
+      sha256: rawHash(witnessCountProjectionText),
+      gzipSha256: "b".repeat(64),
+      rowCount: 2,
+      rowSchema: ["catalogRowIndex", "eventId", "valueCode", "macroregionCode"],
+    },
+  },
+  artifactGroups: { witnessCountProjectionShards: ["witnessCountProjectionShard000"] },
+  codes: {
+    source: ["unknown", "nuforc"],
+    status: witnessCountStatusCodes,
+    reason: ["explicit_integer_with_source_credentials", "zero_source_sentinel"],
+    witnessCountBin: witnessCountBinCodes,
+    precision: ["unknown", "integer", "invalid"],
+    credentialProfile: ["", "pilot"],
+    macroregion: ["unknown", "europe"],
+  },
+  counts: { catalogRows: witnessCountRows.length, rawWitnessCountRows: 2, typedRows: 1 },
+  readiness: { status: "ready_descriptive", assessmentLane: "single_source_descriptive_only" },
+  policy: { crossSourceComparison: false, activeReferenceInference: false, patternFinderPromotion: false },
+  negativeControls: { nonpositiveSentinelAudit: { zeroRows: 1, negativeRows: 0 } },
+};
+const witnessCountWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => new Response(
+    String(urlValue).includes("value_dictionary") ? witnessCountDictionaryText : witnessCountProjectionText,
+    { status: 200 }
+  ),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+witnessCountWorker.send({ type: "addCatalogFacetRows", requestId: "witness-count-catalog", rows: witnessCountRows });
+const witnessCountSetup = await witnessCountWorker.sendAsync({
+  type: "setAnalysisWitnessCountArtifact",
+  requestId: "witness-count-setup",
+  filterGeneration: 8,
+  manifest: witnessCountManifest,
+  urls: { manifest: "https://example.test/data/analysis_witness_count_v1/manifest.json" },
+});
+assert.equal(witnessCountSetup.type, "analysisWitnessCountArtifactSet");
+assert.equal(witnessCountSetup.snapshot.appliedRows, 2);
+assert.equal(witnessCountSetup.snapshot.typedRows, 1);
+assert.equal(witnessCountSetup.snapshot.readinessStatus, "ready_descriptive");
+const witnessCountFullCorpus = witnessCountWorker.send({
+  type: "computeAnalysis",
+  requestId: "witness-count-full-corpus",
+  filterGeneration: 8,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "witness-count-worker-fixture",
+  selectedDomains: ["sources_quality"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(witnessCountFullCorpus.type, "analysisComputed");
+const witnessCountAssessment = witnessCountFullCorpus.result.sourcesQuality.witnessCount;
+assert.equal(witnessCountAssessment.status, "ready_descriptive");
+assert.equal(witnessCountAssessment.coverage.active.rawWitnessCountRows, 2);
+assert.equal(witnessCountAssessment.coverage.active.typedRows, 1);
+assert.equal(witnessCountAssessment.coverage.active.exactCountRows, 1);
+assert.equal(witnessCountAssessment.coverage.active.statusCounts.find((item) => item.status === "invalid_count").rows, 1);
+assert.equal(witnessCountAssessment.distribution.find((item) => item.key === "two").activeCount, 1);
+assert.deepEqual(witnessCountAssessment.comparisons, []);
+assert.equal(witnessCountAssessment.patternFinderEligible, false);
+assert.deepEqual(witnessCountAssessment.artifactHashes, {
+  witnessCountProjectionShard000: rawHash(witnessCountProjectionText),
+  witnessCountValueDictionary: rawHash(witnessCountDictionaryText),
+});
+
 const coordinateEvidenceProjectionRows = [
   [0, "2606225892387599", 1, 1, 1, 0, 0, 0, 0, 48.8566, 2.3522],
 ];
@@ -848,7 +948,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 138);
+assert.equal(numericAdded.storage.typedBytes, 148);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1700,6 +1800,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   analysisDurationArtifactHashes: () => ({}),
   analysisReportingDelayArtifactHashes: () => ({}),
   analysisTimeOfDayArtifactHashes: () => ({}),
+  analysisWitnessCountArtifactHashes: () => ({}),
   analysisCoordinateEvidenceArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });

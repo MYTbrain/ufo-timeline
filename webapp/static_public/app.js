@@ -1049,6 +1049,11 @@
     analysisTimeOfDayWorkerReady: false,
     analysisTimeOfDayRequested: false,
     analysisTimeOfDayError: "",
+    analysisWitnessCountPromise: null,
+    analysisWitnessCountManifest: null,
+    analysisWitnessCountWorkerReady: false,
+    analysisWitnessCountRequested: false,
+    analysisWitnessCountError: "",
     analysisCoordinateEvidencePromise: null,
     analysisCoordinateEvidenceManifest: null,
     analysisCoordinateEvidenceWorkerReady: false,
@@ -8225,7 +8230,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-time-of-day-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-witness-count-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8812,6 +8817,10 @@
           ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
           return;
         }
+        if (runtime.analysisWitnessCountError) {
+          ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisDurationError) {
           ensureAnalysisDurationArtifact().catch(function () { return null; });
           return;
@@ -8855,6 +8864,9 @@
           } else {
             runtime.analysisCoordinateEvidenceLoadPending = true;
           }
+        }
+        if (change && change.sectionKey === "sources_quality") {
+          ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
         }
       },
       onRenderComplete: function () {
@@ -9507,6 +9519,99 @@
     ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
   }
 
+  function analysisWitnessCountArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.witnessCountManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisWitnessCountArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-witness-count-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed witness-count projection timed out."));
+      }, 45000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisWitnessCountArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisWitnessCountWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed witness-count setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisWitnessCountArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisWitnessCountArtifact() {
+    runtime.analysisWitnessCountRequested = true;
+    if (runtime.analysisWitnessCountWorkerReady) return Promise.resolve(runtime.analysisWitnessCountManifest);
+    if (runtime.analysisWitnessCountPromise) return runtime.analysisWitnessCountPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_witness_count_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-witness-count-status");
+    if (statusElement) statusElement.textContent = "Loading explicit NUFORC witness-count evidence...";
+    runtime.analysisWitnessCountPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Witness-count manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisWitnessCountManifest = manifest;
+        return setAnalysisWitnessCountArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisWitnessCountError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; single-source limits remain enforced.";
+        scheduleAnalysisCompute("typed witness-count evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisWitnessCountPromise = null;
+        runtime.analysisWitnessCountWorkerReady = false;
+        runtime.analysisWitnessCountRequested = false;
+        runtime.analysisWitnessCountError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Witness-count evidence failed closed: " + runtime.analysisWitnessCountError;
+        console.error("[analysis witness count]", error);
+        throw error;
+      });
+    return runtime.analysisWitnessCountPromise;
+  }
+
   function analysisCoordinateEvidenceArtifactHashes(manifest) {
     const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
       ? manifest.artifacts
@@ -9919,6 +10024,9 @@
       timeOfDayRequested: Boolean(runtime.analysisTimeOfDayRequested),
       timeOfDayReady: Boolean(runtime.analysisTimeOfDayWorkerReady),
       timeOfDayHashes: analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+      witnessCountRequested: Boolean(runtime.analysisWitnessCountRequested),
+      witnessCountReady: Boolean(runtime.analysisWitnessCountWorkerReady),
+      witnessCountHashes: analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
       coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
       coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
       coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
@@ -9932,6 +10040,7 @@
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
         analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+        analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
       ),
       datasetHash: analysisCatalogDatasetHash(),
@@ -10043,9 +10152,10 @@
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
           analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+          analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
         ),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.6.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.7.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -10120,6 +10230,7 @@
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
         analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+        analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
@@ -10160,7 +10271,7 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.6.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.7.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
@@ -10168,6 +10279,7 @@
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
           analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+          analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
           cached.artifactHashes || {}
         ),

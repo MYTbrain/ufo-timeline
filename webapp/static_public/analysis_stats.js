@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_6_time_of_day_assessment_1";
+  const ESTIMATOR_VERSION = "analysis_v2_7_witness_count_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -88,6 +88,28 @@
     morning_06_11: "06:00–11:59 source clock",
     afternoon_12_17: "12:01–17:59 source clock",
     evening_18_23: "18:00–23:59 source clock",
+  });
+  const WITNESS_COUNT_BIN_ORDER = Object.freeze([
+    "one",
+    "two",
+    "three_to_four",
+    "five_to_nine",
+    "ten_to_nineteen",
+    "twenty_to_forty_nine",
+    "fifty_to_ninety_nine",
+    "hundred_to_999",
+    "thousand_plus",
+  ]);
+  const WITNESS_COUNT_BIN_LABELS = Object.freeze({
+    one: "1 witness",
+    two: "2 witnesses",
+    three_to_four: "3\u20134 witnesses",
+    five_to_nine: "5\u20139 witnesses",
+    ten_to_nineteen: "10\u201319 witnesses",
+    twenty_to_forty_nine: "20\u201349 witnesses",
+    fifty_to_ninety_nine: "50\u201399 witnesses",
+    hundred_to_999: "100\u2013999 witnesses",
+    thousand_plus: "1,000+ witnesses",
   });
   const COORDINATE_QUALITY_BIN_ORDER = Object.freeze([
     "country_consistent",
@@ -1763,6 +1785,25 @@
     }
   }
 
+  function addWitnessCountRow(accumulator, row, source) {
+    if (!row || row.analysisWitnessCountAvailable !== true) return;
+    const status = category(row.analysisWitnessCountStatus, "unresolved_text");
+    const bin = category(row.analysisWitnessCountBin, "unknown");
+    accumulator.witnessCountRawRows += 1;
+    incrementRaw(accumulator.witnessCountStatusCounts, status, 1);
+    if (["exact_count", "approximate_count", "bounded_range", "lower_bound", "qualitative_plural"].indexOf(status) !== -1) {
+      accumulator.witnessCountTypedRows += 1;
+      incrementRaw(accumulator.witnessCountTypedSources, source, 1);
+    }
+    if (status !== "exact_count" || bin === "unknown") return;
+    const exactCount = finiteInteger(row.analysisWitnessCountExactCount);
+    if (exactCount == null || exactCount <= 0) return;
+    accumulator.witnessCountExactRows += 1;
+    incrementRaw(accumulator.witnessCountBins, bin, 1);
+    incrementRaw(accumulator.witnessCountExactFrequency, String(exactCount), 1);
+    if (exactCount >= 1000) accumulator.witnessCountExtremeRows += 1;
+  }
+
   function addCoordinateEvidenceRow(accumulator, row, source, civil) {
     if (!row || row.analysisCoordinateEvidenceAvailable !== true) return;
     const status = category(row.analysisCoordinateEvidenceStatus, "unavailable");
@@ -1905,6 +1946,14 @@
       timeOfDayExactSources: new Map(),
       timeOfDayExactStrataTotals: new Map(),
       timeOfDayExactBinStrata: new Map(),
+      witnessCountRawRows: 0,
+      witnessCountTypedRows: 0,
+      witnessCountExactRows: 0,
+      witnessCountExtremeRows: 0,
+      witnessCountStatusCounts: new Map(),
+      witnessCountTypedSources: new Map(),
+      witnessCountBins: new Map(),
+      witnessCountExactFrequency: new Map(),
       coordinateEvidenceRows: 0,
       coordinateEvidenceTypedRows: 0,
       coordinateEvidenceStatusCounts: new Map(),
@@ -2198,6 +2247,7 @@
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
     addTimeOfDayRow(accumulator, row, source, civil);
+    addWitnessCountRow(accumulator, row, source);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
   }
 
@@ -2278,6 +2328,7 @@
     addDurationRow(accumulator, row, source, civil);
     addReportingDelayRow(accumulator, row, source, civil);
     addTimeOfDayRow(accumulator, row, source, civil);
+    addWitnessCountRow(accumulator, row, source);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
@@ -5908,6 +5959,132 @@
     };
   }
 
+  function witnessCountCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      rawWitnessCountRows: accumulator.witnessCountRawRows,
+      rawWitnessCountCoverage: round(rate(accumulator.witnessCountRawRows, accumulator.total), 8),
+      typedRows: accumulator.witnessCountTypedRows,
+      typedCoverage: round(rate(accumulator.witnessCountTypedRows, accumulator.total), 8),
+      exactCountRows: accumulator.witnessCountExactRows,
+      extremeCountRows1000Plus: accumulator.witnessCountExtremeRows,
+      typedSources: mapEntriesByCount(accumulator.witnessCountTypedSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.witnessCountStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+    };
+  }
+
+  function witnessCountQuantile(frequency, quantile) {
+    const rows = [];
+    let total = 0;
+    frequency.forEach(function (count, value) {
+      const numeric = Number(value);
+      if (!Number.isInteger(numeric) || numeric <= 0 || count <= 0) return;
+      rows.push([numeric, count]);
+      total += count;
+    });
+    if (!total) return null;
+    rows.sort(function (left, right) { return left[0] - right[0]; });
+    const target = Math.max(1, Math.ceil(Math.max(0, Math.min(1, quantile)) * total));
+    let cumulative = 0;
+    for (let index = 0; index < rows.length; index += 1) {
+      cumulative += rows[index][1];
+      if (cumulative >= target) return rows[index][0];
+    }
+    return rows[rows.length - 1][0];
+  }
+
+  function buildWitnessCountAssessment(active, reference, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.witnessCountArtifact && typeof options.witnessCountArtifact === "object"
+      ? options.witnessCountArtifact
+      : null;
+    const loaded = options.witnessCountProjectionLoaded === true && artifact;
+    const activeCoverage = witnessCountCoverage(active);
+    const referenceCoverage = witnessCountCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-witness-count-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      assessmentLane: "single_source_descriptive_only",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: [],
+      exactSummary: { median: null, p90: null, maximum: null },
+      comparisons: [],
+      comparisonMetadata: { status: "suppressed_single_source", minimumIndependentSources: 2 },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["witness_count_artifact_not_loaded", "single_source_comparison_suppressed"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const distribution = WITNESS_COUNT_BIN_ORDER.map(function (key) {
+      const activeCount = mapCount(active.witnessCountBins, key);
+      const referenceCount = mapCount(reference.witnessCountBins, key);
+      return {
+        key,
+        label: WITNESS_COUNT_BIN_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.witnessCountExactRows), 8),
+        referenceShare: round(rate(referenceCount, reference.witnessCountExactRows), 8),
+        measurementClass: "explicit_nuforc_integer_only",
+        inferenceEligible: false,
+        patternFinderEligible: false,
+      };
+    });
+    const globalReady = String(readiness.status || "") === "ready_descriptive";
+    const activeReady = active.witnessCountTypedRows > 0 && active.witnessCountExactRows > 0;
+    const status = globalReady && activeReady ? "ready_descriptive" : "not_estimable";
+    const suppressionReasons = [
+      "single_source_comparison_suppressed",
+      "active_reference_inference_suppressed",
+      "pattern_finder_promotion_suppressed",
+      "credibility_incidence_and_causal_claims_suppressed",
+    ];
+    if (!globalReady) suppressionReasons.push("global_witness_count_readiness_failed");
+    if (!active.witnessCountTypedRows) suppressionReasons.push("no_typed_witness_count_in_active_cohort");
+    if (!active.witnessCountExactRows) suppressionReasons.push("no_exact_witness_count_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-witness-count-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "single_source_descriptive_only"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution,
+      exactSummary: {
+        median: witnessCountQuantile(active.witnessCountExactFrequency, 0.5),
+        p90: witnessCountQuantile(active.witnessCountExactFrequency, 0.9),
+        maximum: witnessCountQuantile(active.witnessCountExactFrequency, 1),
+      },
+      comparisons: [],
+      comparisonMetadata: {
+        status: "suppressed_single_source",
+        activeReferenceInference: false,
+        crossSourceComparison: false,
+        minimumIndependentSources: 2,
+        supportedSources: activeCoverage.typedSources.map(function (item) { return item.source; }),
+      },
+      globalCounts: Object.assign({}, artifact.counts || {}),
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, artifact.policy || {}),
+    };
+  }
+
   function coordinateEvidenceComparisonStrata(active, reference, key) {
     const activeTotals = active.coordinateEvidenceStrataTotals || new Map();
     const referenceTotals = reference.coordinateEvidenceStrataTotals || new Map();
@@ -6263,6 +6440,10 @@
       bootstrapReplicates: options.bootstrapReplicates,
       datasetHash,
     });
+    sourcesQuality.witnessCount = buildWitnessCountAssessment(active, reference, {
+      witnessCountProjectionLoaded: options.witnessCountProjectionLoaded,
+      witnessCountArtifact: options.witnessCountArtifact,
+    });
     applyComparisonSchema(sourcesQuality.sourceComposition, balancedFamilies.source);
     const qualityFamilyByRow = {
       "Date precision": "date_precision",
@@ -6450,6 +6631,8 @@
     REPORTING_DELAY_BIN_LABELS,
     TIME_OF_DAY_BIN_ORDER,
     TIME_OF_DAY_BIN_LABELS,
+    WITNESS_COUNT_BIN_ORDER,
+    WITNESS_COUNT_BIN_LABELS,
     COORDINATE_QUALITY_BIN_ORDER,
     COORDINATE_QUALITY_BIN_LABELS,
     FAMILY_ORDER,

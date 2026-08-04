@@ -962,6 +962,9 @@
       } else if (/(?:^|\.)timeOfDay(?:\.|\[|$)/.test(section)) {
         context.timeOfDayReleaseId = firstDefined(item, ["releaseId", "release_id"], context.timeOfDayReleaseId || "");
         context.timeOfDayAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.timeOfDayAssessmentLane || "");
+      } else if (/(?:^|\.)witnessCount(?:\.|\[|$)/.test(section)) {
+        context.witnessCountReleaseId = firstDefined(item, ["releaseId", "release_id"], context.witnessCountReleaseId || "");
+        context.witnessCountAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.witnessCountAssessmentLane || "");
       } else if (/(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section)) {
         context.coordinateEvidenceReleaseId = firstDefined(item, ["releaseId", "release_id"], context.coordinateEvidenceReleaseId || "");
         context.coordinateEvidenceAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.coordinateEvidenceAssessmentLane || "");
@@ -1045,6 +1048,10 @@
         time_of_day_measurement_class: /(?:^|\.)timeOfDay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         time_of_day_release_id: context.timeOfDayReleaseId || "",
         time_of_day_assessment_lane: context.timeOfDayAssessmentLane || "",
+        witness_count_bin: /(?:^|\.)witnessCount(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "witnessCountBin", "witness_count_bin"], "") : "",
+        witness_count_measurement_class: /(?:^|\.)witnessCount(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
+        witness_count_release_id: context.witnessCountReleaseId || "",
+        witness_count_assessment_lane: context.witnessCountAssessmentLane || "",
         coordinate_quality_bin: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "coordinateQualityBin", "coordinate_quality_bin"], "") : "",
         coordinate_measurement_class: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         coordinate_release_id: context.coordinateEvidenceReleaseId || "",
@@ -1091,7 +1098,7 @@
     const payload = isObject(result) ? result : {};
     const metadata = Object.assign({}, isObject(payload.meta) ? payload.meta : {}, isObject(meta) ? meta : {});
     return {
-      schemaVersion: "ufo-timeline-analysis-evidence-v2.4",
+      schemaVersion: "ufo-timeline-analysis-evidence-v2.5",
       generatedAt: new Date().toISOString(),
       estimatorVersion: cleanText(firstDefined(metadata, ["estimatorVersion", "estimator_version"], firstDefined(payload, ["estimatorVersion", "estimator_version"], "not reported"))),
       baselineMode: cleanText(firstDefined(metadata, ["baselineMode", "baseline_mode"], firstDefined(payload.summary || {}, ["baselineMode", "baseline_mode"], "not reported"))),
@@ -1118,7 +1125,7 @@
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
       "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "time_of_day_bin", "time_of_day_measurement_class", "time_of_day_release_id", "time_of_day_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "time_of_day_bin", "time_of_day_measurement_class", "time_of_day_release_id", "time_of_day_assessment_lane", "witness_count_bin", "witness_count_measurement_class", "witness_count_release_id", "witness_count_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5603,6 +5610,57 @@
       );
     }
 
+    _renderWitnessCountEvidence(value, summary) {
+      const assessment = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const statusElement = this.document.getElementById("analysis-witness-count-status");
+      const coverage = isObject(assessment.coverage) ? assessment.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const exactSummary = isObject(assessment.exactSummary) ? assessment.exactSummary : {};
+      const typedRows = finiteNumber(active.typedRows, 0);
+      const rawRows = finiteNumber(active.rawWitnessCountRows, 0);
+      const exactRows = finiteNumber(active.exactCountRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const extremeRows = finiteNumber(active.extremeCountRows1000Plus, 0);
+      const sourceCount = asArray(active.typedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Explicit witness-count evidence loads only when Sources & Quality is requested. No distribution is shown until its immutable artifacts pass integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Witness count is not estimable for this cohort. Missing values, qualitative party sizes, source sentinels, and unresolved text remain uncoerced.";
+        } else {
+          statusElement.textContent = formatCount(typedRows) + " typed explicit-field rows from " + formatCount(sourceCount)
+            + " source (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
+            + formatCount(exactRows) + " retain positive integer counts, "
+            + formatCount(Math.max(0, rawRows - typedRows)) + " source sentinels remain excluded, and "
+            + formatCount(extremeRows) + " counts of 1,000+ remain visible in the audit lane. "
+            + "Exact-count median " + formatCount(exactSummary.median) + ", p90 " + formatCount(exactSummary.p90) + ".";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        this._renderBars("analysis-witness-count-chart", [], summary, {
+          emptyMessage: status === "data_unavailable"
+            ? "Readiness pending: open Sources & Quality to integrity-check and load the explicit witness-count projection."
+            : "No positive explicit integer witness count is available for this cohort.",
+        });
+        return;
+      }
+      this._renderBars("analysis-witness-count-chart", firstArray(assessment, ["distribution", "bins"]), summary, {
+        caption: "Explicit NUFORC witness-count distribution",
+        valueKeys: ["activeShare"],
+        valueFormat: "percent",
+        valueLabel: "Matched-report share",
+        scaleActual: true,
+        emptyMessage: "No positive explicit integer witness count is available for this cohort.",
+      });
+      this._appendChartPolicy(
+        "analysis-witness-count-chart",
+        "Only the explicit NUFORC field is used. Missing, zero/negative source sentinels, approximate values, ranges, lower bounds, qualitative party sizes, and unsupported text are never coerced to exact witnesses. Credential suffixes are metadata, not credibility evidence."
+      );
+    }
+
     _renderCoordinateEvidence(value, summary, spatialVariant) {
       const assessment = isObject(value) ? value : {};
       const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
@@ -5706,6 +5764,7 @@
         reportingDelay: firstDefined(time, ["reportingDelay", "reporting_delay", "reportingDelayAssessment", "reporting_delay_assessment"], {}),
         timeOfDay: firstDefined(time, ["timeOfDay", "time_of_day", "timeOfDayAssessment", "time_of_day_assessment"], {}),
         coordinateEvidence: firstDefined(sourcesQuality, ["coordinateEvidence", "coordinate_evidence", "coordinateEvidenceAssessment", "coordinate_evidence_assessment"], {}),
+        witnessCount: firstDefined(sourcesQuality, ["witnessCount", "witness_count", "witnessCountAssessment", "witness_count_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
@@ -5925,6 +5984,7 @@
         this._appendChartPolicy("analysis-quality-audit-chart", data.auditPolicy);
       });
       sourcesQualityJobs.push(() => this._renderCoordinateEvidence(data.coordinateEvidence, summary, false));
+      sourcesQualityJobs.push(() => this._renderWitnessCountEvidence(data.witnessCount, summary));
       relationshipContextJobs.push(() => this._renderRelationshipEvidence("analysis-relationship-readiness-chart", data.relationshipReadiness, summary, { emptyMessage: "Relationship reconciliation details load with Spatial Evidence; unresolved identifiers remain quarantined." }));
 
       const crops = data.crops;
@@ -5992,7 +6052,7 @@
         ["analysis-crop-context", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
         ["analysis-animal-context", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
         ["analysis-relationship-context", { jobs: relationshipContextJobs, targets: ["analysis-relationship-readiness-chart"] }],
-        ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart"] }],
+        ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-witness-count-chart", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart"] }],
       ]);
       this._clearRenderTargets(Array.from(this.renderPlans.values()).reduce(function (ids, plan) {
         return ids.concat(asArray(plan && plan.targets));
