@@ -1386,8 +1386,7 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
 def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts():
     index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
     supporting_cards = {
-        "Occurrence-to-report delay": "analysis-reporting-delay-chart",
-        "Reported observation duration": "analysis-duration-chart",
+        "Reporting timing evidence": "analysis-reporting-delay-chart",
         "Recurring month-by-craft signal": "analysis-month-year-chart",
         "Craft by era": "analysis-craft-era-chart",
         "Classification confidence": "analysis-craft-confidence-chart",
@@ -1416,6 +1415,13 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
             rf'<summary>{re.escape(summary)}</summary>.*?id="{re.escape(chart_id)}"'
         )
         assert re.search(pattern, index_html, flags=re.DOTALL), summary
+
+    nested_duration = (
+        r'<details\b[^>]*class="[^"]*analysis-reporting-delay-card[^"]*"[^>]*>'
+        r'.*?<details\b[^>]*class="[^"]*analysis-supporting-details[^"]*"[^>]*>'
+        r'<summary>Reported observation duration</summary>.*?id="analysis-duration-chart"'
+    )
+    assert re.search(nested_duration, index_html, flags=re.DOTALL)
 
     for primary_chart_id in (
         "analysis-time-series-chart",

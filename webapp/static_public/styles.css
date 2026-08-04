@@ -8632,6 +8632,10 @@ html[data-active-primary-view="analysis"] .map-timeline-dock {
   grid-column: span 5;
 }
 
+.analysis-reporting-delay-card {
+  grid-column: span 7;
+}
+
 .analysis-month-craft-card {
   grid-column: span 7;
 }
@@ -10567,6 +10571,7 @@ button[data-analysis-unavailable="true"]:disabled {
   }
 
   .analysis-time-series-card,
+  .analysis-reporting-delay-card,
   .analysis-month-craft-card,
   .analysis-craft-mosaic-card,
   .analysis-craft-era-card,
