@@ -1,0 +1,103 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-001-duration-assessment",
+  "candidateId": "duration_assessment",
+  "baselineCommit": "6c6cc1761ab0996c5730969d79a157ba855a65f7",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-evidence-lab-v2.2-20260803",
+    "deploymentId": "e8008f72-d98e-4f15-86f1-8d3d48ad2054",
+    "frozenTreeSha256": "a1058d1d108d290a874edac4940aa1e58093adcf702d6be92aeb09f04f5e72b0"
+  },
+  "primaryObjective": "Make reported duration a defensible, typed, source-aware Analysis assessment without mutating canonical event records.",
+  "hypothesis": "Explicit unit-bearing duration values can be normalized into conservative intervals and stable bins at sufficient cross-source coverage to make a previously unavailable assessment estimable.",
+  "interventionBoundary": {
+    "inScope": [
+      "duration normalization sidecar with original-value hashes and parse reasons",
+      "event-aligned typed duration projection loaded lazily from an immutable R2 prefix",
+      "source-era-region readiness and holdout evidence",
+      "compact duration distribution and adjusted comparison in the Time dashboard",
+      "JSON and CSV evidence export"
+    ],
+    "outOfScope": [
+      "canonical event mutation",
+      "free-text duration inference",
+      "bearing or travel-heading inference",
+      "authenticity, incidence, risk, or causal claims",
+      "any other new assessment"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "rawDurationRows": 290081,
+    "rawDurationCoveragePct": 41.269582,
+    "sourcesWithAtLeast1000RawRows": ["majestic", "nuforc", "ufocat"],
+    "typedDurationRows": 0,
+    "durationAssessmentStatus": "unavailable"
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 232065,
+    "minimumCatalogCoveragePct": 33.0,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalValuesPreserved": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "raw duration",
+      "normalized lower seconds",
+      "normalized upper seconds",
+      "parse status and reason",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "normalizedCatalogPct": 33.0,
+      "supportedSources": 2,
+      "commonSupportRate": 0.8,
+      "minimumActiveAndReferenceBinN": 20
+    },
+    "estimators": [
+      "descriptive conservative duration-bin distribution",
+      "source-era-region common-support standardized active/reference share difference",
+      "deterministic 95 percent bootstrap interval"
+    ],
+    "negativeControls": [
+      "leave-one-source-out",
+      "era holdout",
+      "macroregion holdout",
+      "unknown and bin-spanning durations remain excluded from inferential bins"
+    ],
+    "uncertaintyTreatment": "Exact values and explicit closed ranges are represented separately; bounded, censored, approximate, ambiguous, and unparsed text fail closed or remain descriptive-only.",
+    "suppressionPolicy": "Show a compact readiness result instead of a chart whenever typed coverage, common support, bin support, or stability gates fail. Never treat missing duration as zero."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_time_dashboard_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "normalization idempotence and original-value preservation",
+    "sidecar to projection parity and deterministic hashes",
+    "statistical determinism, common support, FDR isolation, and holdout stability",
+    "no raw-count-driven inference and no duration Pattern Finder promotion in v1",
+    "complete Python and JavaScript suites",
+    "Pages and R2 separation with immutable versioned R2 keys",
+    "clean-clone reproduction",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 232065 rows normalize without free-text inference",
+    "fewer than two sources retain at least 1000 normalized rows",
+    "the assessment requires a second browser event model",
+    "scientific gates would need weakening",
+    "rights or provenance cannot be resolved",
+    "performance or existing Analysis behavior regresses beyond release gates"
+  ]
+}

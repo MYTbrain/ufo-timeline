@@ -808,10 +808,21 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     }
     metrics_dir = output_root / "metrics"
     state_dir = output_root / "state"
+    preregistration_paths = sorted((output_root / "waves").glob("*/preregistration.json"))
+    active_registration = (
+        json.loads(preregistration_paths[-1].read_text(encoding="utf-8"))
+        if preregistration_paths
+        else None
+    )
     write_json(metrics_dir / "field_coverage_matrix.json", matrix)
     write_matrix_csv(metrics_dir / "field_coverage_matrix.csv", matrix)
 
     backlog = make_backlog(scan)
+    if active_registration:
+        active_candidate_id = str(active_registration.get("candidateId") or "")
+        for candidate in backlog["candidates"]:
+            if candidate["candidateId"] == active_candidate_id:
+                candidate["status"] = "in_progress"
     modules = make_module_registry(scan)
     provenance = make_provenance_ledger(scan, input_hashes)
     baseline_metrics = make_baseline_metrics(scan, manifest, app_config)
@@ -841,10 +852,21 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         state_dir / "source_provenance_ledger.json",
         state_dir / "completed_waves.json",
     ]
+    tracked.extend(sorted((output_root / "contracts" / "v1").glob("*.json")))
+    tracked.extend(preregistration_paths)
+    active_wave = None
+    if active_registration:
+        active_wave = {
+            "waveId": active_registration["waveId"],
+            "candidateId": active_registration["candidateId"],
+            "primaryObjective": active_registration["primaryObjective"],
+            "status": "in_progress",
+            "preregistration": preregistration_paths[-1].relative_to(REPO_ROOT).as_posix(),
+        }
     current = {
         "schemaId": CAMPAIGN_SCHEMA,
         "campaignId": CAMPAIGN_ID,
-        "status": "initializing",
+        "status": "active" if active_wave else "initializing",
         "objective": "continuously_improve_analysis_data_first_with_evidence_gated_auto_deployments",
         "stopRule": "close_after_two_consecutive_bounded_frontier_passes_find_no_safe_material_gain",
         "currentProduction": {
@@ -870,9 +892,9 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "reconstructionManifest": "reproduction/release.json",
             "rollbackInstruction": "redeploy the verified reproduction Pages package to branch main",
         },
-        "activeWave": None,
+        "activeWave": active_wave,
         "consecutiveNoGainFrontierPasses": 0,
-        "nextCandidate": backlog["candidates"][0]["candidateId"],
+        "nextCandidate": active_wave["candidateId"] if active_wave else backlog["candidates"][0]["candidateId"],
         "packageArtifacts": {
             path.relative_to(REPO_ROOT).as_posix(): {"bytes": path.stat().st_size, "sha256": sha256_file(path)}
             for path in tracked

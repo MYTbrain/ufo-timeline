@@ -49,6 +49,9 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert current["currentProduction"]["frozenTreeSha256"] == campaign.FROZEN_TREE_SHA256
     assert current["rollbackTarget"]["deploymentId"] == campaign.ROLLBACK_DEPLOYMENT_ID
     assert current["consecutiveNoGainFrontierPasses"] == 0
+    assert current["status"] == "active"
+    assert current["activeWave"]["waveId"] == "wave-001-duration-assessment"
+    assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -72,6 +75,17 @@ def test_backlog_is_ranked_by_the_declared_formula() -> None:
     assert [item["rank"] for item in candidates] == list(range(1, len(candidates) + 1))
     assert [item["score"] for item in candidates] == sorted((item["score"] for item in candidates), reverse=True)
     assert candidates[0]["candidateId"] == load("state/current.json")["nextCandidate"]
+    assert candidates[0]["status"] == "in_progress"
+
+
+def test_duration_wave_is_preregistered_before_implementation() -> None:
+    preregistration = load("waves/wave-001-duration-assessment/preregistration.json")
+    assert preregistration["candidateId"] == "duration_assessment"
+    assert preregistration["beforeMetrics"]["typedDurationRows"] == 0
+    assert preregistration["expectedMaterialGain"]["minimumNormalizedRows"] == 232_065
+    assert preregistration["expectedMaterialGain"]["minimumIndependentSources"] == 2
+    assert "canonical event mutation" in preregistration["interventionBoundary"]["outOfScope"]
+    assert "free-text duration inference" in preregistration["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:
