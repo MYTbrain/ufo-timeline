@@ -1385,6 +1385,7 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
 
 def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts():
     index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
     supporting_cards = {
         "Reporting timing evidence": "analysis-reporting-delay-chart",
         "Recurring month-by-craft signal": "analysis-month-year-chart",
@@ -1408,6 +1409,10 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     )
     assert len(disclosures) == len(supporting_cards)
     assert all(" open" not in disclosure for disclosure in disclosures)
+    assert ".analysis-supporting-details:not([open]) > :not(summary)" in styles_css
+    assert "display: none" in styles_css.split(
+        ".analysis-supporting-details:not([open]) > :not(summary)", 1
+    )[1].split("}", 1)[0]
 
     for summary, chart_id in supporting_cards.items():
         pattern = (
@@ -1446,6 +1451,14 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     assert 'caption: "High-precision co-occurrence pool", endpointsOnly: true' in Path(
         "webapp/static_public/analysis_view.js"
     ).read_text(encoding="utf-8")
+
+
+def test_first_time_activation_defers_optional_sidecars_until_core_render():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    assert 'if (state.activeView === "analysis") {\n            requestAnalysisTimeEvidence();' in app_js
+    assert "runtime.analysisTimeEvidenceLoadPending = true;" in app_js
+    assert 'if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {' in app_js
+    assert "runtime.analysisTimeEvidenceLoadPending = false;\n          requestAnalysisTimeEvidence();" in app_js
 
 
 def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():
@@ -1589,7 +1602,7 @@ def test_context_only_evidence_loader_is_deduplicated_retryable_and_cache_safe()
     assert "ensureAnalysisContextEvidence().catch(function () { return null; });" in initialize_body
     assert "if (runtime.analysisContextEvidenceError)" in initialize_body
     assert "onRenderComplete: function ()" in initialize_body
-    assert "if (!runtime.analysisContextEvidenceRenderPending) return;" in initialize_body
+    assert "if (runtime.analysisContextEvidenceRenderPending)" in initialize_body
     assert 'setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");' in initialize_body
 
     result_context_body = _extract_js_function_body(app_js, "analysisResultHasContextEvidence")

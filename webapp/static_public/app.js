@@ -1044,6 +1044,7 @@
     analysisReportingDelayWorkerReady: false,
     analysisReportingDelayRequested: false,
     analysisReportingDelayError: "",
+    analysisTimeEvidenceLoadPending: false,
     analysisRelationshipPromise: null,
     analysisRelationshipWorkerReady: false,
     analysisRelationshipRequested: false,
@@ -8817,17 +8818,28 @@
       },
       onSectionActivate: function (change) {
         if (change && change.sectionKey === "time") {
-          ensureAnalysisDurationArtifact().catch(function () { return null; });
-          ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
+          if (state.activeView === "analysis") {
+            requestAnalysisTimeEvidence();
+          } else {
+            // On first activation, section navigation runs before the core
+            // Analysis request is queued. Let the useful dashboard render
+            // first, then hydrate the two optional Time sidecars.
+            runtime.analysisTimeEvidenceLoadPending = true;
+          }
         }
         if (change && change.sectionKey === "context") {
           ensureAnalysisContextEvidence().catch(function () { return null; });
         }
       },
       onRenderComplete: function () {
-        if (!runtime.analysisContextEvidenceRenderPending) return;
-        runtime.analysisContextEvidenceRenderPending = false;
-        setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+        if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {
+          runtime.analysisTimeEvidenceLoadPending = false;
+          requestAnalysisTimeEvidence();
+        }
+        if (runtime.analysisContextEvidenceRenderPending) {
+          runtime.analysisContextEvidenceRenderPending = false;
+          setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+        }
       },
       getFilterSnapshot: getAnalysisFilterSnapshot,
       getWorldReferenceData: function () { return runtime.worldReferenceData; },
@@ -9364,6 +9376,11 @@
         throw error;
       });
     return runtime.analysisReportingDelayPromise;
+  }
+
+  function requestAnalysisTimeEvidence() {
+    ensureAnalysisDurationArtifact().catch(function () { return null; });
+    ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
   }
 
   function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
