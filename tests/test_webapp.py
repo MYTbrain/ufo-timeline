@@ -1409,6 +1409,11 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     )
     assert len(disclosures) == len(supporting_cards)
     assert all(" open" not in disclosure for disclosure in disclosures)
+    closed_disclosure_rule = styles_css.split(
+        ".analysis-supporting-details:not([open]) {", 1
+    )[1].split("}", 1)[0]
+    assert "content-visibility: visible" in closed_disclosure_rule
+    assert "contain-intrinsic-size: none" in closed_disclosure_rule
     assert ".analysis-supporting-details:not([open]) > :not(summary)" in styles_css
     assert "display: none" in styles_css.split(
         ".analysis-supporting-details:not([open]) > :not(summary)", 1

@@ -8508,6 +8508,11 @@ html[data-active-primary-view="analysis"] .map-timeline-dock {
   align-self: start;
 }
 
+.analysis-supporting-details:not([open]) {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+
 .analysis-supporting-details:not([open]) > :not(summary) {
   display: none;
 }
