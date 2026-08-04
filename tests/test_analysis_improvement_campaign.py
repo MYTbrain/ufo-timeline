@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
+import pytest
 from scripts import build_analysis_improvement_campaign as campaign
 
 
@@ -34,6 +36,24 @@ def test_field_semantics_fail_closed() -> None:
     assert flags["coordinate_pile_review_state"] is False
 
 
+def test_initializer_refuses_to_overwrite_completed_wave_history(tmp_path: Path) -> None:
+    state_dir = tmp_path / "state"
+    state_dir.mkdir(parents=True)
+    (state_dir / "completed_waves.json").write_text(
+        json.dumps({"waves": [{"waveId": "wave-001"}]}),
+        encoding="utf-8",
+    )
+    args = SimpleNamespace(
+        detail_root=ROOT,
+        analysis_root=ROOT,
+        output_root=tmp_path,
+        app_config=ROOT / "static_bundle" / "data" / "app_config.json",
+        force_reinitialize=False,
+    )
+    with pytest.raises(RuntimeError, match="Refusing to reinitialize"):
+        campaign.build(args)
+
+
 def test_era_policy_is_deterministic() -> None:
     assert campaign.era_for("1944-12-31") == "pre_1945"
     assert campaign.era_for("1945-01-01") == "1945_1959"
@@ -43,16 +63,23 @@ def test_era_policy_is_deterministic() -> None:
 
 def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     current = load("state/current.json")
+    completed = load("state/completed_waves.json")
+    wave_receipt = load("waves/wave-001-duration-assessment/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
-    assert current["currentProduction"]["deploymentId"] == campaign.PRODUCTION_DEPLOYMENT_ID
-    assert current["currentProduction"]["frozenTreeSha256"] == campaign.FROZEN_TREE_SHA256
-    assert current["rollbackTarget"]["deploymentId"] == campaign.ROLLBACK_DEPLOYMENT_ID
+    assert current["currentProduction"]["deploymentId"] == wave_receipt["production"]["deploymentId"]
+    assert current["currentProduction"]["frozenTreeSha256"] == wave_receipt["artifacts"]["frozenPagesTreeSha256"]
+    assert current["rollbackTarget"]["deploymentId"] == wave_receipt["rollback"]["deploymentId"]
+    assert current["rollbackTarget"]["tested"] is True
     assert current["consecutiveNoGainFrontierPasses"] == 0
     assert current["status"] == "active"
-    assert current["activeWave"]["waveId"] == "wave-001-duration-assessment"
+    assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
+    assert completed["waves"][0]["status"] == "accepted_and_promoted"
+    assert current["activeWave"]["waveId"] == "wave-002-reporting-delay-assessment"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -75,8 +102,11 @@ def test_backlog_is_ranked_by_the_declared_formula() -> None:
     candidates = backlog["candidates"]
     assert [item["rank"] for item in candidates] == list(range(1, len(candidates) + 1))
     assert [item["score"] for item in candidates] == sorted((item["score"] for item in candidates), reverse=True)
-    assert candidates[0]["candidateId"] == load("state/current.json")["nextCandidate"]
-    assert candidates[0]["status"] == "in_progress"
+    assert candidates[0]["candidateId"] == "duration_assessment"
+    assert candidates[0]["status"] == "completed_accepted_promoted"
+    active_candidates = [item for item in candidates if item["status"] == "in_progress"]
+    assert len(active_candidates) == 1
+    assert active_candidates[0]["candidateId"] == load("state/current.json")["nextCandidate"]
 
 
 def test_duration_wave_is_preregistered_before_implementation() -> None:
@@ -87,6 +117,17 @@ def test_duration_wave_is_preregistered_before_implementation() -> None:
     assert preregistration["expectedMaterialGain"]["minimumIndependentSources"] == 2
     assert "canonical event mutation" in preregistration["interventionBoundary"]["outOfScope"]
     assert "free-text duration inference" in preregistration["interventionBoundary"]["outOfScope"]
+
+
+def test_reporting_delay_wave_is_preregistered_before_implementation() -> None:
+    preregistration = load("waves/wave-002-reporting-delay-assessment/preregistration.json")
+    assert preregistration["candidateId"] == "reporting_delay_assessment"
+    assert preregistration["beforeMetrics"]["browserTypedReportingDelayRows"] == 0
+    assert preregistration["expectedMaterialGain"]["minimumTypedRows"] == 209_065
+    assert preregistration["expectedMaterialGain"]["minimumIndependentSources"] == 2
+    assert preregistration["expectedMaterialGain"]["dateRolesPreserved"] is True
+    assert "treating occurrence date as report or posting date" in preregistration["interventionBoundary"]["outOfScope"]
+    assert "coercing negative or ambiguous delays to zero" in preregistration["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

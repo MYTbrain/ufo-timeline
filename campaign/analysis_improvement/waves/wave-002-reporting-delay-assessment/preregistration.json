@@ -1,0 +1,118 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-002-reporting-delay-assessment",
+  "candidateId": "reporting_delay_assessment",
+  "generatedAt": "2026-08-04T17:59:27Z",
+  "baselineCommit": "c6d06156c456d38f9df0c52ee558e9429c045a51",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-duration-v1-20260804",
+    "deploymentId": "dd6f6335-7549-4c45-9c83-ed22eea00c0b",
+    "frozenTreeSha256": "6376f3ede7393775b44980958b3efcdfc26d818d4ea8ca93b47df023732ad494"
+  },
+  "primaryObjective": "Make reporting delay a defensible, role-preserving, source-aware Analysis assessment without conflating occurrence, report, and posting dates.",
+  "hypothesis": "Explicit occurrence and reported-or-posted date roles can be projected into non-negative delay intervals at sufficient MUFON and NUFORC coverage to make a previously unavailable assessment estimable.",
+  "interventionBoundary": {
+    "inScope": [
+      "immutable event-aligned reporting-delay sidecar with separate occurrence, reported, and posted date roles",
+      "typed non-negative day-delay projection with parse status, source, era, and macroregion",
+      "descriptive delay bins and source-era-region common-support comparison",
+      "compact Time-dashboard disclosure and JSON/CSV evidence export",
+      "deterministic provenance, release, preview, production, and rollback receipts"
+    ],
+    "outOfScope": [
+      "canonical event mutation",
+      "treating occurrence date as report or posting date",
+      "repairing missing dates from free text",
+      "coercing negative or ambiguous delays to zero",
+      "authenticity, incidence, behavioral, causal, or source-quality claims",
+      "any assessment other than reporting delay"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "reportingDelayEstimableRows": 261331,
+    "reportingDelayCoveragePct": 37.179343,
+    "coveredRowsBySource": {
+      "mufon": 113016,
+      "nuforc": 148315
+    },
+    "browserTypedReportingDelayRows": 0,
+    "reportingDelayAssessmentStatus": "unavailable"
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 209065,
+    "minimumTypedRows": 209065,
+    "minimumCatalogCoveragePct": 29.7,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "dateRolesPreserved": true,
+    "negativeAndAmbiguousIntervalsFailClosed": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "occurrence date ordinal and precision",
+      "reported date raw and parsed ordinal when present",
+      "posted date raw and parsed ordinal when present",
+      "selected delay role",
+      "non-negative delay days",
+      "parse status and reason",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "typedCatalogPct": 29.7,
+      "supportedSources": 2,
+      "commonSupportRate": 0.8,
+      "minimumActiveAndReferenceBinN": 20
+    },
+    "estimators": [
+      "descriptive conservative reporting-delay distribution",
+      "source-era-region common-support standardized active/reference share difference",
+      "deterministic 95 percent bootstrap interval"
+    ],
+    "negativeControls": [
+      "leave-one-source-out",
+      "era holdout",
+      "macroregion holdout",
+      "reported-date-only and posted-date-only role lanes",
+      "negative and ambiguous intervals remain excluded"
+    ],
+    "uncertaintyTreatment": "Reported and posted dates remain distinct. Reported date is preferred only when its explicit role is present; posted date is a separate fallback lane. Missing, ambiguous, negative, or precision-incompatible intervals fail closed.",
+    "suppressionPolicy": "Show readiness instead of an inferential chart whenever typed coverage, date-role integrity, common support, bin support, or stability gates fail. Never treat missing delay as zero."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_time_dashboard_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedFirstUsefulMs": 5000,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "date-role separation, idempotence, and original-value preservation",
+    "sidecar-to-projection parity and deterministic hashes",
+    "statistical determinism, common support, FDR isolation, and holdout stability",
+    "no raw-count-driven inference and no Pattern Finder promotion in v1",
+    "complete Python and JavaScript suites",
+    "Pages and R2 separation with immutable versioned R2 keys",
+    "clean-clone reconstruction",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 209065 rows remain typed without free-text date repair",
+    "fewer than two sources retain at least 1000 typed rows",
+    "reported and posted roles cannot remain distinct",
+    "the assessment requires a second browser event model",
+    "scientific gates would need weakening",
+    "rights or provenance cannot be resolved",
+    "performance or existing Analysis behavior regresses beyond release gates"
+  ]
+}

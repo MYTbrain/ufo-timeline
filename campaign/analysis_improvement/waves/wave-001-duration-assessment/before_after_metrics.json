@@ -1,0 +1,74 @@
+{
+  "schemaId": "ufo-timeline-analysis-before-after-metrics-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "measurementId": "wave-001-duration-assessment-final-20260804",
+  "generatedAt": "2026-08-04T17:59:27Z",
+  "catalog": {
+    "beforeRows": 702893,
+    "afterRows": 702893,
+    "canonicalEventRecordsMutated": false,
+    "rawDurationRows": 290081,
+    "normalizedRows": 246040,
+    "normalizedCatalogPct": 35.003905,
+    "descriptiveBinnedRows": 242082,
+    "inferentialBinnedRows": 110089,
+    "supportedSources": {
+      "nuforc": 120879,
+      "ufocat": 125161
+    }
+  },
+  "statisticalReadiness": {
+    "before": "unavailable",
+    "after": "ready_descriptive",
+    "materialCriterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 232065,
+    "minimumCatalogCoveragePct": 33.0,
+    "minimumIndependentSources": 2,
+    "allPreregisteredMaterialGatesPassed": true,
+    "patternFinderPromotionAuthorized": false,
+    "causalClaimsAuthorized": false
+  },
+  "performance": {
+    "desktopFirstUsefulMs": 1587,
+    "desktopColdSpatialMs": 2228,
+    "constrainedColdSpatialMs": 7623,
+    "desktopUncachedBaselineFirstUsefulMs": 185,
+    "desktopUncachedBaselineFullMs": 574,
+    "desktopWarmBaselineP95Ms": 8.7,
+    "maximumObservedAnalysisMainThreadTaskMs": 0,
+    "warmDashboardResourceCountBefore": 129,
+    "warmDashboardResourceCountAfter": 129,
+    "warmDashboardNewResources": 0,
+    "catalogSourceAfterSweep": "canonical_web"
+  },
+  "accessibility": {
+    "desktopKeyboardNavigationPassed": true,
+    "mobileNoPageOverflowPassed": true,
+    "mobileViewport": "390x844",
+    "mobileBodyClientAndScrollWidth": [375, 375],
+    "mobilePanelClientAndScrollWidth": [331, 331],
+    "lightThemePassed": true,
+    "darkThemePassed": true,
+    "reducedMotionPassed": true,
+    "jsonExportPassed": true,
+    "csvExportPassed": true,
+    "previewConsoleErrorsAndWarnings": 0,
+    "productionConsoleErrorsAndWarnings": 0
+  },
+  "visualDensity": {
+    "referenceViewport": "1280x720",
+    "maximumOrdinaryDashboardPx": 900,
+    "dashboardHeightsPx": {
+      "overview": 519.1875,
+      "time": 750.03125,
+      "craft": 545.359375,
+      "geography": 882.953125,
+      "spatial": 544.71875,
+      "context": 776.125,
+      "sourcesQuality": 692.59375
+    },
+    "allOrdinaryDashboardsWithinBound": true,
+    "spatialEligibilityVisibleStages": 2,
+    "spatialCooccurrenceVisibleAxis": 6
+  }
+}

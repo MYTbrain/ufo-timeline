@@ -17,6 +17,8 @@ The package is internal release-control evidence. It is not copied into the Page
 
 ## Regeneration
 
-Run `python scripts/build_analysis_improvement_campaign.py`. The builder scans the served canonical detail chunks and the pinned Analysis v2.2 geography projection, verifies the row count against `data/app_config.json`, and writes deterministic JSON/CSV state.
+For a new campaign baseline, run `python scripts/build_analysis_improvement_campaign.py`. The builder scans the served canonical detail chunks and the pinned Analysis geography projection, verifies the row count against `data/app_config.json`, and writes deterministic JSON/CSV state. Once a completed-wave receipt exists, the builder fails closed instead of overwriting campaign history; `--force-reinitialize` is reserved for an intentional baseline replacement.
+
+Advance an active campaign by adding the next preregistration, the completed wave's before/after metrics and receipt, then updating `state/completed_waves.json`, `state/ranked_backlog.json`, `state/module_readiness.json`, and `state/current.json` with verified artifact hashes.
 
 The generated state is validated by `tests/test_analysis_improvement_campaign.py`. Per-wave preregistrations and receipts live under `waves/<wave-id>/` and must validate against the schemas under `contracts/v1/`.

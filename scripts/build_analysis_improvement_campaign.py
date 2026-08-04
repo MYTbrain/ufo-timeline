@@ -785,6 +785,15 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     detail_root = args.detail_root.resolve()
     analysis_root = args.analysis_root.resolve()
     output_root = args.output_root.resolve()
+    completed_path = output_root / "state" / "completed_waves.json"
+    if completed_path.exists() and not getattr(args, "force_reinitialize", False):
+        completed_state = json.loads(completed_path.read_text(encoding="utf-8"))
+        if completed_state.get("waves"):
+            raise RuntimeError(
+                "Refusing to reinitialize an active campaign with completed waves. "
+                "Advance it through preregistrations and wave receipts, or pass "
+                "--force-reinitialize only when intentionally rebuilding the campaign baseline."
+            )
     app_config_path = args.app_config.resolve()
     app_config = json.loads(app_config_path.read_text(encoding="utf-8"))
     geography, manifest = load_geography(analysis_root)
@@ -918,6 +927,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--app-config", type=Path, default=DEFAULT_APP_CONFIG)
     parser.add_argument("--analysis-root", type=Path, default=DEFAULT_ANALYSIS_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
+    parser.add_argument(
+        "--force-reinitialize",
+        action="store_true",
+        help="Intentionally replace completed-wave state while rebuilding the campaign baseline.",
+    )
     return parser.parse_args()
 
 
