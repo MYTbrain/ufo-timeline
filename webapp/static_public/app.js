@@ -8770,7 +8770,9 @@
           : "other_dates_balanced";
         state.analysisBaselineMode = nextMode;
         syncAnalysisDateRangeSummary();
-        runtime.analysisCache.clear();
+        // The cache signature already includes the reference baseline and every
+        // scientific input. Preserve other exact baseline results so a warm
+        // comparison can be restored without recomputation.
         scheduleAnalysisCompute("baseline changed", { immediate: true });
       },
       onApplyFilterPreview: function (preview) {
@@ -9845,7 +9847,10 @@
           }
           console.error("[analysis] " + (reason || "full inference") + ":", error);
         });
-      }, 900);
+      // Full inference stays off the main thread. Queue it after the quick
+      // result without an artificial hold so warm adjusted results satisfy the
+      // interaction-latency contract while retaining the complete estimator.
+      }, 0);
       return quickMessage.result;
     }).catch(function (error) {
       runtime.analysisLastError = error && error.message ? error.message : String(error);

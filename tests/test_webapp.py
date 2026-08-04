@@ -1336,6 +1336,25 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
     ):
         assert fragment in app_js
 
+    assert (
+        "state.analysisBaselineMode = nextMode;\n"
+        "        syncAnalysisDateRangeSummary();\n"
+        "        // The cache signature already includes the reference baseline and every\n"
+        "        // scientific input. Preserve other exact baseline results so a warm\n"
+        "        // comparison can be restored without recomputation.\n"
+        '        scheduleAnalysisCompute("baseline changed", { immediate: true });'
+    ) in app_js
+    assert (
+        "state.analysisBaselineMode = nextMode;\n"
+        "        syncAnalysisDateRangeSummary();\n"
+        "        runtime.analysisCache.clear();"
+    ) not in app_js
+
+    compute_body = _extract_js_function_body(app_js, "computeAnalysisForCurrentView")
+    assert "Full inference stays off the main thread." in compute_body
+    assert "}, 0);" in compute_body
+    assert "}, 900);" not in compute_body
+
     for fragment in (
         'message.type === "setAnalysisContextProjections"',
         'message.type === "setAnalysisContextSpatialArtifact"',
