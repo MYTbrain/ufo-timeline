@@ -1403,7 +1403,7 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     }
 
     disclosures = re.findall(
-        r'<details class="[^"]*analysis-dashboard-support[^"]*"[^>]*>',
+        r'<details\b[^>]*class="[^"]*analysis-dashboard-support[^"]*"[^>]*>',
         index_html,
     )
     assert len(disclosures) == len(supporting_cards)
@@ -1411,7 +1411,7 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
 
     for summary, chart_id in supporting_cards.items():
         pattern = (
-            r'<details class="[^"]*analysis-dashboard-support[^"]*"[^>]*>'
+            r'<details\b[^>]*class="[^"]*analysis-dashboard-support[^"]*"[^>]*>'
             rf'<summary>{re.escape(summary)}</summary>.*?id="{re.escape(chart_id)}"'
         )
         assert re.search(pattern, index_html, flags=re.DOTALL), summary
@@ -1427,13 +1427,15 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
         assert f'id="{primary_chart_id}"' in index_html
 
     assert (
-        '<details class="analysis-supporting-details analysis-spatial-matrix-support">'
+        '<details id="analysis-spatial-matrix-disclosure" class="analysis-supporting-details analysis-spatial-matrix-support">'
         '<summary>Craft co-occurrence matrix</summary>'
         '<div id="analysis-cooccurrence-chart"'
     ) in index_html
     assert (
         'analysis-spatial-matrix-support" open'
     ) not in index_html
+    assert 'id="analysis-spatial-context-disclosure"' in index_html
+    assert 'id="analysis-spatial-facility-disclosure"' in index_html
 
 
 def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index():

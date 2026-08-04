@@ -189,6 +189,9 @@ function createShellDocument() {
     "analysis-view-animal-analysis": "a",
     "analysis-export-json": "button",
     "analysis-export-csv": "button",
+    "analysis-spatial-matrix-disclosure": "details",
+    "analysis-spatial-context-disclosure": "details",
+    "analysis-spatial-facility-disclosure": "details",
     "analysis-preview-criteria": "ul",
     "analysis-pattern-list": "ol",
     "analysis-section-nav": "nav",
@@ -234,6 +237,7 @@ function createShellDocument() {
     "analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-card", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-cross-domain-readiness-chart",
     "analysis-crop-readiness-chart", "analysis-animal-readiness-chart", "analysis-relationship-readiness-chart",
     "analysis-context-subview-tabs", "analysis-context-tab-crops", "analysis-context-tab-animals", "analysis-context-tab-relationships", "analysis-relationship-context",
+    "analysis-spatial-matrix-disclosure", "analysis-spatial-context-disclosure", "analysis-spatial-facility-disclosure",
   ];
   ids.forEach((id) => document.register(id, tagById[id] || "div"));
   const mapTab = document.getElementById("view-tab-map");
@@ -1463,6 +1467,10 @@ assert.deepEqual(
 );
 controller.hidePreview({ restoreFocus: false });
 controller.setActiveSection("analysis-section-spatial", { source: "test" });
+assert.equal(document.getElementById("analysis-cooccurrence-chart").children.length, 0, "the closed matrix disclosure defers hidden heatmap DOM");
+const cooccurrenceDisclosure = document.getElementById("analysis-spatial-matrix-disclosure");
+cooccurrenceDisclosure.open = true;
+cooccurrenceDisclosure.emit("toggle");
 const cooccurrenceHeatmap = descendants(document.getElementById("analysis-cooccurrence-chart"))
   .find((element) => element.className.includes("analysis-heatmap-table"));
 assert.ok(cooccurrenceHeatmap, "co-occurrence is a directed heatmap rather than a card wall");
@@ -1512,6 +1520,9 @@ assert.match(sameSourceText, /Same-source.*descriptive estimate remains visible/
 const sameSourceCell = descendants(document.getElementById("analysis-cooccurrence-chart"))
   .find((element) => /Disk, Disk/.test(element.getAttribute("aria-label") || ""));
 assert.match(sameSourceCell.getAttribute("aria-label"), /0.12.*O 60.*E 55/i, "effect-only faces retain observed and expected evidence in their accessible details");
+const facilityDisclosure = document.getElementById("analysis-spatial-facility-disclosure");
+facilityDisclosure.open = true;
+facilityDisclosure.emit("toggle");
 assert.match(
   descendants(document.getElementById("analysis-facility-context-chart")).map((element) => element.textContent).join(" "),
   /triangle.*CMH odds ratio 1.58.*95% CI \[1.12, 2.21\].*q=0.03.*Near band n=42.*Comparison band n=28.*Descriptive estimate.*comparison band below 25/i
@@ -1714,6 +1725,9 @@ contextEvidenceResult.spatialEvidence.relationshipSummary = {
 };
 controller.renderAnalysisResult(contextEvidenceResult);
 controller.setActiveSection("analysis-section-spatial", { source: "test" });
+const contextNeighborhoodDisclosure = document.getElementById("analysis-spatial-context-disclosure");
+contextNeighborhoodDisclosure.open = true;
+contextNeighborhoodDisclosure.emit("toggle");
 const contextNeighborhoodText = descendants(document.getElementById("analysis-context-neighborhood-chart")).map((element) => element.textContent).join(" ");
 assert.match(contextNeighborhoodText, /Bounded crop markers.*Same day.*8–30 days.*0–25 km.*-1.*100–250 km.*0.59/i);
 const neighborhoodLabels = descendants(document.getElementById("analysis-context-neighborhood-chart")).map((element) => element.getAttribute("aria-label") || "").join(" ");
@@ -2279,6 +2293,19 @@ assert.equal(
     targetId + " must remain unmaterialized until its dashboard or Context subview is opened"
   );
 });
+
+progressiveController.setActiveSection("analysis-section-spatial", { source: "test" });
+frameHarness.flushAll();
+assert.ok(progressiveDocument.getElementById("analysis-spatial-eligibility-chart").children.length > 0, "Spatial opens with its compact eligibility summary");
+assert.equal(progressiveDocument.getElementById("analysis-cooccurrence-chart").children.length, 0, "the closed co-occurrence matrix does not materialize hidden DOM");
+assert.equal(progressiveDocument.getElementById("analysis-context-neighborhood-chart").children.length, 0, "closed context-neighborhood support stays deferred");
+assert.equal(progressiveDocument.getElementById("analysis-facility-context-chart").children.length, 0, "closed facility support stays deferred");
+const spatialMatrixDisclosure = progressiveDocument.getElementById("analysis-spatial-matrix-disclosure");
+spatialMatrixDisclosure.open = true;
+spatialMatrixDisclosure.emit("toggle");
+frameHarness.flushAll();
+assert.ok(progressiveDocument.getElementById("analysis-cooccurrence-chart").children.length > 0, "opening the matrix disclosure renders its bounded chart on demand");
+assert.equal(spatialMatrixDisclosure.getAttribute("aria-busy"), "false", "the disclosure clears its local render busy state");
 
 progressiveController.setActiveSection("analysis-section-overview", { source: "test" });
 assert.equal(frameHarness.pendingCount(), 0, "returning to a warm dashboard schedules no chart work");

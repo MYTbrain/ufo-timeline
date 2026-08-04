@@ -2045,6 +2045,7 @@
       this.resultRenderVersion = 0;
       this.renderPlans = new Map();
       this.renderedPlanVersions = new Map();
+      this.deferredDisclosureJobs = new Map();
       this.renderFinalState = "ready";
       this.activeRenderPlanKeys = [];
       this.activeRenderTargetIds = [];
@@ -2099,6 +2100,49 @@
       this.listeners.push([element, eventName, handler]);
     }
 
+    _setDeferredDisclosureJobs(disclosureId, jobs) {
+      const entry = {
+        version: this.resultRenderVersion,
+        jobs: asArray(jobs).filter(function (job) { return typeof job === "function"; }),
+        rendered: false,
+      };
+      this.deferredDisclosureJobs.set(disclosureId, entry);
+      const disclosure = this.document.getElementById(disclosureId);
+      if (disclosure && disclosure.open) this._renderDeferredDisclosure(disclosureId);
+      return entry;
+    }
+
+    _renderDeferredDisclosure(disclosureId) {
+      const disclosure = this.document.getElementById(disclosureId);
+      const entry = this.deferredDisclosureJobs.get(disclosureId);
+      if (!disclosure || !disclosure.open || !entry || entry.rendered || entry.version !== this.resultRenderVersion) return false;
+      entry.rendered = true;
+      disclosure.setAttribute("aria-busy", "true");
+      let index = 0;
+      const runNext = () => {
+        if (this.deferredDisclosureJobs.get(disclosureId) !== entry || entry.version !== this.resultRenderVersion || !disclosure.open) {
+          entry.rendered = false;
+          disclosure.setAttribute("aria-busy", "false");
+          return;
+        }
+        entry.jobs[index]();
+        index += 1;
+        if (index >= entry.jobs.length) {
+          disclosure.setAttribute("aria-busy", "false");
+          return;
+        }
+        if (this.requestRenderFrame) this.requestRenderFrame(runNext);
+        else runNext();
+      };
+      if (!entry.jobs.length) {
+        disclosure.setAttribute("aria-busy", "false");
+        return false;
+      }
+      if (this.requestRenderFrame) this.requestRenderFrame(runNext);
+      else runNext();
+      return true;
+    }
+
     _bindEvents() {
       this._listen(this.els.mapTab, "click", () => {
         this.setActiveView("map", { source: "click" });
@@ -2128,6 +2172,13 @@
       this._listen(this.els.animalView, "click", (event) => this._handleContextView(event, "animals", "analysis-animal-context"));
       this._listen(this.els.exportJson, "click", () => this._exportEvidence("json"));
       this._listen(this.els.exportCsv, "click", () => this._exportEvidence("csv"));
+      [
+        "analysis-spatial-matrix-disclosure",
+        "analysis-spatial-context-disclosure",
+        "analysis-spatial-facility-disclosure",
+      ].forEach((disclosureId) => {
+        this._listen(this.document.getElementById(disclosureId), "toggle", () => this._renderDeferredDisclosure(disclosureId));
+      });
     }
 
     _sectionLinkElements() {
@@ -3833,6 +3884,7 @@
 
     _renderHeatmap(chartId, value, summary, options) {
       const config = options || {};
+      const axisLimit = Math.max(1, Math.min(HEATMAP_AXIS_LIMIT, Number(config.axisLimit) || HEATMAP_AXIS_LIMIT));
       const display = heatmapDisplayItems(value, config.valueKeys);
       const fullData = display.data;
       const completeData = config.completeData == null
@@ -3872,12 +3924,12 @@
             return leftRequested - rightRequested;
           }
           return (categoryScores.get(right) || 0) - (categoryScores.get(left) || 0) || left.localeCompare(right);
-        }).slice(0, HEATMAP_AXIS_LIMIT);
+        }).slice(0, axisLimit);
         const shared = sortSemanticAxis(union, rowKind, requestedOrder);
         displayedRows = shared;
         displayedColumns = shared.slice();
       } else {
-        displayedRows = sortSemanticAxis(rows.slice(0, HEATMAP_AXIS_LIMIT), rowKind, config.rowAxisOrder || firstDefined(rowMetadata, ["order", "labels"], []));
+        displayedRows = sortSemanticAxis(rows.slice(0, axisLimit), rowKind, config.rowAxisOrder || firstDefined(rowMetadata, ["order", "labels"], []));
         const columnCandidates = fixedAxisColumns.length
           ? fixedAxisColumns.concat(columns.filter(function (column) { return fixedAxisColumns.indexOf(column) === -1; }))
           : columns;
@@ -3885,7 +3937,7 @@
           columnCandidates,
           columnKind,
           config.columnAxisOrder || (fixedAxisColumns.length ? fixedAxisColumns : firstDefined(columnMetadata, ["order", "labels"], []))
-        ).slice(0, HEATMAP_AXIS_LIMIT);
+        ).slice(0, axisLimit);
       }
       const formatRowLabel = typeof config.rowLabelFormatter === "function"
         ? config.rowLabelFormatter
@@ -4002,7 +4054,7 @@
           chartId,
           "Display shows " + displayedRows.length + " of " + rows.length + " highest-information rows and "
             + displayedColumns.length + " of " + columns.length + " highest-information columns (at most "
-            + HEATMAP_CELL_LIMIT + " cells); calculations and evidence gates use every cell."
+            + (axisLimit * axisLimit) + " cells); calculations and evidence gates use every cell."
         );
       }
       this._appendLazyDataTable(
@@ -4800,6 +4852,7 @@
           valueKeys: config.valueKeys || ["log2Enrichment", "log2_enrichment"],
           nullValue: 0,
           squareAxes: true,
+          axisLimit: config.axisLimit,
           axisOrder: group.axisOrder,
           craftRows: true,
           craftColumns: true,
@@ -5132,6 +5185,7 @@
           comparisonCountLabel: config.comparisonCountLabel,
           primaryCountKeys: config.primaryCountKeys,
           comparisonCountKeys: config.comparisonCountKeys,
+          limit: config.limit,
           emptyMessage: config.emptyMessage,
         });
         const container = this.document.getElementById(chartId);
@@ -5608,14 +5662,16 @@
         this._renderEqualAreaMap("analysis-geography-sensitivity-chart", data.geographySensitivity, summary, { caption: "Equal-area spatial-bias sensitivity", defaultKind: "area", valueKeys: ["adjustedDifference", "adjusted_difference", "difference", "value"] });
       });
       geographyJobs.push(() => this._renderHeatmap("analysis-geography-time-chart", data.geographyTime, summary, { caption: "Geography by era adjusted comparison", rowHeading: "Region", defaultKind: "area", columnAxisKind: "era", humanGeographyRows: true, effectOnly: true, valueKeys: ["adjustedDifference", "adjusted_difference", "standardizedResidual", "residual", "difference", "value"] }));
-      spatialJobs.push(() => this._renderCooccurrenceEvidence("analysis-cooccurrence-chart", data.cooccurrence, summary, { caption: "Point-based craft co-occurrence evidence", defaultKind: "filter", primaryCountLabel: "Observed", comparisonCountLabel: "Expected", primaryCountKeys: ["observedCount", "observed_count"], comparisonCountKeys: ["expectedCount", "expected_count"], effectLabel: "Log2 observed/expected enrichment", valueKeys: ["log2Enrichment", "log2_enrichment"], nullValue: 0, emptyMessage: "Not estimable until the qualified point-neighbor artifact and stratified null results are available." }));
+      const spatialCooccurrenceJob = () => this._renderCooccurrenceEvidence("analysis-cooccurrence-chart", data.cooccurrence, summary, { caption: "Point-based craft co-occurrence evidence", defaultKind: "filter", primaryCountLabel: "Observed", comparisonCountLabel: "Expected", primaryCountKeys: ["observedCount", "observed_count"], comparisonCountKeys: ["expectedCount", "expected_count"], effectLabel: "Log2 observed/expected enrichment", valueKeys: ["log2Enrichment", "log2_enrichment"], nullValue: 0, axisLimit: 6, emptyMessage: "Not estimable until the qualified point-neighbor artifact and stratified null results are available." });
       spatialJobs.push(() => {
         if (!this.document.getElementById("analysis-spatial-eligibility-chart")) return;
         this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", limit: 8 });
       });
-      spatialJobs.push(() => this._renderContextAssociations("analysis-context-neighborhood-chart", data.contextAssociations, summary, { emptyMessage: "Context-marker neighborhood evidence loads with the pinned point-neighbor artifact." }));
-      spatialJobs.push(() => this._renderContextCategoryAssociations("analysis-context-category-chart", "analysis-context-category-card", data.contextAssociations, summary));
-      spatialJobs.push(() => this._renderFacilityEvidence("analysis-facility-context-chart", data.facilities, summary, { caption: "Qualified facility-marker context evidence", defaultKind: "filter", primaryCountLabel: "Near band", comparisonCountLabel: "Comparison band", primaryCountKeys: ["nearCount", "near_count"], comparisonCountKeys: ["comparisonCount", "comparison_count"], effectLabel: "CMH odds ratio", valueKeys: ["commonOddsRatio", "common_odds_ratio", "oddsRatio", "odds_ratio"], nullValue: 1, emptyMessage: "Not estimable until facility precision, activity interval, and common-support gates pass." }));
+      const spatialContextJobs = [
+        () => this._renderContextAssociations("analysis-context-neighborhood-chart", data.contextAssociations, summary, { emptyMessage: "Context-marker neighborhood evidence loads with the pinned point-neighbor artifact." }),
+        () => this._renderContextCategoryAssociations("analysis-context-category-chart", "analysis-context-category-card", data.contextAssociations, summary),
+      ];
+      const spatialFacilityJob = () => this._renderFacilityEvidence("analysis-facility-context-chart", data.facilities, summary, { caption: "Qualified facility-marker context evidence", defaultKind: "filter", primaryCountLabel: "Near band", comparisonCountLabel: "Comparison band", primaryCountKeys: ["nearCount", "near_count"], comparisonCountKeys: ["comparisonCount", "comparison_count"], effectLabel: "CMH odds ratio", valueKeys: ["commonOddsRatio", "common_odds_ratio", "oddsRatio", "odds_ratio"], nullValue: 1, limit: 8, emptyMessage: "Not estimable until facility precision, activity interval, and common-support gates pass." });
       contextOverviewJobs.push(() => this._renderReadiness("analysis-cross-domain-readiness-chart", data.crossDomainReadiness, summary, { emptyMessage: "Crop and animal proximity remains not estimable until provenance, uncertainty, lineage, and sample gates pass." }));
       spatialJobs.push(() => {
         if (this.els.spatialStatus) this.els.spatialStatus.textContent = data.spatialStatus || "Spatial evidence is associative, point-based, uncertainty-aware, and never uses chronology connectors.";
@@ -5683,6 +5739,9 @@
       }, []));
       this.resultRenderVersion += 1;
       this.renderedPlanVersions.clear();
+      this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob]);
+      this._setDeferredDisclosureJobs("analysis-spatial-context-disclosure", spatialContextJobs);
+      this._setDeferredDisclosureJobs("analysis-spatial-facility-disclosure", [spatialFacilityJob]);
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
@@ -5900,6 +5959,7 @@
         }
       });
       this.listeners = [];
+      this.deferredDisclosureJobs.clear();
       this.currentPreview = null;
     }
   }
