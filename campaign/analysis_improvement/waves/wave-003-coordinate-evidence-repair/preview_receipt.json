@@ -1,0 +1,75 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-003-coordinate-evidence-repair",
+  "generatedAt": "2026-08-04T21:03:28Z",
+  "candidateCommit": "6958a176103c8ad8d6b81ed0d8e47f2dad02e329",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "catalogRows": 702893,
+    "sourceCoordinateRows": 110352,
+    "typedRows": 110055,
+    "typedCatalogPct": 15.657433,
+    "supportedSources": ["majestic", "ufocat"],
+    "generalizedMarkersRemainSeparate": true,
+    "unresolvedConflictsFailClosed": true,
+    "status": "ready_descriptive"
+  },
+  "tests": {
+    "python": {"passed": 1290, "warnings": 1},
+    "javascript": {"passed": 38, "failed": 0},
+    "deterministicBuildAndProjectionParityPassed": true,
+    "frozenInventoryPassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-coordinate-evidence-v1-20260804",
+    "prefix": "releases/analysis-coordinate-evidence-v1-20260804",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-coordinate-evidence-v1-20260804",
+    "payloadCount": 12,
+    "payloadBytes": 29127049,
+    "manifestSha256": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8",
+    "projectionGzipSha256": "c4eca54c818655bfe6b28c4d2a4051cfd9d497f5bd74758609c4ec7f3cf8e94e",
+    "projectionSha256": "66dc8b96b0265315d5286bffd24717152192c51ee92b3c207e0e2c0c9c4bb049",
+    "uploaded": 12,
+    "verified": 12
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-coordinate-evidence-v1-frozen-pages-qa2_20260804",
+    "fileCount": 170,
+    "totalBytes": 107342804,
+    "treeSha256": "80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69",
+    "sourceOverlayTreeSha256": "38e497b6e2aace9ea16e556180a270ac4269126dcc00ee8da75401c517a1bae6",
+    "optionalLayerPayloadsInPages": 0,
+    "exactReleaseInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "14099259-59ef-4e21-a431-f113b01ca5b8",
+    "immutableUrl": "https://14099259.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-coordinate-evidence-rhxs.ufo-timeline.pages.dev",
+    "branch": "analysis-coordinate-evidence-v1-preview-qa2-20260804",
+    "sourceLabel": "6958a17",
+    "networkSmokePassed": true,
+    "coordinateManifestSha256": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopFirstUsefulMs": 1591,
+    "constrainedFirstUsefulMs": 1685,
+    "desktopWarmP95Ms": 306,
+    "constrainedWarmP95Ms": 955,
+    "desktopColdSpatialMs": 3302,
+    "constrainedColdSpatialMs": 3382,
+    "maximumOrdinaryDashboardPx": 869.09375,
+    "mobileNoOverflow": true,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229",
+    "immutableUrl": "https://ecaefd00.ufo-timeline.pages.dev",
+    "sourceLabel": "4af76a3"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}

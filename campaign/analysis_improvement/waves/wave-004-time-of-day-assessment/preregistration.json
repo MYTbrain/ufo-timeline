@@ -1,0 +1,114 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-004-time-of-day-assessment",
+  "candidateId": "time_of_day_assessment",
+  "generatedAt": "2026-08-04T21:03:28Z",
+  "baselineCommit": "6958a176103c8ad8d6b81ed0d8e47f2dad02e329",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-coordinate-evidence-v1-20260804",
+    "deploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
+    "frozenTreeSha256": "80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69"
+  },
+  "primaryObjective": "Make explicit time-of-day evidence a typed, provenance-preserving Analysis assessment while keeping local clock text, uncertainty, and absent timezone semantics distinct.",
+  "hypothesis": "At least 102,410 catalog rows across Majestic, MUFON, and UFOCAT can retain a typed local-clock evidence class without inferring timezone, solar state, or missing values, making a descriptive time-of-day assessment safely estimable.",
+  "interventionBoundary": {
+    "inScope": [
+      "immutable event-aligned time-of-day sidecar preserving original clock text and source role",
+      "typed exact-clock, approximate, range, qualitative, missing, invalid, and unresolved classes",
+      "source-era-region descriptive distributions and conservative common-support comparison",
+      "compact Time dashboard disclosure plus JSON and CSV evidence export",
+      "deterministic provenance, release, preview, production, and rollback receipts"
+    ],
+    "outOfScope": [
+      "canonical event mutation",
+      "timezone inference or UTC conversion",
+      "solar, twilight, astronomical, or celestial correlation",
+      "coercing missing, midnight-like, noon-like, approximate, or invalid values to exact clock times",
+      "location-based local-time repair",
+      "incidence, risk, authenticity, travel, facility, or causal claims",
+      "any assessment other than explicit time-of-day evidence"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "normalizedTimeOfDayCoverageRows": 128013,
+    "normalizedTimeOfDayCoveragePct": 18.212303,
+    "coveredSources": ["majestic", "mufon", "ufocat"],
+    "browserTypedTimeOfDayEvidenceRows": 0,
+    "timeOfDayAssessmentStatus": "unavailable"
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumTypedRows": 102410,
+    "minimumCatalogCoveragePct": 14.56,
+    "minimumIndependentSources": 3,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalClockTextPreserved": true,
+    "timezoneSemanticsRemainUnknownUnlessExplicit": true,
+    "missingAndAmbiguousValuesFailClosed": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "original time-of-day text",
+      "typed clock class and normalized minutes only when supported",
+      "precision and uncertainty class",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "typedCatalogPct": 14.56,
+      "supportedSources": 3,
+      "commonSupportRate": 0.8,
+      "minimumActiveAndReferenceBinN": 20
+    },
+    "estimators": [
+      "descriptive provenance-preserving time-of-day distribution",
+      "source-era-region common-support standardized active/reference share difference",
+      "deterministic 95 percent bootstrap interval"
+    ],
+    "negativeControls": [
+      "missing-time exclusion lane",
+      "approximate-and-range holdout",
+      "midnight-and-noon sentinel audit",
+      "source-format holdout",
+      "leave-one-source-out",
+      "unknown-timezone holdout"
+    ],
+    "uncertaintyTreatment": "Original clock text, time precision, approximation, qualitative periods, missing values, invalid formats, and timezone availability remain distinct. Unknown timezone is never inferred from coordinates or location text.",
+    "suppressionPolicy": "Show readiness and descriptive failure counts instead of inferential comparisons whenever typed coverage, provenance integrity, common support, bin support, or stability gates fail. Never treat missing time as midnight or an unknown timezone as local solar time."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_time_dashboard_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedFirstUsefulMs": 5000,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "original clock preservation, timezone non-inference, and idempotence",
+    "sidecar-to-projection parity and deterministic hashes",
+    "exact, approximate, range, qualitative, missing, invalid, midnight, and noon tests",
+    "statistical determinism, common support, FDR isolation, and holdout stability",
+    "no timezone, solar-state, incidence, authenticity, or Pattern Finder promotion",
+    "complete Python and JavaScript suites",
+    "Pages and R2 separation with immutable versioned R2 keys",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 102410 rows retain typed time-of-day evidence without canonical repair",
+    "fewer than three sources retain at least 1000 typed rows",
+    "original clock text and normalized value cannot remain distinct",
+    "the assessment requires inferred timezone or solar state",
+    "scientific gates would need weakening",
+    "rights or provenance cannot be resolved",
+    "performance or existing Analysis behavior regresses beyond release gates"
+  ]
+}

@@ -33,6 +33,19 @@
             "productionDeploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229",
             "rollbackTestDeploymentId": "1eb86fe5-4e49-47fc-b40c-4eb93cfa70f9",
             "materialGain": true
+        },
+        {
+            "waveId": "wave-003-coordinate-evidence-repair",
+            "candidateId": "coordinate_evidence_repair",
+            "status": "accepted_and_promoted",
+            "completedAt": "2026-08-04T21:03:28Z",
+            "sourceCommit": "6958a176103c8ad8d6b81ed0d8e47f2dad02e329",
+            "receipt": "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/wave_receipt.json",
+            "beforeAfterMetrics": "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/before_after_metrics.json",
+            "previewDeploymentId": "14099259-59ef-4e21-a431-f113b01ca5b8",
+            "productionDeploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
+            "rollbackTestDeploymentId": "132e4a4b-9729-4920-a0f9-e674ae2f7154",
+            "materialGain": true
         }
     ]
 }

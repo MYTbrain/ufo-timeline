@@ -1,0 +1,95 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-003-coordinate-evidence-repair",
+  "generatedAt": "2026-08-04T21:03:28Z",
+  "primaryObjective": "Make coordinate evidence a defensible, provenance-preserving Analysis assessment that separates source-provided coordinates, generalized public markers, and unresolved conflicts without upgrading precision by inference.",
+  "preregisteredOutcome": "accepted_material_gain_and_promoted",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "catalogRows": 702893,
+      "sourceCoordinateRows": 110352,
+      "typedRows": 110055,
+      "typedCatalogPct": 15.657433,
+      "supportedSources": ["majestic", "ufocat"],
+      "consistentRows": 101168,
+      "inconsistentExcludedRows": 297,
+      "generalizedMarkerRows": 470431,
+      "unresolvedRows": 122110,
+      "originalCoordinatesPreserved": true,
+      "canonicalEventRecordsMutated": false,
+      "status": "ready_descriptive"
+    }
+  },
+  "beforeMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/preregistration.json",
+    "coordinateEvidenceAssessmentStatus": "unavailable",
+    "browserTypedCoordinateEvidenceRows": 0
+  },
+  "afterMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-003-coordinate-evidence-repair/before_after_metrics.json",
+    "coordinateEvidenceAssessmentStatus": "ready_descriptive",
+    "typedRows": 110055,
+    "typedCatalogPct": 15.657433
+  },
+  "tests": {
+    "python": {"passed": 1290, "warnings": 1},
+    "javascript": {"passed": 38, "failed": 0},
+    "deterministicReconstructionPassed": true,
+    "browserQaPassed": true,
+    "r2ReadbackPassed": true,
+    "servedPreviewProductionCanonicalHashParityPassed": true
+  },
+  "artifacts": {
+    "candidateCommit": "6958a176103c8ad8d6b81ed0d8e47f2dad02e329",
+    "sourceTreeSha256": "2bdd7e851e663a2bed8500c529055faae34aecff",
+    "coordinateReleaseId": "analysis-coordinate-evidence-v1-20260804",
+    "coordinateR2Prefix": "releases/analysis-coordinate-evidence-v1-20260804",
+    "coordinateManifestSha256": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8",
+    "coordinateProjectionGzipSha256": "c4eca54c818655bfe6b28c4d2a4051cfd9d497f5bd74758609c4ec7f3cf8e94e",
+    "coordinateProjectionSha256": "66dc8b96b0265315d5286bffd24717152192c51ee92b3c207e0e2c0c9c4bb049",
+    "frozenPagesPath": "cloudflare_bundle_r2_analysis-coordinate-evidence-v1-frozen-pages-qa2_20260804",
+    "frozenPagesFileCount": 170,
+    "frozenPagesTotalBytes": 107342804,
+    "frozenPagesTreeSha256": "80c938f4e8d2eb6447fbc2b517d06367b5b96315c34244398a52ce9a72334e69",
+    "frozenAssetSha256": {
+      "index.html": "19d34797349a7b0a32bbdd8ee2875e32b639931ea5556ffe34e08ca59dbba2d3",
+      "app.js": "d50b2d27e0fbc7dc3daf43327dc7e92002431685fc443a5ad1c3fb3db7266a98",
+      "analysis_view.js": "baa0a99eee8f80e37337ff88580681702e3a044cc70be0e95273cd42c96a2d0d",
+      "styles.css": "c4d601ec77310f646273f6fc20ecf4a05171ee76a6367fe21d5050ab3ef9f00e",
+      "coordinate_manifest.json": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8"
+    }
+  },
+  "preview": {
+    "deploymentId": "14099259-59ef-4e21-a431-f113b01ca5b8",
+    "immutableUrl": "https://14099259.ufo-timeline.pages.dev",
+    "branch": "analysis-coordinate-evidence-v1-preview-qa2-20260804",
+    "sourceLabel": "6958a17",
+    "qaPassed": true,
+    "consoleErrorsAndWarnings": 0
+  },
+  "production": {
+    "deploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e",
+    "immutableUrl": "https://1e1a5d8f.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceLabel": "6958a17",
+    "smokePassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "previewProductionCanonicalHashesIdentical": true,
+    "uploadedNewContentFilesAfterPreview": 0
+  },
+  "rollback": {
+    "deploymentId": "ecaefd00-cdb6-47b0-8abc-910e29a1a229",
+    "immutableUrl": "https://ecaefd00.ufo-timeline.pages.dev",
+    "instructions": "Validate the accepted Wave 2 receipt and frozen tree cb0c580f214dc5bfefac0bdcac429f642e8cbb76a7af3a6475c5243e7bef505a, then deploy cloudflare_bundle_r2_analysis-reporting-delay-v1-frozen-pages-qa5_20260804 to branch main.",
+    "tested": true,
+    "testMethod": "isolated_preview_redeployment_and_served_hash_comparison",
+    "testDeploymentId": "132e4a4b-9729-4920-a0f9-e674ae2f7154",
+    "testImmutableUrl": "https://132e4a4b.ufo-timeline.pages.dev",
+    "validatedTreeSha256": "cb0c580f214dc5bfefac0bdcac429f642e8cbb76a7af3a6475c5243e7bef505a",
+    "servedHashesMatchedPriorProduction": true
+  },
+  "releaseGate": "accepted_and_promoted"
+}

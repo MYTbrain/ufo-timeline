@@ -137,14 +137,20 @@
                 "independent_source_identity"
             ],
             "sourceIndependenceScore": 2,
-            "status": "in_progress",
+            "materialRelease": {
+                "releaseId": "analysis-coordinate-evidence-v1-20260804",
+                "typedCatalogPct": 15.657433,
+                "typedRows": 110055,
+                "productionDeploymentId": "1e1a5d8f-e755-4aac-b987-89a81b99443e"
+            },
+            "status": "ready_descriptive",
             "supportedSources": [
                 "majestic",
                 "ufocat"
             ],
             "suppressionPolicy": "suppress inference whenever provenance integrity, typed coverage, common support, bin support, or stability gates fail; generalized markers never count as exact source sites",
             "uncertaintyTreatment": "original coordinates, coordinate origin, precision, generalized public markers, and unresolved conflicts remain distinct; invalid, ambiguous, missing, swapped, zero-sentinel, or unresolved values fail closed",
-            "version": "0.1.0-candidate"
+            "version": "1.0.0"
         },
         {
             "baselineCoverage": {
@@ -169,7 +175,7 @@
                 "independent_source_identity"
             ],
             "sourceIndependenceScore": 3,
-            "status": "candidate_audit_ready",
+            "status": "in_progress",
             "supportedSources": [
                 "majestic",
                 "mufon",
