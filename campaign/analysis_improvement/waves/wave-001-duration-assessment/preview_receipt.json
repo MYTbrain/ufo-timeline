@@ -1,0 +1,106 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-001-duration-assessment",
+  "generatedAt": "2026-08-04T08:02:27Z",
+  "candidateCommit": "2604b5ca5613f883d0fdf3a5bb41849842c92f34",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "catalogRows": 702893,
+    "rawDurationRows": 290081,
+    "normalizedRows": 246040,
+    "normalizedCatalogPct": 35.003905,
+    "descriptiveBinnedRows": 242082,
+    "inferentialBinnedRows": 110089,
+    "supportedSources": {
+      "nuforc": 120879,
+      "ufocat": 125161
+    },
+    "status": "ready_descriptive"
+  },
+  "tests": {
+    "python": {
+      "passed": 1265,
+      "subtestsPassed": 4,
+      "warnings": 1
+    },
+    "javascriptFiles": {
+      "passed": 17
+    },
+    "postCacheTargetedPythonPassed": 78,
+    "campaignAndDurationTargetedPythonPassed": 17,
+    "packagingRegressionPythonPassed": 32,
+    "deterministicRebuild": {
+      "passed": true,
+      "filesCompared": 6
+    }
+  },
+  "cleanClone": {
+    "commit": "2604b5ca5613f883d0fdf3a5bb41849842c92f34",
+    "coreR2ObjectsVerified": 366,
+    "optionalLayerPayloadsVerified": 43,
+    "hydratedFileCount": 568,
+    "hydratedTreeSha256": "7303e18597ff7e214ffee937eb76d82f6ea057cc3530dda34b8e00c5c7c440a9",
+    "exactPagesInventoryPassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-duration-v1-20260804",
+    "prefix": "releases/analysis-duration-v1-20260804",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-duration-v1-20260804",
+    "payloadCount": 4,
+    "payloadBytes": 16401833,
+    "uploaded": 4,
+    "verified": 4,
+    "projectionGzipSha256": "9a6287cbd90734d9c4af2428e4203ddc9d1ef0a7ea9b6ca44cfac6de91ef000f"
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-duration-v1-frozen-pages_20260804",
+    "fileCount": 168,
+    "totalBytes": 107222917,
+    "treeSha256": "1fad4a586d0d53137ad3f6f9bff9e831fec6d1bf5bf29c631382d4731175a2bc",
+    "optionalLayerPayloadsInPages": 0,
+    "exactReleaseInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "2af018a4-66d2-4ae0-a5ed-cd89b3a6258a",
+    "immutableUrl": "https://2af018a4.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-duration-v1-preview.ufo-timeline.pages.dev",
+    "branch": "analysis-duration-v1-preview-20260804",
+    "sourceLabel": "2604b5c",
+    "networkSmokePassed": true,
+    "rootStatus": 200,
+    "durationManifestStatus": 200,
+    "durationManifestSha256": "89dc633e66008655b0aec3a798c0787cd51b187c2e63336a1eb44cb6336210fc",
+    "durationR2CorsOrigin": "https://2af018a4.ufo-timeline.pages.dev",
+    "durationR2ReadbackBytes": 3886442
+  },
+  "browserQa": {
+    "passed": false,
+    "status": "blocked_environment_before_page_session",
+    "requiredChecksNotExecuted": [
+      "desktop and mobile visual layout",
+      "Time dashboard lazy duration load and chart rendering",
+      "keyboard navigation",
+      "light, dark, and reduced-motion behavior",
+      "JSON and CSV download interaction",
+      "console and runtime error inspection",
+      "maximum main-thread task measurement"
+    ],
+    "error": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
+    "promotionAuthorized": false
+  },
+  "production": {
+    "unchanged": true,
+    "deploymentId": "e8008f72-d98e-4f15-86f1-8d3d48ad2054",
+    "immutableUrl": "https://e8008f72.ufo-timeline.pages.dev",
+    "sourceLabel": "990dc33"
+  },
+  "rollback": {
+    "deploymentId": "688e156d-1a4e-44d5-8a60-de1d6554ee18",
+    "immutableUrl": "https://688e156d.ufo-timeline.pages.dev",
+    "instruction": "Redeploy the verified reproduction Pages package to branch main.",
+    "testedInThisWave": false
+  },
+  "releaseGate": "blocked_browser_qa_no_production_promotion"
+}
