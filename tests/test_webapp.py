@@ -1432,6 +1432,12 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
         r'<summary>Reported observation duration</summary>.*?id="analysis-duration-chart"'
     )
     assert re.search(nested_duration, index_html, flags=re.DOTALL)
+    nested_source_mix = (
+        r'<article\b[^>]*class="[^"]*analysis-source-composite-card[^"]*"[^>]*>'
+        r'.*?<details\b[^>]*class="[^"]*analysis-supporting-details[^"]*"[^>]*>'
+        r'<summary>Source mix over time</summary>.*?id="analysis-source-time-chart"'
+    )
+    assert re.search(nested_source_mix, index_html, flags=re.DOTALL)
 
     for primary_chart_id in (
         "analysis-time-series-chart",
