@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-duration-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-reporting-delay-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -57,6 +57,14 @@
     artifactHashes: {},
     releaseId: "",
   };
+  let analysisReportingDelayArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    typedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisSpatialExecutor = null;
   let analysisSpatialExecutorEpoch = 0;
   let analysisSpatialPending = null;
@@ -99,6 +107,7 @@
       analysisCountry: createDictionary(),
       analysisMacroregion: createDictionary(),
       durationMacroregion: createDictionary(),
+      reportingDelayMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
       geographyBoundaryStatus: createDictionary(),
@@ -240,6 +249,12 @@
       analysisDurationMacroregionCodes: new Uint16Array(length),
       analysisDurationLowerSeconds: new Float64Array(length),
       analysisDurationUpperSeconds: new Float64Array(length),
+      analysisReportingDelayProjectionStates: new Uint8Array(length),
+      analysisReportingDelayStatusCodes: new Uint8Array(length),
+      analysisReportingDelayRoleCodes: new Uint8Array(length),
+      analysisReportingDelayBinCodes: new Uint8Array(length),
+      analysisReportingDelayMacroregionCodes: new Uint16Array(length),
+      analysisReportingDelayDays: new Uint32Array(length),
     };
     chunk.analysisDurationLowerSeconds.fill(Number.NaN);
     chunk.analysisDurationUpperSeconds.fill(Number.NaN);
@@ -346,6 +361,12 @@
       chunk.analysisDurationMacroregionCodes.byteLength +
       chunk.analysisDurationLowerSeconds.byteLength +
       chunk.analysisDurationUpperSeconds.byteLength;
+    typedStorageBytes += chunk.analysisReportingDelayProjectionStates.byteLength +
+      chunk.analysisReportingDelayStatusCodes.byteLength +
+      chunk.analysisReportingDelayRoleCodes.byteLength +
+      chunk.analysisReportingDelayBinCodes.byteLength +
+      chunk.analysisReportingDelayMacroregionCodes.byteLength +
+      chunk.analysisReportingDelayDays.byteLength;
     return chunk;
   }
 
@@ -524,6 +545,25 @@
       : null;
     values.analysisDurationUpperSeconds = durationValueCode && Number.isFinite(chunk.analysisDurationUpperSeconds[index])
       ? chunk.analysisDurationUpperSeconds[index]
+      : null;
+    const reportingDelayProjected = Boolean(
+      chunk.analysisReportingDelayProjectionStates && chunk.analysisReportingDelayProjectionStates[index]
+    );
+    values.analysisReportingDelayAvailable = reportingDelayProjected;
+    values.analysisReportingDelayStatus = reportingDelayProjected
+      ? String((analysisReportingDelayArtifact.manifest.codes.status || [])[chunk.analysisReportingDelayStatusCodes[index] - 1] || "unavailable")
+      : "unavailable";
+    values.analysisReportingDelaySelectedRole = reportingDelayProjected
+      ? String((analysisReportingDelayArtifact.manifest.codes.selectedRole || [])[chunk.analysisReportingDelayRoleCodes[index] - 1] || "none")
+      : "none";
+    values.analysisReportingDelayBin = reportingDelayProjected
+      ? String((analysisReportingDelayArtifact.manifest.codes.delayBin || [])[chunk.analysisReportingDelayBinCodes[index] - 1] || "unknown")
+      : "unknown";
+    values.analysisReportingDelayMacroregion = reportingDelayProjected
+      ? dictionaryValue(dictionaries.reportingDelayMacroregion, chunk.analysisReportingDelayMacroregionCodes[index]) || "unknown"
+      : "unknown";
+    values.analysisReportingDelayDays = reportingDelayProjected && ["reported_valid", "posted_fallback_valid"].indexOf(values.analysisReportingDelayStatus) !== -1
+      ? chunk.analysisReportingDelayDays[index]
       : null;
     values.duplicateLineage = dictionaryValue(dictionaries.duplicateLineage, chunk.duplicateLineageCodes[index]);
     values.sortOrdinal = sortOrdinalAt(chunk, index);
@@ -1478,6 +1518,9 @@
           : {},
         analysisDurationArtifact.loaded
           ? Object.assign({}, analysisDurationArtifact.artifactHashes || {})
+          : {},
+        analysisReportingDelayArtifact.loaded
+          ? Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {})
           : {}
       ),
       geographyProjectionLoaded: Boolean(analysisGeographyArtifact.loaded),
@@ -1490,7 +1533,16 @@
         negativeControls: Object.assign({}, analysisDurationArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes || {}),
       } : null,
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
+      reportingDelayProjectionLoaded: Boolean(analysisReportingDelayArtifact.loaded),
+      reportingDelayArtifact: analysisReportingDelayArtifact.loaded ? {
+        releaseId: analysisReportingDelayArtifact.releaseId,
+        counts: Object.assign({}, analysisReportingDelayArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisReportingDelayArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisReportingDelayArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisReportingDelayArtifact.manifest.negativeControls || {}),
+        artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
+      } : null,
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.4.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
@@ -1919,7 +1971,7 @@
         normalizedHashObject(message.artifactHashes),
         analysisSpatialArtifacts.artifactHashes || {}
       ),
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.4.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       inferenceDeferred: Boolean(result && result.inferenceDeferred),
@@ -1944,7 +1996,7 @@
       datasetHash: String(message && message.datasetHash || ""),
       contextReleaseHashes: normalizedHashObject(message && message.contextReleaseHashes),
       artifactHashes: Object.assign({}, analysisSpatialArtifacts.artifactHashes || {}),
-      estimatorVersion: String(message && message.estimatorVersion || "ufo-analysis-evidence-lab-v2.2.0"),
+      estimatorVersion: String(message && message.estimatorVersion || "ufo-analysis-evidence-lab-v2.4.0"),
       cancellationGeneration: Number(message && message.cancellationGeneration) || 0,
       errorCode: String(codeValue || "spatial_analysis_failed"),
       cancelled: Boolean(cancelled),
@@ -2332,6 +2384,163 @@
       normalizedRows: applied.normalizedRows,
       releaseId: analysisDurationArtifact.releaseId,
       artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
+  function analysisReportingDelayManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-reporting-delay-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts &&
+      manifest.artifacts.reportingDelayProjection &&
+      manifest.artifactGroups &&
+      Array.isArray(manifest.artifactGroups.roleEvidenceShards) &&
+      manifest.codes &&
+      manifest.readiness
+    );
+  }
+
+  function validateReportingDelayManifest(manifest) {
+    const projectionEntry = manifestArtifactEntry(manifest, "reportingDelayProjection");
+    if (!projectionEntry || !normalizedSha256(projectionEntry.sha256) || !normalizedSha256(projectionEntry.gzipSha256)) {
+      throw new Error("Reporting-delay projection is missing pinned raw or gzip integrity.");
+    }
+    if (!Array.isArray(projectionEntry.rowSchema) || projectionEntry.rowSchema.length !== 9) {
+      throw new Error("Reporting-delay projection schema is invalid.");
+    }
+    let evidenceRows = 0;
+    manifest.artifactGroups.roleEvidenceShards.forEach(function (key) {
+      const entry = manifestArtifactEntry(manifest, key);
+      if (!entry || !normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+        throw new Error("Reporting-delay role-evidence shard " + key + " is invalid.");
+      }
+      if (!Array.isArray(entry.rowSchema) || entry.rowSchema.length !== 13) {
+        throw new Error("Reporting-delay role-evidence shard " + key + " has an invalid schema.");
+      }
+      evidenceRows += Number(entry.rowCount) || 0;
+    });
+    if (evidenceRows !== Number(projectionEntry.rowCount) ||
+        evidenceRows !== Number(manifest.counts && manifest.counts.dateRoleEvidenceRows)) {
+      throw new Error("Reporting-delay projection and role-evidence row counts disagree.");
+    }
+    return projectionEntry;
+  }
+
+  function applyReportingDelayProjection(projectionRows, manifest) {
+    const statusCodes = manifest.codes.status || [];
+    const roleCodes = manifest.codes.selectedRole || [];
+    const binCodes = manifest.codes.delayBin || [];
+    const sourceCodes = manifest.codes.source || [];
+    const eraCodes = manifest.codes.era || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    let previousRowIndex = -1;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    let typedRows = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const sourceCode = Number(projection[2]);
+      const eraCode = Number(projection[3]);
+      const macroregionCode = Number(projection[4]);
+      const roleCode = Number(projection[5]);
+      const statusCode = Number(projection[6]);
+      const delayDays = projection[7] == null ? null : Number(projection[7]);
+      const binCode = Number(projection[8]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Reporting-delay projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Reporting-delay projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Reporting-delay projection event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(sourceCode) || sourceCode < 0 || sourceCode >= sourceCodes.length ||
+          !Number.isInteger(eraCode) || eraCode < 0 || eraCode >= eraCodes.length ||
+          !Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length ||
+          !Number.isInteger(roleCode) || roleCode < 0 || roleCode >= roleCodes.length ||
+          !Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(binCode) || binCode < 0 || binCode >= binCodes.length) {
+        throw new Error("Reporting-delay projection contains an out-of-range code at row " + projectionIndex + ".");
+      }
+      const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource) {
+        throw new Error("Reporting-delay projection source does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      const status = String(statusCodes[statusCode] || "unavailable");
+      const typed = ["reported_valid", "posted_fallback_valid"].indexOf(status) !== -1;
+      if (typed) {
+        if (!Number.isInteger(delayDays) || delayDays < 0 || String(binCodes[binCode] || "unknown") === "unknown") {
+          throw new Error("Typed reporting-delay row has an invalid delay at row " + projectionIndex + ".");
+        }
+        typedRows += 1;
+      } else if (delayDays != null || String(binCodes[binCode] || "unknown") !== "unknown") {
+        throw new Error("Excluded reporting-delay row silently retains a typed delay at row " + projectionIndex + ".");
+      }
+      location.chunk.analysisReportingDelayProjectionStates[location.index] = 1;
+      location.chunk.analysisReportingDelayStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisReportingDelayRoleCodes[location.index] = roleCode + 1;
+      location.chunk.analysisReportingDelayBinCodes[location.index] = binCode + 1;
+      location.chunk.analysisReportingDelayMacroregionCodes[location.index] = categoryCode(
+        dictionaries.reportingDelayMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+      location.chunk.analysisReportingDelayDays[location.index] = typed ? delayDays : 0;
+    });
+    if (typedRows !== Number(manifest.counts && manifest.counts.typedRows)) {
+      throw new Error("Reporting-delay typed-row parity failed.");
+    }
+    return { appliedRows: projectionRows.length, typedRows };
+  }
+
+  async function loadAnalysisReportingDelayArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_reporting_delay_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisReportingDelayManifestSupported(manifest)) {
+      throw new Error("Analysis reporting-delay manifest is invalid or unsupported.");
+    }
+    const projectionEntry = validateReportingDelayManifest(manifest);
+    const projectionRows = await fetchAnalysisJson(
+      urls.projection || manifestArtifactUrl(manifest, "reportingDelayProjection", manifestUrl),
+      manifestArtifactIntegrity(manifest, "reportingDelayProjection")
+    );
+    if (!Array.isArray(projectionRows) || projectionRows.length !== Number(projectionEntry.rowCount) ||
+        projectionRows.some(function (row) { return !Array.isArray(row) || row.length !== 9; })) {
+      throw new Error("Reporting-delay projection row-count or schema mismatch.");
+    }
+    const applied = applyReportingDelayProjection(projectionRows, manifest);
+    const artifactHashes = {};
+    Object.keys(manifest.artifacts).sort().forEach(function (key) {
+      artifactHashes[key] = String(manifest.artifacts[key].sha256 || "");
+    });
+    analysisReportingDelayArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes,
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      typedRows: applied.typedRows,
+      releaseId: analysisReportingDelayArtifact.releaseId,
+      artifactHashes: Object.assign({}, artifactHashes),
       readinessStatus: String(manifest.readiness.status || "not_estimable"),
     };
   }
@@ -2790,6 +2999,7 @@
         geographyBoundaryStatus: dictionaries.geographyBoundaryStatus.values.length,
         duplicateLineage: dictionaries.duplicateLineage.values.length,
         durationMacroregion: dictionaries.durationMacroregion.values.length,
+        reportingDelayMacroregion: dictionaries.reportingDelayMacroregion.values.length,
       },
       geographyProjection: {
         loaded: Boolean(analysisGeographyArtifact.loaded),
@@ -2802,6 +3012,13 @@
         normalizedRows: Number(analysisDurationArtifact.normalizedRows) || 0,
         releaseId: String(analysisDurationArtifact.releaseId || ""),
         artifactHashes: Object.assign({}, analysisDurationArtifact.artifactHashes || {}),
+      },
+      reportingDelayProjection: {
+        loaded: Boolean(analysisReportingDelayArtifact.loaded),
+        appliedRows: Number(analysisReportingDelayArtifact.appliedRows) || 0,
+        typedRows: Number(analysisReportingDelayArtifact.typedRows) || 0,
+        releaseId: String(analysisReportingDelayArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisReportingDelayArtifact.artifactHashes || {}),
       },
     };
   }
@@ -2820,6 +3037,9 @@
     };
     analysisDurationArtifact = {
       manifest: null, loaded: false, appliedRows: 0, normalizedRows: 0, artifactHashes: {}, releaseId: "",
+    };
+    analysisReportingDelayArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCache.clear();
     analysisMatchCache.clear();
@@ -2927,6 +3147,26 @@
         loadAnalysisDurationArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisDurationArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisReportingDelayArtifact") {
+        loadAnalysisReportingDelayArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisReportingDelayArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),

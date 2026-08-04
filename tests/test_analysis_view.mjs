@@ -218,6 +218,7 @@ function createShellDocument() {
     "analysis-unit-label", "analysis-source-mix", "analysis-date-precision",
     "analysis-location-precision", "analysis-dataset-hash", "analysis-policy-warning",
     "analysis-coverage-chart", "analysis-comparison-chart", "analysis-time-series-chart",
+    "analysis-reporting-delay-status", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart",
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
     "analysis-report-type-chart", "analysis-craft-confidence-chart", "analysis-craft-residual-chart", "analysis-geography-grid-chart", "analysis-geography-sensitivity-chart",
@@ -1116,6 +1117,30 @@ const result = {
     rolling: [{ label: "1952", observed: 120, reference: 60 }],
     bursts: [{ label: "1952", observed: 120, baselineMean: 40, standardizedExcess: 12.6, preview: { kind: "filter", patch: { dateRange: { year: 1952 } } } }],
     burstPolicy: "Exploratory burst gate passed; not a causal or incidence claim.",
+    reportingDelay: {
+      releaseId: "analysis-reporting-delay-v1-fixture",
+      assessmentLane: "descriptive_with_runtime_gated_comparisons",
+      status: "ready_descriptive",
+      readinessStatus: "ready_descriptive",
+      coverage: {
+        active: {
+          catalogRows: 400,
+          dateRoleEvidenceRows: 180,
+          typedRows: 150,
+          typedSources: [{ source: "mufon", rows: 60 }, { source: "nuforc", rows: 90 }],
+        },
+        reference: { catalogRows: 300, dateRoleEvidenceRows: 145, typedRows: 120 },
+      },
+      distribution: [
+        { key: "same_day", label: "Same day", activeCount: 90, referenceCount: 60, activeShare: 0.6, referenceShare: 0.5, measurementClass: "exact_day_nonnegative_role_preserving" },
+        { key: "one_day", label: "1 day", activeCount: 60, referenceCount: 60, activeShare: 0.4, referenceShare: 0.5, measurementClass: "exact_day_nonnegative_role_preserving" },
+      ],
+      comparisons: [
+        { key: "same_day", label: "Same day", observedCount: 90, referenceCount: 60, adjustedDifference: 0.08, interval: { lower: 0.03, upper: 0.13 }, qValue: 0.02, inferenceEligible: true, measurementClass: "exact_day_nonnegative_role_preserving" },
+      ],
+      comparisonMetadata: { fdrFamily: "reporting_delay_bins_v1", reportedAndPostedRolesSeparate: true },
+      patternFinderEligible: false,
+    },
     duration: {
       releaseId: "analysis-duration-v1-fixture",
       assessmentLane: "descriptive_with_runtime_gated_comparisons",
@@ -1347,6 +1372,13 @@ assert.equal(durationDistributionRow.active_share, 80 / 155);
 const durationEvidenceCsv = analysis.evidencePackageToCsv(durationEvidencePackage);
 assert.match(durationEvidenceCsv, /duration_bin,duration_measurement_class,duration_release_id,duration_assessment_lane/);
 assert.match(durationEvidenceCsv, /1_4_minutes,descriptive_includes_source_declared_approximate_values,analysis-duration-v1-fixture,descriptive_with_runtime_gated_comparisons/);
+const reportingDelayDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "time.reportingDelay.distribution" && row.reporting_delay_bin === "same_day");
+assert.equal(reportingDelayDistributionRow.reporting_delay_release_id, "analysis-reporting-delay-v1-fixture");
+assert.equal(reportingDelayDistributionRow.reporting_delay_assessment_lane, "descriptive_with_runtime_gated_comparisons");
+assert.equal(reportingDelayDistributionRow.reporting_delay_measurement_class, "exact_day_nonnegative_role_preserving");
+assert.equal(reportingDelayDistributionRow.active_share, 0.6);
+assert.match(durationEvidenceCsv, /reporting_delay_bin,reporting_delay_measurement_class,reporting_delay_release_id,reporting_delay_assessment_lane/);
+assert.match(durationEvidenceCsv, /same_day,exact_day_nonnegative_role_preserving,analysis-reporting-delay-v1-fixture,descriptive_with_runtime_gated_comparisons/);
 
 controller.setBaselineMode("other_dates_balanced", { notify: false });
 controller.setActiveSection("analysis-section-overview", { source: "test" });
@@ -1399,6 +1431,9 @@ const refreshedTimelineButtons = descendants(document.getElementById("analysis-t
 refreshedTimelineButtons[2].emit("click");
 assert.match(descendants(document.getElementById("analysis-time-series-chart")).map((element) => element.textContent).join(" "), /Source A.*Source B.*Largest displayed source-composition shift/i, "collection-change diagnostics reuse the existing source-composition evidence in the same card");
 assert.ok(document.getElementById("analysis-month-year-chart").children.length >= 2);
+assert.match(document.getElementById("analysis-reporting-delay-status").textContent, /150 typed occurrence-to-report intervals across 2 sources.*37\.5% of matched reports.*30 role-bearing intervals remain explicitly excluded/i);
+assert.match(descendants(document.getElementById("analysis-reporting-delay-chart")).map((element) => element.textContent).join(" "), /Same day.*60%.*1 day.*40%/i);
+assert.match(descendants(document.getElementById("analysis-reporting-delay-comparison-chart")).map((element) => element.textContent).join(" "), /Same day.*\+8%.*95%/i);
 assert.match(document.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources.*40% of matched reports/i);
 assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*51\.6%.*5–14 minutes.*48\.4%/i);
 assert.match(descendants(document.getElementById("analysis-duration-chart")).map((element) => element.textContent).join(" "), /1–4 minutes.*46\.6%.*5–14 minutes.*53\.4%/i, "duration reference bars use reference shares, not reference counts formatted as percentages");
@@ -2212,7 +2247,9 @@ assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").ch
 progressiveController.setActiveSection("analysis-section-time", { source: "test" });
 assert.equal(frameHarness.pendingCount(), 1, "activating Time schedules its first deferred chart job");
 const timeFrames = frameHarness.flushAll();
-assert.ok(timeFrames >= 4 && timeFrames <= 6, "Time renders its timeline, duration readiness, and month-by-craft charts plus completion and alignment work");
+assert.ok(timeFrames >= 5 && timeFrames <= 7, "Time renders its timeline, reporting-delay and duration readiness, and month-by-craft charts plus completion and alignment work");
+assert.match(progressiveDocument.getElementById("analysis-reporting-delay-status").textContent, /150 typed occurrence-to-report intervals across 2 sources/i);
+assert.ok(progressiveDocument.getElementById("analysis-reporting-delay-chart").children.length > 0, "reporting delay materializes with the rest of the requested Time dashboard");
 assert.match(progressiveDocument.getElementById("analysis-duration-status").textContent, /160 normalized duration records across 2 sources/i);
 assert.ok(progressiveDocument.getElementById("analysis-duration-chart").children.length > 0, "duration materializes with the rest of the requested Time dashboard");
 

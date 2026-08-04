@@ -250,7 +250,7 @@ def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     animal_shell = context_shell.split('id="analysis-animal-context"', 1)[1].split('id="analysis-relationship-context"', 1)[0]
     sources_shell = index_html.split('id="analysis-section-sources-quality"', 1)[1].split('id="analysis-preview-drawer"', 1)[0]
 
-    assert len(card_pattern.findall(time_shell)) == 3
+    assert len(card_pattern.findall(time_shell)) == 4
     assert 'id="analysis-duration-status"' in time_shell
     assert 'id="analysis-duration-chart"' in time_shell
     assert 'id="analysis-duration-comparison-chart"' in time_shell
@@ -328,14 +328,14 @@ def test_v22_dashboard_order_visibility_and_dom_budget_are_bounded() -> None:
     card_counts = {name: len(card_pattern.findall(shell)) for name, shell in section_shells.items()}
     assert card_counts == {
         "overview": 1,
-        "time": 3,
+        "time": 4,
         "craft": 3,
         "geography": 3,
         "spatial": 3,
         "context": 8,
         "sources-quality": 3,
     }
-    assert sum(card_counts.values()) == 24
+    assert sum(card_counts.values()) == 25
     assert 'id="analysis-context-category-card" class="analysis-card-subsection analysis-context-category-panel" hidden' in section_shells["spatial"]
 
     context_shell = section_shells["context"]
@@ -406,7 +406,7 @@ def test_v22_reference_desktop_uses_compact_dashboard_layouts() -> None:
 
 def test_v22_shell_assets_share_one_cache_key() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
-    cache_key = "2026-08-04-analysis-duration-v1"
+    cache_key = "2026-08-04-analysis-reporting-delay-v1"
     assert f"styles.css?v={cache_key}" in index_html
     assert f"analysis_view.js?v={cache_key}" in index_html
     assert f"app.js?v={cache_key}" in index_html

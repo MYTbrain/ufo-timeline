@@ -956,8 +956,13 @@
       if (!context.lane && /\.sameSource(?:\.|\[|$)/.test(section)) context.lane = "same_source";
       context.policyId = firstDefined(item, ["policyId", "policy_id"], context.policyId || "");
       context.evidenceHash = firstDefined(item, ["evidenceHash", "evidence_hash"], context.evidenceHash || "");
-      context.durationReleaseId = firstDefined(item, ["releaseId", "release_id"], context.durationReleaseId || "");
-      context.durationAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.durationAssessmentLane || "");
+      if (/(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section)) {
+        context.reportingDelayReleaseId = firstDefined(item, ["releaseId", "release_id"], context.reportingDelayReleaseId || "");
+        context.reportingDelayAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.reportingDelayAssessmentLane || "");
+      } else if (/(?:^|\.)duration(?:\.|\[|$)/.test(section)) {
+        context.durationReleaseId = firstDefined(item, ["releaseId", "release_id"], context.durationReleaseId || "");
+        context.durationAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.durationAssessmentLane || "");
+      }
       return context;
     };
     const appendRow = function (section, item, index, inherited) {
@@ -1026,6 +1031,10 @@
         duration_measurement_class: firstDefined(item, ["measurementClass", "measurement_class"], ""),
         duration_release_id: context.durationReleaseId || "",
         duration_assessment_lane: context.durationAssessmentLane || "",
+        reporting_delay_bin: /(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "reportingDelayBin", "reporting_delay_bin"], "") : "",
+        reporting_delay_measurement_class: /(?:^|\.)reportingDelay(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
+        reporting_delay_release_id: context.reportingDelayReleaseId || "",
+        reporting_delay_assessment_lane: context.reportingDelayAssessmentLane || "",
         geography_country: firstDefined(item, ["country", "countryName", "country_name"], ""),
         geography_macroregion: firstDefined(item, ["macroregion", "analysisMacroregion", "analysis_macroregion"], ""),
         geography_assignment_source: firstDefined(item, ["geographyAssignmentSource", "geography_assignment_source", "assignmentSource", "assignment_source"], ""),
@@ -1068,7 +1077,7 @@
     const payload = isObject(result) ? result : {};
     const metadata = Object.assign({}, isObject(payload.meta) ? payload.meta : {}, isObject(meta) ? meta : {});
     return {
-      schemaVersion: "ufo-timeline-analysis-evidence-v2.3",
+      schemaVersion: "ufo-timeline-analysis-evidence-v2.4",
       generatedAt: new Date().toISOString(),
       estimatorVersion: cleanText(firstDefined(metadata, ["estimatorVersion", "estimator_version"], firstDefined(payload, ["estimatorVersion", "estimator_version"], "not reported"))),
       baselineMode: cleanText(firstDefined(metadata, ["baselineMode", "baseline_mode"], firstDefined(payload.summary || {}, ["baselineMode", "baseline_mode"], "not reported"))),
@@ -1095,7 +1104,7 @@
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
       "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5446,6 +5455,70 @@
       });
     }
 
+    _renderReportingDelayEvidence(value, summary) {
+      const assessment = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const statusElement = this.document.getElementById("analysis-reporting-delay-status");
+      const coverage = isObject(assessment.coverage) ? assessment.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const typedRows = finiteNumber(active.typedRows, 0);
+      const evidenceRows = finiteNumber(active.dateRoleEvidenceRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const sourceCount = asArray(active.typedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Role-preserving reporting-delay evidence loads only when Time is requested. No delay chart is shown until its immutable artifact passes integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Reporting delay is not estimable for this cohort. Missing, incompatible, and negative intervals remain excluded—not zero.";
+        } else {
+          statusElement.textContent = formatCount(typedRows) + " typed occurrence-to-report intervals across " + formatCount(sourceCount)
+            + " sources (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
+            + formatCount(evidenceRows - typedRows) + " role-bearing intervals remain explicitly excluded.";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        const message = status === "data_unavailable"
+          ? "Readiness pending: select Time to integrity-check and load the typed reporting-delay projection."
+          : "Readiness failed for this cohort; missing, negative, ambiguous, and precision-incompatible intervals remain suppressed.";
+        this._renderBars("analysis-reporting-delay-chart", [], summary, { emptyMessage: message });
+        this._renderForestPlot("analysis-reporting-delay-comparison-chart", [], summary, {
+          emptyMessage: "No adjusted reporting-delay comparison is available until the role and support gates pass.",
+        });
+        return;
+      }
+      this._renderBars("analysis-reporting-delay-chart", firstArray(assessment, ["distribution", "bins"]), summary, {
+        caption: "Role-preserving occurrence-to-report delay distribution",
+        valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
+        valueFormat: "percent",
+        valueLabel: "Active share",
+        referenceLabel: "Reference share",
+        scaleActual: true,
+        emptyMessage: "No typed reporting-delay interval is available for this cohort.",
+      });
+      this._appendChartPolicy(
+        "analysis-reporting-delay-chart",
+        "Occurrence, reported, and posted dates remain separate. Reported dates take precedence when present; negative or invalid intervals never become zero or silently switch roles."
+      );
+      this._renderForestPlot(
+        "analysis-reporting-delay-comparison-chart",
+        firstArray(assessment, ["comparisons", "adjustedComparisons", "adjusted_comparisons"]),
+        summary,
+        {
+          caption: "Source–era–macroregion adjusted reporting-delay-bin differences",
+          defaultKind: "filter",
+          valueKeys: ["adjustedDifference", "adjustedEffect"],
+          primaryCountLabel: "Active bin",
+          comparisonCountLabel: "Reference bin",
+          primaryCountKeys: ["observedCount"],
+          comparisonCountKeys: ["referenceCount"],
+          emptyMessage: "The descriptive reporting-delay distribution is ready. Adjusted comparisons require an independent reference cohort and all support gates.",
+        }
+      );
+    }
+
     _sectionData(result) {
       const overview = isObject(result.overview) ? result.overview : {};
       const time = isObject(result.time) ? result.time : {};
@@ -5474,6 +5547,7 @@
         sourceBalanced: sourceBalancedSeries,
         sourceBalancedPolicy: cleanText(firstDefined(time, ["sourceBalancedPolicy", "source_balanced_policy"], "")),
         duration: firstDefined(time, ["duration", "durationAssessment", "duration_assessment"], {}),
+        reportingDelay: firstDefined(time, ["reportingDelay", "reporting_delay", "reportingDelayAssessment", "reporting_delay_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
@@ -5638,6 +5712,7 @@
           defaultKind: "filter",
         });
       });
+      timeJobs.push(() => this._renderReportingDelayEvidence(data.reportingDelay, summary));
       timeJobs.push(() => this._renderDurationEvidence(data.duration, summary));
       timeJobs.push(() => this._renderHeatmap("analysis-month-year-chart", data.monthYear, summary, { caption: "Recurring month by craft adjusted effects", rowHeading: "Craft", defaultKind: "filter", columnAxisKind: "month", axisColumns: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], craftRows: true, effectOnly: true, valueKeys: ["adjustedResidual", "adjusted_residual", "standardizedResidual", "residual", "difference", "value"] }));
       craftJobs.push(() => {
@@ -5748,7 +5823,7 @@
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
-        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-month-year-chart"] }],
+        ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart"] }],

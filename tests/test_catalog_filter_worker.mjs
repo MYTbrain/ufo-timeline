@@ -170,7 +170,7 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 110);
+assert.equal(added.storage.typedBytes, rows.length * 120);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
@@ -178,6 +178,7 @@ assert.ok(added.storage.dictionaries.sameDayMatchStrength >= 2);
 assert.ok(added.storage.dictionaries.country >= 2);
 assert.equal(added.storage.geographyProjection.loaded, false);
 assert.equal(added.storage.durationProjection.loaded, false);
+assert.equal(added.storage.reportingDelayProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
 const filters = {
@@ -422,6 +423,118 @@ const misorderedDurationSetup = await misorderedDurationWorker.sendAsync({
 assert.equal(misorderedDurationSetup.type, "catalogFacetWorkerError");
 assert.match(misorderedDurationSetup.error, /event ID does not match the served catalog/i);
 
+const reportingDelayStatusCodes = [
+  "reported_valid", "posted_fallback_valid", "occurrence_precision_incompatible", "occurrence_unparseable",
+  "reported_unparseable", "reported_negative", "posted_unparseable", "posted_negative", "date_role_missing",
+];
+const reportingDelayBinCodes = ["unknown", "same_day", "one_day", "two_to_three_days"];
+const reportingDelayProjectionRows = [
+  [0, "2606225892387599", 1, 1, 1, 1, 0, 1, 2],
+  [1, "city-event", 2, 1, 1, 1, 5, null, 0],
+];
+const reportingDelayProjectionText = JSON.stringify(reportingDelayProjectionRows);
+const reportingDelayManifest = {
+  schemaId: "ufo-timeline-analysis-reporting-delay-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-reporting-delay-v1-fixture",
+  artifacts: {
+    reportingDelayProjection: {
+      file: "data/analysis_reporting_delay_v1/reporting_delay_projection_v1.json",
+      sha256: rawHash(reportingDelayProjectionText),
+      gzipSha256: "c".repeat(64),
+      rowCount: reportingDelayProjectionRows.length,
+      rowSchema: ["catalogRowIndex", "eventId", "sourceCode", "eraCode", "macroregionCode", "selectedRoleCode", "statusCode", "delayDays", "delayBinCode"],
+    },
+    roleEvidenceShard000: {
+      file: "data/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_000.json",
+      sha256: "d".repeat(64),
+      gzipSha256: "e".repeat(64),
+      rowCount: reportingDelayProjectionRows.length,
+      rowSchema: ["catalogRowIndex", "eventId", "sourceCode", "occurrenceRaw", "occurrencePrecisionCode", "reportedRaw", "postedRaw", "occurrenceOrdinal", "reportedOrdinal", "postedOrdinal", "selectedRoleCode", "statusCode", "reasonCode"],
+    },
+  },
+  artifactGroups: { roleEvidenceShards: ["roleEvidenceShard000"] },
+  codes: {
+    source: ["unknown", "ufocat", "nuforc"],
+    occurrencePrecision: ["", "exact_day"],
+    era: ["unknown", "1945_1959"],
+    macroregion: ["unknown", "europe"],
+    selectedRole: ["none", "reported", "posted"],
+    status: reportingDelayStatusCodes,
+    reason: ["reported_and_posted_missing", "fixture"],
+    delayBin: reportingDelayBinCodes,
+  },
+  counts: { catalogRows: rows.length, dateRoleEvidenceRows: 2, typedRows: 1 },
+  readiness: { status: "ready_descriptive", assessmentLane: "descriptive_with_runtime_gated_comparisons" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceBinN: 20 },
+  negativeControls: { reportedDateOnlyLane: { rows: 1 }, postedDateOnlyLane: { rows: 1 } },
+};
+const reportingDelayWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(reportingDelayProjectionText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+reportingDelayWorker.send({ type: "addCatalogFacetRows", requestId: "reporting-delay-catalog", rows });
+const reportingDelaySetup = await reportingDelayWorker.sendAsync({
+  type: "setAnalysisReportingDelayArtifact",
+  requestId: "reporting-delay-setup",
+  filterGeneration: 6,
+  manifest: reportingDelayManifest,
+  urls: { manifest: "https://example.test/data/analysis_reporting_delay_v1/manifest.json" },
+});
+assert.equal(reportingDelaySetup.type, "analysisReportingDelayArtifactSet");
+assert.equal(reportingDelaySetup.snapshot.appliedRows, 2);
+assert.equal(reportingDelaySetup.snapshot.typedRows, 1);
+assert.equal(reportingDelaySetup.snapshot.readinessStatus, "ready_descriptive");
+const reportingDelayFullCorpus = reportingDelayWorker.send({
+  type: "computeAnalysis",
+  requestId: "reporting-delay-full-corpus",
+  filterGeneration: 6,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "reporting-delay-worker-fixture",
+  selectedDomains: ["time"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(reportingDelayFullCorpus.type, "analysisComputed");
+assert.equal(reportingDelayFullCorpus.result.time.reportingDelay.status, "ready_descriptive");
+assert.equal(reportingDelayFullCorpus.result.time.reportingDelay.coverage.active.dateRoleEvidenceRows, 2);
+assert.equal(reportingDelayFullCorpus.result.time.reportingDelay.coverage.active.typedRows, 1);
+assert.equal(reportingDelayFullCorpus.result.time.reportingDelay.coverage.active.statusCounts.find((item) => item.status === "reported_negative").rows, 1);
+assert.deepEqual(reportingDelayFullCorpus.result.time.reportingDelay.artifactHashes, {
+  reportingDelayProjection: rawHash(reportingDelayProjectionText),
+  roleEvidenceShard000: "d".repeat(64),
+});
+
+const misorderedReportingDelayRows = reportingDelayProjectionRows.map((row) => row.slice());
+misorderedReportingDelayRows[0][1] = "wrong-reporting-delay-event";
+const misorderedReportingDelayText = JSON.stringify(misorderedReportingDelayRows);
+const misorderedReportingDelayManifest = structuredClone(reportingDelayManifest);
+misorderedReportingDelayManifest.artifacts.reportingDelayProjection.sha256 = rawHash(misorderedReportingDelayText);
+const misorderedReportingDelayWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async () => new Response(misorderedReportingDelayText, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+misorderedReportingDelayWorker.send({ type: "addCatalogFacetRows", requestId: "misordered-reporting-delay-catalog", rows });
+const misorderedReportingDelaySetup = await misorderedReportingDelayWorker.sendAsync({
+  type: "setAnalysisReportingDelayArtifact",
+  requestId: "misordered-reporting-delay-setup",
+  filterGeneration: 7,
+  manifest: misorderedReportingDelayManifest,
+  urls: { manifest: "https://example.test/data/analysis_reporting_delay_v1/manifest.json" },
+});
+assert.equal(misorderedReportingDelaySetup.type, "catalogFacetWorkerError");
+assert.match(misorderedReportingDelaySetup.error, /event ID does not match the served catalog/i);
+
 const isolatedDisc = worker.send({
   type: "computeFilteredCatalogIds",
   requestId: "filter-disc",
@@ -520,7 +633,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 110);
+assert.equal(numericAdded.storage.typedBytes, 120);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1370,6 +1483,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   analysisContextReleaseHashes: () => ({ cropCircles: "crop-a", animalReports: "animal-a" }),
   analysisV2ArtifactHashes: () => ({}),
   analysisDurationArtifactHashes: () => ({}),
+  analysisReportingDelayArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });
 const baseSnapshot = {

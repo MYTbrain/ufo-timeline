@@ -1039,6 +1039,11 @@
     analysisDurationWorkerReady: false,
     analysisDurationRequested: false,
     analysisDurationError: "",
+    analysisReportingDelayPromise: null,
+    analysisReportingDelayManifest: null,
+    analysisReportingDelayWorkerReady: false,
+    analysisReportingDelayRequested: false,
+    analysisReportingDelayError: "",
     analysisRelationshipPromise: null,
     analysisRelationshipWorkerReady: false,
     analysisRelationshipRequested: false,
@@ -8208,7 +8213,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-duration-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-reporting-delay-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8783,6 +8788,10 @@
       },
       onCancelPreview: function () {},
       onRetryAnalysis: function () {
+        if (runtime.analysisReportingDelayError) {
+          ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisDurationError) {
           ensureAnalysisDurationArtifact().catch(function () { return null; });
           return;
@@ -8809,6 +8818,7 @@
       onSectionActivate: function (change) {
         if (change && change.sectionKey === "time") {
           ensureAnalysisDurationArtifact().catch(function () { return null; });
+          ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
         }
         if (change && change.sectionKey === "context") {
           ensureAnalysisContextEvidence().catch(function () { return null; });
@@ -9264,6 +9274,98 @@
     return runtime.analysisDurationPromise;
   }
 
+  function analysisReportingDelayArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.reportingDelayManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisReportingDelayArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-reporting-delay-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed reporting-delay projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisReportingDelayArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisReportingDelayWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed reporting-delay setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisReportingDelayArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisReportingDelayArtifact() {
+    runtime.analysisReportingDelayRequested = true;
+    if (runtime.analysisReportingDelayWorkerReady) return Promise.resolve(runtime.analysisReportingDelayManifest);
+    if (runtime.analysisReportingDelayPromise) return runtime.analysisReportingDelayPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_reporting_delay_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-reporting-delay-status");
+    if (statusElement) statusElement.textContent = "Loading role-preserving reporting-delay evidence...";
+    runtime.analysisReportingDelayPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Reporting-delay manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisReportingDelayManifest = manifest;
+        return setAnalysisReportingDelayArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisReportingDelayError = "";
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("typed reporting-delay evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisReportingDelayPromise = null;
+        runtime.analysisReportingDelayWorkerReady = false;
+        runtime.analysisReportingDelayRequested = false;
+        runtime.analysisReportingDelayError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Reporting-delay evidence failed closed: " + runtime.analysisReportingDelayError;
+        console.error("[analysis reporting delay]", error);
+        throw error;
+      });
+    return runtime.analysisReportingDelayPromise;
+  }
+
   function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
     const worker = ensureCatalogFacetWorker();
     if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
@@ -9568,6 +9670,9 @@
       durationRequested: Boolean(runtime.analysisDurationRequested),
       durationReady: Boolean(runtime.analysisDurationWorkerReady),
       durationHashes: analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+      reportingDelayRequested: Boolean(runtime.analysisReportingDelayRequested),
+      reportingDelayReady: Boolean(runtime.analysisReportingDelayWorkerReady),
+      reportingDelayHashes: analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
       relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
       relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
       contextSpatialRequested: Boolean(runtime.analysisContextSpatialRequested),
@@ -9575,7 +9680,8 @@
       artifactHashes: Object.assign(
         {},
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
-        analysisDurationArtifactHashes(runtime.analysisDurationManifest)
+        analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest)
       ),
       datasetHash: analysisCatalogDatasetHash(),
     });
@@ -9683,9 +9789,10 @@
         artifactHashes: Object.assign(
           {},
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
-          analysisDurationArtifactHashes(runtime.analysisDurationManifest)
+          analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest)
         ),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.3.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.4.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -9758,6 +9865,7 @@
         analysisContextReleaseHashes(runtime.analysisContextManifest),
         analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
         analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
       ),
@@ -9797,12 +9905,13 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.3.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.4.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
           analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
           analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
           cached.artifactHashes || {}
         ),
         filterSnapshot: snapshot,

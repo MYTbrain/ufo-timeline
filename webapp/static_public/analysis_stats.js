@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_3_duration_assessment_1";
+  const ESTIMATOR_VERSION = "analysis_v2_4_reporting_delay_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -56,6 +56,26 @@
     "15_59_minutes": "15–59 minutes",
     "1_5_hours": "1–5 hours",
     over_5_hours: "Over 5 hours",
+  });
+  const REPORTING_DELAY_BIN_ORDER = Object.freeze([
+    "same_day",
+    "one_day",
+    "two_to_three_days",
+    "four_to_seven_days",
+    "eight_to_thirty_days",
+    "thirty_one_to_ninety_days",
+    "ninety_one_to_365_days",
+    "over_365_days",
+  ]);
+  const REPORTING_DELAY_BIN_LABELS = Object.freeze({
+    same_day: "Same day",
+    one_day: "1 day",
+    two_to_three_days: "2–3 days",
+    four_to_seven_days: "4–7 days",
+    eight_to_thirty_days: "8–30 days",
+    thirty_one_to_ninety_days: "31–90 days",
+    ninety_one_to_365_days: "91–365 days",
+    over_365_days: "Over 365 days",
   });
   const FAMILY_ORDER = Object.freeze([
     "craft",
@@ -1667,6 +1687,27 @@
     }
   }
 
+  function addReportingDelayRow(accumulator, row, source, civil) {
+    if (!row || row.analysisReportingDelayAvailable !== true) return;
+    const status = category(row.analysisReportingDelayStatus, "unavailable");
+    const selectedRole = category(row.analysisReportingDelaySelectedRole, "none");
+    const delayBin = category(row.analysisReportingDelayBin, "unknown");
+    const macroregion = category(row.analysisReportingDelayMacroregion, "unknown");
+    const stratum = durationStratum(source, civil && civil.year, macroregion);
+    accumulator.reportingDelayEvidenceRows += 1;
+    incrementRaw(accumulator.reportingDelayStatusCounts, status, 1);
+    incrementRaw(accumulator.reportingDelayRoleCounts, selectedRole, 1);
+    if (["reported_valid", "posted_fallback_valid"].indexOf(status) === -1 || delayBin === "unknown") return;
+    accumulator.reportingDelayTypedRows += 1;
+    incrementRaw(accumulator.reportingDelaySources, source, 1);
+    incrementRaw(accumulator.reportingDelayBins, delayBin, 1);
+    incrementRaw(accumulator.reportingDelayStrataTotals, stratum, 1);
+    if (!accumulator.reportingDelayBinStrata.has(delayBin)) {
+      accumulator.reportingDelayBinStrata.set(delayBin, new Map());
+    }
+    incrementRaw(accumulator.reportingDelayBinStrata.get(delayBin), stratum, 1);
+  }
+
   function addStratifiedMatrixCount(container, stratum, rowKey, columnKey) {
     if (!container.has(stratum)) container.set(stratum, new Map());
     addMatrixCount(container.get(stratum), rowKey, columnKey);
@@ -1767,6 +1808,14 @@
       durationDescriptiveBinStrata: new Map(),
       durationInferentialStrataTotals: new Map(),
       durationInferentialBinStrata: new Map(),
+      reportingDelayEvidenceRows: 0,
+      reportingDelayTypedRows: 0,
+      reportingDelayStatusCounts: new Map(),
+      reportingDelayRoleCounts: new Map(),
+      reportingDelaySources: new Map(),
+      reportingDelayBins: new Map(),
+      reportingDelayStrataTotals: new Map(),
+      reportingDelayBinStrata: new Map(),
     };
     accumulator.familyCounts = {
       craft: accumulator.crafts,
@@ -2048,6 +2097,7 @@
       familyStrata.geography
     );
     addDurationRow(accumulator, row, source, civil);
+    addReportingDelayRow(accumulator, row, source, civil);
   }
 
   // The staged first render needs coverage, time, source, and quality summaries only.
@@ -2125,6 +2175,7 @@
       incrementRaw(accumulator.missingAnyBy.locationPrecisions, locationPrecision, 1);
     }
     addDurationRow(accumulator, row, source, civil);
+    addReportingDelayRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
       return;
@@ -5415,6 +5466,173 @@
     };
   }
 
+  function reportingDelayComparisonStrata(active, reference, key) {
+    const activeTotals = active.reportingDelayStrataTotals || new Map();
+    const referenceTotals = reference.reportingDelayStrataTotals || new Map();
+    const activeCounts = active.reportingDelayBinStrata.get(key) || new Map();
+    const referenceCounts = reference.reportingDelayBinStrata.get(key) || new Map();
+    const strata = new Set([].concat(sortedKeys(activeTotals), sortedKeys(referenceTotals)));
+    return Array.from(strata).map(function (stratum) {
+      return {
+        key: stratum,
+        activeCount: mapCount(activeCounts, stratum),
+        activeTotal: mapCount(activeTotals, stratum),
+        referenceCount: mapCount(referenceCounts, stratum),
+        referenceTotal: mapCount(referenceTotals, stratum),
+      };
+    });
+  }
+
+  function reportingDelayCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      dateRoleEvidenceRows: accumulator.reportingDelayEvidenceRows,
+      dateRoleEvidenceCoverage: round(rate(accumulator.reportingDelayEvidenceRows, accumulator.total), 8),
+      typedRows: accumulator.reportingDelayTypedRows,
+      typedCoverage: round(rate(accumulator.reportingDelayTypedRows, accumulator.total), 8),
+      typedSources: mapEntriesByCount(accumulator.reportingDelaySources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      selectedRoleCounts: mapEntriesByCount(accumulator.reportingDelayRoleCounts).map(function (entry) {
+        return { role: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.reportingDelayStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+    };
+  }
+
+  function buildReportingDelayAssessment(active, reference, descriptor, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.reportingDelayArtifact && typeof options.reportingDelayArtifact === "object"
+      ? options.reportingDelayArtifact
+      : null;
+    const loaded = options.reportingDelayProjectionLoaded === true && artifact;
+    const activeCoverage = reportingDelayCoverage(active);
+    const referenceCoverage = reportingDelayCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-reporting-delay-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: [],
+      comparisons: [],
+      comparisonMetadata: {
+        status: "data_unavailable",
+        covariates: ["source", "era", "macroregion"],
+        fdrFamily: "reporting_delay_bins_v1",
+      },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["reporting_delay_artifact_not_loaded"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const policy = artifact.policy || {};
+    const distributionRows = REPORTING_DELAY_BIN_ORDER.map(function (key) {
+      const activeCount = mapCount(active.reportingDelayBins, key);
+      const referenceCount = mapCount(reference.reportingDelayBins, key);
+      return {
+        key,
+        label: REPORTING_DELAY_BIN_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.reportingDelayTypedRows), 8),
+        referenceShare: round(rate(referenceCount, reference.reportingDelayTypedRows), 8),
+        measurementClass: "exact_day_nonnegative_role_preserving",
+        inferenceEligible: false,
+      };
+    });
+    const comparisonUnavailable = [
+      COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+      COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE,
+      COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+    ].indexOf(descriptor.comparisonState) !== -1;
+    let comparisons = [];
+    let comparisonStatus = descriptor.comparisonState;
+    if (options.inferenceDeferred) {
+      comparisonStatus = "deferred";
+    } else if (!comparisonUnavailable) {
+      const activeSources = active.reportingDelaySources.size;
+      const referenceSources = reference.reportingDelaySources.size;
+      const minimumBinN = Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20);
+      const minimumSources = 2;
+      comparisons = REPORTING_DELAY_BIN_ORDER.map(function (key) {
+        const comparison = balancedCommonSupportComparison(reportingDelayComparisonStrata(active, reference, key), {
+          activeN: active.reportingDelayTypedRows,
+          referenceN: reference.reportingDelayTypedRows,
+          descriptive: descriptor.descriptive,
+          covariates: ["source", "era", "macroregion"],
+          minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+          bootstrapReplicates: options.bootstrapReplicates,
+          seed: [options.datasetHash || "not_provided", descriptor.mode, "reporting_delay", key].join("|"),
+        });
+        comparison.family = "reporting_delay";
+        comparison.key = key;
+        comparison.label = REPORTING_DELAY_BIN_LABELS[key] || key;
+        comparison.fdrFamily = "reporting_delay_bins_v1";
+        comparison.patternFinderEligible = false;
+        comparison.measurementClass = "exact_day_nonnegative_role_preserving";
+        const reasons = [];
+        if (comparison.observedCount < minimumBinN) reasons.push("active_bin_n_below_" + minimumBinN);
+        if (comparison.referenceCount < minimumBinN) reasons.push("reference_bin_n_below_" + minimumBinN);
+        if (activeSources < minimumSources || referenceSources < minimumSources) reasons.push("minimum_independent_sources");
+        if (reasons.length) suppressDurationComparison(comparison, reasons);
+        comparison.minimumActiveAndReferenceBinN = minimumBinN;
+        comparison.minimumIndependentSources = minimumSources;
+        comparison.activeIndependentSources = activeSources;
+        comparison.referenceIndependentSources = referenceSources;
+        return comparison;
+      });
+      assignEligibleBenjaminiHochberg(comparisons);
+      comparisonStatus = comparisons.some(function (comparison) { return comparison.inferenceEligible; })
+        ? "ready_inferential"
+        : "suppressed";
+    }
+
+    const globalReady = String(readiness.status || "") === "ready_descriptive";
+    const activeReady = active.reportingDelayTypedRows > 0;
+    const anyInference = comparisons.some(function (comparison) { return comparison.inferenceEligible; });
+    const status = !globalReady || !activeReady
+      ? "not_estimable"
+      : (anyInference ? "ready_descriptive_with_inferential_comparison" : "ready_descriptive");
+    const suppressionReasons = [];
+    if (!globalReady) suppressionReasons.push("global_reporting_delay_readiness_failed");
+    if (!active.reportingDelayTypedRows) suppressionReasons.push("no_typed_reporting_delay_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-reporting-delay-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "descriptive_with_runtime_gated_comparisons"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: distributionRows,
+      comparisons,
+      comparisonMetadata: {
+        status: comparisonStatus,
+        comparisonState: descriptor.comparisonState,
+        covariates: ["source", "era", "macroregion"],
+        minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+        minimumActiveAndReferenceBinN: Math.max(20, finiteInteger(policy.minimumActiveAndReferenceBinN) || 20),
+        fdrFamily: "reporting_delay_bins_v1",
+        reportedAndPostedRolesSeparate: true,
+        negativeIntervalsExcluded: true,
+      },
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, policy),
+    };
+  }
+
   function computeAnalysis(optionsValue) {
     const options = optionsValue || {};
     const inferenceDeferred = options.quickMode === true || String(options.analysisPhase || "").trim().toLowerCase() === "quick";
@@ -5520,6 +5738,13 @@
     time.duration = buildDurationAssessment(active, reference, descriptor, {
       durationProjectionLoaded: options.durationProjectionLoaded,
       durationArtifact: options.durationArtifact,
+      inferenceDeferred,
+      bootstrapReplicates: options.bootstrapReplicates,
+      datasetHash,
+    });
+    time.reportingDelay = buildReportingDelayAssessment(active, reference, descriptor, {
+      reportingDelayProjectionLoaded: options.reportingDelayProjectionLoaded,
+      reportingDelayArtifact: options.reportingDelayArtifact,
       inferenceDeferred,
       bootstrapReplicates: options.bootstrapReplicates,
       datasetHash,
@@ -5759,6 +5984,8 @@
     MONTH_AXIS_ORDER,
     DURATION_BIN_ORDER,
     DURATION_BIN_LABELS,
+    REPORTING_DELAY_BIN_ORDER,
+    REPORTING_DELAY_BIN_LABELS,
     FAMILY_ORDER,
     FAMILY_COVARIATES,
     EXPLORATORY_POLICY,
