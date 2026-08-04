@@ -170,7 +170,7 @@ assert.equal(ControlledSpatialWorker.instances.length, 1);
 const coldWorker = ControlledSpatialWorker.instances[0];
 assert.match(
   coldWorker.url,
-  /analysis_spatial_worker\.js\?v=2026-08-04-analysis-witness-count-v1$/,
+  /analysis_spatial_worker\.js\?v=2026-08-04-analysis-witness-count-v1-ui1$/,
   "the dedicated worker URL pins the v2.2 analytical runtime instead of reusing stale browser code"
 );
 

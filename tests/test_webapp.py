@@ -1206,8 +1206,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-            'styles.css?v=2026-08-04-analysis-witness-count-v1',
-            'app.js?v=2026-08-04-analysis-witness-count-v1',
+            'styles.css?v=2026-08-04-analysis-witness-count-v1-ui1',
+            'app.js?v=2026-08-04-analysis-witness-count-v1-ui1',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -1325,7 +1325,7 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
         'craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence)',
         'craft_type_source: internCanonicalSummaryString(event.craft_type_source)',
         'const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"',
-        'catalog_filter_worker.js?v=2026-08-04-analysis-witness-count-v1',
+        'catalog_filter_worker.js?v=2026-08-04-analysis-witness-count-v1-ui1',
         "Promise.all([manifestPromise, ensureWorldReferenceData()])",
         "getWorldReferenceData: function () { return runtime.worldReferenceData; }",
         "function ensureAnalysisContextEvidence()",

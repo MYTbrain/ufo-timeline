@@ -5650,6 +5650,7 @@
       this._renderBars("analysis-witness-count-chart", firstArray(assessment, ["distribution", "bins"]), summary, {
         caption: "Explicit NUFORC witness-count distribution",
         valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
         valueFormat: "percent",
         valueLabel: "Matched-report share",
         scaleActual: true,

@@ -1717,6 +1717,7 @@ assert.ok(document.getElementById("analysis-coordinate-evidence-chart").children
 assert.match(document.getElementById("analysis-witness-count-status").textContent, /110 typed explicit-field rows from 1 source.*27\.5% of matched reports.*110 retain positive integer counts.*10 source sentinels remain excluded.*2 counts of 1,000\+.*median 1.*p90 3/i);
 assert.ok(document.getElementById("analysis-witness-count-chart").children.length > 0);
 assert.match(descendants(document.getElementById("analysis-witness-count-chart")).map((element) => element.textContent).join(" "), /1 witness.*50%.*2 witnesses.*36\.4%.*NUFORC.*never coerced.*Credential suffixes are metadata/i);
+assert.doesNotMatch(descendants(document.getElementById("analysis-witness-count-chart")).map((element) => element.textContent).join(" "), /4,000%|3,000%|1,000%/);
 assert.match(descendants(document.getElementById("analysis-coordinate-evidence-comparison-chart")).map((element) => element.textContent).join(" "), /Country-consistent source coordinates.*\+5%.*95%/i);
 assert.equal(document.getElementById("analysis-craft-trends-chart"), null, "the standalone craft trend duplicate is not rendered after classifier consistency");
 assert.match(

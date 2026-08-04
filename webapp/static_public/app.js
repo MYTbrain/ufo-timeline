@@ -8230,7 +8230,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-witness-count-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-witness-count-v1-ui1");
   }
 
   function catalogFacetWorkerEnabled() {
