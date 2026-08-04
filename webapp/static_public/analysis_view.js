@@ -2390,7 +2390,7 @@
       if ((previousSectionId !== sectionId || sectionId === "analysis-section-context") && this.callbacks.onSectionActivate) {
         this.callbacks.onSectionActivate({
           sectionId,
-          sectionKey: sectionId.replace(/^analysis-section-/, ""),
+          sectionKey: sectionId.replace(/^analysis-section-/, "").replace(/-/g, "_"),
           source: cleanText(options && options.source, "navigation"),
         });
       }

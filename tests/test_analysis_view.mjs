@@ -1634,6 +1634,11 @@ assert.ok(descendants(document.getElementById("analysis-cross-domain-readiness-c
 assert.match(readinessText, /Crop circles.*10 \/ 7,745.*Blocked.*Animal reports.*0 \/ 1,177.*Blocked.*Relationship reconciliation.*0 \/ 1,804.*Blocked/i);
 assert.match(readinessText, /Fewer than 25 qualifying records.*No exact coordinates.*Unresolved identifiers remain quarantined/i);
 controller.setActiveSection("analysis-section-sources-quality", { source: "test" });
+assert.equal(
+  sectionActivations.at(-1).sectionKey,
+  "sources_quality",
+  "section activation keys normalize hyphenated dashboard IDs for lazy artifact routing"
+);
 assert.ok(document.getElementById("analysis-report-type-chart").children.length >= 2);
 assert.match(document.getElementById("analysis-coordinate-evidence-status").textContent, /98 typed source-coordinate rows across 2 sources.*24\.5% of matched reports.*2 source-coordinate rows remain excluded.*470,431 generalized markers.*122,110 unresolved rows/i);
 assert.ok(document.getElementById("analysis-coordinate-evidence-chart").children.length > 0);
