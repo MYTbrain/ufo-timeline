@@ -119,15 +119,38 @@ def discover_optional_r2_paths(static_root: Path) -> set[str]:
             continue
         delivery = manifest.get("delivery") if isinstance(manifest, dict) else None
         paths = delivery.get("r2OnlyPaths") if isinstance(delivery, dict) else None
-        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
-            continue
+        if paths is not None:
+            if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+                raise ValueError(f"Invalid optional-layer R2 path list in {manifest_path}")
+        else:
+            paths = nested_optional_payload_paths(manifest)
         layer_relative = manifest_path.parent.relative_to(static_root)
         for path in paths:
-            candidate = Path(path)
+            candidate = Path(path.replace("\\", "/"))
             if candidate.is_absolute() or any(part in {"", ".", ".."} for part in candidate.parts):
                 raise ValueError(f"Unsafe optional-layer R2 path in {manifest_path}: {path!r}")
-            result.add((layer_relative / candidate).as_posix())
+            resolved = candidate if candidate.parts[: len(layer_relative.parts)] == layer_relative.parts else layer_relative / candidate
+            result.add(resolved.as_posix())
     return result
+
+
+def nested_optional_payload_paths(value: Any) -> list[str]:
+    paths: list[str] = []
+    if isinstance(value, dict):
+        path = value.get("path")
+        if isinstance(path, str) and (
+            value.get("r2Only") is True
+            or "sha256" in value
+            or "bytes" in value
+            or "sizeBytes" in value
+        ):
+            paths.append(path)
+        for child in value.values():
+            paths.extend(nested_optional_payload_paths(child))
+    elif isinstance(value, list):
+        for child in value:
+            paths.extend(nested_optional_payload_paths(child))
+    return paths
 
 
 def classify_file(

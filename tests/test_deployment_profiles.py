@@ -305,6 +305,42 @@ def test_cloudflare_bundle_omits_oversized_raw_artifacts_and_rewrites_r2_urls(tm
     assert config["canonicalWebArtifacts"]["summaryShardsBaseUrl"] == "https://example.r2.dev/ufo/data/canonical_web/summary_shards/"
 
 
+def test_cloudflare_builder_omits_legacy_optional_payload_declarations(tmp_path):
+    static_root = tmp_path / "static_bundle"
+    crop_root = static_root / "data" / "crop_circles"
+    crop_root.mkdir(parents=True)
+    (static_root / "index.html").write_text("<!doctype html>\n", encoding="utf-8")
+    (static_root / "data" / "app_config.json").write_text("{}\n", encoding="utf-8")
+    payload = b"legacy crop payload"
+    (crop_root / "points.json.gz").write_bytes(payload)
+    (crop_root / "manifest.json").write_text(
+        json.dumps({
+            "releaseId": "crop-v1",
+            "assetBaseUrl": "https://assets.example.org/releases/crop-v1",
+            "points": {
+                "path": "points.json.gz",
+                "bytes": len(payload),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            },
+        }),
+        encoding="utf-8",
+    )
+    output_root = tmp_path / "cloudflare_bundle"
+
+    run_python_script(
+        "scripts/build_cloudflare_bundle.py",
+        "--static-root",
+        str(static_root),
+        "--output-root",
+        str(output_root),
+    )
+
+    assert not (output_root / "data" / "crop_circles" / "points.json.gz").exists()
+    report = json.loads((output_root / "cloudflare_bundle_manifest.json").read_text(encoding="utf-8"))
+    omitted = {item["path"]: item["reason"] for item in report["omitted"]}
+    assert omitted["data/crop_circles/points.json.gz"] == "optional_layer_immutable_r2_payload"
+
+
 def test_cloudflare_bundle_validator_blocks_placeholder_r2_urls(tmp_path):
     bundle_root = tmp_path / "cloudflare_bundle_r2"
     (bundle_root / "data").mkdir(parents=True)
