@@ -965,6 +965,9 @@
       } else if (/(?:^|\.)witnessCount(?:\.|\[|$)/.test(section)) {
         context.witnessCountReleaseId = firstDefined(item, ["releaseId", "release_id"], context.witnessCountReleaseId || "");
         context.witnessCountAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.witnessCountAssessmentLane || "");
+      } else if (/(?:^|\.)color(?:\.|\[|$)/.test(section)) {
+        context.colorReleaseId = firstDefined(item, ["releaseId", "release_id"], context.colorReleaseId || "");
+        context.colorAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.colorAssessmentLane || "");
       } else if (/(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section)) {
         context.coordinateEvidenceReleaseId = firstDefined(item, ["releaseId", "release_id"], context.coordinateEvidenceReleaseId || "");
         context.coordinateEvidenceAssessmentLane = firstDefined(item, ["assessmentLane", "assessment_lane"], context.coordinateEvidenceAssessmentLane || "");
@@ -1052,6 +1055,10 @@
         witness_count_measurement_class: /(?:^|\.)witnessCount(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         witness_count_release_id: context.witnessCountReleaseId || "",
         witness_count_assessment_lane: context.witnessCountAssessmentLane || "",
+        color_category: /(?:^|\.)color(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "colorCategory", "color_category"], "") : "",
+        color_measurement_class: /(?:^|\.)color(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
+        color_release_id: context.colorReleaseId || "",
+        color_assessment_lane: context.colorAssessmentLane || "",
         coordinate_quality_bin: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["key", "coordinateQualityBin", "coordinate_quality_bin"], "") : "",
         coordinate_measurement_class: /(?:^|\.)coordinateEvidence(?:\.|\[|$)/.test(section) ? firstDefined(item, ["measurementClass", "measurement_class"], "") : "",
         coordinate_release_id: context.coordinateEvidenceReleaseId || "",
@@ -1125,7 +1132,7 @@
       "section", "label", "raw_label", "display_label", "row_label", "raw_row_label", "display_row_label", "column_label", "raw_column_label", "display_column_label", "lane", "unit", "active_n", "reference_n", "expected_count", "supported_active_n", "supported_reference_n",
       "common_support_rate", "active_share", "reference_share", "adjusted_effect", "interval_lower", "interval_upper", "p_value", "q_value", "estimate_available", "inference_eligible", "low_support", "covariates",
       "source_stability", "region_stability", "estimator_version", "artifact_hashes", "release_hashes", "exclusions", "sensitivity", "permutation_count", "bootstrap_count", "suppression_reason",
-      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "time_of_day_bin", "time_of_day_measurement_class", "time_of_day_release_id", "time_of_day_assessment_lane", "witness_count_bin", "witness_count_measurement_class", "witness_count_release_id", "witness_count_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
+      "gate_id", "gate_label", "readiness_status", "applicability", "input_n", "passed_n", "failed_n", "unknown_n", "policy_id", "evidence_hash", "reason_codes", "duration_bin", "duration_measurement_class", "duration_release_id", "duration_assessment_lane", "reporting_delay_bin", "reporting_delay_measurement_class", "reporting_delay_release_id", "reporting_delay_assessment_lane", "time_of_day_bin", "time_of_day_measurement_class", "time_of_day_release_id", "time_of_day_assessment_lane", "witness_count_bin", "witness_count_measurement_class", "witness_count_release_id", "witness_count_assessment_lane", "color_category", "color_measurement_class", "color_release_id", "color_assessment_lane", "coordinate_quality_bin", "coordinate_measurement_class", "coordinate_release_id", "coordinate_assessment_lane",
       "geography_country", "geography_macroregion", "geography_assignment_source", "geography_assignment_confidence", "geography_boundary_status", "geography_unknown_status", "geography_source_mix", "geography_assignment_provenance",
     ];
     const exportRows = rows.length ? rows : [{ section: "metadata", label: "No evidence rows" }];
@@ -5413,6 +5420,79 @@
       if (cells.length) this._appendChartPolicy(chartId, "Counts describe inherited relationship records and reconciliation state. Recomputed proximity evidence is kept separate.");
     }
 
+    _renderColorEvidence(value, summary) {
+      const assessment = isObject(value) ? value : {};
+      const status = cleanText(firstDefined(assessment, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
+      const statusElement = this.document.getElementById("analysis-color-status");
+      const coverage = isObject(assessment.coverage) ? assessment.coverage : {};
+      const active = isObject(coverage.active) ? coverage.active : {};
+      const normalizedRows = finiteNumber(active.normalizedRows, 0);
+      const rawRows = finiteNumber(active.rawColorRows, 0);
+      const catalogRows = finiteNumber(active.catalogRows, 0);
+      const sourceCount = asArray(active.normalizedSources).filter(function (item) {
+        return finiteNumber(item && item.rows, 0) > 0;
+      }).length;
+      const roleCounts = new Map(asArray(active.roleCounts).map(function (item) {
+        return [cleanText(item && item.role), finiteNumber(item && item.rows, 0)];
+      }));
+      const unspecifiedRoleRows = roleCounts.get("role_unspecified") || 0;
+      if (statusElement) {
+        if (status === "data_unavailable") {
+          statusElement.textContent = "Typed color evidence loads only when Craft is requested. No color chart is shown until its immutable artifact passes integrity checks.";
+        } else if (status === "not_estimable") {
+          statusElement.textContent = "Color is not estimable for this cohort. Missing, descriptor-only, sentinel, and unparsed values remain excluded rather than becoming a color.";
+        } else {
+          statusElement.textContent = formatCount(normalizedRows) + " normalized reports from " + formatCount(rawRows)
+            + " explicit color fields across " + formatCount(sourceCount) + " sources ("
+            + formatPercent(catalogRows > 0 ? normalizedRows / catalogRows : 0) + " of matched reports). "
+            + formatCount(unspecifiedRoleRows) + " raw values retain an unspecified object-versus-light role.";
+        }
+      }
+      if (status === "data_unavailable" || status === "not_estimable") {
+        const message = status === "data_unavailable"
+          ? "Readiness pending: select Craft to integrity-check and load the typed color projection."
+          : "Readiness failed for this cohort; excluded values remain inspectable in the exported evidence package, not plotted as colors.";
+        this._renderBars("analysis-color-chart", [], summary, { emptyMessage: message });
+        this._renderForestPlot("analysis-color-comparison-chart", [], summary, {
+          emptyMessage: "No adjusted color comparison is available until role-preserving support gates pass.",
+        });
+        return;
+      }
+      this._renderBars("analysis-color-chart", firstArray(assessment, ["distribution", "categories"]), summary, {
+        caption: "Explicit source-reported color categories",
+        valueKeys: ["activeShare"],
+        referenceKeys: ["referenceShare"],
+        valueFormat: "percent",
+        valueLabel: "Active normalized share",
+        referenceLabel: "Reference normalized share",
+        scaleActual: true,
+        emptyMessage: "No explicit source-reported color normalizes under the preregistered dictionary for this cohort.",
+      });
+      this._appendChartPolicy(
+        "analysis-color-chart",
+        "Categories are multi-label for explicit compounds and changing-known values, so category shares may sum above 100%. Descriptor-only, sentinel, and unparsed values are excluded; original source strings remain hashed and preserved."
+      );
+      this._renderForestPlot(
+        "analysis-color-comparison-chart",
+        firstArray(assessment, ["comparisons", "adjustedComparisons", "adjusted_comparisons"]),
+        summary,
+        {
+          caption: "Source-era-macroregion-role adjusted color-category differences",
+          defaultKind: "filter",
+          valueKeys: ["adjustedDifference", "adjustedEffect"],
+          primaryCountLabel: "Active color category",
+          comparisonCountLabel: "Reference color category",
+          primaryCountKeys: ["observedCount"],
+          comparisonCountKeys: ["referenceCount"],
+          emptyMessage: "The descriptive color distribution is ready. Adjusted comparisons require an independent reference cohort, like-for-like typed roles, and all support gates.",
+        }
+      );
+      this._appendChartPolicy(
+        "analysis-color-comparison-chart",
+        "Object-surface, emitted-light, both-explicit, and role-unspecified evidence compare only within the same typed role. Benjamini-Hochberg correction spans all 15 color categories; Pattern Finder eligibility is locked false."
+      );
+    }
+
     _renderDurationEvidence(value, summary) {
       const duration = isObject(value) ? value : {};
       const status = cleanText(firstDefined(duration, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
@@ -5768,6 +5848,7 @@
         witnessCount: firstDefined(sourcesQuality, ["witnessCount", "witness_count", "witnessCountAssessment", "witness_count_assessment"], {}),
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
+        color: firstDefined(craft, ["color", "colorAssessment", "color_assessment"], {}),
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
         craftConfidence: firstArray(craft, ["confidence", "classificationConfidence", "craftConfidence"]),
         craftEra: firstDefined(craft, ["byEra", "by_era", "eraHeatmap", "era_heatmap"], firstDefined(craft, ["trends", "byTime"], [])),
@@ -5937,6 +6018,7 @@
       craftJobs.push(() => {
         this._renderCraftMosaic("analysis-craft-distribution-chart", data.craftDistribution, summary, { caption: "Craft category mosaic", defaultKind: "filter", limit: 12 });
       });
+      craftJobs.push(() => this._renderColorEvidence(data.color, summary));
       sourcesQualityJobs.push(() => this._renderBars("analysis-report-type-chart", data.reportTypes, summary, { caption: "Reported event types", defaultKind: "filter" }));
       craftJobs.push(() => this._renderBars("analysis-craft-confidence-chart", data.craftConfidence, summary, { caption: "Craft classification confidence" }));
       craftJobs.push(() => this._renderHeatmap("analysis-craft-era-chart", data.craftEra, summary, { caption: "Craft by era adjusted residuals", rowHeading: "Craft", defaultKind: "filter", columnAxisKind: "era", craftRows: true, effectOnly: true, valueKeys: ["adjustedResidual", "adjusted_residual", "standardizedResidual", "residual", "difference", "value"] }));
@@ -6046,7 +6128,7 @@
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
-        ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
+        ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-color-chart", "analysis-color-comparison-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
         ["analysis-section-context", { jobs: contextOverviewJobs, targets: ["analysis-cross-domain-readiness-chart"] }],

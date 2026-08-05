@@ -170,7 +170,7 @@ assert.equal(added.type, "catalogFacetRowsAdded");
 assert.equal(added.rowCount, rows.length);
 assert.equal(added.storage.mode, "typed_column_chunks");
 assert.equal(added.storage.rows, rows.length);
-assert.equal(added.storage.typedBytes, rows.length * 148);
+assert.equal(added.storage.typedBytes, rows.length * 157);
 assert.equal(added.storage.analysisDerivedColumns, true);
 assert.ok(added.storage.analysisGridKeys >= 2, "typed storage interns derived coordinate-class grid keys");
 assert.equal(added.storage.analysisCoordinatePiles, 1, "only source-provided coordinates enter exact-coordinate pile accounting");
@@ -181,6 +181,7 @@ assert.equal(added.storage.durationProjection.loaded, false);
 assert.equal(added.storage.reportingDelayProjection.loaded, false);
 assert.equal(added.storage.timeOfDayProjection.loaded, false);
 assert.equal(added.storage.witnessCountProjection.loaded, false);
+assert.equal(added.storage.colorProjection.loaded, false);
 assert.equal(added.storage.coordinateEvidenceProjection.loaded, false);
 assert.equal(added.storage.stringEventIds, rows.length);
 
@@ -810,6 +811,102 @@ assert.deepEqual(witnessCountAssessment.artifactHashes, {
   witnessCountValueDictionary: rawHash(witnessCountDictionaryText),
 });
 
+const colorDictionaryRows = [
+  [1, rawHash("White"), "White", 2, 0, 0, 1, 0, 0, 0, 1],
+  [2, rawHash("Red lights"), "Red lights", 2, 0, 1, 8, 0, 0, 0, 1],
+];
+const colorProjectionRows = [
+  [0, "2606225892387599", 0, 1, 1],
+  [1, "city-event", 1, 1, 1],
+];
+const colorDictionaryText = JSON.stringify(colorDictionaryRows);
+const colorProjectionText = JSON.stringify(colorProjectionRows);
+const colorManifest = {
+  schemaId: "ufo-timeline-analysis-color-artifacts-v1.0.0",
+  schemaVersion: 1,
+  manifestVersion: "1.0.0",
+  releaseId: "analysis-color-v1-fixture",
+  artifacts: {
+    colorValueDictionary: {
+      file: "data/analysis_color_v1/color_value_dictionary_v1.json",
+      sha256: rawHash(colorDictionaryText),
+      gzipSha256: "a".repeat(64),
+      rowCount: 2,
+      rowSchema: ["sourceCode", "rawValueSha256", "rawValue", "statusCode", "reasonCode", "roleCode", "categoryMask", "changingFlag", "multicolorFlag", "compoundFlag", "occurrenceCount"],
+    },
+    colorProjection: {
+      file: "data/analysis_color_v1/color_projection_v1.json",
+      sha256: rawHash(colorProjectionText),
+      gzipSha256: "b".repeat(64),
+      rowCount: 2,
+      rowSchema: ["catalogRowIndex", "eventId", "valueCode", "eraCode", "macroregionCode"],
+    },
+  },
+  codes: {
+    source: ["unknown", "ufocat", "nuforc"],
+    status: ["missing", "source_sentinel", "exact_single", "explicit_compound", "multicolor_unspecified", "changing_known", "changing_unspecified", "non_color_descriptor", "unparsed"],
+    reason: ["whole_token_category"],
+    role: ["role_unspecified", "emitted_light_explicit", "object_surface_explicit", "both_role_cues_ambiguous"],
+    category: ["white", "black", "gray", "red", "orange", "yellow", "amber", "green", "blue", "purple", "pink", "brown", "gold", "silver", "copper_bronze"],
+    era: ["unknown", "1945_1959"],
+    macroregion: ["unknown", "europe"],
+  },
+  counts: { catalogRows: rows.length, rawColorRows: 2, normalizedRows: 2 },
+  readiness: { status: "ready_descriptive_cross_source", assessmentLane: "cross_source_descriptive_role_preserving" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceCellN: 20, patternFinderPromotion: false, unknownRolePromoted: false },
+  commonSupport: { commonSupportRate: 1, commonSupportCategories: ["white", "red"] },
+  negativeControls: { roleSeparation: { roleUnspecifiedRows: 1, roleSpecificRows: 1 } },
+};
+const colorWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  Response,
+  TextDecoder,
+  URL,
+  fetch: async (urlValue) => new Response(
+    String(urlValue).includes("value_dictionary") ? colorDictionaryText : colorProjectionText,
+    { status: 200 }
+  ),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+colorWorker.send({ type: "addCatalogFacetRows", requestId: "color-catalog", rows });
+const colorSetup = await colorWorker.sendAsync({
+  type: "setAnalysisColorArtifact",
+  requestId: "color-setup",
+  filterGeneration: 8,
+  manifest: colorManifest,
+  urls: { manifest: "https://example.test/data/analysis_color_v1/manifest.json" },
+});
+assert.equal(colorSetup.type, "analysisColorArtifactSet");
+assert.equal(colorSetup.snapshot.appliedRows, 2);
+assert.equal(colorSetup.snapshot.normalizedRows, 2);
+assert.equal(colorSetup.snapshot.readinessStatus, "ready_descriptive_cross_source");
+const colorFullCorpus = colorWorker.send({
+  type: "computeAnalysis",
+  requestId: "color-full-corpus",
+  filterGeneration: 8,
+  cancellationGeneration: 1,
+  baselineMode: "full_catalog",
+  fullTimeRange: true,
+  timeRangeMode: "full",
+  datasetHash: "color-worker-fixture",
+  selectedDomains: ["craft"],
+  filters: { ...filters, hideLowPrecision: false },
+  lowPrecisionValues,
+});
+assert.equal(colorFullCorpus.type, "analysisComputed");
+const colorAssessment = colorFullCorpus.result.craft.color;
+assert.equal(colorAssessment.status, "ready_descriptive");
+assert.equal(colorAssessment.coverage.active.rawColorRows, 2);
+assert.equal(colorAssessment.coverage.active.normalizedRows, 2);
+assert.equal(colorAssessment.coverage.active.roleCounts.find((item) => item.role === "role_unspecified").rows, 1);
+assert.equal(colorAssessment.distribution.find((item) => item.key === "white").activeCount, 1);
+assert.equal(colorAssessment.distribution.find((item) => item.key === "red").activeCount, 1);
+assert.deepEqual(colorAssessment.comparisons, []);
+assert.equal(colorAssessment.patternFinderEligible, false);
+assert.deepEqual(colorAssessment.artifactHashes, {
+  colorProjection: rawHash(colorProjectionText),
+  colorValueDictionary: rawHash(colorDictionaryText),
+});
+
 const coordinateEvidenceProjectionRows = [
   [0, "2606225892387599", 1, 1, 1, 0, 0, 0, 0, 48.8566, 2.3522],
 ];
@@ -1024,7 +1121,7 @@ const numericAdded = numericWorker.send({
   }],
 });
 assert.equal(numericAdded.storage.stringEventIds, 0);
-assert.equal(numericAdded.storage.typedBytes, 148);
+assert.equal(numericAdded.storage.typedBytes, 157);
 const numericFiltered = numericWorker.send({
   type: "computeFilteredCatalogIds",
   requestId: "numeric-filter",
@@ -1877,6 +1974,7 @@ const signatureFixture = loadNamedFunction(appSource, "analysisComputeCacheKey",
   analysisReportingDelayArtifactHashes: () => ({}),
   analysisTimeOfDayArtifactHashes: () => ({}),
   analysisWitnessCountArtifactHashes: () => ({}),
+  analysisColorArtifactHashes: () => ({}),
   analysisCoordinateEvidenceArtifactHashes: () => ({}),
   analysisCatalogDatasetHash: () => "catalog-a",
 });

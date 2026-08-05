@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-04-analysis-geography-binary-v1-ui1">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-05-analysis-color-v1-ui1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -1437,7 +1437,7 @@
               <div class="analysis-card-grid">
                 <article class="analysis-card analysis-craft-mosaic-card"><h4>Craft composition mosaic</h4><p class="analysis-card-question">Tile area shows report share; color shows whole-corpus intensity or the adjusted difference for a selected date range.</p><div id="analysis-craft-distribution-chart" class="analysis-chart" data-analysis-chart="craft-distribution"></div></article>
                 <details class="analysis-card analysis-craft-era-card analysis-supporting-details analysis-dashboard-support"><summary>Craft by era</summary><p class="analysis-card-question">Which craft categories are over- or under-represented within each chronological era?</p><div id="analysis-craft-era-chart" class="analysis-chart" data-analysis-chart="craft-era"></div></details>
-                <details class="analysis-card analysis-card-wide analysis-confidence-strip-card analysis-supporting-details analysis-dashboard-support"><summary>Classification confidence</summary><div id="analysis-craft-confidence-chart" class="analysis-chart analysis-confidence-strip" data-analysis-chart="craft-confidence"></div></details>
+                <details class="analysis-card analysis-card-wide analysis-confidence-strip-card analysis-supporting-details analysis-dashboard-support"><summary>Classification confidence</summary><div id="analysis-craft-confidence-chart" class="analysis-chart analysis-confidence-strip" data-analysis-chart="craft-confidence"></div><details class="analysis-supporting-details"><summary>Source-reported color evidence</summary><p id="analysis-color-status" class="analysis-readiness-summary" role="status">Typed color evidence loads only when Craft is requested.</p><p class="analysis-card-question">Which explicit source-reported colors remain after object-surface, emitted-light, changing, compound, descriptor-only, and unknown-role evidence stay distinct?</p><div id="analysis-color-chart" class="analysis-chart" data-analysis-chart="color"></div><details class="analysis-supporting-details"><summary>Role-preserving adjusted comparison</summary><p class="analysis-card-note">Comparisons use source, era, macroregion, and the same explicit color role. An unspecified role never becomes object surface or emitted light, and color is never promoted into Pattern Finder.</p><div id="analysis-color-comparison-chart" class="analysis-chart" data-analysis-chart="color-comparison"></div></details></details></details>
               </div>
             </section>
 
@@ -1677,7 +1677,7 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
-  <script src="./analysis_view.js?v=2026-08-04-analysis-geography-binary-v1-ui1"></script>
-  <script src="./app.js?v=2026-08-04-analysis-geography-binary-v1-ui1"></script>
+  <script src="./analysis_view.js?v=2026-08-05-analysis-color-v1-ui1"></script>
+  <script src="./app.js?v=2026-08-05-analysis-color-v1-ui1"></script>
 </body>
 </html>

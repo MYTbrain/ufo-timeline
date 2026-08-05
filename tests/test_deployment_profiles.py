@@ -122,6 +122,22 @@ def write_witness_count_manifest_stub(root: Path) -> None:
     path.write_text(json.dumps(manifest), encoding="utf-8")
 
 
+def write_color_manifest_stub(root: Path) -> None:
+    manifest = {
+        "releaseId": "analysis-color-test-v1",
+        "assetBaseUrl": "https://assets.example.org/releases/analysis-color-test-v1",
+        "delivery": {
+            "pagesFiles": ["manifest.json"],
+            "immutablePrefix": "releases/analysis-color-test-v1",
+            "r2OnlyPaths": ["projection.json.gz"],
+        },
+        "payloads": {"projection": {"path": "projection.json.gz", "bytes": 2, "sha256": "0" * 64, "r2Only": True}},
+    }
+    path = root / "data" / "analysis_color_v1" / "manifest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+
+
 def test_startup_profile_builder_writes_scoped_preview_artifacts(tmp_path):
     static_root = tmp_path / "static_bundle"
     canonical_root = static_root / "data" / "canonical_web"
@@ -720,6 +736,7 @@ def test_cloudflare_bundle_release_mode_enforces_exact_inventory(tmp_path, monke
     write_coordinate_evidence_manifest_stub(bundle_root)
     write_time_of_day_manifest_stub(bundle_root)
     write_witness_count_manifest_stub(bundle_root)
+    write_color_manifest_stub(bundle_root)
     (bundle_root / "cloudflare_bundle_manifest.json").write_text(
         json.dumps({"pages_safe": True}), encoding="utf-8"
     )

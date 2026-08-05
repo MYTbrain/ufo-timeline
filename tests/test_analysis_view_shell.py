@@ -409,7 +409,7 @@ def test_v22_reference_desktop_uses_compact_dashboard_layouts() -> None:
 
 def test_v22_shell_assets_share_one_cache_key() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
-    cache_key = "2026-08-04-analysis-geography-binary-v1-ui1"
+    cache_key = "2026-08-05-analysis-color-v1-ui1"
     assert f"styles.css?v={cache_key}" in index_html
     assert f"analysis_view.js?v={cache_key}" in index_html
     assert f"app.js?v={cache_key}" in index_html

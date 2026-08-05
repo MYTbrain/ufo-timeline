@@ -1,0 +1,2713 @@
+{
+  "schemaId": "ufo-timeline-analysis-color-raw-audit-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-007-color-assessment",
+  "auditBoundary": {
+    "stage": "raw_value_audit_before_normalization_rules",
+    "descriptionMiningUsed": false,
+    "neighboringFieldInferenceUsed": false,
+    "normalizationDecisionMade": false,
+    "roleAnchorCountsAreParserRules": false
+  },
+  "inputs": {
+    "eventChunkManifest": "static_bundle/data/canonical_web/event_chunk_manifest.json",
+    "eventChunkManifestSha256": "833ca33e18ca17768b2e1852d36ad28bd45f9544e88d1821677a67ac176a9d19",
+    "chunkCount": 282,
+    "chunkTreeSha256": "640d204edb996242b0706e82fa247c59d4d27f4633aa165fba6d6447dee56893"
+  },
+  "coverage": {
+    "catalogRows": 702893,
+    "eligibleRawColorRows": 79215,
+    "eligibleCatalogCoveragePct": 11.269852,
+    "eventsWithMultipleMatchingColorFields": 0,
+    "canonicalFieldKeys": [
+      {
+        "value": "COLOR",
+        "rows": 67529
+      },
+      {
+        "value": "Color",
+        "rows": 11686
+      }
+    ],
+    "sourceEligibleRows": {
+      "nuforc": 11686,
+      "ufocat": 67529
+    }
+  },
+  "valueInventory": {
+    "distinctEligibleRawValuesAcrossSources": 4856,
+    "distinctSourceValuePairs": 4859,
+    "sourceValueInventorySha256": "0590ea8fa5b182e393f0712eac62ba764a6b5a307269b656387158d8dd9ced0f",
+    "topGlobalValues": [
+      {
+        "value": "Orange",
+        "rows": 11011
+      },
+      {
+        "value": "White",
+        "rows": 10782
+      },
+      {
+        "value": "Multi",
+        "rows": 7401
+      },
+      {
+        "value": "Red",
+        "rows": 6862
+      },
+      {
+        "value": "Green",
+        "rows": 3352
+      },
+      {
+        "value": "Silver",
+        "rows": 3325
+      },
+      {
+        "value": "Black",
+        "rows": 2928
+      },
+      {
+        "value": "Blue",
+        "rows": 2556
+      },
+      {
+        "value": "RedOrang",
+        "rows": 2282
+      },
+      {
+        "value": "Luminous",
+        "rows": 1952
+      },
+      {
+        "value": " White",
+        "rows": 1883
+      },
+      {
+        "value": "Metallic",
+        "rows": 1790
+      },
+      {
+        "value": "Yellow",
+        "rows": 1719
+      },
+      {
+        "value": "Changed",
+        "rows": 1411
+      },
+      {
+        "value": "Dark",
+        "rows": 1328
+      },
+      {
+        "value": "Gray",
+        "rows": 1194
+      },
+      {
+        "value": "YelOrang",
+        "rows": 804
+      },
+      {
+        "value": "Amber",
+        "rows": 789
+      },
+      {
+        "value": "Fiery",
+        "rows": 737
+      },
+      {
+        "value": "Shiny",
+        "rows": 647
+      },
+      {
+        "value": "BluWhite",
+        "rows": 577
+      },
+      {
+        "value": "Gold",
+        "rows": 572
+      },
+      {
+        "value": " Black",
+        "rows": 570
+      },
+      {
+        "value": "BluGreen",
+        "rows": 474
+      },
+      {
+        "value": " white",
+        "rows": 356
+      },
+      {
+        "value": "Changing",
+        "rows": 342
+      },
+      {
+        "value": "Transpar",
+        "rows": 304
+      },
+      {
+        "value": " Orange",
+        "rows": 293
+      },
+      {
+        "value": " Silver",
+        "rows": 283
+      },
+      {
+        "value": "Pink",
+        "rows": 260
+      },
+      {
+        "value": "YelWhite",
+        "rows": 194
+      },
+      {
+        "value": "Bright",
+        "rows": 192
+      },
+      {
+        "value": " Red",
+        "rows": 171
+      },
+      {
+        "value": "Transluc",
+        "rows": 171
+      },
+      {
+        "value": "Purple",
+        "rows": 165
+      },
+      {
+        "value": "Brown",
+        "rows": 159
+      },
+      {
+        "value": " Bright white",
+        "rows": 155
+      },
+      {
+        "value": "DarkGray",
+        "rows": 154
+      },
+      {
+        "value": " Green",
+        "rows": 143
+      },
+      {
+        "value": "Aluminum",
+        "rows": 134
+      },
+      {
+        "value": " black",
+        "rows": 116
+      },
+      {
+        "value": " Blue",
+        "rows": 110
+      },
+      {
+        "value": "Chrome",
+        "rows": 110
+      },
+      {
+        "value": " White light",
+        "rows": 104
+      },
+      {
+        "value": " Grey",
+        "rows": 92
+      },
+      {
+        "value": " Yellow",
+        "rows": 83
+      },
+      {
+        "value": " Dark",
+        "rows": 77
+      },
+      {
+        "value": "YelRed",
+        "rows": 71
+      },
+      {
+        "value": "YelGreen",
+        "rows": 68
+      },
+      {
+        "value": " silver",
+        "rows": 64
+      },
+      {
+        "value": "RedYello",
+        "rows": 62
+      },
+      {
+        "value": " Metallic",
+        "rows": 61
+      },
+      {
+        "value": " Gray",
+        "rows": 59
+      },
+      {
+        "value": "Violet",
+        "rows": 57
+      },
+      {
+        "value": " White.",
+        "rows": 49
+      },
+      {
+        "value": "Bronze",
+        "rows": 49
+      },
+      {
+        "value": " orange",
+        "rows": 48
+      },
+      {
+        "value": "Copper",
+        "rows": 45
+      },
+      {
+        "value": " White lights",
+        "rows": 41
+      },
+      {
+        "value": " bright white",
+        "rows": 41
+      },
+      {
+        "value": " Bright light",
+        "rows": 36
+      },
+      {
+        "value": " Dark grey",
+        "rows": 31
+      },
+      {
+        "value": " red",
+        "rows": 31
+      },
+      {
+        "value": " Bright White",
+        "rows": 29
+      },
+      {
+        "value": " Translucent",
+        "rows": 29
+      },
+      {
+        "value": " white light",
+        "rows": 29
+      },
+      {
+        "value": " Bright",
+        "rows": 27
+      },
+      {
+        "value": " Black.",
+        "rows": 26
+      },
+      {
+        "value": " Light",
+        "rows": 26
+      },
+      {
+        "value": " Changing",
+        "rows": 25
+      },
+      {
+        "value": " Multiple colors",
+        "rows": 25
+      },
+      {
+        "value": " Bright white light",
+        "rows": 24
+      },
+      {
+        "value": "BlueGray",
+        "rows": 24
+      },
+      {
+        "value": "Cream",
+        "rows": 24
+      },
+      {
+        "value": "Tan",
+        "rows": 24
+      },
+      {
+        "value": " Amber",
+        "rows": 23
+      },
+      {
+        "value": " Red and white",
+        "rows": 22
+      },
+      {
+        "value": " Transparent",
+        "rows": 21
+      },
+      {
+        "value": " White and red",
+        "rows": 21
+      },
+      {
+        "value": " Gold",
+        "rows": 20
+      },
+      {
+        "value": " dark",
+        "rows": 20
+      },
+      {
+        "value": " grey",
+        "rows": 20
+      },
+      {
+        "value": " Multi",
+        "rows": 19
+      },
+      {
+        "value": " Multiple",
+        "rows": 19
+      },
+      {
+        "value": " blue",
+        "rows": 18
+      },
+      {
+        "value": "Cloaked",
+        "rows": 18
+      },
+      {
+        "value": "RedWhite",
+        "rows": 18
+      },
+      {
+        "value": " Dark gray",
+        "rows": 17
+      },
+      {
+        "value": " White/yellow",
+        "rows": 17
+      },
+      {
+        "value": " gray",
+        "rows": 17
+      },
+      {
+        "value": " green",
+        "rows": 17
+      },
+      {
+        "value": " yellow",
+        "rows": 17
+      },
+      {
+        "value": "Camoflag",
+        "rows": 16
+      },
+      {
+        "value": " White/silver",
+        "rows": 15
+      },
+      {
+        "value": " white lights",
+        "rows": 15
+      },
+      {
+        "value": "Beige",
+        "rows": 15
+      },
+      {
+        "value": " Clear",
+        "rows": 14
+      },
+      {
+        "value": " Red/orange",
+        "rows": 14
+      },
+      {
+        "value": " Silver metallic",
+        "rows": 14
+      },
+      {
+        "value": " Yellow/white",
+        "rows": 14
+      },
+      {
+        "value": " Chrome",
+        "rows": 13
+      },
+      {
+        "value": " Metallic silver",
+        "rows": 13
+      },
+      {
+        "value": " Bright orange",
+        "rows": 12
+      },
+      {
+        "value": " Golden",
+        "rows": 12
+      },
+      {
+        "value": " Rainbow",
+        "rows": 12
+      },
+      {
+        "value": " white/yellow",
+        "rows": 12
+      },
+      {
+        "value": "Dull",
+        "rows": 12
+      },
+      {
+        "value": " Orange/red",
+        "rows": 11
+      },
+      {
+        "value": " Purple",
+        "rows": 11
+      },
+      {
+        "value": " Reddish orange",
+        "rows": 11
+      },
+      {
+        "value": " metallic",
+        "rows": 11
+      },
+      {
+        "value": "Brass",
+        "rows": 11
+      },
+      {
+        "value": "Rust",
+        "rows": 11
+      },
+      {
+        "value": " Blue and white",
+        "rows": 10
+      },
+      {
+        "value": " Dark Grey",
+        "rows": 10
+      },
+      {
+        "value": " Lights",
+        "rows": 10
+      },
+      {
+        "value": " Metalic",
+        "rows": 10
+      },
+      {
+        "value": " Red/Orange",
+        "rows": 10
+      },
+      {
+        "value": " Silver.",
+        "rows": 10
+      },
+      {
+        "value": " White and blue",
+        "rows": 10
+      },
+      {
+        "value": " white.",
+        "rows": 10
+      },
+      {
+        "value": "PaleBlue",
+        "rows": 10
+      },
+      {
+        "value": "RedYel",
+        "rows": 10
+      },
+      {
+        "value": " Glowing white",
+        "rows": 9
+      },
+      {
+        "value": " Gray/silver",
+        "rows": 9
+      },
+      {
+        "value": " Green.",
+        "rows": 9
+      },
+      {
+        "value": " Metal",
+        "rows": 9
+      },
+      {
+        "value": " Neon green",
+        "rows": 9
+      },
+      {
+        "value": " Not sure",
+        "rows": 9
+      },
+      {
+        "value": " Red and green",
+        "rows": 9
+      },
+      {
+        "value": " Red.",
+        "rows": 9
+      },
+      {
+        "value": " Reflective",
+        "rows": 9
+      },
+      {
+        "value": " White Light",
+        "rows": 9
+      },
+      {
+        "value": " White and orange",
+        "rows": 9
+      },
+      {
+        "value": " White/blue",
+        "rows": 9
+      },
+      {
+        "value": "Peach",
+        "rows": 9
+      },
+      {
+        "value": "Teal",
+        "rows": 9
+      },
+      {
+        "value": " Black and silver",
+        "rows": 8
+      },
+      {
+        "value": " Black with lights",
+        "rows": 8
+      },
+      {
+        "value": " Bright Green",
+        "rows": 8
+      },
+      {
+        "value": " Bright yellow",
+        "rows": 8
+      },
+      {
+        "value": " Light blue",
+        "rows": 8
+      },
+      {
+        "value": " Multicolor",
+        "rows": 8
+      },
+      {
+        "value": " Multicolored",
+        "rows": 8
+      },
+      {
+        "value": " Pink",
+        "rows": 8
+      },
+      {
+        "value": " Silver/white",
+        "rows": 8
+      },
+      {
+        "value": " White/Blue",
+        "rows": 8
+      },
+      {
+        "value": " bright white light",
+        "rows": 8
+      },
+      {
+        "value": "Red ",
+        "rows": 8
+      },
+      {
+        "value": "RedBrown",
+        "rows": 8
+      },
+      {
+        "value": " Black/grey",
+        "rows": 7
+      },
+      {
+        "value": " Blue.",
+        "rows": 7
+      },
+      {
+        "value": " Blue/white",
+        "rows": 7
+      },
+      {
+        "value": " Blueish white",
+        "rows": 7
+      },
+      {
+        "value": " Bluish white",
+        "rows": 7
+      },
+      {
+        "value": " Bright white lights",
+        "rows": 7
+      },
+      {
+        "value": " Brilliant.",
+        "rows": 7
+      },
+      {
+        "value": " Different colors",
+        "rows": 7
+      },
+      {
+        "value": " Gray.",
+        "rows": 7
+      },
+      {
+        "value": " Multi color",
+        "rows": 7
+      },
+      {
+        "value": " Orange lights",
+        "rows": 7
+      },
+      {
+        "value": " Red orange",
+        "rows": 7
+      },
+      {
+        "value": " Reddish",
+        "rows": 7
+      },
+      {
+        "value": " Silver or white",
+        "rows": 7
+      },
+      {
+        "value": " Silver/White",
+        "rows": 7
+      },
+      {
+        "value": " Very bright white",
+        "rows": 7
+      },
+      {
+        "value": " White/grey",
+        "rows": 7
+      },
+      {
+        "value": " Yellow/orange",
+        "rows": 7
+      },
+      {
+        "value": " Yellowish",
+        "rows": 7
+      },
+      {
+        "value": " Yellowish white",
+        "rows": 7
+      },
+      {
+        "value": " bright light",
+        "rows": 7
+      },
+      {
+        "value": " changing",
+        "rows": 7
+      },
+      {
+        "value": " dark grey",
+        "rows": 7
+      },
+      {
+        "value": "BlueRed",
+        "rows": 7
+      },
+      {
+        "value": "Light",
+        "rows": 7
+      },
+      {
+        "value": "RedGreen",
+        "rows": 7
+      },
+      {
+        "value": "RedPink",
+        "rows": 7
+      },
+      {
+        "value": " Bright Orange",
+        "rows": 6
+      },
+      {
+        "value": " Bright white.",
+        "rows": 6
+      },
+      {
+        "value": " Dark metallic",
+        "rows": 6
+      },
+      {
+        "value": " Green and white",
+        "rows": 6
+      },
+      {
+        "value": " Green lights",
+        "rows": 6
+      },
+      {
+        "value": " Off white",
+        "rows": 6
+      },
+      {
+        "value": " Orange/white",
+        "rows": 6
+      },
+      {
+        "value": " Orange/yellow",
+        "rows": 6
+      },
+      {
+        "value": " WHITE",
+        "rows": 6
+      },
+      {
+        "value": " White and Red",
+        "rows": 6
+      },
+      {
+        "value": " White and black",
+        "rows": 6
+      },
+      {
+        "value": " White glow",
+        "rows": 6
+      },
+      {
+        "value": " White/orange",
+        "rows": 6
+      },
+      {
+        "value": " Yellowish/white",
+        "rows": 6
+      },
+      {
+        "value": " gold",
+        "rows": 6
+      },
+      {
+        "value": " red.",
+        "rows": 6
+      },
+      {
+        "value": " white and red",
+        "rows": 6
+      },
+      {
+        "value": "GrayBlue",
+        "rows": 6
+      },
+      {
+        "value": "Magenta",
+        "rows": 6
+      },
+      {
+        "value": "Pearl",
+        "rows": 6
+      },
+      {
+        "value": "Polymorf",
+        "rows": 6
+      },
+      {
+        "value": " 3 white lights",
+        "rows": 5
+      },
+      {
+        "value": " Black or dark gray",
+        "rows": 5
+      }
+    ],
+    "topGlobalValueRows": 73487,
+    "topGlobalValueCoveragePct": 92.769046
+  },
+  "sourceProfiles": {
+    "nuforc": {
+      "catalogRows": 151816,
+      "schemaFieldRows": 151816,
+      "rawSourceBlankRows": 139978,
+      "rawSourceSentinelRows": {
+        "n/a": 19,
+        "na": 1,
+        "none": 10,
+        "unk": 2,
+        "unknown": 120
+      },
+      "eligibleRawRows": 11686,
+      "canonicalSourceValueParityRows": 11686,
+      "distinctEligibleRawValues": 4660,
+      "roleAnchorRows": {
+        "both_explicit_role_cues": 13,
+        "explicit_light_role_cue": 1171,
+        "explicit_object_role_cue": 25,
+        "no_explicit_role_cue": 10477
+      },
+      "auditedTopValues": [
+        {
+          "value": " White",
+          "rows": 1881
+        },
+        {
+          "value": " Black",
+          "rows": 570
+        },
+        {
+          "value": " white",
+          "rows": 356
+        },
+        {
+          "value": " Orange",
+          "rows": 293
+        },
+        {
+          "value": " Silver",
+          "rows": 283
+        },
+        {
+          "value": " Red",
+          "rows": 171
+        },
+        {
+          "value": " Bright white",
+          "rows": 155
+        },
+        {
+          "value": " Green",
+          "rows": 143
+        },
+        {
+          "value": " black",
+          "rows": 116
+        },
+        {
+          "value": " Blue",
+          "rows": 110
+        },
+        {
+          "value": " White light",
+          "rows": 104
+        },
+        {
+          "value": " Grey",
+          "rows": 92
+        },
+        {
+          "value": " Yellow",
+          "rows": 83
+        },
+        {
+          "value": " Dark",
+          "rows": 77
+        },
+        {
+          "value": " silver",
+          "rows": 64
+        },
+        {
+          "value": " Metallic",
+          "rows": 61
+        },
+        {
+          "value": " Gray",
+          "rows": 59
+        },
+        {
+          "value": " White.",
+          "rows": 49
+        },
+        {
+          "value": " orange",
+          "rows": 48
+        },
+        {
+          "value": " White lights",
+          "rows": 41
+        },
+        {
+          "value": " bright white",
+          "rows": 41
+        },
+        {
+          "value": " Bright light",
+          "rows": 36
+        },
+        {
+          "value": " Dark grey",
+          "rows": 31
+        },
+        {
+          "value": " red",
+          "rows": 31
+        },
+        {
+          "value": " Bright White",
+          "rows": 29
+        },
+        {
+          "value": " Translucent",
+          "rows": 29
+        },
+        {
+          "value": " white light",
+          "rows": 29
+        },
+        {
+          "value": " Bright",
+          "rows": 27
+        },
+        {
+          "value": " Black.",
+          "rows": 26
+        },
+        {
+          "value": " Light",
+          "rows": 26
+        },
+        {
+          "value": " Changing",
+          "rows": 25
+        },
+        {
+          "value": " Multiple colors",
+          "rows": 25
+        },
+        {
+          "value": " Bright white light",
+          "rows": 24
+        },
+        {
+          "value": " Amber",
+          "rows": 23
+        },
+        {
+          "value": " Red and white",
+          "rows": 22
+        },
+        {
+          "value": " Transparent",
+          "rows": 21
+        },
+        {
+          "value": " White and red",
+          "rows": 21
+        },
+        {
+          "value": " Gold",
+          "rows": 20
+        },
+        {
+          "value": " dark",
+          "rows": 20
+        },
+        {
+          "value": " grey",
+          "rows": 20
+        },
+        {
+          "value": " Multiple",
+          "rows": 19
+        },
+        {
+          "value": " Multi",
+          "rows": 18
+        },
+        {
+          "value": " blue",
+          "rows": 18
+        },
+        {
+          "value": " Dark gray",
+          "rows": 17
+        },
+        {
+          "value": " White/yellow",
+          "rows": 17
+        },
+        {
+          "value": " gray",
+          "rows": 17
+        },
+        {
+          "value": " green",
+          "rows": 17
+        },
+        {
+          "value": " yellow",
+          "rows": 17
+        },
+        {
+          "value": " White/silver",
+          "rows": 15
+        },
+        {
+          "value": " white lights",
+          "rows": 15
+        },
+        {
+          "value": " Clear",
+          "rows": 14
+        },
+        {
+          "value": " Red/orange",
+          "rows": 14
+        },
+        {
+          "value": " Silver metallic",
+          "rows": 14
+        },
+        {
+          "value": " Yellow/white",
+          "rows": 14
+        },
+        {
+          "value": " Metallic silver",
+          "rows": 13
+        },
+        {
+          "value": " Bright orange",
+          "rows": 12
+        },
+        {
+          "value": " Chrome",
+          "rows": 12
+        },
+        {
+          "value": " Golden",
+          "rows": 12
+        },
+        {
+          "value": " Rainbow",
+          "rows": 12
+        },
+        {
+          "value": " white/yellow",
+          "rows": 12
+        },
+        {
+          "value": " Orange/red",
+          "rows": 11
+        },
+        {
+          "value": " Purple",
+          "rows": 11
+        },
+        {
+          "value": " Reddish orange",
+          "rows": 11
+        },
+        {
+          "value": " metallic",
+          "rows": 11
+        },
+        {
+          "value": " Blue and white",
+          "rows": 10
+        },
+        {
+          "value": " Dark Grey",
+          "rows": 10
+        },
+        {
+          "value": " Lights",
+          "rows": 10
+        },
+        {
+          "value": " Metalic",
+          "rows": 10
+        },
+        {
+          "value": " Red/Orange",
+          "rows": 10
+        },
+        {
+          "value": " Silver.",
+          "rows": 10
+        },
+        {
+          "value": " White and blue",
+          "rows": 10
+        },
+        {
+          "value": " white.",
+          "rows": 10
+        },
+        {
+          "value": " Glowing white",
+          "rows": 9
+        },
+        {
+          "value": " Gray/silver",
+          "rows": 9
+        },
+        {
+          "value": " Green.",
+          "rows": 9
+        },
+        {
+          "value": " Metal",
+          "rows": 9
+        },
+        {
+          "value": " Neon green",
+          "rows": 9
+        },
+        {
+          "value": " Not sure",
+          "rows": 9
+        },
+        {
+          "value": " Red and green",
+          "rows": 9
+        },
+        {
+          "value": " Red.",
+          "rows": 9
+        },
+        {
+          "value": " Reflective",
+          "rows": 9
+        },
+        {
+          "value": " White Light",
+          "rows": 9
+        },
+        {
+          "value": " White and orange",
+          "rows": 9
+        },
+        {
+          "value": " White/blue",
+          "rows": 9
+        },
+        {
+          "value": " Black and silver",
+          "rows": 8
+        },
+        {
+          "value": " Black with lights",
+          "rows": 8
+        },
+        {
+          "value": " Bright Green",
+          "rows": 8
+        },
+        {
+          "value": " Bright yellow",
+          "rows": 8
+        },
+        {
+          "value": " Light blue",
+          "rows": 8
+        },
+        {
+          "value": " Multicolor",
+          "rows": 8
+        },
+        {
+          "value": " Multicolored",
+          "rows": 8
+        },
+        {
+          "value": " Pink",
+          "rows": 8
+        },
+        {
+          "value": " Silver/white",
+          "rows": 8
+        },
+        {
+          "value": " White/Blue",
+          "rows": 8
+        },
+        {
+          "value": " bright white light",
+          "rows": 8
+        },
+        {
+          "value": " Black/grey",
+          "rows": 7
+        },
+        {
+          "value": " Blue.",
+          "rows": 7
+        },
+        {
+          "value": " Blue/white",
+          "rows": 7
+        },
+        {
+          "value": " Blueish white",
+          "rows": 7
+        },
+        {
+          "value": " Bluish white",
+          "rows": 7
+        },
+        {
+          "value": " Bright white lights",
+          "rows": 7
+        },
+        {
+          "value": " Brilliant.",
+          "rows": 7
+        },
+        {
+          "value": " Different colors",
+          "rows": 7
+        },
+        {
+          "value": " Gray.",
+          "rows": 7
+        },
+        {
+          "value": " Multi color",
+          "rows": 7
+        },
+        {
+          "value": " Orange lights",
+          "rows": 7
+        },
+        {
+          "value": " Red orange",
+          "rows": 7
+        },
+        {
+          "value": " Reddish",
+          "rows": 7
+        },
+        {
+          "value": " Silver or white",
+          "rows": 7
+        },
+        {
+          "value": " Silver/White",
+          "rows": 7
+        },
+        {
+          "value": " Very bright white",
+          "rows": 7
+        },
+        {
+          "value": " White/grey",
+          "rows": 7
+        },
+        {
+          "value": " Yellow/orange",
+          "rows": 7
+        },
+        {
+          "value": " Yellowish",
+          "rows": 7
+        },
+        {
+          "value": " Yellowish white",
+          "rows": 7
+        },
+        {
+          "value": " bright light",
+          "rows": 7
+        },
+        {
+          "value": " changing",
+          "rows": 7
+        },
+        {
+          "value": " dark grey",
+          "rows": 7
+        },
+        {
+          "value": " Bright Orange",
+          "rows": 6
+        },
+        {
+          "value": " Bright white.",
+          "rows": 6
+        },
+        {
+          "value": " Dark metallic",
+          "rows": 6
+        },
+        {
+          "value": " Green and white",
+          "rows": 6
+        },
+        {
+          "value": " Green lights",
+          "rows": 6
+        },
+        {
+          "value": " Off white",
+          "rows": 6
+        },
+        {
+          "value": " Orange/white",
+          "rows": 6
+        },
+        {
+          "value": " Orange/yellow",
+          "rows": 6
+        },
+        {
+          "value": " WHITE",
+          "rows": 6
+        },
+        {
+          "value": " White and Red",
+          "rows": 6
+        },
+        {
+          "value": " White and black",
+          "rows": 6
+        },
+        {
+          "value": " White glow",
+          "rows": 6
+        },
+        {
+          "value": " White/orange",
+          "rows": 6
+        },
+        {
+          "value": " Yellowish/white",
+          "rows": 6
+        },
+        {
+          "value": " gold",
+          "rows": 6
+        },
+        {
+          "value": " red.",
+          "rows": 6
+        },
+        {
+          "value": " white and red",
+          "rows": 6
+        },
+        {
+          "value": " 3 white lights",
+          "rows": 5
+        },
+        {
+          "value": " Black or dark gray",
+          "rows": 5
+        },
+        {
+          "value": " Blueish",
+          "rows": 5
+        },
+        {
+          "value": " Bright White Light",
+          "rows": 5
+        },
+        {
+          "value": " Bright blue",
+          "rows": 5
+        },
+        {
+          "value": " Bright green",
+          "rows": 5
+        },
+        {
+          "value": " Bronze",
+          "rows": 5
+        },
+        {
+          "value": " Could not tell",
+          "rows": 5
+        },
+        {
+          "value": " Dark green",
+          "rows": 5
+        },
+        {
+          "value": " Dark silver",
+          "rows": 5
+        },
+        {
+          "value": " Gray metallic",
+          "rows": 5
+        },
+        {
+          "value": " Green and red",
+          "rows": 5
+        },
+        {
+          "value": " Greenish",
+          "rows": 5
+        },
+        {
+          "value": " Greyish",
+          "rows": 5
+        },
+        {
+          "value": " It was dark",
+          "rows": 5
+        },
+        {
+          "value": " Light green",
+          "rows": 5
+        },
+        {
+          "value": " Matte Black",
+          "rows": 5
+        },
+        {
+          "value": " Metallic Silver",
+          "rows": 5
+        },
+        {
+          "value": " Metallic grey",
+          "rows": 5
+        },
+        {
+          "value": " Orange and yellow",
+          "rows": 5
+        },
+        {
+          "value": " Orange red",
+          "rows": 5
+        },
+        {
+          "value": " Red and Orange",
+          "rows": 5
+        },
+        {
+          "value": " Red and blue",
+          "rows": 5
+        },
+        {
+          "value": " Red and white lights",
+          "rows": 5
+        },
+        {
+          "value": " Red lights",
+          "rows": 5
+        },
+        {
+          "value": " Silver/Metallic",
+          "rows": 5
+        },
+        {
+          "value": " Tan",
+          "rows": 5
+        },
+        {
+          "value": " White Lights",
+          "rows": 5
+        },
+        {
+          "value": " White like a star",
+          "rows": 5
+        },
+        {
+          "value": " White/red",
+          "rows": 5
+        },
+        {
+          "value": " Whitish",
+          "rows": 5
+        },
+        {
+          "value": " Yellow and white",
+          "rows": 5
+        },
+        {
+          "value": " Yellow-orange",
+          "rows": 5
+        },
+        {
+          "value": " Yellow.",
+          "rows": 5
+        },
+        {
+          "value": " bright white lights",
+          "rows": 5
+        },
+        {
+          "value": " light blue",
+          "rows": 5
+        },
+        {
+          "value": " red and white",
+          "rows": 5
+        },
+        {
+          "value": " red and/or white",
+          "rows": 5
+        },
+        {
+          "value": " silver metallic",
+          "rows": 5
+        },
+        {
+          "value": " white and blue",
+          "rows": 5
+        },
+        {
+          "value": " white to yellow",
+          "rows": 5
+        },
+        {
+          "value": " Amber lights",
+          "rows": 4
+        },
+        {
+          "value": " Black and white",
+          "rows": 4
+        },
+        {
+          "value": " Black with red light",
+          "rows": 4
+        },
+        {
+          "value": " Black/Grey",
+          "rows": 4
+        },
+        {
+          "value": " Black?",
+          "rows": 4
+        },
+        {
+          "value": " Blackish",
+          "rows": 4
+        },
+        {
+          "value": " Blue and orange",
+          "rows": 4
+        },
+        {
+          "value": " Blue and red",
+          "rows": 4
+        },
+        {
+          "value": " Blue/White",
+          "rows": 4
+        },
+        {
+          "value": " Branca",
+          "rows": 4
+        },
+        {
+          "value": " Bright Red",
+          "rows": 4
+        },
+        {
+          "value": " Bright lights",
+          "rows": 4
+        },
+        {
+          "value": " Brilliant white",
+          "rows": 4
+        },
+        {
+          "value": " Brown",
+          "rows": 4
+        },
+        {
+          "value": " Changing colors",
+          "rows": 4
+        },
+        {
+          "value": " Couldn’t see",
+          "rows": 4
+        },
+        {
+          "value": " Dark with lights",
+          "rows": 4
+        },
+        {
+          "value": " Dark.",
+          "rows": 4
+        },
+        {
+          "value": " Fire",
+          "rows": 4
+        },
+        {
+          "value": " Glowing",
+          "rows": 4
+        },
+        {
+          "value": " Grayish",
+          "rows": 4
+        },
+        {
+          "value": " Green and White",
+          "rows": 4
+        },
+        {
+          "value": " Grey/black",
+          "rows": 4
+        },
+        {
+          "value": " Light Blue",
+          "rows": 4
+        },
+        {
+          "value": " Light gray.",
+          "rows": 4
+        },
+        {
+          "value": " Metal grey",
+          "rows": 4
+        },
+        {
+          "value": " Metallic Gray",
+          "rows": 4
+        },
+        {
+          "value": " Metallic gray.",
+          "rows": 4
+        },
+        {
+          "value": " Multi-colored",
+          "rows": 4
+        },
+        {
+          "value": " Multicolored lights",
+          "rows": 4
+        },
+        {
+          "value": " Multiple colours",
+          "rows": 4
+        },
+        {
+          "value": " Orange and white",
+          "rows": 4
+        },
+        {
+          "value": " Orange then white",
+          "rows": 4
+        },
+        {
+          "value": " Orange yellow",
+          "rows": 4
+        },
+        {
+          "value": " Pale yellow",
+          "rows": 4
+        },
+        {
+          "value": " Pure White",
+          "rows": 4
+        },
+        {
+          "value": " Pure white",
+          "rows": 4
+        },
+        {
+          "value": " RED",
+          "rows": 4
+        },
+        {
+          "value": " Red and White",
+          "rows": 4
+        },
+        {
+          "value": " Red and green lights",
+          "rows": 4
+        },
+        {
+          "value": " Red green white",
+          "rows": 4
+        },
+        {
+          "value": " Red white green",
+          "rows": 4
+        },
+        {
+          "value": " Red, Green, White",
+          "rows": 4
+        },
+        {
+          "value": " Red, green, white",
+          "rows": 4
+        },
+        {
+          "value": " Red-orange",
+          "rows": 4
+        },
+        {
+          "value": " Silver/grey",
+          "rows": 4
+        },
+        {
+          "value": " Silvered.",
+          "rows": 4
+        },
+        {
+          "value": " Silvery",
+          "rows": 4
+        },
+        {
+          "value": " Sliver",
+          "rows": 4
+        },
+        {
+          "value": " Soft white",
+          "rows": 4
+        },
+        {
+          "value": " Too dark to tell",
+          "rows": 4
+        },
+        {
+          "value": " Vanta Black",
+          "rows": 4
+        },
+        {
+          "value": " Various",
+          "rows": 4
+        },
+        {
+          "value": " Various colors",
+          "rows": 4
+        },
+        {
+          "value": " White and green",
+          "rows": 4
+        },
+        {
+          "value": " White bright light",
+          "rows": 4
+        },
+        {
+          "value": " White or silver",
+          "rows": 4
+        },
+        {
+          "value": " White or yellow",
+          "rows": 4
+        },
+        {
+          "value": " White shiny",
+          "rows": 4
+        },
+        {
+          "value": " White to blue",
+          "rows": 4
+        },
+        {
+          "value": " White, red",
+          "rows": 4
+        },
+        {
+          "value": " White, red, green",
+          "rows": 4
+        },
+        {
+          "value": " White, yellow",
+          "rows": 4
+        },
+        {
+          "value": " White/Red",
+          "rows": 4
+        },
+        {
+          "value": " White/Yellow",
+          "rows": 4
+        },
+        {
+          "value": " White/gray",
+          "rows": 4
+        },
+        {
+          "value": " Yellow light",
+          "rows": 4
+        },
+        {
+          "value": " Yellow orange",
+          "rows": 4
+        },
+        {
+          "value": " Yellow/Orange",
+          "rows": 4
+        },
+        {
+          "value": " Yellow/White",
+          "rows": 4
+        },
+        {
+          "value": " amber",
+          "rows": 4
+        },
+        {
+          "value": " black.",
+          "rows": 4
+        },
+        {
+          "value": " light",
+          "rows": 4
+        },
+        {
+          "value": " metallic silver",
+          "rows": 4
+        }
+      ],
+      "auditedTopValueRows": 6665,
+      "auditedTopValueCoveragePct": 57.034058
+    },
+    "ufocat": {
+      "catalogRows": 221280,
+      "schemaFieldRows": 221280,
+      "rawSourceBlankRows": 153751,
+      "rawSourceSentinelRows": {},
+      "eligibleRawRows": 67529,
+      "canonicalSourceValueParityRows": 67529,
+      "distinctEligibleRawValues": 199,
+      "roleAnchorRows": {
+        "explicit_light_role_cue": 11,
+        "explicit_object_role_cue": 1,
+        "no_explicit_role_cue": 67517
+      },
+      "auditedTopValues": [
+        {
+          "value": "Orange",
+          "rows": 11011
+        },
+        {
+          "value": "White",
+          "rows": 10782
+        },
+        {
+          "value": "Multi",
+          "rows": 7401
+        },
+        {
+          "value": "Red",
+          "rows": 6862
+        },
+        {
+          "value": "Green",
+          "rows": 3352
+        },
+        {
+          "value": "Silver",
+          "rows": 3325
+        },
+        {
+          "value": "Black",
+          "rows": 2928
+        },
+        {
+          "value": "Blue",
+          "rows": 2556
+        },
+        {
+          "value": "RedOrang",
+          "rows": 2282
+        },
+        {
+          "value": "Luminous",
+          "rows": 1952
+        },
+        {
+          "value": "Metallic",
+          "rows": 1790
+        },
+        {
+          "value": "Yellow",
+          "rows": 1719
+        },
+        {
+          "value": "Changed",
+          "rows": 1411
+        },
+        {
+          "value": "Dark",
+          "rows": 1328
+        },
+        {
+          "value": "Gray",
+          "rows": 1194
+        },
+        {
+          "value": "YelOrang",
+          "rows": 804
+        },
+        {
+          "value": "Amber",
+          "rows": 789
+        },
+        {
+          "value": "Fiery",
+          "rows": 737
+        },
+        {
+          "value": "Shiny",
+          "rows": 647
+        },
+        {
+          "value": "BluWhite",
+          "rows": 577
+        },
+        {
+          "value": "Gold",
+          "rows": 572
+        },
+        {
+          "value": "BluGreen",
+          "rows": 474
+        },
+        {
+          "value": "Changing",
+          "rows": 342
+        },
+        {
+          "value": "Transpar",
+          "rows": 304
+        },
+        {
+          "value": "Pink",
+          "rows": 260
+        },
+        {
+          "value": "YelWhite",
+          "rows": 194
+        },
+        {
+          "value": "Bright",
+          "rows": 192
+        },
+        {
+          "value": "Transluc",
+          "rows": 171
+        },
+        {
+          "value": "Purple",
+          "rows": 165
+        },
+        {
+          "value": "Brown",
+          "rows": 159
+        },
+        {
+          "value": "DarkGray",
+          "rows": 154
+        },
+        {
+          "value": "Aluminum",
+          "rows": 134
+        },
+        {
+          "value": "Chrome",
+          "rows": 110
+        },
+        {
+          "value": "YelRed",
+          "rows": 71
+        },
+        {
+          "value": "YelGreen",
+          "rows": 68
+        },
+        {
+          "value": "RedYello",
+          "rows": 62
+        },
+        {
+          "value": "Violet",
+          "rows": 57
+        },
+        {
+          "value": "Bronze",
+          "rows": 49
+        },
+        {
+          "value": "Copper",
+          "rows": 45
+        },
+        {
+          "value": "BlueGray",
+          "rows": 24
+        },
+        {
+          "value": "Cream",
+          "rows": 24
+        },
+        {
+          "value": "Tan",
+          "rows": 24
+        },
+        {
+          "value": "Cloaked",
+          "rows": 18
+        },
+        {
+          "value": "RedWhite",
+          "rows": 18
+        },
+        {
+          "value": "Camoflag",
+          "rows": 16
+        },
+        {
+          "value": "Beige",
+          "rows": 15
+        },
+        {
+          "value": "Dull",
+          "rows": 12
+        },
+        {
+          "value": "Brass",
+          "rows": 11
+        },
+        {
+          "value": "Rust",
+          "rows": 11
+        },
+        {
+          "value": "PaleBlue",
+          "rows": 10
+        },
+        {
+          "value": "RedYel",
+          "rows": 10
+        },
+        {
+          "value": "Peach",
+          "rows": 9
+        },
+        {
+          "value": "Teal",
+          "rows": 9
+        },
+        {
+          "value": "Red ",
+          "rows": 8
+        },
+        {
+          "value": "RedBrown",
+          "rows": 8
+        },
+        {
+          "value": "BlueRed",
+          "rows": 7
+        },
+        {
+          "value": "Light",
+          "rows": 7
+        },
+        {
+          "value": "RedGreen",
+          "rows": 7
+        },
+        {
+          "value": "RedPink",
+          "rows": 7
+        },
+        {
+          "value": "GrayBlue",
+          "rows": 6
+        },
+        {
+          "value": "Magenta",
+          "rows": 6
+        },
+        {
+          "value": "Pearl",
+          "rows": 6
+        },
+        {
+          "value": "Polymorf",
+          "rows": 6
+        },
+        {
+          "value": "BluGray",
+          "rows": 5
+        },
+        {
+          "value": "White ",
+          "rows": 5
+        },
+        {
+          "value": "Aqua",
+          "rows": 4
+        },
+        {
+          "value": "Camo",
+          "rows": 4
+        },
+        {
+          "value": "Fireball",
+          "rows": 4
+        },
+        {
+          "value": "Lights",
+          "rows": 4
+        },
+        {
+          "value": "Muti",
+          "rows": 4
+        },
+        {
+          "value": "Neon",
+          "rows": 4
+        },
+        {
+          "value": "Pewter",
+          "rows": 4
+        },
+        {
+          "value": "PinkRed",
+          "rows": 4
+        },
+        {
+          "value": "BluSilvr",
+          "rows": 3
+        },
+        {
+          "value": "Camoufla",
+          "rows": 3
+        },
+        {
+          "value": "Crystal",
+          "rows": 3
+        },
+        {
+          "value": "Grey",
+          "rows": 3
+        },
+        {
+          "value": "Maroon",
+          "rows": 3
+        },
+        {
+          "value": "Mirror",
+          "rows": 3
+        },
+        {
+          "value": "PinkOran",
+          "rows": 3
+        },
+        {
+          "value": "RedAmber",
+          "rows": 3
+        },
+        {
+          "value": "RedGold",
+          "rows": 3
+        },
+        {
+          "value": "RedYellw",
+          "rows": 3
+        },
+        {
+          "value": "Rusty",
+          "rows": 3
+        },
+        {
+          "value": " White",
+          "rows": 2
+        },
+        {
+          "value": "Auburn",
+          "rows": 2
+        },
+        {
+          "value": "Black ",
+          "rows": 2
+        },
+        {
+          "value": "BluPink",
+          "rows": 2
+        },
+        {
+          "value": "BluePink",
+          "rows": 2
+        },
+        {
+          "value": "Charcoal",
+          "rows": 2
+        },
+        {
+          "value": "Cigar",
+          "rows": 2
+        },
+        {
+          "value": "Crimson",
+          "rows": 2
+        },
+        {
+          "value": "Dark ",
+          "rows": 2
+        },
+        {
+          "value": "Dim",
+          "rows": 2
+        },
+        {
+          "value": "Gold  ",
+          "rows": 2
+        },
+        {
+          "value": "Golden",
+          "rows": 2
+        },
+        {
+          "value": "GrayGree",
+          "rows": 2
+        },
+        {
+          "value": "Indigo",
+          "rows": 2
+        },
+        {
+          "value": "Opal",
+          "rows": 2
+        },
+        {
+          "value": "Orangle",
+          "rows": 2
+        },
+        {
+          "value": "Pale",
+          "rows": 2
+        },
+        {
+          "value": "PinkBlue",
+          "rows": 2
+        },
+        {
+          "value": "Rainbow",
+          "rows": 2
+        },
+        {
+          "value": "RedBlue",
+          "rows": 2
+        },
+        {
+          "value": "RegOrang",
+          "rows": 2
+        },
+        {
+          "value": "Rose",
+          "rows": 2
+        },
+        {
+          "value": "Smoke",
+          "rows": 2
+        },
+        {
+          "value": "Smoky",
+          "rows": 2
+        },
+        {
+          "value": "Steel",
+          "rows": 2
+        },
+        {
+          "value": "Three",
+          "rows": 2
+        },
+        {
+          "value": "Whtie",
+          "rows": 2
+        },
+        {
+          "value": "YelBlue",
+          "rows": 2
+        },
+        {
+          "value": "YelBrown",
+          "rows": 2
+        },
+        {
+          "value": "YelGray",
+          "rows": 2
+        },
+        {
+          "value": " Chrome",
+          "rows": 1
+        },
+        {
+          "value": " Multi",
+          "rows": 1
+        },
+        {
+          "value": ".",
+          "rows": 1
+        },
+        {
+          "value": "3",
+          "rows": 1
+        },
+        {
+          "value": "600",
+          "rows": 1
+        },
+        {
+          "value": "Almond",
+          "rows": 1
+        },
+        {
+          "value": "Appeared",
+          "rows": 1
+        },
+        {
+          "value": "B&W",
+          "rows": 1
+        },
+        {
+          "value": "Ball",
+          "rows": 1
+        },
+        {
+          "value": "BluBlack",
+          "rows": 1
+        },
+        {
+          "value": "BluGrey",
+          "rows": 1
+        },
+        {
+          "value": "BluMetal",
+          "rows": 1
+        },
+        {
+          "value": "BluPurpl",
+          "rows": 1
+        },
+        {
+          "value": "BluViole",
+          "rows": 1
+        },
+        {
+          "value": "Burgundy",
+          "rows": 1
+        },
+        {
+          "value": "Chaning",
+          "rows": 1
+        },
+        {
+          "value": "Chromium",
+          "rows": 1
+        },
+        {
+          "value": "Cloud",
+          "rows": 1
+        },
+        {
+          "value": "Cloudy",
+          "rows": 1
+        },
+        {
+          "value": "Cyan",
+          "rows": 1
+        },
+        {
+          "value": "DarkRed",
+          "rows": 1
+        },
+        {
+          "value": "Darl",
+          "rows": 1
+        },
+        {
+          "value": "Dary",
+          "rows": 1
+        },
+        {
+          "value": "DomeDisc",
+          "rows": 1
+        },
+        {
+          "value": "Dust",
+          "rows": 1
+        },
+        {
+          "value": "Fast",
+          "rows": 1
+        },
+        {
+          "value": "Firey",
+          "rows": 1
+        },
+        {
+          "value": "Flaming",
+          "rows": 1
+        },
+        {
+          "value": "Flashes",
+          "rows": 1
+        },
+        {
+          "value": "Grean",
+          "rows": 1
+        },
+        {
+          "value": "Green'",
+          "rows": 1
+        },
+        {
+          "value": "GreenRed",
+          "rows": 1
+        },
+        {
+          "value": "Gren",
+          "rows": 1
+        },
+        {
+          "value": "GreyBlac",
+          "rows": 1
+        },
+        {
+          "value": "GreyBrwn",
+          "rows": 1
+        },
+        {
+          "value": "Hidden",
+          "rows": 1
+        },
+        {
+          "value": "Hree",
+          "rows": 1
+        },
+        {
+          "value": "Huge",
+          "rows": 1
+        },
+        {
+          "value": "Iron",
+          "rows": 1
+        },
+        {
+          "value": "Ivory",
+          "rows": 1
+        },
+        {
+          "value": "Large",
+          "rows": 1
+        },
+        {
+          "value": "Lavender",
+          "rows": 1
+        },
+        {
+          "value": "Manilla",
+          "rows": 1
+        },
+        {
+          "value": "Molten",
+          "rows": 1
+        },
+        {
+          "value": "Mult",
+          "rows": 1
+        },
+        {
+          "value": "NL",
+          "rows": 1
+        },
+        {
+          "value": "Nickel",
+          "rows": 1
+        },
+        {
+          "value": "Nothing",
+          "rows": 1
+        },
+        {
+          "value": "Object",
+          "rows": 1
+        },
+        {
+          "value": "Observed",
+          "rows": 1
+        },
+        {
+          "value": "Odd",
+          "rows": 1
+        },
+        {
+          "value": "Opaque",
+          "rows": 1
+        },
+        {
+          "value": "Platinum",
+          "rows": 1
+        },
+        {
+          "value": "Pprox",
+          "rows": 1
+        },
+        {
+          "value": "Pulsing",
+          "rows": 1
+        },
+        {
+          "value": "REd",
+          "rows": 1
+        },
+        {
+          "value": "Radium",
+          "rows": 1
+        },
+        {
+          "value": "ReOrang",
+          "rows": 1
+        },
+        {
+          "value": "RedPurpl",
+          "rows": 1
+        },
+        {
+          "value": "Redd",
+          "rows": 1
+        },
+        {
+          "value": "Rell",
+          "rows": 1
+        },
+        {
+          "value": "Right",
+          "rows": 1
+        },
+        {
+          "value": "RosePink",
+          "rows": 1
+        },
+        {
+          "value": "Round",
+          "rows": 1
+        },
+        {
+          "value": "Saw",
+          "rows": 1
+        },
+        {
+          "value": "Semitran",
+          "rows": 1
+        },
+        {
+          "value": "Shinyu",
+          "rows": 1
+        },
+        {
+          "value": "Siny",
+          "rows": 1
+        },
+        {
+          "value": "Smokey",
+          "rows": 1
+        },
+        {
+          "value": "Star",
+          "rows": 1
+        },
+        {
+          "value": "Strange",
+          "rows": 1
+        },
+        {
+          "value": "Striped",
+          "rows": 1
+        },
+        {
+          "value": "Swirling",
+          "rows": 1
+        },
+        {
+          "value": "Tin",
+          "rows": 1
+        },
+        {
+          "value": "UFO",
+          "rows": 1
+        },
+        {
+          "value": "V-shap",
+          "rows": 1
+        },
+        {
+          "value": "Vertical",
+          "rows": 1
+        },
+        {
+          "value": "WhiGreen",
+          "rows": 1
+        },
+        {
+          "value": "Whie",
+          "rows": 1
+        },
+        {
+          "value": "While ",
+          "rows": 1
+        },
+        {
+          "value": "YelGold",
+          "rows": 1
+        },
+        {
+          "value": "Zig",
+          "rows": 1
+        },
+        {
+          "value": "Zinc",
+          "rows": 1
+        },
+        {
+          "value": "purple",
+          "rows": 1
+        },
+        {
+          "value": "white",
+          "rows": 1
+        }
+      ],
+      "auditedTopValueRows": 67529,
+      "auditedTopValueCoveragePct": 100.0
+    }
+  },
+  "semanticAuditAnchors": {
+    "roleAnchorRows": {
+      "both_explicit_role_cues": 13,
+      "explicit_light_role_cue": 1182,
+      "explicit_object_role_cue": 26,
+      "no_explicit_role_cue": 77994
+    },
+    "structuralAnchorRows": {
+      "appearance_or_luminosity_descriptor": 8448,
+      "changing_color_word": 1940,
+      "compound_separator_or_conjunction": 2451,
+      "multicolor_word": 7623,
+      "named_color_word": 55703
+    },
+    "interpretation": "Vocabulary audit only. No role or color category may be assigned from these counts alone."
+  },
+  "preRuleDecision": {
+    "minimumNormalizedRows": 63372,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "rawVolumeGatePlausible": true,
+    "crossSourceVolumeGatePlausible": true,
+    "roleAmbiguityIsMaterial": true,
+    "nextAuthorizedStep": "write_and_test_conservative_value_only_parser_rules_with_unknown_role_as_default"
+  }
+}

@@ -297,8 +297,8 @@ assert.match(indexSource, /id="cluster-quick-crop-circles"[\s\S]*?aria-pressed="
 assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelector\("#cluster-quick-crop-circles"\)/, "the quick crop toggle is registered with the core UI");
 assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
 assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
-assert.match(indexSource, /styles\.css\?v=2026-08-04-analysis-geography-binary-v1-ui1/, "shared icon CSS uses the cache-safe geography-binary release key");
-assert.match(indexSource, /app\.js\?v=2026-08-04-analysis-geography-binary-v1-ui1/, "the application runtime uses the cache-safe geography-binary release key");
+assert.match(indexSource, /styles\.css\?v=2026-08-05-analysis-color-v1-ui1/, "shared icon CSS uses the cache-safe color release key");
+assert.match(indexSource, /app\.js\?v=2026-08-05-analysis-color-v1-ui1/, "the application runtime uses the cache-safe color release key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
 assert.match(indexSource, /<legend>UFO sighting → later crop record<\/legend>/, "UFO-to-crop relationship selector is explicitly separate");

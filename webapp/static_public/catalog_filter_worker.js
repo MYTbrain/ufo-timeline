@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-geography-binary-v1-ui1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-05-analysis-color-v1-ui1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -81,6 +81,14 @@
     artifactHashes: {},
     releaseId: "",
   };
+  let analysisColorArtifact = {
+    manifest: null,
+    loaded: false,
+    appliedRows: 0,
+    normalizedRows: 0,
+    artifactHashes: {},
+    releaseId: "",
+  };
   let analysisCoordinateEvidenceArtifact = {
     manifest: null,
     loaded: false,
@@ -134,6 +142,7 @@
       reportingDelayMacroregion: createDictionary(),
       timeOfDayMacroregion: createDictionary(),
       witnessCountMacroregion: createDictionary(),
+      colorMacroregion: createDictionary(),
       coordinateEvidenceMacroregion: createDictionary(),
       geographyAssignmentSource: createDictionary(),
       geographyAssignmentConfidence: createDictionary(),
@@ -294,6 +303,12 @@
       analysisWitnessCountBinCodes: new Uint8Array(length),
       analysisWitnessCountMacroregionCodes: new Uint16Array(length),
       analysisWitnessCountExactCounts: new Uint32Array(length),
+      analysisColorValueCodes: new Uint16Array(length),
+      analysisColorStatusCodes: new Uint8Array(length),
+      analysisColorRoleCodes: new Uint8Array(length),
+      analysisColorCategoryMasks: new Uint16Array(length),
+      analysisColorFlags: new Uint8Array(length),
+      analysisColorMacroregionCodes: new Uint16Array(length),
       analysisCoordinateEvidenceProjectionStates: new Uint8Array(length),
       analysisCoordinateEvidenceStatusCodes: new Uint8Array(length),
       analysisCoordinateEvidenceConsistencyCodes: new Uint8Array(length),
@@ -426,6 +441,12 @@
       chunk.analysisWitnessCountBinCodes.byteLength +
       chunk.analysisWitnessCountMacroregionCodes.byteLength +
       chunk.analysisWitnessCountExactCounts.byteLength;
+    typedStorageBytes += chunk.analysisColorValueCodes.byteLength +
+      chunk.analysisColorStatusCodes.byteLength +
+      chunk.analysisColorRoleCodes.byteLength +
+      chunk.analysisColorCategoryMasks.byteLength +
+      chunk.analysisColorFlags.byteLength +
+      chunk.analysisColorMacroregionCodes.byteLength;
     typedStorageBytes += chunk.analysisCoordinateEvidenceProjectionStates.byteLength +
       chunk.analysisCoordinateEvidenceStatusCodes.byteLength +
       chunk.analysisCoordinateEvidenceConsistencyCodes.byteLength +
@@ -664,6 +685,21 @@
     values.analysisWitnessCountExactCount = witnessCountValueCode && values.analysisWitnessCountStatus === "exact_count"
       ? chunk.analysisWitnessCountExactCounts[index]
       : null;
+    const colorValueCode = chunk.analysisColorValueCodes && chunk.analysisColorValueCodes[index];
+    values.analysisColorAvailable = Boolean(colorValueCode);
+    values.analysisColorStatus = colorValueCode
+      ? String((analysisColorArtifact.manifest.codes.status || [])[chunk.analysisColorStatusCodes[index] - 1] || "unparsed")
+      : "unavailable";
+    values.analysisColorRole = colorValueCode
+      ? String((analysisColorArtifact.manifest.codes.role || [])[chunk.analysisColorRoleCodes[index] - 1] || "role_unspecified")
+      : "role_unspecified";
+    values.analysisColorCategoryMask = colorValueCode ? chunk.analysisColorCategoryMasks[index] : 0;
+    values.analysisColorChanging = Boolean(colorValueCode && (chunk.analysisColorFlags[index] & 1));
+    values.analysisColorMulticolor = Boolean(colorValueCode && (chunk.analysisColorFlags[index] & 2));
+    values.analysisColorCompound = Boolean(colorValueCode && (chunk.analysisColorFlags[index] & 4));
+    values.analysisColorMacroregion = colorValueCode
+      ? dictionaryValue(dictionaries.colorMacroregion, chunk.analysisColorMacroregionCodes[index]) || "unknown"
+      : "unknown";
     const coordinateEvidenceProjected = Boolean(
       chunk.analysisCoordinateEvidenceProjectionStates && chunk.analysisCoordinateEvidenceProjectionStates[index]
     );
@@ -1648,6 +1684,9 @@
         analysisWitnessCountArtifact.loaded
           ? Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {})
           : {},
+        analysisColorArtifact.loaded
+          ? Object.assign({}, analysisColorArtifact.artifactHashes || {})
+          : {},
         analysisCoordinateEvidenceArtifact.loaded
           ? Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {})
           : {}
@@ -1689,6 +1728,16 @@
         negativeControls: Object.assign({}, analysisWitnessCountArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {}),
       } : null,
+      colorProjectionLoaded: Boolean(analysisColorArtifact.loaded),
+      colorArtifact: analysisColorArtifact.loaded ? {
+        releaseId: analysisColorArtifact.releaseId,
+        counts: Object.assign({}, analysisColorArtifact.manifest.counts || {}),
+        readiness: Object.assign({}, analysisColorArtifact.manifest.readiness || {}),
+        policy: Object.assign({}, analysisColorArtifact.manifest.policy || {}),
+        negativeControls: Object.assign({}, analysisColorArtifact.manifest.negativeControls || {}),
+        commonSupport: Object.assign({}, analysisColorArtifact.manifest.commonSupport || {}),
+        artifactHashes: Object.assign({}, analysisColorArtifact.artifactHashes || {}),
+      } : null,
       coordinateEvidenceProjectionLoaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
       coordinateEvidenceArtifact: analysisCoordinateEvidenceArtifact.loaded ? {
         releaseId: analysisCoordinateEvidenceArtifact.releaseId,
@@ -1698,7 +1747,7 @@
         negativeControls: Object.assign({}, analysisCoordinateEvidenceArtifact.manifest.negativeControls || {}),
         artifactHashes: Object.assign({}, analysisCoordinateEvidenceArtifact.artifactHashes || {}),
       } : null,
-      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.7.0"),
+      estimatorVersion: String(message.estimatorVersion || "ufo-analysis-evidence-lab-v2.8.0"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
@@ -2948,6 +2997,191 @@
     };
   }
 
+  function analysisColorManifestSupported(manifest) {
+    return Boolean(
+      manifest &&
+      Number(manifest.schemaVersion) === 1 &&
+      String(manifest.schemaId || "") === "ufo-timeline-analysis-color-artifacts-v1.0.0" &&
+      String(manifest.manifestVersion || "") === "1.0.0" &&
+      manifest.artifacts && manifest.artifacts.colorValueDictionary && manifest.artifacts.colorProjection &&
+      manifest.codes && Array.isArray(manifest.codes.category) && manifest.codes.category.length <= 16 &&
+      manifest.readiness
+    );
+  }
+
+  function validateColorRows(rows, manifest, key, width) {
+    const entry = manifestArtifactEntry(manifest, key);
+    if (!entry || !normalizedSha256(entry.sha256) || !normalizedSha256(entry.gzipSha256)) {
+      throw new Error("Color artifact " + key + " is missing pinned integrity.");
+    }
+    if (!Array.isArray(entry.rowSchema) || entry.rowSchema.length !== width) {
+      throw new Error("Color artifact " + key + " has an invalid row schema.");
+    }
+    if (!Array.isArray(rows) || rows.length !== Number(entry.rowCount)) {
+      throw new Error("Color artifact " + key + " row-count mismatch.");
+    }
+    const invalidIndex = rows.findIndex(function (row) { return !Array.isArray(row) || row.length !== width; });
+    if (invalidIndex !== -1) {
+      throw new Error("Color artifact " + key + " row " + invalidIndex + " has an invalid width.");
+    }
+    return rows;
+  }
+
+  function bitCount16(value) {
+    let bits = Number(value) & 65535;
+    let count = 0;
+    while (bits) {
+      count += bits & 1;
+      bits >>>= 1;
+    }
+    return count;
+  }
+
+  function applyColorProjection(dictionaryRows, projectionRows, manifest) {
+    const sourceCodes = manifest.codes.source || [];
+    const statusCodes = manifest.codes.status || [];
+    const roleCodes = manifest.codes.role || [];
+    const categoryCodes = manifest.codes.category || [];
+    const eraCodes = manifest.codes.era || [];
+    const macroregionCodes = manifest.codes.macroregion || [];
+    const normalizedStatuses = new Set([
+      "exact_single", "explicit_compound", "multicolor_unspecified", "changing_known", "changing_unspecified",
+    ]);
+    const maximumMask = (1 << categoryCodes.length) - 1;
+    const occurrences = new Uint32Array(dictionaryRows.length);
+    let previousRowIndex = -1;
+    let chunkIndex = 0;
+    let chunkStart = 0;
+    let normalizedRows = 0;
+    projectionRows.forEach(function (projection, projectionIndex) {
+      const catalogRowIndex = Number(projection[0]);
+      const valueCode = Number(projection[2]);
+      const eraCode = Number(projection[3]);
+      const macroregionCode = Number(projection[4]);
+      if (!Number.isInteger(catalogRowIndex) || catalogRowIndex <= previousRowIndex) {
+        throw new Error("Color projection row order is not strictly increasing at row " + projectionIndex + ".");
+      }
+      previousRowIndex = catalogRowIndex;
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      if (catalogRowIndex < 0 || catalogRowIndex >= rowCount || chunkIndex >= chunks.length) {
+        throw new Error("Color projection references an out-of-range catalog row.");
+      }
+      const location = { chunk: chunks[chunkIndex], index: catalogRowIndex - chunkStart };
+      if (String(eventIdAt(location.chunk, location.index)) !== String(projection[1])) {
+        throw new Error("Color projection event ID does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      if (!Number.isInteger(valueCode) || valueCode < 0 || valueCode >= dictionaryRows.length ||
+          !Number.isInteger(eraCode) || eraCode < 0 || eraCode >= eraCodes.length ||
+          !Number.isInteger(macroregionCode) || macroregionCode < 0 || macroregionCode >= macroregionCodes.length) {
+        throw new Error("Color projection contains an out-of-range code at row " + projectionIndex + ".");
+      }
+      const value = dictionaryRows[valueCode];
+      const sourceCode = Number(value[0]);
+      const statusCode = Number(value[3]);
+      const roleCode = Number(value[5]);
+      const categoryMask = Number(value[6]);
+      const changing = Number(value[7]);
+      const multicolor = Number(value[8]);
+      const compound = Number(value[9]);
+      if (!Number.isInteger(sourceCode) || sourceCode < 0 || sourceCode >= sourceCodes.length ||
+          !normalizedSha256(value[1]) || typeof value[2] !== "string" ||
+          !Number.isInteger(statusCode) || statusCode < 0 || statusCode >= statusCodes.length ||
+          !Number.isInteger(roleCode) || roleCode < 0 || roleCode >= roleCodes.length ||
+          !Number.isInteger(categoryMask) || categoryMask < 0 || categoryMask > maximumMask ||
+          [changing, multicolor, compound].some(function (flag) { return flag !== 0 && flag !== 1; })) {
+        throw new Error("Color dictionary code or flag is invalid for value " + valueCode + ".");
+      }
+      const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource) {
+        throw new Error("Color dictionary source does not match the served catalog at row " + catalogRowIndex + ".");
+      }
+      const status = String(statusCodes[statusCode] || "unparsed");
+      const categoryCount = bitCount16(categoryMask);
+      if ((status === "exact_single" && categoryCount !== 1) ||
+          (status === "explicit_compound" && categoryCount < 2) ||
+          (status === "changing_known" && categoryCount < 1) ||
+          (["changing_unspecified", "non_color_descriptor", "unparsed"].indexOf(status) !== -1 && categoryCount !== 0) ||
+          (status === "multicolor_unspecified" && categoryCount >= 2)) {
+        throw new Error("Color status/category semantics failed closed for value " + valueCode + ".");
+      }
+      location.chunk.analysisColorValueCodes[location.index] = valueCode + 1;
+      location.chunk.analysisColorStatusCodes[location.index] = statusCode + 1;
+      location.chunk.analysisColorRoleCodes[location.index] = roleCode + 1;
+      location.chunk.analysisColorCategoryMasks[location.index] = categoryMask;
+      location.chunk.analysisColorFlags[location.index] = changing | (multicolor << 1) | (compound << 2);
+      location.chunk.analysisColorMacroregionCodes[location.index] = categoryCode(
+        dictionaries.colorMacroregion,
+        String(macroregionCodes[macroregionCode] || "unknown")
+      );
+      occurrences[valueCode] += 1;
+      if (normalizedStatuses.has(status)) normalizedRows += 1;
+    });
+    dictionaryRows.forEach(function (value, valueCode) {
+      if (occurrences[valueCode] !== Number(value[10])) {
+        throw new Error("Color dictionary occurrence parity failed for value " + valueCode + ".");
+      }
+    });
+    if (normalizedRows !== Number(manifest.counts && manifest.counts.normalizedRows)) {
+      throw new Error("Color normalized-row parity failed.");
+    }
+    return { appliedRows: projectionRows.length, normalizedRows };
+  }
+
+  async function loadAnalysisColorArtifact(message) {
+    const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
+    const manifestUrl = String(urls.manifest || "./data/analysis_color_v1/manifest.json");
+    const manifest = message.manifest && typeof message.manifest === "object"
+      ? message.manifest
+      : await fetchAnalysisJson(manifestUrl, { sha256: message.manifestSha256 || "" });
+    if (!analysisColorManifestSupported(manifest)) {
+      throw new Error("Analysis color manifest is invalid or unsupported.");
+    }
+    const dictionaryRows = validateColorRows(
+      await fetchAnalysisJson(
+        urls.dictionary || manifestArtifactUrl(manifest, "colorValueDictionary", manifestUrl),
+        manifestArtifactIntegrity(manifest, "colorValueDictionary")
+      ),
+      manifest,
+      "colorValueDictionary",
+      11
+    );
+    const projectionRows = validateColorRows(
+      await fetchAnalysisJson(
+        urls.projection || manifestArtifactUrl(manifest, "colorProjection", manifestUrl),
+        manifestArtifactIntegrity(manifest, "colorProjection")
+      ),
+      manifest,
+      "colorProjection",
+      5
+    );
+    const applied = applyColorProjection(dictionaryRows, projectionRows, manifest);
+    const artifactHashes = {};
+    Object.keys(manifest.artifacts).sort().forEach(function (key) {
+      artifactHashes[key] = String(manifest.artifacts[key].sha256 || "");
+    });
+    analysisColorArtifact = {
+      manifest,
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      normalizedRows: applied.normalizedRows,
+      releaseId: String(manifest.releaseId || ""),
+      artifactHashes,
+    };
+    analysisCache.clear();
+    analysisMatchCache.clear();
+    return {
+      loaded: true,
+      appliedRows: applied.appliedRows,
+      normalizedRows: applied.normalizedRows,
+      releaseId: analysisColorArtifact.releaseId,
+      artifactHashes: Object.assign({}, artifactHashes),
+      readinessStatus: String(manifest.readiness.status || "not_estimable"),
+    };
+  }
+
   function analysisReportingDelayManifestSupported(manifest) {
     return Boolean(
       manifest &&
@@ -3858,6 +4092,7 @@
         reportingDelayMacroregion: dictionaries.reportingDelayMacroregion.values.length,
         timeOfDayMacroregion: dictionaries.timeOfDayMacroregion.values.length,
         witnessCountMacroregion: dictionaries.witnessCountMacroregion.values.length,
+        colorMacroregion: dictionaries.colorMacroregion.values.length,
         coordinateEvidenceMacroregion: dictionaries.coordinateEvidenceMacroregion.values.length,
       },
       geographyProjection: {
@@ -3893,6 +4128,13 @@
         releaseId: String(analysisWitnessCountArtifact.releaseId || ""),
         artifactHashes: Object.assign({}, analysisWitnessCountArtifact.artifactHashes || {}),
       },
+      colorProjection: {
+        loaded: Boolean(analysisColorArtifact.loaded),
+        appliedRows: Number(analysisColorArtifact.appliedRows) || 0,
+        normalizedRows: Number(analysisColorArtifact.normalizedRows) || 0,
+        releaseId: String(analysisColorArtifact.releaseId || ""),
+        artifactHashes: Object.assign({}, analysisColorArtifact.artifactHashes || {}),
+      },
       coordinateEvidenceProjection: {
         loaded: Boolean(analysisCoordinateEvidenceArtifact.loaded),
         appliedRows: Number(analysisCoordinateEvidenceArtifact.appliedRows) || 0,
@@ -3926,6 +4168,9 @@
     };
     analysisWitnessCountArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
+    };
+    analysisColorArtifact = {
+      manifest: null, loaded: false, appliedRows: 0, normalizedRows: 0, artifactHashes: {}, releaseId: "",
     };
     analysisCoordinateEvidenceArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
@@ -4096,6 +4341,26 @@
         loadAnalysisWitnessCountArtifact(message).then(function (snapshot) {
           self.postMessage({
             type: "analysisWitnessCountArtifactSet",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            snapshot,
+          });
+        }).catch(function (error) {
+          self.postMessage({
+            type: "catalogFacetWorkerError",
+            requestId: message.requestId || "",
+            filterGeneration: analysisFilterGeneration(message),
+            generation: analysisFilterGeneration(message),
+            error: error && error.message ? error.message : String(error),
+          });
+        });
+        return;
+      }
+      if (message.type === "setAnalysisColorArtifact") {
+        loadAnalysisColorArtifact(message).then(function (snapshot) {
+          self.postMessage({
+            type: "analysisColorArtifactSet",
             requestId: message.requestId || "",
             filterGeneration: analysisFilterGeneration(message),
             generation: analysisFilterGeneration(message),

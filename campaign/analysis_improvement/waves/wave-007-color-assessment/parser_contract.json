@@ -1,0 +1,195 @@
+{
+  "schemaId": "ufo-timeline-analysis-color-parser-contract-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-007-color-assessment",
+  "generatedAt": "2026-08-05T00:48:45Z",
+  "governingAudit": {
+    "path": "campaign/analysis_improvement/waves/wave-007-color-assessment/raw_value_audit.json",
+    "bytes": 49939,
+    "sha256": "fd35ae5051cd5a358a2f7dc3c2ee9ec825c7ea4c26cf3b8d4f7aad76046a23de",
+    "eligibleRawColorRows": 79215,
+    "distinctSourceValuePairs": 4859,
+    "sourceValueInventorySha256": "0590ea8fa5b182e393f0712eac62ba764a6b5a307269b656387158d8dd9ced0f"
+  },
+  "inputBoundary": {
+    "allowedInputs": [
+      "canonical source identifier",
+      "exact canonical raw color-field value"
+    ],
+    "forbiddenInputs": [
+      "description or summary text",
+      "craft type or shape",
+      "brightness, characteristics, evidence, or neighboring fields",
+      "geographic, chronological, or source-frequency priors",
+      "fuzzy or probabilistic spelling correction"
+    ],
+    "originalValuePreservation": "Retain the exact canonical raw value and its SHA-256. Parsing may use a trimmed case-folded working copy but may not replace the retained value."
+  },
+  "ruleOrder": [
+    "missing or source sentinel",
+    "explicit changing-color marker",
+    "explicit multicolor marker",
+    "exact whole-token or controlled packed-token color categories",
+    "appearance or luminosity descriptor without a color category",
+    "unparsed text"
+  ],
+  "parseStatuses": [
+    "missing",
+    "source_sentinel",
+    "exact_single",
+    "explicit_compound",
+    "multicolor_unspecified",
+    "changing_known",
+    "changing_unspecified",
+    "non_color_descriptor",
+    "unparsed"
+  ],
+  "normalizedStatuses": [
+    "exact_single",
+    "explicit_compound",
+    "multicolor_unspecified",
+    "changing_known",
+    "changing_unspecified"
+  ],
+  "roleRules": {
+    "default": "role_unspecified",
+    "roles": [
+      "role_unspecified",
+      "emitted_light_explicit",
+      "object_surface_explicit",
+      "both_role_cues_ambiguous"
+    ],
+    "emittedLightCues": [
+      "light",
+      "lights",
+      "glow",
+      "glowing",
+      "illumination",
+      "illuminated"
+    ],
+    "objectSurfaceCues": [
+      "object",
+      "craft",
+      "body",
+      "hull",
+      "surface",
+      "exterior",
+      "fuselage"
+    ],
+    "prohibitions": [
+      "The source column name Color does not establish an object or emitted-light role.",
+      "Luminous, bright, fiery, shiny, metallic, transparent, translucent, reflective, clear, and dark do not establish an emitted-light or object-surface role.",
+      "A role may not be inferred from descriptions or neighboring fields.",
+      "Rows with both cue families remain ambiguous instead of being forced into either role."
+    ]
+  },
+  "colorCategories": {
+    "white": ["white", "whitish", "ivory", "cream"],
+    "black": ["black", "blackish", "charcoal"],
+    "gray": ["gray", "grey", "grayish", "greyish"],
+    "red": ["red", "reddish", "crimson", "scarlet", "maroon", "burgundy"],
+    "orange": ["orange", "orangish"],
+    "yellow": ["yellow", "yellowish"],
+    "amber": ["amber"],
+    "green": ["green", "greenish"],
+    "blue": ["blue", "bluish", "aqua", "cyan", "teal"],
+    "purple": ["purple", "violet", "magenta", "indigo", "lavender"],
+    "pink": ["pink"],
+    "brown": ["brown", "brownish", "tan", "beige"],
+    "gold": ["gold", "golden"],
+    "silver": ["silver"],
+    "copper_bronze": ["copper", "bronze"]
+  },
+  "controlledPackedTokens": {
+    "scope": "UFOCAT controlled COLOR values only",
+    "strategy": "After punctuation removal and case folding, accept a value only when the complete string can be segmented into registered color aliases and registered non-color modifiers. Partial substring matches are forbidden.",
+    "colorAliases": {
+      "blu": "blue",
+      "blue": "blue",
+      "brown": "brown",
+      "brwn": "brown",
+      "gold": "gold",
+      "gray": "gray",
+      "gree": "green",
+      "green": "green",
+      "grey": "gray",
+      "oran": "orange",
+      "orang": "orange",
+      "orange": "orange",
+      "pink": "pink",
+      "purpl": "purple",
+      "red": "red",
+      "silvr": "silver",
+      "silver": "silver",
+      "viole": "purple",
+      "white": "white",
+      "yel": "yellow",
+      "yell": "yellow",
+      "yello": "yellow",
+      "yellow": "yellow"
+    },
+    "modifiers": [
+      "bright",
+      "dark",
+      "neon",
+      "pale"
+    ],
+    "noFuzzyMatching": true
+  },
+  "structuralRules": {
+    "changingMarkers": [
+      "change",
+      "changed",
+      "changing",
+      "flashing",
+      "flashes",
+      "pulsing",
+      "cycling",
+      "alternating"
+    ],
+    "multicolorMarkers": [
+      "multi",
+      "multicolor",
+      "multicolored",
+      "multiple",
+      "various",
+      "rainbow",
+      "different colors",
+      "different colours"
+    ],
+    "appearanceDescriptors": [
+      "luminous",
+      "metallic",
+      "shiny",
+      "bright",
+      "fiery",
+      "transparent",
+      "translucent",
+      "reflective",
+      "clear",
+      "dark"
+    ],
+    "compoundRule": "Two or more distinct parsed categories are explicit_compound. Repeated synonyms of one category remain exact_single.",
+    "changingRule": "A changing marker with categories is changing_known; without categories it is changing_unspecified.",
+    "multicolorRule": "A multicolor marker with fewer than two explicit categories is multicolor_unspecified."
+  },
+  "releaseAccounting": {
+    "minimumNormalizedRows": 63372,
+    "minimumCatalogCoveragePct": 9.0,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "normalizedRowDefinition": "parse status is one of normalizedStatuses; descriptors, sentinels, missing values, and unparsed text do not count",
+    "roleCompatibleComparison": "Only like-for-like role codes may be compared. role_unspecified may be described and compared only as source-reported color with unspecified role; it may never be relabeled object color or emitted-light color.",
+    "patternFinderEligible": false
+  },
+  "requiredFailClosedTests": [
+    "same input is idempotent",
+    "raw value and raw-value SHA-256 are exact",
+    "source occurrence counts equal the governing audit",
+    "all accepted categories consume whole tokens or a complete registered UFOCAT packed value",
+    "descriptors without categories do not count as normalized",
+    "missing and sentinel values never become negative observations",
+    "object and light roles are never inferred from the Color field name",
+    "unknown role remains unknown in projections, estimators, UI, and exports"
+  ]
+}

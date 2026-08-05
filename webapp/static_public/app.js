@@ -1054,6 +1054,11 @@
     analysisWitnessCountWorkerReady: false,
     analysisWitnessCountRequested: false,
     analysisWitnessCountError: "",
+    analysisColorPromise: null,
+    analysisColorManifest: null,
+    analysisColorWorkerReady: false,
+    analysisColorRequested: false,
+    analysisColorError: "",
     analysisCoordinateEvidencePromise: null,
     analysisCoordinateEvidenceManifest: null,
     analysisCoordinateEvidenceWorkerReady: false,
@@ -8230,7 +8235,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-04-analysis-geography-binary-v1-ui1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-05-analysis-color-v1-ui1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8821,6 +8826,10 @@
           ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
           return;
         }
+        if (runtime.analysisColorError) {
+          ensureAnalysisColorArtifact().catch(function () { return null; });
+          return;
+        }
         if (runtime.analysisDurationError) {
           ensureAnalysisDurationArtifact().catch(function () { return null; });
           return;
@@ -8867,6 +8876,9 @@
         }
         if (change && change.sectionKey === "sources_quality") {
           ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
+        }
+        if (change && change.sectionKey === "craft") {
+          ensureAnalysisColorArtifact().catch(function () { return null; });
         }
       },
       onRenderComplete: function () {
@@ -9612,6 +9624,99 @@
     return runtime.analysisWitnessCountPromise;
   }
 
+  function analysisColorArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.colorManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisColorArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-color-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed color projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisColorArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisColorWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed color setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisColorArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisColorArtifact() {
+    runtime.analysisColorRequested = true;
+    if (runtime.analysisColorWorkerReady) return Promise.resolve(runtime.analysisColorManifest);
+    if (runtime.analysisColorPromise) return runtime.analysisColorPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_color_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-color-status");
+    if (statusElement) statusElement.textContent = "Loading provenance-preserving source-reported color evidence...";
+    runtime.analysisColorPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Color manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisColorManifest = manifest;
+        return setAnalysisColorArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisColorError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Typed color evidence ready; object, emitted-light, changing, compound, and unknown-role evidence remain distinct.";
+        scheduleAnalysisCompute("typed color evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisColorPromise = null;
+        runtime.analysisColorWorkerReady = false;
+        runtime.analysisColorRequested = false;
+        runtime.analysisColorError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Color evidence failed closed: " + runtime.analysisColorError;
+        console.error("[analysis color]", error);
+        throw error;
+      });
+    return runtime.analysisColorPromise;
+  }
+
   function analysisCoordinateEvidenceArtifactHashes(manifest) {
     const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
       ? manifest.artifacts
@@ -10027,6 +10132,9 @@
       witnessCountRequested: Boolean(runtime.analysisWitnessCountRequested),
       witnessCountReady: Boolean(runtime.analysisWitnessCountWorkerReady),
       witnessCountHashes: analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+      colorRequested: Boolean(runtime.analysisColorRequested),
+      colorReady: Boolean(runtime.analysisColorWorkerReady),
+      colorHashes: analysisColorArtifactHashes(runtime.analysisColorManifest),
       coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
       coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
       coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
@@ -10041,6 +10149,7 @@
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
         analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
         analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+        analysisColorArtifactHashes(runtime.analysisColorManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
       ),
       datasetHash: analysisCatalogDatasetHash(),
@@ -10153,9 +10262,10 @@
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
           analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
           analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+          analysisColorArtifactHashes(runtime.analysisColorManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
         ),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.7.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
         selectedDomains: Array.isArray(options.selectedDomains)
@@ -10231,6 +10341,7 @@
         analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
         analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
         analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+        analysisColorArtifactHashes(runtime.analysisColorManifest),
         analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
         result.artifactHashes || {},
         message.artifactHashes || {}
@@ -10271,7 +10382,7 @@
       runtime.analysisLastResult = cached;
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
-        estimatorVersion: "ufo-analysis-evidence-lab-v2.7.0",
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
         artifactHashes: Object.assign(
           {},
           analysisContextReleaseHashes(runtime.analysisContextManifest),
@@ -10280,6 +10391,7 @@
           analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
           analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
           analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+          analysisColorArtifactHashes(runtime.analysisColorManifest),
           analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
           cached.artifactHashes || {}
         ),

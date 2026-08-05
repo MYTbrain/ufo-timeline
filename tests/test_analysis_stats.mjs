@@ -1471,6 +1471,85 @@ assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.pVal
 assert.ok(singleSourceDuration.time.duration.comparisons.every((row) => row.interval === null), "suppressed duration comparisons expose no inferential interval");
 assert.ok(singleSourceDuration.time.duration.comparisons.some((row) => row.suppressionReasons.includes("minimum_independent_sources")));
 
+const colorRows = [];
+for (const source of ["color-source-a", "color-source-b"]) {
+  for (const cohort of ["active", "reference"]) {
+    const activeCohort = cohort === "active";
+    const year = activeCohort ? 2018 : 2017;
+    const redCount = activeCohort ? 30 : 20;
+    const whiteCount = activeCohort ? 20 : 30;
+    for (const [colorKey, mask, count] of [["red", 1 << 3, redCount], ["white", 1, whiteCount]]) {
+      for (let index = 0; index < count; index += 1) {
+        colorRows.push(row({
+          eventId: `${source}-${cohort}-${colorKey}-${index}`,
+          source,
+          sortOrdinal: stats.ordinalFromCivil(year, 6, 15),
+          analysisColorAvailable: true,
+          analysisColorStatus: "exact_single",
+          analysisColorRole: "role_unspecified",
+          analysisColorCategoryMask: mask,
+          analysisColorChanging: false,
+          analysisColorMulticolor: false,
+          analysisColorCompound: false,
+          analysisColorMacroregion: "northern_america",
+        }));
+      }
+    }
+  }
+}
+colorRows.push(row({
+  eventId: "color-descriptor-excluded",
+  source: "color-source-a",
+  sortOrdinal: stats.ordinalFromCivil(2018, 7, 1),
+  analysisColorAvailable: true,
+  analysisColorStatus: "non_color_descriptor",
+  analysisColorRole: "role_unspecified",
+  analysisColorCategoryMask: 0,
+  analysisColorChanging: false,
+  analysisColorMulticolor: false,
+  analysisColorCompound: false,
+  analysisColorMacroregion: "northern_america",
+}));
+const colorArtifact = {
+  releaseId: "analysis-color-v1-fixture",
+  counts: { catalogRows: 702893, rawColorRows: 79215, normalizedRows: 70097 },
+  readiness: { status: "ready_descriptive_cross_source", assessmentLane: "cross_source_descriptive_role_preserving" },
+  policy: { minimumCommonSupport: 0.8, minimumActiveAndReferenceCellN: 20 },
+  commonSupport: { commonSupportRate: 1, commonSupportCategories: ["white", "red"] },
+  negativeControls: { roleSeparation: { roleUnspecifiedRows: 77994 } },
+  artifactHashes: { colorProjection: "d".repeat(64), colorValueDictionary: "e".repeat(64) },
+};
+const colorAnalysis = stats.computeAnalysis({
+  rows: colorRows,
+  baselineMode: "other_dates_balanced",
+  timeRangeStartOrdinal: stats.ordinalFromCivil(2018, 1, 1),
+  timeRangeEndOrdinal: stats.ordinalFromCivil(2018, 12, 31),
+  selectedDomains: ["craft"],
+  colorProjectionLoaded: true,
+  colorArtifact,
+  bootstrapReplicates: 31,
+  datasetHash: "color-fixture",
+});
+const colorAssessment = colorAnalysis.craft.color;
+assert.equal(colorAssessment.status, "ready_descriptive_with_inferential_comparison");
+assert.equal(colorAssessment.patternFinderEligible, false);
+assert.equal(colorAssessment.coverage.active.rawColorRows, 101);
+assert.equal(colorAssessment.coverage.active.normalizedRows, 100);
+assert.equal(colorAssessment.coverage.active.roleCounts.find((entry) => entry.role === "role_unspecified").rows, 101);
+assert.equal(colorAssessment.comparisonMetadata.roleCompatibility, "same_typed_role_stratum_only");
+assert.deepEqual(colorAssessment.comparisonMetadata.covariates, ["source", "era", "macroregion", "typed_color_role"]);
+const redColorComparison = colorAssessment.comparisons.find((entry) => entry.key === "red");
+assert.equal(redColorComparison.inferenceEligible, true);
+assert.equal(redColorComparison.activeIndependentSources, 2);
+assert.equal(redColorComparison.roleCompatibility, "same_typed_role_stratum_only");
+assert.equal(redColorComparison.patternFinderEligible, false);
+assert.equal(redColorComparison.interval.method, "deterministic_aggregated_stratum_bootstrap");
+assert.equal(
+  colorAnalysis.patterns.some((pattern) => pattern.family === "color"),
+  false,
+  "color v1 never enters Pattern Finder"
+);
+
 const coordinateRows = [];
 for (const year of [2017, 2018]) {
   for (const source of ["coordinate-source-a", "coordinate-source-b"]) {

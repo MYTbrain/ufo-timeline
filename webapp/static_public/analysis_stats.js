@@ -12,7 +12,7 @@
   "use strict";
 
   const SCHEMA_VERSION = 2;
-  const ESTIMATOR_VERSION = "analysis_v2_7_witness_count_assessment_1";
+  const ESTIMATOR_VERSION = "analysis_v2_8_color_assessment_1";
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -110,6 +110,27 @@
     fifty_to_ninety_nine: "50\u201399 witnesses",
     hundred_to_999: "100\u2013999 witnesses",
     thousand_plus: "1,000+ witnesses",
+  });
+  const COLOR_CATEGORY_ORDER = Object.freeze([
+    "white", "black", "gray", "red", "orange", "yellow", "amber", "green", "blue", "purple", "pink",
+    "brown", "gold", "silver", "copper_bronze",
+  ]);
+  const COLOR_CATEGORY_LABELS = Object.freeze({
+    white: "White",
+    black: "Black",
+    gray: "Gray / grey",
+    red: "Red",
+    orange: "Orange",
+    yellow: "Yellow",
+    amber: "Amber",
+    green: "Green",
+    blue: "Blue / cyan / teal",
+    purple: "Purple / violet",
+    pink: "Pink",
+    brown: "Brown / tan / beige",
+    gold: "Gold",
+    silver: "Silver",
+    copper_bronze: "Copper / bronze",
   });
   const COORDINATE_QUALITY_BIN_ORDER = Object.freeze([
     "country_consistent",
@@ -1804,6 +1825,34 @@
     if (exactCount >= 1000) accumulator.witnessCountExtremeRows += 1;
   }
 
+  function addColorRow(accumulator, row, source, civil) {
+    if (!row || row.analysisColorAvailable !== true) return;
+    const status = category(row.analysisColorStatus, "unparsed");
+    const role = category(row.analysisColorRole, "role_unspecified");
+    const macroregion = category(row.analysisColorMacroregion, "unknown");
+    const mask = Math.max(0, finiteInteger(row.analysisColorCategoryMask) || 0);
+    const normalized = [
+      "exact_single", "explicit_compound", "multicolor_unspecified", "changing_known", "changing_unspecified",
+    ].indexOf(status) !== -1;
+    accumulator.colorRawRows += 1;
+    incrementRaw(accumulator.colorStatusCounts, status, 1);
+    incrementRaw(accumulator.colorRoleCounts, role, 1);
+    if (!normalized) return;
+    accumulator.colorNormalizedRows += 1;
+    incrementRaw(accumulator.colorNormalizedSources, source, 1);
+    const stratum = [source, durationEra(civil && civil.year), macroregion, role].join("\u001f");
+    incrementRaw(accumulator.colorStrataTotals, stratum, 1);
+    COLOR_CATEGORY_ORDER.forEach(function (key, index) {
+      if (!(mask & (1 << index))) return;
+      incrementRaw(accumulator.colorCategories, key, 1);
+      if (!accumulator.colorCategoryStrata.has(key)) accumulator.colorCategoryStrata.set(key, new Map());
+      incrementRaw(accumulator.colorCategoryStrata.get(key), stratum, 1);
+    });
+    if (row.analysisColorChanging === true) accumulator.colorChangingRows += 1;
+    if (row.analysisColorMulticolor === true) accumulator.colorMulticolorRows += 1;
+    if (row.analysisColorCompound === true) accumulator.colorCompoundRows += 1;
+  }
+
   function addCoordinateEvidenceRow(accumulator, row, source, civil) {
     if (!row || row.analysisCoordinateEvidenceAvailable !== true) return;
     const status = category(row.analysisCoordinateEvidenceStatus, "unavailable");
@@ -1954,6 +2003,17 @@
       witnessCountTypedSources: new Map(),
       witnessCountBins: new Map(),
       witnessCountExactFrequency: new Map(),
+      colorRawRows: 0,
+      colorNormalizedRows: 0,
+      colorChangingRows: 0,
+      colorMulticolorRows: 0,
+      colorCompoundRows: 0,
+      colorStatusCounts: new Map(),
+      colorRoleCounts: new Map(),
+      colorNormalizedSources: new Map(),
+      colorCategories: new Map(),
+      colorStrataTotals: new Map(),
+      colorCategoryStrata: new Map(),
       coordinateEvidenceRows: 0,
       coordinateEvidenceTypedRows: 0,
       coordinateEvidenceStatusCounts: new Map(),
@@ -2248,6 +2308,7 @@
     addReportingDelayRow(accumulator, row, source, civil);
     addTimeOfDayRow(accumulator, row, source, civil);
     addWitnessCountRow(accumulator, row, source);
+    addColorRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
   }
 
@@ -2329,6 +2390,7 @@
     addReportingDelayRow(accumulator, row, source, civil);
     addTimeOfDayRow(accumulator, row, source, civil);
     addWitnessCountRow(accumulator, row, source);
+    addColorRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
@@ -6085,6 +6147,179 @@
     };
   }
 
+  function colorComparisonStrata(active, reference, key) {
+    const activeTotals = active.colorStrataTotals || new Map();
+    const referenceTotals = reference.colorStrataTotals || new Map();
+    const activeCounts = active.colorCategoryStrata.get(key) || new Map();
+    const referenceCounts = reference.colorCategoryStrata.get(key) || new Map();
+    const strata = new Set([].concat(sortedKeys(activeTotals), sortedKeys(referenceTotals)));
+    return Array.from(strata).map(function (stratum) {
+      return {
+        key: stratum,
+        activeCount: mapCount(activeCounts, stratum),
+        activeTotal: mapCount(activeTotals, stratum),
+        referenceCount: mapCount(referenceCounts, stratum),
+        referenceTotal: mapCount(referenceTotals, stratum),
+      };
+    });
+  }
+
+  function colorCoverage(accumulator) {
+    return {
+      catalogRows: accumulator.total,
+      rawColorRows: accumulator.colorRawRows,
+      rawColorCoverage: round(rate(accumulator.colorRawRows, accumulator.total), 8),
+      normalizedRows: accumulator.colorNormalizedRows,
+      normalizedCoverage: round(rate(accumulator.colorNormalizedRows, accumulator.total), 8),
+      changingRows: accumulator.colorChangingRows,
+      multicolorRows: accumulator.colorMulticolorRows,
+      compoundRows: accumulator.colorCompoundRows,
+      normalizedSources: mapEntriesByCount(accumulator.colorNormalizedSources).map(function (entry) {
+        return { source: entry[0], rows: entry[1] };
+      }),
+      statusCounts: mapEntriesByCount(accumulator.colorStatusCounts).map(function (entry) {
+        return { status: entry[0], rows: entry[1] };
+      }),
+      roleCounts: mapEntriesByCount(accumulator.colorRoleCounts).map(function (entry) {
+        return { role: entry[0], rows: entry[1] };
+      }),
+    };
+  }
+
+  function buildColorAssessment(active, reference, descriptor, optionsValue) {
+    const options = optionsValue || {};
+    const artifact = options.colorArtifact && typeof options.colorArtifact === "object"
+      ? options.colorArtifact
+      : null;
+    const loaded = options.colorProjectionLoaded === true && artifact;
+    const activeCoverage = colorCoverage(active);
+    const referenceCoverage = colorCoverage(reference);
+    const empty = {
+      schemaId: "ufo-timeline-analysis-color-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: artifact ? String(artifact.releaseId || "") : "",
+      artifactHashes: artifact ? Object.assign({}, artifact.artifactHashes || {}) : {},
+      status: "data_unavailable",
+      readinessStatus: "data_unavailable",
+      assessmentLane: "cross_source_descriptive_role_preserving",
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution: [],
+      comparisons: [],
+      comparisonMetadata: {
+        status: "data_unavailable",
+        covariates: ["source", "era", "macroregion", "typed_color_role"],
+        fdrFamily: "color_categories_v1",
+      },
+      negativeControls: artifact ? Object.assign({}, artifact.negativeControls || {}) : {},
+      patternFinderEligible: false,
+      suppressionReasons: ["color_artifact_not_loaded"],
+      warnings: [],
+    };
+    if (!loaded) return empty;
+
+    const readiness = artifact.readiness || {};
+    const policy = artifact.policy || {};
+    const distribution = COLOR_CATEGORY_ORDER.map(function (key) {
+      const activeCount = mapCount(active.colorCategories, key);
+      const referenceCount = mapCount(reference.colorCategories, key);
+      return {
+        key,
+        label: COLOR_CATEGORY_LABELS[key] || key,
+        activeCount,
+        referenceCount,
+        activeShare: round(rate(activeCount, active.colorNormalizedRows), 8),
+        referenceShare: round(rate(referenceCount, reference.colorNormalizedRows), 8),
+        measurementClass: "source_reported_color_with_role_preserved",
+        inferenceEligible: false,
+        patternFinderEligible: false,
+      };
+    });
+    const comparisonUnavailable = [
+      COMPARISON_STATES.WHOLE_CORPUS_STRUCTURE,
+      COMPARISON_STATES.UNAVAILABLE_NO_REFERENCE,
+      COMPARISON_STATES.UNAVAILABLE_SELF_COMPARISON,
+    ].indexOf(descriptor.comparisonState) !== -1;
+    let comparisons = [];
+    let comparisonStatus = descriptor.comparisonState;
+    if (options.inferenceDeferred) {
+      comparisonStatus = "deferred";
+    } else if (!comparisonUnavailable) {
+      const activeSources = active.colorNormalizedSources.size;
+      const referenceSources = reference.colorNormalizedSources.size;
+      const minimumCategoryN = Math.max(20, finiteInteger(policy.minimumActiveAndReferenceCellN) || 20);
+      comparisons = COLOR_CATEGORY_ORDER.map(function (key) {
+        const comparison = balancedCommonSupportComparison(colorComparisonStrata(active, reference, key), {
+          activeN: active.colorNormalizedRows,
+          referenceN: reference.colorNormalizedRows,
+          descriptive: descriptor.descriptive,
+          covariates: ["source", "era", "macroregion", "typed_color_role"],
+          minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+          bootstrapReplicates: options.bootstrapReplicates,
+          seed: [options.datasetHash || "not_provided", descriptor.mode, "color", key].join("|"),
+        });
+        comparison.family = "color";
+        comparison.key = key;
+        comparison.label = COLOR_CATEGORY_LABELS[key] || key;
+        comparison.fdrFamily = "color_categories_v1";
+        comparison.patternFinderEligible = false;
+        comparison.measurementClass = "source_reported_color_like_role_only";
+        const reasons = [];
+        if (comparison.observedCount < minimumCategoryN) reasons.push("active_category_n_below_" + minimumCategoryN);
+        if (comparison.referenceCount < minimumCategoryN) reasons.push("reference_category_n_below_" + minimumCategoryN);
+        if (activeSources < 2 || referenceSources < 2) reasons.push("minimum_independent_sources");
+        if (reasons.length) suppressDurationComparison(comparison, reasons);
+        comparison.minimumActiveAndReferenceCategoryN = minimumCategoryN;
+        comparison.minimumIndependentSources = 2;
+        comparison.activeIndependentSources = activeSources;
+        comparison.referenceIndependentSources = referenceSources;
+        comparison.roleCompatibility = "same_typed_role_stratum_only";
+        return comparison;
+      });
+      assignEligibleBenjaminiHochberg(comparisons);
+      comparisonStatus = comparisons.some(function (comparison) { return comparison.inferenceEligible; })
+        ? "ready_inferential"
+        : "suppressed";
+    }
+
+    const globalReady = String(readiness.status || "") === "ready_descriptive_cross_source";
+    const activeReady = active.colorNormalizedRows > 0;
+    const anyInference = comparisons.some(function (comparison) { return comparison.inferenceEligible; });
+    const status = !globalReady || !activeReady
+      ? "not_estimable"
+      : (anyInference ? "ready_descriptive_with_inferential_comparison" : "ready_descriptive");
+    const suppressionReasons = [];
+    if (!globalReady) suppressionReasons.push("global_color_readiness_failed");
+    if (!active.colorNormalizedRows) suppressionReasons.push("no_normalized_color_in_active_cohort");
+    return {
+      schemaId: "ufo-timeline-analysis-color-assessment-v1.0.0",
+      estimatorVersion: ESTIMATOR_VERSION,
+      releaseId: String(artifact.releaseId || ""),
+      artifactHashes: Object.assign({}, artifact.artifactHashes || {}),
+      status,
+      readinessStatus: String(readiness.status || "not_estimable"),
+      assessmentLane: String(readiness.assessmentLane || "cross_source_descriptive_role_preserving"),
+      coverage: { active: activeCoverage, reference: referenceCoverage },
+      distribution,
+      comparisons,
+      comparisonMetadata: {
+        status: comparisonStatus,
+        comparisonState: descriptor.comparisonState,
+        covariates: ["source", "era", "macroregion", "typed_color_role"],
+        roleCompatibility: "same_typed_role_stratum_only",
+        minimumCommonSupport: finiteNumber(policy.minimumCommonSupport) == null ? 0.8 : finiteNumber(policy.minimumCommonSupport),
+        minimumActiveAndReferenceCategoryN: Math.max(20, finiteInteger(policy.minimumActiveAndReferenceCellN) || 20),
+        fdrFamily: "color_categories_v1",
+      },
+      globalCounts: Object.assign({}, artifact.counts || {}),
+      globalCommonSupport: Object.assign({}, artifact.commonSupport || {}),
+      negativeControls: Object.assign({}, artifact.negativeControls || {}),
+      patternFinderEligible: false,
+      suppressionReasons,
+      warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : [],
+      policy: Object.assign({}, policy),
+    };
+  }
+
   function coordinateEvidenceComparisonStrata(active, reference, key) {
     const activeTotals = active.coordinateEvidenceStrataTotals || new Map();
     const referenceTotals = reference.coordinateEvidenceStrataTotals || new Map();
@@ -6393,6 +6628,13 @@
     applyComparisonSchema(craft.distribution, balancedFamilies.craft);
     craft.comparisons = balancedFamilies.craft.comparisons;
     craft.comparisonMetadata = balancedFamilies.craft.metadata;
+    craft.color = buildColorAssessment(active, reference, descriptor, {
+      colorProjectionLoaded: options.colorProjectionLoaded,
+      colorArtifact: options.colorArtifact,
+      inferenceDeferred,
+      bootstrapReplicates: options.bootstrapReplicates,
+      datasetHash,
+    });
     const geography = inferenceDeferred && !domainRequested(requestedDomains, "geography")
       ? deferredGeographySection()
       : (!geographyProjectionLoaded
@@ -6633,6 +6875,8 @@
     TIME_OF_DAY_BIN_LABELS,
     WITNESS_COUNT_BIN_ORDER,
     WITNESS_COUNT_BIN_LABELS,
+    COLOR_CATEGORY_ORDER,
+    COLOR_CATEGORY_LABELS,
     COORDINATE_QUALITY_BIN_ORDER,
     COORDINATE_QUALITY_BIN_LABELS,
     FAMILY_ORDER,
@@ -6662,6 +6906,7 @@
     normalizeContextProjections,
     buildDurationAssessment,
     buildTimeOfDayAssessment,
+    buildColorAssessment,
     computeAnalysis,
   });
 });

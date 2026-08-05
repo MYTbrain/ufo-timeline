@@ -222,6 +222,7 @@ function createShellDocument() {
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
     "analysis-time-of-day-status", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart",
     "analysis-witness-count-status", "analysis-witness-count-chart",
+    "analysis-color-status", "analysis-color-chart", "analysis-color-comparison-chart",
     "analysis-coordinate-evidence-status", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart",
     "analysis-coordinate-evidence-spatial-status", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart",
     "analysis-month-year-chart", "analysis-time-series-title", "analysis-time-series-question", "analysis-craft-distribution-chart",
@@ -1207,6 +1208,31 @@ const result = {
     ],
     reportTypes: [{ label: "Close encounter", count: 55, patch: { types: ["close_encounter"] } }],
     confidence: [{ label: "High", observed: 140, reference: 80 }],
+    color: {
+      releaseId: "analysis-color-v1-fixture",
+      assessmentLane: "cross_source_descriptive_role_preserving",
+      status: "ready_descriptive_with_inferential_comparison",
+      readinessStatus: "ready_descriptive_cross_source",
+      coverage: {
+        active: {
+          catalogRows: 400,
+          rawColorRows: 50,
+          normalizedRows: 40,
+          normalizedSources: [{ source: "nuforc", rows: 18 }, { source: "ufocat", rows: 22 }],
+          roleCounts: [{ role: "role_unspecified", rows: 45 }, { role: "emitted_light_explicit", rows: 5 }],
+        },
+        reference: { catalogRows: 300, rawColorRows: 36, normalizedRows: 30 },
+      },
+      distribution: [
+        { key: "white", label: "White", activeCount: 24, referenceCount: 15, activeShare: 0.6, referenceShare: 0.5, measurementClass: "source_reported_color_with_role_preserved" },
+        { key: "red", label: "Red", activeCount: 16, referenceCount: 15, activeShare: 0.4, referenceShare: 0.5, measurementClass: "source_reported_color_with_role_preserved" },
+      ],
+      comparisons: [
+        { key: "white", label: "White", observedCount: 24, referenceCount: 15, adjustedDifference: 0.05, interval: { lower: 0.01, upper: 0.09 }, qValue: 0.04, inferenceEligible: true, measurementClass: "source_reported_color_like_role_only" },
+      ],
+      comparisonMetadata: { fdrFamily: "color_categories_v1", roleCompatibility: "same_typed_role_stratum_only" },
+      patternFinderEligible: false,
+    },
     trends: [
       { row: "Disk", column: "1950s", observed: 80, reference: 40 },
       { row: "Disk", column: "1960s", observed: 65, reference: 50 },
@@ -1488,6 +1514,13 @@ assert.equal(witnessCountDistributionRow.witness_count_measurement_class, "expli
 assert.equal(witnessCountDistributionRow.active_share, 0.5);
 assert.match(durationEvidenceCsv, /witness_count_bin,witness_count_measurement_class,witness_count_release_id,witness_count_assessment_lane/);
 assert.match(durationEvidenceCsv, /one,explicit_nuforc_integer_only,analysis-witness-count-v1-fixture,single_source_descriptive_only/);
+const colorDistributionRow = durationEvidencePackage.evidenceRows.find((row) => row.section === "craft.color.distribution" && row.color_category === "white");
+assert.equal(colorDistributionRow.color_release_id, "analysis-color-v1-fixture");
+assert.equal(colorDistributionRow.color_assessment_lane, "cross_source_descriptive_role_preserving");
+assert.equal(colorDistributionRow.color_measurement_class, "source_reported_color_with_role_preserved");
+assert.equal(colorDistributionRow.active_share, 0.6);
+assert.match(durationEvidenceCsv, /color_category,color_measurement_class,color_release_id,color_assessment_lane/);
+assert.match(durationEvidenceCsv, /white,source_reported_color_with_role_preserved,analysis-color-v1-fixture,cross_source_descriptive_role_preserving/);
 
 controller.setBaselineMode("other_dates_balanced", { notify: false });
 controller.setActiveSection("analysis-section-overview", { source: "test" });
@@ -1562,6 +1595,9 @@ assert.equal(document.getElementById("analysis-rolling-chart"), null, "the redun
 assert.equal(document.getElementById("analysis-bursts-chart"), null, "the legacy burst panel is absent from the dashboard shell");
 controller.setActiveSection("analysis-section-craft", { source: "test" });
 assert.ok(document.getElementById("analysis-craft-confidence-chart").children.length >= 2);
+assert.match(document.getElementById("analysis-color-status").textContent, /40 normalized reports from 50 explicit color fields across 2 sources.*10% of matched reports.*45 raw values retain an unspecified/i);
+assert.match(descendants(document.getElementById("analysis-color-chart")).map((element) => element.textContent).join(" "), /White.*60%.*Red.*40%.*multi-label.*Descriptor-only.*original source strings remain hashed/i);
+assert.match(descendants(document.getElementById("analysis-color-comparison-chart")).map((element) => element.textContent).join(" "), /White.*\+5%.*95%.*same typed role.*Pattern Finder eligibility is locked false/i);
 assert.ok(descendants(document.getElementById("analysis-craft-distribution-chart")).some((element) => element.className.includes("analysis-craft-mosaic")), "craft distribution is a compact mosaic");
 const mosaicTiles = descendants(document.getElementById("analysis-craft-distribution-chart"))
   .filter((element) => element.className.includes("analysis-craft-mosaic-tile"));
