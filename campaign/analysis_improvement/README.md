@@ -25,6 +25,6 @@ The generated state is validated by `tests/test_analysis_improvement_campaign.py
 
 ## Current status
 
-Wave 2 made role-preserving reporting-delay evidence estimable for 261,331 catalog rows (37.179343%) across MUFON and NUFORC. The exact frozen package passed preview, production, served-hash parity, and isolated rollback reconstruction, and is deployed as production deployment `ecaefd00-cdb6-47b0-8abc-910e29a1a229`.
+Wave 7 made role-preserving color evidence estimable for 70,097 catalog rows (9.972642%) across NUFORC and UFOCAT. Object-surface, emitted-light, compound, changing, ambiguous-role, descriptor-only, sentinel, and unparsed evidence remain distinct; Pattern Finder and incidence, authenticity, risk, and causal claims remain suppressed. The exact frozen package passed preview, production, served-hash parity, and isolated Wave 6 rollback reconstruction, and is deployed as production deployment `bb261575-1812-46ab-a6fd-1165e04759d0`.
 
-Wave 3 is active under its pre-implementation registration. It is limited to provenance-preserving coordinate evidence repair: source coordinates, generalized public markers, and unresolved conflicts must remain separate, and no geocoding, canonical repair, or inferred precision upgrade is permitted.
+Wave 8 is active under its pre-implementation registration. It is limited to proving exact, locally pinned admin-0 boundary provenance for existing country assignments. If the exact release, rights evidence, stable identifiers, assignment algorithm, and parity cannot be proven without substituting geometry or guessing, the wave must close as a no-gain frontier pass and must not deploy.

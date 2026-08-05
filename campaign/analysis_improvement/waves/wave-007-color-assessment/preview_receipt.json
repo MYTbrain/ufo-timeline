@@ -1,0 +1,86 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-007-color-assessment",
+  "generatedAt": "2026-08-05T02:03:36Z",
+  "candidateCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+  "candidateTree": "161ceb6d90bfc62638420394b412f83a5cbb32ae",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "rawColorRows": 79215,
+    "normalizedRows": 70097,
+    "normalizedCatalogPct": 9.972642,
+    "supportedSources": ["nuforc", "ufocat"],
+    "commonSupportRate": 1.0,
+    "status": "ready_descriptive_cross_source",
+    "roleAmbiguityPreserved": true,
+    "patternFinderEligible": false
+  },
+  "tests": {
+    "python": {"passed": 1331, "subtestsPassed": 4, "warnings": 1},
+    "javascriptSuites": {"passed": 17, "failed": 0},
+    "focusedColorAndReproductionAssertions": 41,
+    "deterministicBuildProjectionAndOccurrenceParityPassed": true,
+    "parserIdempotenceAndOriginalValuePreservationPassed": true,
+    "releaseValidatorPassed": true,
+    "frozenInventoryPassed": true
+  },
+  "r2": {
+    "releaseId": "analysis-color-v1-20260805",
+    "prefix": "releases/analysis-color-v1-20260805",
+    "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-color-v1-20260805",
+    "payloadCount": 4,
+    "payloadBytes": 4586485,
+    "treeSha256": "640d204edb996242b0706e82fa247c59d4d27f4633aa165fba6d6447dee56893",
+    "manifestSha256": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49",
+    "uploaded": 4,
+    "verified": 4,
+    "publicReadbackPassed": true
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-color-v1-frozen-pages-qa1_20260805",
+    "baselinePath": "cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804",
+    "fileCount": 175,
+    "totalBytes": 120154856,
+    "treeSha256": "a7010b4cf2bff6fedd1512f863fd41fd4c1cfef9a3808d49bd699eefef54aa73",
+    "baselineChangedFiles": 6,
+    "baselineAddedFiles": 1,
+    "baselineRemovedFiles": 0,
+    "optionalLayerPayloadsInPages": 0,
+    "exactFrozenInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+    "immutableUrl": "https://ad680fbc.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-color-v1-preview-qa.ufo-timeline.pages.dev",
+    "branch": "analysis-color-v1-preview-qa1-20260805",
+    "sourceLabel": "a14889b",
+    "networkSmokePassed": true,
+    "servedAssetHashesMatched": true,
+    "colorManifestSha256": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopFirstUsefulMs": 1687.0,
+    "constrainedFirstUsefulMs": 2829.2,
+    "desktopWarmP95Ms": 5.3,
+    "constrainedWarmP95Ms": 50.7,
+    "constrainedColdSpatialMs": 2979.9,
+    "maximumObservedCleanDesktopAnalysisMainThreadTaskMs": 0,
+    "maximumOrdinaryDashboardPx": 874.859375,
+    "mobileNoOverflow": true,
+    "keyboardThemesReducedMotionPassed": true,
+    "exportSchemaAndControlsPassed": true,
+    "viewSwitchReloads": 0,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+    "immutableUrl": "https://e4c8685c.ufo-timeline.pages.dev",
+    "sourceLabel": "aa28e96"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}

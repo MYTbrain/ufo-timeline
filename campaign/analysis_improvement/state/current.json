@@ -1,31 +1,31 @@
 {
     "activeWave": {
-        "candidateId": "typed_observation_assessments",
-        "preregistration": "campaign/analysis_improvement/waves/wave-007-color-assessment/preregistration.json",
-        "primaryObjective": "Determine whether raw color evidence can become one defensible, typed, cross-source descriptive assessment without converting absence, ambiguous prose, luminosity, material color, or compound observations into exact object-color claims.",
+        "candidateId": "country_admin_provenance",
+        "preregistration": "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json",
+        "primaryObjective": "Determine whether the existing country assignments can gain reproducible, pinned administrative-boundary provenance without silently acquiring an unlicensed boundary dataset, weakening ocean or boundary ambiguity, or claiming subnational precision.",
         "status": "in_progress",
-        "waveId": "wave-007-color-assessment"
+        "waveId": "wave-008-country-admin-provenance"
     },
     "campaignId": "analysis-improvement-campaign-20260804",
     "consecutiveNoGainFrontierPasses": 0,
     "currentProduction": {
-        "analysisReleaseId": "analysis-geography-binary-v1-20260805",
+        "analysisReleaseId": "analysis-color-v1-20260805",
         "baselineCommit": "f64c7ab3b3a5efb297500365d883f0c5a26d2c25",
         "baselineTag": "analysis-v2.2.0-production",
         "canonicalUrl": "https://ufo-timeline.pages.dev",
-        "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
-        "deploymentSourceLabel": "aa28e96",
-        "estimatorVersion": "ufo-analysis-evidence-lab-v2.7.0",
-        "frozenBundle": "cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804",
-        "frozenTreeSha256": "b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215",
-        "immutableUrl": "https://e4c8685c.ufo-timeline.pages.dev",
-        "previewDeploymentId": "184e82ac-798e-4bf2-81a4-3587d2996554",
-        "r2BaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-witness-count-v1-20260804",
-        "r2TreeSha256": "43df295152c0c2558f2465fb028f422dd87d219bd524a66fede35059dc8d538c",
-        "sourceCommit": "aa28e965b618c30390cfc4e3c397a8cccdf8cdde",
-        "sourceTreeSha256": "324fea1f8cc4b0fcc5bb1ce7da60dd32623f3609"
+        "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+        "deploymentSourceLabel": "a14889b",
+        "estimatorVersion": "ufo-analysis-evidence-lab-v2.8.0",
+        "frozenBundle": "cloudflare_bundle_r2_analysis-color-v1-frozen-pages-qa1_20260805",
+        "frozenTreeSha256": "a7010b4cf2bff6fedd1512f863fd41fd4c1cfef9a3808d49bd699eefef54aa73",
+        "immutableUrl": "https://bb261575.ufo-timeline.pages.dev",
+        "previewDeploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+        "r2BaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-color-v1-20260805",
+        "r2TreeSha256": "640d204edb996242b0706e82fa247c59d4d27f4633aa165fba6d6447dee56893",
+        "sourceCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+        "sourceTreeSha256": "161ceb6d90bfc62638420394b412f83a5cbb32ae"
     },
-    "nextCandidate": "typed_observation_assessments",
+    "nextCandidate": "country_admin_provenance",
     "objective": "continuously_improve_analysis_data_first_with_evidence_gated_auto_deployments",
     "packageArtifacts": {
         "campaign/analysis_improvement/contracts/v1/before_after_metrics.schema.json": {
@@ -65,16 +65,16 @@
             "sha256": "12d5d76857b36d2500425eed7bb4ac05b55e897a77fda22f1123a92c2302464e"
         },
         "campaign/analysis_improvement/state/completed_waves.json": {
-            "bytes": 5380,
-            "sha256": "0ba04fd893d62a8a67e429104a387a6ae1aa4db4faaf3a508e11e2c8b21d2f52"
+            "bytes": 6179,
+            "sha256": "5e6b1488d3d148b82fca8fb24e6bce35f3dae00d3244203a9a2cf4586fa31c26"
         },
         "campaign/analysis_improvement/state/module_readiness.json": {
-            "bytes": 16054,
-            "sha256": "f4abaa30fd21a3f79474093e07911967d998b7ea2709afa3f57e076f59ba69a2"
+            "bytes": 17171,
+            "sha256": "c6af2a569c5435c58aa8ca0feb0b7d5e2a0b72c212d99dcef16aa1d214c25f7a"
         },
         "campaign/analysis_improvement/state/ranked_backlog.json": {
-            "bytes": 11272,
-            "sha256": "72ad9da02f10cf1edb5e38237926d179a6a6b768de5649b2fda5bf8969eabb58"
+            "bytes": 11285,
+            "sha256": "bece6d42205ba91c8e73b57b111bd537b70a88da080214b178fabb3a868a34f1"
         },
         "campaign/analysis_improvement/state/source_provenance_ledger.json": {
             "bytes": 12242,
@@ -203,20 +203,48 @@
         "campaign/analysis_improvement/waves/wave-007-color-assessment/preregistration.json": {
             "bytes": 6863,
             "sha256": "12b083776ff0835e423b513a16094a87b9ded03b23da581bc16307b0c18b7f2d"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/build_audit.json": {
+            "bytes": 4279,
+            "sha256": "1eaf8faaa187914290f566b05775e77b9d4b50f64626eabb91668919b4b91b88"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/parser_contract.json": {
+            "bytes": 6667,
+            "sha256": "eb05efbe78db529b9965692c6f51c60017d23b23e6833526e1c2ab081aece1b4"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/raw_value_audit.json": {
+            "bytes": 49939,
+            "sha256": "fd35ae5051cd5a358a2f7dc3c2ee9ec825c7ea4c26cf3b8d4f7aad76046a23de"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/before_after_metrics.json": {
+            "bytes": 3436,
+            "sha256": "4897dcf1f1ec31d41a8aa1f9aa710aac3dd2f5350dcec0991d456b7d842b1984"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/preview_receipt.json": {
+            "bytes": 3464,
+            "sha256": "bb700ae9a9ac7e8a952b5913c033356b701ca16c59c9a8e422aaa657058a301f"
+        },
+        "campaign/analysis_improvement/waves/wave-007-color-assessment/wave_receipt.json": {
+            "bytes": 5309,
+            "sha256": "437c86afcc68775fb0f779a293478aa46125a4800429041b0efc3036b4df2e9b"
+        },
+        "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json": {
+            "bytes": 6084,
+            "sha256": "ca79cae607d69642ab11840acaea29c989333646cff546973efa5379d47c6a3a"
         }
     },
     "rollbackTarget": {
-        "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
-        "immutableUrl": "https://022a9b4d.ufo-timeline.pages.dev",
-        "baselineCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
-        "frozenBundle": "cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804",
-        "frozenTreeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa",
-        "reconstructionManifest": "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/wave_receipt.json",
-        "releaseId": "analysis-witness-count-v1-20260804",
-        "rollbackInstruction": "validate the accepted Wave 5 receipt and frozen tree a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa, then deploy cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804 to branch main",
+        "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+        "immutableUrl": "https://e4c8685c.ufo-timeline.pages.dev",
+        "baselineCommit": "aa28e965b618c30390cfc4e3c397a8cccdf8cdde",
+        "frozenBundle": "cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804",
+        "frozenTreeSha256": "b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215",
+        "reconstructionManifest": "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/wave_receipt.json",
+        "releaseId": "analysis-geography-binary-v1-20260805",
+        "rollbackInstruction": "validate the accepted Wave 6 receipt and frozen tree b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215, then deploy cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804 to branch main",
         "tested": true,
-        "testDeploymentId": "9b1f1692-ccb9-4221-a17b-ba0a5184bab4",
-        "secondaryFallbackDeploymentId": "814b480b-cf4f-4998-926d-746461af56b4"
+        "testDeploymentId": "a8c3c159-0248-48a8-84eb-6c4af16734d1",
+        "secondaryFallbackDeploymentId": "184e82ac-798e-4bf2-81a4-3587d2996554"
     },
     "schemaId": "ufo-timeline-analysis-improvement-campaign-v1.0.0",
     "status": "active",

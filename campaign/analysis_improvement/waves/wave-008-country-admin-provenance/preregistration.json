@@ -1,0 +1,105 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-008-country-admin-provenance",
+  "candidateId": "country_admin_provenance",
+  "generatedAt": "2026-08-05T02:03:36Z",
+  "baselineCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-color-v1-20260805",
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "frozenTreeSha256": "a7010b4cf2bff6fedd1512f863fd41fd4c1cfef9a3808d49bd699eefef54aa73"
+  },
+  "primaryObjective": "Determine whether the existing country assignments can gain reproducible, pinned administrative-boundary provenance without silently acquiring an unlicensed boundary dataset, weakening ocean or boundary ambiguity, or claiming subnational precision.",
+  "hypothesis": "The current geography projection's 561,658 country assignments and 580,783 mapped boundary-provenance rows can support an explicit admin-0 release identifier, license, source hash, assignment algorithm, and stable boundary identifier for at least 548,257 catalog rows if the authoritative boundary release is already locally pinned and exactly reconstructible.",
+  "selectionRationale": {
+    "backlogCandidate": "country_admin_provenance",
+    "reason": "It is the highest-ranked unfinished data-first candidate after the accepted color assessment; the current ledger explicitly records zero administrative-region coverage while country assignment and generic boundary provenance are already present.",
+    "onePrimaryObjectivePerWave": true
+  },
+  "interventionBoundary": {
+    "inScope": [
+      "bounded inventory of local geometry, manifests, licenses, source URLs, hashes, assignment code, and country identifiers",
+      "deterministic parity audit between current geography assignments and any locally pinned boundary release",
+      "admin-0 assignment provenance sidecar or manifest only if exact reconstruction, license, hash, and ambiguity gates pass",
+      "country-level descriptive provenance coverage and export fields",
+      "one compact provenance disclosure only if every material gate passes"
+    ],
+    "outOfScope": [
+      "subnational or administrative-region assignment beyond the pinned geometry's verified level",
+      "whole-dataset external ingestion without public-domain status, compatible license, or permission",
+      "online geocoding, silent boundary substitution, nearest-country filling, coastline snapping, or disputed-territory guessing",
+      "mutating canonical coordinates or country labels",
+      "incidence, risk, causal, authenticity, or Pattern Finder claims"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "mappedRows": 580783,
+    "countryAssignedRows": 561658,
+    "countryAssignmentCoveragePct": 79.906615,
+    "boundaryAssignmentProvenanceRows": 580783,
+    "boundaryAssignmentProvenanceCoveragePct": 82.627512,
+    "administrativeRegionRows": 0,
+    "pinnedBoundaryReleaseIdentifierPresent": false
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumProvenanceQualifiedRows": 548257,
+    "minimumCatalogCoveragePct": 78.0,
+    "exactCountryAssignmentParityRequired": true,
+    "pinnedBoundaryReleaseIdentifierRequired": true,
+    "boundaryArtifactSha256Required": true,
+    "licenseOrPublicDomainEvidenceRequired": true,
+    "assignmentAlgorithmVersionRequired": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "existing country assignment",
+      "stable boundary identifier",
+      "boundary release identifier",
+      "boundary artifact hash",
+      "license or public-domain evidence",
+      "assignment algorithm version",
+      "boundary ambiguity status"
+    ],
+    "negativeControls": [
+      "ocean and no-polygon rows remain unknown",
+      "boundary-edge and disputed-territory holdout",
+      "dateline and high-latitude holdout",
+      "country-code parity",
+      "exact reconstruction from the pinned local release"
+    ],
+    "uncertaintyTreatment": "Country assignment, administrative level, source geometry, disputed-territory policy, boundary-edge ambiguity, and coordinate precision remain separate. Missing provenance cannot be inferred from a country label alone.",
+    "suppressionPolicy": "Publish a no-gain audit and do not deploy if the exact geometry release, rights evidence, stable identifiers, algorithm, or assignment parity cannot be proven locally. Never backfill from a different geometry release merely to satisfy coverage."
+  },
+  "performanceBudget": {
+    "loading": "manifest_only_until_a_user_requests_geography_provenance",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "constrainedFirstUsefulMs": 5000,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "local provenance and rights reconciliation before any external query",
+    "exact pinned boundary release, source, license, hash, and stable identifiers",
+    "deterministic assignment reconstruction and country-code parity",
+    "ocean, disputed, edge, dateline, and high-latitude ambiguity preservation",
+    "complete Python and JavaScript suites if implementation occurs",
+    "clean-clone reproduction",
+    "browser QA, frozen preview-production parity, and tested rollback if a material gain is accepted"
+  ],
+  "stopConditions": [
+    "the current country assignments cannot be tied to one exact locally pinned boundary release",
+    "rights or redistribution evidence is missing or incompatible",
+    "stable boundary identifiers or assignment algorithm provenance are absent",
+    "exact reconstruction changes existing country assignments",
+    "coverage falls below 548257 rows without nearest-country or semantic guessing",
+    "scientific, provenance, rights, accessibility, or performance gates would need weakening"
+  ]
+}

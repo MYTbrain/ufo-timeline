@@ -7,9 +7,9 @@
                 "coveredRows": 290081,
                 "missingRows": 412812
             },
-            "estimators": [
-                "descriptive_distribution",
-                "source_era_region_standardized_comparison"
+              "estimators": [
+                  "descriptive_typed_color_role_distribution",
+                  "source_era_region_common_support_standardized_comparison"
             ],
             "minimumCoveragePct": 5.0,
             "moduleId": "duration",
@@ -245,31 +245,47 @@
                 "coveredRows": 79215,
                 "missingRows": 623678
             },
-            "estimators": [
-                "descriptive_distribution",
-                "source_era_region_standardized_comparison"
-            ],
-            "minimumCoveragePct": 5.0,
-            "moduleId": "color",
-            "negativeControls": [
-                "source_composition_holdout",
-                "era_holdout",
-                "region_holdout"
-            ],
-            "requiredFields": [
-                "color_raw",
-                "exact_date",
-                "independent_source_identity"
-            ],
-            "sourceIndependenceScore": 2,
-            "status": "candidate_audit_ready",
+              "estimators": [
+                  "descriptive_typed_color_role_distribution",
+                  "source_era_region_common_support_standardized_comparison"
+              ],
+              "minimumCoveragePct": 5.0,
+              "moduleId": "color",
+              "negativeControls": [
+                  "leave_one_source_out",
+                  "era_holdout",
+                  "macroregion_holdout",
+                  "object_color_vs_emitted_light_role_separation",
+                  "blank_sentinel_descriptor_compound_changing_and_unparsed_separation",
+                  "source_raw_value_occurrence_parity"
+              ],
+              "requiredFields": [
+                  "color_raw",
+                  "typed_color_role",
+                  "normalized_color_categories",
+                  "compound_and_changing_flags",
+                  "parse_status_and_reason",
+                  "independent_source_identity",
+                  "era",
+                  "macroregion"
+              ],
+              "sourceIndependenceScore": 2,
+              "materialRelease": {
+                  "releaseId": "analysis-color-v1-20260805",
+                  "rawRows": 79215,
+                  "normalizedRows": 70097,
+                  "normalizedCatalogPct": 9.972642,
+                  "commonSupportRate": 1.0,
+                  "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0"
+              },
+              "status": "ready_descriptive_cross_source",
             "supportedSources": [
                 "nuforc",
                 "ufocat"
             ],
-            "suppressionPolicy": "suppress_inference_until_common_support_and_typed_normalization_pass",
-            "uncertaintyTreatment": "typed_parser_uncertainty_and_bootstrap_interval_required",
-            "version": "0.1.0-candidate"
+              "suppressionPolicy": "suppress comparison whenever typed coverage, source independence, role compatibility, common support, cell support, or holdout stability fails; Pattern Finder remains disabled",
+              "uncertaintyTreatment": "exact single, compound, changing, object-surface, emitted-light, ambiguous-role, descriptor-only, sentinel, and unparsed values remain distinct; original source text and hashes are preserved",
+              "version": "1.0.0"
         },
         {
             "baselineCoverage": {

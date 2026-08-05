@@ -70,15 +70,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     wave_four_receipt = load("waves/wave-004-time-of-day-assessment/wave_receipt.json")
     wave_five_receipt = load("waves/wave-005-witness-count-assessment/wave_receipt.json")
     wave_six_receipt = load("waves/wave-006-analysis-projection-encoding/wave_receipt.json")
+    wave_seven_receipt = load("waves/wave-007-color-assessment/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
-    assert current["currentProduction"]["deploymentId"] == wave_six_receipt["production"]["deploymentId"]
-    assert current["currentProduction"]["frozenTreeSha256"] == wave_six_receipt["artifacts"]["frozenPagesTreeSha256"]
-    assert current["rollbackTarget"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
+    assert current["currentProduction"]["deploymentId"] == wave_seven_receipt["production"]["deploymentId"]
+    assert current["currentProduction"]["frozenTreeSha256"] == wave_seven_receipt["artifacts"]["frozenPagesTreeSha256"]
+    assert current["rollbackTarget"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
     assert current["consecutiveNoGainFrontierPasses"] == 0
     assert current["status"] == "active"
-    assert len(completed["waves"]) == 6
+    assert len(completed["waves"]) == 7
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
     assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
@@ -96,12 +97,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert completed["waves"][5]["waveId"] == "wave-006-analysis-projection-encoding"
     assert completed["waves"][5]["status"] == "accepted_and_promoted"
     assert completed["waves"][5]["productionDeploymentId"] == wave_six_receipt["production"]["deploymentId"]
+    assert completed["waves"][6]["waveId"] == "wave-007-color-assessment"
+    assert completed["waves"][6]["status"] == "accepted_and_promoted"
+    assert completed["waves"][6]["productionDeploymentId"] == wave_seven_receipt["production"]["deploymentId"]
     assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert wave_two_receipt["production"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
     assert wave_three_receipt["production"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
     assert wave_four_receipt["production"]["deploymentId"] == wave_five_receipt["rollback"]["deploymentId"]
     assert wave_five_receipt["production"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
-    assert current["activeWave"]["waveId"] == "wave-007-color-assessment"
+    assert wave_six_receipt["production"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
+    assert current["activeWave"]["waveId"] == "wave-008-country-admin-provenance"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
@@ -131,6 +136,13 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preview_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-007-color-assessment/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/build_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/parser_contract.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/raw_value_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/before_after_metrics.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/preview_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -268,6 +280,23 @@ def test_projection_encoding_receipt_and_color_wave_transition_are_pinned() -> N
     assert color["expectedMaterialGain"]["minimumIndependentSources"] == 2
     assert color["expectedMaterialGain"]["originalValuesPreserved"] is True
     assert "inferring color from craft type, brightness, illumination, photographs, or chronology prose" in color["interventionBoundary"]["outOfScope"]
+
+
+def test_color_receipt_and_country_admin_wave_transition_are_pinned() -> None:
+    receipt = load("waves/wave-007-color-assessment/wave_receipt.json")
+    country = load("waves/wave-008-country-admin-provenance/preregistration.json")
+    assert receipt["releaseGate"] == "accepted_and_promoted"
+    assert receipt["materialGain"]["passed"] is True
+    assert receipt["materialGain"]["evidence"]["normalizedRows"] == 70_097
+    assert receipt["materialGain"]["evidence"]["supportedSources"] == ["nuforc", "ufocat"]
+    assert receipt["materialGain"]["evidence"]["roleUnspecifiedRows"] == 77_994
+    assert receipt["rollback"]["tested"] is True
+    assert country["candidateId"] == "country_admin_provenance"
+    assert country["baselineCommit"] == receipt["artifacts"]["candidateCommit"]
+    assert country["beforeMetrics"]["countryAssignedRows"] == 561_658
+    assert country["expectedMaterialGain"]["minimumProvenanceQualifiedRows"] == 548_257
+    assert country["expectedMaterialGain"]["exactCountryAssignmentParityRequired"] is True
+    assert "online geocoding, silent boundary substitution, nearest-country filling, coastline snapping, or disputed-territory guessing" in country["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

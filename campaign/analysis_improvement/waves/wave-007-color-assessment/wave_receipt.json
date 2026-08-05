@@ -1,0 +1,103 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-007-color-assessment",
+  "generatedAt": "2026-08-05T02:03:36Z",
+  "primaryObjective": "Determine whether raw color evidence can become one defensible, typed, cross-source descriptive assessment without converting absence, ambiguous prose, luminosity, material color, or compound observations into exact object-color claims.",
+  "preregisteredOutcome": "accepted_material_gain_and_promoted",
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "catalogRows": 702893,
+      "rawColorRows": 79215,
+      "normalizedRows": 70097,
+      "normalizedCatalogPct": 9.972642,
+      "supportedSources": ["nuforc", "ufocat"],
+      "normalizedRowsBySource": {"nuforc": 10165, "ufocat": 59932},
+      "roleSpecificRows": 1207,
+      "roleUnspecifiedRows": 77994,
+      "commonSupportRate": 1.0,
+      "originalValuesPreserved": true,
+      "canonicalEventRecordsMutated": false
+    }
+  },
+  "beforeMetrics": {
+    "rawColorRows": 79215,
+    "rawColorCoveragePct": 11.269852,
+    "typedColorRows": 0,
+    "colorAssessmentStatus": "unavailable"
+  },
+  "afterMetrics": {
+    "path": "campaign/analysis_improvement/waves/wave-007-color-assessment/before_after_metrics.json",
+    "normalizedRows": 70097,
+    "normalizedCatalogPct": 9.972642,
+    "colorAssessmentStatus": "ready_descriptive_cross_source"
+  },
+  "tests": {
+    "python": {"passed": 1331, "subtestsPassed": 4, "warnings": 1},
+    "javascriptSuites": {"passed": 17, "failed": 0},
+    "focusedColorAndReproductionAssertions": 41,
+    "deterministicReconstructionPassed": true,
+    "sourceOccurrenceParityPassed": true,
+    "roleAndScientificSuppressionContractsPassed": true,
+    "browserQaPassed": true,
+    "servedPreviewProductionCanonicalHashParityPassed": true
+  },
+  "artifacts": {
+    "candidateCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+    "sourceTreeSha256": "161ceb6d90bfc62638420394b412f83a5cbb32ae",
+    "rawValueAuditSha256": "fd35ae5051cd5a358a2f7dc3c2ee9ec825c7ea4c26cf3b8d4f7aad76046a23de",
+    "rawValueInventorySha256": "0590ea8fa5b182e393f0712eac62ba764a6b5a307269b656387158d8dd9ced0f",
+    "colorValueDictionarySha256": "22b3be93b547e41ce0c171a9ff3edaefc3c161148cbc9ca3e19c2294cf58f003",
+    "colorValueDictionaryGzipSha256": "36a3f76a3b4d67c32aed43f3152f1b2cd6fada8f359acd558b3d0dad66ad5cba",
+    "colorProjectionSha256": "86210c50074fbb074a287613f71470db553090db8ff7772695ba48e00e262238",
+    "colorProjectionGzipSha256": "e18fe47c5007c247068a938cf97d028b19ac363988d58e95454e7c817fce0057",
+    "colorManifestSha256": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49",
+    "r2TreeSha256": "640d204edb996242b0706e82fa247c59d4d27f4633aa165fba6d6447dee56893",
+    "frozenPagesPath": "cloudflare_bundle_r2_analysis-color-v1-frozen-pages-qa1_20260805",
+    "frozenPagesFileCount": 175,
+    "frozenPagesTotalBytes": 120154856,
+    "frozenPagesTreeSha256": "a7010b4cf2bff6fedd1512f863fd41fd4c1cfef9a3808d49bd699eefef54aa73",
+    "frozenAssetSha256": {
+      "index.html": "e8f6d49aa53074d80dedcbb31e4f9fc0c6f192f8bc0a47c02da63b6986e959e4",
+      "app.js": "a13314ebac4e79646622db2879913257b253b4880261a3cf8c7de6fff0c8ddf9",
+      "analysis_stats.js": "56c953d7b55c9e631bf820b9ca734a1d7f71b79f89e7461af3cccdabe5eb4718",
+      "analysis_view.js": "c9db17d27022f91769a2150c7ba7ee60bb2d01fb2fcf9e9735a8ee356bf45861",
+      "catalog_filter_worker.js": "da5c56bf2df00f616561f06c9f2344c4079fb9f4ee7d3bebf6a9a4a0f16a31c3",
+      "analysis_color_manifest.json": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49"
+    }
+  },
+  "preview": {
+    "deploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+    "immutableUrl": "https://ad680fbc.ufo-timeline.pages.dev",
+    "branch": "analysis-color-v1-preview-qa1-20260805",
+    "sourceLabel": "a14889b",
+    "qaPassed": true,
+    "consoleErrorsAndWarnings": 0
+  },
+  "production": {
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "immutableUrl": "https://bb261575.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceLabel": "a14889b",
+    "smokePassed": true,
+    "consoleErrorsAndWarnings": 0,
+    "previewProductionCanonicalHashesIdentical": true,
+    "uploadedNewContentFilesAfterPreview": 0
+  },
+  "rollback": {
+    "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+    "immutableUrl": "https://e4c8685c.ufo-timeline.pages.dev",
+    "instructions": "Validate the accepted Wave 6 receipt and frozen tree b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215, then deploy cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804 to branch main.",
+    "tested": true,
+    "testMethod": "isolated_preview_redeployment_and_served_hash_comparison",
+    "testDeploymentId": "a8c3c159-0248-48a8-84eb-6c4af16734d1",
+    "testImmutableUrl": "https://a8c3c159.ufo-timeline.pages.dev",
+    "validatedTreeSha256": "b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215",
+    "servedHashesMatchedPriorProduction": true,
+    "colorManifestAbsentFromRollback": true,
+    "currentProductionRemainedHealthy": true
+  },
+  "releaseGate": "accepted_and_promoted"
+}

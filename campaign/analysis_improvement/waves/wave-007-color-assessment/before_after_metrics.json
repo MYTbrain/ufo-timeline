@@ -1,0 +1,91 @@
+{
+  "schemaId": "ufo-timeline-analysis-before-after-metrics-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "measurementId": "wave-007-color-assessment-final-20260805",
+  "generatedAt": "2026-08-05T02:03:36Z",
+  "catalog": {
+    "beforeRows": 702893,
+    "afterRows": 702893,
+    "canonicalEventRecordsMutated": false,
+    "rawColorRows": 79215,
+    "rawColorCoveragePct": 11.269852,
+    "normalizedColorRows": 70097,
+    "normalizedCatalogPct": 9.972642,
+    "supportedSources": ["nuforc", "ufocat"],
+    "normalizedRowsBySource": {"nuforc": 10165, "ufocat": 59932},
+    "roleSpecificRows": 1207,
+    "roleUnspecifiedRows": 77994,
+    "commonSupportRate": 1.0,
+    "normalizedCategoryCount": 15,
+    "uniqueSourceRawValues": 4859
+  },
+  "statisticalReadiness": {
+    "before": "unavailable",
+    "after": "ready_descriptive_cross_source",
+    "materialCriterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 63372,
+    "minimumNormalizedCatalogPct": 9.0,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalColorTextPreserved": true,
+    "objectAndEmittedLightRolesSeparated": true,
+    "compoundChangingDescriptorSentinelAndUnparsedValuesRemainDistinct": true,
+    "patternFinderPromotionAuthorized": false,
+    "incidenceAuthenticityRiskOrCausalClaimsAuthorized": false,
+    "allPreregisteredMaterialGatesPassed": true
+  },
+  "performance": {
+    "desktopFirstUsefulMs": 1687.0,
+    "desktopQuickWorkerMs": 581.9,
+    "constrainedCpu4xFirstUsefulMs": 2829.2,
+    "constrainedCpu4xQuickWorkerMs": 1293.8,
+    "desktopWarmRecomputationP95Ms": 5.3,
+    "constrainedCpu4xWarmRecomputationP95Ms": 50.7,
+    "maximumObservedCleanDesktopAnalysisMainThreadTaskMs": 0,
+    "constrainedCpu4xColdSpatialReadyMs": 2979.9,
+    "lastAcceptedDesktopColdSpatialMs": 3062,
+    "spatialArtifactsChanged": false,
+    "warmDashboardResourceCountBefore": 134,
+    "warmDashboardResourceCountAfter": 134,
+    "warmDashboardNewResources": 0,
+    "catalogContextTileOrLayerReloadsDuringStableSwitching": 0,
+    "colorArtifactLoading": "lazy_on_craft_dashboard",
+    "colorArtifactCompressedBytes": 1320746,
+    "maximumAllowedCompressedArtifactBytes": 5000000
+  },
+  "accessibility": {
+    "desktopKeyboardNavigationPassed": true,
+    "mobileNoPageOverflowPassed": true,
+    "mobileViewport": "390x844",
+    "mobileDocumentClientAndScrollWidth": [375, 375],
+    "mobileAnalysisClientAndScrollWidth": [331, 331],
+    "mobileCraftClientAndScrollWidth": [307, 307],
+    "lightThemePassed": true,
+    "darkThemePassed": true,
+    "reducedMotionPassed": true,
+    "jsonAndCsvExportSchemaTestsPassed": true,
+    "liveJsonAndCsvExportControlsTriggered": true,
+    "colorReleaseAndArtifactHashesPresentInExports": true,
+    "previewConsoleErrorsAndWarnings": 0,
+    "productionConsoleErrorsAndWarnings": 0
+  },
+  "visualDensity": {
+    "referenceViewport": "1440x720",
+    "maximumOrdinaryDashboardPx": 900,
+    "dashboardHeightsPx": {
+      "overview": 742.1875,
+      "time": 874.859375,
+      "craft": 339.15625,
+      "geography": 596.71875,
+      "spatial": 587.71875,
+      "context": 855.890625,
+      "sourcesQuality": 613.4375
+    },
+    "allOrdinaryDashboardsWithinBound": true,
+    "maximumObservedOrdinaryDashboardPx": 874.859375
+  },
+  "materialGain": {
+    "passed": true,
+    "criterion": "previously_unavailable_assessment_becomes_estimable"
+  }
+}

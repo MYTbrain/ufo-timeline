@@ -85,6 +85,19 @@
             "productionDeploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
             "rollbackTestDeploymentId": "9b1f1692-ccb9-4221-a17b-ba0a5184bab4",
             "materialGain": true
+        },
+        {
+            "waveId": "wave-007-color-assessment",
+            "candidateId": "typed_observation_assessments",
+            "status": "accepted_and_promoted",
+            "completedAt": "2026-08-05T02:03:36Z",
+            "sourceCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+            "receipt": "campaign/analysis_improvement/waves/wave-007-color-assessment/wave_receipt.json",
+            "beforeAfterMetrics": "campaign/analysis_improvement/waves/wave-007-color-assessment/before_after_metrics.json",
+            "previewDeploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+            "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+            "rollbackTestDeploymentId": "a8c3c159-0248-48a8-84eb-6c4af16734d1",
+            "materialGain": true
         }
     ]
 }
