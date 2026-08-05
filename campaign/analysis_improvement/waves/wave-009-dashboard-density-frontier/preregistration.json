@@ -1,0 +1,86 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-009-dashboard-density-frontier",
+  "candidateId": "dashboard_density_refinement",
+  "generatedAt": "2026-08-05T02:13:51Z",
+  "baselineCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-color-v1-20260805",
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "frozenTreeSha256": "a7010b4cf2bff6fedd1512f863fd41fd4c1cfef9a3808d49bd699eefef54aa73"
+  },
+  "primaryObjective": "Determine whether one measured Analysis dashboard or core dashboard-completion workflow can improve by at least 10 percent without hiding required evidence, weakening readability or accessibility, adding a second event model, or regressing scientific safeguards.",
+  "hypothesis": "The current maximum ordinary dashboard height of 874.859375 px may contain a safely removable or collapsible redundancy that can reduce the same dashboard to at most 787.373438 px at 1440x720, or an equivalent core completion task may improve by at least 10 percent, while preserving all required questions, readiness states, uncertainty, hashes, and keyboard access.",
+  "selectionRationale": {
+    "backlogCandidate": "dashboard_density_refinement",
+    "reason": "It is the highest-ranked unfinished candidate after the country-provenance audit closed with no gain. All data-first candidates above it are either accepted, blocked by missing evidence, or explicitly fail closed.",
+    "onePrimaryObjectivePerWave": true
+  },
+  "interventionBoundary": {
+    "inScope": [
+      "fresh reference-height and core task inventory across all seven dashboards",
+      "bounded audit of the tallest dashboard for duplicated explanation, repeated controls, and supporting-detail disclosure opportunities",
+      "one prototype only if the measured dashboard height or core task improves by at least 10 percent",
+      "keyboard, mobile, theme, reduced-motion, export, direct-hash, and zero-console checks if a prototype passes"
+    ],
+    "outOfScope": [
+      "removing a scientific question, readiness state, uncertainty statement, denominator, source, or artifact hash",
+      "shrinking text below the current readable scale or relying on hover-only content",
+      "default-collapsing the primary answer needed to understand a dashboard",
+      "changing estimators, event records, evidence eligibility, Pattern Finder gates, or context semantics",
+      "adding a second browser event model or reloading catalog, context, tile, or layer assets during switching"
+    ]
+  },
+  "beforeMetrics": {
+    "referenceViewport": "1440x720",
+    "dashboardHeightsPx": {
+      "overview": 742.1875,
+      "time": 874.859375,
+      "craft": 339.15625,
+      "geography": 596.71875,
+      "spatial": 587.71875,
+      "context": 855.890625,
+      "sourcesQuality": 613.4375
+    },
+    "maximumDashboard": "time",
+    "maximumDashboardHeightPx": 874.859375,
+    "desktopFirstUsefulMs": 1687.0,
+    "desktopWarmRecomputationP95Ms": 5.3,
+    "stableSwitchingReloads": 0,
+    "mobileOverflowPx": 0
+  },
+  "expectedMaterialGain": {
+    "criterion": "dashboard_height_or_core_task_improves_at_least_10_percent",
+    "minimumImprovementPct": 10.0,
+    "maximumAcceptedTimeDashboardHeightPx": 787.373438,
+    "allSevenDashboardsMustRemainAtOrBelowPx": 900,
+    "informationAndControlParityRequired": true,
+    "accessibilityParityRequired": true
+  },
+  "performanceBudget": {
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "constrainedFirstUsefulMs": 5000,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "desktopColdSpatialMs": 6000,
+    "constrainedColdSpatialMs": 12000,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "fresh exact reference-height and task inventory",
+    "one primary target and one bounded prototype",
+    "at least 10 percent same-metric improvement",
+    "information, readability, keyboard, mobile, theme, reduced-motion, export, and hash parity",
+    "complete Python and JavaScript suites if implementation occurs",
+    "clean-clone reproduction",
+    "identical frozen preview and production package with tested rollback if accepted"
+  ],
+  "stopConditions": [
+    "no dashboard height or core task can improve by 10 percent without hiding required information or controls",
+    "the only measurable improvements depend on smaller text, hover-only content, or default-hidden primary answers",
+    "scientific, provenance, accessibility, performance, or product-readiness gates would need weakening"
+  ]
+}

@@ -71,15 +71,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     wave_five_receipt = load("waves/wave-005-witness-count-assessment/wave_receipt.json")
     wave_six_receipt = load("waves/wave-006-analysis-projection-encoding/wave_receipt.json")
     wave_seven_receipt = load("waves/wave-007-color-assessment/wave_receipt.json")
+    wave_eight_receipt = load("waves/wave-008-country-admin-provenance/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
     assert current["currentProduction"]["deploymentId"] == wave_seven_receipt["production"]["deploymentId"]
     assert current["currentProduction"]["frozenTreeSha256"] == wave_seven_receipt["artifacts"]["frozenPagesTreeSha256"]
     assert current["rollbackTarget"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
-    assert current["consecutiveNoGainFrontierPasses"] == 0
+    assert current["consecutiveNoGainFrontierPasses"] == 1
     assert current["status"] == "active"
-    assert len(completed["waves"]) == 7
+    assert len(completed["waves"]) == 8
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
     assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
@@ -100,13 +101,17 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert completed["waves"][6]["waveId"] == "wave-007-color-assessment"
     assert completed["waves"][6]["status"] == "accepted_and_promoted"
     assert completed["waves"][6]["productionDeploymentId"] == wave_seven_receipt["production"]["deploymentId"]
+    assert completed["waves"][7]["waveId"] == "wave-008-country-admin-provenance"
+    assert completed["waves"][7]["status"] == "completed_no_gain"
+    assert completed["waves"][7]["productionDeploymentId"] == wave_eight_receipt["production"]["deploymentId"]
+    assert completed["waves"][7]["deploymentPerformed"] is False
     assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert wave_two_receipt["production"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
     assert wave_three_receipt["production"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
     assert wave_four_receipt["production"]["deploymentId"] == wave_five_receipt["rollback"]["deploymentId"]
     assert wave_five_receipt["production"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
     assert wave_six_receipt["production"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
-    assert current["activeWave"]["waveId"] == "wave-008-country-admin-provenance"
+    assert current["activeWave"]["waveId"] == "wave-009-dashboard-density-frontier"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
@@ -143,6 +148,9 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-007-color-assessment/preview_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-007-color-assessment/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/provenance_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -297,6 +305,24 @@ def test_color_receipt_and_country_admin_wave_transition_are_pinned() -> None:
     assert country["expectedMaterialGain"]["minimumProvenanceQualifiedRows"] == 548_257
     assert country["expectedMaterialGain"]["exactCountryAssignmentParityRequired"] is True
     assert "online geocoding, silent boundary substitution, nearest-country filling, coastline snapping, or disputed-territory guessing" in country["interventionBoundary"]["outOfScope"]
+
+
+def test_country_admin_no_gain_and_dashboard_frontier_transition_are_pinned() -> None:
+    receipt = load("waves/wave-008-country-admin-provenance/wave_receipt.json")
+    dashboard = load("waves/wave-009-dashboard-density-frontier/preregistration.json")
+    assert receipt["releaseGate"] == "completed_no_gain_not_deployed"
+    assert receipt["materialGain"]["passed"] is False
+    assert receipt["materialGain"]["evidence"]["exactUpstreamByteMatch"] is True
+    assert receipt["materialGain"]["evidence"]["pinnedExternalReleaseIdentity"] is False
+    assert receipt["materialGain"]["evidence"]["rightsEvidenceForExactArtifact"] is False
+    assert receipt["materialGain"]["evidence"]["stableUniqueBoundaryIdentifiers"] is False
+    assert receipt["production"]["unchanged"] is True
+    assert receipt["deployment"]["previewCreated"] is False
+    assert dashboard["candidateId"] == "dashboard_density_refinement"
+    assert dashboard["baselineCommit"] == "a14889b428f18c399db0b8b884a6f88dea1e2c8a"
+    assert dashboard["beforeMetrics"]["maximumDashboardHeightPx"] == 874.859375
+    assert dashboard["expectedMaterialGain"]["minimumImprovementPct"] == 10.0
+    assert dashboard["expectedMaterialGain"]["informationAndControlParityRequired"] is True
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

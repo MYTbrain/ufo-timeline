@@ -1,0 +1,54 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-008-country-admin-provenance",
+  "generatedAt": "2026-08-05T02:13:51Z",
+  "primaryObjective": "Determine whether the existing country assignments can gain reproducible, pinned administrative-boundary provenance without silently acquiring an unlicensed boundary dataset, weakening ocean or boundary ambiguity, or claiming subnational precision.",
+  "preregisteredOutcome": "completed_no_safe_material_gain",
+  "materialGain": {
+    "passed": false,
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "evidence": {
+      "countryShellBytes": 256950,
+      "countryShellSha256": "bc2356a26a2976f98e4aaf1b24c5693d5a4dc9b6178aeb952dbafbcd42c73bcd",
+      "exactUpstreamByteMatch": true,
+      "pinnedExternalReleaseIdentity": false,
+      "rightsEvidenceForExactArtifact": false,
+      "uniqueFeatureIds": 179,
+      "featureCount": 180,
+      "stableUniqueBoundaryIdentifiers": false,
+      "countryAssignmentRows": 561658,
+      "canonicalEventRecordsMutated": false
+    }
+  },
+  "audit": {
+    "path": "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/provenance_audit.json",
+    "localReconciliationCompletedBeforeExternalQuery": true,
+    "boundedExternalIdentityCheckCompleted": true,
+    "stopConditionsTriggered": true,
+    "failClosed": true
+  },
+  "tests": {
+    "campaignStateAssertionsPassed": 15,
+    "jsonAndSchemaValidationPassed": true,
+    "implementationTestSuiteRequired": false,
+    "reason": "No implementation or served artifact changed."
+  },
+  "production": {
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "immutableUrl": "https://bb261575.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "unchanged": true
+  },
+  "rollback": {
+    "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+    "unchanged": true
+  },
+  "deployment": {
+    "previewCreated": false,
+    "productionCreated": false,
+    "rollbackTestCreated": false,
+    "reason": "Audit-only and no-gain waves are not deployed."
+  },
+  "releaseGate": "completed_no_gain_not_deployed"
+}

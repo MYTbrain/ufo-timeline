@@ -233,14 +233,14 @@
                 "sourceIndependence": 0,
                 "userFacingSeverity": 4
             },
-              "status": "in_progress"
+              "status": "completed_no_gain"
         },
         {
             "baselineCoverage": null,
             "blockingIssues": [
                 "fresh_visual_density_and_task_baseline_required"
             ],
-            "candidateId": "dashboard_density_refinement",
+              "candidateId": "dashboard_density_refinement",
             "expectedOutcome": "Reduce a measured dashboard height or task-completion burden by at least 10%.",
             "independentlySupportedSources": [],
             "materialCriterion": "dashboard_height_or_core_task_improves_at_least_10_percent",
@@ -257,7 +257,7 @@
                 "sourceIndependence": 0,
                 "userFacingSeverity": 3
             },
-            "status": "candidate"
+              "status": "in_progress"
         }
     ],
     "rankingPolicy": {

@@ -1,13 +1,13 @@
 {
     "activeWave": {
-        "candidateId": "country_admin_provenance",
-        "preregistration": "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json",
-        "primaryObjective": "Determine whether the existing country assignments can gain reproducible, pinned administrative-boundary provenance without silently acquiring an unlicensed boundary dataset, weakening ocean or boundary ambiguity, or claiming subnational precision.",
+        "candidateId": "dashboard_density_refinement",
+        "preregistration": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json",
+        "primaryObjective": "Determine whether one measured Analysis dashboard or core dashboard-completion workflow can improve by at least 10 percent without hiding required evidence, weakening readability or accessibility, adding a second event model, or regressing scientific safeguards.",
         "status": "in_progress",
-        "waveId": "wave-008-country-admin-provenance"
+        "waveId": "wave-009-dashboard-density-frontier"
     },
     "campaignId": "analysis-improvement-campaign-20260804",
-    "consecutiveNoGainFrontierPasses": 0,
+    "consecutiveNoGainFrontierPasses": 1,
     "currentProduction": {
         "analysisReleaseId": "analysis-color-v1-20260805",
         "baselineCommit": "f64c7ab3b3a5efb297500365d883f0c5a26d2c25",
@@ -25,7 +25,7 @@
         "sourceCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
         "sourceTreeSha256": "161ceb6d90bfc62638420394b412f83a5cbb32ae"
     },
-    "nextCandidate": "country_admin_provenance",
+    "nextCandidate": "dashboard_density_refinement",
     "objective": "continuously_improve_analysis_data_first_with_evidence_gated_auto_deployments",
     "packageArtifacts": {
         "campaign/analysis_improvement/contracts/v1/before_after_metrics.schema.json": {
@@ -65,16 +65,16 @@
             "sha256": "12d5d76857b36d2500425eed7bb4ac05b55e897a77fda22f1123a92c2302464e"
         },
         "campaign/analysis_improvement/state/completed_waves.json": {
-            "bytes": 6179,
-            "sha256": "5e6b1488d3d148b82fca8fb24e6bce35f3dae00d3244203a9a2cf4586fa31c26"
+            "bytes": 6864,
+            "sha256": "e6c367a08443f8d7ed229c87888e0a4bfde32a29cc9721e95f6a5d9013a7dfae"
         },
         "campaign/analysis_improvement/state/module_readiness.json": {
             "bytes": 17171,
             "sha256": "c6af2a569c5435c58aa8ca0feb0b7d5e2a0b72c212d99dcef16aa1d214c25f7a"
         },
         "campaign/analysis_improvement/state/ranked_backlog.json": {
-            "bytes": 11285,
-            "sha256": "bece6d42205ba91c8e73b57b111bd537b70a88da080214b178fabb3a868a34f1"
+            "bytes": 11295,
+            "sha256": "e2d2a1cb1518b40cb48aa30b4e3bf3ed4b6df46484906cda8e123c7dfbb4fa7d"
         },
         "campaign/analysis_improvement/state/source_provenance_ledger.json": {
             "bytes": 12242,
@@ -231,6 +231,18 @@
         "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/preregistration.json": {
             "bytes": 6084,
             "sha256": "ca79cae607d69642ab11840acaea29c989333646cff546973efa5379d47c6a3a"
+        },
+        "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/provenance_audit.json": {
+            "bytes": 4754,
+            "sha256": "3da181190e9c22c6d3dd63978a75785972a993c33ed2ff7788a143e33e97381a"
+        },
+        "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/wave_receipt.json": {
+            "bytes": 2202,
+            "sha256": "c4e76ee3c04f06aa65a82ee85fdbaf0b6853b9396b5ff5a4a765494bf6203109"
+        },
+        "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json": {
+            "bytes": 4705,
+            "sha256": "96c79f0e0ef3e894c2212a37cccab22494556e2458b1d6a837322d702c1bba4a"
         }
     },
     "rollbackTarget": {

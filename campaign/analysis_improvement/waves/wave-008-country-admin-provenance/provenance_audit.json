@@ -1,0 +1,101 @@
+{
+  "schemaId": "ufo-timeline-country-admin-provenance-audit-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-008-country-admin-provenance",
+  "generatedAt": "2026-08-05T02:13:51Z",
+  "status": "no_safe_material_gain",
+  "localEvidence": {
+    "countryShell": {
+      "path": "webapp/static_public/data/world_countries.geojson",
+      "bytes": 256950,
+      "sha256": "bc2356a26a2976f98e4aaf1b24c5693d5a4dc9b6178aeb952dbafbcd42c73bcd",
+      "featureCount": 180,
+      "uniqueFeatureIds": 179,
+      "uniqueFeatureNames": 180,
+      "polygonFeatures": 150,
+      "multiPolygonFeatures": 30,
+      "polygonParts": 292,
+      "nonIsoLikeIds": [
+        {"id": "-99", "name": "Northern Cyprus"},
+        {"id": "CS-KM", "name": "Kosovo"},
+        {"id": "-99", "name": "Somaliland"}
+      ],
+      "duplicateIds": [{"id": "-99", "names": ["Northern Cyprus", "Somaliland"]}]
+    },
+    "assignmentImplementation": {
+      "path": "scripts/build_analysis_v2_artifacts.py",
+      "policyId": "world_country_point_assignment_v1",
+      "assignmentMethod": "point_in_pinned_country_polygon_with_boundary_fail_closed",
+      "releasePolicy": "content_addressed_local_country_shell_no_external_release_invented",
+      "manifestWarning": "country_shell_is_content_addressed_but_has_no_claimed_external_release_identity"
+    },
+    "currentProjection": {
+      "path": "webapp/static_public/data/analysis_v2/ufo_geography_v1.json",
+      "rows": 580783,
+      "countryAssignedRows": 561658,
+      "countryUnknownRows": 19125,
+      "insideCountryRows": 561657,
+      "onBoundaryRows": 1,
+      "outsideCountryBoundaryRows": 19088,
+      "overlappingBoundaryRows": 37,
+      "countryAssignmentPolicyId": "world_country_point_assignment_v1"
+    },
+    "repositoryHistory": {
+      "countryShellIntroductionCommit": "d0c8341c9b4785db40f7da74369c750770b0d21f",
+      "countryShellIntroductionMessage": "Make production release exactly reproducible",
+      "localAcquisitionReceiptPresent": false,
+      "localLicenseRecordPresent": false,
+      "localExternalReleaseIdentifierPresent": false
+    }
+  },
+  "boundedExternalIdentityCheck": {
+    "queries": [
+      "exact first-coordinate identification for the local country shell",
+      "official Natural Earth public-domain terms",
+      "upstream repository history, license, and source chain"
+    ],
+    "exactUpstreamMatch": {
+      "repository": "https://github.com/johan/world.geo.json",
+      "file": "countries.geo.json",
+      "fileCommit": "0cd701afcecfaeaf95113d742c7c8c09bd9556a4",
+      "fileCommitDate": "2016-06-07T21:47:32Z",
+      "bytes": 256950,
+      "sha256": "bc2356a26a2976f98e4aaf1b24c5693d5a4dc9b6178aeb952dbafbcd42c73bcd",
+      "exactByteMatch": true,
+      "initialRepositoryCommit": "261b1500c01980a35d98b5e6533be03673dc708c",
+      "initialSource": "https://gist.github.com/raw/1246403/c5094cef84e05315e37a3fa6afec54c5b5e6745c/readme.json"
+    },
+    "rightsEvidence": {
+      "upstreamUnlicensePresent": true,
+      "upstreamReadmeRightsWarning": "Legal status of this dataset: dubious?",
+      "upstreamRecommendation": "Prefer world-atlas or us-atlas when attributable sources matter.",
+      "naturalEarthOfficialTerms": "Natural Earth states that all versions of its raster and vector map data on its site are public domain.",
+      "naturalEarthReleaseIdentityProvenForThisExactFile": false,
+      "reason": "Coordinate similarity is not an acquisition or derivation chain. The exact upstream file includes later repository edits and does not claim one Natural Earth release, scale, disputed-boundary policy, or source artifact hash."
+    }
+  },
+  "gateResults": {
+    "minimumProvenanceQualifiedRows": false,
+    "exactCountryAssignmentParity": true,
+    "pinnedBoundaryReleaseIdentifier": false,
+    "boundaryArtifactSha256": true,
+    "licenseOrPublicDomainEvidenceForExactArtifact": false,
+    "assignmentAlgorithmVersion": true,
+    "stableUniqueBoundaryIdentifiers": false,
+    "boundaryAmbiguityPreserved": true
+  },
+  "stopConditionsTriggered": [
+    "the current country assignments cannot be tied to one exact locally pinned boundary release",
+    "rights evidence for the exact artifact is insufficient",
+    "stable unique boundary identifiers are absent"
+  ],
+  "decision": {
+    "materialGain": false,
+    "deploymentAuthorized": false,
+    "canonicalEventRecordsMutated": false,
+    "sourceCodeChanged": false,
+    "servedArtifactsChanged": false,
+    "productionChanged": false,
+    "requiredFutureUnblock": "Replace the shell only in a separately preregistered migration using an authoritative, versioned, rights-compatible boundary release, then rederive and adjudicate every assignment delta before any production claim."
+  }
+}

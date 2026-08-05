@@ -98,6 +98,18 @@
             "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
             "rollbackTestDeploymentId": "a8c3c159-0248-48a8-84eb-6c4af16734d1",
             "materialGain": true
+        },
+        {
+            "waveId": "wave-008-country-admin-provenance",
+            "candidateId": "country_admin_provenance",
+            "status": "completed_no_gain",
+            "completedAt": "2026-08-05T02:13:51Z",
+            "sourceCommit": "0bb333bd6477ca29fd755f30cb78d2a6d08dd629",
+            "receipt": "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/wave_receipt.json",
+            "audit": "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/provenance_audit.json",
+            "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+            "deploymentPerformed": false,
+            "materialGain": false
         }
     ]
 }
