@@ -1,0 +1,86 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-009-dashboard-density-frontier",
+  "generatedAt": "2026-08-05T02:23:52Z",
+  "primaryObjective": "Determine whether one measured Analysis dashboard or core dashboard-completion workflow can improve by at least 10 percent without hiding required evidence, weakening readability or accessibility, adding a second event model, or regressing scientific safeguards.",
+  "preregisteredOutcome": "completed_no_safe_material_gain",
+  "materialGain": {
+    "passed": false,
+    "criterion": "dashboard_height_or_core_task_improves_at_least_10_percent",
+    "evidence": {
+      "targetDashboard": "time",
+      "baselineHeightPx": 874.859375,
+      "prototypeHeightPx": 894.90625,
+      "heightDeltaPx": 20.046875,
+      "improvementPct": -2.29144,
+      "minimumRequiredImprovementPct": 10.0,
+      "baselineVisibleFocusables": 55,
+      "prototypeVisibleFocusables": 55,
+      "prototypeRemoved": true,
+      "restoredHeightPx": 874.859375
+    }
+  },
+  "beforeMetrics": {
+    "maximumDashboard": "time",
+    "maximumDashboardHeightPx": 874.859375,
+    "allSevenDashboardsAtOrBelowPx": 900
+  },
+  "afterMetrics": {
+    "acceptedProductChange": false,
+    "maximumDashboard": "time",
+    "maximumDashboardHeightPx": 874.859375,
+    "productionUnchanged": true
+  },
+  "audit": {
+    "path": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/density_audit.json",
+    "freshReferenceInventoryCompleted": true,
+    "boundedPrototypeCount": 1,
+    "stopConditionsTriggered": true,
+    "failClosed": true
+  },
+  "tests": {
+    "campaignStateAssertionsPassed": 18,
+    "jsonAndSchemaValidationPassed": true,
+    "implementationTestSuiteRequired": false,
+    "reason": "No implementation or served artifact changed."
+  },
+  "artifacts": {
+    "sourceCommit": "a624051ca7c198ceb0282f2c89311f9beef4a58e",
+    "densityAudit": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/density_audit.json",
+    "sourceCodeChanged": false,
+    "servedArtifactsChanged": false
+  },
+  "preview": {
+    "deploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+    "qaPassed": true,
+    "createdForWave": false,
+    "reason": "The audit ran against the immutable accepted Wave 7 preview; no candidate package was created."
+  },
+  "production": {
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "immutableUrl": "https://bb261575.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "smokePassed": true,
+    "unchanged": true
+  },
+  "rollback": {
+    "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+    "instructions": "Validate the accepted Wave 6 receipt and frozen tree b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215, then deploy cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804 to branch main.",
+    "tested": true,
+    "unchanged": true
+  },
+  "deployment": {
+    "previewCreated": false,
+    "productionCreated": false,
+    "rollbackTestCreated": false,
+    "reason": "Audit-only and no-gain waves are not deployed."
+  },
+  "campaignCloseout": {
+    "consecutiveNoGainFrontierPasses": 2,
+    "stopRule": "close_after_two_consecutive_bounded_frontier_passes_find_no_safe_material_gain",
+    "stopRuleSatisfied": true,
+    "finalCampaignStatus": "closed_diminishing_returns"
+  },
+  "releaseGate": "completed_no_gain_not_deployed"
+}

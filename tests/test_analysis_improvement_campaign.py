@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from jsonschema import Draft202012Validator
 from scripts import build_analysis_improvement_campaign as campaign
 
 
@@ -61,6 +62,18 @@ def test_era_policy_is_deterministic() -> None:
     assert campaign.era_for(None) == "unknown"
 
 
+def test_active_campaign_contracts_validate() -> None:
+    campaign_schema = load("contracts/v1/campaign_state.schema.json")
+    preregistration_schema = load("contracts/v1/wave_preregistration.schema.json")
+    receipt_schema = load("contracts/v1/wave_receipt.schema.json")
+    Draft202012Validator(campaign_schema).validate(load("state/current.json"))
+    for preregistration in sorted((CAMPAIGN_ROOT / "waves").glob("*/preregistration.json")):
+        Draft202012Validator(preregistration_schema).validate(json.loads(preregistration.read_text(encoding="utf-8")))
+    Draft202012Validator(receipt_schema).validate(
+        load("waves/wave-009-dashboard-density-frontier/wave_receipt.json")
+    )
+
+
 def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     current = load("state/current.json")
     completed = load("state/completed_waves.json")
@@ -72,15 +85,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     wave_six_receipt = load("waves/wave-006-analysis-projection-encoding/wave_receipt.json")
     wave_seven_receipt = load("waves/wave-007-color-assessment/wave_receipt.json")
     wave_eight_receipt = load("waves/wave-008-country-admin-provenance/wave_receipt.json")
+    wave_nine_receipt = load("waves/wave-009-dashboard-density-frontier/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
     assert current["currentProduction"]["deploymentId"] == wave_seven_receipt["production"]["deploymentId"]
     assert current["currentProduction"]["frozenTreeSha256"] == wave_seven_receipt["artifacts"]["frozenPagesTreeSha256"]
     assert current["rollbackTarget"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
-    assert current["consecutiveNoGainFrontierPasses"] == 1
-    assert current["status"] == "active"
-    assert len(completed["waves"]) == 8
+    assert current["consecutiveNoGainFrontierPasses"] == 2
+    assert current["status"] == "closed_diminishing_returns"
+    assert len(completed["waves"]) == 9
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
     assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
@@ -105,14 +119,18 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert completed["waves"][7]["status"] == "completed_no_gain"
     assert completed["waves"][7]["productionDeploymentId"] == wave_eight_receipt["production"]["deploymentId"]
     assert completed["waves"][7]["deploymentPerformed"] is False
+    assert completed["waves"][8]["waveId"] == "wave-009-dashboard-density-frontier"
+    assert completed["waves"][8]["status"] == "completed_no_gain"
+    assert completed["waves"][8]["productionDeploymentId"] == wave_nine_receipt["production"]["deploymentId"]
+    assert completed["waves"][8]["deploymentPerformed"] is False
     assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert wave_two_receipt["production"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
     assert wave_three_receipt["production"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
     assert wave_four_receipt["production"]["deploymentId"] == wave_five_receipt["rollback"]["deploymentId"]
     assert wave_five_receipt["production"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
     assert wave_six_receipt["production"]["deploymentId"] == wave_seven_receipt["rollback"]["deploymentId"]
-    assert current["activeWave"]["waveId"] == "wave-009-dashboard-density-frontier"
-    assert current["nextCandidate"] == current["activeWave"]["candidateId"]
+    assert current["activeWave"] is None
+    assert current["nextCandidate"] is None
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-002-reporting-delay-assessment/preregistration.json" in current["packageArtifacts"]
@@ -151,6 +169,8 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/provenance_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-008-country-admin-provenance/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/density_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/wave_receipt.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -176,8 +196,8 @@ def test_backlog_is_ranked_by_the_declared_formula() -> None:
     assert candidates[0]["candidateId"] == "duration_assessment"
     assert candidates[0]["status"] == "completed_accepted_promoted"
     active_candidates = [item for item in candidates if item["status"].startswith("in_progress")]
-    assert len(active_candidates) == 1
-    assert active_candidates[0]["candidateId"] == load("state/current.json")["nextCandidate"]
+    assert active_candidates == []
+    assert load("state/current.json")["nextCandidate"] is None
 
 
 def test_duration_wave_is_preregistered_before_implementation() -> None:
@@ -323,6 +343,25 @@ def test_country_admin_no_gain_and_dashboard_frontier_transition_are_pinned() ->
     assert dashboard["beforeMetrics"]["maximumDashboardHeightPx"] == 874.859375
     assert dashboard["expectedMaterialGain"]["minimumImprovementPct"] == 10.0
     assert dashboard["expectedMaterialGain"]["informationAndControlParityRequired"] is True
+
+
+def test_dashboard_frontier_no_gain_closes_the_campaign() -> None:
+    audit = load("waves/wave-009-dashboard-density-frontier/density_audit.json")
+    receipt = load("waves/wave-009-dashboard-density-frontier/wave_receipt.json")
+    current = load("state/current.json")
+    assert audit["freshDashboardInventory"]["maximumDashboard"] == "time"
+    assert audit["freshDashboardInventory"]["maximumDashboardHeightPx"] == 874.859375
+    assert audit["boundedPrototype"]["count"] == 1
+    assert audit["boundedPrototype"]["improvementPct"] == -2.29144
+    assert audit["boundedPrototype"]["informationAndControlParityPassed"] is True
+    assert audit["boundedPrototype"]["prototypeRemoved"] is True
+    assert receipt["releaseGate"] == "completed_no_gain_not_deployed"
+    assert receipt["materialGain"]["passed"] is False
+    assert receipt["production"]["unchanged"] is True
+    assert receipt["deployment"]["previewCreated"] is False
+    assert receipt["campaignCloseout"]["stopRuleSatisfied"] is True
+    assert current["consecutiveNoGainFrontierPasses"] == 2
+    assert current["status"] == "closed_diminishing_returns"
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

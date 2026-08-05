@@ -110,6 +110,18 @@
             "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
             "deploymentPerformed": false,
             "materialGain": false
+        },
+        {
+            "waveId": "wave-009-dashboard-density-frontier",
+            "candidateId": "dashboard_density_refinement",
+            "status": "completed_no_gain",
+            "completedAt": "2026-08-05T02:23:52Z",
+            "sourceCommit": "a624051ca7c198ceb0282f2c89311f9beef4a58e",
+            "receipt": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/wave_receipt.json",
+            "audit": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/density_audit.json",
+            "productionDeploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+            "deploymentPerformed": false,
+            "materialGain": false
         }
     ]
 }

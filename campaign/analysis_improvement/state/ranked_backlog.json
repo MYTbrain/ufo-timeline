@@ -238,7 +238,8 @@
         {
             "baselineCoverage": null,
             "blockingIssues": [
-                "fresh_visual_density_and_task_baseline_required"
+                "bounded_information_preserving_prototype_worsened_time_dashboard_height_by_2_29144_percent",
+                "no_safe_10_percent_density_gain"
             ],
               "candidateId": "dashboard_density_refinement",
             "expectedOutcome": "Reduce a measured dashboard height or task-completion burden by at least 10%.",
@@ -257,7 +258,7 @@
                 "sourceIndependence": 0,
                 "userFacingSeverity": 3
             },
-              "status": "in_progress"
+            "status": "completed_no_gain"
         }
     ],
     "rankingPolicy": {

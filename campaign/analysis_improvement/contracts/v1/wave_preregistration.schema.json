@@ -1,1 +1,90 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"ufo-timeline-analysis-wave-preregistration-v1.0.0","type":"object","required":["schemaId","campaignId","waveId","candidateId","baselineCommit","primaryObjective","hypothesis","interventionBoundary","beforeMetrics","expectedMaterialGain","readinessContract","releaseGates","stopConditions"],"properties":{"schemaId":{"const":"ufo-timeline-analysis-wave-preregistration-v1.0.0"},"expectedMaterialGain":{"type":"object","required":["criterion","minimumNormalizedRows","minimumCatalogCoveragePct","minimumIndependentSources"]},"readinessContract":{"type":"object","required":["requiredFields","minimumCoverage","estimators","negativeControls","uncertaintyTreatment","suppressionPolicy"]}},"additionalProperties":true}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "type": "object",
+  "required": [
+    "schemaId",
+    "campaignId",
+    "waveId",
+    "candidateId",
+    "baselineCommit",
+    "primaryObjective",
+    "hypothesis",
+    "interventionBoundary",
+    "beforeMetrics",
+    "expectedMaterialGain",
+    "releaseGates",
+    "stopConditions"
+  ],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-analysis-wave-preregistration-v1.0.0"},
+    "expectedMaterialGain": {
+      "type": "object",
+      "required": ["criterion"]
+    },
+    "readinessContract": {
+      "type": "object",
+      "required": ["requiredFields", "negativeControls", "uncertaintyTreatment", "suppressionPolicy"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "expectedMaterialGain": {
+            "properties": {"criterion": {"const": "dashboard_height_or_core_task_improves_at_least_10_percent"}},
+            "required": ["criterion"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "expectedMaterialGain": {
+            "required": ["minimumImprovementPct", "informationAndControlParityRequired", "accessibilityParityRequired"]
+          }
+        }
+      },
+      "else": {"required": ["readinessContract"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "expectedMaterialGain": {
+            "properties": {"criterion": {"const": "previously_unavailable_assessment_becomes_estimable"}},
+            "required": ["criterion"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "expectedMaterialGain": {
+            "required": ["minimumCatalogCoveragePct"],
+            "anyOf": [
+              {"required": ["minimumNormalizedRows"]},
+              {"required": ["minimumTypedRows"]},
+              {"required": ["minimumProvenanceQualifiedRows"]}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expectedMaterialGain": {
+            "properties": {"criterion": {"const": "performance_metric_improves_at_least_10_percent"}},
+            "required": ["criterion"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "expectedMaterialGain": {
+            "required": ["minimumCompressedTransferReductionPct", "decodedValueParityRequired", "scientificOutputParityRequired"]
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

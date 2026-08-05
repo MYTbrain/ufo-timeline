@@ -1,13 +1,7 @@
 {
-    "activeWave": {
-        "candidateId": "dashboard_density_refinement",
-        "preregistration": "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json",
-        "primaryObjective": "Determine whether one measured Analysis dashboard or core dashboard-completion workflow can improve by at least 10 percent without hiding required evidence, weakening readability or accessibility, adding a second event model, or regressing scientific safeguards.",
-        "status": "in_progress",
-        "waveId": "wave-009-dashboard-density-frontier"
-    },
+    "activeWave": null,
     "campaignId": "analysis-improvement-campaign-20260804",
-    "consecutiveNoGainFrontierPasses": 1,
+    "consecutiveNoGainFrontierPasses": 2,
     "currentProduction": {
         "analysisReleaseId": "analysis-color-v1-20260805",
         "baselineCommit": "f64c7ab3b3a5efb297500365d883f0c5a26d2c25",
@@ -25,7 +19,7 @@
         "sourceCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
         "sourceTreeSha256": "161ceb6d90bfc62638420394b412f83a5cbb32ae"
     },
-    "nextCandidate": "dashboard_density_refinement",
+    "nextCandidate": null,
     "objective": "continuously_improve_analysis_data_first_with_evidence_gated_auto_deployments",
     "packageArtifacts": {
         "campaign/analysis_improvement/contracts/v1/before_after_metrics.schema.json": {
@@ -45,8 +39,8 @@
             "sha256": "bba4700d368063b1c4ed15102aa3ff412a0dca8ca242548924fb1f6cef009540"
         },
         "campaign/analysis_improvement/contracts/v1/wave_preregistration.schema.json": {
-            "bytes": 779,
-            "sha256": "bf5ae4450f8a0b7946e092bad602bb1a7a15e17012300e148f6d884f484cd391"
+            "bytes": 2491,
+            "sha256": "cb928d77f37b6c115a0579f09309b253ce28ae4ff73d167349186c170f5b4185"
         },
         "campaign/analysis_improvement/contracts/v1/wave_receipt.schema.json": {
             "bytes": 720,
@@ -65,16 +59,16 @@
             "sha256": "12d5d76857b36d2500425eed7bb4ac05b55e897a77fda22f1123a92c2302464e"
         },
         "campaign/analysis_improvement/state/completed_waves.json": {
-            "bytes": 6864,
-            "sha256": "e6c367a08443f8d7ed229c87888e0a4bfde32a29cc9721e95f6a5d9013a7dfae"
+            "bytes": 7556,
+            "sha256": "5a9c97ab7bd43b6110dd0c377b51d2f0bf16017411eaad788d8e4d3b6b6b72b6"
         },
         "campaign/analysis_improvement/state/module_readiness.json": {
             "bytes": 17171,
             "sha256": "c6af2a569c5435c58aa8ca0feb0b7d5e2a0b72c212d99dcef16aa1d214c25f7a"
         },
         "campaign/analysis_improvement/state/ranked_backlog.json": {
-            "bytes": 11295,
-            "sha256": "e2d2a1cb1518b40cb48aa30b4e3bf3ed4b6df46484906cda8e123c7dfbb4fa7d"
+            "bytes": 11390,
+            "sha256": "19aab60f2e97a0e724917731168c7b6988f5644ff789d70ccf795e2199ce5ee8"
         },
         "campaign/analysis_improvement/state/source_provenance_ledger.json": {
             "bytes": 12242,
@@ -243,6 +237,14 @@
         "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/preregistration.json": {
             "bytes": 4705,
             "sha256": "96c79f0e0ef3e894c2212a37cccab22494556e2458b1d6a837322d702c1bba4a"
+        },
+        "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/density_audit.json": {
+            "bytes": 4007,
+            "sha256": "6372a209381eec8b6ce0d4cc44862d08683cfc0111c5e04a2c1e5018bdd28ac6"
+        },
+        "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/wave_receipt.json": {
+            "bytes": 3478,
+            "sha256": "7d13875b28deecea82acee0736d9a5a86d7e8051c9e9cc00e638752c123f9455"
         }
     },
     "rollbackTarget": {
@@ -259,6 +261,6 @@
         "secondaryFallbackDeploymentId": "184e82ac-798e-4bf2-81a4-3587d2996554"
     },
     "schemaId": "ufo-timeline-analysis-improvement-campaign-v1.0.0",
-    "status": "active",
+    "status": "closed_diminishing_returns",
     "stopRule": "close_after_two_consecutive_bounded_frontier_passes_find_no_safe_material_gain"
 }

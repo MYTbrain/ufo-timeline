@@ -1,0 +1,87 @@
+{
+  "schemaId": "ufo-timeline-dashboard-density-audit-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-009-dashboard-density-frontier",
+  "generatedAt": "2026-08-05T02:23:52Z",
+  "status": "no_safe_material_gain",
+  "referenceEnvironment": {
+    "deploymentId": "ad680fbc-6e33-4d5e-be2c-d0c9db72f9c7",
+    "immutableUrl": "https://ad680fbc.ufo-timeline.pages.dev",
+    "viewport": "1440x720",
+    "deviceScaleFactor": 1,
+    "cleanReload": true,
+    "analysisModeActivatedByKeyboardAccessibleTab": true
+  },
+  "freshDashboardInventory": {
+    "overview": {"heightPx": 770.59375, "cards": 1, "visibleFocusables": 2},
+    "time": {"heightPx": 874.859375, "cards": 3, "visibleFocusables": 55},
+    "craft": {"heightPx": 339.15625, "cards": 3, "visibleFocusables": 2},
+    "geography": {"heightPx": 596.71875, "cards": 3, "visibleFocusables": 2},
+    "spatial": {"heightPx": 587.71875, "cards": 3, "visibleFocusables": 5},
+    "context": {"heightPx": 855.890625, "cards": 8, "visibleFocusables": 8},
+    "sourcesQuality": {"heightPx": 534.375, "cards": 3, "visibleFocusables": 10},
+    "maximumDashboard": "time",
+    "maximumDashboardHeightPx": 874.859375,
+    "allDashboardsAtOrBelow900Px": true
+  },
+  "targetAudit": {
+    "dashboard": "time",
+    "baselineHeightPx": 874.859375,
+    "maximumAcceptedHeightPx": 787.373438,
+    "existingPrimaryCard": {
+      "widthPx": 309.328125,
+      "heightPx": 646.859375,
+      "defaultHidden": false
+    },
+    "existingSupportingCards": [
+      {"name": "reporting_timing_evidence", "widthPx": 436.671875, "heightPx": 61, "defaultClosed": true},
+      {"name": "recurring_month_by_craft_signal", "widthPx": 436.65625, "heightPx": 61, "defaultClosed": true}
+    ],
+    "findings": [
+      "Both secondary evidence cards are already compact, keyboard-accessible disclosures and do not expose their supporting content by default.",
+      "The primary card contains the visible scientific answer, view controls, chart, legends, accessible data tables, sampling policy, weighting policy, and uncertainty language required to interpret the result.",
+      "Meeting the threshold by hiding the primary answer, shrinking the current text scale, or removing policy and accessibility content is outside the preregistered intervention boundary."
+    ]
+  },
+  "boundedPrototype": {
+    "count": 1,
+    "description": "At desktop widths, expand the primary Time card from five to twelve columns and place the two already-closed supporting cards side by side at six columns each.",
+    "sourceFilesChanged": false,
+    "servedArtifactsChanged": false,
+    "temporaryRuntimeStyleOnly": true,
+    "before": {
+      "dashboardHeightPx": 874.859375,
+      "visibleFocusables": 55,
+      "primaryCardWidthPx": 309.328125,
+      "primaryCardHeightPx": 646.859375
+    },
+    "after": {
+      "dashboardHeightPx": 894.90625,
+      "visibleFocusables": 55,
+      "primaryCardWidthPx": 755,
+      "primaryCardHeightPx": 666.90625,
+      "hiddenElementsOutsideExistingClosedDetails": 0
+    },
+    "heightDeltaPx": 20.046875,
+    "improvementPct": -2.29144,
+    "minimumRequiredImprovementPct": 10.0,
+    "materialityGatePassed": false,
+    "informationAndControlParityPassed": true,
+    "prototypeRemoved": true,
+    "restoredDashboardHeightPx": 874.859375
+  },
+  "stopConditionsTriggered": [
+    "The only bounded information-preserving reflow worsened the primary metric instead of improving it by at least 10 percent.",
+    "Further height reductions would require hiding primary evidence, shrinking readable text, removing accessible tables or policy language, or spending additional prototypes outside the registered bound."
+  ],
+  "decision": {
+    "materialGain": false,
+    "deploymentAuthorized": false,
+    "canonicalEventRecordsMutated": false,
+    "sourceCodeChanged": false,
+    "servedArtifactsChanged": false,
+    "productionChanged": false,
+    "consecutiveNoGainFrontierPassesAfterCloseout": 2,
+    "campaignStopRuleSatisfied": true
+  }
+}
