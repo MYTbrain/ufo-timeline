@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-witness-count-v1-ui1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-04-analysis-geography-binary-v1-ui1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -1838,6 +1838,46 @@
     }
   }
 
+  function rawBinaryFallbackUrl(url) {
+    return String(url || "").replace(/\.bin\.gz(?:\?.*)?$/i, function (match) {
+      const queryIndex = match.indexOf("?");
+      return ".bin" + (queryIndex === -1 ? "" : match.slice(queryIndex));
+    });
+  }
+
+  async function decodeBinaryResponse(response, sourceUrl, integrity) {
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    let decodedBytes = bytes;
+    const gzipEncoded = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+    if (gzipEncoded) {
+      await verifyAnalysisBytes(bytes, integrity && integrity.gzipSha256, sourceUrl + " compressed payload");
+      if (typeof DecompressionStream !== "function") {
+        throw new Error("gzip analysis binary requires DecompressionStream support: " + sourceUrl);
+      }
+      const stream = new Response(bytes).body.pipeThrough(new DecompressionStream("gzip"));
+      decodedBytes = new Uint8Array(await new Response(stream).arrayBuffer());
+    }
+    await verifyAnalysisBytes(decodedBytes, integrity && integrity.sha256, sourceUrl + " binary payload");
+    return decodedBytes;
+  }
+
+  async function fetchAnalysisBinary(urlValue, integrity) {
+    const url = String(urlValue || "");
+    if (!url) return null;
+    try {
+      const response = await fetch(url, { cache: "force-cache" });
+      if (!response.ok) throw new Error("HTTP " + response.status + " for " + url);
+      return await decodeBinaryResponse(response, url, integrity || {});
+    } catch (error) {
+      if (error && /SHA-256 mismatch/.test(String(error.message || error))) throw error;
+      const fallback = rawBinaryFallbackUrl(url);
+      if (!fallback || fallback === url) throw error;
+      const response = await fetch(fallback, { cache: "force-cache" });
+      if (!response.ok) throw new Error("HTTP " + response.status + " for " + fallback);
+      return await decodeBinaryResponse(response, fallback, integrity || {});
+    }
+  }
+
   function manifestArtifactEntry(manifest, key) {
     const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object" ? manifest.artifacts : {};
     return artifacts[key] && typeof artifacts[key] === "object" ? artifacts[key] : null;
@@ -1869,6 +1909,40 @@
     } catch (_error) {
       return resolved + (resolved.indexOf("?") === -1 ? "?" : "&") + "sha256=" + sha256;
     }
+  }
+
+  function geographyBinaryEntry(manifest) {
+    const entry = manifestArtifactEntry(manifest, "ufoGeography") || {};
+    return entry.binary && typeof entry.binary === "object" ? entry.binary : null;
+  }
+
+  function geographyBinaryFile(manifest) {
+    const entry = geographyBinaryEntry(manifest) || {};
+    const gzipFile = entry.gzipFile || entry.gzip_file || "";
+    if (gzipFile && typeof DecompressionStream === "function") return gzipFile;
+    return entry.file || entry.path || gzipFile || "";
+  }
+
+  function geographyBinaryUrl(manifest, manifestUrl) {
+    const entry = geographyBinaryEntry(manifest) || {};
+    const resolved = resolveAnalysisUrl(geographyBinaryFile(manifest), manifestUrl);
+    const sha256 = normalizedSha256(entry.sha256);
+    if (!resolved || !sha256) return resolved;
+    try {
+      const url = new URL(resolved, manifestUrl);
+      url.searchParams.set("sha256", sha256);
+      return url.toString();
+    } catch (_error) {
+      return resolved + (resolved.indexOf("?") === -1 ? "?" : "&") + "sha256=" + sha256;
+    }
+  }
+
+  function geographyBinaryIntegrity(manifest) {
+    const entry = geographyBinaryEntry(manifest) || {};
+    return {
+      sha256: entry.sha256 || "",
+      gzipSha256: entry.gzipSha256 || entry.gzip_sha256 || "",
+    };
   }
 
   function validateSpatialManifestArtifact(manifest, key) {
@@ -3251,6 +3325,121 @@
     return cursor;
   }
 
+  function decodeGeographyBinary(bytesValue, manifest) {
+    const bytes = bytesValue instanceof Uint8Array ? bytesValue : new Uint8Array(bytesValue || 0);
+    const entry = geographyBinaryEntry(manifest);
+    if (!entry || String(entry.format || "") !== "ufo_geography_columnar_v1") {
+      throw new Error("The geography binary encoding is missing or unsupported.");
+    }
+    const expectedMagic = [0x55, 0x46, 0x4f, 0x47, 0x45, 0x4f, 0x31, 0x00];
+    if (bytes.length < 32 || expectedMagic.some(function (value, index) { return bytes[index] !== value; })) {
+      throw new Error("The geography binary header magic is invalid.");
+    }
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const version = view.getUint32(8, true);
+    const rowCount = view.getUint32(12, true);
+    const pointRowBase = view.getUint32(16, true);
+    const logicalColumnCount = view.getUint32(20, true);
+    const codeColumnCount = view.getUint32(24, true);
+    const headerBytes = view.getUint32(28, true);
+    if (version !== 1 || pointRowBase !== 0 || logicalColumnCount !== 8 ||
+        codeColumnCount !== 6 || headerBytes !== 32) {
+      throw new Error("The geography binary header contract is invalid or unsupported.");
+    }
+    if (rowCount !== Number(manifest.artifacts.ufoGeography.rowCount)) {
+      throw new Error("The geography binary row count does not match the signed manifest.");
+    }
+    const expectedBytes = headerBytes + rowCount * 8 + rowCount * codeColumnCount;
+    if (bytes.length !== expectedBytes || Number(entry.bytes) !== expectedBytes) {
+      throw new Error("The geography binary byte length does not match its format contract.");
+    }
+    const lowOffset = headerBytes;
+    const highOffset = lowOffset + rowCount * 4;
+    const codeOffset = highOffset + rowCount * 4;
+    const codeColumns = [];
+    for (let codeIndex = 0; codeIndex < codeColumnCount; codeIndex += 1) {
+      codeColumns.push(new Uint8Array(
+        bytes.buffer,
+        bytes.byteOffset + codeOffset + codeIndex * rowCount,
+        rowCount
+      ));
+    }
+    return {
+      bytes,
+      view,
+      rowCount,
+      lowOffset,
+      highOffset,
+      codeColumns,
+      format: "ufo_geography_columnar_v1",
+    };
+  }
+
+  function geographyBinaryEventId(projection, index) {
+    const low = projection.view.getUint32(projection.lowOffset + index * 4, true);
+    const high = projection.view.getUint32(projection.highOffset + index * 4, true);
+    const eventId = high * 4294967296 + low;
+    if (!Number.isSafeInteger(eventId) || eventId < 0) {
+      throw new Error("The geography binary contains an unsafe event ID at row " + index + ".");
+    }
+    return eventId;
+  }
+
+  function applyGeographyBinaryToCatalog(projection, manifest) {
+    const codes = manifest && manifest.codes && manifest.codes.ufoGeography || {};
+    const columns = projection.codeColumns;
+    let cursor = 0;
+    chunks.forEach(function (chunk) {
+      for (let index = 0; index < chunk.length; index += 1) {
+        if (chunk.mappedStates[index] !== 2) continue;
+        if (cursor >= projection.rowCount) {
+          throw new Error("The geography binary ended before the mapped catalog subsequence.");
+        }
+        const catalogEventId = String(eventIdAt(chunk, index));
+        const geographyEventId = String(geographyBinaryEventId(projection, cursor));
+        if (!catalogEventId || catalogEventId !== geographyEventId) {
+          throw new Error(
+            "The geography binary does not match the served mapped-event order at row " + cursor + "."
+          );
+        }
+        chunk.analysisCountryCodes[index] = categoryCode(
+          dictionaries.analysisCountry,
+          decodeCode(codes, "country", columns[0][cursor]) || "unknown"
+        );
+        chunk.analysisMacroregionCodes[index] = categoryCode(
+          dictionaries.analysisMacroregion,
+          decodeCode(codes, "macroregion", columns[1][cursor]) || "unknown"
+        );
+        chunk.analysisGeographyAssignmentSourceCodes[index] = categoryCode(
+          dictionaries.geographyAssignmentSource,
+          decodeCode(codes, "assignmentSource", columns[2][cursor]) || "unknown"
+        );
+        chunk.analysisGeographyAssignmentConfidenceCodes[index] = categoryCode(
+          dictionaries.geographyAssignmentConfidence,
+          decodeCode(codes, "assignmentConfidence", columns[3][cursor]) || "unknown"
+        );
+        chunk.analysisGeographyBoundaryStatusCodes[index] = categoryCode(
+          dictionaries.geographyBoundaryStatus,
+          decodeCode(codes, "boundaryStatus", columns[4][cursor]) || "unknown"
+        );
+        // coordinateEvidence is a retained logical parity column. Its runtime
+        // value already lives on the catalog row, but the code must remain
+        // decodable so sentinel and source-coordinate semantics cannot drift.
+        if (!decodeCode(codes, "coordinateEvidence", columns[5][cursor])) {
+          throw new Error("The geography binary contains an invalid coordinate-evidence code at row " + cursor + ".");
+        }
+        cursor += 1;
+      }
+    });
+    if (cursor !== projection.rowCount) {
+      throw new Error(
+        "The geography binary contains " + projection.rowCount +
+        " mapped rows but the served catalog contains " + cursor + "."
+      );
+    }
+    return cursor;
+  }
+
   async function loadAnalysisGeographyArtifact(message) {
     const urls = message.urls && typeof message.urls === "object" ? message.urls : {};
     const manifestUrl = String(urls.manifest || "./data/analysis_v2/manifest.json");
@@ -3261,15 +3450,27 @@
       throw new Error("Analysis v2 geography manifest is invalid or unsupported.");
     }
     validateSpatialManifestArtifact(manifest, "ufoGeography");
-    const artifactUrl = urls.geography || urls.ufoGeography ||
-      manifestArtifactUrl(manifest, "ufoGeography", manifestUrl);
-    if (!artifactUrl) throw new Error("Analysis v2.2 manifest is missing the geography projection URL.");
-    const payload = await fetchAnalysisJson(
-      artifactUrl,
-      manifestArtifactIntegrity(manifest, "ufoGeography")
-    );
-    const rows = validateLoadedSpatialArtifact(payload, manifest, "ufoGeography");
-    const appliedRows = applyGeographyRowsToCatalog(rows, manifest);
+    const binaryEntry = geographyBinaryEntry(manifest);
+    let appliedRows = 0;
+    let encodingHash = "";
+    if (binaryEntry) {
+      const binaryUrl = urls.geographyBinary || geographyBinaryUrl(manifest, manifestUrl);
+      if (!binaryUrl) throw new Error("Analysis v2.2 manifest is missing the geography binary URL.");
+      const binaryBytes = await fetchAnalysisBinary(binaryUrl, geographyBinaryIntegrity(manifest));
+      const projection = decodeGeographyBinary(binaryBytes, manifest);
+      appliedRows = applyGeographyBinaryToCatalog(projection, manifest);
+      encodingHash = String(binaryEntry.sha256 || "");
+    } else {
+      const artifactUrl = urls.geography || urls.ufoGeography ||
+        manifestArtifactUrl(manifest, "ufoGeography", manifestUrl);
+      if (!artifactUrl) throw new Error("Analysis v2.2 manifest is missing the geography projection URL.");
+      const payload = await fetchAnalysisJson(
+        artifactUrl,
+        manifestArtifactIntegrity(manifest, "ufoGeography")
+      );
+      const rows = validateLoadedSpatialArtifact(payload, manifest, "ufoGeography");
+      appliedRows = applyGeographyRowsToCatalog(rows, manifest);
+    }
     analysisGeographyArtifact = {
       manifest,
       rows: null,
@@ -3277,6 +3478,7 @@
       loaded: true,
       appliedRows,
       artifactHash: String(manifest.artifacts.ufoGeography.sha256 || ""),
+      encodingHash,
     };
     analysisCache.clear();
     analysisMatchCache.clear();
@@ -3285,6 +3487,7 @@
       appliedRows,
       releaseId: String(manifest.releaseId || ""),
       artifactHash: analysisGeographyArtifact.artifactHash,
+      encodingHash: analysisGeographyArtifact.encodingHash,
       rowOrder: "packed_points_input_order_mapped_catalog_subsequence",
     };
   }

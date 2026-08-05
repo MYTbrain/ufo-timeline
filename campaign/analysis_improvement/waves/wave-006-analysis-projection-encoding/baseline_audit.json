@@ -1,0 +1,137 @@
+{
+  "schemaId": "ufo-timeline-analysis-projection-baseline-v1.0.0",
+  "waveId": "wave-006-analysis-projection-encoding",
+  "recordedAt": "2026-08-04T23:40:53Z",
+  "recordingOrder": "completed_before_encoding_prototype_selection",
+  "baselineCommit": "e696749f70bee6ec2e2514152a38ae97d9870a59",
+  "baselineDeployment": {
+    "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+    "url": "https://022a9b4d.ufo-timeline.pages.dev",
+    "frozenTreeSha256": "a504c3f390e4e12437774219656c23dc63293ca2c803b38eace61938744553aa"
+  },
+  "sourceManifest": {
+    "path": "webapp/static_public/data/analysis_v2/manifest.json",
+    "schemaId": "ufo-timeline-analysis-evidence-artifacts-v2.2.0",
+    "releaseId": "analysis-evidence-lab-v2.2-20260803",
+    "sha256": "3c94f1659991f3d35ae83059d64f48da7b4aa722ff53a78afeaa970a988ada5c"
+  },
+  "method": {
+    "browserSurface": "Codex in-app Chromium",
+    "cachePolicy": "CDP Network.setCacheDisabled plus unique query key and fetch cache no-store",
+    "pipeline": [
+      "fetch response and compressed bytes",
+      "compressed SHA-256",
+      "DecompressionStream gzip decode",
+      "decoded SHA-256",
+      "UTF-8 decode",
+      "JSON.parse"
+    ],
+    "sampleCountPerProfile": 5,
+    "profiles": {
+      "desktop": { "cpuThrottlingRate": 1 },
+      "constrainedCpu4x": { "cpuThrottlingRate": 4 }
+    },
+    "quantilePolicy": "nearest-rank over five bounded samples",
+    "networkCaveat": "Transfer and CPU phases are reported separately. The network was not bandwidth-throttled, and network variance is not attributed to the encoding."
+  },
+  "loadingMap": {
+    "analysisOverview": "No analysis_v2 projection payload is fetched for the first useful Overview.",
+    "geography": "The Geography dashboard lazily fetches only ufoGeography, then applies every packed row to the served catalog in the analysis worker.",
+    "spatial": "The Spatial Evidence dashboard lazily fetches seven required artifacts concurrently. Relationship and Context can prewarm two of those artifacts through their own bounded loaders."
+  },
+  "geography": {
+    "artifact": {
+      "key": "ufoGeography",
+      "rows": 580783,
+      "rawBytes": 22892369,
+      "gzipBytes": 6974597,
+      "rawSha256": "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871",
+      "gzipSha256": "5ed6e8eca4dbbf1dacdc98e2d79c11d2a4a5c1df4f42755bad8a9b1044e65104",
+      "rowSchema": [
+        "pointRowIndex",
+        "eventId",
+        "countryCode",
+        "macroregionCode",
+        "assignmentSourceCode",
+        "assignmentConfidenceCode",
+        "boundaryStatusCode",
+        "coordinateEvidenceCode"
+      ]
+    },
+    "desktop": {
+      "liveFirstUseMs": 905.1,
+      "pipelineSamplesMs": [809.9, 550.6, 580.4, 538.7, 553.8],
+      "transferSamplesMs": [583.3, 314.8, 311.7, 321.1, 300.5],
+      "postTransferVerifyDecodeParseSamplesMs": [226.6, 235.8, 268.7, 217.6, 253.3],
+      "pipelineMedianMs": 553.8,
+      "pipelineP95Ms": 809.9,
+      "transferMedianMs": 314.8,
+      "transferP95Ms": 583.3,
+      "postTransferVerifyDecodeParseMedianMs": 235.8
+    },
+    "constrainedCpu4x": {
+      "liveFirstUseMs": 1643.0,
+      "pipelineSamplesMs": [1579.3, 1510.0, 1505.7, 1561.9, 1480.3],
+      "transferSamplesMs": [379.6, 315.8, 334.7, 354.6, 335.0],
+      "postTransferVerifyDecodeParseSamplesMs": [1199.7, 1194.2, 1171.0, 1207.3, 1145.3],
+      "pipelineMedianMs": 1510.0,
+      "pipelineP95Ms": 1579.3,
+      "transferMedianMs": 335.0,
+      "transferP95Ms": 379.6,
+      "postTransferVerifyDecodeParseMedianMs": 1194.2
+    },
+    "consoleWarningsOrErrors": 0
+  },
+  "spatial": {
+    "artifactCount": 7,
+    "totalRowsAcrossArtifacts": 145015,
+    "rawBytes": 14129486,
+    "gzipBytes": 3261558,
+    "desktop": {
+      "groupPipelineSamplesMs": [315.9, 225.9, 232.6, 220.8, 236.4],
+      "groupPipelineMedianMs": 232.6,
+      "groupPipelineP95Ms": 315.9
+    },
+    "constrainedCpu4x": {
+      "groupPipelineSamplesMs": [653.2, 636.9, 684.0, 512.9, 583.9],
+      "groupPipelineMedianMs": 636.9,
+      "groupPipelineP95Ms": 684.0
+    },
+    "largestArtifacts": [
+      {
+        "key": "ufoSpatialPoints",
+        "rows": 33801,
+        "rawBytes": 3366574,
+        "gzipBytes": 1259079,
+        "desktopPipelineMedianMs": 176.3,
+        "constrainedCpu4xPipelineMedianMs": 488.2
+      },
+      {
+        "key": "contextUfoNeighbors",
+        "rows": 63753,
+        "rawBytes": 8008662,
+        "gzipBytes": 1118329,
+        "desktopPipelineMedianMs": 232.1,
+        "constrainedCpu4xPipelineMedianMs": 633.8
+      }
+    ],
+    "acceptedLiveColdSpatialReferenceMs": 3062.0,
+    "selectionAssessment": "Even removing the complete measured pipeline cost of either single largest Spatial artifact would not credibly establish a stable ten-percent improvement in the accepted 3062 ms cold-Spatial path; most of that path is downstream setup, indexing, computation, and render work outside a one-artifact encoding boundary."
+  },
+  "candidateSelection": {
+    "status": "eligible_for_bounded_prototype",
+    "selectedArtifactKey": "ufoGeography",
+    "selectedAfterBaselineWasRecorded": true,
+    "reason": "Geography is a single independently loaded artifact, accounts for 6,974,597 compressed bytes, and spends a median 1,194.2 ms after transfer under 4x CPU. It is the only audited immutable projection with a credible path to a stable ten-percent first-use improvement inside the one-encoding boundary.",
+    "rejectedAlternatives": [
+      {
+        "candidate": "single Spatial artifact encoding",
+        "reason": "The bounded transfer/decode contribution is too small relative to the accepted cold-Spatial user-facing path."
+      },
+      {
+        "candidate": "initial Overview projection encoding",
+        "reason": "No analysis_v2 projection payload participates in the first useful Overview."
+      }
+    ]
+  }
+}

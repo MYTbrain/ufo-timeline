@@ -23,6 +23,11 @@ import re
 import struct
 from typing import Any, Iterable, Mapping, Sequence
 
+try:
+    from scripts import build_analysis_geography_binary_v1 as geography_binary
+except ImportError:  # Direct script execution resolves sibling modules here.
+    import build_analysis_geography_binary_v1 as geography_binary
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 STATIC_DATA_ROOT = REPO_ROOT / "webapp" / "static_public" / "data"
@@ -587,6 +592,33 @@ def write_registered_projection(
         ordering_fields=contract["orderingFields"],
         ordering_policy_id=contract["orderingPolicyId"],
     )
+
+
+def write_geography_binary_projection(
+    output_root: Path,
+    browser_base_path: str,
+    rows: list[list[Any]],
+    source_declaration: Mapping[str, Any],
+) -> dict[str, Any]:
+    encoded = geography_binary.encode_rows(rows)
+    compressed = geography_binary.deterministic_gzip(encoded)
+    filename = "ufo_geography_v1.bin"
+    output_root.mkdir(parents=True, exist_ok=True)
+    (output_root / filename).write_bytes(encoded)
+    (output_root / f"{filename}.gz").write_bytes(compressed)
+    prefix = browser_base_path.strip("/")
+    return {
+        "bytes": len(encoded),
+        "decodedCanonicalJsonSha256": sha256_bytes(canonical_json_bytes(rows)),
+        "decodedJsonSha256": str(source_declaration["sha256"]),
+        "file": f"{prefix}/{filename}",
+        "format": "ufo_geography_columnar_v1",
+        "gzipBytes": len(compressed),
+        "gzipFile": f"{prefix}/{filename}.gz",
+        "gzipSha256": sha256_bytes(compressed),
+        "sha256": sha256_bytes(encoded),
+        "version": geography_binary.VERSION,
+    }
 
 
 def write_document(
@@ -3010,6 +3042,12 @@ def build(
             release_id=release_id,
         ),
     }
+    artifacts["ufoGeography"]["binary"] = write_geography_binary_projection(
+        output_root,
+        browser_base_path,
+        geography_encoded,
+        artifacts["ufoGeography"],
+    )
     snapshot_artifact = write_projection(
         output_root,
         browser_base_path,

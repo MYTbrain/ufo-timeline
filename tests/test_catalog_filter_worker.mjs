@@ -224,6 +224,29 @@ const geographyRows = [
 ];
 const geographyText = JSON.stringify(geographyRows);
 const geographyHash = createHash("sha256").update(geographyText).digest("hex");
+function encodeGeographyBinary(rowsValue) {
+  const rowCountValue = rowsValue.length;
+  const encoded = Buffer.alloc(32 + rowCountValue * 14);
+  Buffer.from("UFOGEO1\0", "binary").copy(encoded, 0);
+  encoded.writeUInt32LE(1, 8);
+  encoded.writeUInt32LE(rowCountValue, 12);
+  encoded.writeUInt32LE(0, 16);
+  encoded.writeUInt32LE(8, 20);
+  encoded.writeUInt32LE(6, 24);
+  encoded.writeUInt32LE(32, 28);
+  const lowOffset = 32;
+  const highOffset = lowOffset + rowCountValue * 4;
+  const codeOffset = highOffset + rowCountValue * 4;
+  rowsValue.forEach((row, index) => {
+    const eventId = BigInt(row[1]);
+    encoded.writeUInt32LE(Number(eventId & 0xffffffffn), lowOffset + index * 4);
+    encoded.writeUInt32LE(Number(eventId >> 32n), highOffset + index * 4);
+    row.slice(2).forEach((code, codeIndex) => {
+      encoded[codeOffset + codeIndex * rowCountValue + index] = code;
+    });
+  });
+  return encoded;
+}
 const geographyManifest = {
   schemaVersion: 2,
   manifestVersion: "2.2.0",
@@ -282,6 +305,59 @@ assert.deepEqual(
   projectedCountryFilter.result.eventIds,
   ["city-event"],
   "the pinned geography projection is merged into the worker-owned catalog and drives Area Filter selection"
+);
+
+const geographyBinaryRows = geographyRows.map((row) => row.slice());
+geographyBinaryRows[1][1] = "123456789";
+const geographyBinaryCatalogRows = structuredClone(rows);
+geographyBinaryCatalogRows[1].eventId = "123456789";
+const geographyBinary = encodeGeographyBinary(geographyBinaryRows);
+const geographyBinaryManifest = structuredClone(geographyManifest);
+geographyBinaryManifest.artifacts.ufoGeography.binary = {
+  format: "ufo_geography_columnar_v1",
+  file: "data/analysis_v2/ufo_geography_v1.bin",
+  bytes: geographyBinary.length,
+  sha256: createHash("sha256").update(geographyBinary).digest("hex"),
+};
+const geographyBinaryWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
+  DataView,
+  Response,
+  TextDecoder,
+  Uint8Array,
+  URL,
+  fetch: async () => new Response(geographyBinary, { status: 200 }),
+  self: { crypto: webcrypto, location: { href: "https://example.test/catalog_filter_worker.js" } },
+});
+geographyBinaryWorker.send({
+  type: "addCatalogFacetRows",
+  requestId: "geography-binary-catalog",
+  rows: geographyBinaryCatalogRows,
+});
+const geographyBinarySetup = await geographyBinaryWorker.sendAsync({
+  type: "setAnalysisGeographyArtifact",
+  requestId: "geography-binary-setup",
+  filterGeneration: 3,
+  manifest: geographyBinaryManifest,
+  urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
+});
+assert.equal(geographyBinarySetup.type, "analysisGeographyArtifactSet");
+assert.equal(geographyBinarySetup.snapshot.appliedRows, 2);
+assert.equal(
+  geographyBinarySetup.snapshot.encodingHash,
+  geographyBinaryManifest.artifacts.ufoGeography.binary.sha256
+);
+const projectedBinaryCountryFilter = geographyBinaryWorker.send({
+  type: "computeFilteredCatalogIds",
+  requestId: "filter-projected-binary-country",
+  filters,
+  lowPrecisionValues,
+  selectedAreaCountry: "Germany",
+  catalogExactDayAscending: true,
+});
+assert.deepEqual(
+  projectedBinaryCountryFilter.result.eventIds,
+  ["123456789"],
+  "the binary geography projection decodes to the same worker-owned country assignments"
 );
 
 const misorderedGeographyRows = geographyRows.map((row) => row.slice());

@@ -1,0 +1,95 @@
+{
+  "format": {
+    "endianness": "little",
+    "headerBytes": 32,
+    "logicalRowSchema": [
+      "pointRowIndex",
+      "eventId",
+      "countryCode",
+      "macroregionCode",
+      "assignmentSourceCode",
+      "assignmentConfidenceCode",
+      "boundaryStatusCode",
+      "coordinateEvidenceCode"
+    ],
+    "magicHex": "55464f47454f3100",
+    "storedColumns": [
+      "eventIdLowUint32",
+      "eventIdHighUint32",
+      "countryCodeUint8",
+      "macroregionCodeUint8",
+      "assignmentSourceCodeUint8",
+      "assignmentConfidenceCodeUint8",
+      "boundaryStatusCodeUint8",
+      "coordinateEvidenceCodeUint8"
+    ],
+    "version": 1
+  },
+  "manifest": {
+    "artifactEntry": {
+      "bytes": 8130994,
+      "decodedCanonicalJsonSha256": "71297de8b48420b98302efe11c5520ad62dfbd33475bafacbd591fff83d9ef9b",
+      "decodedJsonSha256": "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871",
+      "file": "data/analysis_v2/ufo_geography_v1.bin",
+      "format": "ufo_geography_columnar_v1",
+      "gzipBytes": 4509528,
+      "gzipFile": "data/analysis_v2/ufo_geography_v1.bin.gz",
+      "gzipSha256": "e9a1c122e4511c296d9dd7101cb084106e7a95c951c0712e67f55001cbceea41",
+      "sha256": "3923d1c09186e1ee6cb607ca0ca306ab1bbbdfe713df89d46812317ee5aa4057",
+      "version": 1
+    },
+    "path": "webapp/static_public/data/analysis_v2/manifest.json",
+    "sha256": "57a721cf1d23e063f4054a773d216f10319db5568e5d331c336d7efe751bcbbd"
+  },
+  "output": {
+    "bytes": 8130994,
+    "gzipByteReductionPct": 35.343533,
+    "gzipBytes": 4509528,
+    "gzipPath": "webapp/static_public/data/analysis_v2/ufo_geography_v1.bin.gz",
+    "gzipSha256": "e9a1c122e4511c296d9dd7101cb084106e7a95c951c0712e67f55001cbceea41",
+    "path": "webapp/static_public/data/analysis_v2/ufo_geography_v1.bin",
+    "rawByteReductionPct": 64.48164,
+    "sha256": "3923d1c09186e1ee6cb607ca0ca306ab1bbbdfe713df89d46812317ee5aa4057"
+  },
+  "parity": {
+    "codeMaximums": [
+      167,
+      7,
+      2,
+      2,
+      3,
+      1
+    ],
+    "codeMinimums": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "decodedCanonicalJsonSha256": "71297de8b48420b98302efe11c5520ad62dfbd33475bafacbd591fff83d9ef9b",
+    "decodedParityPct": 100.0,
+    "decodedRowCount": 580783,
+    "eventId": {
+      "maximum": 4504587788352938,
+      "minimum": 1002960921211
+    },
+    "nullCount": 0,
+    "pointRowIndex": {
+      "base": 0,
+      "implicit": true,
+      "maximum": 580782
+    },
+    "sentinelSemantics": "All six integer code columns are retained byte-exact; their codebooks remain in the signed manifest.",
+    "sourceCanonicalJsonSha256": "71297de8b48420b98302efe11c5520ad62dfbd33475bafacbd591fff83d9ef9b",
+    "sourceJsonSha256": "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871"
+  },
+  "schemaId": "ufo-timeline-analysis-geography-binary-build-v1.0.0",
+  "source": {
+    "bytes": 22892369,
+    "gzipBytes": 6974597,
+    "path": "webapp/static_public/data/analysis_v2/ufo_geography_v1.json",
+    "sha256": "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871"
+  }
+}

@@ -111,6 +111,8 @@ PAGES_SOURCE_ADDITION_PATHS = frozenset(
         PurePosixPath("data/analysis_v2/context_ufo_neighbors_v1.json.gz"),
         PurePosixPath("data/analysis_v2/ufo_geography_v1.json"),
         PurePosixPath("data/analysis_v2/ufo_geography_v1.json.gz"),
+        PurePosixPath("data/analysis_v2/ufo_geography_v1.bin"),
+        PurePosixPath("data/analysis_v2/ufo_geography_v1.bin.gz"),
         PurePosixPath("data/analysis_v2/ufo_configuration_points_v1.json"),
         PurePosixPath("data/analysis_v2/ufo_configuration_points_v1.json.gz"),
         PurePosixPath("data/analysis_v2/ufo_configuration_neighbors_v1.json"),
