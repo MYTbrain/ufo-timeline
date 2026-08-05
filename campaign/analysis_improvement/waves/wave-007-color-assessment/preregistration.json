@@ -1,0 +1,127 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preregistration-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-007-color-assessment",
+  "candidateId": "typed_observation_assessments",
+  "generatedAt": "2026-08-05T00:24:58Z",
+  "baselineCommit": "aa28e965b618c30390cfc4e3c397a8cccdf8cdde",
+  "baselineProduction": {
+    "analysisReleaseId": "analysis-geography-binary-v1-20260805",
+    "deploymentId": "e4c8685c-4228-4e98-93fe-09a935fa86a6",
+    "frozenTreeSha256": "b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215"
+  },
+  "primaryObjective": "Determine whether raw color evidence can become one defensible, typed, cross-source descriptive assessment without converting absence, ambiguous prose, luminosity, material color, or compound observations into exact object-color claims.",
+  "hypothesis": "The 79,215 catalog rows carrying raw color evidence across NUFORC and UFOCAT contain enough explicit object-color or light-color vocabulary to normalize at least 63,372 rows into conservative typed roles while preserving original text, ambiguity, compound colors, and source-specific semantics.",
+  "selectionRationale": {
+    "backlogCandidate": "typed_observation_assessments",
+    "selectedModule": "color",
+    "reason": "Color is the only remaining typed-observation module already marked candidate_audit_ready, exceeds the 5 percent coverage floor, and has two independently identified sources. Sound and light remain single-source; behavior and evidence have no pinned raw-field coverage.",
+    "onePrimaryObjectivePerWave": true
+  },
+  "interventionBoundary": {
+    "inScope": [
+      "deterministic audit of exact raw color values, source coverage, missingness, sentinels, and high-frequency forms",
+      "one conservative typed color-role normalization sidecar with original-value hashes and parse reasons",
+      "explicit separation of object color, emitted-light color, multicolor, color change, unknown role, and unparsed text",
+      "cross-source descriptive readiness and source-era-region support checks",
+      "one compact color assessment only if every material gate passes",
+      "JSON and CSV evidence export with hashes and suppression state"
+    ],
+    "outOfScope": [
+      "canonical event mutation or free-text description mining",
+      "inferring color from craft type, brightness, illumination, photographs, or chronology prose",
+      "collapsing object color and emitted-light color into one scientific variable",
+      "treating missing, blank, none, unknown, or unparsed values as negative observations",
+      "sound, light-presence, behavior, evidence, solar, weather, or lunar assessments",
+      "authenticity, incidence, risk, causal, or Pattern Finder claims",
+      "external whole-dataset ingestion"
+    ]
+  },
+  "beforeMetrics": {
+    "catalogRows": 702893,
+    "rawColorRows": 79215,
+    "rawColorCoveragePct": 11.269852,
+    "supportedSources": ["nuforc", "ufocat"],
+    "typedColorRows": 0,
+    "colorAssessmentStatus": "unavailable",
+    "soundRows": 18479,
+    "lightPositiveMentionRows": 73016,
+    "behaviorRows": 0,
+    "evidenceRows": 0
+  },
+  "expectedMaterialGain": {
+    "criterion": "previously_unavailable_assessment_becomes_estimable",
+    "minimumNormalizedRows": 63372,
+    "minimumCatalogCoveragePct": 9.0,
+    "minimumIndependentSources": 2,
+    "minimumRowsPerSupportedSource": 1000,
+    "originalValuesPreserved": true,
+    "roleAmbiguityPreserved": true
+  },
+  "readinessContract": {
+    "requiredFields": [
+      "canonical event id",
+      "raw color value",
+      "typed color role",
+      "normalized color category or categories",
+      "compound and changing-color flags",
+      "parse status and reason",
+      "source",
+      "era",
+      "macroregion"
+    ],
+    "minimumCoverage": {
+      "normalizedCatalogPct": 9.0,
+      "supportedSources": 2,
+      "minimumRowsPerSupportedSource": 1000,
+      "commonSupportRate": 0.8,
+      "minimumActiveAndReferenceCellN": 20
+    },
+    "estimators": [
+      "descriptive typed color-role distribution",
+      "source-era-region common-support standardized active/reference share difference only for role-compatible categories",
+      "deterministic 95 percent bootstrap interval when cross-source stability gates pass"
+    ],
+    "negativeControls": [
+      "leave-one-source-out",
+      "era holdout",
+      "macroregion holdout",
+      "object-color versus emitted-light-color role separation",
+      "blank, none, unknown, ambiguous, compound, changing, and unparsed values remain distinct",
+      "source raw-value occurrence parity"
+    ],
+    "uncertaintyTreatment": "Exact single colors, explicit compound colors, changing colors, object-color roles, emitted-light-color roles, ambiguous roles, non-color descriptors, source sentinels, and unparsed text remain distinct. No value is inferred from descriptions or neighboring fields.",
+    "suppressionPolicy": "Publish a compact readiness result instead of an assessment whenever typed coverage, source independence, role compatibility, common support, cell support, or holdout stability fails. Never treat missing color as colorless or zero."
+  },
+  "performanceBudget": {
+    "loading": "lazy_when_craft_dashboard_color_assessment_is_requested",
+    "maximumCompressedArtifactBytes": 5000000,
+    "maximumMainThreadTaskMs": 50,
+    "catalogOrTileReloads": 0,
+    "desktopFirstUsefulMs": 2500,
+    "constrainedFirstUsefulMs": 5000,
+    "desktopWarmRecomputationP95Ms": 750,
+    "constrainedWarmRecomputationP95Ms": 1500,
+    "materialRegressionAllowed": false
+  },
+  "releaseGates": [
+    "raw-value audit and preregistered parser rules before production code",
+    "normalization idempotence, original-value preservation, and source occurrence parity",
+    "role-compatible projection parity and deterministic hashes",
+    "statistical determinism, common support, FDR isolation, and holdout stability",
+    "no raw-count-driven inference and no Color Pattern Finder promotion",
+    "complete Python and JavaScript suites",
+    "Pages and immutable R2 separation if a large sidecar is accepted",
+    "clean-clone reproduction",
+    "desktop and mobile browser QA, keyboard, themes, reduced motion, exports, direct hashes, and zero console errors",
+    "identical frozen Pages package preview to production and tested rollback"
+  ],
+  "stopConditions": [
+    "fewer than 63372 rows normalize without description mining or semantic guessing",
+    "fewer than two sources retain at least 1000 normalized rows",
+    "object color and emitted-light color cannot be separated deterministically",
+    "compound, changing, unknown, or source sentinel semantics would be weakened",
+    "the assessment requires a second browser event model",
+    "scientific, provenance, rights, accessibility, or performance gates would need weakening"
+  ]
+}

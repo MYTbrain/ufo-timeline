@@ -175,7 +175,7 @@
                 "sourceIndependence": 0,
                 "userFacingSeverity": 3
             },
-            "status": "in_progress"
+            "status": "completed_accepted_promoted"
         },
         {
             "baselineCoverage": {
@@ -205,7 +205,7 @@
                 "sourceIndependence": 1,
                 "userFacingSeverity": 4
             },
-            "status": "candidate"
+            "status": "in_progress_color_selected"
         },
         {
             "baselineCoverage": {

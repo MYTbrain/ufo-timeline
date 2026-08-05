@@ -69,15 +69,16 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     wave_three_receipt = load("waves/wave-003-coordinate-evidence-repair/wave_receipt.json")
     wave_four_receipt = load("waves/wave-004-time-of-day-assessment/wave_receipt.json")
     wave_five_receipt = load("waves/wave-005-witness-count-assessment/wave_receipt.json")
+    wave_six_receipt = load("waves/wave-006-analysis-projection-encoding/wave_receipt.json")
     assert current["schemaId"] == campaign.CAMPAIGN_SCHEMA
     assert current["currentProduction"]["baselineCommit"] == campaign.BASELINE_COMMIT
-    assert current["currentProduction"]["deploymentId"] == wave_five_receipt["production"]["deploymentId"]
-    assert current["currentProduction"]["frozenTreeSha256"] == wave_five_receipt["artifacts"]["frozenPagesTreeSha256"]
-    assert current["rollbackTarget"]["deploymentId"] == wave_five_receipt["rollback"]["deploymentId"]
+    assert current["currentProduction"]["deploymentId"] == wave_six_receipt["production"]["deploymentId"]
+    assert current["currentProduction"]["frozenTreeSha256"] == wave_six_receipt["artifacts"]["frozenPagesTreeSha256"]
+    assert current["rollbackTarget"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
     assert current["rollbackTarget"]["tested"] is True
     assert current["consecutiveNoGainFrontierPasses"] == 0
     assert current["status"] == "active"
-    assert len(completed["waves"]) == 5
+    assert len(completed["waves"]) == 6
     assert completed["waves"][0]["waveId"] == "wave-001-duration-assessment"
     assert completed["waves"][0]["status"] == "accepted_and_promoted"
     assert completed["waves"][1]["waveId"] == "wave-002-reporting-delay-assessment"
@@ -92,11 +93,15 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert completed["waves"][4]["waveId"] == "wave-005-witness-count-assessment"
     assert completed["waves"][4]["status"] == "accepted_and_promoted"
     assert completed["waves"][4]["productionDeploymentId"] == wave_five_receipt["production"]["deploymentId"]
+    assert completed["waves"][5]["waveId"] == "wave-006-analysis-projection-encoding"
+    assert completed["waves"][5]["status"] == "accepted_and_promoted"
+    assert completed["waves"][5]["productionDeploymentId"] == wave_six_receipt["production"]["deploymentId"]
     assert wave_one_receipt["production"]["deploymentId"] == wave_two_receipt["rollback"]["deploymentId"]
     assert wave_two_receipt["production"]["deploymentId"] == wave_three_receipt["rollback"]["deploymentId"]
     assert wave_three_receipt["production"]["deploymentId"] == wave_four_receipt["rollback"]["deploymentId"]
     assert wave_four_receipt["production"]["deploymentId"] == wave_five_receipt["rollback"]["deploymentId"]
-    assert current["activeWave"]["waveId"] == "wave-006-analysis-projection-encoding"
+    assert wave_five_receipt["production"]["deploymentId"] == wave_six_receipt["rollback"]["deploymentId"]
+    assert current["activeWave"]["waveId"] == "wave-007-color-assessment"
     assert current["nextCandidate"] == current["activeWave"]["candidateId"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/build_audit.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-001-duration-assessment/wave_receipt.json" in current["packageArtifacts"]
@@ -120,6 +125,12 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/preview_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-005-witness-count-assessment/wave_receipt.json" in current["packageArtifacts"]
     assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preregistration.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/baseline_audit.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/encoding_build_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/before_after_metrics.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preview_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/wave_receipt.json" in current["packageArtifacts"]
+    assert "campaign/analysis_improvement/waves/wave-007-color-assessment/preregistration.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
         assert path.stat().st_size == record["bytes"]
@@ -144,7 +155,7 @@ def test_backlog_is_ranked_by_the_declared_formula() -> None:
     assert [item["score"] for item in candidates] == sorted((item["score"] for item in candidates), reverse=True)
     assert candidates[0]["candidateId"] == "duration_assessment"
     assert candidates[0]["status"] == "completed_accepted_promoted"
-    active_candidates = [item for item in candidates if item["status"] == "in_progress"]
+    active_candidates = [item for item in candidates if item["status"].startswith("in_progress")]
     assert len(active_candidates) == 1
     assert active_candidates[0]["candidateId"] == load("state/current.json")["nextCandidate"]
 
@@ -238,6 +249,25 @@ def test_witness_count_receipt_and_projection_encoding_wave_transition_are_pinne
     assert projection["expectedMaterialGain"]["minimumCompressedTransferReductionPct"] == 10
     assert projection["expectedMaterialGain"]["decodedValueParityRequired"] is True
     assert "lossy numeric quantization, dropped provenance, or changed null and sentinel semantics" in projection["interventionBoundary"]["outOfScope"]
+
+
+def test_projection_encoding_receipt_and_color_wave_transition_are_pinned() -> None:
+    receipt = load("waves/wave-006-analysis-projection-encoding/wave_receipt.json")
+    color = load("waves/wave-007-color-assessment/preregistration.json")
+    assert receipt["releaseGate"] == "accepted_and_promoted"
+    assert receipt["materialGain"]["passed"] is True
+    assert receipt["materialGain"]["evidence"]["projectionRows"] == 580_783
+    assert receipt["materialGain"]["evidence"]["gzipByteReductionPct"] >= 10
+    assert receipt["materialGain"]["evidence"]["decodedValueParityPct"] == 100
+    assert receipt["materialGain"]["evidence"]["scientificOutputParityPct"] == 100
+    assert receipt["rollback"]["tested"] is True
+    assert color["candidateId"] == "typed_observation_assessments"
+    assert color["baselineCommit"] == receipt["artifacts"]["candidateCommit"]
+    assert color["beforeMetrics"]["rawColorRows"] == 79_215
+    assert color["expectedMaterialGain"]["minimumNormalizedRows"] == 63_372
+    assert color["expectedMaterialGain"]["minimumIndependentSources"] == 2
+    assert color["expectedMaterialGain"]["originalValuesPreserved"] is True
+    assert "inferring color from craft type, brightness, illumination, photographs, or chronology prose" in color["interventionBoundary"]["outOfScope"]
 
 
 def test_module_registry_preserves_forbidden_claims_and_suppression() -> None:

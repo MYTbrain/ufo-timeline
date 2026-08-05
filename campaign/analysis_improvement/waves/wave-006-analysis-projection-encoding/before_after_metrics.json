@@ -1,0 +1,97 @@
+{
+  "schemaId": "ufo-timeline-analysis-before-after-metrics-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "measurementId": "wave-006-analysis-projection-encoding-final-20260805",
+  "generatedAt": "2026-08-05T00:24:58Z",
+  "catalog": {
+    "beforeRows": 702893,
+    "afterRows": 702893,
+    "geographyProjectionRows": 580783,
+    "canonicalEventRecordsMutated": false,
+    "estimatorOutputsChanged": false,
+    "decodedValueParityPct": 100.0,
+    "scientificOutputParityPct": 100.0
+  },
+  "encoding": {
+    "format": "ufo_geography_columnar_v1",
+    "sourceJsonBytes": 22892369,
+    "sourceGzipBytes": 6974597,
+    "binaryBytes": 8130994,
+    "binaryGzipBytes": 4509528,
+    "rawByteReductionPct": 64.48164,
+    "gzipByteReductionPct": 35.343533,
+    "sourceJsonSha256": "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871",
+    "binarySha256": "3923d1c09186e1ee6cb607ca0ca306ab1bbbdfe713df89d46812317ee5aa4057",
+    "binaryGzipSha256": "e9a1c122e4511c296d9dd7101cb084106e7a95c951c0712e67f55001cbceea41",
+    "decodedCanonicalJsonSha256": "71297de8b48420b98302efe11c5520ad62dfbd33475bafacbd591fff83d9ef9b"
+  },
+  "performance": {
+    "desktopLivePipeline": {
+      "beforeMedianMs": 553.8,
+      "afterMedianMs": 377.5,
+      "medianImprovementPct": 31.834597,
+      "beforeP95Ms": 809.9,
+      "afterP95Ms": 532.8,
+      "p95ImprovementPct": 34.214101
+    },
+    "desktopLiveTransfer": {
+      "beforeMedianMs": 314.8,
+      "afterMedianMs": 193.6,
+      "medianImprovementPct": 38.500635,
+      "beforeP95Ms": 583.3,
+      "afterP95Ms": 418.5,
+      "p95ImprovementPct": 28.253043
+    },
+    "coldGeographyReady": {
+      "desktopBeforeMs": 905.1,
+      "desktopAfterMs": 322.3,
+      "desktopImprovementPct": 64.390675,
+      "constrainedCpu4xBeforeMs": 1643.0,
+      "constrainedCpu4xAfterMs": 417.6,
+      "constrainedCpu4xImprovementPct": 74.58308
+    },
+    "analysisFirstUseful": {
+      "desktopEndToEndMs": 1542.1,
+      "desktopQuickWorkerMs": 1181.3,
+      "constrainedCpu4xEndToEndMs": 2281.1,
+      "constrainedCpu4xQuickWorkerMs": 727.0,
+      "desktopBudgetMs": 2500,
+      "constrainedBudgetMs": 5000
+    },
+    "desktopWarmRecomputationP95Ms": 9.6,
+    "maximumObservedDesktopGeographyMainThreadTaskMs": 0,
+    "catalogContextTileOrLayerReloadsDuringStableSwitching": 0,
+    "stableSwitchCycles": 3,
+    "lastAcceptedColdSpatialMs": 3062,
+    "spatialArtifactsChanged": false
+  },
+  "accessibility": {
+    "desktopKeyboardNavigationPassed": true,
+    "mobileNoPageOverflowPassed": true,
+    "mobileViewport": "390x844",
+    "mobileDocumentClientAndScrollWidth": [390, 390],
+    "mobileAnalysisClientAndScrollWidth": [346, 346],
+    "mobileGeographyClientAndScrollWidth": [322, 322],
+    "lightThemePassed": true,
+    "darkThemePassed": true,
+    "reducedMotionPassed": true,
+    "jsonAndCsvExportSchemaTestsPassed": true,
+    "liveJsonExportControlTriggered": true,
+    "previewConsoleErrorsAndWarnings": 0,
+    "productionConsoleErrorsAndWarnings": 0
+  },
+  "visualDensity": {
+    "referenceViewport": "1280x720 effective browser viewport",
+    "maximumOrdinaryDashboardPx": 900,
+    "changedDashboard": "geography",
+    "geographyDashboardHeightPx": 882.953125,
+    "unchangedDashboardHeightsInheritedFromExactWave5Package": true,
+    "allOrdinaryDashboardsWithinBound": true
+  },
+  "materialGain": {
+    "passed": true,
+    "criterion": "performance_metric_improves_at_least_10_percent",
+    "minimumRequiredImprovementPct": 10,
+    "minimumObservedImprovementPct": 28.253043
+  }
+}

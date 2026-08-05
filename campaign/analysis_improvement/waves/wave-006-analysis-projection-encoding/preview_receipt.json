@@ -1,0 +1,72 @@
+{
+  "schemaId": "ufo-timeline-analysis-wave-preview-receipt-v1.0.0",
+  "campaignId": "analysis-improvement-campaign-20260804",
+  "waveId": "wave-006-analysis-projection-encoding",
+  "generatedAt": "2026-08-05T00:24:58Z",
+  "candidateCommit": "aa28e965b618c30390cfc4e3c397a8cccdf8cdde",
+  "candidateTree": "324fea1f8cc4b0fcc5bb1ce7da60dd32623f3609",
+  "materialGain": {
+    "passed": true,
+    "criterion": "performance_metric_improves_at_least_10_percent",
+    "gzipByteReductionPct": 35.343533,
+    "desktopColdGeographyImprovementPct": 64.390675,
+    "constrainedColdGeographyImprovementPct": 74.58308,
+    "decodedValueParityPct": 100.0,
+    "scientificOutputParityPct": 100.0
+  },
+  "tests": {
+    "finalTreePythonAssertions": 1318,
+    "subtestsPassed": 4,
+    "warnings": 1,
+    "javascriptSuites": {"passed": 17, "failed": 0},
+    "focusedEncodingManifestAndWebappTests": 83,
+    "finalReproductionContractTests": 15,
+    "deterministicPrimaryBuilderPassed": true,
+    "decodedRowParityPassed": true,
+    "completeSuiteReleaseBoundaryRemediationRecorded": true
+  },
+  "frozenPages": {
+    "path": "cloudflare_bundle_r2_analysis-geography-binary-v1-frozen-pages-qa2_20260804",
+    "baselinePath": "cloudflare_bundle_r2_analysis-witness-count-v1-frozen-pages-qa2_20260804",
+    "fileCount": 174,
+    "totalBytes": 120106908,
+    "treeSha256": "b5e25400ba34df8f6225e0ce9b6a098d7a0d84726c8c9a39709a4d3385844215",
+    "baselineChangedFiles": 4,
+    "baselineAddedFiles": 2,
+    "baselineRemovedFiles": 0,
+    "exactFrozenInventoryPassed": true
+  },
+  "preview": {
+    "deploymentId": "184e82ac-798e-4bf2-81a4-3587d2996554",
+    "immutableUrl": "https://184e82ac.ufo-timeline.pages.dev",
+    "aliasUrl": "https://analysis-geography-binary-v1.ufo-timeline.pages.dev",
+    "branch": "analysis-geography-binary-v1-preview-qa2-20260804",
+    "sourceLabel": "aa28e96",
+    "networkSmokePassed": true,
+    "servedAssetHashesMatched": true,
+    "analysisManifestSha256": "57a721cf1d23e063f4054a773d216f10319db5568e5d331c336d7efe751bcbbd"
+  },
+  "browserQa": {
+    "passed": true,
+    "desktopAnalysisFirstUsefulMs": 1542.1,
+    "constrainedAnalysisFirstUsefulMs": 2281.1,
+    "desktopColdGeographyReadyMs": 322.3,
+    "constrainedColdGeographyReadyMs": 417.6,
+    "desktopWarmP95Ms": 9.6,
+    "maximumObservedDesktopGeographyMainThreadTaskMs": 0,
+    "maximumOrdinaryDashboardPx": 882.953125,
+    "mobileNoOverflow": true,
+    "keyboardThemesReducedMotionPassed": true,
+    "exportSchemaAndControlsPassed": true,
+    "viewSwitchReloads": 0,
+    "consoleErrorsAndWarnings": 0,
+    "promotionAuthorized": true
+  },
+  "productionAtPreviewTime": {
+    "unchanged": true,
+    "deploymentId": "022a9b4d-a5bb-44ed-82ca-9bfa343e2ce6",
+    "immutableUrl": "https://022a9b4d.ufo-timeline.pages.dev",
+    "sourceLabel": "e696749"
+  },
+  "releaseGate": "accepted_preview_authorized_production_promotion"
+}
