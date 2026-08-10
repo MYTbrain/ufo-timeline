@@ -405,7 +405,8 @@ function createAnimalBootstrapHarness() {
 }
 
 
-assert.match(indexSource, /id="overlay-animal-mutilations"[\s\S]*?<span>Animal Mutilation Reports<\/span>/, "toggle uses the exact layer name");
+assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*aria-label="Animal Mutilation Reports"/, "compact toggle preserves the exact accessible layer name");
+assert.match(indexSource, /id="overlay-animal-mutilations"[\s\S]*?<span class="overlay-chip-label" aria-hidden="true">Mutilations<\/span>[\s\S]*?id="overlay-animal-mutilations-count"/, "compact toggle keeps its visual label and shared visible count");
 assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*data-default-enabled="true"[^>]*aria-pressed="true"/, "animal reports are enabled by default in the accessible initial state");
 assert.match(indexSource, /id="animal-mutilation-browser"[\s\S]*?role="dialog"[\s\S]*?aria-modal="true"/, "all-record browser is an accessible modal dialog");
 assert.doesNotMatch(indexSource, /<script src="\.\/animal_mutilation_layer\.js/, "heavy animal runtime is not a startup script");

@@ -3079,6 +3079,7 @@ button:focus {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .legend-title {
@@ -3089,6 +3090,96 @@ button:focus {
   display: grid;
   gap: 8px;
   margin-top: 8px;
+}
+
+.legend-bulk-controls,
+.map-legend-bulk-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.legend-bulk-button,
+.map-legend-bulk-button {
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid var(--button-border);
+  border-radius: 999px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.legend-bulk-button:hover,
+.map-legend-bulk-button:hover,
+.legend-bulk-button:focus-visible,
+.map-legend-bulk-button:focus-visible {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.craft-legend-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) max-content;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.craft-legend-row.is-disabled {
+  opacity: 0.58;
+}
+
+.craft-legend-swatch-button,
+.craft-legend-label-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.craft-legend-swatch-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 999px;
+}
+
+.craft-legend-label-button {
+  min-width: 0;
+  padding: 6px 5px;
+  border-radius: 8px;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.craft-legend-swatch-button:hover,
+.craft-legend-label-button:hover,
+.craft-legend-swatch-button:focus-visible,
+.craft-legend-label-button:focus-visible,
+.craft-legend-label-button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--panel-border));
+  background: color-mix(in srgb, var(--accent-soft) 60%, transparent);
+  color: var(--ink);
+}
+
+.craft-legend-swatch-button:focus-visible,
+.craft-legend-label-button:focus-visible,
+.legend-bulk-button:focus-visible,
+.map-legend-bulk-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
 }
 
 .legend-item {
@@ -3127,6 +3218,16 @@ button:focus {
   border-radius: 999px;
   border: 1px solid var(--panel-border);
   flex-shrink: 0;
+}
+
+.legend-item.craft-legend-row,
+.map-legend-item.craft-legend-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) max-content;
+  align-items: center;
+  justify-content: stretch;
+  gap: 6px;
+  width: 100%;
 }
 
 .fit-button,
@@ -3168,6 +3269,44 @@ button:focus {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+}
+
+.overlay-chip-group-secondary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+
+.overlay-chip-secondary-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) max-content;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.overlay-chip-secondary-row:hover {
+  transform: none;
+}
+
+.overlay-chip-label {
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.overlay-chip-count {
+  min-width: 3ch;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: currentColor;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
 }
 
 .overlay-subpanel {
@@ -3948,18 +4087,14 @@ button:focus {
   transform-origin: center;
 }
 
-.chronological-neighborhood-endpoint {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
-}
-
 .map-control-cluster {
   position: absolute;
   top: 16px;
   left: 16px;
   z-index: 640;
-  width: auto;
+  width: min(320px, calc(100% - 32px));
   min-height: 0;
-  max-width: min(304px, calc(100% - 32px));
+  max-width: min(336px, calc(100% - 32px));
   max-height: calc(100% - 24px);
   display: flex;
   flex-direction: column;
@@ -4402,8 +4537,8 @@ button:focus {
 .map-control-cluster-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px 12px 14px;
+  gap: 6px;
+  padding: 8px 8px 12px;
   flex: 1 1 auto;
   min-height: 0;
   max-height: 100%;
@@ -4472,13 +4607,13 @@ button:focus {
   flex-direction: column;
   min-height: 0;
   border: 1px solid var(--panel-border);
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--panel-soft);
   overflow: hidden;
 }
 
 .map-control-section[open] {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   min-height: 0;
 }
 
@@ -4488,8 +4623,9 @@ button:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 10px;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -4516,6 +4652,34 @@ button:focus {
   flex-shrink: 0;
 }
 
+.map-control-summary-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  color: inherit;
+}
+
+.map-control-summary-state {
+  max-width: 46%;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.map-control-section[open] .map-control-summary-state {
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  color: var(--ink);
+}
+
 .map-control-section summary:hover,
 .map-control-section summary:focus-visible {
   color: var(--ink);
@@ -4538,19 +4702,14 @@ button:focus {
 
 .map-control-slot {
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   flex-direction: column;
-  gap: 10px;
-  padding: 0 12px 14px;
+  gap: 8px;
+  padding: 10px;
   min-width: 0;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y pinch-zoom;
+  overflow: visible;
+  touch-action: auto;
 }
 
 :root.compact-map-ui .map-control-cluster {
@@ -4978,13 +5137,53 @@ button:focus {
   margin-top: 0;
 }
 
-.map-control-section[data-map-control-section="trace"] .map-control-slot {
+.map-control-section[data-map-control-section="traces"] .map-control-slot {
   padding-bottom: 18px;
-  scroll-padding-block-end: 44px;
 }
 
-.map-control-section[data-map-control-section="trace"] .trace-controls {
+.map-control-section[data-map-control-section="traces"] .trace-controls {
   padding-bottom: 16px;
+}
+
+.map-control-slot .overlay-panel,
+.map-control-slot .legend,
+.map-control-slot .trace-controls,
+.map-control-slot .trace-facility-filter {
+  width: 100%;
+  margin: 0;
+  padding: 9px;
+  border-radius: 12px;
+}
+
+.map-control-slot .area-selection-shell {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  width: 100%;
+  transform: none;
+  justify-items: stretch;
+  pointer-events: auto;
+}
+
+.map-control-slot .area-selection-toggle {
+  justify-self: start;
+  min-height: 36px;
+  box-shadow: none;
+}
+
+.map-control-slot .area-selection-panel {
+  max-height: none;
+  overflow: visible;
+  border-radius: 12px;
+  background: var(--panel-soft);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.map-control-slot .trace-facility-advanced {
+  width: 100%;
+  padding: 0;
+  border-top: 0;
 }
 
 .map-control-slot #map-settings-section {
@@ -5874,7 +6073,14 @@ button:focus {
 .trace-bucket-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 5px;
+}
+
+.trace-bucket-heading {
+  flex: 1 0 100%;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .trace-bucket-button {
@@ -5882,7 +6088,9 @@ button:focus {
   --trace-bucket-tint: rgba(255, 45, 117, 0.14);
   border: 1px solid var(--button-border);
   border-radius: 999px;
-  padding: 8px 12px;
+  min-width: 42px;
+  min-height: 32px;
+  padding: 6px 9px;
   background: var(--button-bg);
   color: var(--button-text);
   cursor: pointer;
@@ -5927,8 +6135,8 @@ button:focus {
 
 .trace-facility-filter {
   display: grid;
-  gap: 8px;
-  padding: 10px;
+  gap: 7px;
+  padding: 9px;
   border: 1px solid rgba(125, 211, 252, 0.18);
   border-radius: 14px;
   background: rgba(8, 18, 28, 0.34);
@@ -5939,7 +6147,7 @@ button:focus {
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .trace-facility-row-label {
@@ -5948,6 +6156,10 @@ button:focus {
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.trace-facility-category-controls .trace-facility-row-label {
+  flex: 1 1 100%;
 }
 
 .trace-facility-mini-button {
@@ -6029,6 +6241,7 @@ button:focus {
 
 .trace-facility-evidence-help {
   flex: 1 1 100%;
+  padding-inline: 2px;
 }
 
 .trace-facility-advanced {
@@ -6062,13 +6275,13 @@ button:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 34px;
-  padding: 6px 9px;
+  min-height: 32px;
+  padding: 5px 8px;
   border: 1px solid var(--button-border);
   border-radius: 999px;
   background: var(--button-bg);
   color: var(--button-text);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 800;
   cursor: pointer;
 }

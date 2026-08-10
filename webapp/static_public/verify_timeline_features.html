@@ -832,7 +832,6 @@
           debugApi &&
           typeof debugApi.getMappedEventProbeForTest === "function" &&
           typeof debugApi.setAreaSelectionForTest === "function" &&
-          typeof debugApi.activateNeighborhoodEndpointForTest === "function" &&
           typeof debugApi.closeMapPopupForTest === "function" &&
           typeof debugApi.clearAreaSelectionForTest === "function" &&
           typeof debugApi.activateRenderedPointForTest === "function"
@@ -842,11 +841,11 @@
           dispatch(win, mapMode, "change");
           await wait(500);
 
-          const areaProbe = debugApi.getMappedEventProbeForTest();
-          if (areaProbe && areaProbe.from) {
-            const latitudePadding = 0.08;
-            const longitudePadding = 0.08;
-            debugApi.setAreaSelectionForTest([{
+            const areaProbe = debugApi.getMappedEventProbeForTest();
+            if (areaProbe && areaProbe.from) {
+              const latitudePadding = 0.08;
+              const longitudePadding = 0.08;
+            const areaShape = {
               type: "rectangle",
               bounds: {
                 north: areaProbe.from.lat + latitudePadding,
@@ -854,32 +853,35 @@
                 east: areaProbe.from.lon + longitudePadding,
                 west: areaProbe.from.lon - longitudePadding,
               },
-            }], {
-              depth: 1,
+            };
+            const visibleAreaOptions = {
+              depth: 0,
               direction: "forward",
               selectTraces: true,
               selectEvents: true,
               showSelectedTraces: true,
               showEventsAssociatedWithSelectedTraces: true,
               showSelectedEvents: true,
-            });
+            };
+            debugApi.setAreaSelectionForTest([areaShape], visibleAreaOptions);
             await wait(500);
 
             const activeAreaSnapshot = debugApi.getStateSnapshot();
-            const neighborhoodEndpointEventId = debugApi.activateNeighborhoodEndpointForTest();
+            const areaPointEventId = debugApi.activateRenderedPointForTest();
             await wait(180);
-            const neighborhoodPopup = doc.querySelector("#map .leaflet-popup");
+            const areaPointPopup = doc.querySelector("#map .leaflet-popup");
             const descriptionPanel = doc.querySelector("#map-description-panel");
+            const areaDirectionSelect = doc.querySelector("#area-selection-direction");
             lines.push(line(
-              "Area endpoint opens full sighting UI",
-              "event=" + neighborhoodEndpointEventId +
+              "Area-selected point opens full sighting UI",
+              "event=" + areaPointEventId +
                 " | layers=" + activeAreaSnapshot.areaSelection.interactionLayerCount +
-                " | pane=" + activeAreaSnapshot.areaSelection.interactionPanePointerEvents,
-              neighborhoodEndpointEventId != null &&
-              Boolean(neighborhoodPopup) &&
+                " | representation=" + activeAreaSnapshot.areaSelection.eventRepresentation,
+              areaPointEventId != null &&
+              Boolean(areaPointPopup) &&
               !descriptionPanel.hidden &&
-              activeAreaSnapshot.areaSelection.interactionLayerCount > 0 &&
-              activeAreaSnapshot.areaSelection.interactionPanePointerEvents === "auto"
+              activeAreaSnapshot.areaSelection.eventRepresentation === "points" &&
+              areaDirectionSelect.disabled
             ));
 
             const mapSurface = doc.querySelector("#map");
@@ -895,6 +897,64 @@
                 " | description hidden=" + descriptionPanel.hidden,
               !doc.querySelector("#map .leaflet-popup") && descriptionPanel.hidden
             ));
+
+            mapMode.value = "clusters";
+            dispatch(win, mapMode, "change");
+            await wait(500);
+            const clusterAreaSnapshot = debugApi.getStateSnapshot();
+            const clusterRawEndpoints = doc.querySelectorAll(".chronological-neighborhood-endpoint").length;
+            lines.push(line(
+              "Area-selected events obey Clusters",
+              "representation=" + clusterAreaSnapshot.areaSelection.eventRepresentation +
+                " | raw endpoints=" + clusterRawEndpoints,
+              clusterAreaSnapshot.areaSelection.eventRepresentation === "clusters" &&
+              clusterRawEndpoints === 0
+            ));
+
+            mapMode.value = "heatmap";
+            dispatch(win, mapMode, "change");
+            await wait(500);
+            const heatmapAreaSnapshot = debugApi.getStateSnapshot();
+            const heatmapRawEndpoints = doc.querySelectorAll(".chronological-neighborhood-endpoint").length;
+            lines.push(line(
+              "Area-selected events obey Heatmap",
+              "representation=" + heatmapAreaSnapshot.areaSelection.eventRepresentation +
+                " | raw endpoints=" + heatmapRawEndpoints,
+              heatmapAreaSnapshot.areaSelection.eventRepresentation === "heatmap" &&
+              heatmapRawEndpoints === 0
+            ));
+
+            mapMode.value = "auto";
+            dispatch(win, mapMode, "change");
+            await wait(500);
+            const autoAreaSnapshot = debugApi.getStateSnapshot();
+            const autoRawEndpoints = doc.querySelectorAll(".chronological-neighborhood-endpoint").length;
+            lines.push(line(
+              "Area-selected events obey resolved Auto",
+              "effective=" + autoAreaSnapshot.effectiveMapMode +
+                " | representation=" + autoAreaSnapshot.areaSelection.eventRepresentation +
+                " | raw endpoints=" + autoRawEndpoints,
+              ["points", "clusters", "heatmap"].includes(autoAreaSnapshot.areaSelection.eventRepresentation) &&
+              autoRawEndpoints === 0
+            ));
+
+            debugApi.setAreaSelectionForTest([areaShape], Object.assign({}, visibleAreaOptions, {
+              selectEvents: false,
+              showSelectedEvents: false,
+              showEventsAssociatedWithSelectedTraces: false,
+            }));
+            await wait(500);
+            const hiddenAreaSnapshot = debugApi.getStateSnapshot();
+            lines.push(line(
+              "Area event representation can be hidden",
+              "representation=" + hiddenAreaSnapshot.areaSelection.eventRepresentation,
+              hiddenAreaSnapshot.areaSelection.eventRepresentation === "hidden" &&
+              doc.querySelectorAll(".chronological-neighborhood-endpoint").length === 0
+            ));
+
+            mapMode.value = "points";
+            dispatch(win, mapMode, "change");
+            await wait(500);
 
             debugApi.clearAreaSelectionForTest();
             await wait(500);

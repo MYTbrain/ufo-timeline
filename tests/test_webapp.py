@@ -343,9 +343,21 @@ def test_point_markers_take_priority_over_overlapping_neighborhood_trace_clicks(
     assert "marker: pointHit.candidate.marker" in overlay_body
     assert "runtime.neighborhoodInspectorTraceId = segment.traceId;" in overlay_body
 
-    assert "marker.bindPopup(buildPopupContent(event), { maxWidth: 360 });" in overlay_body
-    assert "activateMapPointEvent(eventId, { marker });" in overlay_body
-    assert 'ufoEventId: Number(eventId)' in overlay_body
+    assert "L.circleMarker" not in overlay_body
+    assert "chronological-neighborhood-endpoint" not in overlay_body
+    assert "ufoEventId" not in overlay_body
+
+    render_map_body = _extract_js_function_body(app_js, "renderMap")
+    assert "TRACE_NEIGHBORHOOD.resolveAreaEventRepresentation({" in render_map_body
+    assert "TRACE_NEIGHBORHOOD.planAreaEventLayerTransition(" in render_map_body
+    assert 'nextAreaEventRepresentation === "hidden"' in render_map_body
+    assert "clearMapDataLayers();" in render_map_body
+    assert 'nextAreaEventRepresentation === MAP_RENDERERS.heatmap' in render_map_body
+    assert 'nextAreaEventRepresentation === MAP_RENDERERS.clusters' in render_map_body
+
+    clear_layers_body = _extract_js_function_body(app_js, "clearMapDataLayers")
+    for layer in ("clusterLayer", "pointLayer", "heatmapLayer"):
+        assert f"runtime.map.removeLayer(runtime.{layer});" in clear_layers_body
 
 
 def test_area_selection_clear_releases_interaction_pane_and_popup_close_releases_description():
@@ -356,7 +368,7 @@ def test_area_selection_clear_releases_interaction_pane_and_popup_close_releases
 
     overlay_body = _extract_js_function_body(app_js, "renderChronologicalNeighborhoodOverlay")
     assert "setChronologicalNeighborhoodPaneInteractive(false);" in overlay_body
-    assert "setChronologicalNeighborhoodPaneInteractive(true);" in overlay_body
+    assert "setChronologicalNeighborhoodPaneInteractive(segments.length > 0);" in overlay_body
 
     pane_body = _extract_js_function_body(app_js, "setChronologicalNeighborhoodPaneInteractive")
     assert 'pane.style.pointerEvents = active ? "auto" : "none";' in pane_body
@@ -370,7 +382,6 @@ def test_area_selection_clear_releases_interaction_pane_and_popup_close_releases
 
     assert "interactionLayerCount:" in app_js
     assert "interactionPanePointerEvents:" in app_js
-    assert "activateNeighborhoodEndpointForTest:" in app_js
     assert "activateRenderedPointForTest:" in app_js
     assert "closeMapPopupForTest:" in app_js
 
@@ -501,9 +512,11 @@ def test_static_trace_render_metrics_debug_snapshot_is_exposed():
     assert "state.filteredMappedCatalog.filter(function (event) {" not in app_js
     region_result_body = _extract_js_function_body(app_js, "computeRegionSelectionResult")
     assert "const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();" in region_result_body
-    assert ": TRACE_NEIGHBORHOOD.traverseNeighborhood({" in region_result_body
-    assert "if (!pointOnly && showsReachedTraces)" in region_result_body
-    assert "if (!pointOnly && showsReachedEvents)" in region_result_body
+    assert "else if (areaDepth === 0)" in region_result_body
+    assert "TRACE_NEIGHBORHOOD.computeAreaZeroHopSelection({" in region_result_body
+    assert "neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({" in region_result_body
+    assert "if (showsReachedTraces)" in region_result_body
+    assert "if (showsReachedEvents)" in region_result_body
     assert "state.regionSelection.showTracesAssociatedWithSelectedEvents" in app_js
     assert "neighborhood.segmentIds.forEach(function (traceId)" in app_js
     assert "neighborhood.eventIds.forEach(function (eventId)" in app_js
@@ -1027,7 +1040,6 @@ def test_france_heatmap_facility_proximity_defaults_are_wired():
         'id="trace-facility-filter-enabled" type="checkbox"',
         'id="trace-facility-radius" type="number" min="1" max="1000" step="1" value="5" disabled',
         'id="trace-facility-evidence-mode" disabled aria-describedby="trace-facility-evidence-help"',
-        '<option value="source_coordinates" selected>Source-provided coordinates + exact dates</option>',
         'id="trace-facility-linked-only" type="checkbox" checked disabled',
         'data-trace-facility-radius-preset="1" disabled',
         'data-trace-facility-radius-preset="2"',
@@ -1042,6 +1054,201 @@ def test_france_heatmap_facility_proximity_defaults_are_wired():
     for fragment in required_index_fragments:
         assert fragment in index_html
         assert fragment in bundle_index_html
+
+    assert '<option value="source_coordinates" selected>Strict mode</option>' in index_html
+    assert '<option value="include_generalized">Exploratory mode</option>' in index_html
+
+
+def test_map_control_panel_has_seven_accessible_sections_and_moves_one_control_tree():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    sections = (
+        ("view", "View"),
+        ("sightings", "Sightings"),
+        ("overlays", "Overlays"),
+        ("traces", "Traces"),
+        ("facility", "Facility proximity"),
+        ("area", "Area selection"),
+        ("advanced", "Advanced"),
+    )
+    discovered = re.findall(
+        r'<details id="map-control-section-([^"]+)" class="map-control-section" '
+        r'data-map-control-section="([^"]+)"',
+        index_html,
+    )
+    assert discovered == [(key, key) for key, _label in sections]
+
+    for key, label in sections:
+        assert index_html.count(f'id="map-control-section-{key}"') == 1
+        assert index_html.count(f'id="map-control-{key}-slot"') == 1
+        assert index_html.count(f'id="map-control-{key}-summary-state"') == 1
+        assert re.search(
+            rf'<span class="map-control-summary-label">{re.escape(label)}</span>\s*'
+            rf'<span id="map-control-{key}-summary-state" class="map-control-summary-state">',
+            index_html,
+        )
+
+    assert 'id="map-control-overlay-slot"' not in index_html
+    assert 'id="map-control-trace-slot"' not in index_html
+
+    original_control_ids = (
+        "map-display-panel",
+        "fit-results",
+        "legend-panel",
+        "map-overlays-panel",
+        "trace-controls-panel",
+        "trace-facility-filter",
+        "area-selection-shell",
+    )
+    for control_id in original_control_ids:
+        assert index_html.count(f'id="{control_id}"') == 1
+    assert index_html.count('class="trace-facility-row trace-facility-advanced"') == 1
+
+    mount_cluster = _extract_js_function_body(app_js, "mountMapControlCluster")
+    expected_mounts = (
+        "els.mapControlViewSlot.appendChild(els.mapSettingsDisplayPanel);",
+        "els.mapControlViewSlot.appendChild(els.fitResultsButton);",
+        "els.mapControlSightingsSlot.appendChild(els.legendPanel);",
+        "els.mapControlOverlaysSlot.appendChild(els.mapSettingsOverlayPanel);",
+        "els.mapControlTracesSlot.appendChild(els.traceControlsPanel);",
+        "els.mapControlFacilitySlot.appendChild(els.traceFacilityFilter);",
+        "els.mapControlAreaSlot.appendChild(els.areaSelectionShell);",
+        "els.mapControlAdvancedSlot.appendChild(els.traceFacilityAdvanced);",
+    )
+    for fragment in expected_mounts:
+        assert fragment in mount_cluster
+    assert "cloneNode" not in mount_cluster
+
+    assert 'const MAP_CONTROL_SECTION_SESSION_KEY = "ufoTimeline.mapControlSections.v1"' in app_js
+    default_open_state = _extract_js_function_body(app_js, "defaultMapControlSectionOpenState")
+    for key, _label in sections:
+        assert re.search(rf"\b{key}:\s", default_open_state)
+    persist_open_state = _extract_js_function_body(app_js, "persistMapControlSectionOpenState")
+    assert "safeSessionStorageSet(MAP_CONTROL_SECTION_SESSION_KEY" in persist_open_state
+
+
+def test_control_panel_compact_labels_and_overlay_counts_are_truthful_and_shared():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    expected_gap_buttons = {
+        "gap_le_1": ("true", "Up to 1 day", "&le;1"),
+        "gap_le_2": ("true", "More than 1 and up to 2 days", "1&ndash;2"),
+        "gap_le_7": ("false", "More than 2 and up to 7 days", "2&ndash;7"),
+        "gap_le_30": ("false", "More than 7 and up to 30 days", "7&ndash;30"),
+        "gap_gt_30": ("false", "More than 30 days", "&gt;30"),
+    }
+    assert 'role="group" aria-label="Trace time-gap buckets"' in index_html
+    assert '<span class="trace-bucket-heading">Gap between sightings (days)</span>' in index_html
+    for key, (pressed, accessible_label, visible_label) in expected_gap_buttons.items():
+        assert (
+            f'data-trace-bucket="{key}" aria-pressed="{pressed}" '
+            f'aria-label="{accessible_label}">{visible_label}</button>'
+        ) in index_html
+
+    required_facility_fragments = (
+        '<option value="source_coordinates" selected>Strict mode</option>',
+        '<option value="include_generalized">Exploratory mode</option>',
+        '>Endpoint near facility</span>',
+        'data-trace-facility-class="start" checked disabled aria-label="Start endpoint near facility"',
+        'data-trace-facility-class="end" checked disabled aria-label="End endpoint near facility"',
+        'data-trace-facility-class="between" checked disabled aria-label="Both endpoints near facilities"',
+        '<span>Start</span>',
+        '<span>End</span>',
+        '<span>Both ends</span>',
+        'aria-label="Only show facilities linked to visible traces"',
+        'Strict mode includes only source-provided endpoint coordinates with exact event dates',
+        "facility's recorded operating period supports that date",
+        "Year-only opening or closing years remain uncertain.",
+    )
+    for fragment in required_facility_fragments:
+        assert fragment in index_html
+
+    counted_overlay_rows = (
+        ("overlay-research-sites", "overlay-research-sites-count", "Research sites"),
+        ("overlay-crop-circles", "overlay-crop-circles-count", "Crop circles"),
+        ("overlay-animal-mutilations", "overlay-animal-mutilations-count", "Mutilations"),
+    )
+    for button_id, count_id, visible_label in counted_overlay_rows:
+        assert index_html.count(f'id="{button_id}"') == 1
+        assert index_html.count(f'id="{count_id}"') == 1
+        assert 'class="overlay-chip-label"' in index_html or 'class="overlay-chip-label" aria-hidden="true"' in index_html
+        assert f'>{visible_label}</span>' in index_html
+    animal_button = re.search(
+        r'<button id="overlay-animal-mutilations"[^>]+>',
+        index_html,
+    )
+    assert animal_button is not None
+    assert 'aria-label="Animal Mutilation Reports"' in animal_button.group(0)
+    assert ".overlay-chip-group-secondary" in styles_css
+    assert ".overlay-chip-secondary-row" in styles_css
+    assert ".overlay-chip-count" in styles_css
+
+    compact_counts = _extract_js_function_body(app_js, "renderCompactOverlayCounts")
+    map_legend_rows = _extract_js_function_body(app_js, "buildMapLegendOverlayRows")
+    assert "const counts = currentOverlayCountModel();" in compact_counts
+    assert "const overlayCounts = currentOverlayCountModel();" in map_legend_rows
+    for key in ("researchSites", "cropCircles", "animalMutilations"):
+        assert f"counts.{key}" in compact_counts
+    assert "overlayCounts.researchByCategory.get(category)" in map_legend_rows
+    assert "overlayCounts.cropCircles" in map_legend_rows
+    assert "overlayCounts.animalMutilations" in map_legend_rows
+
+
+def test_map_control_cluster_body_is_the_only_section_scroller():
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+
+    def rule(selector: str) -> str:
+        match = re.search(re.escape(selector) + r"\s*\{([^}]*)\}", styles_css, re.DOTALL)
+        assert match is not None, selector
+        return match.group(1)
+
+    cluster_body = rule(".map-control-cluster-body")
+    slot = rule(".map-control-slot")
+    open_section = rule(".map-control-section[open]")
+    mounted_area_panel = rule(".map-control-slot .area-selection-panel")
+    mounted_area_shell = rule(".map-control-slot .area-selection-shell")
+
+    assert "overflow-y: auto;" in cluster_body
+    assert "overflow-x: hidden;" in cluster_body
+    assert "overflow: visible;" in slot
+    assert "overflow-y:" not in slot
+    assert "flex: 0 0 auto;" in open_section
+    assert "max-height: none;" in mounted_area_panel
+    assert "overflow: visible;" in mounted_area_panel
+    assert "position: static;" in mounted_area_shell
+
+
+def test_area_selection_zero_hops_is_the_independent_default():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    helper_js = Path("webapp/static_public/trace_neighborhood.js").read_text(encoding="utf-8")
+
+    depth_select = re.search(
+        r'<select id="area-selection-depth"[^>]*>(.*?)</select>',
+        index_html,
+        re.DOTALL,
+    )
+    assert depth_select is not None
+    depth_markup = depth_select.group(1)
+    assert '<option value="0" selected>0 hops</option>' in depth_markup
+    assert '<option value="1">1 hop</option>' in depth_markup
+    assert '<option value="1" selected>' not in depth_markup
+
+    assert "const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH = 0;" in app_js
+    default_region = _normalize_js_body(_extract_js_function_body(app_js, "defaultRegionSelectionState"))
+    assert "depth:CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH" in default_region
+    area_normalizer = _normalize_js_body(_extract_js_function_body(helper_js, "normalizeAreaDepth"))
+    generic_normalizer = _normalize_js_body(_extract_js_function_body(helper_js, "normalizeDepth"))
+    assert "Math.max(0,Math.min(4," in area_normalizer
+    assert "Math.max(1,Math.min(4," in generic_normalizer
+
+    region_ui = _extract_js_function_body(app_js, "renderRegionSelectionUi")
+    assert "const directionInactive = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth) === 0;" in region_ui
+    assert "els.areaSelectionDirectionSelect.disabled = directionInactive;" in region_ui
+    assert 'els.areaSelectionDirectionSelect.setAttribute("aria-disabled", directionInactive ? "true" : "false");' in region_ui
 
 
 def test_map_control_cluster_defaults_to_full_portrait_and_desktop_height_and_preserves_manual_resize():
@@ -1206,8 +1413,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-            'styles.css?v=2026-08-05-analysis-color-v1-ui1',
-            'app.js?v=2026-08-05-analysis-color-v1-ui1',
+            'styles.css?v=2026-08-09-control-panel-area-v1',
+            'app.js?v=2026-08-09-control-panel-area-v1',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -1512,8 +1719,9 @@ def test_analysis_area_filter_is_point_only_and_never_builds_a_chronology_index(
     assert "const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();" in result_body
     assert "? currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds)" in result_body
     assert ": currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);" in result_body
-    assert "if (!pointOnly && showsReachedEvents)" in result_body
-    assert "if (!pointOnly && showsReachedTraces)" in result_body
+    assert "TRACE_NEIGHBORHOOD.computeAreaZeroHopSelection({" in result_body
+    assert "TRACE_NEIGHBORHOOD.traverseNeighborhood({" in result_body
+    assert "const areaDepth = TRACE_NEIGHBORHOOD.normalizeAreaDepth" in result_body
     assert "chronologyIndexUsed: !pointOnly" in result_body
     assert "traceSegments: pointOnly ? [] : index.segments" in result_body
 
@@ -1893,8 +2101,8 @@ def test_trace_facility_location_evidence_policy_is_conservative_and_truthful():
 
     required_ui_fragments = [
         'id="trace-facility-evidence-mode" disabled aria-describedby="trace-facility-evidence-help"',
-        '<option value="source_coordinates" selected>Source-provided coordinates + exact dates</option>',
-        '<option value="include_generalized">Include uncertain locations/dates (exploratory)</option>',
+        '<option value="source_coordinates" selected>Strict mode</option>',
+        '<option value="include_generalized">Exploratory mode</option>',
         "exact event dates",
         "recorded operating period",
         "Start endpoint near facility",
@@ -2117,7 +2325,7 @@ def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
     assert 'id="map-legend-status"' in index_html
     assert 'role="status" aria-live="polite"' in index_html
     assert (
-        "legend_controls.js?v=2026-07-31-area-lifecycle-v154"
+        "legend_controls.js?v=2026-08-09-control-panel-area-v1"
         in index_html
     )
     assert index_html.index("legend_controls.js") < index_html.index("app.js?v=")
@@ -2145,6 +2353,25 @@ def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
     assert "legendEventCounts" in worker_js
     assert "legendEventMode" in worker_js
     assert "selectedLegendEventKeys" in worker_js
+
+    craft_row = _extract_js_function_body(app_js, "buildCraftLegendRow")
+    for fragment in (
+        'class="craft-legend-swatch-button"',
+        'data-map-legend-event-key=',
+        'data-craft-legend-toggle-key=',
+        'class="craft-legend-label-button"',
+        'data-craft-legend-solo-key=',
+        'aria-pressed="',
+        'aria-hidden="true"',
+    ):
+        assert fragment in craft_row
+    assert "function toggleCraftLegendSoloKey(key)" in app_js
+    assert "function applyCraftLegendBulkAction(action)" in app_js
+    assert "LEGEND_CONTROLS.toggleCraftKey(" in app_js
+    assert "LEGEND_CONTROLS.toggleCraftSolo(" in app_js
+    assert "LEGEND_CONTROLS.applyCraftBulkSelection(" in app_js
+    assert app_js.count("buildCraftLegendBulkControls()") >= 3
+    assert app_js.count("clearCraftLegendSoloState();") >= 5
 
     for selector in (
         ".map-legend-reset-button",
@@ -2552,7 +2779,7 @@ def test_chronological_neighborhood_release_contract_is_synchronized():
     assert "Chronological Neighborhood" in index_html
     assert "not evidence of travel" in index_html
     assert (
-        "trace_neighborhood.js?v=2026-08-01-crop-circles-v157"
+        "trace_neighborhood.js?v=2026-08-09-control-panel-area-v1"
         in index_html
     )
     assert "function currentChronologicalNeighborhoodIndex()" in app_js

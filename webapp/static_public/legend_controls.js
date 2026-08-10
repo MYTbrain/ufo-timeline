@@ -95,6 +95,235 @@
     };
   }
 
+  function sameKeyUniverse(left, right) {
+    const leftKeys = uniqueKeys(left);
+    const rightKeys = uniqueKeys(right);
+    if (leftKeys.length !== rightKeys.length) return false;
+    const rightSet = new Set(rightKeys);
+    return leftKeys.every(function (key) {
+      return rightSet.has(key);
+    });
+  }
+
+  function normalizeSelectionForUniverse(selection, availableKeys, fallbackColorMode) {
+    const normalized = normalizeEventSelection(selection, fallbackColorMode);
+    const available = uniqueKeys(availableKeys);
+    if (normalized.mode !== "subset") return normalized;
+    const availableSet = new Set(available);
+    const selectedKeys = normalized.selectedKeys.filter(function (key) {
+      return availableSet.has(key);
+    });
+    return {
+      mode: selectedKeys.length ? "subset" : "none",
+      colorMode: normalized.colorMode,
+      selectedKeys,
+    };
+  }
+
+  function activeKeysForSelection(selection, availableKeys) {
+    const available = uniqueKeys(availableKeys);
+    if (selection.mode === "all") return available.slice();
+    if (selection.mode === "none") return [];
+    const availableSet = new Set(available);
+    return selection.selectedKeys.filter(function (key) {
+      return availableSet.has(key);
+    });
+  }
+
+  function selectionFromActiveKeys(activeKeys, availableKeys, colorMode) {
+    const available = uniqueKeys(availableKeys);
+    const availableSet = new Set(available);
+    const selectedKeys = uniqueKeys(activeKeys).filter(function (key) {
+      return availableSet.has(key);
+    });
+    if (!selectedKeys.length) {
+      return {
+        mode: "none",
+        colorMode: String(colorMode || "craft_type"),
+        selectedKeys: [],
+      };
+    }
+    const selectedSet = new Set(selectedKeys);
+    if (available.length && available.every(function (key) {
+      return selectedSet.has(key);
+    })) {
+      return resetEventSelection(colorMode);
+    }
+    return {
+      mode: "subset",
+      colorMode: String(colorMode || "craft_type"),
+      selectedKeys,
+    };
+  }
+
+  function craftStateSource(value) {
+    if (value && typeof value === "object" && value.selection) {
+      return {
+        selection: value.selection,
+        solo: value.solo || null,
+      };
+    }
+    return {
+      selection: value,
+      solo: null,
+    };
+  }
+
+  function normalizeCraftSelectionState(value, availableKeys, fallbackColorMode) {
+    const source = craftStateSource(value);
+    const available = uniqueKeys(availableKeys);
+    const selection = normalizeSelectionForUniverse(source.selection, available, fallbackColorMode);
+    const soloSource = source.solo && typeof source.solo === "object" ? source.solo : null;
+    if (!soloSource) {
+      return { selection, solo: null };
+    }
+
+    const soloKey = String(soloSource.key == null ? "" : soloSource.key).trim();
+    const soloUniverse = uniqueKeys(soloSource.universeKeys);
+    const visibleKeys = activeKeysForSelection(selection, available);
+    const validSolo = Boolean(
+      soloKey &&
+      available.indexOf(soloKey) !== -1 &&
+      sameKeyUniverse(soloUniverse, available) &&
+      selection.mode === "subset" &&
+      visibleKeys.length === 1 &&
+      visibleKeys[0] === soloKey
+    );
+    if (!validSolo) {
+      return { selection, solo: null };
+    }
+
+    return {
+      selection,
+      solo: {
+        key: soloKey,
+        restoreSelection: normalizeSelectionForUniverse(
+          soloSource.restoreSelection,
+          available,
+          selection.colorMode
+        ),
+        universeKeys: available.slice(),
+      },
+    };
+  }
+
+  function createCraftSelectionState(selection, availableKeys, fallbackColorMode) {
+    return normalizeCraftSelectionState(
+      { selection, solo: null },
+      availableKeys,
+      fallbackColorMode
+    );
+  }
+
+  function toggleCraftKey(value, key, availableKeys, fallbackColorMode) {
+    const available = uniqueKeys(availableKeys);
+    const current = normalizeCraftSelectionState(value, available, fallbackColorMode);
+    const targetKey = String(key == null ? "" : key).trim();
+    if (!targetKey || available.indexOf(targetKey) === -1) return current;
+
+    const activeKeys = activeKeysForSelection(current.selection, available);
+    const activeSet = new Set(activeKeys);
+    if (activeSet.has(targetKey)) {
+      activeSet.delete(targetKey);
+    } else {
+      activeSet.add(targetKey);
+    }
+    const nextKeys = activeKeys.filter(function (activeKey) {
+      return activeSet.has(activeKey);
+    });
+    if (activeSet.has(targetKey) && nextKeys.indexOf(targetKey) === -1) {
+      nextKeys.push(targetKey);
+    }
+    return {
+      selection: selectionFromActiveKeys(nextKeys, available, current.selection.colorMode),
+      solo: null,
+    };
+  }
+
+  function toggleCraftSolo(value, key, availableKeys, fallbackColorMode) {
+    const available = uniqueKeys(availableKeys);
+    const current = normalizeCraftSelectionState(value, available, fallbackColorMode);
+    const targetKey = String(key == null ? "" : key).trim();
+    if (!targetKey || available.indexOf(targetKey) === -1) return current;
+
+    if (current.solo && current.solo.key === targetKey) {
+      return {
+        selection: normalizeEventSelection(
+          current.solo.restoreSelection,
+          current.selection.colorMode
+        ),
+        solo: null,
+      };
+    }
+
+    const restoreSelection = current.solo
+      ? current.solo.restoreSelection
+      : current.selection;
+    return {
+      selection: {
+        mode: "subset",
+        colorMode: current.selection.colorMode,
+        selectedKeys: [targetKey],
+      },
+      solo: {
+        key: targetKey,
+        restoreSelection: normalizeEventSelection(
+          restoreSelection,
+          current.selection.colorMode
+        ),
+        universeKeys: available.slice(),
+      },
+    };
+  }
+
+  function applyCraftBulkSelection(value, action, availableKeys, fallbackColorMode) {
+    const available = uniqueKeys(availableKeys);
+    const current = normalizeCraftSelectionState(value, available, fallbackColorMode);
+    const normalizedAction = String(action == null ? "" : action).trim().toLowerCase();
+    if (["all", "none", "invert", "reset"].indexOf(normalizedAction) === -1) {
+      return current;
+    }
+
+    const colorMode = normalizedAction === "reset"
+      ? String(fallbackColorMode || current.selection.colorMode || "craft_type")
+      : current.selection.colorMode;
+    let selection;
+    if (normalizedAction === "all" || normalizedAction === "reset") {
+      selection = resetEventSelection(colorMode);
+    } else if (normalizedAction === "none") {
+      selection = {
+        mode: "none",
+        colorMode,
+        selectedKeys: [],
+      };
+    } else {
+      const activeSet = new Set(activeKeysForSelection(current.selection, available));
+      selection = selectionFromActiveKeys(
+        available.filter(function (key) { return !activeSet.has(key); }),
+        available,
+        colorMode
+      );
+    }
+    return { selection, solo: null };
+  }
+
+  function replaceCraftSelectionUniverse(value, availableKeys, fallbackColorMode) {
+    const available = uniqueKeys(availableKeys);
+    const source = craftStateSource(value);
+    const selection = normalizeSelectionForUniverse(source.selection, available, fallbackColorMode);
+    if (selection.mode !== "subset") {
+      return { selection, solo: null };
+    }
+    return {
+      selection: selectionFromActiveKeys(
+        selection.selectedKeys,
+        available,
+        selection.colorMode
+      ),
+      solo: null,
+    };
+  }
+
   function toggleGroupedOverlay(parentActive, visibility, key, availableKeys) {
     const targetKey = String(key == null ? "" : key).trim();
     const keys = uniqueKeys((availableKeys || []).concat(targetKey ? [targetKey] : []));
@@ -130,9 +359,15 @@
   }
 
   return Object.freeze({
+    applyCraftBulkSelection,
+    createCraftSelectionState,
     eventKeyActive,
     normalizeEventSelection,
+    normalizeCraftSelectionState,
+    replaceCraftSelectionUniverse,
     resetEventSelection,
+    toggleCraftKey,
+    toggleCraftSolo,
     toggleEventKey,
     toggleGroupedOverlay,
     uniqueKeys,

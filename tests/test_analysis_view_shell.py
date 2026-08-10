@@ -407,12 +407,11 @@ def test_v22_reference_desktop_uses_compact_dashboard_layouts() -> None:
         assert class_name in compact_fallback
 
 
-def test_v22_shell_assets_share_one_cache_key() -> None:
+def test_shell_cache_keys_track_their_current_source_releases() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
-    cache_key = "2026-08-05-analysis-color-v1-ui1"
-    assert f"styles.css?v={cache_key}" in index_html
-    assert f"analysis_view.js?v={cache_key}" in index_html
-    assert f"app.js?v={cache_key}" in index_html
+    assert "styles.css?v=2026-08-09-control-panel-area-v1" in index_html
+    assert "app.js?v=2026-08-09-control-panel-area-v1" in index_html
+    assert "analysis_view.js?v=2026-08-05-analysis-color-v1-ui1" in index_html
     assert "analysis-evidence-lab-v2-1-recovery" not in index_html
 
 

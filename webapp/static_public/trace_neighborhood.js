@@ -157,6 +157,12 @@
     return Math.max(1, Math.min(4, parsed));
   }
 
+  function normalizeAreaDepth(value) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return 0;
+    return Math.max(0, Math.min(4, Math.round(parsed)));
+  }
+
   function normalizeDirection(value) {
     const direction = String(value || "forward").toLowerCase();
     return direction === "backward" || direction === "both" ? direction : "forward";
@@ -447,6 +453,352 @@
         reachedSegments: segments.length,
         reachedEvents: events.length,
       },
+    };
+  }
+
+  function zeroHopSeedId(seed, key) {
+    if (!seed) return "";
+    return eventId(seed[key] != null ? seed[key] : seed.id);
+  }
+
+  function ensureZeroHopSegmentRecord(records, segment) {
+    let record = records.get(segment.traceId);
+    if (!record) {
+      record = {
+        segment,
+        attributions: [],
+        attributionKeys: new Set(),
+        roles: new Set(),
+        seedEventIds: new Set(),
+        seedTraceIds: new Set(),
+        regionIds: new Set(),
+      };
+      records.set(segment.traceId, record);
+    }
+    return record;
+  }
+
+  function addZeroHopSegmentAttribution(records, segment, attribution) {
+    if (!segment) return;
+    const record = ensureZeroHopSegmentRecord(records, segment);
+    const regionIds = uniqueStrings(attribution.regionIds);
+    const key = [
+      attribution.role,
+      attribution.relation,
+      attribution.seedType,
+      attribution.seedId,
+      regionIds.join(","),
+    ].join("|");
+    if (!record.attributionKeys.has(key)) {
+      record.attributionKeys.add(key);
+      record.attributions.push({
+        hop: 0,
+        direction: "direct",
+        role: attribution.role,
+        relation: attribution.relation,
+        seedType: attribution.seedType,
+        seedId: attribution.seedId,
+        regionIds,
+      });
+    }
+    record.roles.add(attribution.role);
+    if (attribution.seedType === "event") {
+      record.seedEventIds.add(attribution.seedId);
+    } else {
+      record.seedTraceIds.add(attribution.seedId);
+    }
+    regionIds.forEach(function (regionId) {
+      record.regionIds.add(regionId);
+    });
+  }
+
+  function zeroHopSegmentFromRecord(record) {
+    return Object.assign({}, record.segment, {
+      neighborhood: {
+        hop: 0,
+        hops: [0],
+        direction: "direct",
+        directions: ["direct"],
+        roles: Array.from(record.roles).sort(),
+        seedEventIds: Array.from(record.seedEventIds).sort(),
+        seedTraceIds: Array.from(record.seedTraceIds).sort(),
+        regionIds: Array.from(record.regionIds).sort(),
+        attributions: record.attributions.slice(),
+      },
+    });
+  }
+
+  function sortedZeroHopSegments(records) {
+    return Array.from(records.values()).map(zeroHopSegmentFromRecord).sort(function (left, right) {
+      const order = Number(left.sequenceIndex) - Number(right.sequenceIndex);
+      return order || left.traceId.localeCompare(right.traceId);
+    });
+  }
+
+  function addSegmentEndpoints(target, segment) {
+    if (!segment) return;
+    if (segment.fromEventId) target.add(String(segment.fromEventId));
+    if (segment.toEventId) target.add(String(segment.toEventId));
+  }
+
+  function planAreaZeroHopSelection(options) {
+    const config = options || {};
+    const index = config.index || buildAdjacencyIndex(config.segments || [], config.generation);
+    const records = new Map();
+    const directEventIds = new Set();
+    const directTraceIds = new Set();
+    const directTraceEndpointIds = new Set();
+    const incidentTraceIds = new Set();
+    const incidentTraceEndpointIds = new Set();
+
+    (Array.isArray(config.eventSeeds) ? config.eventSeeds : []).forEach(function (seed) {
+      const seedId = zeroHopSeedId(seed, "eventId");
+      if (!seedId) return;
+      directEventIds.add(seedId);
+      const incoming = index.incomingByEvent.get(seedId) || [];
+      const outgoing = index.outgoingByEvent.get(seedId) || [];
+      const incident = [];
+      if (incoming.length) {
+        incident.push({ segment: incoming[incoming.length - 1], relation: "incoming" });
+      }
+      if (outgoing.length) {
+        incident.push({ segment: outgoing[0], relation: "outgoing" });
+      }
+      incident.forEach(function (entry) {
+        const segment = entry.segment;
+        incidentTraceIds.add(segment.traceId);
+        addSegmentEndpoints(incidentTraceEndpointIds, segment);
+        addZeroHopSegmentAttribution(records, segment, {
+          role: "incident_from_event",
+          relation: entry.relation,
+          seedType: "event",
+          seedId,
+          regionIds: seed.regionIds || [],
+        });
+      });
+    });
+
+    (Array.isArray(config.traceSeeds) ? config.traceSeeds : []).forEach(function (seed) {
+      const seedId = zeroHopSeedId(seed, "traceId");
+      const segment = index.segmentById.get(seedId);
+      if (!seedId || !segment) return;
+      directTraceIds.add(seedId);
+      addSegmentEndpoints(directTraceEndpointIds, segment);
+      addZeroHopSegmentAttribution(records, segment, {
+        role: "direct_trace",
+        relation: "intersects_area",
+        seedType: "trace",
+        seedId,
+        regionIds: seed.regionIds || [],
+      });
+    });
+
+    const segments = sortedZeroHopSegments(records);
+    const segmentIds = new Set(segments.map(function (segment) { return segment.traceId; }));
+    const endpointEventIds = new Set();
+    directTraceEndpointIds.forEach(function (id) { endpointEventIds.add(id); });
+    incidentTraceEndpointIds.forEach(function (id) { endpointEventIds.add(id); });
+    const plannedEventIds = new Set(directEventIds);
+    endpointEventIds.forEach(function (id) { plannedEventIds.add(id); });
+
+    return {
+      generation: Number(index.generation) || 0,
+      depth: 0,
+      direction: "direct",
+      directEventIds,
+      directTraceIds,
+      directTraceEndpointIds,
+      incidentTraceIds,
+      incidentTraceEndpointIds,
+      endpointEventIds,
+      plannedEventIds,
+      segmentIds,
+      segments,
+      directTraceSegments: segments.filter(function (segment) {
+        return directTraceIds.has(segment.traceId);
+      }),
+      incidentTraceSegments: segments.filter(function (segment) {
+        return incidentTraceIds.has(segment.traceId);
+      }),
+      metrics: {
+        indexedSegments: Array.isArray(index.segments) ? index.segments.length : 0,
+        directEvents: directEventIds.size,
+        directTraces: directTraceIds.size,
+        incidentTraces: incidentTraceIds.size,
+        plannedSegments: segments.length,
+        plannedEvents: plannedEventIds.size,
+      },
+    };
+  }
+
+  function configuredBoolean(config, names, fallback) {
+    for (const name of names) {
+      if (Object.prototype.hasOwnProperty.call(config, name)) {
+        return Boolean(config[name]);
+      }
+    }
+    return Boolean(fallback);
+  }
+
+  function computeAreaZeroHopSelection(options) {
+    const config = options || {};
+    const plan = config.plan || planAreaZeroHopSelection(config);
+    const selectEvents = configuredBoolean(config, ["selectEvents"], false);
+    const selectTraces = configuredBoolean(config, ["selectTraces"], false);
+    const showSelectedEvents = configuredBoolean(config, ["showSelectedEvents"], false);
+    const showSelectedTraces = configuredBoolean(config, ["showSelectedTraces"], false);
+    const showEventsFromTraces = configuredBoolean(config, [
+      "showEventsAssociatedWithSelectedTraces",
+      "showEventsFromTraces",
+    ], false);
+    const showTracesFromEvents = configuredBoolean(config, [
+      "showTracesAssociatedWithSelectedEvents",
+      "showTracesFromEvents",
+    ], false);
+    const selectedEventIds = selectEvents ? new Set(plan.directEventIds) : new Set();
+    const selectedTraceIds = selectTraces ? new Set(plan.directTraceIds) : new Set();
+    const visibleEventIds = new Set();
+    const visibleTraceIds = new Set();
+    const neighborhoodEventIds = new Set(selectedEventIds);
+    const neighborhoodTraceIds = new Set();
+
+    if (selectEvents && showSelectedEvents) {
+      selectedEventIds.forEach(function (id) { visibleEventIds.add(id); });
+    }
+    if (selectTraces) {
+      plan.directTraceEndpointIds.forEach(function (id) { neighborhoodEventIds.add(id); });
+      plan.directTraceIds.forEach(function (id) { neighborhoodTraceIds.add(id); });
+      if (showSelectedTraces) {
+        plan.directTraceIds.forEach(function (id) { visibleTraceIds.add(id); });
+      }
+      if (showEventsFromTraces) {
+        plan.directTraceEndpointIds.forEach(function (id) { visibleEventIds.add(id); });
+      }
+    }
+    if (selectEvents) {
+      plan.incidentTraceEndpointIds.forEach(function (id) { neighborhoodEventIds.add(id); });
+      plan.incidentTraceIds.forEach(function (id) { neighborhoodTraceIds.add(id); });
+      if (showTracesFromEvents) {
+        plan.incidentTraceIds.forEach(function (id) { visibleTraceIds.add(id); });
+      }
+    }
+
+    const neighborhoodSegments = plan.segments.filter(function (segment) {
+      return neighborhoodTraceIds.has(segment.traceId);
+    });
+    const visibleTraceSegments = neighborhoodSegments.filter(function (segment) {
+      return visibleTraceIds.has(segment.traceId);
+    });
+    return {
+      generation: plan.generation,
+      depth: 0,
+      direction: "direct",
+      selectedEventIds,
+      selectedTraceIds,
+      visibleEventIds,
+      visibleTraceIds,
+      visibleTraceSegments,
+      neighborhoodSegments,
+      neighborhoodEventIds,
+      plan,
+      metrics: {
+        indexedSegments: plan.metrics.indexedSegments,
+        reachedSegments: neighborhoodSegments.length,
+        reachedEvents: neighborhoodEventIds.size,
+        selectedEvents: selectedEventIds.size,
+        selectedTraces: selectedTraceIds.size,
+        visibleEvents: visibleEventIds.size,
+        visibleTraces: visibleTraceIds.size,
+      },
+    };
+  }
+
+  const AREA_EVENT_REPRESENTATIONS = Object.freeze(["points", "clusters", "heatmap"]);
+
+  function normalizeAreaEventRepresentation(value) {
+    const representation = String(value == null ? "" : value).trim().toLowerCase();
+    if (representation === "events" || representation === "event" || representation === "point") {
+      return "points";
+    }
+    if (representation === "cluster") return "clusters";
+    if (representation === "heat") return "heatmap";
+    if (AREA_EVENT_REPRESENTATIONS.includes(representation) || representation === "auto") {
+      return representation;
+    }
+    return "hidden";
+  }
+
+  function resolveAreaEventRepresentation(options) {
+    const config = typeof options === "string" ? { requestedMode: options } : (options || {});
+    if (config.active === false || config.showEvents === false) return "hidden";
+    const requestedValue = config.requestedMode != null
+      ? config.requestedMode
+      : config.mapMode != null
+        ? config.mapMode
+        : config.mode != null
+          ? config.mode
+          : config.representation;
+    const requested = normalizeAreaEventRepresentation(requestedValue);
+    if (requested === "auto") {
+      const effectiveValue = config.effectiveMode != null
+        ? config.effectiveMode
+        : config.resolvedMode != null
+          ? config.resolvedMode
+          : config.autoMode;
+      const effective = normalizeAreaEventRepresentation(effectiveValue);
+      return AREA_EVENT_REPRESENTATIONS.includes(effective) ? effective : "hidden";
+    }
+    return AREA_EVENT_REPRESENTATIONS.includes(requested) ? requested : "hidden";
+  }
+
+  function resolvedTransitionRepresentation(config, prefix) {
+    const representationKey = prefix + "Representation";
+    if (config[representationKey] != null) {
+      return resolveAreaEventRepresentation(config[representationKey]);
+    }
+    const modeKey = prefix + "Mode";
+    const effectiveModeKey = prefix + "EffectiveMode";
+    const activeKey = prefix + "Active";
+    const showEventsKey = prefix + "ShowEvents";
+    return resolveAreaEventRepresentation({
+      requestedMode: config[modeKey],
+      effectiveMode: config[effectiveModeKey],
+      active: Object.prototype.hasOwnProperty.call(config, activeKey) ? config[activeKey] : true,
+      showEvents: Object.prototype.hasOwnProperty.call(config, showEventsKey) ? config[showEventsKey] : true,
+    });
+  }
+
+  function planAreaEventLayerTransition(previousOrOptions, nextRepresentation) {
+    const config = previousOrOptions && typeof previousOrOptions === "object" && nextRepresentation == null
+      ? previousOrOptions
+      : {
+          previousRepresentation: previousOrOptions,
+          nextRepresentation,
+        };
+    const previous = resolvedTransitionRepresentation(config, "previous");
+    const next = resolvedTransitionRepresentation(config, "next");
+    const removeRepresentations = AREA_EVENT_REPRESENTATIONS.filter(function (representation) {
+      return representation !== next;
+    });
+    const clearRepresentations = AREA_EVENT_REPRESENTATIONS.includes(next) ? [next] : [];
+    const operations = removeRepresentations.map(function (representation) {
+      return { type: "remove", representation };
+    });
+    clearRepresentations.forEach(function (representation) {
+      operations.push({ type: "clear", representation });
+    });
+    if (AREA_EVENT_REPRESENTATIONS.includes(next)) {
+      operations.push({ type: "render", representation: next });
+    }
+    return {
+      previousRepresentation: previous,
+      nextRepresentation: next,
+      changed: previous !== next,
+      hidden: next === "hidden",
+      removeRepresentations,
+      clearRepresentations,
+      renderRepresentation: AREA_EVENT_REPRESENTATIONS.includes(next) ? next : null,
+      operations,
     };
   }
 
@@ -1158,6 +1510,7 @@
     resolveCraftEndpointStyle,
     nearestPointHit,
     normalizeDepth,
+    normalizeAreaDepth,
     normalizeDirection,
     buildAdjacencyIndex,
     buildSpatialIndex,
@@ -1168,6 +1521,12 @@
     clipSegmentToCircle,
     queryCircleSpatialIndex,
     traverseNeighborhood,
+    planAreaZeroHopSelection,
+    computeAreaZeroHopSelection,
+    AREA_EVENT_REPRESENTATIONS,
+    normalizeAreaEventRepresentation,
+    resolveAreaEventRepresentation,
+    planAreaEventLayerTransition,
     midpoint,
     haversineKm,
   });

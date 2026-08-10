@@ -85,6 +85,7 @@
   const FILTER_SECTION_COLLAPSE_STORAGE_KEY = "ufoTimeline.filterSectionCollapse";
   const PRIMARY_FILTERS_COLLAPSE_STORAGE_KEY = "ufoTimeline.primaryFiltersCollapsed";
   const MAP_CONTROL_CLUSTER_STORAGE_KEY = "ufoTimeline.mapControlCluster";
+  const MAP_CONTROL_SECTION_SESSION_KEY = "ufoTimeline.mapControlSections.v1";
   const MAP_SURFACE_HEIGHT_STORAGE_KEY = "ufoTimeline.mapSurfaceHeight.v1";
   const HEADER_STATS_COLLAPSE_STORAGE_KEY = "ufoTimeline.headerStatsCollapsed";
   const APPEARANCE_PANEL_COLLAPSE_STORAGE_KEY = "ufoTimeline.appearancePanelCollapsed";
@@ -230,7 +231,7 @@
     "source_coordinates",
   ]);
   const TRACE_FACILITY_ENDPOINT_ACCENT_RATIO = 0.1;
-  const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH = 1;
+  const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH = 0;
   const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DIRECTION = "forward";
   const CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR = "#0b1620";
   const CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR = "#f8fafc";
@@ -1162,6 +1163,8 @@
     neighborhoodSeedCacheValue: null,
     neighborhoodTraceLayer: null,
     neighborhoodInspectorTraceId: null,
+    areaEventRepresentation: "hidden",
+    areaEventLayerTransition: null,
     neighborhoodBuildMetrics: null,
     neighborhoodTraversalMetrics: null,
     neighborhoodPerformanceSamples: [],
@@ -1355,6 +1358,7 @@
     headerStatsCollapsed: true,
     mapLegendCollapsed: false,
     mapLegendEventSelection: defaultMapLegendEventSelectionState(),
+    mapLegendCraftSolo: null,
     primaryFiltersCollapsed: false,
     mapControlClusterHeight: null,
     mapControlClusterPosition: {
@@ -1555,6 +1559,7 @@
       overlayVisibility: defaultOverlayVisibilityState(),
       claimedUfoBaseVisibility: defaultClaimedUfoBaseVisibilityState(),
       mapLegendEventSelection: defaultMapLegendEventSelectionState(DEFAULT_COLOR_MODE),
+      mapLegendCraftSolo: null,
       regionSelection: defaultRegionSelectionState(),
       traceFacilityFilter: defaultTraceFacilityFilterState(),
       militaryBranchVisibility: defaultMilitaryBranchVisibilityState(),
@@ -1745,6 +1750,8 @@
     traceFacilityClassActionButtons: Array.from(document.querySelectorAll("[data-trace-facility-class-action]")),
     traceFacilitySourceInputs: Array.from(document.querySelectorAll("[data-trace-facility-source]")),
     traceFacilitySourceActionButtons: Array.from(document.querySelectorAll("[data-trace-facility-source-action]")),
+    traceFacilityFilter: document.querySelector("#trace-facility-filter"),
+    traceFacilityAdvanced: document.querySelector(".trace-facility-advanced"),
     playbackPrevButton: document.querySelector("#playback-prev"),
     playPauseButton: document.querySelector("#play-pause"),
     playbackNextButton: document.querySelector("#playback-next"),
@@ -1782,6 +1789,8 @@
     resultsSortSelect: document.querySelector("#results-sort"),
     traceBucketButtons: Array.from(document.querySelectorAll("[data-trace-bucket]")),
     mapSettingsSection: document.querySelector("#map-settings-section"),
+    mapSettingsOverlayPanel: document.querySelector("#map-settings-section > .overlay-panel:not(.overlay-panel-display)"),
+    mapSettingsDisplayPanel: document.querySelector("#map-settings-section > .overlay-panel-display"),
     overlayAirportsToggle: document.querySelector("#overlay-airports"),
     overlayHighwaysToggle: document.querySelector("#overlay-highways"),
     overlayMilitaryToggle: document.querySelector("#overlay-military"),
@@ -1800,9 +1809,16 @@
     mapControlClusterResizeHandle: document.querySelector("#map-control-cluster-resize-handle"),
     toggleMapControlClusterButton: document.querySelector("#toggle-map-control-cluster"),
     sideColumnResizeRail: document.querySelector("#side-column-resize-rail"),
-    mapControlPlaybackSlot: document.querySelector("#map-control-playback-slot"),
-    mapControlTraceSlot: document.querySelector("#map-control-trace-slot"),
-    mapControlOverlaySlot: document.querySelector("#map-control-overlay-slot"),
+    mapControlViewSlot: document.querySelector("#map-control-view-slot"),
+    mapControlSightingsSlot: document.querySelector("#map-control-sightings-slot"),
+    mapControlOverlaysSlot: document.querySelector("#map-control-overlays-slot"),
+    mapControlTracesSlot: document.querySelector("#map-control-traces-slot"),
+    mapControlFacilitySlot: document.querySelector("#map-control-facility-slot"),
+    mapControlAreaSlot: document.querySelector("#map-control-area-slot"),
+    mapControlAdvancedSlot: document.querySelector("#map-control-advanced-slot"),
+    overlayResearchSitesCount: document.querySelector("#overlay-research-sites-count"),
+    overlayCropCirclesCount: document.querySelector("#overlay-crop-circles-count"),
+    overlayAnimalMutilationsCount: document.querySelector("#overlay-animal-mutilations-count"),
     mapPlaybackDateBadge: document.querySelector("#map-playback-date-badge"),
     mapLegendPanel: document.querySelector("#map-legend-panel"),
     mapLegendBody: document.querySelector("#map-legend-body"),
@@ -1865,6 +1881,24 @@
       }
     } catch (error) {
       // Ignore storage failures so static hosting still works in restricted browser modes.
+    }
+  }
+
+  function safeSessionStorageGet(key) {
+    try {
+      return window.sessionStorage ? window.sessionStorage.getItem(key) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function safeSessionStorageSet(key, value) {
+    try {
+      if (window.sessionStorage) {
+        window.sessionStorage.setItem(key, value);
+      }
+    } catch (error) {
+      // Session persistence is optional in restricted static-hosting contexts.
     }
   }
 
@@ -2610,10 +2644,11 @@
     if (state.regionSelection.pointOnly) {
       return regionLabel + " · " + visibleSightings + " mapped report points · point-only";
     }
-    const depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
+    const depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
     const direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
     return regionLabel + " - " + visibleSightings + " sightings - " + result.visibleTraceCount +
-      " traces - " + depth + " hop" + (depth === 1 ? "" : "s") + " " + direction;
+      " traces - " + depth + " hop" + (depth === 1 ? "" : "s") +
+      (depth === 0 ? " direct" : " " + direction);
   }
 
   function syncRegionSelectionMapInteraction() {
@@ -2719,10 +2754,16 @@
       els.areaSelectionShowTracesFromEventsToggle.disabled = !state.regionSelection.selectEvents;
     }
     if (els.areaSelectionDepthSelect) {
-      els.areaSelectionDepthSelect.value = String(TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth));
+      els.areaSelectionDepthSelect.value = String(TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth));
     }
     if (els.areaSelectionDirectionSelect) {
       els.areaSelectionDirectionSelect.value = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
+      const directionInactive = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth) === 0;
+      els.areaSelectionDirectionSelect.disabled = directionInactive;
+      els.areaSelectionDirectionSelect.setAttribute("aria-disabled", directionInactive ? "true" : "false");
+      els.areaSelectionDirectionSelect.title = directionInactive
+        ? "Direction is not applicable at 0 hops; your prior choice is retained."
+        : "Choose chronological expansion direction.";
     }
 
     if (els.resultsAreaFilterIndicator) {
@@ -2736,6 +2777,8 @@
     if (els.resultsAreaFilterClearButton) {
       els.resultsAreaFilterClearButton.disabled = !hasAreaFilter;
     }
+
+    renderMapControlSectionSummaries();
 
     syncRegionSelectionMapInteraction();
   }
@@ -2770,6 +2813,9 @@
       renderRegionSelectionUi();
       return;
     }
+    if (nextOpen) {
+      openMapControlSection("area");
+    }
     if (!config.skipRender) {
       renderRegionSelectionUi();
     }
@@ -2794,6 +2840,8 @@
     }
     if (!nextActive) {
       clearRegionSelectionDrawRuntime();
+    } else {
+      openMapControlSection("area");
     }
     if (!config.skipRender) {
       renderRegionSelectionUi();
@@ -3188,6 +3236,59 @@
     return Array.from(document.querySelectorAll(".map-control-slot"));
   }
 
+  function defaultMapControlSectionOpenState() {
+    return {
+      view: true,
+      sightings: window.innerWidth >= 1180,
+      overlays: true,
+      traces: state.traceMode !== "off",
+      facility: Boolean(state.traceFacilityFilter && state.traceFacilityFilter.enabled),
+      area: Boolean(state.regionSelection && (state.regionSelection.panelOpen || state.regionSelection.drawingActive)),
+      advanced: false,
+    };
+  }
+
+  function readMapControlSectionOpenState() {
+    const defaults = defaultMapControlSectionOpenState();
+    const rawValue = safeSessionStorageGet(MAP_CONTROL_SECTION_SESSION_KEY);
+    if (!rawValue) return defaults;
+    try {
+      const parsed = JSON.parse(rawValue);
+      if (!parsed || typeof parsed !== "object") return defaults;
+      Object.keys(defaults).forEach(function (key) {
+        if (typeof parsed[key] === "boolean") defaults[key] = parsed[key];
+      });
+    } catch (error) {
+      return defaults;
+    }
+    return defaults;
+  }
+
+  function persistMapControlSectionOpenState() {
+    const snapshot = {};
+    mapControlSectionElements().forEach(function (section) {
+      const key = String(section.getAttribute("data-map-control-section") || "").trim();
+      if (key) snapshot[key] = Boolean(section.open);
+    });
+    safeSessionStorageSet(MAP_CONTROL_SECTION_SESSION_KEY, JSON.stringify(snapshot));
+  }
+
+  function applyMapControlSectionOpenState(openState) {
+    const stateSnapshot = openState && typeof openState === "object"
+      ? openState
+      : readMapControlSectionOpenState();
+    mapControlSectionElements().forEach(function (section) {
+      const key = String(section.getAttribute("data-map-control-section") || "").trim();
+      section.open = Boolean(stateSnapshot[key]);
+    });
+  }
+
+  function setMapControlSummaryState(sectionKey, text) {
+    const target = document.querySelector("#map-control-" + sectionKey + "-summary-state");
+    if (!target) return;
+    target.textContent = String(text || "").trim();
+  }
+
   function mapControlClusterVisibleBodyChildren() {
     if (!els.mapControlClusterBody) return [];
     return Array.from(els.mapControlClusterBody.children).filter(function (child) {
@@ -3269,9 +3370,8 @@
   function openMapControlSection(sectionKey) {
     const targetSection = mapControlSectionElement(sectionKey);
     if (!targetSection) return null;
-    mapControlSectionElements().forEach(function (section) {
-      section.open = section === targetSection;
-    });
+    targetSection.open = true;
+    persistMapControlSectionOpenState();
     return targetSection;
   }
 
@@ -3285,13 +3385,13 @@
 
     if (guideKey === "map-modes") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("overlay");
+      openMapControlSection("view");
       return;
     }
 
     if (guideKey === "military-overlays") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("overlay");
+      openMapControlSection("overlays");
       return;
     }
 
@@ -3311,7 +3411,7 @@
 
     if (guideKey === "trace-analysis") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("trace");
+      openMapControlSection("traces");
       return;
     }
 
@@ -3328,7 +3428,7 @@
       return els.mapModeSelect;
     }
     if (guideKey === "military-overlays") {
-      return els.overlayMilitaryToggle || mapControlSectionElement("overlay");
+      return els.overlayMilitaryToggle || mapControlSectionElement("overlays");
     }
     if (guideKey === "timeline") {
       return els.timelineCanvasWrap;
@@ -3340,7 +3440,7 @@
       return els.mapSurface || document.querySelector("#map");
     }
     if (guideKey === "trace-analysis") {
-      return els.traceControlsPanel || mapControlSectionElement("trace");
+      return els.traceControlsPanel || mapControlSectionElement("traces");
     }
     if (guideKey === "disclaimer") {
       return els.timelineCanvasWrap || els.timelinePanel;
@@ -3368,8 +3468,7 @@
   }
 
   function preferredMapControlScrollContainer(target) {
-    if (!target) return els.mapControlClusterBody;
-    return target.closest(".map-control-slot") || els.mapControlClusterBody;
+    return els.mapControlClusterBody;
   }
 
   function flashGuideTarget(target) {
@@ -3571,56 +3670,6 @@
     const bodyHeight = Math.max(96, clusterHeight - headerHeight - resizeHeight);
     els.mapControlClusterBody.style.height = bodyHeight + "px";
     els.mapControlClusterBody.style.maxHeight = bodyHeight + "px";
-
-    const sections = mapControlSectionElements();
-    const openSection = sections.find(function (section) {
-      return section.open;
-    });
-    if (!openSection) {
-      return;
-    }
-
-    const openSummary = openSection.querySelector("summary");
-    const openSlot = openSection.querySelector(".map-control-slot");
-    if (!openSummary || !openSlot) {
-      return;
-    }
-
-    const bodyStyle = window.getComputedStyle(els.mapControlClusterBody);
-    const bodyGap = parseFloat(bodyStyle.rowGap || bodyStyle.gap || "0") || 0;
-    const bodyPaddingTop = parseFloat(bodyStyle.paddingTop || "0") || 0;
-    const bodyPaddingBottom = parseFloat(bodyStyle.paddingBottom || "0") || 0;
-    const bodyContentHeight = Math.max(
-      96,
-      els.mapControlClusterBody.clientHeight - bodyPaddingTop - bodyPaddingBottom
-    );
-    const visibleChildren = mapControlClusterVisibleBodyChildren();
-    const siblingHeight = visibleChildren.reduce(function (total, child) {
-      if (child === openSection) return total;
-      return total + Math.round(child.getBoundingClientRect().height || child.clientHeight || 0);
-    }, 0);
-    const gapTotal = Math.max(0, visibleChildren.length - 1) * bodyGap;
-
-    const closedSections = sections.filter(function (section) {
-      return section !== openSection;
-    });
-    closedSections.forEach(function (section) {
-      section.style.flex = "0 0 auto";
-    });
-    openSection.style.flex = "0 0 auto";
-
-    const openSummaryHeight = Math.round(openSummary.getBoundingClientRect().height);
-    const openSectionHeight = Math.max(
-      openSummaryHeight + 112,
-      bodyContentHeight - siblingHeight - gapTotal
-    );
-    const slotHeight = Math.max(112, openSectionHeight - openSummaryHeight - 2);
-
-    openSection.style.height = openSectionHeight + "px";
-    openSection.style.maxHeight = openSectionHeight + "px";
-    openSlot.style.flex = "1 1 auto";
-    openSlot.style.height = slotHeight + "px";
-    openSlot.style.maxHeight = slotHeight + "px";
   }
 
   function applyMapControlClusterState(options) {
@@ -3740,16 +3789,45 @@
   function mountMapControlCluster() {
     if (runtime.mapControlClusterMounted) return;
 
-    if (els.mapControlTraceSlot) {
-      if (els.traceControlsPanel) {
-        els.mapControlTraceSlot.appendChild(els.traceControlsPanel);
+    if (els.mapControlViewSlot) {
+      if (els.mapSettingsDisplayPanel) {
+        els.mapControlViewSlot.appendChild(els.mapSettingsDisplayPanel);
+      }
+      if (els.fitResultsButton) {
+        els.mapControlViewSlot.appendChild(els.fitResultsButton);
       }
     }
 
-    if (els.mapControlOverlaySlot && els.mapSettingsSection) {
-      els.mapControlOverlaySlot.appendChild(els.mapSettingsSection);
+    if (els.mapControlSightingsSlot && els.legendPanel) {
+      els.mapControlSightingsSlot.appendChild(els.legendPanel);
     }
 
+    if (els.mapControlOverlaysSlot && els.mapSettingsOverlayPanel) {
+      els.mapControlOverlaysSlot.appendChild(els.mapSettingsOverlayPanel);
+    }
+
+    if (els.mapControlTracesSlot && els.traceControlsPanel) {
+      els.mapControlTracesSlot.appendChild(els.traceControlsPanel);
+    }
+
+    if (els.mapControlFacilitySlot && els.traceFacilityFilter) {
+      els.mapControlFacilitySlot.appendChild(els.traceFacilityFilter);
+    }
+
+    if (els.mapControlAdvancedSlot && els.traceFacilityAdvanced) {
+      els.mapControlAdvancedSlot.appendChild(els.traceFacilityAdvanced);
+    }
+
+    if (els.mapControlAreaSlot && els.areaSelectionShell) {
+      els.mapControlAreaSlot.appendChild(els.areaSelectionShell);
+    }
+
+    if (els.mapSettingsSection) {
+      els.mapSettingsSection.hidden = true;
+      els.mapSettingsSection.setAttribute("aria-hidden", "true");
+    }
+
+    applyMapControlSectionOpenState();
     runtime.mapControlClusterMounted = true;
   }
 
@@ -4383,6 +4461,7 @@
     clearPendingDateInputEdits();
     setDateRangeFeedback("");
     invalidatePlaybackForTimeChange();
+    clearCraftLegendSoloState();
 
     if (preset.kind === "rolling") {
       const anchorEnd = state.timeRangeEndOrdinal != null ? state.timeRangeEndOrdinal : extent.maxOrdinal;
@@ -5614,6 +5693,55 @@
     };
   }
 
+  function mapControlColorModeLabel() {
+    if (state.colorMode === "craft_type") return "Craft type";
+    if (state.colorMode === "type") return "Event type";
+    if (state.colorMode === "precision") return "Precision";
+    return "Single color";
+  }
+
+  function activeOverlayControlCount() {
+    let count = Object.keys(state.overlayVisibility || {}).filter(function (key) {
+      return Boolean(state.overlayVisibility[key]);
+    }).length;
+    if (claimedUfoBaseSitesVisible()) count += 1;
+    if (claimedUfoBaseTracesVisible()) count += 1;
+    if (cropCircleOverlayActive()) count += 1;
+    if (animalMutilationOverlayActive()) count += 1;
+    return count;
+  }
+
+  function renderMapControlSectionSummaries() {
+    const mapState = currentQuickMapModeState();
+    setMapControlSummaryState(
+      "view",
+      mapState === "heatmap" ? "Heatmap" : mapState === "clusters" ? "Clusters" : "Points"
+    );
+    setMapControlSummaryState("sightings", mapControlColorModeLabel());
+    const overlayCount = activeOverlayControlCount();
+    setMapControlSummaryState("overlays", formatNumber(overlayCount) + " on");
+    const traceState = currentQuickTraceState();
+    setMapControlSummaryState(
+      "traces",
+      traceState === "none" ? "Off" : traceState === "playback" ? "Playback" : "Static"
+    );
+    const facility = traceFacilityFilterState();
+    setMapControlSummaryState(
+      "facility",
+      facility.enabled ? formatNumber(Math.round(facility.radiusKm)) + " km" : "Off"
+    );
+    const areaDepth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
+    const shapeCount = Array.isArray(state.regionSelection.shapes) ? state.regionSelection.shapes.length : 0;
+    setMapControlSummaryState(
+      "area",
+      areaDepth + " hop" + (areaDepth === 1 ? "" : "s") + (shapeCount ? " · " + shapeCount + " region" + (shapeCount === 1 ? "" : "s") : "")
+    );
+    setMapControlSummaryState(
+      "advanced",
+      facility.classes && facility.classes.passes ? "Passes on" : "Optional"
+    );
+  }
+
   function announceMapQuickControl(message) {
     if (!els.mapQuickControlStatus) return;
     els.mapQuickControlStatus.textContent = message;
@@ -5828,6 +5956,7 @@
         els.clusterQuickFacilityValue.textContent = facilityState.valueLabel;
       }
     }
+    renderMapControlSectionSummaries();
   }
 
   function applyFullTimeRange() {
@@ -5987,9 +6116,11 @@
       els.traceFacilityEvidenceMode.disabled = !facilityFilter.enabled;
     }
     if (els.traceFacilityEvidenceHelp) {
-      els.traceFacilityEvidenceHelp.textContent = evidenceMode === "source_coordinates"
-        ? "Strict: only source-provided endpoint coordinates with exact event dates are included, and only when the facility's recorded operating period supports that date. Year-only opening or closing years remain uncertain."
-        : "Exploratory: generalized locations, non-exact event dates, and uncertain facility operating dates may create coincidental proximity; these are labeled Possible.";
+      els.traceFacilityEvidenceHelp.innerHTML = evidenceMode === "source_coordinates"
+        ? '<span aria-hidden="true">Exact coordinates and dates within recorded operating periods.</span>' +
+          '<span class="sr-only">Strict mode includes only source-provided endpoint coordinates with exact event dates, and only when the facility\'s recorded operating period supports that date. Year-only opening or closing years remain uncertain.</span>'
+        : '<span aria-hidden="true">Generalized locations or dates are exploratory and labeled Possible.</span>' +
+          '<span class="sr-only">Exploratory mode may include generalized locations, non-exact event dates, and uncertain facility operating dates. These can create coincidental proximity and are labeled Possible.</span>';
     }
     if (els.traceFacilityLinkedOnly) {
       els.traceFacilityLinkedOnly.checked = Boolean(facilityFilter.onlyShowTraceLinkedFacilities);
@@ -8604,8 +8735,9 @@
       state.mapLegendEventSelection = selectedCraftTypes.length
         ? { mode: "subset", colorMode: "craft_type", selectedKeys: selectedCraftTypes }
         : { mode: "none", colorMode: "craft_type", selectedKeys: [] };
+      clearCraftLegendSoloState();
       invalidateMapLegendEventFilterCaches();
-      renderMapLegend();
+      renderLegend();
       changed = true;
     }
     if (Object.prototype.hasOwnProperty.call(filterPatch, "hideLowPrecision") && els.hideLowPrecisionToggle) {
@@ -12520,7 +12652,78 @@
     renderMultiSelectState(filterKey);
   }
 
+  function currentCraftLegendState(availableKeys) {
+    return LEGEND_CONTROLS.normalizeCraftSelectionState(
+      {
+        selection: state.mapLegendEventSelection,
+        solo: state.mapLegendCraftSolo,
+      },
+      availableKeys,
+      "craft_type"
+    );
+  }
+
+  function assignCraftLegendState(nextState) {
+    state.mapLegendEventSelection = LEGEND_CONTROLS.normalizeEventSelection(
+      nextState && nextState.selection,
+      "craft_type"
+    );
+    state.mapLegendCraftSolo = nextState && nextState.solo ? nextState.solo : null;
+  }
+
+  function clearCraftLegendSoloState() {
+    state.mapLegendCraftSolo = null;
+  }
+
+  function craftLegendSoloKey() {
+    return state.mapLegendCraftSolo && state.mapLegendCraftSolo.key
+      ? String(state.mapLegendCraftSolo.key)
+      : "";
+  }
+
+  function buildCraftLegendBulkControls() {
+    return (
+      '<div class="legend-bulk-controls" role="group" aria-label="Craft visibility actions">' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="all">All</button>' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="none">None</button>' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="invert">Invert</button>' +
+      "</div>"
+    );
+  }
+
+  function buildCraftLegendRow(entry, surface) {
+    const active = Boolean(entry.active);
+    const soloActive = craftLegendSoloKey() === entry.key;
+    const formattedCount = formatNumber(entry.count);
+    const countLabel = formattedCount + (Number(entry.count) === 1 ? " event" : " events");
+    const toggleAttribute = surface === "map"
+      ? 'data-map-legend-event-key="' + escapeHtml(entry.key) + '"'
+      : 'data-craft-legend-toggle-key="' + escapeHtml(entry.key) + '"';
+    const soloTitle = soloActive
+      ? "Restore the previous craft selection"
+      : "Show only " + entry.label;
+    const surfaceClass = surface === "map" ? "map-legend-item" : "legend-item";
+    return (
+      '<div class="' + surfaceClass + ' craft-legend-row' + (active ? "" : " is-disabled") + '">' +
+      '<button class="craft-legend-swatch-button" type="button" ' + toggleAttribute +
+      ' aria-pressed="' + (active ? "true" : "false") + '" aria-label="Toggle ' +
+      escapeHtml(entry.label) + '" title="Toggle ' + escapeHtml(entry.label) + '">' +
+      '<span class="legend-swatch" style="background:' + escapeHtml(entry.color) + '" aria-hidden="true"></span>' +
+      "</button>" +
+      '<button class="craft-legend-label-button" type="button" data-craft-legend-solo-key="' +
+      escapeHtml(entry.key) + '" aria-pressed="' + (soloActive ? "true" : "false") +
+      '" aria-label="' + escapeHtml(soloTitle) + '" title="' + escapeHtml(soloTitle) + '">' +
+      escapeHtml(entry.label) +
+      "</button>" +
+      '<strong class="craft-legend-count" aria-label="' + escapeHtml(countLabel) + '">' +
+      escapeHtml(formattedCount) +
+      "</strong>" +
+      "</div>"
+    );
+  }
+
   function renderLegend() {
+    renderMapControlSectionSummaries();
     if (state.colorMode === "single") {
       els.legendPanel.hidden = true;
       els.legendBody.innerHTML = "";
@@ -12530,7 +12733,7 @@
     const orderedEntries = state.colorMode === "type"
       ? buildTypeLegendEntries()
       : state.colorMode === "craft_type"
-        ? buildCraftTypeLegendEntries()
+        ? buildMapLegendEventEntries()
         : buildPrecisionLegendEntries();
 
     if (!orderedEntries.length) {
@@ -12546,7 +12749,7 @@
       : state.colorMode === "craft_type"
         ? "Legend: Craft Type"
         : "Legend: Location Precision";
-    els.legendBody.innerHTML = orderedEntries.map(function (entry) {
+    const legendRows = orderedEntries.map(function (entry) {
       if (state.colorMode === "type") {
         return (
           '<div class="legend-item' + (entry.active ? "" : " is-disabled") + '">' +
@@ -12562,6 +12765,10 @@
         );
       }
 
+      if (state.colorMode === "craft_type") {
+        return buildCraftLegendRow(entry, "panel");
+      }
+
       return (
         '<div class="legend-item">' +
         '<span class="legend-item-label">' +
@@ -12572,6 +12779,9 @@
         "</div>"
       );
     }).join("");
+    els.legendBody.innerHTML =
+      (state.colorMode === "craft_type" ? buildCraftLegendBulkControls() : "") +
+      legendRows;
 
     if (state.colorMode === "type") {
       els.legendBody.querySelectorAll("[data-legend-partial]").forEach(function (input) {
@@ -12581,11 +12791,12 @@
     renderMapLegend();
   }
 
-  function buildMapLegendSection(title, rows) {
+  function buildMapLegendSection(title, rows, controlsHtml) {
     if (!rows.length) return "";
     return (
       '<section class="map-legend-section">' +
       '<div class="map-legend-heading">' + escapeHtml(title) + "</div>" +
+      (controlsHtml || "") +
       rows.join("") +
       "</section>"
     );
@@ -12786,8 +12997,24 @@
   }
 
   function buildMapLegendEventEntries() {
-    const selection = normalizedMapLegendEventSelection();
     const counts = mapLegendEventCountsForCurrentMode();
+    if (state.colorMode === "craft_type") {
+      const availableKeys = LEGEND_CONTROLS.uniqueKeys(Array.from(counts.keys()));
+      if (!availableKeys.length) {
+        clearCraftLegendSoloState();
+      } else {
+        const currentState = {
+          selection: state.mapLegendEventSelection,
+          solo: state.mapLegendCraftSolo,
+        };
+        assignCraftLegendState(
+          state.mapLegendCraftSolo
+            ? LEGEND_CONTROLS.normalizeCraftSelectionState(currentState, availableKeys, "craft_type")
+            : LEGEND_CONTROLS.replaceCraftSelectionUniverse(currentState, availableKeys, "craft_type")
+        );
+      }
+    }
+    const selection = normalizedMapLegendEventSelection();
     return orderedMapLegendEventKeys(counts, selection).map(function (key) {
       return {
         key,
@@ -12812,6 +13039,9 @@
   function buildMapLegendEventRows() {
     const selection = normalizedMapLegendEventSelection();
     return buildMapLegendEventEntries().map(function (entry) {
+      if (state.colorMode === "craft_type") {
+        return buildCraftLegendRow(entry, "map");
+      }
       return buildMapLegendMarkerRow(entry.label, entry.color, "circle", {
         active: entry.active,
         controlAttribute: "data-map-legend-event-key",
@@ -12877,8 +13107,64 @@
     ));
   }
 
+  function currentOverlayCountModel() {
+    const researchPayload = runtime.overlayPayloads.get("researchSites");
+    const researchFeatures = researchPayload
+      ? overlayFeaturesForDisplay("researchSites", researchPayload)
+      : [];
+    const researchByCategory = new Map();
+    researchFeatures.forEach(function (feature) {
+      const properties = feature && feature.properties ? feature.properties : {};
+      const category = researchSiteStringValue(properties, "category");
+      researchByCategory.set(category, (researchByCategory.get(category) || 0) + 1);
+    });
+    return {
+      researchSites: researchFeatures.length,
+      researchByCategory,
+      cropCircles: Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
+        ? Math.max(0, Number(runtime.cropCircleOverlayVisibleCount))
+        : 0,
+      animalMutilations: Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+        ? Math.max(0, Number(runtime.animalMutilationOverlayVisibleCount))
+        : 0,
+    };
+  }
+
+  function renderCompactOverlayCounts() {
+    const counts = currentOverlayCountModel();
+    if (els.overlayResearchSitesCount) {
+      els.overlayResearchSitesCount.textContent = formatNumber(counts.researchSites);
+    }
+    if (els.overlayCropCirclesCount) {
+      els.overlayCropCirclesCount.textContent = formatNumber(counts.cropCircles);
+    }
+    if (els.overlayAnimalMutilationsCount) {
+      els.overlayAnimalMutilationsCount.textContent = formatNumber(counts.animalMutilations);
+    }
+    if (els.overlayResearchSitesToggle) {
+      els.overlayResearchSitesToggle.setAttribute(
+        "aria-label",
+        "Research sites, " + formatNumber(counts.researchSites) + " visible"
+      );
+    }
+    if (els.overlayCropCirclesToggle) {
+      els.overlayCropCirclesToggle.setAttribute(
+        "aria-label",
+        "Crop circles, " + formatNumber(counts.cropCircles) + " visible"
+      );
+    }
+    if (els.overlayAnimalMutilationsToggle) {
+      els.overlayAnimalMutilationsToggle.setAttribute(
+        "aria-label",
+        "Animal Mutilation Reports, " + formatNumber(counts.animalMutilations) + " mapped reports visible"
+      );
+    }
+    return counts;
+  }
+
   function buildMapLegendOverlayRows() {
     const rows = [];
+    const overlayCounts = currentOverlayCountModel();
     const cropCirclesActive = cropCircleOverlayActive();
     rows.push(buildMapLegendMarkerRow(
       "Crop circles",
@@ -12891,13 +13177,11 @@
           "Crop circles",
           cropCirclesActive
         ),
-        Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
-          ? {
-              count: Number(runtime.cropCircleOverlayVisibleCount),
-              countNounSingular: "crop record",
-              countNounPlural: "crop records",
-            }
-          : {}
+        {
+          count: overlayCounts.cropCircles,
+          countNounSingular: "crop record",
+          countNounPlural: "crop records",
+        }
       )
     ));
     const animalMutilationsActive = animalMutilationOverlayActive();
@@ -12912,13 +13196,11 @@
           "Animal Mutilation Reports",
           animalMutilationsActive
         ),
-        Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
-          ? {
-              count: Number(runtime.animalMutilationOverlayVisibleCount),
-              countNounSingular: "mapped report",
-              countNounPlural: "mapped reports",
-            }
-          : {}
+        {
+          count: overlayCounts.animalMutilations,
+          countNounSingular: "mapped report",
+          countNounPlural: "mapped reports",
+        }
       )
     ));
     const airportsActive = Boolean(state.overlayVisibility.airports);
@@ -12954,7 +13236,14 @@
         label,
         researchSiteCategoryStyle(category).color,
         "ring",
-        mapLegendOverlayToggleOptions("data-map-legend-research-category", category, label, active)
+        Object.assign(
+          mapLegendOverlayToggleOptions("data-map-legend-research-category", category, label, active),
+          {
+            count: overlayCounts.researchByCategory.get(category) || 0,
+            countNounSingular: "research site",
+            countNounPlural: "research sites",
+          }
+        )
       ));
     });
 
@@ -13119,16 +13408,27 @@
   function toggleMapLegendEventKey(key) {
     const current = normalizedMapLegendEventSelection();
     const entries = buildMapLegendEventEntries();
-    const next = LEGEND_CONTROLS.toggleEventKey(
-      current,
-      key,
-      entries.map(function (entry) { return entry.key; }),
-      state.colorMode
-    );
-    state.mapLegendEventSelection = next;
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    if (state.colorMode === "craft_type") {
+      assignCraftLegendState(LEGEND_CONTROLS.toggleCraftKey(
+        currentCraftLegendState(availableKeys),
+        key,
+        availableKeys,
+        "craft_type"
+      ));
+    } else {
+      state.mapLegendEventSelection = LEGEND_CONTROLS.toggleEventKey(
+        current,
+        key,
+        availableKeys,
+        state.colorMode
+      );
+      clearCraftLegendSoloState();
+    }
+    const next = normalizedMapLegendEventSelection();
     invalidateMapLegendEventFilterCaches();
     resetPlayback({ preserveSelection: true });
-    renderMapLegend();
+    renderLegend();
     if (next.mode === "all") {
       announceMapLegendStatus("All event categories are shown.");
     } else if (next.mode === "none") {
@@ -13139,6 +13439,52 @@
         (next.selectedKeys.length === 1 ? " event category is selected." : " event categories are selected.")
       );
     }
+    scheduleRefresh({ immediate: true });
+  }
+
+  function toggleCraftLegendSoloKey(key) {
+    if (state.colorMode !== "craft_type") return;
+    const entries = buildMapLegendEventEntries();
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    const wasActiveSolo = craftLegendSoloKey() === String(key || "");
+    assignCraftLegendState(LEGEND_CONTROLS.toggleCraftSolo(
+      currentCraftLegendState(availableKeys),
+      key,
+      availableKeys,
+      "craft_type"
+    ));
+    invalidateMapLegendEventFilterCaches();
+    resetPlayback({ preserveSelection: true });
+    renderLegend();
+    announceMapLegendStatus(
+      wasActiveSolo
+        ? "The previous craft selection was restored."
+        : "Showing only " + mapLegendEventEntryLabel(key) + ". Select the same label again to restore the prior selection."
+    );
+    scheduleRefresh({ immediate: true });
+  }
+
+  function applyCraftLegendBulkAction(action) {
+    if (state.colorMode !== "craft_type") return;
+    const entries = buildMapLegendEventEntries();
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    assignCraftLegendState(LEGEND_CONTROLS.applyCraftBulkSelection(
+      currentCraftLegendState(availableKeys),
+      action,
+      availableKeys,
+      "craft_type"
+    ));
+    invalidateMapLegendEventFilterCaches();
+    resetPlayback({ preserveSelection: true });
+    renderLegend();
+    const normalizedAction = String(action || "").toLowerCase();
+    announceMapLegendStatus(
+      normalizedAction === "all"
+        ? "All craft types are shown."
+        : normalizedAction === "none"
+          ? "All craft types are hidden."
+          : "Craft-type visibility was inverted."
+    );
     scheduleRefresh({ immediate: true });
   }
 
@@ -13251,6 +13597,7 @@
   function resetMapLegendControls() {
     const eventSelectionWasFiltered = normalizedMapLegendEventSelection().mode !== "all";
     state.mapLegendEventSelection = defaultMapLegendEventSelectionState(state.colorMode);
+    clearCraftLegendSoloState();
     state.overlayVisibility = defaultOverlayVisibilityState();
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
@@ -13268,7 +13615,7 @@
     renderOverlayControls();
     syncOverlayVisibility();
     syncClaimedUfoBaseVisibility();
-    renderMapLegend();
+    renderLegend();
     announceMapLegendStatus("Legend event filters and overlays were reset to their defaults.");
     if (eventSelectionWasFiltered) {
       scheduleRefresh({ immediate: true });
@@ -13284,7 +13631,11 @@
     const overlayRows = buildMapLegendOverlayRows();
     const trailRows = buildMapLegendTrailRows();
     els.mapLegendBody.innerHTML = [
-      buildMapLegendSection("Events", eventRows),
+      buildMapLegendSection(
+        "Events",
+        eventRows,
+        state.colorMode === "craft_type" ? buildCraftLegendBulkControls() : ""
+      ),
       buildMapLegendSection("Overlays", overlayRows),
       buildMapLegendSection(mapLegendTrailSectionTitle(), trailRows),
     ].join("");
@@ -15344,6 +15695,8 @@
     }
     renderClaimedUfoBaseControls();
     renderFocusMapButton();
+    renderCompactOverlayCounts();
+    renderMapControlSectionSummaries();
     renderMapLegend();
     renderMapControlQuickButtons();
   }
@@ -16732,7 +17085,7 @@
       regionState.showEventsAssociatedWithSelectedTraces ? "1" : "0",
       regionState.showTracesAssociatedWithSelectedEvents ? "1" : "0",
       regionState.pointOnly ? "1" : "0",
-      TRACE_NEIGHBORHOOD.normalizeDepth(regionState.depth),
+      TRACE_NEIGHBORHOOD.normalizeAreaDepth(regionState.depth),
       TRACE_NEIGHBORHOOD.normalizeDirection(regionState.direction),
     ].join("");
   }
@@ -19374,54 +19727,92 @@
       : currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);
     const eventSeeds = seeds.eventSeeds;
     const traceSeeds = state.regionSelection.selectTraces ? seeds.traceSeeds : [];
+    const areaDepth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
+    let neighborhood;
 
-    if (state.regionSelection.selectEvents) {
-      eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
-    }
-    traceSeeds.forEach(function (seed) { selectedTraceIds.add(seed.traceId); });
-
-    const neighborhood = pointOnly
-      ? {
-          depth: 0,
-          direction: "point_only",
-          eventIds: new Set(selectedEventIds),
-          segmentIds: new Set(),
-          segments: [],
-          metrics: {
-            reachedSegments: 0,
-            reachedEvents: selectedEventIds.size,
-          },
-        }
-      : TRACE_NEIGHBORHOOD.traverseNeighborhood({
-          index: index,
-          depth: state.regionSelection.depth,
-          direction: state.regionSelection.direction,
-          eventSeeds: eventSeeds,
-          traceSeeds: traceSeeds,
-        });
-
-    if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
-      selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
-    }
-    const showsReachedTraces = Boolean(
-      (state.regionSelection.selectTraces && state.regionSelection.showSelectedTraces) ||
-      (state.regionSelection.selectEvents && state.regionSelection.showTracesAssociatedWithSelectedEvents)
-    );
-    if (!pointOnly && showsReachedTraces) {
-      neighborhood.segmentIds.forEach(function (traceId) { visibleTraceIds.add(traceId); });
-    }
-    const showsReachedEvents = Boolean(
-      (state.regionSelection.selectTraces && state.regionSelection.showEventsAssociatedWithSelectedTraces) ||
-      (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents)
-    );
-    if (!pointOnly && showsReachedEvents) {
-      neighborhood.eventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+    if (pointOnly) {
+      if (state.regionSelection.selectEvents) {
+        eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
+      }
+      if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
+        selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
+      neighborhood = {
+        depth: 0,
+        direction: "point_only",
+        eventIds: new Set(selectedEventIds),
+        segmentIds: new Set(),
+        segments: [],
+        metrics: {
+          reachedSegments: 0,
+          reachedEvents: selectedEventIds.size,
+        },
+      };
+    } else if (areaDepth === 0) {
+      const zeroHop = TRACE_NEIGHBORHOOD.computeAreaZeroHopSelection({
+        index,
+        eventSeeds,
+        traceSeeds,
+        selectEvents: state.regionSelection.selectEvents,
+        selectTraces: state.regionSelection.selectTraces,
+        showSelectedEvents: state.regionSelection.showSelectedEvents,
+        showSelectedTraces: state.regionSelection.showSelectedTraces,
+        showEventsAssociatedWithSelectedTraces: state.regionSelection.showEventsAssociatedWithSelectedTraces,
+        showTracesAssociatedWithSelectedEvents: state.regionSelection.showTracesAssociatedWithSelectedEvents,
+      });
+      zeroHop.selectedEventIds.forEach(function (id) { selectedEventIds.add(id); });
+      zeroHop.selectedTraceIds.forEach(function (id) { selectedTraceIds.add(id); });
+      zeroHop.visibleEventIds.forEach(function (id) { visibleEventIds.add(id); });
+      zeroHop.visibleTraceIds.forEach(function (id) { visibleTraceIds.add(id); });
+      neighborhood = {
+        generation: zeroHop.generation,
+        depth: 0,
+        direction: "direct",
+        eventIds: zeroHop.neighborhoodEventIds,
+        segmentIds: new Set(zeroHop.neighborhoodSegments.map(function (segment) { return segment.traceId; })),
+        segments: zeroHop.neighborhoodSegments,
+        metrics: zeroHop.metrics,
+        zeroHopPlan: zeroHop.plan,
+      };
+    } else {
+      if (state.regionSelection.selectEvents) {
+        eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
+      }
+      traceSeeds.forEach(function (seed) { selectedTraceIds.add(seed.traceId); });
+      neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({
+        index,
+        depth: areaDepth,
+        direction: state.regionSelection.direction,
+        eventSeeds,
+        traceSeeds,
+      });
+      if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
+        selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
+      const showsReachedTraces = Boolean(
+        (state.regionSelection.selectTraces && state.regionSelection.showSelectedTraces) ||
+        (state.regionSelection.selectEvents && state.regionSelection.showTracesAssociatedWithSelectedEvents)
+      );
+      if (showsReachedTraces) {
+        neighborhood.segmentIds.forEach(function (traceId) { visibleTraceIds.add(traceId); });
+      }
+      const showsReachedEvents = Boolean(
+        (state.regionSelection.selectTraces && state.regionSelection.showEventsAssociatedWithSelectedTraces) ||
+        (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents)
+      );
+      if (showsReachedEvents) {
+        neighborhood.eventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
     }
 
     const traversalDurationMs = Math.round((performance.now() - startedAt) * 100) / 100;
     const metrics = {
       active: true,
-      reason: pointOnly ? "computed point-only area selection" : "computed cached chronological neighborhood",
+      reason: pointOnly
+        ? "computed point-only area selection"
+        : areaDepth === 0
+          ? "computed direct zero-hop area selection"
+          : "computed cached chronological neighborhood",
       generation: state.filterGeneration,
       shapeCount: shapes.length,
       eventPointsAvailable: state.filteredMappedCatalog.length,
@@ -24740,7 +25131,11 @@
       ["Elapsed time", elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
       ["Derived distance", distanceKm == null ? "Missing" : distanceKm.toFixed(1) + " km (great-circle estimate)"],
       ["Derived implied speed", impliedSpeedKph == null ? "Missing or undefined" : impliedSpeedKph.toFixed(1) + " km/h"],
-      ["Hop / direction", String(neighborhood.hop || 1) + " / " + String(neighborhood.direction || "forward")],
+      [
+        "Hop / direction",
+        String(neighborhood.hop == null ? 1 : neighborhood.hop) + " / " +
+          String(neighborhood.direction || "forward"),
+      ],
       ["Region attribution", regionIds],
     ];
     if (els.chronologicalNeighborhoodInspectorBody) {
@@ -24774,7 +25169,6 @@
       closeChronologicalNeighborhoodInspector();
       return;
     }
-    setChronologicalNeighborhoodPaneInteractive(true);
     const result = currentRegionSelectionResult();
     if (result.pointOnly) {
       setChronologicalNeighborhoodPaneInteractive(false);
@@ -24782,16 +25176,19 @@
       return;
     }
     const segments = result.visibleTraceSegments || [];
-    const endpointIds = new Set();
+    setChronologicalNeighborhoodPaneInteractive(segments.length > 0);
     const densityProfile = normalTraceDensityProfile(Math.max(1, segments.length));
     segments.forEach(function (rawSegment) {
       const segment = styleTraceSegmentForDensity(rawSegment, densityProfile);
       const neighborhood = rawSegment.neighborhood || {};
-      const hop = TRACE_NEIGHBORHOOD.normalizeDepth(neighborhood.hop || 1);
+      const hop = TRACE_NEIGHBORHOOD.normalizeAreaDepth(
+        neighborhood.hop == null ? 1 : neighborhood.hop
+      );
       const direction = neighborhood.direction || state.regionSelection.direction || "forward";
-      const weight = Math.max(2.2, 5.6 - ((hop - 1) * 0.72));
-      const opacity = Math.max(0.48, 0.96 - ((hop - 1) * 0.13));
-      const dashArray = hop === 1 ? null : hop === 2 ? "10 7" : hop === 3 ? "6 7" : "2 7";
+      const visualHop = Math.max(1, hop);
+      const weight = Math.max(2.2, 5.6 - ((visualHop - 1) * 0.72));
+      const opacity = Math.max(0.48, 0.96 - ((visualHop - 1) * 0.13));
+      const dashArray = visualHop === 1 ? null : visualHop === 2 ? "10 7" : visualHop === 3 ? "6 7" : "2 7";
       const outlineColor = state.resolvedTheme === "dark"
         ? CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR
         : CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR;
@@ -24846,33 +25243,6 @@
           }),
         }).addTo(runtime.neighborhoodTraceLayer);
       });
-      (segment.eventIds || []).forEach(function (eventId) { endpointIds.add(String(eventId)); });
-    });
-    endpointIds.forEach(function (eventId) {
-      const event = getCatalogEventById(eventId);
-      if (!event || !event.has_coordinates) return;
-      const marker = L.circleMarker([event.lat, closestWrappedLongitude(event.lon)], {
-        pane: "neighborhoodTracePane",
-        radius: 7,
-        weight: 2.5,
-        color: state.resolvedTheme === "dark" ? "#f8fafc" : "#0b1620",
-        fillColor: colorForEvent(event),
-        fillOpacity: 0.96,
-        opacity: 0.95,
-        interactive: true,
-        className: "chronological-neighborhood-endpoint",
-        ufoEventId: Number(eventId),
-      });
-      marker.bindTooltip(
-        escapeHtml(chronologicalNeighborhoodEndpointLabel(event)) + "<br>" +
-        escapeHtml(chronologicalNeighborhoodDateLabel(event)),
-        { direction: "top" }
-      );
-      marker.bindPopup(buildPopupContent(event), { maxWidth: 360 });
-      marker.on("click", function () {
-        activateMapPointEvent(eventId, { marker });
-      });
-      marker.addTo(runtime.neighborhoodTraceLayer);
     });
     renderChronologicalNeighborhoodInspector();
   }
@@ -24908,15 +25278,31 @@
         state.mapMode = state.effectiveMapMode;
       }
       syncMapModeControl();
+      const areaFilterActive = regionSelectionAffectsRendering();
+      const nextAreaEventRepresentation = areaFilterActive
+        ? TRACE_NEIGHBORHOOD.resolveAreaEventRepresentation({
+            requestedMode: state.mapMode,
+            effectiveMode: state.effectiveMapMode,
+            active: true,
+            showEvents: currentVisibleMappedCatalog().length > 0,
+          })
+        : TRACE_NEIGHBORHOOD.normalizeAreaEventRepresentation(state.effectiveMapMode);
+      runtime.areaEventLayerTransition = TRACE_NEIGHBORHOOD.planAreaEventLayerTransition(
+        runtime.areaEventRepresentation,
+        nextAreaEventRepresentation
+      );
+      runtime.areaEventRepresentation = nextAreaEventRepresentation;
       const measureLayer = runtime.startupTiming.active
         ? function (name, fn) { return measureStartupStepSync(name, fn); }
         : function (name, fn) { return fn(); };
 
-      if (state.effectiveMapMode === MAP_RENDERERS.heatmap) {
+      if (nextAreaEventRepresentation === "hidden") {
+        clearMapDataLayers();
+      } else if (nextAreaEventRepresentation === MAP_RENDERERS.heatmap) {
         measureLayer("renderHeatmapLayer()", function () {
           renderHeatmapLayer(config);
         });
-      } else if (state.effectiveMapMode === MAP_RENDERERS.clusters) {
+      } else if (nextAreaEventRepresentation === MAP_RENDERERS.clusters) {
         measureLayer("renderClusterLayer()", function () {
           renderClusterLayer(config);
         });
@@ -27201,6 +27587,16 @@
       defaults.mapLegendEventSelection,
       defaults.colorMode
     );
+    state.mapLegendCraftSolo = defaults.mapLegendCraftSolo;
+    state.analysisCountryAreaFilter = "";
+    state.regionSelection = Object.assign({}, defaults.regionSelection, {
+      shapes: defaults.regionSelection.shapes.slice(),
+    });
+    clearRegionSelectionDrawRuntime();
+    clearChronologicalNeighborhoodInteractionLayer();
+    invalidateRegionSelectionResult();
+    renderRegionSelectionShapes();
+    renderRegionSelectionUi();
     state.militaryBranchVisibility = Object.assign({}, defaults.militaryBranchVisibility);
     state.researchCategoryVisibility = Object.assign({}, defaults.researchCategoryVisibility);
     state.traceBucketVisibility = Object.assign({}, defaults.traceBucketVisibility);
@@ -27631,8 +28027,7 @@
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
-      renderMapControlQuickButtons();
-      renderMapLegend();
+      renderOverlayControls();
       if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
         runtime.analysisViewController.setContextControlState("crops", {
           enabled: runtime.cropCircleOverlayEnabled,
@@ -27653,8 +28048,7 @@
       runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
-      renderMapControlQuickButtons();
-      renderMapLegend();
+      renderOverlayControls();
       if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
         runtime.analysisViewController.setContextControlState("animals", {
           enabled: runtime.animalMutilationOverlayEnabled,
@@ -27957,19 +28351,29 @@
     if (els.mapLegendBody) {
       els.mapLegendBody.addEventListener("click", function (event) {
         const eventButton = event.target.closest("[data-map-legend-event-key]");
+        const craftSoloButton = event.target.closest("[data-craft-legend-solo-key]");
+        const craftBulkButton = event.target.closest("[data-craft-legend-bulk]");
         const overlayButton = event.target.closest("[data-map-legend-overlay]");
         const cropCircleButton = event.target.closest("[data-map-legend-crop-circles]");
         const animalMutilationButton = event.target.closest("[data-map-legend-animal-mutilations]");
         const militaryButton = event.target.closest("[data-map-legend-military-branch]");
         const researchButton = event.target.closest("[data-map-legend-research-category]");
         const claimedButton = event.target.closest("[data-map-legend-claimed-control]");
-        const button = eventButton || overlayButton || cropCircleButton || animalMutilationButton || militaryButton || researchButton || claimedButton;
+        const button = eventButton || craftSoloButton || craftBulkButton || overlayButton || cropCircleButton || animalMutilationButton || militaryButton || researchButton || claimedButton;
         if (!button) return;
         event.preventDefault();
         event.stopPropagation();
 
         if (eventButton) {
           toggleMapLegendEventKey(eventButton.getAttribute("data-map-legend-event-key"));
+          return;
+        }
+        if (craftSoloButton) {
+          toggleCraftLegendSoloKey(craftSoloButton.getAttribute("data-craft-legend-solo-key"));
+          return;
+        }
+        if (craftBulkButton) {
+          applyCraftLegendBulkAction(craftBulkButton.getAttribute("data-craft-legend-bulk"));
           return;
         }
         if (cropCircleButton) {
@@ -28274,7 +28678,7 @@
     if (els.areaSelectionDepthSelect) {
       els.areaSelectionDepthSelect.addEventListener("change", function () {
         applyRegionSelectionOptionChanges(function (regionState) {
-          regionState.depth = TRACE_NEIGHBORHOOD.normalizeDepth(els.areaSelectionDepthSelect.value);
+          regionState.depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(els.areaSelectionDepthSelect.value);
         });
       });
     }
@@ -28295,13 +28699,7 @@
 
     mapControlSectionElements().forEach(function (section) {
       section.addEventListener("toggle", function () {
-        if (section.open) {
-          mapControlSectionElements().forEach(function (candidate) {
-            if (candidate !== section) {
-              candidate.open = false;
-            }
-          });
-        }
+        persistMapControlSectionOpenState();
         window.requestAnimationFrame(function () {
           window.requestAnimationFrame(function () {
             applyMapControlClusterState();
@@ -28413,6 +28811,7 @@
       const legendEventFilterWasActive = normalizedMapLegendEventSelection().mode !== "all";
       state.colorMode = els.colorModeSelect.value;
       state.mapLegendEventSelection = defaultMapLegendEventSelectionState(state.colorMode);
+      clearCraftLegendSoloState();
       runtime.mapLegendEventBaseCounts = new Map();
       runtime.mapLegendEventBaseMode = state.colorMode;
       invalidateMapLegendEventFilterCaches();
@@ -28444,6 +28843,23 @@
       invalidatePlaybackForTimeChange();
       toggleLegendTypeGroup(toggle.getAttribute("data-legend-type-toggle"), toggle.checked);
       scheduleRefresh({ immediate: true });
+    });
+
+    els.legendBody.addEventListener("click", function (event) {
+      const toggle = event.target.closest("[data-craft-legend-toggle-key]");
+      const solo = event.target.closest("[data-craft-legend-solo-key]");
+      const bulk = event.target.closest("[data-craft-legend-bulk]");
+      const target = toggle || solo || bulk;
+      if (!target || state.colorMode !== "craft_type") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (toggle) {
+        toggleMapLegendEventKey(toggle.getAttribute("data-craft-legend-toggle-key"));
+      } else if (solo) {
+        toggleCraftLegendSoloKey(solo.getAttribute("data-craft-legend-solo-key"));
+      } else {
+        applyCraftLegendBulkAction(bulk.getAttribute("data-craft-legend-bulk"));
+      }
     });
 
     els.playbackSpeedSelect.addEventListener("change", function () {
@@ -29991,7 +30407,7 @@
           visibleTraceCount: regionResult.visibleTraceCount,
           pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
           chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
-          depth: TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth),
+          depth: TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth),
           direction: TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction),
           neighborhoodEventCount: regionResult.neighborhoodEventIds ? regionResult.neighborhoodEventIds.size : 0,
           neighborhoodTraceCount: regionResult.neighborhoodSegments ? regionResult.neighborhoodSegments.length : 0,
@@ -30001,6 +30417,8 @@
           interactionPanePointerEvents: runtime.map && runtime.map.getPane("neighborhoodTracePane")
             ? runtime.map.getPane("neighborhoodTracePane").style.pointerEvents
             : "",
+          eventRepresentation: runtime.areaEventRepresentation,
+          eventLayerTransition: runtime.areaEventLayerTransition,
         },
         chronologicalNeighborhood: {
           build: runtime.neighborhoodBuildMetrics,
@@ -30026,6 +30444,7 @@
         },
         mapLegend: {
           eventSelection: normalizedMapLegendEventSelection(),
+          craftSolo: state.mapLegendCraftSolo,
           controlsDirty: mapLegendControlsAreDirty(),
           overlayVisibility: Object.assign({}, state.overlayVisibility),
           claimedUfoBaseVisibility: Object.assign({}, state.claimedUfoBaseVisibility),
@@ -30180,6 +30599,7 @@
     getMapLegendSnapshotForTest: function () {
       return {
         eventSelection: normalizedMapLegendEventSelection(),
+        craftSolo: state.mapLegendCraftSolo,
         controlsDirty: mapLegendControlsAreDirty(),
         eventEntries: buildMapLegendEventEntries(),
         overlayVisibility: Object.assign({}, state.overlayVisibility),
@@ -30196,7 +30616,7 @@
       if (!options || !Object.prototype.hasOwnProperty.call(options, "pointOnly")) {
         state.regionSelection.pointOnly = false;
       }
-      state.regionSelection.depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
+      state.regionSelection.depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
       state.regionSelection.direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
       refreshRegionSelectionRenderState();
       return this.getFilterParitySnapshot();
@@ -30204,24 +30624,6 @@
     clearAreaSelectionForTest: function () {
       clearAllRegionSelectionShapes();
       return this.getFilterParitySnapshot();
-    },
-    activateNeighborhoodEndpointForTest: function () {
-      if (!runtime.neighborhoodTraceLayer) return null;
-      let endpointMarker = null;
-      runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
-        if (
-          !endpointMarker &&
-          layer &&
-          layer.options &&
-          layer.options.ufoEventId != null &&
-          typeof layer.fire === "function"
-        ) {
-          endpointMarker = layer;
-        }
-      });
-      if (!endpointMarker) return null;
-      endpointMarker.fire("click");
-      return Number(endpointMarker.options.ufoEventId);
     },
     activateRenderedPointForTest: function () {
       let pointMarker = null;
