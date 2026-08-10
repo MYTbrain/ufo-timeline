@@ -85,7 +85,7 @@ web:
 
     assert response.status_code == 200
     assert "UFO Timeline World Map" in response.text
-    assert 'id="toggle-area-selection"' in response.text
+    assert 'id="area-selection-shell"' in response.text
     assert 'id="area-selection-panel"' in response.text
     assert 'id="results-area-filter-indicator"' in response.text
 
@@ -1041,12 +1041,6 @@ def test_france_heatmap_facility_proximity_defaults_are_wired():
         'id="trace-facility-radius" type="number" min="1" max="1000" step="1" value="5" disabled',
         'id="trace-facility-evidence-mode" disabled aria-describedby="trace-facility-evidence-help"',
         'id="trace-facility-linked-only" type="checkbox" checked disabled',
-        'data-trace-facility-radius-preset="1" disabled',
-        'data-trace-facility-radius-preset="2"',
-        'data-trace-facility-radius-preset="3"',
-        'data-trace-facility-radius-preset="4"',
-        'data-trace-facility-radius-preset="5"',
-        'data-trace-facility-radius-preset="10"',
         'data-trace-facility-class="start" checked disabled',
         'data-trace-facility-class="passes" disabled',
         'data-trace-facility-source="military" checked disabled',
@@ -1054,6 +1048,9 @@ def test_france_heatmap_facility_proximity_defaults_are_wired():
     for fragment in required_index_fragments:
         assert fragment in index_html
         assert fragment in bundle_index_html
+
+    assert "data-trace-facility-radius-preset" not in index_html
+    assert "data-trace-facility-radius-preset" not in bundle_index_html
 
     assert '<option value="source_coordinates" selected>Strict mode</option>' in index_html
     assert '<option value="include_generalized">Exploratory mode</option>' in index_html
@@ -1221,6 +1218,54 @@ def test_map_control_cluster_body_is_the_only_section_scroller():
     assert "position: static;" in mounted_area_shell
 
 
+def test_overlay_controls_use_compact_semantic_symbols_and_hidden_live_status():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    assert re.search(
+        r'id="overlay-airports"[\s\S]*?overlay-chip-swatch-airports[\s\S]*?<svg[^>]+viewBox="0 0 20 18"',
+        index_html,
+    )
+    assert re.search(
+        r'id="overlay-highways"[\s\S]*?overlay-chip-swatch-highways',
+        index_html,
+    )
+    assert re.search(
+        r'id="overlay-military-air"[\s\S]*?overlay-chip-swatch-air[\s\S]*?<svg[^>]+viewBox="0 0 20 16"',
+        index_html,
+    )
+    assert re.search(
+        r'id="overlay-military-naval"[\s\S]*?overlay-chip-swatch-naval[^>]*>⚓</span>',
+        index_html,
+    )
+    assert re.search(
+        r'id="overlay-military-army"[\s\S]*?overlay-chip-swatch-army[\s\S]*?<svg[^>]+viewBox="0 0 22 16"',
+        index_html,
+    )
+    assert '.overlay-chip[data-overlay-kind="highways"] .overlay-chip-swatch-highways' in styles_css
+    assert ".overlay-chip-swatch-air::before" in styles_css
+    assert ".overlay-chip-swatch-naval::before" in styles_css
+    assert ".overlay-chip-swatch-army::before" in styles_css
+
+    for status_id, status_class in (
+        ("military-branch-status", "sr-only"),
+        ("crop-circle-status", "sr-only crop-circle-status"),
+        ("animal-mutilation-status", "sr-only animal-mutilation-status"),
+    ):
+        status_tag = re.search(rf'<p id="{status_id}"[^>]+>', index_html)
+        assert status_tag is not None
+        assert f'class="{status_class}"' in status_tag.group(0)
+        assert 'role="status"' in status_tag.group(0)
+
+    assert ".crop-circle-status.sr-only.is-error" in styles_css
+    assert ".animal-mutilation-status.sr-only.is-error" in styles_css
+    assert "position: static;" in styles_css
+
+    assert '"Showing " + activeBranches' not in app_js
+    assert '"Military branches: " + activeBranches' in app_js
+
+
 def test_area_selection_zero_hops_is_the_independent_default():
     index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
@@ -1249,6 +1294,67 @@ def test_area_selection_zero_hops_is_the_independent_default():
     assert "const directionInactive = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth) === 0;" in region_ui
     assert "els.areaSelectionDirectionSelect.disabled = directionInactive;" in region_ui
     assert 'els.areaSelectionDirectionSelect.setAttribute("aria-disabled", directionInactive ? "true" : "false");' in region_ui
+
+
+def test_area_selection_disclosure_is_the_only_panel_reveal_step():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    assert 'id="toggle-area-selection"' not in index_html
+    assert '<section id="area-selection-panel" class="area-selection-panel" aria-live="polite">' in index_html
+    assert "Exploratory chronological adjacency under the current filters only." not in index_html
+
+    default_region = _extract_js_function_body(app_js, "defaultRegionSelectionState")
+    render_ui = _extract_js_function_body(app_js, "renderRegionSelectionUi")
+    panel_open = _extract_js_function_body(app_js, "regionSelectionPanelOpen")
+    handlers = _extract_js_function_body(app_js, "attachEventHandlers")
+    clear_area = _extract_js_function_body(app_js, "clearAllRegionSelectionShapes")
+
+    assert "panelOpen" not in default_region
+    assert "els.areaSelectionPanel.hidden = false;" in render_ui
+    assert "els.exitAreaSelectionButton.disabled = !drawingActive;" in render_ui
+    assert 'drawingActive && state.regionSelection.tool === "rectangle"' in render_ui
+    assert 'drawingActive && state.regionSelection.tool === "circle"' in render_ui
+    assert 'mapControlSectionElement("area")' in panel_open
+    assert "setRegionSelectionPanelOpen" not in app_js
+    assert "toggleAreaSelectionButton" not in app_js
+    assert handlers.count("setRegionSelectionDrawingActive(true);") >= 2
+    assert "setRegionSelectionDrawingActive(false);" in handlers
+    assert 'section.getAttribute("data-map-control-section") === "area"' in handlers
+    assert "!section.open" in handlers
+    assert "setRegionSelectionDrawingActive(false, { skipRender: true });" in clear_area
+
+
+def test_facility_controls_and_basemap_label_are_compact_without_losing_filters():
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+
+    assert 'class="trace-facility-row trace-facility-primary-row"' in index_html
+    assert "data-trace-facility-radius-preset" not in index_html
+    for redundant_action in (
+        'data-trace-facility-class-action="only:start"',
+        'data-trace-facility-class-action="only:end"',
+        'data-trace-facility-class-action="only:between"',
+        'data-trace-facility-source-action="only:military"',
+        'data-trace-facility-source-action="only:researchSites"',
+        'data-trace-facility-source-action="only:claimedUfoBases"',
+    ):
+        assert redundant_action not in index_html
+    for retained_control in (
+        'data-trace-facility-class="start"',
+        'data-trace-facility-class="end"',
+        'data-trace-facility-class="between"',
+        'data-trace-facility-source="military"',
+        'data-trace-facility-source="researchSites"',
+        'data-trace-facility-source="claimedUfoBases"',
+    ):
+        assert retained_control in index_html
+
+    assert ".trace-facility-primary-row" in styles_css
+    assert "grid-template-columns: minmax(0, 1fr) 82px;" in styles_css
+    populate_basemaps = _extract_js_function_body(app_js, "populateBasemapOptions")
+    assert 'replace(/\\s*\\(hosted tiles\\)\\s*$/i, "")' in populate_basemaps
 
 
 def test_map_control_cluster_defaults_to_full_portrait_and_desktop_height_and_preserves_manual_resize():
@@ -1354,7 +1460,6 @@ def test_facility_proximity_quick_cycle_is_visible_accessible_and_synchronized()
             '>Facility proximity</span>',
             'id="map-quick-control-status"',
             'role="status" aria-live="polite" aria-atomic="true"',
-            'data-trace-facility-radius-preset="10"',
             'role="group" aria-label="Trace facility proximity filter"',
         ]
         for fragment in required_index_fragments:
@@ -1413,8 +1518,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-            'styles.css?v=2026-08-09-control-panel-area-v1',
-            'app.js?v=2026-08-09-control-panel-area-v1',
+            'styles.css?v=2026-08-10-control-panel-polish-v1',
+            'app.js?v=2026-08-10-control-panel-polish-v1',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -1764,14 +1869,14 @@ def test_country_area_filter_is_visible_human_labeled_clearable_and_atomic():
     ui_body = _extract_js_function_body(app_js, "renderRegionSelectionUi")
     for fragment in (
         "const countryLabel = analysisCountryAreaFilterLabel();",
-        '"Area Filter \u00b7 " + countryLabel',
-        '"Country Area Filter active: " + countryLabel',
+        "els.areaSelectionSummary.textContent = regionSelectionSummaryText(result);",
         "els.undoAreaSelectionButton.disabled = !hasAreaFilter;",
         "els.clearAreaSelectionButton.disabled = !hasAreaFilter;",
         "els.resultsAreaFilterIndicator.hidden = !hasAreaFilter;",
         "els.resultsAreaFilterClearButton.disabled = !hasAreaFilter;",
     ):
         assert fragment in ui_body
+    assert "toggleAreaSelectionButton" not in ui_body
 
     summary_body = _extract_js_function_body(app_js, "regionSelectionSummaryText")
     assert '"Country: " + countryLabel' in summary_body
@@ -1956,13 +2061,18 @@ def test_trace_facility_proximity_filter_is_wired_into_trace_rendering():
     assert "Only show facilities linked to visible traces" in index_html
     assert 'data-trace-facility-class="start"' in index_html
     assert 'data-trace-facility-class="passes"' in index_html
-    assert 'data-trace-facility-radius-preset="1"' in index_html
-    assert 'data-trace-facility-radius-preset="5"' in index_html
-    assert 'data-trace-facility-radius-preset="250"' in index_html
+    assert "data-trace-facility-radius-preset" not in index_html
     assert 'data-trace-facility-class-action="all"' in index_html
+    assert 'data-trace-facility-class-action="none"' in index_html
+    assert 'data-trace-facility-class-action="only:start"' not in index_html
+    assert 'data-trace-facility-class-action="only:end"' not in index_html
+    assert 'data-trace-facility-class-action="only:between"' not in index_html
     assert 'data-trace-facility-class-action="only:passes"' not in index_html
     assert 'data-trace-facility-source-action="none"' in index_html
-    assert 'data-trace-facility-source-action="only:military"' in index_html
+    assert 'data-trace-facility-source-action="all"' in index_html
+    assert 'data-trace-facility-source-action="only:military"' not in index_html
+    assert 'data-trace-facility-source-action="only:researchSites"' not in index_html
+    assert 'data-trace-facility-source-action="only:claimedUfoBases"' not in index_html
     assert ".trace-facility-chip-passes" in styles_css
     assert ".trace-facility-linked-only" in styles_css
     assert ".trace-facility-linked-only:has(input:disabled)" in styles_css
@@ -2007,7 +2117,7 @@ def test_trace_facility_proximity_filter_is_wired_into_trace_rendering():
     assert "traceFacilityClassActionButtons" in app_js
     assert "traceFacilitySourceActionButtons" in app_js
     assert "action.slice(5)" in app_js
-    assert "traceFacilityRadiusPresetButtons" in app_js
+    assert "traceFacilityRadiusPresetButtons" not in app_js
     assert "traceFacilityLinkedOnly" in app_js
     assert "onlyShowTraceLinkedFacilities" in app_js
     assert "facilityTraceClass" in app_js
@@ -2109,6 +2219,7 @@ def test_trace_facility_location_evidence_policy_is_conservative_and_truthful():
         "End endpoint near facility",
         "Both endpoints near facilities",
         "Connector intersects facility radius",
+        "Turn on Facility proximity and choose Exploratory mode.",
         "Chronology lines connect records in date order; they are not observed travel paths.",
         'data-trace-facility-source="claimedUfoBases" disabled',
     ]
@@ -2116,6 +2227,9 @@ def test_trace_facility_location_evidence_policy_is_conservative_and_truthful():
         assert fragment in index_html
 
     assert 'data-trace-facility-class-action="only:passes"' not in index_html
+    render_controls = _extract_js_function_body(app_js, "renderTraceControls")
+    assert 'input.disabled = !facilityFilter.enabled || (key === "passes" && evidenceMode !== "include_generalized");' in render_controls
+    assert '"Turn on Facility proximity and choose Exploratory mode."' in render_controls
     assert ".trace-facility-evidence-field select:focus-visible" in styles_css
     assert ".playback-trail-line-facility-possible" in styles_css
     assert ".map-legend-note" in styles_css
@@ -2179,7 +2293,6 @@ def test_static_bundle_trace_facility_filter_matches_source_wiring():
         "traceFacilityFilterSignature()",
         "traceFacilityClassActionButtons",
         "traceFacilitySourceActionButtons",
-        "traceFacilityRadiusPresetButtons",
         "traceFacilityLinkedOnly",
         "onlyShowTraceLinkedFacilities",
         "function traceFacilityLinkedDisplayOnlyEnabled()",
@@ -2202,6 +2315,9 @@ def test_static_bundle_trace_facility_filter_matches_source_wiring():
     for fragment in required_fragments:
         assert fragment in source_js
         assert fragment in bundle_js
+
+    assert "traceFacilityRadiusPresetButtons" not in source_js
+    assert "traceFacilityRadiusPresetButtons" not in bundle_js
 
 
 def test_static_trace_categories_filter_visible_events_and_results():
@@ -2304,11 +2420,32 @@ def test_trace_legend_uses_descriptor_rows():
     assert 'return "Sequence trail";' in trail_heading
     assert "buildMapLegendSection(mapLegendTrailSectionTitle(), trailRows)" in render_map_legend
 
+    assert 'id="trace-status-summary"' in index_html
+    assert 'aria-live="polite" aria-atomic="true">0 traces</p>' in index_html
+    assert '<details id="trace-status-details" class="trace-status-details">' in index_html
+    assert '<summary>More</summary>' in index_html
     assert 'id="trace-status"' in index_html
+    trace_details = index_html[
+        index_html.index('<details id="trace-status-details"') : index_html.index(
+            "</details>", index_html.index('<details id="trace-status-details"')
+        )
+    ]
+    assert "Chronology lines connect records in date order; they are not observed travel paths." in trace_details
+    facility_panel = index_html[
+        index_html.index('<div id="trace-facility-filter"') : index_html.index(
+            '<div class="trace-status-shell">', index_html.index('<div id="trace-facility-filter"')
+        )
+    ]
+    assert "Chronology lines connect records" not in facility_panel
+    assert "function currentVisibleTraceCount()" in app_js
+    assert "function traceStatusSummaryText()" in app_js
+    assert "function renderTraceStatusSummary()" in app_js
     assert "function traceStatusText()" in app_js
     assert "generalized \" + formatNumber(renderedSegments) + \" cells" in app_js
     assert "sampled \" + formatNumber(renderedSegments) + \" of \" + formatNumber(sourceSegments)" in app_js
     assert ".trace-status" in styles_css
+    assert ".trace-status-shell" in styles_css
+    assert ".trace-status-details[open]" in styles_css
 
 
 def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
@@ -2325,7 +2462,7 @@ def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
     assert 'id="map-legend-status"' in index_html
     assert 'role="status" aria-live="polite"' in index_html
     assert (
-        "legend_controls.js?v=2026-08-09-control-panel-area-v1"
+        "legend_controls.js?v=2026-08-10-control-panel-polish-v1"
         in index_html
     )
     assert index_html.index("legend_controls.js") < index_html.index("app.js?v=")
@@ -2387,6 +2524,55 @@ def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
     assert ".map-legend .compact-toggle-button" in styles_css
     assert "min-width: 204px;" in styles_css
     assert "max-width: min(220px, calc(100% - 20px));" in styles_css
+
+
+def test_independent_craft_colors_and_map_place_label_sizing_are_wired():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+    helper_js = Path("webapp/static_public/legend_controls.js").read_text(encoding="utf-8")
+
+    craft_row = _extract_js_function_body(app_js, "buildCraftLegendRow")
+    for fragment in (
+        'class="craft-legend-label-color"',
+        'class="craft-color-picker',
+        'class="craft-color-input" type="color"',
+        'data-craft-color-key=',
+        "sightings and traces",
+    ):
+        assert fragment in craft_row
+    assert "function normalizeCraftColorOverrides" in helper_js
+    assert "function updateCraftColorOverride" in helper_js
+    assert 'const CRAFT_COLOR_OVERRIDES_STORAGE_KEY = "ufoTimeline.craftTypeColors.v1";' in app_js
+    assert "state.craftTypeColorOverrides = readCraftTypeColorOverrides();" in app_js
+    assert "runtime.craftTypeResolutionByKey.clear();" in app_js
+    assert "restylePlaybackTrailEntriesForColorMode();" in _extract_js_function_body(
+        app_js, "applyCraftTypeColorOverride"
+    )
+    reset_legend = _extract_js_function_body(app_js, "resetMapLegendControls")
+    assert "if (craftColorsWereCustomized)" in reset_legend
+    assert "renderTimeline();" in reset_legend
+    assert app_js.count('addEventListener("change", function (event) {\n        handleCraftColorInput(event);') >= 1
+    assert "if (handleCraftColorInput(event)) return;" in app_js
+    assert ".craft-color-wheel" in styles_css
+    assert "conic-gradient(" in styles_css
+
+    assert 'id="map-control-section-advanced"' in index_html
+    assert 'id="map-label-scale-mode"' in index_html
+    assert 'aria-describedby="map-label-size-note"' in index_html
+    assert "Timeline country/city labels only. Hosted tile text follows map zoom." in index_html
+    assert 'const MAP_LABEL_SCALE_STORAGE_KEY = "ufoTimeline.mapLabelScaleMode.v1";' in app_js
+    assert "function applyMapLabelScaleMode(mode, options)" in app_js
+    assert 'runtime.map.createPane("referenceLabelPane");' in app_js
+    assert 'runtime.referenceLabelLayer = L.layerGroup().addTo(runtime.map);' in app_js
+    assert 'pane: "referenceLabelPane"' in app_js
+    label_visibility = _extract_js_function_body(app_js, "updateWorldReferenceLabelVisibility")
+    assert "state.currentTileProviderId !== \"none\"" in label_visibility
+    assert "runtime.referenceLabelLayer" in label_visibility
+    assert 'state.currentTileProviderId !== "none")' not in label_visibility
+    assert "font-size: calc(13px * var(--map-label-scale));" in styles_css
+    assert "font-size: calc(12.5px * var(--map-label-scale));" in styles_css
+    assert "font-size: calc(13px * var(--app-font-scale));" not in styles_css
 
 
 def test_map_legend_counts_and_desktop_map_height_resizer_are_wired_and_accessible():
@@ -2777,7 +2963,7 @@ def test_chronological_neighborhood_release_contract_is_synchronized():
     assert 'id="area-selection-depth"' in index_html
     assert 'id="area-selection-direction"' in index_html
     assert "Chronological Neighborhood" in index_html
-    assert "not evidence of travel" in index_html
+    assert "Exploratory chronological adjacency under the current filters only." not in index_html
     assert (
         "trace_neighborhood.js?v=2026-08-09-control-panel-area-v1"
         in index_html
@@ -2864,3 +3050,8 @@ def test_hosted_feature_verifier_tracks_current_progressive_results_and_legends(
     assert "Results progressive rendering" in verifier
     assert 'doc.querySelector("#map-legend-body")' in verifier
     assert 'selectedMapMode === "heatmap"' in verifier
+    assert "let verificationStarted = false;" in verifier
+    assert 'iframe.addEventListener("load", startVerification);' in verifier
+    assert 'iframe.contentDocument.readyState === "complete"' in verifier
+    assert "window.setTimeout(startWhenFrameReady, 50);" in verifier
+    assert "startWhenFrameReady();" in verifier

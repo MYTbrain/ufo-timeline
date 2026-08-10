@@ -75,6 +75,8 @@
   const FILTER_PANE_HEIGHT_STORAGE_PREFIX = "ufoTimeline.filterPaneHeight.";
   const THEME_MODE_STORAGE_KEY = "ufoTimeline.themeMode";
   const FONT_SCALE_STORAGE_KEY = "ufoTimeline.fontScaleMode";
+  const MAP_LABEL_SCALE_STORAGE_KEY = "ufoTimeline.mapLabelScaleMode.v1";
+  const CRAFT_COLOR_OVERRIDES_STORAGE_KEY = "ufoTimeline.craftTypeColors.v1";
   const GUIDE_VISIBILITY_STORAGE_KEY = "ufoTimeline.userGuideCollapsed";
   const TRAIL_LEGEND_STORAGE_KEY = "ufoTimeline.showTrailLegend";
   const TRACE_WIDTH_SCALE_STORAGE_KEY = "ufoTimeline.traceWidthScale";
@@ -565,7 +567,8 @@
 
   const CRAFT_TYPE_ORDER = TRACE_NEIGHBORHOOD.CRAFT_TYPE_ORDER;
   const CRAFT_TYPE_LABELS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_LABELS;
-  const CRAFT_TYPE_COLORS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_COLORS;
+  const DEFAULT_CRAFT_TYPE_COLORS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_COLORS;
+  const CRAFT_TYPE_COLORS = Object.assign({}, DEFAULT_CRAFT_TYPE_COLORS);
 
   const PLAYBACK_TRAIL_BUCKETS = [
     { key: "gap_le_1", label: "\u22641 day", maxDays: 1, color: "#ff2d75", opacity: 0.92, weight: 5.4, glow: true, dashArray: "" },
@@ -593,6 +596,12 @@
     xlarge: 1.24,
   });
   const FONT_SCALE_ORDER = Object.freeze(["small", "default", "large", "xlarge"]);
+  const MAP_LABEL_SCALE_VALUES = Object.freeze({
+    small: 0.9,
+    default: 1,
+    large: 1.18,
+    xlarge: 1.36,
+  });
 
   const DEFAULT_INITIAL_TIMELINE_RANGE = Object.freeze({
     startIso: "1954-09-01",
@@ -881,6 +890,7 @@
     selectionLayer: null,
     selectionMarker: null,
     worldReferenceLayer: null,
+    referenceLabelLayer: null,
     worldReferenceData: null,
     worldReferencePromise: null,
     countryLabelMarkers: [],
@@ -1326,6 +1336,8 @@
     themeMode: "dark",
     resolvedTheme: "dark",
     fontScaleMode: "default",
+    mapLabelScaleMode: "default",
+    craftTypeColorOverrides: {},
     appearancePanelCollapsed: true,
     userGuideCollapsed: true,
     colorMode: DEFAULT_COLOR_MODE,
@@ -1471,7 +1483,6 @@
 
   function defaultRegionSelectionState() {
     return {
-      panelOpen: false,
       drawingActive: false,
       modeActive: false,
       tool: "rectangle",
@@ -1608,6 +1619,7 @@
     datasetSpan: document.querySelector("#dataset-span"),
     appearanceModeSelect: document.querySelector("#appearance-mode"),
     fontScaleModeSelect: document.querySelector("#font-scale-mode"),
+    mapLabelScaleModeSelect: document.querySelector("#map-label-scale-mode"),
     userGuide: document.querySelector("#user-guide"),
     userGuideBody: document.querySelector("#user-guide-body"),
     toggleUserGuideButton: document.querySelector("#toggle-user-guide"),
@@ -1631,7 +1643,6 @@
     mapHeightResizeLabel: document.querySelector("#map-height-resize-label"),
     areaSelectionDrawSurface: document.querySelector("#area-selection-draw-surface"),
     areaSelectionShell: document.querySelector("#area-selection-shell"),
-    toggleAreaSelectionButton: document.querySelector("#toggle-area-selection"),
     areaSelectionPanel: document.querySelector("#area-selection-panel"),
     areaSelectionSummary: document.querySelector("#area-selection-summary"),
     areaSelectionEmptyState: document.querySelector("#area-selection-empty-state"),
@@ -1731,6 +1742,7 @@
     traceModeSelect: document.querySelector("#trace-mode"),
     tracePersistenceSelect: document.querySelector("#trace-persistence"),
     tracePersistenceField: document.querySelector("#trace-persistence-field"),
+    traceStatusSummary: document.querySelector("#trace-status-summary"),
     traceStatus: document.querySelector("#trace-status"),
     clearTracesButton: document.querySelector("#clear-traces"),
     traceControlsPanel: document.querySelector("#trace-controls-panel"),
@@ -1745,7 +1757,6 @@
     traceFacilityEvidenceMode: document.querySelector("#trace-facility-evidence-mode"),
     traceFacilityEvidenceHelp: document.querySelector("#trace-facility-evidence-help"),
     traceFacilityLinkedOnly: document.querySelector("#trace-facility-linked-only"),
-    traceFacilityRadiusPresetButtons: Array.from(document.querySelectorAll("[data-trace-facility-radius-preset]")),
     traceFacilityClassInputs: Array.from(document.querySelectorAll("[data-trace-facility-class]")),
     traceFacilityClassActionButtons: Array.from(document.querySelectorAll("[data-trace-facility-class-action]")),
     traceFacilitySourceInputs: Array.from(document.querySelectorAll("[data-trace-facility-source]")),
@@ -2671,30 +2682,11 @@
     const countryLabel = analysisCountryAreaFilterLabel();
     const hasCountryArea = Boolean(countryLabel);
     const hasAreaFilter = hasShapes || hasCountryArea;
-    const panelOpen = regionSelectionPanelOpen();
     const drawingActive = regionSelectionDrawingActive();
     const result = hasAreaFilter ? currentRegionSelectionResult() : emptyRegionSelectionResult();
 
-    if (els.toggleAreaSelectionButton) {
-      const buttonLabel = hasCountryArea
-        ? "Area Filter · " + countryLabel
-        : hasShapes
-          ? "Area Filter · " + result.shapeCount
-          : "Area Select";
-      els.toggleAreaSelectionButton.textContent = buttonLabel;
-      els.toggleAreaSelectionButton.classList.toggle("is-active", panelOpen || hasAreaFilter);
-      els.toggleAreaSelectionButton.setAttribute("aria-pressed", panelOpen ? "true" : "false");
-      els.toggleAreaSelectionButton.title = panelOpen
-        ? "Close Area Filter"
-        : hasCountryArea
-          ? "Country Area Filter active: " + countryLabel
-          : hasShapes
-            ? "Area filter active"
-            : "Area Select";
-    }
-
     if (els.areaSelectionPanel) {
-      els.areaSelectionPanel.hidden = !panelOpen;
+      els.areaSelectionPanel.hidden = false;
     }
     if (els.areaSelectionSummary) {
       els.areaSelectionSummary.textContent = regionSelectionSummaryText(result);
@@ -2714,15 +2706,15 @@
     }
 
     if (els.areaSelectionRectangleButton) {
-      const pressed = state.regionSelection.tool === "rectangle";
+      const pressed = drawingActive && state.regionSelection.tool === "rectangle";
       els.areaSelectionRectangleButton.setAttribute("aria-pressed", pressed ? "true" : "false");
     }
     if (els.areaSelectionCircleButton) {
-      const pressed = state.regionSelection.tool === "circle";
+      const pressed = drawingActive && state.regionSelection.tool === "circle";
       els.areaSelectionCircleButton.setAttribute("aria-pressed", pressed ? "true" : "false");
     }
     if (els.exitAreaSelectionButton) {
-      els.exitAreaSelectionButton.disabled = !panelOpen;
+      els.exitAreaSelectionButton.disabled = !drawingActive;
     }
     if (els.undoAreaSelectionButton) {
       els.undoAreaSelectionButton.disabled = !hasAreaFilter;
@@ -2803,24 +2795,6 @@
     }
   }
 
-  function setRegionSelectionPanelOpen(open, options) {
-    const config = options || {};
-    const nextOpen = Boolean(open);
-    const currentOpen = regionSelectionPanelOpen();
-    if (currentOpen !== nextOpen || typeof state.regionSelection.panelOpen !== "boolean") {
-      state.regionSelection.panelOpen = nextOpen;
-    } else if (!config.skipRender) {
-      renderRegionSelectionUi();
-      return;
-    }
-    if (nextOpen) {
-      openMapControlSection("area");
-    }
-    if (!config.skipRender) {
-      renderRegionSelectionUi();
-    }
-  }
-
   function setRegionSelectionDrawingActive(active, options) {
     const config = options || {};
     const nextActive = Boolean(active);
@@ -2869,7 +2843,6 @@
 
   function undoLastRegionSelectionShape() {
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(true, { skipRender: true });
     if (!regionSelectionHasActiveShapes()) {
       if (state.analysisCountryAreaFilter) {
         state.analysisCountryAreaFilter = "";
@@ -2896,7 +2869,6 @@
     state.regionSelection.pointOnly = false;
     clearChronologicalNeighborhoodInteractionLayer();
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(false, { skipRender: true });
     if (!hadShapes) {
       renderRegionSelectionUi();
       return;
@@ -2981,7 +2953,6 @@
     state.regionSelection.shapes = state.regionSelection.shapes.concat([nextShape]);
     state.regionSelection.pointOnly = false;
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(false, { skipRender: true });
     if (replacedCountryArea) {
       refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
       window.clearTimeout(scheduleRefresh._timer);
@@ -3056,6 +3027,59 @@
     if (!(options && options.skipPersist)) {
       safeStorageSet(FONT_SCALE_STORAGE_KEY, normalizedMode);
     }
+  }
+
+  function applyMapLabelScaleMode(mode, options) {
+    const normalizedMode = Object.prototype.hasOwnProperty.call(MAP_LABEL_SCALE_VALUES, mode)
+      ? mode
+      : "default";
+    state.mapLabelScaleMode = normalizedMode;
+    document.documentElement.style.setProperty(
+      "--map-label-scale",
+      String(MAP_LABEL_SCALE_VALUES[normalizedMode])
+    );
+    document.documentElement.setAttribute("data-map-label-scale-mode", normalizedMode);
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.value = normalizedMode;
+    }
+    if (runtime.map) {
+      updateWorldReferenceLabelVisibility();
+      scheduleMapInvalidate();
+    }
+    if (!(options && options.skipPersist)) {
+      safeStorageSet(MAP_LABEL_SCALE_STORAGE_KEY, normalizedMode);
+    }
+  }
+
+  function readCraftTypeColorOverrides() {
+    const stored = safeStorageGet(CRAFT_COLOR_OVERRIDES_STORAGE_KEY);
+    if (!stored) return {};
+    try {
+      return LEGEND_CONTROLS.normalizeCraftColorOverrides(
+        JSON.parse(stored),
+        DEFAULT_CRAFT_TYPE_COLORS
+      );
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function syncCraftTypeColorPalette() {
+    Object.keys(CRAFT_TYPE_COLORS).forEach(function (key) {
+      delete CRAFT_TYPE_COLORS[key];
+    });
+    Object.assign(CRAFT_TYPE_COLORS, DEFAULT_CRAFT_TYPE_COLORS, state.craftTypeColorOverrides);
+  }
+
+  function craftTypeColorsAreCustomized() {
+    return Object.keys(state.craftTypeColorOverrides || {}).length > 0;
+  }
+
+  function persistCraftTypeColorOverrides() {
+    safeStorageSet(
+      CRAFT_COLOR_OVERRIDES_STORAGE_KEY,
+      JSON.stringify(state.craftTypeColorOverrides || {})
+    );
   }
 
   function stepFontScale(direction) {
@@ -3243,7 +3267,7 @@
       overlays: true,
       traces: state.traceMode !== "off",
       facility: Boolean(state.traceFacilityFilter && state.traceFacilityFilter.enabled),
-      area: Boolean(state.regionSelection && (state.regionSelection.panelOpen || state.regionSelection.drawingActive)),
+      area: Boolean(state.regionSelection && state.regionSelection.drawingActive),
       advanced: false,
     };
   }
@@ -6022,6 +6046,48 @@
     els.trailLegend.hidden = !shouldShow;
   }
 
+  function visiblePlaybackTraceCount() {
+    return runtime.playbackTrailLines.reduce(function (count, entry) {
+      const visible = entry &&
+        traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) &&
+        playbackTrailEntryVisibleUnderFacilityFilter(entry);
+      return count + (visible ? 1 : 0);
+    }, 0);
+  }
+
+  function currentVisibleTraceCount() {
+    if (state.traceMode === "off") return 0;
+    if (traceFacilityFilterEnabled()) {
+      const stats = traceFacilityFilterStatsSnapshot();
+      if (stats.candidateSegments || stats.matchedSegments) {
+        return Math.max(0, Math.round(Number(stats.matchedSegments) || 0));
+      }
+    }
+    if (state.traceMode === "static") {
+      const metrics = runtime.staticTraceRenderMetrics || {};
+      return Math.max(0, Math.round(Number(
+        metrics.viewportSourceSegments ||
+        metrics.totalSegments ||
+        metrics.renderedSegments ||
+        runtime.staticTraceTotalSegments ||
+        runtime.staticTraceRenderedSegments ||
+        0
+      )));
+    }
+    return visiblePlaybackTraceCount();
+  }
+
+  function traceStatusSummaryText() {
+    const count = currentVisibleTraceCount();
+    return formatNumber(count) + " trace" + (count === 1 ? "" : "s");
+  }
+
+  function renderTraceStatusSummary() {
+    if (els.traceStatusSummary) {
+      els.traceStatusSummary.textContent = traceStatusSummaryText();
+    }
+  }
+
   function traceStatusText() {
     const activeLabels = activeTraceBuckets().map(function (bucket) { return bucket.label; });
     const activeBucketText = activeLabels.length ? activeLabels.join(", ") : "none";
@@ -6068,8 +6134,10 @@
   function renderTraceStatus() {
     renderTraceWidthControls();
     renderTraceBoldnessControls();
-    if (!els.traceStatus) return;
-    els.traceStatus.textContent = traceStatusText();
+    renderTraceStatusSummary();
+    if (els.traceStatus) {
+      els.traceStatus.textContent = traceStatusText();
+    }
   }
 
   function renderTraceControls() {
@@ -6126,25 +6194,15 @@
       els.traceFacilityLinkedOnly.checked = Boolean(facilityFilter.onlyShowTraceLinkedFacilities);
       els.traceFacilityLinkedOnly.disabled = !facilityFilter.enabled;
     }
-    if (els.traceFacilityRadiusPresetButtons && els.traceFacilityRadiusPresetButtons.length) {
-      els.traceFacilityRadiusPresetButtons.forEach(function (button) {
-        const value = normalizeTraceFacilityRadiusKm(button.getAttribute("data-trace-facility-radius-preset"));
-        const active = Math.round(value) === Math.round(facilityFilter.radiusKm);
-        button.disabled = !facilityFilter.enabled;
-        button.classList.toggle("is-active", active);
-        button.setAttribute("aria-pressed", active ? "true" : "false");
-      });
-    }
-
     if (els.traceFacilityClassInputs && els.traceFacilityClassInputs.length) {
       els.traceFacilityClassInputs.forEach(function (input) {
         const key = input.getAttribute("data-trace-facility-class");
         input.checked = Boolean(facilityFilter.classes[key]);
         input.disabled = !facilityFilter.enabled || (key === "passes" && evidenceMode !== "include_generalized");
         if (key === "passes") {
-          input.title = evidenceMode === "include_generalized"
-            ? "Advanced geometric intersection only; this connector is not an observed path"
-            : "Connector intersection is unavailable in strict source-coordinate mode";
+          input.title = facilityFilter.enabled && evidenceMode === "include_generalized"
+            ? "Connector intersection option enabled"
+            : "Turn on Facility proximity and choose Exploratory mode.";
         }
       });
     }
@@ -8610,7 +8668,6 @@
       state.analysisCountryAreaFilter = country;
       state.regionSelection.shapes = [];
       Object.assign(state.regionSelection, {
-        panelOpen: false,
         drawingActive: false,
         modeActive: false,
         selectTraces: false,
@@ -8664,7 +8721,6 @@
     state.analysisCountryAreaFilter = "";
     state.regionSelection.shapes = [shape];
     Object.assign(state.regionSelection, {
-      panelOpen: false,
       drawingActive: false,
       modeActive: false,
       selectTraces: false,
@@ -12702,6 +12758,11 @@
     const soloTitle = soloActive
       ? "Restore the previous craft selection"
       : "Show only " + entry.label;
+    const colorTitle = "Choose color for " + entry.label + " sightings and traces";
+    const customColor = Object.prototype.hasOwnProperty.call(
+      state.craftTypeColorOverrides || {},
+      entry.key
+    );
     const surfaceClass = surface === "map" ? "map-legend-item" : "legend-item";
     return (
       '<div class="' + surfaceClass + ' craft-legend-row' + (active ? "" : " is-disabled") + '">' +
@@ -12710,11 +12771,20 @@
       escapeHtml(entry.label) + '" title="Toggle ' + escapeHtml(entry.label) + '">' +
       '<span class="legend-swatch" style="background:' + escapeHtml(entry.color) + '" aria-hidden="true"></span>' +
       "</button>" +
+      '<span class="craft-legend-label-color">' +
       '<button class="craft-legend-label-button" type="button" data-craft-legend-solo-key="' +
       escapeHtml(entry.key) + '" aria-pressed="' + (soloActive ? "true" : "false") +
       '" aria-label="' + escapeHtml(soloTitle) + '" title="' + escapeHtml(soloTitle) + '">' +
       escapeHtml(entry.label) +
       "</button>" +
+      '<label class="craft-color-picker' + (customColor ? " is-custom" : "") + '" title="' +
+      escapeHtml(colorTitle) + '">' +
+      '<input class="craft-color-input" type="color" data-craft-color-key="' +
+      escapeHtml(entry.key) + '" value="' + escapeHtml(entry.color) + '" aria-label="' +
+      escapeHtml(colorTitle) + '">' +
+      '<span class="craft-color-wheel" aria-hidden="true"></span>' +
+      "</label>" +
+      "</span>" +
       '<strong class="craft-legend-count" aria-label="' + escapeHtml(countLabel) + '">' +
       escapeHtml(formattedCount) +
       "</strong>" +
@@ -13354,6 +13424,7 @@
     const researchCategories = researchLegendCategories();
     return (
       eventSelection.mode !== "all" ||
+      craftTypeColorsAreCustomized() ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
       !cropCircleOverlayActive() ||
@@ -13374,11 +13445,11 @@
     els.resetMapLegendButton.setAttribute(
       "aria-label",
       dirty
-        ? "Reset legend event filters and overlays"
-        : "Legend event filters and overlays are at their defaults"
+        ? "Reset legend filters, overlays, and craft colors"
+        : "Legend filters, overlays, and craft colors are at their defaults"
     );
     els.resetMapLegendButton.title = dirty
-      ? "Reset legend event filters and overlays"
+      ? "Reset legend filters, overlays, and craft colors"
       : "Legend is already at its default state";
   }
 
@@ -13403,6 +13474,61 @@
     runtime.resultsRenderSortMode = "";
     invalidateTraceSequenceCache();
     invalidateStaticTraceRenderCaches();
+  }
+
+  function invalidateCraftTypeColorRenderingCaches() {
+    runtime.craftTypeResolutionByKey.clear();
+    runtime.craftTypeLegendEntriesCacheKey = "";
+    runtime.craftTypeLegendEntriesCacheValue = null;
+    runtime.timelineRenderCacheKey = "";
+    runtime.timelineRenderCacheValue = null;
+    invalidateTraceSequenceCache();
+    invalidateStaticTraceRenderCaches();
+  }
+
+  function applyCraftTypeColorOverride(key, color, options) {
+    const previous = JSON.stringify(state.craftTypeColorOverrides || {});
+    state.craftTypeColorOverrides = LEGEND_CONTROLS.updateCraftColorOverride(
+      state.craftTypeColorOverrides,
+      key,
+      color,
+      DEFAULT_CRAFT_TYPE_COLORS
+    );
+    if (JSON.stringify(state.craftTypeColorOverrides) === previous) return false;
+
+    syncCraftTypeColorPalette();
+    invalidateCraftTypeColorRenderingCaches();
+    if (!(options && options.skipPersist)) {
+      persistCraftTypeColorOverrides();
+    }
+    renderLegend();
+    renderTrailLegend();
+    renderTimeline();
+    renderMap();
+    restylePlaybackTrailEntriesForColorMode();
+    renderPlaybackStatus();
+
+    const normalizedKey = String(key || "");
+    const restoredDefault = !Object.prototype.hasOwnProperty.call(
+      state.craftTypeColorOverrides,
+      normalizedKey
+    );
+    announceMapLegendStatus(
+      mapLegendEventEntryLabel(normalizedKey) +
+      (restoredDefault
+        ? " color restored to its default."
+        : " color updated for sightings and traces.")
+    );
+    return true;
+  }
+
+  function handleCraftColorInput(event) {
+    const input = event && event.target && event.target.closest
+      ? event.target.closest("[data-craft-color-key]")
+      : null;
+    if (!input || state.colorMode !== "craft_type") return false;
+    applyCraftTypeColorOverride(input.getAttribute("data-craft-color-key"), input.value);
+    return true;
   }
 
   function toggleMapLegendEventKey(key) {
@@ -13596,8 +13722,12 @@
 
   function resetMapLegendControls() {
     const eventSelectionWasFiltered = normalizedMapLegendEventSelection().mode !== "all";
+    const craftColorsWereCustomized = craftTypeColorsAreCustomized();
     state.mapLegendEventSelection = defaultMapLegendEventSelectionState(state.colorMode);
     clearCraftLegendSoloState();
+    state.craftTypeColorOverrides = {};
+    syncCraftTypeColorPalette();
+    persistCraftTypeColorOverrides();
     state.overlayVisibility = defaultOverlayVisibilityState();
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
@@ -13611,12 +13741,19 @@
       els.overlayAnimalMutilationsToggle.click();
     }
     invalidateMapLegendEventFilterCaches();
+    if (craftColorsWereCustomized) {
+      invalidateCraftTypeColorRenderingCaches();
+      restylePlaybackTrailEntriesForColorMode();
+    }
     resetPlayback({ preserveSelection: true });
     renderOverlayControls();
     syncOverlayVisibility();
     syncClaimedUfoBaseVisibility();
     renderLegend();
-    announceMapLegendStatus("Legend event filters and overlays were reset to their defaults.");
+    if (craftColorsWereCustomized) {
+      renderTimeline();
+    }
+    announceMapLegendStatus("Legend filters, overlays, and craft colors were reset to their defaults.");
     if (eventSelectionWasFiltered) {
       scheduleRefresh({ immediate: true });
     } else {
@@ -14324,8 +14461,9 @@
     return L.marker([lat, lon], {
       interactive: false,
       keyboard: false,
+      pane: "referenceLabelPane",
       icon: L.divIcon({
-        className,
+        className: "map-reference-label-marker " + className,
         html,
         iconSize: null,
       }),
@@ -14334,26 +14472,28 @@
 
   function syncReferenceMarkersVisibility(markers, shouldShow) {
     for (const marker of markers) {
-      const visible = runtime.worldReferenceLayer.hasLayer(marker);
+      const visible = runtime.referenceLabelLayer.hasLayer(marker);
       if (shouldShow(marker) && !visible) {
-        marker.addTo(runtime.worldReferenceLayer);
+        marker.addTo(runtime.referenceLabelLayer);
       } else if (!shouldShow(marker) && visible) {
-        runtime.worldReferenceLayer.removeLayer(marker);
+        runtime.referenceLabelLayer.removeLayer(marker);
       }
     }
   }
 
   function updateWorldReferenceLabelVisibility() {
-    if (!runtime.map || !runtime.worldReferenceLayer || state.currentTileProviderId !== "none") {
+    if (!runtime.map || !runtime.referenceLabelLayer) {
       return;
     }
 
     const zoom = runtime.map.getZoom();
+    const hostedBasemap = state.currentTileProviderId !== "none";
     syncReferenceMarkersVisibility(runtime.countryLabelMarkers, function (marker) {
-      return zoom >= (marker.options.minReferenceZoom || COUNTRY_LABEL_MIN_ZOOM);
+      const minimumZoom = marker.options.minReferenceZoom || COUNTRY_LABEL_MIN_ZOOM;
+      return zoom >= Math.max(minimumZoom, hostedBasemap ? 3 : COUNTRY_LABEL_MIN_ZOOM);
     });
     syncReferenceMarkersVisibility(runtime.cityLabelMarkers, function () {
-      return zoom >= MAJOR_CITY_LABEL_MIN_ZOOM;
+      return zoom >= (hostedBasemap ? 5 : MAJOR_CITY_LABEL_MIN_ZOOM);
     });
   }
 
@@ -14405,16 +14545,6 @@
       },
     }).addTo(runtime.worldReferenceLayer);
 
-    runtime.cityLabelMarkers = MAJOR_CITY_LABELS.map(function (city) {
-      return createReferenceLabelMarker(
-        city.lat,
-        city.lon,
-        '<span class="city-label-pill">' + escapeHtml(city.name) + "</span>",
-        "major-city-label-marker"
-      );
-    });
-
-    updateWorldReferenceLabelVisibility();
     return true;
   }
 
@@ -14471,12 +14601,21 @@
 
   function drawWorldReferenceLayer() {
     runtime.worldReferenceLayer.clearLayers();
+    runtime.referenceLabelLayer.clearLayers();
     runtime.countryLabelMarkers = [];
-    runtime.cityLabelMarkers = [];
     addGraticule();
     if (!addGeoJsonCountryLayer()) {
       addLandMasses();
     }
+    runtime.cityLabelMarkers = MAJOR_CITY_LABELS.map(function (city) {
+      return createReferenceLabelMarker(
+        city.lat,
+        city.lon,
+        '<span class="city-label-pill">' + escapeHtml(city.name) + "</span>",
+        "major-city-label-marker"
+      );
+    });
+    updateWorldReferenceLabelVisibility();
   }
 
   function refreshProjectedMapLayers() {
@@ -15688,10 +15827,10 @@
     if (els.militaryBranchStatus) {
       const activeBranches = activeMilitaryBranches();
       els.militaryBranchStatus.textContent = !militaryVisible
-        ? "Military overlay is off. Turn it on to inspect global installations by branch."
+        ? "Military overlay off."
         : activeBranches.length
-          ? "Showing " + activeBranches.map(militaryBranchLabel).join(", ").toLowerCase() + "."
-          : "Military overlay is on, but no branch types are selected.";
+          ? "Military branches: " + activeBranches.map(militaryBranchLabel).join(", ").toLowerCase() + "."
+          : "Military overlay on; no branches selected.";
     }
     renderClaimedUfoBaseControls();
     renderFocusMapButton();
@@ -16541,7 +16680,7 @@
     for (const provider of providers) {
       const option = document.createElement("option");
       option.value = provider.id;
-      option.textContent = provider.label;
+      option.textContent = String(provider.label || "").replace(/\s*\(hosted tiles\)\s*$/i, "");
       if (provider.id === state.currentTileProviderId) option.selected = true;
       els.basemapMode.append(option);
     }
@@ -16616,6 +16755,7 @@
     });
     layer.addTo(runtime.map);
     state.currentTileLayer = layer;
+    updateWorldReferenceLabelVisibility();
     setTileStatus("Hosted labeled basemap active. If blocked, the map falls back to local geography.");
     scheduleMapInvalidate();
     scheduleMapProjectionRefresh();
@@ -16719,6 +16859,7 @@
     runtime.playbackTrailLines = runtime.playbackTrailLines.filter(function (candidate) {
       return candidate !== entry;
     });
+    renderTraceStatusSummary();
     if (!config.suppressCanvasSync) {
       syncPlaybackTrailCanvas();
     }
@@ -16991,7 +17132,8 @@
   }
 
   function regionSelectionPanelOpen() {
-    return Boolean(state.regionSelection && state.regionSelection.panelOpen);
+    const section = mapControlSectionElement("area");
+    return Boolean(section && section.open);
   }
 
   function regionSelectionDrawingActive() {
@@ -21200,6 +21342,7 @@
         suppressCanvasSync: true,
       });
     }
+    renderTraceStatusSummary();
     syncPlaybackTrailCanvas();
     syncTraceFacilityDisplayRestriction();
 
@@ -27715,6 +27858,9 @@
     if (els.fontScaleModeSelect) {
       els.fontScaleModeSelect.value = state.fontScaleMode;
     }
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.value = state.mapLabelScaleMode;
+    }
     if (els.showTrailLegendToggle) {
       els.showTrailLegendToggle.checked = state.showTrailLegend;
     }
@@ -28274,6 +28420,12 @@
       });
     }
 
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.addEventListener("change", function () {
+        applyMapLabelScaleMode(els.mapLabelScaleModeSelect.value);
+      });
+    }
+
     if (els.mobileFontDecreaseButton) {
       els.mobileFontDecreaseButton.addEventListener("click", function () {
         stepFontScale(-1);
@@ -28349,6 +28501,10 @@
     }
 
     if (els.mapLegendBody) {
+      els.mapLegendBody.addEventListener("change", function (event) {
+        handleCraftColorInput(event);
+      });
+
       els.mapLegendBody.addEventListener("click", function (event) {
         const eventButton = event.target.closest("[data-map-legend-event-key]");
         const craftSoloButton = event.target.closest("[data-craft-legend-solo-key]");
@@ -28565,18 +28721,9 @@
       els.areaSelectionDrawSurface.addEventListener("pointerdown", startRegionSelectionDraw);
     }
 
-    if (els.toggleAreaSelectionButton) {
-      els.toggleAreaSelectionButton.addEventListener("click", function () {
-        const nextPanelOpen = !regionSelectionPanelOpen();
-        setRegionSelectionDrawingActive(false, { skipRender: true });
-        setRegionSelectionPanelOpen(nextPanelOpen);
-      });
-    }
-
     if (els.areaSelectionRectangleButton) {
       els.areaSelectionRectangleButton.addEventListener("click", function () {
         setRegionSelectionTool("rectangle", { skipRender: true });
-        setRegionSelectionPanelOpen(true, { skipRender: true });
         setRegionSelectionDrawingActive(true);
       });
     }
@@ -28584,15 +28731,13 @@
     if (els.areaSelectionCircleButton) {
       els.areaSelectionCircleButton.addEventListener("click", function () {
         setRegionSelectionTool("circle", { skipRender: true });
-        setRegionSelectionPanelOpen(true, { skipRender: true });
         setRegionSelectionDrawingActive(true);
       });
     }
 
     if (els.exitAreaSelectionButton) {
       els.exitAreaSelectionButton.addEventListener("click", function () {
-        setRegionSelectionDrawingActive(false, { skipRender: true });
-        setRegionSelectionPanelOpen(false);
+        setRegionSelectionDrawingActive(false);
       });
     }
 
@@ -28699,6 +28844,13 @@
 
     mapControlSectionElements().forEach(function (section) {
       section.addEventListener("toggle", function () {
+        if (
+          section.getAttribute("data-map-control-section") === "area" &&
+          !section.open &&
+          regionSelectionDrawingActive()
+        ) {
+          setRegionSelectionDrawingActive(false);
+        }
         persistMapControlSectionOpenState();
         window.requestAnimationFrame(function () {
           window.requestAnimationFrame(function () {
@@ -28838,6 +28990,7 @@
     });
 
     els.legendBody.addEventListener("change", function (event) {
+      if (handleCraftColorInput(event)) return;
       const toggle = event.target.closest("[data-legend-type-toggle]");
       if (!toggle || state.colorMode !== "type") return;
       invalidatePlaybackForTimeChange();
@@ -29001,16 +29154,6 @@
         syncTraceFacilityDisplayRestriction();
         renderTraceControls();
         renderMapLegend();
-      });
-    }
-
-    if (els.traceFacilityRadiusPresetButtons && els.traceFacilityRadiusPresetButtons.length) {
-      els.traceFacilityRadiusPresetButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-          traceFacilityFilterState().radiusKm = normalizeTraceFacilityRadiusKm(button.getAttribute("data-trace-facility-radius-preset"));
-          persistTraceFacilityFilterState();
-          refreshTracesForFacilityFilterChange();
-        });
       });
     }
 
@@ -29467,6 +29610,9 @@
     });
     runtime.map.createPane("regionSelectionPane");
     runtime.map.getPane("regionSelectionPane").style.zIndex = "350";
+    runtime.map.createPane("referenceLabelPane");
+    runtime.map.getPane("referenceLabelPane").style.zIndex = "420";
+    runtime.map.getPane("referenceLabelPane").style.pointerEvents = "none";
     runtime.map.createPane("researchSiteAreaPane");
     runtime.map.getPane("researchSiteAreaPane").style.zIndex = "355";
     runtime.map.getPane("researchSiteAreaPane").style.pointerEvents = "none";
@@ -29503,6 +29649,7 @@
     });
 
     runtime.worldReferenceLayer = L.layerGroup().addTo(runtime.map);
+    runtime.referenceLabelLayer = L.layerGroup().addTo(runtime.map);
     runtime.regionSelectionLayer = L.layerGroup().addTo(runtime.map);
     runtime.regionSelectionPreviewLayer = L.layerGroup().addTo(runtime.map);
     runtime.neighborhoodTraceLayer = L.layerGroup().addTo(runtime.map);
@@ -30190,6 +30337,7 @@
 
     const storedThemeMode = safeStorageGet(THEME_MODE_STORAGE_KEY) || "dark";
     const storedFontScaleMode = safeStorageGet(FONT_SCALE_STORAGE_KEY) || "default";
+    const storedMapLabelScaleMode = safeStorageGet(MAP_LABEL_SCALE_STORAGE_KEY) || "default";
     const storedGuideVisibility = safeStorageGet(GUIDE_VISIBILITY_STORAGE_KEY);
     const storedMapControlClusterState = readMapControlClusterState();
     const defaultGuideCollapsed = true;
@@ -30206,6 +30354,8 @@
       ? "manual"
       : normalizeTraceWidthMode(storedTraceWidthMode);
     state.traceBoldnessScale = normalizeTraceBoldnessScale(storedTraceBoldnessScale);
+    state.craftTypeColorOverrides = readCraftTypeColorOverrides();
+    syncCraftTypeColorPalette();
     state.traceFacilityFilter = readTraceFacilityFilterState();
     state.filterSectionCollapse = readFilterSectionCollapseState();
     state.mapControlClusterCollapsed = storedMapControlClusterState.collapsed;
@@ -30227,6 +30377,7 @@
     state.panelCollapse.timeline = useCompactTimelinePanelCollapse();
     applyThemeMode(storedThemeMode, { skipPersist: true });
     applyFontScaleMode(storedFontScaleMode, { skipPersist: true });
+    applyMapLabelScaleMode(storedMapLabelScaleMode, { skipPersist: true });
     setAppearancePanelCollapsed(state.appearancePanelCollapsed, { skipPersist: true });
     setUserGuideCollapsed(storedGuideVisibility == null ? defaultGuideCollapsed : storedGuideVisibility === "1", { skipPersist: true });
     setPrimaryFiltersCollapsed(state.primaryFiltersCollapsed, { skipPersist: true });
@@ -30393,6 +30544,7 @@
         mapMode: state.mapMode,
         effectiveMapMode: state.effectiveMapMode,
         fontScaleMode: state.fontScaleMode,
+        mapLabelScaleMode: state.mapLabelScaleMode,
         userGuideCollapsed: state.userGuideCollapsed,
         areaSelection: {
           active: areaFilterHasActiveSelection(),
@@ -30445,6 +30597,8 @@
         mapLegend: {
           eventSelection: normalizedMapLegendEventSelection(),
           craftSolo: state.mapLegendCraftSolo,
+          craftTypeColorOverrides: Object.assign({}, state.craftTypeColorOverrides),
+          craftTypeColors: Object.assign({}, CRAFT_TYPE_COLORS),
           controlsDirty: mapLegendControlsAreDirty(),
           overlayVisibility: Object.assign({}, state.overlayVisibility),
           claimedUfoBaseVisibility: Object.assign({}, state.claimedUfoBaseVisibility),
@@ -30600,6 +30754,8 @@
       return {
         eventSelection: normalizedMapLegendEventSelection(),
         craftSolo: state.mapLegendCraftSolo,
+        craftTypeColorOverrides: Object.assign({}, state.craftTypeColorOverrides),
+        craftTypeColors: Object.assign({}, CRAFT_TYPE_COLORS),
         controlsDirty: mapLegendControlsAreDirty(),
         eventEntries: buildMapLegendEventEntries(),
         overlayVisibility: Object.assign({}, state.overlayVisibility),
@@ -30607,6 +30763,14 @@
         militaryBranchVisibility: Object.assign({}, state.militaryBranchVisibility),
         researchCategoryVisibility: Object.assign({}, state.researchCategoryVisibility),
       };
+    },
+    setCraftTypeColorForTest: function (key, color) {
+      applyCraftTypeColorOverride(key, color, { skipPersist: true });
+      return this.getMapLegendSnapshotForTest();
+    },
+    setMapLabelScaleModeForTest: function (mode) {
+      applyMapLabelScaleMode(mode, { skipPersist: true });
+      return state.mapLabelScaleMode;
     },
     setAreaSelectionForTest: function (shapes, options) {
       state.regionSelection.shapes = (Array.isArray(shapes) ? shapes : []).map(function (shape, index) {

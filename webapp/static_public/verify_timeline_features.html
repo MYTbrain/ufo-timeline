@@ -1129,13 +1129,27 @@
         setReport(lines);
       }
 
-      iframe.addEventListener("load", function () {
+      let verificationStarted = false;
+      function startVerification() {
+        if (verificationStarted) return;
+        verificationStarted = true;
         runVerification().catch(function (error) {
           setReport([
             line("Verification error", error && error.stack ? error.stack : String(error), false),
           ]);
         });
-      });
+      }
+
+      iframe.addEventListener("load", startVerification);
+      function startWhenFrameReady() {
+        if (verificationStarted) return;
+        if (iframe.contentDocument && iframe.contentDocument.readyState === "complete") {
+          startVerification();
+          return;
+        }
+        window.setTimeout(startWhenFrameReady, 50);
+      }
+      startWhenFrameReady();
     })();
   </script>
 </body>

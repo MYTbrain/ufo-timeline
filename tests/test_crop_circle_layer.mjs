@@ -35,6 +35,7 @@ class MockElement {
     this.dataset = {};
     this.hidden = false;
     this.disabled = false;
+    this.open = false;
     this.checked = checked;
     this.value = value;
     this.textContent = "";
@@ -62,6 +63,9 @@ const elements = new Map([
   ["#crop-circle-detail-close", new MockElement()],
   ["#crop-circle-chronology-controls", new MockElement()],
   ["#crop-circle-selected-summary", new MockElement()],
+  ["#crop-circle-ufo-relation-disclosure", new MockElement()],
+  ["#crop-circle-chronology-disclosure", new MockElement()],
+  ["#crop-circle-radius-disclosure", new MockElement()],
   ["#crop-circle-ufo-relation-window", new MockElement({ value: "off" })],
   ["#crop-circle-ufo-position-quality", new MockElement({ value: "source" })],
   ["#crop-circle-ufo-crop-position-quality", new MockElement({ value: "field" })],
@@ -297,12 +301,14 @@ assert.match(indexSource, /id="cluster-quick-crop-circles"[\s\S]*?aria-pressed="
 assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelector\("#cluster-quick-crop-circles"\)/, "the quick crop toggle is registered with the core UI");
 assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
 assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
-assert.match(indexSource, /styles\.css\?v=2026-08-09-control-panel-area-v1/, "shared icon CSS uses the current cache-safe shell key");
-assert.match(indexSource, /app\.js\?v=2026-08-09-control-panel-area-v1/, "the application runtime uses the current cache-safe shell key");
+assert.match(indexSource, /styles\.css\?v=2026-08-10-control-panel-polish-v1/, "shared icon CSS uses the current cache-safe shell key");
+assert.match(indexSource, /app\.js\?v=2026-08-10-control-panel-polish-v1/, "the application runtime uses the current cache-safe shell key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
-assert.match(indexSource, /<legend>UFO sighting → later crop record<\/legend>/, "UFO-to-crop relationship selector is explicitly separate");
-assert.match(indexSource, /<legend>Crop record → later crop record<\/legend>/, "crop-to-crop relationship selector is explicitly separate");
+assert.match(indexSource, /<details id="crop-circle-ufo-relation-disclosure"[^>]*aria-disabled="true">[\s\S]*?<summary[^>]*>UFO sighting → later crop record<\/summary>/, "UFO-to-crop controls are a compact disclosure that starts unavailable without a selected crop");
+assert.match(indexSource, /<details id="crop-circle-chronology-disclosure"[^>]*aria-disabled="false">[\s\S]*?<summary[^>]*>Crop record → later crop record<\/summary>/, "independent crop-to-crop controls remain available in their own compact disclosure");
+assert.match(indexSource, /<details id="crop-circle-radius-disclosure"[^>]*aria-disabled="true">[\s\S]*?<summary[^>]*>Selected crop radius and UFO traces<\/summary>/, "selected-radius trace controls start closed and unavailable without a selected crop");
+assert.match(stylesheetSource, /crop-circle-relation-group\[aria-disabled="true"\] summary[\s\S]*?pointer-events:\s*none/, "unavailable relationship disclosures cannot be opened by pointer interaction");
 assert.match(indexSource, /id="crop-circle-ufo-crop-position-quality"/, "UFO-to-crop inference has an explicit selected-crop position-quality control");
 assert.match(indexSource, /id="crop-circle-analyze-ufo-traces"/, "trace-radius analysis requires an explicit opt-in control");
 assert.match(indexSource, /id="overlay-crop-circles"[^>]*data-default-enabled="true"[^>]*aria-pressed="true"/, "crop circles are enabled by default in the accessible initial state");
@@ -349,6 +355,9 @@ assert.equal(status.chronology.coordinateScope, "field");
 assert.equal(status.chronology.maxDistanceKm, 250);
 assert.equal(status.selectedRecordId, null, "enabling the layer does not silently select a crop record");
 assert.equal(elements.get("#crop-circle-chronology-relation").disabled, false, "crop-to-crop relation selection does not require a selected record");
+assert.equal(elements.get("#crop-circle-chronology-disclosure").getAttribute("aria-disabled"), "false", "the independent crop chronology disclosure is available when the layer is enabled");
+assert.equal(elements.get("#crop-circle-ufo-relation-disclosure").getAttribute("aria-disabled"), "true", "UFO-to-crop disclosure waits for a selected crop record");
+assert.equal(elements.get("#crop-circle-radius-disclosure").getAttribute("aria-disabled"), "true", "selected-radius disclosure waits for a selected crop record");
 elements.get("#crop-circle-chronology-relation").setAttribute("data-analysis-unavailable", "true");
 layerApi.setChronology({ relation: "off" });
 assert.equal(
@@ -356,9 +365,11 @@ assert.equal(
   true,
   "crop-layer control sync cannot re-enable map-only controls while Analysis is active"
 );
+assert.equal(elements.get("#crop-circle-chronology-disclosure").getAttribute("aria-disabled"), "true", "Analysis mode closes the unavailable crop chronology disclosure");
 elements.get("#crop-circle-chronology-relation").removeAttribute("data-analysis-unavailable");
 layerApi.setChronology({ relation: "off" });
 assert.equal(elements.get("#crop-circle-chronology-relation").disabled, false, "Map Explorer restores the available crop chronology selector");
+assert.equal(elements.get("#crop-circle-chronology-disclosure").getAttribute("aria-disabled"), "false", "Map Explorer restores the crop chronology disclosure");
 assert.equal(elements.get("#crop-circle-chronology-coordinate-scope").disabled, true, "crop chronology refinements remain disabled while its independent selector is off");
 assert.equal(elements.get("#crop-circle-ufo-relation-window").disabled, true, "UFO-to-crop selection requires one specific crop record");
 assert.equal(elements.get("#crop-circle-ufo-position-quality").disabled, true);
@@ -453,6 +464,8 @@ for (const selector of [
   assert.equal(elements.get(selector).disabled, true, `${selector} waits for explicit trace analysis opt-in`);
 }
 assert.equal(elements.get("#crop-circle-radius-km").disabled, false, "radius display is available without building the trace network");
+assert.equal(elements.get("#crop-circle-ufo-relation-disclosure").getAttribute("aria-disabled"), "false", "selecting one crop unlocks its UFO-date disclosure");
+assert.equal(elements.get("#crop-circle-radius-disclosure").getAttribute("aria-disabled"), "false", "selecting one crop unlocks its radius-and-traces disclosure");
 assert.equal(elements.get("#crop-circle-show-radius").disabled, false, "radius display is available without building the trace network");
 assert.equal(elements.get("#crop-circle-analyze-ufo-traces").disabled, false, "specific record enables the explicit trace-analysis toggle");
 assert.ok(cropTraceFocusCalls.length > 0, "selecting one record invokes the authoritative UFO trace bridge");
@@ -511,6 +524,8 @@ assert.match(elements.get("#crop-circle-ufo-relation-status").textContent, /3 UF
 assert.match(elements.get("#crop-circle-ufo-relation-status").textContent, /2 filtered UFO trace segments intersect/);
 
 const focusCallsBeforeChronology = cropTraceFocusCalls.length;
+elements.get("#crop-circle-ufo-relation-disclosure").open = true;
+elements.get("#crop-circle-radius-disclosure").open = true;
 elements.get("#crop-circle-chronology-coordinate-scope").value = "all";
 elements.get("#crop-circle-chronology-max-distance").value = "1000";
 elements.get("#crop-circle-chronology-relation").value = "same_day";
@@ -533,6 +548,10 @@ assert.equal(mapContainer.classList.contains("crop-circle-focus-active"), false,
 assert.ok(cropTraceFocusClears.length > clearsBeforeStackReturn);
 assert.equal(elements.get("#crop-circle-ufo-relation-window").disabled, true);
 assert.equal(elements.get("#crop-circle-radius-km").disabled, true);
+assert.equal(elements.get("#crop-circle-ufo-relation-disclosure").open, false, "clearing the selected crop closes the dependent UFO-date disclosure");
+assert.equal(elements.get("#crop-circle-radius-disclosure").open, false, "clearing the selected crop closes the dependent radius-and-traces disclosure");
+assert.equal(elements.get("#crop-circle-ufo-relation-disclosure").getAttribute("aria-disabled"), "true");
+assert.equal(elements.get("#crop-circle-radius-disclosure").getAttribute("aria-disabled"), "true");
 assert.equal(status.chronology.relation, "same_day", "clearing the selected UFO focus does not disable crop-to-crop progression");
 
 await layerApi.openRecord(chosenId);
@@ -895,7 +914,7 @@ async function testBootstrapRetry() {
   await retryButton.dispatch("click");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(appendCount, 2, "transient runtime load failure can be retried without reloading the app");
-  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-03-context-layers-default-on-v1$/);
+  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-10-control-panel-polish-v1$/);
   assert.equal(enables, 1);
 }
 

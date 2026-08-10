@@ -12,6 +12,45 @@
   "use strict";
 
   const EVENT_SELECTION_MODES = new Set(["all", "subset", "none"]);
+  const SAFE_CRAFT_COLOR_KEY = /^[a-z0-9][a-z0-9_-]{0,63}$/i;
+
+  function normalizeHexColor(value) {
+    const normalized = String(value == null ? "" : value).trim().toLowerCase();
+    if (/^#[0-9a-f]{6}$/.test(normalized)) return normalized;
+    if (/^#[0-9a-f]{3}$/.test(normalized)) {
+      return "#" + normalized.slice(1).split("").map(function (digit) {
+        return digit + digit;
+      }).join("");
+    }
+    return "";
+  }
+
+  function normalizeCraftColorOverrides(value, defaultPalette) {
+    const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const defaults = defaultPalette && typeof defaultPalette === "object" ? defaultPalette : {};
+    const output = {};
+    Object.keys(source).slice(0, 128).forEach(function (rawKey) {
+      const key = String(rawKey == null ? "" : rawKey).trim();
+      if (!SAFE_CRAFT_COLOR_KEY.test(key)) return;
+      const color = normalizeHexColor(source[rawKey]);
+      if (!color || color === normalizeHexColor(defaults[key])) return;
+      output[key] = color;
+    });
+    return output;
+  }
+
+  function updateCraftColorOverride(value, key, color, defaultPalette) {
+    const output = normalizeCraftColorOverrides(value, defaultPalette);
+    const normalizedKey = String(key == null ? "" : key).trim();
+    const normalizedColor = normalizeHexColor(color);
+    if (!SAFE_CRAFT_COLOR_KEY.test(normalizedKey) || !normalizedColor) return output;
+    if (normalizedColor === normalizeHexColor(defaultPalette && defaultPalette[normalizedKey])) {
+      delete output[normalizedKey];
+    } else {
+      output[normalizedKey] = normalizedColor;
+    }
+    return output;
+  }
 
   function uniqueKeys(values) {
     const seen = new Set();
@@ -362,14 +401,17 @@
     applyCraftBulkSelection,
     createCraftSelectionState,
     eventKeyActive,
+    normalizeCraftColorOverrides,
     normalizeEventSelection,
     normalizeCraftSelectionState,
+    normalizeHexColor,
     replaceCraftSelectionUniverse,
     resetEventSelection,
     toggleCraftKey,
     toggleCraftSolo,
     toggleEventKey,
     toggleGroupedOverlay,
+    updateCraftColorOverride,
     uniqueKeys,
   });
 });

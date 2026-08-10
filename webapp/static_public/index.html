@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-09-control-panel-area-v1">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-10-control-panel-polish-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -387,7 +387,7 @@
           <button class="trace-bucket-button" type="button" data-trace-bucket="gap_gt_30" aria-pressed="false" aria-label="More than 30 days">&gt;30</button>
         </div>
         <div id="trace-facility-filter" class="trace-facility-filter" role="group" aria-label="Trace facility proximity filter">
-          <div class="trace-facility-row">
+          <div class="trace-facility-row trace-facility-primary-row">
             <label class="checkbox-field inline-checkbox trace-facility-toggle">
               <input id="trace-facility-filter-enabled" type="checkbox">
               <span>Facility proximity</span>
@@ -416,26 +416,10 @@
               <span>Linked facilities only</span>
             </label>
           </div>
-          <div class="trace-facility-row trace-facility-radius-presets" role="group" aria-label="Trace proximity radius presets">
-            <span class="trace-facility-row-label">Radius</span>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="1" disabled>1 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="2" disabled>2 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="3" disabled>3 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="4" disabled>4 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="5" disabled>5 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="10" disabled>10 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="25" disabled>25 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="100" disabled>100 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="250" disabled>250 km</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-radius-preset="500" disabled>500 km</button>
-          </div>
           <div class="trace-facility-row trace-facility-category-controls" role="group" aria-label="Trace proximity categories">
             <span class="trace-facility-row-label">Endpoint near facility</span>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="all" disabled>All</button>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="none" disabled>None</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:start" disabled>Start only</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:end" disabled>End only</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="only:between" disabled>Between only</button>
             <label class="trace-facility-chip trace-facility-chip-start">
               <input type="checkbox" data-trace-facility-class="start" checked disabled aria-label="Start endpoint near facility">
               <span>Start</span>
@@ -455,15 +439,12 @@
               <input type="checkbox" data-trace-facility-class="passes" disabled>
               <span>Connector intersects facility radius</span>
             </label>
-            <span class="trace-facility-advanced-note">Exploratory geometry only; the connector is not an observed path.</span>
+            <span class="trace-facility-advanced-note">Turn on Facility proximity and choose Exploratory mode.</span>
           </div>
           <div class="trace-facility-row trace-facility-source-controls" role="group" aria-label="Trace proximity facility sources">
             <span class="trace-facility-row-label">Sources</span>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="all" disabled>All</button>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="none" disabled>None</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:military" disabled>Military only</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:researchSites" disabled>Research only</button>
-            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="only:claimedUfoBases" disabled>Claimed only</button>
             <label class="trace-facility-chip">
               <input type="checkbox" data-trace-facility-source="military" checked disabled>
               <span>Military</span>
@@ -477,9 +458,15 @@
               <span>Claimed UFO (unverified)</span>
             </label>
           </div>
-          <p class="trace-facility-truth-note">Chronology lines connect records in date order; they are not observed travel paths.</p>
         </div>
-        <p id="trace-status" class="trace-status" aria-live="polite"></p>
+        <div class="trace-status-shell">
+          <p id="trace-status-summary" class="trace-status trace-status-summary" aria-live="polite" aria-atomic="true">0 traces</p>
+          <details id="trace-status-details" class="trace-status-details">
+            <summary>More</summary>
+            <p id="trace-status" class="trace-status trace-status-details-copy"></p>
+            <p class="trace-truth-note">Chronology lines connect records in date order; they are not observed travel paths.</p>
+          </details>
+        </div>
       </div>
       </div>
       </div>
@@ -584,11 +571,13 @@
             </div>
             <div class="overlay-chip-group" role="group" aria-label="Map overlays">
               <button id="overlay-airports" class="overlay-chip" data-overlay-id="airports" data-overlay-kind="airports" type="button" aria-pressed="false">
-                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span class="overlay-chip-swatch overlay-chip-swatch-icon overlay-chip-swatch-airports" aria-hidden="true">
+                  <svg viewBox="0 0 20 18" focusable="false"><path d="M10 1c.8 0 1.4.6 1.4 1.4v4.3l6 3.2v1.8l-6-1.6v3.2l2 1.5V16L10 15l-3.4 1v-1.2l2-1.5v-3.2l-6 1.6V9.9l6-3.2V2.4C8.6 1.6 9.2 1 10 1Z"/></svg>
+                </span>
                 <span>Airports</span>
               </button>
               <button id="overlay-highways" class="overlay-chip" data-overlay-id="highways" data-overlay-kind="highways" type="button" aria-pressed="false">
-                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span class="overlay-chip-swatch overlay-chip-swatch-highways" aria-hidden="true"></span>
                 <span>Highways</span>
               </button>
               <button id="overlay-military" class="overlay-chip" data-overlay-id="military" data-overlay-kind="military" type="button" aria-pressed="false">
@@ -602,15 +591,19 @@
               </div>
               <div class="overlay-chip-group overlay-chip-group-branches" role="group" aria-label="Military base branches">
                 <button id="overlay-military-air" class="overlay-chip overlay-chip-branch" data-military-branch="air" type="button" aria-pressed="true">
-                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-air" aria-hidden="true"></span>
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-air" aria-hidden="true">
+                    <svg viewBox="0 0 20 16" focusable="false"><path d="M1 2h18l-3.2 12L10 9.7 4.2 14Z"/></svg>
+                  </span>
                   <span>Air</span>
                 </button>
                 <button id="overlay-military-naval" class="overlay-chip overlay-chip-branch" data-military-branch="naval" type="button" aria-pressed="true">
-                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-naval" aria-hidden="true"></span>
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-naval" aria-hidden="true">⚓</span>
                   <span>Naval</span>
                 </button>
                 <button id="overlay-military-army" class="overlay-chip overlay-chip-branch" data-military-branch="army" type="button" aria-pressed="true">
-                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-army" aria-hidden="true"></span>
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-army" aria-hidden="true">
+                    <svg viewBox="0 0 22 16" focusable="false"><path d="M8 3h6l1.5 2H21v2h-6.5l-1-1H7L5.5 8H20l-2 5H5L2 8h2.2l2.3-3H8V3Zm-.8 7.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z"/></svg>
+                  </span>
                   <span>Army</span>
                 </button>
                 <button id="overlay-military-other" class="overlay-chip overlay-chip-branch" data-military-branch="other" type="button" aria-pressed="false">
@@ -618,7 +611,7 @@
                   <span>Other</span>
                 </button>
               </div>
-              <p id="military-branch-status" class="note-copy compact-status">Military overlay is off. Turn it on to inspect global installations by branch.</p>
+              <p id="military-branch-status" class="sr-only" role="status" aria-live="polite">Military overlay off.</p>
             </div>
             <div class="overlay-chip-group overlay-chip-group-secondary" role="group" aria-label="Additional map overlays">
               <button id="overlay-research-sites" class="overlay-chip overlay-chip-secondary-row" data-overlay-id="researchSites" data-overlay-kind="research-sites" type="button" aria-pressed="false">
@@ -637,7 +630,7 @@
                 <span id="overlay-animal-mutilations-count" class="overlay-chip-count" aria-hidden="true">0</span>
               </button>
             </div>
-            <p id="crop-circle-status" class="note-copy compact-status crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
+            <p id="crop-circle-status" class="sr-only crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
             <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
               <div class="crop-circle-chronology-head">
                 <strong>Crop-circle relationships</strong>
@@ -645,8 +638,9 @@
               </div>
               <p id="crop-circle-selected-summary" class="crop-circle-selected-summary">Select one crop spiral to inspect its radius and related UFO traces.</p>
 
-              <fieldset class="crop-circle-relation-group crop-circle-ufo-relation-group">
-                <legend>UFO sighting → later crop record</legend>
+              <details id="crop-circle-ufo-relation-disclosure" class="crop-circle-relation-group crop-circle-ufo-relation-group" aria-disabled="true">
+                <summary id="crop-circle-ufo-relation-summary">UFO sighting → later crop record</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-ufo-relation-summary">
                 <div class="crop-circle-relation-grid">
                   <label class="field compact-field">
                     <span>Crop record date relative to sighting</span>
@@ -677,10 +671,12 @@
                   <span><i class="is-ufo-same-day" aria-hidden="true"></i>Same date (order unknown)</span>
                   <span><i class="is-ufo-later" aria-hidden="true"></i>UFO sighting → later crop record</span>
                 </div>
-              </fieldset>
+                </div>
+              </details>
 
-              <fieldset class="crop-circle-relation-group crop-circle-crop-relation-group">
-                <legend>Crop record → later crop record</legend>
+              <details id="crop-circle-chronology-disclosure" class="crop-circle-relation-group crop-circle-crop-relation-group" aria-disabled="false">
+                <summary id="crop-circle-chronology-summary">Crop record → later crop record</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-chronology-summary">
                 <div class="crop-circle-relation-grid">
                   <label class="field compact-field">
                     <span>Later crop-record window</span>
@@ -713,10 +709,12 @@
                   <span><i class="is-later" aria-hidden="true"></i>Earlier → later crop record</span>
                 </div>
                 <p id="crop-circle-chronology-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Crop-to-crop progression is off.</p>
-              </fieldset>
+                </div>
+              </details>
 
-              <fieldset class="crop-circle-relation-group crop-circle-radius-group">
-                <legend>Selected crop radius and UFO traces</legend>
+              <details id="crop-circle-radius-disclosure" class="crop-circle-relation-group crop-circle-radius-group" aria-disabled="true">
+                <summary id="crop-circle-radius-summary">Selected crop radius and UFO traces</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-radius-summary">
                 <div class="crop-circle-relation-grid">
                   <label class="field compact-field">
                     <span>Selected crop radius</span>
@@ -756,14 +754,15 @@
                 </div>
                 <p class="crop-circle-control-help">Trace analysis is off until explicitly enabled, so selecting a crop record never builds the global UFO trace network automatically. Hop 1 is an existing filtered UFO trace segment that geometrically intersects the selected radius. Outside Focus view, existing traces are left unchanged and only the section inside the radius is emphasized. This trace view is independent of the UFO-to-crop date selector above. Connectors are exploratory, not evidence of travel, causation, or a shared craft.</p>
                 <p id="crop-circle-ufo-relation-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Select a crop record to inspect nearby UFO relations and trace intersections.</p>
-              </fieldset>
+                </div>
+              </details>
 
               <p class="crop-circle-chronology-caveat">All dates are catalog/report dates. Discovery or publication may lag formation by days or weeks, so the map never labels these links as confirmed formation order or causation.</p>
             </div>
             <div class="animal-mutilation-actions">
               <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
             </div>
-            <p id="animal-mutilation-status" class="note-copy compact-status animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
+            <p id="animal-mutilation-status" class="sr-only animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
                 <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
@@ -1110,7 +1109,20 @@
                   <span class="map-control-summary-label">Advanced</span>
                   <span id="map-control-advanced-summary-state" class="map-control-summary-state">Optional</span>
                 </summary>
-                <div id="map-control-advanced-slot" class="map-control-slot"></div>
+                <div id="map-control-advanced-slot" class="map-control-slot">
+                  <div id="map-label-size-controls" class="map-label-size-controls">
+                    <label class="map-label-size-field" for="map-label-scale-mode">
+                      <span>Map label size</span>
+                      <select id="map-label-scale-mode" aria-describedby="map-label-size-note">
+                        <option value="small">Small</option>
+                        <option value="default" selected>Standard</option>
+                        <option value="large">Large</option>
+                        <option value="xlarge">Extra large</option>
+                      </select>
+                    </label>
+                    <p id="map-label-size-note" class="map-label-size-note">Timeline country/city labels only. Hosted tile text follows map zoom.</p>
+                  </div>
+                </div>
               </details>
               <div class="map-control-action-row">
                 <button id="clear-traces" class="secondary-button map-control-action-button map-control-action-button-secondary" type="button">Clear Trace</button>
@@ -1149,8 +1161,8 @@
                 id="reset-map-legend"
                 class="map-legend-reset-button"
                 type="button"
-                aria-label="Reset legend event filters and overlays"
-                title="Reset legend event filters and overlays"
+                aria-label="Reset legend filters, overlays, and craft colors"
+                title="Reset legend filters, overlays, and craft colors"
               ><span aria-hidden="true">&#x21BA;</span></button>
               <button
                 id="toggle-map-legend"
@@ -1165,14 +1177,7 @@
             <div id="map-legend-body" class="map-legend-body"></div>
           </div>
           <div id="area-selection-shell" class="area-selection-shell">
-            <button
-              id="toggle-area-selection"
-              class="secondary-button area-selection-toggle"
-              type="button"
-              aria-pressed="false"
-              title="Area Select"
-            >Area Select</button>
-            <section id="area-selection-panel" class="area-selection-panel" hidden aria-live="polite">
+            <section id="area-selection-panel" class="area-selection-panel" aria-live="polite">
               <div class="area-selection-panel-head">
                 <strong class="area-selection-panel-title">Area Filter</strong>
                 <span id="area-selection-summary" class="area-selection-summary">0 regions</span>
@@ -1226,7 +1231,6 @@
                     </select>
                   </label>
                 </div>
-                <p class="chronological-neighborhood-disclaimer">Exploratory chronological adjacency under the current filters only. It is not evidence of travel or that adjacent sightings involved the same craft.</p>
               </div>
               <div class="area-selection-option-group">
                 <p class="area-selection-option-heading">Select</p>
@@ -1719,12 +1723,12 @@
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
   <script src="./trace_neighborhood.js?v=2026-08-09-control-panel-area-v1"></script>
-  <script src="./legend_controls.js?v=2026-08-09-control-panel-area-v1"></script>
+  <script src="./legend_controls.js?v=2026-08-10-control-panel-polish-v1"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./crop_circle_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-10-control-panel-polish-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./analysis_view.js?v=2026-08-05-analysis-color-v1-ui1"></script>
-  <script src="./app.js?v=2026-08-09-control-panel-area-v1"></script>
+  <script src="./app.js?v=2026-08-10-control-panel-polish-v1"></script>
 </body>
 </html>

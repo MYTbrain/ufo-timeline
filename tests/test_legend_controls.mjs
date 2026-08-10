@@ -4,6 +4,44 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const legend = require("../webapp/static_public/legend_controls.js");
 
+const defaultCraftColors = {
+  disc_saucer: "#38bdf8",
+  sphere_orb: "#22c55e",
+  triangle: "#f97316",
+};
+assert.equal(legend.normalizeHexColor(" #AbC "), "#aabbcc");
+assert.equal(legend.normalizeHexColor("not-a-color"), "");
+assert.deepEqual(
+  legend.normalizeCraftColorOverrides({
+    disc_saucer: "#112233",
+    sphere_orb: "#22c55e",
+    "unsafe key": "#ffffff",
+    triangle: "transparent",
+  }, defaultCraftColors),
+  { disc_saucer: "#112233" },
+  "stored craft colors are normalized while defaults and unsafe values are discarded",
+);
+const oneCraftRecolored = legend.updateCraftColorOverride(
+  { disc_saucer: "#112233" },
+  "triangle",
+  "#445566",
+  defaultCraftColors,
+);
+assert.deepEqual(oneCraftRecolored, {
+  disc_saucer: "#112233",
+  triangle: "#445566",
+});
+assert.deepEqual(
+  legend.updateCraftColorOverride(oneCraftRecolored, "triangle", "#f97316", defaultCraftColors),
+  { disc_saucer: "#112233" },
+  "choosing the default removes only that craft's override",
+);
+assert.deepEqual(
+  legend.normalizeCraftColorOverrides(oneCraftRecolored, defaultCraftColors),
+  oneCraftRecolored,
+  "colors for craft types outside the current visible universe remain available",
+);
+
 const available = ["disc_saucer", "triangle", "light"];
 const all = legend.resetEventSelection("craft_type");
 assert.deepEqual(all, {

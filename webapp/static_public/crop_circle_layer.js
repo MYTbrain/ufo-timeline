@@ -89,6 +89,9 @@
   const chronologyDistance = document.querySelector("#crop-circle-chronology-max-distance");
   const chronologyStatus = document.querySelector("#crop-circle-chronology-status");
   const selectedSummary = document.querySelector("#crop-circle-selected-summary");
+  const ufoRelationDisclosure = document.querySelector("#crop-circle-ufo-relation-disclosure");
+  const chronologyDisclosure = document.querySelector("#crop-circle-chronology-disclosure");
+  const radiusDisclosure = document.querySelector("#crop-circle-radius-disclosure");
   const ufoRelationWindow = document.querySelector("#crop-circle-ufo-relation-window");
   const ufoPositionQuality = document.querySelector("#crop-circle-ufo-position-quality");
   const ufoCropPositionQuality = document.querySelector("#crop-circle-ufo-crop-position-quality");
@@ -444,6 +447,20 @@
     chronologyStatus.classList.toggle("is-error", Boolean(isError));
   }
 
+  function setRelationDisclosureAvailability(disclosure, available) {
+    if (!disclosure) return;
+    const enabled = Boolean(available);
+    disclosure.setAttribute("aria-disabled", enabled ? "false" : "true");
+    disclosure.classList.toggle("is-unavailable", !enabled);
+    if (!enabled) disclosure.open = false;
+    const summary = typeof disclosure.querySelector === "function"
+      ? disclosure.querySelector("summary")
+      : null;
+    if (!summary) return;
+    if (enabled) summary.removeAttribute("tabindex");
+    else summary.setAttribute("tabindex", "-1");
+  }
+
   function syncChronologyControlState() {
     if (chronologyPanel) chronologyPanel.hidden = !state.enabled;
     const on = state.enabled && state.chronology.enabled;
@@ -452,6 +469,10 @@
         || chronologyRelation.getAttribute("data-analysis-unavailable") === "true";
     }
     for (const input of [chronologyScope, chronologyDistance]) if (input) input.disabled = !on;
+    setRelationDisclosureAvailability(
+      chronologyDisclosure,
+      Boolean(chronologyRelation && !chronologyRelation.disabled)
+    );
     if (chronologyRelation) chronologyRelation.value = state.chronology.relation;
     if (chronologyScope) chronologyScope.value = state.chronology.coordinateScope;
     if (chronologyDistance) chronologyDistance.value = String(state.chronology.maxDistanceKm);
@@ -482,6 +503,8 @@
 
   function syncUfoFocusControlState() {
     const selected = Boolean(state.enabled && state.activeRow);
+    setRelationDisclosureAvailability(ufoRelationDisclosure, selected);
+    setRelationDisclosureAvailability(radiusDisclosure, selected);
     if (selectedSummary) {
       selectedSummary.textContent = selected
         ? "Selected: " + selectedCropLabel()
@@ -659,6 +682,14 @@
     }
     for (const input of [ufoRelationWindow, ufoPositionQuality, ufoCropPositionQuality, radiusSelect, traceAnalysisToggle, hopDepthSelect, hopDirectionSelect, showRadiusToggle, emphasizeIntersectionsToggle, focusModeToggle]) {
       if (input) input.addEventListener("change", ufoChange);
+    }
+    for (const disclosure of [ufoRelationDisclosure, chronologyDisclosure, radiusDisclosure]) {
+      if (!disclosure) continue;
+      disclosure.addEventListener("toggle", function () {
+        if (disclosure.getAttribute("aria-disabled") === "true" && disclosure.open) {
+          disclosure.open = false;
+        }
+      });
     }
     syncChronologyControlState();
   }
