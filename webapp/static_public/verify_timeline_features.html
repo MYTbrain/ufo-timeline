@@ -205,7 +205,8 @@
         ));
 
         const landOutlineCount = doc.querySelectorAll(".land-outline").length;
-        const countryLabelCount = doc.querySelectorAll(".country-label-marker").length;
+        const customPlaceLabelCount = doc.querySelectorAll(".country-label-marker, .major-city-label-marker").length;
+        const hostedLabelTileCount = doc.querySelectorAll(".hosted-basemap-label-tile").length;
         const tileCount = doc.querySelectorAll(".leaflet-tile").length;
         const clusterCount = doc.querySelectorAll(".cluster-icon").length;
         const markerDots = doc.querySelectorAll(".ufo-dot").length;
@@ -217,8 +218,9 @@
         const uniqueTransforms = new Set(markerTransforms);
         lines.push(line(
           "Geographic map scaffolding",
-          tileCount + " tiles, " + landOutlineCount + " outlines, " + countryLabelCount + " country labels, " + clusterCount + " clusters, " + markerDots + " raw markers, " + mapCanvasCount + " map canvases, " + uniqueTransforms.size + " unique marker transforms sampled",
+          tileCount + " tiles (" + hostedLabelTileCount + " hosted label tiles), " + landOutlineCount + " outlines, " + customPlaceLabelCount + " custom place labels, " + clusterCount + " clusters, " + markerDots + " raw markers, " + mapCanvasCount + " map canvases, " + uniqueTransforms.size + " unique marker transforms sampled",
           (tileCount > 0 || landOutlineCount > 50) &&
+          customPlaceLabelCount === 0 &&
           (clusterCount > 0 || markerDots > 0 || mapCanvasCount > 0 || uniqueTransforms.size > 1)
         ));
 

@@ -1,6 +1,5 @@
 :root {
   --app-font-scale: 1;
-  --map-label-scale: 1;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -52,6 +51,9 @@
   --result-pane-gap: 10px;
   --crop-circle-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.3' stroke='%2317191b' stroke-width='4.6'/%3E%3Ccircle cx='12' cy='12' r='8.3' stroke='%23fff8df' stroke-width='2'/%3E%3Cpath d='M 12.00 11.65 L 12.16 11.50 L 12.41 11.42 L 12.71 11.47 L 13.01 11.65 L 13.25 11.97 L 13.37 12.41 L 13.33 12.91 L 13.10 13.41 L 12.68 13.84 L 12.09 14.14 L 11.38 14.24 L 10.63 14.10 L 9.92 13.69 L 9.33 13.04 L 8.96 12.19 L 8.88 11.21 L 9.12 10.20 L 9.69 9.27 L 10.56 8.53 L 11.67 8.08 L 12.93 7.99 L 14.20 8.31 L 15.35 9.03 L 16.26 10.13 L 16.81 11.50 L 16.91 13.03 L 16.52 14.56 L 15.64 15.95 L 14.34 17.04 L 12.71 17.69 L 10.91 17.81 L 9.11 17.36 L 7.48 16.35 L 6.21 14.84' stroke='%2317191b' stroke-width='4.2'/%3E%3Cpath d='M 12.00 11.65 L 12.16 11.50 L 12.41 11.42 L 12.71 11.47 L 13.01 11.65 L 13.25 11.97 L 13.37 12.41 L 13.33 12.91 L 13.10 13.41 L 12.68 13.84 L 12.09 14.14 L 11.38 14.24 L 10.63 14.10 L 9.92 13.69 L 9.33 13.04 L 8.96 12.19 L 8.88 11.21 L 9.12 10.20 L 9.69 9.27 L 10.56 8.53 L 11.67 8.08 L 12.93 7.99 L 14.20 8.31 L 15.35 9.03 L 16.26 10.13 L 16.81 11.50 L 16.91 13.03 L 16.52 14.56 L 15.64 15.95 L 14.34 17.04 L 12.71 17.69 L 10.91 17.81 L 9.11 17.36 L 7.48 16.35 L 6.21 14.84' stroke='%23d8ff3e' stroke-width='1.9'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='1.8' fill='%23d8ff3e'/%3E%3C/svg%3E");
   --animal-cow-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Cg stroke='%23101417' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath fill='%23e9f2ff' d='M8 7h25c4 0 7 3 7 7v8H8c-3 0-6-2-6-6v-3c0-3 3-6 6-6Z'/%3E%3Cpath fill='%23e9f2ff' d='M36 11h7l4 4v6l-4 3h-7Z'/%3E%3Cpath fill='%23e9f2ff' d='M9 21h6v10h-5L9 21Zm20 0h6v10h-5l-1-10Z'/%3E%3Cpath fill='none' d='M5 10Q0 7 3 3'/%3E%3Cpath fill='%23101417' d='m42 12 1-6 3 2-1 5Zm3 3 3-2v4Z'/%3E%3Cpath fill='%23101417' stroke='none' d='M10 7h9l6 5-4 7-11-4Zm17 9 8-5 5 4v7H29Z'/%3E%3Cpath fill='%23e9f2ff' stroke='none' d='M13 9h5l4 4-3 3-6-3Zm17 7 5-3 3 3v3h-6Z'/%3E%3Ccircle fill='%23101417' stroke='none' cx='42' cy='16' r='1.2'/%3E%3Cpath fill='none' d='M43 21q-3 2-6 0'/%3E%3C/g%3E%3C/svg%3E");
+  --airport-plane-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18'%3E%3Cpath d='M10 1c.8 0 1.4.6 1.4 1.4v4.3l6 3.2v1.8l-6-1.6v3.2l2 1.5V16L10 15l-3.4 1v-1.2l2-1.5v-3.2l-6 1.6V9.9l6-3.2V2.4C8.6 1.6 9.2 1 10 1Z'/%3E%3C/svg%3E");
+  --military-air-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M1 2h18l-3.2 12L10 9.7 4.2 14Z'/%3E%3C/svg%3E");
+  --military-army-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Cpath d='M8 3h6l1.5 2H21v2h-6.5l-1-1H7L5.5 8H20l-2 5H5L2 8h2.2l2.3-3H8V3Zm-.8 7.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z'/%3E%3C/svg%3E");
 }
 
 /* Optional crop-circle layer. Its runtime and data are loaded only on demand. */
@@ -3183,9 +3185,9 @@ button:focus {
 
 .craft-legend-row {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) max-content;
+  grid-template-columns: 34px minmax(0, 1fr) minmax(2ch, max-content) 25px;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -3214,6 +3216,7 @@ button:focus {
 }
 
 .craft-legend-label-button {
+  width: 100%;
   min-width: 0;
   padding: 6px 5px;
   border-radius: 8px;
@@ -3221,15 +3224,12 @@ button:focus {
   line-height: 1.25;
 }
 
-.craft-legend-label-color {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  min-width: 0;
-}
-
-.craft-legend-label-color .craft-legend-label-button {
-  flex: 0 1 auto;
+.craft-legend-count {
+  min-width: 2ch;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: right;
 }
 
 .craft-color-picker {
@@ -3330,10 +3330,10 @@ button:focus {
 .legend-item.craft-legend-row,
 .map-legend-item.craft-legend-row {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) max-content;
+  grid-template-columns: 34px minmax(0, 1fr) minmax(2ch, max-content) 25px;
   align-items: center;
   justify-content: stretch;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
 }
 
@@ -3495,8 +3495,8 @@ button:focus {
 }
 
 .overlay-chip[data-overlay-kind="airports"] {
-  --overlay-color: #e14f9e;
-  --overlay-tint: rgba(225, 79, 158, 0.18);
+  --overlay-color: #b9c5d0;
+  --overlay-tint: rgba(185, 197, 208, 0.18);
 }
 
 .overlay-chip[data-overlay-kind="highways"] {
@@ -5813,6 +5813,54 @@ button:focus {
   filter: drop-shadow(0 0 0.7px rgba(36, 24, 15, 0.6)) drop-shadow(0 2px 6px rgba(36, 24, 15, 0.2));
 }
 
+.overlay-marker-shape-airplane::before,
+.map-legend-marker-sample-airplane::before,
+.overlay-marker-shape-air-chevron::before,
+.map-legend-marker-sample-air-chevron::before,
+.overlay-marker-shape-tank::before,
+.map-legend-marker-sample-tank::before {
+  background: var(--overlay-marker-color, #b9c5d0);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  filter: drop-shadow(0 0 0.7px rgba(36, 24, 15, 0.82)) drop-shadow(0 2px 4px rgba(36, 24, 15, 0.28));
+}
+
+.overlay-marker-shape-airplane::before,
+.map-legend-marker-sample-airplane::before {
+  -webkit-mask-image: var(--airport-plane-mask);
+  mask-image: var(--airport-plane-mask);
+}
+
+.overlay-marker-shape-air-chevron::before,
+.map-legend-marker-sample-air-chevron::before {
+  -webkit-mask-image: var(--military-air-mask);
+  mask-image: var(--military-air-mask);
+}
+
+.overlay-marker-shape-tank::before,
+.map-legend-marker-sample-tank::before {
+  -webkit-mask-image: var(--military-army-mask);
+  mask-image: var(--military-army-mask);
+}
+
+.overlay-marker-shape-anchor::before,
+.map-legend-marker-sample-anchor::before {
+  content: "⚓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-marker-color, #2b50d9);
+  font-family: "Segoe UI Symbol", sans-serif;
+  font-size: calc(var(--overlay-marker-size, 14px) * 1.12);
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(36, 24, 15, 0.28);
+}
+
 #map {
   flex: 1 1 auto;
   width: 100%;
@@ -5833,7 +5881,7 @@ button:focus {
 .leaflet-container.crop-circle-focus-active .leaflet-tooltip-pane,
 .leaflet-container.crop-circle-focus-active .leaflet-popup-pane,
 .leaflet-container.crop-circle-focus-active .leaflet-region-selection-pane,
-.leaflet-container.crop-circle-focus-active .leaflet-reference-label-pane,
+.leaflet-container.crop-circle-focus-active .leaflet-basemap-label-pane,
 .leaflet-container.crop-circle-focus-active .leaflet-research-site-area-pane,
 .leaflet-container.crop-circle-focus-active .leaflet-trace-pane,
 .leaflet-container.crop-circle-focus-active .leaflet-playback-trace-pane,
@@ -5919,65 +5967,6 @@ button:focus {
 .map-description-actions {
   display: flex;
   justify-content: flex-end;
-}
-
-.country-label-marker,
-.major-city-label-marker {
-  pointer-events: none;
-}
-
-.map-reference-label-marker {
-  pointer-events: none;
-  user-select: none;
-}
-
-.country-label-pill,
-.city-label-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-.country-label-pill {
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: var(--label-country-bg);
-  color: var(--label-country-text);
-  font-size: calc(13px * var(--map-label-scale));
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.city-label-pill {
-  color: var(--label-city-text);
-  font-size: calc(12.5px * var(--map-label-scale));
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
-#map.map-mode-tile .country-label-pill {
-  background: color-mix(in srgb, var(--panel-strong) 76%, transparent);
-  box-shadow: 0 1px 4px rgba(8, 18, 28, 0.18);
-}
-
-#map.map-mode-tile .city-label-pill {
-  padding: 1px 4px;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--panel-strong) 62%, transparent);
-  text-shadow: 0 1px 1px var(--panel-strong);
-}
-
-.city-label-pill::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  margin-right: 6px;
-  border-radius: 50%;
-  background: var(--label-city-dot);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
 .ufo-dot {

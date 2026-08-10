@@ -406,12 +406,13 @@ def test_map_wraps_across_dateline_without_finite_horizontal_bounds():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
     initialize_map = _extract_js_function_body(app_js, "initializeMap")
     set_basemap = _extract_js_function_body(app_js, "setBasemap")
+    hosted_tile_options = _extract_js_function_body(app_js, "hostedTileOptions")
     moveend = _extract_js_function_body(app_js, "handleMapMoveEnd")
 
     assert "worldCopyJump: true" in initialize_map
     assert "maxBounds:" not in initialize_map
     assert "maxBoundsViscosity:" not in initialize_map
-    assert "noWrap: false" in set_basemap
+    assert "noWrap: false" in hosted_tile_options
     assert "bounds: MAP_CANONICAL_BOUNDS" not in set_basemap
     assert "MAP_HORIZONTAL_PAN_LIMIT" not in app_js
     assert "MAP_CANONICAL_BOUNDS" not in app_js
@@ -1148,14 +1149,16 @@ def test_control_panel_compact_labels_and_overlay_counts_are_truthful_and_shared
     required_facility_fragments = (
         '<option value="source_coordinates" selected>Strict mode</option>',
         '<option value="include_generalized">Exploratory mode</option>',
-        '>Endpoint near facility</span>',
+        '>Start/End Near Facility</span>',
         'data-trace-facility-class="start" checked disabled aria-label="Start endpoint near facility"',
         'data-trace-facility-class="end" checked disabled aria-label="End endpoint near facility"',
         'data-trace-facility-class="between" checked disabled aria-label="Both endpoints near facilities"',
         '<span>Start</span>',
         '<span>End</span>',
         '<span>Both ends</span>',
-        'aria-label="Only show facilities linked to visible traces"',
+        'aria-label="Only show facilities matched to visible traces"',
+        'title="Hide facilities that are not matched to visible traces"',
+        '<span>Nearby facilities only</span>',
         'Strict mode includes only source-provided endpoint coordinates with exact event dates',
         "facility's recorded operating period supports that date",
         "Year-only opening or closing years remain uncertain.",
@@ -1518,8 +1521,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-            'styles.css?v=2026-08-10-control-panel-polish-v1',
-            'app.js?v=2026-08-10-control-panel-polish-v1',
+                'styles.css?v=2026-08-10-control-panel-polish-v2',
+                'app.js?v=2026-08-10-control-panel-polish-v2',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -2058,7 +2061,7 @@ def test_trace_facility_proximity_filter_is_wired_into_trace_rendering():
     assert 'id="trace-facility-filter-enabled" type="checkbox"' in index_html
     assert 'id="trace-facility-filter-enabled" type="checkbox" checked' not in index_html
     assert 'id="trace-facility-linked-only" type="checkbox" checked disabled' in index_html
-    assert "Only show facilities linked to visible traces" in index_html
+    assert "Only show facilities matched to visible traces" in index_html
     assert 'data-trace-facility-class="start"' in index_html
     assert 'data-trace-facility-class="passes"' in index_html
     assert "data-trace-facility-radius-preset" not in index_html
@@ -2423,7 +2426,7 @@ def test_trace_legend_uses_descriptor_rows():
     assert 'id="trace-status-summary"' in index_html
     assert 'aria-live="polite" aria-atomic="true">0 traces</p>' in index_html
     assert '<details id="trace-status-details" class="trace-status-details">' in index_html
-    assert '<summary>More</summary>' in index_html
+    assert '<summary>Info</summary>' in index_html
     assert 'id="trace-status"' in index_html
     trace_details = index_html[
         index_html.index('<details id="trace-status-details"') : index_html.index(
@@ -2534,13 +2537,16 @@ def test_independent_craft_colors_and_map_place_label_sizing_are_wired():
 
     craft_row = _extract_js_function_body(app_js, "buildCraftLegendRow")
     for fragment in (
-        'class="craft-legend-label-color"',
         'class="craft-color-picker',
         'class="craft-color-input" type="color"',
         'data-craft-color-key=',
         "sightings and traces",
     ):
         assert fragment in craft_row
+    assert craft_row.index('class="craft-legend-label-button"') < craft_row.index(
+        'class="craft-legend-count"'
+    ) < craft_row.index('class="craft-color-picker')
+    assert "grid-template-columns: 34px minmax(0, 1fr) minmax(2ch, max-content) 25px;" in styles_css
     assert "function normalizeCraftColorOverrides" in helper_js
     assert "function updateCraftColorOverride" in helper_js
     assert 'const CRAFT_COLOR_OVERRIDES_STORAGE_KEY = "ufoTimeline.craftTypeColors.v1";' in app_js
@@ -2560,19 +2566,31 @@ def test_independent_craft_colors_and_map_place_label_sizing_are_wired():
     assert 'id="map-control-section-advanced"' in index_html
     assert 'id="map-label-scale-mode"' in index_html
     assert 'aria-describedby="map-label-size-note"' in index_html
-    assert "Timeline country/city labels only. Hosted tile text follows map zoom." in index_html
+    assert "Large labels may show fewer place names." in index_html
+    map_label_select_start = index_html.index('id="map-label-scale-mode"')
+    map_label_select = index_html[
+        map_label_select_start : index_html.index("</select>", map_label_select_start)
+    ]
+    assert '<option value="xlarge">' not in map_label_select
     assert 'const MAP_LABEL_SCALE_STORAGE_KEY = "ufoTimeline.mapLabelScaleMode.v1";' in app_js
+    assert "const MAP_LABEL_TILE_ZOOM_STEPS = Object.freeze({" in app_js
     assert "function applyMapLabelScaleMode(mode, options)" in app_js
-    assert 'runtime.map.createPane("referenceLabelPane");' in app_js
-    assert 'runtime.referenceLabelLayer = L.layerGroup().addTo(runtime.map);' in app_js
-    assert 'pane: "referenceLabelPane"' in app_js
-    label_visibility = _extract_js_function_body(app_js, "updateWorldReferenceLabelVisibility")
-    assert "state.currentTileProviderId !== \"none\"" in label_visibility
-    assert "runtime.referenceLabelLayer" in label_visibility
-    assert 'state.currentTileProviderId !== "none")' not in label_visibility
-    assert "font-size: calc(13px * var(--map-label-scale));" in styles_css
-    assert "font-size: calc(12.5px * var(--map-label-scale));" in styles_css
-    assert "font-size: calc(13px * var(--app-font-scale));" not in styles_css
+    assert 'runtime.map.createPane("basemapLabelPane");' in app_js
+    assert 'pane = "basemapLabelPane";' in app_js
+    composite_urls = _extract_js_function_body(app_js, "cartoCompositeTileUrls")
+    assert '"/light_nolabels/"' in composite_urls
+    assert '"/light_only_labels/"' in composite_urls
+    label_layer = _extract_js_function_body(app_js, "refreshHostedBasemapLabelLayer")
+    assert "labelTileOptions.tileSize = 256 * Math.pow(2, zoomSteps);" in label_layer
+    assert "labelTileOptions.zoomOffset = -zoomSteps;" in label_layer
+    assert "highResolutionCartoTileUrl(compositeUrls.labels)" in label_layer
+    assert 'className = "hosted-basemap-label-tile";' in label_layer
+    initial_tile_wait = _extract_js_function_body(app_js, "waitForInitialMapTilesToSettle")
+    assert "[state.currentTileLayer, state.currentTileLabelLayer]" in initial_tile_wait
+    assert "createReferenceLabelMarker" not in app_js
+    assert "country-label-pill" not in app_js
+    assert ".country-label-pill" not in styles_css
+    assert ".city-label-pill" not in styles_css
 
 
 def test_map_legend_counts_and_desktop_map_height_resizer_are_wired_and_accessible():
@@ -3055,3 +3073,39 @@ def test_hosted_feature_verifier_tracks_current_progressive_results_and_legends(
     assert 'iframe.contentDocument.readyState === "complete"' in verifier
     assert "window.setTimeout(startWhenFrameReady, 50);" in verifier
     assert "startWhenFrameReady();" in verifier
+
+
+def test_overlay_map_and_legend_symbols_match_the_control_panel_art():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+
+    for mapping in (
+        'air: "air-chevron"',
+        'naval: "anchor"',
+        'army: "tank"',
+        'airports: "airplane"',
+    ):
+        assert mapping in app_js
+
+    for obsolete_mapping in (
+        'air: "circle"',
+        'naval: "triangle"',
+        'army: "square"',
+        'airports: "diamond"',
+    ):
+        assert obsolete_mapping not in app_js
+
+    map_legend = _extract_js_function_body(app_js, "buildMapLegendOverlayRows")
+    point_descriptor = _extract_js_function_body(app_js, "overlayPointDescriptor")
+    assert "OVERLAY_MARKER_SHAPES.airports" in map_legend
+    assert "militaryBranchShape(branch)" in map_legend
+    assert "OVERLAY_MARKER_SHAPES.airports" in point_descriptor
+    assert "militaryBranchShape(branch)" in point_descriptor
+
+    for shape in ("airplane", "air-chevron", "anchor", "tank"):
+        assert f".overlay-marker-shape-{shape}::before" in styles_css
+        assert f".map-legend-marker-sample-{shape}::before" in styles_css
+
+    assert "--airport-plane-mask:" in styles_css
+    assert "--military-air-mask:" in styles_css
+    assert "--military-army-mask:" in styles_css

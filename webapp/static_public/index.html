@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-10-control-panel-polish-v1">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-10-control-panel-polish-v2">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -411,13 +411,13 @@
             </p>
           </div>
           <div class="trace-facility-row trace-facility-display-options">
-            <label class="trace-facility-chip trace-facility-linked-only">
-              <input id="trace-facility-linked-only" type="checkbox" checked disabled aria-label="Only show facilities linked to visible traces">
-              <span>Linked facilities only</span>
+            <label class="trace-facility-chip trace-facility-linked-only" title="Hide facilities that are not matched to visible traces">
+              <input id="trace-facility-linked-only" type="checkbox" checked disabled aria-label="Only show facilities matched to visible traces">
+              <span>Nearby facilities only</span>
             </label>
           </div>
           <div class="trace-facility-row trace-facility-category-controls" role="group" aria-label="Trace proximity categories">
-            <span class="trace-facility-row-label">Endpoint near facility</span>
+            <span class="trace-facility-row-label">Start/End Near Facility</span>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="all" disabled>All</button>
             <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="none" disabled>None</button>
             <label class="trace-facility-chip trace-facility-chip-start">
@@ -462,7 +462,7 @@
         <div class="trace-status-shell">
           <p id="trace-status-summary" class="trace-status trace-status-summary" aria-live="polite" aria-atomic="true">0 traces</p>
           <details id="trace-status-details" class="trace-status-details">
-            <summary>More</summary>
+            <summary>Info</summary>
             <p id="trace-status" class="trace-status trace-status-details-copy"></p>
             <p class="trace-truth-note">Chronology lines connect records in date order; they are not observed travel paths.</p>
           </details>
@@ -1117,10 +1117,9 @@
                         <option value="small">Small</option>
                         <option value="default" selected>Standard</option>
                         <option value="large">Large</option>
-                        <option value="xlarge">Extra large</option>
                       </select>
                     </label>
-                    <p id="map-label-size-note" class="map-label-size-note">Timeline country/city labels only. Hosted tile text follows map zoom.</p>
+                    <p id="map-label-size-note" class="map-label-size-note">Large labels may show fewer place names.</p>
                   </div>
                 </div>
               </details>
@@ -1729,6 +1728,6 @@
   <script src="./crop_circle_bootstrap.js?v=2026-08-10-control-panel-polish-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-03-context-layers-default-on-v1"></script>
   <script src="./analysis_view.js?v=2026-08-05-analysis-color-v1-ui1"></script>
-  <script src="./app.js?v=2026-08-10-control-panel-polish-v1"></script>
+  <script src="./app.js?v=2026-08-10-control-panel-polish-v2"></script>
 </body>
 </html>
