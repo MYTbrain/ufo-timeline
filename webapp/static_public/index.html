@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-10-control-panel-polish-v2">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-10-crop-relationships-v1">
   <script>
     window.setTimeout(function () {
       document.documentElement.classList.remove("app-initializing");
@@ -619,23 +619,27 @@
                 <span class="overlay-chip-label">Research sites</span>
                 <span id="overlay-research-sites-count" class="overlay-chip-count">0</span>
               </button>
-              <button id="overlay-crop-circles" class="overlay-chip overlay-chip-secondary-row is-active" data-overlay-kind="crop-circles" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="crop-circle-status">
-                <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
-                <span class="overlay-chip-label">Crop circles</span>
-                <span id="overlay-crop-circles-count" class="overlay-chip-count">0</span>
-              </button>
               <button id="overlay-animal-mutilations" class="overlay-chip overlay-chip-secondary-row is-active" data-overlay-kind="animal-mutilations" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="animal-mutilation-status" aria-label="Animal Mutilation Reports">
                 <span class="overlay-chip-swatch overlay-chip-swatch-animal-mutilations" aria-hidden="true"></span>
                 <span class="overlay-chip-label" aria-hidden="true">Mutilations</span>
                 <span id="overlay-animal-mutilations-count" class="overlay-chip-count" aria-hidden="true">0</span>
               </button>
+              <div class="animal-mutilation-actions">
+                <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
+              </div>
+              <button id="overlay-crop-circles" class="overlay-chip overlay-chip-secondary-row is-active" data-overlay-kind="crop-circles" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="crop-circle-status">
+                <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
+                <span class="overlay-chip-label">Crop circles</span>
+                <span id="overlay-crop-circles-count" class="overlay-chip-count">0</span>
+              </button>
             </div>
             <p id="crop-circle-status" class="sr-only crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
-            <div id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
-              <div class="crop-circle-chronology-head">
+            <details id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
+              <summary class="crop-circle-chronology-head">
                 <strong>Crop-circle relationships</strong>
                 <span class="crop-circle-chronology-key" aria-hidden="true"><i></i><i></i></span>
-              </div>
+              </summary>
+              <div class="crop-circle-chronology-body">
               <p id="crop-circle-selected-summary" class="crop-circle-selected-summary">Select one crop spiral to inspect its radius and related UFO traces.</p>
 
               <details id="crop-circle-ufo-relation-disclosure" class="crop-circle-relation-group crop-circle-ufo-relation-group" aria-disabled="true">
@@ -758,10 +762,8 @@
               </details>
 
               <p class="crop-circle-chronology-caveat">All dates are catalog/report dates. Discovery or publication may lag formation by days or weeks, so the map never labels these links as confirmed formation order or causation.</p>
-            </div>
-            <div class="animal-mutilation-actions">
-              <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
-            </div>
+              </div>
+            </details>
             <p id="animal-mutilation-status" class="sr-only animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
             <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
               <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">

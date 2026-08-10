@@ -1176,6 +1176,24 @@ def test_control_panel_compact_labels_and_overlay_counts_are_truthful_and_shared
         assert index_html.count(f'id="{count_id}"') == 1
         assert 'class="overlay-chip-label"' in index_html or 'class="overlay-chip-label" aria-hidden="true"' in index_html
         assert f'>{visible_label}</span>' in index_html
+    research_position = index_html.index('id="overlay-research-sites"')
+    animal_position = index_html.index('id="overlay-animal-mutilations"')
+    animal_browser_position = index_html.index('id="animal-mutilation-browser-open"')
+    crop_position = index_html.index('id="overlay-crop-circles"')
+    relationships_position = index_html.index('id="crop-circle-chronology-controls"')
+    assert research_position < animal_position < animal_browser_position < crop_position < relationships_position
+    relationship_panel = re.search(
+        r'<details id="crop-circle-chronology-controls"([^>]*)>\s*'
+        r'<summary class="crop-circle-chronology-head">\s*'
+        r'<strong>Crop-circle relationships</strong>',
+        index_html,
+    )
+    assert relationship_panel is not None
+    assert "open" not in relationship_panel.group(1).split()
+    assert "hidden" in relationship_panel.group(1).split()
+    assert ".crop-circle-chronology-body" in styles_css
+    assert ".crop-circle-chronology-controls[open] > .crop-circle-chronology-head::after" in styles_css
+    assert ".crop-circle-chronology-head:focus-visible" in styles_css
     animal_button = re.search(
         r'<button id="overlay-animal-mutilations"[^>]+>',
         index_html,
@@ -1521,7 +1539,7 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-                'styles.css?v=2026-08-10-control-panel-polish-v2',
+                'styles.css?v=2026-08-10-crop-relationships-v1',
                 'app.js?v=2026-08-10-control-panel-polish-v2',
         ]
         for fragment in required_index_fragments:
