@@ -1206,8 +1206,10 @@ def test_control_panel_compact_labels_and_overlay_counts_are_truthful_and_shared
 
     compact_counts = _extract_js_function_body(app_js, "renderCompactOverlayCounts")
     map_legend_rows = _extract_js_function_body(app_js, "buildMapLegendOverlayRows")
+    render_map_legend = _extract_js_function_body(app_js, "renderMapLegend")
     assert "const counts = currentOverlayCountModel();" in compact_counts
     assert "const overlayCounts = currentOverlayCountModel();" in map_legend_rows
+    assert "renderCompactOverlayCounts();" in render_map_legend
     for key in ("researchSites", "cropCircles", "animalMutilations"):
         assert f"counts.{key}" in compact_counts
     assert "overlayCounts.researchByCategory.get(category)" in map_legend_rows
@@ -1539,8 +1541,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-                'styles.css?v=2026-08-10-crop-relationships-v1',
-                'app.js?v=2026-08-10-control-panel-polish-v2',
+                'styles.css?v=2026-08-10-facility-symbols-v1',
+                'app.js?v=2026-08-10-facility-symbols-v1',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -3095,7 +3097,13 @@ def test_hosted_feature_verifier_tracks_current_progressive_results_and_legends(
 
 def test_overlay_map_and_legend_symbols_match_the_control_panel_art():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    index_html = Path("webapp/static_public/index.html").read_text(encoding="utf-8")
     styles_css = Path("webapp/static_public/styles.css").read_text(encoding="utf-8")
+    research_config = json.loads(
+        Path(
+            "webapp/static_public/data/map_overlays/research_test_sites_config.json"
+        ).read_text(encoding="utf-8")
+    )
 
     for mapping in (
         'air: "air-chevron"',
@@ -3127,3 +3135,79 @@ def test_overlay_map_and_legend_symbols_match_the_control_panel_art():
     assert "--airport-plane-mask:" in styles_css
     assert "--military-air-mask:" in styles_css
     assert "--military-army-mask:" in styles_css
+
+    research_shapes = {
+        "national_lab": "beaker",
+        "defense_research": "shield-sword",
+        "military_test": "crosshair",
+        "contractor": "gear",
+        "observatory": "telescope",
+        "space_launch": "rocket",
+        "other_research": "landmark",
+    }
+    display_category = _extract_js_function_body(
+        app_js, "researchSiteDisplayCategory"
+    )
+    category_style = _extract_js_function_body(app_js, "researchSiteCategoryStyle")
+    research_descriptor = _extract_js_function_body(
+        app_js, "researchSitePointDescriptor"
+    )
+    resolved_marker_size = _extract_js_function_body(
+        app_js, "resolvedOverlayMarkerVisualSize"
+    )
+
+    for category, shape in research_shapes.items():
+        assert f'{category}: "{shape}"' in app_js
+        assert research_config["category_styles"][category]["icon"] == shape
+        assert f"--research-{shape}-mask:" in styles_css
+        assert f".overlay-marker-shape-{shape}::before" in styles_css
+        assert f".map-legend-marker-sample-{shape}::before" in styles_css
+
+    # One semantic descriptor drives both the real Leaflet marker and the
+    # corresponding interactive map-legend sample.
+    assert "const categoryStyle = researchSiteCategoryStyle(category);" in map_legend
+    assert "categoryStyle.shape" in map_legend
+    assert 'const category = researchSiteDisplayCategory(properties);' in research_descriptor
+    assert research_descriptor.count("shape: categoryStyle.shape") == 2
+    assert 'shape: "circle"' not in research_descriptor
+    assert 'shape: "ring"' not in research_descriptor
+    assert "RESEARCH_SITE_CATEGORY_SHAPES[displayCategory]" in category_style
+    assert "RESEARCH_SITE_FALLBACK_CATEGORY" in display_category
+    assert "Object.values(RESEARCH_SITE_CATEGORY_SHAPES).indexOf(configuredIcon)" in category_style
+    assert "RESEARCH_SITE_CATEGORY_SHAPES[RESEARCH_SITE_FALLBACK_CATEGORY]" in category_style
+
+    blank_category_source = json.loads(
+        Path(
+            "webapp/static_public/data/map_overlays/"
+            "northern_europe_research_test_sites_pass3_marker_sized_conservative.geojson"
+        ).read_text(encoding="utf-8")
+    )
+    blank_category_count = sum(
+        1
+        for feature in blank_category_source["features"]
+        if not str(feature.get("properties", {}).get("category") or "").strip()
+    )
+    assert blank_category_count > 0
+    assert 'other_research: "Other research facility"' in app_js
+
+    legend_categories = _extract_js_function_body(app_js, "researchLegendCategories")
+    overlay_counts = _extract_js_function_body(app_js, "currentOverlayCountModel")
+    research_visibility = _extract_js_function_body(app_js, "researchSiteFeatureVisible")
+    assert "categories.add(researchSiteDisplayCategory(properties));" in legend_categories
+    assert "const category = researchSiteDisplayCategory(properties);" in overlay_counts
+    assert "const category = researchSiteDisplayCategory(properties);" in research_visibility
+
+    assert (
+        'class="overlay-chip-swatch overlay-chip-swatch-research-sites" aria-hidden="true"'
+        in index_html
+    )
+    assert ".overlay-chip-swatch-research-sites" in styles_css
+    assert "mask-image: var(--research-beaker-mask);" in styles_css
+    marker_row = _extract_js_function_body(app_js, "buildMapLegendMarkerRow")
+    assert 'aria-hidden="true"' in marker_row
+
+    # Complex glyphs remain legible at their smallest map scale while the
+    # existing independent hitbox expansion remains untouched.
+    assert "const RESEARCH_SITE_SYMBOL_MIN_SIZE_PX = 14;" in app_js
+    assert 'overlayId === "researchSites" ? RESEARCH_SITE_SYMBOL_MIN_SIZE_PX : 6' in resolved_marker_size
+    assert "interactiveDivMarkerSize(visualSize)" in app_js

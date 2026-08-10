@@ -54,6 +54,13 @@
   --airport-plane-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18'%3E%3Cpath d='M10 1c.8 0 1.4.6 1.4 1.4v4.3l6 3.2v1.8l-6-1.6v3.2l2 1.5V16L10 15l-3.4 1v-1.2l2-1.5v-3.2l-6 1.6V9.9l6-3.2V2.4C8.6 1.6 9.2 1 10 1Z'/%3E%3C/svg%3E");
   --military-air-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M1 2h18l-3.2 12L10 9.7 4.2 14Z'/%3E%3C/svg%3E");
   --military-army-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Cpath d='M8 3h6l1.5 2H21v2h-6.5l-1-1H7L5.5 8H20l-2 5H5L2 8h2.2l2.3-3H8V3Zm-.8 7.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z'/%3E%3C/svg%3E");
+  --research-beaker-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h8M10 2v7l-5.3 9.2A2.5 2.5 0 0 0 6.9 22h10.2a2.5 2.5 0 0 0 2.2-3.8L14 9V2M7.2 16h9.6' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --research-shield-sword-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3 3.5 5v5.7c0 4 2.2 7.5 5.5 9.1 2.5-1.2 4.4-3.6 5.1-6.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='m11 17 8.5-13.5M16.7 3.8l3.8.7-2.4 3M10.2 16.2l2.6 1.6M11 17l-2.5 3' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --research-crosshair-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='7'/%3E%3Cpath d='M12 2v5m0 10v5M2 12h5m10 0h5'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='1.8'/%3E%3C/svg%3E");
+  --research-gear-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='6.2'/%3E%3Ccircle cx='12' cy='12' r='2.2'/%3E%3Cpath d='M12 1v4m0 14v4M1 12h4m14 0h4M4.2 4.2 7 7m10 10 2.8 2.8M19.8 4.2 17 7M7 17l-2.8 2.8'/%3E%3C/g%3E%3C/svg%3E");
+  --research-telescope-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 7 12-4 2 6-12 4Zm12.3-2.8 3-1 2 6-3 1Z'/%3E%3Cpath d='M11 12v3m0 0-5 7m5-7 5 7m-5-7v7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --research-rocket-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c3.7 2.7 5.2 7.1 4.1 11.3L12 18l-4.1-5.2C6.8 8.6 8.3 4.2 12 1.5Zm0 4.3a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2ZM8.2 11.5 4 15v4.5l5.1-2.8Zm7.6 0L20 15v4.5l-5.1-2.8ZM9.5 19h5L12 23Z'/%3E%3C/svg%3E");
+  --research-landmark-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 8 12 2l10 6v2H2Zm2 4h3v7h2v-7h3v7h2v-7h3v7h3v3H2v-3h2Z'/%3E%3C/svg%3E");
 }
 
 /* Optional crop-circle layer. Its runtime and data are loaded only on demand. */
@@ -3608,12 +3615,22 @@ button:focus {
     linear-gradient(90deg, #00d8ff 0 33%, #2b50d9 33% 66%, #7b8f2a 66% 100%);
 }
 
-.overlay-chip[data-overlay-kind="research-sites"] .overlay-chip-swatch {
-  background: transparent;
-  border: 2px solid #7dd3fc;
-  box-shadow:
-    inset 0 0 0 2px rgba(18, 24, 31, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.24);
+.overlay-chip[data-overlay-kind="research-sites"] .overlay-chip-swatch-research-sites {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 0;
+  background: #7dd3fc;
+  -webkit-mask-image: var(--research-beaker-mask);
+  mask-image: var(--research-beaker-mask);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  box-shadow: none;
+  filter: drop-shadow(0 0 0.8px rgba(24, 18, 13, 0.92));
 }
 
 .overlay-chip-swatch-claimed-bases {
@@ -5884,6 +5901,83 @@ button:focus {
 .map-legend-marker-sample-tank::before {
   -webkit-mask-image: var(--military-army-mask);
   mask-image: var(--military-army-mask);
+}
+
+.overlay-marker-shape-beaker::before,
+.map-legend-marker-sample-beaker::before,
+.overlay-marker-shape-shield-sword::before,
+.map-legend-marker-sample-shield-sword::before,
+.overlay-marker-shape-crosshair::before,
+.map-legend-marker-sample-crosshair::before,
+.overlay-marker-shape-gear::before,
+.map-legend-marker-sample-gear::before,
+.overlay-marker-shape-telescope::before,
+.map-legend-marker-sample-telescope::before,
+.overlay-marker-shape-rocket::before,
+.map-legend-marker-sample-rocket::before,
+.overlay-marker-shape-landmark::before,
+.map-legend-marker-sample-landmark::before {
+  background: var(--overlay-marker-color, #7dd3fc);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  filter: drop-shadow(0 0 0.8px rgba(24, 18, 13, 0.92)) drop-shadow(0 1px 2px rgba(24, 18, 13, 0.48));
+}
+
+.map-legend-marker-sample-beaker,
+.map-legend-marker-sample-shield-sword,
+.map-legend-marker-sample-crosshair,
+.map-legend-marker-sample-gear,
+.map-legend-marker-sample-telescope,
+.map-legend-marker-sample-rocket,
+.map-legend-marker-sample-landmark {
+  width: 16px;
+  height: 16px;
+}
+
+.overlay-marker-shape-beaker::before,
+.map-legend-marker-sample-beaker::before {
+  -webkit-mask-image: var(--research-beaker-mask);
+  mask-image: var(--research-beaker-mask);
+}
+
+.overlay-marker-shape-shield-sword::before,
+.map-legend-marker-sample-shield-sword::before {
+  -webkit-mask-image: var(--research-shield-sword-mask);
+  mask-image: var(--research-shield-sword-mask);
+}
+
+.overlay-marker-shape-crosshair::before,
+.map-legend-marker-sample-crosshair::before {
+  -webkit-mask-image: var(--research-crosshair-mask);
+  mask-image: var(--research-crosshair-mask);
+}
+
+.overlay-marker-shape-gear::before,
+.map-legend-marker-sample-gear::before {
+  -webkit-mask-image: var(--research-gear-mask);
+  mask-image: var(--research-gear-mask);
+}
+
+.overlay-marker-shape-telescope::before,
+.map-legend-marker-sample-telescope::before {
+  -webkit-mask-image: var(--research-telescope-mask);
+  mask-image: var(--research-telescope-mask);
+}
+
+.overlay-marker-shape-rocket::before,
+.map-legend-marker-sample-rocket::before {
+  -webkit-mask-image: var(--research-rocket-mask);
+  mask-image: var(--research-rocket-mask);
+}
+
+.overlay-marker-shape-landmark::before,
+.map-legend-marker-sample-landmark::before {
+  -webkit-mask-image: var(--research-landmark-mask);
+  mask-image: var(--research-landmark-mask);
 }
 
 .overlay-marker-shape-anchor::before,

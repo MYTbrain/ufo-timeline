@@ -486,6 +486,9 @@
     defense_research: "Defense research",
     military_test: "Military test",
     contractor: "Contractor",
+    observatory: "Observatory",
+    space_launch: "Space Launch",
+    other_research: "Other research facility",
   });
 
   const RESEARCH_SITE_FALLBACK_CATEGORY_COLORS = Object.freeze({
@@ -493,7 +496,29 @@
     defense_research: "#c084fc",
     military_test: "#f59e0b",
     contractor: "#34d399",
+    observatory: "#a7f3d0",
+    space_launch: "#22d3ee",
+    other_research: "#94a3b8",
   });
+
+  const RESEARCH_SITE_CATEGORY_SHAPES = Object.freeze({
+    national_lab: "beaker",
+    defense_research: "shield-sword",
+    military_test: "crosshair",
+    contractor: "gear",
+    observatory: "telescope",
+    space_launch: "rocket",
+    other_research: "landmark",
+  });
+
+  const RESEARCH_SITE_LEGACY_ICON_ALIASES = Object.freeze({
+    lab: "beaker",
+    radar: "shield-sword",
+    range: "crosshair",
+    factory: "gear",
+  });
+
+  const RESEARCH_SITE_FALLBACK_CATEGORY = "other_research";
 
   const RESEARCH_SITE_AREA_MAX_CIRCLE_RADIUS_KM = 30;
   const RESEARCH_SITE_AREA_MAX_LONG_SIDE_KM = 40;
@@ -503,6 +528,7 @@
   const RESEARCH_SITE_DEFAULT_DOT_OPACITY = 0.9;
   const RESEARCH_SITE_DEFAULT_AREA_OPACITY = 0.1;
   const RESEARCH_SITE_DEFAULT_AREA_STROKE_OPACITY = 0.3;
+  const RESEARCH_SITE_SYMBOL_MIN_SIZE_PX = 14;
 
   const TYPE_GROUP_ORDER = [
     "UFO/UAP sighting",
@@ -12872,7 +12898,7 @@
       escapeHtml(shape) +
       '" style="--overlay-marker-color:' +
       escapeHtml(color) +
-      '"></span>';
+      '" aria-hidden="true"></span>';
     return (
       '<div class="map-legend-item' + (active ? "" : " is-disabled") + '">' +
       buildMapLegendToggleButton(sampleHtml, Object.assign({}, config, { label })) +
@@ -13093,8 +13119,8 @@
     const payload = runtime.overlayPayloads.get("researchSites");
     const features = Array.isArray(payload && payload.features) ? payload.features : [];
     features.forEach(function (feature) {
-      const category = String(feature && feature.properties ? feature.properties.category || "" : "").trim();
-      if (category) categories.add(category);
+      const properties = feature && feature.properties ? feature.properties : {};
+      categories.add(researchSiteDisplayCategory(properties));
     });
     const preferred = Object.keys(RESEARCH_SITE_CATEGORY_LABELS).filter(function (category) {
       return categories.has(category);
@@ -13111,9 +13137,9 @@
   }
 
   function researchCategoryVisible(category) {
-    if (!category) return true;
-    if (!Object.prototype.hasOwnProperty.call(state.researchCategoryVisibility, category)) return true;
-    return Boolean(state.researchCategoryVisibility[category]);
+    const displayCategory = researchSiteDisplayCategory(category);
+    if (!Object.prototype.hasOwnProperty.call(state.researchCategoryVisibility, displayCategory)) return true;
+    return Boolean(state.researchCategoryVisibility[displayCategory]);
   }
 
   function mapLegendOverlayToggleOptions(attribute, value, label, active) {
@@ -13145,7 +13171,7 @@
     const researchByCategory = new Map();
     researchFeatures.forEach(function (feature) {
       const properties = feature && feature.properties ? feature.properties : {};
-      const category = researchSiteStringValue(properties, "category");
+      const category = researchSiteDisplayCategory(properties);
       researchByCategory.set(category, (researchByCategory.get(category) || 0) + 1);
     });
     return {
@@ -13262,10 +13288,11 @@
     researchLegendCategories().forEach(function (category) {
       const active = Boolean(state.overlayVisibility.researchSites && researchCategoryVisible(category));
       const label = researchSiteCategoryLabel(category);
+      const categoryStyle = researchSiteCategoryStyle(category);
       rows.push(buildMapLegendMarkerRow(
         label,
-        researchSiteCategoryStyle(category).color,
-        "ring",
+        categoryStyle.color,
+        categoryStyle.shape,
         Object.assign(
           mapLegendOverlayToggleOptions("data-map-legend-research-category", category, label, active),
           {
@@ -13722,6 +13749,7 @@
   }
 
   function renderMapLegend() {
+    renderCompactOverlayCounts();
     if (!els.mapLegendBody) return;
     renderMapLegendHeaderControls();
     const eventRows = buildMapLegendEventRows();
@@ -15262,7 +15290,7 @@
   function researchSiteFeatureVisible(feature) {
     const properties = feature && feature.properties ? feature.properties : {};
     if (researchSiteRecommendedIncludeValue(properties) === "no") return false;
-    const category = researchSiteStringValue(properties, "category");
+    const category = researchSiteDisplayCategory(properties);
     if (!researchCategoryVisible(category)) return false;
     return overlayFeatureVisibleInCurrentTimeWindow(feature);
   }
@@ -15333,19 +15361,33 @@
     return String(value).trim();
   }
 
+  function researchSiteDisplayCategory(value) {
+    const rawCategory = value && typeof value === "object"
+      ? researchSiteStringValue(value, "category")
+      : String(value || "").trim();
+    return rawCategory || RESEARCH_SITE_FALLBACK_CATEGORY;
+  }
+
   function researchSiteCategoryStyle(category) {
+    const displayCategory = researchSiteDisplayCategory(category);
     const overlayCfg = overlayConfig("researchSites");
     const categoryStyles = overlayCfg && overlayCfg.category_styles ? overlayCfg.category_styles : null;
-    const style = categoryStyles && category ? categoryStyles[category] : null;
+    const style = categoryStyles ? categoryStyles[displayCategory] : null;
+    const configuredIcon = String((style && style.icon) || "").trim();
+    const semanticShape = RESEARCH_SITE_CATEGORY_SHAPES[displayCategory];
+    const legacyShape = RESEARCH_SITE_LEGACY_ICON_ALIASES[configuredIcon];
+    const configuredShape = Object.values(RESEARCH_SITE_CATEGORY_SHAPES).indexOf(configuredIcon) !== -1
+      ? configuredIcon
+      : legacyShape;
     return {
-      color: (style && style.color) || RESEARCH_SITE_FALLBACK_CATEGORY_COLORS[category] || OVERLAY_VISUALS.researchSites.chipColor,
-      icon: (style && style.icon) || "lab",
+      color: (style && style.color) || RESEARCH_SITE_FALLBACK_CATEGORY_COLORS[displayCategory] || OVERLAY_VISUALS.researchSites.chipColor,
+      shape: semanticShape || configuredShape || RESEARCH_SITE_CATEGORY_SHAPES[RESEARCH_SITE_FALLBACK_CATEGORY],
     };
   }
 
   function researchSiteCategoryLabel(category) {
-    if (!category) return "";
-    return RESEARCH_SITE_CATEGORY_LABELS[category] || humanizeTokenLabel(category);
+    const displayCategory = researchSiteDisplayCategory(category);
+    return RESEARCH_SITE_CATEGORY_LABELS[displayCategory] || humanizeTokenLabel(displayCategory);
   }
 
   function researchSiteOperationDates(properties) {
@@ -15467,7 +15509,8 @@
         return;
       }
       if (field === "category") {
-        const categoryLabel = researchSiteCategoryLabel(researchSiteStringValue(properties, "category"));
+        const rawCategory = researchSiteStringValue(properties, "category");
+        const categoryLabel = rawCategory ? researchSiteCategoryLabel(rawCategory) : "";
         if (categoryLabel) {
           rows.push(buildOverlayPopupRow("Category", categoryLabel));
         }
@@ -15707,7 +15750,6 @@
     }
     renderClaimedUfoBaseControls();
     renderFocusMapButton();
-    renderCompactOverlayCounts();
     renderMapControlSectionSummaries();
     renderMapLegend();
     renderMapControlQuickButtons();
@@ -15758,9 +15800,10 @@
       ].filter(Boolean).join(" | ");
     }
     if (overlayId === "researchSites") {
+      const rawCategory = researchSiteStringValue(properties, "category");
       return [
         researchSiteStringValue(properties, ["region_or_city", "location_label"]),
-        researchSiteCategoryLabel(researchSiteStringValue(properties, "category")) ||
+        (rawCategory ? researchSiteCategoryLabel(rawCategory) : "") ||
           researchSiteStringValue(properties, "facility_type"),
         researchSiteOperationDates(properties),
       ].filter(Boolean).join(" | ");
@@ -15813,9 +15856,10 @@
     const properties = feature && feature.properties ? feature.properties : {};
     const overlayCfg = overlayConfig("researchSites");
     const markerStyle = overlayCfg && overlayCfg.marker_style ? overlayCfg.marker_style : null;
-    const category = researchSiteStringValue(properties, "category");
-    const baseColor = markerStyle && markerStyle.use_category_color && category
-      ? researchSiteCategoryStyle(category).color
+    const category = researchSiteDisplayCategory(properties);
+    const categoryStyle = researchSiteCategoryStyle(category);
+    const baseColor = markerStyle && markerStyle.use_category_color
+      ? categoryStyle.color
       : overlayVisual("researchSites").chipColor;
 
     if (researchSiteHasContextMarker(properties)) {
@@ -15823,7 +15867,7 @@
       const baseOpacity = researchSiteNumberValue(properties, "marker_dot_opacity");
       return {
         color: baseColor,
-        shape: "circle",
+        shape: categoryStyle.shape,
         opacity: clamp(
           (Number.isFinite(baseOpacity) ? baseOpacity : RESEARCH_SITE_DEFAULT_DOT_OPACITY) *
             researchSiteMarkerEmphasis(properties),
@@ -15840,7 +15884,7 @@
 
     return {
       color: baseColor,
-      shape: (markerStyle && markerStyle.shape) || "ring",
+      shape: categoryStyle.shape,
     };
   }
 
@@ -15901,10 +15945,11 @@
   }
 
   function resolvedOverlayMarkerVisualSize(descriptor, overlayId) {
+    const minimumSize = overlayId === "researchSites" ? RESEARCH_SITE_SYMBOL_MIN_SIZE_PX : 6;
     if (descriptor && Number.isFinite(descriptor.fixedSizePx) && descriptor.fixedSizePx > 0) {
-      return clamp(descriptor.fixedSizePx, 6, MAP_OVERLAY_MAX_SIZE);
+      return clamp(descriptor.fixedSizePx, minimumSize, MAP_OVERLAY_MAX_SIZE);
     }
-    return zoomScaledOverlayMarkerSize(overlayId);
+    return clamp(zoomScaledOverlayMarkerSize(overlayId), minimumSize, MAP_OVERLAY_MAX_SIZE);
   }
 
   function createOverlayMarkerIcon(descriptor, overlayId) {

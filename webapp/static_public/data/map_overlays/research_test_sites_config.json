@@ -12,28 +12,32 @@
   },
   "category_styles": {
     "national_lab": {
-      "icon": "lab",
+      "icon": "beaker",
       "color": "#7dd3fc"
     },
     "defense_research": {
-      "icon": "radar",
+      "icon": "shield-sword",
       "color": "#c084fc"
     },
     "military_test": {
-      "icon": "range",
+      "icon": "crosshair",
       "color": "#f59e0b"
     },
     "contractor": {
-      "icon": "factory",
+      "icon": "gear",
       "color": "#34d399"
     },
     "space_launch": {
-      "icon": "range",
+      "icon": "rocket",
       "color": "#22d3ee"
     },
     "observatory": {
-      "icon": "lab",
+      "icon": "telescope",
       "color": "#a7f3d0"
+    },
+    "other_research": {
+      "icon": "landmark",
+      "color": "#94a3b8"
     }
   },
   "popup_fields": [
