@@ -532,6 +532,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 {
   const harness = await createHarness();
   const remoteCatalogPath = new URL(harness.manifest.catalog.path, harness.manifest.assetBaseUrl).pathname;
+  harness.failedPaths.set("/data/animal_mutilations/catalog.json", 404);
   assert.equal(harness.requests.length, 0, "importing the heavy animal runtime has no fetch side effects before bootstrap activation");
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   assert.deepEqual(harness.requests, [
@@ -595,6 +596,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 {
   const harness = await createHarness();
   const remotePointsPath = new URL(harness.manifest.points.path, harness.manifest.assetBaseUrl).pathname;
+  harness.failedPaths.set("/data/animal_mutilations/points.json", 404);
   await harness.api.setEnabled(true);
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
