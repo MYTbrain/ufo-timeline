@@ -85,6 +85,7 @@ SEMANTIC_CHECKS = [
     "attempt_fingerprints_are_unique_and_budget_bounded",
     "two_subwave_no_gain_stop_rule_enforced",
     "privacy_forbidden_keys_absent",
+    "frozen_known_source_fingerprint_index_verified",
     "non_milestone_release_seal_fail_closed",
 ]
 
@@ -698,7 +699,25 @@ def _validate_release_seal(
             )
 
 
-def validate_known_source_reconciliation(reconciliation: Mapping[str, Any]) -> set[str]:
+def validate_frozen_known_source_index(reconciliation: Mapping[str, Any]) -> set[str]:
+    index = reconciliation["noRepeatIndex"]
+    raw_fingerprints = index.get("fingerprints")
+    if not isinstance(raw_fingerprints, list) or any(
+        not isinstance(value, str) or not re.fullmatch(r"[a-f0-9]{64}", value)
+        for value in raw_fingerprints
+    ):
+        raise CampaignValidationError("Frozen known-source fingerprint index is malformed")
+    fingerprints = list(raw_fingerprints)
+    if fingerprints != sorted(set(fingerprints)):
+        raise CampaignValidationError("Frozen known-source fingerprint index must be sorted and unique")
+    if index.get("count") != len(fingerprints):
+        raise CampaignValidationError("Frozen known-source fingerprint count changed")
+    if index.get("sha256") != sha256_bytes(canonical_json_bytes(fingerprints)):
+        raise CampaignValidationError("Frozen known-source fingerprint index hash changed")
+    return set(fingerprints)
+
+
+def derive_external_known_source_fingerprints(reconciliation: Mapping[str, Any]) -> set[str]:
     canonical = reconciliation["canonicalInput"]
     path = Path(canonical["path"])
     if not path.is_file():
@@ -766,6 +785,40 @@ def validate_known_source_reconciliation(reconciliation: Mapping[str, Any]) -> s
         raise CampaignValidationError("Existing source registry URL count changed")
     fingerprints.update(attempt_fingerprint("source_open", url) for url in registry_urls)
     return fingerprints
+
+
+def validate_known_source_reconciliation(reconciliation: Mapping[str, Any]) -> set[str]:
+    frozen_fingerprints = validate_frozen_known_source_index(reconciliation)
+    canonical_path = Path(reconciliation["canonicalInput"]["path"])
+    registry_path = Path(reconciliation["existingSourceRegistry"]["path"])
+    available = (canonical_path.is_file(), registry_path.is_file())
+    if available == (False, False):
+        return frozen_fingerprints
+    if available != (True, True):
+        raise CampaignValidationError(
+            "Known-source external inputs must either both be available or both be absent"
+        )
+    derived_fingerprints = derive_external_known_source_fingerprints(reconciliation)
+    if derived_fingerprints != frozen_fingerprints:
+        raise CampaignValidationError("Frozen known-source fingerprint index does not match canonical inputs")
+    return frozen_fingerprints
+
+
+def write_known_source_index(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> Path:
+    path = campaign_root / "state" / "known_source_reconciliation.json"
+    reconciliation = load_json(path)
+    fingerprints = sorted(derive_external_known_source_fingerprints(reconciliation))
+    reconciliation["noRepeatIndex"] = {
+        "targetColumn": "source_record_url",
+        "fingerprintAlgorithm": "sha256_attempt_kind_normalized_target_version_v1",
+        "storage": "frozen_sorted_index_recomputed_when_canonical_inputs_available",
+        "exactMatchRequired": True,
+        "count": len(fingerprints),
+        "sha256": sha256_bytes(canonical_json_bytes(fingerprints)),
+        "fingerprints": fingerprints,
+    }
+    path.write_bytes(canonical_json_bytes(reconciliation))
+    return path
 
 
 def validate_campaign(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, Any]:
@@ -897,13 +950,21 @@ def parse_args() -> argparse.Namespace:
     action = parser.add_mutually_exclusive_group()
     action.add_argument("--check", action="store_true", help="Require the tracked receipt to match (default).")
     action.add_argument("--write-receipt", action="store_true", help="Write the deterministic candidate receipt.")
+    action.add_argument(
+        "--write-known-source-index",
+        action="store_true",
+        help="Freeze the no-repeat fingerprint index from both content-addressed external inputs.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
-        if args.write_receipt:
+        if args.write_known_source_index:
+            path = write_known_source_index(args.campaign_root)
+            print(f"wrote {path}")
+        elif args.write_receipt:
             path = write_receipt(args.campaign_root)
             print(f"wrote {path}")
         else:

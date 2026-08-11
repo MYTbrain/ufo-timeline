@@ -36,12 +36,21 @@
     "coverageCounts": {"const": {"coverage_gap": 7, "narrative_scanned": 2364}},
     "noRepeatIndex": {
       "type": "object",
-      "required": ["targetColumn", "fingerprintAlgorithm", "storage", "exactMatchRequired"],
+      "required": ["targetColumn", "fingerprintAlgorithm", "storage", "exactMatchRequired", "count", "sha256", "fingerprints"],
       "properties": {
         "targetColumn": {"const": "source_record_url"},
         "fingerprintAlgorithm": {"const": "sha256_attempt_kind_normalized_target_version_v1"},
-        "storage": {"const": "recompute_from_content_addressed_canonical_input"},
-        "exactMatchRequired": {"const": true}
+        "storage": {"const": "frozen_sorted_index_recomputed_when_canonical_inputs_available"},
+        "exactMatchRequired": {"const": true},
+        "count": {"const": 2393},
+        "sha256": {"const": "23bb6f2fa989005ae07827924e69bfc26abe82aa783b66d5fde8d46d6cc1f831"},
+        "fingerprints": {
+          "type": "array",
+          "minItems": 2393,
+          "maxItems": 2393,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
       },
       "additionalProperties": false
     },

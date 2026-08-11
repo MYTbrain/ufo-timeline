@@ -86,6 +86,7 @@ def test_tracked_campaign_is_valid_populated_and_receipted() -> None:
     assert validated["baseline"]["domainBaseline"]["cropCircle"]["strictReady"] == 0
     assert validated["baseline"]["domainBaseline"]["animalMutilation"]["strictReady"] == 0
     assert validated["knownSources"]["selection"]["rows"] == 2371
+    assert validated["knownSources"]["noRepeatIndex"]["count"] == 2393
     rows = validated["rows"]
     assert all(rows[name] for name in ("source", "assertion", "decision", "queue"))
     assert len(validated["reviewStates"]) == len(rows["assertion"])
@@ -93,6 +94,19 @@ def test_tracked_campaign_is_valid_populated_and_receipted() -> None:
     assert review_states <= {"proposed", "source_reviewed", "human_reviewed"}
     assert "source_reviewed" in review_states
     assert any(row["status"] == "materially_upgraded" for row in rows["queue"])
+
+
+def test_frozen_known_source_index_supports_clean_clone_validation(tmp_path: Path) -> None:
+    reconciliation = json.loads(
+        (CAMPAIGN_ROOT / "state" / "known_source_reconciliation.json").read_text(encoding="utf-8")
+    )
+    reconciliation["canonicalInput"]["path"] = str(tmp_path / "missing-audit.csv")
+    reconciliation["existingSourceRegistry"]["path"] = str(tmp_path / "missing-registry.json")
+
+    fingerprints = campaign.validate_known_source_reconciliation(reconciliation)
+
+    assert len(fingerprints) == 2393
+    assert len(fingerprints) == reconciliation["noRepeatIndex"]["count"]
 
 
 def test_source_discovery_queue_has_candidate_identity_without_fake_case() -> None:
