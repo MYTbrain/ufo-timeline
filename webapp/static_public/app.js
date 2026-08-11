@@ -8412,7 +8412,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-05-analysis-color-v1-ui1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-10-analysis-polish-v3");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8934,14 +8934,29 @@
       }
       return { domain: config.domain, enabled: enabled, origin: origin, result: result };
     }).catch(function (error) {
+      runtime.analysisContextEnabledState[config.domain] = enabled;
+      if (config.button) {
+        config.button.setAttribute("aria-pressed", enabled ? "true" : "false");
+        config.button.classList.toggle("is-active", enabled);
+      }
       if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
         runtime.analysisViewController.setContextControlState(config.domain, {
-          enabled: !enabled,
+          enabled: enabled,
           busy: false,
-          error: error && error.message ? error.message : String(error),
+          message: enabled
+            ? config.label + " included in Analysis; its optional map overlay is unavailable."
+            : config.label + " excluded from Analysis.",
         });
       }
-      throw error;
+      runtime.analysisCache.clear();
+      scheduleAnalysisCompute(config.domain + " analysis context changed", { immediate: true });
+      return {
+        domain: config.domain,
+        enabled: enabled,
+        origin: origin,
+        overlayAvailable: false,
+        error: error && error.message ? error.message : String(error),
+      };
     }).finally(function () {
       if (config.button) config.button.removeAttribute("aria-busy");
       if (runtime.analysisContextMutationPromises[config.domain] === operation) {
@@ -9040,7 +9055,7 @@
             runtime.analysisTimeEvidenceLoadPending = true;
           }
         }
-        if (change && change.sectionKey === "context") {
+        if (change && ["context", "crops", "animals", "facilities"].indexOf(change.sectionKey) !== -1) {
           ensureAnalysisContextEvidence().catch(function () { return null; });
         }
         if (change && ["spatial", "sources_quality"].indexOf(change.sectionKey) !== -1) {
@@ -28191,18 +28206,19 @@
       const detail = event && event.detail ? event.detail : {};
       const priorEnabled = runtime.analysisContextEnabledState.crops;
       runtime.cropCircleOverlayEnabled = Boolean(detail.enabled);
-      runtime.analysisContextEnabledState.crops = runtime.cropCircleOverlayEnabled;
+      const cropAnalysisEnabled = Boolean(els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true");
+      runtime.analysisContextEnabledState.crops = cropAnalysisEnabled;
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
       renderOverlayControls();
       if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
         runtime.analysisViewController.setContextControlState("crops", {
-          enabled: runtime.cropCircleOverlayEnabled,
+          enabled: cropAnalysisEnabled,
           busy: Boolean(detail.busy),
         });
       }
-      if (priorEnabled !== null && priorEnabled !== runtime.cropCircleOverlayEnabled) {
+      if (priorEnabled !== null && priorEnabled !== cropAnalysisEnabled) {
         runtime.analysisCache.clear();
         scheduleAnalysisCompute("crop context layer changed");
       }
@@ -28212,18 +28228,19 @@
       const detail = event && event.detail ? event.detail : {};
       const priorEnabled = runtime.analysisContextEnabledState.animals;
       runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
-      runtime.analysisContextEnabledState.animals = runtime.animalMutilationOverlayEnabled;
+      const animalAnalysisEnabled = Boolean(els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true");
+      runtime.analysisContextEnabledState.animals = animalAnalysisEnabled;
       runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
         ? Number(detail.visibleRecords)
         : null;
       renderOverlayControls();
       if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
         runtime.analysisViewController.setContextControlState("animals", {
-          enabled: runtime.animalMutilationOverlayEnabled,
+          enabled: animalAnalysisEnabled,
           busy: Boolean(detail.busy),
         });
       }
-      if (priorEnabled !== null && priorEnabled !== runtime.animalMutilationOverlayEnabled) {
+      if (priorEnabled !== null && priorEnabled !== animalAnalysisEnabled) {
         runtime.analysisCache.clear();
         scheduleAnalysisCompute("animal context layer changed");
       }

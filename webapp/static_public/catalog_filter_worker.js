@@ -1870,21 +1870,31 @@
     return JSON.parse(new TextDecoder("utf-8").decode(decodedBytes));
   }
 
+  const analysisRemoteFallbacks = new Map();
+
+  function uniqueAnalysisUrls(values) {
+    return values.map(String).filter(function (value, index, source) {
+      return Boolean(value) && source.indexOf(value) === index;
+    });
+  }
+
   async function fetchAnalysisJson(urlValue, integrity) {
     const url = String(urlValue || "");
     if (!url) return null;
-    try {
-      const response = await fetch(url, { cache: "force-cache" });
-      if (!response.ok) throw new Error("HTTP " + response.status + " for " + url);
-      return await decodeJsonResponse(response, url, integrity || {});
-    } catch (error) {
-      if (error && /SHA-256 mismatch|only available gzip SHA-256/.test(String(error.message || error))) throw error;
-      const fallback = rawJsonFallbackUrl(url);
-      if (!fallback || fallback === url) throw error;
-      const response = await fetch(fallback, { cache: "force-cache" });
-      if (!response.ok) throw new Error("HTTP " + response.status + " for " + fallback);
-      return await decodeJsonResponse(response, fallback, integrity || {});
+    const remote = analysisRemoteFallbacks.get(url) || "";
+    const candidates = uniqueAnalysisUrls([url, rawJsonFallbackUrl(url), remote, rawJsonFallbackUrl(remote)]);
+    let lastError = null;
+    for (const candidate of candidates) {
+      try {
+        const response = await fetch(candidate, { cache: "force-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status + " for " + candidate);
+        return await decodeJsonResponse(response, candidate, integrity || {});
+      } catch (error) {
+        if (error && /SHA-256 mismatch|only available gzip SHA-256/.test(String(error.message || error))) throw error;
+        lastError = error;
+      }
     }
+    throw lastError || new Error("Analysis JSON artifact is unavailable: " + url);
   }
 
   function rawBinaryFallbackUrl(url) {
@@ -1952,9 +1962,16 @@
     const sha256 = normalizedSha256((manifestArtifactEntry(manifest, key) || {}).sha256);
     if (!resolved || !sha256) return resolved;
     try {
-      const url = new URL(resolved, manifestUrl);
-      url.searchParams.set("sha256", sha256);
-      return url.toString();
+      const remoteUrl = new URL(resolved, manifestUrl);
+      remoteUrl.searchParams.set("sha256", sha256);
+      const manifestOrigin = new URL(manifestUrl, self.location && self.location.href).origin;
+      if (remoteUrl.origin !== manifestOrigin) {
+        const localUrl = new URL("./" + remoteUrl.pathname.split("/").filter(Boolean).pop(), manifestUrl);
+        localUrl.searchParams.set("sha256", sha256);
+        analysisRemoteFallbacks.set(localUrl.toString(), remoteUrl.toString());
+        return localUrl.toString();
+      }
+      return remoteUrl.toString();
     } catch (_error) {
       return resolved + (resolved.indexOf("?") === -1 ? "?" : "&") + "sha256=" + sha256;
     }

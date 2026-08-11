@@ -1541,8 +1541,8 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'aria-controls="map animal-mutilation-status"',
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
-                'styles.css?v=2026-08-10-facility-symbols-v1',
-                'app.js?v=2026-08-10-facility-symbols-v1',
+                'styles.css?v=2026-08-10-analysis-polish-v3',
+                'app.js?v=2026-08-10-analysis-polish-v3',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -1662,7 +1662,7 @@ def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifec
         'craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence)',
         'craft_type_source: internCanonicalSummaryString(event.craft_type_source)',
         'const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"',
-        'catalog_filter_worker.js?v=2026-08-05-analysis-color-v1-ui1',
+        'catalog_filter_worker.js?v=2026-08-10-analysis-polish-v3',
         "Promise.all([manifestPromise, ensureWorldReferenceData()])",
         "getWorldReferenceData: function () { return runtime.worldReferenceData; }",
         "function ensureAnalysisContextEvidence()",
@@ -1730,9 +1730,7 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
         "Classification confidence": "analysis-craft-confidence-chart",
         "Geography by era": "analysis-geography-time-chart",
         "Context-marker neighborhoods": "analysis-context-neighborhood-chart",
-        "Facility context": "analysis-facility-context-chart",
         "Coordinate evidence quality": "analysis-coordinate-evidence-spatial-chart",
-        "Cross-domain readiness": "analysis-cross-domain-readiness-chart",
         "Catalog composition": "analysis-crop-morphology-chart",
         "Location, coverage, and point evidence": "analysis-crop-coordinate-chart",
         "Report composition": "analysis-animal-species-chart",
@@ -1749,6 +1747,8 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
     )
     assert len(disclosures) == len(supporting_cards)
     assert all(" open" not in disclosure for disclosure in disclosures)
+    assert '<div id="analysis-facility-context-chart"' in index_html
+    assert '<div id="analysis-cross-domain-readiness-chart"' in index_html
     closed_disclosure_rule = styles_css.split(
         ".analysis-supporting-details:not([open]) {", 1
     )[1].split("}", 1)[0]
@@ -1798,7 +1798,8 @@ def test_analysis_dashboards_collapse_secondary_evidence_without_removing_charts
         'analysis-spatial-matrix-support" open'
     ) not in index_html
     assert 'id="analysis-spatial-context-disclosure"' in index_html
-    assert 'id="analysis-spatial-facility-disclosure"' in index_html
+    assert 'id="analysis-section-tab-facilities"' in index_html
+    assert 'id="analysis-section-facilities"' in index_html
     assert 'caption: "High-precision co-occurrence pool", endpointsOnly: true' in Path(
         "webapp/static_public/analysis_view.js"
     ).read_text(encoding="utf-8")
@@ -1950,7 +1951,7 @@ def test_context_only_evidence_loader_is_deduplicated_retryable_and_cache_safe()
     assert layer_status_body.index("Object.assign({ loaded: false }, status || {})") < layer_status_body.index("merged.enabled = requestedEnabled")
 
     initialize_body = _extract_js_function_body(app_js, "initializeAnalysisView")
-    assert 'change && change.sectionKey === "context"' in initialize_body
+    assert 'change && ["context", "crops", "animals", "facilities"].indexOf(change.sectionKey) !== -1' in initialize_body
     assert "ensureAnalysisContextEvidence().catch(function () { return null; });" in initialize_body
     assert "if (runtime.analysisContextEvidenceError)" in initialize_body
     assert "onRenderComplete: function ()" in initialize_body

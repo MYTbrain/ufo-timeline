@@ -111,7 +111,7 @@
     setStatus("Loading the crop-circle layer…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./crop_circle_layer.js?v=2026-08-10-control-panel-polish-v1";
+      script.src = "./crop_circle_layer.js?v=2026-08-10-analysis-polish-v3";
       script.async = true;
       script.onload = function () {
         if (!window.UfoCropCircleLayer) {
@@ -136,9 +136,8 @@
   }
 
   function reportError(error) {
-    desiredEnabled = false;
-    setDesiredButtonState(false);
-    setStatus(error && error.message ? error.message : String(error), true);
+    setDesiredButtonState(desiredEnabled);
+    setStatus("Crop circles remain included in Analysis; the map overlay could not load. " + (error && error.message ? error.message : String(error)), true);
     console.error(error);
   }
 

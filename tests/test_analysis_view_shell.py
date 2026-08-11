@@ -85,6 +85,9 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
         "analysis-section-craft",
         "analysis-section-geography",
         "analysis-section-spatial",
+        "analysis-section-crops",
+        "analysis-section-animals",
+        "analysis-section-facilities",
         "analysis-section-sources-quality",
         "analysis-section-context",
         "analysis-context-status",
@@ -105,10 +108,6 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
         "analysis-relationship-context",
         "analysis-crop-context",
         "analysis-animal-context",
-        "analysis-context-subview-tabs",
-        "analysis-context-tab-crops",
-        "analysis-context-tab-animals",
-        "analysis-context-tab-relationships",
         "analysis-include-crop-circles",
         "analysis-include-animal-reports",
         "analysis-view-crop-analysis",
@@ -124,6 +123,9 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
     }
     chart_ids = {
         "analysis-coverage-chart",
+        "analysis-overview-coverage-visual",
+        "analysis-overview-craft-mosaic",
+        "analysis-overview-context-visual",
         "analysis-comparison-chart",
         "analysis-time-series-chart",
         "analysis-month-year-chart",
@@ -154,12 +156,14 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
         "analysis-crop-coordinate-chart",
         "analysis-crop-coverage-chart",
         "analysis-crop-spatial-chart",
+        "analysis-crop-craft-context-chart",
         "analysis-animal-time-chart",
         "analysis-animal-species-chart",
         "analysis-animal-status-chart",
         "analysis-animal-date-precision-chart",
         "analysis-animal-coverage-chart",
         "analysis-animal-spatial-chart",
+        "analysis-animal-craft-context-chart",
     }
     assert required_ids | chart_ids <= set(parser.elements)
     for chart_id in chart_ids:
@@ -172,7 +176,7 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
     assert "Other dates, balanced" in baseline_options
     assert "Report-marker associations only. Chronology connectors are never analyzed." in baseline_options
     assert 'role="switch" aria-checked="true"' in baseline_options
-    assert "An association appears only when its preregistered evidence gates pass." in baseline_options
+    assert "proximity does not establish a relationship or cause" in baseline_options
     assert "They do not establish travel, causation, authenticity, or phenomenon incidence." in baseline_options
     section_tab_ids = [
         "analysis-section-tab-overview",
@@ -180,6 +184,9 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
         "analysis-section-tab-craft",
         "analysis-section-tab-geography",
         "analysis-section-tab-spatial",
+        "analysis-section-tab-crops",
+        "analysis-section-tab-animals",
+        "analysis-section-tab-facilities",
         "analysis-section-tab-context",
         "analysis-section-tab-sources-quality",
     ]
@@ -190,6 +197,9 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
         "analysis-section-craft",
         "analysis-section-geography",
         "analysis-section-spatial",
+        "analysis-section-crops",
+        "analysis-section-animals",
+        "analysis-section-facilities",
         "analysis-section-context",
         "analysis-section-sources-quality",
     ]
@@ -209,33 +219,6 @@ def test_analysis_shell_exposes_all_sections_states_and_preview_actions() -> Non
             assert "inert" not in panel[1]
             assert panel[1]["aria-hidden"] == "false"
 
-    context_tab_ids = [
-        "analysis-context-tab-crops",
-        "analysis-context-tab-animals",
-        "analysis-context-tab-relationships",
-    ]
-    assert parser.elements["analysis-context-subview-tabs"][1]["role"] == "tablist"
-    assert [parser.elements[tab_id][1]["aria-controls"] for tab_id in context_tab_ids] == [
-        "analysis-crop-context",
-        "analysis-animal-context",
-        "analysis-relationship-context",
-    ]
-    assert sum(parser.elements[tab_id][1]["aria-selected"] == "true" for tab_id in context_tab_ids) == 1
-    for index, tab_id in enumerate(context_tab_ids):
-        panel_id = parser.elements[tab_id][1]["aria-controls"]
-        panel = parser.elements[panel_id]
-        assert panel[1]["role"] == "tabpanel"
-        assert panel[1]["aria-labelledby"] == tab_id
-        if index:
-            assert "hidden" in panel[1]
-            assert "inert" in panel[1]
-            assert panel[1]["aria-hidden"] == "true"
-        else:
-            assert "hidden" not in panel[1]
-            assert "inert" not in panel[1]
-            assert panel[1]["aria-hidden"] == "false"
-
-
 def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
     card_pattern = re.compile(r'<(?:article|details)\b[^>]*class="[^"]*\banalysis-card\b[^"]*"', re.I)
@@ -244,10 +227,11 @@ def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     craft_shell = index_html.split('id="analysis-section-craft"', 1)[1].split('id="analysis-section-geography"', 1)[0]
     geography_shell = index_html.split('id="analysis-section-geography"', 1)[1].split('id="analysis-section-spatial"', 1)[0]
     overview_shell = index_html.split('id="analysis-section-overview"', 1)[1].split('id="analysis-section-time"', 1)[0]
-    spatial_shell = index_html.split('id="analysis-section-spatial"', 1)[1].split('id="analysis-section-context"', 1)[0]
+    spatial_shell = index_html.split('id="analysis-section-spatial"', 1)[1].split('id="analysis-section-crops"', 1)[0]
+    crop_shell = index_html.split('id="analysis-section-crops"', 1)[1].split('id="analysis-section-animals"', 1)[0]
+    animal_shell = index_html.split('id="analysis-section-animals"', 1)[1].split('id="analysis-section-facilities"', 1)[0]
+    facilities_shell = index_html.split('id="analysis-section-facilities"', 1)[1].split('id="analysis-section-context"', 1)[0]
     context_shell = index_html.split('id="analysis-section-context"', 1)[1].split('id="analysis-section-sources-quality"', 1)[0]
-    crop_shell = context_shell.split('id="analysis-crop-context"', 1)[1].split('id="analysis-animal-context"', 1)[0]
-    animal_shell = context_shell.split('id="analysis-animal-context"', 1)[1].split('id="analysis-relationship-context"', 1)[0]
     sources_shell = index_html.split('id="analysis-section-sources-quality"', 1)[1].split('id="analysis-preview-drawer"', 1)[0]
 
     assert len(card_pattern.findall(time_shell)) == 3
@@ -267,17 +251,20 @@ def test_analysis_dashboards_prioritize_the_primary_questions() -> None:
     assert '<h3 id="analysis-geography-title">Country evidence</h3>' in geography_shell
     assert 'id="analysis-geography-sensitivity-chart"' in geography_shell
     assert '<summary>Advanced equal-area sensitivity</summary>' in geography_shell
-    assert len(card_pattern.findall(overview_shell)) == 1
+    assert len(card_pattern.findall(overview_shell)) == 4
     cohort_shell = overview_shell.split('id="analysis-cohort-banner"', 1)[1].split('id="analysis-methodology"', 1)[0]
     assert 'id="analysis-coverage-chart"' in cohort_shell
     assert 'id="analysis-comparison-chart"' in overview_shell
     assert 'id="analysis-pattern-list"' in overview_shell
-    assert len(card_pattern.findall(spatial_shell)) == 3
+    assert len(card_pattern.findall(spatial_shell)) == 2
     assert 'id="analysis-cross-domain-readiness-chart"' not in spatial_shell
     assert 'id="analysis-context-category-card" class="analysis-card-subsection' in spatial_shell
     assert 'id="analysis-cross-domain-readiness-chart"' in context_shell
-    assert len(card_pattern.findall(crop_shell)) == 3
-    assert len(card_pattern.findall(animal_shell)) == 3
+    assert len(card_pattern.findall(crop_shell)) == 4
+    assert len(card_pattern.findall(animal_shell)) == 4
+    assert len(card_pattern.findall(facilities_shell)) == 1
+    assert 'id="analysis-crop-craft-context-chart"' in crop_shell
+    assert 'id="analysis-animal-craft-context-chart"' in animal_shell
     assert len(card_pattern.findall(sources_shell)) == 3
     assert 'id="analysis-spatial-eligibility-chart"' in index_html
 
@@ -290,6 +277,9 @@ def test_v22_dashboard_order_visibility_and_dom_budget_are_bounded() -> None:
         "craft",
         "geography",
         "spatial",
+        "crops",
+        "animals",
+        "facilities",
         "context",
         "sources-quality",
     ]
@@ -327,35 +317,36 @@ def test_v22_dashboard_order_visibility_and_dom_budget_are_bounded() -> None:
     card_pattern = re.compile(r'<(?:article|details)\b[^>]*class="[^"]*\banalysis-card\b[^"]*"', re.I)
     card_counts = {name: len(card_pattern.findall(shell)) for name, shell in section_shells.items()}
     assert card_counts == {
-        "overview": 1,
+        "overview": 4,
         "time": 3,
         "craft": 3,
         "geography": 3,
-        "spatial": 3,
-        "context": 8,
+        "spatial": 2,
+        "crops": 4,
+        "animals": 4,
+        "facilities": 1,
+        "context": 2,
         "sources-quality": 3,
     }
-    assert sum(card_counts.values()) == 24
+    assert sum(card_counts.values()) == 29
     assert 'id="analysis-context-category-card" class="analysis-card-subsection analysis-context-category-panel" hidden' in section_shells["spatial"]
 
-    context_shell = section_shells["context"]
-    crop_shell = context_shell.split('id="analysis-crop-context"', 1)[1].split('id="analysis-animal-context"', 1)[0]
-    animal_shell = context_shell.split('id="analysis-animal-context"', 1)[1].split('id="analysis-relationship-context"', 1)[0]
-    relationship_shell = context_shell.split('id="analysis-relationship-context"', 1)[1]
-    assert len(card_pattern.findall(crop_shell)) == 3
-    assert len(card_pattern.findall(animal_shell)) == 3
+    relationship_shell = section_shells["context"].split('id="analysis-relationship-context"', 1)[1]
     assert len(card_pattern.findall(relationship_shell)) == 1
 
     simultaneously_primary = {
-        "overview": 1,
-        "time": 2,
-        "craft": 3,
-        "geography": 2,
-        "spatial": 3,
-        "context": 4,
-        "sources-quality": 3,
+        "overview": 4,
+        "time": 1,
+        "craft": 1,
+        "geography": 1,
+        "spatial": 1,
+        "crops": 2,
+        "animals": 2,
+        "facilities": 1,
+        "context": 2,
+        "sources-quality": 1,
     }
-    assert sum(simultaneously_primary.values()) == 18
+    assert sum(simultaneously_primary.values()) == 16
     assert sum(simultaneously_primary.values()) < 20
 
     toolbar_rule = styles_css.split(".analysis-workspace-toolbar {", 1)[1].split("}", 1)[0]
@@ -409,9 +400,9 @@ def test_v22_reference_desktop_uses_compact_dashboard_layouts() -> None:
 
 def test_shell_cache_keys_track_their_current_source_releases() -> None:
     index_html = (SOURCE_ROOT / "index.html").read_text(encoding="utf-8")
-    assert "styles.css?v=2026-08-10-facility-symbols-v1" in index_html
-    assert "app.js?v=2026-08-10-facility-symbols-v1" in index_html
-    assert "analysis_view.js?v=2026-08-05-analysis-color-v1-ui1" in index_html
+    assert "styles.css?v=2026-08-10-analysis-polish-v3" in index_html
+    assert "app.js?v=2026-08-10-analysis-polish-v3" in index_html
+    assert "analysis_view.js?v=2026-08-10-analysis-polish-v3" in index_html
     assert "analysis-evidence-lab-v2-1-recovery" not in index_html
 
 
@@ -530,8 +521,10 @@ def test_analysis_styles_cover_dark_theme_mobile_keyboard_and_unavailable_map_co
         ".analysis-craft-mosaic",
         ".analysis-country-choropleth",
         ".analysis-country-shape",
-        ".analysis-context-subview-tabs",
-        ".analysis-context-subview[hidden]",
+        ".analysis-visual-briefing-grid",
+        ".analysis-context-pulse-card",
+        ".analysis-mosaic-mode-button",
+        'html[data-active-primary-view="analysis"] .timeline-panel',
         ".analysis-context-subchart-grid",
         ".analysis-card-subsection[hidden]",
         ".analysis-context-readiness-card",

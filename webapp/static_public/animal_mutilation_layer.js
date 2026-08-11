@@ -190,32 +190,44 @@
 
   async function readPayload(declaration, label, signal) {
     throwIfAborted(signal);
-    const response = await fetch(new URL(declaration.path, assetBaseUrl()), { cache: "force-cache", signal: signal });
-    if (!response.ok) throw new Error(label + " request failed (" + response.status + ").");
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    throwIfAborted(signal);
-    if (Number.isFinite(Number(declaration.bytes)) && bytes.length !== Number(declaration.bytes)) {
-      throw new Error(label + " failed its byte-count integrity check.");
-    }
-    if (declaration.sha256) {
-      const actualHash = await sha256Hex(bytes);
-      if (actualHash && actualHash !== String(declaration.sha256).toLowerCase()) {
-        throw new Error(label + " failed its SHA-256 integrity check.");
+    let lastError = null;
+    for (const candidate of payloadCandidates(declaration.path)) {
+      try {
+        const response = await fetch(candidate.url, { cache: "force-cache", signal: signal });
+        if (!response.ok) throw new Error(label + " request failed (" + response.status + ").");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        throwIfAborted(signal);
+        const expectedBytes = candidate.compressed
+          ? declaration.bytes
+          : (declaration.decodedBytes || declaration.decoded_bytes);
+        if (Number.isFinite(Number(expectedBytes)) && bytes.length !== Number(expectedBytes)) {
+          throw new Error(label + " failed its byte-count integrity check.");
+        }
+        if (candidate.compressed && declaration.sha256) {
+          const actualHash = await sha256Hex(bytes);
+          if (actualHash && actualHash !== String(declaration.sha256).toLowerCase()) {
+            throw new Error(label + " failed its SHA-256 integrity check.");
+          }
+        }
+        throwIfAborted(signal);
+        let decoded;
+        if (bytes.length > 1 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
+          if (typeof DecompressionStream !== "function") {
+            throw new Error("This browser cannot decode the compact Animal Mutilation Reports data.");
+          }
+          const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+          decoded = await new Response(stream).text();
+        } else {
+          decoded = new TextDecoder("utf-8").decode(bytes);
+        }
+        throwIfAborted(signal);
+        return JSON.parse(decoded);
+      } catch (error) {
+        if (isAbortError(error)) throw error;
+        lastError = error;
       }
     }
-    throwIfAborted(signal);
-    let decoded;
-    if (bytes.length > 1 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
-      if (typeof DecompressionStream !== "function") {
-        throw new Error("This browser cannot decode the compact Animal Mutilation Reports data.");
-      }
-      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
-      decoded = await new Response(stream).text();
-    } else {
-      decoded = new TextDecoder("utf-8").decode(bytes);
-    }
-    throwIfAborted(signal);
-    return JSON.parse(decoded);
+    throw lastError || new Error(label + " is unavailable.");
   }
 
   function validateManifest(manifest) {
@@ -265,6 +277,16 @@
   function assetBaseUrl() {
     if (state.manifest && state.manifest.assetBaseUrl) return new URL(state.manifest.assetBaseUrl, document.baseURI);
     return new URL("./data/animal_mutilations/", document.baseURI);
+  }
+
+  function payloadCandidates(pathValue) {
+    const path = String(pathValue || "");
+    const localPath = path.replace(/\.json\.gz$/i, ".json");
+    const localUrl = new URL(localPath, new URL("./data/animal_mutilations/", document.baseURI));
+    const remoteUrl = new URL(path, assetBaseUrl());
+    const candidates = [{ url: localUrl, compressed: false }];
+    if (remoteUrl.toString() !== localUrl.toString()) candidates.push({ url: remoteUrl, compressed: true });
+    return candidates;
   }
 
   function positionKey(row) {

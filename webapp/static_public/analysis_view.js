@@ -60,7 +60,32 @@
     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
   ]);
   const CRAFT_DISPLAY_LABELS = Object.freeze({
+    chevron_boomerang: "Chevron / boomerang",
+    cigar_cylinder: "Cigar / cylinder",
+    disc_saucer: "Disc / saucer",
+    dumbbell_barbell: "Dumbbell / barbell",
     formation: "Formation",
+    oval_egg: "Oval / egg",
+    rectangle_box: "Rectangle / box",
+    sphere_orb: "Sphere / orb",
+  });
+  const SPECIES_DISPLAY_LABELS = Object.freeze({
+    avian: "Birds",
+    bovine: "Cattle",
+    camelid: "Camels / llamas",
+    canid: "Dogs / canids",
+    caprine: "Goats",
+    cervid: "Deer",
+    equine: "Horses",
+    felid: "Cats / felines",
+    fish: "Fish",
+    lagomorph: "Rabbits / hares",
+    marine_mammal: "Marine mammals",
+    other_mammal: "Other mammals",
+    other_sparse_species: "Other species (limited sample)",
+    ovine: "Sheep",
+    porcine: "Pigs",
+    unknown: "Unknown species",
   });
   const READINESS_STATUS_LABELS = Object.freeze({
     ready_inferential: "Inferential",
@@ -69,7 +94,7 @@
     limited: "Limited",
     blocked: "Blocked",
     not_applicable: "N/A",
-    not_evaluated: "Not evaluated",
+    not_evaluated: "No gate defined",
     data_unavailable: "Unavailable",
   });
   const READINESS_MATRIX_COLUMNS = Object.freeze([
@@ -729,8 +754,38 @@
   }
 
   function humanizeEvidenceReason(value) {
-    const reason = cleanText(value);
-    return reason.indexOf("_") === -1 ? reason : reason.replace(/_/g, " ");
+    const reason = cleanText(value).replace(/_/g, " ").replace(/\s+/g, " ").trim();
+    const lower = reason.toLowerCase();
+    const sampleParts = [];
+    if (/near observed below 25|near band below 25/.test(lower)) sampleParts.push("near n<25");
+    else if (/observed clusters below 25|observed below 25/.test(lower)) sampleParts.push("observed n<25");
+    if (/comparison band below 10/.test(lower)) sampleParts.push("comparison n<10");
+    else if (/comparison band below 25/.test(lower)) sampleParts.push("comparison n<25");
+    else if (/expected clusters below 10|expected below 10/.test(lower)) sampleParts.push("expected n<10");
+    if (sampleParts.length) return "Limited sample (" + sampleParts.join("; ") + ")";
+    if (/effect below 1(?:\.|\s)25x or above 0(?:\.|\s)80x/.test(lower)) return "Small effect";
+    if (!reason) return "";
+    return reason.charAt(0).toUpperCase() + reason.slice(1);
+  }
+
+  function summarizeEvidenceReasons(value) {
+    const values = (Array.isArray(value) ? value : [value]).map(cleanText).filter(Boolean);
+    if (!values.length) return "";
+    const combined = values.join(" ").replace(/_/g, " ").replace(/\s+/g, " ").toLowerCase();
+    const sampleParts = [];
+    if (/near observed below 25|near band below 25/.test(combined)) sampleParts.push("near n<25");
+    else if (/observed clusters below 25|observed below 25/.test(combined)) sampleParts.push("observed n<25");
+    if (/comparison band below 10/.test(combined)) sampleParts.push("comparison n<10");
+    else if (/comparison band below 25/.test(combined)) sampleParts.push("comparison n<25");
+    if (/expected clusters below 10|expected below 10/.test(combined)) sampleParts.push("expected n<10");
+    const summarized = [];
+    if (sampleParts.length) summarized.push("Limited sample (" + Array.from(new Set(sampleParts)).join("; ") + ")");
+    if (/effect below 1(?:\.|\s)25x or above 0(?:\.|\s)80x/.test(combined)) summarized.push("Small effect");
+    values.map(humanizeEvidenceReason).forEach(function (reason) {
+      if (!reason || /^Limited sample\b|^Small effect$/i.test(reason)) return;
+      if (summarized.indexOf(reason) === -1) summarized.push(reason);
+    });
+    return summarized.join("; ");
   }
 
   function monthDisplayLabel(value) {
@@ -745,6 +800,22 @@
     const key = raw.toLowerCase().replace(/[\s/-]+/g, "_");
     if (Object.prototype.hasOwnProperty.call(CRAFT_DISPLAY_LABELS, key)) return CRAFT_DISPLAY_LABELS[key];
     return raw.replace(/_/g, " ").replace(/\b\w/g, function (letter) { return letter.toUpperCase(); });
+  }
+
+  function speciesDisplayLabel(value) {
+    const raw = cleanText(value, "Unknown species");
+    const key = raw.toLowerCase().replace(/[\s/-]+/g, "_");
+    if (Object.prototype.hasOwnProperty.call(SPECIES_DISPLAY_LABELS, key)) return SPECIES_DISPLAY_LABELS[key];
+    return raw.replace(/_/g, " ").replace(/\b\w/g, function (letter) { return letter.toUpperCase(); });
+  }
+
+  function plainLanguageLabel(value) {
+    const raw = cleanText(value);
+    const speciesKey = raw.toLowerCase().replace(/[\s/-]+/g, "_");
+    if (Object.prototype.hasOwnProperty.call(SPECIES_DISPLAY_LABELS, speciesKey)) return SPECIES_DISPLAY_LABELS[speciesKey];
+    return raw.indexOf("_") === -1
+      ? raw
+      : raw.replace(/_/g, " ").replace(/\b\w/g, function (letter) { return letter.toUpperCase(); });
   }
 
   function isDumbbellBarbellCraft(value) {
@@ -856,9 +927,7 @@
 
   function suppressionReason(item) {
     const explicitValue = firstDefined(item, ["suppressionReasons", "suppression_reasons", "supportReasons", "support_reasons", "suppressionReason", "suppression_reason", "reason"], "");
-    const explicit = Array.isArray(explicitValue)
-      ? explicitValue.map(humanizeEvidenceReason).filter(Boolean).join("; ")
-      : humanizeEvidenceReason(explicitValue);
+    const explicit = summarizeEvidenceReasons(explicitValue);
     const status = cleanText(firstDefined(item, ["displayStatus", "display_status", "suppressionStatus", "suppression_status", "status", "eligibility", "evidenceStatus", "evidence_status"], "")).toLowerCase();
     const suppressed = item && (
       item.suppressed === true ||
@@ -1174,10 +1243,13 @@
         ? "Generalized"
         : ((coordinateClass.indexOf("source") !== -1 || coordinateClass.indexOf("exact") !== -1)
           ? "Source-provided exact"
-          : "Unspecified coordinate class");
+          : "");
+      const combineGeographyLabel = function (geographyLabel) {
+        return classLabel ? geographyLabel + " · " + classLabel.toLowerCase() + " coordinates" : geographyLabel;
+      };
       if (Number.isFinite(Number(item.latIndex)) && Number.isFinite(Number(item.lonIndex))) {
         return Object.assign({}, item, {
-          row: classLabel + " · " + coordinateRangeLabel(item.latMinimum, item.latMaximum),
+          row: combineGeographyLabel(coordinateRangeLabel(item.latMinimum, item.latMaximum)),
           column: coordinateRangeLabel(item.lonMinimum, item.lonMaximum),
         });
       }
@@ -1185,12 +1257,13 @@
       if (identity) {
         const bounds = equalAreaBandBounds(identity.row, identity.column, identity.rows, identity.columns);
         return Object.assign({}, item, {
-          row: classLabel + " · " + coordinateRangeLabel(bounds.south, bounds.north),
+          row: combineGeographyLabel(coordinateRangeLabel(bounds.south, bounds.north)),
           column: coordinateRangeLabel(bounds.west, bounds.east),
         });
       }
+      const geographyLabel = humanGeographyLabel(firstDefined(item, ["row", "rowLabel"], "Unknown region"));
       return Object.assign({}, item, {
-        row: classLabel + " · " + humanGeographyLabel(firstDefined(item, ["row", "rowLabel"], "Unknown band")),
+        row: combineGeographyLabel(geographyLabel),
         column: humanGeographyLabel(firstDefined(item, ["column", "columnLabel"], "Value")),
       });
     }).sort(function (left, right) {
@@ -2416,7 +2489,9 @@
         });
       }
       if (sectionId === "analysis-section-geography") this._requestGeography("section-visible");
-      if (sectionId === "analysis-section-spatial") this._requestSpatialEvidence("section-visible");
+      if (["analysis-section-spatial", "analysis-section-crops", "analysis-section-animals", "analysis-section-facilities", "analysis-section-context"].indexOf(sectionId) !== -1) {
+        this._requestSpatialEvidence("section-visible");
+      }
       if (previousSectionId !== sectionId) {
         if (this.renderPending) this._cancelActiveRenderScope();
         this._renderActiveSectionIfNeeded();
@@ -2456,8 +2531,10 @@
         return this.navigateToSection(hash, Object.assign({ updateHash: false, focus: false }, options || {}));
       }
       if (hash === "analysis-crop-context" || hash === "analysis-animal-context" || hash === "analysis-relationship-context") {
-        const activated = this.navigateToSection("analysis-section-context", Object.assign({ updateHash: false, focus: false }, options || {}));
-        this.setActiveContextSubview(hash, { focus: false, source: "hash" });
+        const sectionId = hash === "analysis-crop-context"
+          ? "analysis-section-crops"
+          : (hash === "analysis-animal-context" ? "analysis-section-animals" : "analysis-section-context");
+        const activated = this.navigateToSection(sectionId, Object.assign({ updateHash: false, focus: false }, options || {}));
         const target = this.document.getElementById(hash);
         if (target && typeof target.scrollIntoView === "function") {
           target.scrollIntoView({ block: "start", behavior: this._prefersReducedMotion() ? "auto" : "smooth" });
@@ -2597,8 +2674,7 @@
     _handleContextView(event, domain, targetId) {
       if (event && typeof event.preventDefault === "function") event.preventDefault();
       if (this.callbacks.onContextView) this.callbacks.onContextView({ domain, targetId, origin: "analysis" });
-      this.navigateToSection("analysis-section-context", { updateHash: false, focus: false, source: "context-view" });
-      this.setActiveContextSubview(targetId, { focus: false, source: "context-view" });
+      this.navigateToSection(domain === "animals" ? "analysis-section-animals" : "analysis-section-crops", { updateHash: false, focus: false, source: "context-view" });
       const target = this.document.getElementById(targetId);
       this._replaceHash(targetId);
       if (target && typeof target.scrollIntoView === "function") {
@@ -2918,8 +2994,7 @@
     }
 
     _activeRenderKeys() {
-      if (this.activeSectionId !== "analysis-section-context") return [this.activeSectionId];
-      return [this.activeContextSubviewId, "analysis-section-context"];
+      return [this.activeSectionId];
     }
 
     _renderActiveSectionIfNeeded() {
@@ -3263,13 +3338,16 @@
       const list = this._element("div", "analysis-forest-list" + (config.compact ? " analysis-signal-spectrum" : ""));
       const tableRows = [];
       data.forEach((item, index) => {
-        const label = datumLabel(item, index);
+        const rawLabel = datumLabel(item, index);
+        const label = config.labelKind === "craft"
+          ? craftDisplayLabel(rawLabel)
+          : (config.labelKind === "species" ? speciesDisplayLabel(rawLabel) : plainLanguageLabel(rawLabel));
         const effect = comparativeEffect(item, config.valueKeys);
         const interval = intervalBounds(item, { ratioScale });
         const plotInterval = interval || { lower: effect, upper: effect };
         const itemSuppression = suppressionReason(item);
         const selectable = estimateAvailable(item, config.valueKeys) && datumHasPreview(item);
-        const row = this._element(selectable ? "button" : "div", "analysis-forest-row" + (config.compact ? " analysis-signal-spectrum-row" : ""));
+        const row = this._element(selectable ? "button" : "div", "analysis-forest-row" + (config.compact ? " analysis-signal-spectrum-row" : "") + (config.dense ? " is-dense" : ""));
         if (selectable) row.type = "button";
         if (itemSuppression) row.classList.add("is-low-support");
         if (transform(effect) < 0) row.classList.add("is-negative");
@@ -3302,9 +3380,11 @@
             : formatSignedPercent(effect) + " · " + intervalLabel)
           : valueLabel;
         row.appendChild(this._element("span", "analysis-forest-value", faceValueLabel));
-        if (countText) row.appendChild(this._element("span", "analysis-forest-counts", countText));
-        if (itemSuppression) {
-          row.appendChild(this._element("span", "analysis-forest-status", "Descriptive estimate · " + itemSuppression));
+        if (config.dense && (countText || itemSuppression)) {
+          row.appendChild(this._element("span", "analysis-forest-meta", [countText, itemSuppression].filter(Boolean).join(" · ")));
+        } else {
+          if (countText) row.appendChild(this._element("span", "analysis-forest-counts", countText));
+          if (itemSuppression) row.appendChild(this._element("span", "analysis-forest-status", itemSuppression));
         }
         row.setAttribute("aria-label", label + ": " + (countText ? countText + ". " : "") + valueLabel + (itemSuppression ? ". Descriptive estimate: " + itemSuppression + "." : (selectable ? ". Preview this selection." : "")));
         if (config.compact) row.setAttribute("title", valueLabel);
@@ -3366,6 +3446,112 @@
       this._appendDataTable(container, config.caption || "Eligibility funnel", ["Stage", "Input n", "Eligible n", "Excluded n", "Retention", "Policy"], rows);
     }
 
+    _renderCoverageOrbit(chartId, items, summary) {
+      const stages = asArray(items).filter(isObject);
+      const container = this._prepareChart(chartId, summary.activeCount > 0 ? [true] : [], summary, "No matched reports are available for a coverage profile.");
+      if (!container) return;
+      const total = Math.max(1, summary.activeCount);
+      const lastStage = stages.length ? stages[stages.length - 1] : {};
+      const neighborhoodEligible = Math.max(0, finiteNumber(firstDefined(lastStage, ["passedN", "passed_n", "eligibleN", "eligible_n", "count", "value"], 0), 0));
+      const metrics = [
+        { label: "Mapped", count: summary.mappedCount, color: "var(--accent)" },
+        { label: "Point-neighborhood eligible", count: neighborhoodEligible, color: "#7b61a8" },
+        { label: "Required fields complete", count: Math.max(0, summary.activeCount - summary.missingCount), color: "#2f9e76" },
+      ].map(function (metric) {
+        return Object.assign({}, metric, { share: Math.max(0, Math.min(1, metric.count / total)) });
+      });
+      const visual = this._element("div", "analysis-coverage-orbit");
+      const rings = this._element("div", "analysis-coverage-rings");
+      rings.setAttribute("role", "img");
+      rings.setAttribute("aria-label", metrics.map(function (metric) { return metric.label + " " + formatPercent(metric.share); }).join("; "));
+      metrics.slice().reverse().forEach((metric, index) => {
+        const ring = this._element("span", "analysis-coverage-ring analysis-coverage-ring-" + index);
+        ring.style.setProperty("--analysis-ring-angle", (metric.share * 360).toFixed(2) + "deg");
+        ring.style.setProperty("--analysis-ring-color", metric.color);
+        rings.appendChild(ring);
+      });
+      const center = this._element("span", "analysis-coverage-ring-center");
+      center.appendChild(this._element("strong", "", "Coverage"));
+      center.appendChild(this._element("span", "", "share of cohort"));
+      rings.appendChild(center);
+      visual.appendChild(rings);
+      const legend = this._element("dl", "analysis-coverage-orbit-legend");
+      metrics.forEach(function (metric) {
+        const row = documentSafeElement(container.ownerDocument, "div", "");
+        row.style.setProperty("--analysis-ring-color", metric.color);
+        row.appendChild(documentSafeElement(container.ownerDocument, "dt", "", metric.label));
+        row.appendChild(documentSafeElement(container.ownerDocument, "dd", "", formatPercent(metric.share)));
+        legend.appendChild(row);
+      });
+      visual.appendChild(legend);
+      container.appendChild(visual);
+    }
+
+    _renderContextPulse(chartId, data, summary) {
+      const source = isObject(data) ? data : {};
+      const container = this._prepareChart(chartId, [true], summary, "Context summaries are not available.");
+      if (!container) return;
+      const contextCount = function (contextData) {
+        const context = isObject(contextData) ? contextData : {};
+        const contextSummary = isObject(context.summary) ? context.summary : {};
+        const explicit = firstDefined(context, ["activeCount", "count", "rowCount", "recordCount"], firstDefined(contextSummary, ["activeCount", "active_count", "count"], null));
+        if (explicit != null) return Math.max(0, finiteNumber(explicit, 0));
+        return firstArray(context, ["time", "series", "yearly"]).reduce(function (total, item) {
+          return total + Math.max(0, datumValue(item));
+        }, 0);
+      };
+      const facilities = isObject(source.facilities) ? source.facilities : {};
+      const facilityCatalog = isObject(firstDefined(facilities, ["catalogSummary", "catalog_summary"], null))
+        ? firstDefined(facilities, ["catalogSummary", "catalog_summary"], {})
+        : {};
+      const facilityTotal = Math.max(0, finiteNumber(firstDefined(facilityCatalog, ["totalN", "total_n"], firstDefined(facilities, ["facilityCatalogN", "facility_catalog_n"], 0)), 0));
+      const facilityQualified = Math.max(0, finiteNumber(firstDefined(facilities, ["inferentialFacilityN", "inferential_facility_n"], firstDefined(facilityCatalog, ["inferentialEligibleN", "inferential_eligible_n"], 0)), 0));
+      const entries = [
+        {
+          label: "Crop circles",
+          count: contextCount(source.crops),
+          detail: "descriptive formation catalog",
+          target: "analysis-section-crops",
+          color: "#2f9e76",
+          share: Math.min(1, contextCount(source.crops) / Math.max(1, summary.activeCount)),
+        },
+        {
+          label: "Animal reports",
+          count: contextCount(source.animals),
+          detail: "reported · unreviewed",
+          target: "analysis-section-animals",
+          color: "#d18a34",
+          share: Math.min(1, contextCount(source.animals) / Math.max(1, summary.activeCount)),
+        },
+        {
+          label: "Facilities",
+          count: facilityQualified,
+          detail: "qualified of " + formatCount(facilityTotal) + " catalog markers",
+          target: "analysis-section-facilities",
+          color: "#7b61a8",
+          share: facilityTotal > 0 ? Math.min(1, facilityQualified / facilityTotal) : 0,
+        },
+      ];
+      const grid = this._element("div", "analysis-context-pulse");
+      entries.forEach((entry) => {
+        const button = this._element("button", "analysis-context-pulse-card");
+        button.type = "button";
+        button.style.setProperty("--analysis-pulse-color", entry.color);
+        button.style.setProperty("--analysis-pulse-angle", (entry.share * 360).toFixed(2) + "deg");
+        button.appendChild(this._element("span", "analysis-context-pulse-gauge", formatPercent(entry.share)));
+        const copy = this._element("span", "analysis-context-pulse-copy");
+        copy.appendChild(this._element("strong", "", entry.label));
+        copy.appendChild(this._element("b", "", formatCount(entry.count)));
+        copy.appendChild(this._element("small", "", entry.detail));
+        button.appendChild(copy);
+        button.setAttribute("aria-label", entry.label + ": " + formatCount(entry.count) + ", " + entry.detail + ". Open this analysis view.");
+        button.addEventListener("click", () => this.navigateToSection(entry.target, { updateHash: true, focus: true, source: "overview-context-pulse" }));
+        grid.appendChild(button);
+      });
+      container.appendChild(grid);
+      container.appendChild(this._element("p", "analysis-chart-summary", "Context counts describe available records or qualified markers. They do not assert a relationship with UFO reports."));
+    }
+
     _renderCraftMosaic(chartId, items, summary, options) {
       const config = options || {};
       const craftCount = function (item) {
@@ -3376,82 +3562,146 @@
         return craftCount(right) - craftCount(left)
           || datumLabel(left, 0).localeCompare(datumLabel(right, 0));
       });
-      const limit = Math.max(2, config.limit || 12);
-      let display = ranked.slice(0, limit);
-      if (ranked.length > limit) {
-        const remaining = ranked.slice(limit - 1);
-        display = ranked.slice(0, limit - 1).concat([{
-          label: "Remaining categories",
-          count: remaining.reduce(function (sum, item) { return sum + craftCount(item); }, 0),
-          aggregatedCategoryCount: remaining.length,
-          aggregateOnly: true,
-        }]);
-      }
-      const container = this._prepareChart(chartId, display, summary, config.emptyMessage || "No craft categories are available for this cohort.");
+      const container = this._prepareChart(chartId, ranked, summary, config.emptyMessage || "No craft categories are available for this cohort.");
       if (!container) return;
-      const total = Math.max(1, ranked.reduce(function (sum, item) { return sum + craftCount(item); }, 0));
-      const mosaic = this._element("div", "analysis-craft-mosaic");
-      mosaic.setAttribute("role", "group");
-      mosaic.setAttribute("aria-label", "Craft mosaic; tile area encodes report share and color encodes "
-        + (this.currentAnalysisMode === "whole_corpus_structure" ? "whole-corpus share intensity" : "adjusted difference"));
-      const layout = proportionalTreemap(display.map(function (item) {
-        return { item, weight: craftCount(item) };
-      }));
-      const effects = display.map(function (item) {
-        return finiteNumber(firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], 0), 0);
-      });
-      const maximumEffect = Math.max(Number.EPSILON, ...effects.map(Math.abs));
-      const maximumShare = Math.max(Number.EPSILON, ...display.map(function (item) { return craftCount(item) / total; }));
-      layout.forEach((rectangle, index) => {
-        const item = rectangle.item.item;
-        const rawLabel = datumLabel(item, index);
-        const label = craftDisplayLabel(rawLabel);
-        const count = craftCount(item);
-        const share = count / total;
-        const effect = firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], null);
-        const interval = intervalBounds(item);
-        const selectable = !item.aggregateOnly && datumHasPreview(item);
-        const tile = this._element(selectable ? "button" : "div", "analysis-craft-mosaic-tile");
-        if (selectable) tile.type = "button";
-        tile.style.left = rectangle.x.toFixed(4) + "%";
-        tile.style.top = rectangle.y.toFixed(4) + "%";
-        tile.style.width = rectangle.width.toFixed(4) + "%";
-        tile.style.height = rectangle.height.toFixed(4) + "%";
-        tile.style.setProperty("--analysis-mosaic-area-share", share.toFixed(8));
-        if (rectangle.width < 18 || rectangle.height < 22 || share < 0.025) tile.classList.add("is-compact");
-        if (this.currentAnalysisMode === "whole_corpus_structure") {
-          const intensity = Math.round(14 + (74 * Math.sqrt(share / maximumShare)));
-          tile.style.setProperty("--analysis-mosaic-fill", "color-mix(in srgb, var(--accent) " + intensity + "%, var(--surface-muted))");
-          tile.classList.add("is-whole-corpus");
-        } else {
-          const numericEffect = finiteNumber(effect, 0);
-          const intensity = Math.round(13 + (72 * Math.abs(numericEffect) / maximumEffect));
-          tile.style.setProperty("--analysis-mosaic-fill", numericEffect < 0
-            ? "color-mix(in srgb, var(--warn-text) " + intensity + "%, var(--surface-muted))"
-            : "color-mix(in srgb, var(--accent) " + intensity + "%, var(--surface-muted))");
-          tile.classList.add(numericEffect < 0 ? "is-negative" : (numericEffect > 0 ? "is-positive" : "is-neutral"));
+      const limit = Math.max(2, config.limit || 12);
+      const excluded = new Set();
+      let rebalanceMode = false;
+      const categoryKey = function (item, index) { return datumLabel(item, index).toLowerCase().replace(/[\s/-]+/g, "_"); };
+      const renderMosaic = () => {
+        this._clear(container);
+        let included = ranked.filter(function (item, index) { return !excluded.has(categoryKey(item, index)); });
+        if (!included.length) {
+          excluded.clear();
+          included = ranked.slice();
         }
-        tile.appendChild(this._element("strong", "analysis-craft-mosaic-label", label));
-        tile.appendChild(this._element("span", "analysis-craft-mosaic-count", formatPercent(share)));
-        if (effect != null && this.currentAnalysisMode !== "whole_corpus_structure") tile.appendChild(this._element("span", "analysis-craft-mosaic-effect", formatSignedPercent(effect)));
-        const accessible = label + ": " + formatCount(count) + " reports, " + formatPercent(share) + " of matched craft reports; tile area " + formatPercent(rectangle.areaShare)
-          + (this.currentAnalysisMode === "whole_corpus_structure" ? "; color shows report-share intensity" : (effect == null ? "" : "; adjusted effect " + formatSignedPercent(effect)))
-          + (interval ? "; 95% interval " + formatPercentInterval(interval) : "");
-        tile.setAttribute("aria-label", accessible + (selectable ? ". Preview this craft selection." : ""));
-        tile.setAttribute("title", accessible);
-        if (selectable) this._activatePreview(tile, item, label, summary, config.defaultKind || "filter");
-        mosaic.appendChild(tile);
-      });
-      container.appendChild(mosaic);
-      container.appendChild(this._element("p", "analysis-chart-summary analysis-mosaic-encoding", "Area = report share. "
-        + (this.currentAnalysisMode === "whole_corpus_structure"
-          ? "Darker teal = larger whole-corpus share."
-          : "Teal = above the balanced expectation; amber = below it.")));
-      this._appendDataTable(container, config.caption || "Craft category mosaic", ["Craft", "Reports", "Share", "Adjusted effect", "95% interval"], ranked.map(function (item, index) {
-        const count = craftCount(item);
-        const effect = firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], null);
-        return [craftDisplayLabel(datumLabel(item, index)), formatCount(count), formatPercent(count / total), effect == null ? "—" : formatSignedPercent(effect), intervalBounds(item) ? formatPercentInterval(intervalBounds(item)) : "—"];
-      }));
+        let display = included.slice(0, limit);
+        if (included.length > limit) {
+          const remaining = included.slice(limit - 1);
+          display = included.slice(0, limit - 1).concat([{
+            label: "Remaining categories",
+            count: remaining.reduce(function (sum, item) { return sum + craftCount(item); }, 0),
+            aggregatedCategoryCount: remaining.length,
+            aggregateOnly: true,
+          }]);
+        }
+        const total = Math.max(1, included.reduce(function (sum, item) { return sum + craftCount(item); }, 0));
+        const controls = this._element("div", "analysis-mosaic-controls");
+        const modeButton = this._element("button", "analysis-mosaic-mode-button", "Rebalance categories");
+        modeButton.type = "button";
+        modeButton.setAttribute("aria-pressed", rebalanceMode ? "true" : "false");
+        modeButton.setAttribute("title", "When active, selecting a tile removes it from this display and recalculates the remaining percentages.");
+        modeButton.addEventListener("click", function () {
+          rebalanceMode = !rebalanceMode;
+          renderMosaic();
+        });
+        controls.appendChild(modeButton);
+        const resetButton = this._element("button", "analysis-mosaic-reset-button", "Show all");
+        resetButton.type = "button";
+        resetButton.disabled = !excluded.size;
+        resetButton.addEventListener("click", function () {
+          excluded.clear();
+          renderMosaic();
+        });
+        controls.appendChild(resetButton);
+        controls.appendChild(this._element(
+          "span",
+          "analysis-mosaic-mode-status",
+          rebalanceMode ? "Select a tile to exclude it" : "Select a tile to preview its filter"
+        ));
+        container.appendChild(controls);
+        if (excluded.size) {
+          const excludedRow = this._element("div", "analysis-mosaic-excluded");
+          excludedRow.appendChild(this._element("span", "", "Excluded from display:"));
+          ranked.forEach((item, index) => {
+            const key = categoryKey(item, index);
+            if (!excluded.has(key)) return;
+            const restore = this._element("button", "analysis-mosaic-restore-button", craftDisplayLabel(datumLabel(item, index)) + " ×");
+            restore.type = "button";
+            restore.setAttribute("aria-label", "Restore " + craftDisplayLabel(datumLabel(item, index)) + " to the composition mosaic");
+            restore.addEventListener("click", function () {
+              excluded.delete(key);
+              renderMosaic();
+            });
+            excludedRow.appendChild(restore);
+          });
+          container.appendChild(excludedRow);
+        }
+        const mosaic = this._element("div", "analysis-craft-mosaic");
+        mosaic.setAttribute("role", "group");
+        mosaic.setAttribute("aria-label", "Craft mosaic; tile area encodes recalculated report share and color encodes "
+          + (this.currentAnalysisMode === "whole_corpus_structure" ? "whole-corpus share intensity" : "adjusted difference"));
+        const layout = proportionalTreemap(display.map(function (item) {
+          return { item, weight: craftCount(item) };
+        }));
+        const effects = display.map(function (item) {
+          return finiteNumber(firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], 0), 0);
+        });
+        const maximumEffect = Math.max(Number.EPSILON, ...effects.map(Math.abs));
+        const maximumShare = Math.max(Number.EPSILON, ...display.map(function (item) { return craftCount(item) / total; }));
+        layout.forEach((rectangle, index) => {
+          const item = rectangle.item.item;
+          const rawLabel = datumLabel(item, index);
+          const key = categoryKey(item, index);
+          const label = craftDisplayLabel(rawLabel);
+          const count = craftCount(item);
+          const share = count / total;
+          const effect = firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], null);
+          const interval = intervalBounds(item);
+          const previewable = !item.aggregateOnly && datumHasPreview(item);
+          const excludable = !item.aggregateOnly && included.length > 1;
+          const selectable = rebalanceMode ? excludable : previewable;
+          const tile = this._element(selectable ? "button" : "div", "analysis-craft-mosaic-tile");
+          if (selectable) tile.type = "button";
+          tile.style.left = rectangle.x.toFixed(4) + "%";
+          tile.style.top = rectangle.y.toFixed(4) + "%";
+          tile.style.width = rectangle.width.toFixed(4) + "%";
+          tile.style.height = rectangle.height.toFixed(4) + "%";
+          tile.style.setProperty("--analysis-mosaic-area-share", share.toFixed(8));
+          if (rectangle.width < 18 || rectangle.height < 22 || share < 0.025) tile.classList.add("is-compact");
+          if (this.currentAnalysisMode === "whole_corpus_structure") {
+            const intensity = Math.round(14 + (74 * Math.sqrt(share / maximumShare)));
+            tile.style.setProperty("--analysis-mosaic-fill", "color-mix(in srgb, var(--accent) " + intensity + "%, var(--surface-muted))");
+            tile.classList.add("is-whole-corpus");
+          } else {
+            const numericEffect = finiteNumber(effect, 0);
+            const intensity = Math.round(13 + (72 * Math.abs(numericEffect) / maximumEffect));
+            tile.style.setProperty("--analysis-mosaic-fill", numericEffect < 0
+              ? "color-mix(in srgb, var(--warn-text) " + intensity + "%, var(--surface-muted))"
+              : "color-mix(in srgb, var(--accent) " + intensity + "%, var(--surface-muted))");
+            tile.classList.add(numericEffect < 0 ? "is-negative" : (numericEffect > 0 ? "is-positive" : "is-neutral"));
+          }
+          tile.appendChild(this._element("strong", "analysis-craft-mosaic-label", label));
+          tile.appendChild(this._element("span", "analysis-craft-mosaic-count", formatPercent(share)));
+          if (effect != null && this.currentAnalysisMode !== "whole_corpus_structure") tile.appendChild(this._element("span", "analysis-craft-mosaic-effect", formatSignedPercent(effect)));
+          const accessible = label + ": " + formatCount(count) + " reports, " + formatPercent(share) + " of the displayed composition; tile area " + formatPercent(rectangle.areaShare)
+            + (this.currentAnalysisMode === "whole_corpus_structure" ? "; color shows report-share intensity" : (effect == null ? "" : "; adjusted effect " + formatSignedPercent(effect)))
+            + (interval ? "; 95% interval " + formatPercentInterval(interval) : "");
+          tile.setAttribute("aria-label", accessible + (rebalanceMode && excludable ? ". Exclude this category and recalculate the display." : (previewable ? ". Preview this craft selection." : "")));
+          tile.setAttribute("title", accessible);
+          if (rebalanceMode && excludable) {
+            tile.addEventListener("click", function () {
+              excluded.add(key);
+              renderMosaic();
+            });
+          } else if (previewable) {
+            this._activatePreview(tile, item, label, summary, config.defaultKind || "filter");
+          }
+          mosaic.appendChild(tile);
+        });
+        container.appendChild(mosaic);
+        container.appendChild(this._element("p", "analysis-chart-summary analysis-mosaic-encoding", "Area = recalculated share of displayed categories. "
+          + (this.currentAnalysisMode === "whole_corpus_structure"
+            ? "Darker teal = larger whole-corpus share."
+            : "Teal = above the balanced expectation; amber = below it.")
+          + (excluded.size ? " This display excludes " + formatCount(excluded.size) + " categor" + (excluded.size === 1 ? "y" : "ies") + "; analysis results and exports are unchanged." : "")));
+        this._appendDataTable(container, config.caption || "Craft category mosaic", ["Craft", "Reports", "Displayed share", "Adjusted effect", "95% interval"], included.map(function (item, index) {
+          const count = craftCount(item);
+          const effect = firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], null);
+          return [craftDisplayLabel(datumLabel(item, index)), formatCount(count), formatPercent(count / total), effect == null ? "—" : formatSignedPercent(effect), intervalBounds(item) ? formatPercentInterval(intervalBounds(item)) : "—"];
+        }));
+      };
+      renderMosaic();
     }
 
     _renderBars(chartId, items, summary, options) {
@@ -3471,7 +3721,10 @@
       const list = this._element("ol", "analysis-bar-list");
       const rows = [];
       data.forEach((item, index) => {
-        const label = datumLabel(item, index);
+        const rawLabel = datumLabel(item, index);
+        const label = config.labelKind === "craft"
+          ? craftDisplayLabel(rawLabel)
+          : (config.labelKind === "species" ? speciesDisplayLabel(rawLabel) : plainLanguageLabel(rawLabel));
         const value = datumValue(item, config.valueKeys);
         const reference = hideReference ? null : datumReference(item, config.referenceKeys);
         const listItem = this._element("li", "analysis-bar-item");
@@ -3546,13 +3799,23 @@
         return row.referenceShare > 0 || row.referenceCount > 0;
       });
 
+      const chartHeader = this._element("div", "analysis-composition-header");
+      chartHeader.appendChild(this._element("p", "analysis-composition-axis-title", "Period (year or decade)"));
+      const legend = this._element("ul", "analysis-composition-legend");
+      display.sources.forEach((source, sourceIndex) => {
+        const entry = this._element("li", "", source);
+        entry.style.setProperty("--analysis-composition-color", CHART_COLORS[sourceIndex % CHART_COLORS.length]);
+        legend.appendChild(entry);
+      });
+      chartHeader.appendChild(legend);
+      chart.appendChild(chartHeader);
       display.periods.forEach((period) => {
         const periodRows = display.rows.filter(function (row) { return row.period === period; });
         const periodGroup = this._element("section", "analysis-composition-period");
         periodGroup.appendChild(this._element("h5", "analysis-composition-period-label", period));
 
-        const appendCohortRow = (cohortLabel, shareKey, countKey, selectable) => {
-          const cohortRow = this._element("div", "analysis-composition-row" + (selectable ? "" : " is-reference"));
+        const appendCohortRow = (cohortLabel, shareKey, countKey, selectable, accessibleCohortLabel) => {
+          const cohortRow = this._element("div", "analysis-composition-row" + (selectable ? "" : " is-reference") + (cohortLabel ? "" : " is-single-cohort"));
           cohortRow.appendChild(this._element("span", "analysis-composition-cohort", cohortLabel));
           const track = this._element("div", "analysis-composition-track");
           track.setAttribute("role", "group");
@@ -3560,7 +3823,8 @@
           const summaryText = periodRows.filter(function (row) { return row[shareKey] > 0; }).map(function (row) {
             return row.source + " " + formatPercent(row[shareKey]);
           }).join(", ");
-          track.setAttribute("aria-label", period + " " + cohortLabel.toLowerCase() + " source composition" + (summaryText ? ": " + summaryText : ": no reports"));
+          const cohortDescription = cleanText(accessibleCohortLabel, cohortLabel || "all matched records");
+          track.setAttribute("aria-label", period + " " + cohortDescription.toLowerCase() + " source composition" + (summaryText ? ": " + summaryText : ": no reports"));
           if (total <= 0) {
             track.appendChild(this._element("span", "analysis-composition-empty", "No reports"));
           } else {
@@ -3584,19 +3848,12 @@
           periodGroup.appendChild(cohortRow);
         };
 
-        appendCohortRow(this.currentAnalysisMode === "whole_corpus_structure" ? "All records" : "Active", "activeShare", "activeCount", true);
+        appendCohortRow(this.currentAnalysisMode === "whole_corpus_structure" ? "" : "Active", "activeShare", "activeCount", true, "All matched records");
         if (hasReference) appendCohortRow("Reference", "referenceShare", "referenceCount", false);
         chart.appendChild(periodGroup);
       });
       container.appendChild(chart);
 
-      const legend = this._element("ul", "analysis-composition-legend");
-      display.sources.forEach((source, sourceIndex) => {
-        const entry = this._element("li", "", source);
-        entry.style.setProperty("--analysis-composition-color", CHART_COLORS[sourceIndex % CHART_COLORS.length]);
-        legend.appendChild(entry);
-      });
-      container.appendChild(legend);
       container.appendChild(this._element(
         "p",
         "analysis-chart-summary",
@@ -3981,10 +4238,10 @@
       }
       const formatRowLabel = typeof config.rowLabelFormatter === "function"
         ? config.rowLabelFormatter
-        : (config.humanGeographyRows ? humanGeographyLabel : (config.craftRows ? craftDisplayLabel : cleanText));
+        : (config.humanGeographyRows ? humanGeographyLabel : (config.craftRows ? craftDisplayLabel : (config.speciesRows ? speciesDisplayLabel : plainLanguageLabel)));
       const formatColumnLabel = typeof config.columnLabelFormatter === "function"
         ? config.columnLabelFormatter
-        : (columnKind === "month" ? monthDisplayLabel : (config.humanGeographyColumns ? humanGeographyLabel : (config.craftColumns ? craftDisplayLabel : cleanText)));
+        : (columnKind === "month" ? monthDisplayLabel : (config.humanGeographyColumns ? humanGeographyLabel : (config.craftColumns ? craftDisplayLabel : (config.speciesColumns ? speciesDisplayLabel : plainLanguageLabel))));
       const displayedRowSet = new Set(displayedRows);
       const displayedColumnSet = new Set(displayedColumns);
       const data = fullData.filter(function (item) {
@@ -4013,6 +4270,7 @@
       ));
       const tableWrap = this._element("div", "analysis-heatmap-scroll");
       const table = this._element("table", "analysis-heatmap-table");
+      table.style.setProperty("--analysis-heatmap-columns", String(displayedColumns.length));
       const caption = this._element("caption", "sr-only", config.caption || "Heatmap values");
       table.appendChild(caption);
       const head = this._element("thead");
@@ -4246,8 +4504,22 @@
         return { mode, button };
       });
       container.appendChild(controls);
+      const legendPanel = this._element("div", "analysis-map-legend-panel");
+      legendPanel.appendChild(this._element(
+        "p",
+        "analysis-map-baseline",
+        wholeCorpus
+          ? "Baseline: source-balanced country share within the selected coordinate, time, and craft scope. This is internal structure; no external reference cohort is used."
+          : "Baseline: the selected balanced reference cohort, standardized over common source, era, and geography support."
+      ));
+      const scale = this._element("div", "analysis-map-scale");
+      scale.appendChild(this._element("span", "is-below", "Far below expectation"));
+      scale.appendChild(this._element("span", "is-neutral", "Near expectation"));
+      scale.appendChild(this._element("span", "is-above", "Far above expectation"));
+      legendPanel.appendChild(scale);
       const legend = this._element("p", "analysis-map-legend");
-      container.appendChild(legend);
+      legendPanel.appendChild(legend);
+      container.appendChild(legendPanel);
       const svg = this._svgElement("svg", {
         class: "analysis-country-choropleth",
         viewBox: "0 0 960 480",
@@ -4391,7 +4663,7 @@
         if (decadeSelect) decadeSelect.disabled = modeKey === "craft";
         const selectedDecade = activeDecade !== "all" && modeKey !== "craft";
         legend.textContent = modeKey === "craft"
-          ? craftDisplayLabel(activeCraft) + " association by country; blue is above conditional expectation and amber below."
+          ? craftDisplayLabel(activeCraft) + " association by country. Amber is below and blue is above the conditional baseline; stronger color means farther from expectation."
           : (selectedDecade && modeKey === "effect"
           ? (wholeCorpus
             ? activeDecade + "s source-balanced within-decade report share; darker fill means a larger balanced share. No reference cohort is used."
@@ -4617,8 +4889,16 @@
         modeControls.appendChild(button);
       });
       container.appendChild(modeControls);
+      const mapLegendPanel = this._element("div", "analysis-map-legend-panel analysis-equal-area-legend-panel");
+      mapLegendPanel.appendChild(this._element("p", "analysis-map-baseline", "Resolution: the locked 6 × 12 Lambert equal-area evidence grid. Cells are never interpolated or subdivided into invented precision."));
+      const mapScale = this._element("div", "analysis-map-scale");
+      mapScale.appendChild(this._element("span", "is-below", "Lower / below"));
+      mapScale.appendChild(this._element("span", "is-neutral", "Neutral / sparse"));
+      mapScale.appendChild(this._element("span", "is-above", "Higher / above"));
+      mapLegendPanel.appendChild(mapScale);
       const mapLegend = this._element("p", "analysis-map-legend");
-      container.appendChild(mapLegend);
+      mapLegendPanel.appendChild(mapLegend);
+      container.appendChild(mapLegendPanel);
       const facets = this._element("div", "analysis-equal-area-facets");
       const mapMarks = [];
       const world = this._getWorldReferenceData();
@@ -5041,7 +5321,8 @@
       renderLane(0);
     }
 
-    _renderContextCategoryAssociations(chartId, cardId, value, summary) {
+    _renderContextCategoryAssociations(chartId, cardId, value, summary, options) {
+      const config = options || {};
       const source = isObject(value) ? value : {};
       let groups = firstArray(source, ["categoryHeatmaps", "category_heatmaps", "categoryAssociations", "category_associations", "secondary"]);
       if (!groups.length) {
@@ -5060,6 +5341,12 @@
           });
         }).filter(Boolean);
       }
+      const allowedLanes = new Set(asArray(config.allowedLanes).map(cleanText).filter(Boolean));
+      if (allowedLanes.size) {
+        groups = groups.filter(function (group) {
+          return allowedLanes.has(cleanText(firstDefined(group, ["lane", "key", "id"], "")));
+        });
+      }
       const card = this.document.getElementById(cardId);
       if (!groups.length) {
         if (card) card.hidden = true;
@@ -5071,6 +5358,7 @@
         const index = Math.max(0, Math.min(groups.length - 1, Number(indexValue) || 0));
         const group = groups[index];
         const labelText = cleanText(firstDefined(group, ["label", "name"], "Craft by context feature"));
+        const laneKey = cleanText(firstDefined(group, ["lane", "key", "id"], ""));
         this._renderHeatmap(chartId, firstDefined(group, ["cells", "matrix", "effects"], group), summary, {
           caption: labelText,
           rowHeading: "Craft",
@@ -5078,6 +5366,7 @@
           columnAxisKind: "category",
           valueKeys: ["log2Enrichment", "log2_enrichment", "adjustedResidual", "adjusted_residual", "standardizedResidual", "standardized_residual"],
           craftRows: true,
+          speciesColumns: laneKey === "animal_public_marker",
           effectOnly: true,
           inspectable: true,
         });
@@ -5109,8 +5398,10 @@
         if (completeCells.length) {
           this._appendLazyDataTable(container, labelText + " complete unpooled values", ["Craft", "Context feature", "Observed", "Expected", "Log2 enrichment"], completeCells.map(function (cell) {
             return [
-              cleanText(firstDefined(cell, ["row", "rowLabel"], "Unknown")),
-              cleanText(firstDefined(cell, ["column", "columnLabel"], "Unknown")),
+              craftDisplayLabel(firstDefined(cell, ["row", "rowLabel"], "Unknown")),
+              laneKey === "animal_public_marker"
+                ? speciesDisplayLabel(firstDefined(cell, ["column", "columnLabel"], "Unknown"))
+                : plainLanguageLabel(firstDefined(cell, ["column", "columnLabel"], "Unknown")),
               formatCount(firstDefined(cell, ["observedClusterCount", "observedCount", "observed"], 0)),
               formatDecimal(firstDefined(cell, ["expectedClusterCount", "expectedCount", "expected"], 0), 2),
               formatDecimal(firstDefined(cell, ["log2Enrichment", "log2_enrichment"], 0), 2),
@@ -5226,10 +5517,13 @@
           primaryCountKeys: config.primaryCountKeys,
           comparisonCountKeys: config.comparisonCountKeys,
           limit: config.limit,
+          dense: true,
+          labelKind: "craft",
           emptyMessage: config.emptyMessage,
         });
         const container = this.document.getElementById(chartId);
         if (!container) return;
+        container.classList.add("analysis-facility-plot");
         const controls = this._element("div", "analysis-evidence-view-controls");
         const label = this._element("label", "field compact-field");
         label.appendChild(this._element("span", "", "Facility comparison"));
@@ -5250,6 +5544,12 @@
           controls.parentNode = container;
           container.children.unshift(controls);
         } else container.appendChild(controls);
+        const axisLegend = this._element("div", "analysis-facility-axis-legend");
+        axisLegend.appendChild(this._element("span", "is-lower", "Less common near facilities"));
+        axisLegend.appendChild(this._element("strong", "", "No difference (odds ratio 1.0)"));
+        axisLegend.appendChild(this._element("span", "is-higher", "More common near facilities"));
+        if (typeof container.insertBefore === "function") container.insertBefore(axisLegend, controls.nextSibling || null);
+        else container.appendChild(axisLegend);
         appendFacilityScope(container);
       };
       renderGroup(0);
@@ -5334,7 +5634,8 @@
       const matrix = readinessMatrix(value);
       const container = this._prepareChart(chartId, matrix.rows, summary, config.emptyMessage || "No cross-domain result is estimable. Readiness details will appear after provenance checks complete.");
       if (!container) return;
-      container.appendChild(this._element("p", "analysis-heatmap-legend", "Green = inferentially ready · blue = descriptive or sensitivity-ready · amber = limited · red = blocked · gray = unavailable, not evaluated, or not applicable"));
+      container.appendChild(this._element("p", "analysis-readiness-explainer", "“No gate defined” means this release has no scientifically valid typed test for that domain/dimension—not that the evidence is zero. “Blocked” means a defined test was attempted but its requirements failed. Low eligible counts are the records that survive the stated gates; they are not repaired by guessing missing dates, coordinates, provenance, or review status."));
+      container.appendChild(this._element("p", "analysis-heatmap-legend", "Green = inferentially ready · blue = descriptive or sensitivity-ready · amber = limited · red = blocked · dotted gray = no gate defined · dashed gray = unavailable or not applicable"));
       const scroll = this._element("div", "analysis-heatmap-scroll");
       const table = this._element("table", "analysis-readiness-matrix");
       table.appendChild(this._element("caption", "sr-only", "Cross-domain evidence readiness by domain and gate"));
@@ -5991,6 +6292,9 @@
       const animalContextJobs = [];
       const relationshipContextJobs = [];
       overviewJobs.push(() => this._renderEligibilityFunnel("analysis-coverage-chart", data.overviewCoverage, summary, { caption: "Analysis eligibility funnel", limit: 8 }));
+      overviewJobs.push(() => this._renderCoverageOrbit("analysis-overview-coverage-visual", data.overviewCoverage, summary));
+      overviewJobs.push(() => this._renderCraftMosaic("analysis-overview-craft-mosaic", data.craftDistribution, summary, { caption: "Overview craft composition", defaultKind: "filter", limit: 9 }));
+      overviewJobs.push(() => this._renderContextPulse("analysis-overview-context-visual", { crops: data.crops, animals: data.animals, facilities: data.facilities }, summary));
       overviewJobs.push(() => this._renderForestPlot("analysis-comparison-chart", data.overviewComparison, summary, {
         caption: "Signal spectrum: adjusted effects with 95% intervals",
         defaultKind: "filter",
@@ -6053,7 +6357,9 @@
       const spatialFacilityJob = () => this._renderFacilityEvidence("analysis-facility-context-chart", data.facilities, summary, { caption: "Qualified facility-marker context evidence", defaultKind: "filter", primaryCountLabel: "Near band", comparisonCountLabel: "Comparison band", primaryCountKeys: ["nearCount", "near_count"], comparisonCountKeys: ["comparisonCount", "comparison_count"], effectLabel: "CMH odds ratio", valueKeys: ["commonOddsRatio", "common_odds_ratio", "oddsRatio", "odds_ratio"], nullValue: 1, limit: 8, emptyMessage: "Not estimable until facility precision, activity interval, and common-support gates pass." });
       contextOverviewJobs.push(() => this._renderReadiness("analysis-cross-domain-readiness-chart", data.crossDomainReadiness, summary, { emptyMessage: "Crop and animal proximity remains not estimable until provenance, uncertainty, lineage, and sample gates pass." }));
       spatialJobs.push(() => {
-        if (this.els.spatialStatus) this.els.spatialStatus.textContent = data.spatialStatus || "Spatial evidence is associative, point-based, uncertainty-aware, and never uses chronology connectors.";
+        if (this.els.spatialStatus) this.els.spatialStatus.textContent = data.spatialStatus
+          ? humanizeEvidenceReason(data.spatialStatus)
+          : "Spatial evidence is associative, point-based, uncertainty-aware, and never uses chronology connectors.";
       });
       spatialJobs.push(() => this._renderCoordinateEvidence(data.coordinateEvidence, summary, true));
       sourcesQualityJobs.push(() => this._renderBars("analysis-source-composition-chart", data.sourceComposition, summary, { caption: "Source composition", defaultKind: "filter" }));
@@ -6084,6 +6390,7 @@
         cropContextJobs.push(() => this._renderBars("analysis-crop-type-chart", firstArray(crops, ["crop", "cropType", "cropTypes"]), cropSummary, { caption: "Crop-circle crop types" }));
         cropContextJobs.push(() => this._renderBars("analysis-crop-coordinate-chart", firstArray(crops, ["coordinateClass", "coordinateClasses", "coordinate_class"]), cropSummary, { caption: "Crop-circle coordinate classes" }));
         cropContextJobs.push(() => this._renderHeatmap("analysis-crop-coverage-chart", firstDefined(crops, ["coverage", "missingness"], []), cropSummary, { caption: "Crop-circle field coverage", rowHeading: "Field" }));
+        cropContextJobs.push(() => this._renderContextCategoryAssociations("analysis-crop-craft-context-chart", "", data.contextAssociations, cropSummary, { allowedLanes: ["crop_bounded", "crop_locality"] }));
         cropContextJobs.push(() => this._renderContextAssociations("analysis-crop-spatial-chart", data.contextAssociations, cropSummary, {
           allowedLanes: ["crop_bounded", "crop_locality"],
           emptyMessage: "Crop point-neighborhood evidence has not loaded. The descriptive crop catalog above remains available.",
@@ -6099,10 +6406,11 @@
       if (animalSummary) {
         animalContextJobs.push(() => this._renderReadiness("analysis-animal-readiness-chart", data.animalReadiness, animalSummary, { emptyMessage: "Detailed animal-association readiness loads with Spatial Evidence; descriptive catalog health remains available here." }));
         animalContextJobs.push(() => this._renderSeries("analysis-animal-time-chart", firstArray(animals, ["time", "series", "yearly"]), animalSummary, { caption: "Animal reports by period", axisKind: "year", singleSeries: this.currentAnalysisMode === "whole_corpus_structure", singleSeriesLabel: "All animal reports" }));
-        animalContextJobs.push(() => this._renderBars("analysis-animal-species-chart", firstArray(animals, ["species", "speciesGroups", "distribution"]), animalSummary, { caption: "Animal report species groups" }));
+        animalContextJobs.push(() => this._renderBars("analysis-animal-species-chart", firstArray(animals, ["species", "speciesGroups", "distribution"]), animalSummary, { caption: "Animal report species groups", labelKind: "species" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-status-chart", firstArray(animals, ["statusBreakdown", "reviewStatus", "status"]), animalSummary, { caption: "Animal report review status" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-date-precision-chart", firstArray(animals, ["datePrecision", "datePrecisions", "date_precision"]), animalSummary, { caption: "Animal report date precision" }));
         animalContextJobs.push(() => this._renderHeatmap("analysis-animal-coverage-chart", firstDefined(animals, ["coverage", "missingness"], []), animalSummary, { caption: "Animal report field coverage", rowHeading: "Field" }));
+        animalContextJobs.push(() => this._renderContextCategoryAssociations("analysis-animal-craft-context-chart", "", data.contextAssociations, animalSummary, { allowedLanes: ["animal_public_marker"] }));
         animalContextJobs.push(() => this._renderContextAssociations("analysis-animal-spatial-chart", data.contextAssociations, animalSummary, {
           allowedLanes: ["animal_public_marker"],
           emptyMessage: "Animal public-marker neighborhood evidence has not loaded. The descriptive animal catalog above remains available.",
@@ -6123,18 +6431,17 @@
       this.renderedPlanVersions.clear();
       this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob]);
       this._setDeferredDisclosureJobs("analysis-spatial-context-disclosure", spatialContextJobs);
-      this._setDeferredDisclosureJobs("analysis-spatial-facility-disclosure", [spatialFacilityJob]);
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
-        ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-comparison-chart", "analysis-pattern-list"] }],
+        ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-color-chart", "analysis-color-comparison-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
-        ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
-        ["analysis-section-context", { jobs: contextOverviewJobs, targets: ["analysis-cross-domain-readiness-chart"] }],
-        ["analysis-crop-context", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
-        ["analysis-animal-context", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
-        ["analysis-relationship-context", { jobs: relationshipContextJobs, targets: ["analysis-relationship-readiness-chart"] }],
+        ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
+        ["analysis-section-crops", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-craft-context-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
+        ["analysis-section-animals", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-craft-context-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
+        ["analysis-section-facilities", { jobs: [spatialFacilityJob], targets: ["analysis-facility-context-chart"] }],
+        ["analysis-section-context", { jobs: contextOverviewJobs.concat(relationshipContextJobs), targets: ["analysis-cross-domain-readiness-chart", "analysis-relationship-readiness-chart"] }],
         ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-witness-count-chart", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart"] }],
       ]);
       this._clearRenderTargets(Array.from(this.renderPlans.values()).reduce(function (ids, plan) {
@@ -6418,6 +6725,7 @@
     sortSemanticAxis,
     sourceBalancedDisplay,
     sourceCompositionDisplay,
+    speciesDisplayLabel,
     positiveSeriesMaximum,
   });
 });

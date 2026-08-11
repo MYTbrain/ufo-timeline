@@ -38,7 +38,7 @@
     setStatus("Loading Animal Mutilation Reports…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./animal_mutilation_layer.js?v=2026-08-03-context-layers-default-on-v1";
+      script.src = "./animal_mutilation_layer.js?v=2026-08-10-analysis-polish-v3";
       script.async = true;
       script.onload = function () {
         if (!window.UfoAnimalMutilationLayer) {
@@ -62,9 +62,8 @@
   }
 
   function reportError(error) {
-    desiredEnabled = false;
-    setDesiredToggleState(false);
-    setStatus(error && error.message ? error.message : String(error), true);
+    setDesiredToggleState(desiredEnabled);
+    setStatus("Animal reports remain included in Analysis; the map overlay could not load. " + (error && error.message ? error.message : String(error)), true);
     console.error(error);
   }
 

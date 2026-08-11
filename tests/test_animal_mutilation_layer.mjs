@@ -9,6 +9,7 @@ import { gunzipSync, gzipSync } from "node:zlib";
 const repoRoot = path.resolve(import.meta.dirname, "..");
 const staticRoot = path.join(repoRoot, "webapp", "static_public");
 const animalRoot = path.join(staticRoot, "data", "animal_mutilations");
+const bundledAnimalRoot = path.join(repoRoot, "static_bundle", "data", "animal_mutilations");
 const layerSource = await fs.readFile(path.join(staticRoot, "animal_mutilation_layer.js"), "utf8");
 const bootstrapSource = await fs.readFile(path.join(staticRoot, "animal_mutilation_bootstrap.js"), "utf8");
 const indexSource = await fs.readFile(path.join(staticRoot, "index.html"), "utf8");
@@ -110,11 +111,13 @@ async function createHarness({ maliciousDetail = false } = {}) {
       { sourceId: "unsafe-script", sourceHash: "0".repeat(64), locator: "test", url: "javascript:alert(3)" },
       { sourceId: "unsafe-private", sourceHash: "1".repeat(64), locator: "test", url: "http://127.0.0.1/private" },
     ];
-    const bytes = gzipSync(Buffer.from(JSON.stringify(records)), { level: 9, mtime: 0 });
+    const decodedBytes = Buffer.from(JSON.stringify(records));
+    const bytes = gzipSync(decodedBytes, { level: 9, mtime: 0 });
     declaration.bytes = bytes.length;
     declaration.decodedBytes = gunzipSync(bytes).length;
     declaration.sha256 = createHash("sha256").update(bytes).digest("hex");
     payloadOverrides.set(declaration.path, bytes);
+    payloadOverrides.set(declaration.path.replace(/\.json\.gz$/i, ".json"), decodedBytes);
   }
 
   const elements = createElements();
@@ -243,9 +246,13 @@ async function createHarness({ maliciousDetail = false } = {}) {
     if (url.pathname === "/data/animal_mutilations/manifest.json") {
       return new Response(JSON.stringify(manifest), { status: 200 });
     }
-    const relative = url.pathname.replace(/^\/releases\/[^/]+\//, "").replace(/^\/+/, "");
+    const relative = url.pathname
+      .replace(/^\/data\/animal_mutilations\//, "")
+      .replace(/^\/releases\/[^/]+\//, "")
+      .replace(/^\/+/, "");
     try {
-      const bytes = payloadOverrides.get(relative) || await fs.readFile(path.join(animalRoot, relative));
+      const payloadRoot = url.pathname.startsWith("/data/animal_mutilations/") ? bundledAnimalRoot : animalRoot;
+      const bytes = payloadOverrides.get(relative) || await fs.readFile(path.join(payloadRoot, relative));
       return new Response(bytes, { status: 200 });
     } catch (error) {
       return new Response("not found", { status: 404 });
@@ -411,7 +418,7 @@ assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*data-default-enab
 assert.match(indexSource, /id="animal-mutilation-browser"[\s\S]*?role="dialog"[\s\S]*?aria-modal="true"/, "all-record browser is an accessible modal dialog");
 assert.doesNotMatch(indexSource, /<script src="\.\/animal_mutilation_layer\.js/, "heavy animal runtime is not a startup script");
 assert.match(bootstrapSource, /animal_mutilation_layer\.js/, "bootstrap lazily loads the animal runtime");
-assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-03-context-layers-default-on-v1/, "default-on animal runtime uses a release-specific cache key");
+assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-10-analysis-polish-v3/, "default-on animal runtime uses a release-specific cache key");
 assert.match(bootstrapSource, /addEventListener\("ufo:timeline-ready"[\s\S]*?enableDesiredLayer\(\)/, "default activation waits for the core timeline Ready event");
 assert.match(bootstrapSource, /openBrowser\(browse\)/, "Browse action has an independent lazy entry point");
 assert.match(appSource, /CustomEvent\("ufo:timeline-ready"/, "the core app announces the post-startup activation boundary");
@@ -473,8 +480,8 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
-    "/releases/animal-mutilations-v1-20260802/catalog.json.gz",
-  ], "Browse loads only the Pages manifest and all-record R2 catalog");
+    "/data/animal_mutilations/catalog.json",
+  ], "Browse loads only the bundled manifest and local all-record catalog");
   assert.deepEqual(harness.requestCaches, ["no-cache", "force-cache"]);
   assert.equal(harness.api.getStatus().catalogLoaded, true);
   assert.equal(harness.api.getStatus().loaded, false, "Browse never fetches the point index");
@@ -511,7 +518,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 
 {
   const harness = await createHarness();
-  const catalogPath = "/releases/animal-mutilations-v1-20260802/catalog.json.gz";
+  const catalogPath = "/data/animal_mutilations/catalog.json";
   harness.delayedPaths.add(catalogPath);
   const opener = harness.elements.get("#animal-mutilation-browser-open");
   const search = harness.elements.get("#animal-mutilation-search");
@@ -533,7 +540,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await harness.api.setEnabled(true);
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
-    "/releases/animal-mutilations-v1-20260802/points.json.gz",
+    "/data/animal_mutilations/points.json",
   ], "map toggle loads points without the all-record catalog");
   assert.equal(harness.api.getStatus().catalogLoaded, false);
   assert.equal(harness.api.getStatus().visibleRecords, 518);
@@ -597,7 +604,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 
 {
   const harness = await createHarness();
-  const pointsPath = "/releases/animal-mutilations-v1-20260802/points.json.gz";
+  const pointsPath = "/data/animal_mutilations/points.json";
   harness.delayedPaths.add(pointsPath);
   const pending = harness.api.setEnabled(true);
   await new Promise((resolve) => setTimeout(resolve, 10));
@@ -615,7 +622,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   const catalog = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, "catalog.json.gz"))).toString("utf8"));
   const first = catalog[0];
   const second = catalog.find((row) => row[9] !== first[9]);
-  const firstPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
+  const firstPath = `/data/animal_mutilations/details/chunk_${String(first[9]).padStart(3, "0")}.json`;
   harness.delayedPaths.add(firstPath);
   const results = harness.elements.get("#animal-mutilation-browser-results");
   const firstTarget = resultTarget(first[0], first[9]);
@@ -627,7 +634,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   assert.match(detailHtml, new RegExp(second[0]), "newest detail request wins a cross-chunk race");
   assert.doesNotMatch(detailHtml, new RegExp(first[0]), "late detail response cannot replace the newest selection");
   assert.ok(harness.abortedRequests.includes(firstPath), "a newer cross-chunk selection aborts the stale detail transfer");
-  const secondPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(second[9]).padStart(3, "0")}.json.gz`;
+  const secondPath = `/data/animal_mutilations/details/chunk_${String(second[9]).padStart(3, "0")}.json`;
   const before = harness.requests.filter((request) => request === secondPath).length;
   const cachedTarget = resultTarget(second[0], second[9]);
   await results.dispatch("click", { target: cachedTarget });
@@ -646,7 +653,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   const catalog = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, "catalog.json.gz"))).toString("utf8"));
   const first = catalog[0];
   const sameChunk = catalog.find((row) => row[0] !== first[0] && row[9] === first[9]);
-  const detailPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
+  const detailPath = `/data/animal_mutilations/details/chunk_${String(first[9]).padStart(3, "0")}.json`;
   harness.delayedPaths.add(detailPath);
   const results = harness.elements.get("#animal-mutilation-browser-results");
   const firstTarget = resultTarget(first[0], first[9]);
@@ -663,7 +670,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   const catalog = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, "catalog.json.gz"))).toString("utf8"));
   const first = catalog[0];
-  const detailPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
+  const detailPath = `/data/animal_mutilations/details/chunk_${String(first[9]).padStart(3, "0")}.json`;
   harness.delayedPaths.add(detailPath);
   const target = resultTarget(first[0], first[9]);
   await harness.elements.get("#animal-mutilation-browser-results").dispatch("click", { target });
@@ -686,8 +693,10 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   const catalog = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, "catalog.json.gz"))).toString("utf8"));
   const first = catalog[0];
-  const detailPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
+  const detailPath = `/data/animal_mutilations/details/chunk_${String(first[9]).padStart(3, "0")}.json`;
+  const remoteDetailPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
   harness.failedPaths.set(detailPath, 503);
+  harness.failedPaths.set(remoteDetailPath, 503);
   const target = resultTarget(first[0], first[9]);
   await harness.elements.get("#animal-mutilation-browser-results").dispatch("click", { target });
   assert.equal(activeDocument.activeElement, harness.elements.get("#animal-mutilation-detail-close"));

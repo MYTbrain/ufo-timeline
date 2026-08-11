@@ -176,6 +176,31 @@
     return new URL("./data/crop_circles/", document.baseURI);
   }
 
+  function localAssetBaseUrl() {
+    return new URL("./data/crop_circles/", document.baseURI);
+  }
+
+  function assetCandidates(pathValue) {
+    const path = String(pathValue || "");
+    const localPath = path.replace(/\.json\.gz$/i, ".json");
+    const candidates = [new URL(localPath, localAssetBaseUrl())];
+    const remote = new URL(path, assetBaseUrl());
+    if (remote.toString() !== candidates[0].toString()) candidates.push(remote);
+    return candidates;
+  }
+
+  async function readAssetJson(pathValue) {
+    let lastError = null;
+    for (const url of assetCandidates(pathValue)) {
+      try {
+        return await readJson(url, /\.gz(?:\?|$)/i.test(url.toString()));
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error("Crop-circle data is unavailable.");
+  }
+
   async function ensureData() {
     if (state.manifest && state.points) return;
     const manifest = await readJson(new URL(MANIFEST_URL, document.baseURI), false, "no-cache");
@@ -183,8 +208,7 @@
       throw new Error("Crop-circle manifest is incompatible with this app release.");
     }
     state.manifest = manifest;
-    const pointsUrl = new URL(manifest.points.path, assetBaseUrl());
-    const points = await readJson(pointsUrl, true);
+    const points = await readAssetJson(manifest.points.path);
     if (!Array.isArray(points) || points.length !== Number(manifest.counts.mapped)) {
       throw new Error("Crop-circle point index failed its record-count check.");
     }
@@ -1434,7 +1458,7 @@
     const chunkText = String(chunkNumber).padStart(3, "0");
     const path = pattern.replace("{chunk:03d}", chunkText).replace("{chunk}", String(chunkNumber));
     const detailPath = String(state.manifest.details.basePath || "") + path;
-    const payload = await readJson(new URL(detailPath, assetBaseUrl()), true);
+    const payload = await readAssetJson(detailPath);
     state.detailChunkCache.set(chunkNumber, payload);
     while (state.detailChunkCache.size > MAX_DETAIL_CHUNKS) {
       state.detailChunkCache.delete(state.detailChunkCache.keys().next().value);

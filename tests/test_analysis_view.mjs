@@ -191,14 +191,9 @@ function createShellDocument() {
     "analysis-export-csv": "button",
     "analysis-spatial-matrix-disclosure": "details",
     "analysis-spatial-context-disclosure": "details",
-    "analysis-spatial-facility-disclosure": "details",
     "analysis-preview-criteria": "ul",
     "analysis-pattern-list": "ol",
     "analysis-section-nav": "nav",
-    "analysis-context-subview-tabs": "div",
-    "analysis-context-tab-crops": "button",
-    "analysis-context-tab-animals": "button",
-    "analysis-context-tab-relationships": "button",
     "analysis-baseline-label": "span",
     "analysis-mode-label": "span",
     "analysis-date-range-chip-mode": "span",
@@ -217,7 +212,7 @@ function createShellDocument() {
     "analysis-mapped-count", "analysis-unmapped-count", "analysis-missing-count",
     "analysis-unit-label", "analysis-source-mix", "analysis-date-precision",
     "analysis-location-precision", "analysis-dataset-hash", "analysis-policy-warning",
-    "analysis-coverage-chart", "analysis-comparison-chart", "analysis-time-series-chart",
+    "analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-time-series-chart",
     "analysis-reporting-delay-status", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart",
     "analysis-duration-status", "analysis-duration-chart", "analysis-duration-comparison-chart",
     "analysis-time-of-day-status", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart",
@@ -230,20 +225,20 @@ function createShellDocument() {
     "analysis-geography-time-chart", "analysis-source-composition-chart",
     "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-crop-context",
     "analysis-crop-context-status", "analysis-crop-time-chart", "analysis-crop-morphology-chart",
-    "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart", "analysis-animal-context", "analysis-animal-context-status",
+    "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart", "analysis-crop-craft-context-chart", "analysis-animal-context", "analysis-animal-context-status",
     "analysis-animal-time-chart", "analysis-animal-species-chart", "analysis-animal-status-chart",
-    "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart",
+    "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart", "analysis-animal-craft-context-chart",
     "analysis-pattern-list", "analysis-pattern-count",
     "analysis-section-nav", "analysis-section-overview", "analysis-section-time", "analysis-section-craft",
-    "analysis-section-geography", "analysis-section-spatial", "analysis-section-sources-quality", "analysis-section-context",
+    "analysis-section-geography", "analysis-section-spatial", "analysis-section-crops", "analysis-section-animals", "analysis-section-facilities", "analysis-section-context", "analysis-section-sources-quality",
     "analysis-spatial-status", "analysis-context-status", "analysis-include-crop-circles", "analysis-include-animal-reports",
     "analysis-view-crop-analysis", "analysis-view-animal-analysis", "analysis-crop-control-status", "analysis-animal-control-status",
     "analysis-export-json", "analysis-export-csv", "analysis-crop-content", "analysis-crop-excluded",
     "analysis-animal-content", "analysis-animal-excluded", "analysis-craft-era-chart",
     "analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-card", "analysis-context-category-chart", "analysis-facility-context-chart", "analysis-cross-domain-readiness-chart",
     "analysis-crop-readiness-chart", "analysis-animal-readiness-chart", "analysis-relationship-readiness-chart",
-    "analysis-context-subview-tabs", "analysis-context-tab-crops", "analysis-context-tab-animals", "analysis-context-tab-relationships", "analysis-relationship-context",
-    "analysis-spatial-matrix-disclosure", "analysis-spatial-context-disclosure", "analysis-spatial-facility-disclosure",
+    "analysis-relationship-context",
+    "analysis-spatial-matrix-disclosure", "analysis-spatial-context-disclosure",
   ];
   ids.forEach((id) => document.register(id, tagById[id] || "div"));
   const mapTab = document.getElementById("view-tab-map");
@@ -261,36 +256,13 @@ function createShellDocument() {
   document.getElementById("analysis-include-crop-circles").setAttribute("aria-checked", "true");
   document.getElementById("analysis-include-animal-reports").setAttribute("aria-checked", "true");
   const sectionNav = document.getElementById("analysis-section-nav");
-  ["overview", "time", "craft", "geography", "spatial", "sources-quality", "context"].forEach((key) => {
+  ["overview", "time", "craft", "geography", "spatial", "crops", "animals", "facilities", "context", "sources-quality"].forEach((key) => {
     const link = document.createElement("button");
     link.setAttribute("role", "tab");
     link.setAttribute("aria-controls", "analysis-section-" + key);
     link.textContent = key;
     sectionNav.appendChild(link);
   });
-  const contextSubviewTablist = document.getElementById("analysis-context-subview-tabs");
-  const contextSubviews = [
-    ["analysis-context-tab-crops", "analysis-crop-context", true],
-    ["analysis-context-tab-animals", "analysis-animal-context", false],
-    ["analysis-context-tab-relationships", "analysis-relationship-context", false],
-  ];
-  contextSubviews.forEach(([tabId, panelId, selected]) => {
-    const tab = document.getElementById(tabId);
-    const panel = document.getElementById(panelId);
-    tab.setAttribute("role", "tab");
-    tab.setAttribute("aria-controls", panelId);
-    tab.setAttribute("aria-selected", selected ? "true" : "false");
-    tab.setAttribute("tabindex", selected ? "0" : "-1");
-    contextSubviewTablist.appendChild(tab);
-    panel.classList.add("analysis-context-subview");
-    panel.setAttribute("role", "tabpanel");
-    panel.hidden = !selected;
-    panel.setAttribute("aria-hidden", selected ? "false" : "true");
-    panel.inert = !selected;
-  });
-  contextSubviewTablist.querySelectorAll = function () {
-    return this.children.filter((child) => child.getAttribute("role") === "tab" && child.getAttribute("aria-controls"));
-  };
   return document;
 }
 
@@ -396,8 +368,10 @@ assert.deepEqual(
 );
 assert.equal(analysis.monthDisplayLabel("January"), "01/JAN");
 assert.equal(analysis.monthDisplayLabel("12"), "12/DEC");
-assert.equal(analysis.craftDisplayLabel("dumbbell_barbell"), "Dumbbell Barbell", "dumbbell/barbell is never aliased to Formation");
+assert.equal(analysis.craftDisplayLabel("dumbbell_barbell"), "Dumbbell / barbell", "dumbbell/barbell is never aliased to Formation");
 assert.notEqual(analysis.craftDisplayLabel("dumbbell_barbell"), analysis.craftDisplayLabel("formation"));
+assert.equal(analysis.speciesDisplayLabel("bovine"), "Cattle");
+assert.equal(analysis.speciesDisplayLabel("other_sparse_species"), "Other species (limited sample)");
 assert.match(analysis.humanGeographyLabel("ea6x12:2:4"), /^Latitude .*\/ longitude /);
 assert.doesNotMatch(analysis.humanGeographyLabel("ea6x12:2:4"), /ea6x12/i, "grid identifiers never leak into presentation labels");
 const orderedSharedAxis = analysis.orderedSeriesDisplay([
@@ -438,7 +412,7 @@ assert.equal(
 assert.deepEqual(
   analysis.normalizeGeographyCells([{ key: "ea12x24:7:3", latIndex: 7, lonIndex: 3, latMinimum: 9.6, latMaximum: 19.5, lonMinimum: -135, lonMaximum: -120 }])
     .map((item) => [item.row, item.column]),
-  [["Unspecified coordinate class · 9.6° to 19.5°", "-135° to -120°"]]
+  [["9.6° to 19.5°", "-135° to -120°"]]
 );
 
 assert.deepEqual(
@@ -661,11 +635,11 @@ assert.deepEqual({
   lane: exactFormationExport.lane,
 }, {
   raw_label: "formation / disc_saucer",
-  display_label: "Formation / Disc Saucer",
+  display_label: "Formation / Disc / saucer",
   raw_row_label: "formation",
   display_row_label: "Formation",
   raw_column_label: "disc_saucer",
-  display_column_label: "Disc Saucer",
+  display_column_label: "Disc / saucer",
   lane: "formation_configuration",
 });
 const exactGateExport = evidencePackage.evidenceRows.find((row) => row.gate_id === "date_role");
@@ -946,10 +920,11 @@ assert.equal(document.getElementById("analysis-spatial-status").getAttribute("da
 spatialLink.emit("click");
 assert.equal(spatialRequests.length, 2, "the active Spatial Evidence link retries after a transient load failure");
 assert.equal(document.getElementById("analysis-spatial-status").getAttribute("data-analysis-state"), "loading");
-const sectionKeyEvent = sectionNav.emit("keydown", { key: "End", target: spatialLink });
-assert.equal(sectionKeyEvent.defaultPrevented, true);
-assert.equal(controller.activeSectionId, "analysis-section-context");
-assert.equal(document.activeElement, sectionNav.children[6], "keyboard activation retains focus on the selected tab");
+  const sectionKeyEvent = sectionNav.emit("keydown", { key: "End", target: spatialLink });
+  assert.equal(sectionKeyEvent.defaultPrevented, true);
+assert.equal(controller.activeSectionId, "analysis-section-sources-quality");
+assert.equal(document.activeElement, sectionNav.children[9], "keyboard activation retains focus on the selected tab");
+controller.setActiveSection("analysis-section-context", { source: "test" });
 controller.setSectionState("context", "loading", "Loading context neighbors.");
 assert.equal(document.getElementById("analysis-section-context").getAttribute("aria-busy"), "true");
 assert.equal(document.getElementById("analysis-context-status").getAttribute("data-analysis-state"), "loading");
@@ -961,31 +936,17 @@ assert.equal(controller.activeSectionId, "analysis-section-time");
 assert.equal(document.getElementById("analysis-section-time").hidden, false);
 controller.setActiveSection("analysis-section-context", { source: "test" });
 
-// Context is a nested selected dashboard with one perceivable panel, roving
-// keyboard focus, and stable public activation semantics.
-const contextSubviewTablist = document.getElementById("analysis-context-subview-tabs");
-const cropSubviewTab = document.getElementById("analysis-context-tab-crops");
-const animalSubviewTab = document.getElementById("analysis-context-tab-animals");
-const relationshipSubviewTab = document.getElementById("analysis-context-tab-relationships");
-assert.equal(contextSubviewTablist.children.filter((tab) => tab.getAttribute("aria-selected") === "true").length, 1);
-assert.equal(cropSubviewTab.getAttribute("aria-selected"), "true");
-assert.equal(document.getElementById("analysis-crop-context").hidden, false);
-assert.equal(document.getElementById("analysis-animal-context").hidden, true);
-animalSubviewTab.emit("click");
-assert.equal(controller.activeContextSubviewId, "analysis-animal-context");
-assert.equal(document.activeElement, animalSubviewTab);
-assert.equal(document.getElementById("analysis-crop-context").hidden, true);
-assert.equal(document.getElementById("analysis-crop-context").inert, true);
-assert.equal(document.getElementById("analysis-animal-context").hidden, false);
-assert.equal(document.getElementById("analysis-animal-context").getAttribute("aria-hidden"), "false");
-const contextEndEvent = contextSubviewTablist.emit("keydown", { key: "End", target: animalSubviewTab });
-assert.equal(contextEndEvent.defaultPrevented, true);
-assert.equal(controller.activeContextSubviewId, "analysis-relationship-context");
-assert.equal(document.activeElement, relationshipSubviewTab);
-contextSubviewTablist.emit("keydown", { key: "Home", target: relationshipSubviewTab });
-assert.equal(controller.activeContextSubviewId, "analysis-crop-context");
-assert.equal(document.activeElement, cropSubviewTab);
-assert.equal(controller.setActiveContextSubview("missing-context-panel"), false);
+// Crop, animal, facility, and evidence-gate content are first-class dashboards
+// with exactly one perceivable top-level panel.
+assert.equal(controller.setActiveSection("analysis-section-crops", { source: "test" }), true);
+assert.equal(document.getElementById("analysis-section-crops").hidden, false);
+assert.equal(document.getElementById("analysis-section-animals").hidden, true);
+assert.equal(controller.setActiveSection("analysis-section-animals", { source: "test" }), true);
+assert.equal(document.getElementById("analysis-section-crops").inert, true);
+assert.equal(document.getElementById("analysis-section-animals").hidden, false);
+assert.equal(controller.setActiveSection("analysis-section-facilities", { source: "test" }), true);
+assert.equal(document.getElementById("analysis-section-facilities").hidden, false);
+assert.equal(controller.setActiveSection("missing-context-panel"), false);
 
 // Context inclusion is a controller callback contract, independent of the
 // hidden and inert Map Explorer controls.
@@ -1555,7 +1516,9 @@ const lowSupportForestRows = descendants(document.getElementById("analysis-compa
   .filter((element) => element.classList.contains("is-low-support"));
 assert.equal(lowSupportForestRows.length, 1);
 assert.equal(lowSupportForestRows[0].tagName, "BUTTON", "descriptive estimates retain local preview access");
-assert.match(descendants(lowSupportForestRows[0]).map((element) => element.textContent).join(" "), /Descriptive estimate.*Common support below 80%/i);
+const lowSupportText = descendants(lowSupportForestRows[0]).map((element) => element.textContent).join(" ");
+assert.match(lowSupportText, /Common support below 80%/i);
+assert.doesNotMatch(lowSupportText, /Descriptive estimate/i, "support warnings are not repeated on every row");
 controller.setActiveSection("analysis-section-time", { source: "test" });
 assert.ok(document.getElementById("analysis-time-series-chart").children.some((child) => child.tagName === "SVG"));
 assert.match(
@@ -1607,7 +1570,23 @@ assert.equal(mosaicTiles[1].style.values.get("--analysis-mosaic-area-share"), (4
 assert.match(mosaicTiles[0].style.values.get("--analysis-mosaic-fill"), /var\(--accent\)/, "positive adjusted effects use the teal diverging hue");
 assert.match(mosaicTiles[1].style.values.get("--analysis-mosaic-fill"), /var\(--warn-text\)/, "negative adjusted effects use the amber diverging hue");
 assert.ok(mosaicTiles.every((tile) => /%$/.test(tile.style.width) && /%$/.test(tile.style.height)), "mosaic tiles receive proportional two-dimensional rectangles");
-assert.match(descendants(document.getElementById("analysis-craft-distribution-chart")).map((element) => element.textContent).join(" "), /Area = report share.*Teal = above.*amber = below/i);
+assert.match(descendants(document.getElementById("analysis-craft-distribution-chart")).map((element) => element.textContent).join(" "), /Area = recalculated share of displayed categories.*Teal = above.*amber = below/i);
+const rebalanceButton = descendants(document.getElementById("analysis-craft-distribution-chart"))
+  .find((element) => element.className.includes("analysis-mosaic-mode-button"));
+rebalanceButton.emit("click");
+assert.equal(descendants(document.getElementById("analysis-craft-distribution-chart")).find((element) => element.className.includes("analysis-mosaic-mode-button")).getAttribute("aria-pressed"), "true");
+descendants(document.getElementById("analysis-craft-distribution-chart"))
+  .find((element) => element.className.includes("analysis-craft-mosaic-tile"))
+  .emit("click");
+const rebalancedTiles = descendants(document.getElementById("analysis-craft-distribution-chart"))
+  .filter((element) => element.className.includes("analysis-craft-mosaic-tile"));
+assert.equal(rebalancedTiles.length, 2);
+assert.deepEqual(rebalancedTiles.map((tile) => tile.style.values.get("--analysis-mosaic-area-share")), [(40 / 60).toFixed(8), (20 / 60).toFixed(8)]);
+assert.match(descendants(document.getElementById("analysis-craft-distribution-chart")).map((element) => element.textContent).join(" "), /Excluded from display.*Disk.*analysis results and exports are unchanged/i);
+descendants(document.getElementById("analysis-craft-distribution-chart"))
+  .find((element) => element.className.includes("analysis-mosaic-reset-button"))
+  .emit("click");
+assert.equal(descendants(document.getElementById("analysis-craft-distribution-chart")).filter((element) => element.className.includes("analysis-craft-mosaic-tile")).length, 3);
 assert.equal(document.getElementById("analysis-craft-geography-chart"), null, "craft-by-geography is consolidated into the Geography dashboard rather than rendered twice");
 assert.equal(document.getElementById("analysis-report-type-chart").children.length, 0, "Sources & Quality remains deferred while Craft is active");
 controller.setActiveSection("analysis-section-geography", { source: "test" });
@@ -1703,12 +1682,10 @@ assert.match(sameSourceText, /Same-source.*descriptive estimate remains visible/
 const sameSourceCell = descendants(document.getElementById("analysis-cooccurrence-chart"))
   .find((element) => /Disk, Disk/.test(element.getAttribute("aria-label") || ""));
 assert.match(sameSourceCell.getAttribute("aria-label"), /0.12.*O 60.*E 55/i, "effect-only faces retain observed and expected evidence in their accessible details");
-const facilityDisclosure = document.getElementById("analysis-spatial-facility-disclosure");
-facilityDisclosure.open = true;
-facilityDisclosure.emit("toggle");
+controller.setActiveSection("analysis-section-facilities", { source: "test" });
 assert.match(
   descendants(document.getElementById("analysis-facility-context-chart")).map((element) => element.textContent).join(" "),
-  /triangle.*CMH odds ratio 1.58.*95% CI \[1.12, 2.21\].*q=0.03.*Near band n=42.*Comparison band n=28.*Descriptive estimate.*comparison band below 25/i
+  /Triangle.*CMH odds ratio 1.58.*95% CI \[1.12, 2.21\].*q=0.03.*Near band n=42.*Comparison band n=28.*Limited sample \(comparison n<25\)/i
 );
 const facilityScopeText = descendants(document.getElementById("analysis-facility-context-chart"))
   .map((element) => element.textContent)
@@ -1736,7 +1713,6 @@ facilityViewSelect.value = "2";
 facilityViewSelect.emit("change");
 assert.match(descendants(document.getElementById("analysis-facility-context-chart")).map((element) => element.textContent).join(" "), /10 km active-facility radius.*sensitivity.*CMH odds ratio 1.4/i);
 controller.setActiveSection("analysis-section-context", { source: "test" });
-controller.setActiveContextSubview("analysis-crop-context", { source: "test" });
 const readinessText = descendants(document.getElementById("analysis-cross-domain-readiness-chart")).map((element) => element.textContent).join(" ");
 assert.ok(descendants(document.getElementById("analysis-cross-domain-readiness-chart")).some((element) => element.className.includes("analysis-readiness-matrix")), "readiness is a domain-by-gate matrix");
 assert.match(readinessText, /Crop circles.*10 \/ 7,745.*Blocked.*Animal reports.*0 \/ 1,177.*Blocked.*Relationship reconciliation.*0 \/ 1,804.*Blocked/i);
@@ -1774,11 +1750,10 @@ assert.match(
   /Disk.*50.*not ground truth/
 );
 controller.setActiveSection("analysis-section-context", { source: "test" });
-controller.setActiveContextSubview("analysis-relationship-context", { source: "test" });
 const relationshipText = descendants(document.getElementById("analysis-relationship-readiness-chart")).map((element) => element.textContent).join(" ");
 assert.match(relationshipText, /Relationship lane.*Explicit-source.*Computed candidate.*Analyst-reviewed.*Association eligible/i);
 assert.match(relationshipText, /1,250.*554.*0.*Reconciliation.*1,069.*251.*Quarantine.*460.*24.*Output.*0/i, "relationship reconciliation and quarantine lanes are visible in Context");
-controller.setActiveContextSubview("analysis-crop-context", { source: "test" });
+controller.setActiveSection("analysis-section-crops", { source: "test" });
 assert.equal(document.getElementById("analysis-crop-context-status").textContent, "Crop-circle records: 210 active · 7,300 reference · 7,745 total projection rows.");
 assert.ok(document.getElementById("analysis-crop-type-chart").children.length >= 2);
 assert.match(
@@ -1811,10 +1786,10 @@ assert.equal(document.getElementById("analysis-animal-control-status").textConte
 assert.equal(document.getElementById("analysis-animal-content").hidden, false);
 assert.equal(document.getElementById("analysis-animal-excluded").hidden, true, "the selected shared filter snapshot cannot render a stale excluded animal panel");
 controller.renderAnalysisResult(result);
-assert.equal(document.getElementById("analysis-animal-context").hidden, true, "rendering hidden context data does not expose a second tabpanel");
-document.getElementById("analysis-context-tab-animals").emit("click");
-assert.equal(document.getElementById("analysis-animal-context").hidden, false);
-assert.equal(document.getElementById("analysis-crop-context").hidden, true);
+assert.equal(document.getElementById("analysis-section-animals").hidden, true, "rendering hidden context data does not expose a second tabpanel");
+controller.setActiveSection("analysis-section-animals", { source: "test" });
+assert.equal(document.getElementById("analysis-section-animals").hidden, false);
+assert.equal(document.getElementById("analysis-section-crops").hidden, true);
 assert.equal(document.getElementById("analysis-animal-context-status").textContent, "Animal reports: 80 active · 1,040 reference · 1,177 total projection rows.");
 assert.ok(document.getElementById("analysis-animal-status-chart").children.length >= 2);
 assert.ok(document.getElementById("analysis-animal-date-precision-chart").children.length >= 2);
@@ -1908,7 +1883,7 @@ contextEvidenceResult.spatialEvidence.contextAssociations = {
     policyWarnings: ["Public markers do not establish exact-site proximity."],
     cells: [{ row: "0_25_km", column: "same_day", observedClusterCount: 4, expectedClusterCount: 3, log2Enrichment: 0.32, estimateAvailable: true, inferenceEligible: false }],
     featureAssociation: {
-      cells: [{ row: "Triangle", column: "Cattle", observedCount: 26, expectedCount: 20, log2Enrichment: 0.38, estimateAvailable: true, inferenceEligible: false }],
+      cells: [{ row: "Triangle", column: "bovine", observedCount: 26, expectedCount: 20, log2Enrichment: 0.38, estimateAvailable: true, inferenceEligible: false }],
     },
   }],
 };
@@ -1932,18 +1907,21 @@ assert.match(descendants(document.getElementById("analysis-context-category-char
 assert.match(descendants(document.getElementById("analysis-context-category-chart")).map((element) => element.getAttribute("aria-label") || "").join(" "), /Circular.*Disk.*0.49.*O 28.*E 20/i);
 assert.equal(descendants(document.getElementById("analysis-context-category-chart")).filter((element) => element.tagName === "OPTION").length, 2, "each context lane with feature evidence remains selectable while lanes without a feature table stay out of the selector");
 assert.match(descendants(document.getElementById("analysis-context-category-chart")).map((element) => element.textContent).join(" "), /complete unpooled table remains available/i);
-controller.setActiveSection("analysis-section-context", { source: "test" });
-controller.setActiveContextSubview("analysis-crop-context", { source: "test" });
+controller.setActiveSection("analysis-section-crops", { source: "test" });
+assert.match(descendants(document.getElementById("analysis-crop-craft-context-chart")).map((element) => element.textContent).join(" "), /Circular.*Disk.*0.49/i, "crop craft context is visible in its dedicated dashboard");
 const cropSpatialText = descendants(document.getElementById("analysis-crop-spatial-chart")).map((element) => element.textContent).join(" ");
 assert.match(cropSpatialText, /Bounded crop markers.*field candidates.*Crop locality markers/i, "the Crop subview exposes bounded-field and locality-marker point lanes without another readiness card");
 const cropSpatialSelect = descendants(document.getElementById("analysis-crop-spatial-chart")).find((element) => element.tagName === "SELECT");
 cropSpatialSelect.value = "1";
 cropSpatialSelect.emit("change");
 assert.match(descendants(document.getElementById("analysis-crop-spatial-chart")).map((element) => element.textContent).join(" "), /3,249 unique location-date clusters.*Locality markers do not locate a formation site/i);
-controller.setActiveContextSubview("analysis-animal-context", { source: "test" });
+controller.setActiveSection("analysis-section-animals", { source: "test" });
+const animalCraftContextText = descendants(document.getElementById("analysis-animal-craft-context-chart")).map((element) => element.textContent).join(" ");
+assert.match(animalCraftContextText, /Cattle.*Triangle.*0.38/i, "animal species use common-language labels in the dedicated dashboard");
+assert.doesNotMatch(animalCraftContextText, /bovine/i);
 const animalSpatialText = descendants(document.getElementById("analysis-animal-spatial-chart")).map((element) => element.textContent).join(" ");
 assert.match(animalSpatialText, /Animal public markers.*uncertainty lane.*Contamination exclusions 12.*ambiguous 41.*Contamination audit: 12/i, "the Animal subview quantifies marker uncertainty and origin/publisher contamination exclusions");
-controller.setActiveContextSubview("analysis-relationship-context", { source: "test" });
+controller.setActiveSection("analysis-section-context", { source: "test" });
 const relationshipCells = descendants(document.getElementById("analysis-relationship-readiness-chart")).filter((element) => element.className.includes("analysis-heat-cell"));
 assert.match(relationshipCells.find((element) => /explicit source.*reconciled current/.test(element.getAttribute("aria-label") || "")).getAttribute("aria-label"), /reported nearby.*reconciled current.*67/i);
 assert.match(relationshipCells.find((element) => /deterministic match.*quarantined object/.test(element.getAttribute("aria-label") || "")).getAttribute("aria-label"), /regional context.*quarantined object.*1,737/i);
@@ -2260,8 +2238,8 @@ assert.equal(choroplethController.worldPathCache.get(worldGeometry).size, 2, "pr
 assert.equal(choroplethController.worldEqualAreaPathCache.get(worldGeometry).length, 2, "equal-area land geometry remains cached across result invalidation");
 choroplethController.destroy();
 
-// Direct hashes activate the corresponding selected dashboard. Nested context
-// hashes activate Context without making multiple panels perceivable.
+// Direct hashes activate the corresponding selected dashboard. Legacy context
+// hashes route to the new first-class Crop or Animal dashboard.
 const hashDocument = createShellDocument();
 const hashListeners = new Map();
 const hashView = {
@@ -2285,30 +2263,19 @@ assert.equal(hashController.activeSectionId, "analysis-section-craft");
 assert.equal(hashDocument.getElementById("analysis-section-craft").hidden, false);
 hashView.location.hash = "#analysis-animal-context";
 hashView.emit("hashchange");
-assert.equal(hashController.activeSectionId, "analysis-section-context");
-assert.equal(hashDocument.getElementById("analysis-section-context").hidden, false);
+assert.equal(hashController.activeSectionId, "analysis-section-animals");
+assert.equal(hashDocument.getElementById("analysis-section-animals").hidden, false);
 assert.equal(hashDocument.getElementById("analysis-section-craft").hidden, true);
-assert.equal(hashDocument.getElementById("analysis-section-context").scrollIntoViewCalls.length, 0, "direct hashes switch panels without document-flow scrolling");
+assert.equal(hashDocument.getElementById("analysis-section-animals").scrollIntoViewCalls.length, 0, "direct hashes switch panels without document-flow scrolling");
 assert.equal(hashDocument.getElementById("analysis-animal-context").scrollIntoViewCalls.length, 1, "nested direct hashes reveal the requested context group");
 assert.equal(hashDocument.getElementById("analysis-animal-context").scrollIntoViewCalls[0].behavior, "auto", "nested hash navigation honors reduced motion");
-assert.equal(hashDocument.getElementById("analysis-context-tab-animals").getAttribute("aria-selected"), "true");
-assert.equal(hashDocument.getElementById("analysis-animal-context").hidden, false);
-assert.equal(hashDocument.getElementById("analysis-crop-context").hidden, true);
-assert.equal(hashDocument.getElementById("analysis-crop-context").inert, true);
-hashDocument.getElementById("analysis-context-tab-relationships").emit("click");
-assert.equal(hashView.location.hash, "#analysis-relationship-context", "subview clicks preserve a direct-linkable nested hash");
-assert.equal(hashDocument.getElementById("analysis-relationship-context").hidden, false);
-assert.equal(hashDocument.activeElement, hashDocument.getElementById("analysis-context-tab-relationships"));
-hashDocument.getElementById("analysis-context-subview-tabs").emit("keydown", {
-  key: "Home",
-  target: hashDocument.getElementById("analysis-context-tab-relationships"),
-});
-assert.equal(hashView.location.hash, "#analysis-crop-context", "keyboard subview activation updates the nested hash");
-assert.equal(hashDocument.getElementById("analysis-crop-context").hidden, false);
-assert.equal(hashDocument.getElementById("analysis-animal-context").getAttribute("aria-hidden"), "true");
+hashView.location.hash = "#analysis-relationship-context";
+hashView.emit("hashchange");
+assert.equal(hashController.activeSectionId, "analysis-section-context");
+assert.equal(hashDocument.getElementById("analysis-section-context").hidden, false);
 hashController.destroy();
 
-// When Context is the visible dashboard, its selected subview renders before
+// When Animal Reports is the visible dashboard, its evidence renders before
 // offscreen core charts so a ready artifact cannot leave the visible panel
 // looking unloaded while background frame work drains.
 const contextPriorityFrames = createFrameHarness();
@@ -2320,8 +2287,7 @@ const contextPriorityController = new analysis.AnalysisViewController({
 });
 contextPriorityController.setAnalysisEnabled(true);
 contextPriorityController.setActiveView("analysis");
-contextPriorityController.setActiveSection("analysis-section-context", { source: "test" });
-contextPriorityController.setActiveContextSubview("analysis-animal-context", { source: "test" });
+contextPriorityController.setActiveSection("analysis-section-animals", { source: "test" });
 contextPriorityController.renderAnalysisResult(result);
 assert.equal(contextPriorityDocument.getElementById("analysis-animal-readiness-chart").children.length, 0);
 assert.equal(contextPriorityDocument.getElementById("analysis-coverage-chart").children.length, 0);
@@ -2394,15 +2360,18 @@ progressiveController.setAnalysisState("ready");
 assert.equal(progressiveController.analysisState, "loading", "Ready is deferred until all current render jobs finish");
 
 const flushedFrames = frameHarness.flushAll();
-assert.ok(flushedFrames >= 4 && flushedFrames <= 6, "only the active Overview dashboard should render in its bounded frame batch; observed " + flushedFrames + "; state " + progressiveController.analysisState + "; error " + progressiveDocument.getElementById("analysis-error-message").textContent);
+assert.ok(flushedFrames >= 8 && flushedFrames <= 10, "only the active visual Overview dashboard should render in its bounded frame batch; observed " + flushedFrames + "; state " + progressiveController.analysisState + "; error " + progressiveDocument.getElementById("analysis-error-message").textContent);
 assert.equal(progressiveController.renderPending, false);
 assert.equal(progressiveController.analysisState, "ready");
 assert.equal(progressiveDocument.getElementById("analysis-content").getAttribute("aria-busy"), "false", "completed chart batches clear their accessibility busy state");
 assert.equal(progressiveDocument.getElementById("analysis-content").hidden, false);
 assert.equal(progressiveDocument.getElementById("analysis-active-count").textContent, "401");
 assert.equal(progressiveDocument.getElementById("analysis-time-series-chart").children.length, 0, "the hidden Time dashboard remains unmaterialized after Overview finishes");
-assert.equal(progressiveDocument.getElementById("analysis-crop-time-chart").children.length, 0, "the hidden Crop subview remains unmaterialized after Overview finishes");
-assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").children.length, 0, "the hidden Animal subview remains unmaterialized after Overview finishes");
+assert.ok(progressiveDocument.getElementById("analysis-overview-coverage-visual").children.length > 0, "the coverage orbit is present on first view");
+assert.ok(progressiveDocument.getElementById("analysis-overview-craft-mosaic").children.length > 0, "the overview craft mosaic is present on first view");
+assert.ok(progressiveDocument.getElementById("analysis-overview-context-visual").children.length > 0, "context pulse navigation is present on first view");
+assert.equal(progressiveDocument.getElementById("analysis-crop-time-chart").children.length, 0, "the hidden Crop dashboard remains unmaterialized after Overview finishes");
+assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").children.length, 0, "the hidden Animal dashboard remains unmaterialized after Overview finishes");
 
 progressiveController.setActiveSection("analysis-section-time", { source: "test" });
 assert.equal(frameHarness.pendingCount(), 1, "activating Time schedules its first deferred chart job");
@@ -2498,7 +2467,7 @@ frameHarness.flushAll();
 assert.ok(progressiveDocument.getElementById("analysis-spatial-eligibility-chart").children.length > 0, "Spatial opens with its compact eligibility summary");
 assert.equal(progressiveDocument.getElementById("analysis-cooccurrence-chart").children.length, 0, "the closed co-occurrence matrix does not materialize hidden DOM");
 assert.equal(progressiveDocument.getElementById("analysis-context-neighborhood-chart").children.length, 0, "closed context-neighborhood support stays deferred");
-assert.equal(progressiveDocument.getElementById("analysis-facility-context-chart").children.length, 0, "closed facility support stays deferred");
+assert.equal(progressiveDocument.getElementById("analysis-facility-context-chart").children.length, 0, "the dedicated Facilities dashboard stays deferred");
 const spatialMatrixDisclosure = progressiveDocument.getElementById("analysis-spatial-matrix-disclosure");
 spatialMatrixDisclosure.open = true;
 spatialMatrixDisclosure.emit("toggle");
@@ -2510,14 +2479,13 @@ progressiveController.setActiveSection("analysis-section-overview", { source: "t
 assert.equal(frameHarness.pendingCount(), 0, "returning to a warm dashboard schedules no chart work");
 assert.equal(progressiveDocument.getElementById("analysis-coverage-chart").children[0], progressiveOverviewFirstChild);
 
-progressiveController.setActiveSection("analysis-section-context", { source: "test" });
-progressiveController.setActiveContextSubview("analysis-crop-context", { source: "test" });
+progressiveController.setActiveSection("analysis-section-crops", { source: "test" });
 frameHarness.flushAll();
-assert.ok(progressiveDocument.getElementById("analysis-crop-time-chart").children.length > 0, "the selected Crop subview materializes on demand");
-assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").children.length, 0, "the unselected Animal subview remains unmaterialized");
-progressiveController.setActiveContextSubview("analysis-animal-context", { source: "test" });
+assert.ok(progressiveDocument.getElementById("analysis-crop-time-chart").children.length > 0, "the Crop dashboard materializes on demand");
+assert.equal(progressiveDocument.getElementById("analysis-animal-time-chart").children.length, 0, "the unselected Animal dashboard remains unmaterialized");
+progressiveController.setActiveSection("analysis-section-animals", { source: "test" });
 frameHarness.flushAll();
-assert.ok(progressiveDocument.getElementById("analysis-animal-time-chart").children.length > 0, "the Animal subview materializes only after selection");
+assert.ok(progressiveDocument.getElementById("analysis-animal-time-chart").children.length > 0, "the Animal dashboard materializes only after selection");
 assert.equal(
   progressiveController.listeners.length,
   staticProgressiveListenerCount,
@@ -2584,8 +2552,11 @@ resizeNav.rect = { top: 8, left: 0, right: 320, bottom: 68, width: 320, height: 
   [-600, "analysis-section-craft"],
   [-400, "analysis-section-geography"],
   [84, "analysis-section-spatial"],
-  [900, "analysis-section-sources-quality"],
-  [1500, "analysis-section-context"],
+  [400, "analysis-section-crops"],
+  [700, "analysis-section-animals"],
+  [1000, "analysis-section-facilities"],
+  [1300, "analysis-section-context"],
+  [1600, "analysis-section-sources-quality"],
 ].forEach(([top, id]) => {
   resizeDocument.getElementById(id).rect = { top, left: 0, right: 320, bottom: top + 300, width: 320, height: 300 };
 });
