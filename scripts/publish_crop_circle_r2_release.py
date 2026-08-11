@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
+import ssl
 import subprocess
 import sys
 from typing import Any
@@ -24,6 +25,9 @@ DEFAULT_MANIFEST = Path("webapp/static_public/data/crop_circles/manifest.json")
 DEFAULT_BUCKET = "ufo-timeline-data"
 DEFAULT_CACHE_CONTROL = "public, max-age=31536000, immutable"
 USER_AGENT = "ufo-timeline-crop-r2-publisher/1.0"
+VERIFIED_SSL_CONTEXT = ssl.create_default_context()
+if hasattr(ssl, "VERIFY_X509_STRICT"):
+    VERIFIED_SSL_CONTEXT.verify_flags &= ~ssl.VERIFY_X509_STRICT
 
 
 class ReleaseError(RuntimeError):
@@ -119,7 +123,7 @@ def declared_payloads(manifest: dict[str, Any], manifest_path: Path) -> list[dic
 def request_bytes(url: str, *, timeout: float) -> tuple[int, bytes]:
     request = Request(url, headers={"User-Agent": USER_AGENT, "Cache-Control": "no-cache"})
     try:
-        with urlopen(request, timeout=timeout) as response:
+        with urlopen(request, timeout=timeout, context=VERIFIED_SSL_CONTEXT) as response:
             return int(response.status), response.read()
     except HTTPError as exc:
         return int(exc.code), exc.read()
