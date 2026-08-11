@@ -10,6 +10,8 @@ import struct
 import sys
 from urllib.parse import urlparse
 
+import pytest
+
 from parser.packed_points import export_packed_points
 
 
@@ -48,6 +50,16 @@ def local_analysis_payload_path(value: str) -> Path:
         assert parsed.scheme == "https"
         return ANALYSIS_ROOT / Path(parsed.path).name
     return STATIC_ROOT / value
+
+
+def canonical_web_root() -> Path:
+    for candidate in (
+        REPO_ROOT / "data" / "canonical_web",
+        REPO_ROOT / "static_bundle" / "data" / "canonical_web",
+    ):
+        if (candidate / "points_meta.json").is_file() and (candidate / "points.bin").is_file():
+            return candidate
+    raise AssertionError("The packed canonical-web point artifacts are unavailable")
 
 
 def decoded_label(artifact: str, field: str, code: int) -> str:
@@ -449,15 +461,14 @@ def test_v22_geography_projection_is_row_aligned_decodable_and_fail_closed() -> 
     boundary = schema.index("boundaryStatusCode")
     coordinate_evidence = schema.index("coordinateEvidenceCode")
     codes = value["codes"]["ufoGeography"]
-    metadata = json.loads(
-        (REPO_ROOT / "data" / "canonical_web" / "points_meta.json").read_text(encoding="utf-8")
-    )
+    canonical_root = canonical_web_root()
+    metadata = json.loads((canonical_root / "points_meta.json").read_text(encoding="utf-8"))
     row_struct = struct.Struct(metadata["struct_format"])
     event_id_field = next(
         index for index, field in enumerate(metadata["fields"]) if field["name"] == "event_id"
     )
     packed_rows = row_struct.iter_unpack(
-        (REPO_ROOT / "data" / "canonical_web" / "points.bin").read_bytes()
+        (canonical_root / "points.bin").read_bytes()
     )
     for index, (projection_row, packed_row) in enumerate(zip(rows, packed_rows, strict=True)):
         assert projection_row[row_index] == index
@@ -872,8 +883,10 @@ def test_uncertainty_classification_and_distance_are_boundary_safe() -> None:
 
 
 def test_builder_regenerates_frozen_analysis_v2_byte_for_byte(tmp_path: Path) -> None:
+    if not BUILDER.DEFAULT_CANONICAL_SOURCE.is_file():
+        pytest.skip("Full-corpus Analysis v2 regeneration requires the protected canonical source")
     output = tmp_path / "analysis_v2"
-    rebuilt = BUILDER.build(output_root=output)
+    rebuilt = BUILDER.build(output_root=output, canonical_root=canonical_web_root())
 
     assert rebuilt == manifest()
     frozen_files = sorted(path.name for path in ANALYSIS_ROOT.iterdir() if path.is_file())

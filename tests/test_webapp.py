@@ -4,6 +4,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
+from scripts import reproduction
 from webapp.app import create_app
 
 
@@ -1635,9 +1636,24 @@ def test_shell_assets_match_the_rebuilt_static_bundle():
         "relationship_source_snapshot.json.gz",
         "relationship_source_snapshot.meta.json",
     ):
-        assert (Path("webapp/static_public/data/analysis_v2") / filename).read_bytes() == (
-            Path("static_bundle/data/analysis_v2") / filename
-        ).read_bytes()
+        source_path = Path("webapp/static_public/data/analysis_v2") / filename
+        bundle_path = Path("static_bundle/data/analysis_v2") / filename
+        if filename != "manifest.json":
+            assert source_path.read_bytes() == bundle_path.read_bytes()
+            continue
+
+        source_manifest = json.loads(source_path.read_text(encoding="utf-8"))
+        bundle_manifest = json.loads(bundle_path.read_text(encoding="utf-8"))
+        if bundle_manifest != source_manifest:
+            local_base = str(bundle_manifest["assetBaseUrl"]).rstrip("/")
+            assert local_base == "./data/analysis_v2"
+            expected = reproduction.replace_url_prefix(
+                source_manifest,
+                str(source_manifest["assetBaseUrl"]).rstrip("/"),
+                local_base,
+            )
+            expected["assetBaseUrl"] = local_base + "/"
+            assert bundle_manifest == expected
 
 
 def test_analysis_app_runtime_contract_is_wired_to_existing_filter_and_map_lifecycle():

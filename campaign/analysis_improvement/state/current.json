@@ -59,16 +59,16 @@
             "sha256": "12d5d76857b36d2500425eed7bb4ac05b55e897a77fda22f1123a92c2302464e"
         },
         "campaign/analysis_improvement/state/completed_waves.json": {
-            "bytes": 7556,
-            "sha256": "5a9c97ab7bd43b6110dd0c377b51d2f0bf16017411eaad788d8e4d3b6b6b72b6"
+            "bytes": 7547,
+            "sha256": "c1854cbf91e6f2a95ae42e0b8232a88515fc14f6a69a3d60c4fb95a3c71f7555"
         },
         "campaign/analysis_improvement/state/module_readiness.json": {
-            "bytes": 17171,
-            "sha256": "c6af2a569c5435c58aa8ca0feb0b7d5e2a0b72c212d99dcef16aa1d214c25f7a"
+            "bytes": 16942,
+            "sha256": "2cef4b867a3a61c0d650b930c1e851fbea7304f12add306de2f3f7719a0425f0"
         },
         "campaign/analysis_improvement/state/ranked_backlog.json": {
-            "bytes": 11390,
-            "sha256": "19aab60f2e97a0e724917731168c7b6988f5644ff789d70ccf795e2199ce5ee8"
+            "bytes": 11122,
+            "sha256": "1046cb7408a092babc427be14b08767305e0a65b9fc700c435845feefed3c1d5"
         },
         "campaign/analysis_improvement/state/source_provenance_ledger.json": {
             "bytes": 12242,
@@ -179,8 +179,8 @@
             "sha256": "7d66dad4d4c8c711ccad74a57dceb606bc63bef1dbec6d35735c452b1b50f439"
         },
         "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/encoding_build_receipt.json": {
-            "bytes": 3181,
-            "sha256": "45130662ae74ac25a0b648faf637e80be5e7a362897b2f7426b698d63f2edd5a"
+            "bytes": 3086,
+            "sha256": "34a69d8cca5ac70012d9dddbc6fb3777a7af31b81c500bdfbd939c9473687022"
         },
         "campaign/analysis_improvement/waves/wave-006-analysis-projection-encoding/preregistration.json": {
             "bytes": 5412,

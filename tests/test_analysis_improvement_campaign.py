@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 import pytest
@@ -18,8 +19,13 @@ def load(relative: str):
     return json.loads((CAMPAIGN_ROOT / relative).read_text(encoding="utf-8"))
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def committed_bytes(relative: str) -> bytes:
+    return subprocess.run(
+        ["git", "show", f"HEAD:{relative}"],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout
 
 
 def test_field_semantics_fail_closed() -> None:
@@ -173,8 +179,10 @@ def test_authoritative_state_is_pinned_and_self_consistent() -> None:
     assert "campaign/analysis_improvement/waves/wave-009-dashboard-density-frontier/wave_receipt.json" in current["packageArtifacts"]
     for relative, record in current["packageArtifacts"].items():
         path = ROOT / relative
-        assert path.stat().st_size == record["bytes"]
-        assert sha256(path) == record["sha256"]
+        assert path.is_file()
+        payload = committed_bytes(relative)
+        assert len(payload) == record["bytes"]
+        assert hashlib.sha256(payload).hexdigest() == record["sha256"]
 
 
 def test_coverage_matrix_counts_the_served_catalog_and_keeps_coverage_kinds_distinct() -> None:

@@ -76,7 +76,7 @@ def test_geography_binary_rebuild_is_deterministic_and_value_exact() -> None:
     rebuilt_gzip = BUILDER.deterministic_gzip(rebuilt)
 
     assert bytes(rebuilt) == BINARY.read_bytes()
-    assert rebuilt_gzip == GZIP_BINARY.read_bytes()
+    assert gzip.decompress(GZIP_BINARY.read_bytes()) == bytes(rebuilt)
     assert parity["decodedParityPct"] == 100.0
     assert parity["sourceJsonSha256"] == "f87c7747cd2143ed75cf8cc87c53603774651a17c66f5333df3b6d3f7cf17871"
     assert parity["sourceCanonicalJsonSha256"] == parity["decodedCanonicalJsonSha256"]

@@ -8,6 +8,8 @@ from pathlib import Path, PurePosixPath
 import re
 import sys
 
+import pytest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 STATIC_ROOT = REPO_ROOT / "webapp" / "static_public"
@@ -185,6 +187,8 @@ def test_projection_artifacts_are_complete_hashed_compact_and_decodable() -> Non
 
 
 def test_builder_regenerates_the_frozen_release_byte_for_byte(tmp_path: Path) -> None:
+    if not BUILDER.DEFAULT_CATALOG_SOURCE.is_file():
+        pytest.skip("Full-corpus Analysis v1 regeneration requires the protected catalog source")
     output = tmp_path / "analysis_v1"
     manifest = BUILDER.build(output_root=output)
 
