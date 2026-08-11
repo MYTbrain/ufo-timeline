@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -107,6 +108,20 @@ def test_frozen_known_source_index_supports_clean_clone_validation(tmp_path: Pat
 
     assert len(fingerprints) == 2393
     assert len(fingerprints) == reconciliation["noRepeatIndex"]["count"]
+
+
+def test_foundation_receipt_seals_git_canonical_bytes() -> None:
+    receipt = json.loads(
+        (CAMPAIGN_ROOT / "state" / "foundation_build_receipt.json").read_text(encoding="utf-8")
+    )
+    for relative, record in receipt["artifacts"].items():
+        payload = campaign.git_index_bytes(ROOT, relative)
+        assert len(payload) == record["bytes"]
+        assert hashlib.sha256(payload).hexdigest() == record["sha256"]
+
+    builder = receipt["builder"]
+    payload = campaign.git_index_bytes(ROOT, builder["path"])
+    assert hashlib.sha256(payload).hexdigest() == builder["sha256"]
 
 
 def test_source_discovery_queue_has_candidate_identity_without_fake_case() -> None:

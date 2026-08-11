@@ -110,6 +110,34 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def git_index_bytes(repo_root: Path, relative: str) -> bytes:
+    process = subprocess.run(
+        ["git", "cat-file", "blob", f":{relative}"],
+        cwd=repo_root,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if process.returncode != 0:
+        detail = process.stderr.decode("utf-8", errors="replace").strip()
+        raise CampaignValidationError(f"Tracked receipt input is unavailable: {relative}: {detail}")
+    return process.stdout
+
+
+def git_index_paths(repo_root: Path, prefix: str) -> list[str]:
+    process = subprocess.run(
+        ["git", "ls-files", "--cached", "--", prefix],
+        cwd=repo_root,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if process.returncode != 0:
+        detail = process.stderr.decode("utf-8", errors="replace").strip()
+        raise CampaignValidationError(f"Cannot enumerate tracked receipt inputs: {detail}")
+    return sorted(line for line in process.stdout.decode("utf-8").splitlines() if line)
+
+
 def load_json(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
@@ -879,18 +907,22 @@ def build_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, Any]
     receipt_path = campaign_root / "state" / "foundation_build_receipt.json"
     artifacts: dict[str, dict[str, Any]] = {}
     mutable_release_seal_path = campaign_root / "state" / "release_seal.json"
-    for path in sorted(
-        item
-        for item in campaign_root.rglob("*")
-        if item.is_file() and item not in {receipt_path, mutable_release_seal_path}
-    ):
-        relative = path.relative_to(repo_root).as_posix()
-        artifacts[relative] = {"bytes": path.stat().st_size, "sha256": sha256_file(path)}
+    excluded = {
+        receipt_path.relative_to(repo_root).as_posix(),
+        mutable_release_seal_path.relative_to(repo_root).as_posix(),
+    }
+    campaign_prefix = campaign_root.relative_to(repo_root).as_posix()
+    for relative in git_index_paths(repo_root, campaign_prefix):
+        if relative in excluded:
+            continue
+        payload = git_index_bytes(repo_root, relative)
+        artifacts[relative] = {"bytes": len(payload), "sha256": sha256_bytes(payload)}
     builder_path = Path(__file__).resolve()
     builder_relative = builder_path.relative_to(repo_root).as_posix()
-    builder_hash = sha256_file(builder_path)
+    builder_payload = git_index_bytes(repo_root, builder_relative)
+    builder_hash = sha256_bytes(builder_payload)
     tree_lines = [f"{path}\0{record['bytes']}\0{record['sha256']}" for path, record in artifacts.items()]
-    tree_lines.append(f"{builder_relative}\0{builder_path.stat().st_size}\0{builder_hash}")
+    tree_lines.append(f"{builder_relative}\0{len(builder_payload)}\0{builder_hash}")
     tree_hash = sha256_bytes(("\n".join(tree_lines) + "\n").encode("utf-8"))
     rows = validated["rows"]
     receipt = {
