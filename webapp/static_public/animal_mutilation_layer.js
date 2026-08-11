@@ -7,6 +7,7 @@
   const BROWSER_PAGE_SIZE = 100;
   const ROW = Object.freeze({
     id: 0, lat: 1, lon: 2, start: 3, end: 4, datePrecision: 5, species: 6, chunk: 7,
+    coordinateEvidenceClass: 8, coordinateUncertaintyM: 9,
   });
   const CATALOG = Object.freeze({
     id: 0, title: 1, summary: 2, location: 3, dateStart: 4, dateEnd: 5,
@@ -133,6 +134,48 @@
       else toggle.removeAttribute("aria-busy");
     }
     dispatchState({ busy: Boolean(busy) });
+  }
+
+  function readableCode(value, fallback) {
+    const normalized = String(value || "").trim();
+    if (!normalized) return fallback || "Unknown";
+    return normalized.replaceAll("_", " ").replace(/\b\w/g, function (letter) {
+      return letter.toUpperCase();
+    });
+  }
+
+  function coordinateEvidenceClassForRow(row) {
+    const rawCode = row[ROW.coordinateEvidenceClass];
+    if (rawCode != null && Number.isFinite(Number(rawCode))) {
+      const declared = state.manifest && state.manifest.codes && state.manifest.codes.coordinateEvidenceClass;
+      if (declared && typeof declared === "object") {
+        const match = Object.keys(declared).find(function (name) {
+          return Number(declared[name]) === Number(rawCode);
+        });
+        if (match) return match;
+      }
+      const stableCodes = [
+        "source_exact", "source_bounded", "source_regional", "source_uncertainty_unknown",
+        "generalized_public_marker", "locality_centroid", "postal_centroid",
+        "approximate_map_pin", "unmapped",
+      ];
+      if (stableCodes[Number(rawCode)]) return stableCodes[Number(rawCode)];
+    }
+    // Releases before the context-evidence contract contain generalized public
+    // markers only and have no appended evidence-class column.
+    return "generalized_public_marker";
+  }
+
+  function coordinateQualityGroup(row) {
+    const evidenceClass = coordinateEvidenceClassForRow(row);
+    if (evidenceClass === "source_exact") return "exact";
+    if (evidenceClass === "source_bounded") return "bounded";
+    return "generalized";
+  }
+
+  function coordinateUncertaintyForRow(row) {
+    const value = row[ROW.coordinateUncertaintyM];
+    return value != null && Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null;
   }
 
   function dispatchState(extra) {
@@ -416,7 +459,7 @@
   }
 
   function pointMatches(row, context) {
-    if (context.hideLowPrecisionCoordinates) return false;
+    if (context.hideLowPrecisionCoordinates && coordinateEvidenceClassForRow(row) !== "source_exact") return false;
     if (context.hideNonExactDates && Number(row[ROW.datePrecision]) !== 0) return false;
     if (row[ROW.start] == null || row[ROW.end] == null) return Boolean(context.timeRangeIsAllTime);
     const start = Number(row[ROW.start]);
@@ -428,6 +471,8 @@
 
   function markerForRows(rows) {
     const representative = rows[0];
+    const coordinateEvidenceClasses = Array.from(new Set(rows.map(coordinateEvidenceClassForRow))).sort();
+    const coordinateUncertainties = rows.map(coordinateUncertaintyForRow).filter(function (value) { return value != null; });
     const radius = 6.5 + Math.min(5, Math.log2(Math.max(1, rows.length)) * 1.6);
     const iconSize = Math.round((radius + 4) * 2);
     const icon = window.L.divIcon({
@@ -444,6 +489,8 @@
       keyboard: false,
       bubblingMouseEvents: false,
       animalHitRadius: radius,
+      animalCoordinateEvidenceClasses: coordinateEvidenceClasses,
+      animalCoordinateUncertaintyM: coordinateUncertainties.length ? Math.max.apply(null, coordinateUncertainties) : null,
     });
     marker._animalRows = rows.slice();
     marker.options.animalStackCount = rows.length;
@@ -458,10 +505,12 @@
     state.layer.clearLayers();
     state.markers = [];
     let visibleRecords = 0;
+    const coordinateCounts = { exact: 0, bounded: 0, generalized: 0 };
     state.rowsByPosition.forEach(function (rows) {
       const visibleRows = rows.filter(function (row) { return pointMatches(row, context); });
       if (!visibleRows.length) return;
       visibleRecords += visibleRows.length;
+      visibleRows.forEach(function (row) { coordinateCounts[coordinateQualityGroup(row)] += 1; });
       const marker = markerForRows(visibleRows);
       state.markers.push(marker);
       state.layer.addLayer(marker);
@@ -470,13 +519,23 @@
     state.visibleRecords = visibleRecords;
     state.visiblePositions = state.markers.length;
     if (context.hideLowPrecisionCoordinates) {
-      setStatus("No animal reports remain: this dataset has zero reviewed exact coordinates. Clear Exact coordinates only to show generalized locations.");
+      if (!visibleRecords) {
+        setStatus("No mapped animal reports with source-exact coordinates match the current filters. Clear Exact coordinates only to include source-bounded and generalized locations.");
+      } else {
+        setStatus(
+          plural(visibleRecords, "source-exact mapped report", "source-exact mapped reports") + " at " +
+          plural(state.visiblePositions, "source-supported position", "source-supported positions") + "."
+        );
+      }
     } else if (!visibleRecords) {
       setStatus("No mapped animal reports match the current date filters. Undated reports appear only in All Time; all reports remain available in Browse all reports.");
     } else {
       setStatus(
         plural(visibleRecords, "mapped report", "mapped reports") + " at " +
-        plural(state.visiblePositions, "generalized position", "generalized positions") +
+        plural(state.visiblePositions, "mapped position", "mapped positions") +
+        ". Coordinate evidence: " + coordinateCounts.exact.toLocaleString() + " source-exact, " +
+        coordinateCounts.bounded.toLocaleString() + " source-bounded, " +
+        coordinateCounts.generalized.toLocaleString() + " generalized or otherwise non-strict" +
         ". " + plural(state.manifest.counts.unmapped, "unmapped report", "unmapped reports") +
         " remain available in Browse all reports."
       );
@@ -586,7 +645,70 @@
         ? "No public map point supplied · Generalized place label: " + detail.location
         : "No public map point supplied";
     }
+    const evidenceClass = String(detail.coordinateEvidenceClass || detail.locationPrecision || "generalized_public_marker");
+    if (evidenceClass === "source_exact") {
+      return detail.location ? "Source-supported event site: " + detail.location : "Source-supported event site";
+    }
+    if (evidenceClass === "source_bounded") {
+      return detail.location ? "Source-supported bounded site: " + detail.location : "Source-supported bounded site";
+    }
     return detail.location ? "Generalized location: " + detail.location : "Generalized location (place label not supplied)";
+  }
+
+  function reviewPresentation(detail) {
+    const stateCode = String(detail.reviewState || detail.status || "reported_unreviewed");
+    if (stateCode === "human_reviewed") {
+      return {
+        heading: detail.title || detail.claimLabel || "Human-reviewed animal incident report",
+        label: "Human reviewed",
+        warning: "Critical event fields were human-reviewed against the cited evidence. Review state describes sourcing, not authenticity or cause; the layer asserts no UFO cause or other cause.",
+      };
+    }
+    if (stateCode === "source_reviewed") {
+      return {
+        heading: detail.title || detail.claimLabel || "Source-reviewed animal incident report",
+        label: "Source reviewed",
+        warning: "Two independent reviews agreed against the same frozen source evidence. Review state describes sourcing, not authenticity or cause; the layer asserts no UFO cause or other cause.",
+      };
+    }
+    return {
+      heading: "Reported animal mutilation — unreviewed",
+      label: "Reported, unreviewed",
+      warning: "This source report has not been scientifically verified. The layer asserts no UFO cause or other cause and cannot enter craft traces, relationships, chronology, or playback.",
+    };
+  }
+
+  function coordinateEvidenceLabel(detail) {
+    const evidenceClass = String(detail.coordinateEvidenceClass || detail.locationPrecision || "unknown");
+    const labels = {
+      source_exact: "Source-supported event site (100 m uncertainty or less)",
+      source_bounded: "Source-supported bounded site (over 100 m through 1 km uncertainty)",
+      source_regional: "Source-supported regional location (over 1 km uncertainty)",
+      source_uncertainty_unknown: "Source-supported location; uncertainty not quantified",
+      generalized_public_marker: "Generalized public marker",
+      locality_centroid: "Locality centroid",
+      postal_centroid: "Postal centroid",
+      approximate_map_pin: "Approximate map pin",
+      unmapped: "Unmapped",
+    };
+    return labels[evidenceClass] || readableCode(evidenceClass, "Unknown");
+  }
+
+  function uncertaintyLabel(value) {
+    if (value == null || value === "" || !Number.isFinite(Number(value))) return "Not quantified";
+    const metres = Number(value);
+    if (metres >= 1000) return (metres / 1000).toLocaleString(undefined, { maximumFractionDigits: 3 }) + " km";
+    return metres.toLocaleString(undefined, { maximumFractionDigits: 3 }) + " m";
+  }
+
+  function listLabel(values, fallback) {
+    if (!Array.isArray(values) || !values.length) return fallback || "None recorded";
+    return values.map(function (value) { return readableCode(value); }).join(", ");
+  }
+
+  function identifierListLabel(values, fallback) {
+    if (!Array.isArray(values) || !values.length) return fallback || "None recorded";
+    return values.map(function (value) { return String(value); }).join(", ");
   }
 
   function sourceReferenceHtml(ref) {
@@ -602,6 +724,7 @@
 
   function renderDetail(detail, positionRows) {
     if (!detailPanel || !detailBody) return;
+    const review = reviewPresentation(detail);
     const names = (detail.commonNames || []).map(function (value) { return String(value).replaceAll("_", " "); });
     const excerpts = (detail.evidenceExcerpts || []).length
       ? '<ul class="animal-detail-excerpts">' + detail.evidenceExcerpts.map(function (text) {
@@ -614,24 +737,30 @@
     const sharedRows = (positionRows || []).filter(function (row) { return String(row[ROW.id]) !== String(detail.id); });
     const shared = sharedRows.length
       ? '<div class="animal-detail-shared"><strong>' + escapeHtml(String(positionRows.length)) +
-        " reports share this generalized position</strong><div>" + sharedRows.map(function (row) {
+        " reports share this mapped position</strong><div>" + sharedRows.map(function (row) {
           return '<button class="secondary-button" type="button" data-animal-record-id="' + escapeHtml(row[ROW.id]) +
             '" data-animal-detail-chunk="' + escapeHtml(row[ROW.chunk]) + '">' + escapeHtml(row[ROW.id]) + "</button>";
         }).join("") + "</div></div>"
       : "";
     detailBody.innerHTML = [
       '<p class="animal-detail-eyebrow">Animal Mutilation Reports · context only</p>',
-      "<h3>Reported animal mutilation — unreviewed</h3>",
+      "<h3>" + escapeHtml(review.heading) + "</h3>",
       '<p class="animal-report-title"><strong>Report label:</strong> ' + escapeHtml(detail.title || detail.claimLabel || "Reported animal mutilation") + "</p>",
       '<p class="animal-content-warning"><strong>Content warning:</strong> ' + escapeHtml(detail.contentWarning || "Animal-death descriptions may be disturbing.") + "</p>",
-      '<p class="animal-science-warning"><strong>Reported, unreviewed:</strong> This source report has not been scientifically verified. The layer asserts no UFO cause or other cause and cannot enter craft traces, relationships, chronology, or playback.</p>',
+      '<p class="animal-science-warning"><strong>' + escapeHtml(review.label) + ":</strong> " + escapeHtml(review.warning) + "</p>",
       '<dl class="animal-detail-grid">',
-      "<div><dt>Status</dt><dd>" + escapeHtml(detail.status) + "</dd></div>",
+      "<div><dt>Status</dt><dd>" + escapeHtml(readableCode(detail.status || detail.reviewState || "reported_unreviewed")) + "</dd></div>",
+      "<div><dt>Review state</dt><dd>" + escapeHtml(readableCode(detail.reviewState || detail.status || "reported_unreviewed")) + "</dd></div>",
       "<div><dt>Date</dt><dd>" + escapeHtml(formatDate(detail)) + "</dd></div>",
+      "<div><dt>Date role</dt><dd>" + escapeHtml(readableCode(detail.dateRole || "reported_unspecified")) + "</dd></div>",
       "<div><dt>Location</dt><dd>" + escapeHtml(formatLocation(detail)) + "</dd></div>",
       "<div><dt>Species</dt><dd>" + escapeHtml(names.length ? names.join(", ") : "Unknown") + "</dd></div>",
-      "<div><dt>Location precision</dt><dd>" + escapeHtml(detail.locationPrecision || "unknown") + "</dd></div>",
+      "<div><dt>Coordinate evidence</dt><dd>" + escapeHtml(coordinateEvidenceLabel(detail)) + "</dd></div>",
+      "<div><dt>Coordinate method</dt><dd>" + escapeHtml(readableCode(detail.coordinateMethod, "Not recorded")) + "</dd></div>",
+      "<div><dt>Coordinate uncertainty</dt><dd>" + escapeHtml(uncertaintyLabel(detail.coordinateUncertaintyM)) + "</dd></div>",
       "<div><dt>Privacy</dt><dd>" + escapeHtml(detail.privacyLevel || "unknown") + "</dd></div>",
+      "<div><dt>Analysis tier</dt><dd>" + escapeHtml(readableCode(detail.analysisTier, "Excluded")) + "</dd></div>",
+      "<div><dt>Strict-lane exclusions</dt><dd>" + escapeHtml(listLabel(detail.exclusionReasonCodes, "None")) + "</dd></div>",
       "</dl>",
       "<p>" + escapeHtml(detail.summary || "") + "</p>",
       "<h4>Public report excerpts</h4>", excerpts,
@@ -640,6 +769,9 @@
       "<div><dt>Stable report ID</dt><dd><code>" + escapeHtml(detail.id) + "</code></dd></div>",
       "<div><dt>Source incident ID</dt><dd><code>" + escapeHtml(detail.sourceIncidentId) + "</code></dd></div>",
       '<div><dt>Source incident SHA-256</dt><dd><code class="animal-hash">' + escapeHtml(detail.sourceIncidentSha256) + "</code></dd></div>",
+      "<div><dt>Source families</dt><dd>" + escapeHtml(identifierListLabel(detail.sourceFamilyIds, "None recorded")) + "</dd></div>",
+      "<div><dt>Independence</dt><dd>" + escapeHtml(readableCode(detail.independenceStatus, "Unreviewed")) + "</dd></div>",
+      "<div><dt>Deduplication</dt><dd>" + escapeHtml(readableCode(detail.dedupStatus, "Unresolved")) + "</dd></div>",
       "<div><dt>Causality</dt><dd>not_asserted</dd></div>",
       "</dl>", shared,
     ].join("");

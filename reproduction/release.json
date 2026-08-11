@@ -6,14 +6,14 @@
   },
   "pages": {
     "archive": {
-      "bytes": 8694455,
+      "bytes": 9341229,
       "format": "zip",
-      "sha256": "6f3bbe200364aed283f3b1837b2ca14bea52ecde687544e161e82491b53fa9d2",
-      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-layer-quick-toggles-v1-20260803/pages-bundle.zip"
+      "sha256": "22d8ae8e5dc66511f413c2992e560086973b4f31ac77ff09f45a98742cf2843f",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-evidence-mapping-provenance-v1-20260811/pages-bundle.zip"
     },
-    "base_url": "https://688e156d.ufo-timeline.pages.dev",
-    "deployment_id": "688e156d-1a4e-44d5-8a60-de1d6554ee18",
-    "file_count": 134,
+    "base_url": "https://00000000.ufo-timeline.pages.dev",
+    "deployment_id": "00000000-0000-0000-0000-000000000001",
+    "file_count": 150,
     "files": [
       {
         "bytes": 0,
@@ -26,24 +26,44 @@
         "sha256": "98ea475f3dec0f1854a6e94d18da9381ca9eb5410cec76e246ef61baceb0044c"
       },
       {
-        "bytes": 1316,
+        "bytes": 2226,
         "path": "_headers",
-        "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
+        "sha256": "d14fff52395fee656fc3d78f9688648769411e612cc95f7311678adab91f3231"
       },
       {
-        "bytes": 3579,
+        "bytes": 122100,
+        "path": "analysis_spatial.js",
+        "sha256": "359c3866d8085dd2ccfaa4a7b965d4518c2193d4fc3b754833cc040a1da81c79"
+      },
+      {
+        "bytes": 5746,
+        "path": "analysis_spatial_worker.js",
+        "sha256": "661f59e585c73fc2c64040a12dafea1c9d7d17457703a2fd5262bf00cd29242a"
+      },
+      {
+        "bytes": 321958,
+        "path": "analysis_stats.js",
+        "sha256": "56c953d7b55c9e631bf820b9ca734a1d7f71b79f89e7461af3cccdabe5eb4718"
+      },
+      {
+        "bytes": 419635,
+        "path": "analysis_view.js",
+        "sha256": "291753a9f41b448b4b7e01cafce73d641bba4e6fff141d593a64536d2b951edd"
+      },
+      {
+        "bytes": 4834,
         "path": "animal_mutilation_bootstrap.js",
-        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
+        "sha256": "c1fb9925c79355d648be07c351dbf0f91207b057843d9f9c14c49951660df59f"
       },
       {
-        "bytes": 43787,
+        "bytes": 52313,
         "path": "animal_mutilation_layer.js",
-        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
+        "sha256": "06051edee25fbce594c89f9113362dc238b4cd4b26eea27a5d07c72938dc62ec"
       },
       {
-        "bytes": 1093932,
+        "bytes": 1252419,
         "path": "app.js",
-        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
+        "sha256": "4e8715bd6f97170d59ad9fd74eec15d0df276b2f889740db5e07cc016ce7a1df"
       },
       {
         "bytes": 81571,
@@ -51,34 +71,94 @@
         "sha256": "e857484bc228929849fae4704818b580526922a537a981dd528954f4fa2b979d"
       },
       {
-        "bytes": 17006,
+        "bytes": 226929,
         "path": "catalog_filter_worker.js",
-        "sha256": "dd3359364d0a21b6d8c841e194e6972a19d491afa17e66cb6b10aa06720c4cb1"
+        "sha256": "bf7072311dd8f3106c2ce89e693e326a171b025b0b0d644cd941e1ad1ba28440"
       },
       {
-        "bytes": 129100,
+        "bytes": 149380,
         "path": "cloudflare_bundle_manifest.json",
-        "sha256": "ce30bf17276bd92c0c8b401515c6ae33db608c565c0bc617f2241632b6433250"
+        "sha256": "946056088d0ce2b68c4ec997ab1d7da32cd4a4c46b3aa197ee2397525d6210e7"
       },
       {
-        "bytes": 6155,
+        "bytes": 7339,
         "path": "crop_circle_bootstrap.js",
-        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
+        "sha256": "873bff992381eee77afd31474e70e41fe0b7befb418bd8c5faadc9b8eaa0d265"
       },
       {
-        "bytes": 78476,
+        "bytes": 83101,
         "path": "crop_circle_layer.js",
-        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
+        "sha256": "b73e7f46ff1ea702e618b461a16c4fc3fc2501f3bc5466b312226e79ab896cf3"
       },
       {
-        "bytes": 4210,
+        "bytes": 10556,
+        "path": "data/analysis_color_v1/manifest.json",
+        "sha256": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49"
+      },
+      {
+        "bytes": 19125,
+        "path": "data/analysis_coordinate_evidence_v1/manifest.json",
+        "sha256": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8"
+      },
+      {
+        "bytes": 9463,
+        "path": "data/analysis_duration_v1/manifest.json",
+        "sha256": "89dc633e66008655b0aec3a798c0787cd51b187c2e63336a1eb44cb6336210fc"
+      },
+      {
+        "bytes": 16723,
+        "path": "data/analysis_reporting_delay_v1/manifest.json",
+        "sha256": "332c2b39a17715cd255d6c3a39ac0d175db1d379b6327ddb91c2499aa6e53fd9"
+      },
+      {
+        "bytes": 15385,
+        "path": "data/analysis_time_of_day_v1/manifest.json",
+        "sha256": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa"
+      },
+      {
+        "bytes": 104423,
+        "path": "data/analysis_v1/animal_reports.json",
+        "sha256": "6bf67a59d081de3c7e385d38e8a0ad0701c2cbbdb28a93528bcbd4650b447478"
+      },
+      {
+        "bytes": 27925,
+        "path": "data/analysis_v1/animal_reports.json.gz",
+        "sha256": "eb437b517887343194838b3e3a509b6a4b2a9bdcecb952da55dce949215529df"
+      },
+      {
+        "bytes": 626047,
+        "path": "data/analysis_v1/crop_circles.json",
+        "sha256": "088c647b07183ac7e192cbec8fe5af6b635d02422d5639d8cf39ebd004837df8"
+      },
+      {
+        "bytes": 141876,
+        "path": "data/analysis_v1/crop_circles.json.gz",
+        "sha256": "4b0d9f3607ffefd3a86078f597d8c89957dbbbf71690cdb3a30d46aa008ee3a7"
+      },
+      {
+        "bytes": 6123,
+        "path": "data/analysis_v1/manifest.json",
+        "sha256": "ad6f5b4c3bd712a0dd3594be5ffb63370c35e9cd39bce3ebc447338cb78e54ce"
+      },
+      {
+        "bytes": 93777,
+        "path": "data/analysis_v2/manifest.json",
+        "sha256": "29df7c9cef0977b69e398e19373c3e0ac741d522b4d4776787cfb15c6fe5404b"
+      },
+      {
+        "bytes": 8709,
+        "path": "data/analysis_witness_count_v1/manifest.json",
+        "sha256": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2"
+      },
+      {
+        "bytes": 5858,
         "path": "data/animal_mutilations/manifest.json",
-        "sha256": "342de15d439f8270069e697c605fd48915198497bfd16b65a65564a9881ce0d4"
+        "sha256": "a4f6188b2496f91f8edc0b8b2cbcd630552d3a025ce9e1b35840437e2ed6cedb"
       },
       {
         "bytes": 3689,
         "path": "data/app_config.json",
-        "sha256": "be039879fbedbdd8882fdb6285bb5361acb397e7b3fb4225915268d230e7c888"
+        "sha256": "e22188b3ec318950ca0cd085b22e42806c4b18cf6df11b2b15c5cbefb1c5f319"
       },
       {
         "bytes": 40482,
@@ -131,9 +211,9 @@
         "sha256": "a809d616bdf19d4265003ad23614a6906f55663131c43bacc712395008b8d29d"
       },
       {
-        "bytes": 7301,
+        "bytes": 8865,
         "path": "data/crop_circles/manifest.json",
-        "sha256": "961530d02cfe6d73cd55b938acc4e7c67398de9163e02089367eca3f673b285d"
+        "sha256": "262491af98deacf0c00d3019c6a8f9c894eb16f4d22cf931abd3bf9ec8bb15fe"
       },
       {
         "bytes": 1533,
@@ -201,9 +281,9 @@
         "sha256": "af1fe37caaf69f2f33766962d1254c63b1bbdd517a83ddffa2d726cee673c2c5"
       },
       {
-        "bytes": 1398,
+        "bytes": 1498,
         "path": "data/map_overlays/research_test_sites_config.json",
-        "sha256": "491e7f11a17354da8e468725b51a792888c5641f26fd428da4e5df007373d112"
+        "sha256": "953d1f34e27ccf27efeb95f729bc43eedc9a026e1bce8fdf7f74203397dd17de"
       },
       {
         "bytes": 3011976,
@@ -566,14 +646,14 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 86812,
+        "bytes": 137259,
         "path": "index.html",
-        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
+        "sha256": "5a26534a1206cf02049d2110bde81a625517685a3bcf8649b6a2b6fcab10c015"
       },
       {
-        "bytes": 4067,
+        "bytes": 13477,
         "path": "legend_controls.js",
-        "sha256": "825bb16db73d55e9f16cb4cf9ae96fbdd901e5542c6d1d29ec32125f36fe78dc"
+        "sha256": "2ba792f7e387cebab1eed069b847d61fcd36663ead4409761e5c130ac546ee68"
       },
       {
         "bytes": 4689,
@@ -581,9 +661,9 @@
         "sha256": "d2a20b082d2c4608dc9b859fa3c2201b11277bf81922c9fbb66793689516bf52"
       },
       {
-        "bytes": 250027,
+        "bytes": 288823,
         "path": "r2_upload_manifest.json",
-        "sha256": "8d6703ab0128eb4d1030602baf8cec14aebc2e2a2ce380cfe3f890044fb74136"
+        "sha256": "4ccb1587213f91e4d8d58f052d1010e025ca2f887f69ad35abf941d223ac0a0f"
       },
       {
         "bytes": 2895134,
@@ -611,9 +691,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 158370,
+        "bytes": 256951,
         "path": "styles.css",
-        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
+        "sha256": "e42b80cfe55b51b6cdf2a9b057562c0ea6174b027b9f728148bfaa7fdbc48372"
       },
       {
         "bytes": 49332,
@@ -621,14 +701,14 @@
         "sha256": "62d6286544667a9bd9692eb4d5fc5253f98f7836e88a35a437dc26a995a719e2"
       },
       {
-        "bytes": 40860,
+        "bytes": 54333,
         "path": "trace_neighborhood.js",
-        "sha256": "d43e12e464983517adab078ec3f42af0f38e84d0e8ed64e955be50f2775cf029"
+        "sha256": "4bef0095661353fd073862a43dc4faf68652a0d421a3d9b458d459dade0ce704"
       },
       {
-        "bytes": 119923,
+        "bytes": 156889,
         "path": "upload_r2_assets.ps1",
-        "sha256": "effdea8eb2f00338c267089d7c38345695a1becc92feaef90ca5cb64e7a2d791"
+        "sha256": "7ee85a78216e8a5bf67a5e02d7149e14fd8d965e9fd51b662d7fea4a0a0c0437"
       },
       {
         "bytes": 1287,
@@ -681,14 +761,14 @@
         "sha256": "1e4e1d22972a3926f48598e0caf14e3fe7049835d428a344fed4f9e3665b3508"
       },
       {
-        "bytes": 52896,
+        "bytes": 56540,
         "path": "verify_timeline_features.html",
-        "sha256": "d818efd83f5597c10d8f2800f4d51a5cf5e48bb38e6f8bf6d402e6db840e65cd"
+        "sha256": "86a0e0ffb28862299690d1f136a25a1e601068b32eb68237472e9b90b4e60c5e"
       }
     ],
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "465002faa4145226bae6bffabbba03473e4722317ffa91606c36f7e5270638a2",
-    "uncompressed_bytes": 54933569
+    "tree_sha256": "ab3d4d8f34d00b28c60468d994932af18edb7c8dae567e8aa97eb4f58667d914",
+    "uncompressed_bytes": 57542959
   },
   "r2": {
     "base_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
@@ -3259,7 +3339,7 @@
     ],
     "key_prefix": "releases/coordinated-reliability-v152-20260731",
     "source_manifest_path": "r2_upload_manifest.json",
-    "source_manifest_sha256": "8d6703ab0128eb4d1030602baf8cec14aebc2e2a2ce380cfe3f890044fb74136",
+    "source_manifest_sha256": "4ccb1587213f91e4d8d58f052d1010e025ca2f887f69ad35abf941d223ac0a0f",
     "total_bytes": 913767840,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
     "tree_sha256": "5cfd7f9e3158facdfc4d3de42fd388093fb8dfa2d617a9608a1d04127f4563a2"
@@ -3267,8 +3347,8 @@
   "release": {
     "asset_version": "2026-07-31T08:32:50.335399+00:00",
     "canonical_production_url": "https://ufo-timeline.pages.dev",
-    "generated_at_utc": "2026-07-31T18:07:39.829315+00:00",
-    "id": "context-layer-quick-toggles-v1-20260803",
+    "generated_at_utc": "2026-08-11T19:14:53.146707+00:00",
+    "id": "context-evidence-mapping-provenance-v1-20260811",
     "mapped_count": 580783,
     "normalized_count": 702893
   },
@@ -3280,7 +3360,7 @@
   },
   "schema_version": 1,
   "source_overlay": {
-    "file_count": 43,
+    "file_count": 59,
     "files": [
       {
         "bytes": 411,
@@ -3288,44 +3368,124 @@
         "sha256": "98ea475f3dec0f1854a6e94d18da9381ca9eb5410cec76e246ef61baceb0044c"
       },
       {
-        "bytes": 1316,
+        "bytes": 2226,
         "path": "_headers",
-        "sha256": "1a9e8bdb395c56c0408bff5738966061b9d6a90f9915a2c92b176afe3e4e9594"
+        "sha256": "d14fff52395fee656fc3d78f9688648769411e612cc95f7311678adab91f3231"
       },
       {
-        "bytes": 3579,
+        "bytes": 122100,
+        "path": "analysis_spatial.js",
+        "sha256": "359c3866d8085dd2ccfaa4a7b965d4518c2193d4fc3b754833cc040a1da81c79"
+      },
+      {
+        "bytes": 5746,
+        "path": "analysis_spatial_worker.js",
+        "sha256": "661f59e585c73fc2c64040a12dafea1c9d7d17457703a2fd5262bf00cd29242a"
+      },
+      {
+        "bytes": 321958,
+        "path": "analysis_stats.js",
+        "sha256": "56c953d7b55c9e631bf820b9ca734a1d7f71b79f89e7461af3cccdabe5eb4718"
+      },
+      {
+        "bytes": 419635,
+        "path": "analysis_view.js",
+        "sha256": "291753a9f41b448b4b7e01cafce73d641bba4e6fff141d593a64536d2b951edd"
+      },
+      {
+        "bytes": 4834,
         "path": "animal_mutilation_bootstrap.js",
-        "sha256": "33abccbc911a5c61e0ef87ff326015b79c5748e6cc96b54915d3d6d16c77c342"
+        "sha256": "c1fb9925c79355d648be07c351dbf0f91207b057843d9f9c14c49951660df59f"
       },
       {
-        "bytes": 43787,
+        "bytes": 52313,
         "path": "animal_mutilation_layer.js",
-        "sha256": "1a6fddb98535d9579c51a2a493b2eec9ad1434de1af16c2a57818903a09f93ae"
+        "sha256": "06051edee25fbce594c89f9113362dc238b4cd4b26eea27a5d07c72938dc62ec"
       },
       {
-        "bytes": 1093932,
+        "bytes": 1252419,
         "path": "app.js",
-        "sha256": "7652f133df76ee9b5bd2a5a7e4953925a05ed11827c8f4c952ddf4de09dc2382"
+        "sha256": "4e8715bd6f97170d59ad9fd74eec15d0df276b2f889740db5e07cc016ce7a1df"
       },
       {
-        "bytes": 17006,
+        "bytes": 226929,
         "path": "catalog_filter_worker.js",
-        "sha256": "dd3359364d0a21b6d8c841e194e6972a19d491afa17e66cb6b10aa06720c4cb1"
+        "sha256": "bf7072311dd8f3106c2ce89e693e326a171b025b0b0d644cd941e1ad1ba28440"
       },
       {
-        "bytes": 6155,
+        "bytes": 7339,
         "path": "crop_circle_bootstrap.js",
-        "sha256": "bf17304f65b60fb69ac696ac928f69b128e5a701c10dc8b71aa03f04417a3af8"
+        "sha256": "873bff992381eee77afd31474e70e41fe0b7befb418bd8c5faadc9b8eaa0d265"
       },
       {
-        "bytes": 78476,
+        "bytes": 83101,
         "path": "crop_circle_layer.js",
-        "sha256": "9f7e018e4b856607c02052cb269451dbf77c0de9bc89bc5028a7558f9c33c59b"
+        "sha256": "b73e7f46ff1ea702e618b461a16c4fc3fc2501f3bc5466b312226e79ab896cf3"
       },
       {
-        "bytes": 4210,
+        "bytes": 10556,
+        "path": "data/analysis_color_v1/manifest.json",
+        "sha256": "f418a78a9cf2e8245fd0a406134f5a5792ac05f0988cf1e65684cb1419390d49"
+      },
+      {
+        "bytes": 19125,
+        "path": "data/analysis_coordinate_evidence_v1/manifest.json",
+        "sha256": "2d1c70e0b90a5a7f4d8f519f36dff07bf370c86a6381229f0d255309c033a4d8"
+      },
+      {
+        "bytes": 9463,
+        "path": "data/analysis_duration_v1/manifest.json",
+        "sha256": "89dc633e66008655b0aec3a798c0787cd51b187c2e63336a1eb44cb6336210fc"
+      },
+      {
+        "bytes": 16723,
+        "path": "data/analysis_reporting_delay_v1/manifest.json",
+        "sha256": "332c2b39a17715cd255d6c3a39ac0d175db1d379b6327ddb91c2499aa6e53fd9"
+      },
+      {
+        "bytes": 15385,
+        "path": "data/analysis_time_of_day_v1/manifest.json",
+        "sha256": "a3bb2552b2eda25c43b576988e2ca042603d221b9ceceeaa3b7a5459d81893fa"
+      },
+      {
+        "bytes": 104423,
+        "path": "data/analysis_v1/animal_reports.json",
+        "sha256": "6bf67a59d081de3c7e385d38e8a0ad0701c2cbbdb28a93528bcbd4650b447478"
+      },
+      {
+        "bytes": 27925,
+        "path": "data/analysis_v1/animal_reports.json.gz",
+        "sha256": "eb437b517887343194838b3e3a509b6a4b2a9bdcecb952da55dce949215529df"
+      },
+      {
+        "bytes": 626047,
+        "path": "data/analysis_v1/crop_circles.json",
+        "sha256": "088c647b07183ac7e192cbec8fe5af6b635d02422d5639d8cf39ebd004837df8"
+      },
+      {
+        "bytes": 141876,
+        "path": "data/analysis_v1/crop_circles.json.gz",
+        "sha256": "4b0d9f3607ffefd3a86078f597d8c89957dbbbf71690cdb3a30d46aa008ee3a7"
+      },
+      {
+        "bytes": 6123,
+        "path": "data/analysis_v1/manifest.json",
+        "sha256": "ad6f5b4c3bd712a0dd3594be5ffb63370c35e9cd39bce3ebc447338cb78e54ce"
+      },
+      {
+        "bytes": 93777,
+        "path": "data/analysis_v2/manifest.json",
+        "sha256": "29df7c9cef0977b69e398e19373c3e0ac741d522b4d4776787cfb15c6fe5404b"
+      },
+      {
+        "bytes": 8709,
+        "path": "data/analysis_witness_count_v1/manifest.json",
+        "sha256": "74d2e07c678ca80986037486a3237adad30362d336b2df8c80744cdc5a32e2f2"
+      },
+      {
+        "bytes": 5858,
         "path": "data/animal_mutilations/manifest.json",
-        "sha256": "342de15d439f8270069e697c605fd48915198497bfd16b65a65564a9881ce0d4"
+        "sha256": "a4f6188b2496f91f8edc0b8b2cbcd630552d3a025ce9e1b35840437e2ed6cedb"
       },
       {
         "bytes": 4818,
@@ -3333,9 +3493,9 @@
         "sha256": "a809d616bdf19d4265003ad23614a6906f55663131c43bacc712395008b8d29d"
       },
       {
-        "bytes": 7301,
+        "bytes": 8865,
         "path": "data/crop_circles/manifest.json",
-        "sha256": "961530d02cfe6d73cd55b938acc4e7c67398de9163e02089367eca3f673b285d"
+        "sha256": "262491af98deacf0c00d3019c6a8f9c894eb16f4d22cf931abd3bf9ec8bb15fe"
       },
       {
         "bytes": 784,
@@ -3393,9 +3553,9 @@
         "sha256": "af1fe37caaf69f2f33766962d1254c63b1bbdd517a83ddffa2d726cee673c2c5"
       },
       {
-        "bytes": 1398,
+        "bytes": 1498,
         "path": "data/map_overlays/research_test_sites_config.json",
-        "sha256": "491e7f11a17354da8e468725b51a792888c5641f26fd428da4e5df007373d112"
+        "sha256": "953d1f34e27ccf27efeb95f729bc43eedc9a026e1bce8fdf7f74203397dd17de"
       },
       {
         "bytes": 256950,
@@ -3408,14 +3568,14 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 86812,
+        "bytes": 137259,
         "path": "index.html",
-        "sha256": "8d36751351840b30e1fc941481f9a4ae1c9d937f2b13f8559e08ec4140d2e208"
+        "sha256": "5a26534a1206cf02049d2110bde81a625517685a3bcf8649b6a2b6fcab10c015"
       },
       {
-        "bytes": 4067,
+        "bytes": 13477,
         "path": "legend_controls.js",
-        "sha256": "825bb16db73d55e9f16cb4cf9ae96fbdd901e5542c6d1d29ec32125f36fe78dc"
+        "sha256": "2ba792f7e387cebab1eed069b847d61fcd36663ead4409761e5c130ac546ee68"
       },
       {
         "bytes": 4689,
@@ -3428,9 +3588,9 @@
         "sha256": "6f97929d3728f52178cce177d9ee38bc5386f5754400ae03fbe5936ff96f154f"
       },
       {
-        "bytes": 158370,
+        "bytes": 256951,
         "path": "styles.css",
-        "sha256": "e5fa7db0cc7e35139635f139bbe707712c499f0d1f5c003bb265a714027c12c3"
+        "sha256": "e42b80cfe55b51b6cdf2a9b057562c0ea6174b027b9f728148bfaa7fdbc48372"
       },
       {
         "bytes": 49332,
@@ -3438,9 +3598,9 @@
         "sha256": "62d6286544667a9bd9692eb4d5fc5253f98f7836e88a35a437dc26a995a719e2"
       },
       {
-        "bytes": 40860,
+        "bytes": 54333,
         "path": "trace_neighborhood.js",
-        "sha256": "d43e12e464983517adab078ec3f42af0f38e84d0e8ed64e955be50f2775cf029"
+        "sha256": "4bef0095661353fd073862a43dc4faf68652a0d421a3d9b458d459dade0ce704"
       },
       {
         "bytes": 1287,
@@ -3493,14 +3653,14 @@
         "sha256": "1e4e1d22972a3926f48598e0caf14e3fe7049835d428a344fed4f9e3665b3508"
       },
       {
-        "bytes": 52896,
+        "bytes": 56540,
         "path": "verify_timeline_features.html",
-        "sha256": "d818efd83f5597c10d8f2800f4d51a5cf5e48bb38e6f8bf6d402e6db840e65cd"
+        "sha256": "86a0e0ffb28862299690d1f136a25a1e601068b32eb68237472e9b90b4e60c5e"
       }
     ],
     "root": "webapp/static_public",
-    "total_bytes": 8797616,
+    "total_bytes": 11310964,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "86e73af25b472b4547cae82f5063fff144a78204a902177f629cc4235a1b5c22"
+    "tree_sha256": "9aff9ab9c2afe7b1e537a6bc974b70eefd2cfcd36819e34743753d58df363d89"
   }
 }

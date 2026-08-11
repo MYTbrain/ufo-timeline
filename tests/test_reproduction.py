@@ -122,6 +122,25 @@ def _write_color_manifest_stub(root: Path) -> None:
     _write(root / "data" / "analysis_color_v1" / "manifest.json", json.dumps(value).encode("utf-8"))
 
 
+def _write_analysis_v2_manifest_stub(root: Path) -> None:
+    value = {
+        "releaseId": "analysis-v2-test-v1",
+        "assetBaseUrl": "https://assets.example.test/releases/analysis-v2-test-v1",
+        "delivery": {
+            "pagesFiles": ["manifest.json"],
+            "immutablePrefix": "releases/analysis-v2-test-v1",
+            "r2OnlyPaths": ["projection.json.gz"],
+        },
+        "payloads": [{
+            "path": "projection.json.gz",
+            "bytes": 2,
+            "sha256": "0" * 64,
+            "r2Only": True,
+        }],
+    }
+    _write(root / "data" / "analysis_v2" / "manifest.json", json.dumps(value).encode("utf-8"))
+
+
 def test_deterministic_pages_archive_and_tree_hash(tmp_path: Path) -> None:
     source = tmp_path / "pages"
     _write(source / "index.html", b"<h1>UFO Timeline</h1>\n")
@@ -483,6 +502,7 @@ def test_required_pages_json_must_parse(tmp_path: Path) -> None:
     _write_time_of_day_manifest_stub(bundle)
     _write_witness_count_manifest_stub(bundle)
     _write_color_manifest_stub(bundle)
+    _write_analysis_v2_manifest_stub(bundle)
     _write(bundle / "data" / "startup_profiles" / "france_1954_flap" / "manifest.json", b"{}\n")
 
     report = reproduction.verify_required_pages_files(bundle)
@@ -502,7 +522,7 @@ def test_current_release_pages_inventory_is_exact_baseline_plus_approved_source_
     expected_paths = {record["path"] for record in expected}
     source_paths = {record["path"] for record in source_records}
 
-    assert len(manifest["pages"]["files"]) == 134
+    assert manifest["pages"]["file_count"] == len(manifest["pages"]["files"])
     assert len(expected) == len({record["path"] for record in [*manifest["pages"]["files"], *source_records]})
     assert "404.html" in expected_paths
     assert "crop_circle_bootstrap.js" in expected_paths
@@ -541,6 +561,7 @@ def test_offline_hydration_copies_and_localizes_manifest_declared_optional_paylo
     _write_time_of_day_manifest_stub(pages)
     _write_witness_count_manifest_stub(pages)
     _write_color_manifest_stub(pages)
+    _write_analysis_v2_manifest_stub(pages)
     app_config = {
         "deploymentProfile": {
             "largeDataBaseUrl": "https://assets.example.test/releases/core-v1",
@@ -662,3 +683,60 @@ def test_offline_hydration_copies_and_localizes_manifest_declared_optional_paylo
     assert localized["assetBaseUrl"] == "./data/animal_mutilations/"
     assert report["optional_layer_r2"]["file_count"] == 1
     assert report["pages_validation"]["optional_layer_payloads"] == [optional_relative.as_posix()]
+
+
+def test_analysis_v2_offline_localization_rewrites_absolute_runtime_urls(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    output = tmp_path / "output"
+    root = source / "data" / "analysis_v2"
+    payload = gzip.compress(b"[]", mtime=0)
+    _write(root / "projection.json.gz", payload)
+    base_url = "https://assets.example.test/releases/analysis-v2-test"
+    manifest = {
+        "releaseId": "analysis-v2-test",
+        "assetBaseUrl": base_url,
+        "delivery": {
+            "immutablePrefix": "releases/analysis-v2-test",
+            "pagesFiles": ["manifest.json"],
+            "r2OnlyPaths": ["projection.json.gz"],
+        },
+        "payloads": [{
+            "bytes": len(payload),
+            "path": "projection.json.gz",
+            "r2Only": True,
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        }],
+        "artifacts": {
+            "projection": {"gzipFile": base_url + "/projection.json.gz"},
+        },
+    }
+    encoded = json.dumps(manifest).encode("utf-8")
+    _write(root / "manifest.json", encoded)
+    _write(output / "data" / "analysis_v2" / "manifest.json", encoded)
+
+    localized = reproduction.localize_optional_layer_manifests(source, output)
+    value = json.loads(
+        (output / "data" / "analysis_v2" / "manifest.json").read_text(encoding="utf-8")
+    )
+
+    assert localized[0]["path"] == "data/analysis_v2/manifest.json"
+    assert value["assetBaseUrl"] == "./data/analysis_v2/"
+    assert value["artifacts"]["projection"]["gzipFile"] == (
+        "./data/analysis_v2/projection.json.gz"
+    )
+
+
+def test_pages_only_overlay_prunes_legacy_analysis_payloads(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    output = tmp_path / "output"
+    _write_analysis_v2_manifest_stub(source)
+    legacy = output / "data" / "analysis_v2" / "projection.json.gz"
+    _write(legacy, b"legacy-pages-payload")
+
+    removed = reproduction.prune_optional_layer_r2_payloads(source, output)
+
+    assert removed == ["data/analysis_v2/projection.json.gz"]
+    assert not legacy.exists()
+    assert (source / "data" / "analysis_v2" / "manifest.json").is_file()

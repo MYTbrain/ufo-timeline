@@ -1025,6 +1025,8 @@
     analysisContextLoaded: false,
     analysisContextWorkerReady: false,
     analysisV2ManifestPromise: null,
+    analysisV2OverviewManifestRequested: false,
+    analysisV2OverviewManifestError: "",
     analysisSpatialPromise: null,
     analysisSpatialManifest: null,
     analysisSpatialWorkerReady: false,
@@ -8412,7 +8414,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-10-analysis-polish-v3");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-11-context-evidence-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9278,6 +9280,18 @@
     });
     hashes.manifest = String(manifest && manifest.releaseId || "") + ":" + String(manifest && manifest.schemaVersion || "");
     return hashes;
+  }
+
+  function attachAnalysisV2ContextPulseSummary(resultValue) {
+    const result = resultValue && typeof resultValue === "object" ? resultValue : resultValue;
+    const manifest = runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+    const summary = manifest && typeof manifest === "object"
+      ? (manifest.contextPulseSummary || manifest.context_pulse_summary)
+      : null;
+    if (result && typeof result === "object" && summary && typeof summary === "object") {
+      result.contextPulseSummary = summary;
+    }
+    return result;
   }
 
   function ensureAnalysisV2Manifest(manifestUrl) {
@@ -10497,7 +10511,7 @@
     if (runtime.analysisPendingRequest && runtime.analysisPendingRequest.requestId === message.requestId) {
       runtime.analysisPendingRequest = null;
     }
-    const result = message.result;
+    const result = attachAnalysisV2ContextPulseSummary(message.result);
     runtime.analysisLastResult = result;
     runtime.analysisLastError = "";
     if (options.cacheResult !== false) {
@@ -10564,10 +10578,28 @@
     if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
       return Promise.resolve(null);
     }
+    if (
+      !runtime.analysisSpatialManifest &&
+      !runtime.analysisGeographyManifest &&
+      !runtime.analysisV2OverviewManifestRequested
+    ) {
+      runtime.analysisV2OverviewManifestRequested = true;
+      const overviewManifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+      return ensureAnalysisV2Manifest(overviewManifestUrl)
+        .then(function () {
+          runtime.analysisV2OverviewManifestError = "";
+          return computeAnalysisForCurrentView(reason);
+        })
+        .catch(function (error) {
+          runtime.analysisV2OverviewManifestError = error && error.message ? error.message : String(error);
+          console.warn("[analysis overview manifest] " + runtime.analysisV2OverviewManifestError);
+          return computeAnalysisForCurrentView(reason);
+        });
+    }
     ensureAnalysisContextProjections();
     const snapshot = getAnalysisFilterSnapshot();
     const cacheKey = analysisComputeCacheKey(snapshot);
-    const cached = runtime.analysisCache.get(cacheKey);
+    const cached = attachAnalysisV2ContextPulseSummary(runtime.analysisCache.get(cacheKey));
     if (cached) {
       runtime.analysisPendingRequest = null;
       runtime.analysisLastResult = cached;

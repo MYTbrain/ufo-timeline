@@ -97,10 +97,11 @@ function createElements() {
 }
 
 
-async function createHarness({ maliciousDetail = false } = {}) {
+async function createHarness({ maliciousDetail = false, contextEvidenceFixture = false } = {}) {
   const manifest = JSON.parse(await fs.readFile(path.join(animalRoot, "manifest.json"), "utf8"));
   const payloadOverrides = new Map();
   const failedPaths = new Map();
+  let contextFixture = null;
   if (maliciousDetail) {
     const declaration = manifest.details.files[0];
     const records = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, declaration.path))).toString("utf8"));
@@ -118,6 +119,54 @@ async function createHarness({ maliciousDetail = false } = {}) {
     declaration.sha256 = createHash("sha256").update(bytes).digest("hex");
     payloadOverrides.set(declaration.path, bytes);
     payloadOverrides.set(declaration.path.replace(/\.json\.gz$/i, ".json"), decodedBytes);
+  }
+  if (contextEvidenceFixture) {
+    const pointRows = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, manifest.points.path))).toString("utf8"));
+    pointRows.forEach(function (row) { row.push(4, null); });
+    pointRows[0][8] = 0;
+    pointRows[0][9] = 75;
+    pointRows[1][8] = 1;
+    pointRows[1][9] = 650;
+    manifest.codes ||= {};
+    manifest.codes.coordinateEvidenceClass = {
+      source_exact: 0, source_bounded: 1, source_regional: 2,
+      source_uncertainty_unknown: 3, generalized_public_marker: 4,
+      locality_centroid: 5, postal_centroid: 6, approximate_map_pin: 7, unmapped: 8,
+    };
+    const pointDecoded = Buffer.from(JSON.stringify(pointRows));
+    const pointBytes = gzipSync(pointDecoded, { level: 9, mtime: 0 });
+    manifest.points.bytes = pointBytes.length;
+    manifest.points.decodedBytes = pointDecoded.length;
+    manifest.points.sha256 = createHash("sha256").update(pointBytes).digest("hex");
+    payloadOverrides.set(manifest.points.path, pointBytes);
+    payloadOverrides.set(manifest.points.path.replace(/\.json\.gz$/i, ".json"), pointDecoded);
+
+    const recordId = String(pointRows[0][0]);
+    const chunkNumber = Number(pointRows[0][7]);
+    const declaration = manifest.details.files[chunkNumber];
+    const records = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, declaration.path))).toString("utf8"));
+    Object.assign(records[recordId], {
+      title: "Questa calf incident",
+      status: "source_reviewed",
+      reviewState: "source_reviewed",
+      dateRole: "occurrence_date",
+      coordinateEvidenceClass: "source_exact",
+      coordinateMethod: "source_reported_event_site",
+      coordinateUncertaintyM: 75,
+      analysisTier: "animal_strict",
+      exclusionReasonCodes: [],
+      dedupStatus: "stable_unique",
+      independenceStatus: "qualifying_independent_source",
+      sourceFamilyIds: ["sf_rommel_operation_animal_mutilation"],
+    });
+    const detailDecoded = Buffer.from(JSON.stringify(records));
+    const detailBytes = gzipSync(detailDecoded, { level: 9, mtime: 0 });
+    declaration.bytes = detailBytes.length;
+    declaration.decodedBytes = detailDecoded.length;
+    declaration.sha256 = createHash("sha256").update(detailBytes).digest("hex");
+    payloadOverrides.set(declaration.path, detailBytes);
+    payloadOverrides.set(declaration.path.replace(/\.json\.gz$/i, ".json"), detailDecoded);
+    contextFixture = { recordId, chunkNumber };
   }
 
   const elements = createElements();
@@ -336,6 +385,7 @@ async function createHarness({ maliciousDetail = false } = {}) {
     dispatchedEvents,
     consoleErrors,
     manifest,
+    contextFixture,
     view,
     tick() { for (const handler of intervals.values()) handler(); },
   };
@@ -418,7 +468,7 @@ assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*data-default-enab
 assert.match(indexSource, /id="animal-mutilation-browser"[\s\S]*?role="dialog"[\s\S]*?aria-modal="true"/, "all-record browser is an accessible modal dialog");
 assert.doesNotMatch(indexSource, /<script src="\.\/animal_mutilation_layer\.js/, "heavy animal runtime is not a startup script");
 assert.match(bootstrapSource, /animal_mutilation_layer\.js/, "bootstrap lazily loads the animal runtime");
-assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-10-analysis-polish-v3/, "default-on animal runtime uses a release-specific cache key");
+assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-11-context-evidence-v1/, "default-on animal runtime uses a release-specific cache key");
 assert.match(bootstrapSource, /addEventListener\("ufo:timeline-ready"[\s\S]*?enableDesiredLayer\(\)/, "default activation waits for the core timeline Ready event");
 assert.match(bootstrapSource, /openBrowser\(browse\)/, "Browse action has an independent lazy entry point");
 assert.match(appSource, /CustomEvent\("ufo:timeline-ready"/, "the core app announces the post-startup activation boundary");
@@ -426,7 +476,12 @@ assert.match(appSource, /timeRangeIsAllTime:\s*state\.timeRangeMode === "full"/,
 assert.match(appSource, /data-map-legend-animal-mutilations/, "map legend exposes the animal context layer");
 assert.match(appSource, /!animalMutilationOverlayActive\(\)/, "legend reset treats the default-on animal layer as clean and restores it when disabled");
 assert.doesNotMatch(layerSource, /polyline|setCropTraceFocus|traceNeighborhood/i, "animal runtime cannot construct or enter traces and relationships");
-assert.match(layerSource, /Reported animal mutilation — unreviewed/, "every detail uses the fixed unreviewed label");
+assert.match(layerSource, /Reported animal mutilation — unreviewed/, "legacy unreviewed details retain their established label");
+assert.match(layerSource, /coordinateEvidenceClass:\s*8, coordinateUncertaintyM:\s*9/, "point decoder accepts appended coordinate-evidence columns");
+assert.match(layerSource, /coordinateEvidenceClassForRow\(row\) !== "source_exact"/, "Exact coordinates only is evidence-driven rather than hardcoded to zero");
+assert.match(layerSource, /source-bounded[\s\S]*?generalized or otherwise non-strict/, "map status distinguishes exact, bounded, and generalized coordinate evidence");
+assert.match(layerSource, /Review state[\s\S]*?Date role[\s\S]*?Coordinate evidence[\s\S]*?Analysis tier[\s\S]*?Strict-lane exclusions/, "detail view exposes scientific readiness fields");
+assert.match(layerSource, /Source families[\s\S]*?Independence[\s\S]*?Deduplication[\s\S]*?not_asserted/, "detail provenance remains explicit and noncausal");
 assert.match(layerSource, /Withheld for privacy/, "internal-only locations render explicit privacy copy");
 assert.match(layerSource, /No public map point supplied/, "null public geometry is explained explicitly");
 assert.match(layerSource, /window\.L\.divIcon[\s\S]*?animal-mutilation-map-cow[\s\S]*?aria-hidden="true"/, "animal markers use a decorative cow icon");
@@ -476,13 +531,15 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 
 {
   const harness = await createHarness();
+  const remoteCatalogPath = new URL(harness.manifest.catalog.path, harness.manifest.assetBaseUrl).pathname;
   assert.equal(harness.requests.length, 0, "importing the heavy animal runtime has no fetch side effects before bootstrap activation");
   await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
     "/data/animal_mutilations/catalog.json",
-  ], "Browse loads only the bundled manifest and local all-record catalog");
-  assert.deepEqual(harness.requestCaches, ["no-cache", "force-cache"]);
+    remoteCatalogPath,
+  ], "Browse falls back from the local catalog probe to the manifest-declared immutable R2 catalog");
+  assert.deepEqual(harness.requestCaches, ["no-cache", "force-cache", "force-cache"]);
   assert.equal(harness.api.getStatus().catalogLoaded, true);
   assert.equal(harness.api.getStatus().loaded, false, "Browse never fetches the point index");
   assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /1,177 matching reports, including undated reports/);
@@ -537,11 +594,13 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
 
 {
   const harness = await createHarness();
+  const remotePointsPath = new URL(harness.manifest.points.path, harness.manifest.assetBaseUrl).pathname;
   await harness.api.setEnabled(true);
   assert.deepEqual(harness.requests, [
     "/data/animal_mutilations/manifest.json",
     "/data/animal_mutilations/points.json",
-  ], "map toggle loads points without the all-record catalog");
+    remotePointsPath,
+  ], "map toggle falls back from the local point-index probe to the manifest-declared immutable R2 points without loading the catalog");
   assert.equal(harness.api.getStatus().catalogLoaded, false);
   assert.equal(harness.api.getStatus().visibleRecords, 518);
   assert.equal(harness.api.getStatus().visiblePositions, 400);
@@ -568,7 +627,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await new Promise((resolve) => setTimeout(resolve, 30));
   assert.equal(click.immediatePropagationStopped, true, "only an actual animal marker hit captures the map click");
   assert.match(harness.elements.get("#animal-mutilation-detail-body").innerHTML, /Reported animal mutilation — unreviewed/);
-  assert.match(harness.elements.get("#animal-mutilation-detail-body").innerHTML, /reports share this generalized position/);
+  assert.match(harness.elements.get("#animal-mutilation-detail-body").innerHTML, /reports share this mapped position/);
   assert.match(harness.elements.get("#animal-mutilation-detail-body").innerHTML, /has not been scientifically verified/);
 
   harness.view.hideLowPrecisionCoordinates = true;
@@ -576,7 +635,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   harness.tick();
   assert.equal(harness.api.getStatus().visibleRecords, 0);
   assert.equal(harness.createdLayerGroups[0].getLayers().length, 0, "exact-coordinate filtering removes every cow marker layer");
-  assert.match(harness.elements.get("#animal-mutilation-status").textContent, /zero reviewed exact coordinates/);
+  assert.match(harness.elements.get("#animal-mutilation-status").textContent, /No mapped animal reports with source-exact coordinates/);
   harness.view.hideLowPrecisionCoordinates = false;
   harness.view.hideNonExactDates = true;
   harness.view.filterGeneration += 1;
@@ -599,6 +658,39 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   await harness.api.setEnabled(true);
   assert.equal(harness.requests.length, requestsBeforeReenable, "re-enable reuses validated point data without refetching");
   assert.equal(harness.mapLayers.size, 1, "re-enable restores the map layer");
+  await harness.api.setEnabled(false);
+}
+
+{
+  const harness = await createHarness({ contextEvidenceFixture: true });
+  await harness.api.setEnabled(true);
+  assert.match(harness.elements.get("#animal-mutilation-status").textContent, /1 source-exact, 1 source-bounded, 516 generalized/);
+  harness.view.hideLowPrecisionCoordinates = true;
+  harness.view.filterGeneration += 1;
+  harness.tick();
+  assert.equal(harness.api.getStatus().visibleRecords, 1, "Exact coordinates only retains a source_exact point row");
+  assert.match(harness.elements.get("#animal-mutilation-status").textContent, /1 source-exact mapped report/);
+  assert.ok(harness.createdMarkers.some(function (marker) {
+    return marker.options.animalCoordinateEvidenceClasses.includes("source_exact") &&
+      marker.options.animalCoordinateUncertaintyM === 75;
+  }), "the appended uncertainty value reaches the decoded marker state");
+
+  await harness.api.openBrowser(harness.elements.get("#animal-mutilation-browser-open"));
+  await harness.elements.get("#animal-mutilation-browser-results").dispatch("click", {
+    target: resultTarget(harness.contextFixture.recordId, harness.contextFixture.chunkNumber),
+  });
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  const html = harness.elements.get("#animal-mutilation-detail-body").innerHTML;
+  assert.match(html, /Questa calf incident/);
+  assert.match(html, /Source reviewed/);
+  assert.match(html, /Occurrence Date/);
+  assert.match(html, /Source-supported event site \(100 m uncertainty or less\)/);
+  assert.match(html, /75 m/);
+  assert.match(html, /Animal Strict/);
+  assert.match(html, /sf_rommel_operation_animal_mutilation/);
+  assert.match(html, /Stable Unique/);
+  assert.match(html, /not_asserted/);
+  assert.doesNotMatch(html, /has not been scientifically verified/);
   await harness.api.setEnabled(false);
 }
 
@@ -694,7 +786,8 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   const catalog = JSON.parse(gunzipSync(await fs.readFile(path.join(animalRoot, "catalog.json.gz"))).toString("utf8"));
   const first = catalog[0];
   const detailPath = `/data/animal_mutilations/details/chunk_${String(first[9]).padStart(3, "0")}.json`;
-  const remoteDetailPath = `/releases/animal-mutilations-v1-20260802/details/chunk_${String(first[9]).padStart(3, "0")}.json.gz`;
+  const detailDeclaration = harness.manifest.details.files[Number(first[9])];
+  const remoteDetailPath = new URL(detailDeclaration.path, harness.manifest.assetBaseUrl).pathname;
   harness.failedPaths.set(detailPath, 503);
   harness.failedPaths.set(remoteDetailPath, 503);
   const target = resultTarget(first[0], first[9]);

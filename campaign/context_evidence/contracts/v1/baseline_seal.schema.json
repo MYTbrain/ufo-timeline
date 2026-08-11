@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-baseline-seal-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "campaignId", "sealedAt", "baselineCommit", "production", "rollback", "domainBaseline", "artifacts", "sourceFrontier"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-baseline-seal-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "sealedAt": {"type": "string", "format": "date-time"},
+    "baselineCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "production": {
+      "type": "object",
+      "required": ["deploymentId", "immutableUrl", "canonicalUrl", "sourceCommit"],
+      "properties": {
+        "deploymentId": {"type": "string", "format": "uuid"},
+        "immutableUrl": {"type": "string", "format": "uri"},
+        "canonicalUrl": {"type": "string", "format": "uri"},
+        "sourceCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["deploymentId", "immutableUrl", "sourceCommit", "status", "instruction"],
+      "properties": {
+        "deploymentId": {"type": "string", "format": "uuid"},
+        "immutableUrl": {"type": "string", "format": "uri"},
+        "sourceCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "status": {"enum": ["known_good", "tested"]},
+        "instruction": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "domainBaseline": {
+      "type": "object",
+      "required": ["cropCircle", "animalMutilation", "facility"],
+      "properties": {
+        "cropCircle": {"$ref": "#/$defs/domainCounts"},
+        "animalMutilation": {"$ref": "#/$defs/domainCounts"},
+        "facility": {"$ref": "#/$defs/domainCounts"}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "sourceFrontier": {
+      "type": "object",
+      "required": ["knownAtlasUrlCount", "reconciliationStatus", "atlasDraft", "candidateRepositories"],
+      "properties": {
+        "knownAtlasUrlCount": {"const": 2371},
+        "reconciliationStatus": {"enum": ["pending_no_external_query", "complete"]},
+        "atlasDraft": {
+          "type": "object",
+          "required": ["repository", "pullRequest", "status", "baseCommit", "headCommit", "newPlacementRecords", "intakeDisposition"],
+          "properties": {
+            "repository": {"const": "MYTbrain/crop-circle-atlas"},
+            "pullRequest": {"const": 13},
+            "status": {"const": "open_draft"},
+            "baseCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            "headCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+            "newPlacementRecords": {"const": 43},
+            "intakeDisposition": {"const": "blocked_existing_case_evidence_until_finalized_upstream_commit"}
+          },
+          "additionalProperties": false
+        },
+        "candidateRepositories": {"type": "array", "items": {"type": "object"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "domainCounts": {
+      "type": "object",
+      "required": ["inventory", "mapped", "sensitivityReady", "strictReady"],
+      "properties": {
+        "inventory": {"type": "integer", "minimum": 0},
+        "mapped": {"type": "integer", "minimum": 0},
+        "sensitivityReady": {"type": "integer", "minimum": 0},
+        "strictReady": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

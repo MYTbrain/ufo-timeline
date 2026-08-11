@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-foundation-receipt-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "campaignId", "validationEpoch", "builder", "packageTreeSha256", "artifacts", "externalInputs", "ledgerCounts", "semanticChecks", "result"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-foundation-receipt-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "validationEpoch": {"type": "string", "format": "date-time"},
+    "builder": {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"const": "scripts/build_context_evidence_campaign.py"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "additionalProperties": false},
+    "packageTreeSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "artifacts": {"type": "object", "additionalProperties": {"type": "object", "required": ["bytes", "sha256"], "properties": {"bytes": {"type": "integer", "minimum": 0}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "additionalProperties": false}},
+    "externalInputs": {"type": "object", "additionalProperties": {"type": "object", "required": ["bytes", "sha256", "selectedRows"], "properties": {"bytes": {"type": "integer", "minimum": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "selectedRows": {"type": "integer", "minimum": 1}}, "additionalProperties": false}},
+    "ledgerCounts": {"type": "object", "required": ["sources", "assertions", "reviewDecisions", "queueItems"], "properties": {"sources": {"type": "integer", "minimum": 0}, "assertions": {"type": "integer", "minimum": 0}, "reviewDecisions": {"type": "integer", "minimum": 0}, "queueItems": {"type": "integer", "minimum": 0}}, "additionalProperties": false},
+    "semanticChecks": {"type": "array", "minItems": 8, "items": {"type": "string"}, "uniqueItems": true},
+    "result": {"const": "valid"}
+  },
+  "additionalProperties": false
+}

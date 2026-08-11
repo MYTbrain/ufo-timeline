@@ -109,6 +109,17 @@ def _validate_decoded_payload(path: Path, declaration: Mapping[str, Any]) -> Non
             f"Decoded byte count does not match manifest for {path.name}: "
             f"{len(decoded)}/{expected_decoded}"
         )
+    expected_decoded_sha = declaration.get("decodedSha256", declaration.get("decoded_sha256"))
+    if expected_decoded_sha is not None:
+        actual_decoded_sha = hashlib.sha256(decoded).hexdigest()
+        if actual_decoded_sha != str(expected_decoded_sha):
+            raise ReleaseError(
+                f"Decoded SHA-256 does not match manifest for {path.name}: "
+                f"{actual_decoded_sha}/{expected_decoded_sha}"
+            )
+    content_type = str(declaration.get("contentType") or "application/json").lower()
+    if not content_type.startswith("application/json"):
+        return
     try:
         value = json.loads(decoded)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -123,18 +134,11 @@ def _validate_decoded_payload(path: Path, declaration: Mapping[str, Any]) -> Non
 
 
 def declared_payloads(manifest: dict[str, Any], manifest_path: Path) -> list[dict[str, Any]]:
-    declarations: dict[str, dict[str, Any]] = {}
-    declaration_order: list[str] = []
-    for declaration in _nested_payload_declarations(manifest):
-        relative = safe_payload_path(str(declaration["path"])).as_posix()
-        if relative in declarations:
-            raise ReleaseError(f"Duplicate optional-layer payload declaration: {relative}")
-        declarations[relative] = declaration
-        declaration_order.append(relative)
-
     delivery = manifest.get("delivery")
     delivery = delivery if isinstance(delivery, dict) else {}
     declared_delivery_paths = delivery.get("r2OnlyPaths")
+    payload_order: list[str] | None = None
+    payload_allowlist: set[str] | None = None
     if declared_delivery_paths is not None:
         if not isinstance(declared_delivery_paths, list) or not all(
             isinstance(path, str) for path in declared_delivery_paths
@@ -143,16 +147,29 @@ def declared_payloads(manifest: dict[str, Any], manifest_path: Path) -> list[dic
         payload_order = [safe_payload_path(path).as_posix() for path in declared_delivery_paths]
         if len(set(payload_order)) != len(payload_order):
             raise ReleaseError("delivery.r2OnlyPaths contains duplicate paths")
+        payload_allowlist = set(payload_order)
+
+    declarations: dict[str, dict[str, Any]] = {}
+    declaration_order: list[str] = []
+    unlisted_r2: list[str] = []
+    for declaration in _nested_payload_declarations(manifest):
+        relative = safe_payload_path(str(declaration["path"])).as_posix()
+        if payload_allowlist is not None and relative not in payload_allowlist:
+            if declaration.get("r2Only") is True:
+                unlisted_r2.append(relative)
+            continue
+        if relative in declarations:
+            raise ReleaseError(f"Duplicate optional-layer payload declaration: {relative}")
+        declarations[relative] = declaration
+        declaration_order.append(relative)
+
+    if payload_order is not None:
         missing = sorted(set(payload_order) - set(declarations))
-        r2_marked = {
-            path for path, declaration in declarations.items() if declaration.get("r2Only") is True
-        }
-        unlisted = sorted(r2_marked - set(payload_order))
-        if missing or unlisted:
+        if missing or unlisted_r2:
             raise ReleaseError(
                 "delivery.r2OnlyPaths disagrees with payload declarations"
                 + (f"; missing integrity={', '.join(missing)}" if missing else "")
-                + (f"; unlisted r2Only={', '.join(unlisted)}" if unlisted else "")
+                + (f"; unlisted r2Only={', '.join(sorted(set(unlisted_r2)))}" if unlisted_r2 else "")
             )
     else:
         payload_order = declaration_order

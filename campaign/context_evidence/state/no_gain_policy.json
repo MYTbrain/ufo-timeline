@@ -1,0 +1,10 @@
+{
+  "schemaId": "ufo-timeline-context-evidence-no-gain-policy-v1.0.0",
+  "campaignId": "context-evidence-expansion-20260810",
+  "subwaveSize": {"cropCircle": 25, "animalMutilation": 25},
+  "materialGainCriteria": {"newStrictReady": 3, "decisiveUpgrades": 8, "lineageOrDedupResolutions": 12, "logic": "any_one_threshold"},
+  "parkAfterConsecutiveNoGain": 2,
+  "retryPolicy": {"focusedValidationRuns": 1, "correctionPasses": 1, "finalTargetedReruns": 1, "thirdAttemptAllowed": false},
+  "discoveryWave": {"maximumCandidatesScreened": 20, "maximumCandidatesSampled": 2, "recordsPerSample": 25, "minimumDomainRelevancePct": 80, "minimumCriticalImprovements": 10, "minimumNewCases": 25, "parkAfterConsecutiveNoAcceptedSource": 2}
+}
+

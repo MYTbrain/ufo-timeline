@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-no-gain-policy-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "campaignId", "subwaveSize", "materialGainCriteria", "parkAfterConsecutiveNoGain", "retryPolicy", "discoveryWave"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-no-gain-policy-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "subwaveSize": {"type": "object", "required": ["cropCircle", "animalMutilation"], "properties": {"cropCircle": {"const": 25}, "animalMutilation": {"const": 25}}, "additionalProperties": false},
+    "materialGainCriteria": {"type": "object", "required": ["newStrictReady", "decisiveUpgrades", "lineageOrDedupResolutions", "logic"], "properties": {"newStrictReady": {"const": 3}, "decisiveUpgrades": {"const": 8}, "lineageOrDedupResolutions": {"const": 12}, "logic": {"const": "any_one_threshold"}}, "additionalProperties": false},
+    "parkAfterConsecutiveNoGain": {"const": 2},
+    "retryPolicy": {"type": "object", "required": ["focusedValidationRuns", "correctionPasses", "finalTargetedReruns", "thirdAttemptAllowed"], "properties": {"focusedValidationRuns": {"const": 1}, "correctionPasses": {"const": 1}, "finalTargetedReruns": {"const": 1}, "thirdAttemptAllowed": {"const": false}}, "additionalProperties": false},
+    "discoveryWave": {"type": "object", "required": ["maximumCandidatesScreened", "maximumCandidatesSampled", "recordsPerSample", "minimumDomainRelevancePct", "minimumCriticalImprovements", "minimumNewCases", "parkAfterConsecutiveNoAcceptedSource"], "properties": {"maximumCandidatesScreened": {"const": 20}, "maximumCandidatesSampled": {"const": 2}, "recordsPerSample": {"const": 25}, "minimumDomainRelevancePct": {"const": 80}, "minimumCriticalImprovements": {"const": 10}, "minimumNewCases": {"const": 25}, "parkAfterConsecutiveNoAcceptedSource": {"const": 2}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}
+

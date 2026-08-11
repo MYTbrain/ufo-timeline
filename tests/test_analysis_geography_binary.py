@@ -5,6 +5,7 @@ import importlib.util
 import json
 import struct
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,7 +44,29 @@ def test_geography_binary_manifest_and_receipt_are_exact() -> None:
     assert receipt["parity"]["decodedParityPct"] == 100.0
     assert receipt["parity"]["decodedRowCount"] == geography["rowCount"] == 580_783
     assert receipt["output"]["gzipByteReductionPct"] >= 10
-    assert receipt["manifest"]["artifactEntry"] == binary
+    receipt_entry = receipt["manifest"]["artifactEntry"]
+    path_fields = {"file", "gzipFile"}
+    assert {
+        key: value for key, value in receipt_entry.items() if key not in path_fields
+    } == {
+        key: value for key, value in binary.items() if key not in path_fields
+    }
+
+    asset_base_url = manifest["assetBaseUrl"].rstrip("/")
+    parsed_base = urlparse(asset_base_url)
+    assert parsed_base.scheme == "https"
+    assert parsed_base.netloc
+    assert parsed_base.path.rstrip("/").endswith(
+        f"/releases/{manifest['releaseId']}"
+    )
+    for field in sorted(path_fields):
+        runtime_url = binary[field]
+        parsed_runtime = urlparse(runtime_url)
+        assert parsed_runtime.scheme == "https"
+        assert parsed_runtime.netloc == parsed_base.netloc
+        assert runtime_url.startswith(asset_base_url + "/")
+        assert not urlparse(receipt_entry[field]).scheme
+        assert Path(parsed_runtime.path).name == Path(receipt_entry[field]).name
 
 
 def test_geography_binary_rebuild_is_deterministic_and_value_exact() -> None:

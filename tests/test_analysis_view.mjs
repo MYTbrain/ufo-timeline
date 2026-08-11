@@ -339,6 +339,66 @@ assert.equal(analysis.analysisRequestEnvelopeMatches(requestEnvelope, {
   baselineMode: "other_dates_balanced",
   analysisSignature: "filters:A|area:new|context:crop",
 }, requestEnvelope.signature), false, "area and context signature mismatches must be stale");
+const fallbackPulse = analysis.contextPulseEntries({
+  crops: { activeCount: 7745, totalProjectionRows: 7745, summary: { mappedCount: 4324 } },
+  animals: { activeCount: 1177, totalProjectionRows: 1177, summary: { mappedCount: 518 } },
+  facilities: {},
+});
+assert.deepEqual(
+  fallbackPulse.map((entry) => [entry.key, entry.inventoryTotal, entry.mapped, entry.sensitivityReady, entry.strictReady]),
+  [
+    ["crops", 7745, 4324, 3658, 0],
+    ["animals", 1177, 518, 339, 0],
+    ["facilities", 1800, 1800, 70, 70],
+  ],
+  "the sealed manifest summary remains available before lazy spatial evidence loads"
+);
+assert.equal(fallbackPulse[0].strictShare, 0);
+assert.equal(fallbackPulse[1].sensitivityShare, 339 / 1177);
+assert.equal(fallbackPulse[2].strictShare, 70 / 1800);
+assert.notEqual(fallbackPulse[0].sensitivityShare, 3658 / 334519, "context readiness never uses the UFO-report cohort as its denominator");
+const typedPulse = analysis.contextPulseEntries({
+  crops: {
+    activeCount: 100,
+    totalProjectionRows: 7745,
+    summary: { mappedCount: 80 },
+    releaseDelta: { inventoryN: 12, strictReadyN: 3 },
+  },
+  animals: { activeCount: 40, totalProjectionRows: 1177, summary: { mappedCount: 20 } },
+  readiness: [
+    { key: "cropCircles", status: "ready_sensitivity", eligibleN: 3655, totalN: 7745 },
+    {
+      key: "cropBounded",
+      gates: [{
+        gateId: "crop_exact_site_formation_date",
+        inputN: 7745,
+        passedN: 25,
+        status: "ready_inferential",
+        reasonCodes: ["formation_date_source_review_required"],
+      }],
+    },
+  ],
+  manifestSummary: {
+    counts: {
+      cropStrictAnalysisRecords: 24,
+      animalStrictAnalysisRecords: 7,
+      facilityMarkers: 1900,
+      facilityInferentialEligible: 90,
+    },
+  },
+});
+assert.equal(typedPulse[0].activeShare, 100 / 7745);
+assert.equal(typedPulse[0].mappedShare, 0.8);
+assert.equal(typedPulse[0].sensitivityReady, 3655);
+assert.equal(typedPulse[0].strictReady, 25, "typed live readiness takes precedence over a manifest summary");
+assert.match(typedPulse[0].leadingExclusionReasons.join(" "), /Formation date source review required/i);
+assert.equal(typedPulse[0].releaseDeltaLabel, "Change since previous release: inventory +12; strict +3");
+assert.equal(typedPulse[1].strictReady, 7, "new manifest strict-count fields are consumed before the legacy zero fallback");
+assert.deepEqual(
+  [typedPulse[2].inventoryTotal, typedPulse[2].strictReady],
+  [1900, 90],
+  "a supplied facility manifest summary replaces the sealed fallback"
+);
 assert.equal(analysis.positiveSeriesMaximum([0.08, 0.24, 0.12]), 0.24);
 assert.equal(analysis.positiveSeriesMaximum([]), Number.EPSILON);
 const countInterval = analysis.poissonCountInterval(100);
@@ -1502,6 +1562,15 @@ assert.ok(document.getElementById("analysis-coverage-chart").children.length >= 
 const eligibilityText = descendants(document.getElementById("analysis-coverage-chart")).map((element) => element.textContent).join(" ");
 assert.match(eligibilityText, /Mapped report points.*580,783.*Qualified craft point evidence.*33,801/i, "the spatial-point eligibility funnel exposes the qualified 33,801-report stage");
 assert.match(descendants(document.getElementById("analysis-coverage-chart")).map((element) => element.getAttribute("aria-label") || "").join(" "), /33,801 eligible from 580,783.*546,982 excluded/i);
+const contextPulse = document.getElementById("analysis-overview-context-visual");
+const contextPulseText = descendants(contextPulse).map((element) => element.textContent).join(" ");
+assert.match(contextPulseText, /Crop circles.*Active inventory: 210 \/ 7,745.*Sensitivity-ready: 3,658 \/ 7,745.*Strict-ready: 10 \/ 7,745/i);
+assert.match(contextPulseText, /Animal reports.*Active inventory: 80 \/ 1,177.*Sensitivity-ready: 339 \/ 1,177.*Strict-ready: 0 \/ 1,177/i);
+assert.match(contextPulseText, /Facilities.*Active inventory: 1,800 \/ 1,800.*Strict-ready: 70 \/ 1,800 \(3\.9%\)/i);
+assert.doesNotMatch(contextPulseText, /0\s*\/\s*0/, "an unloaded facility artifact must never render false 0/0 readiness");
+assert.match(contextPulseText, /Every percentage uses that context domain's own inventory, never the UFO-report cohort/i);
+const contextPulseLabels = descendants(contextPulse).map((element) => element.getAttribute("aria-label") || "").join(" ");
+assert.match(contextPulseLabels, /Leading exclusions.*Change since previous release not reported.*Open this analysis view/i, "pulse cards expose the full readiness summary to assistive technology");
 assert.equal(descendants(document.getElementById("analysis-comparison-chart")).filter((element) => element.className.includes("analysis-signal-spectrum-row")).length, 2);
 assert.match(
   descendants(document.getElementById("analysis-comparison-chart")).map((element) => element.textContent).join(" "),

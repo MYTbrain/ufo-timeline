@@ -1,0 +1,98 @@
+{
+  "schemaId": "ufo-timeline-context-evidence-release-seal-v1.0.0",
+  "campaignId": "context-evidence-expansion-20260810",
+  "releaseId": "context-evidence-mapping-provenance-v1-20260811",
+  "releaseStatus": "pre_release",
+  "authorizedAt": "2026-08-11T00:00:00Z",
+  "finalizedAt": null,
+  "sourceCommit": null,
+  "authorizedScope": {
+    "authorizationKind": "explicit_user_authorized_non_milestone",
+    "mappingAndProvenanceOnly": true,
+    "milestoneClaimed": false,
+    "strictReadinessClaimed": false,
+    "causality": "not_asserted",
+    "traceEligible": false
+  },
+  "frozenLedgers": {
+    "source": {
+      "path": "campaign/context_evidence/ledgers/source_ledger.jsonl",
+      "bytes": 104285,
+      "sha256": "464ae78836d7180f8fabe37895f40c8a514dfc55f281672ed157b231ff3f917b"
+    },
+    "enrichment": {
+      "path": "campaign/context_evidence/ledgers/case_enrichment.jsonl",
+      "bytes": 616946,
+      "sha256": "7893f5556d956cbdc5cfc331ec106e668aeb50907ffe4f19ae696d298e0b0018"
+    },
+    "review": {
+      "path": "campaign/context_evidence/ledgers/case_review_decisions.jsonl",
+      "bytes": 961434,
+      "sha256": "1a96d7fe1d14c973ecac0d75ffa6ec2f5abd0bfe9e136d10579700d7017de1b4"
+    },
+    "queue": {
+      "path": "campaign/context_evidence/ledgers/research_queue.jsonl",
+      "bytes": 142977,
+      "sha256": "4701a1d44a349c0e7c4c264e46668822993dd0328a1e9535104ecaaf3850e374"
+    }
+  },
+  "dataSummary": {
+    "materiallyUpgradedOverall": 98,
+    "domains": {
+      "cropCircle": {
+        "activeInventory": 7745,
+        "mapped": 4324,
+        "sensitivityReady": 3658,
+        "strictReady": 0
+      },
+      "animalMutilation": {
+        "activeInventory": 1177,
+        "mapped": 518,
+        "sensitivityReady": 339,
+        "strictReady": 0
+      }
+    },
+    "firstMilestoneMet": false,
+    "releaseDisposition": "authorized_mapping_provenance_release_without_milestone_or_strict_claim"
+  },
+  "artifactManifests": [],
+  "acceptance": {
+    "localFullSuite": {
+      "status": "pending",
+      "runCount": 0,
+      "evidenceLocator": null
+    },
+    "cleanCloneCi": {
+      "status": "pending",
+      "runCount": 0,
+      "evidenceLocator": null
+    },
+    "previewBrowserQa": {
+      "status": "pending",
+      "runCount": 0,
+      "evidenceLocator": null
+    },
+    "productionSmoke": {
+      "status": "pending",
+      "runCount": 0,
+      "evidenceLocator": null
+    }
+  },
+  "r2Releases": [],
+  "pages": {
+    "frozenTreeSha256": null,
+    "fileCount": null,
+    "totalBytes": null,
+    "preview": null,
+    "production": null,
+    "identicalPreviewProductionArtifact": null
+  },
+  "reproduction": null,
+  "rollback": {
+    "deploymentId": "f21b47a5-368f-4547-8202-b37778f6fcc4",
+    "immutableUrl": "https://f21b47a5.ufo-timeline.pages.dev",
+    "sourceCommit": "e96acd36a6e572deb42507dd1e8be0d939f25212",
+    "status": "known_good",
+    "instruction": "Redeploy the retained f21b47a5 frozen Pages artifact to branch main without rebuilding."
+  }
+}

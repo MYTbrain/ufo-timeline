@@ -36,11 +36,13 @@ def read_gzip_json(path: Path):
 def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> None:
     manifest_bytes = (ANIMAL_ROOT / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
-    assert manifest["releaseId"] == "animal-mutilations-v1-20260802"
-    assert manifest["assetBaseUrl"].endswith("/releases/animal-mutilations-v1-20260802/")
-    assert manifest["delivery"]["immutablePrefix"] == "releases/animal-mutilations-v1-20260802/"
+    assert manifest["releaseId"] == "animal-mutilations-v1-20260811"
+    assert manifest["assetBaseUrl"].endswith("/releases/animal-mutilations-v1-20260811/")
+    assert manifest["delivery"]["immutablePrefix"] == "releases/animal-mutilations-v1-20260811/"
     assert manifest["delivery"]["pagesFiles"] == ["manifest.json"]
     assert manifest["counts"] == {
+        "acceptedNewCases": 0,
+        "boundedCoordinates": 0,
         "records": 1177,
         "mapped": 518,
         "unmapped": 659,
@@ -51,6 +53,8 @@ def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> Non
         "exactDay": 921,
         "mappedExactDay": 339,
         "reportedUnreviewed": 1177,
+        "legallyRestrictedSuppressed": 0,
+        "sourceRecords": 1177,
         "detailChunks": 5,
     }
     assert manifest["policy"] == {
@@ -58,8 +62,11 @@ def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> Non
         "contentWarningRequired": True,
         "craftColorEligible": False,
         "exactCoordinateEligible": False,
+        "legalRestrictionSuppressesPublicRecord": True,
         "playbackEligible": False,
+        "privateOwnerAndAccessDetailsPublished": False,
         "relationshipsEligible": False,
+        "sourceSupportedPrivatePropertyCoordinatesPublished": True,
         "status": "reported_unreviewed",
         "traceEligible": False,
         "traceRole": "context_only",

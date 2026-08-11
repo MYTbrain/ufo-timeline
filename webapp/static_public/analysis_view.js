@@ -186,6 +186,46 @@
       sample: "relationship_inference",
     }),
   });
+  // This compact fallback is pinned to the currently served manifests. It is
+  // used only before the lazy Analysis v2 readiness payload arrives; live
+  // result or manifest-summary values always take precedence. Keeping the
+  // release IDs beside the counts prevents an unloaded facility artifact from
+  // being presented as false zero evidence.
+  const CONTEXT_PULSE_MANIFEST_FALLBACK = Object.freeze({
+    crops: Object.freeze({
+      releaseId: "crop-circles-context-evidence-v1-20260811",
+      inventoryN: 7745,
+      mappedN: 4324,
+      sensitivityReadyN: 3658,
+      strictReadyN: 0,
+      exclusionReasonCodes: Object.freeze([
+        "catalog_dates_cannot_substitute_for_formation_dates",
+        "formation_date_and_coordinate_evidence_gates_not_jointly_satisfied",
+      ]),
+    }),
+    animals: Object.freeze({
+      releaseId: "animal-mutilations-v1-20260811",
+      inventoryN: 1177,
+      mappedN: 518,
+      sensitivityReadyN: 339,
+      strictReadyN: 0,
+      exclusionReasonCodes: Object.freeze([
+        "all_records_reported_unreviewed",
+        "exact_coordinate_contract_unavailable",
+      ]),
+    }),
+    facilities: Object.freeze({
+      releaseId: "analysis-evidence-lab-v2.3-20260811.facility_analysis_v1",
+      inventoryN: 1800,
+      mappedN: 1800,
+      sensitivityReadyN: 70,
+      strictReadyN: 70,
+      exclusionReasonCodes: Object.freeze([
+        "coverage_concentrated_in_northern_europe_and_new_zealand",
+        "coordinate_and_operational_interval_qualification_required",
+      ]),
+    }),
+  });
   const PATTERN_FAMILY_ORDER = Object.freeze([
     "craft",
     "time_month",
@@ -1894,6 +1934,318 @@
     };
   }
 
+  function contextPulseOptionalCount(source, keys) {
+    const value = firstDefined(source, keys, null);
+    if (value == null || value === "") return null;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? Math.max(0, numeric) : null;
+  }
+
+  function contextPulseRows(value) {
+    if (Array.isArray(value)) return value.filter(isObject);
+    if (!isObject(value)) return [];
+    const nested = firstArray(value, ["domains", "readiness", "rows", "items"]);
+    if (nested.length) return nested.filter(isObject);
+    return Object.keys(value).filter(function (key) {
+      return isObject(value[key]);
+    }).map(function (key) {
+      return Object.assign({ key, label: key }, value[key]);
+    });
+  }
+
+  function contextPulseDomainRows(readiness, domain) {
+    const needle = domain === "animals" ? "animal" : (domain === "facilities" ? "facilit" : "crop");
+    return contextPulseRows(readiness).filter(function (row) {
+      return [firstDefined(row, ["key", "id", "domain"], ""), firstDefined(row, ["label", "name"], "")]
+        .some(function (candidate) {
+          const normalized = cleanText(candidate).toLowerCase();
+          if (domain === "facilities" && /military|research/.test(normalized)) return true;
+          return normalized.indexOf(needle) !== -1;
+        });
+    });
+  }
+
+  function contextPulseManifestDomain(summaryValue, domain) {
+    const source = isObject(summaryValue) ? summaryValue : {};
+    const pulse = isObject(firstDefined(source, ["contextPulse", "context_pulse", "contextPulseSummary", "context_pulse_summary"], null))
+      ? firstDefined(source, ["contextPulse", "context_pulse", "contextPulseSummary", "context_pulse_summary"], {})
+      : source;
+    const domains = isObject(firstDefined(pulse, ["domains", "domainSummaries", "domain_summaries"], null))
+      ? firstDefined(pulse, ["domains", "domainSummaries", "domain_summaries"], {})
+      : pulse;
+    const aliases = domain === "crops"
+      ? ["crops", "cropCircles", "crop_circles", "cropContext"]
+      : (domain === "animals"
+        ? ["animals", "animalReports", "animal_reports", "animalContext"]
+        : ["facilities", "facilityAnalysis", "facility_analysis"]);
+    let direct = {};
+    for (let index = 0; index < aliases.length; index += 1) {
+      if (isObject(domains[aliases[index]])) {
+        direct = domains[aliases[index]];
+        break;
+      }
+    }
+    const counts = isObject(source.counts) ? source.counts : (isObject(pulse.counts) ? pulse.counts : {});
+    const output = Object.assign({}, direct);
+    const assignCount = function (key, countKeys) {
+      const snakeKey = key.replace(/[A-Z]/g, function (letter) { return "_" + letter.toLowerCase(); });
+      if (contextPulseOptionalCount(output, [key, snakeKey]) != null) return;
+      const value = contextPulseOptionalCount(counts, countKeys);
+      if (value != null) output[key] = value;
+    };
+    if (domain === "crops") {
+      assignCount("inventoryN", ["cropContextRecords", "cropCircles", "crop_circles", "cropRecords"]);
+      assignCount("mappedN", ["mappedCropContextRecords", "mappedCropCircles", "mapped_crop_circles"]);
+      const bounded = contextPulseOptionalCount(counts, ["cropBoundedAnalysisRecords"]);
+      const locality = contextPulseOptionalCount(counts, ["cropLocalityAnalysisRecords"]);
+      if (contextPulseOptionalCount(output, ["sensitivityReadyN"]) == null && (bounded != null || locality != null)) {
+        output.sensitivityReadyN = Math.max(0, bounded || 0) + Math.max(0, locality || 0);
+      }
+      assignCount("strictReadyN", ["cropStrictAnalysisRecords", "cropKilometerEligible"]);
+    } else if (domain === "animals") {
+      assignCount("inventoryN", ["animalContextRecords", "animalReports", "animal_reports", "animalRecords"]);
+      assignCount("mappedN", ["mappedAnimalContextRecords", "mappedAnimalReports", "mapped_animal_reports"]);
+      assignCount("sensitivityReadyN", ["animalPublicMarkerAnalysisRecords"]);
+      assignCount("strictReadyN", ["animalStrictAnalysisRecords", "animalKilometerEligible"]);
+    } else {
+      assignCount("inventoryN", ["facilityMarkers", "facilityRecords", "facilities"]);
+      assignCount("mappedN", ["mappedFacilityMarkers", "facilityMarkers", "facilityRecords", "facilities"]);
+      assignCount("sensitivityReadyN", ["facilityInferentialEligible"]);
+      assignCount("strictReadyN", ["facilityInferentialEligible"]);
+    }
+    return output;
+  }
+
+  function contextPulseContextCount(contextData) {
+    const context = isObject(contextData) ? contextData : {};
+    const summary = isObject(context.summary) ? context.summary : {};
+    const explicit = firstDefined(
+      context,
+      ["activeCount", "active_count", "count", "rowCount", "recordCount"],
+      firstDefined(summary, ["activeCount", "active_count", "count"], null)
+    );
+    if (explicit != null) return Math.max(0, finiteNumber(explicit, 0));
+    const rows = firstArray(context, ["time", "series", "yearly"]);
+    return rows.length ? rows.reduce(function (total, item) {
+      return total + Math.max(0, datumValue(item));
+    }, 0) : null;
+  }
+
+  function contextPulseMappedCount(contextData) {
+    const context = isObject(contextData) ? contextData : {};
+    const summary = isObject(context.summary) ? context.summary : {};
+    const explicit = contextPulseOptionalCount(context, ["mappedCount", "mapped_count", "mappedN", "mapped_n"]);
+    if (explicit != null) return explicit;
+    const summaryCount = contextPulseOptionalCount(summary, ["mappedCount", "mapped_count", "mappedN", "mapped_n"]);
+    if (summaryCount != null) return summaryCount;
+    const mappedRow = firstArray(context, ["coverage"]).find(function (item) {
+      return /^mapped(?:\s|$)/i.test(cleanText(firstDefined(item, ["label", "name", "key", "row"], "")));
+    });
+    if (!mappedRow) return null;
+    const count = contextPulseOptionalCount(mappedRow, ["count", "observed", "value", "passedN", "passed_n"]);
+    if (count != null) return count;
+    const rateValue = firstDefined(mappedRow, ["rate", "share", "observedShare", "observed_share"], null);
+    const active = contextPulseContextCount(context);
+    return rateValue != null && active != null && Number.isFinite(Number(rateValue))
+      ? Math.round(Math.max(0, Math.min(1, Number(rateValue))) * active)
+      : null;
+  }
+
+  function contextPulseGateSummary(rows, domain) {
+    const gatesById = new Map();
+    const reasons = [];
+    rows.forEach(function (row) {
+      const rowReasons = firstDefined(row, ["reasons", "reasonCodes", "reason_codes", "suppressionReasons", "suppression_reasons", "reason"], []);
+      asArray(rowReasons).forEach(function (reason) { if (cleanText(reason)) reasons.push(cleanText(reason)); });
+      readinessGateEntries(row).forEach(function (entry) {
+        const counts = readinessCounts(entry.gate);
+        const existing = gatesById.get(entry.key);
+        if (!existing || Number(counts.passed) > Number(existing.counts.passed)) {
+          gatesById.set(entry.key, { gate: entry.gate, counts });
+        }
+      });
+    });
+    const strictGateIds = domain === "crops"
+      ? ["crop_exact_site_formation_date", "crop_strict", "crop_strict_eligibility"]
+      : (domain === "animals"
+        ? ["animal_exact_site_reviewed", "animal_strict", "animal_strict_eligibility"]
+        : ["facility_inferential_markers", "facility_strict", "facility_strict_eligibility"]);
+    const sensitivityGateIds = domain === "crops"
+      ? ["crop_bounded_marker_lane", "crop_locality_marker_lane"]
+      : (domain === "animals" ? ["animal_public_marker_lane"] : ["facility_inferential_markers"]);
+    const gateCount = function (ids, combine) {
+      const values = ids.map(function (id) {
+        const entry = gatesById.get(id);
+        if (!entry || entry.counts.passed == null) return null;
+        asArray(firstDefined(entry.gate, ["reasonCodes", "reason_codes"], [])).forEach(function (reason) {
+          if (cleanText(reason)) reasons.push(cleanText(reason));
+        });
+        return Math.max(0, finiteNumber(entry.counts.passed, 0));
+      }).filter(function (value) { return value != null; });
+      if (!values.length) return null;
+      return combine === "sum"
+        ? values.reduce(function (total, value) { return total + value; }, 0)
+        : Math.max.apply(Math, values);
+    };
+    let strict = gateCount(strictGateIds, "max");
+    let sensitivity = null;
+    const normalizedRows = rows.map(function (row) {
+      return {
+        key: readinessDomainKey(row),
+        row,
+        count: contextPulseOptionalCount(row, ["eligibleN", "eligible_n", "passedN", "passed_n", "qualifiedCount", "qualified_count"]),
+        status: normalizedGateStatus(firstDefined(row, ["status", "state", "result"], "not_evaluated")),
+      };
+    });
+    const aggregateKey = domain === "crops" ? "cropcircles" : (domain === "animals" ? "animalreports" : "facilities");
+    const aggregate = normalizedRows.find(function (entry) { return entry.key === aggregateKey; });
+    if (aggregate && aggregate.status === "ready_sensitivity" && aggregate.count != null) sensitivity = aggregate.count;
+    if (sensitivity == null) {
+      const laneKeys = domain === "crops"
+        ? ["cropbounded", "croplocality"]
+        : (domain === "animals" ? [] : ["militaryfacilities", "researchfacilities"]);
+      const laneValues = laneKeys.map(function (key) {
+        const lane = normalizedRows.find(function (entry) { return entry.key === key; });
+        return lane && lane.count != null ? lane.count : null;
+      }).filter(function (value) { return value != null; });
+      if (laneValues.length) {
+        sensitivity = domain === "facilities"
+          ? Math.max.apply(Math, laneValues)
+          : laneValues.reduce(function (total, value) { return total + value; }, 0);
+      }
+    }
+    if (sensitivity == null) sensitivity = gateCount(sensitivityGateIds, "sum");
+    if (strict == null) {
+      const strictRow = normalizedRows.find(function (entry) {
+        return entry.key.indexOf("strict") !== -1 && entry.count != null;
+      });
+      if (strictRow) strict = strictRow.count;
+    }
+    // Legacy readiness used one blocked aggregate row for the strict lane.
+    if (strict == null && aggregate && aggregate.status !== "ready_sensitivity" && aggregate.count != null) {
+      strict = aggregate.count;
+    }
+    return { strict, sensitivity, reasons };
+  }
+
+  function contextPulseDeltaLabel(value) {
+    if (value == null || value === "") return "Change since previous release not reported";
+    if (!isObject(value)) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return "Change since previous release: " + cleanText(value);
+      return "Change since previous release: " + (numeric > 0 ? "+" : "") + formatCount(numeric);
+    }
+    const fields = [
+      ["inventory", ["inventoryN", "inventory", "activeInventoryN", "active_inventory_n"]],
+      ["mapped", ["mappedN", "mapped", "mapped_count"]],
+      ["sensitivity", ["sensitivityReadyN", "sensitivity_ready_n", "sensitivity"]],
+      ["strict", ["strictReadyN", "strict_ready_n", "strict"]],
+    ];
+    const parts = [];
+    fields.forEach(function (definition) {
+      const count = contextPulseOptionalCount(value, definition[1]);
+      const raw = firstDefined(value, definition[1], null);
+      if (raw == null || !Number.isFinite(Number(raw))) return;
+      const numeric = Number(raw);
+      parts.push(definition[0] + " " + (numeric > 0 ? "+" : "") + formatCount(numeric));
+    });
+    return parts.length
+      ? "Change since previous release: " + parts.join("; ")
+      : "Change since previous release not reported";
+  }
+
+  function contextPulseEntries(dataValue) {
+    const source = isObject(dataValue) ? dataValue : {};
+    const readiness = firstDefined(source, ["readiness", "crossDomainReadiness", "cross_domain_readiness"], {});
+    const manifestSummary = firstDefined(source, ["manifestSummary", "manifest_summary", "contextPulseSummary", "context_pulse_summary", "manifest"], {});
+    const configurations = [
+      { key: "crops", label: "Crop circles", target: "analysis-section-crops", color: "#2f9e76" },
+      { key: "animals", label: "Animal reports", target: "analysis-section-animals", color: "#d18a34" },
+      { key: "facilities", label: "Facilities", target: "analysis-section-facilities", color: "#7b61a8" },
+    ];
+    return configurations.map(function (configuration) {
+      const domain = configuration.key;
+      const context = isObject(source[domain]) ? source[domain] : {};
+      const suppliedManifest = contextPulseManifestDomain(manifestSummary, domain);
+      const fallback = CONTEXT_PULSE_MANIFEST_FALLBACK[domain];
+      const rows = contextPulseDomainRows(readiness, domain);
+      const readinessSummary = contextPulseGateSummary(rows, domain);
+      const facilityCatalog = domain === "facilities" && isObject(firstDefined(context, ["catalogSummary", "catalog_summary"], null))
+        ? firstDefined(context, ["catalogSummary", "catalog_summary"], {})
+        : {};
+      const contextTotal = contextPulseOptionalCount(
+        context,
+        ["totalProjectionRows", "total_projection_rows", "inventoryN", "inventory_n", "totalN", "total_n", "facilityCatalogN", "facility_catalog_n"]
+      );
+      const summaryTotal = contextPulseOptionalCount(
+        isObject(context.summary) ? context.summary : {},
+        ["totalProjectionRows", "total_projection_rows", "inventoryN", "inventory_n", "totalN", "total_n"]
+      );
+      const facilityCatalogTotal = contextPulseOptionalCount(facilityCatalog, ["totalN", "total_n"]);
+      const inventoryTotal = contextTotal != null
+        ? contextTotal
+        : (summaryTotal != null
+          ? summaryTotal
+          : (facilityCatalogTotal != null
+            ? facilityCatalogTotal
+            : firstDefined(suppliedManifest, ["inventoryN", "inventory_n", "totalN", "total_n", "rowCount", "row_count"], fallback.inventoryN)));
+      const activeValue = contextPulseContextCount(context);
+      const activeInventory = activeValue == null ? Math.max(0, finiteNumber(inventoryTotal, fallback.inventoryN)) : activeValue;
+      const total = Math.max(activeInventory, Math.max(0, finiteNumber(inventoryTotal, fallback.inventoryN)));
+      const contextMapped = contextPulseMappedCount(context);
+      const manifestMapped = contextPulseOptionalCount(suppliedManifest, ["mappedN", "mapped_n", "mappedCount", "mapped_count"]);
+      const mapped = contextMapped != null
+        ? Math.min(activeInventory, contextMapped)
+        : (activeInventory === total
+          ? Math.min(total, manifestMapped == null ? fallback.mappedN : manifestMapped)
+          : null);
+      const contextSensitivityDirect = contextPulseOptionalCount(context, ["sensitivityReadyN", "sensitivity_ready_n", "activeSensitivityReadyN", "active_sensitivity_ready_n", "inferentialFacilityN", "inferential_facility_n"]);
+      const contextStrictDirect = contextPulseOptionalCount(context, ["strictReadyN", "strict_ready_n", "activeStrictReadyN", "active_strict_ready_n", "inferentialFacilityN", "inferential_facility_n"]);
+      const facilityQualified = contextPulseOptionalCount(facilityCatalog, ["inferentialEligibleN", "inferential_eligible_n"]);
+      const contextSensitivity = contextSensitivityDirect == null ? facilityQualified : contextSensitivityDirect;
+      const contextStrict = contextStrictDirect == null ? facilityQualified : contextStrictDirect;
+      const manifestSensitivity = contextPulseOptionalCount(suppliedManifest, ["sensitivityReadyN", "sensitivity_ready_n"]);
+      const manifestStrict = contextPulseOptionalCount(suppliedManifest, ["strictReadyN", "strict_ready_n"]);
+      const sensitivity = Math.min(total, contextSensitivity != null
+        ? contextSensitivity
+        : (readinessSummary.sensitivity != null
+          ? readinessSummary.sensitivity
+          : (manifestSensitivity == null ? fallback.sensitivityReadyN : manifestSensitivity)));
+      const strict = Math.min(total, contextStrict != null
+        ? contextStrict
+        : (readinessSummary.strict != null
+          ? readinessSummary.strict
+          : (manifestStrict == null ? fallback.strictReadyN : manifestStrict)));
+      const reasonValues = readinessSummary.reasons.concat(
+        asArray(firstDefined(suppliedManifest, ["exclusionReasonCodes", "exclusion_reason_codes", "leadingExclusionReasons", "leading_exclusion_reasons", "reasons"], []))
+      ).concat(fallback.exclusionReasonCodes || []);
+      const reasons = [];
+      reasonValues.map(humanizeEvidenceReason).filter(Boolean).forEach(function (reason) {
+        if (reasons.indexOf(reason) === -1) reasons.push(reason);
+      });
+      const deltaValue = firstDefined(
+        context,
+        ["releaseDelta", "release_delta", "changeSincePreviousRelease", "change_since_previous_release"],
+        firstDefined(suppliedManifest, ["releaseDelta", "release_delta", "changeSincePreviousRelease", "change_since_previous_release"], null)
+      );
+      const denominator = Math.max(1, total);
+      return Object.assign({}, configuration, {
+        activeInventory,
+        inventoryTotal: total,
+        activeShare: Math.max(0, Math.min(1, activeInventory / denominator)),
+        mapped,
+        mappedShare: mapped == null || activeInventory <= 0 ? null : Math.max(0, Math.min(1, mapped / activeInventory)),
+        sensitivityReady: sensitivity,
+        sensitivityShare: Math.max(0, Math.min(1, sensitivity / denominator)),
+        strictReady: strict,
+        strictShare: Math.max(0, Math.min(1, strict / denominator)),
+        leadingExclusionReasons: reasons.slice(0, 2),
+        releaseDeltaLabel: contextPulseDeltaLabel(deltaValue),
+        releaseId: cleanText(firstDefined(suppliedManifest, ["releaseId", "release_id"], fallback.releaseId)),
+      });
+    });
+  }
+
   function relationshipMatrix(value) {
     const direct = matrixItems(value);
     if (direct.length && direct.some(function (item) {
@@ -3488,68 +3840,48 @@
     }
 
     _renderContextPulse(chartId, data, summary) {
-      const source = isObject(data) ? data : {};
       const container = this._prepareChart(chartId, [true], summary, "Context summaries are not available.");
       if (!container) return;
-      const contextCount = function (contextData) {
-        const context = isObject(contextData) ? contextData : {};
-        const contextSummary = isObject(context.summary) ? context.summary : {};
-        const explicit = firstDefined(context, ["activeCount", "count", "rowCount", "recordCount"], firstDefined(contextSummary, ["activeCount", "active_count", "count"], null));
-        if (explicit != null) return Math.max(0, finiteNumber(explicit, 0));
-        return firstArray(context, ["time", "series", "yearly"]).reduce(function (total, item) {
-          return total + Math.max(0, datumValue(item));
-        }, 0);
-      };
-      const facilities = isObject(source.facilities) ? source.facilities : {};
-      const facilityCatalog = isObject(firstDefined(facilities, ["catalogSummary", "catalog_summary"], null))
-        ? firstDefined(facilities, ["catalogSummary", "catalog_summary"], {})
-        : {};
-      const facilityTotal = Math.max(0, finiteNumber(firstDefined(facilityCatalog, ["totalN", "total_n"], firstDefined(facilities, ["facilityCatalogN", "facility_catalog_n"], 0)), 0));
-      const facilityQualified = Math.max(0, finiteNumber(firstDefined(facilities, ["inferentialFacilityN", "inferential_facility_n"], firstDefined(facilityCatalog, ["inferentialEligibleN", "inferential_eligible_n"], 0)), 0));
-      const entries = [
-        {
-          label: "Crop circles",
-          count: contextCount(source.crops),
-          detail: "descriptive formation catalog",
-          target: "analysis-section-crops",
-          color: "#2f9e76",
-          share: Math.min(1, contextCount(source.crops) / Math.max(1, summary.activeCount)),
-        },
-        {
-          label: "Animal reports",
-          count: contextCount(source.animals),
-          detail: "reported · unreviewed",
-          target: "analysis-section-animals",
-          color: "#d18a34",
-          share: Math.min(1, contextCount(source.animals) / Math.max(1, summary.activeCount)),
-        },
-        {
-          label: "Facilities",
-          count: facilityQualified,
-          detail: "qualified of " + formatCount(facilityTotal) + " catalog markers",
-          target: "analysis-section-facilities",
-          color: "#7b61a8",
-          share: facilityTotal > 0 ? Math.min(1, facilityQualified / facilityTotal) : 0,
-        },
-      ];
+      const entries = contextPulseEntries(data);
       const grid = this._element("div", "analysis-context-pulse");
       entries.forEach((entry) => {
         const button = this._element("button", "analysis-context-pulse-card");
         button.type = "button";
         button.style.setProperty("--analysis-pulse-color", entry.color);
-        button.style.setProperty("--analysis-pulse-angle", (entry.share * 360).toFixed(2) + "deg");
-        button.appendChild(this._element("span", "analysis-context-pulse-gauge", formatPercent(entry.share)));
+        button.style.setProperty("--analysis-pulse-angle", (entry.strictShare * 360).toFixed(2) + "deg");
+        button.appendChild(this._element("span", "analysis-context-pulse-gauge", formatPercent(entry.strictShare)));
         const copy = this._element("span", "analysis-context-pulse-copy");
         copy.appendChild(this._element("strong", "", entry.label));
-        copy.appendChild(this._element("b", "", formatCount(entry.count)));
-        copy.appendChild(this._element("small", "", entry.detail));
+        copy.appendChild(this._element("b", "", formatCount(entry.strictReady) + " strict"));
+        const activeLine = "Active inventory: " + formatCount(entry.activeInventory) + " / " + formatCount(entry.inventoryTotal)
+          + " (" + formatPercent(entry.activeShare) + " of this domain)";
+        const mappedLine = entry.mapped == null
+          ? "Mapped: not available for this active inventory"
+          : "Mapped: " + formatCount(entry.mapped) + " / " + formatCount(entry.activeInventory)
+            + " (" + formatPercent(entry.mappedShare) + " of active)";
+        const readinessLine = "Sensitivity-ready: " + formatCount(entry.sensitivityReady) + " / " + formatCount(entry.inventoryTotal)
+          + " (" + formatPercent(entry.sensitivityShare) + ") · Strict-ready: " + formatCount(entry.strictReady) + " / "
+          + formatCount(entry.inventoryTotal) + " (" + formatPercent(entry.strictShare) + ")";
+        const exclusionsLine = "Leading exclusions: " + (entry.leadingExclusionReasons.length
+          ? entry.leadingExclusionReasons.join("; ")
+          : "none reported");
+        [activeLine, mappedLine, readinessLine, exclusionsLine, entry.releaseDeltaLabel].forEach(function (line) {
+          copy.appendChild(documentSafeElement(container.ownerDocument, "small", "", line));
+        });
         button.appendChild(copy);
-        button.setAttribute("aria-label", entry.label + ": " + formatCount(entry.count) + ", " + entry.detail + ". Open this analysis view.");
+        button.setAttribute(
+          "aria-label",
+          [entry.label, activeLine, mappedLine, readinessLine, exclusionsLine, entry.releaseDeltaLabel, "Open this analysis view."].join(". ")
+        );
         button.addEventListener("click", () => this.navigateToSection(entry.target, { updateHash: true, focus: true, source: "overview-context-pulse" }));
         grid.appendChild(button);
       });
       container.appendChild(grid);
-      container.appendChild(this._element("p", "analysis-chart-summary", "Context counts describe available records or qualified markers. They do not assert a relationship with UFO reports."));
+      container.appendChild(this._element(
+        "p",
+        "analysis-chart-summary",
+        "Every percentage uses that context domain's own inventory, never the UFO-report cohort. Readiness describes evidence quality and does not assert a relationship with UFO reports."
+      ));
     }
 
     _renderCraftMosaic(chartId, items, summary, options) {
@@ -6127,6 +6459,15 @@
       const spatial = isObject(result.spatial) ? result.spatial : (isObject(result.spatialEvidence) ? result.spatialEvidence : {});
       const spatialEligibility = firstDefined(spatial, ["eligibility", "eligibilityFunnel", "eligibility_funnel"], {});
       const crossDomainReadiness = firstDefined(spatial, ["crossDomainReadiness", "cross_domain_readiness", "readiness"], firstDefined(context, ["readiness", "crossDomainReadiness"], {}));
+      const contextPulseSummary = firstDefined(
+        result,
+        ["contextPulseSummary", "context_pulse_summary", "analysisManifestSummary", "analysis_manifest_summary"],
+        firstDefined(
+          context,
+          ["pulseSummary", "pulse_summary", "manifestSummary", "manifest_summary"],
+          firstDefined(spatial, ["pulseSummary", "pulse_summary", "manifestSummary", "manifest_summary"], {})
+        )
+      );
       const adaptiveTimeSeries = firstArray(time, ["series", "yearly", "trends"]);
       const annualTimeSeries = firstArray(time, ["annualSeries", "annual_series"]);
       const sourceBalanced = firstArray(time, ["sourceBalanced", "source_balanced"]);
@@ -6166,6 +6507,7 @@
         contextAssociations: firstDefined(spatial, ["contextAssociations", "context_associations"], {}),
         facilities: firstDefined(spatial, ["facility", "facilities", "facilityContext", "facility_context"], {}),
         crossDomainReadiness,
+        contextPulseSummary,
         cropReadiness: readinessForDomain(crossDomainReadiness, "crops"),
         animalReadiness: readinessForDomain(crossDomainReadiness, "animals"),
         relationshipReadiness: firstDefined(spatial, ["relationshipSummary", "relationship_summary", "relationshipEvidence", "relationship_evidence", "relationships"], readinessForDomain(crossDomainReadiness, "relationships")),
@@ -6294,7 +6636,13 @@
       overviewJobs.push(() => this._renderEligibilityFunnel("analysis-coverage-chart", data.overviewCoverage, summary, { caption: "Analysis eligibility funnel", limit: 8 }));
       overviewJobs.push(() => this._renderCoverageOrbit("analysis-overview-coverage-visual", data.overviewCoverage, summary));
       overviewJobs.push(() => this._renderCraftMosaic("analysis-overview-craft-mosaic", data.craftDistribution, summary, { caption: "Overview craft composition", defaultKind: "filter", limit: 9 }));
-      overviewJobs.push(() => this._renderContextPulse("analysis-overview-context-visual", { crops: data.crops, animals: data.animals, facilities: data.facilities }, summary));
+      overviewJobs.push(() => this._renderContextPulse("analysis-overview-context-visual", {
+        crops: data.crops,
+        animals: data.animals,
+        facilities: data.facilities,
+        readiness: data.crossDomainReadiness,
+        manifestSummary: data.contextPulseSummary,
+      }, summary));
       overviewJobs.push(() => this._renderForestPlot("analysis-comparison-chart", data.overviewComparison, summary, {
         caption: "Signal spectrum: adjusted effects with 95% intervals",
         defaultKind: "filter",
@@ -6669,6 +7017,7 @@
     ANALYSIS_STATES,
     BASELINE_MODES,
     BASELINE_NOTES,
+    CONTEXT_PULSE_MANIFEST_FALLBACK,
     SERIES_POINT_LIMIT,
     HEATMAP_CELL_LIMIT,
     HEATMAP_AXIS_LIMIT,
@@ -6681,6 +7030,7 @@
     buildEvidencePackage,
     collapseDuplicateReferenceSeries,
     comparativeEffect,
+    contextPulseEntries,
     countryEvidenceItems,
     craftDisplayLabel,
     contextEnabledForRender,

@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-release-seal-v1.0.0",
+  "type": "object",
+  "required": [
+    "schemaId",
+    "campaignId",
+    "releaseId",
+    "releaseStatus",
+    "authorizedAt",
+    "finalizedAt",
+    "sourceCommit",
+    "authorizedScope",
+    "frozenLedgers",
+    "dataSummary",
+    "artifactManifests",
+    "acceptance",
+    "r2Releases",
+    "pages",
+    "reproduction",
+    "rollback"
+  ],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-release-seal-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "releaseId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "releaseStatus": {"enum": ["pre_release", "released"]},
+    "authorizedAt": {"type": "string", "format": "date-time"},
+    "finalizedAt": {"type": ["string", "null"], "format": "date-time"},
+    "sourceCommit": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[a-f0-9]{40}$"}
+      ]
+    },
+    "authorizedScope": {
+      "type": "object",
+      "required": [
+        "authorizationKind",
+        "mappingAndProvenanceOnly",
+        "milestoneClaimed",
+        "strictReadinessClaimed",
+        "causality",
+        "traceEligible"
+      ],
+      "properties": {
+        "authorizationKind": {"const": "explicit_user_authorized_non_milestone"},
+        "mappingAndProvenanceOnly": {"const": true},
+        "milestoneClaimed": {"const": false},
+        "strictReadinessClaimed": {"const": false},
+        "causality": {"const": "not_asserted"},
+        "traceEligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "frozenLedgers": {
+      "type": "object",
+      "required": ["source", "enrichment", "review", "queue"],
+      "properties": {
+        "source": {"$ref": "#/$defs/fileIdentity"},
+        "enrichment": {"$ref": "#/$defs/fileIdentity"},
+        "review": {"$ref": "#/$defs/fileIdentity"},
+        "queue": {"$ref": "#/$defs/fileIdentity"}
+      },
+      "additionalProperties": false
+    },
+    "dataSummary": {
+      "type": "object",
+      "required": [
+        "materiallyUpgradedOverall",
+        "domains",
+        "firstMilestoneMet",
+        "releaseDisposition"
+      ],
+      "properties": {
+        "materiallyUpgradedOverall": {"type": "integer", "minimum": 0},
+        "domains": {
+          "type": "object",
+          "required": ["cropCircle", "animalMutilation"],
+          "properties": {
+            "cropCircle": {"$ref": "#/$defs/domainCounts"},
+            "animalMutilation": {"$ref": "#/$defs/domainCounts"}
+          },
+          "additionalProperties": false
+        },
+        "firstMilestoneMet": {"const": false},
+        "releaseDisposition": {
+          "const": "authorized_mapping_provenance_release_without_milestone_or_strict_claim"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifactManifests": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifactManifest"}
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["localFullSuite", "cleanCloneCi", "previewBrowserQa", "productionSmoke"],
+      "properties": {
+        "localFullSuite": {"$ref": "#/$defs/gate"},
+        "cleanCloneCi": {"$ref": "#/$defs/gate"},
+        "previewBrowserQa": {"$ref": "#/$defs/gate"},
+        "productionSmoke": {"$ref": "#/$defs/gate"}
+      },
+      "additionalProperties": false
+    },
+    "r2Releases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/r2Release"}
+    },
+    "pages": {
+      "type": "object",
+      "required": [
+        "frozenTreeSha256",
+        "fileCount",
+        "totalBytes",
+        "preview",
+        "production",
+        "identicalPreviewProductionArtifact"
+      ],
+      "properties": {
+        "frozenTreeSha256": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          ]
+        },
+        "fileCount": {"type": ["integer", "null"], "minimum": 1},
+        "totalBytes": {"type": ["integer", "null"], "minimum": 1},
+        "preview": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/pagesDeployment"}
+          ]
+        },
+        "production": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/pagesDeployment"}
+          ]
+        },
+        "identicalPreviewProductionArtifact": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "reproduction": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/reproduction"}
+      ]
+    },
+    "rollback": {"$ref": "#/$defs/rollback"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"releaseStatus": {"const": "released"}}},
+      "then": {
+        "properties": {
+          "finalizedAt": {"type": "string", "format": "date-time"},
+          "sourceCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+          "artifactManifests": {"minItems": 3},
+          "r2Releases": {"minItems": 3, "maxItems": 3},
+          "pages": {
+            "properties": {
+              "frozenTreeSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "fileCount": {"type": "integer", "minimum": 1},
+              "totalBytes": {"type": "integer", "minimum": 1},
+              "preview": {"$ref": "#/$defs/pagesDeployment"},
+              "production": {"$ref": "#/$defs/pagesDeployment"},
+              "identicalPreviewProductionArtifact": {"const": true}
+            }
+          },
+          "reproduction": {"$ref": "#/$defs/reproduction"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "fileIdentity": {
+      "type": "object",
+      "required": ["path", "bytes", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "domainCounts": {
+      "type": "object",
+      "required": ["activeInventory", "mapped", "sensitivityReady", "strictReady"],
+      "properties": {
+        "activeInventory": {"type": "integer", "minimum": 0},
+        "mapped": {"type": "integer", "minimum": 0},
+        "sensitivityReady": {"type": "integer", "minimum": 0},
+        "strictReady": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "artifactManifest": {
+      "type": "object",
+      "required": ["domain", "path", "releaseId", "bytes", "sha256"],
+      "properties": {
+        "domain": {"enum": ["crop_circle", "animal_mutilation", "analysis"]},
+        "path": {"type": "string", "minLength": 1},
+        "releaseId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": ["status", "runCount", "evidenceLocator"],
+      "properties": {
+        "status": {"enum": ["pending", "passed", "failed", "quarantined"]},
+        "runCount": {"type": "integer", "minimum": 0, "maximum": 1},
+        "evidenceLocator": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "r2Release": {
+      "type": "object",
+      "required": [
+        "domain",
+        "releaseId",
+        "immutablePrefix",
+        "objectCount",
+        "totalBytes",
+        "treeSha256",
+        "readbackVerified"
+      ],
+      "properties": {
+        "domain": {"enum": ["crop_circle", "animal_mutilation", "analysis"]},
+        "releaseId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+        "immutablePrefix": {"type": "string", "pattern": "^releases/[A-Za-z0-9._/-]+$"},
+        "objectCount": {"type": "integer", "minimum": 1},
+        "totalBytes": {"type": "integer", "minimum": 1},
+        "treeSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "readbackVerified": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "pagesDeployment": {
+      "type": "object",
+      "required": ["deploymentId", "immutableUrl", "canonicalUrl", "branch", "sourceCommit"],
+      "properties": {
+        "deploymentId": {"type": "string", "format": "uuid"},
+        "immutableUrl": {"type": "string", "format": "uri"},
+        "canonicalUrl": {"type": ["string", "null"], "format": "uri"},
+        "branch": {"type": "string", "minLength": 1},
+        "sourceCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "reproduction": {
+      "type": "object",
+      "required": ["releaseId", "manifestSha256", "pagesArchiveSha256"],
+      "properties": {
+        "releaseId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+        "manifestSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "pagesArchiveSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["deploymentId", "immutableUrl", "sourceCommit", "status", "instruction"],
+      "properties": {
+        "deploymentId": {"type": "string", "format": "uuid"},
+        "immutableUrl": {"type": "string", "format": "uri"},
+        "sourceCommit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "status": {"enum": ["known_good", "tested"]},
+        "instruction": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

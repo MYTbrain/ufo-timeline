@@ -22,11 +22,20 @@ from pathlib import Path
 import re
 import struct
 from typing import Any, Iterable, Mapping, Sequence
+from urllib.parse import urlparse
 
 try:
     from scripts import build_analysis_geography_binary_v1 as geography_binary
 except ImportError:  # Direct script execution resolves sibling modules here.
     import build_analysis_geography_binary_v1 as geography_binary
+
+try:
+    from scripts.context_evidence_contract import (
+        REPEATABLE_CONTEXT_FIELDS,
+        distinct_reviewed_values,
+    )
+except ImportError:  # Direct script execution resolves sibling modules here.
+    from context_evidence_contract import REPEATABLE_CONTEXT_FIELDS, distinct_reviewed_values
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -40,9 +49,13 @@ DEFAULT_CANONICAL_SOURCE = (
     / "deduped_events.jsonl"
 )
 DEFAULT_BROWSER_BASE_PATH = "data/analysis_v2"
-DEFAULT_RELEASE_ID = "analysis-evidence-lab-v2.2-20260803"
-SCHEMA_ID = "ufo-timeline-analysis-evidence-artifacts-v2.2.0"
-ESTIMATOR_VERSION = "ufo-analysis-evidence-lab-v2.2.0"
+DEFAULT_RELEASE_ID = "analysis-evidence-lab-v2.3-20260811"
+DEFAULT_R2_PUBLIC_ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
+IMMUTABLE_CACHE_CONTROL = "public, max-age=31536000, immutable"
+DEFAULT_CONTEXT_EVIDENCE_ROOT = REPO_ROOT / "campaign" / "context_evidence" / "ledgers"
+DEFAULT_PREVIOUS_MANIFEST = DEFAULT_OUTPUT_ROOT / "manifest.json"
+SCHEMA_ID = "ufo-timeline-analysis-evidence-artifacts-v2.3.0"
+ESTIMATOR_VERSION = "ufo-analysis-evidence-lab-v2.3.0"
 RELATIONSHIP_SNAPSHOT_FILENAME = "relationship_source_snapshot.json"
 RELATIONSHIP_SNAPSHOT_META_FILENAME = "relationship_source_snapshot.meta.json"
 SAFE_RELEASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
@@ -84,6 +97,41 @@ READINESS_STATUSES = {
     "not_applicable",
     "not_evaluated",
     "data_unavailable",
+}
+CONTEXT_ANALYSIS_TIERS = {
+    "crop_strict",
+    "crop_bounded",
+    "crop_locality",
+    "animal_strict",
+    "animal_public_marker",
+    "excluded",
+}
+STRICT_REVIEW_STATES = {"source_reviewed", "human_reviewed"}
+QUALIFYING_SOURCE_TIERS = {"primary", "official", "contemporaneous"}
+INDEPENDENT_SOURCE_STATUSES = {
+    "independent",
+    "independent_primary",
+    "independently_obtained",
+}
+RESOLVED_DEDUP_STATUSES = {"resolved_cluster", "stable_unique"}
+STRICT_CONFLICT_FIELDS = {
+    "catalog_date",
+    "coordinate_method",
+    "coordinate_uncertainty_m",
+    "dedup_cluster_id",
+    "death_interval",
+    "discovery_date",
+    "duplicate_of_case_id",
+    "formation_date",
+    "investigation_date",
+    "latitude",
+    "location_label",
+    "longitude",
+    "occurrence_date",
+    "photography_date",
+    "publication_date",
+    "report_date",
+    "source_case_identifier",
 }
 
 # Each published projection has an independently identifiable release and a
@@ -242,7 +290,10 @@ CROP_CONTEXT_ROW_SCHEMA = [
     "lat",
     "lon",
     "coordinateEvidenceCode",
+    "coordinateEvidenceClassCode",
+    "coordinateMethodCode",
     "coordinateUncertaintyKm",
+    "coordinateUncertaintyM",
     "startOrdinal",
     "endOrdinal",
     "datePrecisionCode",
@@ -250,7 +301,11 @@ CROP_CONTEXT_ROW_SCHEMA = [
     "formationDateKnown",
     "reviewStateCode",
     "lineageHash",
+    "sourceFamilyIds",
     "sourceFamilyCount",
+    "independenceStatusCode",
+    "dedupStatusCode",
+    "analysisTierCode",
     "analysisLaneCode",
     "featureGroupCode",
     "locationDateClusterId",
@@ -262,14 +317,23 @@ ANIMAL_CONTEXT_ROW_SCHEMA = [
     "lat",
     "lon",
     "coordinateEvidenceCode",
+    "coordinateEvidenceClassCode",
+    "coordinateMethodCode",
     "coordinateUncertaintyKm",
+    "coordinateUncertaintyM",
     "startOrdinal",
     "endOrdinal",
     "datePrecisionCode",
+    "dateRoleCode",
     "reviewStateCode",
     "sourceIncidentId",
     "sourceIncidentSha256",
     "lineageHash",
+    "sourceFamilyIds",
+    "sourceFamilyCount",
+    "independenceStatusCode",
+    "dedupStatusCode",
+    "analysisTierCode",
     "analysisLaneCode",
     "featureGroupCode",
     "locationDateClusterId",
@@ -357,6 +421,8 @@ CONTEXT_UFO_NEIGHBOR_ROW_SCHEMA = [
     "originPublisherExcluded",
     "independentAssociationEligible",
     "dateRoleCode",
+    "contextSourceFamilyGroupCode",
+    "contextCoarseSpatialStratumCode",
 ]
 RELATIONSHIP_SOURCE_ROW_SCHEMA = [
     "relationshipId",
@@ -392,8 +458,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--release-id", default=DEFAULT_RELEASE_ID)
     parser.add_argument("--browser-base-path", default=DEFAULT_BROWSER_BASE_PATH)
+    parser.add_argument(
+        "--asset-base-url",
+        default="",
+        help=(
+            "Absolute HTTPS R2 release URL. When omitted, the locked public R2 origin and "
+            "release ID are used. The URL must end in /releases/<release-id>."
+        ),
+    )
     parser.add_argument("--relationship-source", type=Path)
     parser.add_argument("--relationship-snapshot", type=Path)
+    parser.add_argument(
+        "--context-evidence-root",
+        type=Path,
+        default=DEFAULT_CONTEXT_EVIDENCE_ROOT,
+        help="Directory containing the append-only context-evidence ledgers",
+    )
+    parser.add_argument(
+        "--previous-manifest",
+        type=Path,
+        default=DEFAULT_PREVIOUS_MANIFEST,
+        help="Prior frozen Analysis manifest used only to calculate release deltas",
+    )
     return parser.parse_args()
 
 
@@ -640,6 +726,139 @@ def write_document(
         "releaseId": artifact_release_id(release_id, artifact_id),
         "sha256": sha256_bytes(raw),
     }
+
+
+def analysis_asset_base_url(release_id: str, value: str | None = None) -> str:
+    """Return one immutable Analysis release URL or fail closed.
+
+    The builder never emits localhost, branch, mutable alias, query, or fragment
+    URLs. A custom HTTPS origin is allowed for deterministic fixture builds, but
+    the production publisher separately locks the accepted public R2 origin.
+    """
+    candidate = str(value or "").strip() or (
+        f"{DEFAULT_R2_PUBLIC_ORIGIN}/releases/{release_id}"
+    )
+    parsed = urlparse(candidate)
+    expected_path = f"/releases/{release_id}"
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+        or parsed.path.rstrip("/") != expected_path
+    ):
+        raise ValueError(
+            "Analysis asset-base-url must be absolute HTTPS and end exactly with "
+            f"{expected_path}"
+        )
+    return candidate.rstrip("/")
+
+
+def _payload_content_type(path: str) -> str:
+    return (
+        "application/octet-stream"
+        if path.endswith(".bin") or path.endswith(".bin.gz")
+        else "application/json; charset=utf-8"
+    )
+
+
+def build_analysis_r2_delivery(
+    *,
+    output_root: Path,
+    release_id: str,
+    asset_base_url: str,
+    declaration_roots: Sequence[dict[str, Any]],
+) -> tuple[str, dict[str, Any], list[dict[str, Any]]]:
+    """Rewrite runtime URLs and inventory every non-manifest output for R2.
+
+    All generated Analysis bytes are R2-only. Pages receives exactly the small
+    manifest. The URL declarations, local file inventory, and delivery payload
+    list must be exact peers; an unreferenced or multiply referenced output is a
+    build error rather than an implicitly publishable file.
+    """
+    base_url = analysis_asset_base_url(release_id, asset_base_url)
+    referenced: dict[str, tuple[int, str]] = {}
+
+    def rewrite(value: Any) -> None:
+        if isinstance(value, dict):
+            for key, child in list(value.items()):
+                if key not in {"file", "gzipFile"} or not isinstance(child, str):
+                    rewrite(child)
+                    continue
+                normalized = child.replace("\\", "/")
+                path = Path(normalized)
+                if path.is_absolute() or ".." in path.parts or not path.name:
+                    raise ValueError(f"Unsafe Analysis payload URL path: {child!r}")
+                filename = path.name
+                bytes_key = "gzipBytes" if key == "gzipFile" else "bytes"
+                sha_key = "gzipSha256" if key == "gzipFile" else "sha256"
+                try:
+                    identity = (int(value[bytes_key]), str(value[sha_key]))
+                except (KeyError, TypeError, ValueError) as exc:
+                    raise ValueError(
+                        f"Analysis payload declaration lacks integrity: {filename}"
+                    ) from exc
+                previous = referenced.get(filename)
+                if previous is not None:
+                    raise ValueError(f"Analysis payload is declared more than once: {filename}")
+                referenced[filename] = identity
+                value[key] = f"{base_url}/{filename}"
+        elif isinstance(value, list):
+            for child in value:
+                rewrite(child)
+
+    for declaration in declaration_roots:
+        rewrite(declaration)
+
+    actual_paths = sorted(
+        path.name
+        for path in output_root.iterdir()
+        if path.is_file() and path.name != "manifest.json"
+    )
+    if len(actual_paths) != len(set(actual_paths)):
+        raise ValueError("Analysis output contains duplicate payload filenames")
+    if set(actual_paths) != set(referenced):
+        missing_urls = sorted(set(actual_paths) - set(referenced))
+        missing_files = sorted(set(referenced) - set(actual_paths))
+        raise ValueError(
+            "Analysis R2 inventory disagrees with runtime declarations"
+            + (f"; unreferenced={','.join(missing_urls)}" if missing_urls else "")
+            + (f"; missing={','.join(missing_files)}" if missing_files else "")
+        )
+
+    payloads: list[dict[str, Any]] = []
+    for filename in actual_paths:
+        path = output_root / filename
+        size = path.stat().st_size
+        digest = sha256_path(path)
+        if referenced[filename] != (size, digest):
+            raise ValueError(f"Analysis payload bytes drifted from declaration: {filename}")
+        payload: dict[str, Any] = {
+            "bytes": size,
+            "contentType": _payload_content_type(filename),
+            "path": filename,
+            "r2Only": True,
+            "sha256": digest,
+        }
+        if filename.endswith(".gz"):
+            decoded = gzip.decompress(path.read_bytes())
+            raw_path = output_root / filename[:-3]
+            if not raw_path.is_file() or decoded != raw_path.read_bytes():
+                raise ValueError(f"Analysis gzip payload does not reproduce raw peer: {filename}")
+            payload["decodedBytes"] = len(decoded)
+            payload["decodedSha256"] = sha256_bytes(decoded)
+        payloads.append(payload)
+
+    r2_paths = [payload["path"] for payload in payloads]
+    delivery = {
+        "cacheControl": IMMUTABLE_CACHE_CONTROL,
+        "immutablePrefix": f"releases/{release_id}",
+        "pagesFiles": ["manifest.json"],
+        "r2OnlyPaths": r2_paths,
+    }
+    return base_url, delivery, payloads
 
 
 def artifact_release_id(release_id: str, artifact_id: str) -> str:
@@ -1042,6 +1261,335 @@ def lineage_hash(values: Any) -> str:
     return sha256_bytes(canonical_json_bytes(values))
 
 
+def context_case_id(domain: str, value: Any) -> str:
+    """Normalize public animal IDs to the campaign's stable ami_* identifier."""
+    case_id = text(value)
+    if domain == "animal" and case_id.startswith("animal_mutilation:"):
+        return case_id.split(":", 1)[1]
+    return case_id
+
+
+def context_domain(value: Any) -> str:
+    label = text(value).lower()
+    if label in {"crop", "crop_circle", "crop_circles"}:
+        return "crop"
+    if label in {"animal", "animal_mutilation", "animal_mutilations"}:
+        return "animal"
+    raise ValueError(f"Unsupported context-evidence domain: {value!r}")
+
+
+def jsonl_records(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as stream:
+        for line_number, raw in enumerate(stream, start=1):
+            if not raw.strip():
+                continue
+            try:
+                value = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"Invalid JSONL at {path}:{line_number}") from exc
+            if not isinstance(value, Mapping):
+                raise ValueError(f"Expected object at {path}:{line_number}")
+            rows.append(dict(value))
+    return rows
+
+
+def context_ledger_path(root: Path, filename: str) -> Path:
+    direct = root / filename
+    nested = root / "ledgers" / filename
+    if direct.is_file() or not nested.is_file():
+        return direct
+    return nested
+
+
+def load_context_evidence(root: Path | None) -> tuple[dict[tuple[str, str], dict[str, Any]], dict[str, Any]]:
+    """Load accepted campaign assertions without mutating their append-only ledgers.
+
+    A human acceptance or two distinct agent acceptances against the assertion's
+    exact frozen evidence hashes are required before an assertion can affect an
+    Analysis projection.  Superseded decisions are ignored.  Conflicting accepted
+    values fail the build rather than selecting a winner implicitly.
+    """
+    metadata: dict[str, Any] = {
+        "activeAcceptedAssertions": 0,
+        "caseCount": 0,
+        "files": {},
+        "status": "not_present",
+    }
+    if root is None:
+        return {}, metadata
+
+    paths = {
+        name: context_ledger_path(root, name)
+        for name in (
+            "source_ledger.jsonl",
+            "case_enrichment.jsonl",
+            "case_review_decisions.jsonl",
+        )
+    }
+    present = {name: path for name, path in paths.items() if path.is_file()}
+    if not present:
+        return {}, metadata
+    metadata["status"] = "loaded"
+    metadata["files"] = {
+        name: input_declaration(path, label=f"context evidence {name}")
+        for name, path in sorted(present.items())
+    }
+
+    source_rows = jsonl_records(paths["source_ledger.jsonl"]) if paths["source_ledger.jsonl"].is_file() else []
+    assertion_rows = jsonl_records(paths["case_enrichment.jsonl"]) if paths["case_enrichment.jsonl"].is_file() else []
+    decision_rows = (
+        jsonl_records(paths["case_review_decisions.jsonl"])
+        if paths["case_review_decisions.jsonl"].is_file()
+        else []
+    )
+
+    sources: dict[str, dict[str, Any]] = {}
+    for row in source_rows:
+        source_id = text(row.get("sourceId"))
+        if not source_id or source_id in sources:
+            raise ValueError(f"Missing or duplicate context source ID: {source_id!r}")
+        family_id = text(row.get("sourceFamilyId"))
+        if not family_id:
+            raise ValueError(f"Context source {source_id} has no source family")
+        sources[source_id] = {
+            "familyId": family_id,
+            "independenceStatus": text(row.get("independenceStatus")).lower() or "unknown",
+            "sourceTier": text(row.get("sourceTier")).lower() or "lead_only",
+        }
+
+    assertions: dict[str, dict[str, Any]] = {}
+    for row in assertion_rows:
+        assertion_id = text(row.get("assertionId"))
+        if not assertion_id or assertion_id in assertions:
+            raise ValueError(f"Missing or duplicate context assertion ID: {assertion_id!r}")
+        domain = context_domain(row.get("domain"))
+        case_id = context_case_id(domain, row.get("caseId"))
+        field_name = text(row.get("fieldName"))
+        evidence_hashes = [text(value).lower() for value in (row.get("evidenceSha256") or [])]
+        if not case_id or not field_name:
+            raise ValueError(f"Context assertion {assertion_id} is missing its case or field")
+        if not evidence_hashes or evidence_hashes != sorted(set(evidence_hashes)) or any(
+            re.fullmatch(r"[0-9a-f]{64}", value) is None for value in evidence_hashes
+        ):
+            raise ValueError(f"Context assertion {assertion_id} has invalid evidence hashes")
+        source_ids = sorted({text(value) for value in (row.get("sourceIds") or []) if text(value)})
+        if not source_ids:
+            raise ValueError(f"Context assertion {assertion_id} has no supporting sources")
+        unresolved_sources = [source_id for source_id in source_ids if source_id not in sources]
+        if unresolved_sources:
+            raise ValueError(
+                f"Context assertion {assertion_id} references unknown sources: {unresolved_sources}"
+            )
+        assertions[assertion_id] = {
+            "assertionId": assertion_id,
+            "caseId": case_id,
+            "domain": domain,
+            "evidenceSha256": evidence_hashes,
+            "fieldName": field_name,
+            "sourceIds": source_ids,
+            "value": row.get("value"),
+        }
+
+    decisions: dict[str, dict[str, Any]] = {}
+    superseded_ids: set[str] = set()
+    for row in decision_rows:
+        decision_id = text(row.get("decisionId"))
+        assertion_id = text(row.get("assertionId"))
+        if not decision_id or decision_id in decisions:
+            raise ValueError(f"Missing or duplicate context decision ID: {decision_id!r}")
+        assertion = assertions.get(assertion_id)
+        if assertion is None:
+            raise ValueError(f"Context decision {decision_id} references unknown assertion {assertion_id}")
+        frozen_hashes = [text(value).lower() for value in (row.get("frozenEvidenceSha256") or [])]
+        if frozen_hashes != assertion["evidenceSha256"]:
+            raise ValueError(f"Context decision {decision_id} does not match frozen assertion evidence")
+        domain = context_domain(row.get("domain"))
+        case_id = context_case_id(domain, row.get("caseId"))
+        if domain != assertion["domain"] or case_id != assertion["caseId"]:
+            raise ValueError(f"Context decision {decision_id} case identity does not match its assertion")
+        decisions[decision_id] = dict(row)
+        superseded_ids.update(
+            text(value) for value in (row.get("supersedesDecisionIds") or []) if text(value)
+        )
+
+    active_by_assertion: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for decision_id, row in decisions.items():
+        if decision_id not in superseded_ids:
+            active_by_assertion[text(row.get("assertionId"))].append(row)
+
+    accepted_by_field: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
+    case_conflicts: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for assertion_id, assertion in assertions.items():
+        active = active_by_assertion.get(assertion_id, [])
+        positive_outcomes = {"accepted", "duplicate"}
+        human_rows = [
+            row for row in active
+            if isinstance(row.get("reviewer"), Mapping)
+            and text((row.get("reviewer") or {}).get("reviewerType")) == "human"
+        ]
+        candidate_rows = human_rows or active
+        outcomes = {text(row.get("outcome")) for row in candidate_rows}
+        duplicate_targets = {
+            text(row.get("duplicateOfCaseId"))
+            for row in candidate_rows
+            if text(row.get("outcome")) == "duplicate"
+        }
+        unanimous_positive = (
+            len(outcomes) == 1
+            and outcomes.issubset(positive_outcomes)
+            and len(duplicate_targets) <= 1
+        )
+        if human_rows and unanimous_positive:
+            review_state = "human_reviewed"
+        else:
+            agent_reviewers = {
+                text((row.get("reviewer") or {}).get("reviewerId"))
+                for row in active
+                if isinstance(row.get("reviewer"), Mapping)
+                and text((row.get("reviewer") or {}).get("reviewerType")) == "agent"
+                and text((row.get("reviewer") or {}).get("reviewerId"))
+            }
+            review_state = "source_reviewed" if len(agent_reviewers) >= 2 and unanimous_positive else None
+        if review_state is None:
+            if outcomes.intersection({"rejected", "contradictory", "unresolved"}) \
+                    and assertion["fieldName"] in STRICT_CONFLICT_FIELDS:
+                case_conflicts[(assertion["domain"], assertion["caseId"])].add(assertion["fieldName"])
+            continue
+        if outcomes == {"duplicate"}:
+            if assertion["fieldName"] != "duplicate_of_case_id" \
+                    or duplicate_targets != {text(assertion["value"])}:
+                raise ValueError(f"Invalid reviewed duplicate decision for {assertion_id}")
+        accepted_by_field[(assertion["domain"], assertion["caseId"], assertion["fieldName"])].append({
+            **assertion,
+            "reviewState": review_state,
+        })
+
+    cases: dict[tuple[str, str], dict[str, Any]] = {}
+    for (domain, case_id, field_name), values in sorted(accepted_by_field.items()):
+        field_values = distinct_reviewed_values(
+            field_name,
+            (value["value"] for value in values),
+            canonical_json_bytes,
+        )
+        if field_name not in REPEATABLE_CONTEXT_FIELDS and len(field_values) != 1:
+            raise ValueError(
+                f"Conflicting accepted context assertions for {domain}:{case_id}:{field_name}"
+            )
+        item = cases.setdefault((domain, case_id), {
+            "fields": {},
+            "sourceIds": set(),
+            "reviewStates": set(),
+            "conflictFields": set(),
+        })
+        source_ids = sorted({source_id for value in values for source_id in value["sourceIds"]})
+        review_states = {value["reviewState"] for value in values}
+        item["fields"][field_name] = {
+            "sourceIds": source_ids,
+            "value": field_values if field_name in REPEATABLE_CONTEXT_FIELDS else field_values[0],
+            "reviewState": "human_reviewed" if "human_reviewed" in review_states else "source_reviewed",
+        }
+        item["sourceIds"].update(source_ids)
+        item["reviewStates"].update(review_states)
+        metadata["activeAcceptedAssertions"] += 1
+
+    for key, fields in case_conflicts.items():
+        item = cases.setdefault(key, {
+            "fields": {},
+            "sourceIds": set(),
+            "reviewStates": set(),
+            "conflictFields": set(),
+        })
+        item["conflictFields"].update(fields)
+
+    for item in cases.values():
+        source_ids = sorted(item.pop("sourceIds"))
+        review_states = item.pop("reviewStates")
+        conflict_fields = sorted(item.pop("conflictFields"))
+        family_ids = sorted({sources[source_id]["familyId"] for source_id in source_ids})
+        independent_sources = [
+            source_id for source_id in source_ids
+            if sources[source_id]["independenceStatus"] in INDEPENDENT_SOURCE_STATUSES
+        ]
+        independent_families = sorted({sources[source_id]["familyId"] for source_id in independent_sources})
+        # A primary, official, or contemporaneous source satisfies the first
+        # source gate on its own. Independence is evaluated separately for the
+        # alternative two-family route; requiring both properties here would
+        # incorrectly reject an official scan retained in its parent family.
+        qualifying_sources = [
+            source_id for source_id in source_ids
+            if sources[source_id]["sourceTier"] in QUALIFYING_SOURCE_TIERS
+        ]
+        if len(independent_families) >= 2:
+            independence_status = "independent_source_families"
+        elif independent_families:
+            independence_status = "single_independent_source_family"
+        elif source_ids and all(
+            sources[source_id]["independenceStatus"] == "same_family"
+            for source_id in source_ids
+        ):
+            independence_status = "same_source_family"
+        elif source_ids:
+            independence_status = "unresolved"
+        else:
+            independence_status = "no_sources"
+        item.update({
+            "independenceStatus": independence_status,
+            "reviewState": (
+                "human_reviewed" if "human_reviewed" in review_states
+                else "source_reviewed" if "source_reviewed" in review_states
+                else "unreviewed"
+            ),
+            "sourceFamilyIds": family_ids,
+            "sourceGateSatisfied": bool(qualifying_sources) or len(independent_families) >= 2,
+            "sourceIds": source_ids,
+            "unresolvedConflict": bool(conflict_fields),
+            "unresolvedConflictFields": conflict_fields,
+        })
+
+    metadata["caseCount"] = len(cases)
+    return cases, metadata
+
+
+def accepted_context_field(evidence: Mapping[str, Any], field_name: str) -> Mapping[str, Any] | None:
+    value = (evidence.get("fields") or {}).get(field_name)
+    return value if isinstance(value, Mapping) else None
+
+
+def accepted_context_value(evidence: Mapping[str, Any], field_name: str) -> Any:
+    field = accepted_context_field(evidence, field_name)
+    return field.get("value") if field is not None else None
+
+
+def legacy_source_family_ids(record: Mapping[str, Any], domain: str) -> list[str]:
+    if isinstance(record.get("sourceFamilyIds"), list):
+        return sorted({text(value) for value in record["sourceFamilyIds"] if text(value)})
+    if domain == "crop":
+        values = [text(value) for value in (record.get("sourceFamilies") or []) if text(value)]
+    else:
+        values = [
+            text(row.get("sourceId"))
+            for row in (record.get("sourceRefs") or [])
+            if isinstance(row, Mapping) and text(row.get("sourceId"))
+        ]
+    return sorted({f"legacy_sf_{lineage_hash(value)[:16]}" for value in values})
+
+
+def date_assertion_bounds(value: Any) -> tuple[int | None, int | None, str]:
+    if isinstance(value, Mapping):
+        start_value = (
+            value.get("date") or value.get("dateIso") or value.get("dateStart")
+            or value.get("startDate") or value.get("start")
+        )
+        end_value = value.get("dateEnd") or value.get("endDate") or value.get("end")
+    else:
+        start_value = value
+        end_value = None
+    start, end = ordinal_bounds(start_value, end_value)
+    precision = "exact_day" if start is not None and start == end and len(text(start_value)) >= 10 else "range"
+    return start, end, precision
+
+
 def location_date_cluster_id(domain: str, lat: float | None, lon: float | None, ordinal: int | None) -> str | None:
     """Return a stable location-date unit without implying exact-site identity."""
     if lat is None or lon is None or ordinal is None:
@@ -1061,93 +1609,548 @@ def animal_feature_group(record: Mapping[str, Any]) -> str:
     return groups[0] if groups else "unknown"
 
 
-def build_crop_context_projection(source_root: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    records, manifest, manifest_bytes = detail_records(source_root / "crop_circles")
-    rows: list[dict[str, Any]] = []
-    for record_id in sorted(records):
-        record = records[record_id]
+def record_context_evidence(
+    evidence_index: Mapping[tuple[str, str], Mapping[str, Any]],
+    domain: str,
+    record_id: str,
+) -> Mapping[str, Any]:
+    return evidence_index.get((domain, context_case_id(domain, record_id)), {})
+
+
+def context_bootstrap_ready(domain: str, evidence: Mapping[str, Any]) -> bool:
+    """Return whether a reviewed sidecar can safely create a new public case.
+
+    Incremental reviewed assertions remain useful in the campaign ledgers, but
+    an ID absent from the current public domain release is not projected until
+    its minimum identity, classification, date, location, and domain bootstrap
+    is complete. This prevents a partial assertion or mistyped ID from silently
+    creating a browser-visible record.
+    """
+    fields = evidence.get("fields") or {}
+    if not isinstance(fields, Mapping):
+        return False
+    field_names = set(fields)
+    common = (
+        "source_case_identifier" in field_names
+        and bool(field_names.intersection({"public_title", "public_summary"}))
+        and "primary_classification" in field_names
+        and bool(field_names.intersection({"location_label", "latitude", "longitude"}))
+    )
+    if not common:
+        return False
+    if domain == "crop":
+        return (
+            "crop_type" in field_names
+            and bool(field_names.intersection({
+                "occurrence_date", "formation_date", "discovery_date",
+                "photography_date", "catalog_date", "publication_date",
+            }))
+        )
+    return (
+        bool(field_names.intersection({"animal_species", "victim_count"}))
+        and bool(field_names.intersection({
+            "occurrence_date", "death_interval", "discovery_date",
+            "report_date", "investigation_date", "publication_date",
+        }))
+    )
+
+
+def context_publication_restricted(record: Mapping[str, Any], evidence: Mapping[str, Any]) -> bool:
+    return (
+        accepted_context_value(evidence, "legal_publication_restriction") is True
+        or record.get("legalPublicationRestriction") is True
+    )
+
+
+def selected_context_date(
+    domain: str,
+    record: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+) -> tuple[int | None, int | None, str, str, bool]:
+    priorities = (
+        ("formation_date", "occurrence_date", "discovery_date", "photography_date", "catalog_date", "publication_date")
+        if domain == "crop"
+        else ("occurrence_date", "death_interval", "discovery_date", "report_date", "investigation_date", "publication_date")
+    )
+    for field_name in priorities:
+        field = accepted_context_field(evidence, field_name)
+        if field is None:
+            continue
+        start, end, precision = date_assertion_bounds(field.get("value"))
+        return start, end, precision, field_name, bool(field.get("sourceIds"))
+
+    if domain == "crop":
+        start, end = ordinal_bounds(record.get("dateIso"), record.get("endDateIso"))
+        role = text(record.get("dateRole")) or "catalog_unspecified"
+    else:
+        start, end = ordinal_bounds(record.get("dateStart"), record.get("dateEnd"))
+        role = text(record.get("dateRole")) or "reported_unspecified"
+    return start, end, text(record.get("datePrecision")) or "unknown", role, bool(
+        record.get("dateSourceIds")
+    )
+
+
+def context_coordinate_state(
+    domain: str,
+    record: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+) -> dict[str, Any]:
+    latitude = accepted_context_field(evidence, "latitude")
+    longitude = accepted_context_field(evidence, "longitude")
+    uncertainty = accepted_context_field(evidence, "coordinate_uncertainty_m")
+    method = accepted_context_field(evidence, "coordinate_method")
+    accepted_pair = latitude is not None and longitude is not None
+
+    if accepted_pair:
+        lat = finite_number(latitude.get("value"))
+        lon = finite_number(longitude.get("value"))
+    elif domain == "crop":
         lat = finite_number(record.get("lat"))
         lon = finite_number(record.get("lon"))
-        if lat is None or lon is None:
-            coordinate_evidence = "unmapped"
-        elif record.get("exactCoordinate") is True:
-            coordinate_evidence = "exact_source_coordinate"
-        elif text(record.get("markerConfidence")) == "provisional":
-            coordinate_evidence = "candidate_field_marker"
+    else:
+        coordinates = record.get("coordinates")
+        lon = finite_number(coordinates[0]) if isinstance(coordinates, list) and len(coordinates) >= 2 else None
+        lat = finite_number(coordinates[1]) if isinstance(coordinates, list) and len(coordinates) >= 2 else None
+
+    explicit_uncertainty_m = finite_number(uncertainty.get("value")) if uncertainty is not None else None
+    if explicit_uncertainty_m is None:
+        explicit_uncertainty_m = finite_number(record.get("coordinateUncertaintyM"))
+    if explicit_uncertainty_m is None:
+        uncertainty_km = finite_number(record.get("coordinateUncertaintyKm"))
+        explicit_uncertainty_m = uncertainty_km * 1_000.0 if uncertainty_km is not None else None
+    if explicit_uncertainty_m is not None and explicit_uncertainty_m < 0:
+        explicit_uncertainty_m = None
+
+    coordinate_method = text(method.get("value")) if method is not None else text(record.get("coordinateMethod"))
+    explicit_class = text(record.get("coordinateEvidenceClass"))
+    has_coordinates = lat is not None and lon is not None and -90.0 <= lat <= 90.0
+    source_supported = accepted_pair or explicit_class.startswith("source_")
+    if source_supported and has_coordinates:
+        if explicit_uncertainty_m is None:
+            evidence_class = "source_uncertainty_unknown"
+        elif explicit_uncertainty_m <= 100.0:
+            evidence_class = "source_exact"
+        elif explicit_uncertainty_m <= 1_000.0:
+            evidence_class = "source_bounded"
         else:
-            coordinate_evidence = "locality_centroid"
-        start, end = ordinal_bounds(record.get("dateIso"), record.get("endDateIso"))
-        date_precision = text(record.get("datePrecision")) or "unknown"
-        date_role = text(record.get("dateRole")) or "catalog_unspecified"
-        formation_known = record.get("formationDateKnown") is True
-        review_state = text(record.get("classification")) or "unreviewed"
-        analysis_lane = "excluded"
-        if date_precision in {"day", "exact_day"} and coordinate_evidence in {
+            evidence_class = "source_regional"
+    elif not has_coordinates:
+        evidence_class = "unmapped"
+    elif domain == "crop" and text(record.get("markerConfidence")) == "provisional":
+        evidence_class = "candidate_field_marker"
+    elif domain == "crop" and record.get("exactCoordinate") is True:
+        # Legacy exactCoordinate establishes a source-site claim, but the new
+        # evidence class still respects its numeric uncertainty.
+        if explicit_uncertainty_m is None:
+            evidence_class = "source_uncertainty_unknown"
+        elif explicit_uncertainty_m <= 100.0:
+            evidence_class = "source_exact"
+        elif explicit_uncertainty_m <= 1_000.0:
+            evidence_class = "source_bounded"
+        else:
+            evidence_class = "source_regional"
+    elif domain == "crop":
+        evidence_class = "locality_centroid"
+    else:
+        evidence_class = "generalized_public_marker"
+
+    if accepted_pair:
+        legacy_evidence = {
+            "source_exact": "exact_source_coordinate",
+            "source_bounded": "bounded_source_coordinate",
+            "source_regional": "regional_source_coordinate",
+            "source_uncertainty_unknown": "source_coordinate_uncertainty_unknown",
+        }.get(evidence_class, evidence_class)
+    elif not has_coordinates:
+        legacy_evidence = "unmapped"
+    elif domain == "crop" and record.get("exactCoordinate") is True:
+        legacy_evidence = "exact_source_coordinate"
+    elif domain == "crop" and text(record.get("markerConfidence")) == "provisional":
+        legacy_evidence = "candidate_field_marker"
+    elif domain == "crop":
+        legacy_evidence = "locality_centroid"
+    else:
+        legacy_evidence = "generalized_public_marker"
+
+    if not coordinate_method:
+        if evidence_class == "unmapped":
+            coordinate_method = "unmapped"
+        elif domain == "animal":
+            coordinate_method = "public_generalization"
+        elif legacy_evidence == "candidate_field_marker":
+            coordinate_method = "candidate_field_marker"
+        elif legacy_evidence == "locality_centroid":
+            coordinate_method = "locality_centroid"
+        else:
+            coordinate_method = "legacy_source_coordinates"
+
+    provenance_complete = bool(
+        accepted_pair
+        and uncertainty is not None
+        and method is not None
+        and latitude.get("sourceIds")
+        and longitude.get("sourceIds")
+        and uncertainty.get("sourceIds")
+        and method.get("sourceIds")
+    ) or bool(record.get("coordinateSourceIds"))
+    return {
+        "coordinateEvidenceClassCode": evidence_class,
+        "coordinateEvidenceCode": legacy_evidence,
+        "coordinateMethodCode": coordinate_method,
+        "coordinateProvenanceComplete": provenance_complete,
+        "coordinateUncertaintyM": round(explicit_uncertainty_m, 3) if explicit_uncertainty_m is not None else None,
+        "lat": round(lat, 7) if lat is not None else None,
+        "lon": round(normalize_longitude(lon), 7) if lon is not None else None,
+    }
+
+
+def context_quality_state(
+    domain: str,
+    record: Mapping[str, Any],
+    evidence: Mapping[str, Any],
+    coordinate: Mapping[str, Any],
+    *,
+    start: int | None,
+    end: int | None,
+    date_precision: str,
+    date_role: str,
+    date_provenance_complete: bool,
+) -> dict[str, Any]:
+    review_state = text(evidence.get("reviewState")) or text(record.get("reviewState"))
+    if not review_state:
+        review_state = text(record.get("classification" if domain == "crop" else "status")) or "unreviewed"
+    source_family_ids = list(evidence.get("sourceFamilyIds") or legacy_source_family_ids(record, domain))
+    independence_status = (
+        text(evidence.get("independenceStatus"))
+        or text(record.get("independenceStatus"))
+        or "unreviewed"
+    )
+    source_gate = bool(evidence.get("sourceGateSatisfied")) or bool(record.get("sourceGateSatisfied"))
+
+    duplicate_of = accepted_context_value(evidence, "duplicate_of_case_id")
+    dedup_cluster = accepted_context_value(evidence, "dedup_cluster_id")
+    if text(duplicate_of):
+        dedup_status = "duplicate"
+    elif text(dedup_cluster):
+        dedup_status = "resolved_cluster"
+    else:
+        dedup_status = text(record.get("dedupStatus")) or "canonical_record_unreviewed"
+
+    legal_restriction = accepted_context_value(evidence, "legal_publication_restriction") is True or (
+        record.get("legalPublicationRestriction") is True
+    )
+    exact_day = start is not None and start == end and date_precision in {"day", "exact_day"}
+    valid_date_roles = (
+        {"formation", "formation_date", "occurrence", "occurrence_date"}
+        if domain == "crop"
+        else {"occurrence", "occurrence_date", "death", "death_date", "death_interval", "incident", "incident_date"}
+    )
+    source_site = coordinate.get("coordinateEvidenceClassCode") in {"source_exact", "source_bounded"}
+    uncertainty_m = finite_number(coordinate.get("coordinateUncertaintyM"))
+    resolved_dedup = dedup_status in RESOLVED_DEDUP_STATUSES
+    unresolved_conflict = bool(evidence.get("unresolvedConflict")) or bool(
+        record.get("unresolvedEvidenceConflict")
+    )
+
+    reasons: list[str] = []
+    if coordinate.get("lat") is None or coordinate.get("lon") is None:
+        reasons.append("coordinates_unavailable")
+    if not source_site:
+        reasons.append("coordinate_not_source_supported_within_1km")
+    if uncertainty_m is None:
+        reasons.append("coordinate_uncertainty_unavailable")
+    elif uncertainty_m > 1_000.0:
+        reasons.append("coordinate_uncertainty_exceeds_1km")
+    if not coordinate.get("coordinateProvenanceComplete"):
+        reasons.append("coordinate_field_provenance_incomplete")
+    if not exact_day:
+        reasons.append("date_not_exact_occurrence_day")
+    if date_role not in valid_date_roles:
+        reasons.append("date_role_not_occurrence_or_formation")
+    if not date_provenance_complete:
+        reasons.append("date_field_provenance_incomplete")
+    if review_state not in STRICT_REVIEW_STATES:
+        reasons.append("record_not_source_or_human_reviewed")
+    if not source_gate:
+        reasons.append("qualifying_or_independent_source_gate_not_met")
+    if not resolved_dedup:
+        reasons.append("deduplication_not_resolved")
+    if dedup_status == "duplicate":
+        reasons.append("duplicate_record_excluded_from_analysis")
+    if unresolved_conflict:
+        reasons.append("unresolved_identity_date_or_coordinate_conflict")
+    if legal_restriction:
+        reasons.append("legal_publication_restriction")
+
+    strict = not reasons
+    if dedup_status == "duplicate":
+        analysis_tier = "excluded"
+    elif domain == "crop":
+        if strict:
+            analysis_tier = "crop_strict"
+        elif exact_day and coordinate.get("coordinateEvidenceClassCode") in {
+            "source_exact", "source_bounded", "candidate_field_marker"
+        } or exact_day and coordinate.get("coordinateEvidenceCode") in {
             "exact_source_coordinate", "candidate_field_marker"
         }:
-            analysis_lane = "crop_bounded"
-        elif date_precision in {"day", "exact_day"} and coordinate_evidence == "locality_centroid":
-            analysis_lane = "crop_locality"
-        reasons: list[str] = []
-        if coordinate_evidence != "exact_source_coordinate":
-            reasons.append("coordinate_not_exact_source_site")
-        if not formation_known:
-            reasons.append("formation_date_not_established")
-        if date_precision not in {"day", "exact_day"}:
-            reasons.append("date_not_exact_day")
-        if date_role == "catalog_unspecified":
-            reasons.append("catalog_date_role_not_formation_date")
-        if review_state in {"unreviewed", "unknown"}:
-            reasons.append("record_not_analyst_reviewed")
+            analysis_tier = "crop_bounded"
+        elif exact_day and coordinate.get("lat") is not None and coordinate.get("lon") is not None:
+            analysis_tier = "crop_locality"
+        else:
+            analysis_tier = "excluded"
+    else:
+        if strict:
+            analysis_tier = "animal_strict"
+        elif exact_day and coordinate.get("lat") is not None and coordinate.get("lon") is not None:
+            analysis_tier = "animal_public_marker"
+        else:
+            analysis_tier = "excluded"
+    if analysis_tier not in CONTEXT_ANALYSIS_TIERS:
+        raise ValueError(f"Unsupported generated context tier: {analysis_tier}")
+    return {
+        "analysisLaneCode": analysis_tier,
+        "analysisTierCode": analysis_tier,
+        "dedupStatusCode": dedup_status,
+        "exclusionReasonCodes": sorted(set(reasons)),
+        "independenceStatusCode": independence_status,
+        "kilometerEligible": strict,
+        "reviewStateCode": review_state,
+        "sourceFamilyCount": len(source_family_ids),
+        "sourceFamilyIds": source_family_ids,
+    }
+
+
+def leading_context_exclusions(rows: Sequence[Mapping[str, Any]], limit: int = 5) -> list[dict[str, Any]]:
+    counts = Counter(
+        text(reason)
+        for row in rows
+        if not row.get("kilometerEligible")
+        for reason in (row.get("exclusionReasonCodes") or [])
+        if text(reason)
+    )
+    return [
+        {"count": count, "reasonCode": reason}
+        for reason, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:limit]
+    ]
+
+
+def strict_cohort_balance(
+    rows: Sequence[Mapping[str, Any]],
+    tier: str,
+    source_root: Path,
+) -> dict[str, Any]:
+    strict_rows = [row for row in rows if row.get("analysisTierCode") == tier]
+    by_cluster: dict[str, Mapping[str, Any]] = {}
+    for row in strict_rows:
+        cluster_id = text(row.get("locationDateClusterId"))
+        if not cluster_id:
+            continue
+        by_cluster.setdefault(cluster_id, row)
+    cohort = [by_cluster[key] for key in sorted(by_cluster)]
+    cohort_n = len(cohort)
+    family_counts = Counter(
+        family_id
+        for row in cohort
+        for family_id in sorted({text(value) for value in (row.get("sourceFamilyIds") or []) if text(value)})
+    )
+
+    world_path = source_root / WORLD_COUNTRIES_FILENAME
+    region_counts: Counter[str] = Counter()
+    if world_path.is_file():
+        parts, buckets, macroregions, _world_source = world_country_index(world_path)
+        for row in cohort:
+            lat = finite_number(row.get("lat"))
+            lon = finite_number(row.get("lon"))
+            if lat is None or lon is None:
+                region_counts["unknown"] += 1
+                continue
+            _country, macroregion, _source, _confidence, _boundary = assign_world_country(
+                lat, lon, parts, buckets, macroregions
+            )
+            region_counts[macroregion or "unknown"] += 1
+    elif cohort:
+        region_counts["unknown"] = cohort_n
+
+    maximum_family_share = max(family_counts.values(), default=0) / max(1, cohort_n)
+    maximum_region_share = max(region_counts.values(), default=0) / max(1, cohort_n)
+    qualifying_regions = sorted(
+        region for region, count in region_counts.items()
+        if region != "unknown" and count >= 25
+    )
+    milestone_two_ready = (
+        cohort_n >= 100
+        and len(family_counts) >= 2
+        and len(qualifying_regions) >= 2
+        and maximum_family_share <= 0.60
+        and maximum_region_share <= 0.60
+    )
+    reason_codes: list[str] = []
+    if cohort_n < 100:
+        reason_codes.append("strict_unique_clusters_below_100")
+    if len(family_counts) < 2:
+        reason_codes.append("strict_source_families_below_2")
+    if len(qualifying_regions) < 2:
+        reason_codes.append("strict_macroregions_with_25_clusters_below_2")
+    if maximum_family_share > 0.60:
+        reason_codes.append("strict_source_family_share_exceeds_60pct")
+    if maximum_region_share > 0.60:
+        reason_codes.append("strict_macroregion_share_exceeds_60pct")
+    return {
+        "strictRecordRows": len(strict_rows),
+        "strictUniqueClusters": cohort_n,
+        "duplicateClusterRowsCollapsed": len(strict_rows) - cohort_n,
+        "sourceFamilyClusterCounts": dict(sorted(family_counts.items())),
+        "macroregionClusterCounts": dict(sorted(region_counts.items())),
+        "qualifyingMacroregionsAtLeast25": qualifying_regions,
+        "maximumSourceFamilyShare": round(maximum_family_share, 6),
+        "maximumMacroregionShare": round(maximum_region_share, 6),
+        "milestoneTwoReady": milestone_two_ready,
+        "reasonCodes": reason_codes,
+        "policy": {
+            "minimumStrictUniqueClusters": 100,
+            "minimumSourceFamilies": 2,
+            "minimumMacroregions": 2,
+            "minimumClustersPerMacroregion": 25,
+            "maximumSourceFamilyOrMacroregionShare": 0.60,
+            "regionAssignment": "pinned_world_country_polygon_to_macroregion",
+        },
+    }
+
+
+def build_crop_context_projection(
+    source_root: Path,
+    context_evidence_root: Path | None = DEFAULT_CONTEXT_EVIDENCE_ROOT,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    records, manifest, manifest_bytes = detail_records(source_root / "crop_circles")
+    evidence_index, evidence_metadata = load_context_evidence(context_evidence_root)
+    rows: list[dict[str, Any]] = []
+    existing_ids = set(records)
+    candidate_ids = existing_ids | {
+        case_id for (domain, case_id), evidence in evidence_index.items()
+        if domain == "crop" and context_bootstrap_ready("crop", evidence)
+    }
+    evidence_metadata["newCasesProjected"] = 0
+    evidence_metadata["newCasesWithheldIncompleteBootstrap"] = sum(
+        1 for (domain, case_id), evidence in evidence_index.items()
+        if domain == "crop" and case_id not in existing_ids
+        and not context_bootstrap_ready("crop", evidence)
+    )
+    evidence_metadata["legalPublicationRestrictedCasesWithheld"] = 0
+    for record_id in sorted(candidate_ids):
+        record = records.get(record_id, {})
+        evidence = record_context_evidence(evidence_index, "crop", record_id)
+        if context_publication_restricted(record, evidence):
+            evidence_metadata["legalPublicationRestrictedCasesWithheld"] += 1
+            continue
+        if record_id not in existing_ids:
+            evidence_metadata["newCasesProjected"] += 1
+        coordinate = context_coordinate_state("crop", record, evidence)
+        start, end, date_precision, date_role, date_provenance = selected_context_date(
+            "crop", record, evidence
+        )
+        quality = context_quality_state(
+            "crop",
+            record,
+            evidence,
+            coordinate,
+            start=start,
+            end=end,
+            date_precision=date_precision,
+            date_role=date_role,
+            date_provenance_complete=date_provenance,
+        )
+        formation_known = date_role in {"formation", "formation_date", "occurrence", "occurrence_date"}
         source_lineage = [
             [text(source.get("assertionId")), text(source.get("name")), text(source.get("recordUrl"))]
             for source in (record.get("sources") or [])
             if isinstance(source, Mapping)
         ]
+        source_lineage.extend(["campaign_source", source_id] for source_id in evidence.get("sourceIds", []))
         rows.append({
             "id": record_id,
-            "lat": round(lat, 7) if lat is not None else None,
-            "lon": round(normalize_longitude(lon), 7) if lon is not None else None,
-            "coordinateEvidenceCode": coordinate_evidence,
-            "coordinateUncertaintyKm": finite_number(record.get("coordinateUncertaintyKm")),
+            "lat": coordinate["lat"],
+            "lon": coordinate["lon"],
+            "coordinateEvidenceCode": coordinate["coordinateEvidenceCode"],
+            "coordinateEvidenceClassCode": coordinate["coordinateEvidenceClassCode"],
+            "coordinateMethodCode": coordinate["coordinateMethodCode"],
+            "coordinateUncertaintyKm": (
+                round(coordinate["coordinateUncertaintyM"] / 1_000.0, 6)
+                if coordinate["coordinateUncertaintyM"] is not None else None
+            ),
+            "coordinateUncertaintyM": coordinate["coordinateUncertaintyM"],
             "startOrdinal": start,
             "endOrdinal": end,
             "datePrecisionCode": date_precision,
             "dateRoleCode": date_role,
             "formationDateKnown": formation_known,
-            "reviewStateCode": review_state,
+            "reviewStateCode": quality["reviewStateCode"],
             "lineageHash": lineage_hash(sorted(source_lineage)),
-            "sourceFamilyCount": len(set(record.get("sourceFamilies") or [])),
-            "analysisLaneCode": analysis_lane,
-            "featureGroupCode": crop_feature_group(record),
-            "locationDateClusterId": location_date_cluster_id("crop", lat, lon, start),
-            "kilometerEligible": not reasons,
-            "exclusionReasonCodes": sorted(set(reasons)),
+            "sourceFamilyIds": quality["sourceFamilyIds"],
+            "sourceFamilyCount": quality["sourceFamilyCount"],
+            "independenceStatusCode": quality["independenceStatusCode"],
+            "dedupStatusCode": quality["dedupStatusCode"],
+            "analysisTierCode": quality["analysisTierCode"],
+            "analysisLaneCode": quality["analysisLaneCode"],
+            "featureGroupCode": (
+                crop_feature_group(record)
+                if crop_feature_group(record) != "unknown"
+                else text(accepted_context_value(evidence, "primary_classification")) or "unknown"
+            ),
+            "locationDateClusterId": (
+                text(accepted_context_value(evidence, "dedup_cluster_id"))
+                or location_date_cluster_id("crop", coordinate["lat"], coordinate["lon"], start)
+            ),
+            "kilometerEligible": quality["kilometerEligible"],
+            "exclusionReasonCodes": quality["exclusionReasonCodes"],
         })
+    strict_record_count = sum(row["analysisTierCode"] == "crop_strict" for row in rows)
+    cohort_balance = strict_cohort_balance(rows, "crop_strict", source_root)
+    strict_count = cohort_balance["strictUniqueClusters"]
+    leading_exclusions = leading_context_exclusions(rows)
     source = {
+        "contextEvidence": evidence_metadata,
         "manifestBytes": len(manifest_bytes),
         "manifestSha256": sha256_bytes(manifest_bytes),
         "releaseId": manifest.get("releaseId"),
         "rowCount": len(rows),
+        "counts": {
+            "activeInventory": len(rows),
+            "excluded": sum(row["analysisTierCode"] == "excluded" for row in rows),
+            "mapped": sum(row["lat"] is not None and row["lon"] is not None for row in rows),
+            "sensitivityReady": sum(
+                row["analysisTierCode"] in {"crop_bounded", "crop_locality"} for row in rows
+            ),
+            "strictRecordRows": strict_record_count,
+            "strictReady": strict_count,
+        },
         "policy": {
             "localityCentroidsKilometerEligible": False,
             "candidateMarkersKilometerEligible": False,
             "candidateMarkersBoundedAnalysisEligible": True,
             "localityCentroidsRoughMarkerAnalysisEligible": True,
+            "sourceExactMaximumUncertaintyM": 100,
+            "sourceBoundedMaximumUncertaintyM": 1_000,
             "catalogDatesSubstituteForFormationDates": False,
             "minimumDomainEligibleRecordsForInference": 25,
             "traceEligible": False,
         },
         "readiness": {
-            "eligibleRecordCount": sum(row["kilometerEligible"] for row in rows),
+            "eligibleRecordCount": strict_count,
+            "cohortBalance": cohort_balance,
+            "leadingExclusionReasons": leading_exclusions,
             "minimumEligibleRecords": 25,
-            "status": "strict_not_estimable_exploratory_lanes_ready",
-            "reasons": [
-                "eligible_record_count_below_25",
-                "formation_date_and_coordinate_evidence_gates_not_jointly_satisfied",
-                "locality_and_candidate_markers_excluded_from_kilometer_analysis",
-            ],
+            "status": (
+                "strict_candidate_pool_ready" if strict_count >= 25
+                else "strict_not_estimable_exploratory_lanes_ready"
+            ),
+            "reasons": (
+                [] if strict_count >= 25
+                else ["eligible_record_count_below_25"] + [
+                    item["reasonCode"] for item in leading_exclusions[:3]
+                ]
+            ),
             "analysisLanes": {
+                "cropStrict": strict_count,
                 "cropBoundedExactDay": sum(row["analysisLaneCode"] == "crop_bounded" for row in rows),
                 "cropLocalityExactDay": sum(row["analysisLaneCode"] == "crop_locality" for row in rows),
             },
@@ -1157,14 +2160,25 @@ def build_crop_context_projection(source_root: Path) -> tuple[list[dict[str, Any
                     "Exact-site reviewed formation-date evidence",
                     "crop-circle catalog records",
                     applicability="strict_kilometer_inference",
-                    status="blocked",
+                    status="ready_inferential" if strict_count >= 25 else "blocked",
                     input_n=len(rows),
-                    passed_n=sum(row["kilometerEligible"] for row in rows),
+                    passed_n=strict_count,
                     reason_codes=(
-                        "formation_date_and_coordinate_evidence_gates_not_jointly_satisfied",
-                        "catalog_dates_cannot_substitute_for_formation_dates",
+                        () if strict_count >= 25
+                        else tuple(item["reasonCode"] for item in leading_exclusions[:3])
                     ),
                     policy_id="crop_strict_site_date_gate_v2",
+                ),
+                readiness_gate(
+                    "crop_strict_balanced_cohort",
+                    "Balanced 100-cluster strict crop cohort",
+                    "strict crop location-date clusters",
+                    applicability="second_milestone_strict_context_inference",
+                    status="ready_inferential" if cohort_balance["milestoneTwoReady"] else "blocked",
+                    input_n=strict_count,
+                    passed_n=strict_count if cohort_balance["milestoneTwoReady"] else 0,
+                    reason_codes=tuple(cohort_balance["reasonCodes"]),
+                    policy_id="strict_context_second_milestone_balance_v1",
                 ),
                 readiness_gate(
                     "crop_bounded_marker_lane",
@@ -1197,18 +2211,57 @@ def build_crop_context_projection(source_root: Path) -> tuple[list[dict[str, Any
     return rows, source
 
 
-def build_animal_context_projection(source_root: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, str]]:
+def build_animal_context_projection(
+    source_root: Path,
+    context_evidence_root: Path | None = DEFAULT_CONTEXT_EVIDENCE_ROOT,
+) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, str]]:
     records, manifest, manifest_bytes = detail_records(source_root / "animal_mutilations")
+    evidence_index, evidence_metadata = load_context_evidence(context_evidence_root)
     rows: list[dict[str, Any]] = []
     incident_to_public: dict[str, str] = {}
-    for record_id in sorted(records):
-        record = records[record_id]
-        coordinates = record.get("coordinates")
-        lon = finite_number(coordinates[0]) if isinstance(coordinates, list) and len(coordinates) >= 2 else None
-        lat = finite_number(coordinates[1]) if isinstance(coordinates, list) and len(coordinates) >= 2 else None
-        coordinate_evidence = "generalized_public_marker" if lat is not None and lon is not None else "unmapped"
-        start, end = ordinal_bounds(record.get("dateStart"), record.get("dateEnd"))
-        source_incident_id = text(record.get("sourceIncidentId"))
+    existing_case_ids = {context_case_id("animal", record_id) for record_id in records}
+    candidate_case_ids = existing_case_ids | {
+        case_id for (domain, case_id), evidence in evidence_index.items()
+        if domain == "animal" and context_bootstrap_ready("animal", evidence)
+    }
+    record_id_by_case_id = {
+        context_case_id("animal", record_id): record_id for record_id in records
+    }
+    evidence_metadata["newCasesProjected"] = 0
+    evidence_metadata["newCasesWithheldIncompleteBootstrap"] = sum(
+        1 for (domain, case_id), evidence in evidence_index.items()
+        if domain == "animal" and case_id not in existing_case_ids
+        and not context_bootstrap_ready("animal", evidence)
+    )
+    evidence_metadata["legalPublicationRestrictedCasesWithheld"] = 0
+    for case_id in sorted(candidate_case_ids):
+        record_id = record_id_by_case_id.get(case_id, f"animal_mutilation:{case_id}")
+        record = records.get(record_id, {})
+        evidence = record_context_evidence(evidence_index, "animal", record_id)
+        if context_publication_restricted(record, evidence):
+            evidence_metadata["legalPublicationRestrictedCasesWithheld"] += 1
+            continue
+        if case_id not in existing_case_ids:
+            evidence_metadata["newCasesProjected"] += 1
+        coordinate = context_coordinate_state("animal", record, evidence)
+        start, end, date_precision, date_role, date_provenance = selected_context_date(
+            "animal", record, evidence
+        )
+        quality = context_quality_state(
+            "animal",
+            record,
+            evidence,
+            coordinate,
+            start=start,
+            end=end,
+            date_precision=date_precision,
+            date_role=date_role,
+            date_provenance_complete=date_provenance,
+        )
+        source_incident_id = (
+            text(record.get("sourceIncidentId"))
+            or text(accepted_context_value(evidence, "source_case_identifier"))
+        )
         if source_incident_id:
             incident_to_public[source_incident_id] = record_id
         source_lineage = [
@@ -1216,66 +2269,102 @@ def build_animal_context_projection(source_root: Path) -> tuple[list[dict[str, A
             for source in (record.get("sourceRefs") or [])
             if isinstance(source, Mapping)
         ]
+        source_lineage.extend(["campaign_source", source_id] for source_id in evidence.get("sourceIds", []))
         origin_input_ids = sorted({
             text(source.get("sourceId"))[4:]
             for source in (record.get("sourceRefs") or [])
             if isinstance(source, Mapping) and text(source.get("sourceId")).startswith("ufo:cin_")
         })
-        analysis_lane = (
-            "animal_public_marker"
-            if coordinate_evidence == "generalized_public_marker" and text(record.get("datePrecision")) == "exact_day"
-            else "excluded"
-        )
-        reasons = [
-            "exact_coordinate_contract_unavailable",
-            "generalized_or_unmapped_location",
-            "record_reported_unreviewed",
-        ]
         rows.append({
             "id": record_id,
-            "lat": round(lat, 7) if lat is not None else None,
-            "lon": round(normalize_longitude(lon), 7) if lon is not None else None,
-            "coordinateEvidenceCode": coordinate_evidence,
-            "coordinateUncertaintyKm": None,
+            "lat": coordinate["lat"],
+            "lon": coordinate["lon"],
+            "coordinateEvidenceCode": coordinate["coordinateEvidenceCode"],
+            "coordinateEvidenceClassCode": coordinate["coordinateEvidenceClassCode"],
+            "coordinateMethodCode": coordinate["coordinateMethodCode"],
+            "coordinateUncertaintyKm": (
+                round(coordinate["coordinateUncertaintyM"] / 1_000.0, 6)
+                if coordinate["coordinateUncertaintyM"] is not None else None
+            ),
+            "coordinateUncertaintyM": coordinate["coordinateUncertaintyM"],
             "startOrdinal": start,
             "endOrdinal": end,
-            "datePrecisionCode": text(record.get("datePrecision")) or "unknown",
-            "reviewStateCode": text(record.get("status")) or "reported_unreviewed",
+            "datePrecisionCode": date_precision,
+            "dateRoleCode": date_role,
+            "reviewStateCode": quality["reviewStateCode"],
             "sourceIncidentId": source_incident_id or None,
             "sourceIncidentSha256": text(record.get("sourceIncidentSha256")) or None,
             "lineageHash": lineage_hash(sorted(source_lineage)),
-            "analysisLaneCode": analysis_lane,
-            "featureGroupCode": animal_feature_group(record),
-            "locationDateClusterId": location_date_cluster_id("animal", lat, lon, start),
+            "sourceFamilyIds": quality["sourceFamilyIds"],
+            "sourceFamilyCount": quality["sourceFamilyCount"],
+            "independenceStatusCode": quality["independenceStatusCode"],
+            "dedupStatusCode": quality["dedupStatusCode"],
+            "analysisTierCode": quality["analysisTierCode"],
+            "analysisLaneCode": quality["analysisLaneCode"],
+            "featureGroupCode": (
+                animal_feature_group(record)
+                if animal_feature_group(record) != "unknown"
+                else text(accepted_context_value(evidence, "animal_species"))
+                or text(accepted_context_value(evidence, "primary_classification"))
+                or "unknown"
+            ),
+            "locationDateClusterId": (
+                text(accepted_context_value(evidence, "dedup_cluster_id"))
+                or location_date_cluster_id("animal", coordinate["lat"], coordinate["lon"], start)
+            ),
             "originInputIds": origin_input_ids,
             "originUfoEventIds": [],
             "originPublisherCodes": [],
-            "kilometerEligible": False,
-            "exclusionReasonCodes": reasons,
+            "kilometerEligible": quality["kilometerEligible"],
+            "exclusionReasonCodes": quality["exclusionReasonCodes"],
         })
+    strict_record_count = sum(row["analysisTierCode"] == "animal_strict" for row in rows)
+    cohort_balance = strict_cohort_balance(rows, "animal_strict", source_root)
+    strict_count = cohort_balance["strictUniqueClusters"]
+    leading_exclusions = leading_context_exclusions(rows)
     source = {
+        "contextEvidence": evidence_metadata,
         "manifestBytes": len(manifest_bytes),
         "manifestSha256": sha256_bytes(manifest_bytes),
         "releaseId": manifest.get("releaseId"),
         "rowCount": len(rows),
+        "counts": {
+            "activeInventory": len(rows),
+            "excluded": sum(row["analysisTierCode"] == "excluded" for row in rows),
+            "mapped": sum(row["lat"] is not None and row["lon"] is not None for row in rows),
+            "sensitivityReady": sum(
+                row["analysisTierCode"] == "animal_public_marker" for row in rows
+            ),
+            "strictRecordRows": strict_record_count,
+            "strictReady": strict_count,
+        },
         "policy": {
             "generalizedMarkersKilometerEligible": False,
             "generalizedPublicMarkersRoughAnalysisEligible": True,
             "generalizedPublicMarkersDefiniteNearEligible": False,
+            "sourceExactMaximumUncertaintyM": 100,
+            "sourceBoundedMaximumUncertaintyM": 1_000,
             "minimumDomainEligibleRecordsForInference": 25,
             "relationshipsEligible": False,
             "traceEligible": False,
         },
         "readiness": {
-            "eligibleRecordCount": 0,
+            "eligibleRecordCount": strict_count,
+            "cohortBalance": cohort_balance,
+            "leadingExclusionReasons": leading_exclusions,
             "minimumEligibleRecords": 25,
-            "status": "strict_not_estimable_exploratory_lane_ready",
-            "reasons": [
-                "exact_coordinate_contract_unavailable",
-                "all_records_reported_unreviewed",
-                "generalized_markers_excluded_from_kilometer_analysis",
-            ],
+            "status": (
+                "strict_candidate_pool_ready" if strict_count >= 25
+                else "strict_not_estimable_exploratory_lane_ready"
+            ),
+            "reasons": (
+                [] if strict_count >= 25
+                else ["eligible_record_count_below_25"] + [
+                    item["reasonCode"] for item in leading_exclusions[:3]
+                ]
+            ),
             "analysisLanes": {
+                "animalStrict": strict_count,
                 "animalPublicMarkerExactDay": sum(
                     row["analysisLaneCode"] == "animal_public_marker" for row in rows
                 ),
@@ -1286,14 +2375,25 @@ def build_animal_context_projection(source_root: Path) -> tuple[list[dict[str, A
                     "Reviewed exact-site animal evidence",
                     "animal-report catalog records",
                     applicability="strict_kilometer_inference",
-                    status="blocked",
+                    status="ready_inferential" if strict_count >= 25 else "blocked",
                     input_n=len(rows),
-                    passed_n=0,
+                    passed_n=strict_count,
                     reason_codes=(
-                        "exact_coordinate_contract_unavailable",
-                        "all_records_reported_unreviewed",
+                        () if strict_count >= 25
+                        else tuple(item["reasonCode"] for item in leading_exclusions[:3])
                     ),
                     policy_id="animal_strict_site_review_gate_v2",
+                ),
+                readiness_gate(
+                    "animal_strict_balanced_cohort",
+                    "Balanced 100-cluster strict animal cohort",
+                    "strict animal location-date clusters",
+                    applicability="second_milestone_strict_context_inference",
+                    status="ready_inferential" if cohort_balance["milestoneTwoReady"] else "blocked",
+                    input_n=strict_count,
+                    passed_n=strict_count if cohort_balance["milestoneTwoReady"] else 0,
+                    reason_codes=tuple(cohort_balance["reasonCodes"]),
+                    policy_id="strict_context_second_milestone_balance_v1",
                 ),
                 readiness_gate(
                     "animal_public_marker_lane",
@@ -2467,10 +3567,7 @@ def build_relationship_projection(
                 reasons.append("crop_source_candidate_not_in_current_crop_release")
         else:
             reasons.append("unsupported_object_domain")
-        reasons.extend([
-            "animal_exact_coordinate_contract_unavailable",
-            "relationship_not_analyst_adjudicated_for_inference",
-        ])
+        reasons.append("relationship_not_analyst_adjudicated_for_inference")
         if subject_public is None:
             status = "quarantined_subject"
         elif object_analysis_id is None:
@@ -2521,7 +3618,6 @@ def build_relationship_projection(
             "minimumEligibleRecords": 25,
             "status": "not_estimable",
             "reasons": [
-                "animal_exact_coordinate_contract_unavailable",
                 "relationships_not_analyst_adjudicated_for_inference",
                 "unresolved_subjects_and_objects_remain_quarantined",
             ],
@@ -2560,10 +3656,7 @@ def build_relationship_projection(
                     status="blocked",
                     input_n=len(rows),
                     passed_n=0,
-                    reason_codes=(
-                        "animal_exact_coordinate_contract_unavailable",
-                        "relationships_not_analyst_adjudicated_for_inference",
-                    ),
+                    reason_codes=("relationships_not_analyst_adjudicated_for_inference",),
                     policy_id="relationship_inference_gate_v2",
                 ),
             ],
@@ -2582,9 +3675,9 @@ def classify_uncertain_distance(
     minimum = max(0.0, float(marker_distance_km) - uncertainty)
     maximum = float(marker_distance_km) + uncertainty
     if maximum <= radius_km:
-        return "near"
+        return "definitely_near"
     if minimum > radius_km:
-        return "far"
+        return "definitely_far"
     return "ambiguous"
 
 
@@ -2607,7 +3700,9 @@ def distance_ring(distance_km: float) -> str:
         return "25_50_km"
     if distance_km <= 100.0:
         return "50_100_km"
-    return "100_250_km"
+    if distance_km <= 250.0:
+        return "100_250_km"
+    return "outside_250km_uncertainty_margin"
 
 
 def day_lag_band(day_lag: int) -> str:
@@ -2640,9 +3735,11 @@ def build_context_ufo_neighbor_projection(
 
     contexts: list[tuple[str, Mapping[str, Any]]] = []
     contexts.extend(("crop", row) for row in crop_rows if row.get("analysisLaneCode") in {
-        "crop_bounded", "crop_locality"
+        "crop_strict", "crop_bounded", "crop_locality"
     })
-    contexts.extend(("animal", row) for row in animal_rows if row.get("analysisLaneCode") == "animal_public_marker")
+    contexts.extend(("animal", row) for row in animal_rows if row.get("analysisLaneCode") in {
+        "animal_strict", "animal_public_marker"
+    })
     contexts.sort(key=lambda item: (item[0], text(item[1].get("id"))))
 
     rows: list[dict[str, Any]] = []
@@ -2658,10 +3755,22 @@ def build_context_ufo_neighbor_projection(
         lon = float(context["lon"])
         lane = text(context.get("analysisLaneCode"))
         feature = text(context.get("featureGroupCode")) or "unknown"
+        context_source_family_group = "|".join(sorted({
+            text(value) for value in (context.get("sourceFamilyIds") or []) if text(value)
+        })) or "unknown"
+        _context_fine, context_coarse = equal_area_strata(lat, lon)
         uncertainty_km = finite_number(context.get("coordinateUncertaintyKm"))
+        if uncertainty_km is None:
+            uncertainty_m = finite_number(context.get("coordinateUncertaintyM"))
+            uncertainty_km = uncertainty_m / 1_000.0 if uncertainty_m is not None else None
         origin_event_ids = {int(value) for value in (context.get("originUfoEventIds") or [])}
         origin_publishers = {text(value).lower() for value in (context.get("originPublisherCodes") or [])}
-        observed_role = "observed_catalog_date" if domain == "crop" else "observed_reported_date"
+        if lane == "crop_strict":
+            observed_role = "observed_formation_date"
+        elif lane == "animal_strict":
+            observed_role = "observed_occurrence_date"
+        else:
+            observed_role = "observed_catalog_date" if domain == "crop" else "observed_reported_date"
         anchors = [(observed_role, context_ordinal)] + [
             (
                 f"matched_control_{'plus' if offset > 0 else 'minus'}_{abs(offset)}y",
@@ -2678,10 +3787,13 @@ def build_context_ufo_neighbor_projection(
                 for point in points_by_day.get(ufo_ordinal, []):
                     # A latitude bound rejects most candidates cheaply and is
                     # safe at the dateline and poles; exact distance follows.
-                    if abs(float(point["lat"]) - lat) > CONTEXT_MAX_DISTANCE_KM / 110.5:
+                    strict_lane = lane in {"crop_strict", "animal_strict"}
+                    search_uncertainty_km = uncertainty_km if strict_lane and uncertainty_km is not None else 0.0
+                    search_radius_km = CONTEXT_MAX_DISTANCE_KM + max(0.0, search_uncertainty_km)
+                    if abs(float(point["lat"]) - lat) > search_radius_km / 110.5:
                         continue
                     marker_distance = haversine_km(lat, lon, float(point["lat"]), float(point["lon"]))
-                    if marker_distance > CONTEXT_MAX_DISTANCE_KM:
+                    if marker_distance > search_radius_km:
                         continue
                     candidate_counts[f"{lane}:{role}"] += 1
                     event_id = int(point["eventId"])
@@ -2696,7 +3808,7 @@ def build_context_ufo_neighbor_projection(
                         if role == observed_role:
                             observed_excluded_counts["origin_publisher"] += 1
                     independent = not origin_ufo_excluded and not origin_publisher_excluded
-                    if domain == "animal":
+                    if lane == "animal_public_marker":
                         uncertainty_class = "public_marker_ambiguous"
                     elif uncertainty_km is None:
                         uncertainty_class = "uncertainty_unavailable"
@@ -2731,6 +3843,8 @@ def build_context_ufo_neighbor_projection(
                         "originPublisherExcluded": origin_publisher_excluded,
                         "independentAssociationEligible": independent,
                         "dateRoleCode": role,
+                        "contextSourceFamilyGroupCode": context_source_family_group,
+                        "contextCoarseSpatialStratumCode": context_coarse,
                     })
                     if role == observed_role and independent:
                         observed_clusters.add(cluster_id)
@@ -2747,7 +3861,9 @@ def build_context_ufo_neighbor_projection(
                     "distanceRingCode": "none",
                     "dayLagBandCode": "none",
                     "uncertaintyClassCode": (
-                        "public_marker_ambiguous" if domain == "animal" else "no_neighbor_in_window"
+                        "public_marker_ambiguous" if lane == "animal_public_marker"
+                        else "definitely_far_at_250km" if lane in {"crop_strict", "animal_strict"}
+                        else "no_neighbor_in_window"
                     ),
                     "contextUncertaintyKm": round(uncertainty_km, 6) if uncertainty_km is not None else None,
                     "ufoCraftCode": "none",
@@ -2759,6 +3875,8 @@ def build_context_ufo_neighbor_projection(
                     "originPublisherExcluded": False,
                     "independentAssociationEligible": True,
                     "dateRoleCode": role,
+                    "contextSourceFamilyGroupCode": context_source_family_group,
+                    "contextCoarseSpatialStratumCode": context_coarse,
                 })
     rows.sort(key=lambda row: (
         row["contextDomainCode"],
@@ -2780,6 +3898,21 @@ def build_context_ufo_neighbor_projection(
         if row["dateRoleCode"].startswith("observed_") and row["ufoEventId"] is not None
     ]
     independent_observed = [row for row in observed_rows if row["independentAssociationEligible"]]
+    strict_lanes = {"crop_strict", "animal_strict"}
+    strict_context_clusters_by_domain = {
+        domain: {
+            text(row.get("locationDateClusterId"))
+            for row_domain, row in contexts
+            if row_domain == domain and row.get("analysisLaneCode") in strict_lanes
+            and text(row.get("locationDateClusterId"))
+        }
+        for domain in ("crop", "animal")
+    }
+    strict_context_clusters = set().union(*strict_context_clusters_by_domain.values())
+    strict_domains_ready = all(
+        len(strict_context_clusters_by_domain[domain]) >= 25 for domain in ("crop", "animal")
+    )
+    strict_observed = [row for row in observed_rows if row["contextLaneCode"] in strict_lanes]
     source = {
         "counts": {
             "contextRecords": len(contexts),
@@ -2790,6 +3923,15 @@ def build_context_ufo_neighbor_projection(
             "observedRows": len(observed_rows),
             "independentObservedRows": len(independent_observed),
             "independentObservedClusters": len(observed_clusters),
+            "strictContextClusters": len(strict_context_clusters),
+            "strictContextClustersByDomain": {
+                domain: len(values)
+                for domain, values in sorted(strict_context_clusters_by_domain.items())
+            },
+            "strictObservedRows": len(strict_observed),
+            "strictAmbiguousAt250KmRows": sum(
+                row["uncertaintyClassCode"] == "ambiguous_at_250km" for row in strict_observed
+            ),
             "rowsByLane": dict(sorted(Counter(row["contextLaneCode"] for row in rows).items())),
             "originExclusions": dict(sorted(excluded_counts.items())),
             "observedOriginExclusions": dict(sorted(observed_excluded_counts.items())),
@@ -2804,13 +3946,53 @@ def build_context_ufo_neighbor_projection(
             "controlYearOffsets": list(CONTEXT_CONTROL_YEAR_OFFSETS),
             "matchedPermutationReplicates": 499,
             "clusterBootstrapReplicates": 199,
-            "animalMarkersNeverDefiniteNear": True,
-            "cropCatalogDatesAreNotFormationDates": True,
+            "generalizedAnimalMarkersNeverDefiniteNear": True,
+            "cropSensitivityCatalogDatesAreNotFormationDates": True,
+            "strictDistanceClassification": "definitely_near_definitely_far_or_ambiguous",
+            "strictDistanceRingAssignment": "entire_uncertainty_interval_must_fit_one_ring",
+            "strictEstimatorMinimumUniqueClustersPerDomain": 25,
             "originatingUfoAndPublisherExcludedFromIndependentLane": True,
         },
         "readiness": {
-            "status": "exploratory_candidate_pool",
+            "status": (
+                "strict_candidate_pool_ready" if strict_domains_ready
+                else "exploratory_sensitivity_pool"
+            ),
             "gates": [
+                readiness_gate(
+                    "crop_strict_context_clusters",
+                    "Strict source-supported crop formation clusters",
+                    "strict crop location-date clusters",
+                    applicability="strict_crop_context_association_estimator",
+                    status=(
+                        "ready_inferential"
+                        if len(strict_context_clusters_by_domain["crop"]) >= 25 else "blocked"
+                    ),
+                    input_n=len(strict_context_clusters_by_domain["crop"]),
+                    passed_n=len(strict_context_clusters_by_domain["crop"]),
+                    reason_codes=(
+                        () if len(strict_context_clusters_by_domain["crop"]) >= 25
+                        else ("crop_strict_context_clusters_below_25",)
+                    ),
+                    policy_id="strict_crop_context_cluster_estimator_gate_v1",
+                ),
+                readiness_gate(
+                    "animal_strict_context_clusters",
+                    "Strict source-supported animal occurrence clusters",
+                    "strict animal location-date clusters",
+                    applicability="strict_animal_context_association_estimator",
+                    status=(
+                        "ready_inferential"
+                        if len(strict_context_clusters_by_domain["animal"]) >= 25 else "blocked"
+                    ),
+                    input_n=len(strict_context_clusters_by_domain["animal"]),
+                    passed_n=len(strict_context_clusters_by_domain["animal"]),
+                    reason_codes=(
+                        () if len(strict_context_clusters_by_domain["animal"]) >= 25
+                        else ("animal_strict_context_clusters_below_25",)
+                    ),
+                    policy_id="strict_animal_context_cluster_estimator_gate_v1",
+                ),
                 readiness_gate(
                     "context_observed_neighbors",
                     "Observed context-to-UFO marker neighborhoods",
@@ -2864,6 +4046,193 @@ def encoded_projection(rows: list[dict[str, Any]], schema: list[str]) -> tuple[l
     return encode_rows(transformed, schema, code_maps), code_tables
 
 
+CONTEXT_PULSE_COUNT_FIELDS = (
+    "inventoryN",
+    "mappedN",
+    "sensitivityReadyN",
+    "strictReadyN",
+)
+
+
+def optional_nonnegative_int(value: Any) -> int | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        numeric = int(value)
+    except (TypeError, ValueError):
+        return None
+    return max(0, numeric)
+
+
+def first_not_none(*values: Any) -> Any:
+    return next((value for value in values if value is not None), None)
+
+
+def context_pulse_counts_from_manifest(
+    manifest: Mapping[str, Any] | None,
+    domain: str,
+) -> dict[str, int]:
+    """Read a domain readiness baseline from either the new or legacy manifest."""
+
+    source_manifest = manifest if isinstance(manifest, Mapping) else {}
+    summary = source_manifest.get("contextPulseSummary") or {}
+    if isinstance(summary, Mapping):
+        domains = summary.get("domains") or {}
+        if isinstance(domains, Mapping) and isinstance(domains.get(domain), Mapping):
+            direct = {
+                field: optional_nonnegative_int(domains[domain].get(field))
+                for field in CONTEXT_PULSE_COUNT_FIELDS
+            }
+            return {field: value for field, value in direct.items() if value is not None}
+    direct_domains = source_manifest.get("domains") or {}
+    if isinstance(direct_domains, Mapping) and isinstance(direct_domains.get(domain), Mapping):
+        direct = {
+            field: optional_nonnegative_int(direct_domains[domain].get(field))
+            for field in CONTEXT_PULSE_COUNT_FIELDS
+        }
+        return {field: value for field, value in direct.items() if value is not None}
+
+    counts = source_manifest.get("counts") or {}
+    sources = source_manifest.get("sources") or {}
+    if not isinstance(counts, Mapping):
+        counts = {}
+    if not isinstance(sources, Mapping):
+        sources = {}
+
+    if domain == "crops":
+        source = sources.get("cropContext") or {}
+        if not isinstance(source, Mapping):
+            source = {}
+        source_counts = source.get("counts") or {}
+        if not isinstance(source_counts, Mapping):
+            source_counts = {}
+        bounded = optional_nonnegative_int(counts.get("cropBoundedAnalysisRecords"))
+        locality = optional_nonnegative_int(counts.get("cropLocalityAnalysisRecords"))
+        candidates = {
+            "inventoryN": first_not_none(source_counts.get("activeInventory"), source.get("rowCount"), counts.get("cropContextRecords")),
+            "mappedN": first_not_none(source_counts.get("mapped"), counts.get("mappedCropContextRecords")),
+            "sensitivityReadyN": source_counts.get("sensitivityReady") if isinstance(source_counts, Mapping) else None,
+            "strictReadyN": first_not_none(source_counts.get("strictReady"), counts.get("cropStrictAnalysisRecords")),
+        }
+        if candidates["sensitivityReadyN"] is None and (bounded is not None or locality is not None):
+            candidates["sensitivityReadyN"] = (bounded or 0) + (locality or 0)
+    elif domain == "animals":
+        source = sources.get("animalContext") or {}
+        if not isinstance(source, Mapping):
+            source = {}
+        source_counts = source.get("counts") or {}
+        if not isinstance(source_counts, Mapping):
+            source_counts = {}
+        candidates = {
+            "inventoryN": first_not_none(source_counts.get("activeInventory"), source.get("rowCount"), counts.get("animalContextRecords")),
+            "mappedN": first_not_none(source_counts.get("mapped"), counts.get("mappedAnimalContextRecords")),
+            "sensitivityReadyN": first_not_none(source_counts.get("sensitivityReady"), counts.get("animalPublicMarkerAnalysisRecords")),
+            "strictReadyN": first_not_none(source_counts.get("strictReady"), counts.get("animalStrictAnalysisRecords")),
+        }
+    elif domain == "facilities":
+        source = sources.get("facilities") or {}
+        if not isinstance(source, Mapping):
+            source = {}
+        source_counts = source.get("counts") or {}
+        if not isinstance(source_counts, Mapping):
+            source_counts = {}
+        inventory = first_not_none(source_counts.get("rows"), counts.get("facilityMarkers"))
+        eligible = first_not_none(source_counts.get("inferentialEligible"), counts.get("facilityInferentialEligible"))
+        candidates = {
+            "inventoryN": inventory,
+            "mappedN": inventory,
+            "sensitivityReadyN": eligible,
+            "strictReadyN": eligible,
+        }
+    else:
+        raise ValueError(f"Unsupported context-pulse domain: {domain!r}")
+
+    normalized = {
+        field: optional_nonnegative_int(candidates.get(field))
+        for field in CONTEXT_PULSE_COUNT_FIELDS
+    }
+    return {field: value for field, value in normalized.items() if value is not None}
+
+
+def context_pulse_reason_codes(source: Mapping[str, Any]) -> list[str]:
+    readiness = source.get("readiness") or {}
+    leading = readiness.get("leadingExclusionReasons") or [] if isinstance(readiness, Mapping) else []
+    values: list[str] = []
+    for item in leading:
+        reason = item.get("reasonCode") if isinstance(item, Mapping) else item
+        normalized = text(reason)
+        if normalized and normalized not in values:
+            values.append(normalized)
+    if not values and isinstance(readiness, Mapping):
+        for gate in readiness.get("gates") or []:
+            if not isinstance(gate, Mapping):
+                continue
+            for reason in gate.get("reasonCodes") or []:
+                normalized = text(reason)
+                if normalized and normalized not in values:
+                    values.append(normalized)
+    return values[:5]
+
+
+def build_context_pulse_summary(
+    *,
+    release_id: str,
+    crop_source: Mapping[str, Any],
+    animal_source: Mapping[str, Any],
+    facility_source: Mapping[str, Any],
+    previous_manifest: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    current_manifest = {
+        "counts": {},
+        "sources": {
+            "cropContext": crop_source,
+            "animalContext": animal_source,
+            "facilities": facility_source,
+        },
+    }
+    previous = previous_manifest if isinstance(previous_manifest, Mapping) else {}
+    # If a deterministic rebuild points at its own prior output, retain the
+    # originally frozen comparison baseline instead of turning every delta to 0.
+    if previous.get("releaseId") == release_id:
+        embedded = (previous.get("contextPulseSummary") or {}).get("previousRelease") or {}
+        if isinstance(embedded, Mapping):
+            previous = embedded
+
+    source_by_domain = {
+        "crops": crop_source,
+        "animals": animal_source,
+        "facilities": facility_source,
+    }
+    domains: dict[str, Any] = {}
+    previous_domains: dict[str, Any] = {}
+    for domain in ("crops", "animals", "facilities"):
+        current_counts = context_pulse_counts_from_manifest(current_manifest, domain)
+        previous_counts = context_pulse_counts_from_manifest(previous, domain)
+        release_delta = {
+            field: current_counts[field] - previous_counts[field]
+            for field in CONTEXT_PULSE_COUNT_FIELDS
+            if field in current_counts and field in previous_counts
+        }
+        domains[domain] = {
+            **current_counts,
+            "exclusionReasonCodes": context_pulse_reason_codes(source_by_domain[domain]),
+            "releaseDelta": release_delta,
+            "releaseId": release_id,
+        }
+        previous_domains[domain] = previous_counts
+    return {
+        "domains": domains,
+        "previousRelease": {
+            "counts": {},
+            "domains": previous_domains,
+            "releaseId": text(previous.get("releaseId")) or None,
+            "sources": {},
+        },
+        "previousReleaseId": text(previous.get("releaseId")) or None,
+        "releaseId": release_id,
+    }
+
+
 def build(
     *,
     source_root: Path = STATIC_DATA_ROOT,
@@ -2872,17 +4241,28 @@ def build(
     output_root: Path = DEFAULT_OUTPUT_ROOT,
     release_id: str = DEFAULT_RELEASE_ID,
     browser_base_path: str = DEFAULT_BROWSER_BASE_PATH,
+    asset_base_url: str = "",
     relationship_source: Path | None = None,
     relationship_snapshot: Path | None = None,
+    context_evidence_root: Path | None = DEFAULT_CONTEXT_EVIDENCE_ROOT,
+    previous_manifest: Path | None = DEFAULT_PREVIOUS_MANIFEST,
 ) -> dict[str, Any]:
     if not SAFE_RELEASE_ID_RE.fullmatch(release_id):
         raise ValueError(f"Invalid release ID: {release_id!r}")
     if not browser_base_path.strip("/") or ".." in Path(browser_base_path).parts:
         raise ValueError("Invalid browser base path")
 
+    prior_manifest = (
+        load_json(previous_manifest)
+        if previous_manifest is not None and previous_manifest.is_file()
+        else {}
+    )
+
     facility_rows, facility_source = build_facility_projection(source_root)
-    crop_rows, crop_source = build_crop_context_projection(source_root)
-    animal_rows, animal_source, animal_incident_to_public = build_animal_context_projection(source_root)
+    crop_rows, crop_source = build_crop_context_projection(source_root, context_evidence_root)
+    animal_rows, animal_source, animal_incident_to_public = build_animal_context_projection(
+        source_root, context_evidence_root
+    )
     ufo_spatial_rows, neighbor_rows, neighbor_source = build_ufo_spatial_projections(canonical_root)
     geography_rows, geography_source = build_ufo_geography_projection(canonical_root, source_root)
     (
@@ -3068,6 +4448,13 @@ def build(
         release_id=release_id,
     )
 
+    asset_base_url, delivery, payloads = build_analysis_r2_delivery(
+        output_root=output_root,
+        release_id=release_id,
+        asset_base_url=asset_base_url,
+        declaration_roots=[artifacts, snapshot_artifact, snapshot_metadata_artifact],
+    )
+
     codebooks = {
         "animalContextReadiness": animal_codes,
         "cropContextReadiness": crop_codes,
@@ -3085,9 +4472,10 @@ def build(
         "contextProximityFailClosed": True,
         "generalizedCoordinatesKilometerEligible": False,
         "roughMarkerAnalysisEnabled": True,
-        "roughMarkerAssociationInferenceEligible": True,
+        "roughMarkerAssociationInferenceEligible": False,
         "roughMarkerDefiniteNearEligible": False,
         "minimumContextEligibleRecordsForInference": 25,
+        "strictContextAssociationInferenceEligible": True,
         "pointNeighborhoodsOnly": True,
         "traceMetrics": False,
         "travelMetrics": False,
@@ -3116,16 +4504,33 @@ def build(
         "rootPolicySha256": sha256_bytes(canonical_json_bytes(root_policy)),
     }
 
+    context_pulse_summary = build_context_pulse_summary(
+        release_id=release_id,
+        crop_source=crop_source,
+        animal_source=animal_source,
+        facility_source=facility_source,
+        previous_manifest=prior_manifest,
+    )
     manifest = {
+        "assetBaseUrl": asset_base_url,
         "artifacts": artifacts,
         "artifactReleases": artifact_releases,
         "codes": codebooks,
         "contractHashes": contract_hashes,
+        "contextPulseSummary": context_pulse_summary,
         "counts": {
             "animalContextRecords": len(animal_rows),
             "animalKilometerEligible": sum(row["kilometerEligible"] for row in animal_rows),
+            "animalStrictAnalysisRecords": sum(
+                row["analysisTierCode"] == "animal_strict" for row in animal_rows
+            ),
+            "animalStrictAnalysisClusters": animal_source["counts"]["strictReady"],
             "cropContextRecords": len(crop_rows),
             "cropKilometerEligible": sum(row["kilometerEligible"] for row in crop_rows),
+            "cropStrictAnalysisRecords": sum(
+                row["analysisTierCode"] == "crop_strict" for row in crop_rows
+            ),
+            "cropStrictAnalysisClusters": crop_source["counts"]["strictReady"],
             "facilityMarkers": len(facility_rows),
             "facilityInferentialEligible": sum(row["inferentialEligible"] for row in facility_rows),
             "relationshipRows": len(relationship_rows),
@@ -3159,11 +4564,13 @@ def build(
             "configurationNeighborOrder": "left_event_id_right_event_id_distance_day_lag",
         },
         "dictionaries": dictionaries,
+        "delivery": delivery,
         "estimatorVersion": ESTIMATOR_VERSION,
         "policy": root_policy,
+        "payloads": payloads,
         "releaseId": release_id,
         "rowOrderingHashes": row_ordering_hashes,
-        "manifestVersion": "2.2.0",
+        "manifestVersion": "2.3.0",
         "schemaId": SCHEMA_ID,
         "schemaVersion": 2,
         "sources": {
@@ -3205,8 +4612,11 @@ def main() -> int:
         output_root=args.output,
         release_id=args.release_id,
         browser_base_path=args.browser_base_path,
+        asset_base_url=args.asset_base_url,
         relationship_source=args.relationship_source,
         relationship_snapshot=args.relationship_snapshot,
+        context_evidence_root=args.context_evidence_root,
+        previous_manifest=args.previous_manifest,
     )
     print(json.dumps({
         "artifacts": manifest["artifacts"],

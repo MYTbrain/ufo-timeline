@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-campaign-state-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "campaignId", "status", "objective", "baselineSealPath", "sourceReconciliationPath", "ledgers", "effortAllocation", "milestones", "strictEligibility", "laneState", "validationBudget", "storagePolicy", "nonCausalInvariants"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-campaign-state-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "status": {"enum": ["foundation_active", "research_active", "milestone_ready", "closed_milestone_two", "closed_all_lanes_parked", "blocked"]},
+    "objective": {"const": "massively_improve_crop_circle_and_animal_mutilation_mapping_and_analysis_evidence"},
+    "baselineSealPath": {"const": "campaign/context_evidence/state/baseline_seal.json"},
+    "sourceReconciliationPath": {"const": "campaign/context_evidence/state/known_source_reconciliation.json"},
+    "ledgers": {
+      "type": "object",
+      "required": ["source", "enrichment", "review", "queue"],
+      "properties": {
+        "source": {"const": "campaign/context_evidence/ledgers/source_ledger.jsonl"},
+        "enrichment": {"const": "campaign/context_evidence/ledgers/case_enrichment.jsonl"},
+        "review": {"const": "campaign/context_evidence/ledgers/case_review_decisions.jsonl"},
+        "queue": {"const": "campaign/context_evidence/ledgers/research_queue.jsonl"}
+      },
+      "additionalProperties": false
+    },
+    "effortAllocation": {
+      "type": "object",
+      "required": ["existingCaseEnrichmentPct", "sourceDiscoveryPct"],
+      "properties": {"existingCaseEnrichmentPct": {"const": 70}, "sourceDiscoveryPct": {"const": 30}},
+      "additionalProperties": false
+    },
+    "milestones": {
+      "type": "object",
+      "required": ["first", "second"],
+      "properties": {
+        "first": {"type": "object", "required": ["strictReadyPerDomain", "materiallyUpgradedOverall"], "properties": {"strictReadyPerDomain": {"const": 25}, "materiallyUpgradedOverall": {"const": 100}}, "additionalProperties": false},
+        "second": {"type": "object", "required": ["strictReadyPerDomain", "minimumSourceFamilies", "minimumRegions", "minimumCasesPerRegion", "maximumCohortSharePct"], "properties": {"strictReadyPerDomain": {"const": 100}, "minimumSourceFamilies": {"const": 2}, "minimumRegions": {"const": 2}, "minimumCasesPerRegion": {"const": 25}, "maximumCohortSharePct": {"const": 60}}, "additionalProperties": false}
+      },
+      "additionalProperties": false
+    },
+    "strictEligibility": {
+      "type": "object",
+      "required": ["exactOccurrenceDayRequired", "maximumCoordinateUncertaintyM", "allowedReviewStates", "qualifyingSourceRule", "fieldLevelDateAndLocationProvenanceRequired", "unresolvedConflictsAllowed"],
+      "properties": {
+        "exactOccurrenceDayRequired": {"const": true},
+        "maximumCoordinateUncertaintyM": {"const": 1000},
+        "allowedReviewStates": {"const": ["human_reviewed", "source_reviewed"]},
+        "qualifyingSourceRule": {"const": "one_primary_official_or_contemporaneous_source_or_two_independent_source_families"},
+        "fieldLevelDateAndLocationProvenanceRequired": {"const": true},
+        "unresolvedConflictsAllowed": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "laneState": {"type": "object", "required": ["cropCircle", "animalMutilation", "sourceDiscovery"], "additionalProperties": {"$ref": "#/$defs/lane"}},
+    "validationBudget": {"type": "object", "required": ["focusedRunsPerWave", "correctionPasses", "finalTargetedReruns", "fullSuiteRunsPerMilestone"], "properties": {"focusedRunsPerWave": {"const": 1}, "correctionPasses": {"const": 1}, "finalTargetedReruns": {"const": 1}, "fullSuiteRunsPerMilestone": {"const": 1}}, "additionalProperties": false},
+    "storagePolicy": {"type": "object", "required": ["candidateRoot", "minimumCDriveFreeGiB", "approvalThresholdMiB", "fullCorpusCopiesAllowed"], "properties": {"candidateRoot": {"const": "D:\\UFO-Timeline-Context-Evidence"}, "minimumCDriveFreeGiB": {"const": 100}, "approvalThresholdMiB": {"const": 100}, "fullCorpusCopiesAllowed": {"const": false}}, "additionalProperties": false},
+    "nonCausalInvariants": {"type": "object", "required": ["causality", "traceEligible", "orientationAnalysis"], "properties": {"causality": {"const": "not_asserted"}, "traceEligible": {"const": false}, "orientationAnalysis": {"const": "out_of_scope"}}, "additionalProperties": false}
+  },
+  "$defs": {"lane": {"type": "object", "required": ["status", "consecutiveNoGainSubwaves"], "properties": {"status": {"enum": ["active", "parked", "blocked", "complete"]}, "consecutiveNoGainSubwaves": {"type": "integer", "minimum": 0, "maximum": 2}}, "additionalProperties": false}},
+  "additionalProperties": false
+}

@@ -97,7 +97,7 @@ def main() -> None:
         args.static_root,
         r2_key_prefix=r2_key_prefix,
     )
-    write_cloudflare_headers(args.output_root)
+    write_cloudflare_headers(args.output_root, args.static_root)
     write_json(args.output_root / "r2_upload_manifest.json", r2_manifest)
     write_r2_upload_script(args.output_root, r2_manifest)
     write_json(args.output_root / "cloudflare_bundle_manifest.json", report)
@@ -433,7 +433,12 @@ def write_r2_upload_script(output_root: Path, r2_manifest: dict[str, Any]) -> No
     (output_root / "upload_r2_assets.ps1").write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_cloudflare_headers(output_root: Path) -> None:
+def write_cloudflare_headers(output_root: Path, static_root: Path | None = None) -> None:
+    source_headers = static_root / "_headers" if static_root is not None else None
+    if source_headers is not None and source_headers.is_file():
+        shutil.copy2(source_headers, output_root / "_headers")
+        return
+
     headers = """# Cloudflare Pages cache policy for UFO Timeline static deployment.
 
 /index.html

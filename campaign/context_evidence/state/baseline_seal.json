@@ -1,0 +1,50 @@
+{
+  "schemaId": "ufo-timeline-context-evidence-baseline-seal-v1.0.0",
+  "campaignId": "context-evidence-expansion-20260810",
+  "sealedAt": "2026-08-10T00:00:00Z",
+  "baselineCommit": "e96acd36a6e572deb42507dd1e8be0d939f25212",
+  "production": {
+    "deploymentId": "f21b47a5-368f-4547-8202-b37778f6fcc4",
+    "immutableUrl": "https://f21b47a5.ufo-timeline.pages.dev",
+    "canonicalUrl": "https://ufo-timeline.pages.dev",
+    "sourceCommit": "e96acd36a6e572deb42507dd1e8be0d939f25212"
+  },
+  "rollback": {
+    "deploymentId": "bb261575-1812-46ab-a6fd-1165e04759d0",
+    "immutableUrl": "https://bb261575.ufo-timeline.pages.dev",
+    "sourceCommit": "a14889b428f18c399db0b8b884a6f88dea1e2c8a",
+    "status": "known_good",
+    "instruction": "Deploy the immutable bb261575 Pages artifact without rebuilding after verifying its recorded Wave 7 release receipt."
+  },
+  "domainBaseline": {
+    "cropCircle": {"inventory": 7745, "mapped": 4305, "sensitivityReady": 3655, "strictReady": 0},
+    "animalMutilation": {"inventory": 1177, "mapped": 518, "sensitivityReady": 339, "strictReady": 0},
+    "facility": {"inventory": 1800, "mapped": 1800, "sensitivityReady": 70, "strictReady": 70}
+  },
+  "artifacts": [
+    {"path": "webapp/static_public/data/crop_circles/manifest.json", "bytes": 7301, "sha256": "961530d02cfe6d73cd55b938acc4e7c67398de9163e02089367eca3f673b285d"},
+    {"path": "webapp/static_public/data/animal_mutilations/manifest.json", "bytes": 4210, "sha256": "342de15d439f8270069e697c605fd48915198497bfd16b65a65564a9881ce0d4"},
+    {"path": "webapp/static_public/data/analysis_v2/manifest.json", "bytes": 61891, "sha256": "57a721cf1d23e063f4054a773d216f10319db5568e5d331c336d7efe751bcbbd"}
+  ],
+  "sourceFrontier": {
+    "knownAtlasUrlCount": 2371,
+    "reconciliationStatus": "complete",
+    "atlasDraft": {
+      "repository": "MYTbrain/crop-circle-atlas",
+      "pullRequest": 13,
+      "status": "open_draft",
+      "baseCommit": "0086e3b86ceefeaa5c12422ea28a3fed05e8e260",
+      "headCommit": "076ab506e28d38509391e883e252ea57186694bc",
+      "newPlacementRecords": 43,
+      "intakeDisposition": "blocked_existing_case_evidence_until_finalized_upstream_commit"
+    },
+    "candidateRepositories": [
+      {"repository": "eric-henline/crop-circle-watch", "commit": "71d7e2c65aca6aeeddbbcf495f2068f4daa07cbd", "dataBlob": "21b350883d4df920e1ee0a8df6f94fc79cac0abf", "disposition": "candidate_sampling_required"},
+      {"repository": "beta86/crop_circle_map", "disposition": "metadata_only"},
+      {"repository": "merrypranxter/crop_circles", "disposition": "metadata_only"},
+      {"repository": "roserustowicz/finding-aliens", "disposition": "irrelevant"},
+      {"repository": "AImissq/cjd-USA", "disposition": "irrelevant"},
+      {"repository": "lyy289065406/crop-circles", "disposition": "likely_irrelevant_pending_final_disposition"}
+    ]
+  }
+}

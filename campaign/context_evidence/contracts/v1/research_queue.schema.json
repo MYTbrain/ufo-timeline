@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-research-queue-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "queueId", "caseId", "candidateId", "domain", "lane", "caseClass", "missingStrictGates", "priorityInputs", "priorityScore", "rank", "queryBudget", "attempts", "blockers", "waveId", "status", "terminalDisposition", "candidateDisposition", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-research-queue-v1.0.0"},
+    "queueId": {"type": "string", "pattern": "^rq_[a-f0-9]{16,64}$"},
+    "caseId": {"oneOf": [{"type": "string", "pattern": "^(cc|ami)_[a-f0-9]+$"}, {"type": "null"}]},
+    "candidateId": {"oneOf": [{"type": "string", "pattern": "^source_candidate_[A-Za-z0-9._@/-]+$"}, {"type": "null"}]},
+    "domain": {"enum": ["crop_circle", "animal_mutilation", "cross_domain"]},
+    "lane": {"enum": ["case_enrichment", "source_discovery"]},
+    "caseClass": {"enum": ["crop_exact_coordinate", "crop_candidate_field", "animal_exact_day_internal_coordinate", "accepted_new_source", "descriptive_backlog", "source_candidate"]},
+    "missingStrictGates": {"type": "array", "items": {"enum": ["stable_identity", "exact_occurrence_day", "source_supported_coordinates", "uncertainty_within_1km", "review_quorum", "qualifying_source", "date_provenance", "location_provenance", "conflict_resolution"]}, "uniqueItems": true},
+    "priorityInputs": {
+      "type": "object",
+      "required": ["missingStrictGateCount", "independentSourceFamilyCount", "exactOccurrenceDay", "sourceSupportedCoordinate"],
+      "properties": {
+        "missingStrictGateCount": {"type": "integer", "minimum": 0, "maximum": 9},
+        "independentSourceFamilyCount": {"type": "integer", "minimum": 0},
+        "exactOccurrenceDay": {"type": "boolean"},
+        "sourceSupportedCoordinate": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "priorityScore": {"type": "integer"},
+    "rank": {"type": "integer", "minimum": 1},
+    "queryBudget": {
+      "type": "object",
+      "required": ["firstPassQueries", "firstPassSourceOpenings", "escalationQueries", "escalationSourceOpenings", "archiveFallbacks", "escalationApproved"],
+      "properties": {
+        "firstPassQueries": {"const": 2},
+        "firstPassSourceOpenings": {"const": 4},
+        "escalationQueries": {"const": 3},
+        "escalationSourceOpenings": {"const": 4},
+        "archiveFallbacks": {"const": 1},
+        "escalationApproved": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["attemptId", "kind", "target", "versionSha256", "fingerprint", "automatic", "phase", "result", "attemptedAt"],
+        "properties": {
+          "attemptId": {"type": "string", "pattern": "^ra_[a-f0-9]{16,64}$"},
+          "kind": {"enum": ["query", "source_open", "archive_fallback", "repository_sample", "source_version"]},
+          "target": {"type": "string", "minLength": 1},
+          "versionSha256": {"oneOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]},
+          "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "automatic": {"type": "boolean"},
+          "phase": {"enum": ["first_pass", "escalation"]},
+          "result": {"enum": ["material_gain", "useful_lead", "duplicate", "failed", "inaccessible", "rights_blocked", "irrelevant", "no_gain"]},
+          "attemptedAt": {"type": "string", "format": "date-time"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "blockers": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "uniqueItems": true},
+    "waveId": {"type": "string", "pattern": "^wave-[0-9]{3}-[a-z0-9-]+$"},
+    "status": {"enum": ["materially_upgraded", "strict_ready", "blocked", "no_gain", "quarantined", "parked"]},
+    "terminalDisposition": {"enum": ["strict_ready", "materially_upgraded", "blocked", "no_gain", "quarantined", "parked"]},
+    "candidateDisposition": {"oneOf": [{"enum": ["accept_ingest", "metadata_only", "duplicate", "irrelevant", "rights_blocked", "inaccessible"]}, {"type": "null"}]},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"lane": {"const": "case_enrichment"}}, "required": ["lane"]},
+      "then": {
+        "properties": {
+          "caseId": {"type": "string", "pattern": "^(cc|ami)_[a-f0-9]+$"},
+          "candidateId": {"type": "null"},
+          "domain": {"enum": ["crop_circle", "animal_mutilation"]},
+          "caseClass": {"enum": ["crop_exact_coordinate", "crop_candidate_field", "animal_exact_day_internal_coordinate", "accepted_new_source", "descriptive_backlog"]},
+          "missingStrictGates": {"minItems": 0},
+          "candidateDisposition": {"type": "null"}
+        }
+      },
+      "else": {
+        "properties": {
+          "caseId": {"type": "null"},
+          "candidateId": {"type": "string", "pattern": "^source_candidate_[A-Za-z0-9._@/-]+$"},
+          "caseClass": {"const": "source_candidate"},
+          "missingStrictGates": {"maxItems": 0},
+          "priorityInputs": {"properties": {"missingStrictGateCount": {"const": 0}}}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

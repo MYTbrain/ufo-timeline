@@ -1,0 +1,35 @@
+{
+  "schemaId": "ufo-timeline-context-evidence-campaign-state-v1.0.0",
+  "campaignId": "context-evidence-expansion-20260810",
+  "status": "research_active",
+  "objective": "massively_improve_crop_circle_and_animal_mutilation_mapping_and_analysis_evidence",
+  "baselineSealPath": "campaign/context_evidence/state/baseline_seal.json",
+  "sourceReconciliationPath": "campaign/context_evidence/state/known_source_reconciliation.json",
+  "ledgers": {
+    "source": "campaign/context_evidence/ledgers/source_ledger.jsonl",
+    "enrichment": "campaign/context_evidence/ledgers/case_enrichment.jsonl",
+    "review": "campaign/context_evidence/ledgers/case_review_decisions.jsonl",
+    "queue": "campaign/context_evidence/ledgers/research_queue.jsonl"
+  },
+  "effortAllocation": {"existingCaseEnrichmentPct": 70, "sourceDiscoveryPct": 30},
+  "milestones": {
+    "first": {"strictReadyPerDomain": 25, "materiallyUpgradedOverall": 100},
+    "second": {"strictReadyPerDomain": 100, "minimumSourceFamilies": 2, "minimumRegions": 2, "minimumCasesPerRegion": 25, "maximumCohortSharePct": 60}
+  },
+  "strictEligibility": {
+    "exactOccurrenceDayRequired": true,
+    "maximumCoordinateUncertaintyM": 1000,
+    "allowedReviewStates": ["human_reviewed", "source_reviewed"],
+    "qualifyingSourceRule": "one_primary_official_or_contemporaneous_source_or_two_independent_source_families",
+    "fieldLevelDateAndLocationProvenanceRequired": true,
+    "unresolvedConflictsAllowed": false
+  },
+  "laneState": {
+    "cropCircle": {"status": "active", "consecutiveNoGainSubwaves": 0},
+    "animalMutilation": {"status": "parked", "consecutiveNoGainSubwaves": 2},
+    "sourceDiscovery": {"status": "active", "consecutiveNoGainSubwaves": 0}
+  },
+  "validationBudget": {"focusedRunsPerWave": 1, "correctionPasses": 1, "finalTargetedReruns": 1, "fullSuiteRunsPerMilestone": 1},
+  "storagePolicy": {"candidateRoot": "D:\\UFO-Timeline-Context-Evidence", "minimumCDriveFreeGiB": 100, "approvalThresholdMiB": 100, "fullCorpusCopiesAllowed": false},
+  "nonCausalInvariants": {"causality": "not_asserted", "traceEligible": false, "orientationAnalysis": "out_of_scope"}
+}

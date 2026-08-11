@@ -1063,12 +1063,28 @@
   }
 
   function coordinateLabel(detail) {
+    const evidenceClass = String(detail.coordinateEvidenceClass || "");
+    const labels = {
+      source_exact: "Source-supported site · uncertainty ≤100 m",
+      source_bounded: "Source-supported bounded site · uncertainty ≤1 km",
+      candidate_field_marker: "Candidate field marker · not source-bounded",
+      locality_centroid: "Locality centroid · not the formation field",
+      postal_centroid: "Postal centroid · not the formation field",
+      approximate_map_pin: "Approximate map pin · not an exact field",
+      source_regional: "Source-supported regional location · uncertainty >1 km",
+      source_uncertainty_unknown: "Source-supported location · uncertainty unknown",
+    };
+    if (labels[evidenceClass]) return labels[evidenceClass];
     if (detail.exactCoordinate) return "Reviewed/corroborated exact field";
     if (detail.markerConfidence === "provisional") return "Provisional candidate field";
-    return "Locality centroid — not the formation field";
+    return "Locality centroid · not the formation field";
   }
 
   function coordinateClass(detail) {
+    const evidenceClass = String(detail.coordinateEvidenceClass || "");
+    if (evidenceClass === "source_exact") return "is-exact";
+    if (evidenceClass === "source_bounded" || evidenceClass === "candidate_field_marker") return "is-candidate";
+    if (evidenceClass) return "is-locality";
     if (detail.exactCoordinate) return "is-exact";
     if (detail.markerConfidence === "provisional") return "is-candidate";
     return "is-locality";
@@ -1085,22 +1101,40 @@
   function dateRoleLabel(detail) {
     const labels = {
       formation: "Formation date",
+      formation_date: "Formation date",
+      occurrence: "Occurrence date",
+      occurrence_date: "Occurrence date",
       observed: "Observed date",
       discovered: "Discovery date",
+      discovery_date: "Discovery date",
       reported: "Report date",
+      report_date: "Report date",
+      photography_date: "Photography date",
+      catalog_date: "Catalog date",
       published: "Publication date",
+      publication_date: "Publication date",
       catalog_unspecified: "Catalog date (role unspecified)",
     };
     return labels[String(detail.dateRole || "catalog_unspecified")] || "Catalog date (role unspecified)";
   }
 
   function dateCaveat(detail) {
-    if (detail.formationDateKnown && detail.dateRole === "formation") {
-      return "The cited source identifies this as the formation date.";
-    }
     const role = String(detail.dateRole || "catalog_unspecified");
-    if (role === "observed" || role === "discovered" || role === "reported" || role === "published") {
-      return "This is the cataloged " + role + " date, not evidence of when the formation was created.";
+    if (role === "formation" || role === "formation_date") {
+      return detail.formationDateKnown
+        ? "The cited source identifies this as the exact formation date."
+        : "The cited source labels this as a formation date, but this record does not establish an exact formation day.";
+    }
+    if (role === "occurrence" || role === "occurrence_date") {
+      return "The cited source identifies this as the event occurrence date; authenticity and cause are not implied.";
+    }
+    const nonFormationLabels = {
+      observed: "observed", discovered: "discovery", discovery_date: "discovery",
+      reported: "report", report_date: "report", photography_date: "photography",
+      catalog_date: "catalog", published: "publication", publication_date: "publication",
+    };
+    if (nonFormationLabels[role]) {
+      return "This is the " + nonFormationLabels[role] + " date, not evidence of when the formation was created.";
     }
     return "The catalog date may reflect discovery, reporting, or publication. Formation time is not established by this record.";
   }
@@ -1300,9 +1334,17 @@
     const imageMarkup = image
       ? '<div class="cc-source-image-shell"><button type="button" class="secondary-button" data-cc-load-image="' + escapeHtml(safeHttpUrl(image.imageUrl)) + '">Load licensed source photo</button><p>' + escapeHtml(image.rights || "Open-license source image") + '</p><img data-cc-source-image alt="Source photograph of this reported crop formation" hidden></div>'
       : "";
-    const uncertainty = detail.coordinateUncertaintyKm != null
-      ? Number(detail.coordinateUncertaintyKm).toLocaleString() + " km estimated coordinate uncertainty"
-      : "";
+    const uncertaintyM = detail.coordinateUncertaintyM != null
+      ? Number(detail.coordinateUncertaintyM)
+      : detail.coordinateUncertaintyKm != null
+        ? Number(detail.coordinateUncertaintyKm) * 1000
+        : null;
+    const uncertainty = Number.isFinite(uncertaintyM)
+      ? (uncertaintyM >= 1000
+        ? (uncertaintyM / 1000).toLocaleString(undefined, { maximumFractionDigits: 3 }) + " km"
+        : uncertaintyM.toLocaleString(undefined, { maximumFractionDigits: 3 }) + " m") +
+        " coordinate uncertainty"
+      : "Coordinate uncertainty is not quantified";
     const morphologyName = diagram ? familyLabel(diagram.family) : "Design not documented";
     const sourceDescriptionMarkup = renderSourceDescriptions(detail);
     const catalogSummary = String(detail.catalogSummary || detail.description || "").trim();
@@ -1327,7 +1369,7 @@
     panelBody.innerHTML = stackReturnMarkup +
       '<div class="cc-detail-heading"><div><p class="cc-detail-eyebrow">Crop Circle Atlas</p><h3>' + escapeHtml(detail.location || "Reported crop formation") + '</h3><p>' + escapeHtml(dateLabel(detail)) + '</p></div><span class="cc-coordinate-badge ' + coordinateClass(detail) + '">' + escapeHtml(coordinateLabel(detail)) + "</span></div>" +
       '<p class="cc-date-caveat"><strong>' + escapeHtml(dateRoleLabel(detail)) + ':</strong> ' + escapeHtml(dateCaveat(detail)) + "</p>" +
-      (uncertainty ? '<p class="cc-detail-warning">' + escapeHtml(uncertainty) + "</p>" : "") +
+      '<p class="cc-detail-warning">' + escapeHtml(uncertainty) + "</p>" +
       sourceDescriptionMarkup +
       catalogSummaryMarkup +
       '<section class="cc-schematic-card">' + tabs + '<div class="cc-schematic" data-cc-schematic>' + renderSchematicSvg(diagram) + '</div><p><strong>Measurement-informed schematic</strong> — an approximate visual derived from catalog morphology, not an exact field diagram or photograph.</p></section>' +

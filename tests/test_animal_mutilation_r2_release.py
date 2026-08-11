@@ -116,7 +116,7 @@ def test_local_payload_hash_size_json_and_counts_are_validated(tmp_path: Path) -
     PUBLISH.validate_animal_manifest(manifest, payloads)
 
     assert [payload["path"] for payload in payloads] == manifest["delivery"]["r2OnlyPaths"]
-    assert all(payload["r2Key"].startswith("releases/animal-mutilations-v1-20260802/") for payload in payloads)
+    assert all(payload["r2Key"].startswith("releases/animal-mutilations-v1-20260811/") for payload in payloads)
 
 
 def test_release_fails_closed_without_coordinate_audit(tmp_path: Path) -> None:

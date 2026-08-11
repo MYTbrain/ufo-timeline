@@ -40,7 +40,7 @@ def test_frozen_manifest_pins_releases_hashes_and_descriptive_policy() -> None:
 
     assert manifest["schemaVersion"] == 1
     assert manifest["schemaId"] == "ufo-timeline-analysis-projections-v1.1.0"
-    assert manifest["releaseId"] == "analysis-projections-v1-20260803"
+    assert manifest["releaseId"] == "analysis-projections-v1-context-evidence-20260811"
     assert manifest["counts"] == {
         "animalReports": 1177,
         "cropCircles": 7745,
@@ -48,9 +48,9 @@ def test_frozen_manifest_pins_releases_hashes_and_descriptive_policy() -> None:
         "ufoCatalog": 702893,
         "unmappedAnimalReports": 659,
     }
-    assert manifest["sources"]["cropCircles"]["releaseId"] == "crop-circles-v156-20260731"
+    assert manifest["sources"]["cropCircles"]["releaseId"] == "crop-circles-context-evidence-v1-20260811"
     assert manifest["sources"]["cropCircles"]["rowCount"] == 7745
-    assert manifest["sources"]["animalReports"]["releaseId"] == "animal-mutilations-v1-20260802"
+    assert manifest["sources"]["animalReports"]["releaseId"] == "animal-mutilations-v1-20260811"
     assert manifest["sources"]["animalReports"]["rowCount"] == 1177
 
     catalog = manifest["sources"]["ufoCatalog"]
@@ -70,13 +70,14 @@ def test_frozen_manifest_pins_releases_hashes_and_descriptive_policy() -> None:
         "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"
     )
     assert catalog["canonicalWebManifestSha256"] == catalog["sha256"]
+    assert "releaseSeal" not in catalog
+    assert "releaseSealSha256" not in catalog
 
     for source in manifest["sources"].values():
         for key in (
             "path",
             "manifest",
             "canonicalWebManifest",
-            "releaseSeal",
             "sourceCorpusPath",
         ):
             value = source.get(key)
@@ -152,8 +153,8 @@ def test_projection_artifacts_are_complete_hashed_compact_and_decodable() -> Non
 
     crop_rows = payloads["cropCircles"]
     assert len(crop_rows) == 7745
-    assert sum(row[9] for row in crop_rows) == 4305
-    assert sum(not row[9] for row in crop_rows) == 3440
+    assert sum(row[9] for row in crop_rows) == 4324
+    assert sum(not row[9] for row in crop_rows) == 3421
     assert sum(row[10] for row in crop_rows) == 564
     assert sum(row[11] for row in crop_rows) == 136
     assert all(
@@ -164,7 +165,7 @@ def test_projection_artifacts_are_complete_hashed_compact_and_decodable() -> Non
     assert {
         code: sum(row[8] == code for row in crop_rows)
         for code in range(len(manifest["codes"]["coordinateClass"]))
-    } == {0: 10, 1: 409, 2: 3886, 3: 3440}
+    } == {0: 10, 1: 409, 2: 3905, 3: 3421}
 
     animal_rows = payloads["animalReports"]
     assert len(animal_rows) == 1177

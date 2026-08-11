@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-source-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "sourceId", "sourceFamilyId", "title", "publisher", "publicationDate", "authors", "locator", "accessStatus", "contentSha256", "sourceTier", "rights", "retention", "derivation", "independenceStatus", "registeredAt"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-source-v1.0.0"},
+    "sourceId": {"type": "string", "pattern": "^src_[a-f0-9]{16,64}$"},
+    "sourceFamilyId": {"type": "string", "pattern": "^sf_[a-f0-9]{16,64}$"},
+    "title": {"type": "string", "minLength": 1},
+    "publisher": {"type": "string", "minLength": 1},
+    "publicationDate": {"oneOf": [{"type": "string", "format": "date"}, {"type": "null"}]},
+    "authors": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "locator": {
+      "type": "object",
+      "required": ["kind", "value", "accessedAt", "pageOrSection"],
+      "properties": {
+        "kind": {"enum": ["url", "archive_url", "local_file", "bibliographic"]},
+        "value": {"type": "string", "minLength": 1},
+        "accessedAt": {"type": "string", "format": "date"},
+        "pageOrSection": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+      },
+      "additionalProperties": false
+    },
+    "accessStatus": {"enum": ["retrieved", "inaccessible"]},
+    "contentSha256": {"oneOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]},
+    "sourceTier": {"enum": ["primary", "official", "contemporaneous", "secondary", "lead_only"]},
+    "rights": {
+      "type": "object",
+      "required": ["status", "redistributionAllowed", "license", "notes"],
+      "properties": {
+        "status": {"enum": ["public_domain", "open_license", "permission_granted", "copyright_link_only", "rights_unknown", "restricted"]},
+        "redistributionAllowed": {"type": "boolean"},
+        "license": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "notes": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+      },
+      "additionalProperties": false
+    },
+    "retention": {
+      "type": "object",
+      "required": ["class", "storageLocation", "decision"],
+      "properties": {
+        "class": {"enum": ["canonical_source", "metadata_only", "link_only", "restricted"]},
+        "storageLocation": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "decision": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "derivation": {
+      "type": "object",
+      "required": ["derivedFromSourceIds", "relation"],
+      "properties": {
+        "derivedFromSourceIds": {"type": "array", "items": {"type": "string", "pattern": "^src_[a-f0-9]{16,64}$"}, "uniqueItems": true},
+        "relation": {"enum": ["original", "mirror", "scan", "syndication", "translation", "retelling", "index"]}
+      },
+      "additionalProperties": false
+    },
+    "independenceStatus": {"enum": ["independent", "same_family", "unknown", "lead_only"]},
+    "registeredAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"accessStatus": {"const": "retrieved"}}, "required": ["accessStatus"]},
+      "then": {"properties": {"contentSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+      "else": {"properties": {"contentSha256": {"type": "null"}, "sourceTier": {"const": "lead_only"}, "independenceStatus": {"const": "lead_only"}}}
+    }
+  ],
+  "additionalProperties": false
+}

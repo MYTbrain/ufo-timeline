@@ -61,6 +61,11 @@ OPTIONAL_LAYER_SPECS = (
         "manifest": PurePosixPath("data/animal_mutilations/manifest.json"),
     },
     {
+        "name": "analysis_v2",
+        "root": PurePosixPath("data/analysis_v2"),
+        "manifest": PurePosixPath("data/analysis_v2/manifest.json"),
+    },
+    {
         "name": "analysis_duration_v1",
         "root": PurePosixPath("data/analysis_duration_v1"),
         "manifest": PurePosixPath("data/analysis_duration_v1/manifest.json"),
@@ -108,31 +113,6 @@ PAGES_SOURCE_ADDITION_PATHS = frozenset(
         PurePosixPath("data/analysis_v1/animal_reports.json"),
         PurePosixPath("data/analysis_v1/animal_reports.json.gz"),
         PurePosixPath("data/analysis_v2/manifest.json"),
-        PurePosixPath("data/analysis_v2/ufo_point_neighbors_v1.json"),
-        PurePosixPath("data/analysis_v2/ufo_point_neighbors_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/ufo_spatial_points_v2.json"),
-        PurePosixPath("data/analysis_v2/ufo_spatial_points_v2.json.gz"),
-        PurePosixPath("data/analysis_v2/context_ufo_neighbors_v1.json"),
-        PurePosixPath("data/analysis_v2/context_ufo_neighbors_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/ufo_geography_v1.json"),
-        PurePosixPath("data/analysis_v2/ufo_geography_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/ufo_geography_v1.bin"),
-        PurePosixPath("data/analysis_v2/ufo_geography_v1.bin.gz"),
-        PurePosixPath("data/analysis_v2/ufo_configuration_points_v1.json"),
-        PurePosixPath("data/analysis_v2/ufo_configuration_points_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/ufo_configuration_neighbors_v1.json"),
-        PurePosixPath("data/analysis_v2/ufo_configuration_neighbors_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/facility_analysis_v1.json"),
-        PurePosixPath("data/analysis_v2/facility_analysis_v1.json.gz"),
-        PurePosixPath("data/analysis_v2/crop_context_readiness.json"),
-        PurePosixPath("data/analysis_v2/crop_context_readiness.json.gz"),
-        PurePosixPath("data/analysis_v2/animal_context_readiness.json"),
-        PurePosixPath("data/analysis_v2/animal_context_readiness.json.gz"),
-        PurePosixPath("data/analysis_v2/relationship_reconciliation.json"),
-        PurePosixPath("data/analysis_v2/relationship_reconciliation.json.gz"),
-        PurePosixPath("data/analysis_v2/relationship_source_snapshot.json"),
-        PurePosixPath("data/analysis_v2/relationship_source_snapshot.json.gz"),
-        PurePosixPath("data/analysis_v2/relationship_source_snapshot.meta.json"),
         PurePosixPath("data/analysis_duration_v1/manifest.json"),
         PurePosixPath("data/analysis_reporting_delay_v1/manifest.json"),
         PurePosixPath("data/analysis_coordinate_evidence_v1/manifest.json"),
@@ -317,17 +297,28 @@ def optional_layer_contracts(
         r2_paths = [_layer_relative_path(layer_root, value) for value in payload_values]
         if len(set(r2_paths)) != len(r2_paths):
             raise ContractError(f"Optional-layer manifest has duplicate R2 paths: {manifest_relative.as_posix()}")
-        if set(r2_paths) & pages_paths:
+        r2_path_set = set(r2_paths)
+        if r2_path_set & pages_paths:
             raise ContractError(f"Optional-layer file cannot be both Pages and R2: {manifest_relative.as_posix()}")
 
         declarations: dict[PurePosixPath, dict[str, Any]] = {}
+        unlisted_r2: list[PurePosixPath] = []
         for declaration in _payload_declarations(manifest):
             relative = _layer_relative_path(layer_root, str(declaration["path"]))
+            if relative not in r2_path_set:
+                if declaration.get("r2Only") is True:
+                    unlisted_r2.append(relative)
+                continue
             if relative in declarations:
                 raise ContractError(
                     f"Optional-layer payload integrity is declared twice: {relative.as_posix()}"
                 )
             declarations[relative] = declaration
+        if unlisted_r2:
+            raise ContractError(
+                "Optional-layer r2Only payload is absent from delivery.r2OnlyPaths: "
+                + ", ".join(path.as_posix() for path in sorted(set(unlisted_r2)))
+            )
 
         records: list[dict[str, Any]] = []
         for relative in r2_paths:
@@ -371,7 +362,7 @@ def optional_layer_contracts(
                 "manifest_path": manifest_relative,
                 "manifest": manifest,
                 "pages_paths": pages_paths,
-                "r2_paths": set(r2_paths),
+                "r2_paths": r2_path_set,
                 "r2_records": records,
             }
         )
@@ -463,7 +454,17 @@ def expected_pages_records(
     include_r2: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     source_records = pages_source_records(source_root, manifest)
-    collections: list[Iterable[dict[str, Any]]] = [manifest["pages"]["files"]]
+    current_r2_paths = {
+        path.as_posix()
+        for contract in optional_layer_contracts(source_root)
+        for path in contract["r2_paths"]
+    }
+    retained_pages_records = [
+        record
+        for record in manifest["pages"]["files"]
+        if str(record["path"]) not in current_r2_paths
+    ]
+    collections: list[Iterable[dict[str, Any]]] = [retained_pages_records]
     if include_r2:
         collections.append(manifest["r2"]["files"])
         collections.append(optional_layer_r2_records(source_root))
@@ -926,6 +927,22 @@ def overlay_source(
     return records
 
 
+def prune_optional_layer_r2_payloads(source_root: Path, output_root: Path) -> list[str]:
+    """Remove only manifest-declared R2 payloads from a Pages-only candidate."""
+    output_resolved = output_root.resolve()
+    removed: list[str] = []
+    for contract in optional_layer_contracts(source_root):
+        for relative in sorted(contract["r2_paths"]):
+            target = output_root.joinpath(*relative.parts)
+            resolved = target.resolve()
+            if not resolved.is_relative_to(output_resolved):
+                raise ContractError(f"Optional-layer prune target escapes output root: {relative}")
+            if target.is_file():
+                target.unlink()
+                removed.append(relative.as_posix())
+    return removed
+
+
 def hydrate_optional_layer_payloads(source_root: Path, output_root: Path) -> dict[str, Any]:
     """Copy locally pinned optional-layer R2 payloads into an offline reproduction."""
     records = optional_layer_r2_records(source_root)
@@ -950,7 +967,11 @@ def localize_optional_layer_manifests(source_root: Path, output_root: Path) -> l
         relative = contract["manifest_path"]
         target = output_root.joinpath(*relative.parts)
         manifest = load_json(target)
-        manifest["assetBaseUrl"] = "./" + contract["root"].as_posix() + "/"
+        old_base = str(manifest.get("assetBaseUrl") or "").rstrip("/")
+        local_base = "./" + contract["root"].as_posix()
+        if old_base:
+            manifest = replace_url_prefix(manifest, old_base, local_base)
+        manifest["assetBaseUrl"] = local_base + "/"
         write_json(target, manifest)
         localized.append({"path": relative.as_posix(), "sha256": sha256_file(target)})
     return localized
@@ -1046,6 +1067,9 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         optional_layer_results = hydrate_optional_layer_payloads(source_root, output_root)
 
     overlay_source(source_root, output_root, records=source_records)
+    pruned_optional_payloads = []
+    if not args.offline:
+        pruned_optional_payloads = prune_optional_layer_r2_payloads(source_root, output_root)
     for record in source_records:
         output_path = output_root / Path(record["path"])
         if sha256_file(output_path) != record["sha256"]:
@@ -1083,6 +1107,7 @@ def hydrate(args: argparse.Namespace) -> dict[str, Any]:
         "pages_archive": archive_status,
         "r2": r2_results,
         "optional_layer_r2": optional_layer_results,
+        "pruned_optional_layer_r2_payloads": pruned_optional_payloads,
         "gzip": gzip_results,
         "pages_validation": release_validation,
     }

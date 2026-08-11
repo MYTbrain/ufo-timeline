@@ -8,6 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 import struct
 import sys
+from urllib.parse import urlparse
 
 from parser.packed_points import export_packed_points
 
@@ -37,8 +38,16 @@ def manifest() -> dict:
 
 def artifact_rows(name: str) -> tuple[list, list[str]]:
     declaration = manifest()["artifacts"][name]
-    path = STATIC_ROOT / declaration["file"]
+    path = local_analysis_payload_path(declaration["file"])
     return json.loads(path.read_text(encoding="utf-8")), declaration["rowSchema"]
+
+
+def local_analysis_payload_path(value: str) -> Path:
+    parsed = urlparse(value)
+    if parsed.scheme:
+        assert parsed.scheme == "https"
+        return ANALYSIS_ROOT / Path(parsed.path).name
+    return STATIC_ROOT / value
 
 
 def decoded_label(artifact: str, field: str, code: int) -> str:
@@ -49,21 +58,25 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
     value = manifest()
 
     assert value["schemaVersion"] == 2
-    assert value["schemaId"] == "ufo-timeline-analysis-evidence-artifacts-v2.2.0"
-    assert value["releaseId"] == "analysis-evidence-lab-v2.2-20260803"
-    assert value["manifestVersion"] == "2.2.0"
+    assert value["schemaId"] == "ufo-timeline-analysis-evidence-artifacts-v2.3.0"
+    assert value["releaseId"] == "analysis-evidence-lab-v2.3-20260811"
+    assert value["manifestVersion"] == "2.3.0"
     assert value["counts"] == {
         "animalContextRecords": 1177,
         "animalKilometerEligible": 0,
         "animalPublicMarkerAnalysisRecords": 339,
-        "contextIndependentObservedRows": 12180,
-        "contextLocationDateClusters": 3892,
-        "contextObservedNeighborRows": 12596,
-        "contextUfoNeighborRows": 63753,
-        "cropBoundedAnalysisRecords": 406,
+        "animalStrictAnalysisClusters": 0,
+        "animalStrictAnalysisRecords": 0,
+        "contextIndependentObservedRows": 12225,
+        "contextLocationDateClusters": 3897,
+        "contextObservedNeighborRows": 12641,
+        "contextUfoNeighborRows": 63917,
+        "cropBoundedAnalysisRecords": 433,
         "cropContextRecords": 7745,
         "cropKilometerEligible": 0,
-        "cropLocalityAnalysisRecords": 3249,
+        "cropLocalityAnalysisRecords": 3225,
+        "cropStrictAnalysisClusters": 0,
+        "cropStrictAnalysisRecords": 0,
         "facilityMarkers": 1800,
         "facilityInferentialEligible": 70,
         "relationshipRows": 1804,
@@ -76,8 +89,8 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
         "ufoGeographyRows": 580783,
         "ufoSpatialPoints": 33801,
     }
-    assert value["sources"]["cropContext"]["releaseId"] == "crop-circles-v156-20260731"
-    assert value["sources"]["animalContext"]["releaseId"] == "animal-mutilations-v1-20260802"
+    assert value["sources"]["cropContext"]["releaseId"] == "crop-circles-context-evidence-v1-20260811"
+    assert value["sources"]["animalContext"]["releaseId"] == "animal-mutilations-v1-20260811"
     assert value["sources"]["relationshipPackage"]["sha256"] == (
         "18e3a451872793d02018fda961e5eda17d62bba18cea088b63a4033c9d715d2c"
     )
@@ -90,8 +103,9 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
         "minimumContextEligibleRecordsForInference": 25,
         "pointNeighborhoodsOnly": True,
         "roughMarkerAnalysisEnabled": True,
-        "roughMarkerAssociationInferenceEligible": True,
+        "roughMarkerAssociationInferenceEligible": False,
         "roughMarkerDefiniteNearEligible": False,
+        "strictContextAssociationInferenceEligible": True,
         "traceMetrics": False,
         "travelMetrics": False,
     }
@@ -128,11 +142,58 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
     ))
 
 
+def test_analysis_v2_delivery_is_manifest_only_and_immutable_r2() -> None:
+    value = manifest()
+    base_url = value["assetBaseUrl"]
+    assert base_url == (
+        f"{BUILDER.DEFAULT_R2_PUBLIC_ORIGIN}/releases/{value['releaseId']}"
+    )
+    delivery = value["delivery"]
+    assert delivery == {
+        "cacheControl": BUILDER.IMMUTABLE_CACHE_CONTROL,
+        "immutablePrefix": f"releases/{value['releaseId']}",
+        "pagesFiles": ["manifest.json"],
+        "r2OnlyPaths": sorted(delivery["r2OnlyPaths"]),
+    }
+    payloads = value["payloads"]
+    assert len(payloads) == 25
+    assert [payload["path"] for payload in payloads] == delivery["r2OnlyPaths"]
+    assert all(payload["r2Only"] is True for payload in payloads)
+    assert all(payload.get("contentEncoding") in {None, ""} for payload in payloads)
+
+    for payload in payloads:
+        path = ANALYSIS_ROOT / payload["path"]
+        raw = path.read_bytes()
+        assert len(raw) == payload["bytes"]
+        assert hashlib.sha256(raw).hexdigest() == payload["sha256"]
+        if payload["path"].endswith(".gz"):
+            decoded = gzip.decompress(raw)
+            assert len(decoded) == payload["decodedBytes"]
+            assert hashlib.sha256(decoded).hexdigest() == payload["decodedSha256"]
+
+    runtime_urls: list[str] = []
+    for declaration in value["artifacts"].values():
+        runtime_urls.extend([declaration["file"], declaration["gzipFile"]])
+        if isinstance(declaration.get("binary"), dict):
+            runtime_urls.extend([
+                declaration["binary"]["file"],
+                declaration["binary"]["gzipFile"],
+            ])
+    snapshot = value["sources"]["relationshipSourceSnapshot"]
+    snapshot_metadata = value["sources"]["relationshipSourceSnapshotMetadata"]
+    runtime_urls.extend([snapshot["file"], snapshot["gzipFile"], snapshot_metadata["file"]])
+    assert len(runtime_urls) == 25
+    assert all(url.startswith(base_url + "/") for url in runtime_urls)
+    assert {Path(urlparse(url).path).name for url in runtime_urls} == set(
+        delivery["r2OnlyPaths"]
+    )
+
+
 def test_artifacts_are_hashed_compact_decodable_and_deterministically_gzipped() -> None:
     value = manifest()
     for declaration in value["artifacts"].values():
-        raw = (STATIC_ROOT / declaration["file"]).read_bytes()
-        compressed = (STATIC_ROOT / declaration["gzipFile"]).read_bytes()
+        raw = local_analysis_payload_path(declaration["file"]).read_bytes()
+        compressed = local_analysis_payload_path(declaration["gzipFile"]).read_bytes()
         assert len(raw) == declaration["bytes"]
         assert len(compressed) == declaration["gzipBytes"]
         assert hashlib.sha256(raw).hexdigest() == declaration["sha256"]
@@ -144,7 +205,7 @@ def test_artifacts_are_hashed_compact_decodable_and_deterministically_gzipped() 
         assert all(len(row) == len(declaration["rowSchema"]) for row in rows)
 
     snapshot = value["sources"]["relationshipSourceSnapshot"]
-    raw_snapshot = (STATIC_ROOT / snapshot["file"]).read_bytes()
+    raw_snapshot = local_analysis_payload_path(snapshot["file"]).read_bytes()
     assert hashlib.sha256(raw_snapshot).hexdigest() == snapshot["sha256"]
     lowered = raw_snapshot.lower()
     assert b"http" not in lowered
@@ -157,7 +218,7 @@ def test_manifest_pins_estimator_artifact_releases_ordering_and_contract_hashes(
     value = manifest()
 
     assert value["estimatorVersion"] == BUILDER.ESTIMATOR_VERSION == (
-        "ufo-analysis-evidence-lab-v2.2.0"
+        "ufo-analysis-evidence-lab-v2.3.0"
     )
     assert set(BUILDER.ARTIFACT_CONTRACTS) == set(value["artifacts"])
     assert value["artifactReleases"] == {
@@ -175,7 +236,7 @@ def test_manifest_pins_estimator_artifact_releases_ordering_and_contract_hashes(
         assert declaration["releaseId"] == (
             f'{value["releaseId"]}.{contract["artifactId"]}'
         )
-        rows = json.loads((STATIC_ROOT / declaration["file"]).read_text(encoding="utf-8"))
+        rows = json.loads(local_analysis_payload_path(declaration["file"]).read_text(encoding="utf-8"))
         assert declaration["rowOrdering"] == BUILDER.row_ordering_declaration(
             rows,
             declaration["rowSchema"],
@@ -205,7 +266,7 @@ def test_manifest_pins_estimator_artifact_releases_ordering_and_contract_hashes(
     }
 
     snapshot = value["sources"]["relationshipSourceSnapshot"]
-    snapshot_rows = json.loads((STATIC_ROOT / snapshot["file"]).read_text(encoding="utf-8"))
+    snapshot_rows = json.loads(local_analysis_payload_path(snapshot["file"]).read_text(encoding="utf-8"))
     snapshot_contract = BUILDER.RELATIONSHIP_SNAPSHOT_CONTRACT
     assert snapshot["artifactId"] == snapshot_contract["artifactId"]
     assert snapshot["releaseId"] == (
@@ -274,10 +335,10 @@ def test_context_readiness_never_promotes_generalized_or_catalog_markers() -> No
         label = decoded_label("cropContextReadiness", "coordinateEvidenceCode", row[crop_evidence])
         crop_counts[label] = crop_counts.get(label, 0) + 1
     assert crop_counts == {
-        "candidate_field_marker": 409,
-        "exact_source_coordinate": 10,
-        "locality_centroid": 3886,
-        "unmapped": 3440,
+        "candidate_field_marker": 358,
+        "exact_source_coordinate": 97,
+        "locality_centroid": 3869,
+        "unmapped": 3421,
     }
     assert not any(row[crop_eligible] for row in crop_rows)
 
@@ -298,8 +359,8 @@ def test_context_analysis_lanes_publish_the_locked_candidate_counts() -> None:
         BUILDER.STATIC_DATA_ROOT
     )
 
-    assert sum(row["analysisLaneCode"] == "crop_bounded" for row in crops) == 406
-    assert sum(row["analysisLaneCode"] == "crop_locality" for row in crops) == 3249
+    assert sum(row["analysisLaneCode"] == "crop_bounded" for row in crops) == 433
+    assert sum(row["analysisLaneCode"] == "crop_locality" for row in crops) == 3225
     assert sum(row["analysisLaneCode"] == "animal_public_marker" for row in animals) == 339
     assert crop_source["policy"]["candidateMarkersBoundedAnalysisEligible"] is True
     assert crop_source["policy"]["catalogDatesSubstituteForFormationDates"] is False
@@ -347,18 +408,18 @@ def test_context_neighbors_keep_origin_and_publisher_exclusions_auditable() -> N
     assert (rows, source) == (repeated_rows, repeated_source)
 
 
-def test_v22_packed_spatial_schemas_are_versioned_and_decision_complete() -> None:
-    assert BUILDER.DEFAULT_RELEASE_ID == "analysis-evidence-lab-v2.2-20260803"
-    assert BUILDER.SCHEMA_ID == "ufo-timeline-analysis-evidence-artifacts-v2.2.0"
+def test_v23_packed_spatial_schemas_are_versioned_and_decision_complete() -> None:
+    assert BUILDER.DEFAULT_RELEASE_ID == "analysis-evidence-lab-v2.3-20260811"
+    assert BUILDER.SCHEMA_ID == "ufo-timeline-analysis-evidence-artifacts-v2.3.0"
     assert BUILDER.UFO_SPATIAL_POINT_ROW_SCHEMA == [
         "eventId", "lat", "lon", "ordinal", "year", "sourceCode", "craftCode",
         "craftConfidenceCode", "sameDayMatchStrengthCode", "coordinateEvidenceCode",
         "coordinatePileGroup", "coordinatePileCount", "fineSpatialStratumCode",
         "coarseSpatialStratumCode", "fiveYearBand", "decade", "duplicateLineageCode",
     ]
-    assert BUILDER.CONTEXT_UFO_NEIGHBOR_ROW_SCHEMA[-4:] == [
+    assert BUILDER.CONTEXT_UFO_NEIGHBOR_ROW_SCHEMA[-6:] == [
         "originUfoExcluded", "originPublisherExcluded", "independentAssociationEligible",
-        "dateRoleCode",
+        "dateRoleCode", "contextSourceFamilyGroupCode", "contextCoarseSpatialStratumCode",
     ]
     assert "contextClusterId" in BUILDER.CONTEXT_UFO_NEIGHBOR_ROW_SCHEMA
     assert "uncertaintyClassCode" in BUILDER.CONTEXT_UFO_NEIGHBOR_ROW_SCHEMA
@@ -618,7 +679,7 @@ def test_neighbor_projection_contains_only_unique_bounded_unordered_point_pairs(
     }
 
 
-def test_v22_pinned_points_and_context_neighbors_are_bounded_and_decodable() -> None:
+def test_v23_pinned_points_and_context_neighbors_are_bounded_and_decodable() -> None:
     points, point_schema = artifact_rows("ufoSpatialPoints")
     assert len(points) == 33801
     event_id = point_schema.index("eventId")
@@ -640,7 +701,7 @@ def test_v22_pinned_points_and_context_neighbors_are_bounded_and_decodable() -> 
     independent = schema.index("independentAssociationEligible")
     origin_event = schema.index("originUfoExcluded")
     origin_publisher = schema.index("originPublisherExcluded")
-    assert len(neighbors) == 63753
+    assert len(neighbors) == 63917
     assert all(row[distance] is None or 0 <= row[distance] <= 25_000 for row in neighbors)
     assert all(row[lag] is None or abs(row[lag]) <= 30 for row in neighbors)
     assert {
@@ -803,8 +864,8 @@ def test_relationship_reconciliation_uses_lineage_and_quarantines_unresolved_row
 
 
 def test_uncertainty_classification_and_distance_are_boundary_safe() -> None:
-    assert BUILDER.classify_uncertain_distance(5, 1, 1, 10) == "near"
-    assert BUILDER.classify_uncertain_distance(20, 2, 2, 10) == "far"
+    assert BUILDER.classify_uncertain_distance(5, 1, 1, 10) == "definitely_near"
+    assert BUILDER.classify_uncertain_distance(20, 2, 2, 10) == "definitely_far"
     assert BUILDER.classify_uncertain_distance(10, 2, 2, 10) == "ambiguous"
     assert 22.0 < BUILDER.haversine_km(0, 179.9, 0, -179.9) < 22.3
     assert BUILDER.haversine_km(89.9, 170, 89.9, -170) < 4.0

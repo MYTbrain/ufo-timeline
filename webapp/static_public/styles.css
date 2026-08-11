@@ -9051,6 +9051,7 @@ html[data-active-primary-view="analysis"] .timeline-panel {
 
 .analysis-context-pulse {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 7px;
 }
 
@@ -9307,6 +9308,11 @@ html[data-active-primary-view="analysis"] .timeline-panel {
   overflow: hidden;
   background: color-mix(in srgb, var(--card) 86%, transparent);
   backdrop-filter: blur(12px);
+}
+
+.analysis-visual-briefing-grid .analysis-overview-context-card {
+  grid-column: 1 / -1;
+  min-height: 0;
 }
 
 .analysis-visual-briefing-grid .analysis-card > h5 {
@@ -11565,7 +11571,7 @@ button[data-analysis-unavailable="true"]:disabled {
   }
 
   .analysis-overview-context-card .analysis-context-pulse {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .analysis-facility-plot .analysis-forest-list {
@@ -11601,7 +11607,7 @@ button[data-analysis-unavailable="true"]:disabled {
   }
 
   .analysis-overview-context-card {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .analysis-coverage-orbit {

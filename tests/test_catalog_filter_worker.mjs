@@ -314,6 +314,8 @@ const geographyBinaryCatalogRows = structuredClone(rows);
 geographyBinaryCatalogRows[1].eventId = "123456789";
 const geographyBinary = encodeGeographyBinary(geographyBinaryRows);
 const geographyBinaryManifest = structuredClone(geographyManifest);
+geographyBinaryManifest.manifestVersion = "2.3.0";
+geographyBinaryManifest.schemaId = "ufo-timeline-analysis-evidence-artifacts-v2.3.0";
 geographyBinaryManifest.artifacts.ufoGeography.binary = {
   format: "ufo_geography_columnar_v1",
   file: "data/analysis_v2/ufo_geography_v1.bin",
@@ -1442,10 +1444,22 @@ assert.equal(mismatch.type, "catalogFacetWorkerError");
 assert.match(mismatch.error, /SHA-256 mismatch/);
 
 const analysisV2Manifest = JSON.parse(fs.readFileSync("webapp/static_public/data/analysis_v2/manifest.json", "utf8"));
+const analysisV2LocalArtifactPaths = new Map();
+Object.values(analysisV2Manifest.artifacts || {}).forEach((declaration) => {
+  [declaration && declaration.file, declaration && declaration.gzipFile].filter(Boolean).forEach((file) => {
+    const artifactUrl = new URL(file, "https://example.test/");
+    const filename = artifactUrl.pathname.split("/").filter(Boolean).at(-1);
+    analysisV2LocalArtifactPaths.set(
+      artifactUrl.origin + artifactUrl.pathname,
+      "webapp/static_public/data/analysis_v2/" + filename
+    );
+  });
+});
 const spatialFetch = async (urlValue) => {
   const url = new URL(String(urlValue), "https://example.test/");
   const relative = decodeURIComponent(url.pathname).replace(/^\//, "");
-  const path = relative.startsWith("data/") ? "webapp/static_public/" + relative : relative;
+  const path = analysisV2LocalArtifactPaths.get(url.origin + url.pathname) ||
+    (relative.startsWith("data/") ? "webapp/static_public/" + relative : relative);
   if (!fs.existsSync(path)) return new Response("not found", { status: 404 });
   return new Response(fs.readFileSync(path), { status: 200 });
 };
@@ -1506,7 +1520,7 @@ const contextOnlySetup = await contextOnlyWorker.sendAsync({
   urls: { manifest: "https://example.test/data/analysis_v2/manifest.json" },
 });
 assert.equal(contextOnlySetup.type, "analysisContextSpatialArtifactSet");
-assert.equal(contextOnlySetup.snapshot.rowCount, 63_753);
+assert.equal(contextOnlySetup.snapshot.rowCount, analysisV2Manifest.artifacts.contextUfoNeighbors.rowCount);
 assert.equal(contextOnlySetup.snapshot.fullSpatialLoaded, false);
 assert.equal(contextOnlyRequests.length, 1, "Context loads only its point-neighbor projection");
 assert.match(contextOnlyRequests[0], /context_ufo_neighbors_v1\.json(?:\?|$)/);
@@ -1534,7 +1548,7 @@ assert.equal(contextOnlyAnalysis.type, "analysisComputed");
 assert.equal(contextOnlyAnalysis.result.spatialEvidence.status, "context_evidence_ready_spatial_not_loaded");
 assert.deepEqual(
   contextOnlyAnalysis.result.spatialEvidence.contextAssociations.lanes.map((lane) => lane.lane),
-  ["crop_bounded", "crop_locality", "animal_public_marker"]
+  ["crop_strict", "animal_strict", "crop_bounded", "crop_locality", "animal_public_marker"]
 );
 assert.equal(contextOnlyAnalysis.result.spatialEvidence.traceInputsRead, false);
 assert.equal("cooccurrence" in contextOnlyAnalysis.result.spatialEvidence, false);
@@ -1634,7 +1648,7 @@ const raceWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
     if (String(urlValue).includes("delayed-context-only.json")) {
       delayedContextFetchStarted = true;
       await delayedContextFetchGate;
-      return spatialFetch(new URL(analysisV2Manifest.artifacts.contextUfoNeighbors.file, "https://example.test/"));
+      return spatialFetch(analysisV2Manifest.artifacts.contextUfoNeighbors.file);
     }
     return spatialFetch(urlValue);
   },
@@ -1659,7 +1673,7 @@ raceWorker.dispatch({
 });
 const raceFullSetup = await raceWorker.waitFor("context-race-full");
 assert.equal(raceFullSetup.type, "analysisSpatialArtifactsSet");
-assert.equal(raceFullSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+assert.equal(raceFullSetup.snapshot.rowCounts.contextNeighbors, analysisV2Manifest.artifacts.contextUfoNeighbors.rowCount);
 releaseDelayedContextFetch();
 const racePartialSetup = await raceWorker.waitFor("context-race-partial");
 assert.equal(racePartialSetup.type, "catalogFacetWorkerError");
@@ -1683,7 +1697,7 @@ const fullLoadedContextOnly = raceWorker.send({
 assert.equal(fullLoadedContextOnly.result.spatialEvidence.status, "context_evidence_ready");
 assert.equal("cooccurrence" in fullLoadedContextOnly.result.spatialEvidence, false);
 assert.equal("facility" in fullLoadedContextOnly.result.spatialEvidence, false);
-assert.equal(fullLoadedContextOnly.result.spatialEvidence.contextAssociations.lanes.length, 3);
+assert.equal(fullLoadedContextOnly.result.spatialEvidence.contextAssociations.lanes.length, 5);
 const incompatibleContextManifest = structuredClone(analysisV2Manifest);
 incompatibleContextManifest.releaseId = analysisV2Manifest.releaseId + "-different-release";
 const incompatibleContextSetup = await raceWorker.sendAsync({
@@ -1712,7 +1726,7 @@ const fullFirstRaceWorker = loadWorker("webapp/static_public/catalog_filter_work
     if (urlText.includes("delayed-full-neighbors.json")) {
       delayedFullFetchStarted = true;
       await delayedFullFetchGate;
-      return spatialFetch(new URL(analysisV2Manifest.artifacts.ufoPointNeighbors.file, "https://example.test/"));
+      return spatialFetch(analysisV2Manifest.artifacts.ufoPointNeighbors.file);
     }
     return spatialFetch(urlValue);
   },
@@ -1746,7 +1760,7 @@ assert.equal(
 releaseDelayedFullFetch();
 const fullFirstSpatialSetup = await fullFirstRaceWorker.waitFor("full-first-race-spatial");
 assert.equal(fullFirstSpatialSetup.type, "analysisSpatialArtifactsSet");
-assert.equal(fullFirstSpatialSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+assert.equal(fullFirstSpatialSetup.snapshot.rowCounts.contextNeighbors, analysisV2Manifest.artifacts.contextUfoNeighbors.rowCount);
 
 const spatialWorkerRequests = [];
 const spatialWorker = loadWorker("webapp/static_public/catalog_filter_worker.js", {
@@ -1787,7 +1801,7 @@ assert.equal(spatialArtifactSetup.snapshot.rowCounts.neighbors, 42_575);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.facilities, 1_800);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.relationships, 1_804);
 assert.equal(spatialArtifactSetup.snapshot.rowCounts.spatialPoints, 33_801);
-assert.equal(spatialArtifactSetup.snapshot.rowCounts.contextNeighbors, 63_753);
+assert.equal(spatialArtifactSetup.snapshot.rowCounts.contextNeighbors, analysisV2Manifest.artifacts.contextUfoNeighbors.rowCount);
 assert.equal(spatialArtifactSetup.snapshot.releaseId, analysisV2Manifest.releaseId);
 assert.equal(spatialArtifactSetup.snapshot.artifactHashes.ufoPointNeighbors, analysisV2Manifest.artifacts.ufoPointNeighbors.sha256);
 assert.equal(
@@ -1809,7 +1823,6 @@ assert.deepEqual(spatialArtifactSetup.snapshot.relationshipReadiness, {
   minimumEligibleN: 25,
   inferenceEnabled: false,
   reasons: [
-    "animal_exact_coordinate_contract_unavailable",
     "relationships_not_analyst_adjudicated_for_inference",
     "unresolved_subjects_and_objects_remain_quarantined",
   ],
@@ -1873,7 +1886,11 @@ assert.equal(spatialComputed.result.spatialEvidence.cooccurrence.sameSource.leng
 const cropReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "cropCircles");
 const animalReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "animalReports");
 assert.equal(cropReadiness.status, "ready_sensitivity");
-assert.equal(cropReadiness.eligibleN, 3_655, "bounded and locality crop lanes remain distinct but both contribute usable markers");
+assert.equal(
+  cropReadiness.eligibleN,
+  analysisV2Manifest.contextPulseSummary.domains.crops.sensitivityReadyN,
+  "bounded and locality crop lanes remain distinct but both contribute usable markers"
+);
 assert.equal(animalReadiness.status, "ready_sensitivity");
 assert.equal(animalReadiness.eligibleN, 339, "rough animal markers remain usable for public-marker association analysis");
 const relationshipRuntimeReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "relationshipReconciliation");

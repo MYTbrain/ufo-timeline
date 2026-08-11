@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-review-decision-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "decisionId", "assertionId", "caseId", "domain", "outcome", "reviewer", "frozenEvidenceSha256", "reasonCodes", "supersedesDecisionIds", "duplicateOfCaseId", "decidedAt"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-review-decision-v1.0.0"},
+    "decisionId": {"type": "string", "pattern": "^crd_[a-f0-9]{16,64}$"},
+    "assertionId": {"type": "string", "pattern": "^cea_[a-f0-9]{16,64}$"},
+    "caseId": {"type": "string", "pattern": "^(cc|ami)_[a-f0-9]+$"},
+    "domain": {"enum": ["crop_circle", "animal_mutilation"]},
+    "outcome": {"enum": ["accepted", "rejected", "contradictory", "duplicate", "unresolved"]},
+    "reviewer": {
+      "type": "object",
+      "required": ["reviewerId", "reviewerType", "runId"],
+      "properties": {
+        "reviewerId": {"type": "string", "minLength": 1},
+        "reviewerType": {"enum": ["agent", "human"]},
+        "runId": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+      },
+      "additionalProperties": false
+    },
+    "frozenEvidenceSha256": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "uniqueItems": true},
+    "reasonCodes": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "uniqueItems": true},
+    "supersedesDecisionIds": {"type": "array", "items": {"type": "string", "pattern": "^crd_[a-f0-9]{16,64}$"}, "uniqueItems": true},
+    "duplicateOfCaseId": {"oneOf": [{"type": "string", "pattern": "^(cc|ami)_[a-f0-9]+$"}, {"type": "null"}]},
+    "decidedAt": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"outcome": {"const": "duplicate"}}, "required": ["outcome"]},
+      "then": {"properties": {"duplicateOfCaseId": {"type": "string", "pattern": "^(cc|ami)_[a-f0-9]+$"}}},
+      "else": {"properties": {"duplicateOfCaseId": {"type": "null"}}}
+    }
+  ],
+  "additionalProperties": false
+}
+

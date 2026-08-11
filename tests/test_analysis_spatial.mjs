@@ -421,7 +421,7 @@ test("pinned spatial points replace mutable runtime endpoint fields", () => {
   assert.equal(rows[0].analysisFineSpatialStratum, "ea12x24:8:4");
 });
 
-test("rough-marker context estimates are tested while exact-site claims remain prohibited", () => {
+test("rough-marker context estimates remain sensitivity-only and never become findings", () => {
   const rows = [];
   const activeRows = [];
   for (let cluster = 0; cluster < 40; cluster += 1) {
@@ -473,7 +473,10 @@ test("rough-marker context estimates are tested while exact-site claims remain p
   assert.equal(cell.observedClusterCount, 30);
   assert.equal(cell.expectedClusterCount, 12);
   assert.equal(cell.estimateAvailable, true);
-  assert.equal(cell.inferenceEligible, true);
+  assert.equal(cell.inferenceEligible, false);
+  assert.equal(cell.pValue, null);
+  assert.equal(cell.qValue, null);
+  assert.equal(cell.evidenceStatus, "sensitivity_only");
   assert.equal(cell.patternFinderEligible, false);
   assert.equal(lane.definiteNearEligible, false);
   assert.equal(lane.excludedObservedPairN, 1);
@@ -481,6 +484,87 @@ test("rough-marker context estimates are tested while exact-site claims remain p
   assert.ok(lane.featureAssociation.axes.columns.includes("other_sparse_species"));
   assert.ok(lane.featureAssociation.completeAccessibleTable.axes.columns.includes("equine"));
   assert.ok(lane.featureAssociation.cells.every((value) => "observedClusterCount" in value && "qValue" in value));
+});
+
+test("strict context lanes use occurrence roles, interval-safe distance rings, and stable holdouts", () => {
+  const rows = [];
+  const activeRows = [];
+  const controls = [
+    "matched_control_minus_2y", "matched_control_minus_1y",
+    "matched_control_plus_1y", "matched_control_plus_2y",
+  ];
+  for (let cluster = 0; cluster < 60; cluster += 1) {
+    const definiteEventId = `strict-definite-${cluster}`;
+    const ambiguousEventId = `strict-ambiguous-${cluster}`;
+    activeRows.push({ eventId: definiteEventId }, { eventId: ambiguousEventId });
+    const shared = {
+      contextDomainCode: "crop",
+      contextLaneCode: "crop_strict",
+      contextId: `crop-strict-${cluster}`,
+      contextClusterId: `strict-cluster-${cluster}`,
+      contextOrdinal: 730486,
+      dayLag: 0,
+      dayLagBandCode: "same_day",
+      uncertaintyClassCode: "definitely_near_at_250km",
+      contextUncertaintyKm: 0.8,
+      ufoCraftCode: "triangle",
+      ufoSourceCode: cluster % 2 ? "ufo-source-b" : "ufo-source-a",
+      ufoFineSpatialStratumCode: "ufo-fine-1",
+      ufoCoarseSpatialStratumCode: "ufo-coarse-1",
+      contextSourceFamilyGroupCode: cluster % 2 ? "sf-b" : "sf-a",
+      contextCoarseSpatialStratumCode: cluster % 2 ? "context-region-b" : "context-region-a",
+      featureGroupCode: "radial_rosette_or_star",
+      originUfoExcluded: false,
+      originPublisherExcluded: false,
+      independentAssociationEligible: true,
+    };
+    rows.push({
+      ...shared,
+      ufoEventId: definiteEventId,
+      distanceDecameters: 1000,
+      distanceRingCode: "0_25_km",
+      dateRoleCode: "observed_formation_date",
+    });
+    rows.push({
+      ...shared,
+      ufoEventId: ambiguousEventId,
+      distanceDecameters: 2500,
+      distanceRingCode: "0_25_km",
+      dateRoleCode: "observed_formation_date",
+    });
+    if (cluster < 24) controls.forEach((role) => rows.push({
+      ...shared,
+      ufoEventId: definiteEventId,
+      distanceDecameters: 1000,
+      distanceRingCode: "0_25_km",
+      dateRoleCode: role,
+    }));
+  }
+  const result = spatial.computeContextAssociations({
+    activeRows,
+    neighbors: rows,
+    permutationCount: 499,
+    bootstrapCount: 49,
+    inferenceEnabled: true,
+    seed: "strict-context-fixture",
+  });
+  const lane = result.lanes.find((value) => value.lane === "crop_strict");
+  const cell = lane.cells.find((value) => value.row === "0_25_km" && value.column === "same_day");
+  assert.equal(lane.observedDateRole, "observed_formation_date");
+  assert.equal(lane.definiteNearEligible, true);
+  assert.equal(lane.observedPairN, 120);
+  assert.equal(lane.strictDistanceClassificationCounts.definitelyNear, 120);
+  assert.equal(lane.strictDistanceClassificationCounts.bandAmbiguous, 60);
+  assert.equal(cell.observedClusterCount, 60, "boundary-crossing pairs cannot enter a definite distance ring");
+  assert.equal(cell.expectedClusterCount, 24);
+  assert.equal(cell.sourceSensitivity.evaluatedHoldoutN, 2);
+  assert.equal(cell.regionSensitivity.evaluatedHoldoutN, 2);
+  assert.equal(cell.sourceSensitivity.signStable, true);
+  assert.equal(cell.regionSensitivity.signStable, true);
+  assert.equal(cell.inferenceEligible, true);
+  assert.equal(cell.patternFinderEligible, true);
+  assert.equal(cell.evidenceStatus, "qualified_exploratory");
+  assert.equal(lane.featureAssociation.cells.some((value) => value.inferenceEligible), false);
 });
 
 test("empty active cohort retains context sentinels but admits no real neighbors", () => {

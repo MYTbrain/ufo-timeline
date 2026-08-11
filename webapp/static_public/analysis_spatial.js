@@ -5,7 +5,7 @@
 })(typeof self !== "undefined" ? self : globalThis, function () {
   "use strict";
 
-  const ESTIMATOR_VERSION = "ufo-analysis-spatial-v2.2.0";
+  const ESTIMATOR_VERSION = "ufo-analysis-spatial-v2.3.0";
   const DEFAULT_WINDOWS = Object.freeze([
     Object.freeze({ id: "near_25km_7d", label: "25 km / +/-7 days", radiusKm: 25, dayWindow: 7, primary: true }),
     Object.freeze({ id: "near_50km_7d", label: "50 km / +/-7 days", radiusKm: 50, dayWindow: 7 }),
@@ -46,7 +46,7 @@
     "contextUncertaintyKm", "ufoCraftCode", "ufoSourceCode",
     "ufoFineSpatialStratumCode", "ufoCoarseSpatialStratumCode", "featureGroupCode",
     "originUfoExcluded", "originPublisherExcluded", "independentAssociationEligible",
-    "dateRoleCode",
+    "dateRoleCode", "contextSourceFamilyGroupCode", "contextCoarseSpatialStratumCode",
   ]);
   const PACKED_RELATIONSHIP_SCHEMA = Object.freeze([
     "relationshipId", "subjectAnalysisId", "objectDomainCode", "objectAnalysisId",
@@ -947,6 +947,8 @@
         originPublisherExcluded: Boolean(value[18]),
         independentEligible: Boolean(value[19]),
         dateRole: codeLabel(codebookValue, "dateRole", value[20], "unknown"),
+        contextSourceFamilyGroup: codeLabel(codebookValue, "contextSourceFamilyGroup", value[21], "unknown"),
+        contextCoarse: codeLabel(codebookValue, "contextCoarseSpatialStratum", value[22], "unmapped"),
         packed: true,
       };
     }
@@ -975,17 +977,69 @@
         ? Boolean(row.independentEligible)
         : Boolean(row.independentAssociationEligible),
       dateRole: text(firstDefined(row.dateRole, row.dateRoleCode), "unknown"),
+      contextSourceFamilyGroup: text(firstDefined(
+        row.contextSourceFamilyGroup, row.contextSourceFamilyGroupCode
+      ), "unknown"),
+      contextCoarse: text(firstDefined(
+        row.contextCoarse, row.contextCoarseSpatialStratum, row.contextCoarseSpatialStratumCode
+      ), "unmapped"),
       packed: false,
     };
   }
 
-  function contextCellIndex(row) {
-    const distance = CONTEXT_DISTANCE_RING_ORDER.indexOf(row.distanceRing);
+  function strictContextLane(laneValue) {
+    const lane = text(laneValue);
+    return lane === "crop_strict" || lane === "animal_strict";
+  }
+
+  function contextObservedRole(laneValue) {
+    const lane = text(laneValue);
+    if (lane === "crop_strict") return "observed_formation_date";
+    if (lane === "animal_strict") return "observed_occurrence_date";
+    if (lane === "animal_public_marker") return "observed_reported_date";
+    return "observed_catalog_date";
+  }
+
+  function strictContextOuterClassification(row) {
+    if (!row || !row.ufoEventId || row.distanceDecameters == null || row.contextUncertaintyKm == null) {
+      return "unknown";
+    }
+    const classification = classifyUncertainDistance(
+      Math.max(0, finite(row.distanceDecameters, Infinity)) * 10,
+      Math.max(0, finite(row.contextUncertaintyKm, Infinity)) * 1000,
+      0,
+      250000
+    );
+    return classification.status === "near"
+      ? "definitely_near"
+      : (classification.status === "far" ? "definitely_far" : classification.status);
+  }
+
+  function strictContextDistanceRing(row) {
+    if (strictContextOuterClassification(row) !== "definitely_near") return null;
+    const distanceKm = Math.max(0, finite(row.distanceDecameters, Infinity)) / 100;
+    const uncertaintyKm = Math.max(0, finite(row.contextUncertaintyKm, Infinity));
+    const minimum = Math.max(0, distanceKm - uncertaintyKm);
+    const maximum = distanceKm + uncertaintyKm;
+    const bounds = [0, 25, 50, 100, 250];
+    for (let index = 0; index < CONTEXT_DISTANCE_RING_ORDER.length; index += 1) {
+      const lower = bounds[index];
+      const upper = bounds[index + 1];
+      if ((index === 0 ? minimum >= 0 : minimum > lower) && maximum <= upper) {
+        return CONTEXT_DISTANCE_RING_ORDER[index];
+      }
+    }
+    return null;
+  }
+
+  function contextCellIndex(row, laneValue) {
+    const ring = strictContextLane(laneValue) ? strictContextDistanceRing(row) : row.distanceRing;
+    const distance = CONTEXT_DISTANCE_RING_ORDER.indexOf(ring);
     const lag = CONTEXT_DAY_LAG_ORDER.indexOf(row.dayLagBand);
     return distance < 0 || lag < 0 ? -1 : (distance * CONTEXT_DAY_LAG_ORDER.length) + lag;
   }
 
-  function contextClusterRoles(rowsValue, observedRole) {
+  function contextClusterRoles(rowsValue, observedRole, laneValue) {
     const roles = [
       observedRole,
       "matched_control_minus_2y",
@@ -995,7 +1049,7 @@
     ];
     const clusters = new Map();
     (Array.isArray(rowsValue) ? rowsValue : []).forEach(function (row) {
-      const cell = contextCellIndex(row);
+      const cell = contextCellIndex(row, laneValue);
       if (roles.indexOf(row.dateRole) === -1 || !row.clusterId) return;
       if (!clusters.has(row.clusterId)) clusters.set(row.clusterId, new Map());
       if (cell < 0) return;
@@ -1025,12 +1079,16 @@
     return { observed, controls, expected };
   }
 
-  function contextHoldoutSensitivity(rows, observedRole, baseEffects, selector, minimumN) {
-    const groupCounts = new Map();
+  function contextHoldoutSensitivity(rows, observedRole, baseEffects, selector, minimumN, laneValue) {
+    const groupClusters = new Map();
     rows.filter(function (row) { return row.dateRole === observedRole && row.ufoEventId; }).forEach(function (row) {
       const key = text(selector(row), "unknown");
-      groupCounts.set(key, (groupCounts.get(key) || 0) + 1);
+      if (!groupClusters.has(key)) groupClusters.set(key, new Set());
+      groupClusters.get(key).add(row.clusterId);
     });
+    const groupCounts = new Map(Array.from(groupClusters.entries()).map(function (entry) {
+      return [entry[0], entry[1].size];
+    }));
     const total = Array.from(groupCounts.values()).reduce(function (sum, value) { return sum + value; }, 0);
     const groups = Array.from(groupCounts.entries()).filter(function (entry) {
       return entry[1] >= minimumN && total - entry[1] >= minimumN;
@@ -1038,7 +1096,7 @@
     const effects = Array.from({ length: 16 }, function () { return []; });
     groups.forEach(function (entry) {
       const remaining = rows.filter(function (row) { return text(selector(row), "unknown") !== entry[0]; });
-      const prepared = contextClusterRoles(remaining, observedRole);
+      const prepared = contextClusterRoles(remaining, observedRole, laneValue);
       const totals = contextTotals(prepared.clusters, prepared.roles);
       for (let cell = 0; cell < 16; cell += 1) {
         effects[cell].push({
@@ -1056,7 +1114,9 @@
   function contextFeatureAssociation(rowsValue, lane, observedRole, optionsValue) {
     const options = optionsValue || {};
     const rows = (Array.isArray(rowsValue) ? rowsValue : []).filter(function (row) {
-      return row.ufoEventId && row.craft && row.craft !== "none";
+      return row.ufoEventId && row.craft && row.craft !== "none" && (
+        !strictContextLane(lane) || strictContextOuterClassification(row) === "definitely_near"
+      );
     });
     const observedFeatureClusters = new Map();
     rows.filter(function (row) { return row.dateRole === observedRole; }).forEach(function (row) {
@@ -1167,16 +1227,20 @@
       cell.qValue = null;
       cell.estimateAvailable = observed > 0 || expected > 0;
       cell.inferenceEligible = false;
-      cell.evidenceStatus = reasons.length ? "low_support" : "candidate";
+      cell.evidenceStatus = !inferenceEnabled
+        ? (options.sensitivityOnly ? "sensitivity_only" : "descriptive_only")
+        : (reasons.length ? "low_support" : "candidate");
       cell.supportReasons = reasons;
+      if (!inferenceEnabled) cell.supportReasons.push(
+        options.sensitivityOnly ? "sensitivity_lane_not_inferential" : "inference_disabled"
+      );
       cell.patternFinderEligible = false;
     });
     if (inferenceEnabled) benjaminiHochberg(cells);
     cells.forEach(function (cell) {
       if (cell.evidenceStatus === "candidate" && finite(cell.qValue, 1) <= 0.05) {
-        cell.evidenceStatus = "qualified_exploratory";
-        cell.inferenceEligible = true;
-        cell.patternFinderEligible = lane === "crop_bounded";
+        cell.evidenceStatus = "exploratory_unqualified";
+        cell.supportReasons.push("source_family_and_region_holdouts_not_available_for_feature_cells");
       } else if (cell.evidenceStatus === "candidate") {
         cell.evidenceStatus = "not_statistically_qualified";
         cell.supportReasons.push("q_above_0_05");
@@ -1203,9 +1267,10 @@
     const options = optionsValue || {};
     const rows = Array.isArray(options.rows) ? options.rows : [];
     const lane = text(laneValue);
+    const strictLane = strictContextLane(lane);
     const laneRows = rows.filter(function (row) { return row.lane === lane && row.independentEligible; });
-    const observedRole = lane === "animal_public_marker" ? "observed_reported_date" : "observed_catalog_date";
-    const prepared = contextClusterRoles(laneRows, observedRole);
+    const observedRole = contextObservedRole(lane);
+    const prepared = contextClusterRoles(laneRows, observedRole, lane);
     const totals = contextTotals(prepared.clusters, prepared.roles);
     const random = seededRandom(text(options.seed, ESTIMATOR_VERSION + "|context|" + lane));
     const permutationCount = Math.max(0, Math.trunc(finite(options.permutationCount, 499)));
@@ -1236,9 +1301,15 @@
     const baseEffects = Array.from({ length: 16 }, function (_unused, cell) {
       return effectValue(totals.observed[cell], totals.expected[cell]);
     });
-    const sourceSensitivity = contextHoldoutSensitivity(laneRows, observedRole, baseEffects, function (row) { return row.source; }, 25);
-    const regionSensitivity = contextHoldoutSensitivity(laneRows, observedRole, baseEffects, function (row) { return row.coarse; }, 25);
-    const inferential = options.inferenceEnabled !== false;
+    const sourceSensitivity = contextHoldoutSensitivity(
+      laneRows, observedRole, baseEffects,
+      function (row) { return row.contextSourceFamilyGroup; }, 25, lane
+    );
+    const regionSensitivity = contextHoldoutSensitivity(
+      laneRows, observedRole, baseEffects,
+      function (row) { return row.contextCoarse; }, 25, lane
+    );
+    const inferential = strictLane && options.inferenceEnabled !== false;
     const cells = [];
     for (let distanceIndex = 0; distanceIndex < CONTEXT_DISTANCE_RING_ORDER.length; distanceIndex += 1) {
       for (let lagIndex = 0; lagIndex < CONTEXT_DAY_LAG_ORDER.length; lagIndex += 1) {
@@ -1256,6 +1327,8 @@
         if (observed < 25) reasons.push("observed_clusters_below_25");
         if (expected < 10) reasons.push("expected_clusters_below_10");
         if (Math.abs(effect) < Math.log2(1.25)) reasons.push("effect_below_1_25x");
+        if (!strictLane) reasons.push("sensitivity_lane_not_inferential");
+        else if (options.inferenceEnabled === false) reasons.push("inference_disabled");
         cells.push({
           estimatorVersion: ESTIMATOR_VERSION,
           row: CONTEXT_DISTANCE_RING_ORDER[distanceIndex],
@@ -1270,7 +1343,9 @@
           qValue: null,
           estimateAvailable: observed > 0 || expected > 0,
           inferenceEligible: false,
-          evidenceStatus: reasons.length ? "low_support" : "candidate",
+          evidenceStatus: !strictLane
+            ? "sensitivity_only"
+            : (options.inferenceEnabled === false ? "descriptive_only" : (reasons.length ? "low_support" : "candidate")),
           supportReasons: reasons,
           sourceSensitivity: sourceSensitivity[cellIndex],
           regionSensitivity: regionSensitivity[cellIndex],
@@ -1281,10 +1356,19 @@
     if (inferential) benjaminiHochberg(cells);
     cells.forEach(function (cell) {
       if (cell.evidenceStatus === "candidate" && finite(cell.qValue, 1) <= 0.05) {
-        cell.evidenceStatus = "qualified_exploratory";
-        cell.inferenceEligible = true;
-        cell.patternFinderEligible = lane === "crop_bounded" &&
-          cell.sourceSensitivity.signStable === true && cell.regionSensitivity.signStable === true;
+        if (cell.sourceSensitivity.signStable === true && cell.regionSensitivity.signStable === true) {
+          cell.evidenceStatus = "qualified_exploratory";
+          cell.inferenceEligible = true;
+          cell.patternFinderEligible = true;
+        } else {
+          cell.evidenceStatus = "holdout_unstable";
+          if (cell.sourceSensitivity.signStable !== true) {
+            cell.supportReasons.push("source_family_holdout_sign_not_stable");
+          }
+          if (cell.regionSensitivity.signStable !== true) {
+            cell.supportReasons.push("regional_holdout_sign_not_stable");
+          }
+        }
       } else if (cell.evidenceStatus === "candidate") {
         cell.evidenceStatus = "not_statistically_qualified";
         cell.supportReasons.push("q_above_0_05");
@@ -1296,10 +1380,29 @@
     observedRows.forEach(function (row) {
       uncertaintyCounts[row.uncertaintyClass] = (uncertaintyCounts[row.uncertaintyClass] || 0) + 1;
     });
+    const strictDistanceClassificationCounts = {
+      definitelyNear: 0,
+      definitelyFar: 0,
+      ambiguous: 0,
+      unknown: 0,
+      bandAmbiguous: 0,
+    };
+    if (strictLane) observedRows.forEach(function (row) {
+      const classification = strictContextOuterClassification(row);
+      const key = classification === "definitely_near"
+        ? "definitelyNear"
+        : (classification === "definitely_far" ? "definitelyFar" : classification);
+      strictDistanceClassificationCounts[key in strictDistanceClassificationCounts ? key : "unknown"] += 1;
+      if (classification === "definitely_near" && strictContextDistanceRing(row) == null) {
+        strictDistanceClassificationCounts.bandAmbiguous += 1;
+      }
+    });
     return {
       estimatorVersion: ESTIMATOR_VERSION,
       lane,
-      evidenceClass: lane === "crop_bounded" ? "bounded_location" : "rough_public_marker",
+      evidenceClass: strictLane
+        ? "strict_source_supported_site"
+        : (lane === "crop_bounded" ? "bounded_sensitivity_marker" : "rough_public_marker"),
       observedDateRole: observedRole,
       unitOfAnalysis: "unique context location-date cluster with at least one eligible UFO report marker",
       contextClusterN: prepared.clusters.length,
@@ -1308,6 +1411,7 @@
         return values && values.size;
       }).length,
       observedPairN: observedRows.length,
+      definiteObservedPairN: strictLane ? strictDistanceClassificationCounts.definitelyNear : 0,
       excludedObservedPairN: allLaneRows.filter(function (row) {
         return row.dateRole === observedRole && row.ufoEventId && !row.independentEligible;
       }).length,
@@ -1318,16 +1422,22 @@
       featureAssociation: contextFeatureAssociation(laneRows, lane, observedRole, {
         permutationCount,
         inferenceEnabled: inferential,
+        sensitivityOnly: !strictLane,
         seed: text(options.seed) + "|feature",
       }),
       uncertaintyCounts,
-      definiteNearEligible: lane === "crop_bounded",
-      patternFinderLaneEligible: lane === "crop_bounded",
-      policyWarnings: lane === "animal_public_marker"
+      strictDistanceClassificationCounts,
+      definiteNearEligible: strictLane,
+      patternFinderLaneEligible: strictLane,
+      policyWarnings: lane === "crop_strict"
+        ? ["Strict crop proximity uses formation day and source-supported site uncertainty; boundary-crossing distance intervals remain ambiguous."]
+        : lane === "animal_strict"
+          ? ["Strict animal proximity uses occurrence/death day and source-supported site uncertainty; boundary-crossing distance intervals remain ambiguous."]
+          : lane === "animal_public_marker"
         ? ["Public-marker association only; generalized animal markers never establish definite proximity."]
         : lane === "crop_locality"
           ? ["Crop-locality centroid association only; distances do not locate a formation site.", "Time is catalog date, not established formation time."]
-          : ["Bounded crop-marker association uses catalog dates, not established formation times."],
+          : ["Bounded crop-marker sensitivity uses catalog dates, not established formation times."],
     };
   }
 
@@ -1347,7 +1457,9 @@
       estimatorVersion: ESTIMATOR_VERSION,
       traceInputsRead: false,
       matchedNull: "same-location same-season controls at -2, -1, +1, and +2 years",
-      lanes: ["crop_bounded", "crop_locality", "animal_public_marker"].map(function (lane) {
+      lanes: [
+        "crop_strict", "animal_strict", "crop_bounded", "crop_locality", "animal_public_marker",
+      ].map(function (lane) {
         return computeContextLane(lane, {
           rows: normalized,
           seed: text(options.seed) + "|" + lane,
@@ -1358,6 +1470,8 @@
       }),
       policyWarnings: [
         "Point-marker associations are exploratory and non-causal.",
+        "Only strict source-supported occurrence/formation lanes may enter inference; sensitivity lanes remain descriptive.",
+        "Strict distance intervals are classified as definitely near, definitely far, or ambiguous at every ring boundary.",
         "Chronology connectors are prohibited estimator inputs.",
         "Originating UFO events and animal-record publishers are excluded from independent animal lanes.",
       ],

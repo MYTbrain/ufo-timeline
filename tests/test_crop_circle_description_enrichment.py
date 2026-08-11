@@ -338,6 +338,7 @@ class CropCircleDescriptionEnrichmentTest(unittest.TestCase):
                 50,
                 "https://assets.example.test/test-release/",
                 enrichment_path,
+                context_evidence_root=None,
             )
             self.assertEqual(manifest["sourceCommit"], "atlas-source-commit")
             self.assertEqual(manifest["counts"]["sourceDescriptions"], 1)
@@ -418,6 +419,7 @@ class CropCircleDescriptionEnrichmentTest(unittest.TestCase):
                 "duplicate-test",
                 50,
                 description_enrichment_path=enrichment_path,
+                context_evidence_root=None,
             )
             self.assertEqual(manifest["counts"]["recordsWithSourceDescriptions"], 1)
             self.assertEqual(manifest["counts"]["sourceDescriptionAssertions"], 2)

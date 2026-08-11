@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-05-analysis-color-v1-ui1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-11-context-evidence-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -1471,6 +1471,10 @@
       (wholeCorpusStructure || baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG);
     result.baselineMode = baselineMode;
     result.inferenceEnabled = inferenceEnabled;
+    const manifest = analysisSpatialArtifacts.manifest || {};
+    if (manifest.contextPulseSummary && typeof manifest.contextPulseSummary === "object") {
+      result.pulseSummary = manifest.contextPulseSummary;
+    }
     const relationship = readiness.relationshipReconciliation;
     if (relationship && typeof relationship === "object") {
       result.relationshipReadiness = Object.assign({}, relationship);
@@ -2235,7 +2239,7 @@
         ? analysisSpatialExecutor.estimatorVersion
         : (analysisSpatialApi && analysisSpatialApi.ESTIMATOR_VERSION
           ? analysisSpatialApi.ESTIMATOR_VERSION
-          : "ufo-analysis-spatial-v2.2.0"),
+          : "ufo-analysis-spatial-v2.3.0"),
     };
   }
 
@@ -2327,7 +2331,7 @@
     const message = event && event.data || {};
     if (message.type === "spatialAnalysisReady") {
       executor.ready = true;
-      executor.estimatorVersion = String(message.estimatorVersion || "ufo-analysis-spatial-v2.2.0");
+      executor.estimatorVersion = String(message.estimatorVersion || "ufo-analysis-spatial-v2.3.0");
       const resolveReady = executor.resolveReady;
       executor.resolveReady = null;
       executor.rejectReady = null;
@@ -2521,9 +2525,10 @@
     return Boolean(
       manifest &&
       Number(manifest.schemaVersion) === 2 &&
-      (version === "2.1.0" || version === "2.2.0") &&
+      (version === "2.1.0" || version === "2.2.0" || version === "2.3.0") &&
       (schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.1.0" ||
-        schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.2.0") &&
+        schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.2.0" ||
+        schemaId === "ufo-timeline-analysis-evidence-artifacts-v2.3.0") &&
       manifest.artifacts
     );
   }
@@ -3706,7 +3711,7 @@
     let encodingHash = "";
     if (binaryEntry) {
       const binaryUrl = urls.geographyBinary || geographyBinaryUrl(manifest, manifestUrl);
-      if (!binaryUrl) throw new Error("Analysis v2.2 manifest is missing the geography binary URL.");
+      if (!binaryUrl) throw new Error("Analysis v2 manifest is missing the geography binary URL.");
       const binaryBytes = await fetchAnalysisBinary(binaryUrl, geographyBinaryIntegrity(manifest));
       const projection = decodeGeographyBinary(binaryBytes, manifest);
       appliedRows = applyGeographyBinaryToCatalog(projection, manifest);
@@ -3714,7 +3719,7 @@
     } else {
       const artifactUrl = urls.geography || urls.ufoGeography ||
         manifestArtifactUrl(manifest, "ufoGeography", manifestUrl);
-      if (!artifactUrl) throw new Error("Analysis v2.2 manifest is missing the geography projection URL.");
+      if (!artifactUrl) throw new Error("Analysis v2 manifest is missing the geography projection URL.");
       const payload = await fetchAnalysisJson(
         artifactUrl,
         manifestArtifactIntegrity(manifest, "ufoGeography")
@@ -3762,8 +3767,8 @@
     const configurationAvailable = Boolean(
       manifest.artifacts.ufoConfigurationPoints && manifest.artifacts.ufoConfigurationNeighbors
     );
-    if (String(manifest.manifestVersion || "") === "2.2.0" && !configurationAvailable) {
-      throw new Error("Analysis v2.2 manifest is missing Formation/configuration artifacts.");
+    if (["2.2.0", "2.3.0"].indexOf(String(manifest.manifestVersion || "")) !== -1 && !configurationAvailable) {
+      throw new Error("Analysis v2 manifest is missing Formation/configuration artifacts.");
     }
     if (configurationAvailable) {
       requiredArtifactKeys.push("ufoConfigurationPoints", "ufoConfigurationNeighbors");

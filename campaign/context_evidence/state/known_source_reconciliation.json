@@ -1,0 +1,39 @@
+{
+  "schemaId": "ufo-timeline-context-evidence-known-source-reconciliation-v1.0.0",
+  "campaignId": "context-evidence-expansion-20260810",
+  "status": "complete",
+  "canonicalInput": {
+    "path": "C:\\Users\\jarod\\Documents\\Cattle Mutilation Map\\outputs\\phase1_1\\global_animal_seed_v1_1\\crop_circle_source_access_audit.csv",
+    "bytes": 7477735,
+    "sha256": "f12fd4bd5dc78f118e1a7fe68b45cd92e5fe63c39e0df08d81da9c41576c73d2",
+    "totalRows": 27953
+  },
+  "existingSourceRegistry": {
+    "path": "C:\\Users\\jarod\\Documents\\Cattle Mutilation Map\\repo_worktree\\docs\\cattle_mutilation\\source_registry.json",
+    "bytes": 13874,
+    "sha256": "f4f82d514173d4ee231b4d4033be40272f16757957362f02b455288a79221282",
+    "sourceRows": 18,
+    "urlRows": 15,
+    "retrievalClaim": "registry_identity_and_urls_only_not_document_retrieval"
+  },
+  "selection": {"field": "item_kind", "value": "crop_source_url", "rows": 2371},
+  "dispositionCounts": {"narrative_unavailable": 1, "source_page_narrative_candidate": 15, "source_page_scanned_no_signal": 2349, "unavailable": 6},
+  "coverageCounts": {"coverage_gap": 7, "narrative_scanned": 2364},
+  "noRepeatIndex": {
+    "targetColumn": "source_record_url",
+    "fingerprintAlgorithm": "sha256_attempt_kind_normalized_target_version_v1",
+    "storage": "recompute_from_content_addressed_canonical_input",
+    "exactMatchRequired": true
+  },
+  "externalDiscoveryProvenance": {
+    "status": "already_known_frontier_reconciliation_inputs_not_pristine_prequery",
+    "candidateRepositories": [
+      "eric-henline/crop-circle-watch@71d7e2c65aca6aeeddbbcf495f2068f4daa07cbd",
+      "beta86/crop_circle_map",
+      "merrypranxter/crop_circles",
+      "roserustowicz/finding-aliens",
+      "AImissq/cjd-USA",
+      "lyy289065406/crop-circles"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-wave-package-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "packageId", "campaignId", "waveIds", "frozenAt", "files", "adjudicators"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-wave-package-v1.0.0"},
+    "packageId": {"type": "string", "pattern": "^cep_[a-f0-9]{16,64}$"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "waveIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^wave-[0-9]{3}-[a-z0-9-]+$"}
+    },
+    "frozenAt": {"type": "string", "format": "date-time"},
+    "files": {
+      "type": "object",
+      "required": ["source_ledger.jsonl", "case_enrichment.jsonl", "case_review_decisions.jsonl", "research_queue.jsonl"],
+      "properties": {
+        "source_ledger.jsonl": {"$ref": "#/$defs/fileIdentity"},
+        "case_enrichment.jsonl": {"$ref": "#/$defs/fileIdentity"},
+        "case_review_decisions.jsonl": {"$ref": "#/$defs/fileIdentity"},
+        "research_queue.jsonl": {"$ref": "#/$defs/fileIdentity"}
+      },
+      "additionalProperties": false
+    },
+    "adjudicators": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["reviewerId", "reviewerType", "runId"],
+        "properties": {
+          "reviewerId": {"type": "string", "minLength": 1},
+          "reviewerType": {"enum": ["agent", "human"]},
+          "runId": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "fileIdentity": {
+      "type": "object",
+      "required": ["rows", "bytes", "sha256"],
+      "properties": {
+        "rows": {"type": "integer", "minimum": 0},
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

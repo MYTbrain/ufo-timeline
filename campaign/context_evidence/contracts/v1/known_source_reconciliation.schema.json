@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ufo-timeline-context-evidence-known-source-reconciliation-v1.0.0",
+  "type": "object",
+  "required": ["schemaId", "campaignId", "status", "canonicalInput", "existingSourceRegistry", "selection", "dispositionCounts", "coverageCounts", "noRepeatIndex", "externalDiscoveryProvenance"],
+  "properties": {
+    "schemaId": {"const": "ufo-timeline-context-evidence-known-source-reconciliation-v1.0.0"},
+    "campaignId": {"const": "context-evidence-expansion-20260810"},
+    "status": {"const": "complete"},
+    "canonicalInput": {
+      "type": "object",
+      "required": ["path", "bytes", "sha256", "totalRows"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "totalRows": {"const": 27953}
+      },
+      "additionalProperties": false
+    },
+    "existingSourceRegistry": {
+      "type": "object",
+      "required": ["path", "bytes", "sha256", "sourceRows", "urlRows", "retrievalClaim"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "bytes": {"const": 13874},
+        "sha256": {"const": "f4f82d514173d4ee231b4d4033be40272f16757957362f02b455288a79221282"},
+        "sourceRows": {"const": 18},
+        "urlRows": {"const": 15},
+        "retrievalClaim": {"const": "registry_identity_and_urls_only_not_document_retrieval"}
+      },
+      "additionalProperties": false
+    },
+    "selection": {"type": "object", "required": ["field", "value", "rows"], "properties": {"field": {"const": "item_kind"}, "value": {"const": "crop_source_url"}, "rows": {"const": 2371}}, "additionalProperties": false},
+    "dispositionCounts": {"const": {"narrative_unavailable": 1, "source_page_narrative_candidate": 15, "source_page_scanned_no_signal": 2349, "unavailable": 6}},
+    "coverageCounts": {"const": {"coverage_gap": 7, "narrative_scanned": 2364}},
+    "noRepeatIndex": {
+      "type": "object",
+      "required": ["targetColumn", "fingerprintAlgorithm", "storage", "exactMatchRequired"],
+      "properties": {
+        "targetColumn": {"const": "source_record_url"},
+        "fingerprintAlgorithm": {"const": "sha256_attempt_kind_normalized_target_version_v1"},
+        "storage": {"const": "recompute_from_content_addressed_canonical_input"},
+        "exactMatchRequired": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "externalDiscoveryProvenance": {
+      "type": "object",
+      "required": ["status", "candidateRepositories"],
+      "properties": {
+        "status": {"const": "already_known_frontier_reconciliation_inputs_not_pristine_prequery"},
+        "candidateRepositories": {"type": "array", "minItems": 6, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

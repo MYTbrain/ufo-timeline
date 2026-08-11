@@ -301,8 +301,8 @@ assert.match(indexSource, /id="cluster-quick-crop-circles"[\s\S]*?aria-pressed="
 assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelector\("#cluster-quick-crop-circles"\)/, "the quick crop toggle is registered with the core UI");
 assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
 assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
-assert.match(indexSource, /styles\.css\?v=2026-08-10-analysis-polish-v3/, "shared icon CSS uses the current cache-safe shell key");
-assert.match(indexSource, /app\.js\?v=2026-08-10-analysis-polish-v3/, "the application runtime uses the current cache-safe shell key");
+assert.match(indexSource, /styles\.css\?v=2026-08-11-context-evidence-v1/, "shared icon CSS uses the current cache-safe shell key");
+assert.match(indexSource, /app\.js\?v=2026-08-11-context-evidence-v1/, "the application runtime uses the current cache-safe shell key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
 assert.match(indexSource, /<details id="crop-circle-ufo-relation-disclosure"[^>]*aria-disabled="true">[\s\S]*?<summary[^>]*>UFO sighting → later crop record<\/summary>/, "UFO-to-crop controls are a compact disclosure that starts unavailable without a selected crop");
@@ -325,8 +325,16 @@ assert.match(appSource, /cropCircleEmphasisPane/, "inside-radius emphasis has it
 assert.match(appSource, /outline:\s*false/, "full selected trace baselines are not given an extra outside-radius outline");
 assert.match(appSource, /runtime\.map\.on\("zoomend", runtime\.cropTraceRelationZoomHandler\)/, "UFO-to-crop arrowheads are regenerated at each zoom");
 assert.match(appSource, /runtime\.map\.off\("zoomend", runtime\.cropTraceRelationZoomHandler\)/, "relation arrow zoom lifecycle is detached on clear");
+assert.match(source, /coordinateEvidenceClass[\s\S]*?source_exact[\s\S]*?source_bounded[\s\S]*?candidate_field_marker[\s\S]*?locality_centroid/, "detail coordinate badges prioritize explicit evidence classes");
+assert.match(source, /coordinateUncertaintyM[\s\S]*?coordinateUncertaintyKm[\s\S]*?Coordinate uncertainty is not quantified/, "detail coordinates expose metre uncertainty with an honest legacy fallback");
+for (const role of ["formation_date", "occurrence_date", "discovery_date", "report_date", "photography_date", "catalog_date", "publication_date"]) {
+  assert.match(source, new RegExp(`\\b${role}\\b`), `${role} has explicit detail-interface semantics`);
+}
+assert.match(source, /authenticity and cause are not implied/, "occurrence-date copy remains noncausal");
+assert.match(source, /does not establish an exact formation day/, "an inexact formation_date is labeled without inventing an exact occurrence day");
+assert.match(source, /not evidence of when the formation was created/, "non-formation date roles cannot be mistaken for formation time");
 const manifestFixture = JSON.parse(await fs.readFile(path.join(staticRoot, "data", "crop_circles", "manifest.json"), "utf8"));
-assert.equal(manifestFixture.releaseId, "crop-circles-v156-20260731", "harness targets the immutable v156 crop release");
+assert.equal(manifestFixture.releaseId, "crop-circles-context-evidence-v1-20260811", "harness targets the immutable context-evidence crop release");
 const expectedPointsPath = "/data/crop_circles/points.json";
 const pointRowsFixture = JSON.parse(gunzipSync(await fs.readFile(path.join(staticRoot, "data", "crop_circles", "points.json.gz"))).toString("utf8"));
 const pointRowByIdFixture = new Map(pointRowsFixture.map((row) => [String(row[0]), row]));
@@ -344,7 +352,7 @@ assert.deepEqual(requestCaches.slice(0, 2), ["no-cache", "force-cache"], "mutabl
 let status = layerApi.getStatus();
 assert.equal(status.loaded, true);
 assert.equal(status.traceEligible, false, "crop records never enter UFO traces or hops");
-assert.ok(status.renderedCount > 0 && status.renderedCount < 4305, "exact-date filter is applied");
+assert.ok(status.renderedCount > 0 && status.renderedCount < 4324, "exact-date filter is applied");
 assert.equal(elements.get("#crop-circle-chronology-controls").hidden, false, "separate crop chronology controls appear only after enable");
 assert.equal(status.chronology.enabled, false, "crop chronology is opt-in");
 assert.equal(status.chronology.relation, "off");
@@ -392,13 +400,13 @@ assert.equal(panes.get("cropCircleChronologyPane").style.zIndex, "480", "crop ch
 view.hideNonExactDates = false;
 await waitForPoll();
 status = layerApi.getStatus();
-assert.equal(status.renderedCount, 4305, "all mapped crop records remain represented when date precision is unrestricted");
-assert.equal(status.renderedPositionCount, 2541, "identical coordinates are grouped into one selectable marker");
+assert.equal(status.renderedCount, 4324, "all mapped crop records remain represented when date precision is unrestricted");
+assert.equal(status.renderedPositionCount, 2574, "identical coordinates are grouped into one selectable marker");
 assert.equal(manifestFixture.counts.recordsWithSourceDescriptions, 564);
 assert.equal(manifestFixture.counts.sourceDescriptionAssertions, 566);
 assert.match(elements.get("#crop-circle-status").textContent, /Source narratives captured for 564 of 7,745 records\./);
 const pointLayer = findPointLayer();
-assert.equal(pointLayer.getLayers().length, 2541);
+assert.equal(pointLayer.getLayers().length, 2574);
 
 const invariantMarker = pointLayer.getLayers()[0];
 const invariantStyle = markerInvariant(invariantMarker);
@@ -635,8 +643,8 @@ assert.match(elements.get("#crop-circle-chronology-status").textContent, /catalo
 view.hideLowPrecisionCoordinates = true;
 await waitForPoll();
 status = layerApi.getStatus();
-assert.equal(status.renderedCount, 10, "exact-coordinate filter retains only reviewed/corroborated records");
-assert.equal(status.renderedPositionCount, 10);
+assert.equal(status.renderedCount, 96, "exact-coordinate filter retains only source-exact rows");
+assert.equal(status.renderedPositionCount, 96);
 
 const raceRows = rowsFromUnusedChunks(3);
 assert.equal(raceRows.length, 3, "fixture has unused detail chunks for async race checks");
@@ -702,9 +710,9 @@ await testBootstrapPreReadyOptOut();
 console.log(JSON.stringify({
   ok: true,
   requests: requests.length,
-  mappedRecords: 4305,
-  mappedPositions: 2541,
-  exact: 10,
+  mappedRecords: 4324,
+  mappedPositions: 2574,
+  exact: 96,
 }));
 
 function waitForPoll() {
@@ -911,7 +919,7 @@ async function testBootstrapRetry() {
   await retryWindow.UfoCropCircleBootstrap.setEnabled(true, "retry");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(appendCount, 2, "transient runtime load failure can be retried without reloading the app");
-  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-10-analysis-polish-v3$/);
+  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-11-context-evidence-v1$/);
   assert.equal(enables, 1);
 }
 

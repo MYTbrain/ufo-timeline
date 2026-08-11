@@ -31,7 +31,7 @@ DEFAULT_CATALOG_SOURCE = (
 )
 DEFAULT_CANONICAL_WEB_MANIFEST = REPO_ROOT / "data" / "canonical_web" / "canonical_web_manifest.json"
 DEFAULT_RELEASE_SEAL = REPO_ROOT / "reproduction" / "release.json"
-DEFAULT_RELEASE_ID = "analysis-projections-v1-20260803"
+DEFAULT_RELEASE_ID = "analysis-projections-v1-context-evidence-20260811"
 DEFAULT_BROWSER_BASE_PATH = "data/analysis_v1"
 SCHEMA_ID = "ufo-timeline-analysis-projections-v1.1.0"
 
@@ -506,7 +506,7 @@ def sealed_ufo_catalog_metadata(
     release_seal_path: Path,
 ) -> dict[str, Any]:
     canonical_manifest, canonical_bytes = load_json(canonical_web_manifest_path)
-    release_seal, release_bytes = load_json(release_seal_path)
+    release_seal, _ = load_json(release_seal_path)
     sealed_files = (release_seal.get("r2") or {}).get("files")
     if not isinstance(sealed_files, list):
         raise ValueError("Release seal has no R2 file inventory")
@@ -551,8 +551,6 @@ def sealed_ufo_catalog_metadata(
         "hashRole": "served_catalog_manifest",
         "mappedRowCount": mapped_count,
         "releaseId": release_id,
-        "releaseSeal": repository_path(release_seal_path),
-        "releaseSealSha256": sha256_bytes(release_bytes),
         "reviewedMergedShellReduction": reviewed_merge_reduction,
         "rowCount": row_count,
         "sha256": canonical_sha256,
