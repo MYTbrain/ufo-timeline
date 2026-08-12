@@ -34,7 +34,13 @@
         "escalationQueries": {"const": 3},
         "escalationSourceOpenings": {"const": 4},
         "archiveFallbacks": {"const": 1},
-        "escalationApproved": {"type": "boolean"}
+        "escalationApproved": {"type": "boolean"},
+        "escalationFocusGate": {
+          "oneOf": [
+            {"enum": ["stable_identity", "exact_occurrence_day", "source_supported_coordinates", "uncertainty_within_1km", "review_quorum", "qualifying_source", "date_provenance", "location_provenance", "conflict_resolution"]},
+            {"type": "null"}
+          ]
+        }
       },
       "additionalProperties": false
     },

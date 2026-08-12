@@ -42,6 +42,7 @@ def _queue_row(*, lane: str = "case_enrichment") -> dict:
             "escalationSourceOpenings": 4,
             "archiveFallbacks": 1,
             "escalationApproved": False,
+            "escalationFocusGate": None,
         },
         "attempts": [],
         "blockers": [],
@@ -157,6 +158,54 @@ def test_strict_ready_queue_closes_its_last_gate_after_approved_escalation() -> 
     errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(row))
     assert errors == []
     campaign.validate_queue([row])
+
+
+def test_strict_ready_queue_may_retain_its_completed_escalation_focus() -> None:
+    row = _queue_row()
+    row["missingStrictGates"] = []
+    row["priorityInputs"]["missingStrictGateCount"] = 0
+    row["queryBudget"]["escalationApproved"] = True
+    row["queryBudget"]["escalationFocusGate"] = "review_quorum"
+    row["status"] = row["terminalDisposition"] = "strict_ready"
+    row["priorityScore"] = campaign.queue_priority_score(row)
+
+    campaign.validate_queue([row])
+
+
+def test_multi_gate_escalation_names_one_unresolved_research_focus() -> None:
+    row = _queue_row()
+    row["missingStrictGates"] = [
+        "review_quorum",
+        "source_supported_coordinates",
+        "stable_identity",
+    ]
+    row["priorityInputs"]["missingStrictGateCount"] = 3
+    row["queryBudget"]["escalationApproved"] = True
+    row["queryBudget"]["escalationFocusGate"] = "source_supported_coordinates"
+    row["priorityScore"] = campaign.queue_priority_score(row)
+    schema = json.loads(
+        (CAMPAIGN_ROOT / "contracts" / "v1" / "research_queue.schema.json").read_text(encoding="utf-8")
+    )
+
+    errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(row))
+
+    assert errors == []
+    campaign.validate_queue([row])
+
+
+def test_multi_gate_escalation_without_focus_fails_closed() -> None:
+    row = _queue_row()
+    row["missingStrictGates"] = [
+        "review_quorum",
+        "source_supported_coordinates",
+        "stable_identity",
+    ]
+    row["priorityInputs"]["missingStrictGateCount"] = 3
+    row["queryBudget"]["escalationApproved"] = True
+    row["priorityScore"] = campaign.queue_priority_score(row)
+
+    with pytest.raises(campaign.CampaignValidationError, match="multi-gate escalation requires"):
+        campaign.validate_queue([row])
 
 
 def test_inaccessible_lead_allows_null_hash_but_retrieved_source_does_not() -> None:
@@ -277,3 +326,78 @@ def test_attempt_fingerprints_block_normalized_repeats() -> None:
     ]
     with pytest.raises(campaign.CampaignValidationError, match="Repeated query, URL"):
         campaign.validate_queue([row])
+
+
+def _release_seal_inputs() -> tuple[dict, dict, list[dict]]:
+    seal = json.loads(
+        (CAMPAIGN_ROOT / "state" / "release_seal.json").read_text(encoding="utf-8")
+    )
+    baseline = json.loads(
+        (CAMPAIGN_ROOT / "state" / "baseline_seal.json").read_text(encoding="utf-8")
+    )
+    queue_rows = campaign.load_jsonl(CAMPAIGN_ROOT / "ledgers" / "research_queue.jsonl")
+    return seal, baseline, queue_rows
+
+
+def test_released_seal_uses_frozen_commit_after_working_ledger_appends(monkeypatch: pytest.MonkeyPatch) -> None:
+    seal, baseline, queue_rows = _release_seal_inputs()
+    queue_rows.append(
+        {
+            "caseId": "cc_post_release_regression",
+            "domain": "crop_circle",
+            "lane": "case_enrichment",
+            "status": "materially_upgraded",
+        }
+    )
+    ledger_paths = {
+        (CAMPAIGN_ROOT / "ledgers" / filename).resolve()
+        for filename in campaign.LEDGERS.values()
+    }
+    actual_sha256_file = campaign.sha256_file
+
+    def working_tree_sha256(path: Path) -> str:
+        if path.resolve() in ledger_paths:
+            return "f" * 64
+        return actual_sha256_file(path)
+
+    monkeypatch.setattr(campaign, "sha256_file", working_tree_sha256)
+
+    campaign._validate_release_seal(
+        seal,
+        campaign_root=CAMPAIGN_ROOT,
+        baseline=baseline,
+        queue_rows=queue_rows,
+    )
+
+
+def test_released_seal_rejects_tampered_frozen_ledger_identity() -> None:
+    seal, baseline, queue_rows = _release_seal_inputs()
+    seal["frozenLedgers"]["queue"]["sha256"] = "f" * 64
+
+    with pytest.raises(campaign.CampaignValidationError, match="queue ledger identity is stale"):
+        campaign._validate_release_seal(
+            seal,
+            campaign_root=CAMPAIGN_ROOT,
+            baseline=baseline,
+            queue_rows=queue_rows,
+        )
+
+
+@pytest.mark.parametrize(
+    ("source_commit", "message"),
+    [
+        ("0" * 40, "Released Git blob is unavailable"),
+        ("abc", "full lowercase Git object ID"),
+    ],
+)
+def test_released_seal_rejects_tampered_source_commit(source_commit: str, message: str) -> None:
+    seal, baseline, queue_rows = _release_seal_inputs()
+    seal["sourceCommit"] = source_commit
+
+    with pytest.raises(campaign.CampaignValidationError, match=message):
+        campaign._validate_release_seal(
+            seal,
+            campaign_root=CAMPAIGN_ROOT,
+            baseline=baseline,
+            queue_rows=queue_rows,
+        )

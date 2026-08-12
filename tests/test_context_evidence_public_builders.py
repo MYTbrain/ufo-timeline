@@ -143,7 +143,7 @@ def write_reviewed_ledgers(
             "queryBudget": {
                 "firstPassQueries": 2, "firstPassSourceOpenings": 4,
                 "escalationQueries": 3, "escalationSourceOpenings": 4,
-                "archiveFallbacks": 1, "escalationApproved": False,
+                "archiveFallbacks": 1, "escalationApproved": False, "escalationFocusGate": None,
             },
             "attempts": [],
             "waveId": "wave-001-public-builders",

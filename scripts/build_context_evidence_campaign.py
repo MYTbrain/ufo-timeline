@@ -124,6 +124,38 @@ def git_index_bytes(repo_root: Path, relative: str) -> bytes:
     return process.stdout
 
 
+def git_commit_blob_bytes(repo_root: Path, commit: str, relative: str) -> bytes:
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise CampaignValidationError("Released source commit must be a full lowercase Git object ID")
+    relative_path = PurePosixPath(relative)
+    if (
+        not relative_path.parts
+        or relative_path.is_absolute()
+        or relative != relative_path.as_posix()
+        or any(part in {"", ".", ".."} for part in relative_path.parts)
+        or ":" in relative
+    ):
+        raise CampaignValidationError(f"Unsafe released Git blob path: {relative!r}")
+    try:
+        process = subprocess.run(
+            ["git", "cat-file", "blob", f"{commit}:{relative}"],
+            cwd=repo_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except OSError as exc:
+        raise CampaignValidationError(
+            f"Unable to read released Git blob at {commit}:{relative}"
+        ) from exc
+    if process.returncode != 0:
+        detail = process.stderr.decode("utf-8", errors="replace").strip()
+        raise CampaignValidationError(
+            f"Released Git blob is unavailable at {commit}:{relative}: {detail}"
+        )
+    return process.stdout
+
+
 def git_index_paths(repo_root: Path, prefix: str) -> list[str]:
     process = subprocess.run(
         ["git", "ls-files", "--cached", "--", prefix],
@@ -160,6 +192,25 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
             raise CampaignValidationError(f"Invalid JSONL at {path}:{line_number}: {exc}") from exc
         if not isinstance(value, dict):
             raise CampaignValidationError(f"JSONL row must be an object: {path}:{line_number}")
+        rows.append(value)
+    return rows
+
+
+def load_jsonl_bytes(payload: bytes, label: str) -> list[dict[str, Any]]:
+    try:
+        lines = payload.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise CampaignValidationError(f"Cannot decode JSONL {label}: {exc}") from exc
+    rows: list[dict[str, Any]] = []
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            raise CampaignValidationError(f"Blank JSONL line is not allowed: {label}:{line_number}")
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise CampaignValidationError(f"Invalid JSONL at {label}:{line_number}: {exc}") from exc
+        if not isinstance(value, dict):
+            raise CampaignValidationError(f"JSONL row must be an object: {label}:{line_number}")
         rows.append(value)
     return rows
 
@@ -445,10 +496,27 @@ def validate_queue(rows: list[dict[str, Any]], known_attempt_fingerprints: set[s
         expected_score = queue_priority_score(row)
         if row["priorityScore"] != expected_score:
             raise CampaignValidationError(f"Queue item {queue_id} priority score must be {expected_score}")
-        if row["queryBudget"]["escalationApproved"] and inputs["missingStrictGateCount"] > 1:
-            raise CampaignValidationError(
-                f"Queue item {queue_id} escalation requires no more than one remaining strict gate"
-            )
+        budget = row["queryBudget"]
+        if budget["escalationApproved"]:
+            focus_gate = budget.get("escalationFocusGate")
+            missing_gates = row["missingStrictGates"]
+            if inputs["missingStrictGateCount"] > 1:
+                if focus_gate is None:
+                    raise CampaignValidationError(
+                        f"Queue item {queue_id} multi-gate escalation requires one explicit focus gate"
+                    )
+                if focus_gate not in missing_gates:
+                    raise CampaignValidationError(
+                        f"Queue item {queue_id} escalation focus gate must be unresolved"
+                    )
+            elif (
+                focus_gate is not None
+                and row["status"] != "strict_ready"
+                and focus_gate not in missing_gates
+            ):
+                raise CampaignValidationError(
+                    f"Queue item {queue_id} escalation focus gate must be unresolved"
+                )
         if row["status"] == "strict_ready" and row["missingStrictGates"]:
             raise CampaignValidationError(f"Queue item {queue_id} cannot be strict-ready with missing gates")
         if row["status"] != "strict_ready" and row["lane"] == "case_enrichment" and not row["missingStrictGates"]:
@@ -609,24 +677,41 @@ def _validate_release_seal(
     queue_rows: list[dict[str, Any]],
 ) -> None:
     repo_root = campaign_root.parents[1]
+    released = seal["releaseStatus"] == "released"
+    source_commit = seal["sourceCommit"]
+    if released and not isinstance(source_commit, str):
+        raise CampaignValidationError("Released source commit must be a full lowercase Git object ID")
     ledger_paths = {
         "source": campaign_root / "ledgers" / LEDGERS["source"],
         "enrichment": campaign_root / "ledgers" / LEDGERS["assertion"],
         "review": campaign_root / "ledgers" / LEDGERS["decision"],
         "queue": campaign_root / "ledgers" / LEDGERS["queue"],
     }
+    frozen_ledger_bytes: dict[str, bytes] = {}
     for name, path in ledger_paths.items():
         record = seal["frozenLedgers"][name]
         expected_relative = path.relative_to(repo_root).as_posix()
         if record["path"] != expected_relative:
             raise CampaignValidationError(f"Release seal {name} ledger path must be {expected_relative}")
-        if path.stat().st_size != record["bytes"] or sha256_file(path) != record["sha256"]:
+        if released:
+            payload = git_commit_blob_bytes(repo_root, source_commit, expected_relative)
+            frozen_ledger_bytes[name] = payload
+            identity_matches = len(payload) == record["bytes"] and sha256_bytes(payload) == record["sha256"]
+        else:
+            identity_matches = path.stat().st_size == record["bytes"] and sha256_file(path) == record["sha256"]
+        if not identity_matches:
             raise CampaignValidationError(f"Release seal {name} ledger identity is stale")
 
+    summary_queue_rows = queue_rows
+    if released:
+        summary_queue_rows = load_jsonl_bytes(
+            frozen_ledger_bytes["queue"],
+            f"release seal queue at {source_commit}",
+        )
     terminal_material_statuses = {"materially_upgraded", "strict_ready"}
     material_case_ids = {
         row["caseId"]
-        for row in queue_rows
+        for row in summary_queue_rows
         if row["lane"] == "case_enrichment"
         and row["caseId"]
         and row["status"] in terminal_material_statuses
@@ -634,7 +719,7 @@ def _validate_release_seal(
     strict_by_domain = {
         domain: {
             row["caseId"]
-            for row in queue_rows
+            for row in summary_queue_rows
             if row["lane"] == "case_enrichment"
             and row["domain"] == domain
             and row["caseId"]
@@ -673,7 +758,7 @@ def _validate_release_seal(
     if rollback["sourceCommit"] != baseline["production"]["sourceCommit"]:
         raise CampaignValidationError("Release rollback source commit must match the sealed baseline production")
 
-    if seal["releaseStatus"] != "released":
+    if not released:
         if seal["sourceCommit"] is not None or seal["finalizedAt"] is not None:
             raise CampaignValidationError("Pre-release seal cannot claim a finalized source commit or time")
         if seal["artifactManifests"] or seal["r2Releases"] or seal["reproduction"] is not None:
@@ -686,7 +771,6 @@ def _validate_release_seal(
                 raise CampaignValidationError(f"Pre-release {gate_name} gate must remain pending and unused")
         return
 
-    source_commit = seal["sourceCommit"]
     for artifact in seal["artifactManifests"]:
         relative = Path(artifact["path"])
         if relative.is_absolute() or ".." in relative.parts:
@@ -900,7 +984,11 @@ def validate_campaign(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, 
     }
 
 
-def build_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, Any]:
+def build_receipt(
+    campaign_root: Path = DEFAULT_CAMPAIGN_ROOT,
+    *,
+    artifact_byte_overrides: Mapping[str, bytes] | None = None,
+) -> dict[str, Any]:
     validated = validate_campaign(campaign_root)
     campaign_root = campaign_root.resolve()
     repo_root = campaign_root.parents[1]
@@ -912,10 +1000,24 @@ def build_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, Any]
         mutable_release_seal_path.relative_to(repo_root).as_posix(),
     }
     campaign_prefix = campaign_root.relative_to(repo_root).as_posix()
-    for relative in git_index_paths(repo_root, campaign_prefix):
-        if relative in excluded:
-            continue
-        payload = git_index_bytes(repo_root, relative)
+    artifact_paths = [
+        relative
+        for relative in git_index_paths(repo_root, campaign_prefix)
+        if relative not in excluded
+    ]
+    overrides = dict(artifact_byte_overrides or {})
+    invalid_overrides = sorted(set(overrides) - set(artifact_paths))
+    if invalid_overrides:
+        raise CampaignValidationError(
+            "Receipt byte override is not a tracked campaign artifact: "
+            + ", ".join(invalid_overrides)
+        )
+    if any(not isinstance(payload, bytes) for payload in overrides.values()):
+        raise CampaignValidationError("Receipt artifact byte overrides must be bytes")
+    for relative in artifact_paths:
+        payload = overrides.get(relative)
+        if payload is None:
+            payload = git_index_bytes(repo_root, relative)
         artifacts[relative] = {"bytes": len(payload), "sha256": sha256_bytes(payload)}
     builder_path = Path(__file__).resolve()
     builder_relative = builder_path.relative_to(repo_root).as_posix()
@@ -957,15 +1059,35 @@ def build_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> dict[str, Any]
     return receipt
 
 
-def write_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> Path:
+def write_receipt(
+    campaign_root: Path = DEFAULT_CAMPAIGN_ROOT,
+    *,
+    artifact_byte_overrides: Mapping[str, bytes] | None = None,
+) -> Path:
     path = campaign_root / "state" / "foundation_build_receipt.json"
-    path.write_bytes(canonical_json_bytes(build_receipt(campaign_root)))
+    path.write_bytes(
+        canonical_json_bytes(
+            build_receipt(
+                campaign_root,
+                artifact_byte_overrides=artifact_byte_overrides,
+            )
+        )
+    )
     return path
 
 
-def check_receipt(campaign_root: Path = DEFAULT_CAMPAIGN_ROOT) -> None:
+def check_receipt(
+    campaign_root: Path = DEFAULT_CAMPAIGN_ROOT,
+    *,
+    artifact_byte_overrides: Mapping[str, bytes] | None = None,
+) -> None:
     path = campaign_root / "state" / "foundation_build_receipt.json"
-    expected = canonical_json_bytes(build_receipt(campaign_root))
+    expected = canonical_json_bytes(
+        build_receipt(
+            campaign_root,
+            artifact_byte_overrides=artifact_byte_overrides,
+        )
+    )
     try:
         actual = path.read_bytes()
     except OSError as exc:

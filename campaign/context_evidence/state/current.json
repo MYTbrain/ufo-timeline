@@ -26,7 +26,7 @@
   },
   "laneState": {
     "cropCircle": {"status": "active", "consecutiveNoGainSubwaves": 0},
-    "animalMutilation": {"status": "parked", "consecutiveNoGainSubwaves": 2},
+    "animalMutilation": {"status": "active", "consecutiveNoGainSubwaves": 0},
     "sourceDiscovery": {"status": "active", "consecutiveNoGainSubwaves": 0}
   },
   "validationBudget": {"focusedRunsPerWave": 1, "correctionPasses": 1, "finalTargetedReruns": 1, "fullSuiteRunsPerMilestone": 1},

@@ -239,8 +239,25 @@ def apply_package(package_root: Path, campaign_root: Path) -> dict[str, Any]:
         for kind, filename in LEDGER_FILES.items():
             os.replace(ledger_root / f".{filename}.{manifest['packageId']}.pending", ledger_root / filename)
             replaced.append(kind)
-        campaign.write_receipt(campaign_root)
-        campaign.check_receipt(campaign_root)
+        repo_root = campaign_root.resolve().parents[1]
+        ledger_receipt_bytes: dict[str, bytes] = {}
+        for kind, filename in LEDGER_FILES.items():
+            path = ledger_root / filename
+            payload = path.read_bytes()
+            if payload != outputs[kind]:
+                raise WaveApplicationError(
+                    f"Applied ledger bytes differ from prepared output: {filename}"
+                )
+            relative = path.resolve().relative_to(repo_root).as_posix()
+            ledger_receipt_bytes[relative] = payload
+        campaign.write_receipt(
+            campaign_root,
+            artifact_byte_overrides=ledger_receipt_bytes,
+        )
+        campaign.check_receipt(
+            campaign_root,
+            artifact_byte_overrides=ledger_receipt_bytes,
+        )
     except Exception:
         for kind in replaced:
             filename = LEDGER_FILES[kind]
