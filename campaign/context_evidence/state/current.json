@@ -27,7 +27,7 @@
   "laneState": {
     "cropCircle": {"status": "active", "consecutiveNoGainSubwaves": 0},
     "animalMutilation": {"status": "active", "consecutiveNoGainSubwaves": 0},
-    "sourceDiscovery": {"status": "active", "consecutiveNoGainSubwaves": 0}
+    "sourceDiscovery": {"status": "parked", "consecutiveNoGainSubwaves": 2}
   },
   "validationBudget": {"focusedRunsPerWave": 1, "correctionPasses": 1, "finalTargetedReruns": 1, "fullSuiteRunsPerMilestone": 1},
   "storagePolicy": {"candidateRoot": "D:\\UFO-Timeline-Context-Evidence", "minimumCDriveFreeGiB": 100, "approvalThresholdMiB": 100, "fullCorpusCopiesAllowed": false},
