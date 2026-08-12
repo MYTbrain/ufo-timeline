@@ -85,6 +85,10 @@ PRIVATE_TEXT_RE = re.compile(
     r"(?:street|st|road|rd|lane|ln|drive|dr|avenue|ave|boulevard|blvd)\b)",
     flags=re.IGNORECASE,
 )
+PUBLIC_ROUTE_RE = re.compile(
+    r"\b(?:US|U\.S\.|State|County)\s+(?:Route\s+)?\d{1,4}\b",
+    flags=re.IGNORECASE,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -376,7 +380,8 @@ def _public_context_text(value: Any, *, field: str, case_id: str) -> str | None:
     text = normalized_text(str(value))
     if text_has_control_characters(text) or "\ufffd" in text or HTML_TAG_RE.search(text):
         raise ValueError(f"Unsafe reviewed public text in {field}: {case_id}")
-    if PRIVATE_TEXT_RE.search(text):
+    privacy_scan_text = PUBLIC_ROUTE_RE.sub("public route", text)
+    if PRIVATE_TEXT_RE.search(privacy_scan_text):
         raise ValueError(f"Potential private contact or address text in {field}: {case_id}")
     return text or None
 

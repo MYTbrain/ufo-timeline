@@ -719,3 +719,15 @@ def test_terminal_new_case_without_reviewed_bootstrap_fails_closed(tmp_path: Pat
             release_id="animal-mutilations-v1-20260810", asset_base_url="", chunk_size=250,
             context_evidence_root=ledgers,
         )
+
+
+@pytest.mark.parametrize("module", [CROP, ANIMAL])
+def test_public_route_landmark_is_not_misread_as_a_private_address(module) -> None:
+    label = "wheat field immediately south of US 26 near 185th Avenue"
+    assert module._public_context_text(
+        label, field="location_label", case_id="cc_route_fixture"
+    ) == label
+    with pytest.raises(ValueError, match="Potential private contact or address"):
+        module._public_context_text(
+            "18526 Example Avenue", field="location_label", case_id="cc_address_fixture"
+        )
