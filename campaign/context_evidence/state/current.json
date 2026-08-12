@@ -25,7 +25,7 @@
     "unresolvedConflictsAllowed": false
   },
   "laneState": {
-    "cropCircle": {"status": "active", "consecutiveNoGainSubwaves": 1},
+    "cropCircle": {"status": "parked", "consecutiveNoGainSubwaves": 2},
     "animalMutilation": {"status": "active", "consecutiveNoGainSubwaves": 0},
     "sourceDiscovery": {"status": "parked", "consecutiveNoGainSubwaves": 2}
   },
