@@ -165,6 +165,67 @@ def write_reviewed_ledgers(
     return root
 
 
+def append_rejected_assertion(
+    root: Path,
+    *,
+    domain: str,
+    case_id: str,
+    field_name: str,
+    value: object,
+) -> None:
+    source = json.loads((root / "source_ledger.jsonl").read_text(encoding="utf-8"))
+    source_id = source["sourceId"]
+    evidence_hash = source["contentSha256"]
+    identity = hashlib.sha256(
+        f"rejected:{domain}:{case_id}:{field_name}".encode()
+    ).hexdigest()[:16]
+    assertion_id = f"cea_{identity}"
+    assertion = {
+        "schemaId": "ufo-timeline-context-evidence-assertion-v1.0.0",
+        "assertionId": assertion_id,
+        "caseId": case_id,
+        "domain": domain,
+        "fieldName": field_name,
+        "value": value,
+        "sourceIds": [source_id],
+        "sourceLocators": [{"sourceId": source_id, "locator": f"rejected {field_name}"}],
+        "confidence": "high",
+        "polarity": "supports",
+        "evidenceSha256": [evidence_hash],
+        "waveId": "wave-008-rejected-claim-regression",
+        "assertedAt": "2026-08-11T12:00:00Z",
+    }
+    decision = {
+        "schemaId": "ufo-timeline-context-evidence-review-decision-v1.0.0",
+        "decisionId": "crd_" + hashlib.sha256(f"decision:{identity}".encode()).hexdigest()[:16],
+        "assertionId": assertion_id,
+        "caseId": case_id,
+        "domain": domain,
+        "outcome": "rejected",
+        "reviewer": {
+            "reviewerId": "fixture-human",
+            "reviewerType": "human",
+            "runId": None,
+        },
+        "frozenEvidenceSha256": [evidence_hash],
+        "reasonCodes": ["source_does_not_support_assertion"],
+        "supersedesDecisionIds": [],
+        "duplicateOfCaseId": None,
+        "decidedAt": "2026-08-11T12:01:00Z",
+    }
+    for filename, row in (
+        ("case_enrichment.jsonl", assertion),
+        ("case_review_decisions.jsonl", decision),
+    ):
+        path = root / filename
+        path.write_text(
+            path.read_text(encoding="utf-8")
+            + json.dumps(row, sort_keys=True, separators=(",", ":"))
+            + "\n",
+            encoding="utf-8",
+        )
+
+
 def write_two_reviewed_values(
     root: Path,
     *,
@@ -451,6 +512,87 @@ def test_accepted_new_crop_and_animal_cases_bootstrap_into_strict_tiers(tmp_path
     assert "Private name" not in json.dumps(animal_detail)
     animal_points = read_gzip_json(animal_out / "points.json.gz")
     assert animal_points[0][-1] == 900.0
+
+
+def test_rejected_critical_claim_does_not_block_public_strict_tiers(tmp_path: Path) -> None:
+    crop_id = "cc_aaaaaaaaaaaaaaaa"
+    animal_id = "ami_aaaaaaaaaaaaaaaa"
+    crop_ledgers = write_reviewed_ledgers(
+        tmp_path / "rejected-crop-ledgers",
+        domain="crop_circle",
+        case_id=crop_id,
+        accepted_new=False,
+        fields={
+            "formation_date": "1996-09-23",
+            "latitude": 37.1,
+            "longitude": -106.0,
+            "coordinate_uncertainty_m": 75,
+            "coordinate_method": "source_reported_event_site",
+            "dedup_cluster_id": "crop-cluster-existing",
+        },
+    )
+    append_rejected_assertion(
+        crop_ledgers,
+        domain="crop_circle",
+        case_id=crop_id,
+        field_name="formation_date",
+        value="1996-09-24",
+    )
+    animal_ledgers = write_reviewed_ledgers(
+        tmp_path / "rejected-animal-ledgers",
+        domain="animal_mutilation",
+        case_id=animal_id,
+        accepted_new=False,
+        fields={
+            "occurrence_date": "1975-01-15",
+            "latitude": 39.7,
+            "longitude": -104.5,
+            "coordinate_uncertainty_m": 800,
+            "coordinate_method": "source_reported_event_site",
+            "dedup_cluster_id": "animal-cluster-existing",
+        },
+    )
+    append_rejected_assertion(
+        animal_ledgers,
+        domain="animal_mutilation",
+        case_id=animal_id,
+        field_name="occurrence_date",
+        value="1975-01-16",
+    )
+    crop_source = tmp_path / "rejected-crop.json"
+    animal_source = tmp_path / "rejected-animal.json"
+    write_json(crop_source, crop_export())
+    write_json(animal_source, animal_collection())
+    crop_out = tmp_path / "rejected-crop-out"
+    animal_out = tmp_path / "rejected-animal-out"
+
+    crop_manifest = CROP.build(
+        crop_source,
+        crop_out,
+        "crop-fixture-rejected-v1",
+        50,
+        context_evidence_root=crop_ledgers,
+    )
+    animal_manifest = ANIMAL.build(
+        input_path=animal_source,
+        handoff_zip=None,
+        output_root=animal_out,
+        release_id="animal-mutilations-v1-20260810",
+        asset_base_url="",
+        chunk_size=250,
+        context_evidence_root=animal_ledgers,
+    )
+
+    crop_detail = read_gzip_json(crop_out / "details" / "chunk_000.json.gz")[crop_id]
+    animal_detail = read_gzip_json(
+        animal_out / "details" / "chunk_000.json.gz"
+    )[f"animal_mutilation:{animal_id}"]
+    assert crop_detail["analysisTier"] == "crop_strict"
+    assert animal_detail["analysisTier"] == "animal_strict"
+    assert "unresolved_identity_date_or_coordinate_conflict" not in crop_detail["exclusionReasonCodes"]
+    assert "unresolved_identity_date_or_coordinate_conflict" not in animal_detail["exclusionReasonCodes"]
+    assert crop_manifest["readiness"]["strictReady"] == 1
+    assert animal_manifest["readiness"]["strictReady"] == 1
 
 
 def test_centroid_method_never_becomes_exact_and_legal_restriction_suppresses(tmp_path: Path) -> None:

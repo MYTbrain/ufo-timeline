@@ -1452,7 +1452,7 @@ def load_context_evidence(root: Path | None) -> tuple[dict[tuple[str, str], dict
             }
             review_state = "source_reviewed" if len(agent_reviewers) >= 2 and unanimous_positive else None
         if review_state is None:
-            if outcomes.intersection({"rejected", "contradictory", "unresolved"}) \
+            if outcomes.intersection({"contradictory", "unresolved"}) \
                     and assertion["fieldName"] in STRICT_CONFLICT_FIELDS:
                 case_conflicts[(assertion["domain"], assertion["caseId"])].add(assertion["fieldName"])
             continue

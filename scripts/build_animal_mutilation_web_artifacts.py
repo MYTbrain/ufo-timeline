@@ -237,7 +237,7 @@ def load_context_evidence(root: Path | None, domain: str) -> tuple[dict[str, dic
             else None
         )
         if not review_state:
-            if outcomes.intersection({"rejected", "contradictory", "unresolved"}) and assertion["fieldName"] in STRICT_CONFLICT_FIELDS:
+            if outcomes.intersection({"contradictory", "unresolved"}) and assertion["fieldName"] in STRICT_CONFLICT_FIELDS:
                 case_conflicts[assertion["caseId"]].add(assertion["fieldName"])
             continue
         if outcomes == {"duplicate"}:

@@ -81,6 +81,47 @@ def accepted_case_rows(domain: str, case_id: str, fields: dict[str, object]) -> 
     return assertions, decisions
 
 
+def append_rejected_assertion(
+    ledger_root: Path,
+    *,
+    domain: str,
+    case_id: str,
+    field_name: str,
+    value: object,
+) -> None:
+    assertion_id = f"assertion-{domain}-rejected-{field_name}"
+    assertion = {
+        "assertionId": assertion_id,
+        "caseId": case_id,
+        "domain": domain,
+        "evidenceSha256": [EVIDENCE_HASH],
+        "fieldName": field_name,
+        "sourceIds": ["src_official"],
+        "value": value,
+    }
+    decision = {
+        "assertionId": assertion_id,
+        "caseId": case_id,
+        "decisionId": f"decision-{domain}-rejected-{field_name}",
+        "domain": domain,
+        "frozenEvidenceSha256": [EVIDENCE_HASH],
+        "outcome": "rejected",
+        "reviewer": {"reviewerId": "human-adjudicator", "reviewerType": "human"},
+        "supersedesDecisionIds": [],
+    }
+    for filename, row in (
+        ("case_enrichment.jsonl", assertion),
+        ("case_review_decisions.jsonl", decision),
+    ):
+        path = ledger_root / filename
+        path.write_text(
+            path.read_text(encoding="utf-8")
+            + json.dumps(row, sort_keys=True, separators=(",", ":"))
+            + "\n",
+            encoding="utf-8",
+        )
+
+
 def write_accepted_fixture(ledger_root: Path) -> None:
     source = {
         "independenceStatus": "independent",
@@ -162,6 +203,55 @@ def test_accepted_frozen_assertions_generate_strict_crop_and_animal_tiers(tmp_pa
     assert crop_source["policy"]["traceEligible"] is False
     assert animal_source["policy"]["traceEligible"] is False
     assert animal_source["policy"]["relationshipsEligible"] is False
+
+
+def test_rejected_critical_claim_does_not_block_valid_strict_claim(tmp_path: Path) -> None:
+    source_root = tmp_path / "source"
+    ledger_root = tmp_path / "ledgers"
+    write_detail_layer(source_root, "crop_circles", {
+        "cc_fixture": {
+            "classification": "unreviewed",
+            "datePrecision": "year",
+            "dateRole": "catalog_unspecified",
+            "sources": [],
+        },
+    })
+    write_detail_layer(source_root, "animal_mutilations", {
+        "animal_mutilation:ami_fixture": {
+            "datePrecision": "unknown",
+            "sourceRefs": [],
+            "status": "reported_unreviewed",
+            "traceEligible": False,
+            "causality": "not_asserted",
+        },
+    })
+    write_accepted_fixture(ledger_root)
+    append_rejected_assertion(
+        ledger_root,
+        domain="crop",
+        case_id="cc_fixture",
+        field_name="formation_date",
+        value="2001-05-07",
+    )
+    append_rejected_assertion(
+        ledger_root,
+        domain="animal",
+        case_id="ami_fixture",
+        field_name="occurrence_date",
+        value="2002-06-08",
+    )
+
+    crops, crop_source = BUILDER.build_crop_context_projection(source_root, ledger_root)
+    animals, animal_source, _incident_map = BUILDER.build_animal_context_projection(
+        source_root, ledger_root
+    )
+
+    assert crops[0]["analysisTierCode"] == "crop_strict"
+    assert animals[0]["analysisTierCode"] == "animal_strict"
+    assert "unresolved_identity_date_or_coordinate_conflict" not in crops[0]["exclusionReasonCodes"]
+    assert "unresolved_identity_date_or_coordinate_conflict" not in animals[0]["exclusionReasonCodes"]
+    assert crop_source["counts"]["strictReady"] == 1
+    assert animal_source["counts"]["strictReady"] == 1
 
 
 @pytest.mark.parametrize(
