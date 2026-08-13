@@ -6,13 +6,13 @@
   },
   "pages": {
     "archive": {
-      "bytes": 9342575,
+      "bytes": 9344874,
       "format": "zip",
-      "sha256": "f6df27378c786ede24f5cc3ab17c1703f4d21e27e747acb45c69ccbf874a927f",
-      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/context-evidence-mapping-provenance-v2-20260812/pages-bundle.zip"
+      "sha256": "713ae232b010a5be6fe9985652fba903c7830d8f3e3ecef70da8ff8903ae0b4a",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/reproduction/viewport-legend-area-traces-v1-20260813/pages-bundle.zip"
     },
-    "base_url": "https://a2d28d0e.ufo-timeline.pages.dev",
-    "deployment_id": "a2d28d0e-b5a5-43cb-9642-00a961514aa3",
+    "base_url": "https://b0f0a0de.ufo-timeline.pages.dev",
+    "deployment_id": "b0f0a0de-03cf-4d02-bed7-a504d0f4d9d3",
     "file_count": 150,
     "files": [
       {
@@ -61,9 +61,9 @@
         "sha256": "06051edee25fbce594c89f9113362dc238b4cd4b26eea27a5d07c72938dc62ec"
       },
       {
-        "bytes": 1252419,
+        "bytes": 1261434,
         "path": "app.js",
-        "sha256": "9ca767caded917db51f46544058ab55502ee60a004a052a82a362098ae3af053"
+        "sha256": "b634c6264c4c964deda1cf614fd9b0a6271900311ae6a1e3402fb1bf03230f4d"
       },
       {
         "bytes": 81571,
@@ -646,14 +646,14 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 137259,
+        "bytes": 137277,
         "path": "index.html",
-        "sha256": "5b0102c55bd692cbf55ee4d53492e6b8e5b9c6e53104560fa0dbd860138815b0"
+        "sha256": "be4842d002219338bcb4bc160d75ac58153b4bf1f9982a6cd1bf33f040229afd"
       },
       {
-        "bytes": 13477,
+        "bytes": 15511,
         "path": "legend_controls.js",
-        "sha256": "2ba792f7e387cebab1eed069b847d61fcd36663ead4409761e5c130ac546ee68"
+        "sha256": "e7f598b37ead4cac5d4ad5676edd8f48d9ffe76fa78771e1c501768b185bfb8f"
       },
       {
         "bytes": 4689,
@@ -767,8 +767,8 @@
       }
     ],
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "928ed9bd220ef588619f7e6ca8aaf0816a26bdd134dc1f17f49eae082a80d314",
-    "uncompressed_bytes": 57545839
+    "tree_sha256": "239fd25a295d36b43d9106085bdd7e32261653d2304ab74f76abadfba6a31a14",
+    "uncompressed_bytes": 57556906
   },
   "r2": {
     "base_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
@@ -3348,7 +3348,7 @@
     "asset_version": "2026-07-31T08:32:50.335399+00:00",
     "canonical_production_url": "https://ufo-timeline.pages.dev",
     "generated_at_utc": "2026-08-11T19:14:53.146707+00:00",
-    "id": "context-evidence-mapping-provenance-v2-20260812",
+    "id": "viewport-legend-area-traces-v1-20260813",
     "mapped_count": 580783,
     "normalized_count": 702893
   },
@@ -3403,9 +3403,9 @@
         "sha256": "06051edee25fbce594c89f9113362dc238b4cd4b26eea27a5d07c72938dc62ec"
       },
       {
-        "bytes": 1252419,
+        "bytes": 1261434,
         "path": "app.js",
-        "sha256": "9ca767caded917db51f46544058ab55502ee60a004a052a82a362098ae3af053"
+        "sha256": "b634c6264c4c964deda1cf614fd9b0a6271900311ae6a1e3402fb1bf03230f4d"
       },
       {
         "bytes": 226929,
@@ -3568,14 +3568,14 @@
         "sha256": "7cfba4ee961be0c622b0d83ae85b352e974bbf6715aa4e1c81583f5055bc98c1"
       },
       {
-        "bytes": 137259,
+        "bytes": 137277,
         "path": "index.html",
-        "sha256": "5b0102c55bd692cbf55ee4d53492e6b8e5b9c6e53104560fa0dbd860138815b0"
+        "sha256": "be4842d002219338bcb4bc160d75ac58153b4bf1f9982a6cd1bf33f040229afd"
       },
       {
-        "bytes": 13477,
+        "bytes": 15511,
         "path": "legend_controls.js",
-        "sha256": "2ba792f7e387cebab1eed069b847d61fcd36663ead4409761e5c130ac546ee68"
+        "sha256": "e7f598b37ead4cac5d4ad5676edd8f48d9ffe76fa78771e1c501768b185bfb8f"
       },
       {
         "bytes": 4689,
@@ -3659,8 +3659,8 @@
       }
     ],
     "root": "webapp/static_public",
-    "total_bytes": 11313844,
+    "total_bytes": 11324911,
     "tree_hash_algorithm": "ordinal path<TAB>bytes<TAB>sha256<LF>",
-    "tree_sha256": "4417b49d5b918a6c58974aef1c93a25911d72f8c5896b35f8dd87d173d0f1d5c"
+    "tree_sha256": "72ab8eb356231842a2d8afdf363e8b4ccbf52ffc46cbe3186b1b991340bfca6f"
   }
 }
