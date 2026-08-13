@@ -11,7 +11,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
+import shutil
 import ssl
 import subprocess
 import sys
@@ -145,9 +147,24 @@ def classify_remote(payload: dict[str, Any], *, timeout: float) -> str:
     return "matching"
 
 
-def upload_payload(wrangler: Path, bucket: str, payload: dict[str, Any]) -> None:
+def resolve_wrangler_command(wrangler: Path) -> list[str]:
+    """Return a CreateProcess-safe Wrangler launcher on Windows and POSIX."""
+    wrangler = wrangler.resolve()
+    if os.name != "nt":
+        return [str(wrangler)]
+    node_modules = wrangler.parent.parent if wrangler.parent.name == ".bin" else None
+    wrangler_js = node_modules / "wrangler" / "bin" / "wrangler.js" if node_modules else wrangler
+    if not wrangler_js.is_file():
+        raise ReleaseError(f"Wrangler JavaScript entrypoint is missing: {wrangler_js}")
+    located_node = shutil.which("node")
+    if not located_node:
+        raise ReleaseError("Node.js executable is unavailable for the pinned Wrangler launcher")
+    return [str(Path(located_node).resolve()), str(wrangler_js.resolve())]
+
+
+def upload_payload(wrangler_command: list[str], bucket: str, payload: dict[str, Any]) -> None:
     command = [
-        str(wrangler),
+        *wrangler_command,
         "r2",
         "object",
         "put",
@@ -192,9 +209,10 @@ def main() -> None:
 
     remote_states = {item["path"]: classify_remote(item, timeout=args.timeout) for item in payloads}
     uploads = [item for item in payloads if remote_states[item["path"]] == "missing"]
+    wrangler_command = resolve_wrangler_command(args.wrangler)
     for index, payload in enumerate(uploads, start=1):
         print(f"Uploading crop-circle R2 payload {index}/{len(uploads)}: {payload['r2Key']}", flush=True)
-        upload_payload(args.wrangler, args.bucket, payload)
+        upload_payload(wrangler_command, args.bucket, payload)
     for payload in payloads:
         verify_remote(payload, timeout=args.timeout)
     print(json.dumps({
