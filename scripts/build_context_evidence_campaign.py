@@ -716,7 +716,7 @@ def _validate_release_seal(
         and row["caseId"]
         and row["status"] in terminal_material_statuses
     }
-    strict_by_domain = {
+    queue_strict_by_domain = {
         domain: {
             row["caseId"]
             for row in summary_queue_rows
@@ -731,9 +731,24 @@ def _validate_release_seal(
     if summary["materiallyUpgradedOverall"] != len(material_case_ids):
         raise CampaignValidationError("Release seal materially-upgraded count does not match the frozen queue")
     strict_counts = {
-        "cropCircle": len(strict_by_domain["crop_circle"]),
-        "animalMutilation": len(strict_by_domain["animal_mutilation"]),
+        "cropCircle": len(queue_strict_by_domain["crop_circle"]),
+        "animalMutilation": len(queue_strict_by_domain["animal_mutilation"]),
     }
+    if released:
+        analysis_manifest_path = "webapp/static_public/data/analysis_v2/manifest.json"
+        analysis_manifest = json.loads(
+            git_commit_blob_bytes(repo_root, source_commit, analysis_manifest_path)
+        )
+        domains = analysis_manifest.get("contextPulseSummary", {}).get("domains", {})
+        try:
+            strict_counts = {
+                "cropCircle": int(domains["crops"]["strictReadyN"]),
+                "animalMutilation": int(domains["animals"]["strictReadyN"]),
+            }
+        except (KeyError, TypeError, ValueError) as exc:
+            raise CampaignValidationError(
+                "Released Analysis manifest must declare derived strict-ready domain counts"
+            ) from exc
     for domain, strict_count in strict_counts.items():
         if summary["domains"][domain]["strictReady"] != strict_count:
             raise CampaignValidationError(
@@ -753,10 +768,16 @@ def _validate_release_seal(
         )
 
     rollback = seal["rollback"]
-    if rollback["deploymentId"] != baseline["production"]["deploymentId"]:
-        raise CampaignValidationError("Release rollback must retain the sealed pre-release production deployment")
-    if rollback["sourceCommit"] != baseline["production"]["sourceCommit"]:
-        raise CampaignValidationError("Release rollback source commit must match the sealed baseline production")
+    expected_rollback = baseline["production"]
+    if released:
+        prior_seal_path = "campaign/context_evidence/state/release_seal.json"
+        prior_seal = json.loads(git_commit_blob_bytes(repo_root, source_commit, prior_seal_path))
+        if prior_seal.get("releaseStatus") == "released":
+            expected_rollback = prior_seal["pages"]["production"]
+    if rollback["deploymentId"] != expected_rollback["deploymentId"]:
+        raise CampaignValidationError("Release rollback must retain the prior production deployment")
+    if rollback["sourceCommit"] != expected_rollback["sourceCommit"]:
+        raise CampaignValidationError("Release rollback source commit must match prior production")
 
     if not released:
         if seal["sourceCommit"] is not None or seal["finalizedAt"] is not None:

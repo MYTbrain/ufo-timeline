@@ -383,6 +383,38 @@ def test_released_seal_rejects_tampered_frozen_ledger_identity() -> None:
         )
 
 
+def test_released_seal_uses_derived_manifest_strict_counts() -> None:
+    seal, baseline, queue_rows = _release_seal_inputs()
+    analysis_manifest = json.loads(
+        campaign.git_commit_blob_bytes(
+            CAMPAIGN_ROOT.parents[1],
+            seal["sourceCommit"],
+            "webapp/static_public/data/analysis_v2/manifest.json",
+        )
+    )
+
+    assert seal["dataSummary"]["domains"]["cropCircle"]["strictReady"] == (
+        analysis_manifest["contextPulseSummary"]["domains"]["crops"]["strictReadyN"]
+    )
+    assert seal["dataSummary"]["domains"]["animalMutilation"]["strictReady"] == (
+        analysis_manifest["contextPulseSummary"]["domains"]["animals"]["strictReadyN"]
+    )
+
+
+def test_released_seal_rollback_matches_prior_released_production() -> None:
+    seal, _baseline, _queue_rows = _release_seal_inputs()
+    prior_seal = json.loads(
+        campaign.git_commit_blob_bytes(
+            CAMPAIGN_ROOT.parents[1],
+            seal["sourceCommit"],
+            "campaign/context_evidence/state/release_seal.json",
+        )
+    )
+    if prior_seal["releaseStatus"] == "released":
+        assert seal["rollback"]["deploymentId"] == prior_seal["pages"]["production"]["deploymentId"]
+        assert seal["rollback"]["sourceCommit"] == prior_seal["pages"]["production"]["sourceCommit"]
+
+
 @pytest.mark.parametrize(
     ("source_commit", "message"),
     [
