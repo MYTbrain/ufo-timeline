@@ -301,8 +301,8 @@ assert.match(indexSource, /id="cluster-quick-crop-circles"[\s\S]*?aria-pressed="
 assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelector\("#cluster-quick-crop-circles"\)/, "the quick crop toggle is registered with the core UI");
 assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
 assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
-assert.match(indexSource, /styles\.css\?v=2026-08-11-context-evidence-v1/, "shared icon CSS uses the current cache-safe shell key");
-assert.match(indexSource, /app\.js\?v=2026-08-11-context-evidence-v1/, "the application runtime uses the current cache-safe shell key");
+assert.match(indexSource, /styles\.css\?v=2026-08-12-context-evidence-v2/, "shared icon CSS uses the current cache-safe shell key");
+assert.match(indexSource, /app\.js\?v=2026-08-12-context-evidence-v2/, "the application runtime uses the current cache-safe shell key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
 assert.match(indexSource, /<details id="crop-circle-ufo-relation-disclosure"[^>]*aria-disabled="true">[\s\S]*?<summary[^>]*>UFO sighting → later crop record<\/summary>/, "UFO-to-crop controls are a compact disclosure that starts unavailable without a selected crop");
@@ -334,7 +334,7 @@ assert.match(source, /authenticity and cause are not implied/, "occurrence-date 
 assert.match(source, /does not establish an exact formation day/, "an inexact formation_date is labeled without inventing an exact occurrence day");
 assert.match(source, /not evidence of when the formation was created/, "non-formation date roles cannot be mistaken for formation time");
 const manifestFixture = JSON.parse(await fs.readFile(path.join(staticRoot, "data", "crop_circles", "manifest.json"), "utf8"));
-assert.equal(manifestFixture.releaseId, "crop-circles-context-evidence-v1-20260811", "harness targets the immutable context-evidence crop release");
+assert.equal(manifestFixture.releaseId, "crop-circles-context-evidence-v1-20260812", "harness targets the immutable context-evidence crop release");
 const expectedPointsPath = "/data/crop_circles/points.json";
 const pointRowsFixture = JSON.parse(gunzipSync(await fs.readFile(path.join(staticRoot, "data", "crop_circles", "points.json.gz"))).toString("utf8"));
 const pointRowByIdFixture = new Map(pointRowsFixture.map((row) => [String(row[0]), row]));
@@ -643,8 +643,8 @@ assert.match(elements.get("#crop-circle-chronology-status").textContent, /catalo
 view.hideLowPrecisionCoordinates = true;
 await waitForPoll();
 status = layerApi.getStatus();
-assert.equal(status.renderedCount, 96, "exact-coordinate filter retains only source-exact rows");
-assert.equal(status.renderedPositionCount, 96);
+assert.equal(status.renderedCount, 97, "exact-coordinate filter retains only source-exact rows");
+assert.equal(status.renderedPositionCount, 97);
 
 const raceRows = rowsFromUnusedChunks(3);
 assert.equal(raceRows.length, 3, "fixture has unused detail chunks for async race checks");
@@ -919,7 +919,7 @@ async function testBootstrapRetry() {
   await retryWindow.UfoCropCircleBootstrap.setEnabled(true, "retry");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(appendCount, 2, "transient runtime load failure can be retried without reloading the app");
-  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-11-context-evidence-v1$/);
+  assert.match(lastScriptSrc, /crop_circle_layer\.js\?v=2026-08-12-context-evidence-v2$/);
   assert.equal(enables, 1);
 }
 

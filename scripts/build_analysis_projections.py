@@ -31,7 +31,7 @@ DEFAULT_CATALOG_SOURCE = (
 )
 DEFAULT_CANONICAL_WEB_MANIFEST = REPO_ROOT / "data" / "canonical_web" / "canonical_web_manifest.json"
 DEFAULT_RELEASE_SEAL = REPO_ROOT / "reproduction" / "release.json"
-DEFAULT_RELEASE_ID = "analysis-projections-v1-context-evidence-20260811"
+DEFAULT_RELEASE_ID = "analysis-projections-v1-context-evidence-20260812"
 DEFAULT_BROWSER_BASE_PATH = "data/analysis_v1"
 SCHEMA_ID = "ufo-timeline-analysis-projections-v1.1.0"
 
@@ -57,7 +57,11 @@ COMPLEXITY_TIER_CODES = {
     "very_complex": 3,
     "not_applicable": 4,
 }
-ANIMAL_STATUS_CODES = {"reported_unreviewed": 0}
+ANIMAL_STATUS_CODES = {
+    "reported_unreviewed": 0,
+    "source_reviewed": 1,
+    "human_reviewed": 2,
+}
 YEAR_RE = re.compile(r"^(\d{4})(?:-|$)")
 ISO_DATE_RE = re.compile(r"^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?")
 SAFE_RELEASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")

@@ -8414,7 +8414,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-11-context-evidence-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-12-context-evidence-v2");
   }
 
   function catalogFacetWorkerEnabled() {

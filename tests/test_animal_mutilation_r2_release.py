@@ -38,9 +38,9 @@ def _payload(root: Path, name: str, value: object) -> dict[str, object]:
 
 def write_manifest_fixture(root: Path, *, audit_available: bool = True) -> Path:
     points = _payload(root, "points.json.gz", [[index] for index in range(518)])
-    catalog = _payload(root, "catalog.json.gz", [[index] for index in range(1177)])
+    catalog = _payload(root, "catalog.json.gz", [[index] for index in range(1184)])
     detail_files = []
-    for chunk, (start, end) in enumerate(((0, 250), (250, 500), (500, 750), (750, 1000), (1000, 1177))):
+    for chunk, (start, end) in enumerate(((0, 250), (250, 500), (500, 750), (750, 1000), (1000, 1184))):
         detail_files.append(
             _payload(
                 root,
@@ -57,12 +57,14 @@ def write_manifest_fixture(root: Path, *, audit_available: bool = True) -> Path:
             "https://assets.example.test/releases/" + PUBLISH.LOCKED_RELEASE_ID + "/"
         ),
         "counts": {
-            "records": 1177,
+            "records": 1184,
+            "sourceRecords": 1177,
+            "acceptedNewCases": 7,
             "mapped": 518,
-            "unmapped": 659,
-            "reportedUnreviewed": 1177,
-            "exactDay": 921,
-            "mappedExactDay": 339,
+            "unmapped": 666,
+            "reportedUnreviewed": 1173,
+            "exactDay": 928,
+            "mappedExactDay": 340,
             "undated": 28,
             "mappedPositions": 400,
             "exactCoordinates": 0,
@@ -116,7 +118,7 @@ def test_local_payload_hash_size_json_and_counts_are_validated(tmp_path: Path) -
     PUBLISH.validate_animal_manifest(manifest, payloads)
 
     assert [payload["path"] for payload in payloads] == manifest["delivery"]["r2OnlyPaths"]
-    assert all(payload["r2Key"].startswith("releases/animal-mutilations-v1-20260811/") for payload in payloads)
+    assert all(payload["r2Key"].startswith("releases/animal-mutilations-v1-20260812/") for payload in payloads)
 
 
 def test_release_fails_closed_without_coordinate_audit(tmp_path: Path) -> None:

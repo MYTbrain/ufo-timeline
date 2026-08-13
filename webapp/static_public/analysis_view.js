@@ -193,21 +193,21 @@
   // being presented as false zero evidence.
   const CONTEXT_PULSE_MANIFEST_FALLBACK = Object.freeze({
     crops: Object.freeze({
-      releaseId: "crop-circles-context-evidence-v1-20260811",
+      releaseId: "crop-circles-context-evidence-v1-20260812",
       inventoryN: 7745,
       mappedN: 4324,
-      sensitivityReadyN: 3658,
-      strictReadyN: 0,
+      sensitivityReadyN: 3652,
+      strictReadyN: 1,
       exclusionReasonCodes: Object.freeze([
         "catalog_dates_cannot_substitute_for_formation_dates",
         "formation_date_and_coordinate_evidence_gates_not_jointly_satisfied",
       ]),
     }),
     animals: Object.freeze({
-      releaseId: "animal-mutilations-v1-20260811",
-      inventoryN: 1177,
+      releaseId: "animal-mutilations-v1-20260812",
+      inventoryN: 1184,
       mappedN: 518,
-      sensitivityReadyN: 339,
+      sensitivityReadyN: 340,
       strictReadyN: 0,
       exclusionReasonCodes: Object.freeze([
         "all_records_reported_unreviewed",
@@ -215,7 +215,7 @@
       ]),
     }),
     facilities: Object.freeze({
-      releaseId: "analysis-evidence-lab-v2.3-20260811.facility_analysis_v1",
+      releaseId: "analysis-evidence-lab-v2.3-20260812.facility_analysis_v1",
       inventoryN: 1800,
       mappedN: 1800,
       sensitivityReadyN: 70,

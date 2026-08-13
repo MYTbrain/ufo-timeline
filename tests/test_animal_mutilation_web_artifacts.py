@@ -36,23 +36,23 @@ def read_gzip_json(path: Path):
 def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> None:
     manifest_bytes = (ANIMAL_ROOT / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
-    assert manifest["releaseId"] == "animal-mutilations-v1-20260811"
-    assert manifest["assetBaseUrl"].endswith("/releases/animal-mutilations-v1-20260811/")
-    assert manifest["delivery"]["immutablePrefix"] == "releases/animal-mutilations-v1-20260811/"
+    assert manifest["releaseId"] == "animal-mutilations-v1-20260812"
+    assert manifest["assetBaseUrl"].endswith("/releases/animal-mutilations-v1-20260812/")
+    assert manifest["delivery"]["immutablePrefix"] == "releases/animal-mutilations-v1-20260812/"
     assert manifest["delivery"]["pagesFiles"] == ["manifest.json"]
     assert manifest["counts"] == {
-        "acceptedNewCases": 0,
+        "acceptedNewCases": 7,
         "boundedCoordinates": 0,
-        "records": 1177,
+        "records": 1184,
         "mapped": 518,
-        "unmapped": 659,
+        "unmapped": 666,
         "mappedPositions": 400,
         "exactCoordinates": 0,
-        "dated": 1149,
+        "dated": 1156,
         "undated": 28,
-        "exactDay": 921,
-        "mappedExactDay": 339,
-        "reportedUnreviewed": 1177,
+        "exactDay": 928,
+        "mappedExactDay": 340,
+        "reportedUnreviewed": 1173,
         "legallyRestrictedSuppressed": 0,
         "sourceRecords": 1177,
         "detailChunks": 5,
@@ -67,7 +67,7 @@ def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> Non
         "privateOwnerAndAccessDetailsPublished": False,
         "relationshipsEligible": False,
         "sourceSupportedPrivatePropertyCoordinatesPublished": True,
-        "status": "reported_unreviewed",
+        "status": "mixed",
         "traceEligible": False,
         "traceRole": "context_only",
     }
@@ -99,27 +99,28 @@ def test_frozen_animal_web_artifacts_are_complete_reachable_and_r2_only() -> Non
     points = read_gzip_json(ANIMAL_ROOT / manifest["points"]["path"])
     catalog = read_gzip_json(ANIMAL_ROOT / manifest["catalog"]["path"])
     assert len(points) == 518
-    assert len(catalog) == 1177
+    assert len(catalog) == 1184
     assert points == sorted(points, key=lambda row: row[0])
     assert catalog == sorted(catalog, key=lambda row: row[0])
     assert len({(row[1], row[2]) for row in points}) == 400
-    assert sum(row[5] == 0 for row in points) == 339
+    assert sum(row[5] == 0 for row in points) == 340
     assert sum(row[4] is None for row in catalog) == 28
     assert sum(row[8] for row in catalog) == 518
-    assert all(row[10] == "reported_unreviewed" for row in catalog)
+    assert {row[10] for row in catalog} == {"reported_unreviewed", "source_reviewed"}
+    assert sum(row[10] == "source_reviewed" for row in catalog) == 11
     assert "evidenceExcerpt" not in manifest["catalog"]["rowSchema"]
     assert "sourceNarrative" not in manifest["catalog"]["rowSchema"]
 
     catalog_ids = {row[0] for row in catalog}
     point_ids = {row[0] for row in points}
-    assert len(catalog_ids) == 1177
+    assert len(catalog_ids) == 1184
     assert point_ids < catalog_ids
     detail_ids: set[str] = set()
     for chunk_number, declaration in enumerate(manifest["details"]["files"]):
         details = read_gzip_json(ANIMAL_ROOT / declaration["path"])
         assert len(details) == declaration["recordCount"]
         detail_ids.update(details)
-        assert all(detail["status"] == "reported_unreviewed" for detail in details.values())
+        assert all(detail["status"] in {"reported_unreviewed", "source_reviewed"} for detail in details.values())
         assert all(detail["causality"] == "not_asserted" for detail in details.values())
         assert all(detail["traceEligible"] is False for detail in details.values())
         assert all(detail["traceRole"] == "context_only" for detail in details.values())
@@ -190,6 +191,7 @@ def test_builder_is_byte_deterministic_and_keeps_excerpts_out_of_catalog(tmp_pat
             release_id="animal-mutilations-v1-20260802",
             asset_base_url="https://assets.example.test/releases/animal-mutilations-v1-20260802/",
             chunk_size=250,
+            context_evidence_root=None,
         )
     paths_a = sorted(path.relative_to(outputs[0]) for path in outputs[0].rglob("*") if path.is_file())
     paths_b = sorted(path.relative_to(outputs[1]) for path in outputs[1].rglob("*") if path.is_file())

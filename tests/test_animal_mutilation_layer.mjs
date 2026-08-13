@@ -468,7 +468,7 @@ assert.match(indexSource, /id="overlay-animal-mutilations"[^>]*data-default-enab
 assert.match(indexSource, /id="animal-mutilation-browser"[\s\S]*?role="dialog"[\s\S]*?aria-modal="true"/, "all-record browser is an accessible modal dialog");
 assert.doesNotMatch(indexSource, /<script src="\.\/animal_mutilation_layer\.js/, "heavy animal runtime is not a startup script");
 assert.match(bootstrapSource, /animal_mutilation_layer\.js/, "bootstrap lazily loads the animal runtime");
-assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-11-context-evidence-v1/, "default-on animal runtime uses a release-specific cache key");
+assert.match(bootstrapSource, /animal_mutilation_layer\.js\?v=2026-08-12-context-evidence-v2/, "default-on animal runtime uses a release-specific cache key");
 assert.match(bootstrapSource, /addEventListener\("ufo:timeline-ready"[\s\S]*?enableDesiredLayer\(\)/, "default activation waits for the core timeline Ready event");
 assert.match(bootstrapSource, /openBrowser\(browse\)/, "Browse action has an independent lazy entry point");
 assert.match(appSource, /CustomEvent\("ufo:timeline-ready"/, "the core app announces the post-startup activation boundary");
@@ -543,12 +543,12 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   assert.deepEqual(harness.requestCaches, ["no-cache", "force-cache", "force-cache"]);
   assert.equal(harness.api.getStatus().catalogLoaded, true);
   assert.equal(harness.api.getStatus().loaded, false, "Browse never fetches the point index");
-  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /1,177 matching reports, including undated reports/);
+  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /1,184 matching reports, including undated reports/);
 
   const mapped = harness.elements.get("#animal-mutilation-mapped-filter");
   mapped.value = "unmapped";
   await mapped.dispatch("change");
-  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /659 matching reports/);
+  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /666 matching reports/);
   mapped.value = "all";
   const dateScope = harness.elements.get("#animal-mutilation-date-filter");
   dateScope.value = "undated";
@@ -556,7 +556,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /28 matching reports/);
   dateScope.value = "exact_day";
   await dateScope.dispatch("change");
-  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /921 matching reports/);
+  assert.match(harness.elements.get("#animal-mutilation-browser-summary").textContent, /928 matching reports/);
 
   const browser = harness.elements.get("#animal-mutilation-browser");
   const first = browser.focusables[0];
@@ -642,7 +642,7 @@ assert.match(appSource, /ufo:animal-mutilation-statechange[\s\S]*?renderMapContr
   harness.view.hideNonExactDates = true;
   harness.view.filterGeneration += 1;
   harness.tick();
-  assert.equal(harness.api.getStatus().visibleRecords, 339, "Exact day filter honors source precision");
+  assert.equal(harness.api.getStatus().visibleRecords, 340, "Exact day filter honors source precision");
   harness.view.hideNonExactDates = false;
   harness.view.timeRangeIsAllTime = false;
   harness.view.filterGeneration += 1;

@@ -38,7 +38,7 @@
     setStatus("Loading Animal Mutilation Reports…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./animal_mutilation_layer.js?v=2026-08-11-context-evidence-v1";
+      script.src = "./animal_mutilation_layer.js?v=2026-08-12-context-evidence-v2";
       script.async = true;
       script.onload = function () {
         if (!window.UfoAnimalMutilationLayer) {

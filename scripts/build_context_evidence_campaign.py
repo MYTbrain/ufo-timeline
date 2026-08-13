@@ -775,10 +775,8 @@ def _validate_release_seal(
         relative = Path(artifact["path"])
         if relative.is_absolute() or ".." in relative.parts:
             raise CampaignValidationError(f"Unsafe release artifact path: {artifact['path']}")
-        path = repo_root / relative
-        if not path.is_file():
-            raise CampaignValidationError(f"Released artifact manifest is missing: {artifact['path']}")
-        if path.stat().st_size != artifact["bytes"] or sha256_file(path) != artifact["sha256"]:
+        payload = git_commit_blob_bytes(repo_root, source_commit, relative.as_posix())
+        if len(payload) != artifact["bytes"] or sha256_bytes(payload) != artifact["sha256"]:
             raise CampaignValidationError(f"Released artifact manifest identity changed: {artifact['path']}")
     artifact_domains = [record["domain"] for record in seal["artifactManifests"]]
     if sorted(artifact_domains) != ["analysis", "animal_mutilation", "crop_circle"]:

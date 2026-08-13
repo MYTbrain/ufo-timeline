@@ -71,24 +71,24 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
 
     assert value["schemaVersion"] == 2
     assert value["schemaId"] == "ufo-timeline-analysis-evidence-artifacts-v2.3.0"
-    assert value["releaseId"] == "analysis-evidence-lab-v2.3-20260811"
+    assert value["releaseId"] == "analysis-evidence-lab-v2.3-20260812"
     assert value["manifestVersion"] == "2.3.0"
     assert value["counts"] == {
-        "animalContextRecords": 1177,
+        "animalContextRecords": 1184,
         "animalKilometerEligible": 0,
-        "animalPublicMarkerAnalysisRecords": 339,
+        "animalPublicMarkerAnalysisRecords": 340,
         "animalStrictAnalysisClusters": 0,
         "animalStrictAnalysisRecords": 0,
-        "contextIndependentObservedRows": 12225,
-        "contextLocationDateClusters": 3897,
-        "contextObservedNeighborRows": 12641,
-        "contextUfoNeighborRows": 63917,
-        "cropBoundedAnalysisRecords": 433,
+        "contextIndependentObservedRows": 12217,
+        "contextLocationDateClusters": 3893,
+        "contextObservedNeighborRows": 12633,
+        "contextUfoNeighborRows": 63848,
+        "cropBoundedAnalysisRecords": 427,
         "cropContextRecords": 7745,
-        "cropKilometerEligible": 0,
+        "cropKilometerEligible": 1,
         "cropLocalityAnalysisRecords": 3225,
-        "cropStrictAnalysisClusters": 0,
-        "cropStrictAnalysisRecords": 0,
+        "cropStrictAnalysisClusters": 1,
+        "cropStrictAnalysisRecords": 1,
         "facilityMarkers": 1800,
         "facilityInferentialEligible": 70,
         "relationshipRows": 1804,
@@ -101,8 +101,8 @@ def test_frozen_manifest_is_evidence_gated_and_pins_current_releases() -> None:
         "ufoGeographyRows": 580783,
         "ufoSpatialPoints": 33801,
     }
-    assert value["sources"]["cropContext"]["releaseId"] == "crop-circles-context-evidence-v1-20260811"
-    assert value["sources"]["animalContext"]["releaseId"] == "animal-mutilations-v1-20260811"
+    assert value["sources"]["cropContext"]["releaseId"] == "crop-circles-context-evidence-v1-20260812"
+    assert value["sources"]["animalContext"]["releaseId"] == "animal-mutilations-v1-20260812"
     assert value["sources"]["relationshipPackage"]["sha256"] == (
         "18e3a451872793d02018fda961e5eda17d62bba18cea088b63a4033c9d715d2c"
     )
@@ -347,12 +347,12 @@ def test_context_readiness_never_promotes_generalized_or_catalog_markers() -> No
         label = decoded_label("cropContextReadiness", "coordinateEvidenceCode", row[crop_evidence])
         crop_counts[label] = crop_counts.get(label, 0) + 1
     assert crop_counts == {
-        "candidate_field_marker": 358,
-        "exact_source_coordinate": 97,
+        "candidate_field_marker": 357,
+        "exact_source_coordinate": 98,
         "locality_centroid": 3869,
         "unmapped": 3421,
     }
-    assert not any(row[crop_eligible] for row in crop_rows)
+    assert sum(row[crop_eligible] for row in crop_rows) == 1
 
     animal_rows, animal_schema = artifact_rows("animalContextReadiness")
     animal_evidence = animal_schema.index("coordinateEvidenceCode")
@@ -361,7 +361,7 @@ def test_context_readiness_never_promotes_generalized_or_catalog_markers() -> No
     for row in animal_rows:
         label = decoded_label("animalContextReadiness", "coordinateEvidenceCode", row[animal_evidence])
         animal_counts[label] = animal_counts.get(label, 0) + 1
-    assert animal_counts == {"generalized_public_marker": 518, "unmapped": 659}
+    assert animal_counts == {"generalized_public_marker": 518, "unmapped": 666}
     assert not any(row[animal_eligible] for row in animal_rows)
 
 
@@ -371,9 +371,9 @@ def test_context_analysis_lanes_publish_the_locked_candidate_counts() -> None:
         BUILDER.STATIC_DATA_ROOT
     )
 
-    assert sum(row["analysisLaneCode"] == "crop_bounded" for row in crops) == 433
+    assert sum(row["analysisLaneCode"] == "crop_bounded" for row in crops) == 427
     assert sum(row["analysisLaneCode"] == "crop_locality" for row in crops) == 3225
-    assert sum(row["analysisLaneCode"] == "animal_public_marker" for row in animals) == 339
+    assert sum(row["analysisLaneCode"] == "animal_public_marker" for row in animals) == 340
     assert crop_source["policy"]["candidateMarkersBoundedAnalysisEligible"] is True
     assert crop_source["policy"]["catalogDatesSubstituteForFormationDates"] is False
     assert animal_source["policy"]["generalizedPublicMarkersRoughAnalysisEligible"] is True
@@ -421,7 +421,7 @@ def test_context_neighbors_keep_origin_and_publisher_exclusions_auditable() -> N
 
 
 def test_v23_packed_spatial_schemas_are_versioned_and_decision_complete() -> None:
-    assert BUILDER.DEFAULT_RELEASE_ID == "analysis-evidence-lab-v2.3-20260811"
+    assert BUILDER.DEFAULT_RELEASE_ID == "analysis-evidence-lab-v2.3-20260812"
     assert BUILDER.SCHEMA_ID == "ufo-timeline-analysis-evidence-artifacts-v2.3.0"
     assert BUILDER.UFO_SPATIAL_POINT_ROW_SCHEMA == [
         "eventId", "lat", "lon", "ordinal", "year", "sourceCode", "craftCode",
@@ -712,20 +712,20 @@ def test_v23_pinned_points_and_context_neighbors_are_bounded_and_decodable() -> 
     independent = schema.index("independentAssociationEligible")
     origin_event = schema.index("originUfoExcluded")
     origin_publisher = schema.index("originPublisherExcluded")
-    assert len(neighbors) == 63917
+    assert len(neighbors) == 63848
     assert all(row[distance] is None or 0 <= row[distance] <= 25_000 for row in neighbors)
     assert all(row[lag] is None or abs(row[lag]) <= 30 for row in neighbors)
     assert {
         decoded_label("contextUfoNeighbors", "contextLaneCode", row[lane])
         for row in neighbors
-    } == {"animal_public_marker", "crop_bounded", "crop_locality"}
+    } == {"animal_public_marker", "crop_bounded", "crop_locality", "crop_strict"}
     assert {
         decoded_label("contextUfoNeighbors", "dateRoleCode", row[role])
         for row in neighbors
     } == {
         "matched_control_minus_1y", "matched_control_minus_2y",
         "matched_control_plus_1y", "matched_control_plus_2y",
-        "observed_catalog_date", "observed_reported_date",
+        "observed_catalog_date", "observed_formation_date", "observed_reported_date",
     }
     assert any(row[origin_event] for row in neighbors)
     assert any(row[origin_publisher] for row in neighbors)

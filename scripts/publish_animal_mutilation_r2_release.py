@@ -18,7 +18,7 @@ except (ModuleNotFoundError, ImportError):  # Direct script execution.
 
 DEFAULT_MANIFEST = Path("webapp/static_public/data/animal_mutilations/manifest.json")
 DEFAULT_BUCKET = "ufo-timeline-data"
-LOCKED_RELEASE_ID = "animal-mutilations-v1-20260811"
+LOCKED_RELEASE_ID = "animal-mutilations-v1-20260812"
 STALE_HANDOFF_ZIP_SHA256 = "caecfb0b2f94f7f361ab0782d4097fee31711073ede3b8a1b2ad071ae28f1048"
 STALE_RELEASE_COMMIT = "1653e7a9cacab47603621974b7e548efaaf88c0a"
 
@@ -79,12 +79,14 @@ def validate_animal_manifest(
     reported = _integer(counts, "reportedUnreviewed")
     detail_chunks = _integer(counts, "detailChunks")
     locked_counts = {
-        "records": 1177,
+        "records": 1184,
+        "sourceRecords": 1177,
+        "acceptedNewCases": 7,
         "mapped": 518,
-        "unmapped": 659,
-        "reportedUnreviewed": 1177,
-        "exactDay": 921,
-        "mappedExactDay": 339,
+        "unmapped": 666,
+        "reportedUnreviewed": 1173,
+        "exactDay": 928,
+        "mappedExactDay": 340,
         "undated": 28,
         "mappedPositions": 400,
         "exactCoordinates": 0,

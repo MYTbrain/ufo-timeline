@@ -29,6 +29,14 @@ def load_builder():
 BUILDER = load_builder()
 
 
+def test_animal_status_codes_accept_reviewed_public_records() -> None:
+    assert BUILDER.ANIMAL_STATUS_CODES == {
+        "reported_unreviewed": 0,
+        "source_reviewed": 1,
+        "human_reviewed": 2,
+    }
+
+
 def read_manifest() -> dict:
     return json.loads((ANALYSIS_ROOT / "manifest.json").read_text(encoding="utf-8"))
 
@@ -42,18 +50,18 @@ def test_frozen_manifest_pins_releases_hashes_and_descriptive_policy() -> None:
 
     assert manifest["schemaVersion"] == 1
     assert manifest["schemaId"] == "ufo-timeline-analysis-projections-v1.1.0"
-    assert manifest["releaseId"] == "analysis-projections-v1-context-evidence-20260811"
+    assert manifest["releaseId"] == "analysis-projections-v1-context-evidence-20260812"
     assert manifest["counts"] == {
-        "animalReports": 1177,
+        "animalReports": 1184,
         "cropCircles": 7745,
         "mappedAnimalReports": 518,
         "ufoCatalog": 702893,
-        "unmappedAnimalReports": 659,
+        "unmappedAnimalReports": 666,
     }
-    assert manifest["sources"]["cropCircles"]["releaseId"] == "crop-circles-context-evidence-v1-20260811"
+    assert manifest["sources"]["cropCircles"]["releaseId"] == "crop-circles-context-evidence-v1-20260812"
     assert manifest["sources"]["cropCircles"]["rowCount"] == 7745
-    assert manifest["sources"]["animalReports"]["releaseId"] == "animal-mutilations-v1-20260811"
-    assert manifest["sources"]["animalReports"]["rowCount"] == 1177
+    assert manifest["sources"]["animalReports"]["releaseId"] == "animal-mutilations-v1-20260812"
+    assert manifest["sources"]["animalReports"]["rowCount"] == 1184
 
     catalog = manifest["sources"]["ufoCatalog"]
     assert catalog["releaseId"] == "coordinated-reliability-v152-20260731"
@@ -170,15 +178,16 @@ def test_projection_artifacts_are_complete_hashed_compact_and_decodable() -> Non
     } == {0: 10, 1: 409, 2: 3905, 3: 3421}
 
     animal_rows = payloads["animalReports"]
-    assert len(animal_rows) == 1177
+    assert len(animal_rows) == 1184
     assert sum(row[5] for row in animal_rows) == 518
-    assert sum(not row[5] for row in animal_rows) == 659
+    assert sum(not row[5] for row in animal_rows) == 666
     assert sum(row[1] is None for row in animal_rows) == 28
     assert {code for row in animal_rows for code in row[4]} == set(
         range(len(manifest["codes"]["speciesGroup"]))
     )
     assert all(row[4] for row in animal_rows)
-    assert all(row[6] == 0 for row in animal_rows)
+    assert {row[6] for row in animal_rows} == {0, 1}
+    assert sum(row[6] == 1 for row in animal_rows) == 11
     assert all(
         (row[7] is None and row[8] is None)
         or (row[7] <= row[8])

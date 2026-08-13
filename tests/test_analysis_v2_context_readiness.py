@@ -344,7 +344,7 @@ def test_active_agent_disagreement_blocks_source_reviewed_promotion(tmp_path: Pa
     assert source["counts"]["strictReady"] == 0
 
 
-def test_current_public_baseline_remains_zero_strict_with_explicit_quality_fields() -> None:
+def test_public_artifacts_without_context_ledgers_remain_non_strict() -> None:
     crops, _crop_source = BUILDER.build_crop_context_projection(BUILDER.STATIC_DATA_ROOT, None)
     animals, _animal_source, _incident_map = BUILDER.build_animal_context_projection(
         BUILDER.STATIC_DATA_ROOT, None
@@ -352,9 +352,9 @@ def test_current_public_baseline_remains_zero_strict_with_explicit_quality_field
 
     assert sum(row["analysisTierCode"] == "crop_strict" for row in crops) == 0
     assert sum(row["analysisTierCode"] == "animal_strict" for row in animals) == 0
-    assert sum(row["analysisTierCode"] == "crop_bounded" for row in crops) == 433
+    assert sum(row["analysisTierCode"] == "crop_bounded" for row in crops) == 428
     assert sum(row["analysisTierCode"] == "crop_locality" for row in crops) == 3225
-    assert sum(row["analysisTierCode"] == "animal_public_marker" for row in animals) == 339
+    assert sum(row["analysisTierCode"] == "animal_public_marker" for row in animals) == 340
     for row in (crops[0], animals[0]):
         assert row["analysisTierCode"] in BUILDER.CONTEXT_ANALYSIS_TIERS
         assert "coordinateEvidenceClassCode" in row

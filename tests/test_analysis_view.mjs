@@ -341,22 +341,22 @@ assert.equal(analysis.analysisRequestEnvelopeMatches(requestEnvelope, {
 }, requestEnvelope.signature), false, "area and context signature mismatches must be stale");
 const fallbackPulse = analysis.contextPulseEntries({
   crops: { activeCount: 7745, totalProjectionRows: 7745, summary: { mappedCount: 4324 } },
-  animals: { activeCount: 1177, totalProjectionRows: 1177, summary: { mappedCount: 518 } },
+  animals: { activeCount: 1184, totalProjectionRows: 1184, summary: { mappedCount: 518 } },
   facilities: {},
 });
 assert.deepEqual(
   fallbackPulse.map((entry) => [entry.key, entry.inventoryTotal, entry.mapped, entry.sensitivityReady, entry.strictReady]),
   [
-    ["crops", 7745, 4324, 3658, 0],
-    ["animals", 1177, 518, 339, 0],
+    ["crops", 7745, 4324, 3652, 1],
+    ["animals", 1184, 518, 340, 0],
     ["facilities", 1800, 1800, 70, 70],
   ],
   "the sealed manifest summary remains available before lazy spatial evidence loads"
 );
-assert.equal(fallbackPulse[0].strictShare, 0);
-assert.equal(fallbackPulse[1].sensitivityShare, 339 / 1177);
+assert.equal(fallbackPulse[0].strictShare, 1 / 7745);
+assert.equal(fallbackPulse[1].sensitivityShare, 340 / 1184);
 assert.equal(fallbackPulse[2].strictShare, 70 / 1800);
-assert.notEqual(fallbackPulse[0].sensitivityShare, 3658 / 334519, "context readiness never uses the UFO-report cohort as its denominator");
+assert.notEqual(fallbackPulse[0].sensitivityShare, 3652 / 334519, "context readiness never uses the UFO-report cohort as its denominator");
 const typedPulse = analysis.contextPulseEntries({
   crops: {
     activeCount: 100,
@@ -1564,8 +1564,8 @@ assert.match(eligibilityText, /Mapped report points.*580,783.*Qualified craft po
 assert.match(descendants(document.getElementById("analysis-coverage-chart")).map((element) => element.getAttribute("aria-label") || "").join(" "), /33,801 eligible from 580,783.*546,982 excluded/i);
 const contextPulse = document.getElementById("analysis-overview-context-visual");
 const contextPulseText = descendants(contextPulse).map((element) => element.textContent).join(" ");
-assert.match(contextPulseText, /Crop circles.*Active inventory: 210 \/ 7,745.*Sensitivity-ready: 3,658 \/ 7,745.*Strict-ready: 10 \/ 7,745/i);
-assert.match(contextPulseText, /Animal reports.*Active inventory: 80 \/ 1,177.*Sensitivity-ready: 339 \/ 1,177.*Strict-ready: 0 \/ 1,177/i);
+assert.match(contextPulseText, /Crop circles.*Active inventory: 210 \/ 7,745.*Sensitivity-ready: 3,652 \/ 7,745.*Strict-ready: 10 \/ 7,745/i);
+assert.match(contextPulseText, /Animal reports.*Active inventory: 80 \/ 1,177.*Sensitivity-ready: 340 \/ 1,177.*Strict-ready: 0 \/ 1,177/i);
 assert.match(contextPulseText, /Facilities.*Active inventory: 1,800 \/ 1,800.*Strict-ready: 70 \/ 1,800 \(3\.9%\)/i);
 assert.doesNotMatch(contextPulseText, /0\s*\/\s*0/, "an unloaded facility artifact must never render false 0/0 readiness");
 assert.match(contextPulseText, /Every percentage uses that context domain's own inventory, never the UFO-report cohort/i);

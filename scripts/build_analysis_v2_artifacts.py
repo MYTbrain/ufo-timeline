@@ -49,7 +49,7 @@ DEFAULT_CANONICAL_SOURCE = (
     / "deduped_events.jsonl"
 )
 DEFAULT_BROWSER_BASE_PATH = "data/analysis_v2"
-DEFAULT_RELEASE_ID = "analysis-evidence-lab-v2.3-20260811"
+DEFAULT_RELEASE_ID = "analysis-evidence-lab-v2.3-20260812"
 DEFAULT_R2_PUBLIC_ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 IMMUTABLE_CACHE_CONTROL = "public, max-age=31536000, immutable"
 DEFAULT_CONTEXT_EVIDENCE_ROOT = REPO_ROOT / "campaign" / "context_evidence" / "ledgers"

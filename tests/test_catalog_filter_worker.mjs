@@ -1892,7 +1892,7 @@ assert.equal(
   "bounded and locality crop lanes remain distinct but both contribute usable markers"
 );
 assert.equal(animalReadiness.status, "ready_sensitivity");
-assert.equal(animalReadiness.eligibleN, 339, "rough animal markers remain usable for public-marker association analysis");
+assert.equal(animalReadiness.eligibleN, 340, "rough animal markers remain usable for public-marker association analysis");
 const relationshipRuntimeReadiness = spatialComputed.result.spatialEvidence.readiness.find((row) => row.key === "relationshipReconciliation");
 assert.equal(relationshipRuntimeReadiness.status, "ready_descriptive");
 assert.equal(relationshipRuntimeReadiness.inferenceEnabled, false);

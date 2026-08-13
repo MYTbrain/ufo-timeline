@@ -24,7 +24,7 @@ except (ModuleNotFoundError, ImportError):
 
 DEFAULT_MANIFEST = Path("webapp/static_public/data/analysis_v2/manifest.json")
 DEFAULT_BUCKET = "ufo-timeline-data"
-LOCKED_RELEASE_ID = "analysis-evidence-lab-v2.3-20260811"
+LOCKED_RELEASE_ID = "analysis-evidence-lab-v2.3-20260812"
 LOCKED_ASSET_ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 EXPECTED_ARTIFACT_KEYS = {
     "animalContextReadiness",

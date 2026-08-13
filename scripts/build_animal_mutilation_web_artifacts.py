@@ -76,6 +76,15 @@ PRIVATE_TEXT_RE = re.compile(
     r"(?:street|st|road|rd|lane|ln|drive|dr|avenue|ave|boulevard|blvd)\b)",
     flags=re.IGNORECASE,
 )
+
+REVIEWED_SPECIES_GROUPS = {
+    "bird": "avian", "birds": "avian", "cattle": "bovine", "cow": "bovine",
+    "cows": "bovine", "calf": "bovine", "calves": "bovine", "heifer": "bovine",
+    "dog": "canid", "dogs": "canid", "goat": "caprine", "goats": "caprine",
+    "deer": "cervid", "horse": "equine", "horses": "equine", "cat": "felid",
+    "cats": "felid", "rabbit": "lagomorph", "rabbits": "lagomorph",
+    "sheep": "ovine", "pig": "porcine", "pigs": "porcine", "swine": "porcine",
+}
 PUBLIC_ROUTE_RE = re.compile(
     r"\b(?:US|U\.S\.|State|County)\s+(?:Route\s+)?\d{1,4}\b",
     flags=re.IGNORECASE,
@@ -596,6 +605,10 @@ def _new_animal_feature(case_id: str, evidence: Mapping[str, Any]) -> dict[str, 
     summary = _context_value(evidence, "public_summary") or "Reviewed animal mutilation incident."
     species = _context_value(evidence, "animal_species")
     common_names = species if isinstance(species, list) else [species] if species else []
+    species_groups = sorted({
+        REVIEWED_SPECIES_GROUPS.get(normalize_text(value).casefold(), "unknown")
+        for value in common_names
+    })
     props = {
         "causality": "not_asserted", "claim_label": "Reported animal mutilation",
         "content_warning": "Animal-death descriptions may be disturbing.",
@@ -605,7 +618,7 @@ def _new_animal_feature(case_id: str, evidence: Mapping[str, Any]) -> dict[str, 
         "normalized_common_names": common_names, "privacy_level": "public_generalized",
         "reported_taxon_keys": [], "source_incident_id": _context_value(evidence, "source_case_identifier"),
         "source_incident_sha256": None, "source_refs": [], "source_status": "reviewed_context_evidence",
-        "species_groups": [], "status": "reported_unreviewed", "summary": summary, "title": title,
+        "species_groups": species_groups, "status": "reported_unreviewed", "summary": summary, "title": title,
         "trace_eligible": False, "trace_role": "context_only",
         "uncertainty": {
             "coordinates_available": False, "date_precision": "unknown",
