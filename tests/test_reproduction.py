@@ -12,6 +12,12 @@ import pytest
 from scripts import reproduction
 
 
+def test_reproduction_publisher_accepts_absolute_pages_root() -> None:
+    publisher = (Path("scripts") / "publish_reproduction_release.ps1").read_text(encoding="utf-8")
+    assert "[IO.Path]::IsPathRooted($PagesRoot)" in publisher
+    assert "Resolve-Path -LiteralPath $PagesRootCandidate" in publisher
+
+
 def _write(path: Path, content: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)

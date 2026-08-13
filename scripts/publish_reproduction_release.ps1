@@ -18,7 +18,12 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-$ResolvedPagesRoot = Resolve-Path (Join-Path $RepoRoot $PagesRoot)
+$PagesRootCandidate = if ([IO.Path]::IsPathRooted($PagesRoot)) {
+  $PagesRoot
+} else {
+  Join-Path $RepoRoot $PagesRoot
+}
+$ResolvedPagesRoot = Resolve-Path -LiteralPath $PagesRootCandidate
 
 $ParsedDeploymentId = [Guid]::Empty
 if (![Guid]::TryParse($PagesDeploymentId, [ref]$ParsedDeploymentId)) {
