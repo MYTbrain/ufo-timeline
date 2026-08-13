@@ -1,11 +1,11 @@
 {
   "schemaId": "ufo-timeline-context-evidence-release-seal-v1.0.0",
   "campaignId": "context-evidence-expansion-20260810",
-  "releaseId": "context-evidence-mapping-provenance-v1-20260811",
+  "releaseId": "context-evidence-mapping-provenance-v2-20260812",
   "releaseStatus": "released",
   "authorizedAt": "2026-08-11T00:00:00Z",
-  "finalizedAt": "2026-08-11T21:14:59.142Z",
-  "sourceCommit": "8af08f8cd64b1da767916fee8f23b6a29bf8e9f0",
+  "finalizedAt": "2026-08-13T03:29:50.4009151Z",
+  "sourceCommit": "8bb4e9be96b435936a897e6eece8ee2376df0840",
   "authorizedScope": {
     "authorizationKind": "explicit_user_authorized_non_milestone",
     "mappingAndProvenanceOnly": true,
@@ -17,38 +17,38 @@
   "frozenLedgers": {
     "source": {
       "path": "campaign/context_evidence/ledgers/source_ledger.jsonl",
-      "bytes": 104285,
-      "sha256": "464ae78836d7180f8fabe37895f40c8a514dfc55f281672ed157b231ff3f917b"
+      "bytes": 176772,
+      "sha256": "69db9173acf80b377074096171ba960e9626f2395f266a3ce64567853195b365"
     },
     "enrichment": {
       "path": "campaign/context_evidence/ledgers/case_enrichment.jsonl",
-      "bytes": 616946,
-      "sha256": "7893f5556d956cbdc5cfc331ec106e668aeb50907ffe4f19ae696d298e0b0018"
+      "bytes": 726607,
+      "sha256": "94b9806d7654398b41de22f7ecd5503c25a91ebaede4787dfc986db50f92ea5b"
     },
     "review": {
       "path": "campaign/context_evidence/ledgers/case_review_decisions.jsonl",
-      "bytes": 961434,
-      "sha256": "1a96d7fe1d14c973ecac0d75ffa6ec2f5abd0bfe9e136d10579700d7017de1b4"
+      "bytes": 1184959,
+      "sha256": "27dbc976da3a9966739ccd0198316b59453049fb4f0bf1b562e5063569c4bc3a"
     },
     "queue": {
       "path": "campaign/context_evidence/ledgers/research_queue.jsonl",
-      "bytes": 142977,
-      "sha256": "4701a1d44a349c0e7c4c264e46668822993dd0328a1e9535104ecaaf3850e374"
+      "bytes": 288496,
+      "sha256": "b97012b78a3fd9313fc29214ed756a7e9e328bdc1295b8d4f35e2f494a42ae55"
     }
   },
   "dataSummary": {
-    "materiallyUpgradedOverall": 98,
+    "materiallyUpgradedOverall": 133,
     "domains": {
       "cropCircle": {
         "activeInventory": 7745,
         "mapped": 4324,
-        "sensitivityReady": 3658,
-        "strictReady": 0
+        "sensitivityReady": 3652,
+        "strictReady": 1
       },
       "animalMutilation": {
-        "activeInventory": 1177,
+        "activeInventory": 1184,
         "mapped": 518,
-        "sensitivityReady": 339,
+        "sensitivityReady": 340,
         "strictReady": 0
       }
     },
@@ -59,106 +59,106 @@
     {
       "domain": "crop_circle",
       "path": "webapp/static_public/data/crop_circles/manifest.json",
-      "releaseId": "crop-circles-context-evidence-v1-20260811",
-      "bytes": 8865,
-      "sha256": "262491af98deacf0c00d3019c6a8f9c894eb16f4d22cf931abd3bf9ec8bb15fe"
+      "releaseId": "crop-circles-context-evidence-v1-20260812",
+      "bytes": 8866,
+      "sha256": "d7e5be315b24220fa95c70843dd45417a276690743a3fb3c1aa5befe28047508"
     },
     {
       "domain": "animal_mutilation",
       "path": "webapp/static_public/data/animal_mutilations/manifest.json",
-      "releaseId": "animal-mutilations-v1-20260811",
-      "bytes": 5858,
-      "sha256": "a4f6188b2496f91f8edc0b8b2cbcd630552d3a025ce9e1b35840437e2ed6cedb"
+      "releaseId": "animal-mutilations-v1-20260812",
+      "bytes": 5841,
+      "sha256": "7e0b07b8a0d5fd23a425af3e0ac43fb4bfe625df57e42107b45e490ec8cdc673"
     },
     {
       "domain": "analysis",
       "path": "webapp/static_public/data/analysis_v2/manifest.json",
-      "releaseId": "analysis-evidence-lab-v2.3-20260811",
-      "bytes": 93777,
-      "sha256": "29df7c9cef0977b69e398e19373c3e0ac741d522b4d4776787cfb15c6fe5404b"
+      "releaseId": "analysis-evidence-lab-v2.3-20260812",
+      "bytes": 95801,
+      "sha256": "6008b8b906fda2bff877846168edb81e5a873c6c988ded37343b02e036da5467"
     }
   ],
   "acceptance": {
     "localFullSuite": {
       "status": "passed",
       "runCount": 1,
-      "evidenceLocator": "local acceptance 2026-08-11: 1,379 Python tests and 40 browser suites passed against frozen attempt-2"
+      "evidenceLocator": "local acceptance 2026-08-12: deterministic build pair matched; 1,403 Python tests and 40 browser suites passed"
     },
     "cleanCloneCi": {
       "status": "passed",
       "runCount": 1,
-      "evidenceLocator": "https://github.com/MYTbrain/ufo-timeline/actions/runs/31535834406"
+      "evidenceLocator": "https://github.com/MYTbrain/ufo-timeline/actions/runs/31663875740"
     },
     "previewBrowserQa": {
       "status": "passed",
       "runCount": 1,
-      "evidenceLocator": "https://a4022927.ufo-timeline.pages.dev desktop 1440x900 and mobile 390x844"
+      "evidenceLocator": "https://6c7e13f8.ufo-timeline.pages.dev rendered browser QA and four byte-identical manifest checks"
     },
     "productionSmoke": {
       "status": "passed",
       "runCount": 1,
-      "evidenceLocator": "https://b58af415.ufo-timeline.pages.dev and https://ufo-timeline.pages.dev"
+      "evidenceLocator": "https://a2d28d0e.ufo-timeline.pages.dev and https://ufo-timeline.pages.dev rendered QA plus four byte-identical manifest checks"
     }
   },
   "r2Releases": [
     {
       "domain": "crop_circle",
-      "releaseId": "crop-circles-context-evidence-v1-20260811",
-      "immutablePrefix": "releases/crop-circles-context-evidence-v1-20260811",
+      "releaseId": "crop-circles-context-evidence-v1-20260812",
+      "immutablePrefix": "releases/crop-circles-context-evidence-v1-20260812",
       "objectCount": 32,
-      "totalBytes": 1802634,
-      "treeSha256": "2da70263f87d03e6696d2cd794b882e0286b8989813838697aed7859b4080b62",
+      "totalBytes": 1804565,
+      "treeSha256": "cea8d8e12e073359240d91c3ae341f978aa967c9153016ca061fcc7268745397",
       "readbackVerified": true
     },
     {
       "domain": "animal_mutilation",
-      "releaseId": "animal-mutilations-v1-20260811",
-      "immutablePrefix": "releases/animal-mutilations-v1-20260811",
+      "releaseId": "animal-mutilations-v1-20260812",
+      "immutablePrefix": "releases/animal-mutilations-v1-20260812",
       "objectCount": 7,
-      "totalBytes": 438699,
-      "treeSha256": "18c8cda00c7826cebc2018c334be6e00db6020d7475d0c8cac05cf7e1374e708",
+      "totalBytes": 443077,
+      "treeSha256": "9f80be47d2973b358bf435fc6806fd0afc7c1095818e7c8d37229f9c6929c6a7",
       "readbackVerified": true
     },
     {
       "domain": "analysis",
-      "releaseId": "analysis-evidence-lab-v2.3-20260811",
-      "immutablePrefix": "releases/analysis-evidence-lab-v2.3-20260811",
+      "releaseId": "analysis-evidence-lab-v2.3-20260812",
+      "immutablePrefix": "releases/analysis-evidence-lab-v2.3-20260812",
       "objectCount": 25,
-      "totalBytes": 63934072,
-      "treeSha256": "6068f4675351c672fe03739eb62f2da6bd79d285b073d84f5e7febd0c916f5a2",
+      "totalBytes": 63929199,
+      "treeSha256": "2d19eccfd22f50b839c4c340836a047958cbf449d94b85009f3a0496ab21ded9",
       "readbackVerified": true
     }
   ],
   "pages": {
-    "frozenTreeSha256": "ab3d4d8f34d00b28c60468d994932af18edb7c8dae567e8aa97eb4f58667d914",
+    "frozenTreeSha256": "928ed9bd220ef588619f7e6ca8aaf0816a26bdd134dc1f17f49eae082a80d314",
     "fileCount": 150,
-    "totalBytes": 57542959,
+    "totalBytes": 57545839,
     "preview": {
-      "deploymentId": "a4022927-8457-4e59-8d7e-c31dd9b85130",
-      "immutableUrl": "https://a4022927.ufo-timeline.pages.dev",
+      "deploymentId": "6c7e13f8-a9ce-4400-bafd-a2ed9cc7f79d",
+      "immutableUrl": "https://6c7e13f8.ufo-timeline.pages.dev",
       "canonicalUrl": null,
-      "branch": "codex/context-evidence-campaign-20260810",
-      "sourceCommit": "8af08f8cd64b1da767916fee8f23b6a29bf8e9f0"
+      "branch": "context-evidence-v2-preview-20260812",
+      "sourceCommit": "8bb4e9be96b435936a897e6eece8ee2376df0840"
     },
     "production": {
-      "deploymentId": "b58af415-c82f-4397-beb6-571ebc5a4dda",
-      "immutableUrl": "https://b58af415.ufo-timeline.pages.dev",
+      "deploymentId": "a2d28d0e-b5a5-43cb-9642-00a961514aa3",
+      "immutableUrl": "https://a2d28d0e.ufo-timeline.pages.dev",
       "canonicalUrl": "https://ufo-timeline.pages.dev",
       "branch": "main",
-      "sourceCommit": "8af08f8cd64b1da767916fee8f23b6a29bf8e9f0"
+      "sourceCommit": "8bb4e9be96b435936a897e6eece8ee2376df0840"
     },
     "identicalPreviewProductionArtifact": true
   },
   "reproduction": {
-    "releaseId": "context-evidence-mapping-provenance-v1-20260811",
-    "manifestSha256": "3f3e8c8542d2c49432f42f1549bd1d715a67ee3183947ccd9234675ef6061ed6",
-    "pagesArchiveSha256": "22d8ae8e5dc66511f413c2992e560086973b4f31ac77ff09f45a98742cf2843f"
+    "releaseId": "context-evidence-mapping-provenance-v2-20260812",
+    "manifestSha256": "91dfc531c037724b8b7bd354832de8334b5d659ec5e6bb63aec51fa08107eb6a",
+    "pagesArchiveSha256": "f6df27378c786ede24f5cc3ab17c1703f4d21e27e747acb45c69ccbf874a927f"
   },
   "rollback": {
-    "deploymentId": "f21b47a5-368f-4547-8202-b37778f6fcc4",
-    "immutableUrl": "https://f21b47a5.ufo-timeline.pages.dev",
-    "sourceCommit": "e96acd36a6e572deb42507dd1e8be0d939f25212",
+    "deploymentId": "b58af415-c82f-4397-beb6-571ebc5a4dda",
+    "immutableUrl": "https://b58af415.ufo-timeline.pages.dev",
+    "sourceCommit": "8af08f8cd64b1da767916fee8f23b6a29bf8e9f0",
     "status": "known_good",
-    "instruction": "Redeploy the retained f21b47a5 frozen Pages artifact to branch main without rebuilding."
+    "instruction": "Redeploy the retained b58af415 frozen Pages artifact to branch main without rebuilding."
   }
 }
