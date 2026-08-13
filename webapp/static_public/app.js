@@ -947,6 +947,10 @@
     mapLegendEventBaseMode: DEFAULT_COLOR_MODE,
     mapLegendEventBaseGeneration: 0,
     mapLegendInteractionVersion: 0,
+    mapLegendViewportCountsCatalogRef: null,
+    mapLegendViewportCountsCacheKey: "",
+    mapLegendViewportCountsCacheValue: null,
+    mapLegendViewportRefreshFrameId: null,
     craftTypeResolutionByKey: new Map(),
     mapLegendFilteredEventIdSetCacheKey: "",
     mapLegendFilteredEventIdSetCacheValue: null,
@@ -1193,6 +1197,8 @@
     isMobileLandscapeLayout: false,
     timelineDockMounted: false,
     renderedWrapWorldIndex: null,
+    mapEventLayerLoadedBounds: null,
+    mapEventLayerLoadedRepresentation: "",
     catalogExactDayAscending: true,
     lastCatalogExactDayEvent: null,
     packedPoints: {
@@ -1948,11 +1954,15 @@
     const playbackLineCount = runtime.playbackTrailLines.reduce(function (total, entry) {
       return total + ((entry && entry.lines && entry.lines.length) || 0);
     }, 0);
+    const neighborhoodSegmentCount = regionSelectionAffectsRendering()
+      ? ((currentRegionSelectionResult().visibleTraceSegments || []).length)
+      : 0;
     const renderedSegments = Math.max(
       0,
       Number(metrics.renderedSegments) || 0,
       Number(runtime.staticTraceRenderedSegments) || 0,
-      playbackLineCount
+      playbackLineCount,
+      neighborhoodSegmentCount
     );
     const sourceSegments = Math.max(
       renderedSegments,
@@ -2109,6 +2119,31 @@
     return Math.max(0, numeric * traceBoldnessScale());
   }
 
+  function refreshScalableLeafletTraceLine(line) {
+    const baseStyle = line && line._ufoTraceBaseStyle ? line._ufoTraceBaseStyle : {};
+    const rawWeight = Number.isFinite(baseStyle.rawWeight) ? baseStyle.rawWeight : baseStyle.weight;
+    const rawOpacity = Number.isFinite(baseStyle.rawOpacity) ? baseStyle.rawOpacity : baseStyle.opacity;
+    if (!line || typeof line.setStyle !== "function" || !Number.isFinite(rawWeight)) return false;
+    const scaledWeight = scaledTraceStrokeWeight(rawWeight);
+    const nextStyle = { weight: scaledWeight };
+    if (Number.isFinite(rawOpacity)) {
+      nextStyle.opacity = scaledTraceOpacity(rawOpacity);
+    }
+    line.setStyle(nextStyle);
+    line._ufoTraceBaseStyle.weight = scaledWeight;
+    if (Number.isFinite(rawOpacity)) {
+      line._ufoTraceBaseStyle.opacity = nextStyle.opacity;
+    }
+    return true;
+  }
+
+  function refreshNeighborhoodTraceRendering() {
+    if (!runtime.neighborhoodTraceLayer || typeof runtime.neighborhoodTraceLayer.eachLayer !== "function") return;
+    runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
+      refreshScalableLeafletTraceLine(layer);
+    });
+  }
+
   function refreshTraceWidthRendering() {
     if (runtime.staticTraceLayer && typeof runtime.staticTraceLayer._redraw === "function") {
       runtime.staticTraceLayer._redraw();
@@ -2116,25 +2151,15 @@
     if (runtime.claimedUfoBaseTraceLayer && typeof runtime.claimedUfoBaseTraceLayer._redraw === "function") {
       runtime.claimedUfoBaseTraceLayer._redraw();
     }
+    if (runtime.playbackTrailCanvasLayer && typeof runtime.playbackTrailCanvasLayer._redraw === "function") {
+      runtime.playbackTrailCanvasLayer._redraw();
+    }
     runtime.playbackTrailLines.forEach(function (entry) {
       (entry.lines || []).forEach(function (line) {
-        const baseStyle = line && line._ufoTraceBaseStyle ? line._ufoTraceBaseStyle : {};
-        const rawWeight = Number.isFinite(baseStyle.rawWeight) ? baseStyle.rawWeight : baseStyle.weight;
-        const rawOpacity = Number.isFinite(baseStyle.rawOpacity) ? baseStyle.rawOpacity : baseStyle.opacity;
-        if (line && typeof line.setStyle === "function" && Number.isFinite(rawWeight)) {
-          const scaledWeight = scaledTraceStrokeWeight(rawWeight);
-          const nextStyle = { weight: scaledWeight };
-          if (Number.isFinite(rawOpacity)) {
-            nextStyle.opacity = scaledTraceOpacity(rawOpacity);
-          }
-          line.setStyle(nextStyle);
-          line._ufoTraceBaseStyle.weight = scaledWeight;
-          if (Number.isFinite(rawOpacity)) {
-            line._ufoTraceBaseStyle.opacity = nextStyle.opacity;
-          }
-        }
+        refreshScalableLeafletTraceLine(line);
       });
     });
+    refreshNeighborhoodTraceRendering();
     renderTrailLegend();
     renderMapLegend();
     renderTraceStatus();
@@ -12786,7 +12811,8 @@
     const active = Boolean(entry.active);
     const soloActive = craftLegendSoloKey() === entry.key;
     const formattedCount = formatNumber(entry.count);
-    const countLabel = formattedCount + (Number(entry.count) === 1 ? " event" : " events");
+    const countLabel = formattedCount + (Number(entry.count) === 1 ? " event" : " events") +
+      " visible on the current map";
     const toggleAttribute = surface === "map"
       ? 'data-map-legend-event-key="' + escapeHtml(entry.key) + '"'
       : 'data-craft-legend-toggle-key="' + escapeHtml(entry.key) + '"';
@@ -12931,9 +12957,10 @@
     const singularNoun = String(config.countNounSingular || "event");
     const pluralNoun = String(config.countNounPlural || singularNoun + "s");
     const countNoun = count === 1 ? singularNoun : pluralNoun;
+    const countContext = String(config.countContext || "under the current filters");
     const countHtml = hasCount
       ? '<span class="map-legend-item-count" title="' +
-        escapeHtml(formatNumber(count) + " " + countNoun + " under the current filters") +
+        escapeHtml(formatNumber(count) + " " + countNoun + " " + countContext) +
         '" aria-label="' +
         escapeHtml(formatNumber(count) + " " + countNoun) +
         '">' +
@@ -13044,21 +13071,95 @@
     return rows;
   }
 
-  function mapLegendEventCountsForCurrentMode() {
+  function currentMapViewportBoundsSnapshot() {
+    if (!runtime.map || typeof runtime.map.getBounds !== "function") {
+      return { south: -90, west: -180, north: 90, east: 180 };
+    }
+    const bounds = runtime.map.getBounds();
+    return {
+      south: Number(bounds.getSouth()),
+      west: Number(bounds.getWest()),
+      north: Number(bounds.getNorth()),
+      east: Number(bounds.getEast()),
+    };
+  }
+
+  function mapViewportBoundsCacheKey(bounds) {
+    return [bounds.south, bounds.west, bounds.north, bounds.east].map(function (value) {
+      return Number.isFinite(value) ? value.toFixed(6) : "invalid";
+    }).join(",");
+  }
+
+  function mapLegendEventUniverseKeysForCurrentMode() {
+    const keys = [];
     if (
       runtime.mapLegendEventBaseMode === state.colorMode &&
-      runtime.mapLegendEventBaseCounts instanceof Map &&
-      runtime.mapLegendEventBaseCounts.size
+      runtime.mapLegendEventBaseCounts instanceof Map
     ) {
-      return new Map(runtime.mapLegendEventBaseCounts);
+      runtime.mapLegendEventBaseCounts.forEach(function (_count, key) {
+        keys.push(key);
+      });
+    }
+    const selection = normalizedMapLegendEventSelection();
+    keys.push.apply(keys, selection.selectedKeys || []);
+    if (state.mapLegendCraftSolo && Array.isArray(state.mapLegendCraftSolo.universeKeys)) {
+      keys.push.apply(keys, state.mapLegendCraftSolo.universeKeys);
+    }
+    if (state.colorMode === "single" && (keys.length || state.filteredCatalog.length)) {
+      keys.push("all_events");
+    }
+    return LEGEND_CONTROLS.uniqueKeys(keys);
+  }
+
+  function mapLegendEventCountsForCurrentMode() {
+    const visibleMappedCatalog = currentVisibleMappedCatalog();
+    const viewportBounds = currentMapViewportBoundsSnapshot();
+    const universeKeys = mapLegendEventUniverseKeysForCurrentMode();
+    const eventSelection = normalizedMapLegendEventSelection();
+    const cacheKey = [
+      state.timelineDataVersion,
+      state.filterGeneration,
+      runtime.activeFilterGeneration,
+      state.colorMode,
+      mapLegendEventSelectionSignature(),
+      regionSelectionAffectsRendering() ? runtime.regionSelectionResultCacheKey : "",
+      traceLinkedVisibilityAffectsRendering() ? runtime.traceLinkedVisibilityCacheKey : "",
+      regionSelectionAffectsRendering() ? runtime.areaEventRepresentation : state.effectiveMapMode,
+      mapViewportBoundsCacheKey(viewportBounds),
+      universeKeys.join(","),
+    ].join("|");
+    if (
+      runtime.mapLegendViewportCountsCatalogRef === visibleMappedCatalog &&
+      runtime.mapLegendViewportCountsCacheKey === cacheKey &&
+      runtime.mapLegendViewportCountsCacheValue instanceof Map
+    ) {
+      return runtime.mapLegendViewportCountsCacheValue;
     }
 
-    const counts = new Map();
-    for (const event of state.filteredCatalog) {
-      const key = eventLegendKeyForMode(event, state.colorMode);
-      counts.set(key, (counts.get(key) || 0) + 1);
-    }
+    const events = regionSelectionAffectsRendering() && runtime.areaEventRepresentation === "hidden"
+      ? []
+      : visibleMappedCatalog;
+    const counts = LEGEND_CONTROLS.countViewportEventsByKey(
+      events,
+      viewportBounds,
+      function (event) {
+        const key = eventLegendKeyForMode(event, state.colorMode);
+        return LEGEND_CONTROLS.eventKeyActive(eventSelection, key, state.colorMode) ? key : "";
+      },
+      universeKeys
+    );
+    runtime.mapLegendViewportCountsCatalogRef = visibleMappedCatalog;
+    runtime.mapLegendViewportCountsCacheKey = cacheKey;
+    runtime.mapLegendViewportCountsCacheValue = counts;
     return counts;
+  }
+
+  function scheduleMapViewportLegendRefresh() {
+    if (runtime.mapLegendViewportRefreshFrameId != null) return;
+    runtime.mapLegendViewportRefreshFrameId = window.requestAnimationFrame(function () {
+      runtime.mapLegendViewportRefreshFrameId = null;
+      renderLegend();
+    });
   }
 
   function orderedMapLegendEventKeys(counts, selection) {
@@ -13151,6 +13252,7 @@
         controlValue: entry.key,
         title: mapLegendEventToggleTitle(entry, selection),
         count: entry.count,
+        countContext: "visible on the current map",
       });
     });
   }
@@ -14612,6 +14714,56 @@
     }
   }
 
+  function currentMapEventRepresentation() {
+    return regionSelectionAffectsRendering()
+      ? runtime.areaEventRepresentation
+      : state.effectiveMapMode;
+  }
+
+  function rememberMapEventLayerLoadedViewport(representation, bounds) {
+    if (!bounds) {
+      runtime.mapEventLayerLoadedBounds = null;
+      runtime.mapEventLayerLoadedRepresentation = "";
+      return;
+    }
+    let west = Number(bounds.getWest());
+    let east = Number(bounds.getEast());
+    while (east < west) east += 360;
+    runtime.mapEventLayerLoadedBounds = {
+      south: Number(bounds.getSouth()) - TRACE_VIEWPORT_LAT_PAD,
+      west: west - TRACE_VIEWPORT_LON_PAD,
+      north: Number(bounds.getNorth()) + TRACE_VIEWPORT_LAT_PAD,
+      east: east + TRACE_VIEWPORT_LON_PAD,
+    };
+    runtime.mapEventLayerLoadedRepresentation = representation;
+  }
+
+  function mapEventLayerLoadedViewportContainsCurrentBounds(representation) {
+    const loaded = runtime.mapEventLayerLoadedBounds;
+    if (
+      !runtime.map ||
+      !loaded ||
+      runtime.mapEventLayerLoadedRepresentation !== representation
+    ) {
+      return false;
+    }
+    const bounds = runtime.map.getBounds();
+    const south = Number(bounds.getSouth());
+    const north = Number(bounds.getNorth());
+    if (south < loaded.south || north > loaded.north) return false;
+    let west = Number(bounds.getWest());
+    let east = Number(bounds.getEast());
+    while (east < west) east += 360;
+    if ((loaded.east - loaded.west) >= 360) return true;
+    if ((east - west) >= 360) return false;
+    const loadedCenter = (loaded.west + loaded.east) / 2;
+    const currentCenter = (west + east) / 2;
+    const worldOffset = Math.round((loadedCenter - currentCenter) / 360) * 360;
+    west += worldOffset;
+    east += worldOffset;
+    return west >= loaded.west && east <= loaded.east;
+  }
+
   function refreshWrappedWorldRendering(force) {
     const nextWorldIndex = currentWrappedWorldIndex();
     if (!force && runtime.renderedWrapWorldIndex === nextWorldIndex) {
@@ -14619,9 +14771,12 @@
     }
 
     runtime.renderedWrapWorldIndex = nextWorldIndex;
-    if (state.effectiveMapMode === MAP_RENDERERS.events) {
+    const representation = currentMapEventRepresentation();
+    if (representation === "hidden") {
+      clearMapDataLayers();
+    } else if (representation === MAP_RENDERERS.events) {
       renderPointLayer();
-    } else if (state.effectiveMapMode === MAP_RENDERERS.clusters) {
+    } else if (representation === MAP_RENDERERS.clusters) {
       renderClusterLayer();
     } else if (runtime.heatmapLayer && runtime.map.hasLayer(runtime.heatmapLayer) && typeof runtime.heatmapLayer._reset === "function") {
       runtime.heatmapLayer._reset();
@@ -14634,6 +14789,30 @@
     }
     scheduleStaticTraceViewportRefresh();
     return true;
+  }
+
+  function refreshMapEventLayerForViewportChange() {
+    if (!runtime.map) return false;
+    const representation = currentMapEventRepresentation();
+    if (
+      representation === MAP_RENDERERS.events &&
+      runtime.pointLayer &&
+      runtime.map.hasLayer(runtime.pointLayer)
+    ) {
+      if (mapEventLayerLoadedViewportContainsCurrentBounds(representation)) return false;
+      renderPointLayer();
+      return true;
+    }
+    if (
+      representation === MAP_RENDERERS.clusters &&
+      runtime.clusterLayer &&
+      runtime.map.hasLayer(runtime.clusterLayer)
+    ) {
+      if (mapEventLayerLoadedViewportContainsCurrentBounds(representation)) return false;
+      renderClusterLayer();
+      return true;
+    }
+    return false;
   }
 
   function scheduleMapProjectionRefresh() {
@@ -14693,6 +14872,7 @@
     }
     const rebuiltWrappedWorld = refreshWrappedWorldRendering();
     if (!rebuiltWrappedWorld) {
+      refreshMapEventLayerForViewportChange();
       scheduleMapProjectionRefresh();
     }
     if (mapMoveEndFollowsRecentZoom()) {
@@ -14700,6 +14880,7 @@
     } else {
       refreshStaticTraceLayerForViewportChange();
     }
+    scheduleMapViewportLegendRefresh();
   }
 
   function panelConfig(panelKey) {
@@ -24974,6 +25155,8 @@
       runtime.map.removeLayer(runtime.heatmapLayer);
     }
     markerByEventId.clear();
+    runtime.mapEventLayerLoadedBounds = null;
+    runtime.mapEventLayerLoadedRepresentation = "";
   }
 
   function resolveNormalAutoMapMode(mappedCount) {
@@ -25120,6 +25303,7 @@
       }
     }
     runtime.renderedWrapWorldIndex = primaryWorldIndex;
+    rememberMapEventLayerLoadedViewport(MAP_RENDERERS.events, bounds);
     runtime.pointLayer.addTo(runtime.map);
     syncPointLayerMarkerSizing();
   }
@@ -25151,6 +25335,7 @@
       }
     }
     runtime.renderedWrapWorldIndex = primaryWorldIndex;
+    rememberMapEventLayerLoadedViewport(MAP_RENDERERS.clusters, bounds);
     runtime.clusterLayer.addTo(runtime.map);
   }
 
@@ -25398,22 +25583,32 @@
       );
       const direction = neighborhood.direction || state.regionSelection.direction || "forward";
       const visualHop = Math.max(1, hop);
-      const weight = Math.max(2.2, 5.6 - ((visualHop - 1) * 0.72));
-      const opacity = Math.max(0.48, 0.96 - ((visualHop - 1) * 0.13));
+      const rawWeight = Math.max(2.2, 5.6 - ((visualHop - 1) * 0.72));
+      const rawOpacity = Math.max(0.48, 0.96 - ((visualHop - 1) * 0.13));
       const dashArray = visualHop === 1 ? null : visualHop === 2 ? "10 7" : visualHop === 3 ? "6 7" : "2 7";
       const outlineColor = state.resolvedTheme === "dark"
         ? CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR
         : CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR;
       wrappedSegmentCopies(segment).forEach(function (copy) {
-        L.polyline([copy.from, copy.to], {
+        const selectedTrace = result.selectedTraceIds.has(segment.traceId);
+        const rawOutlineOpacity = selectedTrace ? 0.88 : 0.56;
+        const rawOutlineWeight = rawWeight + (selectedTrace ? 3.2 : 2);
+        const outlineLine = L.polyline([copy.from, copy.to], {
           pane: "neighborhoodTracePane",
           color: outlineColor,
-          opacity: result.selectedTraceIds.has(segment.traceId) ? 0.88 : 0.56,
-          weight: weight + (result.selectedTraceIds.has(segment.traceId) ? 3.2 : 2),
+          opacity: scaledTraceOpacity(rawOutlineOpacity),
+          weight: scaledTraceStrokeWeight(rawOutlineWeight),
           dashArray: dashArray,
           interactive: false,
           className: "chronological-neighborhood-outline hop-" + hop,
-        }).addTo(runtime.neighborhoodTraceLayer);
+        });
+        outlineLine._ufoTraceBaseStyle = {
+          rawOpacity: rawOutlineOpacity,
+          opacity: scaledTraceOpacity(rawOutlineOpacity),
+          rawWeight: rawOutlineWeight,
+          weight: scaledTraceStrokeWeight(rawOutlineWeight),
+        };
+        outlineLine.addTo(runtime.neighborhoodTraceLayer);
         const midpoint = interpolateLatLngPair(copy.from, copy.to, 0.5);
         const parts = craftTraceColoringActive() && segment.fromCraftColor && segment.toCraftColor
           ? [
@@ -25425,12 +25620,18 @@
           const line = L.polyline(part.points, {
             pane: "neighborhoodTracePane",
             color: part.color,
-            opacity: opacity,
-            weight: weight,
+            opacity: scaledTraceOpacity(rawOpacity),
+            weight: scaledTraceStrokeWeight(rawWeight),
             dashArray: dashArray,
             interactive: true,
             className: "chronological-neighborhood-segment hop-" + hop + " direction-" + direction,
           });
+          line._ufoTraceBaseStyle = {
+            rawOpacity: rawOpacity,
+            opacity: scaledTraceOpacity(rawOpacity),
+            rawWeight: rawWeight,
+            weight: scaledTraceStrokeWeight(rawWeight),
+          };
           line.on("click", function (leafletEvent) {
             const pointHit = renderedPointMarkerHitAtLatLng(leafletEvent && leafletEvent.latlng);
             if (pointHit && activateMapPointEvent(pointHit.candidate.eventId, {
@@ -25532,6 +25733,7 @@
       }
       scheduleMapInvalidate();
       scheduleMapDescriptionPosition();
+      scheduleMapViewportLegendRefresh();
     } finally {
       clearBusyState("mapRender");
     }
@@ -25965,6 +26167,7 @@
       runtime.pendingStaticTraceRenderTimerId = null;
     }
     renderStaticTraceLayer({ reason: "viewport_refresh" });
+    refreshNeighborhoodTraceRendering();
   }
 
   function scheduleStaticTraceViewportRefresh() {
@@ -29758,8 +29961,13 @@
       syncOverlayMarkerSizing();
       scheduleMapProjectionRefresh();
       scheduleStaticTraceViewportRefresh();
+      scheduleMapViewportLegendRefresh();
     });
     runtime.map.on("moveend", handleMapMoveEnd);
+    runtime.map.on("resize", function () {
+      refreshMapEventLayerForViewportChange();
+      scheduleMapViewportLegendRefresh();
+    });
     runtime.map.on("viewreset", scheduleMapProjectionRefresh);
     runtime.map.on("move zoom", scheduleMapDescriptionPosition);
     runtime.map.on("popupclose", function (event) {
@@ -30839,6 +31047,7 @@
         craftTypeColors: Object.assign({}, CRAFT_TYPE_COLORS),
         controlsDirty: mapLegendControlsAreDirty(),
         eventEntries: buildMapLegendEventEntries(),
+        viewportBounds: currentMapViewportBoundsSnapshot(),
         overlayVisibility: Object.assign({}, state.overlayVisibility),
         claimedUfoBaseVisibility: Object.assign({}, state.claimedUfoBaseVisibility),
         militaryBranchVisibility: Object.assign({}, state.militaryBranchVisibility),
@@ -30938,11 +31147,25 @@
     },
     getNeighborhoodSnapshotForTest: function () {
       const result = currentRegionSelectionResult();
+      const renderedTraceStyles = [];
+      if (runtime.neighborhoodTraceLayer && typeof runtime.neighborhoodTraceLayer.eachLayer === "function") {
+        runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
+          if (!layer || !layer._ufoTraceBaseStyle) return;
+          renderedTraceStyles.push({
+            className: layer.options && layer.options.className ? layer.options.className : "",
+            weight: layer.options ? Number(layer.options.weight) : null,
+            opacity: layer.options ? Number(layer.options.opacity) : null,
+            rawWeight: Number(layer._ufoTraceBaseStyle.rawWeight),
+            rawOpacity: Number(layer._ufoTraceBaseStyle.rawOpacity),
+          });
+        });
+      }
       return {
         build: runtime.neighborhoodBuildMetrics,
         traversal: runtime.neighborhoodTraversalMetrics,
         selectedEventIds: Array.from(result.selectedEventIds || []).map(String).sort(),
         selectedTraceIds: Array.from(result.selectedTraceIds || []).map(String).sort(),
+        renderedTraceStyles,
         visibleEvents: (result.visibleMappedCatalog || []).map(function (event) {
           return {
             eventId: String(event.event_id),

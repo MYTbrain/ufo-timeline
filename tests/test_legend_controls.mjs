@@ -51,6 +51,56 @@ assert.deepEqual(all, {
 });
 assert.equal(legend.eventKeyActive(all, "disc_saucer"), true);
 
+const standardViewport = { south: -10, west: -20, north: 10, east: 20 };
+assert.equal(legend.mapViewportContainsCoordinates(0, 0, standardViewport), true);
+assert.equal(legend.mapViewportContainsCoordinates(-10, -20, standardViewport), true, "viewport edges are inclusive");
+assert.equal(legend.mapViewportContainsCoordinates(11, 0, standardViewport), false);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, 175, { south: -10, west: 170, north: 10, east: -170 }),
+  true,
+  "dateline-crossing bounds retain the visible canonical longitude",
+);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, -175, { south: -10, west: 170, north: 10, east: -170 }),
+  false,
+  "the counter does not invent a wrapped sighting copy that the map renderer does not draw",
+);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, -175, { south: -10, west: -190, north: 10, east: -170 }),
+  true,
+  "the canonical western longitude is counted in the matching map viewport",
+);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, 180, { south: -10, west: 520, north: 10, east: 560 }),
+  false,
+  "noncanonical world-copy bounds do not count canonical-only sighting markers",
+);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, 125, { south: -10, west: -200, north: 10, east: 200 }),
+  true,
+  "a wide viewport counts canonical longitudes that are actually inside it",
+);
+assert.equal(
+  legend.mapViewportContainsCoordinates(0, -175, { south: -10, west: 100, north: 10, east: 500 }),
+  false,
+  "a wide viewport shifted to another world does not invent a repeated marker",
+);
+assert.equal(legend.mapViewportContainsCoordinates("unknown", 0, standardViewport), false);
+
+const viewportCounts = legend.countViewportEventsByKey([
+  { event_id: "a", lat: 0, lon: 0, craft: "disc_saucer", has_coordinates: true },
+  { event_id: "b", lat: 5, lon: 5, craft: "triangle", has_coordinates: true },
+  { event_id: "c", lat: 25, lon: 0, craft: "light", has_coordinates: true },
+  { event_id: "d", lat: 0, lon: 0, craft: "light", has_coordinates: false },
+], standardViewport, function (event) {
+  return event.craft;
+}, ["disc_saucer", "triangle", "light"]);
+assert.deepEqual(
+  Array.from(viewportCounts.entries()),
+  [["disc_saucer", 1], ["triangle", 1], ["light", 0]],
+  "viewport counts retain the full control universe while reporting only mapped sightings on screen",
+);
+
 const isolated = legend.toggleEventKey(all, "disc_saucer", available);
 assert.deepEqual(isolated, {
   mode: "subset",

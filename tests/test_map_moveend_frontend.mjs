@@ -23,6 +23,8 @@ function buildHarness(initialCenter) {
   const counters = {
     maxDepth: 0,
     projectionRefreshes: 0,
+    eventLayerRefreshes: 0,
+    legendRefreshSchedules: 0,
     staticTraceRefreshes: 0,
     staticTraceSchedules: 0,
     viewCorrections: [],
@@ -57,10 +59,12 @@ function buildHarness(initialCenter) {
     "MAP_VERTICAL_LIMIT",
     "clamp",
     "refreshWrappedWorldRendering",
+    "refreshMapEventLayerForViewportChange",
     "scheduleMapProjectionRefresh",
     "mapMoveEndFollowsRecentZoom",
     "scheduleStaticTraceViewportRefresh",
     "refreshStaticTraceLayerForViewportChange",
+    "scheduleMapViewportLegendRefresh",
     `return function handleMapMoveEnd() {${handlerBody}};`
   );
 
@@ -73,6 +77,9 @@ function buildHarness(initialCenter) {
       return false;
     },
     () => {
+      counters.eventLayerRefreshes += 1;
+    },
+    () => {
       counters.projectionRefreshes += 1;
     },
     () => false,
@@ -81,6 +88,9 @@ function buildHarness(initialCenter) {
     },
     () => {
       counters.staticTraceRefreshes += 1;
+    },
+    () => {
+      counters.legendRefreshSchedules += 1;
     }
   );
 
@@ -117,8 +127,10 @@ assert.deepEqual(polarHarness.counters.viewCorrections, [
 assert.equal(polarHarness.runtime.mapVerticalClampInProgress, false);
 assert.equal(polarHarness.counters.wrappedRefreshes, 1);
 assert.equal(polarHarness.counters.projectionRefreshes, 1);
+assert.equal(polarHarness.counters.eventLayerRefreshes, 1);
 assert.equal(polarHarness.counters.staticTraceRefreshes, 1);
 assert.equal(polarHarness.counters.staticTraceSchedules, 0);
+assert.equal(polarHarness.counters.legendRefreshSchedules, 1);
 
 const horizontalHarness = buildHarness({ lat: 20, lng: 179.75 });
 for (const lng of [179.75, 180.25, 540.25, -540.25]) {
@@ -128,6 +140,8 @@ for (const lng of [179.75, 180.25, 540.25, -540.25]) {
 assert.equal(horizontalHarness.counters.viewCorrections.length, 0);
 assert.equal(horizontalHarness.counters.wrappedRefreshes, 4);
 assert.equal(horizontalHarness.counters.projectionRefreshes, 4);
+assert.equal(horizontalHarness.counters.eventLayerRefreshes, 4);
 assert.equal(horizontalHarness.counters.staticTraceRefreshes, 4);
+assert.equal(horizontalHarness.counters.legendRefreshSchedules, 4);
 
 console.log("map moveend recursion and dateline continuity assertions passed");

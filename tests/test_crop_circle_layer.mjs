@@ -302,7 +302,7 @@ assert.match(appSource, /clusterQuickCropCirclesButton:\s*document\.querySelecto
 assert.match(appSource, /clusterQuickCropCirclesButton\.addEventListener\("click"[\s\S]*?overlayCropCirclesToggle\.click\(\)/, "the quick crop toggle delegates to the canonical overlay control");
 assert.match(appSource, /ufo:crop-circle-statechange[\s\S]*?renderMapControlQuickButtons\(\)[\s\S]*?renderMapLegend\(\)/, "crop runtime state synchronizes the quick toggle and legend");
 assert.match(indexSource, /styles\.css\?v=2026-08-12-context-evidence-v2/, "shared icon CSS uses the current cache-safe shell key");
-assert.match(indexSource, /app\.js\?v=2026-08-12-context-evidence-v2/, "the application runtime uses the current cache-safe shell key");
+assert.match(indexSource, /app\.js\?v=2026-08-12-viewport-legend-area-traces-v1/, "the application runtime uses the current cache-safe shell key");
 assert.match(stylesheetSource, /\.cc-detail-eyebrow\s*\{\s*color:\s*#596b00;/, "small crop detail eyebrow uses the higher-contrast light-theme color");
 assert.match(stylesheetSource, /\.crop-circle-relation-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s, "relationship controls use a panel-width-safe one-column layout");
 assert.match(indexSource, /<details id="crop-circle-ufo-relation-disclosure"[^>]*aria-disabled="true">[\s\S]*?<summary[^>]*>UFO sighting → later crop record<\/summary>/, "UFO-to-crop controls are a compact disclosure that starts unavailable without a selected crop");

@@ -64,6 +64,57 @@
     return output;
   }
 
+  function normalizeViewportBounds(value) {
+    if (!value || typeof value !== "object") return null;
+    const south = Number(value.south);
+    const west = Number(value.west);
+    const north = Number(value.north);
+    let east = Number(value.east);
+    if (![south, west, north, east].every(Number.isFinite)) return null;
+    while (east < west) east += 360;
+    return {
+      south: Math.min(south, north),
+      west,
+      north: Math.max(south, north),
+      east,
+    };
+  }
+
+  function canonicalMapLongitude(longitude) {
+    let numeric = Number(longitude);
+    if (!Number.isFinite(numeric)) return null;
+    while (numeric > 180) numeric -= 360;
+    while (numeric < -180) numeric += 360;
+    return numeric;
+  }
+
+  function mapViewportContainsCoordinates(latitude, longitude, viewportBounds) {
+    const bounds = normalizeViewportBounds(viewportBounds);
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (!bounds || !Number.isFinite(lat) || !Number.isFinite(lon)) return false;
+    if (lat < bounds.south || lat > bounds.north) return false;
+    const canonicalLongitude = canonicalMapLongitude(lon);
+    return canonicalLongitude != null && canonicalLongitude >= bounds.west && canonicalLongitude <= bounds.east;
+  }
+
+  function countViewportEventsByKey(events, viewportBounds, keyForEvent, universeKeys) {
+    const counts = new Map();
+    uniqueKeys(universeKeys).forEach(function (key) {
+      counts.set(key, 0);
+    });
+    if (typeof keyForEvent !== "function") return counts;
+    (Array.isArray(events) ? events : []).forEach(function (event) {
+      if (!event || event.has_coordinates === false) return;
+      if (!mapViewportContainsCoordinates(event.lat, event.lon, viewportBounds)) return;
+      const resolvedKey = keyForEvent(event);
+      const key = String(resolvedKey == null ? "" : resolvedKey).trim();
+      if (!key) return;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return counts;
+  }
+
   function normalizeEventSelection(selection, fallbackColorMode) {
     const source = selection && typeof selection === "object" ? selection : {};
     const mode = EVENT_SELECTION_MODES.has(source.mode) ? source.mode : "all";
@@ -399,8 +450,10 @@
 
   return Object.freeze({
     applyCraftBulkSelection,
+    countViewportEventsByKey,
     createCraftSelectionState,
     eventKeyActive,
+    mapViewportContainsCoordinates,
     normalizeCraftColorOverrides,
     normalizeEventSelection,
     normalizeCraftSelectionState,

@@ -403,6 +403,44 @@ def test_wrapped_viewport_filter_checks_longitude_not_only_latitude():
     assert "return lon >= west && lon <= east;" in app_js
 
 
+def test_map_legend_counts_follow_exact_live_viewport_and_visible_event_contract():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    legend_js = Path("webapp/static_public/legend_controls.js").read_text(encoding="utf-8")
+
+    counts_body = _extract_js_function_body(app_js, "mapLegendEventCountsForCurrentMode")
+    universe_body = _extract_js_function_body(app_js, "mapLegendEventUniverseKeysForCurrentMode")
+    moveend_body = _extract_js_function_body(app_js, "handleMapMoveEnd")
+    render_map_body = _extract_js_function_body(app_js, "renderMap")
+    initialize_map_body = _extract_js_function_body(app_js, "initializeMap")
+    viewport_refresh_body = _extract_js_function_body(app_js, "refreshMapEventLayerForViewportChange")
+
+    assert "const visibleMappedCatalog = currentVisibleMappedCatalog();" in counts_body
+    assert "const viewportBounds = currentMapViewportBoundsSnapshot();" in counts_body
+    assert "LEGEND_CONTROLS.countViewportEventsByKey(" in counts_body
+    assert "LEGEND_CONTROLS.eventKeyActive(eventSelection, key, state.colorMode)" in counts_body
+    assert 'runtime.areaEventRepresentation === "hidden"' in counts_body
+    assert "state.filteredCatalog" not in counts_body
+    assert "new Map(runtime.mapLegendEventBaseCounts)" not in counts_body
+    assert "runtime.mapLegendEventBaseCounts.forEach" in universe_body
+    assert "state.mapLegendCraftSolo.universeKeys" in universe_body
+
+    assert "function mapViewportContainsCoordinates(latitude, longitude, viewportBounds)" in legend_js
+    assert "while (east < west) east += 360;" in legend_js
+    assert "const canonicalLongitude = canonicalMapLongitude(lon);" in legend_js
+    assert "longitudeNearReference" not in legend_js
+    assert "function countViewportEventsByKey(events, viewportBounds, keyForEvent, universeKeys)" in legend_js
+    assert "if (!event || event.has_coordinates === false) return;" in legend_js
+
+    assert "refreshMapEventLayerForViewportChange();" in moveend_body
+    assert "mapEventLayerLoadedViewportContainsCurrentBounds(representation)" in viewport_refresh_body
+    assert "rememberMapEventLayerLoadedViewport(MAP_RENDERERS.events, bounds);" in app_js
+    assert "rememberMapEventLayerLoadedViewport(MAP_RENDERERS.clusters, bounds);" in app_js
+    assert "scheduleMapViewportLegendRefresh();" in moveend_body
+    assert "scheduleMapViewportLegendRefresh();" in render_map_body
+    assert 'runtime.map.on("resize", function ()' in initialize_map_body
+    assert "scheduleMapViewportLegendRefresh();" in initialize_map_body
+
+
 def test_map_wraps_across_dateline_without_finite_horizontal_bounds():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
     initialize_map = _extract_js_function_body(app_js, "initializeMap")
@@ -1543,7 +1581,7 @@ def test_context_layer_quick_toggles_are_adjacent_accessible_and_synchronized():
             'class="map-legend-marker-sample map-legend-marker-sample-spiral"',
             'class="map-legend-marker-sample map-legend-marker-sample-cow"',
                 'styles.css?v=2026-08-12-context-evidence-v2',
-                'app.js?v=2026-08-12-context-evidence-v2',
+                'app.js?v=2026-08-12-viewport-legend-area-traces-v1',
         ]
         for fragment in required_index_fragments:
             assert fragment in index_html
@@ -2502,7 +2540,7 @@ def test_map_legend_event_and_overlay_controls_are_accessible_and_stateful():
     assert 'id="map-legend-status"' in index_html
     assert 'role="status" aria-live="polite"' in index_html
     assert (
-        "legend_controls.js?v=2026-08-10-control-panel-polish-v1"
+        "legend_controls.js?v=2026-08-12-viewport-legend-area-traces-v1"
         in index_html
     )
     assert index_html.index("legend_controls.js") < index_html.index("app.js?v=")
@@ -2649,7 +2687,8 @@ def test_map_legend_counts_and_desktop_map_height_resizer_are_wired_and_accessib
         assert 'const singularNoun = String(config.countNounSingular || "event");' in marker_row
         assert 'const pluralNoun = String(config.countNounPlural || singularNoun + "s");' in marker_row
         assert 'const countNoun = count === 1 ? singularNoun : pluralNoun;' in marker_row
-        assert 'formatNumber(count) + " " + countNoun + " under the current filters"' in marker_row
+        assert 'const countContext = String(config.countContext || "under the current filters");' in marker_row
+        assert 'formatNumber(count) + " " + countNoun + " " + countContext' in marker_row
         assert "escapeHtml(formatNumber(count))" in marker_row
         assert "count: entry.count" in event_rows
         assert 'countNounSingular: "crop record"' in app_js
@@ -2779,6 +2818,8 @@ def test_trace_width_slider_can_only_thin_existing_trace_weights():
         "function effectiveTraceWidthScale()",
         "function scaledTraceOpacity(opacity)",
         "function scaledTraceStrokeWeight(weight)",
+        "function refreshScalableLeafletTraceLine(line)",
+        "function refreshNeighborhoodTraceRendering()",
         "function applyTraceWidthScale(value, options)",
         "function applyTraceWidthPreset(key, options)",
         "function applyTraceBoldnessScale(value, options)",
@@ -2786,6 +2827,12 @@ def test_trace_width_slider_can_only_thin_existing_trace_weights():
         "weight: scaledWeight",
         "rawWeight: rawWeight",
         "rawOpacity: rawOpacity",
+        "runtime.playbackTrailCanvasLayer._redraw()",
+        "runtime.neighborhoodTraceLayer.eachLayer(function (layer)",
+        "opacity: scaledTraceOpacity(rawOutlineOpacity)",
+        "weight: scaledTraceStrokeWeight(rawOutlineWeight)",
+        "opacity: scaledTraceOpacity(rawOpacity)",
+        "weight: scaledTraceStrokeWeight(rawWeight)",
         "state.traceWidthScale = normalizeTraceWidthScale(storedTraceWidthScale)",
         "state.traceBoldnessScale = normalizeTraceBoldnessScale(storedTraceBoldnessScale)",
         "state.traceWidthMode = storedTraceWidthMode == null && storedTraceWidthScale != null",
