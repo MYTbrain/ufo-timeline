@@ -147,19 +147,27 @@ def classify_remote(payload: dict[str, Any], *, timeout: float) -> str:
     return "matching"
 
 
-def resolve_wrangler_command(wrangler: Path) -> list[str]:
+def resolve_wrangler_command(
+    wrangler: Path,
+    *,
+    platform_name: str | None = None,
+    node_executable: Path | None = None,
+) -> list[str]:
     """Return a CreateProcess-safe Wrangler launcher on Windows and POSIX."""
+    platform_name = os.name if platform_name is None else platform_name
     wrangler = wrangler.resolve()
-    if os.name != "nt":
+    if platform_name != "nt":
         return [str(wrangler)]
     node_modules = wrangler.parent.parent if wrangler.parent.name == ".bin" else None
     wrangler_js = node_modules / "wrangler" / "bin" / "wrangler.js" if node_modules else wrangler
     if not wrangler_js.is_file():
         raise ReleaseError(f"Wrangler JavaScript entrypoint is missing: {wrangler_js}")
-    located_node = shutil.which("node")
-    if not located_node:
+    if node_executable is None:
+        located_node = shutil.which("node")
+        node_executable = Path(located_node) if located_node else None
+    if node_executable is None or not node_executable.is_file():
         raise ReleaseError("Node.js executable is unavailable for the pinned Wrangler launcher")
-    return [str(Path(located_node).resolve()), str(wrangler_js.resolve())]
+    return [str(node_executable.resolve()), str(wrangler_js.resolve())]
 
 
 def upload_payload(wrangler_command: list[str], bucket: str, payload: dict[str, Any]) -> None:

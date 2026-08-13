@@ -87,7 +87,6 @@ def test_mismatched_existing_object_is_never_overwritten(monkeypatch: pytest.Mon
 
 def test_windows_wrangler_launcher_uses_node_entrypoint(
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     node_modules = tmp_path / "node_modules"
     shim = node_modules / ".bin" / "wrangler"
@@ -98,7 +97,8 @@ def test_windows_wrangler_launcher_uses_node_entrypoint(
     shim.write_text("shim", encoding="utf-8")
     entrypoint.write_text("entrypoint", encoding="utf-8")
     node.write_text("node", encoding="utf-8")
-    monkeypatch.setattr(PUBLISH.os, "name", "nt")
-    monkeypatch.setattr(PUBLISH.shutil, "which", lambda _name: str(node))
-
-    assert PUBLISH.resolve_wrangler_command(shim) == [str(node.resolve()), str(entrypoint.resolve())]
+    assert PUBLISH.resolve_wrangler_command(
+        shim,
+        platform_name="nt",
+        node_executable=node,
+    ) == [str(node.resolve()), str(entrypoint.resolve())]
