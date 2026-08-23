@@ -69,6 +69,59 @@ OCEANIA_COUNTRY_TOKENS_BEFORE_REGION_AU = {
     "FJI",
 }
 EXACTISH_COORDINATE_SOURCES = {"raw_latlong", "source_coordinates", "location_coordinates", "geocoded"}
+US_STATE_NAME_TO_ABBREVIATION = {
+    "ALABAMA": "AL",
+    "ALASKA": "AK",
+    "ARIZONA": "AZ",
+    "ARKANSAS": "AR",
+    "CALIFORNIA": "CA",
+    "COLORADO": "CO",
+    "CONNECTICUT": "CT",
+    "DELAWARE": "DE",
+    "DISTRICT OF COLUMBIA": "DC",
+    "FLORIDA": "FL",
+    "GEORGIA": "GA",
+    "HAWAII": "HI",
+    "IDAHO": "ID",
+    "ILLINOIS": "IL",
+    "INDIANA": "IN",
+    "IOWA": "IA",
+    "KANSAS": "KS",
+    "KENTUCKY": "KY",
+    "LOUISIANA": "LA",
+    "MAINE": "ME",
+    "MARYLAND": "MD",
+    "MASSACHUSETTS": "MA",
+    "MICHIGAN": "MI",
+    "MINNESOTA": "MN",
+    "MISSISSIPPI": "MS",
+    "MISSOURI": "MO",
+    "MONTANA": "MT",
+    "NEBRASKA": "NE",
+    "NEVADA": "NV",
+    "NEW HAMPSHIRE": "NH",
+    "NEW JERSEY": "NJ",
+    "NEW MEXICO": "NM",
+    "NEW YORK": "NY",
+    "NORTH CAROLINA": "NC",
+    "NORTH DAKOTA": "ND",
+    "OHIO": "OH",
+    "OKLAHOMA": "OK",
+    "OREGON": "OR",
+    "PENNSYLVANIA": "PA",
+    "RHODE ISLAND": "RI",
+    "SOUTH CAROLINA": "SC",
+    "SOUTH DAKOTA": "SD",
+    "TENNESSEE": "TN",
+    "TEXAS": "TX",
+    "UTAH": "UT",
+    "VERMONT": "VT",
+    "VIRGINIA": "VA",
+    "WASHINGTON": "WA",
+    "WEST VIRGINIA": "WV",
+    "WISCONSIN": "WI",
+    "WYOMING": "WY",
+}
 LOCAL_COUNTRY_ALIASES = {
     **COUNTRY_ALIASES,
     "ENG": "United Kingdom",
@@ -155,7 +208,13 @@ def check_static_country_coordinate_anomalies(
             unsupported_country_counts[country] = unsupported_country_counts.get(country, 0) + 1
             continue
         checked_rows += 1
-        if point_in_any_bounds(lat, lon, bounds):
+        outside_declared_us_state = False
+        if country == "United States of America":
+            state = explicit_us_state(event.get("location_raw"))
+            outside_declared_us_state = bool(
+                state and not inside_us_state(state, lat, lon)
+            )
+        if point_in_any_bounds(lat, lon, bounds) and not outside_declared_us_state:
             continue
         rows.append(anomaly_payload(event, country, lat, lon))
 
@@ -184,6 +243,10 @@ def check_static_country_coordinate_anomalies(
         "notes": [
             "This check uses intentionally broad review bounds, not exact coastlines.",
             "Rows outside these broad bounds are high-priority coordinate QA candidates.",
+            (
+                "Explicit U.S. state abbreviations and full names are checked even "
+                "when the point remains inside broad U.S. bounds."
+            ),
             "Ambiguous non-final tokens such as CA are ignored unless a clear final country token follows.",
         ],
     }
@@ -425,7 +488,9 @@ def explicit_us_state(location_raw: Any) -> str | None:
     if len(parts) < 2 or parts[-1] not in {"US", "USA", "UNITED STATES"}:
         return None
     state = parts[-2]
-    return state if state in US_STATE_BOUNDS else None
+    if state in US_STATE_BOUNDS:
+        return state
+    return US_STATE_NAME_TO_ABBREVIATION.get(state)
 
 
 def inside_us_state(state: str, lat: float, lon: float) -> bool:

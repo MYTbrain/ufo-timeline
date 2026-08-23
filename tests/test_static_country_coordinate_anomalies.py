@@ -63,6 +63,54 @@ def test_static_country_coordinate_anomaly_check_flags_us_point_in_asia(tmp_path
     assert report["examples"][0]["reason"] == "positive_longitude_for_explicit_us_row"
 
 
+def test_static_country_coordinate_anomaly_check_flags_full_us_state_mismatch(tmp_path):
+    root = tmp_path / "bundle"
+    write_summary(
+        root,
+        [
+            {
+                "event_id": "hatch-udb-2481",
+                "location_raw": "Farmlands, NAPA VALLEY, CA, Colorado, USA",
+                "source": "majestic",
+                "lat": 38.300002,
+                "lon": -122.300006,
+                "coordinate_source": "raw_latlong",
+            }
+        ],
+    )
+
+    report = check_static_country_coordinate_anomalies(payload_root=root)
+
+    assert report["status"] == "needs_attention"
+    assert report["counts"]["anomaly_rows"] == 1
+    assert report["examples"][0]["reason"] == "outside_declared_us_state_bounds"
+
+
+def test_static_country_coordinate_anomaly_check_accepts_corrected_napa_state(tmp_path):
+    root = tmp_path / "bundle"
+    write_summary(
+        root,
+        [
+            {
+                "event_id": "hatch-udb-2481",
+                "location_raw": (
+                    "Napa Valley near Napa, Napa County, California, USA"
+                ),
+                "source": "majestic",
+                "lat": 38.300002,
+                "lon": -122.300006,
+                "coordinate_source": "raw_latlong",
+            }
+        ],
+    )
+
+    report = check_static_country_coordinate_anomalies(payload_root=root)
+
+    assert report["status"] == "ready"
+    assert report["counts"]["checked_rows"] == 1
+    assert report["counts"]["anomaly_rows"] == 0
+
+
 def test_static_country_coordinate_anomaly_check_flags_europe_point_in_atlantic(tmp_path):
     root = tmp_path / "bundle"
     write_summary(

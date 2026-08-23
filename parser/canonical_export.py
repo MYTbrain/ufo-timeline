@@ -62,7 +62,9 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         geocode_display_name = primary_location_text
         geocode_query_used = None
         geocode_confidence = 1.0
-        mapping_notes = "Used coordinates carried by the canonical source record."
+        mapping_notes = _first_clean(data, "mapping_notes") or (
+            "Used coordinates carried by the canonical source record."
+        )
     else:
         coordinate_source = "unresolved"
         location_precision = _normalized_location_precision(data.get("location_precision"), mapped=False)
@@ -71,7 +73,9 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         geocode_display_name = None
         geocode_query_used = primary_location_text
         geocode_confidence = None
-        mapping_notes = "Canonical source record did not include usable coordinates."
+        mapping_notes = _first_clean(data, "mapping_notes") or (
+            "Canonical source record did not include usable coordinates."
+        )
 
     extra_data = _extra_data(data, provenance, canonical_input_ids)
     normalized = {
@@ -133,6 +137,7 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "geocode_display_name": geocode_display_name,
         "geocode_confidence": geocode_confidence,
         "mapping_notes": mapping_notes,
+        "reviewed_corrections": data.get("reviewed_corrections") or [],
     }
 
     return normalized
@@ -358,6 +363,7 @@ def _extra_data(
             "shape_normalized": _first_clean(data, "shape_normalized"),
             "type_raw": _first_clean(data, "type_raw"),
             "type_normalized": _first_clean(data, "type_normalized"),
+            "reviewed_corrections": data.get("reviewed_corrections") or [],
         },
     }
 

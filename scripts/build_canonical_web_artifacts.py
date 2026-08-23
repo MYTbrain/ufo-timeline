@@ -19,6 +19,7 @@ from parser.canonical_schema import build_location_text, clean_text, stable_hash
 from parser.craft_types import infer_event_craft_type
 from parser.locations import infer_text_precision
 from parser.packed_points import export_packed_points
+from parser.reviewed_event_corrections import apply_reviewed_event_corrections
 from parser.taxonomy import (
     display_shape_for_web_event,
     display_type_for_web_event,
@@ -126,7 +127,16 @@ def build_canonical_web_artifacts(
     coordinate_source_counts: dict[str, int] = {}
     mapped_bounds = MappedBounds()
 
+    reviewed_correction_counts: dict[str, int] = {}
+
     for record in iter_jsonl(input_path, limit=limit):
+        record = apply_reviewed_event_corrections(record)
+        for correction in record.get("reviewed_corrections") or []:
+            if not isinstance(correction, dict):
+                continue
+            correction_id = clean_text(correction.get("correction_id"))
+            if correction_id:
+                reviewed_correction_counts[correction_id] = reviewed_correction_counts.get(correction_id, 0) + 1
         total_events += 1
         compact_event = prune_compact_event(
             compact_web_event(record, event_id_allocator=event_id_allocator)
@@ -271,6 +281,12 @@ def build_canonical_web_artifacts(
             "summary_raw_source_rows_included": False,
             "summary_source_claims_included": False,
             "summary_full_provenance_included": False,
+            "reviewed_event_corrections": {
+                "applied": bool(reviewed_correction_counts),
+                "event_count": sum(reviewed_correction_counts.values()),
+                "correction_counts": dict(sorted(reviewed_correction_counts.items())),
+                "raw_source_fields_preserved": True,
+            },
         },
     }
     write_json(output_dir / "event_chunk_manifest.json", chunk_manifest, indent=2)
@@ -485,6 +501,8 @@ def detail_web_event(record: dict[str, Any], compact_event: dict[str, Any]) -> d
             "raw_source_missing_columns": record.get("raw_source_missing_columns"),
             "source_row_anomalies": record.get("source_row_anomalies"),
             "source_provenance": source_provenance,
+            "mapping_notes": first_clean(record, "mapping_notes"),
+            "reviewed_corrections": record.get("reviewed_corrections"),
         }
     )
     # Merged-member evidence is review/provenance metadata. Preserve it in the
