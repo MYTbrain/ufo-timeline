@@ -16,9 +16,10 @@ to California, the Hatch environment category `Farmlands` is removed from the
 place label, and coordinate precision is lowered from exact coordinates to
 city/observer-vicinity precision.
 
-Contemporary source review also changes the normalized time from `10:50` to
-`10:45` local and clears Hatch's unsupported duration value. Every original
-Hatch field remains unchanged in raw provenance.
+Contemporary source review adds a reviewed display time of `10:45` local and
+marks duration as not stated. The source-claim fields remain `time_raw: 10:50`,
+`duration_raw: 1`, and the malformed raw location; every original Hatch field
+therefore remains unchanged and visible in raw provenance.
 
 ## Stable identity
 
@@ -28,8 +29,9 @@ Hatch field remains unchanged in raw provenance.
 - Source row hash: `fc1a2224bc69a9810773e1034a2e0d8ae5a4de36`
 
 The correction is applied only after deduplication establishes event identity.
-It is guarded by the stable source identifiers and exact expected raw fields,
-and fails closed if the imported source row changes.
+It is guarded by the singleton dedupe topology, stable source identifiers,
+exact current coordinates, expected projection, and exact raw fields. It fails
+closed if the imported row, marker, identity, or merge topology changes.
 
 ## Source evidence
 
@@ -93,3 +95,12 @@ The tests verify that:
 - stale source rows fail closed; and
 - static QA now detects full-state-name coordinate contradictions such as the
   original `Colorado, USA` label on a Napa coordinate.
+
+## Broader QA scope
+
+The new full-state-name check intentionally exposes more than this one record.
+Against the current v152 production summary corpus, it recognizes 6,021 U.S.
+rows with full state names and reports 284 state/coordinate contradictions
+before this correction (including Napa). Those rows are a review backlog, not
+an assertion that all 284 coordinates are wrong, and this change does not claim
+to make the corpus-wide anomaly report empty.

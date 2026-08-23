@@ -210,7 +210,11 @@ def check_static_country_coordinate_anomalies(
         checked_rows += 1
         outside_declared_us_state = False
         if country == "United States of America":
-            state = explicit_us_state(event.get("location_raw"))
+            # A reviewed display place supersedes a known-bad source label for
+            # map QA, while ``location_raw`` remains available for provenance.
+            state = explicit_us_state(
+                event.get("location_display") or event.get("location_raw")
+            )
             outside_declared_us_state = bool(
                 state and not inside_us_state(state, lat, lon)
             )

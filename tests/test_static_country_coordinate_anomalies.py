@@ -93,9 +93,8 @@ def test_static_country_coordinate_anomaly_check_accepts_corrected_napa_state(tm
         [
             {
                 "event_id": "hatch-udb-2481",
-                "location_raw": (
-                    "Napa Valley near Napa, Napa County, California, USA"
-                ),
+                "location_raw": "Farmlands, NAPA VALLEY, CA, Colorado, USA",
+                "location_display": "Napa Valley near Napa, Napa County, California, USA",
                 "source": "majestic",
                 "lat": 38.300002,
                 "lon": -122.300006,

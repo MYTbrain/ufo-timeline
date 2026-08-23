@@ -66,13 +66,16 @@ function populateSelect(selectEl, values) {
 
 function buildPopupContent(event) {
   const resolvedPlace = String(event.geocode_display_name || "").trim();
+  const displayLocation = event.location_display || event.location_raw || "Unknown";
   return `
     <div class="popup-content">
       <h3 class="popup-title">${escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date")}</h3>
       <div class="popup-row"><span class="popup-label">Normalized Date:</span> ${escapeHtml(event.sort_date_iso || event.date_iso || "Unknown")}</div>
       <div class="popup-row"><span class="popup-label">Date Precision:</span> ${escapeHtml(event.date_precision || "unknown")}</div>
-      <div class="popup-row"><span class="popup-label">Location:</span> ${escapeHtml(event.location_raw || "Unknown")}</div>
-      ${resolvedPlace ? `<div class="popup-row"><span class="popup-label">Resolved Place:</span> ${escapeHtml(resolvedPlace)}</div>` : ""}
+      <div class="popup-row"><span class="popup-label">Location:</span> ${escapeHtml(displayLocation)}</div>
+      ${event.location_display && event.location_raw !== event.location_display ? `<div class="popup-row"><span class="popup-label">Source Location:</span> ${escapeHtml(event.location_raw || "Unknown")}</div>` : ""}
+      ${event.time_display ? `<div class="popup-row"><span class="popup-label">Reviewed Time:</span> ${escapeHtml(event.time_display)}</div>` : ""}
+      ${resolvedPlace && resolvedPlace !== displayLocation ? `<div class="popup-row"><span class="popup-label">Resolved Place:</span> ${escapeHtml(resolvedPlace)}</div>` : ""}
       <div class="popup-row"><span class="popup-label">Description:</span> ${escapeHtml(event.description || "No description")}</div>
       <div class="popup-row"><span class="popup-label">Type:</span> ${escapeHtml(event.type || "Unknown")}</div>
       <div class="popup-row"><span class="popup-label">Source:</span> ${escapeHtml(event.source || "Unknown")}</div>
@@ -84,7 +87,7 @@ function buildPopupContent(event) {
 
 function createColoredMarker(event, color) {
   const marker = L.marker([event.lat, event.lon], {
-    title: `${event.date_raw || event.sort_date_iso || "Unknown"} - ${event.location_raw || event.geocode_display_name || "Unknown location"}`,
+    title: `${event.date_raw || event.sort_date_iso || "Unknown"} - ${event.location_display || event.location_raw || event.geocode_display_name || "Unknown location"}`,
     icon: L.divIcon({
       className: "",
       html: `<div class="ufo-dot" style="background:${color}"></div>`,

@@ -3,7 +3,8 @@
 These corrections intentionally run after deduplication.  That keeps stable
 canonical event identities tied to the imported source row while allowing the
 map projection to use better evidence than a known-bad normalized source field.
-The original row remains unchanged in ``raw_fields`` and ``raw_source_row``.
+Source-claim fields ending in ``_raw`` and the original row remain unchanged;
+reviewed values use distinct display fields.
 """
 
 from __future__ import annotations
@@ -18,6 +19,17 @@ NAPA_CANONICAL_EVENT_ID = "evt_49c65297c6a08bd6ff910e2d"
 NAPA_EVENT_ID = 3483027136344169
 NAPA_SOURCE_ROW_HASH = "fc1a2224bc69a9810773e1034a2e0d8ae5a4de36"
 
+# A singleton receives a deterministic event ID for each supported dedupe mode.
+# Enumerating those IDs keeps all build modes usable while still failing closed
+# on any new merge topology or identity algorithm.
+NAPA_SINGLETON_EVENT_IDS = {
+    "evt_4fbb948a14778d333a893f61": 4255985604229664,  # exact
+    "evt_bb376e27bb52fbb0a13851cc": 3381470316185291,  # aggressive_v1
+    "evt_01dce5938a5e27b9e3b135d5": 2813087785304214,  # maximal_v1
+    "evt_0fe9f1746177762265fb0cf7": 1556825630784813,  # maximal_v2
+    NAPA_CANONICAL_EVENT_ID: NAPA_EVENT_ID,  # maximal_v3 / production v152
+}
+
 NAPA_EXPECTED_RAW_FIELDS = {
     "date": "7/27/1952",
     "time": "10:50",
@@ -30,12 +42,57 @@ NAPA_EXPECTED_RAW_FIELDS = {
     "key_vals/Duration": "1",
 }
 
+NAPA_ORIGINAL_PROJECTION = {
+    "time_raw": "10:50",
+    "location_raw": "Farmlands, NAPA VALLEY, CA, Colorado, USA",
+    "city": "NAPA VALLEY, CA",
+    "state_province": "Colorado",
+    "country": "USA",
+    "duration_raw": "1",
+}
+
+NAPA_REVIEWED_FIELDS = {
+    "time_display": "10:45",
+    "location_display": "Napa Valley near Napa, Napa County, California, USA",
+    "city": "Napa",
+    "state_province": "California",
+    "country": "USA",
+    "location_precision": "city",
+    "duration_display": "Not stated in the contemporary newspaper account",
+    "summary_display": (
+        "John Foraythe reported a metallic disc moving west at great speed over "
+        "Napa Valley at an estimated 20,000 feet; it tilted edge-on and vanished "
+        "in haze."
+    ),
+    "description_display": (
+        "On Sunday, July 27, 1952 at 10:45 a.m., John Foraythe of 1512 A Street "
+        "in Napa reported a metallic, disc-shaped object at an estimated altitude "
+        "of 20,000 feet moving west at great speed over Napa Valley. It tilted "
+        "until its thin edge faced him, then disappeared in haze. His report to "
+        "the local sheriff's office was forwarded to Hamilton Field airbase."
+    ),
+    "source_url_display": (
+        "https://sohp.us/collections/ufos-a-history/pdf/"
+        "GROSS-1952-July-21-31-SN.pdf#page=51"
+    ),
+    "mapping_notes": (
+        "Reviewed 2026-08-23. Retained the Hatch coordinate as an approximate "
+        "Napa-area marker; the report does not establish an exact observer or "
+        "airborne-object position. Corrected the normalized state from Colorado "
+        "to California and removed Hatch's 'Farmlands' environment category from "
+        "the display place. The contemporary newspaper account gives 10:45 a.m. "
+        "and states no duration. Original Hatch values remain preserved in the "
+        "raw source-claim fields and raw source row."
+    ),
+}
+
 NAPA_REVIEWED_CORRECTION = {
     "correction_id": NAPA_CORRECTION_ID,
     "reviewed_at": "2026-08-23",
     "target": {
         "canonical_input_id": NAPA_CANONICAL_INPUT_ID,
         "canonical_event_id": NAPA_CANONICAL_EVENT_ID,
+        "supported_singleton_canonical_event_ids": sorted(NAPA_SINGLETON_EVENT_IDS),
         "event_id": NAPA_EVENT_ID,
         "source_name": "majestic",
         "source_file": "majestic.csv",
@@ -43,40 +100,7 @@ NAPA_REVIEWED_CORRECTION = {
         "source_row_number": 11264,
         "source_row_hash": NAPA_SOURCE_ROW_HASH,
     },
-    "set_fields": {
-        "time_raw": "10:45",
-        "location_raw": "Napa Valley near Napa, Napa County, California, USA",
-        "city": "Napa",
-        "state_province": "California",
-        "country": "USA",
-        "location_precision": "city",
-        "duration_raw": None,
-        "summary": (
-            "John Foraythe reported a metallic disc moving west at great speed over "
-            "Napa Valley at an estimated 20,000 feet; it tilted edge-on and vanished "
-            "in haze."
-        ),
-        "description": (
-            "On Sunday, July 27, 1952 at 10:45 a.m., John Foraythe of 1512 A Street "
-            "in Napa reported a metallic, disc-shaped object at an estimated altitude "
-            "of 20,000 feet moving west at great speed over Napa Valley. It tilted "
-            "until its thin edge faced him, then disappeared in haze. His report to "
-            "the local sheriff's office was forwarded to Hamilton Field airbase."
-        ),
-        "source_url": (
-            "https://sohp.us/collections/ufos-a-history/pdf/"
-            "GROSS-1952-July-21-31-SN.pdf#page=51"
-        ),
-        "mapping_notes": (
-            "Reviewed 2026-08-23. Retained the Hatch coordinate as an approximate "
-            "Napa-area marker; the report does not establish an exact observer or "
-            "airborne-object position. Corrected the normalized state from Colorado "
-            "to California and removed Hatch's 'Farmlands' environment category from "
-            "the place label. The contemporary newspaper account gives 10:45 a.m. "
-            "and states no duration. Original Hatch values remain preserved in the "
-            "raw source fields."
-        ),
-    },
+    "set_fields": NAPA_REVIEWED_FIELDS,
     "evidence": [
         {
             "kind": "contemporary_newspaper",
@@ -107,8 +131,8 @@ NAPA_REVIEWED_CORRECTION = {
         },
     ],
     "provenance_policy": (
-        "Reviewed fields affect the normalized/map projection only; imported raw source "
-        "fields and the stable source-row identity are not rewritten."
+        "Reviewed display fields affect the normalized/map projection only; imported "
+        "source-claim fields, raw source rows, and stable source identity are not rewritten."
     ),
 }
 
@@ -125,7 +149,8 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
     if not _targets_napa_event(next_event):
         return next_event
 
-    _validate_napa_source_guard(next_event)
+    already_applied = _has_napa_correction(next_event)
+    _validate_napa_source_guard(next_event, already_applied=already_applied)
     next_event.update(deepcopy(NAPA_REVIEWED_CORRECTION["set_fields"]))
 
     existing = next_event.get("reviewed_corrections")
@@ -139,7 +164,14 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
         for item in corrections
         if item.get("correction_id") != NAPA_CORRECTION_ID
     ]
-    corrections.append(deepcopy(NAPA_REVIEWED_CORRECTION))
+    correction_record = deepcopy(NAPA_REVIEWED_CORRECTION)
+    correction_record["applied_target"] = {
+        "canonical_input_id": next_event.get("canonical_input_id")
+        or NAPA_CANONICAL_INPUT_ID,
+        "canonical_event_id": next_event.get("canonical_event_id"),
+        "event_id": next_event.get("event_id"),
+    }
+    corrections.append(correction_record)
     next_event["reviewed_corrections"] = corrections
     return next_event
 
@@ -151,20 +183,54 @@ def apply_reviewed_event_corrections_many(
 
 
 def _targets_napa_event(event: Mapping[str, Any]) -> bool:
-    input_ids = event.get("canonical_input_ids")
-    if isinstance(input_ids, list) and NAPA_CANONICAL_INPUT_ID in input_ids:
-        return True
+    # Membership alone is intentionally insufficient: a later merge may retain
+    # the Hatch input as a non-primary member under a different representative.
     if event.get("canonical_input_id") == NAPA_CANONICAL_INPUT_ID:
         return True
     if event.get("canonical_event_id") == NAPA_CANONICAL_EVENT_ID:
         return True
     if event.get("event_id") == NAPA_EVENT_ID:
         return True
-    return _first(event, "source_native_id", "source_id") == "Hatch_UDB_2481"
+    return (
+        _first(event, "source_name", "source") == "majestic"
+        and _first(event, "source_native_id", "source_id") == "Hatch_UDB_2481"
+    )
 
 
-def _validate_napa_source_guard(event: Mapping[str, Any]) -> None:
+def _validate_napa_source_guard(
+    event: Mapping[str, Any],
+    *,
+    already_applied: bool,
+) -> None:
     errors: list[str] = []
+    canonical_event_id = event.get("canonical_event_id")
+    if canonical_event_id not in NAPA_SINGLETON_EVENT_IDS:
+        errors.append(
+            "canonical_event_id: expected a reviewed singleton ID, "
+            f"found {canonical_event_id!r}"
+        )
+    if event.get("event_id") is not None:
+        _expect(
+            errors,
+            "event_id",
+            event.get("event_id"),
+            NAPA_SINGLETON_EVENT_IDS.get(canonical_event_id),
+        )
+    if event.get("canonical_input_id") is not None:
+        _expect(
+            errors,
+            "canonical_input_id",
+            event.get("canonical_input_id"),
+            NAPA_CANONICAL_INPUT_ID,
+        )
+    _expect(
+        errors,
+        "canonical_input_ids",
+        event.get("canonical_input_ids"),
+        [NAPA_CANONICAL_INPUT_ID],
+    )
+    _expect(errors, "duplicate_record_count", event.get("duplicate_record_count"), 1)
+    _expect(errors, "dedupe_strategy", event.get("dedupe_strategy"), "single_record")
     _expect(errors, "source_name", _first(event, "source_name", "source"), "majestic")
     _expect(errors, "source_file", event.get("source_file"), "majestic.csv")
     _expect(
@@ -175,6 +241,56 @@ def _validate_napa_source_guard(event: Mapping[str, Any]) -> None:
     )
     _expect(errors, "source_row_number", _source_row_number(event), 11264)
     _expect(errors, "source_row_hash", _source_row_hash(event), NAPA_SOURCE_ROW_HASH)
+    _expect_float(errors, "lat", event.get("lat"), 38.300002)
+    _expect_float(errors, "lon", event.get("lon"), -122.300006)
+    if event.get("coordinate_source") not in {"source_coordinates", "raw_latlong"}:
+        errors.append(
+            "coordinate_source: expected 'source_coordinates' or 'raw_latlong', "
+            f"found {event.get('coordinate_source')!r}"
+        )
+
+    provenance = _source_provenance(event)
+    if not provenance:
+        errors.append("source_provenance: expected one preserved source member")
+    else:
+        _expect(errors, "source_provenance.count", len(provenance), 1)
+        target_provenance = provenance[0]
+        _expect(
+            errors,
+            "source_provenance[0].source_name",
+            target_provenance.get("source_name"),
+            "majestic",
+        )
+        _expect(
+            errors,
+            "source_provenance[0].source_file",
+            target_provenance.get("source_file"),
+            "majestic.csv",
+        )
+        _expect(
+            errors,
+            "source_provenance[0].source_row_number",
+            target_provenance.get("source_row_number"),
+            11264,
+        )
+        _expect(
+            errors,
+            "source_provenance[0].canonical_input_id",
+            target_provenance.get("canonical_input_id"),
+            NAPA_CANONICAL_INPUT_ID,
+        )
+        _expect(
+            errors,
+            "source_provenance[0].source_native_id",
+            target_provenance.get("source_native_id"),
+            "Hatch_UDB_2481",
+        )
+        _expect(
+            errors,
+            "source_provenance[0].source_row_hash",
+            target_provenance.get("source_row_hash"),
+            NAPA_SOURCE_ROW_HASH,
+        )
 
     raw_fields = event.get("raw_fields")
     if not isinstance(raw_fields, Mapping):
@@ -183,11 +299,37 @@ def _validate_napa_source_guard(event: Mapping[str, Any]) -> None:
         for key, expected in NAPA_EXPECTED_RAW_FIELDS.items():
             _expect(errors, f"raw_fields.{key}", raw_fields.get(key), expected)
 
+    expected_projection = (
+        NAPA_REVIEWED_FIELDS if already_applied else NAPA_ORIGINAL_PROJECTION
+    )
+    for key, expected in expected_projection.items():
+        _expect(errors, key, event.get(key), expected)
+    if not already_applied and event.get("location_precision") not in {
+        "coordinate",
+        "exact_coords",
+    }:
+        errors.append(
+            "location_precision: expected 'coordinate' or 'exact_coords', "
+            f"found {event.get('location_precision')!r}"
+        )
+
     if errors:
         raise ValueError(
             f"Reviewed correction {NAPA_CORRECTION_ID} failed its stale-source guard: "
             + "; ".join(errors)
         )
+
+
+def _has_napa_correction(event: Mapping[str, Any]) -> bool:
+    corrections = event.get("reviewed_corrections")
+    return bool(
+        isinstance(corrections, list)
+        and any(
+            isinstance(item, Mapping)
+            and item.get("correction_id") == NAPA_CORRECTION_ID
+            for item in corrections
+        )
+    )
 
 
 def _source_row_number(event: Mapping[str, Any]) -> Any:
@@ -225,4 +367,19 @@ def _first(event: Mapping[str, Any], *keys: str) -> Any:
 
 def _expect(errors: list[str], field: str, actual: Any, expected: Any) -> None:
     if actual != expected:
+        errors.append(f"{field}: expected {expected!r}, found {actual!r}")
+
+
+def _expect_float(
+    errors: list[str],
+    field: str,
+    actual: Any,
+    expected: float,
+) -> None:
+    try:
+        number = float(actual)
+    except (TypeError, ValueError):
+        errors.append(f"{field}: expected {expected!r}, found {actual!r}")
+        return
+    if abs(number - expected) > 1e-9:
         errors.append(f"{field}: expected {expected!r}, found {actual!r}")
