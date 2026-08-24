@@ -1,0 +1,255 @@
+{
+  "generated_at": "2026-06-04T23:59:00Z",
+  "temporal_source": "manual_web_research_china_round7_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11493894",
+      "name": "Gaomi",
+      "country_code": "CN",
+      "start_year": 2003,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Gaomi",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Gaomi at 36 deg 23 min 15 sec N, 119 deg 42 min 43 sec E and says the 12th Division/35th Air Regiment used J-8B aircraft taken from 1st Division/3rd Regiment in 2003, replacing J-6 aircraft; the regiment became a brigade in 2017 and resumed flying by 2024."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493894: Gaomi",
+          "url": "https://www.mindat.org/feature-11493894.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Gaomi name, airbase class, and coordinates matching the queue row."
+        }
+      ],
+      "rationale": "Use 2003 as a conservative documented operational marker for Gaomi because Scramble ties a named PLAAF regiment and aircraft transition to the base in that year. This is not treated as an opening date."
+    },
+    {
+      "source_id": "geonames:11493883",
+      "name": "Harbin Shuangyushu",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Harbin/Shuang Yu Shu",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Harbin/Shuang Yu Shu at 45 deg 39 min 51 sec N, 126 deg 42 min 00 sec E with the Harbin Flying Academy 1st Training Brigade, and says that in April 2012 the 1st FA/2nd Regiment was subordinated to Harbin Flying Academy with CJ-6 aircraft added at the same time."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493883: Harbin Shuangyushu",
+          "url": "https://www.mindat.org/feature-11493883.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Harbin Shuangyushu name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use 2012 as a documented military training-unit operational date at the Shuangyushu airfield. The source supports unit use and aircraft assignment, not original construction."
+    },
+    {
+      "source_id": "geonames:11493855",
+      "name": "Jinzhou North",
+      "country_code": "CN",
+      "start_year": 2004,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Jinzhou/Liushuibao",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Jinzhou/Liushuibao at 41 deg 11 min 19 sec N, 121 deg 10 min 15 sec E with the Aviation University Flight Basic Training Base and says that in 2004 the 3rd Flying Academy/1st Regiment was subordinated to the 7th Flying Academy as its 3rd Regiment; in April 2012 it was subordinated to the Flight Basic Training Base."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493855: Jinzhou North",
+          "url": "https://www.mindat.org/feature-11493855.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Jinzhou North name, airbase class, and coordinates close to Scramble's Jinzhou/Liushuibao listing."
+        }
+      ],
+      "rationale": "The coordinates and northern Jinzhou naming align with Liushuibao. Use 2004 as the earliest cited military training-regiment date; confidence is medium because the source is an ORBAT marker rather than a formal airfield opening record."
+    },
+    {
+      "source_id": "geonames:11493844",
+      "name": "Lalin",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Harbin/Lalin",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Harbin/Lalin at 45 deg 15 min 35 sec N, 126 deg 53 min 37 sec E with the Harbin Flying Academy 2nd Training Brigade and says that in April 2012 the 1st FA/3rd Regiment was subordinated to Harbin Flying Academy; it also notes 2015 H-6A additions and H-6H replacement starting in 2022."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493844: Lalin",
+          "url": "https://www.mindat.org/feature-11493844.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Lalin name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use 2012 as a conservative documented training-regiment operational date at Lalin. Later aircraft changes are retained only as supporting continuity evidence."
+    },
+    {
+      "source_id": "geonames:11493821",
+      "name": "Malan",
+      "country_code": "CN",
+      "start_year": 1988,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Malan/Uxxaktal",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Malan/Uxxaktal at 42 deg 10 min 51 sec N, 087 deg 11 min 11 sec E and says the 16th Division regiment was based at Ertaizi until 1988, after which it became Shenyang MR Training Base/2nd Regiment and moved to Malan; it also notes Wing Loong I at Malan in 2011 and a 2012 brigade change."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493821: Malan",
+          "url": "https://www.mindat.org/feature-11493821.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Malan name, airbase class, and coordinates matching the queue row."
+        }
+      ],
+      "rationale": "Use 1988 as a conservative documented move-to-Malan operational date. The source supports basing by a specific training unit after 1988, not the airfield's initial construction."
+    },
+    {
+      "source_id": "geonames:11493810",
+      "name": "Nanchang",
+      "country_code": "CN",
+      "end_year": 2018,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Nanchang/Jiang Xi",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Nanchang/Jiang Xi at 28 deg 38 min 08 sec N, 115 deg 55 min 48 sec E as Central Maintenance Base / 320 Factory - Hongdu Aircraft Corp, and says the airfield was vacated in 2018 with manufacturing activities relocated to Nanchang/Yaohu."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493810: Nanchang",
+          "url": "https://www.mindat.org/feature-11493810.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Nanchang name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use 2018 as a conservative end/vacating year for the Nanchang/Jiang Xi airfield entry. No start year is proposed because the cited evidence only supports a terminal relocation marker."
+    },
+    {
+      "source_id": "geonames:11493805",
+      "name": "Neixiang",
+      "country_code": "CN",
+      "start_year": 2010,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Dengzhou/Neixiang",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Dengzhou/Neixiang at 32 deg 58 min 27 sec N, 111 deg 53 min 05 sec E with the 106th Air Brigade and says the 106th Regiment was reactivated again in 2010 for the nuclear bomber role, receiving H-6N aircraft in late 2019."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493805: Neixiang",
+          "url": "https://www.mindat.org/feature-11493805.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Neixiang name, airbase class, and coordinates matching the Dengzhou/Neixiang listing."
+        }
+      ],
+      "rationale": "Use 2010 as a documented reactivation/operational date for the Neixiang bomber unit. The date is not an airfield-opening date, so confidence remains medium."
+    },
+    {
+      "source_id": "geonames:11493802",
+      "name": "Ningbo Zhangqiao",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 2020,
+          "end_year": 2022,
+          "label": "documented major renovation and expansion interval"
+        }
+      ],
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "China Aerospace Studies Institute: PLAN Special Mission Aviation Air Base Renovation and Expansion Activities",
+          "url": "https://www.airuniversity.af.edu/Portals/10/CASI/documents/Research/PLAN/2023-09-25%20PLAN%20SMA%20Air%20Base%20Expansions%20and%20Rennovations.pdf",
+          "note": "CASI says Ningbo Zhuangqiao Airbase underwent major apron renovations, added helicopter hangars and fixed-wing special-mission-aircraft sunshades, and expanded garrison/support infrastructure from 2020 to 2022; it also says operations may have resumed once the facility was sufficiently completed."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493802: Ningbo Zhangqiao",
+          "url": "https://www.mindat.org/feature-11493802.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Ningbo Zhangqiao name, airbase class, and coordinates matching the Zhuangqiao airbase area."
+        }
+      ],
+      "rationale": "Use an operational interval rather than a start year because the reliable dated evidence is a 2020-2022 renovation/expansion window for the same airbase, not original establishment."
+    },
+    {
+      "source_id": "geonames:11493789",
+      "name": "Pulandian",
+      "country_code": "CN",
+      "start_year": 2009,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Pulandian",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Pulandian at 39 deg 27 min 02 sec N, 122 deg 01 min 06 sec E with the 89th Air Brigade and says the 30th Division/89th Regiment moved from Dalian-Zhoushuizi to Pulandian in 2009, then converted to a brigade in April 2012."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493789: Pulandian",
+          "url": "https://www.mindat.org/feature-11493789.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Pulandian name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use 2009 as a documented regiment relocation/start-of-basing date at Pulandian. This is conservative because it avoids inferring earlier construction or readiness."
+    },
+    {
+      "source_id": "geonames:11493771",
+      "name": "Shahezhen",
+      "country_code": "CN",
+      "start_year": 1952,
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Beijing/Shahezhen",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Beijing/Shahezhen at 40 deg 08 min 58 sec N, 116 deg 19 min 24 sec E and says that on 16 April 1952 the air transport brigade and female aviators of the 13th Air Division, all based at Shahezhen, were combined into the 3rd Independent Regiment."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493771: Shahezhen",
+          "url": "https://www.mindat.org/feature-11493771.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Shahezhen name, airbase class, and coordinates matching the Beijing/Shahezhen listing."
+        }
+      ],
+      "rationale": "Use 1952 because Scramble gives a precise dated organizational event and explicitly says the relevant aviation units were based at Shahezhen. This is stronger than a generic current-status listing."
+    },
+    {
+      "source_id": "geonames:11493767",
+      "name": "Shanghai Dachang",
+      "country_code": "CN",
+      "start_year": 1938,
+      "operational_intervals": [
+        {
+          "start_year": 2021,
+          "end_year": 2022,
+          "label": "documented renovation and expansion interval"
+        }
+      ],
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Chinese Wikipedia: Shanghai Dachang Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%9C%BA%E6%9C%BA%E5%9C%BA",
+          "note": "The Chinese-language article identifies Shanghai Dachang Airbase as a military airfield, gives opened as 1938, says it was built by Japanese forces during the invasion, later taken over by the Republic of China Air Force, then by the PLA after 1949, and managed by PLA Naval Aviation from March 1953."
+        },
+        {
+          "title": "China Aerospace Studies Institute: PLAN Special Mission Aviation Air Base Renovation and Expansion Activities",
+          "url": "https://www.airuniversity.af.edu/Portals/10/CASI/documents/Research/PLAN/2023-09-25%20PLAN%20SMA%20Air%20Base%20Expansions%20and%20Rennovations.pdf",
+          "note": "CASI says Shanghai Dachang Air Base underwent renovation and expansion beginning in late 2021 and finishing sometime in late 2022, and identifies it as likely home garrison of the Eastern Theater Navy special mission aviation division."
+        },
+        {
+          "title": "Mindat/GeoNames feature 11493767: Shanghai Dachang",
+          "url": "https://www.mindat.org/feature-11493767.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Shanghai Dachang name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use 1938 only as a low-confidence opening year because the date comes from an encyclopedia entry rather than an official facility history. CASI's 2021-2022 renovation evidence independently supports continued airbase use but does not establish the original start date."
+    }
+  ]
+}

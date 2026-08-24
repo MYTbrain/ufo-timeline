@@ -4,3 +4,5 @@ PyYAML>=6.0,<7.0
 requests>=2.32,<3.0
 pytest>=8.3,<9.0
 httpx>=0.28,<1.0
+tzdata>=2026.3,<2027.0
+truststore>=0.10,<1.0

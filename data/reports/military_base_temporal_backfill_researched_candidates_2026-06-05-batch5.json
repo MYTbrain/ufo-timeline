@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Fifth temporal review batch. Egypt helipad and coast-guard rows were researched, but no source-backed operational date intervals were defensible enough for temporal overrides.",
+  "candidate_overrides": [],
+  "no_override": [
+    {
+      "source_id": "geonames:12164541",
+      "name": "Al Farafirah Helipad",
+      "country_code": "EG",
+      "reason": "Only GeoNames/weather-directory evidence found; no defensible operational opening, closure, or active-by interval."
+    },
+    {
+      "source_id": "geonames:12164544",
+      "name": "As Sallum Heliport South Southeast",
+      "country_code": "EG",
+      "reason": "Only gazetteer/weather-map evidence found; no source-backed operational dates."
+    },
+    {
+      "source_id": "geonames:12164551",
+      "name": "Cairo Northwest Heliport",
+      "country_code": "EG",
+      "reason": "Only gazetteer/weather-map evidence found; no defensible operational interval."
+    },
+    {
+      "source_id": "geonames:12164561",
+      "name": "Jabal Uwaybid Division Assembly A Helipads",
+      "country_code": "EG",
+      "reason": "Only GeoNames-style gazetteer evidence found; no operational opening/closure source."
+    },
+    {
+      "source_id": "geonames:12164570",
+      "name": "Sidi Kurayr Heliport",
+      "country_code": "EG",
+      "reason": "GeoNames/weather-directory evidence only; no defensible operational date interval."
+    },
+    {
+      "source_id": "geonames:357934",
+      "name": "El-Bughaz Fort West",
+      "country_code": "EG",
+      "reason": "NGA-derived gazetteer lists it as a coast guard station; HMS Endeavour log gives a 1921 bearing reference, not an operational interval."
+    },
+    {
+      "source_id": "geonames:357956",
+      "name": "El-'Abd Fort",
+      "country_code": "EG",
+      "reason": "Mapcarta/NGA-derived gazetteer evidence identifies a coast guard station, but no operational dates."
+    },
+    {
+      "source_id": "geonames:357951",
+      "name": "El-'Aiyash Fort No. 6",
+      "country_code": "EG",
+      "reason": "Sailing Directions says the ruined fort was used as a coast-guard station at the time of that edition, but it supports only an active-by observation, not a defensible start/end interval."
+    },
+    {
+      "source_id": "geonames:357949",
+      "name": "El-'Alayim Fort",
+      "country_code": "EG",
+      "reason": "Mapcarta/NGA-derived gazetteer evidence identifies a coast guard station, but no operational dates."
+    },
+    {
+      "source_id": "geonames:11776366",
+      "name": "Gilleaume Station (historical)",
+      "country_code": "EG",
+      "reason": "GeoNames/TideKing-style location evidence marks it historical, but no source-backed operational years."
+    },
+    {
+      "source_id": "geonames:11748313",
+      "name": "Guerin Station (historical)",
+      "country_code": "EG",
+      "reason": "GeoNames/TideKing-style location evidence marks it historical, but no source-backed operational years."
+    }
+  ]
+}

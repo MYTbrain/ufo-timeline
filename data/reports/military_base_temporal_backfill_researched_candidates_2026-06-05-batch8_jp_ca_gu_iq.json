@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Focused Canada range/training-area and JP/GU/IQ manual queue pass. Candidate overrides are limited to rows with defensible public source-backed dates; no_override records document rows reviewed without safe operational dates.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:11717277",
+      "name": "Abashiri Kaijo Hoansho",
+      "country_code": "JP",
+      "start_year": 1950,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.kaiho.mlit.go.jp/01kanku/monbetsu/syoukai/intro_abashiri.html"
+      ],
+      "source_notes": "Official Japan Coast Guard page says Abashiri began on 1950-06-01 as Kushiro Coast Guard Office Abashiri Guard/Rescue Station, later renamed/reassigned."
+    },
+    {
+      "source_id": "geonames:11061003",
+      "name": "Daisan Kanku Kaijo Hoan Honbu Yokohama Kido Bojo Kichi",
+      "country_code": "JP",
+      "start_year": 1998,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.jinji.go.jp/seisaku/sousai/027/yokohama.html",
+        "https://www.kaiho.mlit.go.jp/03kanku/map/"
+      ],
+      "source_notes": "Japanese National Personnel Authority/JCG award page says Yokohama Mobile Disaster Prevention Base was established in April 1998; JCG map confirms current base."
+    },
+    {
+      "source_id": "geonames:11077475",
+      "name": "Kaijo Hoancho Sodegaura Bunshitsu",
+      "country_code": "JP",
+      "start_year": 1972,
+      "end_year": 2010,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.kaiho.mlit.go.jp/03kanku/chiba/hoanbu/index_1.htm"
+      ],
+      "source_notes": "Official Chiba Coast Guard history says Sodegaura branch was installed 1972-05-01 and integrated into Chiba Coast Guard Office on 2010-03-31."
+    },
+    {
+      "source_id": "geonames:11111851",
+      "name": "Katsuura Kaijo Hoansho",
+      "country_code": "JP",
+      "start_year": 1962,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.kaiho.mlit.go.jp/03kanku/choshi/main_org.html"
+      ],
+      "source_notes": "Official Choshi/JCG page lists Katsuura Coast Guard Station and says Katsuura branch was promoted to station in 1962."
+    },
+    {
+      "source_id": "geonames:12626494",
+      "name": "Nagoyako Kaijo Kotsu Center",
+      "country_code": "JP",
+      "start_year": 1994,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www6.kaiho.mlit.go.jp/nagoyako/",
+        "https://www.jttri.or.jp/heisei/wp1994.pdf"
+      ],
+      "source_notes": "JCG current page confirms Nagoya-ko VTS Center; 1994 Transport White Paper reports JCG opened the Nagoya Port Maritime Traffic Center on 1994-07-15."
+    },
+    {
+      "source_id": "geonames:10438074",
+      "name": "Shonan Kaijo Hoansho",
+      "country_code": "JP",
+      "start_year": 2002,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.mlit.go.jp/npcc/hakusyo/npcc/2003/npcc200301_main_149.html",
+        "https://www.ktr.mlit.go.jp/yokohamaez/yokohamaez00126.html"
+      ],
+      "source_notes": "MLIT white paper says Yokosuka Coast Guard Office Shonan Coast Guard Station began 2002-04-01; MLIT Kanto page confirms the current 2017-built Shonan facility."
+    },
+    {
+      "source_id": "geonames:5919607",
+      "name": "Champ de manoeuvre Chilcotin",
+      "country_code": "CA",
+      "start_year": 1923,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_dnd_owned_training_area",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/reports/militia-reports/national-defence-canada-report-part2-1923-03-31.pdf",
+        "https://apps.gov.bc.ca/pub/bcgnws/names/63365.html",
+        "https://canadabuys.canada.ca/documents/pub/att/2013/08/09/a9ef0d51494891d15f0781638cc67e1f/vancouvr-2320103-v3-09-13-0003_rfp_reforestation_cmta_english_.pdf"
+      ],
+      "source_notes": "French alias for Chilcotin Training Area. DND's 1923 report lists Chilcotin, B.C. Training Area land acquired from British Columbia; BC Geographical Names ties Champ de manoeuvre Chilcotin/Canadian Forces Camp Chilcotin to the official Chilcotin Training Area; CanadaBuys/DND material says the area is DND-owned and used as a military training area."
+    },
+    {
+      "source_id": "geonames:5921322",
+      "name": "Chilcotin Training Area",
+      "country_code": "CA",
+      "start_year": 1923,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_dnd_owned_training_area",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://www.canada.ca/content/dam/themes/defence/caf/militaryhistory/dhh/reports/militia-reports/national-defence-canada-report-part2-1923-03-31.pdf",
+        "https://apps.gov.bc.ca/pub/bcgnws/names/63365.html",
+        "https://canadabuys.canada.ca/documents/pub/att/2013/08/09/a9ef0d51494891d15f0781638cc67e1f/vancouvr-2320103-v3-09-13-0003_rfp_reforestation_cmta_english_.pdf"
+      ],
+      "source_notes": "DND's 1923 report lists Chilcotin, B.C. Training Area land acquired from British Columbia; BC Geographical Names confirms the official training-area identity and later naming history; CanadaBuys/DND material documents current DND ownership/use as a military training area. Use 1923 as acquisition/use floor, not a construction date."
+    },
+    {
+      "source_id": "geonames:5919622",
+      "name": "Champ de manoeuvre Sussex",
+      "country_code": "CA",
+      "start_year": 1885,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_partial_training_area_continuity",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://militarybruce.com/abandoned-canadian-military-bases/closed-bases-with-military-presence/new-brunswick/",
+        "https://geonb.snb.ca/downloads/digital_atlas/Index/Index.html"
+      ],
+      "source_notes": "GeoNB lists Champ de manoeuvre Sussex as a Canadian Forces Range and/or Training Area. MilitaryBruce states Camp Sussex opened in 1885, the camp closed in 1965, the rifle range continued into the early 1980s, and part of the property/training area continued in DND/CFB Gagetown use. Confidence medium due mixed camp/range continuity."
+    },
+    {
+      "source_id": "geonames:6159986",
+      "name": "Sussex Training Area",
+      "country_code": "CA",
+      "start_year": 1885,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_partial_training_area_continuity",
+      "temporal_confidence": "medium",
+      "temporal_source": "focused_source_backfill_20260605",
+      "source_urls": [
+        "https://militarybruce.com/abandoned-canadian-military-bases/closed-bases-with-military-presence/new-brunswick/",
+        "https://geonb.snb.ca/downloads/digital_atlas/Index/Index.html"
+      ],
+      "source_notes": "GeoNB lists Sussex Training Area as a Canadian Forces Range and/or Training Area. MilitaryBruce states Camp Sussex opened in 1885, closed in 1965, its rifle range continued into the early 1980s, and the training area continued to be used by troops from CFB Gagetown. Confidence medium due mixed camp/range continuity."
+    }
+  ],
+  "no_override": [
+    {
+      "source_id": "geonames:5883484",
+      "name": "Alexandra Point Range",
+      "country_code": "CA",
+      "reason": "Prior local review plus web check found only CGNDB/GeoNames/map-style Canadian Forces Range and/or Training Area identity evidence; no safe operational start/end."
+    },
+    {
+      "source_id": "geonames:5884490",
+      "name": "Amherst Range",
+      "country_code": "CA",
+      "reason": "Historical rifle-range references were not safely tied to this GeoNames row; otherwise only place-name/map evidence."
+    },
+    {
+      "source_id": "geonames:5911420",
+      "name": "Burdick Range",
+      "country_code": "CA",
+      "reason": "Sources support Canadian Forces range identity/use context but no defensible operational start/end interval."
+    },
+    {
+      "source_id": "geonames:5971146",
+      "name": "Haro Strait Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/map-style evidence found; no operational interval."
+    },
+    {
+      "source_id": "geonames:6136946",
+      "name": "Saanich Inlet Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/GeoNames/map-style evidence found; no operational interval."
+    },
+    {
+      "source_id": "geonames:6139418",
+      "name": "Salmon Arm Range",
+      "country_code": "CA",
+      "reason": "Local history indicates an old DND rifle range nearby, but no safe start/end interval for this row."
+    },
+    {
+      "source_id": "geonames:6160770",
+      "name": "Sydney Range",
+      "country_code": "CA",
+      "reason": "Only CGNDB/weather/map-style evidence found; no operational interval."
+    },
+    {
+      "source_id": "geonames:5892536",
+      "name": "Banff Training Area",
+      "country_code": "CA",
+      "reason": "Official/mirror Canadian Forces Training Area identity and decision-date evidence found only; decision dates are not operational dates."
+    },
+    {
+      "source_id": "geonames:5951491",
+      "name": "Fanshawe Dam Training Area",
+      "country_code": "CA",
+      "reason": "Only CGNDB/NRCan official Canadian Forces Training Area identity and decision-date evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:5960604",
+      "name": "Geraldton Training Area",
+      "country_code": "CA",
+      "reason": "Only place-name/map-style Canadian Forces Training Area evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:5985899",
+      "name": "Jarvis Lake Training Area",
+      "country_code": "CA",
+      "reason": "Only GeoNames/map-style military-base evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:5988710",
+      "name": "Kakabeka Falls Training Area",
+      "country_code": "CA",
+      "reason": "Only CGNDB/NRCan official Canadian Forces Training Area identity and map evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:5994030",
+      "name": "Korah Training Area",
+      "country_code": "CA",
+      "reason": "Only CGNDB/NRCan official Canadian Forces Training Area identity and map evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:6074115",
+      "name": "Mill Hill Training Area",
+      "country_code": "CA",
+      "reason": "Only GeoNB/CGNDB/map-style Canadian Forces Training Area identity evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:6094582",
+      "name": "Oshawa Training Area",
+      "country_code": "CA",
+      "reason": "Museum history supports local regiment training use at Oshawa airport, but not a safe bounded interval for this GeoNames training-area row."
+    },
+    {
+      "source_id": "geonames:6122112",
+      "name": "Richmond Training Area",
+      "country_code": "CA",
+      "reason": "Only official/mirror Canadian Forces Training Area identity and map evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:6150844",
+      "name": "Snowshoe Lake Training Area",
+      "country_code": "CA",
+      "reason": "Only map/mirror evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:6158844",
+      "name": "Sudbury Training Area",
+      "country_code": "CA",
+      "reason": "Only Mindat/map-style evidence found; no operational date."
+    },
+    {
+      "source_id": "geonames:4045189",
+      "name": "DoD Naval Reserve - Apra Heights Housing",
+      "country_code": "GU",
+      "reason": "Guam housing/support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7839943",
+      "name": "DoD Naval Reserve South Finegayan Housing",
+      "country_code": "GU",
+      "reason": "Guam housing/support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7874058",
+      "name": "DoD Nimitz Hill Housing",
+      "country_code": "GU",
+      "reason": "Guam housing/support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7839974",
+      "name": "DoD Nimitz Hill Reserve High School",
+      "country_code": "GU",
+      "reason": "School/support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7874009",
+      "name": "DoD Nimitz Hill Reserve Officers Housing",
+      "country_code": "GU",
+      "reason": "Guam housing/support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7871459",
+      "name": "DoD Reserve Admiral Nimitz Golf Course",
+      "country_code": "GU",
+      "reason": "Recreational golf-course support amenity, not a standalone operational base."
+    },
+    {
+      "source_id": "geonames:7870684",
+      "name": "DoD Naval Reserve - Fena Valley Watershed",
+      "country_code": "GU",
+      "reason": "Water-support infrastructure. Sources support Fena reservoir history, but not a distinct military-base operational interval for this GeoNames row."
+    },
+    {
+      "source_id": "geonames:7874064",
+      "name": "DoD Naval Reserve NHC Reservoir",
+      "country_code": "GU",
+      "reason": "Water-support infrastructure. No safe distinct military-base operational interval for this GeoNames row."
+    },
+    {
+      "source_id": "geonames:7839899",
+      "name": "DoD Naval Reserve Sasa Valley",
+      "country_code": "GU",
+      "reason": "Navy tank-farm/support parcel; no safe opening/end interval for this specific GeoNames row."
+    },
+    {
+      "source_id": "geonames:7839901",
+      "name": "DoD Naval Reserve Tenjo Vista",
+      "country_code": "GU",
+      "reason": "Navy tank-farm/support parcel; no safe opening/end interval for this specific GeoNames row."
+    },
+    {
+      "source_id": "geonames:6687218",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687199",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687141",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687203",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687200",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687239",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687143",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6687205",
+      "name": "Iraq border/security facility row",
+      "country_code": "IQ",
+      "reason": "Likely Iraq border military/security facility by label, but evidence found is gazetteer/Mapcarta/NGA-derived only; no operational dates."
+    },
+    {
+      "source_id": "geonames:6755962",
+      "name": "Maqarr ad Dib",
+      "country_code": "IQ",
+      "reason": "NGA-derived barracks labeling is ambiguous with village/locality usage; no defensible base operational dates."
+    }
+  ]
+}

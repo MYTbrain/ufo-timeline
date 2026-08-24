@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-06-04T22:26:44.0621188Z",
+  "temporal_source": "manual_web_research_china_round5_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11493676",
+      "name": "Yinchuan Helanshan Airport",
+      "country_code": "CN",
+      "start_year": 1970,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Yinchuan Helanshan Airport",
+          "url": "https://en.wikipedia.org/wiki/Yinchuan_Helanshan_Airport",
+          "note": "The airport profile identifies Yinchuan Helanshan Airport as a mostly military field, gives its type as military airport, and lists 1970 as the built year; the history section says construction began in 1970 for national military needs."
+        },
+        {
+          "title": "Yinchuan Helanshan Airport, Mindat/GeoNames feature 11493676",
+          "url": "https://www.mindat.org/feature-11493676.html",
+          "note": "Mindat mirrors the GeoNames feature ID and coordinates and classifies the site as an airbase, supporting the exact overlay-feature match."
+        }
+      ],
+      "rationale": "The queue source_id, name, coordinates, and airbase classification match the Yinchuan Helanshan military airport feature. Use 1970 as a conservative built/start year because the source explicitly ties construction to military needs; confidence remains medium because it is not an official base-history source and does not give a separate commissioning date."
+    },
+    {
+      "source_id": "geonames:11493961",
+      "name": "Beijing Tongxian",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1945,
+          "label": "Japanese-built Sanjianfang/Tongxian airfield phase"
+        },
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "rebuilt Tongxian/Sanjianfang airfield phase documented after PRC-era reconstruction"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Beijing Tongzhou Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E5%8C%97%E4%BA%AC%E9%80%9A%E5%B7%9E%E6%9C%BA%E5%9C%BA",
+          "note": "The history section says Japanese forces began forcing laborers to build the airfield and aircraft shelters in late March 1941, the field was wrecked after Japan's surrender in 1945, and Sanjianfang airfield was rebuilt in 1952."
+        },
+        {
+          "title": "SAM 2nd Battalion",
+          "url": "https://zh.wikipedia.org/wiki/%E5%9C%B0%E7%A9%BA%E5%AF%BC%E5%BC%B9%E7%AC%AC%E4%BA%8C%E8%90%A5",
+          "note": "The SAM history places an air-defense battalion at Beijing Tongxian/Zhangjiawan airfield in September-October 1959, independently supporting post-rebuild military use."
+        }
+      ],
+      "rationale": "The overlay's Beijing Tongxian airbase location aligns with the Tongzhou/Tongxian airfield history. The evidence supports a wartime construction-use interval and a PRC-era rebuilt-use phase, so intervals are safer than a single uninterrupted start date."
+    },
+    {
+      "source_id": "geonames:11493958",
+      "name": "Bikeqi",
+      "country_code": "CN",
+      "start_year": 1995,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "People's Daily, 1995-06-29, military transport landing at Bikeqi Airport",
+          "url": "https://cn.govopendata.com/renminribao/1995/6/29/11/",
+          "note": "The People's Daily item says a military transport aircraft landed at Inner Mongolia Bikeqi Airport in early June 1995."
+        },
+        {
+          "title": "CAAC: Inner Mongolia airport navigation aid for Air Force Bikeqi Airport completed",
+          "url": "https://www.caac.gov.cn/XWZX/HYDT/200902/t20090210_17685.html",
+          "note": "CAAC reported that a new NDB navigation aid for Air Force Bikeqi Airport was transferred to Air Force management on February 8, 2009, after 2008 construction and flight-check work."
+        }
+      ],
+      "rationale": "The queue feature is also known as Hohhot Bikeqi Air Base at the same coordinates. The 1995 People's Daily article documents military aircraft operations by that year, while the CAAC item confirms the same Air Force airport remained operational in 2009. Use 1995 as a documented-by operational date, not as an establishment date."
+    },
+    {
+      "source_id": "geonames:11493949",
+      "name": "Changchun Datun",
+      "country_code": "CN",
+      "start_year": 1951,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "PLA Air Force Xi'an Flight Academy",
+          "url": "https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%9B%BD%E4%BA%BA%E6%B0%91%E8%A7%A3%E6%94%BE%E5%86%9B%E7%A9%BA%E5%86%9B%E8%A5%BF%E5%AE%89%E9%A3%9E%E8%A1%8C%E5%AD%A6%E9%99%A2",
+          "note": "The academy history notes that on May 19, 1951, a Second Aviation School parachute-rigger made a parachute jump at Changchun Datun Airport."
+        },
+        {
+          "title": "History of PLAAF Second Aviation School",
+          "url": "https://www.meipian.cn/48kjauax",
+          "note": "A historical account of the Second Aviation School says its old first training regiment transferred to Changchun Datun Airport in November 1956."
+        },
+        {
+          "title": "Changchun-Datun",
+          "url": "https://aviationsmilitaires.net/v3/kb/airfield/show/1886/changchun-datun",
+          "note": "AviationMilitaires identifies Changchun-Datun as a PLAAF training base at coordinates matching the overlay feature."
+        }
+      ],
+      "rationale": "The queue coordinates and name match Changchun-Datun. The 1951 parachute training reference documents airfield use, and the 1956 aviation-school transfer confirms sustained PLAAF training-base use. Use 1951 as a documented operational date, not a construction date."
+    },
+    {
+      "source_id": "geonames:11493938",
+      "name": "Chengdu Taipingsi",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": null,
+          "label": "documented wartime test-flight and aircraft-manufacturing airfield phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Tracing the history of China's self-made aircraft",
+          "url": "https://m.krzzjn.com/show-2950-139049.html",
+          "note": "The article says a Chinese-developed bomber was test-flown at Chengdu Taipingsi airfield in spring 1944 and that the Zhongyun-1 aircraft flew from Chongqing to Chengdu Taipingsi Airport on November 18, 1944."
+        },
+        {
+          "title": "Sichuan local-history feature on Jinjiang aviation works",
+          "url": "https://www.scdfz.org.cn/whzh/bsjy/content_147518",
+          "note": "The Sichuan local-history article links the Taipingsi airfield with wartime aviation-repair, manufacturing, and research units, including the 1944 first flight of the Yanhong-3 bomber."
+        }
+      ],
+      "rationale": "The queue row is an exact Chengdu Taipingsi airbase feature. The evidence supports operational aircraft testing and military-aviation manufacturing activity at the field in 1944. Because the sources do not provide an original opening or closure date, the candidate uses a documented operational interval."
+    },
+    {
+      "source_id": "geonames:11493937",
+      "name": "Chengdu Wenjian",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": 1945,
+          "label": "wartime Wenjiang/Huangtianba reserve fighter airfield phase"
+        },
+        {
+          "start_year": 1957,
+          "end_year": null,
+          "label": "Chengdu Aircraft Industry Group test-airfield phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Chengdu Wenjiang Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E6%88%90%E9%83%BD%E6%B8%A9%E6%B1%9F%E6%9C%BA%E5%9C%BA",
+          "note": "The article identifies the airport as military, says Wenjiang/Huangtianba Airport was built in 1944 for Operation Matterhorn as a reserve grass airfield, was abandoned after the war, and was repurposed in January 1957 for the No. 432 Aircraft Repair Factory, later Chengdu Aircraft Industry Group."
+        },
+        {
+          "title": "Huangtianba Air Base",
+          "url": "https://www.globalmilitary.net/airbases/huangtianba-air-base/",
+          "note": "GlobalMilitary matches the queue coordinates for Chengdu Wenjiang/Huangtianba and summarizes the wartime construction, postwar abandonment, 1957 repurposing, and current CAC flight-test role."
+        }
+      ],
+      "rationale": "The overlay's Chengdu Wenjian row appears to be the Chengdu Wenjiang/Huangtianba airfield at matching coordinates. The source explicitly separates the 1944 wartime airfield from the 1957 aircraft-factory/test-airfield reuse, so intervals avoid implying uninterrupted service."
+    },
+    {
+      "source_id": "geonames:11493922",
+      "name": "Dalian Sanshilipu",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": 1955,
+          "label": "Soviet Luda-area airfield/garrison phase"
+        },
+        {
+          "start_year": 2013,
+          "end_year": null,
+          "label": "documented PLAAF maintenance/forward-operating-base phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "China News / People's Daily: Soviet air forces in Luda",
+          "url": "https://www.chinanews.com.cn/cul/2010/07-02/2376888.shtml",
+          "note": "The article says Soviet forces were stationed in the Luda region from August 22, 1945 until withdrawal on May 27, 1955, and that their air forces used nine airfields including Jinzhou Sanshilipu."
+        },
+        {
+          "title": "Scramble: China Air Force ORBAT, Dalian/Sanshilipu",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Dalian/Sanshilipu at coordinates matching the overlay, says the 5706 maintenance unit moved there from Dalian/Zhoushuizi in 2013, and notes a 2017 change to forward-operating-base status."
+        }
+      ],
+      "rationale": "The queue feature is Dalian Sanshilipu at the same coordinates as the Scramble airbase row and the historical Jinzhou Sanshilipu airfield. The sources support a Soviet-era interval and a modern documented PLAAF maintenance/FOB phase; they do not establish uninterrupted use between those phases."
+    },
+    {
+      "source_id": "geonames:11493921",
+      "name": "Dalian Tuchengzi",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1945,
+          "end_year": 1955,
+          "label": "Soviet Luda-area Tuchengzi airfield phase"
+        },
+        {
+          "start_year": 1956,
+          "end_year": null,
+          "label": "documented PLAN aviation Tuchengzi airfield phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Soviet troops stationed in Luda",
+          "url": "https://zh.wikipedia.org/wiki/%E8%8B%8F%E5%86%9B%E9%A9%BB%E6%97%85%E5%A4%A7%E9%83%A8%E9%98%9F",
+          "note": "The Luda garrison history says Soviet airborne troops landed at Lushun Tuchengzi Airport on August 22, 1945; the Soviet Luda garrison period ended in 1955."
+        },
+        {
+          "title": "China News / People's Daily: Soviet air forces in Luda",
+          "url": "https://www.chinanews.com.cn/cul/2010/07-02/2376888.shtml",
+          "note": "The article describes Soviet air and naval aviation forces stationed in the Luda region from 1945 until May 27, 1955."
+        },
+        {
+          "title": "PLAN aviation unit history",
+          "url": "https://kknews.cc/zh-cn/military/8poxj3n.html",
+          "note": "The unit-history account says a naval aviation reconnaissance detachment was organized at Liaoning Lushun Tuchengzi Airport in April 1956."
+        }
+      ],
+      "rationale": "The overlay name and coordinates match Dalian/Lushun Tuchengzi. The evidence supports Soviet airfield use beginning in August 1945 and PLAN aviation use by April 1956 after Soviet withdrawal; confidence is medium because the modern-continuity source is a secondary unit-history article."
+    },
+    {
+      "source_id": "geonames:11493918",
+      "name": "Dangyang",
+      "country_code": "CN",
+      "start_year": 1971,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Dangyang Airport",
+          "url": "https://www.baike.com/wikiid/1481237647273849578",
+          "note": "The article identifies Dangyang Airport as a PLA Air Force military airfield, says construction began in 1969, and says it was put into use in 1971."
+        },
+        {
+          "title": "Central Theater Command Air Force",
+          "url": "https://en.wikipedia.org/wiki/Central_Theater_Command_Air_Force",
+          "note": "The ORBAT-style listing places the 39th Air Regiment at Hubei/Yicheng/Dangyang, supporting continuing military-airfield use."
+        }
+      ],
+      "rationale": "The queue coordinates match Dangyang Air Base near Yichang/Dangyang. Use 1971 rather than the 1969 construction start because the source explicitly distinguishes construction from being put into use."
+    },
+    {
+      "source_id": "geonames:11493916",
+      "name": "Datong Qingshuihe",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1994,
+          "end_year": 2005,
+          "label": "Datong Huairen civil-military airport phase"
+        },
+        {
+          "start_year": 2006,
+          "end_year": null,
+          "label": "military-only Huairen Air Base phase after Datong Yungang replacement"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Shanxi province airport list",
+          "url": "https://zh.wikipedia.org/wiki/%E5%B1%B1%E8%A5%BF%E7%9C%81%E6%9C%BA%E5%9C%BA%E5%88%97%E8%A1%A8",
+          "note": "The airport list gives Air Force Huairen Airport as military/civil-military, active, and lists the civil-military period as 1994-2005."
+        },
+        {
+          "title": "Shuozhou Huairen Airport / Huairen Air Base",
+          "url": "https://zh.wikipedia.org/wiki/%E6%80%80%E4%BB%81%E6%9C%BA%E5%9C%BA",
+          "note": "The Huairen Airport article says the airport is now a military base, was formerly Datong's main airport before Datong Yungang Airport opened in 2006, and is a PLAAF aviation-unit base."
+        },
+        {
+          "title": "Datong Yungang International Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%90%8C%E4%BA%91%E5%86%88%E5%9B%BD%E9%99%85%E6%9C%BA%E5%9C%BA",
+          "note": "The Datong Yungang article says Datong Airport opened in January 2006 and replaced the previously used Air Force Huairen Airport."
+        }
+      ],
+      "rationale": "The queue name Datong Qingshuihe is also identified in mapping sources as Huairen Air Base at the same coordinates. The Shanxi airport list provides the cleanest date interval for civil-military use, and the 2006 replacement date supports the later military-only phase."
+    },
+    {
+      "source_id": "geonames:11493890",
+      "name": "Gucheng",
+      "country_code": "CN",
+      "start_year": 2011,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "PLA Air Force Flight Test and Training Base",
+          "url": "https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%9B%BD%E4%BA%BA%E6%B0%91%E8%A7%A3%E6%94%BE%E5%86%9B%E7%A9%BA%E5%86%9B%E9%A3%9E%E8%A1%8C%E8%AF%95%E9%AA%8C%E8%AE%AD%E7%BB%83%E5%9F%BA%E5%9C%B0",
+          "note": "The base article lists an Air Force Gucheng station in Gucheng County, says it was already an alternate airport for Shijiazhuang/Beijing/Tianjin in the early 2010s, and notes that a September 16, 2011 Hebei civil-aviation planning meeting proposed converting it to a civil-military Hengshui Airport."
+        },
+        {
+          "title": "Hengshui airport planning report",
+          "url": "https://www.sohu.com/a/212103465_99978070",
+          "note": "The report says the Gucheng site was then a Beijing Military Region military airport and an Air Force pilot practical-training base, with J-10 and Su-30 trial/training tasks."
+        }
+      ],
+      "rationale": "The feature name and location match the Gucheng airfield/station. Use 2011 only as a documented-by operational date because the sources prove existing military-airfield facilities by the 2011 planning cycle but do not provide the original construction or commissioning date."
+    },
+    {
+      "source_id": "geonames:11493882",
+      "name": "Harbin Wanggang",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1939,
+          "end_year": 1945,
+          "label": "Manchukuo Third Flying Unit at Harbin Wanggang airfield"
+        },
+        {
+          "start_year": 1973,
+          "end_year": null,
+          "label": "documented PRC-era Wanggang airport aviation-training phase"
+        }
+      ],
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Manchukuo Army Flying Corps",
+          "url": "https://zh.wikipedia.org/wiki/%E9%A3%9B%E8%A1%8C%E9%9A%8A_%28%E6%BB%BF%E6%B4%B2%E5%9C%8B%E8%BB%8D%29",
+          "note": "The order-of-battle section says the Manchukuo Third Flying Unit was established in October 1939 and stationed at Harbin Wanggang airfield."
+        },
+        {
+          "title": "Shanghai Observer profile of Di Jianxiu",
+          "url": "https://www.shobserver.cn/wx/detail.do?id=1011987",
+          "note": "The article captions a 1973 photo at Harbin Wanggang Airport, documenting postwar aviation-school/training presence at the airfield."
+        },
+        {
+          "title": "The Paper: fallen PLAAF women pilots",
+          "url": "https://m.thepaper.cn/newsDetail_forward_5041303",
+          "note": "The article references a December 1974 graduation photo at Harbin Wanggang Airport for the fourth cohort of women pilots."
+        }
+      ],
+      "rationale": "The queue row is Harbin Wanggang at the airbase coordinates. The Manchukuo source provides a clear wartime start for an aviation unit at Wanggang, while the 1973-1974 references support PRC-era aviation-training use. Intervals avoid claiming uninterrupted continuity between regimes."
+    },
+    {
+      "source_id": "geonames:11493869",
+      "name": "Huian",
+      "country_code": "CN",
+      "start_year": 1957,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Huian Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E6%83%A0%E5%AE%89%E6%9C%BA%E5%9C%BA",
+          "note": "The article identifies Huian Airport as a military airport operated by the Eastern Theater Command Air Force, gives opened as before 1957, and says that under 1955 orders several Fujian front-line airfields including Huian were rushed/repaired within two years."
+        },
+        {
+          "title": "Voice of America Chinese: China upgrading three air bases opposite Taiwan",
+          "url": "https://www.voachinese.com/amp/china-is-upgrading-three-air-bases-located-opposite-taiwan-20211027/6285548.html",
+          "note": "VOA Chinese reports that the Longtian, Huian, and Zhangzhou air bases had been upgraded since early 2020, supporting continuing military use."
+        },
+        {
+          "title": "Huian County government: Air Force Huian Airport clearance-zone notice",
+          "url": "https://www.huian.gov.cn/zwgk/zfxxgkzl/zfxxgkml/cxjsgl/202407/t20240716_3060555.htm",
+          "note": "A 2024 Huian County government notice concerns obstacle remediation in the Air Force Huian Airport clearance zone, independently supporting current military-airfield status."
+        }
+      ],
+      "rationale": "The queue coordinates match Huian/Luocheng Air Base. Use 1957 as a conservative latest-open/start year because the source says it opened before 1957 and describes 1955-1957 rushed construction of Fujian front-line fields; later sources support ongoing military use."
+    }
+  ]
+}

@@ -1,0 +1,1110 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "description": "Research-only temporal override candidates for still-undated Canada and United States military/facility overlay records in military_bases.geojson. These records were not present in the shipped military_base_temporal_overrides.json at research time. Dates are conservative year-level candidates with source titles and URLs in source_notes.",
+  "match_key": "source_id",
+  "candidates": [
+    {
+      "source_id": "geonames:5914721",
+      "name": "Canadian Forces Base Esquimalt",
+      "country_code": "CA",
+      "start_year": 1855,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Maritime Forces Pacific Units - Canada.ca",
+          "url": "https://www.canada.ca/en/navy/corporate/our-organization/structure/marpac/marpac-units.html",
+          "note": "Canada.ca says CFB Esquimalt was first established as a military installation by the Royal Navy in 1855 and has served the Royal Canadian Navy since 1910."
+        }
+      ],
+      "rationale": "Use the documented 1855 military-installation origin for the Esquimalt naval base site; the source also confirms continuing Royal Canadian Navy use."
+    },
+    {
+      "source_id": "geonames:5914726",
+      "name": "Canadian Forces Base Kingston",
+      "country_code": "CA",
+      "start_year": 1966,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "CFB Kingston [textual record] Archives / Collections and Fonds - Library and Archives Canada",
+          "url": "https://recherche-collection-search.bac-lac.gc.ca/eng/home/record?app=FonAndCol&idnumber=133481&resource=folderlist",
+          "note": "Library and Archives Canada identifies Canadian Forces Base Kingston as established in April 1966."
+        },
+        {
+          "title": "Canadian Forces Base Kingston - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/4-canadian-division/canadian-forces-base-kingston.html",
+          "note": "Canada.ca confirms the current CFB Kingston installation and supported units."
+        }
+      ],
+      "rationale": "The candidate uses the exact LAC administrative establishment date for the CFB Kingston overlay record rather than earlier Kingston-area military history."
+    },
+    {
+      "source_id": "geonames:5894528",
+      "name": "Base des Forces canadiennes Kingston",
+      "country_code": "CA",
+      "start_year": 1966,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "CFB Kingston [textual record] Archives / Collections and Fonds - Library and Archives Canada",
+          "url": "https://recherche-collection-search.bac-lac.gc.ca/eng/home/record?app=FonAndCol&idnumber=133481&resource=folderlist",
+          "note": "Library and Archives Canada identifies Canadian Forces Base Kingston as established in April 1966."
+        },
+        {
+          "title": "Base des Forces canadiennes Kingston - Canada.ca",
+          "url": "https://www.canada.ca/fr/armee/organisation/4-division-du-canada/base-des-forces-canadiennes-kingston.html",
+          "note": "Canada.ca confirms the French-named current CFB Kingston installation."
+        }
+      ],
+      "rationale": "French duplicate/alias of CFB Kingston; use the same LAC-backed 1966 establishment year for this still-undated source_id."
+    },
+    {
+      "source_id": "geonames:5894531",
+      "name": "Base des Forces canadiennes North Bay",
+      "country_code": "CA",
+      "start_year": 1951,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "22 Wing North Bay - Royal Canadian Air Force - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/wings/22-wing.html",
+          "note": "Canada.ca says RCAF Station North Bay opened on September 1, 1951 and was renamed CFB North Bay in 1963."
+        }
+      ],
+      "rationale": "Use the documented 1951 opening of RCAF Station North Bay as the operational origin for the North Bay base site."
+    },
+    {
+      "source_id": "geonames:5914728",
+      "name": "Canadian Forces Base Moose Jaw",
+      "country_code": "CA",
+      "start_year": 1952,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "15 Air Traffic Control Squadron - Royal Canadian Air Force - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/squadrons/15-squadron.html",
+          "note": "Canada.ca says 15 ATC was established with the reactivation of RCAF Station Moose Jaw in 1952 after its post-Second World War closure."
+        },
+        {
+          "title": "15 Wing Moose Jaw/CFB Moose Jaw - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/who-we-are/organizational-structure/2-canadian-air-division/15-wing.html",
+          "note": "Canada.ca confirms current 15 Wing/CFB Moose Jaw operations."
+        }
+      ],
+      "rationale": "Use the official 1952 reactivation year as a conservative continuous-operation start for current CFB Moose Jaw."
+    },
+    {
+      "source_id": "geonames:5914730",
+      "name": "Canadian Forces Base Petawawa",
+      "country_code": "CA",
+      "start_year": 1905,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Governor General to attend the 100th Anniversary of Canadian Forces Base Petawawa - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2005/06/governor-general-attend-100th-anniversary-canadian-forces-base-petawawa.html",
+          "note": "Canada.ca says CFB Petawawa grew from a summer training ground to a permanent military camp since 1905."
+        }
+      ],
+      "rationale": "The source directly ties Petawawa military training use and later permanent camp status to 1905."
+    },
+    {
+      "source_id": "geonames:6101611",
+      "name": "Petawawa Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1905,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Governor General to attend the 100th Anniversary of Canadian Forces Base Petawawa - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2005/06/governor-general-attend-100th-anniversary-canadian-forces-base-petawawa.html",
+          "note": "Canada.ca says CFB Petawawa has operated from a summer training ground origin in 1905."
+        }
+      ],
+      "rationale": "This range/training-area source_id is tied to the Petawawa training-ground origin; 1905 is source-backed and facility-specific."
+    },
+    {
+      "source_id": "geonames:5919646",
+      "name": "Champ de tir et champ de manoeuvre Petawawa",
+      "country_code": "CA",
+      "start_year": 1905,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Governor General to attend the 100th Anniversary of Canadian Forces Base Petawawa - Canada.ca",
+          "url": "https://www.canada.ca/en/news/archive/2005/06/governor-general-attend-100th-anniversary-canadian-forces-base-petawawa.html",
+          "note": "Canada.ca says CFB Petawawa has operated from a summer training ground origin in 1905."
+        }
+      ],
+      "rationale": "French range/training-area alias for Petawawa; use the same official 1905 training-ground origin."
+    },
+    {
+      "source_id": "geonames:6146393",
+      "name": "CFB Shilo",
+      "country_code": "CA",
+      "start_year": 1910,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canadian Forces Base, Shilo - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-shilo.html",
+          "note": "Canada.ca says the Shilo region has been the site of military activity since 1910."
+        }
+      ],
+      "rationale": "Use Canada.ca's explicit 1910 military-activity origin for the CFB Shilo site."
+    },
+    {
+      "source_id": "geonames:6146396",
+      "name": "Shilo Range and Training Area",
+      "country_code": "CA",
+      "start_year": 1910,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canadian Forces Base, Shilo - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-shilo.html",
+          "note": "Canada.ca says the Shilo region has been the site of military activity since 1910."
+        }
+      ],
+      "rationale": "The range/training-area record is part of the Shilo military site; 1910 is the official site-origin year."
+    },
+    {
+      "source_id": "geonames:5919647",
+      "name": "Champ de tir et champ de manoeuvre Shilo",
+      "country_code": "CA",
+      "start_year": 1910,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canadian Forces Base, Shilo - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-shilo.html",
+          "note": "Canada.ca says the Shilo region has been the site of military activity since 1910."
+        }
+      ],
+      "rationale": "French range/training-area alias for Shilo; use the same Canada.ca-backed 1910 site-origin year."
+    },
+    {
+      "source_id": "geonames:6296277",
+      "name": "CFB Suffield",
+      "country_code": "CA",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1971,
+          "label": "Suffield Experimental Station / defence research and proving-ground phase"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "CFB Suffield / British Army Training Unit Suffield range and training area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "DRDC's experimental proving ground supports CAF, allied readiness - Canada.ca",
+          "url": "https://www.canada.ca/en/defence-research-development/news/articles/drdc-experimental-proving-ground-supports-allied-readiness.html",
+          "note": "Canada.ca says Canada and Britain procured land in 1941 for the Suffield Experimental Station and established CFB Suffield/BATUS use in 1971."
+        },
+        {
+          "title": "Defence research through the decades - Canada.ca",
+          "url": "https://www.canada.ca/en/department-national-defence/campaigns/defence-research-through-the-decades.html",
+          "note": "Canada.ca timeline says Experimental Station Suffield opened in 1941."
+        }
+      ],
+      "rationale": "Use 1941 as the military research/proving-ground origin, with an explicit 1971 interval for the CFB Suffield/BATUS range phase."
+    },
+    {
+      "source_id": "geonames:5914732",
+      "name": "Canadian Forces Base Suffield",
+      "country_code": "CA",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1971,
+          "label": "Suffield Experimental Station / defence research and proving-ground phase"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "CFB Suffield / British Army Training Unit Suffield range and training area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "DRDC's experimental proving ground supports CAF, allied readiness - Canada.ca",
+          "url": "https://www.canada.ca/en/defence-research-development/news/articles/drdc-experimental-proving-ground-supports-allied-readiness.html",
+          "note": "Canada.ca says Canada and Britain procured land in 1941 for the Suffield Experimental Station and established CFB Suffield/BATUS use in 1971."
+        },
+        {
+          "title": "Canadian Forces Base, Suffield - Canada.ca",
+          "url": "https://www.canada.ca/en/army/corporate/3-canadian-division/canadian-forces-base-suffield.html",
+          "note": "Canada.ca confirms current CFB Suffield range and training-area mission."
+        }
+      ],
+      "rationale": "English CFB Suffield alias; 1941 captures the source-backed military proving-ground origin and 1971 captures the formal CFB/BATUS phase."
+    },
+    {
+      "source_id": "geonames:5894534",
+      "name": "Base des Forces canadiennes Suffield",
+      "country_code": "CA",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1971,
+          "label": "Suffield Experimental Station / defence research and proving-ground phase"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "CFB Suffield / British Army Training Unit Suffield range and training area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "DRDC's experimental proving ground supports CAF, allied readiness - Canada.ca",
+          "url": "https://www.canada.ca/en/defence-research-development/news/articles/drdc-experimental-proving-ground-supports-allied-readiness.html",
+          "note": "Canada.ca says Canada and Britain procured land in 1941 for the Suffield Experimental Station and established CFB Suffield/BATUS use in 1971."
+        }
+      ],
+      "rationale": "French CFB Suffield alias; use the same official 1941 and 1971 interval evidence."
+    },
+    {
+      "source_id": "geonames:6158871",
+      "name": "Suffield Training Area",
+      "country_code": "CA",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1971,
+          "label": "Suffield Experimental Station / defence research and proving-ground phase"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "CFB Suffield / BATUS military training area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "DRDC's experimental proving ground supports CAF, allied readiness - Canada.ca",
+          "url": "https://www.canada.ca/en/defence-research-development/news/articles/drdc-experimental-proving-ground-supports-allied-readiness.html",
+          "note": "Canada.ca says the 1971 Canada-UK agreement established CFB Suffield and designated much of the Suffield Block as the Military Training Area for BATUS."
+        }
+      ],
+      "rationale": "The training-area record is directly supported by Canada.ca's 1971 military training-area designation, with 1941 retained as the land's defence proving-ground origin."
+    },
+    {
+      "source_id": "geonames:5919621",
+      "name": "Champ de manoeuvre Suffield",
+      "country_code": "CA",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1971,
+          "label": "Suffield Experimental Station / defence research and proving-ground phase"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "CFB Suffield / BATUS military training area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "DRDC's experimental proving ground supports CAF, allied readiness - Canada.ca",
+          "url": "https://www.canada.ca/en/defence-research-development/news/articles/drdc-experimental-proving-ground-supports-allied-readiness.html",
+          "note": "Canada.ca says the 1971 Canada-UK agreement established CFB Suffield and designated much of the Suffield Block as the Military Training Area for BATUS."
+        }
+      ],
+      "rationale": "French training-area alias for Suffield; use the same 1941 proving-ground and 1971 training-area evidence."
+    },
+    {
+      "source_id": "geonames:5914734",
+      "name": "Canadian Forces Base Winnipeg",
+      "country_code": "CA",
+      "start_year": 1925,
+      "operational_intervals": [
+        {
+          "start_year": 1922,
+          "end_year": 1925,
+          "label": "Air Board winter-base predecessor"
+        },
+        {
+          "start_year": 1925,
+          "end_year": 1968,
+          "label": "RCAF Station Winnipeg"
+        },
+        {
+          "start_year": 1968,
+          "end_year": null,
+          "label": "CFB Winnipeg / 17 Wing phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "17 Wing History - Royal Canadian Air Force - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/wings/17-wing/history.html",
+          "note": "Canada.ca says an Air Board station opened in Winnipeg in 1922, RCAF Station Winnipeg opened in April 1925, and CFB Winnipeg was formed in November 1968."
+        }
+      ],
+      "rationale": "Use 1925 as the top-level military air-base opening year, while preserving the 1922 predecessor and 1968 CFB transition in intervals."
+    },
+    {
+      "source_id": "geonames:5894536",
+      "name": "Base des Forces canadiennes Winnipeg",
+      "country_code": "CA",
+      "start_year": 1925,
+      "operational_intervals": [
+        {
+          "start_year": 1922,
+          "end_year": 1925,
+          "label": "Air Board winter-base predecessor"
+        },
+        {
+          "start_year": 1925,
+          "end_year": 1968,
+          "label": "RCAF Station Winnipeg"
+        },
+        {
+          "start_year": 1968,
+          "end_year": null,
+          "label": "CFB Winnipeg / 17 Wing phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "17 Wing History - Royal Canadian Air Force - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/wings/17-wing/history.html",
+          "note": "Canada.ca says an Air Board station opened in Winnipeg in 1922, RCAF Station Winnipeg opened in April 1925, and CFB Winnipeg was formed in November 1968."
+        }
+      ],
+      "rationale": "French CFB Winnipeg alias; use the same source-backed 1925 military air-base opening and interval history."
+    },
+    {
+      "source_id": "geonames:5914736",
+      "name": "Canadian Forces Station Alert",
+      "country_code": "CA",
+      "start_year": 1950,
+      "operational_intervals": [
+        {
+          "start_year": 1950,
+          "end_year": 1958,
+          "label": "Joint Arctic Weather Station site"
+        },
+        {
+          "start_year": 1958,
+          "end_year": null,
+          "label": "Alert Wireless Station / Canadian Forces Station Alert military signals role"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canadian Forces Station Alert - Royal Canadian Air Force - Canada.ca",
+          "url": "https://www.canada.ca/en/air-force/corporate/alert.html",
+          "note": "Canada.ca says Alert was established as a JAWS site in 1950, became Alert Wireless Station on September 1, 1958, and later became CFS Alert."
+        },
+        {
+          "title": "Canadian Forces Station Alert - Canada.ca news archive",
+          "url": "https://www.canada.ca/en/news/archive/2015/01/canadian-forces-station-alert.html",
+          "note": "Canada.ca confirms Alert's operational signals-intelligence role began on September 1, 1958."
+        }
+      ],
+      "rationale": "The intervals distinguish the 1950 weather/sovereignty site from the 1958 military signals station role."
+    },
+    {
+      "source_id": "geonames:6355122",
+      "name": "Air Force Flight Test Center",
+      "country_code": "US",
+      "start_year": 1951,
+      "end_year": 2012,
+      "operational_intervals": [
+        {
+          "start_year": 1951,
+          "end_year": 2012,
+          "label": "Air Force Flight Test Center at Edwards AFB"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Air Force Flight Test Center (AFMC) - Air Force Historical Research Agency",
+          "url": "https://www.dafhistory.af.mil/About-Us/Fact-Sheets/Display/Article/432800/air-force-flight-test-center-afmc/",
+          "note": "AFHRA says the Air Force Flight Test Center was established and organized on June 25, 1951, at Edwards AFB."
+        },
+        {
+          "title": "AFFTC to be re-designated as Air Force Test Center - U.S. Air Force",
+          "url": "https://www.af.mil/News/Article-Display/Article/110867/afftc-to-be-re-designated-as-air-force-test-center/",
+          "note": "U.S. Air Force news says AFFTC was to be redesignated as Air Force Test Center during a July 13, 2012 ceremony."
+        }
+      ],
+      "rationale": "This record is an organizational facility overlay; 1951-2012 bounds the AFFTC name and mission before redesignation."
+    },
+    {
+      "source_id": "geonames:6301615",
+      "name": "Charleston Air Force Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1948,
+          "label": "Charleston Army Air Base / wartime phase"
+        },
+        {
+          "start_year": 1952,
+          "end_year": 2010,
+          "label": "Second Charleston Air Force Base phase"
+        },
+        {
+          "start_year": 2010,
+          "end_year": null,
+          "label": "Joint Base Charleston air base element"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The founding of Charleston Air Force Base - Joint Base Charleston",
+          "url": "https://www.jbcharleston.jb.mil/News/Commentaries/Display/Article/1156851/the-founding-of-charleston-air-force-base/",
+          "note": "Official Joint Base Charleston history says the War Department formally activated the Charleston Municipal Airport military installation on March 23, 1942."
+        },
+        {
+          "title": "The Second Charleston Air Force Base - Joint Base Charleston",
+          "url": "https://www.jbcharleston.jb.mil/News/Commentaries/Display/Article/1358817/the-second-charleston-air-force-base/",
+          "note": "Official history says the wartime base was surplus in 1946, returned to the city in 1948, and a 1952 joint-use agreement began the second Air Force base phase."
+        },
+        {
+          "title": "Joint Base Charleston | Base Overview & Info - MilitaryINSTALLATIONS",
+          "url": "https://installations.militaryonesource.mil/in-depth-overview/joint-base-charleston",
+          "note": "MilitaryINSTALLATIONS describes the 2010 joint-base consolidation of Charleston Air Force Base and Naval Weapons Station Charleston."
+        }
+      ],
+      "rationale": "Intervals avoid implying continuous 1948-1952 Air Force control while preserving the active successor air-base element after joint basing."
+    },
+    {
+      "source_id": "geonames:7267542",
+      "name": "March Air Reserve Base",
+      "country_code": "US",
+      "start_year": 1918,
+      "operational_intervals": [
+        {
+          "start_year": 1918,
+          "end_year": 1923,
+          "label": "March Field initial Army flying field phase"
+        },
+        {
+          "start_year": 1927,
+          "end_year": null,
+          "label": "Reopened March Field / March AFB / March Air Reserve Base phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The March Field Story - March Air Reserve Base",
+          "url": "https://www.march.afrc.af.mil/About-Us/Fact-Sheets/Display/Article/167413/the-march-field-story/",
+          "note": "Official March history says Alessandro Flying Training Field became March Field in March 1918, closed in April 1923, and was reopened/rehabilitated in 1927."
+        },
+        {
+          "title": "March Field: 99 years and counting - March Air Reserve Base",
+          "url": "https://www.march.afrc.af.mil/News/Article-Display/Article/1164990/march-field-99-years-and-counting/",
+          "note": "Official article says the War Department issued the order establishing March Field on March 23, 1918."
+        }
+      ],
+      "rationale": "Use official March Field origin with an interval gap for the 1923 closure before the 1927 reopening."
+    },
+    {
+      "source_id": "geonames:4554366",
+      "name": "Vance Air Force Base",
+      "country_code": "US",
+      "start_year": 1941,
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1947,
+          "label": "Enid Army Air Field / wartime flying school phase"
+        },
+        {
+          "start_year": 1948,
+          "end_year": null,
+          "label": "Enid Air Force Base / Vance Air Force Base pilot training phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Training the world's finest aviators since 1941 - Vance Air Force Base",
+          "url": "https://www.vance.af.mil/News/Article/1091363/training-the-worlds-finest-aviators-since-1941/",
+          "note": "Official Vance history says the base project began in 1941, opened as Enid Army Air Field, and was redesignated Vance AFB in 1949."
+        },
+        {
+          "title": "Vance AFB celebrates 80 years of training the world's best Airmen - Vance Air Force Base",
+          "url": "https://www.vance.af.mil/News/Article-Display/Article/2861993/vance-afb-celebrates-80-years-of-training-the-worlds-best-airmen-honors-aetc-he/",
+          "note": "Official Vance article says Vance history dates to 1941 and the base became Enid Army Flying School in 1942."
+        },
+        {
+          "title": "Vance Air Force Base - Encyclopedia of Oklahoma History and Culture",
+          "url": "https://www.okhistory.org/publications/enc/entry?entry=VA005",
+          "note": "Oklahoma Historical Society notes the base was reactivated as Enid Air Force Base on August 1, 1948."
+        }
+      ],
+      "rationale": "Intervals account for the postwar inactive gap while preserving the 1941 wartime origin and 1948 active Air Force reopening."
+    },
+    {
+      "source_id": "geonames:8081501",
+      "name": "Naval Air Station Fallon",
+      "country_code": "US",
+      "start_year": 1944,
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": 1945,
+          "label": "Naval Auxiliary Air Station Fallon wartime commissioned phase"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Auxiliary landing field / reestablished NAAS / NAS Fallon phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History - Naval Air Station Fallon - CNIC",
+          "url": "https://cnrsw.cnic.navy.mil/Installations/NAS-Fallon/About/History/",
+          "note": "Official Navy history says the Navy assumed control in 1943, NAAS Fallon was commissioned on June 10, 1944, became an auxiliary landing field in 1951, was reestablished in 1953, and became NAS Fallon in 1972."
+        }
+      ],
+      "rationale": "Use the 1944 Navy commissioning as the top-level start and intervals to show the postwar caretaker/auxiliary transition."
+    },
+    {
+      "source_id": "geonames:6301663",
+      "name": "Naval Air Station Joint Reserve Base Fort Worth",
+      "country_code": "US",
+      "start_year": 1942,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1994,
+          "label": "Tarrant Field / Fort Worth Army Air Field / Carswell Air Force Base phase"
+        },
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "Naval Air Station Joint Reserve Base Fort Worth phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History - NAS JRB Fort Worth - CNIC",
+          "url": "https://cnrse.cnic.navy.mil/Installations/NAS-JRB-Fort-Worth/About/History/",
+          "note": "Official Navy history says NAS JRB Fort Worth was first known as Tarrant Field and was mostly known as Carswell Air Force Base from 1948 to 1993."
+        },
+        {
+          "title": "Base History - 301st Fighter Wing",
+          "url": "https://www.301fw.afrc.af.mil/About-Us/Fact-Sheets/Display/Article/167016/base-history/",
+          "note": "Official Air Force Reserve history says NAS JRB Fort Worth was officially established on October 1, 1994, as the first joint-service reserve base."
+        }
+      ],
+      "rationale": "The interval model preserves the WWII/Carswell predecessor and the 1994 Navy joint reserve base transition for the same airfield."
+    },
+    {
+      "source_id": "geonames:8113374",
+      "name": "Naval Air Station Meridian / Mc Cain Field",
+      "country_code": "US",
+      "start_year": 1961,
+      "operational_intervals": [
+        {
+          "start_year": 1961,
+          "end_year": 1968,
+          "label": "Naval Auxiliary Air Station Meridian / McCain Field"
+        },
+        {
+          "start_year": 1968,
+          "end_year": null,
+          "label": "Full Naval Air Station Meridian phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "About - NAS Meridian - CNIC",
+          "url": "https://cnrse.cnic.navy.mil/Installations/NAS-Meridian/About/",
+          "note": "Official Navy page says construction began July 16, 1957, NAAS Meridian was commissioned July 14, 1961, and the station became a full NAS by July 1968."
+        }
+      ],
+      "rationale": "Use the 1961 commissioning as the operational start, with a 1968 transition interval for full NAS status."
+    },
+    {
+      "source_id": "geonames:11838959",
+      "name": "Naval Construction Battalion Center Port Hueneme",
+      "country_code": "US",
+      "start_year": 1942,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "NBVC History - Naval Base Ventura County - CNIC",
+          "url": "https://cnrsw.cnic.navy.mil/Installations/NAVBASE-Ventura-County/About/History/",
+          "note": "Official Navy history says Port Hueneme began operations as Advance Base Depot on May 18, 1942, and was named Naval Construction Battalion Center Port Hueneme in 1945."
+        }
+      ],
+      "rationale": "Use the source-backed 1942 operational start for the Port Hueneme Seabee depot/NCBC facility."
+    },
+    {
+      "source_id": "geonames:6269561",
+      "name": "Military Ocean Terminal Sunny Point",
+      "country_code": "US",
+      "start_year": 1955,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Dedication of wharf at Military Ocean Terminal Sunny Point marks completion of $58 million Corps of Engineers project - USACE Wilmington District",
+          "url": "https://www.saw.usace.army.mil/Media/News-Releases/Article/1648691/dedication-of-wharf-at-military-ocean-terminal-sunny-point-marks-completion-of/",
+          "note": "USACE says the Wilmington District completed the major Sunny Point project between 1952 and 1955."
+        },
+        {
+          "title": "Military Ocean Terminals play strategic role in defense - U.S. Army",
+          "url": "https://www.army.mil/article-amp/113348/military_ocean_terminals_play_strategic_role_in_defense",
+          "note": "U.S. Army article identifies MOTSU as the primary CONUS ammunition terminal and describes it as constructed in 1955."
+        }
+      ],
+      "rationale": "Use 1955 as the operational completion/start year; earlier 1952 construction is noted but not used as the operational start."
+    },
+    {
+      "source_id": "geonames:9036025",
+      "name": "Berry Field Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1946,
+          "label": "Berry Field wartime military base / 4th Ferrying Command phase"
+        },
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "Berry Field Air National Guard complex phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "The Old Hickory Squadron - 118th Wing",
+          "url": "https://www.118wg.ang.af.mil/About-Us/Fact-Sheets/Display/Article/439188/the-old-hickory-squadron/",
+          "note": "Official 118th Wing history says Berry Field became a military base for the 4th Ferrying Command during World War II, returned to Nashville in 1946, and the unit moved to present facilities in 1952."
+        }
+      ],
+      "rationale": "Intervals distinguish wartime military-base use from the later Air National Guard complex at Berry Field."
+    },
+    {
+      "source_id": "geonames:9036536",
+      "name": "Burlington Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1946,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Vermont Air National Guard History - Vermont Air National Guard",
+          "url": "https://www.158fw.ang.af.mil/FACTSHEETS/Article/453591/vermont-air-national-guard-history/",
+          "note": "Official Vermont ANG history says the unit organized on July 1, 1946, received federal recognition August 14, 1946, and used the local airport in South Burlington."
+        },
+        {
+          "title": "158th Fighter Wing's History at a Glance - Vermont Air National Guard",
+          "url": "https://www.158fw.ang.af.mil/FACTSHEETS/Article/869790/158th-fighter-wings-history-at-a-glance/",
+          "note": "Official 158th Fighter Wing history confirms early Burlington/South Burlington operations and current base role."
+        }
+      ],
+      "rationale": "Use 1946 as the Burlington-area Vermont ANG operational origin, supported by official unit history."
+    },
+    {
+      "source_id": "geonames:9036528",
+      "name": "Great Falls Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1942,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1945,
+          "label": "Gore Field wartime military airbase / ALSIB phase"
+        },
+        {
+          "start_year": 1947,
+          "end_year": null,
+          "label": "Montana Air National Guard at Gore Field / Great Falls phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History of the 120th Fighter Wing - 120th Airlift Wing",
+          "url": "https://www.120thairliftwing.ang.af.mil/About-Us/Fact-Sheets/Display/Article/439755/history-of-the-120th-fighter-wing/",
+          "note": "Official 120th history says the 7th Ferrying Group established headquarters at Great Falls in 1942, Gore Field closed in 1945, and the 186th Fighter Squadron was federally recognized in 1947."
+        }
+      ],
+      "rationale": "Intervals separate the wartime Gore Field airbase from the postwar Montana ANG base use."
+    },
+    {
+      "source_id": "geonames:9036027",
+      "name": "Key Field Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1939,
+      "operational_intervals": [
+        {
+          "start_year": 1939,
+          "end_year": 1945,
+          "label": "153rd Observation Squadron / wartime Key Field phase"
+        },
+        {
+          "start_year": 1946,
+          "end_year": null,
+          "label": "Mississippi Air National Guard at Key Field phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History of the Mississippi Air National Guard - 172nd Airlift Wing",
+          "url": "https://www.172aw.ang.af.mil/About-Us/Fact-Sheets/Display/Article/449323/history-of-the-mississippi-air-national-guard/",
+          "note": "Official Mississippi ANG history says the 153rd Observation Squadron originated at Key Field on September 27, 1939, was deactivated in 1945, and reinstated in 1946."
+        }
+      ],
+      "rationale": "Use intervals from official ANG lineage to avoid implying uninterrupted wartime-to-postwar operation."
+    },
+    {
+      "source_id": "geonames:8347314",
+      "name": "McGhee Tyson Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1958,
+          "label": "McGhee Tyson Air Force Base phase"
+        },
+        {
+          "start_year": 1957,
+          "end_year": null,
+          "label": "McGhee Tyson Air National Guard Base / 134th Fighter Interceptor Group phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History - 134th Air Refueling Wing",
+          "url": "https://www.134arw.ang.af.mil/About-Us/History/",
+          "note": "Official 134th history says McGhee Tyson AFB opened on August 9, 1952, the 134th received federal recognition on December 15, 1957, and active Air Force operations ceased January 8, 1958."
+        },
+        {
+          "title": "Volunteer Airmen: The Cold War Fighter Era - 134th Air Refueling Wing",
+          "url": "https://www.134arw.ang.af.mil/News/Article-Display/Article/1246919/the-cold-war-fighter-era/",
+          "note": "Official article says McGhee Tyson was converted to an Air National Guard unit on December 15, 1957."
+        }
+      ],
+      "rationale": "Intervals preserve the active-duty USAF base phase and the overlapping ANG conversion year."
+    },
+    {
+      "source_id": "geonames:9036532",
+      "name": "Memphis Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1946,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "164th Airlift Wing - About Us - History",
+          "url": "https://www.164aw.ang.af.mil/About-Us/History/",
+          "note": "Official 164th Airlift Wing history says the Tennessee ANG air unit in Memphis began in 1946 and received federal recognition on December 23, 1946."
+        }
+      ],
+      "rationale": "Use the official 1946 Memphis ANG origin for this ANG base overlay record."
+    },
+    {
+      "source_id": "geonames:9036529",
+      "name": "Peoria Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1947,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History of the 182nd Airlift Wing - 182nd Airlift Wing",
+          "url": "https://www.182aw.ang.af.mil/About-Us/Fact-Sheets/Display/Article/453244/the182aw/history-of-the-182nd-airlift-wing",
+          "note": "Official 182nd Airlift Wing history says the 169th Fighter Squadron held its first drill in December 1946 and received federal recognition on June 21, 1947 at the original base."
+        }
+      ],
+      "rationale": "Use federal recognition in 1947 as the conservative operational start for the Peoria ANG base record."
+    },
+    {
+      "source_id": "geonames:9036527",
+      "name": "Charlotte Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1948,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "70 Years, and Still Flying Strong - NC Air National Guard",
+          "url": "https://www.145aw.ang.af.mil/News/Article/1465106/70-years-and-still-flying-strong/",
+          "note": "Official 145th Airlift Wing article says the 145th stood up on March 15, 1948, in Charlotte."
+        }
+      ],
+      "rationale": "Use the official 1948 stand-up of the Charlotte-based North Carolina ANG wing."
+    },
+    {
+      "source_id": "geonames:6298676",
+      "name": "McEntire Air National Guard Weather Facility Base",
+      "country_code": "US",
+      "start_year": 1946,
+      "operational_intervals": [
+        {
+          "start_year": 1946,
+          "end_year": null,
+          "label": "South Carolina Air National Guard / McEntire Joint National Guard Base phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "History of the South Carolina Air National Guard - 169th Fighter Wing",
+          "url": "https://www.169fw.ang.af.mil/About-Us/Fact-Sheets/Article/454063/history-of-the-south-carolina-air-national-guard/",
+          "note": "Official 169th history says the South Carolina ANG was established in 1946 and works/drills at McEntire Joint National Guard Base."
+        },
+        {
+          "title": "The Top 10 Moments in SCANG History - 169th Fighter Wing",
+          "url": "https://www.169fw.ang.af.mil/News/Features/Display/Article/2862467/the-top-10-moments-in-scang-history/",
+          "note": "Official 169th article describes the first South Carolina ANG drill at Congaree Air Base on December 9, 1946."
+        }
+      ],
+      "rationale": "The overlay name is awkward, but the source_id/name points to McEntire/SCANG; use official 1946 SCANG base origin evidence."
+    },
+    {
+      "source_id": "geonames:8531871",
+      "name": "Channel Islands Air National Guard Station",
+      "country_code": "US",
+      "start_year": 1990,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "146th Airlift Wing Fact Sheet - 146th Airlift Wing",
+          "url": "https://www.146aw.ang.af.mil/About-Us/Freedom-of-Information/Fact-Sheets/Display/Article/867450/146th-airlift-wing-fact-sheet/",
+          "note": "Official 146th fact sheet says the Van Nuys ANG Base flag was lowered on April 30, 1990 and all units were in place at Channel Islands ANGS."
+        },
+        {
+          "title": "146th Dining Facility Shows Off New Amenities - 146th Airlift Wing",
+          "url": "https://www.146aw.ang.af.mil/Newsroom/Article-Display/Article/867457/146th-dining-facility-shows-off-new-amenities/",
+          "note": "Official 146th article says the wing first opened its gates at the new Channel Islands facility in 1989."
+        }
+      ],
+      "rationale": "Use 1990 as the conservative fully-operational station start, with 1989 noted as initial facility opening."
+    },
+    {
+      "source_id": "geonames:6298988",
+      "name": "Griffiss International Airport",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": 1995,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1995,
+          "label": "Rome Air Depot / Griffiss Air Force Base military phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Former Griffiss Air Force Base (BRAC 1993) - AFCEC",
+          "url": "https://www.afcec.af.mil/Home/BRAC/Griffiss",
+          "note": "AFCEC says initial construction began before U.S. entry into World War II, the site carried out national-defense missions since 1942, and Griffiss closed in September 1995."
+        },
+        {
+          "title": "Former Griffiss Air Force Base (BRAC 1993) - SAF/IE",
+          "url": "https://www.safie.hq.af.mil/About-Us/Fact-Sheets/Display/Article/401901/former-griffiss-air-force-base-brac-1993/",
+          "note": "SAF/IE confirms the former Griffiss AFB BRAC closure in September 1995."
+        }
+      ],
+      "rationale": "Although the current name is civilian airport, the overlay type is air base; bound the military phase from 1942 through the 1995 BRAC closure."
+    },
+    {
+      "source_id": "geonames:9036039",
+      "name": "Pease Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1956,
+      "operational_intervals": [
+        {
+          "start_year": 1956,
+          "end_year": 1991,
+          "label": "Pease Air Force Base phase"
+        },
+        {
+          "start_year": 1991,
+          "end_year": null,
+          "label": "Pease Air National Guard Base retained military enclave"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Former Pease Air Force Base (BRAC 1988) - SAF/IE",
+          "url": "https://www.safie.hq.af.mil/About-Us/Fact-Sheets/Display/Article/401890/former-pease-air-force-base-brac-1988/",
+          "note": "SAF/IE says former Pease Air Force Base closed in March 1991."
+        },
+        {
+          "title": "Pease International Tradeport Takes Off - SAF/IE",
+          "url": "https://www.safie.hq.af.mil/News/Article-Display/Article/402039/pease-international-tradeport-takes-off/",
+          "note": "SAF/IE says Pease served as an Air Force base from 1956 to 1991."
+        },
+        {
+          "title": "Superfund Sites in Reuse in New Hampshire - U.S. EPA",
+          "url": "https://www.epa.gov/superfund-redevelopment/superfund-sites-reuse-new-hampshire",
+          "note": "EPA says the Air Force kept acreage at the former Pease site for the New Hampshire Air National Guard."
+        }
+      ],
+      "rationale": "Intervals distinguish the closed active-duty Air Force base from the continuing ANG base enclave."
+    },
+    {
+      "source_id": "geonames:6298974",
+      "name": "Reese Air Force Base / Lubbock",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": 1997,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1997,
+          "label": "Lubbock Army Airfield / Reese Air Force Base military phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Reese Air Force Base - Texas State Historical Association",
+          "url": "https://www.tshaonline.org/handbook/entries/reese-air-force-base",
+          "note": "TSHA says the War Department announced the Lubbock flying installation in 1941 and it became Reese Air Force Base in 1949."
+        },
+        {
+          "title": "Federal Facilities/Base Closure in Texas - U.S. EPA",
+          "url": "https://www.epa.gov/tx/federal-facilitiesbase-closure-texas",
+          "note": "EPA says Reese AFB closed in 1997 as a result of the 1995 BRAC round."
+        }
+      ],
+      "rationale": "Use 1942 for operational wartime flying-school use and 1997 for the source-backed BRAC closure."
+    },
+    {
+      "source_id": "geonames:13192295",
+      "name": "Reese Airpark",
+      "country_code": "US",
+      "start_year": 1942,
+      "end_year": 1997,
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": 1997,
+          "label": "Former Reese Air Force Base military airfield phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Reese Air Force Base - Texas State Historical Association",
+          "url": "https://www.tshaonline.org/handbook/entries/reese-air-force-base",
+          "note": "TSHA documents the former military base history of the Reese site."
+        },
+        {
+          "title": "Federal Facilities/Base Closure in Texas - U.S. EPA",
+          "url": "https://www.epa.gov/tx/federal-facilitiesbase-closure-texas",
+          "note": "EPA says Reese AFB closed in 1997 as a result of the 1995 BRAC round."
+        }
+      ],
+      "rationale": "Reese Airpark is the post-base airfield at the former Reese AFB site; bound only the military-base phase for temporal overlay use."
+    },
+    {
+      "source_id": "geonames:8112898",
+      "name": "Davison Army Airfield",
+      "country_code": "US",
+      "start_year": 1949,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Fort Belvoir's New Tower - U.S. Army",
+          "url": "https://www.army.mil/article-amp/98928/fort_belvoirs_new_tower",
+          "note": "U.S. Army article says Davison Army Airfield was established in 1949 in support of Army Corps of Engineers headquarters."
+        }
+      ],
+      "rationale": "Use the official 1949 establishment year for Davison Army Airfield."
+    },
+    {
+      "source_id": "geonames:6298323",
+      "name": "Wheeler-Sack Army Airfield",
+      "country_code": "US",
+      "start_year": 1925,
+      "operational_intervals": [
+        {
+          "start_year": 1925,
+          "end_year": 1940,
+          "label": "Pine Camp airfield / early flight-operations phase"
+        },
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Reconstructed Wheeler-Sack Field / Army Airfield phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Wheeler-Sack Army Airfield - Fort Drum",
+          "url": "https://home.army.mil/drum/about/news/around-and-about-fort-drum-1/wheeler-sack-army-airfield",
+          "note": "Official Fort Drum history says the first plane touched down at Pine Camp in 1925, Wheeler-Sack Field was dedicated in 1928, and major reconstruction/runways followed in the 1940s."
+        }
+      ],
+      "rationale": "Use 1925 as the earliest documented airfield operation, noting the 1928 Wheeler-Sack naming and later 1940s reconstruction."
+    },
+    {
+      "source_id": "geonames:7266854",
+      "name": "Northeast Cape Air Force Station (historical)",
+      "country_code": "US",
+      "start_year": 1952,
+      "end_year": 1972,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1969,
+          "label": "Aircraft Control and Warning Station radar operations"
+        },
+        {
+          "start_year": 1969,
+          "end_year": 1972,
+          "label": "White Alice Communications System residual operations"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Northeast Cape and Gambell Formerly Used Defense Sites - Alaska Department of Environmental Conservation",
+          "url": "https://cms.dec.alaska.gov/spar/csp/sites/st-lawrence/",
+          "note": "Alaska DEC says Northeast Cape was constructed during 1950-1951, AC&WS operations terminated in 1969, WACS operations terminated in 1972, and personnel were removed afterward."
+        },
+        {
+          "title": "Formerly Used Defense Sites Program Northeast Cape report",
+          "url": "https://www.apeoplesepa.org/media/pages/modules/acat-foia-repository-226/4dde9a5672-1774872083/f10ak096903_05.09_0500_a.pdf",
+          "note": "FUDS report states the Northeast Cape AC&WS facility was activated in 1952 and operations ended in 1969/1972 by role."
+        }
+      ],
+      "rationale": "Use the official/agency-supported 1952 activation and split end years for radar versus WACS operations."
+    }
+  ]
+}

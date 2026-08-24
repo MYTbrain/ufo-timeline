@@ -1,0 +1,349 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_china_round10_20260605",
+  "description": "Tenth-round conservative temporal backfill candidates for the remaining China S.AIRB rows with recommended_action=research_temporal_dates. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates and country_code=CN were considered.",
+    "All 19 remaining China S.AIRB rows in scope were reviewed.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Where no public establishment date was found, start_year is a conservative documented-by operational or upgrade year, not an inferred construction year.",
+    "Rows with only current directory/location evidence and no dated operational marker were placed in skipped."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:11493859",
+      "name": "Jinghai",
+      "country_code": "CN",
+      "start_year": 2012,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Mapcarta: Jinghai",
+          "url": "https://mapcarta.com/35333396",
+          "note": "Mapcarta mirrors GeoNames feature 11493859 and lists Jinghai as an airbase also known as Tangguantun Air Base at the queue coordinates."
+        },
+        {
+          "title": "Scramble: China Air Force ORBAT, Tangguantun",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Tangguantun at the Jinghai coordinates and says the 4th Flying Academy / 4th Regiment was subordinated to Shijiazhuang Flying Academy as 4th Air Brigade in April 2012."
+        }
+      ],
+      "rationale": "The GeoNames/Mapcarta row ties Jinghai to Tangguantun Air Base. Use April 2012 as a conservative documented operational marker for the Shijiazhuang Flying Academy training-brigade phase, not as an original opening date."
+    },
+    {
+      "source_id": "geonames:11493705",
+      "name": "Xian Huxian",
+      "country_code": "CN",
+      "start_year": 2010,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Huxian",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Huxian at the queue coordinates and says the 2nd Flying Academy / 2nd Regiment with Z-9s replaced the Navigator Training School at this base in 2010; it also notes the April 2012 Xi'an Flying Academy merger."
+        },
+        {
+          "title": "People's Liberation Army Air Force / XAIRFORCES",
+          "url": "https://xairforces.net/airforces.asp?id=98",
+          "note": "XAIRFORCES lists Huxian under Xi'an Flying Academy with the 1st Training Brigade and Y-7/Z-9 aircraft, supporting the base identity."
+        }
+      ],
+      "rationale": "Use 2010 as the earliest dated operational marker found for the Huxian training-base row. The evidence is a unit replacement at the base, not a construction or commissioning date."
+    },
+    {
+      "source_id": "geonames:11493704",
+      "name": "Xian Yanliang",
+      "country_code": "CN",
+      "start_year": 1958,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "AviationMilitaires: Armee de l'air chinoise, Xian-Yanliang",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "The airbase list gives Xian-Yanliang at coordinates matching the queue row and lists a 1958 date de mise en service."
+        },
+        {
+          "title": "Scramble: China Air Force ORBAT, Xi'an/Yanliang",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Xi'an/Yanliang with CFTE and Xian Aircraft Corp maintenance/manufacturing roles at coordinates matching the queue row."
+        }
+      ],
+      "rationale": "Use 1958 as the documented service-entry year for the Yanliang military aviation complex. Scramble supports the current CFTE/XAC military-airbase identity."
+    },
+    {
+      "source_id": "geonames:11493692",
+      "name": "Xuchang West",
+      "country_code": "CN",
+      "start_year": null,
+      "end_year": 2012,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Xuchang",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble lists Xuchang at the queue coordinates and says the airbase was used by the 2nd Regiment of the 13th Flying Academy until that unit was disbanded in 2012; it also notes a 2019/2020 major upgrade."
+        },
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Naval Aviation University",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "The same listing places a Naval Aviation University air regiment at Xuchang, supporting continued military-airfield identity after the PLAAF flying-academy phase."
+        }
+      ],
+      "rationale": "Use 2012 only as a terminal marker for the documented PLAAF 13th Flying Academy use at Xuchang before the 2nd Regiment was disbanded. This does not assert closure of the airbase, which later had a documented upgrade and naval aviation use."
+    },
+    {
+      "source_id": "geonames:11493683",
+      "name": "Yangluo",
+      "country_code": "CN",
+      "start_year": 2012,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Mapcarta: Yangluo",
+          "url": "https://mapcarta.com/35333044",
+          "note": "Mapcarta mirrors GeoNames feature 11493683 and identifies Yangluo as an airbase at the queue coordinates."
+        },
+        {
+          "title": "China PLAAF OOB 2012 - Baloogan Campaign Wiki",
+          "url": "https://wiki.baloogancampaign.com/index.php?title=China_PLAAF_OOB_2012",
+          "note": "The 2012 PLAAF order of battle lists the 38th Air Regiment at Wuhan-Yangluo with Y-7 and An-26 aircraft."
+        }
+      ],
+      "rationale": "Use 2012 as a documented-by operational marker for Wuhan-Yangluo because the OOB places a named transport regiment at the airfield in that year. Confidence is low because this is an order-of-battle snapshot rather than a base-history source."
+    },
+    {
+      "source_id": "geonames:11493672",
+      "name": "Yongji",
+      "country_code": "CN",
+      "start_year": 2012,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Yongji",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Yongji at the queue coordinates with Shijiazhuang Flying Academy's 2nd Training Brigade and says the 6th Flying Academy / 2nd Regiment was subordinated to Shijiazhuang Flying Academy in April 2012."
+        },
+        {
+          "title": "AviationMilitaires: Armee de l'air chinoise, Yongji",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "AviationMilitaires lists Yongji with coordinates matching the queue row and owner as the Chinese air force."
+        }
+      ],
+      "rationale": "Use April 2012 as a conservative documented operational marker for Yongji's Shijiazhuang Flying Academy training role."
+    },
+    {
+      "source_id": "geonames:11493671",
+      "name": "Yongning",
+      "country_code": "CN",
+      "start_year": 2017,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Yanqing/Yongning",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Yanqing/Yongning at the queue coordinates with the 21st Air Brigade and says the 21st Regiment became the 21st Brigade in 2017, with aircraft replacement at about the same time."
+        },
+        {
+          "title": "People's Liberation Army Air Force / XAIRFORCES",
+          "url": "https://xairforces.net/airforces.asp?id=98",
+          "note": "XAIRFORCES lists Yanqing/Yongning under the 7th Fighter Division / 21st Air Regiment, supporting the base identity."
+        }
+      ],
+      "rationale": "Use 2017 as a documented operational marker for the Yanqing/Yongning 21st Brigade phase. The evidence is a dated unit conversion at the base, not an opening date."
+    },
+    {
+      "source_id": "geonames:11493660",
+      "name": "Zhangzhou",
+      "country_code": "CN",
+      "start_year": 2020,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "The War Zone: Major Construction Underway At Three Of China's Airbases Closest To Taiwan",
+          "url": "https://www.twz.com/42722/major-construction-underway-at-three-of-chinas-airbases-closest-to-taiwan",
+          "note": "The OSINT report says work at Longtian, Huian, and Zhangzhou began in early 2020 and continued through the pandemic, enhancing PLA airpower near Taiwan."
+        },
+        {
+          "title": "SCMP/inkl: Upgrades for Chinese military airbases facing Taiwan",
+          "url": "https://www.inkl.com/news/upgrades-for-chinese-military-airbases-facing-taiwan-hint-at-war-plans",
+          "note": "The report says a new ground-to-air missile defense site was added at Zhangzhou, where the Eastern Theatre Command air force commander is based."
+        }
+      ],
+      "rationale": "Use early 2020 as a documented modernization/upgrade-phase marker for Zhangzhou military-airbase use. This is not an original opening year."
+    },
+    {
+      "source_id": "geonames:11493651",
+      "name": "Zhengzhou Northeast",
+      "country_code": "CN",
+      "start_year": 2015,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Zhengzhou",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Zhengzhou at the queue coordinates with the 56th Air Brigade, says the regiment moved about 10 km north to the newly constructed airbase in the early 21st century, and says J-10Bs began replacing J-7IIs at the end of 2015."
+        },
+        {
+          "title": "Central Theater Command Air Force",
+          "url": "https://en.wikipedia.org/wiki/Central_Theater_Command_Air_Force",
+          "note": "The ORBAT table lists the 56th Air Brigade at Henan, Zhengzhou, Matougang Airbase, supporting the modern Zhengzhou Northeast/Matougang identity."
+        }
+      ],
+      "rationale": "Use 2015 as the earliest specific dated operational marker found for the new Zhengzhou/Matougang airbase row. The source notes an earlier move to the newly constructed base but does not give a precise opening year."
+    },
+    {
+      "source_id": "geonames:11493488",
+      "name": "Zhucheng",
+      "country_code": "CN",
+      "start_year": 2020,
+      "end_year": 2022,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Naval Aviation ORBAT, Feidong/Zhucheng",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-naval-aviation",
+          "note": "Scramble says Z-8C helicopters used by the Marine Aviation Brigade arrived at Zhucheng by 2020 after the PLAAF 14th Regiment had withdrawn Q-5 aircraft, and that the brigade relocated from Zhucheng to Feidong by 2022."
+        },
+        {
+          "title": "People's Liberation Army Air Force / XAIRFORCES",
+          "url": "https://xairforces.net/airforces.asp?id=98",
+          "note": "XAIRFORCES lists Zhucheng under the 5th Ground Attack Division / 14th Attack Regiment, supporting earlier PLAAF ground-attack base identity."
+        }
+      ],
+      "rationale": "Use 2020-2022 as a bounded documented Marine Aviation Brigade use phase at Zhucheng. This does not assert the airbase opened in 2020 or closed in 2022; earlier PLAAF use is known but not dated precisely enough here."
+    },
+    {
+      "source_id": "geonames:11493486",
+      "name": "Zhuoxian",
+      "country_code": "CN",
+      "start_year": null,
+      "end_year": 2011,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Zhouzhou/Zhuozhou",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Zhouzhou/Zhuozhou at coordinates matching the queue row and says the airfield was used by CJ-6 from the 6th Flying Academy until 2011."
+        },
+        {
+          "title": "AviationMilitaires: Armee de l'air chinoise, Zhuozhou",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "AviationMilitaires lists Zhuozhou with Chinese air force ownership and coordinates matching the queue row."
+        }
+      ],
+      "rationale": "Use 2011 as a conservative terminal marker for the documented 6th Flying Academy CJ-6 use at Zhuozhou/Zhuoxian. This is not a full airfield closure claim."
+    },
+    {
+      "source_id": "geonames:11493483",
+      "name": "Zunhua Dongxinzhuan",
+      "country_code": "CN",
+      "start_year": 2011,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Zunhua (Dongxinzhuang)",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Zunhua/Dongxinzhuang at the queue coordinates with the 70th Air Brigade and says J-8Es were replaced by J-7E/Gs at the end of 2011, followed by 2017 brigade conversion and early 2018 J-10A replacement."
+        },
+        {
+          "title": "Central Theater Command Air Force",
+          "url": "https://en.wikipedia.org/wiki/Central_Theater_Command_Air_Force",
+          "note": "The ORBAT table lists the 70th Air Brigade at Tangshan, Zunhua Airbase with J-10A aircraft, supporting the modern base identity."
+        }
+      ],
+      "rationale": "Use late 2011 as the earliest specific dated operational marker found for Zunhua/Dongxinzhuang. The evidence is an aircraft replacement at the base, not an opening date."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:11493886",
+      "name": "Guozhuang",
+      "country_code": "CN",
+      "source_notes": [
+        {
+          "title": "AviationMilitaires: Armee de l'air chinoise, Guozhuang",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/53/armee-de-lair-chinoise",
+          "note": "Lists Guozhuang with coordinates matching the queue row and owner as the Chinese air force, but no opening, closing, or dated operational marker was found."
+        }
+      ],
+      "reason": "Skipped because available evidence was an undated current/summary airbase listing only."
+    },
+    {
+      "source_id": "geonames:11493835",
+      "name": "Lingqiu",
+      "country_code": "CN",
+      "source_notes": [],
+      "reason": "Skipped because no credible dated public source was found beyond the queue/current airbase listing."
+    },
+    {
+      "source_id": "geonames:11493811",
+      "name": "Mugelolu",
+      "country_code": "CN",
+      "source_notes": [
+        {
+          "title": "Mapcarta: Mugelolu",
+          "url": "https://mapcarta.com/35333300",
+          "note": "Mirrors GeoNames feature 11493811 as an airbase at the queue coordinates, but provides no operational date."
+        }
+      ],
+      "reason": "Skipped because available evidence was a current GeoNames-derived airbase listing with no dated operational marker."
+    },
+    {
+      "source_id": "geonames:11493769",
+      "name": "Shahousuo",
+      "country_code": "CN",
+      "source_notes": [
+        {
+          "title": "Mapcarta area references: Shahousuo Airbase",
+          "url": "https://mapcarta.com/36026186",
+          "note": "Nearby locality pages identify Shahousuo Airbase at the Xingcheng/Shahousuo location, but no credible opening, closing, or dated operational evidence was found."
+        }
+      ],
+      "reason": "Skipped because available evidence was location/directory evidence only."
+    },
+    {
+      "source_id": "geonames:11493742",
+      "name": "Suizhong",
+      "country_code": "CN",
+      "source_notes": [],
+      "reason": "Skipped because no credible dated public source was found for the Suizhong airbase row."
+    },
+    {
+      "source_id": "geonames:11493712",
+      "name": "Wumaojie",
+      "country_code": "CN",
+      "source_notes": [
+        {
+          "title": "Mapcarta: Wumaojie",
+          "url": "https://mapcarta.com/35333102",
+          "note": "Mirrors GeoNames feature 11493712 as an airbase at the queue coordinates, but provides no operational date."
+        }
+      ],
+      "reason": "Skipped because available evidence was a current GeoNames-derived airbase listing with no dated operational marker."
+    },
+    {
+      "source_id": "geonames:11493652",
+      "name": "Zhengjiatun",
+      "country_code": "CN",
+      "source_notes": [
+        {
+          "title": "Mapcarta: Zhengjiatun",
+          "url": "https://mapcarta.com/35332982",
+          "note": "Mirrors GeoNames feature 11493652 as an airbase at the queue coordinates, but provides no operational date."
+        }
+      ],
+      "reason": "Skipped because available evidence was a current GeoNames-derived airbase listing with no dated operational marker."
+    }
+  ]
+}

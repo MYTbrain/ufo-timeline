@@ -1,0 +1,58 @@
+name: Reproduction
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-clone-reproduction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+      - name: Check out the source revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Install the pinned Python runtime
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version-file: .python-version
+
+      - name: Install the pinned Node runtime
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Install hash-locked Python dependencies
+        run: python -m pip install --require-hashes -r requirements.lock
+
+      - name: Install the pinned npm client and Node dependencies
+        run: |
+          npm install --global npm@11.16.0
+          npm ci --ignore-scripts
+
+      - name: Validate the immutable reproduction contract
+        run: python scripts/reproduction.py verify
+
+      - name: Hydrate the complete offline production replica
+        run: >-
+          python scripts/reproduction.py hydrate
+          --offline
+          --expand-gzip
+          --output static_bundle
+          --cache .reproduction/cache
+          --jobs 8
+
+      - name: Run the complete Python acceptance suite
+        run: python -m pytest -q
+
+      - name: Run the browser-side behavior suites
+        shell: bash
+        run: node --test tests/*.mjs

@@ -1,0 +1,513 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "input_overlay": "webapp/static_public/data/map_overlays/military_bases.geojson",
+  "match_key": "source_id",
+  "scope": "Source-research candidate temporal overrides only. No app, test, overlay GeoJSON, or overlay override JSON files were edited.",
+  "selection_rule": "Candidate must be present in military_bases.geojson and have an official or near-official source for operational start/end year evidence. Existing GB overrides already present in military_base_temporal_overrides.json were not duplicated.",
+  "candidate_count": 35,
+  "existing_target_country_overrides_not_duplicated": [
+    "geonames:6296653",
+    "geonames:6301521",
+    "geonames:6301522",
+    "geonames:6296650"
+  ],
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:6301525",
+      "name": "Alconbury Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.501csw.usafe.af.mil/News/Features/Display/Article/1920615/the-indiana-jones-of-alconbury-uncovering-alconbury-history/",
+        "https://www.501csw.usafe.af.mil/About-Us/Fact-Sheets/Display/Article/436482/royal-air-force-alconbury-royal-air-force-molesworth-and-royal-air-force-upwood/"
+      ],
+      "source_notes": "U.S. Air Force 501st Combat Support Wing history says RAF Alconbury opened in 1938 as a grass satellite airfield for RAF Upwood. Current end left open because the source describes continuing base use."
+    },
+    {
+      "source_id": "geonames:6296664",
+      "name": "Coningsby Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-coningsby/"
+      ],
+      "source_notes": "Official RAF Coningsby history lists 1941 as the year RAF Coningsby opened. Current end left open because the RAF station page lists active current units and aircraft."
+    },
+    {
+      "source_id": "geonames:6296663",
+      "name": "Cosford Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/units/raf-cosford-voluntary-band/"
+      ],
+      "source_notes": "Official RAF Cosford history says No. 2 School of Technical Training was stood up and the station formally opened on 15 July 1938. Current end left open because current RAF pages continue to describe RAF Cosford activity."
+    },
+    {
+      "source_id": "geonames:6296658",
+      "name": "Fairford Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1944,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.501csw.usafe.af.mil/News/Article-Display/Article/437248/raf-fairford-takes-next-step-in-its-rich-history/"
+      ],
+      "source_notes": "U.S. Air Force 501st Combat Support Wing article says Fairford was constructed in 1943-44. Candidate uses 1944 as the first full operational year and marks medium confidence to avoid over-precise interpretation of a construction range."
+    },
+    {
+      "source_id": "geonames:2649634",
+      "name": "Faslane Base",
+      "country_code": "GB",
+      "start_year": 1968,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.royalnavy.mod.uk/locations-and-operations/bases-and-stations/hmnb-clyde-",
+        "https://www.gov.uk/government/publications/continuous-at-sea-deterrent-50-what-you-need-to-know/continuous-at-sea-deterrent-50-what-you-need-to-know"
+      ],
+      "source_notes": "Royal Navy page identifies HMNB Clyde/Faslane as the current submarine-service base. GOV.UK CASD history says HMS Resolution completed the first deterrent patrol in June 1968 and all four Resolution-class submarines were ported and operated from HMNB Clyde. Candidate uses 1968 for the high-confidence nuclear-submarine operational phase, not an assertion that no naval activity existed earlier."
+    },
+    {
+      "source_id": "geonames:8015418",
+      "name": "HMNB Portsmouth",
+      "country_code": "GB",
+      "start_year": 1495,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.rmg.co.uk/stories/maritime-history/royal-naval-dockyards",
+        "https://collection.sciencemuseumgroup.org.uk/people/cp15429/portsmouth-dockyard"
+      ],
+      "source_notes": "Royal Museums Greenwich says Portsmouth Dockyard was established in 1495 by Henry VII and remains one of the oldest dockyards still in operation. Science Museum Group collection timeline also starts Portsmouth Dockyard in 1495. Current end left open for active HMNB Portsmouth."
+    },
+    {
+      "source_id": "geonames:6296669",
+      "name": "Honington Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/units/raf-honington-voluntary-band/"
+      ],
+      "source_notes": "Official RAF Honington history says RAF Honington opened in 1937 and the key dates list 1937 as the station founding year. Current end left open because the RAF describes the station as the home of the RAF Regiment and RAF Police."
+    },
+    {
+      "source_id": "geonames:6296651",
+      "name": "RAF Benson",
+      "country_code": "GB",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-benson/"
+      ],
+      "source_notes": "Official RAF Benson history says the station opened on 1 February 1939 and accepted its first aircraft. Current end left open because the page describes active Joint Aviation Command and resident-unit outputs."
+    },
+    {
+      "source_id": "geonames:6296660",
+      "name": "RAF Brize Norton",
+      "country_code": "GB",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-brize-norton/"
+      ],
+      "source_notes": "Official RAF Brize Norton history says the station officially opened on 13 August 1937. Current end left open because the page lists current transport and air-mobility aircraft."
+    },
+    {
+      "source_id": "geonames:12032468",
+      "name": "RAF High Wycombe",
+      "country_code": "GB",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-high-wycombe/"
+      ],
+      "source_notes": "Official RAF High Wycombe key dates list 1941 as the year the camp was built. Current end left open because the RAF page describes it as an active administrative support station and UK Space Command headquarters site."
+    },
+    {
+      "source_id": "geonames:6301529",
+      "name": "RAF Marham",
+      "country_code": "GB",
+      "start_year": 1916,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-marham/"
+      ],
+      "source_notes": "Official RAF Marham history says RAF Marham first opened in 1916 and re-opened in 1937 after interwar mothballing. Candidate keeps one start_year and open end, while noting the non-continuous early history rather than inventing a precise mothball interval."
+    },
+    {
+      "source_id": "geonames:6296661",
+      "name": "RAF Odiham",
+      "country_code": "GB",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-odiham/"
+      ],
+      "source_notes": "Official RAF Odiham history says the station formally became RAF Odiham on 11 January 1937 and key dates list 1937 as official opening. Current end left open because the page describes it as the active home of the UK Chinook Force."
+    },
+    {
+      "source_id": "geonames:6296671",
+      "name": "RAF Scampton",
+      "country_code": "GB",
+      "start_year": 1916,
+      "end_year": 2023,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/display-teams/red-arrows/news/final-flight-of-red-arrows-jet-from-raf-scampton/",
+        "https://heritage-explorer.lincolnshire.gov.uk/Monument/MLI53104"
+      ],
+      "source_notes": "Official RAF Red Arrows news says the site first opened in 1916 as Air Station Brattleby Cliff. Lincolnshire Heritage Explorer records the airfield as opened in 1916 and closed as a military airfield in March 2023."
+    },
+    {
+      "source_id": "geonames:7669238",
+      "name": "RAF Welford",
+      "country_code": "GB",
+      "start_year": 1943,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.501csw.usafe.af.mil/News/Article-Display/Article/437379/raf-welford-memorial-service/"
+      ],
+      "source_notes": "U.S. Air Force 501st Combat Support Wing memorial article says Memorial Grove was established in 1993, 50 years after Welford became a joint RAF-USAF base. Candidate derives 1943 from that dated statement and keeps confidence medium because this is an anniversary inference."
+    },
+    {
+      "source_id": "geonames:6296618",
+      "name": "Royal Air Force Valley",
+      "country_code": "GB",
+      "start_year": 1941,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.raf.mod.uk/our-organisation/stations/raf-valley/"
+      ],
+      "source_notes": "Official RAF Valley history says the station opened in February 1941 as RAF Rhosneigr. Current end left open because the page describes active flying training outputs."
+    },
+    {
+      "source_id": "geonames:6299366",
+      "name": "Cazaux",
+      "country_code": "FR",
+      "start_year": 1913,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.reservistes.defense.gouv.fr/document-poste/6730",
+        "https://logement.defense.gouv.fr/housing-office/45/commander"
+      ],
+      "source_notes": "French Ministry of Armed Forces reserve/housing pages describe Base aerienne 120 Cazaux as implanted/created at Cazaux in 1913 for aerial-gunnery crew instruction. Current end left open because the same ministry pages describe active BA 120 functions."
+    },
+    {
+      "source_id": "geonames:6299415",
+      "name": "Istres-Le Tube Air Base",
+      "country_code": "FR",
+      "start_year": 1917,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.defense.gouv.fr/sga/actualites/nouvelle-convention-entre-base-aerienne-125-mairie-distres",
+        "https://www.defense.gouv.fr/unites-du-defile-du-14-juillet-2024/14-juillet-2024-defile-troupes-pied/defile-troupes-pied-bases-aeriennes"
+      ],
+      "source_notes": "French Ministry of Armed Forces pages say the site hosted pilot training from 1917, became an operational base in 1940, hosted American forces in 1944, and the French Air Force reinstalled permanently in 1947; BA 125 is installed on the site from 1949. Candidate uses 1917 for first military aviation use and leaves end open for active BA 125."
+    },
+    {
+      "source_id": "geonames:6299375",
+      "name": "Mont-de-Marsan",
+      "country_code": "FR",
+      "start_year": 1945,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://archives.defense.gouv.fr/content/download/620793/10347634/Dossier%20de%20pr%C3%A9sentation.pdf"
+      ],
+      "source_notes": "French Ministry of Armed Forces 14 July presentation dossier identifies Base aerienne 118 Colonel Rozanoff as created in 1945 and located at Mont-de-Marsan. Current end left open for active BA 118."
+    },
+    {
+      "source_id": "geonames:6299419",
+      "name": "Orange-Caritat",
+      "country_code": "FR",
+      "start_year": 1939,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.defense.gouv.fr/unites-du-defile-du-14-juillet-2025/14-juillet-2025-troupes-pied/14-juillet-2025-base-aerienne-115-capitaine",
+        "https://www.defense.gouv.fr/air/actualites/orange-genie-lair-construit-nouvelle-escadre-rafale"
+      ],
+      "source_notes": "French Ministry of Armed Forces BA 115 history says the base was inaugurated in 1939, occupied from 1942 to 1944, hosted the RAF until 1951, and has continued the south-east air-safety posture since the 5th wing returned. Current end left open because the ministry describes current Rafale infrastructure and units at Orange."
+    },
+    {
+      "source_id": "geonames:6299433",
+      "name": "Orleans-Bricy Air Base",
+      "country_code": "FR",
+      "start_year": 1938,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.defense.gouv.fr/sga/actualites/destruction-dune-bombe-americaine-seconde-guerre-mondiale-base-aerienne-123-dorleans-bricy",
+        "https://www.defense.gouv.fr/sga/actualites/a-orleans-sid-deconstruit-mieux-reconstruire"
+      ],
+      "source_notes": "French Ministry of Armed Forces infrastructure article says BA 123 Orleans-Bricy dates to 1938; another ministry article describes ongoing transformation and 90 years of military history. Current end left open for active BA 123."
+    },
+    {
+      "source_id": "geonames:6299424",
+      "name": "Salon",
+      "country_code": "FR",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.defense.gouv.fr/air/base-aerienne-701-salon-provence"
+      ],
+      "source_notes": "French Ministry of Armed Forces BA 701 page says the base has been implanted in Salon-de-Provence since 1937. Current end left open because the same page describes current BA 701, Ecole de l'air et de l'espace, and Patrouille de France activity."
+    },
+    {
+      "source_id": "geonames:6299396",
+      "name": "Solenzara Air Base",
+      "country_code": "FR",
+      "start_year": 1960,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.haute-corse.gouv.fr/Actions-de-l-Etat/Transition-ecologique-environnement-et-prevention-des-risques/Declaration-d-intention-Projets-de-modernisation-de-la-base-aerienne-126",
+        "https://www.anciens-aerodromes.com/?p=32449"
+      ],
+      "source_notes": "Haute-Corse state services page says BA 126 was created in the 1950s and remains operational. The year-level 1960 comes from a specialist airfield history citing SHAA material, which says BA 126 was created on 1 July 1960. Marked medium because the official source supports the decade rather than the exact year."
+    },
+    {
+      "source_id": "geonames:6299455",
+      "name": "Landivisiau",
+      "country_code": "FR",
+      "start_year": 1965,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.defense.gouv.fr/marine/actualites/base-daeronautique-navale-landivisiau-fete-ses-60-ans",
+        "https://www.defense.gouv.fr/actualites/unites-mises-lhonneur-lors-visite-du-roi-charles-iii"
+      ],
+      "source_notes": "French Ministry of Armed Forces / Marine nationale says the BAN Landivisiau was created/inaugurated in 1965 and became operational in 1967 with embarked fighter flotillas. Candidate uses 1965 for base creation and leaves end open for active naval aviation use."
+    },
+    {
+      "source_id": "geonames:6299429",
+      "name": "Evreux-Fauville Air Base",
+      "country_code": "FR",
+      "start_year": 1952,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1967,
+          "label": "USAF Evreux Air Base construction and American era"
+        },
+        {
+          "start_year": 1967,
+          "end_year": null,
+          "label": "French Base aerienne 105 phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://archives.defense.gouv.fr/content/download/572388/9819171/SirpaAir_GuideParticipant_internet.pdf",
+        "https://www.defense.gouv.fr/sites/default/files/ministere-armees/20250709_Guide%20Media%202025_compressed.pdf"
+      ],
+      "source_notes": "French Ministry of Armed Forces material says Evreux Air Base was constructed from 1952 to 1954 for the American era and BA 105 was created in 1967 after return to France. Candidate uses intervals to preserve that operator transition."
+    },
+    {
+      "source_id": "geonames:3208854",
+      "name": "Ramstein",
+      "country_code": "DE",
+      "start_year": 1952,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.ramstein.af.mil/News/Features/Display/Article/3119385/celebrating-70-years-of-rab-rheinland-palatinate-history/"
+      ],
+      "source_notes": "Official Ramstein Air Base history identifies the anniversary of Ramstein Air Base as 5 August 1952 and says French forces began construction in 1951 before U.S. forces took over in 1952. Current end left open for active Ramstein Air Base."
+    },
+    {
+      "source_id": "geonames:3208839",
+      "name": "Wiesbaden",
+      "country_code": "DE",
+      "start_year": 1936,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://home.army.mil/wiesbaden/about/history"
+      ],
+      "source_notes": "Official U.S. Army Garrison Wiesbaden history says Wiesbaden Airfield was designated as a fliegerhorst/air base in 1936, construction was completed in 1938, and the first German military unit occupied it. Current end left open because it remains Lucius D. Clay Kaserne / Wiesbaden Army Airfield."
+    },
+    {
+      "source_id": "geonames:8354414",
+      "name": "RAF Geilenkirchen (historical)",
+      "country_code": "DE",
+      "start_year": 1953,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": 1968,
+          "label": "RAF Geilenkirchen fighter-squadron base"
+        },
+        {
+          "start_year": 1968,
+          "end_year": 1981,
+          "label": "German missile unit and US Army artillery detachment phase"
+        },
+        {
+          "start_year": 1982,
+          "end_year": null,
+          "label": "NATO Air Base Geilenkirchen / E-3A Component phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://awacs.nato.int/resources/site1/General/community/GK_NewcomerGuide_2023.pdf",
+        "https://awacs.nato.int/organisation/hq-naewcf"
+      ],
+      "source_notes": "NATO newcomer guide says the RAF used Geilenkirchen from May 1953 until RAF flying operations ended in January 1968; Germany took over in March 1968; NATO conversion work began in 1980; and Germany formally handed the air base to NATO on 31 March 1982. Current NATO page confirms ongoing NATO Air Base Geilenkirchen use."
+    },
+    {
+      "source_id": "geonames:11427866",
+      "name": "Nordholz Naval Airbase",
+      "country_code": "DE",
+      "start_year": 1914,
+      "end_year": null,
+      "operational_intervals": [
+        {
+          "start_year": 1914,
+          "end_year": 1918,
+          "label": "Imperial German naval airship and flight operations"
+        },
+        {
+          "start_year": 1963,
+          "end_year": null,
+          "label": "Bundeswehr naval air station phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://marineflieger.de/marinefliegerstuetzpunkt"
+      ],
+      "source_notes": "Marineflieger historical page says flight operations at Nordholz began in September 1914 and the Marinefliegerhorst Nordholz was commissioned for Bundeswehr naval aviation on 26 April 1963. Marked medium because the source is near-official/specialist rather than a bundeswehr.de page."
+    },
+    {
+      "source_id": "geonames:3207677",
+      "name": "Norvenich Air Base",
+      "country_code": "DE",
+      "start_year": 1955,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.dbwv.de/aktuelle-themen/blickpunkt/beitrag/andernach-65-jahre-wiege-der-bundeswehr",
+        "https://www.24rhein.de/rheinland-nrw/wo-eurofighter-typhoon-in-nordrhein-westfalen-stationiert-nrw-stuetzpunkt-fliegerhorst-noervenich-92093568.html"
+      ],
+      "source_notes": "German Armed Forces Association article says the Luftwaffe occupied Nörvenich as one of the first three Bundeswehr sites in early 1956. 24Rhein, citing Bundeswehr context, says the RAF Germany base was handed to the German defence ministry in December 1955. Candidate uses 1955 for handover/start of Bundeswehr phase and marks medium confidence because a direct Bundeswehr history page was not located in this pass."
+    },
+    {
+      "source_id": "geonames:3208394",
+      "name": "Lechfeld Air Base",
+      "country_code": "DE",
+      "start_year": 1912,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://dewiki.de/Lexikon/Fliegerhorst_Lechfeld"
+      ],
+      "source_notes": "Specialist encyclopedia mirror lists Fliegerhorst Lechfeld opening in 1912 and describes continued Bundeswehr operation. Marked medium and included as a candidate only; prefer replacing with a Bundeswehr or local-government source before committing to the production override file."
+    },
+    {
+      "source_id": "geonames:3208078",
+      "name": "Lager Hammelburg",
+      "country_code": "DE",
+      "start_year": 1895,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_urls": [
+        "https://www.hammelburg.de/fileadmin/Tourismus_Hammelburg/Hammelburg_entdecken_und_erleben/Schnell_informiert/Unsere_Medien_fuer_Sie/Imagebroschuere_Stadt-Hammelburg_2020_NEU.pdf"
+      ],
+      "source_notes": "City of Hammelburg brochure says Lager/Truppenubungsplatz Hammelburg has had a military tradition since 1895 and is used as a Bundeswehr training center. Marked medium because this is a municipal tourism/overview source, not a dedicated Bundeswehr installation history."
+    },
+    {
+      "source_id": "geonames:6296490",
+      "name": "Chievres Air Base",
+      "country_code": "BE",
+      "start_year": 1967,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://home.army.mil/benelux/about/communities",
+        "https://home.army.mil/benelux/my-fort/cab-fest"
+      ],
+      "source_notes": "Official U.S. Army Garrison Benelux pages identify Chièvres Air Base as the current USAG Benelux headquarters / SHAPE-support NATO airfield and say the NATO/SHAPE Support Group moved to Belgium in 1967. Candidate uses 1967 for current NATO/US support phase, not for the earlier Belgian/German airfield history."
+    },
+    {
+      "source_id": "geonames:6299353",
+      "name": "Naval Station Rota",
+      "country_code": "ES",
+      "start_year": 1956,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://cnreurafcent.cnic.navy.mil/Installations/NAVSTA-Rota/About/History/",
+        "https://cnreurafcent.cnic.navy.mil/Installations/NAVSTA-Rota/About/"
+      ],
+      "source_notes": "Official U.S. Navy NAVSTA Rota history says the agreement was signed in 1953, construction began in 1955, the runway opened on 4 October 1956, the base was called Naval Air Station Rota until becoming Naval Station Rota in 1957, and the port opened in 1958. Candidate uses 1956 as first operational airfield year and leaves end open."
+    },
+    {
+      "source_id": "geonames:6301531",
+      "name": "Soesterberg Air Base",
+      "country_code": "NL",
+      "start_year": 1913,
+      "end_year": 2008,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.nmm.nl/nl/zien-en-doen/buiten/park-vliegbasis-soesterberg/",
+        "https://www.nmm.nl/nl/voorgeschiedenis-nmm/"
+      ],
+      "source_notes": "Nationaal Militair Museum says the Dutch Army aviation department was founded at Soesterberg on 1 July 1913 and the air base was permanently closed in 2008."
+    },
+    {
+      "source_id": "geonames:9036022",
+      "name": "Beja Airbase",
+      "country_code": "PT",
+      "start_year": 1964,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_urls": [
+        "https://www.emfa.pt/unidade-20-base-aerea-n-11",
+        "https://www.emfa.pt/noticia-3488-Base%20A%C3%A9rea%20N.%C2%BA%2011%20celebra%2057%20anos"
+      ],
+      "source_notes": "Portuguese Air Force BA11 page says Base Aerea No. 11 at Beja was created in 1964 by Portaria No. 20856 of 21 October to support Portuguese-West German operational training agreements. Current end left open for active BA11."
+    }
+  ],
+  "deferred_source_gaps": [
+    {
+      "country_code": "IT",
+      "note": "No Italy record was included in this high-confidence tranche because this pass did not locate an official/near-official date source for Decimomannu, the Venice Arsenale GeoNames record, or the NATO naval-base GeoNames record. These should be researched separately before adding year-level overrides."
+    },
+    {
+      "country_code": "BE",
+      "note": "Beauvechain, Florennes, Melsbroek, Elsenborn-Butgenbach, and Jehonville likely have good temporal candidates, but this pass did not locate sufficiently direct official date pages. Avoid adding inferred years until Belgian Defence or installation-history sources are found."
+    },
+    {
+      "country_code": "ES",
+      "note": "Torrejon, Zaragoza, Alcantarilla, Armilla, Pollenca, and other Spanish records were left out pending direct Spanish Ministry of Defence / Ejercito del Aire source pages or similarly strong sources."
+    },
+    {
+      "country_code": "NL",
+      "note": "Dutch barracks records were left out because heritage pages may support building dates but not always military operational intervals; Soesterberg was included because the National Military Museum gives clear air-base start and closure evidence."
+    }
+  ]
+}

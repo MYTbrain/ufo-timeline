@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "Fourth source-backed temporal override batch from focused review of remaining China/Asia high-priority military overlay candidates.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:11493886",
+      "name": "Guozhuang",
+      "country_code": "CN",
+      "start_year": 1950,
+      "end_year": null,
+      "date_precision_start": "decade_start",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "low",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://aviationsmilitaires.net/v3/kb/airfield/show/2072/guozhuang"
+      ],
+      "source_notes": "AviationMilitaires says Guozhuang was constructed during the 1950s and 1960s for H-5 bombers, and appears to have been assigned in 2012 to a transport regiment under the 32nd Air Division. Use 1950 only as a conservative decade-start marker, not an exact opening year."
+    },
+    {
+      "source_id": "geonames:11493742",
+      "name": "Suizhong",
+      "country_code": "CN",
+      "start_year": 2013,
+      "end_year": null,
+      "date_precision_start": "documented_by_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://aviationsmilitaires.net/v3/kb/airfield/show/857/suizhong"
+      ],
+      "source_notes": "AviationMilitaires describes Suizhong as a Liaoning coastal base currently under Chinese naval aviation/Northern Fleet control, with modernization in the 2000s, 2014 and 2020 aircraft imagery, and a 2013 unit formation/fusion marker. Use 2013 as a documented operational/training-base marker, not the original construction year."
+    },
+    {
+      "source_id": "geonames:11493652",
+      "name": "Zhengjiatun",
+      "country_code": "CN",
+      "start_year": 2018,
+      "end_year": null,
+      "date_precision_start": "documented_by_year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_backfill",
+      "source_urls": [
+        "https://www.bellingcat.com/news/rest-of-world/2018/03/23/soar-dragon-uavs-deploy-yishuntun-airbase/",
+        "https://military-history.fandom.com/wiki/Yishuntun_Airbase"
+      ],
+      "source_notes": "Zhengjiatun corresponds to Yishuntun Airbase at the queue coordinates. Bellingcat reports February/March 2018 satellite imagery showing Soar Dragon UAVs deployed there and says the base had been undergoing maintenance and expansion since early 2016. Use 2018 as the documented active operational marker."
+    }
+  ],
+  "no_override": [
+    {
+      "source_id": "geonames:11493835",
+      "name": "Lingqiu",
+      "country_code": "CN",
+      "reason": "No defensible operational interval found. Mapcarta/OSM/GeoNames confirm the airfield location, and a CIA Reading Room PDF snippet mentions a new Ling-chiu airfield with subterranean construction, but the accessible evidence did not provide a safe observation/opening/closure year for this queue row."
+    },
+    {
+      "source_id": "geonames:11493811",
+      "name": "Mugelolu",
+      "country_code": "CN",
+      "reason": "Only GeoNames/Mapcarta-style location evidence found; no defensible operational date marker."
+    },
+    {
+      "source_id": "geonames:11493769",
+      "name": "Shahousuo",
+      "country_code": "CN",
+      "reason": "Only location/directory evidence found for Shahousuo Airbase; no defensible opening, operational, or closure year."
+    },
+    {
+      "source_id": "geonames:11493712",
+      "name": "Wumaojie",
+      "country_code": "CN",
+      "reason": "Only GeoNames/Mapcarta-style location evidence found; no defensible operational date marker."
+    }
+  ]
+}

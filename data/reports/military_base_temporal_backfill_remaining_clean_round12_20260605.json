@@ -1,0 +1,606 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_remaining_clean_round12",
+  "description": "Twelfth-round conservative temporal backfill candidates for the remaining clean not_researched military/base rows requested on 2026-06-05. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates and prior_research_status=not_researched were considered.",
+    "Canadian rows were excluded except geonames:6301413 Pelly Island/Nipterk Base; Canadian rows marked previously_candidate or previously_skipped_no_safe_date were not revisited.",
+    "Rows marked previously_candidate or previously_skipped_no_safe_date were excluded.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Candidates require an explicit opening, establishment, activation, construction, transfer, closure, decommissioning, or similarly dated operational marker. Current-listing-only evidence was placed in skipped[].",
+    "Where a documented year is a predecessor, successor, or documented-by operational marker rather than a formal base-opening date, the rationale explains the identity link and temporal_confidence is downgraded."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:8531895",
+      "name": "Tolemaida Air Base",
+      "country_code": "CO",
+      "start_year": 1954,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Radio Santa Fe - terrenos del Fuerte Militar de Tolemaida",
+          "url": "https://www.radiosantafe.com/2026/05/19/mindefensa-emprende-acciones-judiciales-para-recuperar-terrenos-invadidos-del-fuerte-militar-de-tolemaida-en-melgar-ocupados-hoy-por-lujosos-condominios-y-conjuntos-residenciales-de-alto-valor/",
+          "note": "The report describes Tolemaida as a major Colombian Army base and states that illegal occupation of its lands has persisted since the unit's foundation in 1954."
+        },
+        {
+          "title": "Tolemaida Air Base",
+          "url": "https://en.wikipedia.org/wiki/Tolemaida_Air_Base",
+          "note": "The base profile identifies the row as the Colombian Army airfield at Tolemaida."
+        }
+      ],
+      "rationale": "The GeoNames row is the Colombian Army airfield within the Tolemaida military complex. The 1954 year is used as the foundation year for the wider military fort/base complex, not a separately sourced runway opening, so confidence is medium."
+    },
+    {
+      "source_id": "geonames:3539255",
+      "name": "San Julian Air Base",
+      "country_code": "CU",
+      "start_year": 1961,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "GlobalMilitary.net - San Julian Air Base",
+          "url": "https://www.globalmilitary.net/airbases/san-julian-air-base/",
+          "note": "The base profile identifies San Julian as a Cuban military installation and notes it as a primary target during the 1961 Bay of Pigs invasion."
+        }
+      ],
+      "rationale": "A safe opening year was not located, but the source provides a dated military-operational marker showing the air base was active by the 1961 Bay of Pigs invasion. Confidence is low because 1961 is a documented-by year rather than a formal establishment date."
+    },
+    {
+      "source_id": "geonames:11483582",
+      "name": "Palmahim Airbase",
+      "country_code": "IL",
+      "start_year": 1969,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Missile Test Unit (Israel)",
+          "url": "https://en.wikipedia.org/wiki/Missile_Test_Unit_(Israel)",
+          "note": "The unit history states that the test range at what is now Palmachim Airbase was established in 1969."
+        },
+        {
+          "title": "NTI - Palmachim",
+          "url": "https://www.nti.org/education-center/facilities/palmachim/",
+          "note": "NTI describes Palmachim Air Base as built during the 1970s as a missile test site and currently stationing IAF helicopters."
+        }
+      ],
+      "rationale": "The GeoNames row is the Palmachim/Palmahim Airbase. The 1969 start marks the establishment of the test range at the present airbase location; confidence is medium because later source material describes the air base buildout more generally as a 1970s facility."
+    },
+    {
+      "source_id": "geonames:4039597",
+      "name": "Dyess US Army Air Field",
+      "country_code": "MH",
+      "start_year": 1944,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Pacific Wrecks - Roi Airfield (Dyess AAF)",
+          "url": "https://pacificwrecks.com/airfield/marshalls/roi/index.html",
+          "note": "The airfield history says that during late 1944, under U.S. occupation, fill was added between Roi and Namur, forming Roi-Namur; the site is now known as Dyess Army Air Field."
+        },
+        {
+          "title": "Dyess Army Airfield",
+          "url": "https://en.wikipedia.org/wiki/Dyess_Army_Airfield",
+          "note": "The airfield profile identifies Dyess Army Airfield/Freeflight International Airport as the military airfield on Roi-Namur, Kwajalein Atoll."
+        }
+      ],
+      "rationale": "The row matches Dyess Army Airfield on Roi-Namur. The 1944 marker is tied to the U.S. wartime occupation and site formation rather than a formal named-base activation, so confidence is medium."
+    },
+    {
+      "source_id": "geonames:9036534",
+      "name": "Air Force Base Bloemspruit",
+      "country_code": "ZA",
+      "start_year": 1951,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "South African Air Force - 8 Squadron",
+          "url": "https://www.saairforce.co.za/the-airforce/squadrons/25/8-squadron",
+          "note": "The SAAF squadron history states that 8 Squadron was reinstated on 1 January 1951 as a citizen-force element based at Bloemspruit."
+        },
+        {
+          "title": "South African Air Force - Air Force Base Bloemspruit",
+          "url": "https://www.saairforce.co.za/the-airforce/bases/1/air-force-base-bloemspruit",
+          "note": "The SAAF base page identifies Bloemspruit as a current air force base sharing runways with Bloemfontein Airport."
+        }
+      ],
+      "rationale": "The official SAAF material confirms current base identity and a documented SAAF unit based at Bloemspruit in 1951. Confidence is low because this is a documented-by unit-presence marker, not a formal base opening date."
+    },
+    {
+      "source_id": "geonames:12238203",
+      "name": "Fliegerhorst Aigen im Ennstal",
+      "country_code": "AT",
+      "start_year": 1937,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Denkmal Heer - Fliegerhorst Fiala-Fernbrugg",
+          "url": "https://www.denkmal-heer.at/wissenswertes/fliegerhorst-fiala-fernbrugg",
+          "note": "The Austrian military heritage page traces the selection and construction of the Aigen military airfield in the mid-1930s."
+        },
+        {
+          "title": "Austrian Wings - Bundesheer feiert 50 Jahre Alouette III",
+          "url": "https://www.austrianwings.info/2017/09/bundesheer-feiert-50-jahre-alouette-iii/",
+          "note": "The report states that Fliegerhorst Aigen im Ennstal was founded 80 years before the 2017 anniversary, supporting a 1937 origin."
+        }
+      ],
+      "rationale": "The row directly names Fliegerhorst Aigen im Ennstal/Fiala-Fernbrugg. The 1937 start is supported by anniversary/history material; confidence is medium because the available sources summarize the origin rather than giving a precise opening order."
+    },
+    {
+      "source_id": "geonames:11500098",
+      "name": "Dobrich",
+      "country_code": "BG",
+      "start_year": 1951,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Dobrich Air Base",
+          "url": "https://en.wikipedia.org/wiki/Dobrich_Air_Base",
+          "note": "The base history says a top-secret order of 30 March 1951 established the 26th Independent Air Reconnaissance Regiment, the unit associated with Dobrich Air Base."
+        },
+        {
+          "title": "Dobrich Air Base - en-academic mirror",
+          "url": "https://en-academic.com/dic.nsf/enwiki/6480742/",
+          "note": "The mirrored base-history text cites Alexander Mladenov's History of Dobrich Air Base and repeats the 30 March 1951 establishment marker."
+        }
+      ],
+      "rationale": "The GeoNames row is the Dobrich Air Base record. The 1951 date is tied to the reconnaissance regiment/base history rather than a runway opening; confidence is medium."
+    },
+    {
+      "source_id": "geonames:11711228",
+      "name": "Kasteli",
+      "country_code": "GR",
+      "start_year": 1940,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Hellenic Air Force - 133 Combat Group",
+          "url": "https://www.haf.gr/en/structure/htaf/133-combat-group/",
+          "note": "The official Hellenic Air Force unit page says German forces reconstructed the runway and established a reconnaissance squadron at Kasteli in June 1941, with later reconstruction in 1951-52."
+        },
+        {
+          "title": "Kasteli Airport",
+          "url": "https://en.wikipedia.org/wiki/Kasteli_Airport",
+          "note": "The airport/base profile states that Kastelli Airbase was established in November 1940 shortly after the onset of World War II in Greece."
+        }
+      ],
+      "rationale": "The row maps to Kasteli Hellenic Air Force Base. The 1940 establishment date is explicit in the airfield profile and is supported by official HAF wartime operational history at Kasteli."
+    },
+    {
+      "source_id": "geonames:11483581",
+      "name": "Hatserim Northwest",
+      "country_code": "IL",
+      "start_year": 1966,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Hatzerim Airbase",
+          "url": "https://en.wikipedia.org/wiki/Hatzerim_Airbase",
+          "note": "The base history states that Hatzerim Airbase was constructed during the 1960s and declared operational on 3 October 1966."
+        },
+        {
+          "title": "GlobalMilitary.net - Hatzerim Airbase",
+          "url": "https://www.globalmilitary.net/airbases/hatzerim-airbase/",
+          "note": "The base profile repeats that Hatzerim became operational on 3 October 1966."
+        }
+      ],
+      "rationale": "The row appears to represent the northwestern portion of Hatzerim Airbase, where training activity is described in the base history. The 1966 operational date is for the whole airbase, so confidence is medium for this sub-feature."
+    },
+    {
+      "source_id": "geonames:12067299",
+      "name": "Base Naval Agustin Armario",
+      "country_code": "VE",
+      "start_year": 1946,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Puerto Cabello",
+          "url": "https://es.wikipedia.org/wiki/Puerto_Cabello",
+          "note": "The city history states that Base Naval Agustin Armario in Puerto Cabello was inaugurated in July 1946 and has hosted the Navy Command since 1960."
+        },
+        {
+          "title": "Agustin Armario",
+          "url": "https://es.wikipedia.org/wiki/Agust%C3%ADn_Armario",
+          "note": "The biographical entry says Naval Base No. 1 at Puerto Cabello was assigned the name Contralmirante Agustin Armario by a 22 July 1963 resolution."
+        }
+      ],
+      "rationale": "The row directly names Base Naval Agustin Armario. The 1946 inauguration is used for the base, with the 1963 naming evidence explaining the later Agustin Armario identity."
+    },
+    {
+      "source_id": "geonames:1694009",
+      "name": "Philippine Naval Base",
+      "country_code": "PH",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Naval Station Pascual Ledesma",
+          "url": "https://en.wikipedia.org/wiki/Naval_Station_Pascual_Ledesma",
+          "note": "The station history states that the former U.S. naval facility was officially turned over to the Philippine government on 1 September 1971 and later renamed Naval Station Pascual Ledesma."
+        },
+        {
+          "title": "GMA News - DND urged to retain two Navy stations in Sangley Point",
+          "url": "https://www.gmanetwork.com/news/news/regions/755785/dnd-urged-to-retain-two-navy-stations-in-sangley-point/story/",
+          "note": "The report identifies Naval Station Pascual Ledesma as one of the Navy stations in Sangley Point and notes the site houses vital Philippine Navy facilities."
+        }
+      ],
+      "rationale": "The GeoNames row maps through Wikidata to Naval Station Pascual Ledesma at Cavite/Sangley Point. The 1971 start marks transfer into Philippine government/naval use; confidence is medium because the Pascual Ledesma name was assigned later."
+    },
+    {
+      "source_id": "geonames:6255102",
+      "name": "Base Militar de Rabasa",
+      "country_code": "ES",
+      "start_year": 1924,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Hoja del Lunes - Militares a Rabasa",
+          "url": "https://www.hojadellunes.com/militares-a-rabasa/",
+          "note": "The local historical article describes the first military installation at Rabasa in January 1924 and links it to the continuing historical barracks now used by Spain's special operations command."
+        },
+        {
+          "title": "BOE - Acuartelamiento Alferez Rojas Navarrete security zone",
+          "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2003-20509",
+          "note": "The official Spanish state bulletin identifies the Rabasa installation as the military barracks Acuartelamiento Alferez Rojas Navarrete in Alicante."
+        }
+      ],
+      "rationale": "The row names the Rabasa military base. The 1924 first-military-installation marker is supported by local historical reporting and the BOE confirms the continuing defense installation identity."
+    },
+    {
+      "source_id": "geonames:11202292",
+      "name": "Loran Station",
+      "country_code": "TC",
+      "start_year": 1959,
+      "end_year": 1981,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Loran-History.info - Loran Station South Caicos",
+          "url": "https://loran-history.info/south_caicos/south_caicos.htm",
+          "note": "The station history lists construction from 11 February 1958 to 30 September 1959, establishment in July 1959, operational date 3 July 1959, operations ceased 31 December 1980, and disestablishment in January 1981."
+        },
+        {
+          "title": "Visit Turks and Caicos Islands - South Caicos U.S. Coast Guard LORAN Station",
+          "url": "https://www.visittci.com/south-caicos/about/south-caicos-loran-station",
+          "note": "The local history page says the station was completed in 1959, ceased operating at the end of 1980, and was officially decommissioned in 1981."
+        }
+      ],
+      "rationale": "The row matches the South Caicos U.S. Coast Guard LORAN station. The source provides explicit operational and decommissioning bounds, so 1959-1981 is a safe interval."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:6301413",
+      "name": "Pelly Island/Nipterk Base",
+      "country_code": "CA",
+      "source_notes": [
+        {
+          "title": "Nipterk Base",
+          "url": "https://www.wikidata.org/wiki/Q22353643",
+          "note": "Exact GeoNames-linked item identifies Nipterk Base but does not provide an inception, opening, activation, closure, or operational date."
+        }
+      ],
+      "reason": "Skipped because no real operational date was located for the Pelly Island/Nipterk Base row; available evidence was identifier/current-place style rather than dated military-base history."
+    },
+    {
+      "source_id": "geonames:8298928",
+      "name": "Serra Norte Airport (historical)",
+      "country_code": "BR",
+      "source_notes": [
+        {
+          "title": "Carajas Airport",
+          "url": "https://www.wikidata.org/wiki/Q3536490",
+          "note": "Exact GeoNames-linked Wikidata item maps the row to Carajas Airport with inception 1982, but the item is an airport/commercial aerodrome rather than a sourced military base."
+        }
+      ],
+      "reason": "Skipped as likely civilian or non-military airport evidence; the available dated source did not support a military-base temporal override."
+    },
+    {
+      "source_id": "geonames:4040412",
+      "name": "Meck US army airfield",
+      "country_code": "MH",
+      "source_notes": [
+        {
+          "title": "Meck Island",
+          "url": "https://en.wikipedia.org/wiki/Meck_Island",
+          "note": "The island history says Meck was developed for the Sentinel program in the 1960s and hosted radar and missile launchers."
+        },
+        {
+          "title": "U.S. Army - SMDC History: A Moment of Truth",
+          "url": "https://www.army.mil/article/132735/smdc_history_a_moment_of_truth",
+          "note": "Army history documents Spartan test launches from Meck Island by 1970 but does not give a safe airfield opening or base activation year."
+        }
+      ],
+      "reason": "Skipped because the dated evidence supports missile/radar-site activity on Meck Island, not a clean operational date for the GeoNames airfield feature."
+    },
+    {
+      "source_id": "geonames:11749514",
+      "name": "Meiktila Air Base",
+      "country_code": "MM",
+      "reason": "Skipped because only current or descriptive air-base listings were found, with no safe public opening, activation, construction, or closure year for the specific Myanmar air-base row."
+    },
+    {
+      "source_id": "geonames:11749515",
+      "name": "Nampong Air Base",
+      "country_code": "MM",
+      "reason": "Skipped because only current or descriptive air-base listings were found, with no safe public opening, activation, construction, or closure year for the specific Myanmar air-base row."
+    },
+    {
+      "source_id": "geonames:11749516",
+      "name": "Shante Air Base",
+      "country_code": "MM",
+      "reason": "Skipped because only current or descriptive air-base listings were found, with no safe public opening, activation, construction, or closure year for the specific Myanmar air-base row."
+    },
+    {
+      "source_id": "geonames:9036349",
+      "name": "Air Force Station Port Elizabeth",
+      "country_code": "ZA",
+      "source_notes": [
+        {
+          "title": "South African Air Force - Air Force Station Port Elizabeth",
+          "url": "https://www.saairforce.co.za/the-airforce/bases/18/air-force-station-port-elizabeth",
+          "note": "The SAAF page confirms current station identity and says it was downgraded from an air force base to a station in the early 1990s, but does not provide an establishment/opening year."
+        }
+      ],
+      "reason": "Skipped because the available source confirms present identity and a broad downgrade period only, not a safe start year."
+    },
+    {
+      "source_id": "geonames:11506254",
+      "name": "Nuchon Ni",
+      "country_code": "KP",
+      "reason": "Skipped because available public sources for this DPRK airfield were current/descriptive listings without a dated opening, activation, construction, or closure marker."
+    },
+    {
+      "source_id": "geonames:11257322",
+      "name": "Aeroclub de Castellon",
+      "country_code": "ES",
+      "reason": "Skipped as likely civilian/aeroclub evidence rather than a military-base temporal target; no dated military operational marker was found."
+    },
+    {
+      "source_id": "geonames:3925974",
+      "name": "Vitor",
+      "country_code": "PE",
+      "source_notes": [
+        {
+          "title": "Mayor FAP Guillermo Protset del Castillo Airport",
+          "url": "https://www.wikidata.org/wiki/Q28163416",
+          "note": "Exact GeoNames-linked item identifies the row as an aerodrome/airport but does not provide a safe military-base opening or activation date."
+        }
+      ],
+      "reason": "Skipped because the available evidence identifies the airfield but does not provide a dated military operational marker."
+    },
+    {
+      "source_id": "geonames:11325296",
+      "name": "Gaziemir",
+      "country_code": "TR",
+      "source_notes": [
+        {
+          "title": "Gaziemir Air Base",
+          "url": "https://en.wikipedia.org/wiki/Gaziemir_Air_Base",
+          "note": "The base profile confirms Turkish Air Force ownership/current Training Command use but does not provide an opening or establishment year."
+        }
+      ],
+      "reason": "Skipped because available sources were current/base-profile listings without a dated operational start."
+    },
+    {
+      "source_id": "geonames:11325301",
+      "name": "Kesan",
+      "country_code": "TR",
+      "reason": "Skipped because no credible public source with an explicit opening, establishment, activation, construction, or closure year was found for the specific Kesan air-base row."
+    },
+    {
+      "source_id": "geonames:10177360",
+      "name": "Menderes Hava Meydan Kita Komutanligi",
+      "country_code": "TR",
+      "source_notes": [
+        {
+          "title": "Menderes Airfield Continental Command",
+          "url": "https://www.wikidata.org/wiki/Q49467294",
+          "note": "Exact GeoNames-linked item confirms the air-base/aerodrome identity but does not provide an inception or operational date."
+        }
+      ],
+      "reason": "Skipped because available evidence confirms identity only and does not provide a safe dated operational marker."
+    },
+    {
+      "source_id": "geonames:11325306",
+      "name": "Samandira",
+      "country_code": "TR",
+      "source_notes": [
+        {
+          "title": "Samandira Army Air Base",
+          "url": "https://en.wikipedia.org/wiki/Samand%C4%B1ra_Army_Air_Base",
+          "note": "The profile identifies Samandira as a Turkish Army military airport and current home of the 4th Army Aviation Regiment, but no opening date is provided."
+        }
+      ],
+      "reason": "Skipped because available sources were current/base-profile listings without a dated operational start."
+    },
+    {
+      "source_id": "geonames:307308",
+      "name": "Sivrihisar",
+      "country_code": "TR",
+      "source_notes": [
+        {
+          "title": "Sivrihisar Airport",
+          "url": "https://www.wikidata.org/wiki/Q49467325",
+          "note": "Exact GeoNames-linked item does not support a military-base date and the item typing is not a clean military-base record."
+        }
+      ],
+      "reason": "Skipped because no safe military-base temporal marker was located for the row."
+    },
+    {
+      "source_id": "geonames:11325313",
+      "name": "Tulga",
+      "country_code": "TR",
+      "reason": "Skipped because available references identify a current Turkish army aviation barracks/airfield context but no credible opening, establishment, activation, construction, or closure year was found."
+    },
+    {
+      "source_id": "geonames:11500160",
+      "name": "Kumaritsa",
+      "country_code": "BG",
+      "reason": "Skipped because no safe dated military air-base marker was found for the specific GeoNames row."
+    },
+    {
+      "source_id": "geonames:11500259",
+      "name": "Sliven",
+      "country_code": "BG",
+      "reason": "Skipped because no safe dated military air-base marker was found for the specific GeoNames row."
+    },
+    {
+      "source_id": "geonames:3739342",
+      "name": "Aerodromo Asta",
+      "country_code": "CO",
+      "source_notes": [
+        {
+          "title": "Aerodromo Asta",
+          "url": "https://www.wikidata.org/wiki/Q23701594",
+          "note": "Exact GeoNames-linked item identifies an aerodrome but does not provide inception/opening data or a clean military-base history."
+        }
+      ],
+      "reason": "Skipped because available evidence identifies the aerodrome but does not provide a dated military operational marker."
+    },
+    {
+      "source_id": "geonames:3739337",
+      "name": "Aerodromo Las Magaritas",
+      "country_code": "CO",
+      "source_notes": [
+        {
+          "title": "Aerodromo Las Magaritas",
+          "url": "https://www.wikidata.org/wiki/Q23701595",
+          "note": "Exact GeoNames-linked item identifies an aerodrome but does not provide inception/opening data or a clean military-base history."
+        }
+      ],
+      "reason": "Skipped because available evidence identifies the aerodrome but does not provide a dated military operational marker."
+    },
+    {
+      "source_id": "geonames:414433",
+      "name": "Pinarbashi",
+      "country_code": "CY",
+      "reason": "Skipped because no credible public source with a dated military air-base opening, activation, construction, or closure marker was found for the Cyprus row."
+    },
+    {
+      "source_id": "geonames:11711583",
+      "name": "Stefanovikion",
+      "country_code": "GR",
+      "source_notes": [
+        {
+          "title": "Hellenic Republic Ministry of National Defence - Stefanovikio visit",
+          "url": "https://www.mod.mil.gr/en/deputy-minister-national-defence-alkiviadis-stefanis-visits-1st-army-aviation/",
+          "note": "The official ministry page confirms the 1st Army Aviation Brigade at the military airfield of Stefanovikio but does not provide an opening or establishment year for the airfield."
+        }
+      ],
+      "reason": "Skipped because available official evidence confirms current military-airfield identity only; the dated 1950 Army Aviation origin found in other sources is not specific to Stefanovikio."
+    },
+    {
+      "source_id": "geonames:11675788",
+      "name": "Tamara Military Garrison",
+      "country_code": "HN",
+      "reason": "Skipped because no safe public opening, establishment, activation, construction, or closure year was found for the specific Honduran garrison/air-base row."
+    },
+    {
+      "source_id": "geonames:11500198",
+      "name": "Nalaikh",
+      "country_code": "MN",
+      "reason": "Skipped because available public sources were current/descriptive or ambiguous and did not provide a safe dated operational marker for the specific Mongolian air-base row."
+    },
+    {
+      "source_id": "geonames:11500205",
+      "name": "Nemegete Uula",
+      "country_code": "MN",
+      "reason": "Skipped because no credible public source with an explicit opening, establishment, activation, construction, or closure year was found for the specific Mongolian row."
+    },
+    {
+      "source_id": "geonames:11494179",
+      "name": "Gueiren",
+      "country_code": "TW",
+      "reason": "Skipped because available sources did not provide a safe dated military air-base marker for the specific Gueiren row."
+    },
+    {
+      "source_id": "geonames:11494152",
+      "name": "Tsoying",
+      "country_code": "TW",
+      "reason": "Skipped because available sources did not provide a safe dated military air-base marker for the specific Tsoying row."
+    },
+    {
+      "source_id": "geonames:11457194",
+      "name": "Chirchik",
+      "country_code": "UZ",
+      "reason": "Skipped because no safe public opening, establishment, activation, construction, or closure year was found for the specific Uzbekistan air-base row."
+    },
+    {
+      "source_id": "geonames:11457205",
+      "name": "Pakhtakor",
+      "country_code": "UZ",
+      "reason": "Skipped because no safe public opening, establishment, activation, construction, or closure year was found for the specific Uzbekistan air-base row."
+    },
+    {
+      "source_id": "geonames:13526777",
+      "name": "Air Mercy Service",
+      "country_code": "ZA",
+      "reason": "Skipped as likely non-military/civilian medical aviation evidence mislabeled as an air-base feature; no military operational date was found."
+    },
+    {
+      "source_id": "geonames:11820080",
+      "name": "Chonggong-ni DPRK Underground Naval Base",
+      "country_code": "KP",
+      "reason": "Skipped because available public references describe or list the suspected DPRK facility without a safe opening, construction, activation, or closure year."
+    },
+    {
+      "source_id": "geonames:3436202",
+      "name": "Azopardo Naval Base",
+      "country_code": "AR",
+      "source_notes": [
+        {
+          "title": "Azopardo Naval Base",
+          "url": "https://www.wikidata.org/wiki/Q21828895",
+          "note": "Exact GeoNames-linked item confirms naval-base identity but does not provide inception/opening or closure data."
+        }
+      ],
+      "reason": "Skipped because no safe dated operational marker was located for the specific Argentine naval-base row."
+    },
+    {
+      "source_id": "geonames:3436107",
+      "name": "Barrio Obrero Base Naval",
+      "country_code": "AR",
+      "source_notes": [
+        {
+          "title": "Barrio Obrero Base Naval",
+          "url": "https://www.wikidata.org/wiki/Q21828924",
+          "note": "Exact GeoNames-linked item confirms naval-base identity but does not provide inception/opening or closure data."
+        }
+      ],
+      "reason": "Skipped because no safe dated operational marker was located for the specific Argentine naval-base row."
+    },
+    {
+      "source_id": "geonames:3946800",
+      "name": "Base Naval",
+      "country_code": "PE",
+      "reason": "Skipped because the row name is generic and available evidence did not safely identify the specific Peruvian naval base or provide a dated operational marker."
+    },
+    {
+      "source_id": "geonames:7670686",
+      "name": "Helen Island Permanent Ranger Station",
+      "country_code": "PW",
+      "reason": "Skipped as a ranger/conservation station rather than a military base; no military operational date was found."
+    },
+    {
+      "source_id": "geonames:11508249",
+      "name": "Destacamento Militar Campamento Guayacan",
+      "country_code": "GT",
+      "reason": "Skipped because no credible public opening, establishment, activation, construction, or closure year was found for the specific Guatemalan detachment/camp row."
+    }
+  ]
+}

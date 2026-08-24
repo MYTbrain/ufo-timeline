@@ -1,0 +1,380 @@
+{
+  "generated_at": "2026-06-04T00:00:00Z",
+  "temporal_source": "russia_round5_sourced_backfill_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11459309",
+      "name": "Millerovo Northwest",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 2009,
+          "end_year": null,
+          "label": "6969th air-base and later 31st fighter-regiment phase at Millerovo"
+        }
+      ],
+      "temporal_confidence": "medium_low",
+      "source_notes": [
+        {
+          "title": "Millerovo air base",
+          "url": "https://en.wikipedia.org/wiki/Millerovo_air_base",
+          "note": "Identifies Millerovo as a Russian Aerospace Forces air base and says it housed the 31st Guards Fighter Aviation Regiment by 2022."
+        },
+        {
+          "title": "Eduard MiG-29UB profile PDF",
+          "url": "https://www.eduard.com/out/media/1162.pdf",
+          "note": "Aircraft profile text says the 31st GvIAP was disbanded in 2009 and its aircraft were assigned to the 6969th Air Base at Millerovo."
+        }
+      ],
+      "rationale": "The queue name Millerovo Northwest matches the Millerovo air-base coordinates. The dated evidence supports a conservative 2009 no-later-than military aviation-base phase; the candidate does not infer the original construction year."
+    },
+    {
+      "source_id": "geonames:11458980",
+      "name": "Nizhniy Tagil Northeast",
+      "country_code": "RU",
+      "end_year": 1994,
+      "operational_intervals": [
+        {
+          "start_year": 1981,
+          "end_year": 1994,
+          "label": "Salka / Nizhniy Tagil NE military-airfield phase documented by 1981"
+        }
+      ],
+      "temporal_confidence": "medium_low",
+      "source_notes": [
+        {
+          "title": "Salka Aerodrome",
+          "url": "https://en.wikipedia.org/wiki/Salka_Aerodrome",
+          "note": "Identifies Salka as Nizhny Tagil Salka and cites a 1981 CIA APVO airfield reference; the linked Nizhny Tagil article says it was a military base until 1994."
+        },
+        {
+          "title": "Nizhny Tagil",
+          "url": "https://en.wikipedia.org/wiki/Nizhny_Tagil",
+          "note": "Notes Salka Aerodrome 17 km northeast of the city and states it was a military base until 1994."
+        }
+      ],
+      "rationale": "The queue coordinates align with Salka/Nizhniy Tagil NE. Because the evidence found in this pass gives a documented Cold War use marker and a 1994 military-base endpoint, this candidate records only the sourced 1981-1994 interval."
+    },
+    {
+      "source_id": "geonames:11459351",
+      "name": "Orenburg Southwest",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1992,
+          "end_year": 1998,
+          "label": "128th Guards Military Transport Aviation Regiment at Orenburg-2"
+        },
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "117th aviation-regiment lineage at Orenburg-2"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Orenburg (air base)",
+          "url": "https://en.wikipedia.org/wiki/Orenburg_(air_base)",
+          "note": "Identifies Orenburg as also called Orenburg Southwest, says the 128th Guards Military Transport Air Regiment arrived in 1992 and was disbanded in 1998, and says the 117th regiment arrived in 1994."
+        }
+      ],
+      "rationale": "The overlay label is an exact alias for Orenburg/Orenburg-2. The source provides dated resident-regiment intervals but no clean opening year, so the candidate reports intervals only."
+    },
+    {
+      "source_id": "geonames:11458907",
+      "name": "Plesetsk Plestsy",
+      "country_code": "RU",
+      "start_year": 1958,
+      "operational_intervals": [
+        {
+          "start_year": 1958,
+          "end_year": null,
+          "label": "Plesetsk cosmodrome support-airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Plestsy Airport",
+          "url": "https://en.wikipedia.org/wiki/Plestsy_Airport",
+          "note": "Identifies Plestsy Airport as a logistical base for Plesetsk Cosmodrome and says the 156th separate mixed air squadron was formed at the Angara proving ground in December 1958."
+        },
+        {
+          "title": "Plesetsk Cosmodrome - NTI",
+          "url": "https://www.nti.org/education-center/facilities/plesetsk-cosmodrome/",
+          "note": "States that Plesetsk was chosen in 1957 as the first operational Soviet ICBM base."
+        }
+      ],
+      "rationale": "The queue point matches Plestsy/Plesetsk support-airfield coordinates. The most specific airfield-related marker found is the December 1958 formation of the mixed air squadron supporting the Angara/Plesetsk military complex."
+    },
+    {
+      "source_id": "geonames:11459118",
+      "name": "Rtishchevo",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1990,
+          "end_year": null,
+          "label": "666th Training Aviation Regiment / training-base phase documented by 1990"
+        }
+      ],
+      "temporal_confidence": "medium_low",
+      "source_notes": [
+        {
+          "title": "Rtishchevo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Rtishchevo_(air_base)",
+          "note": "Identifies Rtishchevo as an air base and says Michael Holm's data suggests it was home to the 666th Training Aviation Regiment as of 1990; the page also describes the current 666th Training Aviation Regiment presence."
+        }
+      ],
+      "rationale": "The source gives a clean 1990 documented-use marker and current training-base use, but not a construction year. The candidate therefore records a conservative open interval beginning with the documented 1990 basing evidence."
+    },
+    {
+      "source_id": "geonames:11459129",
+      "name": "Ryazan Aleksandrovo",
+      "country_code": "RU",
+      "end_year": 2005,
+      "operational_intervals": [
+        {
+          "start_year": 1992,
+          "end_year": 2005,
+          "label": "865th Helicopter Reserve Base / storage and dismantling phase at Protasovo"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Protasovo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Protasovo_(air_base)",
+          "note": "Identifies Protasovo as also called Ryazan Alexandrovo or Aleksandrovo; says the DOSAAF training unit was disbanded after 1992 reforms and the base became home to the 865th Helicopter Reserve Base; 2004 and 2005 imagery showed the airfield vacated."
+        }
+      ],
+      "rationale": "The overlay label and coordinates match Protasovo/Ryazan Alexandrovo. The source supports a post-1992 helicopter reserve/storage phase and likely vacancy by 2004-2005, so the candidate uses 2005 as a conservative endpoint marker."
+    },
+    {
+      "source_id": "geonames:11458715",
+      "name": "Rzhev",
+      "country_code": "RU",
+      "start_year": 1950,
+      "operational_intervals": [
+        {
+          "start_year": 1950,
+          "end_year": 1980,
+          "label": "23rd Fighter Aviation Regiment PVO at Rzhev"
+        },
+        {
+          "start_year": 1950,
+          "end_year": null,
+          "label": "Rzhev-3 air-base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Rzhev (air base)",
+          "url": "https://en.wikipedia.org/wiki/Rzhev_(air_base)",
+          "note": "Identifies Rzhev/Rzhev-3 at matching coordinates, gives built/used dates of 1950 to present, and says the 23rd Fighter Aviation Regiment PVO operated there from 1950 to 1980."
+        }
+      ],
+      "rationale": "The queue point is an exact match to Rzhev/Rzhev-3. The source gives both a 1950 built/in-use date and a dated 1950-1980 fighter-regiment interval."
+    },
+    {
+      "source_id": "geonames:11459125",
+      "name": "Sennoy",
+      "country_code": "RU",
+      "start_year": 1940,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": null,
+          "label": "Bagay-Baranovka / Sennoy airfield phase"
+        },
+        {
+          "start_year": 1993,
+          "end_year": 2009,
+          "label": "395th separate test aviation squadron at Bagay-Baranovka"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Bagay-Baranovka air base",
+          "url": "https://en.wikipedia.org/wiki/Bagay-Baranovka_air_base",
+          "note": "Identifies Bagay-Baranovka as also called Sennoy/Sennoye and says the airfield was created in the early 1940s; it also gives a 1993-2009 395th separate test aviation squadron phase."
+        }
+      ],
+      "rationale": "The queue name Sennoy is an alias for Bagay-Baranovka at the same coordinate cluster. The source supports an early-1940s origin, represented conservatively as 1940, plus a dated 1993-2009 test-squadron interval."
+    },
+    {
+      "source_id": "geonames:11458676",
+      "name": "Siverskiy",
+      "country_code": "RU",
+      "start_year": 1955,
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1955,
+          "end_year": 2009,
+          "label": "Siversky air-base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Siversky (air base)",
+          "url": "https://en.wikipedia.org/wiki/Siversky_(air_base)",
+          "note": "Identifies Siversky at matching coordinates, gives built and in-use dates of 1955 to 2009, and notes jet fighter aircraft reported there as early as 1955."
+        }
+      ],
+      "rationale": "The overlay point is an exact match to Siversky/Siverskiy. The source directly supports a 1955-2009 operational span."
+    },
+    {
+      "source_id": "geonames:11459072",
+      "name": "Slavgorod North",
+      "country_code": "RU",
+      "start_year": 1968,
+      "end_year": 1999,
+      "operational_intervals": [
+        {
+          "start_year": 1968,
+          "end_year": 1999,
+          "label": "59th Training Aviation Regiment at Slavgorod North"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Slavgorod (air base)",
+          "url": "https://en.wikipedia.org/wiki/Slavgorod_(air_base)",
+          "note": "Identifies Slavgorod as also known as Slavgorod North, gives built/in-use dates of 1968 to 1999, and says it hosted the 59th Training Aviation Regiment from 1968 to 1999."
+        }
+      ],
+      "rationale": "The overlay label is an exact alias for Slavgorod air base. The source gives a clean 1968-1999 operational and resident-regiment interval."
+    },
+    {
+      "source_id": "geonames:11458680",
+      "name": "Smuravyevo",
+      "country_code": "RU",
+      "start_year": 1960,
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": 2009,
+          "label": "Smuravyevo / Gdov air-base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Smuravyevo",
+          "url": "https://en.wikipedia.org/wiki/Smuravyevo",
+          "note": "Identifies Smuravyevo/Gdov at matching coordinates, gives built and in-use dates of 1960 to 2009, and describes closure around the 2008 military reforms."
+        }
+      ],
+      "rationale": "The queue point is an exact match to Smuravyevo. The source directly supports a 1960-2009 operational span."
+    },
+    {
+      "source_id": "geonames:11459123",
+      "name": "Tambov",
+      "country_code": "RU",
+      "start_year": 1954,
+      "operational_intervals": [
+        {
+          "start_year": 1954,
+          "end_year": null,
+          "label": "Tambov/Vostochniy air-base phase"
+        },
+        {
+          "start_year": 2001,
+          "end_year": null,
+          "label": "3119th aviation-base storage/disposal phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Tambov air base",
+          "url": "https://en.wikipedia.org/wiki/Tambov_air_base",
+          "note": "Identifies Tambov/Vostochniy at matching coordinates, gives built/used dates of 1954 to present, and says the 301st Aircraft Repair Factory became the 3119th Aviation Base for storage and disposal in mid-2001."
+        }
+      ],
+      "rationale": "The overlay coordinates match Tambov/Vostochniy. The source gives a 1954 built/in-use marker and a later 2001 storage/disposal base transition."
+    },
+    {
+      "source_id": "geonames:11459267",
+      "name": "Vozzhayevka Northeast",
+      "country_code": "RU",
+      "start_year": 1948,
+      "operational_intervals": [
+        {
+          "start_year": 1948,
+          "end_year": null,
+          "label": "Vozzhayevka Northeast air-base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Vozzhayevka air base",
+          "url": "https://en.wikipedia.org/wiki/Vozzhayevka_air_base",
+          "note": "Identifies Vozzhayevka as also called Vozzhayevka Northeast, gives built/used dates of 1948 to present, and lists Cold War reconnaissance and fighter-bomber units."
+        }
+      ],
+      "rationale": "The queue label is an exact alias for Vozzhayevka. The source gives a direct 1948 built/in-use marker."
+    },
+    {
+      "source_id": "geonames:11459171",
+      "name": "Vyazma",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Vyazma air-base phase documented by 1960"
+        },
+        {
+          "start_year": 1993,
+          "end_year": null,
+          "label": "440th Independent Helicopter Regiment at Vyazma after relocation from Germany"
+        }
+      ],
+      "temporal_confidence": "medium_low",
+      "source_notes": [
+        {
+          "title": "Vyazma Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/vyazma/",
+          "note": "Specialist profile matches the overlay coordinates, says Vyazma was a Soviet Air Defence Forces installation in 1960, and says the 440th Independent Helicopter Regiment relocated from Stendal, Germany."
+        },
+        {
+          "title": "Russian Forces in the Western Military District - CNA",
+          "url": "https://www.cna.org/archive/CNA_Files/pdf/iop-2020-u-028759-final.pdf",
+          "note": "CNA Western Military District study lists the 440th OVP at Vyazma Airbase."
+        }
+      ],
+      "rationale": "The overlay point matches Vyazma. The sources support a documented 1960 air-defense-installation marker and later current helicopter-regiment basing, but not a precise construction year."
+    },
+    {
+      "source_id": "geonames:11458669",
+      "name": "aeroport Klyuchi",
+      "country_code": "RU",
+      "start_year": 1963,
+      "operational_intervals": [
+        {
+          "start_year": 1963,
+          "end_year": null,
+          "label": "Klyuchi Air Base phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Klyuchi (air base)",
+          "url": "https://en.wikipedia.org/wiki/Klyuchi_(air_base)",
+          "note": "Identifies Klyuchi Air Base near the settlement of Klyuchi in Kamchatka Krai, gives built/used dates of 1963 to present, and matches the queue coordinate cluster."
+        }
+      ],
+      "rationale": "The queue label aeroport Klyuchi and coordinates match Klyuchi Air Base in Kamchatka Krai. The source gives a direct 1963 built/in-use marker."
+    }
+  ]
+}

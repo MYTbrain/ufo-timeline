@@ -1,0 +1,554 @@
+{
+  "schema_version": 1,
+  "policy": "reviewed_same_incident_cross_source_merge",
+  "window": {
+    "start": "1896-11-01",
+    "end": "1897-06-30"
+  },
+  "canonical_full_mutated": false,
+  "review_method": "Conservative record-level review of shared dates, places, named witnesses, distinctive incident details, exact or close narrative matches, and source-specific provenance. Co-located month-only records without corroborating narrative evidence were retained as separate events.",
+  "clusters": [
+    {
+      "cluster_id": "suisun_1896_11_15",
+      "preferred_canonical_event_id": "evt_bf56f39edc337e8f04a4ed8e",
+      "canonical_event_ids": [
+        "evt_bf56f39edc337e8f04a4ed8e",
+        "evt_54f7a2d056ab6fcc42264c45"
+      ],
+      "match_basis": ["Same date and Suisun City", "Same telegraph lineman and powered-balloon narrative"]
+    },
+    {
+      "cluster_id": "rossland_1896_11_24",
+      "preferred_canonical_event_id": "evt_1f7f2707c135db310655ccba",
+      "canonical_event_ids": [
+        "evt_01bc26c94a6551316707d7ab",
+        "evt_1f7f2707c135db310655ccba"
+      ],
+      "match_basis": ["Same date and Rossland", "Exact same luminous-ball narrative"]
+    },
+    {
+      "cluster_id": "modesto_1896_11_26",
+      "preferred_canonical_event_id": "evt_785d88a2a083d7f46a488825",
+      "canonical_event_ids": [
+        "evt_42165b488f00e7f733141342",
+        "evt_785d88a2a083d7f46a488825"
+      ],
+      "match_basis": ["Same date and Modesto", "Same bank witnesses, northwest motion, altitude, and Great Airship wording"]
+    },
+    {
+      "cluster_id": "anderson_1896_11_30",
+      "preferred_canonical_event_id": "evt_d60e553a38e0164a854dc2f0",
+      "canonical_event_ids": [
+        "evt_de2daa8f2eb2449fd8ed0f83",
+        "evt_236077963e6db4fad89be30e",
+        "evt_d60e553a38e0164a854dc2f0"
+      ],
+      "match_basis": ["Same date and Anderson area", "Same separate observers, light beams, horse panic, and southwest departure"]
+    },
+    {
+      "cluster_id": "pacific_grove_1896_12_02",
+      "preferred_canonical_event_id": "evt_490b86be420048c220ae57c7",
+      "canonical_event_ids": [
+        "evt_490b86be420048c220ae57c7",
+        "evt_a522a6ecc4f6652d2ffa884e"
+      ],
+      "match_basis": ["Same date and 15 miles north of Pacific Grove", "Same ocean landing, three occupants, and concealment in woods"]
+    },
+    {
+      "cluster_id": "camptonville_1896_12_07",
+      "preferred_canonical_event_id": "evt_11f7155a73822bf8244bbab3",
+      "canonical_event_ids": [
+        "evt_11b3802a0e426b8c0835eab9",
+        "evt_11f7155a73822bf8244bbab3",
+        "evt_d37b19e647a5d73c307969fd"
+      ],
+      "match_basis": ["Same date and Camptonville", "Same landing, five investigators, and deaf or mute bearded occupant"]
+    },
+    {
+      "cluster_id": "hastings_south_1897_01_16",
+      "preferred_canonical_event_id": "evt_a6aff54761ade031e7e0a3d8",
+      "canonical_event_ids": [
+        "evt_a6aff54761ade031e7e0a3d8",
+        "evt_de08c22b5f4f92d15eb92eb5"
+      ],
+      "match_basis": ["Same date and location south of Hastings", "Same conical body, headlight, six side lights, wings, and fan rudder"]
+    },
+    {
+      "cluster_id": "hastings_1897_01_30",
+      "preferred_canonical_event_id": "evt_87320277ce54728772b894f4",
+      "canonical_event_ids": [
+        "evt_f3b5fd4c00425d897819a6ae",
+        "evt_87320277ce54728772b894f4"
+      ],
+      "match_basis": ["Same date and Hastings", "Same sober observers, immense light, 12-meter estimate, and later Inavale report"]
+    },
+    {
+      "cluster_id": "hastings_1897_01_31_02_01",
+      "preferred_canonical_event_id": "evt_f416f09009a13de6d3520822",
+      "canonical_event_ids": [
+        "evt_454c569a1dc2f6760d2d97b7",
+        "evt_8cee159507fe8484fccfdfe6",
+        "evt_e19ddabaec467bb6d1e5387b",
+        "evt_f416f09009a13de6d3520822"
+      ],
+      "match_basis": ["Same Hastings 9:30 p.m. incident", "Same circling, 200-foot descent, speed changes, and disappearance"],
+      "date_review": "Sources differ by one day; the mapped February 1 record remains primary and every raw date is preserved."
+    },
+    {
+      "cluster_id": "hibbard_sioux_city_1897_03_26",
+      "preferred_canonical_event_id": "evt_235df8e2c9d3708a2dadc9e3",
+      "canonical_event_ids": [
+        "evt_490c6425b6bdf27cbc5620fd",
+        "evt_fcdca7a285d24984593e0f4e",
+        "evt_235df8e2c9d3708a2dadc9e3",
+        "evt_af67dd8844f0d6b46475286d"
+      ],
+      "match_basis": ["Same date and area north of Sioux City", "Same Robert Hibbard anchor-and-rope dragging incident"]
+    },
+    {
+      "cluster_id": "topeka_1897_03_27",
+      "preferred_canonical_event_id": "evt_db36932dbb510367f394fd5c",
+      "canonical_event_ids": [
+        "evt_4e189f20dbd78b0dba0e88b8",
+        "evt_db36932dbb510367f394fd5c"
+      ],
+      "match_basis": ["Same date and Topeka", "Same multi-evening light and cigar report with later Belleville hover"]
+    },
+    {
+      "cluster_id": "omaha_1897_03_28",
+      "preferred_canonical_event_id": "evt_2b4af53e5b2312819eaffa2c",
+      "canonical_event_ids": [
+        "evt_34afc91a68db9cff6a79b079",
+        "evt_a527f65062238a7ddb2c6a99",
+        "evt_2b4af53e5b2312819eaffa2c",
+        "evt_cf34ec0c543ce064e4647a20"
+      ],
+      "match_basis": ["Same date and Omaha", "Same southeast arrival, large light, northwest motion, low altitude, and street crowd"]
+    },
+    {
+      "cluster_id": "everest_1897_04_01",
+      "preferred_canonical_event_id": "evt_947c973935238d93681ecd12",
+      "canonical_event_ids": [
+        "evt_915d08af8d5113b9e95f89a3",
+        "evt_d79a617fd351235d5d55a9de",
+        "evt_947c973935238d93681ecd12",
+        "evt_085d6b3495d3ff169d374155",
+        "evt_add6011ca6de494f1458df3f"
+      ],
+      "match_basis": ["Same date and Everest, Kansas", "Same townwide maneuvering, searchlight sweeps, rapid climbs, and five-minute hover"]
+    },
+    {
+      "cluster_id": "baltimore_ohio_1897_04",
+      "preferred_canonical_event_id": "evt_9f7fc5df5daf10a82686c909",
+      "canonical_event_ids": [
+        "evt_ccc65c2518b3b8c2344a5b42",
+        "evt_9f7fc5df5daf10a82686c909"
+      ],
+      "match_basis": ["Same Baltimore-area record", "Exact same horse reaction and fore-and-aft white-light narrative"],
+      "date_review": "One source is month-only and sorts to April 15; the explicit April 1 record remains primary."
+    },
+    {
+      "cluster_id": "lock_mills_1897_04_11",
+      "preferred_canonical_event_id": "evt_65635de173d857c18a415436",
+      "canonical_event_ids": [
+        "evt_9101eff2ff32842179f687c3",
+        "evt_65635de173d857c18a415436",
+        "evt_aaff9e992a191c5490a68099"
+      ],
+      "match_basis": ["Same date and Lock Mills", "Same airship visitor projecting pictures on a barn"]
+    },
+    {
+      "cluster_id": "milwaukee_1897_04_11",
+      "preferred_canonical_event_id": "evt_b12fe7df760f2c41286ff767",
+      "canonical_event_ids": [
+        "evt_8d63b96654a7096924e10b0b",
+        "evt_b12fe7df760f2c41286ff767",
+        "evt_6e7fd1b48215b8e7d18c7ca8"
+      ],
+      "match_basis": ["Same date, time, and Milwaukee", "Same hovering airship with an occupant visible"]
+    },
+    {
+      "cluster_id": "girard_green_ridge_1897_04_12",
+      "preferred_canonical_event_id": "evt_cb0d9ccc2682a7ab310a169a",
+      "canonical_event_ids": [
+        "evt_034a9c2a7a9f733fde4d96ca",
+        "evt_516f3247e9b3f7e73083e2d7",
+        "evt_cb0d9ccc2682a7ab310a169a",
+        "evt_77dfd56fbdefab58b847cc92",
+        "evt_5b1b81e87968eeef177e24bc"
+      ],
+      "match_basis": ["Same date and Girard or Green Ridge location", "Same miners, railroad operator Paul McCramer, repair, traces, and northward departure"]
+    },
+    {
+      "cluster_id": "nilwood_1897_04_12",
+      "preferred_canonical_event_id": "evt_a772ff86475348cc97284990",
+      "canonical_event_ids": [
+        "evt_a4e6fc0f75c4eb4495dc48fc",
+        "evt_a772ff86475348cc97284990",
+        "evt_1b0565e022d411940811c660",
+        "evt_c48a5cda3602c47582a19d30"
+      ],
+      "match_basis": ["Same date and Nilwood", "Same Z. Thacker property, three witnesses, domed cigar, and northward departure"]
+    },
+    {
+      "cluster_id": "salisbury_1897_04_12",
+      "preferred_canonical_event_id": "evt_a0e7aa9e3392109e821f7a13",
+      "canonical_event_ids": [
+        "evt_3b79b6c9b5113b78613d1d7c",
+        "evt_a0e7aa9e3392109e821f7a13"
+      ],
+      "match_basis": ["Same date and northwest of Salisbury", "Same cigar flying against the wind, abrupt northeast climb, and side lights"]
+    },
+    {
+      "cluster_id": "girard_carlinville_1897_04_13",
+      "preferred_canonical_event_id": "evt_2a0f94c8f5254fdcc8db8615",
+      "canonical_event_ids": [
+        "evt_a4449b09829a684e5a6252a7",
+        "evt_2a0f94c8f5254fdcc8db8615",
+        "evt_d599aab4c32cd1f5ec62b95b"
+      ],
+      "match_basis": ["Same date and Girard-Carlinville telegraph route", "Same message, 100-foot craft, railroad landing, large M, and occupants"]
+    },
+    {
+      "cluster_id": "lake_elmo_1897_04_13",
+      "preferred_canonical_event_id": "evt_4c86d13b749bf94c04ea0061",
+      "canonical_event_ids": [
+        "evt_487386702b78c329cdbb79e9",
+        "evt_1a2047ab2847a4bdc5741d3f",
+        "evt_4c86d13b749bf94c04ea0061",
+        "evt_df6e2ffe8ece7049514c881f"
+      ],
+      "match_basis": ["Same date and Lake Elmo", "Same lantern-bearing figure, cylindrical craft, colored lights, and giant footprints"]
+    },
+    {
+      "cluster_id": "cleveland_lake_erie_1897_04_14",
+      "preferred_canonical_event_id": "evt_ce11c0608fe24b62899a259e",
+      "canonical_event_ids": [
+        "evt_534cbc88f03dc1d4dfba77c7",
+        "evt_1fbef2fd11fe19041289af30",
+        "evt_b6f22e030a6bd54ab51f3c2a",
+        "evt_ce11c0608fe24b62899a259e",
+        "evt_ccf0aa0a2ab0ec4616403f3a"
+      ],
+      "match_basis": ["Same date and Lake Erie near Cleveland", "Same Sea Wing witnesses, canopy craft, fishing man, woman and child, and balloon ascent"]
+    },
+    {
+      "cluster_id": "gas_city_1897_04_14",
+      "preferred_canonical_event_id": "evt_b1a619bdf404a4bfc768a53f",
+      "canonical_event_ids": [
+        "evt_2c8313f01af62c728c8188b1",
+        "evt_b1a619bdf404a4bfc768a53f"
+      ],
+      "match_basis": ["Same date and Gas City", "Same John Roush property landing, six occupants, repairs, and animal panic"]
+    },
+    {
+      "cluster_id": "springfield_1897_04_15",
+      "preferred_canonical_event_id": "evt_ffd0f8bb0e5377700fd24987",
+      "canonical_event_ids": [
+        "evt_bd07522ca6f43a2588f318f7",
+        "evt_ffd0f8bb0e5377700fd24987",
+        "evt_adcab532373eeb99a3e2ac76"
+      ],
+      "match_basis": ["Same date and Springfield, Illinois", "Same Adolph Winkle and John Hulle encounter, three occupants, Quincy flight, and electrical repairs"]
+    },
+    {
+      "cluster_id": "perry_springs_1897_04_15",
+      "preferred_canonical_event_id": "evt_140dd30147a951267d7a6a55",
+      "canonical_event_ids": [
+        "evt_e5b9275172d0b963bf298278",
+        "evt_140dd30147a951267d7a6a55",
+        "evt_f289675fb845726e59a0945a"
+      ],
+      "match_basis": ["Same date and Perry Springs-Hersman rail line", "Same Wabash passenger train pursuit, 15 minutes, and red and white lights"]
+    },
+    {
+      "cluster_id": "linn_grove_1897_04_15",
+      "preferred_canonical_event_id": "evt_feebee667390e5529851733e",
+      "canonical_event_ids": [
+        "evt_fe58de1c7f612d128d7a6df5",
+        "evt_f06f01101b7ae304c2b803c9",
+        "evt_feebee667390e5529851733e"
+      ],
+      "match_basis": ["Same date and Linn Grove", "Same five named men, landed craft, 700-meter approach, four wings, and two occupants"]
+    },
+    {
+      "cluster_id": "howard_artesian_1897_04_15",
+      "preferred_canonical_event_id": "evt_311243c06edbbc82021716d7",
+      "canonical_event_ids": [
+        "evt_d6721a80689ba33d815b214b",
+        "evt_311243c06edbbc82021716d7",
+        "evt_cad7d8b5ade1d596c7e7b6a0"
+      ],
+      "match_basis": ["Same date and Howard-Artesian rail segment", "Same low-flying object following a train and engineer Joe Wright"]
+    },
+    {
+      "cluster_id": "hudson_1897_04_15",
+      "preferred_canonical_event_id": "evt_b452935ac7e2ef5786b1c0a0",
+      "canonical_event_ids": [
+        "evt_b452935ac7e2ef5786b1c0a0",
+        "evt_9f8569cc6aa57ce55825b738"
+      ],
+      "match_basis": ["Same date, time, and Hudson, Michigan", "Same wingless cigar, yellow bow and stern lights, northward path, 500-foot altitude, and moonlight"]
+    },
+    {
+      "cluster_id": "downs_1897_04_16",
+      "preferred_canonical_event_id": "evt_1a61a95ebbc8c997201f6f95",
+      "canonical_event_ids": [
+        "evt_177fbd214813f4ba5655c97d",
+        "evt_c466a700ab69fece857e2a0f",
+        "evt_15b42909b0a718e9aa12d9f6",
+        "evt_1a61a95ebbc8c997201f6f95",
+        "evt_18a45d685b81a1e557e2e198"
+      ],
+      "match_basis": ["Same date and Downs Township", "Same farmer Haney Savidge, landed craft, six people, brief conversation, and departure"]
+    },
+    {
+      "cluster_id": "logan_1897_04_16",
+      "preferred_canonical_event_id": "evt_46ba1acf454fdc3aebb35269",
+      "canonical_event_ids": [
+        "evt_46ba1acf454fdc3aebb35269",
+        "evt_3e59ce44961190e7bf3d795d",
+        "evt_d1ec800b47909a2e325327dd"
+      ],
+      "match_basis": ["Same date and Logan, Ohio", "Same flash, 40-foot dark body, voices, buggy pursuit, 50-foot descent, and rapid ascent"]
+    },
+    {
+      "cluster_id": "bay_city_1897_04_16",
+      "preferred_canonical_event_id": "evt_0515afd795098d91522b115b",
+      "canonical_event_ids": [
+        "evt_0515afd795098d91522b115b",
+        "evt_bb37b647029b6ccb214b65f6"
+      ],
+      "match_basis": ["Same date, time, and Bay City", "Same 50-to-70-foot solid body, red end lights, descent, speed change, and conical form"]
+    },
+    {
+      "cluster_id": "saginaw_1897_04_16",
+      "preferred_canonical_event_id": "evt_721a533ba6e5f5453b301d4d",
+      "canonical_event_ids": [
+        "evt_721a533ba6e5f5453b301d4d",
+        "evt_9e2cb789d8e570db8e7e1005"
+      ],
+      "match_basis": ["Same date, time, and Saginaw", "Same police witnesses, drumming noise, 30-foot cigar, hanging object, colored lights, and southward travel"]
+    },
+    {
+      "cluster_id": "greenville_1897_04_16_18",
+      "preferred_canonical_event_id": "evt_3f134eb0f68e216fb050b5e1",
+      "canonical_event_ids": [
+        "evt_3f134eb0f68e216fb050b5e1",
+        "evt_94beb287a12379523c302b53"
+      ],
+      "match_basis": ["Same Greenville witness Williams", "Same immense cigar, wings, steamboat sidewheel, fish tail, dimensions, and encounter"],
+      "date_review": "Sources differ by two days; the mapped April 18 record remains primary and both raw dates are preserved."
+    },
+    {
+      "cluster_id": "williamston_1897_04_17",
+      "preferred_canonical_event_id": "evt_f9bbfa8e609bf6e61cea127f",
+      "canonical_event_ids": [
+        "evt_5396376506fe21ac18e32968",
+        "evt_cb2b8989499758d2371707d4",
+        "evt_ba2a994c56e57d014c6c0c73",
+        "evt_f9bbfa8e609bf6e61cea127f",
+        "evt_fddf8335305946f5c41b0270"
+      ],
+      "match_basis": ["Same date and Williamston", "Same dozen farmers, hour-long maneuver, landing, three-meter pilot, musical speech, and broken hip"]
+    },
+    {
+      "cluster_id": "upland_1897_04_17",
+      "preferred_canonical_event_id": "evt_72cff984ba75dc864f7e0567",
+      "canonical_event_ids": [
+        "evt_72cff984ba75dc864f7e0567",
+        "evt_c1f0df2b776f95bd7925a6af"
+      ],
+      "match_basis": ["Same date and Upland", "Same feed-mill landing and heavyset long-whiskered man buying cattle feed"]
+    },
+    {
+      "cluster_id": "texas_whaleback_1897_04_17",
+      "preferred_canonical_event_id": "evt_f50a6f9ffb12aff155b537f1",
+      "canonical_event_ids": [
+        "evt_f50a6f9ffb12aff155b537f1",
+        "evt_ea54342d59a6f175d5700844"
+      ],
+      "match_basis": ["Same date and Texas prison-official account", "Same landed whaleback craft, wings, fins, lake, and binocular observation"]
+    },
+    {
+      "cluster_id": "sistersville_1897_04_18",
+      "preferred_canonical_event_id": "evt_9e022392bd8752e71e41609b",
+      "canonical_event_ids": [
+        "evt_9e022392bd8752e71e41609b",
+        "evt_a1796a820697ecf357fd2aaf",
+        "evt_a78c1a5a10c08a4a9dabcad6"
+      ],
+      "match_basis": ["Same date and Sistersville", "Same hovering cigar, searchlights, wings or fins, red-white-green lights, and 180-foot estimate"]
+    },
+    {
+      "cluster_id": "leroy_hamilton_1897_04",
+      "preferred_canonical_event_id": "evt_4c36c74dcfce11a952bf7272",
+      "canonical_event_ids": [
+        "evt_a3ab653e108b3a637f317bd1",
+        "evt_ccd9984699038b58f79c8c94",
+        "evt_8f58362e13d5deaf1ae25f8b",
+        "evt_437a609fc0707a29e832d698",
+        "evt_4c36c74dcfce11a952bf7272",
+        "evt_1facbad0ec7e9220464de105",
+        "evt_473041f46889b3c58ae4b2f9"
+      ],
+      "match_basis": ["Same Alexander Hamilton and LeRoy cattle incident", "Same cigar body, transparent cabin, occupants, cable, heifer, and later hoax classification"],
+      "date_review": "One retelling is dated April 1; the six April 19 records establish the primary date while every raw date is preserved."
+    },
+    {
+      "cluster_id": "greenfield_1897_04_19",
+      "preferred_canonical_event_id": "evt_b47a5acbdbc54c4b7584d926",
+      "canonical_event_ids": [
+        "evt_b8ed81fdcb2423f49d2d7d2f",
+        "evt_b47a5acbdbc54c4b7584d926",
+        "evt_347d7b2b13776af8437e7a5b",
+        "evt_9fba5620d947762b6b2e0a9a"
+      ],
+      "match_basis": ["Same date and Greenfield", "Same postmaster Sisson, low airship, woman netting pigeons, and Airship Co. letter"]
+    },
+    {
+      "cluster_id": "homan_1897_04_20",
+      "preferred_canonical_event_id": "evt_c7723c3fbfae85e0b8ad48e4",
+      "canonical_event_ids": [
+        "evt_32ed4fa79f5891833da14998",
+        "evt_c7723c3fbfae85e0b8ad48e4",
+        "evt_b0c555a20683884aa992fb21",
+        "evt_e8c0e9ef7e150e4f70afda37",
+        "evt_ad502901249aa3cf8bd580a5"
+      ],
+      "match_basis": ["Same Captain James or Jim Hooton incident near Homan", "Same steam-engine sound, landed pointed cylinder, lateral wheels, overhead blade, dark glasses, and occupants"],
+      "date_review": "The exact April 20 account remains primary; month-only and May 13 retellings are preserved as source snapshots."
+    },
+    {
+      "cluster_id": "rockland_1897_04_21_22",
+      "preferred_canonical_event_id": "evt_7575506eaebca2ab7a0969a0",
+      "canonical_event_ids": [
+        "evt_db41e73f995edb524654668e",
+        "evt_224b3a1fc611ede6012ca276",
+        "evt_03fab01d5f064b0986dc4189",
+        "evt_7575506eaebca2ab7a0969a0",
+        "evt_aeb43292b619ff30a5eb7d29"
+      ],
+      "match_basis": ["Same John M. Barclay incident at Rockland", "Same barking dogs, high-pitched or whirring sound, low oblong craft, peaceful visitor, hardware request, and payment"],
+      "date_review": "Sources differ by one day; the mapped April 22 record remains primary and every raw date is preserved."
+    },
+    {
+      "cluster_id": "josserand_1897_04_22_23",
+      "preferred_canonical_event_id": "evt_2a138f2047243ed586f14bb7",
+      "canonical_event_ids": [
+        "evt_8b5dc4290b36ab28531ef6ee",
+        "evt_2a138f2047243ed586f14bb7",
+        "evt_2641b84edbb3e8f6d201a182",
+        "evt_c164aa6e4a935a45aa4edf71",
+        "evt_a2dbbc2ad71bddc485cbbebd"
+      ],
+      "match_basis": ["Same Frank Nichols incident east of Josserand", "Same midnight machinery noise, landed illuminated craft, six to eight occupants, water request, and electrical-power claim"],
+      "date_review": "Four sources use April 22 and one uses April 23; the April 22 newspaper account remains primary."
+    },
+    {
+      "cluster_id": "texarkana_1897_04",
+      "preferred_canonical_event_id": "evt_433a35db59fa6c08bdfdf577",
+      "canonical_event_ids": [
+        "evt_3e1d4adaa47edf30493f8e3f",
+        "evt_73b3cebd440d3d075d24c57e",
+        "evt_433a35db59fa6c08bdfdf577",
+        "evt_2e24b768906aeda1d1fc74aa",
+        "evt_ee0bdede4f62691b903e8c76"
+      ],
+      "match_basis": ["Same Judge Lawrence Byrne or McKinney Bayou surveying incident near Texarkana", "Same anchored craft and three foreign-speaking occupants described as Japanese"],
+      "date_review": "One retelling uses April 17; the four April 23 records establish the primary date."
+    },
+    {
+      "cluster_id": "kountze_1897_04_23",
+      "preferred_canonical_event_id": "evt_f021287961451df9f5a7405c",
+      "canonical_event_ids": [
+        "evt_0caa6f4b8840fddee43142a5",
+        "evt_f021287961451df9f5a7405c",
+        "evt_91c1a519da050fae49e991bf"
+      ],
+      "match_basis": ["Same date and Kountze", "Same two witnesses, landed 50-by-20-foot cigar, Jackson and Wilson, and punctured air compartment"]
+    },
+    {
+      "cluster_id": "louisville_1897_04_24",
+      "preferred_canonical_event_id": "evt_23dca4dc1e801a628b05f193",
+      "canonical_event_ids": [
+        "evt_a97f2094a48a6c928df0f06e",
+        "evt_23dca4dc1e801a628b05f193",
+        "evt_0dc682f6e598bfa14175684d"
+      ],
+      "match_basis": ["Same date and Louisville", "Same buzzing, 200-foot cigar, man at stern, hat wave, and two men at the helm"]
+    },
+    {
+      "cluster_id": "merkel_1897_04_25_26",
+      "preferred_canonical_event_id": "evt_3f8b932874dd6330ad879aa8",
+      "canonical_event_ids": [
+        "evt_393e1aa178517f1a1231a4c0",
+        "evt_3f8b932874dd6330ad879aa8",
+        "evt_e5006976f6c8077a6f501965",
+        "evt_af602d11d85a4314b2a1bdbf",
+        "evt_a37dda317f528874fa73e381"
+      ],
+      "match_basis": ["Same Merkel church-returning group", "Same dragged object, rope snagged on railroad rail, uniformed man descending, cutting rope, and departing"],
+      "date_review": "Four sources use April 25 and one newspaper retelling is dated April 26; April 25 remains primary."
+    },
+    {
+      "cluster_id": "aquila_1897_04_26",
+      "preferred_canonical_event_id": "evt_76e529b267a7f9ad6682777b",
+      "canonical_event_ids": [
+        "evt_85e663e0e93bc1c74994a85c",
+        "evt_76e529b267a7f9ad6682777b",
+        "evt_46f2fab3c7ef443140e85b13",
+        "evt_ccb9366f195bd7a676ac214b"
+      ],
+      "match_basis": ["Same date and Aquila-Hillsboro area", "Same lawyer, frightened horse and carriage, searchlight, smaller underside lights, remote landing, and northeast departure"]
+    },
+    {
+      "cluster_id": "yonkers_1897_04_30",
+      "preferred_canonical_event_id": "evt_a7554c9179b8f3b1ef837db4",
+      "canonical_event_ids": [
+        "evt_63eccd8a158c77314fece8c5",
+        "evt_a7554c9179b8f3b1ef837db4"
+      ],
+      "match_basis": ["Same date and Yonkers", "Same three local witnesses, bright partly covered spotlight, and northward motion"]
+    },
+    {
+      "cluster_id": "winnipeg_1897_05_01",
+      "preferred_canonical_event_id": "evt_32c06a2a070e2501f1991a50",
+      "canonical_event_ids": [
+        "evt_32c06a2a070e2501f1991a50",
+        "evt_396387c5f3a623d60fb841f1"
+      ],
+      "match_basis": ["Same date and Winnipeg", "Same eastward river path and sharp turn north over a hospital"]
+    },
+    {
+      "cluster_id": "jenny_lind_1897_05_04",
+      "preferred_canonical_event_id": "evt_1c97e567eb8743ebc757b73f",
+      "canonical_event_ids": [
+        "evt_4a4bd802a40f71e1a2c6f5c2",
+        "evt_1c97e567eb8743ebc757b73f"
+      ],
+      "match_basis": ["Same date and Jenny Lind", "Same townwide northeast-to-southwest overflight, landing, English-speaking occupant, and bird-catching statement"]
+    },
+    {
+      "cluster_id": "cincinnati_1897_05_04",
+      "preferred_canonical_event_id": "evt_35dd3924703b40873c55884a",
+      "canonical_event_ids": [
+        "evt_35dd3924703b40873c55884a",
+        "evt_0c7bb057fb08c81f09817681"
+      ],
+      "match_basis": ["Same date, time, witness Louis Dumhoff, and Garfield Place address", "Same red egg-shaped light and matching newspaper account"]
+    },
+    {
+      "cluster_id": "hot_springs_1897_05_06",
+      "preferred_canonical_event_id": "evt_dffa0f8dc1b3d885709fc263",
+      "canonical_event_ids": [
+        "evt_6144a01dabc11b9f0a647d00",
+        "evt_7f7ab8da5986ece5eff05f07",
+        "evt_dffa0f8dc1b3d885709fc263",
+        "evt_ce61f170e74ef24956a57e4f",
+        "evt_5e9060ee1b2dddb26f4696e7"
+      ],
+      "match_basis": ["Same date and Hot Springs", "Same officers Sumpter and McLemore, horseback approach, descending light, balking horses, two men, woman, water container, and discussion"]
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "input_overlay": "webapp/static_public/data/map_overlays/military_bases.geojson",
+  "match_key": "source_id",
+  "scope": "Source-supported temporal override candidates for remaining undated long-tail Middle East, Africa, South Asia, Pacific, and Europe military/facility overlay records. This file is additive only; app code, tests, overlay GeoJSON, and existing override JSON were not edited.",
+  "selection_rule": "Candidate must be present in the military_bases.geojson overlay and have source evidence for a defensible year or interval. Current-activity-only mentions, unsourced summaries, and weak name-only matches were excluded.",
+  "candidates": [
+    {
+      "source_id": "geonames:11749390",
+      "name": "Bilbeis Air Base",
+      "country_code": "EG",
+      "start_year": 1950,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: نبذة تاريخية - الكلية الجوية; URL: https://academy.mod.gov.eg/air.aspx; Egyptian Military Academy official Air College history says Bilbeis airfield was selected on 1 August 1950 after evacuation by British air forces as the new site for the advanced flying school."
+      ],
+      "rationale": "Use 1950 as the defensible start for the Egyptian Air College/Bilbeis training-airfield phase. The source supports the Bilbeis site selection year, not necessarily the earliest British RAF use of the airfield."
+    },
+    {
+      "source_id": "geonames:11112318",
+      "name": "Pakistan Air Force Base Masrur",
+      "country_code": "PK",
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1945,
+          "label": "Mauripur temporary Allied/US Air Corps staging and air transport base phase"
+        },
+        {
+          "start_year": 1948,
+          "end_year": null,
+          "label": "RPAF/PAF Station Mauripur, later PAF Base Masroor phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: PAF Masroor; URL: https://www.globalsecurity.org/military/world/pakistan/masroor.htm; GlobalSecurity describes Mauripur as established during World War II in 1940-41 and says RPAF Station Mauripur was established on 1 January 1948."
+      ],
+      "rationale": "The source directly ties the overlay site to Mauripur/Masroor and supports both a World War II staging phase and a post-independence PAF station phase."
+    },
+    {
+      "source_id": "geonames:7038760",
+      "name": "Pakistan Air Force Chaklala",
+      "country_code": "PK",
+      "start_year": 1935,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: PAF Base Nur Khan (RAF Chaklala); URL: https://www.globalmilitary.net/airbases/paf-base-nur-khan/; GlobalMilitary lists the site as established in 1935 as RAF Chaklala, transferred to the Royal Pakistan Air Force in 1947, and renamed from PAF Base Chaklala to PAF Base Nur Khan in 2012."
+      ],
+      "rationale": "Use 1935 as the earliest supported RAF Chaklala airbase year for the same Chaklala/Nur Khan military airfield lineage."
+    },
+    {
+      "source_id": "geonames:11749508",
+      "name": "Ambala Air Force Station",
+      "country_code": "IN",
+      "start_year": 1919,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Ambala Air Force Station (AFS): Location, History, Importance & Address; URL: https://www.pw.live/defence/exams/ambala-air-force-station; PW Defence states Ambala Air Force Station began as Camp Umbala in 1919 and later became a permanent air force station headquarters in 1938.",
+        "Title: IAF Station Ambala's journey from year 1919 till 2020; URL: https://www.thefinancialworld.com/iaf-station-ambalas-journey-from-year-1919-till-2020/; The Financial World reports RAF squadron operations at Ambala beginning in September-November 1919."
+      ],
+      "rationale": "Use 1919 as a medium-confidence start for the RAF/Camp Umbala airfield lineage that became Ambala Air Force Station."
+    },
+    {
+      "source_id": "geonames:8629679",
+      "name": "Yelahanka Airforce Base",
+      "country_code": "IN",
+      "operational_intervals": [
+        {
+          "start_year": 1942,
+          "end_year": null,
+          "label": "World War II RAF-station airfield lineage noted for the site"
+        },
+        {
+          "start_year": 1963,
+          "end_year": null,
+          "label": "IAF transport training airfield recommissioned at Yelahanka"
+        },
+        {
+          "start_year": 1984,
+          "end_year": null,
+          "label": "Air Force Station Yelahanka raised as station-level unit"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Bharat Rakshak: Indian Air Force - AFS Yelahanka; URL: https://www.bharat-rakshak.com/indianairforce/database/units/414%2BAFS%2BYelahanka; Bharat Rakshak notes No. 225 Group Communication Flight at the RAF station in 1942, recommissioning of the deserted field on 1 August 1963, and AFS Yelahanka date raised as 17 December 1984."
+      ],
+      "rationale": "The source supports a layered interval candidate: older RAF-site lineage, recommissioned IAF training use from 1963, and formal AFS unit date in 1984."
+    },
+    {
+      "source_id": "geonames:11749505",
+      "name": "Panagarh Air Force Station",
+      "country_code": "IN",
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": null,
+          "label": "World War II airbase constructed at Panagarh"
+        },
+        {
+          "start_year": 2016,
+          "end_year": null,
+          "label": "Renamed Air Force Station Arjan Singh"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Panagarh airbase renamed after former IAF chief Arjan Singh; URL: https://www.business-standard.com/article/pti-stories/panagarh-airbase-renamed-after-former-iaf-chief-arjan-singh-116041500468_1.html; PTI/Business Standard reports the Panagarh airbase was constructed in 1944 during World War II and renamed Air Force Station Arjan Singh in April 2016."
+      ],
+      "rationale": "Use 1944 for the constructed military airbase lineage and 2016 for the later named Air Force Station Arjan Singh phase."
+    },
+    {
+      "source_id": "geonames:11749480",
+      "name": "Abu ad Duhur Air Base",
+      "country_code": "SY",
+      "end_year": 2015,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Abu al-Duhur Air Base; URL: https://en.wikipedia.org/wiki/Abu_al-Duhur_Air_Base; the page summarizes the Syrian civil-war siege and says al-Nusra Front took control of the airbase in September 2015 after surrounding it for nearly three years.",
+        "Title: Syrian Forces Capture Idlib Province Airbase; URL: https://news.antiwar.com/2018/01/21/syrian-forces-capture-idlib-province-airbase/; Antiwar.com reports the Syrian Army lost Abu al-Duhur in mid-2015 and recaptured it in January 2018."
+      ],
+      "rationale": "Only an end year is proposed: 2015 marks the end of the pre-capture Syrian government airbase-control phase supported by conflict reporting."
+    },
+    {
+      "source_id": "geonames:10172542",
+      "name": "Thawrah Military Airport",
+      "country_code": "SY",
+      "operational_intervals": [
+        {
+          "start_year": null,
+          "end_year": 2014,
+          "label": "Syrian army Tabqa/Thawrah airbase phase before Islamic State capture"
+        },
+        {
+          "start_year": 2017,
+          "end_year": null,
+          "label": "Post-Islamic State control change after SDF capture"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Islamic State strengthens control in Syria; URL: https://www.aljazeera.com/news/2014/8/27/islamic-state-strengthens-control-in-syria; Al Jazeera reports Islamic State took control of Tabqa airbase after a five-day battle in August 2014.",
+        "Title: Kurdish-led forces capture Tabqa airbase west of Syria's Raqqa from IS control; URL: https://www.xinhuanet.com/english/2017-03/27/c_136159446.htm; Xinhua reports the SDF fully captured Tabqa airport from Islamic State in March 2017."
+      ],
+      "rationale": "The evidence supports control-change intervals rather than original construction. Use with a conflict-control caveat."
+    },
+    {
+      "source_id": "geonames:11749396",
+      "name": "Okba Ibn Nafa Air Base",
+      "country_code": "LY",
+      "start_year": 1970,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Wheelus Air Base - United States Nuclear Forces; URL: https://www.globalsecurity.org/wmd/facility/wheelus.htm; GlobalSecurity says the United States agreed to vacate Wheelus by June 1970 and that Libya's former SAC base was renamed Okba Ben Nafi Air Base.",
+        "Title: Wheelus Today: Mitiga Airport; URL: https://libyanheritagehouse.org/wheelus-lives-on-memories-and-reminiscences/mitiha-airport; Libyan Heritage House says after Wheelus closed on 11 June 1970 the former U.S. base was renamed Okba Ben Nafi Air Base and used by the Libyan People's Air Force."
+      ],
+      "rationale": "Use 1970 as the source-supported start of the Okba/Libyan Air Force phase at the former Wheelus site."
+    },
+    {
+      "source_id": "geonames:11843670",
+      "name": "Al Kharj",
+      "country_code": "SA",
+      "operational_intervals": [
+        {
+          "start_year": 1990,
+          "end_year": 1991,
+          "label": "Rapid coalition buildup at Al Kharj during Operation Desert Shield/Storm"
+        },
+        {
+          "start_year": 1996,
+          "end_year": 2003,
+          "label": "Prince Sultan Air Base coalition/USAF command-and-control phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: The Short, Strange Life of PSAB; URL: https://www.airandspaceforces.com/article/0712PSAB/; Air & Space Forces Magazine describes Al Kharj changing in less than two months from a base with no buildings to a major support site, then emphasizes the 1999-early 2003 Prince Sultan Air Base role.",
+        "Title: 4404th Wing (Provisional); URL: https://www.globalsecurity.org/military/agency/usaf/4404wg.htm; GlobalSecurity notes coalition rotations connected to the 4404th Wing from 1996 and the 1998 inactivation/transition at Prince Sultan Air Base."
+      ],
+      "rationale": "The candidate covers the Al Kharj/Prince Sultan Air Base coalition-use phases rather than an original Saudi construction date."
+    },
+    {
+      "source_id": "geonames:400679",
+      "name": "King Salman Airbase",
+      "country_code": "SA",
+      "start_year": 2015,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: King Salman Air Base (closed 2021); URL: https://en.wikipedia.org/wiki/King_Salman_Air_Base_%28closed_2021%29; the page says a royal decree on 6 October 2015 renamed Riyadh Air Base to King Salman Air Base."
+      ],
+      "rationale": "Use 2015 only for the King Salman Air Base name phase. This does not attempt to date the older Riyadh airport or air-base lineage."
+    },
+    {
+      "source_id": "geonames:11499692",
+      "name": "Rasheed",
+      "country_code": "IQ",
+      "operational_intervals": [
+        {
+          "start_year": 1922,
+          "end_year": 1938,
+          "label": "RAF Hinaidi / British RAF main-base phase"
+        },
+        {
+          "start_year": 1938,
+          "end_year": null,
+          "label": "Royal Iraqi Air Force / Iraqi Air Force Rasheed airbase phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Rasheed Air Base; URL: https://en.wikipedia.org/wiki/Rasheed_Air_Base; the page says the airfield became RAF Hinaidi in 1922 and was handed over to the Royal Iraqi Air Force in 1938.",
+        "Title: Rasheed Air Base (Al Salam Air Base); URL: https://www.globalmilitary.net/airbases/rasheed-air-base/; GlobalMilitary repeats the 1922 RAF Hinaidi and 1938 Iraqi handover chronology."
+      ],
+      "rationale": "Use intervals to preserve the British RAF lineage and the Iraqi air force phase instead of collapsing both into one undifferentiated start year."
+    },
+    {
+      "source_id": "geonames:10173025",
+      "name": "Spyker Air Base",
+      "country_code": "IQ",
+      "operational_intervals": [
+        {
+          "start_year": 2003,
+          "end_year": 2011,
+          "label": "U.S. COB Speicher / Camp Speicher phase"
+        },
+        {
+          "start_year": 2011,
+          "end_year": null,
+          "label": "Iraqi government / Iraqi Army and Air Force phase after U.S. handover"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Camp Speicher; URL: https://en.wikipedia.org/wiki/Camp_Speicher; the page says the U.S. Army left COB Speicher and handed it to the Government of Iraq on 20 October 2011.",
+        "Title: Camp Speicher: Pattern of Mass Killing and Genocidal Intent; URL: https://www.unitad.un.org/sites/www.unitad.un.org/files/camp_speicher-pattern_of_mass_killing_and_genocidal_intent_en.pdf; UNITAD says Speicher was gradually handed over to Iraqi authorities in 2011 during the wider U.S. withdrawal."
+      ],
+      "rationale": "Use 2003-2011 as the U.S. base phase and 2011 as the handover point. This candidate does not assert the original Iraqi airfield construction date."
+    },
+    {
+      "source_id": "geonames:12908933",
+      "name": "Ominato JMSDF Port",
+      "country_code": "JP",
+      "start_year": 1953,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: 総監部 - 海上自衛隊 大湊地区隊; URL: https://www.mod.go.jp/msdf/oominato/headquarters.html; official JMSDF Ominato history lists the Ominato District Force as newly formed on 16 September 1953 and reorganized into the Maritime Self-Defense Force Ominato District Force on 1 July 1954."
+      ],
+      "rationale": "Use 1953 for the postwar JMSDF/Ominato District Force port-base lineage."
+    },
+    {
+      "source_id": "geonames:10957427",
+      "name": "Kaijo Hoanbu Haneda Koku Kichi",
+      "country_code": "JP",
+      "operational_intervals": [
+        {
+          "start_year": 1958,
+          "end_year": null,
+          "label": "Japan Coast Guard aviation operations relocated to Haneda Airport"
+        },
+        {
+          "start_year": 1967,
+          "end_year": null,
+          "label": "Current Haneda facilities opened"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Location Reports | J-HangarSpace: Information on Japanese Aviation; URL: https://www.j-hangarspace.jp/on-location; J-HangarSpace reports Maritime Safety Agency/Japan Coast Guard aviation operations relocated to Haneda in July 1958 and current facilities opened in August 1967."
+      ],
+      "rationale": "Use 1958 for the Haneda aviation-base presence and 1967 for the current facility phase."
+    },
+    {
+      "source_id": "geonames:7870743",
+      "name": "US Coast Guard Sector Guam",
+      "country_code": "GU",
+      "start_year": 2021,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Coast Guard Sector Guam rebrands itself during cutters' triple commissioning ceremony; URL: https://www.stripes.com/branches/coast_guard/2021-07-29/coast-guard-guam-fast-attack-cutters-asia-china-2354868.html; Stars and Stripes reports the Coast Guard renamed its Guam outpost Coast Guard Forces Micronesia/Sector Guam during the 29 July 2021 triple commissioning ceremony.",
+        "Title: U.S. Coast Guard Forces Micronesia / Sector Guam; URL: https://www.pacificarea.uscg.mil/Our-Organization/Oceania-District/Oceania-District-Units/US-Coast-Guard-Forces-Micronesia-Sector-Guam/Command/; official Coast Guard page describes the current Forces Micronesia/Sector Guam command."
+      ],
+      "rationale": "Use 2021 for the current Forces Micronesia/Sector Guam command-name phase, not as a claim that Coast Guard activity on Guam began in 2021."
+    },
+    {
+      "source_id": "geonames:7871464",
+      "name": "DoD Naval Communication Station",
+      "country_code": "GU",
+      "start_year": 1945,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Regional Cold War History for Department of Defense Installations in Guam and the Northern Mariana Islands; URL: https://www.denix.osd.mil/legacy/denix-files/sites/33/2022/01/Regional-Cold-War-History-for-Department-of-Defense-Installations-in-Guam-and-the-Northern-Mariana-Islands-Report-2011-Legacy-09-454.pdf; DoD Legacy report says Naval Radio Station (R) Finegayan was established in April 1945 as the primary receiving station for Guam and paired with Naval Radio Station (T) Barrigada."
+      ],
+      "rationale": "Use 1945 for the Guam naval communications-station lineage. Confidence is medium because the overlay label is generic and may map to a communications parcel within the wider Finegayan/Barrigada system."
+    },
+    {
+      "source_id": "geonames:6296657",
+      "name": "Wyton Royal Air Force Base",
+      "country_code": "GB",
+      "start_year": 1916,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: RAF Wyton | Royal Air Force; URL: https://www.raf.mod.uk/our-organisation/stations/raf-wyton/; official RAF page says RAF Wyton opened in 1916 as a Royal Flying Corps training establishment and remains central to UK military operations, though no longer an operational airfield."
+      ],
+      "rationale": "Use 1916 as the official RAF-supported start year for the Wyton military-airfield/station lineage."
+    },
+    {
+      "source_id": "geonames:7669262",
+      "name": "Joint Supply Chain Services Kineton",
+      "country_code": "GB",
+      "start_year": 1941,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Kineton Energetics Factories - The Coventry Arsenal; URL: https://www.thecoventryarsenal.com/kineton-factories; the page says MOD Kineton was developed from 1941 onward as a Central Ammunition Depot and remains a key UK ammunition storage and handling facility."
+      ],
+      "rationale": "Use 1941 as a supported start for the MOD Kineton/Central Ammunition Depot lineage. Confidence is medium because the source is not an official MOD page."
+    },
+    {
+      "source_id": "geonames:12495540",
+      "name": "Arsenal de Brest",
+      "country_code": "FR",
+      "start_year": 1631,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Rapport de presentation - Brest AVAP; URL: https://brest.fr/sites/default/files/medias/brestfr/documents/gerer_mon_quotidien/logement/acheter_construire_r%C3%A9onver/Pr%C3%A9sentation%20de%20l%27AVAP.pdf; Brest planning/heritage document says Cardinal Richelieu decided in 1631 to make Brest one of the kingdom's military ports.",
+        "Title: Bretagne - Brest : une agglomeration aux fonctions militaires strategiques; URL: https://cnes.fr/geoimage/bretagne-brest-une-agglomeration-aux-fonctions-militaires-strategiques-la-reconquete-de-0; CNES Geoimage says construction of the Brest naval base was launched in 1631/1635 and that it remains France's second military naval base after Toulon."
+      ],
+      "rationale": "Use 1631 as the military-port/arsenal inception year for the Brest naval base lineage."
+    },
+    {
+      "source_id": "geonames:12494855",
+      "name": "Camp de Chalons",
+      "country_code": "FR",
+      "start_year": 1857,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Camp de Chalons/Camp de Mourmelon | Department of History | University of Bristol; URL: https://www.bristol.ac.uk/history/militarylandscapes/sites/france/campdechalonscampdemourmelon/; University of Bristol military landscapes entry lists the camp's date created as 1857 by Napoleon III and current use as manoeuvre training."
+      ],
+      "rationale": "Use 1857 as a directly sourced start year for the Camp de Chalons/Camp de Mourmelon military camp."
+    },
+    {
+      "source_id": "geonames:6299467",
+      "name": "Colmar-Meyenheim",
+      "country_code": "FR",
+      "start_year": 1956,
+      "end_year": 2010,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        "Title: Armee de l'air. Dissolution de la base aerienne de Colmar-Meyenheim; URL: https://www.dna.fr/actualite/2010/06/16/dissolution-de-la-base-aerienne-de-colmar-meyenheim; Dernieres Nouvelles d'Alsace reports the BA 132 dissolution ceremony in June 2010 and says the base was constructed from 1951 to 1956."
+      ],
+      "rationale": "Use 1956 as the completion/start candidate for BA 132 Colmar-Meyenheim and 2010 as the dissolution/closure year."
+    },
+    {
+      "source_id": "geonames:6299440",
+      "name": "Creil",
+      "country_code": "FR",
+      "end_year": 2016,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Restructurations 2015 - Dossier thematique; URL: https://archives.defense.gouv.fr/content/download/315201/4268013/Restructurations%202015%20-%20Dossier%20th%C3%A9matique.pdf; French Ministry of Defence archive says the CASA squadrons were transferred from Creil toward Evreux in view of the 2016 closure of the BA 110 Creil aviation platform."
+      ],
+      "rationale": "Only an end year is proposed because the official source supports the 2016 closure of the air platform, not a precise original opening year."
+    },
+    {
+      "source_id": "geonames:6299476",
+      "name": "Luxeuil - Saint-Sauveur",
+      "country_code": "FR",
+      "start_year": 1912,
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Deplacement sur la base aerienne 116 de Luxeuil-Saint-Sauveur; URL: https://www.elysee.fr/emmanuel-macron/2025/03/18/deplacement-sur-la-base-aerienne-116-de-luxeuil-saint-sauveur; official Elysee page says Base aerienne 116 was created in 1912 and hosted the Escadrille Lafayette in 1916.",
+        "Title: L'extension de la base aerienne 116, une opportunite pour la Haute-Saone; URL: https://www.insee.fr/fr/statistiques/8648385; INSEE states that BA 116 Luxeuil-Saint-Sauveur has evolved since its creation in 1912."
+      ],
+      "rationale": "Use 1912 as the official source-supported creation year for BA 116 Luxeuil-Saint-Sauveur."
+    },
+    {
+      "source_id": "geonames:3206206",
+      "name": "Lager Heuberg",
+      "country_code": "DE",
+      "operational_intervals": [
+        {
+          "start_year": 1910,
+          "end_year": 1918,
+          "label": "Imperial German XIV Baden Army Corps camp and training-area phase"
+        },
+        {
+          "start_year": 1934,
+          "end_year": 1945,
+          "label": "Wehrmacht camp and training-area phase"
+        },
+        {
+          "start_year": 1959,
+          "end_year": null,
+          "label": "Bundeswehr garrison/training-area phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Truppenuebungsplatz Heuberg - Bundeswehr data sheet; URL: https://www.bundeswehr.de/resource/blob/5487788/c087f2531143023554d9aa3dd94e33c5/datenblatt-heuberg-zum-download-data.pdf; Bundeswehr chronology says Lager Heuberg and the training area were created 1910-1916, Wehrmacht took over in 1934, first Bundeswehr units arrived in 1957, permanent Bundeswehr units arrived in 1959, and transfer to Bundeswehr occurred on 1 January 1960."
+      ],
+      "rationale": "Intervals preserve the site discontinuities and regime changes documented in the Bundeswehr chronology."
+    },
+    {
+      "source_id": "geonames:10943266",
+      "name": "Robinson Barracks",
+      "country_code": "DE",
+      "operational_intervals": [
+        {
+          "start_year": 1934,
+          "end_year": 1945,
+          "label": "German Flandern/Grenadier Kasernen military-site construction and use"
+        },
+        {
+          "start_year": 1949,
+          "end_year": null,
+          "label": "U.S. Army Robinson Barracks installation phase"
+        }
+      ],
+      "temporal_confidence": "high",
+      "source_notes": [
+        "Title: Stuttgart's Robinson Barracks continues to transition; URL: https://www.army.mil/article-amp/33431/stuttgarts_robinson_barracks_continues_to_transition; official U.S. Army article says the German armed forces took over the land in 1934 to build Flandern and Grenadier Kasernes and that the U.S. Army took over the military installation in 1949."
+      ],
+      "rationale": "Use 1934 for the military-site lineage and 1949 for the U.S. Army Robinson Barracks phase matching the overlay name."
+    }
+  ]
+}

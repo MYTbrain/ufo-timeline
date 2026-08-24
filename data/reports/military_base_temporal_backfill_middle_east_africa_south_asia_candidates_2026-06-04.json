@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-04",
+  "input_overlay": "webapp/static_public/data/map_overlays/military_bases.geojson",
+  "match_key": "source_id",
+  "scope": "Source-research candidate temporal overrides for Middle East, Africa, and South Asia military-base overlay records. No app code, tests, overlay GeoJSON, or military_base_temporal_overrides.json files were edited.",
+  "selection_rule": "Candidate must be present in military_bases.geojson and have official, near-official, or high-quality authority evidence for a defensible year or interval. Weak current-activity-only mentions and unsourced aggregator dates were not promoted to candidate_overrides.",
+  "target_country_codes": [
+    "AF",
+    "AE",
+    "EG",
+    "IN",
+    "IQ",
+    "IR",
+    "LY",
+    "PK",
+    "SY",
+    "TN"
+  ],
+  "candidate_count": 13,
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:8521619",
+      "name": "Camp Bastion Air Base",
+      "country_code": "AF",
+      "start_year": 2006,
+      "end_year": 2014,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.gov.uk/government/news/british-troops-leave-helmand-province-for-the-last-time/",
+        "https://www.gov.uk/government/news/bye-bye-bastion",
+        "https://www.gov.uk/government/news/the-history-of-the-bastion-memorial"
+      ],
+      "source_notes": "UK Ministry of Defence reporting says Camp Bastion was built in early 2006 and was handed over when UK forces left Helmand in October 2014. Use 2006-2014 for the UK/coalition Camp Bastion operational base phase."
+    },
+    {
+      "source_id": "geonames:8181795",
+      "name": "FOB Salerno",
+      "country_code": "AF",
+      "start_year": 2003,
+      "end_year": 2013,
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.army.mil/article/114539/currahees_transfer_fob_salerno_to_ana"
+      ],
+      "source_notes": "U.S. Army article on the November 2013 transfer to Afghan forces says the unit first opened FOB Salerno in 2003 and describes the 2013 transition as the end of the U.S. era at the base."
+    },
+    {
+      "source_id": "geonames:8181794",
+      "name": "Forward Operating Base Shank",
+      "country_code": "AF",
+      "start_year": 2002,
+      "end_year": 2014,
+      "date_precision_start": "inferred_year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.army.mil/article/157234/starting_at_the_end_when_planning_for_base_closure",
+        "https://www.dvidshub.net/news/146766/3d-cavalry-regiment-hands-over-last-major-us-base-southeast-afghanistan"
+      ],
+      "source_notes": "U.S. Army closure article says TB Shank had 12 years of accumulated property when it transferred to Afghan control; DVIDS/3d Cavalry coverage gives the formal transfer date as 23 October 2014. Use 2002 as an inferred start anchor, not a precise opening date."
+    },
+    {
+      "source_id": "geonames:1454312",
+      "name": "Shindand Air Base",
+      "country_code": "AF",
+      "start_year": 1961,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.afcent.af.mil/News/Features/Display/Article/223651/italian-air-force-makes-difference-at-shindand-airbase/"
+      ],
+      "source_notes": "U.S. Air Forces Central feature says Shindand Air Base was originally built by the Soviets in 1961, captured by the Taliban in 1997, and liberated by the Afghan National Army in 2004. End is left open because the cited source supports the origin year but not a final closure year."
+    },
+    {
+      "source_id": "geonames:11749391",
+      "name": "Almaza Air Force Base",
+      "country_code": "EG",
+      "start_year": 1932,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.icao.int/sites/default/files/safety/GASP/GASP%20Library/National%20aviation%20safety%20plans/Egypt-NASP-2024-2025.pdf",
+        "https://www.egypttoday.com/Article/4/104584/Memory-of-the-day-Egypt%E2%80%99s-King-Fouad-inaugurates-Almaza-Airport"
+      ],
+      "source_notes": "Egypt National Aviation Safety Plan material hosted by ICAO places Almaza Airport in 1932; EgyptToday also gives 1932 for King Fouad's inauguration. Use 1932 for the Almaza airfield/base origin, with medium confidence because these sources support the airfield opening more directly than a continuous military-base command history."
+    },
+    {
+      "source_id": "geonames:11749512",
+      "name": "Dundigul Air Force Academy",
+      "country_code": "IN",
+      "start_year": 1971,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.careerairforce.gov.in/afa",
+        "https://www.desw.gov.in/sites/default/files/AnnualReport1617_0.pdf"
+      ],
+      "source_notes": "Indian Air Force career site says AFA Dundigal has existed since its inception in 1971. Government of India annual report says the foundation stone was laid in 1967 and the Air Force Flying College at Hyderabad was formally inaugurated on 16 January 1971. Use 1971 as the operational academy start."
+    },
+    {
+      "source_id": "geonames:13559036",
+      "name": "Bholari",
+      "country_code": "PK",
+      "start_year": 2017,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.radio.gov.pk/26-12-2017/paf-air-base-at-bholari-inaugurated"
+      ],
+      "source_notes": "Radio Pakistan government coverage says a new Pakistan Air Force airbase at Bholari near Karachi was inaugurated in December 2017. Use 2017 as the operational-base start year."
+    },
+    {
+      "source_id": "geonames:7045721",
+      "name": "PNS Qasim",
+      "country_code": "PK",
+      "start_year": 1990,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.paknavy.gov.pk/pn_ssgn",
+        "https://www.paknavy.gov.pk/NN%20Eng%20Nov%202023.pdf"
+      ],
+      "source_notes": "Pakistan Navy Marines page says Naval Headquarters decided on 14 April 1990 to reactivate Pak Marines and establish them as an independent command at Qasim Fort. Pakistan Navy History Cell monthly reckoner also records PNS QASIM re-commissioned on Manora Island as a depot unit for Pakistan Marines in November 1990. Use 1990 as the PNS Qasim/Pak Marines base start."
+    },
+    {
+      "source_id": "geonames:11499695",
+      "name": "Ali Base",
+      "country_code": "IQ",
+      "start_year": 1970,
+      "end_year": null,
+      "date_precision_start": "decade",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "operational_intervals": [
+        {
+          "start_year": 1970,
+          "end_year": null,
+          "date_precision_start": "decade",
+          "date_precision_end": "open",
+          "label": "Iraqi military airfield origin; source only states built in the 1970s"
+        },
+        {
+          "start_year": 2003,
+          "end_year": 2011,
+          "date_precision_start": "year",
+          "date_precision_end": "year",
+          "label": "U.S./coalition Ali Base or Tallil Air Base phase"
+        }
+      ],
+      "source_urls": [
+        "https://www.af.mil/News/Article-Display/Article/134044/air-force-recognizes-historical-name-of-iraqi-air-base/",
+        "https://www.af.mil/News/Article-Display/Article/138910/aef-rotations-begin-at-tallil/",
+        "https://www.afcent.af.mil/News/Article/219468/iraqi-air-force-primed-for-power/"
+      ],
+      "source_notes": "U.S. Air Force article says Ali Base/Tallil was built in the 1970s and was the busiest Iraqi military airfield during the Iran-Iraq War. Separate Air Force reporting places U.S. AEF arrivals at Tallil in 2003 and discusses Iraqi self-sufficiency training before the U.S. withdrawal deadline in 2011. Use the 1970s start only as a decade-precision anchor."
+    },
+    {
+      "source_id": "geonames:11497288",
+      "name": "Nasiriyah Ali Air Base",
+      "country_code": "IQ",
+      "start_year": 1970,
+      "end_year": null,
+      "date_precision_start": "decade",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "operational_intervals": [
+        {
+          "start_year": 1970,
+          "end_year": null,
+          "date_precision_start": "decade",
+          "date_precision_end": "open",
+          "label": "Iraqi military airfield origin; source only states built in the 1970s"
+        },
+        {
+          "start_year": 2003,
+          "end_year": 2011,
+          "date_precision_start": "year",
+          "date_precision_end": "year",
+          "label": "U.S./coalition Ali Base or Tallil Air Base phase"
+        }
+      ],
+      "source_urls": [
+        "https://www.af.mil/News/Article-Display/Article/134044/air-force-recognizes-historical-name-of-iraqi-air-base/",
+        "https://www.af.mil/News/Article-Display/Article/138910/aef-rotations-begin-at-tallil/",
+        "https://www.afcent.af.mil/News/Article/219468/iraqi-air-force-primed-for-power/"
+      ],
+      "source_notes": "Same installation-level evidence as Ali Base; overlay contains a second GeoNames point/name for Nasiriyah Ali Air Base. Candidate is retained separately so future override ingestion can match this source_id directly."
+    },
+    {
+      "source_id": "geonames:11499693",
+      "name": "Al Taji",
+      "country_code": "IQ",
+      "start_year": 2014,
+      "end_year": 2020,
+      "date_precision_start": "inferred_year",
+      "date_precision_end": "year",
+      "historical_status": "active_or_unknown",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "operational_intervals": [
+        {
+          "start_year": 2014,
+          "end_year": 2020,
+          "date_precision_start": "inferred_year",
+          "date_precision_end": "year",
+          "label": "CJTF-OIR coalition training-site phase at Camp Taji"
+        }
+      ],
+      "source_urls": [
+        "https://www.centcom.mil/MEDIA/NEWS-ARTICLES/News-Article-View/Article/2321876/coalition-departs-taji-transfers-347-million-enhanced-training-site/",
+        "https://www.centcom.mil/Portals/14/Documents/Mission/Camp%20Taji%20Fact%20Sheet.pdf?timestamp=159860013823&ver=2020-08-23-043702-077"
+      ],
+      "source_notes": "CENTCOM says the Coalition area of Camp Taji transferred to Iraqi Security Forces on 23 August 2020 and that the site had served for the past six years as a primary Coalition training installation. Candidate uses 2014-2020 for that coalition interval only, not as a claim that Taji did not exist earlier."
+    },
+    {
+      "source_id": "geonames:11280736",
+      "name": "Acad\u00e9mie Navale de Menzel-Bourguiba",
+      "country_code": "TN",
+      "start_year": 1978,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://defense.tn/academie-navale/?lang=fr",
+        "https://legislation-securite.tn/latest-laws/loi-n-84-14-du-6-avril-1984-portant-creation-dune-academie-navale-et-fixant-sa-mission/"
+      ],
+      "source_notes": "Tunisian Ministry of National Defence history lists 16 October 1978 for the Institut Superieur Naval and 6 April 1984 for the Academie Navale name. The 1984 law creating the Naval Academy takes effect from 1 August 1978. Use 1978 as the institution/base start year."
+    },
+    {
+      "source_id": "geonames:11280734",
+      "name": "Bizerte Naval Base",
+      "country_code": "TN",
+      "start_year": 1895,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "temporal_source": "manual_source_research_middle_east_africa_south_asia_20260604",
+      "source_urls": [
+        "https://www.britannica.com/place/Bizerte",
+        "https://www.larousse.fr/encyclopedie/ville/Bizerte/108982"
+      ],
+      "source_notes": "Britannica says Bizerte's maritime value changed in 1895 when the French completed the canal opening Lake Bizerte and the naval port/arsenal at Sidi Abdallah; Larousse also describes Bizerte as an important naval base developed under the French period. Use 1895 as the naval-port/base origin year, with medium confidence because this is an infrastructure-origin year rather than a modern Tunisian command establishment date."
+    }
+  ],
+  "researched_but_not_promoted": [
+    {
+      "country_code": "AE",
+      "reason": "Al Dhafra has an existing override in military_base_temporal_overrides.json, but this pass did not find a better official/near-official public opening-year source. Al Minhad sources confirmed official Australian use, but not a defensible installation start year."
+    },
+    {
+      "country_code": "IR",
+      "reason": "Public sources found for Iranian air bases were unsourced aggregators, Wikidata-only records, or current-activity references. No official/near-official year-level base-origin source was strong enough for candidate_overrides."
+    },
+    {
+      "country_code": "LY",
+      "reason": "Wheelus/Okba Ben Nafi sources were high quality for the Tripoli/Mitiga installation, but the overlay Okba Ibn Nafa point appears to match Al-Watiya rather than Wheelus. No clean source-id-matched start/end candidate was promoted."
+    },
+    {
+      "country_code": "SY",
+      "reason": "Syria sources mostly supported conflict control changes or current operational mentions. They did not provide reliable installation start/end years for the overlay source_ids without importing unsourced precision."
+    },
+    {
+      "country_code": "EG",
+      "reason": "Several Egyptian air-base names have plausible World War II or RAF-era histories, but only Almaza had sufficiently strong year-level evidence in this pass."
+    }
+  ]
+}

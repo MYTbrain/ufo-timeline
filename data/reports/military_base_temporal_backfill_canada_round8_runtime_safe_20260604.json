@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-04T23:11:30.951843+00:00",
+  "source_report": "data/reports/military_base_temporal_backfill_canada_round8_20260604.json",
+  "temporal_source": "canada_round8_runtime_safe_sourced_backfill_20260604",
+  "candidate_count": 1,
+  "filter_rationale": "Runtime-safe subset: excludes low-confidence documented-by-year rows that are not operational start dates.",
+  "candidates": [
+    {
+      "source_id": "geonames:5918916",
+      "name": "Cedar Springs Range",
+      "country_code": "CA",
+      "start_year": 1912,
+      "date_precision_start": "year",
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Canada.ca: Ranges in Ontario - Cedar Springs Range and Training Area",
+          "url": "https://www.canada.ca/en/army/corporate/4-canadian-division/4-canadian-division-ranges.html",
+          "note": "The Canadian Army page states that Cedar Springs Range and Training Area was established in 1912 and is situated on approximately 134 acres southwest of Blenheim near Chatham, Ontario."
+        },
+        {
+          "title": "Canada.ca: Highlights of New Federal Infrastructure Investments in Chatham, Ontario",
+          "url": "https://www.canada.ca/en/news/archive/2015/07/highlights-new-federal-infrastructure-investments-chatham-ontario.html",
+          "note": "The 2015 Government of Canada backgrounder repeats that Cedar Springs Range and Training Area was established in 1912 and identifies it as one of three ranges in Southern Ontario."
+        },
+        {
+          "title": "Mindat/GeoNames feature 5918916: Cedar Springs Range",
+          "url": "https://www.mindat.org/feature-5918916.html",
+          "note": "Mindat mirrors the GeoNames feature ID, Cedar Springs Range name, military-base class, and coordinates 42.26869, -82.02477 used by the overlay."
+        }
+      ],
+      "rationale": "Direct Canadian Army and Government of Canada sources provide the 1912 establishment year for the same Cedar Springs Range and Training Area represented by the overlay source_id."
+    }
+  ]
+}

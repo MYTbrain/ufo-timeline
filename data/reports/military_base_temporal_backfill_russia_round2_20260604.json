@@ -1,0 +1,533 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:11458920",
+      "name": "Gromovo Airbase",
+      "country_code": "RU",
+      "start_year": 1953,
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": 2002,
+          "label": "180th Guards Fighter Aviation Regiment / Leningrad air-defense airbase phase"
+        },
+        {
+          "start_year": 2002,
+          "end_year": null,
+          "label": "Post-180th-regiment Russian Aerospace Forces / transport-composite airbase phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Gromovo Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/gromovo/",
+          "note": "Lists year built as 1953, status active, Russian Aerospace Forces operation, and coordinates matching the overlay point."
+        },
+        {
+          "title": "Gromovo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Gromovo_(air_base)",
+          "note": "Gives use from 1953 to present and notes the 180th Guards Fighter Aviation Regiment at the base from 1953 to 2002."
+        }
+      ],
+      "rationale": "The overlay name and coordinates match Gromovo air base. Both sources identify Gromovo as a military airbase and give a 1953 start/use date, with a specific 1953-2002 unit-basing interval. Confidence is medium because the strongest date source is a specialist airbase profile and Wikipedia-derived history, not an official installation history."
+    },
+    {
+      "source_id": "geonames:7729990",
+      "name": "Khankala Air Base",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1991,
+          "end_year": 1995,
+          "label": "Khankala airbase under Chechen Republic of Ichkeria control"
+        },
+        {
+          "start_year": 2000,
+          "end_year": null,
+          "label": "Russian federal forces base at Khankala"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Khankala",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A5%D0%B0%D0%BD%D0%BA%D0%B0%D0%BB%D0%B0",
+          "note": "States that in Soviet times an MoD airfield was near the settlement, that the Khankala airbase was under Ichkeria control in 1991-1995, and that a Russian forces base opened there in 2000."
+        },
+        {
+          "title": "Khankala",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A5%D0%B0%D0%BD%D0%BA%D0%B0%D0%BB%D0%B0",
+          "note": "Parallel article with the same 1991-1995 airbase-control interval and 2000 Russian-base opening statement."
+        }
+      ],
+      "rationale": "The record is a direct name match to Khankala Air Base and the sources describe the same local airfield/base. This candidate records only documented control/base intervals and deliberately does not infer the original Soviet airfield start date because the sources found in this pass did not give one."
+    },
+    {
+      "source_id": "geonames:11458724",
+      "name": "Kipelovo Airbase",
+      "country_code": "RU",
+      "start_year": 1963,
+      "operational_intervals": [
+        {
+          "start_year": 1963,
+          "end_year": null,
+          "label": "Kipelovo / Fedotovo Northern Fleet Naval Aviation airbase"
+        },
+        {
+          "start_year": 1965,
+          "end_year": null,
+          "label": "392nd independent long-range reconnaissance aviation regiment permanent Kipelovo basing"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Kipelovo (airbase)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%9A%D0%B8%D0%BF%D0%B5%D0%BB%D0%BE%D0%B2%D0%BE_(%D0%B0%D0%B2%D0%B8%D0%B0%D0%B1%D0%B0%D0%B7%D0%B0)",
+          "note": "Identifies Kipelovo as a Northern Fleet Naval Aviation base and gives the opening/founding year as 1963."
+        },
+        {
+          "title": "Fedotov, Alexander Sergeevich",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A4%D0%B5%D0%B4%D0%BE%D1%82%D0%BE%D0%B2,_%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B0%D0%BD%D0%B4%D1%80_%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B5%D0%B2%D0%B8%D1%87",
+          "note": "Notes the 392nd ODRAP's move to its permanent base at Kipelovo on 31 August 1965 while the garrison was still being built."
+        },
+        {
+          "title": "Aviabaza Kipelovo - About the site",
+          "url": "https://www.vologda18.ru/index.php/about-site",
+          "note": "Specialist base-history site says the 392nd ODRAP was created on 1 September 1963 and moved to Kipelovo in 1965."
+        }
+      ],
+      "rationale": "The source_id coordinates match Kipelovo/Fedotovo. Multiple direct histories support a 1963 base-founding date and a documented 1965 permanent-regiment move, so 1963 is suitable as a conservative facility start."
+    },
+    {
+      "source_id": "geonames:8531933",
+      "name": "Rogachevo Airport",
+      "country_code": "RU",
+      "start_year": 1972,
+      "operational_intervals": [
+        {
+          "start_year": 1972,
+          "end_year": 1993,
+          "label": "641st Guards Fighter Aviation Regiment at Rogachevo / Amderma-2"
+        },
+        {
+          "start_year": 1993,
+          "end_year": null,
+          "label": "Post-641st-regiment military airfield / Arctic staging and air-defense site"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Rogachevo (air base)",
+          "url": "https://en.wikipedia.org/wiki/Rogachevo_(air_base)",
+          "note": "Identifies Rogachevo as a military air base on Novaya Zemlya, built/used from 1972, with the 641st Guards Fighter Aviation Regiment based there from 1972 until relocation in 1993."
+        },
+        {
+          "title": "Rogachevo (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A0%D0%BE%D0%B3%D0%B0%D1%87%D1%91%D0%B2%D0%BE_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Russian article identifies Rogachevo/Amderma-2 as a military airfield and says the 641st Guards Fighter Aviation Regiment was based there from 1972."
+        },
+        {
+          "title": "The Barents Observer - Aerodrome on Novaya Zemlya may serve the Shtokman project",
+          "url": "https://ru.thebarentsobserver.com/aerodrom-na-novoj-zemle-mozet-posluzit-stokmanovskomu-proektu/316100",
+          "note": "Describes Rogachevo as a military aerodrome 9 km from Belushya Guba and repeats the 1972 641st-regiment basing."
+        }
+      ],
+      "rationale": "The queue record is Rogachevo Airport but the overlay class is an air base; the sources directly identify the same Rogachevo/Amderma-2 military airfield and provide a 1972 military-use start. Earlier or wartime airfield origins were not promoted because this pass did not find a strong continuity source."
+    },
+    {
+      "source_id": "geonames:11458783",
+      "name": "Severomorsk Airbase",
+      "country_code": "RU",
+      "start_year": 1939,
+      "operational_intervals": [
+        {
+          "start_year": 1939,
+          "end_year": 1951,
+          "label": "Vaenga-1 / Northern Fleet Air Force airfield"
+        },
+        {
+          "start_year": 1951,
+          "end_year": null,
+          "label": "Severomorsk-1 naval aviation airbase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Severomorsk-1 (airfield)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE%D0%BC%D0%BE%D1%80%D1%81%D0%BA-1_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Severomorsk-1 as the former Vaenga-1 military airfield and says the 72nd mixed aviation regiment of the Northern Fleet Air Force began forming there on 23 December 1939."
+        },
+        {
+          "title": "Historical note - Official site of the municipality of Severomorsk",
+          "url": "https://www.citysever.ru/municipalnoe_obr/istoricheskaya_s/",
+          "note": "Municipal history describes Vaenga as a basing airfield for Northern Fleet aviation regiments and provides local historical context for the Vaenga-Severomorsk transition."
+        },
+        {
+          "title": "The Ice Curtain: Kola Peninsula Part 1: Slow Modernization of Severomorsk-1 Air Base",
+          "url": "https://www.tearline.mil/public_page/the-ice-curtain-kola-peninsula-part-1-slow-modernization-of-severomorsk-1-air-base/",
+          "note": "Institutional analytic source says Severomorsk-1 dates to World War II and protected the Soviet northern flank."
+        }
+      ],
+      "rationale": "The GeoNames point aligns with Severomorsk-1/Vaenga-1. The 1939 regiment-formation date is a direct airfield-use marker; the later 1951 label reflects the town/base name transition rather than a new facility start."
+    },
+    {
+      "source_id": "geonames:8693090",
+      "name": "Taganrog Air Base",
+      "country_code": "RU",
+      "start_year": 1938,
+      "operational_intervals": [
+        {
+          "start_year": 1938,
+          "end_year": 1941,
+          "label": "Taganrog military pilot-school airfield phase"
+        },
+        {
+          "start_year": 1948,
+          "end_year": 1960,
+          "label": "Higher officer flight-tactical courses phase"
+        },
+        {
+          "start_year": 1960,
+          "end_year": 1994,
+          "label": "963rd training aviation regiment / Yeisk school phase"
+        },
+        {
+          "start_year": 1994,
+          "end_year": null,
+          "label": "Post-training-regiment military transport / repair plant airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Taganrog-Tsentralny (airfield)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A2%D0%B0%D0%B3%D0%B0%D0%BD%D1%80%D0%BE%D0%B3-%D0%A6%D0%B5%D0%BD%D1%82%D1%80%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Gives opening date 1938 and says the airfield history begins with the Taganrog military pilot school."
+        },
+        {
+          "title": "Aviation in Taganrog - Airfield Taganrog-Tsentralny",
+          "url": "https://taganrog-avia.ru/aeroclub/Taganrog-Centr/Taganrog-Centr.html",
+          "note": "Local aviation-history page says the current Taganrog-Tsentralny airfield began construction in 1938 for the Taganrog military aviation school and describes later military-school basing."
+        },
+        {
+          "title": "Taganrog-Central air base",
+          "url": "https://en.wikipedia.org/wiki/Taganrog-Central_air_base",
+          "note": "Identifies the same military airfield and gives built/used from 1938 to present."
+        }
+      ],
+      "rationale": "The overlay point is Taganrog Air Base, matching Taganrog-Tsentralny. The 1938 date is directly tied to construction/opening for a military pilot school; later intervals document continued military aviation use."
+    },
+    {
+      "source_id": "geonames:11458821",
+      "name": "Alakurtti",
+      "country_code": "RU",
+      "start_year": 1940,
+      "end_year": 2009,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1944,
+          "label": "Wartime Alakurtti military airfield phase"
+        },
+        {
+          "start_year": 1950,
+          "end_year": 2009,
+          "label": "Soviet/Russian military air-defense and helicopter-use phase"
+        },
+        {
+          "start_year": 2015,
+          "end_year": null,
+          "label": "Army garrison reoccupation near Alakurtti; not promoted as an airfield operational restart"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Alakurtti (airfield)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%90%D0%BB%D0%B0%D0%BA%D1%83%D1%80%D1%82%D1%82%D0%B8_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Identifies Alakurtti as a military airfield, says construction began shortly before the Great Patriotic War, documents 1942 and 1944 wartime airfield use, and states the helicopter squadron was disbanded on 1 December 2009."
+        },
+        {
+          "title": "Alakurtti (air base)",
+          "url": "https://en.wikipedia.org/wiki/Alakurtti_(air_base)",
+          "note": "Gives built 1940, use 1940-2014, and notes the December 2009 helicopter squadron disbandment and asset move to Monchegorsk."
+        },
+        {
+          "title": "Yle - Russia moves first troops to Arctic base near Finnish border",
+          "url": "https://yle.fi/a/3-7736771",
+          "note": "News source says different Russian army and navy units had been based there, but since 2009 the town mainly hosted civilians and border guards and the airbase was largely silent."
+        }
+      ],
+      "rationale": "The sources support Alakurtti as a named military airfield and provide enough evidence for a 1940 start and a 2009 aviation-unit drawdown. The 2015 army-base reoccupation is retained only as context and not used to extend airfield operational status because the available sources describe a ground brigade/garrison rather than renewed airbase operations."
+    },
+    {
+      "source_id": "geonames:11459378",
+      "name": "Armavir",
+      "country_code": "RU",
+      "start_year": 1940,
+      "operational_intervals": [
+        {
+          "start_year": 1940,
+          "end_year": 1960,
+          "label": "Armavir military aviation school / central airfield phase"
+        },
+        {
+          "start_year": 1960,
+          "end_year": null,
+          "label": "Air-defense aviation school / airfield-support phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Armavir (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%90%D1%80%D0%BC%D0%B0%D0%B2%D0%B8%D1%80_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Says the stationary airfield was evidently built on the eve of war during formation of the Armavir military aviation school, and that by 1 February 1941 the school had four operating airfields including Armavir Central."
+        },
+        {
+          "title": "Armavir air base",
+          "url": "https://en.wikipedia.org/wiki/Armavir_air_base",
+          "note": "States the official start date for the formation of the aviation school was 1 December 1940, with unit holiday set for 23 February 1941."
+        },
+        {
+          "title": "96 Russian Military Air Bases",
+          "url": "https://www.globalmilitary.net/airbases/country/rus/",
+          "note": "Specialist directory lists Armavir Air Base in Russia with year built 1940."
+        }
+      ],
+      "rationale": "The source trail links the GeoNames Armavir air-base record to Armavir Central airfield and the Armavir military aviation school. The 1940 start is supported by the school formation date and by source references to operating airfields by February 1941."
+    },
+    {
+      "source_id": "geonames:11459193",
+      "name": "Chernyakhovsk",
+      "country_code": "RU",
+      "start_year": 1936,
+      "operational_intervals": [
+        {
+          "start_year": 1936,
+          "end_year": 1945,
+          "label": "German Insterburg military airfield / Luftwaffe base phase"
+        },
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "Soviet/Russian Chernyakhovsk airfield phase from 4th Guards bomber regiment permanent basing"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Chernyakhovsk (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%A7%D0%B5%D1%80%D0%BD%D1%8F%D1%85%D0%BE%D0%B2%D1%81%D0%BA_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Says a civil airfield near Insterburg was transferred to the Luftwaffe in 1936 and became the Insterburg military airfield and airbase; military flights began officially when base headquarters moved on 1 October 1936."
+        },
+        {
+          "title": "Chernyakhovsk (airfield) - Ruwiki",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A7%D0%B5%D1%80%D0%BD%D1%8F%D1%85%D0%BE%D0%B2%D1%81%D0%BA_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "Notes that from 18 October 1952 Chernyakhovsk became the permanent-dislocation airfield of the 4th Guards dive-bomber aviation regiment."
+        },
+        {
+          "title": "Chernyakhovsk Naval Air Base / Insterburg",
+          "url": "https://www.armedconflicts.com/-t184957",
+          "note": "Military-objects database lists Chernyakhovsk/Insterburg as established in 1936, with the Insterburg name used until 22 January 1945."
+        }
+      ],
+      "rationale": "The current Russian airfield occupies the historical Insterburg/Chernyakhovsk airfield site. The report preserves separate pre-Soviet and Soviet/Russian intervals so the 1936 physical airbase origin is not conflated with the 1952 Soviet permanent-basing marker."
+    },
+    {
+      "source_id": "geonames:11459240",
+      "name": "Domna",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1937,
+          "end_year": 1941,
+          "label": "Documented prewar Soviet bomber/squadron activity at Domna garrison/airfield"
+        },
+        {
+          "start_year": 1971,
+          "end_year": null,
+          "label": "120th Fighter Aviation Regiment / modern Domna airbase phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Domna (airfield)",
+          "url": "https://ru.wikipedia.org/wiki/%D0%94%D0%BE%D0%BC%D0%BD%D0%B0_(%D0%B0%D1%8D%D1%80%D0%BE%D0%B4%D1%80%D0%BE%D0%BC)",
+          "note": "States that personnel of a TB-3 heavy bomber squadron based in the Domna garrison retrained there in 1937-1938 and that a regiment was based at the airfield as of 1 January 1939."
+        },
+        {
+          "title": "Domna Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/domna/",
+          "note": "Lists Domna as an active Russian Aerospace Forces airbase, year built 1971, and says the base has been in use since 1971, with the 120th Fighter Aviation Regiment moving there in July 1971."
+        },
+        {
+          "title": "120th Fighter Aviation Regiment",
+          "url": "https://ru.wikipedia.org/wiki/120-%D0%B9_%D0%B8%D1%81%D1%82%D1%80%D0%B5%D0%B1%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%B0%D0%B2%D0%B8%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BF%D0%BE%D0%BB%D0%BA_(%D1%84%D0%BE%D1%80%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)",
+          "note": "Says the 120th IAP was moved to Domna in July 1971."
+        }
+      ],
+      "rationale": "Domna has a strong direct name/coordinate match but the sources split between earlier airfield activity and a modern 1971 airbase construction/use date. To avoid overclaiming, this candidate supplies intervals rather than a single collapsed start year."
+    },
+    {
+      "source_id": "geonames:11459373",
+      "name": "Budennovsk Northwest",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1993,
+          "end_year": null,
+          "label": "368th assault aviation regiment at Budennovsk / Chkalovsky airfield"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "368th Independent Assault Aviation Regiment - Skywar.ru",
+          "url": "https://www.skywar.ru/368OSHAP.html",
+          "note": "Detailed aviation-history page says the 368th OShAP moved to the Budennovsk airfield in Stavropol Krai in June 1993."
+        },
+        {
+          "title": "Grachy have arrived: assault aircraft mark an anniversary - Vesti Stavropol",
+          "url": "https://vesti26.ru/news/123597",
+          "note": "Regional broadcaster report says the 368th assault aviation regiment has been based at Budennovsk's Chkalovsky airfield since June 1993."
+        },
+        {
+          "title": "Military aerodrome Budennovsk",
+          "url": "https://www.komandirovka.ru/sights/budennovsk/voennyiy-aerodrom-budnnovsk/",
+          "note": "Local object profile identifies the military aerodrome and its current/legacy units, including the 368th assault aviation regiment."
+        }
+      ],
+      "rationale": "The GeoNames record is named Budennovsk Northwest and matches the military airfield northwest of the city. This candidate records a documented 1993-present regiment-basing phase only; it does not infer the original airfield construction date."
+    },
+    {
+      "source_id": "geonames:11459298",
+      "name": "Buturlinovka",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": 1990,
+          "label": "186th training aviation regiment phase"
+        },
+        {
+          "start_year": 1993,
+          "end_year": 2009,
+          "label": "899th Guards Assault Aviation Regiment at Buturlinovka"
+        },
+        {
+          "start_year": 2014,
+          "end_year": null,
+          "label": "Commandant/reconstitution and temporary-deployment phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Buturlinovka (air base)",
+          "url": "https://en.wikipedia.org/wiki/Buturlinovka_(air_base)",
+          "note": "Identifies Buturlinovka as a Russian Air Force military base; says the base housed the 186th Training Aviation Regiment from 1952 and the 899th Guards Assault Aviation Regiment until its 1 December 2009 disbandment."
+        },
+        {
+          "title": "Buturlinovka, town - Voronezh Encyclopedia",
+          "url": "https://vrnency.ru/vol-1/ve-1-b/a-00026-b",
+          "note": "Regional encyclopedia says the 899th Guards Assault Aviation Regiment has been based on the outskirts of Buturlinovka since 1993."
+        },
+        {
+          "title": "KP Voronezh - Oldest aviation regiment to be restored in Voronezh Oblast",
+          "url": "https://www.vrn.kp.ru/online/news/1760573/",
+          "note": "Reports that the 899th regiment has been stationed at Buturlinovka since July 1993 and was planned for restoration."
+        }
+      ],
+      "rationale": "The source_id is a direct Buturlinovka air-base record. The 1952 training-regiment date establishes an early documented military-airfield phase; later intervals keep the 899th regiment and post-2009 status changes separated."
+    },
+    {
+      "source_id": "geonames:11458725",
+      "name": "Khotilovo",
+      "country_code": "RU",
+      "start_year": 1952,
+      "operational_intervals": [
+        {
+          "start_year": 1952,
+          "end_year": null,
+          "label": "790th Fighter Aviation Regiment based at Khotilovo"
+        },
+        {
+          "start_year": 2006,
+          "end_year": 2008,
+          "label": "Reconstruction interval; regiment temporarily relocated but the airbase remained the Khotilovo home station"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Borisovsky Khotilovo air base",
+          "url": "https://en.wikipedia.org/wiki/Borisovsky_Khotilovo_air_base",
+          "note": "Identifies Khotilovo as a Russian airbase and states the 844th separate communications/radio battalion has supported 790th IAP flights since 1953."
+        },
+        {
+          "title": "Khotilovo (airbase)",
+          "url": "https://ru.ruwiki.ru/wiki/%D0%A5%D0%BE%D1%82%D0%B8%D0%BB%D0%BE%D0%B2%D0%BE_(%D0%B0%D0%B2%D0%B8%D0%B0%D0%B1%D0%B0%D0%B7%D0%B0)",
+          "note": "Direct airbase article; describes current 790th IAP basing and the 2006-2008 temporary relocation during reconstruction."
+        },
+        {
+          "title": "790th Fighter Aviation Regiment",
+          "url": "https://ru.wikipedia.org/wiki/790-%D0%B9_%D0%B8%D1%81%D1%82%D1%80%D0%B5%D0%B1%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BF%D0%BE%D0%BB%D0%BA",
+          "note": "Regiment basing table gives April 1952 to present for Khotilovo, Tver Oblast."
+        }
+      ],
+      "rationale": "Khotilovo is in the RU global priority queue and remains absent from overrides. The 790th regiment basing table supports an April 1952 start for documented military airfield use; reconstruction is captured as an interval rather than a closure."
+    },
+    {
+      "source_id": "geonames:11459536",
+      "name": "Chernigovka",
+      "country_code": "RU",
+      "operational_intervals": [
+        {
+          "start_year": 1985,
+          "end_year": 2009,
+          "label": "187th Assault Aviation Regiment at Chernigovka"
+        },
+        {
+          "start_year": 2009,
+          "end_year": 2013,
+          "label": "6983rd/575th aviation-base reorganization period at Chernigovka"
+        },
+        {
+          "start_year": 2013,
+          "end_year": null,
+          "label": "18th Assault Aviation Regiment and 319th Independent Helicopter Regiment at Chernigovka"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "187th independent Assault Aviation Regiment - Michael Holm",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/shap/187oshap.htm",
+          "note": "Unit-history page gives Chernigovka, Primorskiy Kray as the regiment's base from September 1985 to today."
+        },
+        {
+          "title": "Chernigovka Air Base, Russia - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/chernigovka/",
+          "note": "Specialist airbase profile identifies Chernigovka as an active Russian Aerospace Forces airbase with coordinates matching the overlay point and current 18th Guards/319th helicopter units."
+        },
+        {
+          "title": "18th Guards Assault Aviation Regiment",
+          "url": "https://en.wikipedia.org/wiki/18th_Guards_Assault_Aviation_Regiment",
+          "note": "States the 18th Assault Aviation Regiment was reactivated at Chernigovka on 1 December 2013."
+        },
+        {
+          "title": "Chernigovka, Primorsky Krai",
+          "url": "https://en.wikipedia.org/wiki/Chernigovka,_Primorsky_Krai",
+          "note": "Summarizes local basing of the 187th regiment since 1985, 2009 reorganization, and the 2013 restoration of the 18th Assault Aviation Regiment at Chernigovka."
+        }
+      ],
+      "rationale": "The record is a direct name and coordinate match to the Chernigovka airfield. The available sources document robust basing intervals from 1985 onward; no earlier airfield origin was inferred."
+    }
+  ]
+}

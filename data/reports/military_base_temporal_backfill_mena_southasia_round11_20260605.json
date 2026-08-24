@@ -1,0 +1,451 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_mena_southasia_round11",
+  "description": "Eleventh-round conservative temporal backfill candidates for unresearched MENA/South Asia research_temporal_dates rows. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates, prior_research_status=not_researched, and country_code in EG, SY, LY, SA, AE, DZ, IR, PK, IQ, BH, LB were considered.",
+    "Rows marked previously_candidate, previously_skipped_no_safe_date, prior_candidate, or prior_skipped were excluded.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Rows with only current gazetteer, map, prayer-time, tide, or airport-directory presence and no dated operational marker were placed in skipped[].",
+    "Where no public establishment date was found, start_year is a conservative documented-by operational year, not an inferred construction year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:11749468",
+      "name": "King Faisal Naval Base",
+      "country_code": "SA",
+      "start_year": 1984,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity.org - Royal Saudi Naval Forces, Western Fleet",
+          "url": "https://www.globalsecurity.org/military/world/gulf/rsnf-west.htm",
+          "note": "Western Fleet history states that King Faisal Naval Base officially opened in 1404 AH, corresponding to 1984 CE."
+        },
+        {
+          "title": "Saudipedia - Royal Saudi Naval Forces",
+          "url": "https://saudipedia.com/en/article/689/government-and-politics/",
+          "note": "Saudi reference article identifies King Faisal Naval Base in Jeddah as a Naval Forces school and Western Fleet location."
+        }
+      ],
+      "rationale": "The queue row is the Jeddah naval-base feature. The official-opening evidence is Hijri-year based and machine-translated in the accessible source, so the Gregorian year is used with medium confidence."
+    },
+    {
+      "source_id": "geonames:11749395",
+      "name": "Sarra Air Base",
+      "country_code": "LY",
+      "start_year": 1987,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Battle of Maaten al-Sarra",
+          "url": "https://en.wikipedia.org/wiki/Battle_of_Maaten_al-Sarra",
+          "note": "Battle history identifies the 5 September 1987 raid against the Libyan Maaten al-Sarra Air Base."
+        },
+        {
+          "title": "Maaten al-Sarra Air Base",
+          "url": "https://en.wikipedia.org/wiki/Maaten_al-Sarra_Air_Base",
+          "note": "Base profile describes Maaten al-Sarra as the main southern Libyan air base in the final phase of the Chadian-Libyan conflict."
+        }
+      ],
+      "rationale": "The GeoNames Sarra Air Base row aligns with Maaten al-Sarra Air Base. No opening year was found, so 1987 is a documented-by wartime operational year rather than a construction date."
+    },
+    {
+      "source_id": "geonames:6270793",
+      "name": "Kahlid Army",
+      "country_code": "PK",
+      "start_year": 2014,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Dawn - Terrorists on the run after Zarb-i-Azb operation, says COAS",
+          "url": "https://www.dawn.com/news/1125503/terrorists-on-the-run-after-zarb-i-azb-operation-says-coas",
+          "note": "2014 ISPR-linked coverage names Khalid Army Aviation Base Quetta and reports that Army Aviation assets remained safe after an attempted attack."
+        },
+        {
+          "title": "Mapcarta - Kahlid Army",
+          "url": "https://mapcarta.com/es/24887264",
+          "note": "Gazetteer page links the GeoNames feature to Kahlid Army near Quetta and lists alternate names Quetta Airfield and Quetta Heliport."
+        }
+      ],
+      "rationale": "The queue spelling appears to be a GeoNames variant for Khalid Army Aviation Base at Quetta. The 2014 start is only a documented-by operational/security incident year, so confidence is low."
+    },
+    {
+      "source_id": "geonames:6300038",
+      "name": "Omidiyeh",
+      "country_code": "IR",
+      "start_year": 2006,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Omidiyeh Air Base",
+          "url": "https://en.wikipedia.org/wiki/Omidiyeh_Air_Base",
+          "note": "Air-base profile identifies Omidiyeh as an Iranian military air base and cites DAFIF data current as of October 2006."
+        },
+        {
+          "title": "GlobalSecurity.org - Umidiyeh Air Base",
+          "url": "https://www.globalsecurity.org/military/world/iran/umidiyeh.htm",
+          "note": "Facility profile identifies the site as the 5th Tactical Air Base outside Umidiyeh/Omidiyeh in southwestern Iran."
+        }
+      ],
+      "rationale": "No establishment date was found. The 2006 start is a conservative documented-by operational year from DAFIF-linked military-airport data."
+    },
+    {
+      "source_id": "geonames:11864957",
+      "name": "Hamah",
+      "country_code": "SY",
+      "start_year": 2006,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Hama Air Base",
+          "url": "https://en.wikipedia.org/wiki/Hama_Air_Base",
+          "note": "Air-base profile identifies Hama Military Airport as a Syrian military airbase and cites DAFIF data effective October 2006."
+        },
+        {
+          "title": "Small Wars Journal - Suheil al-Hassan and the Syrian Army's Tiger Forces",
+          "url": "https://archive.smallwarsjournal.com/jrnl/art/suheil-al-hassan-and-the-syrian-army%E2%80%99s-tiger-forces",
+          "note": "2016 military analysis describes Syrian aircraft and other military assets at Hama Airbase by the end of 2012."
+        }
+      ],
+      "rationale": "The queue row is the GeoNames short form for Hama Air Base. No opening year was found, so 2006 is a dated military-airport directory marker, supported by later operational use."
+    },
+    {
+      "source_id": "geonames:6786676",
+      "name": "Tall Afar",
+      "country_code": "IQ",
+      "start_year": 1983,
+      "end_year": 2003,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Mapcarta - Tall Afar",
+          "url": "https://mapcarta.com/25919030",
+          "note": "Gazetteer summary describes Tal Afar Air Base as constructed in 1983 for the Iraqi Air Force and operated until the 2003 invasion."
+        },
+        {
+          "title": "Tall Afar Air Base - Military Wiki",
+          "url": "https://military-history.fandom.com/wiki/Tall_Afar_Air_Base",
+          "note": "Facility history describes Tall Afar as a former Iraqi Air Force base captured by Coalition forces during Operation Iraqi Freedom in 2003."
+        }
+      ],
+      "rationale": "The GeoNames row maps to Tal/Tall Afar Air Base. The 1983 construction and 2003 Iraqi Air Force endpoint are clear in secondary facility histories, though not official Iraqi records."
+    },
+    {
+      "source_id": "geonames:11843795",
+      "name": "Um Almelh",
+      "country_code": "SA",
+      "start_year": 2010,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Umm Al Melh Border Guards Airport",
+          "url": "https://en.wikipedia.org/wiki/Umm_Al_Melh_Border_Guards_Airport",
+          "note": "Facility history states the air base was commissioned by the Ministry of Interior in November 2010 for Border Guards southern-border operations."
+        },
+        {
+          "title": "Mapcarta - Um Almelh",
+          "url": "https://mapcarta.com/36033268",
+          "note": "Gazetteer page links the GeoNames row to Umm Al Melh Border Guards Airport and repeats the November 2010 commissioning history."
+        }
+      ],
+      "rationale": "The row is the GeoNames Um Almelh airbase feature, and the linked Border Guards Airport history gives a direct commissioned year."
+    },
+    {
+      "source_id": "geonames:9255811",
+      "name": "Fort Suse",
+      "country_code": "IQ",
+      "start_year": 1977,
+      "end_year": 2006,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Fort Suse",
+          "url": "https://en.wikipedia.org/wiki/Fort_Suse",
+          "note": "Facility history says Fort Suse was built in 1977 by Russian engineers as a barracks and training facility, converted in 2005, and handed over in September 2006."
+        },
+        {
+          "title": "Global Policy Forum - Iraq: a decade of abuses",
+          "url": "https://archive.globalpolicy.org/security/issues/iraq/occupation/report/detention.htm",
+          "note": "Detention report describes Fort Suse as a former Iraqi military barracks near Sulaymaniyah, reconstructed and opened in 2005, then handed to Iraqi authorities in September 2006."
+        }
+      ],
+      "rationale": "The queue row is a barracks feature. The start uses the 1977 barracks/training-facility construction date; the end marks the 2006 handover from coalition military detention use to Iraqi authority, not demolition of the physical site."
+    },
+    {
+      "source_id": "geonames:8531846",
+      "name": "Al Minhad Air Base",
+      "country_code": "AE",
+      "start_year": 2001,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Camp Mirage",
+          "url": "https://en.wikipedia.org/wiki/Camp_Mirage",
+          "note": "Camp Mirage history says the facility was established in late December 2001 and was widely reported to be located at Al Minhad Air Base."
+        },
+        {
+          "title": "Nautilus Institute - Al Minhad Air Base",
+          "url": "https://nautilus.org/publications/books/australian-forces-abroad/australian-bases-abroad/mirage/",
+          "note": "Australian basing analysis reports that by late 2009 Australian operations in the Gulf, Iraq, and Afghanistan were based from Al Minhad."
+        }
+      ],
+      "rationale": "No public UAE Air Force opening year was found. The 2001 start is a documented-by coalition logistics presence at Al Minhad, so confidence is low for the base's true opening date."
+    },
+    {
+      "source_id": "geonames:2570495",
+      "name": "Oum el Bouaghi Airport",
+      "country_code": "DZ",
+      "start_year": 2023,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Algerian Air Forces - Chief of Staff visit to Oum El Bouaghi Air Base",
+          "url": "https://www.mdn.dz/site_cfa/sommaire/actualites/an/visite-cem07092023-an.php",
+          "note": "Official Algerian Air Forces notice records a 7 September 2023 working and inspection visit to Oum El Bouaghi Air Base in the 5th Military Region."
+        },
+        {
+          "title": "Oum El Bouaghi Air Base - Airprt.net",
+          "url": "https://www.airprt.net/en/QMH-oum-el-bouaghi-oum-el-bouaghi-air-base/",
+          "note": "Airport profile identifies QMH/DABO as Oum El Bouaghi Air Base near Oum El Bouaghi city."
+        }
+      ],
+      "rationale": "No establishment date was found. The official 2023 Algerian military visit is a dated operational marker for the named air base, not an opening year."
+    },
+    {
+      "source_id": "geonames:11550666",
+      "name": "ISA Air Base",
+      "country_code": "BH",
+      "start_year": 1990,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Air & Space Power Journal - Origins of the Royal Bahraini Air Force",
+          "url": "https://www.airuniversity.af.edu/Portals/10/ASPJ/journals/Volume-19_Issue-1-4/Fall05.pdf",
+          "note": "Air University article states that Bahrain's F-16s arrived in 1990 and Shaikh Isa Air Base opened in southern Bahrain."
+        },
+        {
+          "title": "Isa Air Base",
+          "url": "https://en.wikipedia.org/wiki/Isa_Air_Base",
+          "note": "Base profile identifies Isa Air Base, formerly Shaikh Isa Air Base, as a Royal Bahraini Air Force military installation."
+        }
+      ],
+      "rationale": "The queue row maps directly to Isa/Shaikh Isa Air Base, and the Air University source gives an explicit opening year."
+    },
+    {
+      "source_id": "geonames:8335363",
+      "name": "Beirut Air Base",
+      "country_code": "LB",
+      "start_year": 1950,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Beirut Air Base",
+          "url": "https://en.wikipedia.org/wiki/Beirut_Air_Base",
+          "note": "Base history states that Beirut Air Base was established in 1950 after formation of the Lebanese Air Force."
+        },
+        {
+          "title": "ICAO - Lebanon's Action Plan 2023",
+          "url": "https://www.icao.int/sites/default/files/sp-files/environmental-protection/Documents/ActionPlan/Lebanon%27s%20Action%20Plan%202023-Approved%20by%20DG.pdf",
+          "note": "Lebanon civil aviation action plan notes that Beirut airport also houses Beirut Air Base, the main base for the Lebanese Air Force."
+        }
+      ],
+      "rationale": "The row directly names Beirut Air Base. The 1950 establishment date is available in a base history, with an official aviation plan supporting the current facility identity."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:11483151",
+      "name": "Pakistan Air Force Lalian Base",
+      "country_code": "PK",
+      "source_notes": [
+        {
+          "title": "Mapcarta - Pakistan Air Force Lalian Base",
+          "url": "https://mapcarta.com/35311980",
+          "note": "Gazetteer page identifies the GeoNames feature and location but gives no opening, establishment, or dated operational marker."
+        }
+      ],
+      "reason": "Only current gazetteer/map evidence was found; no dated operational marker met the evidence standard."
+    },
+    {
+      "source_id": "geonames:357934",
+      "name": "El-Bughaz Fort West",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "Survey of Egypt: Rosetta",
+          "url": "https://geo.btaa.org/catalog/camel-1001836",
+          "note": "Historic map catalog confirms nearby Rosetta-area forts on a 1920s Survey of Egypt sheet but does not date this specific fort's military operation."
+        },
+        {
+          "title": "IslamicFinder - El-Bughaz Fort West",
+          "url": "https://www.islamicfinder.org/world/egypt/42603542/el-bughaz-fort-west-prayer-times/",
+          "note": "Location/prayer-time page confirms the place name but provides no historical operational evidence."
+        }
+      ],
+      "reason": "No explicit opening, established, active-use, or closure year was found for the specific feature."
+    },
+    {
+      "source_id": "geonames:357956",
+      "name": "El-‘Abd Fort",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "American Journal of Engineering Research - Rosetta Promontory coastal study",
+          "url": "https://ajer.org/papers/Vol-13-issue-3/13037291.pdf",
+          "note": "Coastal engineering study references Tabiyat El-Abd Fort as a local structure but does not establish a military operational date."
+        },
+        {
+          "title": "IslamicFinder - El-`Abd Fort",
+          "url": "https://www.islamicfinder.org/world/egypt/42603131/el-abd-fort-prayer-times/?language=ms",
+          "note": "Location/prayer-time page confirms the place name but provides no historical operational evidence."
+        }
+      ],
+      "reason": "Sources found were location or coastal-structure references only; no safe temporal military date."
+    },
+    {
+      "source_id": "geonames:357951",
+      "name": "El-‘Aiyâsh Fort No. 6",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "Mapcarta - El-‘Aiyâsh Fort No. 6",
+          "url": "https://mapcarta.com/13061580",
+          "note": "Gazetteer page identifies the GeoNames coast guard station and coordinates but gives no dated operational history."
+        },
+        {
+          "title": "Sailing Directions for the Mediterranean",
+          "url": "https://rommelsriposte.com/wp-content/uploads/2021/10/sailing_directions_for_the_mediterranean.pdf",
+          "note": "Sailing directions mention El Aiyash Fort No. 6 as a coastal landmark, not as a dated operational station."
+        }
+      ],
+      "reason": "Only map/sailing-direction presence was found; no dated operational marker met the evidence standard."
+    },
+    {
+      "source_id": "geonames:357949",
+      "name": "El-‘Alâyim Fort",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "Survey of Egypt: Rosetta",
+          "url": "https://geo.btaa.org/catalog/camel-1001836",
+          "note": "Historic map catalog lists El 'Alayim Fort on the Rosetta sheet but does not provide a construction or operational date."
+        },
+        {
+          "title": "Geographic.org - Egypt geographical names",
+          "url": "https://geographic.org/geographic_names/egypt/e/el.html",
+          "note": "Name index lists El-`Alayim Fort as a coast guard station but supplies no dated historical evidence."
+        }
+      ],
+      "reason": "Only named-map/index evidence was found; no specific dated military operation or establishment evidence."
+    },
+    {
+      "source_id": "geonames:11776366",
+      "name": "Gilleaume Station (historical)",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "TideKing - As Suways tide regions",
+          "url": "https://tideking.com/Egypt/Suez/Tides/",
+          "note": "Tide-region listing includes Gilleaume Station (historical) but gives no military or operational date."
+        }
+      ],
+      "reason": "Only present-day location/tide listing evidence was found; no dated military station evidence."
+    },
+    {
+      "source_id": "geonames:11748313",
+      "name": "Guerin Station (historical)",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "TideKing - As Suways tide regions",
+          "url": "https://tideking.com/Egypt/Suez/Tides/",
+          "note": "Tide-region listing includes Guerin Station (historical) but gives no military or operational date."
+        }
+      ],
+      "reason": "Only present-day location/tide listing evidence was found; no dated military station evidence."
+    },
+    {
+      "source_id": "geonames:11777316",
+      "name": "Km 146 Signal Station (historical)",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "TideKing - As Suways tide regions",
+          "url": "https://tideking.com/Egypt/Suez/Tides/",
+          "note": "Tide-region listing includes Km 146 Signal Station (historical) but gives no operational date."
+        }
+      ],
+      "reason": "Only location/tide listing evidence was found; no dated signal-station operational evidence."
+    },
+    {
+      "source_id": "geonames:11776367",
+      "name": "Km 152 Signal Station (historical)",
+      "country_code": "EG",
+      "source_notes": [
+        {
+          "title": "TideKing - As Suways tide regions",
+          "url": "https://tideking.com/Egypt/Suez/Tides/",
+          "note": "Tide-region listing includes Km 152 Signal Station (historical) but gives no operational date."
+        }
+      ],
+      "reason": "Only location/tide listing evidence was found; no dated signal-station operational evidence."
+    },
+    {
+      "source_id": "geonames:1451072",
+      "name": "Pakistan Air Force Lines",
+      "country_code": "PK",
+      "source_notes": [
+        {
+          "title": "IslamicFinder - Pakistan Air Force Lines",
+          "url": "https://www.islamicfinder.org/world/pakistan/45539731/pakistan-air-force-lines-north-west-frontier-pk-prayer-times/",
+          "note": "Location/prayer-time page confirms the place name but provides no military-operational date."
+        }
+      ],
+      "reason": "No credible dated base-history or operational source was found; available results were location-only."
+    },
+    {
+      "source_id": "geonames:12164610",
+      "name": "Tarabulus Heliport",
+      "country_code": "LY",
+      "source_notes": [
+        {
+          "title": "GeoView - OSM way near Khallat Farjan",
+          "url": "https://ly.geoview.info/osm_way_1137449056%2C1137449056w",
+          "note": "Nearby-place listing references Tarabulus Heliport as an airbase but gives no dated operational marker."
+        },
+        {
+          "title": "GeoNames full text search - Tripoli",
+          "url": "https://www.geonames.org/search.html?q=tripoli&startRow=1000",
+          "note": "GeoNames search result confirms the Tarabulus Heliport feature and coordinates but no temporal evidence."
+        }
+      ],
+      "reason": "Only current gazetteer and commercial helicopter-service context was found; no dated military operational marker."
+    },
+    {
+      "source_id": "geonames:11270077",
+      "name": "Fortified defensive base",
+      "country_code": "SY",
+      "source_notes": [
+        {
+          "title": "BlackWiki - Syrian Civil War overview map documentation",
+          "url": "https://www.blackwiki.org/index.php?title=Module%3ASyrian_Civil_War_overview_map%2Fdoc",
+          "note": "Map-module documentation contains a generic 'Fortified defensive base' label but does not identify the specific queue feature or a temporal marker."
+        }
+      ],
+      "reason": "Feature name is generic and available evidence did not safely identify a specific facility or dated operational period."
+    }
+  ]
+}

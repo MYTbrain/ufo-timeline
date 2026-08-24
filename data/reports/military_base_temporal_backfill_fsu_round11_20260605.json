@@ -1,0 +1,359 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_fsu_round11",
+  "description": "Eleventh-round conservative temporal backfill candidates for unresearched FSU/Eastern Europe/Central Asia military base rows. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates, prior_research_status=not_researched, and country_code in BY, UA, AZ, TM, TJ, KG, MD, RU, GE were considered.",
+    "Rows with prior skipped or prior candidate disposition were excluded by the prior_research_status filter.",
+    "Priority was given to credible real military airbases, air stations, and naval bases with explicit dated operational markers.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Where no public establishment date was found, start_year is a conservative documented-by operational year or unit-presence year, not an inferred construction year."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:11500068",
+      "name": "Bereza",
+      "country_code": "BY",
+      "start_year": 1955,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Osovcy Air Base - GlobalMilitary.net",
+          "url": "https://www.globalmilitary.net/airbases/osovcy-air-base/",
+          "note": "Base-history profile identifies Osovcy/Bereza as an active Belarus military-only air base and states that the 927th Fighter Aviation Regiment transferred there in 1955."
+        },
+        {
+          "title": "Osovcy (air base)",
+          "url": "https://en.wikipedia.org/wiki/Osovcy_%28air_base%29",
+          "note": "Air-base history states that the 927th Fighter Aviation Regiment arrived at Bereza-Osovcy in 1955 and later became part of the Belarusian Air Force."
+        }
+      ],
+      "rationale": "The queue name Bereza aligns with Osovcy/Asaŭcy Air Base near Byaroza. Although one source traces aviation activity at the site to 1915, 1955 is used as the conservative modern military airbase marker tied to the resident fighter regiment."
+    },
+    {
+      "source_id": "geonames:11500078",
+      "name": "Borovtsy",
+      "country_code": "BY",
+      "start_year": 1946,
+      "end_year": 2002,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Borovitsy",
+          "url": "https://en.wikipedia.org/wiki/Borovitsy",
+          "note": "Air-base history identifies Borovitsy/Borovtsy as a military air base near Polotsk and says the 24th Guards Military Transport Aviation Regiment was based there from 1946 to 1956."
+        },
+        {
+          "title": "Air Forces Monthly - Belarusian AF & Air Defence, December 2019",
+          "url": "https://www.4aviation.nl/wp-content/uploads/2019/12/Belarus-jun19-Air-Forces-Monthly-dec19-Stefan-Goossens-Patrick-Roegies.pdf",
+          "note": "Belarusian air-force order-of-battle article reports that the 276th Independent Helicopter Regiment was formed at Borovtsy on 20 January 1982 and later transferred to Belarusian control."
+        }
+      ],
+      "rationale": "The source_id/name matches Borovitsy/Borovtsy. The 1946 start is the earliest dated military unit presence found; the 2002 end follows the documented disestablishment of the resident Belarusian helicopter regiment, so confidence is medium rather than high."
+    },
+    {
+      "source_id": "geonames:11500229",
+      "name": "Pruzhany",
+      "country_code": "BY",
+      "start_year": 1945,
+      "end_year": 1993,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Pruzhany (air base)",
+          "url": "https://en.wikipedia.org/wiki/Pruzhany_%28air_base%29",
+          "note": "Air-base history lists Pruzhany as built in 1945 and in use from 1945 to 1993, with multiple Soviet and Belarusian aviation units based there."
+        },
+        {
+          "title": "Pruzhany Air Base - GlobalMilitary.net",
+          "url": "https://www.globalmilitary.net/airbases/pruzhany-air-base/",
+          "note": "Base profile identifies Pruzhany as a former Belarusian Air Force base and summarizes helicopter-regiment use from 1976 through 1992."
+        }
+      ],
+      "rationale": "The queue row is directly the Pruzhany air-base feature. The start and end years are taken from explicit built/in-use dates, with medium confidence because the supporting base history is compiled from open aviation references."
+    },
+    {
+      "source_id": "geonames:11500237",
+      "name": "Ross",
+      "country_code": "BY",
+      "start_year": 1989,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "116th Guards Assault Air Base",
+          "url": "https://en.wikipedia.org/wiki/116th_Guards_Assault_Air_Base",
+          "note": "Unit/base history states that in summer 1989 the regiment relocated from Brand Airfield to Ross Airfield in the Grodno Region of the Byelorussian SSR."
+        },
+        {
+          "title": "MILAVIA - Belarus Air and Air Defense Forces",
+          "url": "https://www.milavia.net/airforces/reports/belarusian-air-force/",
+          "note": "Belarusian air-force report identifies the Su-24M/MR force as belonging to the 116th Bomber and Reconnaissance Base at Ross."
+        }
+      ],
+      "rationale": "The Ross queue row is supported by a dated 1989 relocation of the relevant Soviet/Belarusian aviation unit to Ross Airfield. No safe public closure year was found, so the endpoint is left open."
+    },
+    {
+      "source_id": "geonames:800682",
+      "name": "Baku Kala",
+      "country_code": "AZ",
+      "start_year": 1993,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Azerbaijan Ministry of Defence - Azerbaijan Air Force",
+          "url": "https://mod.gov.az/en/-260/",
+          "note": "Official Air Force history says the Tu-134 aircraft used by Heydar Aliyev in June 1993 is preserved at Gala Aviation Base."
+        },
+        {
+          "title": "Azerbaijani Air Forces Explained",
+          "url": "https://everything.explained.today/Azerbaijani_Air_Forces/",
+          "note": "Air-force structure summary reports that in October 2004 Azerbaijan had a helicopter squadron at Baku Kala Air Base with Mi-2, Mi-8, and Mi-24 helicopters."
+        }
+      ],
+      "rationale": "The queue name Baku Kala aligns with Gala/Qala Aviation Base. The 1993 official reference is a dated base-presence marker rather than a proven opening date, so confidence is low."
+    },
+    {
+      "source_id": "geonames:11500100",
+      "name": "Dollyar",
+      "country_code": "AZ",
+      "start_year": 1955,
+      "end_year": 1992,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Dollyar Air Base - Airports-Worldwide",
+          "url": "https://www.airports-worldwide.com/azerbaijan/dollyar_azerbaijan.php",
+          "note": "Airport/base profile identifies Dollyar as a military airbase and states that the 882nd Independent Reconnaissance Aviation Regiment was located there from 1955? to 1992."
+        },
+        {
+          "title": "Azerbaijani Air Forces - AviationsMilitaires.net",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/23/armee-de-lair-azerie",
+          "note": "Azerbaijan air-force history lists the 882nd reconnaissance regiment at Dallyar with MiG-25RB and Su-24MR aircraft in the late Soviet order of battle."
+        }
+      ],
+      "rationale": "Dollyar is a real former Soviet/Azerbaijani military airbase. The start year is retained from the dated unit-location range but downgraded because the source itself marks 1955 as uncertain."
+    },
+    {
+      "source_id": "geonames:800653",
+      "name": "Kyurdamir",
+      "country_code": "AZ",
+      "start_year": 1988,
+      "end_year": 1992,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "36th Fighter-Bomber Aviation Division",
+          "url": "https://www.ww2.dk/new/air%20force/division/bad/36bad.htm",
+          "note": "Soviet order-of-battle source lists the 976th Fighter-Bomber Aviation Regiment at Kyurdamir, Azerbaijan SSR, under the 36th division from May 1988 to 1992."
+        },
+        {
+          "title": "Azerbaijani Air Forces - AviationsMilitaires.net",
+          "url": "https://aviationsmilitaires.net/v3/kb/airforce/show/23/armee-de-lair-azerie",
+          "note": "Azerbaijan air-force history identifies the 976th bomber regiment at Kyurdamir with Su-24M aircraft in the late Soviet Azerbaijani basing structure."
+        }
+      ],
+      "rationale": "The queue row is the Kyurdamir/Kurdamir air-base feature. No opening date was found, so 1988 is a conservative documented-by unit-presence year and 1992 marks the end of the cited Soviet basing interval."
+    },
+    {
+      "source_id": "geonames:11500200",
+      "name": "Nasosnaya",
+      "country_code": "AZ",
+      "start_year": 1945,
+      "end_year": 1993,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "82nd Fighter Aviation Regiment PVO",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/iap/82iap.htm",
+          "note": "Soviet order-of-battle source states the 82nd Fighter Aviation Regiment PVO was based at Nasosnaya, Azerbaijan SSR, from 1945 to 1993 and was disbanded in 1993."
+        },
+        {
+          "title": "Nasosnaya Air Base",
+          "url": "https://en.wikipedia.org/wiki/Nasosnaya_Air_Base",
+          "note": "Air-base history identifies Nasosnaya as a military airbase near Sumqayit and describes Azerbaijan taking over MiG-25 aircraft from the 82nd regiment."
+        }
+      ],
+      "rationale": "The Nasosnaya row has direct source-level unit basing dates from 1945 through 1993, making this the strongest Azerbaijani candidate in this round."
+    },
+    {
+      "source_id": "geonames:800932",
+      "name": "Sital Chay",
+      "country_code": "AZ",
+      "start_year": 1981,
+      "end_year": 1992,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "80th Independent Assault Aviation Regiment",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/shap/80oshap.htm",
+          "note": "Soviet order-of-battle source states the 80th Independent Assault Aviation Regiment was activated in Sital-Chae in February 1981 and based there from 1981 to 1992."
+        },
+        {
+          "title": "Azerbaijan Ministry of Defence - Azerbaijan Air Force",
+          "url": "https://mod.gov.az/en/-260/",
+          "note": "Official Air Force history says Azerbaijan's first Su-25 was flown from the former Soviet Army's Sitalchay airfield on 8 April 1992."
+        }
+      ],
+      "rationale": "Sital Chay has both direct unit activation/basing dates and an official Azerbaijani dated operational marker from 1992. The candidate uses the 1981 activation as the start and the 1992 Soviet-to-Azerbaijani transition as the conservative endpoint for the cited Soviet interval."
+    },
+    {
+      "source_id": "geonames:11457251",
+      "name": "Kizyl Arvat",
+      "country_code": "TM",
+      "start_year": 1960,
+      "end_year": 1992,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "217th Fighter-Bomber Aviation Regiment",
+          "url": "https://www.ww2.dk/new/air%20force/regiment/shap/217apib.htm",
+          "note": "Soviet order-of-battle source lists the 217th Fighter-Bomber Aviation Regiment at Kzyl-Arvat, Ashkhabad Oblast, from 1960 to January 1992."
+        },
+        {
+          "title": "Turkmen Air Force",
+          "url": "https://en.wikipedia.org/wiki/Turkmen_Air_Force",
+          "note": "Turkmen air-force history lists the 56th Storage Base at Kyzyl-Arvat among inherited former Soviet aviation facilities."
+        }
+      ],
+      "rationale": "The Kizyl Arvat row has a direct Soviet aviation-regiment basing range. The endpoint records the January 1992 transition to Turkmenistan and storage-base role."
+    },
+    {
+      "source_id": "geonames:11457231",
+      "name": "Mary North",
+      "country_code": "TM",
+      "start_year": 1970,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "MIG-23MLD 2nd Squadron Aggressor, Turkmenia, November 1990 - Hobby Master Archive",
+          "url": "https://hobbymasterarchive.org/HA5310/",
+          "note": "Aviation-history profile states the 1521st Center for Combat Employment was established in 1970 in Mary and was known from 1979 as the 1521st Aviation Base."
+        },
+        {
+          "title": "Mary-2 - AviationsMilitaires.net",
+          "url": "https://aviationsmilitaires.net/v3/kb/airfield/show/2351/mary-2",
+          "note": "Airfield profile identifies Mary-2 as a Soviet/Turkmen air base and notes likely Soviet development from the 1950s plus later Soviet and Turkmen military use."
+        }
+      ],
+      "rationale": "The queue row Mary North aligns with Mary-2. Because the 1950s construction language is approximate, the candidate uses 1970 as the clearer dated military aviation-center establishment marker."
+    },
+    {
+      "source_id": "geonames:11457216",
+      "name": "Ayni Air Base",
+      "country_code": "TJ",
+      "start_year": 2002,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Eurasianet - India: The New Central Asian Player",
+          "url": "https://eurasianet.org/india-the-new-central-asian-player",
+          "note": "Contemporary regional-security reporting says Indian and Tajik officials admitted India had been renovating the Ayni base since 2002."
+        },
+        {
+          "title": "Eurasianet - Why is Tajikistan's Ayni Air Base Idle?",
+          "url": "https://eurasianet.org/why-is-tajikistans-ayni-air-base-idle",
+          "note": "2010 reporting describes Ayni as an air base southwest of Dushanbe, with Indian military renovation work in the mid-2000s and an expected operational announcement in 2006."
+        }
+      ],
+      "rationale": "No safe original Soviet opening year was found. The 2002 date is a documented modern renovation/reactivation marker for Ayni/Gissar Air Base, not a claim that the airfield was first built then."
+    },
+    {
+      "source_id": "geonames:10177085",
+      "name": "Tiraspol Air Base",
+      "country_code": "MD",
+      "start_year": 1989,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Tiraspol Airfield",
+          "url": "https://en.wikipedia.org/wiki/Tiraspol_Airfield",
+          "note": "Airfield history states that Tiraspol previously served as a military air base and was used as a Soviet Air Forces military airfield until 1989."
+        },
+        {
+          "title": "Tiraspol Airfield - Wikidata",
+          "url": "https://www.wikidata.org/wiki/Q4458055",
+          "note": "Exact GeoNames-linked Wikidata item identifies the Tiraspol airfield with GeoNames ID 10177085 and ICAO code LUTR."
+        }
+      ],
+      "rationale": "The only reliable dated operational marker found is the terminal phrase 'until 1989' for Soviet military use. The candidate uses 1989 as a documented-by/known military-use year and leaves the start unknown in prose; confidence is low because this is not an opening date."
+    },
+    {
+      "source_id": "geonames:11500130",
+      "name": "Gudauta",
+      "country_code": "GE",
+      "start_year": 1982,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Gudauta",
+          "url": "https://en.wikipedia.org/wiki/Gudauta",
+          "note": "Gudauta history identifies the Soviet Bombora airfield outside Gudauta and says the 171st Guards Fighter Aviation Regiment flew Su-15TMs there until 1982."
+        },
+        {
+          "title": "A Rogue Fleet in the Black Sea - Jamestown Foundation",
+          "url": "https://jamestown.org/a-rogue-fleet-in-the-black-sea/",
+          "note": "Jamestown analysis refers to the Gudauta land and air base as one of the Russian military installations in Abkhazia being refurbished after the 2008 war."
+        }
+      ],
+      "rationale": "The queue row Gudauta aligns with Bombora/Gudauta airfield. No opening year was found, so 1982 is used only as a documented-by Soviet fighter-regiment marker and confidence is low."
+    },
+    {
+      "source_id": "geonames:12954207",
+      "name": "Ochamchire Naval Base",
+      "country_code": "GE",
+      "start_year": 2008,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "A Rogue Fleet in the Black Sea - Jamestown Foundation",
+          "url": "https://jamestown.org/a-rogue-fleet-in-the-black-sea/",
+          "note": "Jamestown analysis states that in Soviet times Ochamchire was used as a submarine base and later for coastguard/support vessels, was abandoned in the early 1990s, and was being rebuilt after the 2008 war."
+        },
+        {
+          "title": "Ochamchire Naval Base",
+          "url": "https://en.wikipedia.org/wiki/Ochamchire_Naval_Base",
+          "note": "Naval-base article describes Soviet-era use, late-1980s expansion plans, abandonment after the USSR collapse, and renewed Russian/Abkhaz basing discussions."
+        }
+      ],
+      "rationale": "The Soviet-era base clearly predates 2008, but no safe public opening year was found. The candidate uses 2008 as the documented postwar reactivation/rebuilding marker and keeps confidence low."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:11500188",
+      "name": "Minsk Slepyanka",
+      "country_code": "BY",
+      "source_notes": [
+        {
+          "title": "Search review - Minsk Slepyanka",
+          "url": "https://www.geonames.org/11500188",
+          "note": "Review found GeoNames/current-location style records and scattered mentions, but no credible opening, activation, closure, or dated military operational marker for the specific queue feature."
+        }
+      ],
+      "reason": "Skipped because only current or ambiguous airfield/directory evidence was found, not a dated operational military-base marker."
+    },
+    {
+      "source_id": "geonames:11457250",
+      "name": "Ashkhabad Bezmein",
+      "country_code": "TM",
+      "source_notes": [
+        {
+          "title": "Ashkhabad Bezmein - Mindat",
+          "url": "https://www.mindat.org/feature-11457250.html",
+          "note": "Mindat mirrors the GeoNames feature as an airbase, but no dated military operational marker was found in credible public sources during this pass."
+        }
+      ],
+      "reason": "Skipped because the available evidence was current-listing-only or generic airbase classification without an explicit dated opening, activation, closure, or unit-presence marker."
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-05",
+  "description": "High-confidence GeoNames French/English alias temporal candidates. These rows copy temporal evidence from already-reviewed English GeoNames facilities only where country and coordinates match exactly.",
+  "candidate_overrides": [
+    {
+      "source_id": "geonames:5919633",
+      "name": "Champ de tir Cedar Springs",
+      "country_code": "CA",
+      "start_year": 1912,
+      "end_year": null,
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:5918916",
+      "copy_from_name": "Cedar Springs Range",
+      "source_urls": [
+        "https://www.canada.ca/en/army/corporate/4-canadian-division/4-canadian-division-ranges.html",
+        "https://www.canada.ca/en/news/archive/2015/07/highlights-new-federal-infrastructure-investments-chatham-ontario.html",
+        "https://www.mindat.org/feature-5918916.html"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Cedar Springs Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919651",
+      "name": "Champ de tir Lethbridge",
+      "country_code": "CA",
+      "start_year": 2013,
+      "end_year": null,
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6053158",
+      "copy_from_name": "Lethbridge Range",
+      "source_urls": [
+        "https://pollution-waste.canada.ca/sradapi/v2/npri/Details/ReportPdf?language=en&npriId=22627&reportYear=2013"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Lethbridge Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919652",
+      "name": "Champ de tir Moncton",
+      "country_code": "CA",
+      "start_year": 1940,
+      "end_year": 1982,
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6076213",
+      "copy_from_name": "Moncton Range",
+      "source_urls": [
+        "https://toponymes.rncan.gc.ca/search-place-names/unique?id=DBDXQ&wbdisable=true",
+        "https://militarybruce.com/abandoned-canadian-military-bases/closed-bases-with-military-presence/new-brunswick/"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Moncton Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919653",
+      "name": "Champ de tir Mount McKay",
+      "country_code": "CA",
+      "start_year": 1907,
+      "end_year": null,
+      "historical_status": "operational_end_not_found",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6081841",
+      "copy_from_name": "Mount McKay Range",
+      "source_urls": [
+        "https://publications.gc.ca/Collection/CP22-48-2002E.pdf",
+        "https://lurepository.lakeheadu.ca/bitstream/handle/2453/3125/EllardJ1999m-1b.pdf?isAllowed=y&sequence=1",
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations.html"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Mount McKay Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919655",
+      "name": "Champ de tir Nicolet",
+      "country_code": "CA",
+      "start_year": 1952,
+      "end_year": 1999,
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6088138",
+      "copy_from_name": "Nicolet Range",
+      "source_urls": [
+        "https://www.canada.ca/en/news/archive/2006/09/groupe-international-awarded-contract.html",
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations/marking-former-firing-range.html"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Nicolet Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919657",
+      "name": "Champ de tir Prince Albert",
+      "country_code": "CA",
+      "start_year": 2025,
+      "end_year": null,
+      "historical_status": "active_after_reopening",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6113341",
+      "copy_from_name": "Prince Albert Range",
+      "source_urls": [
+        "https://panow.com/2026/01/31/military-conducts-first-exercises-at-newly-reopened-training-grounds-north-of-pa/",
+        "https://paherald.sk.ca/winter-survival-training-returns-to-prince-albert-training-area/",
+        "https://www.98cool.ca/2026/01/31/north-saskatchewan-and-38-combat-engineer-regiments-undergoing-winter-training/"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Prince Albert Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919658",
+      "name": "Champ de tir Saint Charles",
+      "country_code": "CA",
+      "start_year": 1911,
+      "end_year": null,
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6155744",
+      "copy_from_name": "St. Charles Range",
+      "source_urls": [
+        "https://abcdocz.com/doc/444742/lest-we-forget-do-not-pay-march"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as St. Charles Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919661",
+      "name": "Champ de tir Winona",
+      "country_code": "CA",
+      "start_year": 2017,
+      "end_year": null,
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6183253",
+      "copy_from_name": "Winona Range",
+      "source_urls": [
+        "https://iaac-aeic.gc.ca/050/evaluations/document/165752"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Winona Range; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919641",
+      "name": "Champ de tir et champ de manoeuvre Granville Ferry",
+      "country_code": "CA",
+      "start_year": 2009,
+      "end_year": null,
+      "historical_status": "active_documented_by_2009",
+      "temporal_confidence": "medium",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:5965028",
+      "copy_from_name": "Granville Ferry Range and Training Area",
+      "source_urls": [
+        "https://auroranewspaper.com/wp-content/uploads/pdf/Archive/2009/Wing%20Info%20Book%202009%20-%20low%20res.pdf",
+        "https://auroranewspaper.com/wp-content/uploads/pdf/Archive/2022/4337news.pdf"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Granville Ferry Range and Training Area; temporal evidence copied from the reviewed English facility override."
+    },
+    {
+      "source_id": "geonames:5919644",
+      "name": "Champ de tir et champ de manoeuvre Mont Saint Bruno",
+      "country_code": "CA",
+      "start_year": 1938,
+      "end_year": 2017,
+      "historical_status": "closed",
+      "temporal_confidence": "high",
+      "temporal_source": "exact_coordinate_alias_backfill",
+      "copy_from_source_id": "geonames:6083456",
+      "copy_from_name": "Mt. St. Bruno Range and Training Area",
+      "source_urls": [
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations/practicing-uxo-safety-at-the-former-saint-bruno-range.html",
+        "https://www.canada.ca/en/department-national-defence/services/uxo/uxo-locations.html"
+      ],
+      "source_notes": "French GeoNames alias at the same coordinates as Mt. St. Bruno Range and Training Area; temporal evidence copied from the reviewed English facility override."
+    }
+  ],
+  "not_safe": [
+    {
+      "reason": "english_counterpart_undated_research_queue",
+      "source_ids": [
+        "geonames:5919628",
+        "geonames:5919629",
+        "geonames:5919632",
+        "geonames:5919659",
+        "geonames:5919660"
+      ]
+    },
+    {
+      "reason": "no_dated_english_override_target_found",
+      "source_ids": [
+        "geonames:5919627"
+      ]
+    },
+    {
+      "reason": "training_area_pairs_also_undated_manual",
+      "source_ids": [
+        "geonames:5919607",
+        "geonames:5921322",
+        "geonames:5919608",
+        "geonames:5951491",
+        "geonames:5919609",
+        "geonames:5960604",
+        "geonames:5919610",
+        "geonames:5985899",
+        "geonames:5919611",
+        "geonames:5988710",
+        "geonames:5919612",
+        "geonames:5994030",
+        "geonames:5919614",
+        "geonames:6074115",
+        "geonames:5919615",
+        "geonames:6094582",
+        "geonames:5919617",
+        "geonames:6122112",
+        "geonames:5919619",
+        "geonames:6150844",
+        "geonames:5919620",
+        "geonames:6158844",
+        "geonames:5919622",
+        "geonames:6159986"
+      ]
+    }
+  ]
+}

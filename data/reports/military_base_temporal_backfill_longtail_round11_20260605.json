@@ -1,0 +1,447 @@
+{
+  "generated_at": "2026-06-05T00:00:00Z",
+  "temporal_source": "manual_web_research_longtail_round11",
+  "description": "Eleventh-round conservative temporal backfill candidates for unresearched Asia-Pacific, Americas, Africa, and Europe longtail military/base rows. This report is research-only and is not merged into temporal overrides.",
+  "match_key": "source_id",
+  "scope_notes": [
+    "Input records were checked against data/reports/military_base_temporal_priority_queue.json.",
+    "Only rows with recommended_action=research_temporal_dates and prior_research_status=not_researched were considered.",
+    "Countries excluded by the task were not considered: BY, UA, AZ, TM, TJ, KG, MD, RU, GE, EG, SY, LY, SA, AE, DZ, IR, PK, IQ, BH, LB, CA, CN.",
+    "Rows marked previously_candidate, previously_skipped_no_safe_date, manual_classify_then_research_or_exclude, or review_overlay_membership_before_date_backfill were excluded.",
+    "Included source_ids were checked against webapp/static_public/data/map_overlays/military_base_temporal_overrides.json and were not present there at generation time.",
+    "Candidates require an explicit opening, establishment, activation, construction, transfer, closure, or similarly dated operational marker. Current-listing-only evidence was placed in skipped[].",
+    "Where a predecessor or successor facility date is used, the identity link is explained and temporal_confidence is downgraded as needed."
+  ],
+  "candidates": [
+    {
+      "source_id": "geonames:6299351",
+      "name": "Alcantarilla Air Base",
+      "country_code": "ES",
+      "start_year": 1936,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Ejercito del Aire y del Espacio - Base Aerea de Alcantarilla",
+          "url": "https://ejercitodelaireydelespacio.defensa.gob.es/EA/ejercitodelaire/es/Unidades/Unidad/a5e7a0c5-9f29-11ee-b1b1-005056bf91c5/",
+          "note": "The official unit page states that the Aerodromo Militar de Alcantarilla was definitively renamed Base Aerea de Alcantarilla in the 1993 base-classification reform."
+        },
+        {
+          "title": "20 Minutos - Felipe VI visita la Escuela Militar de Paracaidismo",
+          "url": "https://www.20minutos.es/noticia/2668860/0/felipe-vi-visita-por-primera-vez-como-rey-escuela-militar-paracaidismo-base-aerea-alcantarilla/",
+          "note": "The historical summary says the military aerodrome at Alcantarilla was established in August 1936 at Sangonera la Seca with a dirt runway and barracks for flight-school activity."
+        }
+      ],
+      "rationale": "The GeoNames row matches the present Alcantarilla Air Base. The 1936 start is for the predecessor military aerodrome at the same site; confidence is medium because the official page confirms the later base identity while the 1936 establishment detail comes from a secondary historical summary."
+    },
+    {
+      "source_id": "geonames:3642850",
+      "name": "El Libertador AB",
+      "country_code": "VE",
+      "start_year": 1955,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Base Aerea El Libertador",
+          "url": "https://es.wikipedia.org/wiki/Base_A%C3%A9rea_El_Libertador",
+          "note": "The base history says activity began in 1952 with construction of the control tower and that the base facilities were inaugurated on 9 December 1955."
+        },
+        {
+          "title": "DBpedia - Base Aerea El Libertador",
+          "url": "https://es.dbpedia.org/page/Base_A%C3%A9rea_El_Libertador",
+          "note": "The structured abstract repeats that Base Aerea Libertador began activities in 1952 with construction of the control tower."
+        }
+      ],
+      "rationale": "The named row is the Venezuelan El Libertador/Palo Negro air base. The candidate uses the 1955 inauguration year rather than the 1952 construction-start year because inauguration is the clearer dated operational marker."
+    },
+    {
+      "source_id": "geonames:981825",
+      "name": "Louis Trichardt Airport",
+      "country_code": "ZA",
+      "start_year": 1987,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "South African Air Force - Air Force Base Makhado",
+          "url": "https://www.saairforce.co.za/the-airforce/bases/6/air-force-base-makhado",
+          "note": "The SAAF base page states that the base was officially opened on 14 October 1987 as AFB Louis Trichardt and renamed AFB Makhado on 7 November 2003."
+        },
+        {
+          "title": "GlobalSecurity - Louis Trichardt Airbase",
+          "url": "https://www.globalsecurity.org/military/world/rsa/louistrichardt.htm",
+          "note": "GlobalSecurity also records that AFB Louis Trichardt was officially opened on 14 October 1987."
+        }
+      ],
+      "rationale": "The queue row uses the older/local airport name for the current SAAF AFB Makhado/Louis Trichardt facility. The official SAAF opening date provides a direct start year."
+    },
+    {
+      "source_id": "geonames:11483579",
+      "name": "Hatzor",
+      "country_code": "IL",
+      "start_year": 1942,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Hatzor Airbase",
+          "url": "https://en.wikipedia.org/wiki/Hatzor_Airbase",
+          "note": "The airbase history states that the airbase opened in 1942 as RAF Qastina and was taken over by Haganah/Israeli forces in 1948."
+        },
+        {
+          "title": "GlobalSecurity - Hatzor",
+          "url": "https://www.globalsecurity.org/military/world/israel/hatzor.htm",
+          "note": "GlobalSecurity identifies Hatzor as beginning as the British Castina/Qastina base and says the facility was transferred to the IAF on 9 November 1948."
+        }
+      ],
+      "rationale": "The row name is the Hatzor air-base location. The 1942 start is a predecessor RAF Qastina facility date at the same airfield; confidence is medium because the Israeli-base identity depends on the documented 1948 transfer/renaming link."
+    },
+    {
+      "source_id": "geonames:6301846",
+      "name": "Danilo Atienza Air Base",
+      "country_code": "PH",
+      "start_year": 1971,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity - Danilo Atienza Air Base",
+          "url": "https://www.globalsecurity.org/military/world/philippines/atienza.htm",
+          "note": "GlobalSecurity states that Sangley Point was turned over to the Philippine Navy and Air Force on 1 September 1971 and renamed Sangley Point Air Base."
+        },
+        {
+          "title": "Pacific Wrecks - NAS Sangley Point",
+          "url": "https://pacificwrecks.com/airfield/philippines/sangley/index.html",
+          "note": "Pacific Wrecks says the airfield was officially turned over to the Philippines on 1 September 1971 and later renamed Danilo Atienza Air Base."
+        }
+      ],
+      "rationale": "The current Danilo Atienza Air Base is the former Sangley Point facility. The 1971 start marks transfer into Philippine Navy/Air Force use; confidence is medium because the Danilo Atienza name itself was applied later."
+    },
+    {
+      "source_id": "geonames:3709442",
+      "name": "Fort Sherman",
+      "country_code": "PA",
+      "start_year": 1911,
+      "end_year": 1999,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Library of Congress HAER - Fort Sherman",
+          "url": "https://tile.loc.gov/storage-services/master/pnp/habshaer/cz/cz0000/cz0013/data/cz0013data.pdf",
+          "note": "The HAER documentation describes Fort Sherman's Canal Zone military history and notes early command activity by 1914."
+        },
+        {
+          "title": "Fort Sherman",
+          "url": "https://en.wikipedia.org/wiki/Fort_Sherman",
+          "note": "The fort history records naming by War Department General Order No. 153 dated 24 November 1911 and closure on 1 April 1999."
+        }
+      ],
+      "rationale": "The row exactly matches Fort Sherman. The 1911 naming order and 1999 closure provide direct temporal bounds for the U.S. Army fort."
+    },
+    {
+      "source_id": "geonames:1595065",
+      "name": "Sattahip Naval Station",
+      "country_code": "TH",
+      "start_year": 1922,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Britannica - Sattahip",
+          "url": "https://www.britannica.com/place/Sattahip",
+          "note": "Britannica says Sattahip was developed as a naval base in 1920-23 and continued to serve predominantly military purposes in the 1970s."
+        },
+        {
+          "title": "Pattaya Mail - Sattahip Naval Base celebrates 90th anniversary",
+          "url": "https://www.pattayamail.com/news/sattahip-naval-base-celebrates-90th-anniversary-20063",
+          "note": "The anniversary report states that Sattahip Naval Base was first established on 23 December 1922."
+        }
+      ],
+      "rationale": "The row is the Royal Thai Navy Sattahip naval station/base. The 1922 establishment year is explicit and consistent with Britannica's 1920-23 development window."
+    },
+    {
+      "source_id": "geonames:3443386",
+      "name": "Boiso Lanza",
+      "country_code": "UY",
+      "start_year": 1936,
+      "end_year": null,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Fuerza Aerea Uruguaya - Brigada Aerea I",
+          "url": "https://www.fau.mil.uy/es/articulos/106-brigada-aerea-i-carrasco.html",
+          "note": "The official FAU history states that Brigada Aerea I, then Base Aerea I, was created on 1 April 1936 and initially located at the current Aerodromo Militar Boiso Lanza."
+        },
+        {
+          "title": "IMPO Uruguay - Decreto N. 257/992",
+          "url": "https://www.impo.com.uy/bases/decretos/257-1992",
+          "note": "The decree recites that a new Base Aeronautica was provided for in December 1935 and was provisionally located at Aerodromo Militar Capitan Boiso Lanza."
+        }
+      ],
+      "rationale": "The queue row names the Boiso Lanza military aerodrome. Official FAU history directly links the initial Base Aerea I location to Boiso Lanza and gives the 1936 creation date."
+    },
+    {
+      "source_id": "geonames:8629688",
+      "name": "Los Condores Air Base",
+      "country_code": "CL",
+      "start_year": 1928,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Gaceta Aeronautica - I Brigada Aerea de la FACH",
+          "url": "https://www.gacetaeronautica.com/gaceta/wp-101/desde-profundas-raices-hacia-un-gran-esplendor-la-i-brigada-aerea-de-la-fach/",
+          "note": "The history says Grupo No. 1 was created in 1926 and moved in 1928 to Base Aerea Los Condores in Alto Hospicio near Iquique."
+        },
+        {
+          "title": "Instituto de Investigaciones Historico Aeronauticas de Chile - Aerohistoria 2021",
+          "url": "https://docs.historiaaeronauticadechile.cl/aerohistoria/revista_aerohistoria_2021_n5.pdf",
+          "note": "The aeronautical-history magazine notes that Grupo No. 1 began operations at Los Condores on 30 August 1928 once minimum operating conditions were available."
+        }
+      ],
+      "rationale": "The row matches the FACH Los Condores air base. The 1928 start is a dated unit move/operational marker at the base, not merely a current listing."
+    },
+    {
+      "source_id": "geonames:6296702",
+      "name": "Avno Danish Air Force Base",
+      "country_code": "DK",
+      "start_year": 1931,
+      "end_year": 1993,
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "arkiv.dk - Avno Flyvestation",
+          "url": "https://arkiv.dk/vis/566710",
+          "note": "The archive record lists Avno Flyvestation chiefs and flight-school leadership for 3 January 1931 to 1 February 1993."
+        },
+        {
+          "title": "Avnogard",
+          "url": "https://en.wikipedia.org/wiki/Avn%C3%B8g%C3%A5rd",
+          "note": "The estate/history article says the airbase was decommissioned when the airbase moved to Karup in 1993."
+        }
+      ],
+      "rationale": "The row is Avno/Avno Danish Air Force Base. The archive provides dated military air-station leadership beginning in 1931, and the decommissioning/move evidence supports the 1993 endpoint."
+    },
+    {
+      "source_id": "geonames:11503188",
+      "name": "Gjakova Amiko",
+      "country_code": "XK",
+      "start_year": 1999,
+      "end_year": 2013,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Gjakova Airport",
+          "url": "https://en.wikipedia.org/wiki/Gjakova_Airport",
+          "note": "The airport history says KFOR built the airport following the 1999 Kosovo War for mainly military and humanitarian flights and that it was handed to the Kosovo government on 18 December 2013."
+        },
+        {
+          "title": "Military Presence in Kosovo Since 1999",
+          "url": "https://journal.vfu.bg/pdfs/Fadil%20Lekaj%2C%20Ragip%20Ramadani%20-%20Military%20presence%20in%20Kosovo%20since%201999%28%D0%A3%D0%BD%D0%B8%D0%91%D0%98%D0%A2%29.pdf",
+          "note": "The article provides general KFOR context for the post-1999 military presence in Kosovo."
+        }
+      ],
+      "rationale": "The GeoNames Amiko row aligns with Gjakova Airport AMIKO. The candidate bounds the KFOR/Italian Air Force military-humanitarian airport phase from postwar construction in 1999 through handover to Kosovo authorities in 2013."
+    },
+    {
+      "source_id": "geonames:1106458",
+      "name": "Manyame Air Base",
+      "country_code": "ZW",
+      "start_year": 1952,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Manyame Air Force Base",
+          "url": "https://en.wikipedia.org/wiki/Manyame_Air_Force_Base",
+          "note": "The base profile lists the facility as built in 1952, formerly New Sarum Air Force Station, and renamed Manyame after Zimbabwean independence."
+        },
+        {
+          "title": "Rhodesian Air Force",
+          "url": "https://en.wikipedia.org/wiki/Rhodesian_Air_Force",
+          "note": "The air-force history explains that the new airfield was called New Sarum and became a principal air force establishment."
+        }
+      ],
+      "rationale": "The row matches Manyame/New Sarum. The 1952 start is a built-year for the predecessor air force station at the same facility; confidence is medium because a stronger official base-history page was not located."
+    },
+    {
+      "source_id": "geonames:11003448",
+      "name": "Base Naval del Callao",
+      "country_code": "PE",
+      "start_year": 1930,
+      "end_year": null,
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Callao Naval Base",
+          "url": "https://en.wikipedia.org/wiki/Callao_Naval_Base",
+          "note": "The base profile says the Callao Naval Base was first built in the 1930s as a levee and naval arsenal."
+        },
+        {
+          "title": "GlobalSecurity - Navy of Peru bases",
+          "url": "https://www.globalsecurity.org/military/world/peru/marina-bases.htm",
+          "note": "GlobalSecurity describes Callao as the Peruvian Navy home base with dockyard, naval aviation command, coastguards, schools, medical center, and administrative directorates."
+        }
+      ],
+      "rationale": "The row exactly names Base Naval del Callao. The start_year is the earliest year of the sourced 1930s construction decade, so confidence is low and should be revisited if an exact foundation or completion date is found."
+    },
+    {
+      "source_id": "geonames:11711319",
+      "name": "Malacky",
+      "country_code": "SK",
+      "start_year": 1947,
+      "end_year": null,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Vojensky historicky ustav - Vojenske obvody a vycvikove priestory",
+          "url": "https://www.vhu.sk/data/att/5f9/22157.355dea.pdf",
+          "note": "The military-history institute PDF states that military unit 4562 Kuchyna was founded in 1947 as an aviation unit tied to the Kuchyna/Malacky area."
+        },
+        {
+          "title": "GlobalSecurity - Malacky AB / Kuchyna Range Slovakia",
+          "url": "https://www.globalsecurity.org/military/facility/malacky.htm",
+          "note": "GlobalSecurity identifies Malacky Air Base and the nearby Kuchyna range as Slovak air-force facilities used for training."
+        }
+      ],
+      "rationale": "The GeoNames Malacky row is treated as Malacky-Kuchyna Air Base. The 1947 date is an aviation-unit/facility-origin marker rather than a precise runway opening, so confidence is medium."
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "geonames:11749418",
+      "name": "Riwon Airbase",
+      "country_code": "KP",
+      "source_notes": [
+        {
+          "title": "Riwon Airport",
+          "url": "https://en.wikipedia.org/wiki/Riwon_Airport",
+          "note": "The profile identifies Riwon as a military airport with runway and unit details but does not provide an opening, activation, construction, or closure year."
+        },
+        {
+          "title": "GlobalSecurity - Air Bases North Korea",
+          "url": "https://www.globalsecurity.org/military/world/dprk/air-base.htm",
+          "note": "The North Korean air-base list confirms Riwon among DPRK air bases but does not provide a dated operational marker for this facility."
+        }
+      ],
+      "reason": "Researched, but available public sources were current or descriptive listings without a safe temporal start/end date."
+    },
+    {
+      "source_id": "geonames:11526482",
+      "name": "Hyon Ni",
+      "country_code": "KP",
+      "source_notes": [
+        {
+          "title": "Hyon Ni Airport",
+          "url": "https://en.wikipedia.org/wiki/Hyon_Ni_Airport",
+          "note": "The profile identifies Hyon Ni as a North Korean military airport and gives runway/facility details but no establishment or closure date."
+        },
+        {
+          "title": "GlobalSecurity - Air Bases North Korea",
+          "url": "https://www.globalsecurity.org/military/world/dprk/air-base.htm",
+          "note": "The GlobalSecurity list confirms Hyon-ni among DPRK air bases but does not supply a dated opening or activation marker."
+        }
+      ],
+      "reason": "Researched, but only undated facility descriptions were found."
+    },
+    {
+      "source_id": "geonames:11526485",
+      "name": "Kangdong",
+      "country_code": "KP",
+      "source_notes": [
+        {
+          "title": "Kangdong Airport",
+          "url": "https://en.wikipedia.org/wiki/Kangdong_Airport",
+          "note": "The profile identifies Kangdong as a former military airport and says the airport was demolished from 2020 to 2024."
+        },
+        {
+          "title": "FAS - Air Bases North Korean Special Weapons Facilities",
+          "url": "https://nuke.fas.org/guide/dprk/facility/air_base.htm",
+          "note": "FAS discusses North Korean forward air-base activation in 1990-91 and lists Kangdong, but does not establish that Kangdong itself opened in that period."
+        }
+      ],
+      "reason": "Researched, but start-year evidence was not facility-specific enough. The demolition window alone is insufficient without a safe operational start."
+    },
+    {
+      "source_id": "geonames:11526496",
+      "name": "Taetan",
+      "country_code": "KP",
+      "source_notes": [
+        {
+          "title": "GlobalSecurity - Air Bases North Korea",
+          "url": "https://www.globalsecurity.org/military/world/dprk/air-base.htm",
+          "note": "The DPRK air-base list includes Taetan among North Korean military air facilities, but the listing does not include opening or closure dates."
+        },
+        {
+          "title": "Ford Library - Korean Military Situation working document",
+          "url": "https://www.fordlibrarymuseum.gov/library/document/0337/24468977.pdf",
+          "note": "The historical document mentions Hyon-ni and Taetan in an operational readiness context, but the snippet is not a base establishment date."
+        }
+      ],
+      "reason": "Researched, but available dated mentions were operational-context references, not a safe facility temporal boundary."
+    },
+    {
+      "source_id": "geonames:1454285",
+      "name": "Bost",
+      "country_code": "AF",
+      "source_notes": [
+        {
+          "title": "Bost Airport",
+          "url": "https://en.wikipedia.org/wiki/Bost_Airport",
+          "note": "The airport profile identifies Bost Airport serving Lashkargah but does not provide a military opening or closure date."
+        },
+        {
+          "title": "List of NATO installations in Afghanistan",
+          "url": "https://en.wikipedia.org/wiki/List_of_NATO_installations_in_Afghanistan",
+          "note": "The NATO-installations list includes Bost as an airfield used during the Afghanistan war but leaves opened and closed fields blank."
+        }
+      ],
+      "reason": "Researched, but no explicit military operational start/end date was found."
+    },
+    {
+      "source_id": "geonames:6394387",
+      "name": "Aeropuerto FAP Grupo Aereo Cuarenta y Dos",
+      "country_code": "PE",
+      "source_notes": [
+        {
+          "title": "Grupo Aereo No. 42 FAP - airport/directory references",
+          "url": "https://ourairports.com/airports/SPQT/",
+          "note": "Airport-directory material identifies the Iquitos/FAP airfield context but does not provide a dated base establishment or activation marker."
+        },
+        {
+          "title": "Peruvian Air Force unit context",
+          "url": "https://www.gob.pe/fap",
+          "note": "Official FAP web presence confirms the service context, but a public dated page for this specific Grupo Aereo 42 facility was not located during this pass."
+        }
+      ],
+      "reason": "Researched, but current airport/unit context did not meet the temporal evidence standard."
+    },
+    {
+      "source_id": "geonames:9530421",
+      "name": "Puerto Base Naval de Icacos",
+      "country_code": "MX",
+      "source_notes": [
+        {
+          "title": "GeoNames-style/current map listings",
+          "url": "https://www.geonames.org/9530421/puerto-base-naval-de-icacos.html",
+          "note": "Public map/directory records identify the naval-base location but did not provide a dated establishment or closure marker."
+        }
+      ],
+      "reason": "Researched, but only current-location evidence was found."
+    },
+    {
+      "source_id": "geonames:12543657",
+      "name": "Base Naval",
+      "country_code": "EC",
+      "source_notes": [
+        {
+          "title": "Ecuador naval-base current-location references",
+          "url": "https://www.geonames.org/12543657/base-naval.html",
+          "note": "Public location listings identify a naval-base feature in Ecuador but do not provide an opening, activation, or closure year."
+        }
+      ],
+      "reason": "Researched, but no dated operational marker was found."
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "candidates": [
+    {
+      "source_id": "geonames:11493701",
+      "name": "Xiaogan Airbase",
+      "country_code": "CN",
+      "start_year": 1934,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Memories of Building the Xiaogan Military Camp and Airfield",
+          "url": "https://m.krzzjn.com/show-1230-88415.html",
+          "note": "Anti-Japanese War Memorial Network republishes a Hubei Party History/Wuhan historical-materials account saying the Xiaogan military airfield project was built in 1933-1934 and completed for use in April 1934."
+        }
+      ],
+      "rationale": "The queue record is an exact Xiaogan airbase match at the same city and airfield feature. Use 1934 as the conservative operational start because the source distinguishes the 1933 buildout from April 1934 completion and handover; confidence remains medium because the page is a historical republication/oral-history source rather than a current official base history."
+    },
+    {
+      "source_id": "geonames:11493951",
+      "name": "Cangzhou",
+      "country_code": "CN",
+      "start_year": 1987,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Overview of People's Liberation Army Air Force \"Elite Pilots\"",
+          "url": "https://www.rand.org/content/dam/rand/pubs/research_reports/RR1400/RR1416/RAND_RR1416.pdf",
+          "note": "RAND/CASI describes the Cangzhou/Cangxian Flight Test and Training Base in Hebei, says the facility was initially constructed in 1953, and gives February 3, 1987 as the official establishment date replacing the 11th Aviation College."
+        }
+      ],
+      "rationale": "The queue name Cangzhou matches the Cangzhou/Cangxian PLAAF Flight Test and Training Base described in the RAND/CASI report. Use the sourced 1987 official establishment date rather than the earlier construction date to avoid implying a clearly documented operational airbase phase before the FTTB was formally created."
+    },
+    {
+      "source_id": "geonames:11493913",
+      "name": "Dingxin",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1958,
+          "end_year": null,
+          "label": "Dingxin-area Gobi Desert missile-test base phase"
+        },
+        {
+          "start_year": 1999,
+          "end_year": null,
+          "label": "PLAAF combined-arms tactics training center / test-and-training base phase"
+        },
+        {
+          "start_year": 2004,
+          "end_year": null,
+          "label": "post-CMC reorganization test-and-training-area phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "\"Brigadization\" of the PLA Air Force",
+          "url": "https://www.airuniversity.af.edu/Portals/10/CASI/documents/Research/PLAAF/2018-05-02%20Brigadization.pdf",
+          "note": "China Aerospace Studies Institute/Air University says the PLAAF built a large SAM test base near Dingxin in 1958, created the Air Force Combined-arms Tactics Training Center in June 1999, and reorganized the numbered test and training bases/areas in 2003-2004."
+        },
+        {
+          "title": "Overview of People's Liberation Army Air Force \"Elite Pilots\"",
+          "url": "https://www.rand.org/content/dam/rand/pubs/research_reports/RR1400/RR1416/RAND_RR1416.pdf",
+          "note": "RAND/CASI identifies Dingxin as the PLAAF test and training base in northwestern Gansu and the venue for Golden Helmet training/competition activity."
+        }
+      ],
+      "rationale": "The coordinates and name align with the Dingxin/Shuangchengzi PLAAF training complex. The evidence supports phased operational use rather than a single clean airbase opening year, so this report uses source-separated intervals and keeps confidence medium."
+    },
+    {
+      "source_id": "geonames:8593873",
+      "name": "Luliang Air Base",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1944,
+          "end_year": 1945,
+          "label": "USAAF Fourteenth Air Force / 23d Fighter Group wartime Luliang Airfield phase"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Luliang Air Base: Location, Units and Runway Details",
+          "url": "https://www.globalmilitary.net/airbases/luliang-air-base/",
+          "note": "GlobalMilitary identifies the same PLAAF Luliang Air Base coordinates and describes USAAF Fourteenth Air Force use from September 1944 to October 1945 before American facilities closed."
+        },
+        {
+          "title": "68th Composite Wing",
+          "url": "https://www.armyaircorpsmuseum.org/68th_Composite_Wing.cfm",
+          "note": "Army Air Corps Museum station history, drawing on Air Force Combat Units of World War II, lists the 68th Composite Wing at Luliang in late 1944 before moving to Peishiyi in September-October 1945."
+        }
+      ],
+      "rationale": "The overlay name, coordinates, and Luliang airfield/base lineage are a strong match. The sources support a wartime operating interval but do not document an uninterrupted PRC/PLAAF start year, so the candidate avoids a continuous open-ended start-year claim."
+    },
+    {
+      "source_id": "geonames:7731636",
+      "name": "Xingning Airport",
+      "country_code": "CN",
+      "start_year": 1958,
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Xingning Air Base, China - Active Military Air Base",
+          "url": "https://www.globalmilitary.net/airbases/xingning-air-base/",
+          "note": "GlobalMilitary matches the queue coordinates and identifies Xingning as an active PLAAF air base / Xingning Airport site."
+        },
+        {
+          "title": "Xingning Airport",
+          "url": "https://zh.wikipedia.org/wiki/%E5%85%B4%E5%AE%81%E6%9C%BA%E5%9C%BA",
+          "note": "The Chinese-language airport article says Xingning Airport began construction in 1955, opened in 1958, became a dual-use civil-military airport in 1979, and reverted toward military use after Meixian Airport opened in 1987."
+        }
+      ],
+      "rationale": "The queue record uses the same Xingning Airport/Xingning Air Base identity and coordinates. Use 1958 as the operational start rather than the 1955 construction year; confidence is medium because the date evidence is secondary and not an official base-history page."
+    },
+    {
+      "source_id": "geonames:11493899",
+      "name": "Fuxin Flight School",
+      "country_code": "CN",
+      "operational_intervals": [
+        {
+          "start_year": 1953,
+          "end_year": null,
+          "label": "PLAAF Third Aviation School training detachment at Fuxin Airport"
+        }
+      ],
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "From Cowherd to Fighter Pilot",
+          "url": "https://www.wzdj.gov.cn/system/2009/09/28/101445015.shtml",
+          "note": "Wenzhou Party Building/WenzhouNet memoir says a 1953 PLAAF Third Aviation School student cohort was assigned in December 1953 to the school's 1st regiment/1st squadron at Fuxin Airport for primary trainer flying."
+        }
+      ],
+      "rationale": "The queue name is specifically a Fuxin flight-school airbase record. The source supports PLAAF aviation-school training activity at Fuxin Airport by December 1953, but does not provide the airfield's original construction date, so the candidate records only a sourced operational interval."
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "artifacts": {
+    "event_chunk_manifest": "event_chunk_manifest.json",
+    "event_chunks_dir": "event_chunks",
+    "points": "points.bin",
+    "points_metadata": "points_meta.json",
+    "summary_manifest": "summary_manifest.json",
+    "summary_shards_dir": "summary_shards",
+    "trace_aggregate_bins": "trace_aggregate_bins.bin",
+    "trace_aggregate_bins_metadata": "trace_aggregate_bins_meta.json",
+    "trace_event_index": "trace_event_index.bin",
+    "trace_event_index_metadata": "trace_event_index_meta.json",
+    "trace_segments": "trace_segments.bin",
+    "trace_segments_metadata": "trace_segments_meta.json"
+  },
+  "counts": {
+    "coordinate_source_counts": {
+      "geocoded": 470431,
+      "raw_latlong": 110352,
+      "unresolved": 122110
+    },
+    "craft_type_confidence_counts": {
+      "high": 200316,
+      "low": 186159,
+      "medium": 197760,
+      "none": 118658
+    },
+    "craft_type_counts": {
+      "chevron_boomerang": 12226,
+      "cigar_cylinder": 30324,
+      "cone": 2996,
+      "conventional_or_explained": 5163,
+      "diamond": 6035,
+      "disc_saucer": 69925,
+      "dumbbell_barbell": 58,
+      "fireball_meteor_like": 27673,
+      "formation": 17734,
+      "light": 186159,
+      "non_ufo_context": 9972,
+      "oval_egg": 24602,
+      "rectangle_box": 11999,
+      "sphere_orb": 121233,
+      "teardrop": 3011,
+      "triangle": 55125,
+      "unknown": 118658
+    },
+    "craft_type_source_counts": {
+      "description": 209831,
+      "none": 112343,
+      "raw_fields": 3417,
+      "reviewed_same_incident_evidence": 1,
+      "shape_normalized": 314539,
+      "shape_raw": 6463,
+      "summary": 979,
+      "type_normalized": 18545,
+      "type_raw": 7478,
+      "ufocat_hynek_code": 5506,
+      "ufocat_hynek_daylight_disc": 7029,
+      "ufocat_shape_code": 705,
+      "ufocat_type_code": 15953,
+      "ufocat_vallee_code": 104
+    },
+    "date_precision_counts": {
+      "approximate": 1024,
+      "decade": 24,
+      "exact_day": 670137,
+      "month": 15187,
+      "range": 408,
+      "unknown": 7360,
+      "year": 8753
+    },
+    "event_chunks": 282,
+    "events": 702893,
+    "location_precision_counts": {
+      "city": 542038,
+      "country": 22467,
+      "exact_coords": 110352,
+      "province": 622,
+      "state": 10537,
+      "unknown": 16877
+    },
+    "mapped_bounds": {
+      "east": 179.36451,
+      "north": 84.000004,
+      "south": -82.67628,
+      "west": -179.82
+    },
+    "mapped_events": 580783,
+    "same_day_match_strength_counts": {
+      "medium": 171372,
+      "none": 133793,
+      "strong": 183896,
+      "weak": 213832
+    },
+    "shape_counts": {
+      "Beam": 761,
+      "Changing / irregular": 8445,
+      "Chevron": 6221,
+      "Cigar": 9924,
+      "Circle": 23963,
+      "Cone": 1622,
+      "Crescent": 556,
+      "Cross": 1171,
+      "Cylinder": 6017,
+      "Diamond": 4483,
+      "Disk": 28915,
+      "Fireball": 18760,
+      "Flash": 4203,
+      "Formation": 8679,
+      "Light": 90406,
+      "Linear": 2046,
+      "Other": 14423,
+      "Oval / egg": 17485,
+      "Rectangle": 5910,
+      "Sphere / orb": 45494,
+      "Star-like": 4512,
+      "Teardrop": 2403,
+      "Triangle": 32943,
+      "Unknown": 363551
+    },
+    "source_counts": {
+      "majestic": 49418,
+      "mufon": 119350,
+      "nuforc": 151816,
+      "phenomenainon_updb": 161029,
+      "ufocat": 221280
+    },
+    "summary_shards": 71,
+    "trace_aggregate_bins": 146866,
+    "trace_events": 574943,
+    "trace_segments": 574942,
+    "type_counts": {
+      "Astronomical / scientific event": 143,
+      "Beam": 761,
+      "Changing / irregular": 8442,
+      "Chevron": 6221,
+      "Cigar": 9922,
+      "Circle": 23946,
+      "Close encounter / abduction": 154,
+      "Cone": 1622,
+      "Crash / physical evidence": 246,
+      "Crescent": 556,
+      "Cross": 1170,
+      "Cylinder": 6016,
+      "Diamond": 4483,
+      "Disk": 28911,
+      "Fireball": 18752,
+      "Flash": 4198,
+      "Formation": 8681,
+      "Historical / publication": 259,
+      "Landing": 3,
+      "Light": 109245,
+      "Linear": 2046,
+      "Military / government event": 87,
+      "Nuclear / atomic event": 1985,
+      "Other": 14612,
+      "Oval / egg": 17485,
+      "Rectangle": 5910,
+      "Sighting": 13129,
+      "Sphere / orb": 45473,
+      "Star-like": 4501,
+      "Teardrop": 2403,
+      "Triangle": 32938,
+      "Unknown": 328593
+    }
+  },
+  "packed_points": {
+    "bytes_per_row": 88,
+    "row_count": 580783,
+    "schema_version": 3
+  },
+  "packed_trace_aggregate_bins": {
+    "bytes_per_row": 52,
+    "row_count": 146866,
+    "runtime_warning": "Use for full-universe wide-window LOD only. For arbitrary filtered traces, filter trace_event_index rows first and aggregate/connect adjacent visible rows client-side.",
+    "schema_version": 1
+  },
+  "packed_trace_events": {
+    "bytes_per_row": 48,
+    "filtered_segment_rule": "filter rows first, then connect adjacent visible rows client-side",
+    "row_count": 574943,
+    "row_order": "canonical_playback_order",
+    "schema_version": 1
+  },
+  "packed_trace_segments": {
+    "bytes_per_row": 72,
+    "full_window_mode": "summary",
+    "row_count": 574942,
+    "schema_version": 1
+  },
+  "policy": {
+    "detail_chunks_are_lazy_loaded": true,
+    "full_provenance_included": true,
+    "non_terrestrial_coordinate_quarantine": {
+      "applied": true,
+      "canonical_full_mutated": false,
+      "event_records_preserved": true,
+      "policy": "explicit_non_terrestrial_jurisdiction_plus_exact_zero_coordinate",
+      "quarantined_event_count": 3,
+      "raw_source_coordinates_preserved": true,
+      "sidecar": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\non_terrestrial_coordinate_quarantine_sidecar_v147.json"
+    },
+    "raw_source_rows_included": true,
+    "reviewed_event_merge_runs": [
+      {
+        "applied": true,
+        "canonical_full_mutated": false,
+        "policy": "reviewed_same_incident_cross_source_merge",
+        "removed_duplicate_event_count": 117,
+        "removed_events_preserved_as_keeper_snapshots": true,
+        "reviewed_cluster_count": 52,
+        "sidecar": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\airship_wave_reviewed_event_merges_v148.json",
+        "source_provenance_preserved": true,
+        "window": {
+          "end": "1897-06-30",
+          "start": "1896-11-01"
+        }
+      },
+      {
+        "applied": true,
+        "canonical_full_mutated": false,
+        "policy": "reviewed_same_incident_cross_source_merge",
+        "removed_duplicate_event_count": 8,
+        "removed_events_preserved_as_keeper_snapshots": true,
+        "reviewed_cluster_count": 1,
+        "sidecar": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\falcon_lake_reviewed_event_merge_v152.json",
+        "source_provenance_preserved": true,
+        "window": {
+          "end": "1967-05-20",
+          "start": "1967-05-20"
+        }
+      }
+    ],
+    "reviewed_event_merges": {
+      "applied": true,
+      "canonical_full_mutated": false,
+      "policy": "reviewed_same_incident_cross_source_merge",
+      "removed_duplicate_event_count": 8,
+      "removed_events_preserved_as_keeper_snapshots": true,
+      "reviewed_cluster_count": 1,
+      "sidecar": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\falcon_lake_reviewed_event_merge_v152.json",
+      "source_provenance_preserved": true,
+      "window": {
+        "end": "1967-05-20",
+        "start": "1967-05-20"
+      }
+    },
+    "source_claims_included": false
+  },
+  "schema_version": 1,
+  "source": {
+    "input_limit": null,
+    "input_path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_full_maximal_v3_rehydrated_jurisdiction_repair\\deduped_events.jsonl"
+  }
+}

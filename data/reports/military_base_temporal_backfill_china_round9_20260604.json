@@ -1,0 +1,214 @@
+{
+  "generated_at": "2026-06-04T00:00:00Z",
+  "temporal_source": "manual_web_research_china_round9_20260604",
+  "candidates": [
+    {
+      "source_id": "geonames:11493909",
+      "name": "Donglinquan",
+      "country_code": "CN",
+      "start_year": 2017,
+      "confidence": "low",
+      "temporal_confidence": "low",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Xishanbeixiang / Tong Lin Chuan",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Xishanbeixiang / Tong Lin Chuan at 39 deg 08 min 58 sec N, 115 deg 17 min 16 sec E, matching the Donglinquan queue coordinates. Its visible context ties Xishanbeixiang to PLAAF/Army Aviation forward-base use."
+        },
+        {
+          "title": "Modern Chinese Warplanes: Army Aviation Guide",
+          "url": "https://studylib.net/doc/28061530/modern-chinese-warplanes---chinese-army-aviation-aircraft...",
+          "note": "The guide identifies Xishanbeixiang / Tong Lin Chuan as a forward operational base in the Central Theater Army Aviation basing map, in a section describing the 2017 group-army reorganization."
+        },
+        {
+          "title": "Mapcarta: Donglinquan",
+          "url": "https://mapcarta.com/35333496",
+          "note": "Mapcarta mirrors GeoNames feature 11493909 with the Donglinquan name and coordinates matching Scramble's Xishanbeixiang / Tong Lin Chuan position."
+        }
+      ],
+      "rationale": "Use 2017 only as a conservative post-reorganization operational marker for the Xishanbeixiang / Donglinquan forward-base role. Confidence is low because the dating source is broader Army Aviation context rather than a sentence saying the airbase opened in 2017."
+    },
+    {
+      "source_id": "geonames:11493817",
+      "name": "Mengzi West",
+      "country_code": "CN",
+      "end_year": 2016,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Luliang / Mengzi",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble says J-10As from the 131st Regiment replaced J-7H in 2016 and the unit moved from Mengzi to Luliang, joining the 131st Brigade."
+        },
+        {
+          "title": "Mapcarta: Mengzi West",
+          "url": "https://mapcarta.com/35333312",
+          "note": "Mapcarta mirrors GeoNames feature 11493817 for Mengzi West with the queue coordinates and airbase class."
+        }
+      ],
+      "rationale": "Use 2016 as a conservative terminal marker for the documented Mengzi-based 131st Regiment configuration before the move to Luliang. This does not assert full closure of the airfield."
+    },
+    {
+      "source_id": "geonames:11493793",
+      "name": "Pingquan",
+      "country_code": "CN",
+      "end_date": "1998-09-22",
+      "end_year": 1998,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Xinzhou / Wutaishan and Pingquan reference",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble says the unit operated from Pingquan until 22 September 1998 and then moved to Qizhou-Dingxian."
+        }
+      ],
+      "rationale": "Use 1998-09-22 as a specific terminal marker for the documented Pingquan unit basing. This is a unit relocation date, not a claim that all airfield activity ended."
+    },
+    {
+      "source_id": "geonames:11493780",
+      "name": "Ranghezhen",
+      "country_code": "CN",
+      "start_date": "1990-06-19",
+      "start_year": 1990,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Lushan",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Lushan at 33 deg 41 min 08 sec N, 112 deg 53 min 26 sec E and says the airbase has been used for mass storage since the 19th Division left the base on 19 June 1990."
+        },
+        {
+          "title": "Mapcarta: Ranghezhen",
+          "url": "https://mapcarta.com/35333238",
+          "note": "Mapcarta mirrors GeoNames feature 11493780, gives the same coordinates, and lists Luyang Air Base as an alternate name for Ranghezhen."
+        }
+      ],
+      "rationale": "Use 1990-06-19 as a conservative start marker for the documented storage-center role at the Ranghezhen/Lushan airbase location."
+    },
+    {
+      "source_id": "geonames:11493744",
+      "name": "Suixi",
+      "country_code": "CN",
+      "start_date": "2016-12-25",
+      "start_year": 2016,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Suixi",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Suixi at 21 deg 23 min 47 sec N, 110 deg 11 min 57 sec E and says the first Su-35s were delivered on 25 December 2016; it also notes the 6th Regiment had become 6th Brigade by August 2017 and the airbase saw a major expansion."
+        }
+      ],
+      "rationale": "Use 2016-12-25 as a documented operational marker for the Suixi combat-aircraft era, with 2017 brigade conversion/expansion as supporting context."
+    },
+    {
+      "source_id": "geonames:11493728",
+      "name": "Wafangdian",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Wafangdian",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Wafangdian at 39 deg 40 min 12 sec N, 121 deg 45 min 58 sec E and says the 33rd Regiment was subordinated to Dalian Base as the 90th Brigade in 2012; it also notes later inactive years and renewed transport-brigade use in 2021."
+        }
+      ],
+      "rationale": "Use 2012 as a conservative operational marker for the documented 90th Brigade basing relationship at Wafangdian. Later 2021 reuse is noted but not used as the primary start because 2012 is the earlier sourced marker."
+    },
+    {
+      "source_id": "geonames:11493710",
+      "name": "Wuwei",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Wuwei",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Wuwei at 37 deg 59 min 24 sec N, 102 deg 33 min 59 sec E with Xi'an Flying Academy's 4th Training Brigade and says the 5th FA / 4th Regiment was subordinated to Xi'an FA in April 2012."
+        },
+        {
+          "title": "Mapcarta: Wuwei",
+          "url": "https://mapcarta.com/35333098",
+          "note": "Mapcarta mirrors GeoNames feature 11493710, Wuwei name, airbase class, and queue coordinates."
+        }
+      ],
+      "rationale": "Use April 2012 as a conservative operational marker for Wuwei's documented Xi'an Flying Academy training role."
+    },
+    {
+      "source_id": "geonames:11493706",
+      "name": "Xiaheqing",
+      "country_code": "CN",
+      "start_year": 2017,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Jiuquan / Qingshui",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Jiuquan / Qingshui at 39 deg 33 min 15 sec N, 98 deg 53 min 03 sec E with Xi'an Flying Academy's 1st Training Brigade and says that by 2017 aircraft were flying for Xi'an Flight Academy with 3x1x serials."
+        },
+        {
+          "title": "Mapcarta: Xiaheqing",
+          "url": "https://mapcarta.com/35333090",
+          "note": "Mapcarta mirrors GeoNames feature 11493706 for Xiaheqing and lists Qingshui Air Base as an alternate name, matching Scramble's Jiuquan / Qingshui coordinates."
+        }
+      ],
+      "rationale": "Use 2017 as a conservative operational marker for the documented Xi'an Flight Academy activity at the Xiaheqing / Qingshui location."
+    },
+    {
+      "source_id": "geonames:11493699",
+      "name": "Xiapu",
+      "country_code": "CN",
+      "start_year": 2012,
+      "confidence": "high",
+      "temporal_confidence": "high",
+      "source_notes": [
+        {
+          "title": "Defense News: Why is China expanding its air base 160 miles from Taiwan?",
+          "url": "https://www.defensenews.com/global/asia-pacific/2018/05/14/why-is-china-expanding-its-airbase-160-miles-from-taiwan/",
+          "note": "Defense News says Xiapu had previously been used as a deployment base since completion in 2012, hosting rotating PLAAF fighter detachments."
+        },
+        {
+          "title": "Foreign Policy Research Institute: Strategies Behind China and the Asia-Pacific's Military Base Construction",
+          "url": "https://www.fpri.org/article/2022/04/strategies-behind-china-and-the-asia-pacifics-military-base-construction/",
+          "note": "FPRI says China completed a brand-new air base near Xiapu in 2012, expanded it later, and that it serves as a forward-deployment base for J-11 and Su-30 fighters."
+        },
+        {
+          "title": "Scramble: China Air Force ORBAT, Shuimen AB / Xiapu County",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble lists Shuimen AB at the same coordinates as the queue's Xiapu feature and says the base has upgrades and facilitates brigade-size detachments."
+        }
+      ],
+      "rationale": "Use 2012 as the opening/completion and deployment-base start marker, supported by two independent defense sources and coordinate/name alignment to Shuimen AB in Xiapu County."
+    },
+    {
+      "source_id": "geonames:11493690",
+      "name": "Xuzhou Daguozhang",
+      "country_code": "CN",
+      "end_year": 2021,
+      "confidence": "medium",
+      "temporal_confidence": "medium",
+      "source_notes": [
+        {
+          "title": "Scramble: China Air Force ORBAT, Xuzhou-Daguozhuang",
+          "url": "https://www.scramble.nl/planning/orbats/china/china-air-force",
+          "note": "Scramble says 32nd Division / 94th Regiment flew from Xuzhou-Daguozhuang and that by 2021 Xuzhou-Daguozhuang AB was vacated, with operations shifted to the new Xuzhou-Huangjizhen AB."
+        },
+        {
+          "title": "Modern Chinese Warplanes: Army Aviation Guide",
+          "url": "https://studylib.net/doc/28061530/modern-chinese-warplanes---chinese-army-aviation-aircraft...",
+          "note": "The guide identifies Xuzhou / Daguozhang as a forward operational base in the Eastern Theater Army Aviation basing context."
+        }
+      ],
+      "rationale": "Use 2021 as a conservative terminal marker for the documented Xuzhou-Daguozhang PLAAF operation after Scramble reports the base was vacated and operations moved."
+    }
+  ]
+}

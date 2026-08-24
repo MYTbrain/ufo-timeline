@@ -1,0 +1,116 @@
+{
+  "generated_at": "2026-06-04",
+  "candidate_count": 5,
+  "scope": "Third conservative local backfill from official ANG/Navy pages and stable airport-history sources.",
+  "candidates": [
+    {
+      "source_id": "geonames:9036531",
+      "name": "Charleston Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1947,
+      "end_year": null,
+      "date_precision_start": "day",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_unit_history_backfill_20260604",
+      "source_urls": [
+        "https://www.130aw.ang.af.mil/News/Article-Display/Article/1330008/130th-airlift-wing-celebrates-70th-anniversary/",
+        "https://www.130aw.ang.af.mil/News/Photos/?igpage=18&igsort=PhotoDate"
+      ],
+      "source_notes": "Official 130th Airlift Wing pages say the West Virginia Air National Guard was founded at Kanawha Airport, now Yeager Airport/McLaughlin Air National Guard Base, on Nov. 3, 1947.",
+      "rationale": "Exact overlay name match to the current Charleston ANG installation; official unit history gives the founding location and date."
+    },
+    {
+      "source_id": "geonames:9036535",
+      "name": "Salt Lake City Air National Guard Base",
+      "country_code": "US",
+      "start_year": 1946,
+      "end_year": null,
+      "date_precision_start": "day",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "state_guard_history_backfill_20260604",
+      "source_urls": [
+        "https://guard.utah.gov/history/",
+        "https://www.airandspaceforces.com/meet-roland-wright-air-national-guard-base/"
+      ],
+      "source_notes": "Utah Air National Guard history records the 191st Fighter Squadron's federal recognition at Salt Lake City Municipal Airport on Nov. 18, 1946; later sources identify the operating location as Roland Wright/Salt Lake City Air National Guard Base.",
+      "rationale": "Exact overlay name match to the Salt Lake City ANG base; start year follows the documented first Utah ANG flying-unit presence at the same airport."
+    },
+    {
+      "source_id": "geonames:9036028",
+      "name": "Warfield Air National Guard Base",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1960,
+          "end_year": 1982,
+          "label": "Maryland Air National Guard at Martin Company Airport"
+        },
+        {
+          "start_year": 1982,
+          "end_year": null,
+          "label": "Warfield Air National Guard Base"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "high",
+      "temporal_source": "official_unit_history_backfill_20260604",
+      "source_urls": [
+        "https://www.175wg.ang.af.mil/About-Us/Fact-Sheets/Display/Article/448349/history-of-the-maryland-air-national-guard/",
+        "https://www.175wg.ang.af.mil/News/Features/Display/Article/448508/harbor-field-was-maryland-air-guards-first-post-war-home/"
+      ],
+      "source_notes": "Official 175th Wing history says Maryland Air Guard units relocated to Martin Company Airport in 1960 and the military facilities at Martin State Airport were formally renamed Warfield Air National Guard Base in 1982.",
+      "rationale": "Exact overlay name match; intervals preserve the pre-1982 Martin State ANG phase and the Warfield naming date."
+    },
+    {
+      "source_id": "geonames:4419329",
+      "name": "Naval Outlying Landing Field Joe Williams",
+      "country_code": "US",
+      "start_year": 1961,
+      "end_year": null,
+      "date_precision_start": "year",
+      "date_precision_end": "open",
+      "historical_status": "active_or_unknown",
+      "temporal_confidence": "medium",
+      "temporal_source": "navy_installation_history_backfill_20260604",
+      "source_urls": [
+        "https://www.navfac.navy.mil/Divisions/Environmental/Products-and-Services/Environmental-Restoration/Southeast/Meridian-NAS/Site-Descriptions/"
+      ],
+      "source_notes": "NAVFAC describes NOLF Joe Williams as an outlying landing field supporting NAS Meridian and formerly known as outlying field Bravo; NAS Meridian was commissioned in 1961 and the field was renamed Joe Williams in 1987.",
+      "rationale": "Exact overlay name match to the current outlying field; start year follows its support relationship with NAS Meridian, while notes preserve the 1987 renaming."
+    },
+    {
+      "source_id": "geonames:5787705",
+      "name": "Paine Air Force Base",
+      "country_code": "US",
+      "operational_intervals": [
+        {
+          "start_year": 1941,
+          "end_year": 1946,
+          "label": "Army Air Corps / Army Air Forces wartime use"
+        },
+        {
+          "start_year": 1951,
+          "end_year": 1968,
+          "label": "Paine Air Force Base / Air Defense Command"
+        }
+      ],
+      "date_precision_start": "year",
+      "date_precision_end": "year",
+      "historical_status": "closed_or_transferred",
+      "temporal_confidence": "high",
+      "temporal_source": "airport_history_backfill_20260604",
+      "source_urls": [
+        "https://historylink.org/File/8266",
+        "https://www.painefield.com/131/History-Corner"
+      ],
+      "source_notes": "HistoryLink says the Air Corps used Paine Field from 1941 to 1946 and the Air Force later resumed use; Paine Field history pages identify 1951 reactivation as Paine Air Force Base and Air Force departure in 1968.",
+      "rationale": "Exact overlay name match; intervals preserve both the WWII military period and the named Paine AFB period."
+    }
+  ]
+}

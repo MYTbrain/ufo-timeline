@@ -1,0 +1,2080 @@
+{
+  "schema_version": 1,
+  "mode": "canonical_web_reviewed_same_incident_merge",
+  "policy": "reviewed_same_incident_cross_source_merge",
+  "canonical_full_mutated": false,
+  "canonical_web_mutated": true,
+  "removed_events_preserved_as_keeper_snapshots": true,
+  "source_provenance_preserved": true,
+  "inputs": {
+    "artifact_dir": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web",
+    "sidecar": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\airship_wave_reviewed_event_merges_v148.json"
+  },
+  "outputs": {
+    "report": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\airship_wave_reviewed_event_merges_apply_v148.json"
+  },
+  "window": {
+    "start": "1896-11-01",
+    "end": "1897-06-30"
+  },
+  "reviewed_cluster_count": 52,
+  "merged_member_event_count": 169,
+  "removed_duplicate_event_count": 117,
+  "events_before_count": 703018,
+  "events_after_count": 702901,
+  "mapped_after_count": 580785,
+  "points_row_count": 580785,
+  "trace_event_count": 574945,
+  "trace_segment_count": 574944,
+  "trace_aggregate_bin_count": 146869,
+  "clusters": [
+    {
+      "cluster_id": "suisun_1896_11_15",
+      "preferred_canonical_event_id": "evt_bf56f39edc337e8f04a4ed8e",
+      "keeper_event_id": 904143015474455,
+      "member_canonical_event_ids": [
+        "evt_bf56f39edc337e8f04a4ed8e",
+        "evt_54f7a2d056ab6fcc42264c45"
+      ],
+      "removed_event_ids": [
+        644324272438725
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1896-11-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_bf56f39edc337e8f04a4ed8e",
+      "description_source_canonical_event_id": "evt_54f7a2d056ab6fcc42264c45",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000014.json",
+        "event_chunks/chunk_000223.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000003.json",
+        "summary_shards/summary_000055.json"
+      ]
+    },
+    {
+      "cluster_id": "rossland_1896_11_24",
+      "preferred_canonical_event_id": "evt_1f7f2707c135db310655ccba",
+      "keeper_event_id": 3856994135760937,
+      "member_canonical_event_ids": [
+        "evt_01bc26c94a6551316707d7ab",
+        "evt_1f7f2707c135db310655ccba"
+      ],
+      "removed_event_ids": [
+        1719476189974924
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1896-11-24"
+      ],
+      "mapping_source_canonical_event_id": "evt_1f7f2707c135db310655ccba",
+      "description_source_canonical_event_id": "evt_1f7f2707c135db310655ccba",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000021.json",
+        "event_chunks/chunk_000241.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000005.json",
+        "summary_shards/summary_000060.json"
+      ]
+    },
+    {
+      "cluster_id": "modesto_1896_11_26",
+      "preferred_canonical_event_id": "evt_785d88a2a083d7f46a488825",
+      "keeper_event_id": 348560719761917,
+      "member_canonical_event_ids": [
+        "evt_42165b488f00e7f733141342",
+        "evt_785d88a2a083d7f46a488825"
+      ],
+      "removed_event_ids": [
+        3879558391741694
+      ],
+      "source_record_count": 4,
+      "date_values": [
+        "1896-11-26"
+      ],
+      "mapping_source_canonical_event_id": "evt_42165b488f00e7f733141342",
+      "description_source_canonical_event_id": "evt_42165b488f00e7f733141342",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000150.json",
+        "event_chunks/chunk_000178.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000037.json",
+        "summary_shards/summary_000044.json"
+      ]
+    },
+    {
+      "cluster_id": "anderson_1896_11_30",
+      "preferred_canonical_event_id": "evt_d60e553a38e0164a854dc2f0",
+      "keeper_event_id": 1418926316279768,
+      "member_canonical_event_ids": [
+        "evt_de2daa8f2eb2449fd8ed0f83",
+        "evt_236077963e6db4fad89be30e",
+        "evt_d60e553a38e0164a854dc2f0"
+      ],
+      "removed_event_ids": [
+        719208731503590,
+        1913969665211475
+      ],
+      "source_record_count": 3,
+      "date_values": [
+        "1896-11-30"
+      ],
+      "mapping_source_canonical_event_id": "evt_d60e553a38e0164a854dc2f0",
+      "description_source_canonical_event_id": "evt_de2daa8f2eb2449fd8ed0f83",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000020.json",
+        "event_chunks/chunk_000035.json",
+        "event_chunks/chunk_000076.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000005.json",
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000019.json"
+      ]
+    },
+    {
+      "cluster_id": "pacific_grove_1896_12_02",
+      "preferred_canonical_event_id": "evt_490b86be420048c220ae57c7",
+      "keeper_event_id": 614325987363218,
+      "member_canonical_event_ids": [
+        "evt_490b86be420048c220ae57c7",
+        "evt_a522a6ecc4f6652d2ffa884e"
+      ],
+      "removed_event_ids": [
+        2280353800628540
+      ],
+      "source_record_count": 6,
+      "date_values": [
+        "1896-12-02"
+      ],
+      "mapping_source_canonical_event_id": "evt_490b86be420048c220ae57c7",
+      "description_source_canonical_event_id": "evt_a522a6ecc4f6652d2ffa884e",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000112.json",
+        "event_chunks/chunk_000256.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000028.json",
+        "summary_shards/summary_000064.json"
+      ]
+    },
+    {
+      "cluster_id": "camptonville_1896_12_07",
+      "preferred_canonical_event_id": "evt_11f7155a73822bf8244bbab3",
+      "keeper_event_id": 4060484000987550,
+      "member_canonical_event_ids": [
+        "evt_11b3802a0e426b8c0835eab9",
+        "evt_11f7155a73822bf8244bbab3",
+        "evt_d37b19e647a5d73c307969fd"
+      ],
+      "removed_event_ids": [
+        3739449535009483,
+        4006121919878682
+      ],
+      "source_record_count": 6,
+      "date_values": [
+        "1896-12-07"
+      ],
+      "mapping_source_canonical_event_id": "evt_11f7155a73822bf8244bbab3",
+      "description_source_canonical_event_id": "evt_11b3802a0e426b8c0835eab9",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000081.json",
+        "event_chunks/chunk_000187.json",
+        "event_chunks/chunk_000237.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000020.json",
+        "summary_shards/summary_000046.json",
+        "summary_shards/summary_000059.json"
+      ]
+    },
+    {
+      "cluster_id": "hastings_south_1897_01_16",
+      "preferred_canonical_event_id": "evt_a6aff54761ade031e7e0a3d8",
+      "keeper_event_id": 2248350097557958,
+      "member_canonical_event_ids": [
+        "evt_a6aff54761ade031e7e0a3d8",
+        "evt_de08c22b5f4f92d15eb92eb5"
+      ],
+      "removed_event_ids": [
+        1235518916270892
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1897-01-16"
+      ],
+      "mapping_source_canonical_event_id": "evt_de08c22b5f4f92d15eb92eb5",
+      "description_source_canonical_event_id": "evt_a6aff54761ade031e7e0a3d8",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000198.json",
+        "event_chunks/chunk_000230.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000049.json",
+        "summary_shards/summary_000057.json"
+      ]
+    },
+    {
+      "cluster_id": "hastings_1897_01_30",
+      "preferred_canonical_event_id": "evt_87320277ce54728772b894f4",
+      "keeper_event_id": 4477058040221942,
+      "member_canonical_event_ids": [
+        "evt_f3b5fd4c00425d897819a6ae",
+        "evt_87320277ce54728772b894f4"
+      ],
+      "removed_event_ids": [
+        1086743749115423
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-01-30"
+      ],
+      "mapping_source_canonical_event_id": "evt_87320277ce54728772b894f4",
+      "description_source_canonical_event_id": "evt_f3b5fd4c00425d897819a6ae",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000132.json",
+        "event_chunks/chunk_000171.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000033.json",
+        "summary_shards/summary_000042.json"
+      ]
+    },
+    {
+      "cluster_id": "hastings_1897_01_31_02_01",
+      "preferred_canonical_event_id": "evt_f416f09009a13de6d3520822",
+      "keeper_event_id": 2467699443089650,
+      "member_canonical_event_ids": [
+        "evt_454c569a1dc2f6760d2d97b7",
+        "evt_8cee159507fe8484fccfdfe6",
+        "evt_e19ddabaec467bb6d1e5387b",
+        "evt_f416f09009a13de6d3520822"
+      ],
+      "removed_event_ids": [
+        3007039654732731,
+        348577380295862,
+        1708135670559757
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-01-31",
+        "1897-02-01"
+      ],
+      "mapping_source_canonical_event_id": "evt_f416f09009a13de6d3520822",
+      "description_source_canonical_event_id": "evt_8cee159507fe8484fccfdfe6",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000021.json",
+        "event_chunks/chunk_000124.json",
+        "event_chunks/chunk_000225.json",
+        "event_chunks/chunk_000270.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000005.json",
+        "summary_shards/summary_000031.json",
+        "summary_shards/summary_000056.json",
+        "summary_shards/summary_000067.json"
+      ]
+    },
+    {
+      "cluster_id": "hibbard_sioux_city_1897_03_26",
+      "preferred_canonical_event_id": "evt_235df8e2c9d3708a2dadc9e3",
+      "keeper_event_id": 2493907605924231,
+      "member_canonical_event_ids": [
+        "evt_490c6425b6bdf27cbc5620fd",
+        "evt_fcdca7a285d24984593e0f4e",
+        "evt_235df8e2c9d3708a2dadc9e3",
+        "evt_af67dd8844f0d6b46475286d"
+      ],
+      "removed_event_ids": [
+        882121978003201,
+        2165183868474667,
+        3304710812142200
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-03-26"
+      ],
+      "mapping_source_canonical_event_id": "evt_af67dd8844f0d6b46475286d",
+      "description_source_canonical_event_id": "evt_235df8e2c9d3708a2dadc9e3",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000137.json",
+        "event_chunks/chunk_000208.json",
+        "event_chunks/chunk_000254.json",
+        "event_chunks/chunk_000280.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000034.json",
+        "summary_shards/summary_000052.json",
+        "summary_shards/summary_000063.json",
+        "summary_shards/summary_000070.json"
+      ]
+    },
+    {
+      "cluster_id": "topeka_1897_03_27",
+      "preferred_canonical_event_id": "evt_db36932dbb510367f394fd5c",
+      "keeper_event_id": 2869760218535929,
+      "member_canonical_event_ids": [
+        "evt_4e189f20dbd78b0dba0e88b8",
+        "evt_db36932dbb510367f394fd5c"
+      ],
+      "removed_event_ids": [
+        82963086415994
+      ],
+      "source_record_count": 7,
+      "date_values": [
+        "1897-03-27"
+      ],
+      "mapping_source_canonical_event_id": "evt_4e189f20dbd78b0dba0e88b8",
+      "description_source_canonical_event_id": "evt_4e189f20dbd78b0dba0e88b8",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000060.json",
+        "event_chunks/chunk_000152.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000015.json",
+        "summary_shards/summary_000038.json"
+      ]
+    },
+    {
+      "cluster_id": "omaha_1897_03_28",
+      "preferred_canonical_event_id": "evt_2b4af53e5b2312819eaffa2c",
+      "keeper_event_id": 3882401707571908,
+      "member_canonical_event_ids": [
+        "evt_34afc91a68db9cff6a79b079",
+        "evt_a527f65062238a7ddb2c6a99",
+        "evt_2b4af53e5b2312819eaffa2c",
+        "evt_cf34ec0c543ce064e4647a20"
+      ],
+      "removed_event_ids": [
+        2407082036226,
+        754567009567101,
+        855077199422526
+      ],
+      "source_record_count": 12,
+      "date_values": [
+        "1897-03-28"
+      ],
+      "mapping_source_canonical_event_id": "evt_2b4af53e5b2312819eaffa2c",
+      "description_source_canonical_event_id": "evt_34afc91a68db9cff6a79b079",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000009.json",
+        "event_chunks/chunk_000055.json",
+        "event_chunks/chunk_000068.json",
+        "event_chunks/chunk_000180.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000002.json",
+        "summary_shards/summary_000013.json",
+        "summary_shards/summary_000017.json",
+        "summary_shards/summary_000045.json"
+      ]
+    },
+    {
+      "cluster_id": "everest_1897_04_01",
+      "preferred_canonical_event_id": "evt_947c973935238d93681ecd12",
+      "keeper_event_id": 4222513372947355,
+      "member_canonical_event_ids": [
+        "evt_915d08af8d5113b9e95f89a3",
+        "evt_d79a617fd351235d5d55a9de",
+        "evt_947c973935238d93681ecd12",
+        "evt_085d6b3495d3ff169d374155",
+        "evt_add6011ca6de494f1458df3f"
+      ],
+      "removed_event_ids": [
+        4185249384628802,
+        3814659104003091,
+        3393548968102363,
+        2222150409803556
+      ],
+      "source_record_count": 19,
+      "date_values": [
+        "1897-04-01"
+      ],
+      "mapping_source_canonical_event_id": "evt_947c973935238d93681ecd12",
+      "description_source_canonical_event_id": "evt_add6011ca6de494f1458df3f",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000019.json",
+        "event_chunks/chunk_000032.json",
+        "event_chunks/chunk_000175.json",
+        "event_chunks/chunk_000202.json",
+        "event_chunks/chunk_000205.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000004.json",
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000043.json",
+        "summary_shards/summary_000050.json",
+        "summary_shards/summary_000051.json"
+      ]
+    },
+    {
+      "cluster_id": "baltimore_ohio_1897_04",
+      "preferred_canonical_event_id": "evt_9f7fc5df5daf10a82686c909",
+      "keeper_event_id": 2203259759970514,
+      "member_canonical_event_ids": [
+        "evt_ccc65c2518b3b8c2344a5b42",
+        "evt_9f7fc5df5daf10a82686c909"
+      ],
+      "removed_event_ids": [
+        1436606960667609
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1897-04-01",
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_ccc65c2518b3b8c2344a5b42",
+      "description_source_canonical_event_id": "evt_9f7fc5df5daf10a82686c909",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000132.json",
+        "event_chunks/chunk_000156.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000033.json",
+        "summary_shards/summary_000039.json"
+      ]
+    },
+    {
+      "cluster_id": "lock_mills_1897_04_11",
+      "preferred_canonical_event_id": "evt_65635de173d857c18a415436",
+      "keeper_event_id": 2701452791183085,
+      "member_canonical_event_ids": [
+        "evt_9101eff2ff32842179f687c3",
+        "evt_65635de173d857c18a415436",
+        "evt_aaff9e992a191c5490a68099"
+      ],
+      "removed_event_ids": [
+        3096438570518940,
+        492071949369279
+      ],
+      "source_record_count": 4,
+      "date_values": [
+        "1897-04-11"
+      ],
+      "mapping_source_canonical_event_id": "evt_65635de173d857c18a415436",
+      "description_source_canonical_event_id": "evt_aaff9e992a191c5490a68099",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000075.json",
+        "event_chunks/chunk_000132.json",
+        "event_chunks/chunk_000277.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000018.json",
+        "summary_shards/summary_000033.json",
+        "summary_shards/summary_000069.json"
+      ]
+    },
+    {
+      "cluster_id": "milwaukee_1897_04_11",
+      "preferred_canonical_event_id": "evt_b12fe7df760f2c41286ff767",
+      "keeper_event_id": 440843665844928,
+      "member_canonical_event_ids": [
+        "evt_8d63b96654a7096924e10b0b",
+        "evt_b12fe7df760f2c41286ff767",
+        "evt_6e7fd1b48215b8e7d18c7ca8"
+      ],
+      "removed_event_ids": [
+        3323652678573819,
+        1191000865003364
+      ],
+      "source_record_count": 8,
+      "date_values": [
+        "1897-04-11"
+      ],
+      "mapping_source_canonical_event_id": "evt_b12fe7df760f2c41286ff767",
+      "description_source_canonical_event_id": "evt_6e7fd1b48215b8e7d18c7ca8",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000069.json",
+        "event_chunks/chunk_000100.json",
+        "event_chunks/chunk_000172.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000017.json",
+        "summary_shards/summary_000025.json",
+        "summary_shards/summary_000043.json"
+      ]
+    },
+    {
+      "cluster_id": "girard_green_ridge_1897_04_12",
+      "preferred_canonical_event_id": "evt_cb0d9ccc2682a7ab310a169a",
+      "keeper_event_id": 3313108429064219,
+      "member_canonical_event_ids": [
+        "evt_034a9c2a7a9f733fde4d96ca",
+        "evt_516f3247e9b3f7e73083e2d7",
+        "evt_cb0d9ccc2682a7ab310a169a",
+        "evt_77dfd56fbdefab58b847cc92",
+        "evt_5b1b81e87968eeef177e24bc"
+      ],
+      "removed_event_ids": [
+        3383639429156057,
+        445429318860036,
+        2047931188334929,
+        3361744694017056
+      ],
+      "source_record_count": 22,
+      "date_values": [
+        "1897-04-12"
+      ],
+      "mapping_source_canonical_event_id": "evt_516f3247e9b3f7e73083e2d7",
+      "description_source_canonical_event_id": "evt_5b1b81e87968eeef177e24bc",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000016.json",
+        "event_chunks/chunk_000033.json",
+        "event_chunks/chunk_000140.json",
+        "event_chunks/chunk_000213.json",
+        "event_chunks/chunk_000229.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000004.json",
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000035.json",
+        "summary_shards/summary_000053.json",
+        "summary_shards/summary_000057.json"
+      ]
+    },
+    {
+      "cluster_id": "nilwood_1897_04_12",
+      "preferred_canonical_event_id": "evt_a772ff86475348cc97284990",
+      "keeper_event_id": 4188339327215870,
+      "member_canonical_event_ids": [
+        "evt_a4e6fc0f75c4eb4495dc48fc",
+        "evt_a772ff86475348cc97284990",
+        "evt_1b0565e022d411940811c660",
+        "evt_c48a5cda3602c47582a19d30"
+      ],
+      "removed_event_ids": [
+        2117355581444982,
+        821016236599626,
+        3784914202225635
+      ],
+      "source_record_count": 15,
+      "date_values": [
+        "1897-04-12"
+      ],
+      "mapping_source_canonical_event_id": "evt_a772ff86475348cc97284990",
+      "description_source_canonical_event_id": "evt_c48a5cda3602c47582a19d30",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000010.json",
+        "event_chunks/chunk_000101.json",
+        "event_chunks/chunk_000263.json",
+        "event_chunks/chunk_000279.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000002.json",
+        "summary_shards/summary_000025.json",
+        "summary_shards/summary_000065.json",
+        "summary_shards/summary_000069.json"
+      ]
+    },
+    {
+      "cluster_id": "salisbury_1897_04_12",
+      "preferred_canonical_event_id": "evt_a0e7aa9e3392109e821f7a13",
+      "keeper_event_id": 2975479506280834,
+      "member_canonical_event_ids": [
+        "evt_3b79b6c9b5113b78613d1d7c",
+        "evt_a0e7aa9e3392109e821f7a13"
+      ],
+      "removed_event_ids": [
+        4458805183921922
+      ],
+      "source_record_count": 3,
+      "date_values": [
+        "1897-04-12"
+      ],
+      "mapping_source_canonical_event_id": "evt_3b79b6c9b5113b78613d1d7c",
+      "description_source_canonical_event_id": "evt_3b79b6c9b5113b78613d1d7c",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000056.json",
+        "event_chunks/chunk_000072.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000014.json",
+        "summary_shards/summary_000018.json"
+      ]
+    },
+    {
+      "cluster_id": "girard_carlinville_1897_04_13",
+      "preferred_canonical_event_id": "evt_2a0f94c8f5254fdcc8db8615",
+      "keeper_event_id": 4467861660774049,
+      "member_canonical_event_ids": [
+        "evt_a4449b09829a684e5a6252a7",
+        "evt_2a0f94c8f5254fdcc8db8615",
+        "evt_d599aab4c32cd1f5ec62b95b"
+      ],
+      "removed_event_ids": [
+        4477272757526192,
+        4246656128629347
+      ],
+      "source_record_count": 3,
+      "date_values": [
+        "1897-04-13"
+      ],
+      "mapping_source_canonical_event_id": "evt_2a0f94c8f5254fdcc8db8615",
+      "description_source_canonical_event_id": "evt_a4449b09829a684e5a6252a7",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000101.json",
+        "event_chunks/chunk_000163.json",
+        "event_chunks/chunk_000214.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000025.json",
+        "summary_shards/summary_000040.json",
+        "summary_shards/summary_000053.json"
+      ]
+    },
+    {
+      "cluster_id": "lake_elmo_1897_04_13",
+      "preferred_canonical_event_id": "evt_4c86d13b749bf94c04ea0061",
+      "keeper_event_id": 1313344411746332,
+      "member_canonical_event_ids": [
+        "evt_487386702b78c329cdbb79e9",
+        "evt_1a2047ab2847a4bdc5741d3f",
+        "evt_4c86d13b749bf94c04ea0061",
+        "evt_df6e2ffe8ece7049514c881f"
+      ],
+      "removed_event_ids": [
+        2599952323221601,
+        3966084447188836,
+        2425621049701297
+      ],
+      "source_record_count": 10,
+      "date_values": [
+        "1897-04-13"
+      ],
+      "mapping_source_canonical_event_id": "evt_1a2047ab2847a4bdc5741d3f",
+      "description_source_canonical_event_id": "evt_df6e2ffe8ece7049514c881f",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000000.json",
+        "event_chunks/chunk_000093.json",
+        "event_chunks/chunk_000191.json",
+        "event_chunks/chunk_000240.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000000.json",
+        "summary_shards/summary_000023.json",
+        "summary_shards/summary_000047.json",
+        "summary_shards/summary_000060.json"
+      ]
+    },
+    {
+      "cluster_id": "cleveland_lake_erie_1897_04_14",
+      "preferred_canonical_event_id": "evt_ce11c0608fe24b62899a259e",
+      "keeper_event_id": 1832612457592637,
+      "member_canonical_event_ids": [
+        "evt_534cbc88f03dc1d4dfba77c7",
+        "evt_1fbef2fd11fe19041289af30",
+        "evt_b6f22e030a6bd54ab51f3c2a",
+        "evt_ce11c0608fe24b62899a259e",
+        "evt_ccf0aa0a2ab0ec4616403f3a"
+      ],
+      "removed_event_ids": [
+        1307733023526532,
+        1853366071035669,
+        3726681346526236,
+        2783313724374055
+      ],
+      "source_record_count": 15,
+      "date_values": [
+        "1897-04-14"
+      ],
+      "mapping_source_canonical_event_id": "evt_ce11c0608fe24b62899a259e",
+      "description_source_canonical_event_id": "evt_b6f22e030a6bd54ab51f3c2a",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000031.json",
+        "event_chunks/chunk_000066.json",
+        "event_chunks/chunk_000073.json",
+        "event_chunks/chunk_000193.json",
+        "event_chunks/chunk_000228.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000007.json",
+        "summary_shards/summary_000016.json",
+        "summary_shards/summary_000018.json",
+        "summary_shards/summary_000048.json",
+        "summary_shards/summary_000057.json"
+      ]
+    },
+    {
+      "cluster_id": "gas_city_1897_04_14",
+      "preferred_canonical_event_id": "evt_b1a619bdf404a4bfc768a53f",
+      "keeper_event_id": 3834273825621798,
+      "member_canonical_event_ids": [
+        "evt_2c8313f01af62c728c8188b1",
+        "evt_b1a619bdf404a4bfc768a53f"
+      ],
+      "removed_event_ids": [
+        1665894192240240
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1897-04-14"
+      ],
+      "mapping_source_canonical_event_id": "evt_2c8313f01af62c728c8188b1",
+      "description_source_canonical_event_id": "evt_b1a619bdf404a4bfc768a53f",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000147.json",
+        "event_chunks/chunk_000278.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000036.json",
+        "summary_shards/summary_000069.json"
+      ]
+    },
+    {
+      "cluster_id": "springfield_1897_04_15",
+      "preferred_canonical_event_id": "evt_ffd0f8bb0e5377700fd24987",
+      "keeper_event_id": 904639056186939,
+      "member_canonical_event_ids": [
+        "evt_bd07522ca6f43a2588f318f7",
+        "evt_ffd0f8bb0e5377700fd24987",
+        "evt_adcab532373eeb99a3e2ac76"
+      ],
+      "removed_event_ids": [
+        403168951551122,
+        3700498140246384
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_ffd0f8bb0e5377700fd24987",
+      "description_source_canonical_event_id": "evt_adcab532373eeb99a3e2ac76",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000089.json",
+        "event_chunks/chunk_000148.json",
+        "event_chunks/chunk_000223.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000022.json",
+        "summary_shards/summary_000037.json",
+        "summary_shards/summary_000055.json"
+      ]
+    },
+    {
+      "cluster_id": "perry_springs_1897_04_15",
+      "preferred_canonical_event_id": "evt_140dd30147a951267d7a6a55",
+      "keeper_event_id": 3839602685014611,
+      "member_canonical_event_ids": [
+        "evt_e5b9275172d0b963bf298278",
+        "evt_140dd30147a951267d7a6a55",
+        "evt_f289675fb845726e59a0945a"
+      ],
+      "removed_event_ids": [
+        446160457436117,
+        407623248254542
+      ],
+      "source_record_count": 10,
+      "date_values": [
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_140dd30147a951267d7a6a55",
+      "description_source_canonical_event_id": "evt_f289675fb845726e59a0945a",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000048.json",
+        "event_chunks/chunk_000060.json",
+        "event_chunks/chunk_000071.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000012.json",
+        "summary_shards/summary_000015.json",
+        "summary_shards/summary_000017.json"
+      ]
+    },
+    {
+      "cluster_id": "linn_grove_1897_04_15",
+      "preferred_canonical_event_id": "evt_feebee667390e5529851733e",
+      "keeper_event_id": 4364514800355742,
+      "member_canonical_event_ids": [
+        "evt_fe58de1c7f612d128d7a6df5",
+        "evt_f06f01101b7ae304c2b803c9",
+        "evt_feebee667390e5529851733e"
+      ],
+      "removed_event_ids": [
+        2368249351215686,
+        3476401958750098
+      ],
+      "source_record_count": 18,
+      "date_values": [
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_feebee667390e5529851733e",
+      "description_source_canonical_event_id": "evt_fe58de1c7f612d128d7a6df5",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000047.json",
+        "event_chunks/chunk_000119.json",
+        "event_chunks/chunk_000133.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000011.json",
+        "summary_shards/summary_000029.json",
+        "summary_shards/summary_000033.json"
+      ]
+    },
+    {
+      "cluster_id": "howard_artesian_1897_04_15",
+      "preferred_canonical_event_id": "evt_311243c06edbbc82021716d7",
+      "keeper_event_id": 3495191203507189,
+      "member_canonical_event_ids": [
+        "evt_d6721a80689ba33d815b214b",
+        "evt_311243c06edbbc82021716d7",
+        "evt_cad7d8b5ade1d596c7e7b6a0"
+      ],
+      "removed_event_ids": [
+        1563400374178096,
+        1644071193655270
+      ],
+      "source_record_count": 15,
+      "date_values": [
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_311243c06edbbc82021716d7",
+      "description_source_canonical_event_id": "evt_cad7d8b5ade1d596c7e7b6a0",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000071.json",
+        "event_chunks/chunk_000081.json",
+        "event_chunks/chunk_000270.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000017.json",
+        "summary_shards/summary_000020.json",
+        "summary_shards/summary_000067.json"
+      ]
+    },
+    {
+      "cluster_id": "hudson_1897_04_15",
+      "preferred_canonical_event_id": "evt_b452935ac7e2ef5786b1c0a0",
+      "keeper_event_id": 2066312814508970,
+      "member_canonical_event_ids": [
+        "evt_b452935ac7e2ef5786b1c0a0",
+        "evt_9f8569cc6aa57ce55825b738"
+      ],
+      "removed_event_ids": [
+        2566753089573160
+      ],
+      "source_record_count": 9,
+      "date_values": [
+        "1897-04-15"
+      ],
+      "mapping_source_canonical_event_id": "evt_b452935ac7e2ef5786b1c0a0",
+      "description_source_canonical_event_id": "evt_9f8569cc6aa57ce55825b738",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000047.json",
+        "event_chunks/chunk_000264.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000011.json",
+        "summary_shards/summary_000066.json"
+      ]
+    },
+    {
+      "cluster_id": "downs_1897_04_16",
+      "preferred_canonical_event_id": "evt_1a61a95ebbc8c997201f6f95",
+      "keeper_event_id": 3371953540840283,
+      "member_canonical_event_ids": [
+        "evt_177fbd214813f4ba5655c97d",
+        "evt_c466a700ab69fece857e2a0f",
+        "evt_15b42909b0a718e9aa12d9f6",
+        "evt_1a61a95ebbc8c997201f6f95",
+        "evt_18a45d685b81a1e557e2e198"
+      ],
+      "removed_event_ids": [
+        961592365213338,
+        1516234638021331,
+        4336069045635195,
+        259700861612495
+      ],
+      "source_record_count": 12,
+      "date_values": [
+        "1897-04-16"
+      ],
+      "mapping_source_canonical_event_id": "evt_1a61a95ebbc8c997201f6f95",
+      "description_source_canonical_event_id": "evt_177fbd214813f4ba5655c97d",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000034.json",
+        "event_chunks/chunk_000055.json",
+        "event_chunks/chunk_000120.json",
+        "event_chunks/chunk_000168.json",
+        "event_chunks/chunk_000278.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000013.json",
+        "summary_shards/summary_000030.json",
+        "summary_shards/summary_000042.json",
+        "summary_shards/summary_000069.json"
+      ]
+    },
+    {
+      "cluster_id": "logan_1897_04_16",
+      "preferred_canonical_event_id": "evt_46ba1acf454fdc3aebb35269",
+      "keeper_event_id": 2635373479931079,
+      "member_canonical_event_ids": [
+        "evt_46ba1acf454fdc3aebb35269",
+        "evt_3e59ce44961190e7bf3d795d",
+        "evt_d1ec800b47909a2e325327dd"
+      ],
+      "removed_event_ids": [
+        4307682692813054,
+        1037335018452851
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-04-16"
+      ],
+      "mapping_source_canonical_event_id": "evt_46ba1acf454fdc3aebb35269",
+      "description_source_canonical_event_id": "evt_d1ec800b47909a2e325327dd",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000041.json",
+        "event_chunks/chunk_000225.json",
+        "event_chunks/chunk_000268.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000010.json",
+        "summary_shards/summary_000056.json",
+        "summary_shards/summary_000067.json"
+      ]
+    },
+    {
+      "cluster_id": "bay_city_1897_04_16",
+      "preferred_canonical_event_id": "evt_0515afd795098d91522b115b",
+      "keeper_event_id": 3082630834905889,
+      "member_canonical_event_ids": [
+        "evt_0515afd795098d91522b115b",
+        "evt_bb37b647029b6ccb214b65f6"
+      ],
+      "removed_event_ids": [
+        4007782536356043
+      ],
+      "source_record_count": 8,
+      "date_values": [
+        "1897-04-16"
+      ],
+      "mapping_source_canonical_event_id": "evt_0515afd795098d91522b115b",
+      "description_source_canonical_event_id": "evt_bb37b647029b6ccb214b65f6",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000042.json",
+        "event_chunks/chunk_000203.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000010.json",
+        "summary_shards/summary_000050.json"
+      ]
+    },
+    {
+      "cluster_id": "saginaw_1897_04_16",
+      "preferred_canonical_event_id": "evt_721a533ba6e5f5453b301d4d",
+      "keeper_event_id": 1615953419716234,
+      "member_canonical_event_ids": [
+        "evt_721a533ba6e5f5453b301d4d",
+        "evt_9e2cb789d8e570db8e7e1005"
+      ],
+      "removed_event_ids": [
+        4500027846290792
+      ],
+      "source_record_count": 11,
+      "date_values": [
+        "1897-04-16"
+      ],
+      "mapping_source_canonical_event_id": "evt_721a533ba6e5f5453b301d4d",
+      "description_source_canonical_event_id": "evt_9e2cb789d8e570db8e7e1005",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000012.json",
+        "event_chunks/chunk_000253.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000003.json",
+        "summary_shards/summary_000063.json"
+      ]
+    },
+    {
+      "cluster_id": "greenville_1897_04_16_18",
+      "preferred_canonical_event_id": "evt_3f134eb0f68e216fb050b5e1",
+      "keeper_event_id": 2198662830329504,
+      "member_canonical_event_ids": [
+        "evt_3f134eb0f68e216fb050b5e1",
+        "evt_94beb287a12379523c302b53"
+      ],
+      "removed_event_ids": [
+        4468223100717781
+      ],
+      "source_record_count": 7,
+      "date_values": [
+        "1897-04-16",
+        "1897-04-18"
+      ],
+      "mapping_source_canonical_event_id": "evt_3f134eb0f68e216fb050b5e1",
+      "description_source_canonical_event_id": "evt_94beb287a12379523c302b53",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000139.json",
+        "event_chunks/chunk_000163.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000034.json",
+        "summary_shards/summary_000040.json"
+      ]
+    },
+    {
+      "cluster_id": "williamston_1897_04_17",
+      "preferred_canonical_event_id": "evt_f9bbfa8e609bf6e61cea127f",
+      "keeper_event_id": 488859267575668,
+      "member_canonical_event_ids": [
+        "evt_5396376506fe21ac18e32968",
+        "evt_cb2b8989499758d2371707d4",
+        "evt_ba2a994c56e57d014c6c0c73",
+        "evt_f9bbfa8e609bf6e61cea127f",
+        "evt_fddf8335305946f5c41b0270"
+      ],
+      "removed_event_ids": [
+        2922242517453372,
+        1235342531152338,
+        343468025611192,
+        3460248821324346
+      ],
+      "source_record_count": 19,
+      "date_values": [
+        "1897-04-17"
+      ],
+      "mapping_source_canonical_event_id": "evt_f9bbfa8e609bf6e61cea127f",
+      "description_source_canonical_event_id": "evt_cb2b8989499758d2371707d4",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000011.json",
+        "event_chunks/chunk_000035.json",
+        "event_chunks/chunk_000153.json",
+        "event_chunks/chunk_000155.json",
+        "event_chunks/chunk_000257.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000002.json",
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000038.json",
+        "summary_shards/summary_000064.json"
+      ]
+    },
+    {
+      "cluster_id": "upland_1897_04_17",
+      "preferred_canonical_event_id": "evt_72cff984ba75dc864f7e0567",
+      "keeper_event_id": 4272789179518035,
+      "member_canonical_event_ids": [
+        "evt_72cff984ba75dc864f7e0567",
+        "evt_c1f0df2b776f95bd7925a6af"
+      ],
+      "removed_event_ids": [
+        2769369947173762
+      ],
+      "source_record_count": 3,
+      "date_values": [
+        "1897-04-17"
+      ],
+      "mapping_source_canonical_event_id": "evt_72cff984ba75dc864f7e0567",
+      "description_source_canonical_event_id": "evt_c1f0df2b776f95bd7925a6af",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000104.json",
+        "event_chunks/chunk_000246.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000026.json",
+        "summary_shards/summary_000061.json"
+      ]
+    },
+    {
+      "cluster_id": "texas_whaleback_1897_04_17",
+      "preferred_canonical_event_id": "evt_f50a6f9ffb12aff155b537f1",
+      "keeper_event_id": 2156756925802394,
+      "member_canonical_event_ids": [
+        "evt_f50a6f9ffb12aff155b537f1",
+        "evt_ea54342d59a6f175d5700844"
+      ],
+      "removed_event_ids": [
+        1522273664200865
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1897-04-17"
+      ],
+      "mapping_source_canonical_event_id": "evt_f50a6f9ffb12aff155b537f1",
+      "description_source_canonical_event_id": "evt_ea54342d59a6f175d5700844",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000039.json",
+        "event_chunks/chunk_000210.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000009.json",
+        "summary_shards/summary_000052.json"
+      ]
+    },
+    {
+      "cluster_id": "sistersville_1897_04_18",
+      "preferred_canonical_event_id": "evt_9e022392bd8752e71e41609b",
+      "keeper_event_id": 3060697172445548,
+      "member_canonical_event_ids": [
+        "evt_9e022392bd8752e71e41609b",
+        "evt_a1796a820697ecf357fd2aaf",
+        "evt_a78c1a5a10c08a4a9dabcad6"
+      ],
+      "removed_event_ids": [
+        2777340602207411,
+        2941431153112611
+      ],
+      "source_record_count": 19,
+      "date_values": [
+        "1897-04-18"
+      ],
+      "mapping_source_canonical_event_id": "evt_9e022392bd8752e71e41609b",
+      "description_source_canonical_event_id": "evt_a1796a820697ecf357fd2aaf",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000041.json",
+        "event_chunks/chunk_000143.json",
+        "event_chunks/chunk_000165.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000010.json",
+        "summary_shards/summary_000035.json",
+        "summary_shards/summary_000041.json"
+      ]
+    },
+    {
+      "cluster_id": "leroy_hamilton_1897_04",
+      "preferred_canonical_event_id": "evt_4c36c74dcfce11a952bf7272",
+      "keeper_event_id": 3764888027516446,
+      "member_canonical_event_ids": [
+        "evt_a3ab653e108b3a637f317bd1",
+        "evt_ccd9984699038b58f79c8c94",
+        "evt_8f58362e13d5deaf1ae25f8b",
+        "evt_437a609fc0707a29e832d698",
+        "evt_4c36c74dcfce11a952bf7272",
+        "evt_1facbad0ec7e9220464de105",
+        "evt_473041f46889b3c58ae4b2f9"
+      ],
+      "removed_event_ids": [
+        633198998793452,
+        2396966708266819,
+        4396706913874695,
+        1151570864199130,
+        4075273302085340,
+        519083186767409
+      ],
+      "source_record_count": 37,
+      "date_values": [
+        "1897-04-01",
+        "1897-04-19"
+      ],
+      "mapping_source_canonical_event_id": "evt_4c36c74dcfce11a952bf7272",
+      "description_source_canonical_event_id": "evt_8f58362e13d5deaf1ae25f8b",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000005.json",
+        "event_chunks/chunk_000006.json",
+        "event_chunks/chunk_000009.json",
+        "event_chunks/chunk_000080.json",
+        "event_chunks/chunk_000192.json",
+        "event_chunks/chunk_000234.json",
+        "event_chunks/chunk_000267.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000001.json",
+        "summary_shards/summary_000002.json",
+        "summary_shards/summary_000020.json",
+        "summary_shards/summary_000048.json",
+        "summary_shards/summary_000058.json",
+        "summary_shards/summary_000066.json"
+      ]
+    },
+    {
+      "cluster_id": "greenfield_1897_04_19",
+      "preferred_canonical_event_id": "evt_b47a5acbdbc54c4b7584d926",
+      "keeper_event_id": 4099486103407277,
+      "member_canonical_event_ids": [
+        "evt_b8ed81fdcb2423f49d2d7d2f",
+        "evt_b47a5acbdbc54c4b7584d926",
+        "evt_347d7b2b13776af8437e7a5b",
+        "evt_9fba5620d947762b6b2e0a9a"
+      ],
+      "removed_event_ids": [
+        1853965126997238,
+        2040137015845996,
+        1562848286252928
+      ],
+      "source_record_count": 7,
+      "date_values": [
+        "1897-04-19"
+      ],
+      "mapping_source_canonical_event_id": "evt_b47a5acbdbc54c4b7584d926",
+      "description_source_canonical_event_id": "evt_9fba5620d947762b6b2e0a9a",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000031.json",
+        "event_chunks/chunk_000032.json",
+        "event_chunks/chunk_000231.json",
+        "event_chunks/chunk_000269.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000007.json",
+        "summary_shards/summary_000008.json",
+        "summary_shards/summary_000057.json",
+        "summary_shards/summary_000067.json"
+      ]
+    },
+    {
+      "cluster_id": "homan_1897_04_20",
+      "preferred_canonical_event_id": "evt_c7723c3fbfae85e0b8ad48e4",
+      "keeper_event_id": 4339147288101129,
+      "member_canonical_event_ids": [
+        "evt_32ed4fa79f5891833da14998",
+        "evt_c7723c3fbfae85e0b8ad48e4",
+        "evt_b0c555a20683884aa992fb21",
+        "evt_e8c0e9ef7e150e4f70afda37",
+        "evt_ad502901249aa3cf8bd580a5"
+      ],
+      "removed_event_ids": [
+        1862280119989200,
+        961195592306835,
+        3401076213309402,
+        3892068348581643
+      ],
+      "source_record_count": 18,
+      "date_values": [
+        "1897-04-15",
+        "1897-04-20",
+        "1897-05-13"
+      ],
+      "mapping_source_canonical_event_id": "evt_e8c0e9ef7e150e4f70afda37",
+      "description_source_canonical_event_id": "evt_b0c555a20683884aa992fb21",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000013.json",
+        "event_chunks/chunk_000019.json",
+        "event_chunks/chunk_000050.json",
+        "event_chunks/chunk_000106.json",
+        "event_chunks/chunk_000226.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000003.json",
+        "summary_shards/summary_000004.json",
+        "summary_shards/summary_000012.json",
+        "summary_shards/summary_000026.json",
+        "summary_shards/summary_000056.json"
+      ]
+    },
+    {
+      "cluster_id": "rockland_1897_04_21_22",
+      "preferred_canonical_event_id": "evt_7575506eaebca2ab7a0969a0",
+      "keeper_event_id": 3849741826985722,
+      "member_canonical_event_ids": [
+        "evt_db41e73f995edb524654668e",
+        "evt_224b3a1fc611ede6012ca276",
+        "evt_03fab01d5f064b0986dc4189",
+        "evt_7575506eaebca2ab7a0969a0",
+        "evt_aeb43292b619ff30a5eb7d29"
+      ],
+      "removed_event_ids": [
+        4239495936865384,
+        2060703047290370,
+        2574815111929703,
+        1754597948024581
+      ],
+      "source_record_count": 24,
+      "date_values": [
+        "1897-04-21",
+        "1897-04-22"
+      ],
+      "mapping_source_canonical_event_id": "evt_7575506eaebca2ab7a0969a0",
+      "description_source_canonical_event_id": "evt_224b3a1fc611ede6012ca276",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000057.json",
+        "event_chunks/chunk_000143.json",
+        "event_chunks/chunk_000151.json",
+        "event_chunks/chunk_000187.json",
+        "event_chunks/chunk_000237.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000014.json",
+        "summary_shards/summary_000035.json",
+        "summary_shards/summary_000037.json",
+        "summary_shards/summary_000046.json",
+        "summary_shards/summary_000059.json"
+      ]
+    },
+    {
+      "cluster_id": "josserand_1897_04_22_23",
+      "preferred_canonical_event_id": "evt_2a138f2047243ed586f14bb7",
+      "keeper_event_id": 166295546135863,
+      "member_canonical_event_ids": [
+        "evt_8b5dc4290b36ab28531ef6ee",
+        "evt_2a138f2047243ed586f14bb7",
+        "evt_2641b84edbb3e8f6d201a182",
+        "evt_c164aa6e4a935a45aa4edf71",
+        "evt_a2dbbc2ad71bddc485cbbebd"
+      ],
+      "removed_event_ids": [
+        3589160951427507,
+        288377994105012,
+        1978689600107093,
+        4094312771657753
+      ],
+      "source_record_count": 24,
+      "date_values": [
+        "1897-04-22",
+        "1897-04-23"
+      ],
+      "mapping_source_canonical_event_id": "evt_a2dbbc2ad71bddc485cbbebd",
+      "description_source_canonical_event_id": "evt_c164aa6e4a935a45aa4edf71",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000017.json",
+        "event_chunks/chunk_000038.json",
+        "event_chunks/chunk_000066.json",
+        "event_chunks/chunk_000140.json",
+        "event_chunks/chunk_000161.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000004.json",
+        "summary_shards/summary_000009.json",
+        "summary_shards/summary_000016.json",
+        "summary_shards/summary_000035.json",
+        "summary_shards/summary_000040.json"
+      ]
+    },
+    {
+      "cluster_id": "texarkana_1897_04",
+      "preferred_canonical_event_id": "evt_433a35db59fa6c08bdfdf577",
+      "keeper_event_id": 933387231166658,
+      "member_canonical_event_ids": [
+        "evt_3e1d4adaa47edf30493f8e3f",
+        "evt_73b3cebd440d3d075d24c57e",
+        "evt_433a35db59fa6c08bdfdf577",
+        "evt_2e24b768906aeda1d1fc74aa",
+        "evt_ee0bdede4f62691b903e8c76"
+      ],
+      "removed_event_ids": [
+        3639285122046024,
+        2836511139173018,
+        1002079243201669,
+        4128795973717471
+      ],
+      "source_record_count": 15,
+      "date_values": [
+        "1897-04-17",
+        "1897-04-23"
+      ],
+      "mapping_source_canonical_event_id": "evt_433a35db59fa6c08bdfdf577",
+      "description_source_canonical_event_id": "evt_2e24b768906aeda1d1fc74aa",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000042.json",
+        "event_chunks/chunk_000091.json",
+        "event_chunks/chunk_000117.json",
+        "event_chunks/chunk_000131.json",
+        "event_chunks/chunk_000265.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000010.json",
+        "summary_shards/summary_000022.json",
+        "summary_shards/summary_000029.json",
+        "summary_shards/summary_000032.json",
+        "summary_shards/summary_000066.json"
+      ]
+    },
+    {
+      "cluster_id": "kountze_1897_04_23",
+      "preferred_canonical_event_id": "evt_f021287961451df9f5a7405c",
+      "keeper_event_id": 4444645536589105,
+      "member_canonical_event_ids": [
+        "evt_0caa6f4b8840fddee43142a5",
+        "evt_f021287961451df9f5a7405c",
+        "evt_91c1a519da050fae49e991bf"
+      ],
+      "removed_event_ids": [
+        3537869472764887,
+        2785451704149139
+      ],
+      "source_record_count": 7,
+      "date_values": [
+        "1897-04-23"
+      ],
+      "mapping_source_canonical_event_id": "evt_f021287961451df9f5a7405c",
+      "description_source_canonical_event_id": "evt_91c1a519da050fae49e991bf",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000020.json",
+        "event_chunks/chunk_000124.json",
+        "event_chunks/chunk_000179.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000005.json",
+        "summary_shards/summary_000031.json",
+        "summary_shards/summary_000044.json"
+      ]
+    },
+    {
+      "cluster_id": "louisville_1897_04_24",
+      "preferred_canonical_event_id": "evt_23dca4dc1e801a628b05f193",
+      "keeper_event_id": 902795363417821,
+      "member_canonical_event_ids": [
+        "evt_a97f2094a48a6c928df0f06e",
+        "evt_23dca4dc1e801a628b05f193",
+        "evt_0dc682f6e598bfa14175684d"
+      ],
+      "removed_event_ids": [
+        4160254992044106,
+        1614972004400319
+      ],
+      "source_record_count": 4,
+      "date_values": [
+        "1897-04-24"
+      ],
+      "mapping_source_canonical_event_id": "evt_23dca4dc1e801a628b05f193",
+      "description_source_canonical_event_id": "evt_0dc682f6e598bfa14175684d",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000114.json",
+        "event_chunks/chunk_000138.json",
+        "event_chunks/chunk_000154.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000028.json",
+        "summary_shards/summary_000034.json",
+        "summary_shards/summary_000038.json"
+      ]
+    },
+    {
+      "cluster_id": "merkel_1897_04_25_26",
+      "preferred_canonical_event_id": "evt_3f8b932874dd6330ad879aa8",
+      "keeper_event_id": 3665768977371567,
+      "member_canonical_event_ids": [
+        "evt_393e1aa178517f1a1231a4c0",
+        "evt_3f8b932874dd6330ad879aa8",
+        "evt_e5006976f6c8077a6f501965",
+        "evt_af602d11d85a4314b2a1bdbf",
+        "evt_a37dda317f528874fa73e381"
+      ],
+      "removed_event_ids": [
+        2542617899226760,
+        3225689173691703,
+        1969783540577065,
+        2738552030484617
+      ],
+      "source_record_count": 29,
+      "date_values": [
+        "1897-04-25",
+        "1897-04-26"
+      ],
+      "mapping_source_canonical_event_id": "evt_3f8b932874dd6330ad879aa8",
+      "description_source_canonical_event_id": "evt_af602d11d85a4314b2a1bdbf",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000002.json",
+        "event_chunks/chunk_000124.json",
+        "event_chunks/chunk_000132.json",
+        "event_chunks/chunk_000190.json",
+        "event_chunks/chunk_000232.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000000.json",
+        "summary_shards/summary_000031.json",
+        "summary_shards/summary_000033.json",
+        "summary_shards/summary_000047.json",
+        "summary_shards/summary_000058.json"
+      ]
+    },
+    {
+      "cluster_id": "aquila_1897_04_26",
+      "preferred_canonical_event_id": "evt_76e529b267a7f9ad6682777b",
+      "keeper_event_id": 739364126978964,
+      "member_canonical_event_ids": [
+        "evt_85e663e0e93bc1c74994a85c",
+        "evt_76e529b267a7f9ad6682777b",
+        "evt_46f2fab3c7ef443140e85b13",
+        "evt_ccb9366f195bd7a676ac214b"
+      ],
+      "removed_event_ids": [
+        864682881847487,
+        4069078908189524,
+        4043966269086757
+      ],
+      "source_record_count": 14,
+      "date_values": [
+        "1897-04-26"
+      ],
+      "mapping_source_canonical_event_id": "evt_76e529b267a7f9ad6682777b",
+      "description_source_canonical_event_id": "evt_85e663e0e93bc1c74994a85c",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000009.json",
+        "event_chunks/chunk_000026.json",
+        "event_chunks/chunk_000185.json",
+        "event_chunks/chunk_000202.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000002.json",
+        "summary_shards/summary_000006.json",
+        "summary_shards/summary_000046.json",
+        "summary_shards/summary_000050.json"
+      ]
+    },
+    {
+      "cluster_id": "yonkers_1897_04_30",
+      "preferred_canonical_event_id": "evt_a7554c9179b8f3b1ef837db4",
+      "keeper_event_id": 155369486553165,
+      "member_canonical_event_ids": [
+        "evt_63eccd8a158c77314fece8c5",
+        "evt_a7554c9179b8f3b1ef837db4"
+      ],
+      "removed_event_ids": [
+        2448291287497061
+      ],
+      "source_record_count": 5,
+      "date_values": [
+        "1897-04-30"
+      ],
+      "mapping_source_canonical_event_id": "evt_63eccd8a158c77314fece8c5",
+      "description_source_canonical_event_id": "evt_a7554c9179b8f3b1ef837db4",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000077.json",
+        "event_chunks/chunk_000274.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000019.json",
+        "summary_shards/summary_000068.json"
+      ]
+    },
+    {
+      "cluster_id": "winnipeg_1897_05_01",
+      "preferred_canonical_event_id": "evt_32c06a2a070e2501f1991a50",
+      "keeper_event_id": 320612817966802,
+      "member_canonical_event_ids": [
+        "evt_32c06a2a070e2501f1991a50",
+        "evt_396387c5f3a623d60fb841f1"
+      ],
+      "removed_event_ids": [
+        2737716092459324
+      ],
+      "source_record_count": 2,
+      "date_values": [
+        "1897-05-01"
+      ],
+      "mapping_source_canonical_event_id": "evt_32c06a2a070e2501f1991a50",
+      "description_source_canonical_event_id": "evt_32c06a2a070e2501f1991a50",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000038.json",
+        "event_chunks/chunk_000158.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000009.json",
+        "summary_shards/summary_000039.json"
+      ]
+    },
+    {
+      "cluster_id": "jenny_lind_1897_05_04",
+      "preferred_canonical_event_id": "evt_1c97e567eb8743ebc757b73f",
+      "keeper_event_id": 750356177522786,
+      "member_canonical_event_ids": [
+        "evt_4a4bd802a40f71e1a2c6f5c2",
+        "evt_1c97e567eb8743ebc757b73f"
+      ],
+      "removed_event_ids": [
+        2757569014601216
+      ],
+      "source_record_count": 7,
+      "date_values": [
+        "1897-05-04"
+      ],
+      "mapping_source_canonical_event_id": "evt_1c97e567eb8743ebc757b73f",
+      "description_source_canonical_event_id": "evt_4a4bd802a40f71e1a2c6f5c2",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000029.json",
+        "event_chunks/chunk_000039.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000007.json",
+        "summary_shards/summary_000009.json"
+      ]
+    },
+    {
+      "cluster_id": "cincinnati_1897_05_04",
+      "preferred_canonical_event_id": "evt_35dd3924703b40873c55884a",
+      "keeper_event_id": 308803290872463,
+      "member_canonical_event_ids": [
+        "evt_35dd3924703b40873c55884a",
+        "evt_0c7bb057fb08c81f09817681"
+      ],
+      "removed_event_ids": [
+        2288045992135153
+      ],
+      "source_record_count": 3,
+      "date_values": [
+        "1897-05-04"
+      ],
+      "mapping_source_canonical_event_id": "evt_35dd3924703b40873c55884a",
+      "description_source_canonical_event_id": "evt_0c7bb057fb08c81f09817681",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000039.json",
+        "event_chunks/chunk_000110.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000009.json",
+        "summary_shards/summary_000027.json"
+      ]
+    },
+    {
+      "cluster_id": "hot_springs_1897_05_06",
+      "preferred_canonical_event_id": "evt_dffa0f8dc1b3d885709fc263",
+      "keeper_event_id": 1861971048350526,
+      "member_canonical_event_ids": [
+        "evt_6144a01dabc11b9f0a647d00",
+        "evt_7f7ab8da5986ece5eff05f07",
+        "evt_dffa0f8dc1b3d885709fc263",
+        "evt_ce61f170e74ef24956a57e4f",
+        "evt_5e9060ee1b2dddb26f4696e7"
+      ],
+      "removed_event_ids": [
+        809503836748065,
+        3351183088971361,
+        2614449089760685,
+        758444815151362
+      ],
+      "source_record_count": 26,
+      "date_values": [
+        "1897-05-06"
+      ],
+      "mapping_source_canonical_event_id": "evt_dffa0f8dc1b3d885709fc263",
+      "description_source_canonical_event_id": "evt_5e9060ee1b2dddb26f4696e7",
+      "affected_detail_paths": [
+        "event_chunks/chunk_000006.json",
+        "event_chunks/chunk_000071.json",
+        "event_chunks/chunk_000080.json",
+        "event_chunks/chunk_000110.json",
+        "event_chunks/chunk_000213.json"
+      ],
+      "affected_summary_paths": [
+        "summary_shards/summary_000001.json",
+        "summary_shards/summary_000017.json",
+        "summary_shards/summary_000020.json",
+        "summary_shards/summary_000027.json",
+        "summary_shards/summary_000053.json"
+      ]
+    }
+  ],
+  "changed_raw_files": [
+    "artifact_size_report.json",
+    "canonical_web_manifest.json",
+    "compression_report.json",
+    "event_chunk_manifest.json",
+    "event_chunks/chunk_000000.json",
+    "event_chunks/chunk_000002.json",
+    "event_chunks/chunk_000005.json",
+    "event_chunks/chunk_000006.json",
+    "event_chunks/chunk_000009.json",
+    "event_chunks/chunk_000010.json",
+    "event_chunks/chunk_000011.json",
+    "event_chunks/chunk_000012.json",
+    "event_chunks/chunk_000013.json",
+    "event_chunks/chunk_000014.json",
+    "event_chunks/chunk_000016.json",
+    "event_chunks/chunk_000017.json",
+    "event_chunks/chunk_000019.json",
+    "event_chunks/chunk_000020.json",
+    "event_chunks/chunk_000021.json",
+    "event_chunks/chunk_000026.json",
+    "event_chunks/chunk_000029.json",
+    "event_chunks/chunk_000031.json",
+    "event_chunks/chunk_000032.json",
+    "event_chunks/chunk_000033.json",
+    "event_chunks/chunk_000034.json",
+    "event_chunks/chunk_000035.json",
+    "event_chunks/chunk_000038.json",
+    "event_chunks/chunk_000039.json",
+    "event_chunks/chunk_000041.json",
+    "event_chunks/chunk_000042.json",
+    "event_chunks/chunk_000047.json",
+    "event_chunks/chunk_000048.json",
+    "event_chunks/chunk_000050.json",
+    "event_chunks/chunk_000055.json",
+    "event_chunks/chunk_000056.json",
+    "event_chunks/chunk_000057.json",
+    "event_chunks/chunk_000060.json",
+    "event_chunks/chunk_000066.json",
+    "event_chunks/chunk_000068.json",
+    "event_chunks/chunk_000069.json",
+    "event_chunks/chunk_000071.json",
+    "event_chunks/chunk_000072.json",
+    "event_chunks/chunk_000073.json",
+    "event_chunks/chunk_000075.json",
+    "event_chunks/chunk_000076.json",
+    "event_chunks/chunk_000077.json",
+    "event_chunks/chunk_000080.json",
+    "event_chunks/chunk_000081.json",
+    "event_chunks/chunk_000089.json",
+    "event_chunks/chunk_000091.json",
+    "event_chunks/chunk_000093.json",
+    "event_chunks/chunk_000100.json",
+    "event_chunks/chunk_000101.json",
+    "event_chunks/chunk_000104.json",
+    "event_chunks/chunk_000106.json",
+    "event_chunks/chunk_000110.json",
+    "event_chunks/chunk_000112.json",
+    "event_chunks/chunk_000114.json",
+    "event_chunks/chunk_000117.json",
+    "event_chunks/chunk_000119.json",
+    "event_chunks/chunk_000120.json",
+    "event_chunks/chunk_000124.json",
+    "event_chunks/chunk_000131.json",
+    "event_chunks/chunk_000132.json",
+    "event_chunks/chunk_000133.json",
+    "event_chunks/chunk_000137.json",
+    "event_chunks/chunk_000138.json",
+    "event_chunks/chunk_000139.json",
+    "event_chunks/chunk_000140.json",
+    "event_chunks/chunk_000143.json",
+    "event_chunks/chunk_000147.json",
+    "event_chunks/chunk_000148.json",
+    "event_chunks/chunk_000150.json",
+    "event_chunks/chunk_000151.json",
+    "event_chunks/chunk_000152.json",
+    "event_chunks/chunk_000153.json",
+    "event_chunks/chunk_000154.json",
+    "event_chunks/chunk_000155.json",
+    "event_chunks/chunk_000156.json",
+    "event_chunks/chunk_000158.json",
+    "event_chunks/chunk_000161.json",
+    "event_chunks/chunk_000163.json",
+    "event_chunks/chunk_000165.json",
+    "event_chunks/chunk_000168.json",
+    "event_chunks/chunk_000171.json",
+    "event_chunks/chunk_000172.json",
+    "event_chunks/chunk_000175.json",
+    "event_chunks/chunk_000178.json",
+    "event_chunks/chunk_000179.json",
+    "event_chunks/chunk_000180.json",
+    "event_chunks/chunk_000185.json",
+    "event_chunks/chunk_000187.json",
+    "event_chunks/chunk_000190.json",
+    "event_chunks/chunk_000191.json",
+    "event_chunks/chunk_000192.json",
+    "event_chunks/chunk_000193.json",
+    "event_chunks/chunk_000198.json",
+    "event_chunks/chunk_000202.json",
+    "event_chunks/chunk_000203.json",
+    "event_chunks/chunk_000205.json",
+    "event_chunks/chunk_000208.json",
+    "event_chunks/chunk_000210.json",
+    "event_chunks/chunk_000213.json",
+    "event_chunks/chunk_000214.json",
+    "event_chunks/chunk_000223.json",
+    "event_chunks/chunk_000225.json",
+    "event_chunks/chunk_000226.json",
+    "event_chunks/chunk_000228.json",
+    "event_chunks/chunk_000229.json",
+    "event_chunks/chunk_000230.json",
+    "event_chunks/chunk_000231.json",
+    "event_chunks/chunk_000232.json",
+    "event_chunks/chunk_000234.json",
+    "event_chunks/chunk_000237.json",
+    "event_chunks/chunk_000240.json",
+    "event_chunks/chunk_000241.json",
+    "event_chunks/chunk_000246.json",
+    "event_chunks/chunk_000253.json",
+    "event_chunks/chunk_000254.json",
+    "event_chunks/chunk_000256.json",
+    "event_chunks/chunk_000257.json",
+    "event_chunks/chunk_000263.json",
+    "event_chunks/chunk_000264.json",
+    "event_chunks/chunk_000265.json",
+    "event_chunks/chunk_000267.json",
+    "event_chunks/chunk_000268.json",
+    "event_chunks/chunk_000269.json",
+    "event_chunks/chunk_000270.json",
+    "event_chunks/chunk_000274.json",
+    "event_chunks/chunk_000277.json",
+    "event_chunks/chunk_000278.json",
+    "event_chunks/chunk_000279.json",
+    "event_chunks/chunk_000280.json",
+    "points.bin",
+    "points_meta.json",
+    "summary_manifest.json",
+    "summary_shards/summary_000000.json",
+    "summary_shards/summary_000001.json",
+    "summary_shards/summary_000002.json",
+    "summary_shards/summary_000003.json",
+    "summary_shards/summary_000004.json",
+    "summary_shards/summary_000005.json",
+    "summary_shards/summary_000006.json",
+    "summary_shards/summary_000007.json",
+    "summary_shards/summary_000008.json",
+    "summary_shards/summary_000009.json",
+    "summary_shards/summary_000010.json",
+    "summary_shards/summary_000011.json",
+    "summary_shards/summary_000012.json",
+    "summary_shards/summary_000013.json",
+    "summary_shards/summary_000014.json",
+    "summary_shards/summary_000015.json",
+    "summary_shards/summary_000016.json",
+    "summary_shards/summary_000017.json",
+    "summary_shards/summary_000018.json",
+    "summary_shards/summary_000019.json",
+    "summary_shards/summary_000020.json",
+    "summary_shards/summary_000022.json",
+    "summary_shards/summary_000023.json",
+    "summary_shards/summary_000025.json",
+    "summary_shards/summary_000026.json",
+    "summary_shards/summary_000027.json",
+    "summary_shards/summary_000028.json",
+    "summary_shards/summary_000029.json",
+    "summary_shards/summary_000030.json",
+    "summary_shards/summary_000031.json",
+    "summary_shards/summary_000032.json",
+    "summary_shards/summary_000033.json",
+    "summary_shards/summary_000034.json",
+    "summary_shards/summary_000035.json",
+    "summary_shards/summary_000036.json",
+    "summary_shards/summary_000037.json",
+    "summary_shards/summary_000038.json",
+    "summary_shards/summary_000039.json",
+    "summary_shards/summary_000040.json",
+    "summary_shards/summary_000041.json",
+    "summary_shards/summary_000042.json",
+    "summary_shards/summary_000043.json",
+    "summary_shards/summary_000044.json",
+    "summary_shards/summary_000045.json",
+    "summary_shards/summary_000046.json",
+    "summary_shards/summary_000047.json",
+    "summary_shards/summary_000048.json",
+    "summary_shards/summary_000049.json",
+    "summary_shards/summary_000050.json",
+    "summary_shards/summary_000051.json",
+    "summary_shards/summary_000052.json",
+    "summary_shards/summary_000053.json",
+    "summary_shards/summary_000055.json",
+    "summary_shards/summary_000056.json",
+    "summary_shards/summary_000057.json",
+    "summary_shards/summary_000058.json",
+    "summary_shards/summary_000059.json",
+    "summary_shards/summary_000060.json",
+    "summary_shards/summary_000061.json",
+    "summary_shards/summary_000063.json",
+    "summary_shards/summary_000064.json",
+    "summary_shards/summary_000065.json",
+    "summary_shards/summary_000066.json",
+    "summary_shards/summary_000067.json",
+    "summary_shards/summary_000068.json",
+    "summary_shards/summary_000069.json",
+    "summary_shards/summary_000070.json",
+    "trace_aggregate_bins.bin",
+    "trace_aggregate_bins_meta.json",
+    "trace_event_index.bin",
+    "trace_event_index_meta.json",
+    "trace_segments.bin",
+    "trace_segments_meta.json"
+  ],
+  "changed_raw_file_sha256": {
+    "artifact_size_report.json": "5f9beac9633eed44027df91d4bcdea363d6fb7c98125347f63cc0bff5c9feef7",
+    "canonical_web_manifest.json": "e22c4e0acaca2b95ef2674988e960c4f946daa1cb13732edc63fa12d31556dcf",
+    "compression_report.json": "4fc9ae0aa82d75328f6fbc711c27c0a00a11200d2f9990e2a100262ff4372026",
+    "event_chunk_manifest.json": "a6cb46ce88286b40e8585293c90f237136fff60da62aba4a8f51c438eab73ad6",
+    "event_chunks/chunk_000000.json": "c9e06347a2e2ff5c388c00ef6206b865b07cd2a33ba4a87a1038cd60a388f0bd",
+    "event_chunks/chunk_000002.json": "65b0534fdc378b6dd359906918c2ae79128816398ed3c3335bafb74b5323ffec",
+    "event_chunks/chunk_000005.json": "96aa9d687fc751caf26af671c5fcfbb07ad7ecea28ffd5cf29422f3c606c2561",
+    "event_chunks/chunk_000006.json": "fe38fa6cb94d14e81a28f40380b5a47ac972c503b5273caf65275be33de43a8b",
+    "event_chunks/chunk_000009.json": "94b1bbd8339c6aabf0638842e0217be157f80573aeabd1c06224346390ac4941",
+    "event_chunks/chunk_000010.json": "74895fd244643a6132f0661d8c05969b7cbd23f01fd9b3d56a931f35e2384949",
+    "event_chunks/chunk_000011.json": "6df8ff21f273ef6b658bdd54a4c860f198cb7bf63c3cd62741e0ae9470c30364",
+    "event_chunks/chunk_000012.json": "3ca53a8e8095ae1835456ac2338f32c5b0824304e9e6435a7bda526be292d00e",
+    "event_chunks/chunk_000013.json": "539ae5630826a7c803cf498ba32ce905940be07a8b85e8b66d63b27e164955ab",
+    "event_chunks/chunk_000014.json": "f6c96e940e1cd0433385b51f9ebb8487f822c28419fa1e969193554c46ac664c",
+    "event_chunks/chunk_000016.json": "e544a89cb06a228776b15b184cbd803c0dbd5dc81ac75761e3033e754c7eabc5",
+    "event_chunks/chunk_000017.json": "2b2f79c39a6b1f5f721c5e383ef114517435eb6c732b052e6e85e8658dd7118e",
+    "event_chunks/chunk_000019.json": "e9032cbe22d669ac8daa795a6f1d5d92b67f43833aedf63f298fd6a97a6c81cb",
+    "event_chunks/chunk_000020.json": "49f3554baeb4c37bffb624fb63389898f4f08607a3d7c0813358d98d9c4aad80",
+    "event_chunks/chunk_000021.json": "a43bb2134bf76764794e93bf7ce0468df22bbdda61c2d29a6e4798e2d9ad185d",
+    "event_chunks/chunk_000026.json": "3cb8c22a852fe3cb6b16653f809fab32b70fcfa8989d4a278d1358ba4047fbb4",
+    "event_chunks/chunk_000029.json": "5b8c3579e817637d82ef01b09305358fbdd047532a6615114e7b2e706e030bca",
+    "event_chunks/chunk_000031.json": "80252f42bc856297fd0f5f3fab99775ad134c80b77dfac2fe5c591bee1c6c819",
+    "event_chunks/chunk_000032.json": "477e578668cfff1556f2a5f14abd1f7d302c9f80e68ad3747bfc7983783b0c10",
+    "event_chunks/chunk_000033.json": "54b28717c5d0ec3de5ad80b337b6c31b8e8b5d81662ce12ddd98ab923625b6c1",
+    "event_chunks/chunk_000034.json": "16db2cee1ec9e64e182f244b471598e63477a82f835e904dbe800eda58ef0fc7",
+    "event_chunks/chunk_000035.json": "37284332d349001c9d27e486119f344867d397fb79578bb2598a6ac05a5a08f5",
+    "event_chunks/chunk_000038.json": "dd7fd8f0db5a2098a9ff42387012bce2cbc011f90d49e9783ce8957a2ab92e97",
+    "event_chunks/chunk_000039.json": "376f8138d0c89eb77ec77bc47dffff04e11bf6cea213fdee50b3c36f04e3c3b5",
+    "event_chunks/chunk_000041.json": "8a5e5c0763b4935d3b326fe47fa4c08363d592c4e539412ed8e8e2c3fb07d387",
+    "event_chunks/chunk_000042.json": "ee645ba5965728eaf04d3f0fab7e2fffac5f14a2f3cb22b9432588623dfc1f92",
+    "event_chunks/chunk_000047.json": "15e1bcd5bac3ca52c999d3383cede34789400008386bdd07d299b4d0061df218",
+    "event_chunks/chunk_000048.json": "5d402b02547ee30e1fba45a4d37c40fab86dcf394396fcdf99fe75c5d7a1f49d",
+    "event_chunks/chunk_000050.json": "62f6fad246707c3ef6ff4364ff67ae5b06ab74433d57f3ec437cfdad7262e37a",
+    "event_chunks/chunk_000055.json": "928dc1622e68c754743223d0f33558eef2ef943c44e8c50ac9c4a6f40c611a50",
+    "event_chunks/chunk_000056.json": "7d9ee01c70bfd7e4f5f6504d7267eeb93843bdded574683c489b57f754353a96",
+    "event_chunks/chunk_000057.json": "fde2a701fb46e19f86ad248cdbef775d416e4b9b0227d874bfad6bdaf636ea34",
+    "event_chunks/chunk_000060.json": "1e12f4ab81853da775b4adaf689408b37a9413f1868fd9ffd4a3084d6a2506ea",
+    "event_chunks/chunk_000066.json": "63c055a42d6ef3ea887412aaeb88cb0e4d5648a911a87487ec743fd2a38c5377",
+    "event_chunks/chunk_000068.json": "2dcfc34cc654c4ab0f96d704083a1b5557e185b8ab28596fc2c8790d472234ef",
+    "event_chunks/chunk_000069.json": "95e7eba47faa1fa4866e8eaac6816d93457265f05e9b8751caa2488355f1c264",
+    "event_chunks/chunk_000071.json": "26cbc76f194661164e0922d986007037f276844212957f9d92a05805d1b048d1",
+    "event_chunks/chunk_000072.json": "e3c2233b89d51f98f638a6e174d7b180426d87ee97eac95ae7560b39d405801d",
+    "event_chunks/chunk_000073.json": "0388493b961c62016cafbea648c5d557c60580eea16f1c3326c60e9b18c07f30",
+    "event_chunks/chunk_000075.json": "0147a89fe72cb2c4ba5a674afa9819bf867af521df2e12cdb28900f964359de9",
+    "event_chunks/chunk_000076.json": "d8a27e009e8c2be96cef0fcb4f575b7ce55a3fd30a2c3db0dd7c7a47b40d0c89",
+    "event_chunks/chunk_000077.json": "40e18701a1d8d441d76d1bab058ca2ceeb15522d9519f69f402198af83e546d9",
+    "event_chunks/chunk_000080.json": "a83683e8996b9ff3eee505961d2cb8df9976fb1545ddb8c27c75e6165e31a035",
+    "event_chunks/chunk_000081.json": "8a4183348584c0a3bd40b49e7e0de16b09e34cf9bacde1d328487e2336a31aa5",
+    "event_chunks/chunk_000089.json": "98110d5d2fe1397c1b174e7cdcc7d1d817585381629eab815ad9dc295cc60452",
+    "event_chunks/chunk_000091.json": "2cf9f820fa2b639016d825abb07d7395c60993f1b9817a120e21dee0eecaf58d",
+    "event_chunks/chunk_000093.json": "d0a9d8afcb62088a5d751e2987991def71fcd816a8237a3ec2b6c2d0b349bb35",
+    "event_chunks/chunk_000100.json": "207b5b6567007e0085a7a41b272e6897a390d27fcfb0c4041a986e49fa3efde6",
+    "event_chunks/chunk_000101.json": "2e551ea0a9aea1511dde1622117452b5632c6ca22d86f33be388d60fcf49a128",
+    "event_chunks/chunk_000104.json": "e354909015482a161939011dad6a091f800f33e09c4fc7b6121d2e1518988c72",
+    "event_chunks/chunk_000106.json": "9c4870e37a76ce3b111a6cde516a1ea5b939d7dea17c64927688bbc1890bfd91",
+    "event_chunks/chunk_000110.json": "ce9ee6b02393c54e3b0aaf0b899548671bcd6c4c95f0537ff99774887e9c1991",
+    "event_chunks/chunk_000112.json": "973da5bc92f4f6a2092d25800207a0459978079a5879b5d11360810734fbb768",
+    "event_chunks/chunk_000114.json": "4e2d0275305e5f0c0d454c297bdf939e38c8539069fc106aca626a80abb8eded",
+    "event_chunks/chunk_000117.json": "1d75262cd33bf7822a4daaeb1713ed6c4bb80dd4abcde7f40627e0764e370858",
+    "event_chunks/chunk_000119.json": "6434988ec57fc92994e8597706e575d1602310c09d3cda236dd3ed5e3c47b5ef",
+    "event_chunks/chunk_000120.json": "d83a9aabd2aef2d9be065636d4676be32c57e8eff2ae2656601229f1d05390c3",
+    "event_chunks/chunk_000124.json": "a3649068dd3589f7bf52894f8813a0405d2dd1cd4dc1712e920998871834caa3",
+    "event_chunks/chunk_000131.json": "f8cd217b62832acaa48159b768963aa7b2b52f5bcd9a64cb0ca5cc60b57fcd5b",
+    "event_chunks/chunk_000132.json": "63ece70b4b50f9d75c2c9b34dc57adca55b097603d7201acb19997b693833c01",
+    "event_chunks/chunk_000133.json": "63e0c5a6f88d3e598cc5d9052018816086ed6f22630a3e19dc19a79bc4494b78",
+    "event_chunks/chunk_000137.json": "61075665ced21c6d0e63452d125f151c75e3a67359e916cf9f7b4228f0dda116",
+    "event_chunks/chunk_000138.json": "1063bae6ea7f8f84b01975826a40dc39e61e649e1fb078a03ed7091209c25691",
+    "event_chunks/chunk_000139.json": "d4f706c0dc44aa55e680a5049bbeffc0f1284b4fe58d431fa930cc61402e21a2",
+    "event_chunks/chunk_000140.json": "3747e46940c42cae24afd130600f24f206666633a89f5aae04a83aeb034374a8",
+    "event_chunks/chunk_000143.json": "a08bcb3cf27d9bef12376d0393e0482848234ad4d9203610221c40629950899a",
+    "event_chunks/chunk_000147.json": "87c3e86e7541bd2345136bafeae747faaf5b998228a93ebcd3e07a5519697148",
+    "event_chunks/chunk_000148.json": "ed58d7f88f572800798a8f0c6c3db5b362e027fc0dcd39f88f472bb3f46fd423",
+    "event_chunks/chunk_000150.json": "a65f1430146db3f9abdf5dc9adcf6d74c8029070926931323bb3567273b248d3",
+    "event_chunks/chunk_000151.json": "77fca550628f8bbd36ad94d538a11a81028315a7fbcd9a23eb0a6ce12dffa2f1",
+    "event_chunks/chunk_000152.json": "a18d4e482ce14c4ee2db4fcbf67f3e065f5deac7eae840e11f2d49221a47c5fa",
+    "event_chunks/chunk_000153.json": "ed652d305c13b1e497c6ee031920b94568b1035dc5059da836d6c1dcd51ffdd7",
+    "event_chunks/chunk_000154.json": "27aaa7f2af3de74112874a80bdf5f42525b8c73a287c811b9c88ca72e8730553",
+    "event_chunks/chunk_000155.json": "e47296b5f684ad05e0fd2035cbbc239d31bfe9ca27a787bdaff1bf84fb3b22d9",
+    "event_chunks/chunk_000156.json": "ad8c57a2fb7827ac8988277e714fc1c91679a15038f1ec545ae247b2ac7f0acc",
+    "event_chunks/chunk_000158.json": "6c81cd24b5d6d2b2b0cea166ad8e0f7b8d6b020082868688079410836c7744ec",
+    "event_chunks/chunk_000161.json": "66ff41cbddf9ec9348ea61f1c4d1f97ef19e354bd7a0bc2130dd2e72a0316eef",
+    "event_chunks/chunk_000163.json": "5d84727db29a28573b85451b16ee6ab83d745ed86be54319354d940c24ba9419",
+    "event_chunks/chunk_000165.json": "cba7f1cec286f5c1e4685b6d4b47a01c2f848f8f22b1b90831ddb77fad2f7edb",
+    "event_chunks/chunk_000168.json": "0f789b293acfd1d40d3f884bf68f070956714ee1fcc2afa26c00eb113abc2e03",
+    "event_chunks/chunk_000171.json": "e0785f520ed21304d2dc9467dc47fddde48632bc2d26daa8ea9acf1f24bfac9c",
+    "event_chunks/chunk_000172.json": "caf49c87f991a7904f0d7543ba091c327801ce0aecbc78c6cb8db46384484d0a",
+    "event_chunks/chunk_000175.json": "d8b95c7b6c6e5ecb9aeb849efceb5fa7245725f0e3f9b78092508a972453f9ce",
+    "event_chunks/chunk_000178.json": "90476875ef8982ac5f774521a1664c76d53bd49c184713481be748b920ecb326",
+    "event_chunks/chunk_000179.json": "f321b793d8b59f2d3c3fea1e073601e31d89980e72d36ebd942b5495741d6aa1",
+    "event_chunks/chunk_000180.json": "a68ee553f6ec2271b420b57ec2c3786be6c6746349b2a4f4d61617515fbcd427",
+    "event_chunks/chunk_000185.json": "8a35c2dd61ea300564417ecdfe20aac30cca1a5cc6c1085a60fae6501221e930",
+    "event_chunks/chunk_000187.json": "b6eb716dc8faf071402ab691a119ddd18f840eefba0d063880c8e4ec543b857e",
+    "event_chunks/chunk_000190.json": "ed1082db1c8c21db8f21f6cc27069a5fc100a9cbddcbee252a1364d137dd86c7",
+    "event_chunks/chunk_000191.json": "5bdac7c352b68e3b252229442064b6fa53371740648406cee17a7498cfcec053",
+    "event_chunks/chunk_000192.json": "ea0505f65f1c7fe5f1b963e60b856b7b9eef489bbe8995b7b11bc71f120bbcf6",
+    "event_chunks/chunk_000193.json": "825016f349437cc250dc722f574a2211dd302e1d09d4b05f7d689506a93bda7c",
+    "event_chunks/chunk_000198.json": "a429e209dbf1ed791ce7b0a58131502b7a5c396e04923b95672897b01bbe2005",
+    "event_chunks/chunk_000202.json": "32594d032427dd3c84d905ab355222c927de47e84a3508904de5b3edb2efaaa1",
+    "event_chunks/chunk_000203.json": "254b414c7cde18815a89f656086f5bd2b7a27865b39735ecdc0ab11a1ffe2b9f",
+    "event_chunks/chunk_000205.json": "f14ef65c3a5784d3e4f507be962fb158dcd9925e69fa9aacff94c30a57bab956",
+    "event_chunks/chunk_000208.json": "2c69afe8998ecbb5d514a7f50b344fa5ee032fa6340509221eb3a297421b8c5a",
+    "event_chunks/chunk_000210.json": "973b3f1306502efed06ab9b8e85e81dce659404cd41bb3085eb50e508898a86f",
+    "event_chunks/chunk_000213.json": "1f44272dc970be1897d55436b38b5130aa252240bfe99a5827e283d581612d8a",
+    "event_chunks/chunk_000214.json": "db6ce701724bb9e880dc8a188882f19629a59ec25472a856f8b62608d73983cf",
+    "event_chunks/chunk_000223.json": "e0d4948f7723f2e26a4059605068b1fc2cc3161fbb2a893d54d9a4a29088dd96",
+    "event_chunks/chunk_000225.json": "c447f1eb5f69b8525075850b001a4aadba84ceecd397a8d2364be5fc4854d00d",
+    "event_chunks/chunk_000226.json": "ad767a569ea8c885cd61fdf35b5f1fc0693c9c9fb4caedbda8bf3b1af03a601f",
+    "event_chunks/chunk_000228.json": "0c79bebe600b4312102a595bfccc48f9ae7e2eae6f035c87cccd751dd55f3021",
+    "event_chunks/chunk_000229.json": "fad00048bb92663362169a63e44bcbaf7afe6c095699f29f2b1c052b2e4eec89",
+    "event_chunks/chunk_000230.json": "a276572647f6db461ad5cf41404736d7e95beb9647a0e3c6540e4a87bcd19c2c",
+    "event_chunks/chunk_000231.json": "95c004406a8dce1f33e92ad7fe5f059f59f2a1d750db46053047ac726f155e56",
+    "event_chunks/chunk_000232.json": "edbe51c70bb118a0f6189744b7d45ea2ead8cb16a16bbd38a1884574f639846d",
+    "event_chunks/chunk_000234.json": "04d990c2a3e919e3532ba4ca6240a48952ff8bfd9862d852121aec8efbeec713",
+    "event_chunks/chunk_000237.json": "8a96216a56eff5bffc7c683d790d8e1f733924cd2cc3f206abb251c45c254ed3",
+    "event_chunks/chunk_000240.json": "5541fa3fc632798139972fe3c5f2465cb44154b3ebd5bb0ada0280ecb522aeec",
+    "event_chunks/chunk_000241.json": "6a25570024ec6915d2cce5585095b4ca001c707a8b8f469fcad4df3aff08dbfb",
+    "event_chunks/chunk_000246.json": "3a4b244a991c6b487d7aa54618feae3b1cf813caedb9e123ec69bebe2ff1326f",
+    "event_chunks/chunk_000253.json": "90b4bbf75040c810725dc7c24cddaa29c0bb909a7697654caf12523522c46d31",
+    "event_chunks/chunk_000254.json": "2c30fc6bad2dda62a6150fc08827a7b99c242224cde429cb0c1cd880573bcfc5",
+    "event_chunks/chunk_000256.json": "9332052ea599b50d4a7f9b4a191565bef4cc6884b845980f56d1a0349a598c2c",
+    "event_chunks/chunk_000257.json": "0893c0ca7f681864cf805e411e64fb6f52cd464211a010a5860bd5cb0e1d5202",
+    "event_chunks/chunk_000263.json": "42fa64fefcbdcd9323ec7b791267fafda3ead5448a0f895a3fbde3003362112c",
+    "event_chunks/chunk_000264.json": "d6c5d984019cc61d64e7251189e06ba3bb240afb8833dcbd5ebcbfcc75bdebe2",
+    "event_chunks/chunk_000265.json": "32609be210b4d32975aad01f955f25467ad7347426d5ce56419763f734240b4a",
+    "event_chunks/chunk_000267.json": "3afc859f3d5c78775ac5301f56adb798bf127eaeeb29d51a994c458026ab044e",
+    "event_chunks/chunk_000268.json": "91c630047f52b3b542b5f779ad949b0c6e9bd688ad9afb0f582487a617c02a72",
+    "event_chunks/chunk_000269.json": "d5a0747ae2af3c86ba338c0033d19d2e79a55cd796d28894556bf441dc6461ef",
+    "event_chunks/chunk_000270.json": "397d3079c6381eee3548708a093a0acb775ea3fdc9e8466f5cd3462f1e8071c6",
+    "event_chunks/chunk_000274.json": "24bf3f0fea2255d2511d8bd618835c6100a823ab3ff074ebd9a2db723e374380",
+    "event_chunks/chunk_000277.json": "8075e70d8e4fc56022f61772912d1ecb6ee90d2376a2e2838d0e7b0c9cd63035",
+    "event_chunks/chunk_000278.json": "4286c5751955c605fb2dfb0e11fc1a951f61fffadf06338a5e0185bc5663a2a8",
+    "event_chunks/chunk_000279.json": "32ef8b3388884417ea03ab13e4d768a4037591d5120c6eef1e7c4131d8e18c98",
+    "event_chunks/chunk_000280.json": "a2c0c5368424bc0e7c264a052b2f4bac1f843043a65ba69cb63797cafb9181ba",
+    "points.bin": "dd5d21cc1c742114db81d6adb0ce5eea2c86818160af2ebaa0f10a9c6222bdf1",
+    "points_meta.json": "ea541f8f2031eea103aac6f36b2beccb9271831cf29bb896e421a48168a21788",
+    "summary_manifest.json": "efe0a2d938ea73848222487be53eb99ac4597a5e37bc73d67901e5f8a18a234a",
+    "summary_shards/summary_000000.json": "7d3021f2e9ed4b8723a1df7cbce8c65879135d7aa96e5b18ea4bab713a7802d6",
+    "summary_shards/summary_000001.json": "de36b08605fb1d6c281f594a9b5e1e4bad086e8c164ae3e54ec857ce821ac96f",
+    "summary_shards/summary_000002.json": "070de71bc9412c515c57a523efda1e9ef1dbb704aef1d4d969e488dc082d0774",
+    "summary_shards/summary_000003.json": "efe8dfdcf15b7b07743de00eb4d33d5562c7b2dd3f04ad6ad709a265530aa67d",
+    "summary_shards/summary_000004.json": "16d7199833f8121113b5c54e56c547fb6b29b137d09feb89c0672c01d227f8f0",
+    "summary_shards/summary_000005.json": "d3526381a63fbf133f8c258a0c01611fafdedba21a2a859d28179f0d18f0fd76",
+    "summary_shards/summary_000006.json": "d07a36e818ee189fc67ce51f9a58c1573bac5d35fd60c330a1270d9f0752d30b",
+    "summary_shards/summary_000007.json": "23efd6422e5b758c13e941c0246662ef343819c5a67062fcc92391fc0e36d917",
+    "summary_shards/summary_000008.json": "b56753c2625d9e8530ba579952dbe8819ea3e98e1affea4016b23f09d83919dd",
+    "summary_shards/summary_000009.json": "67c935a9473d574b72c498f7a12f508ea0476b1deeabd237eac522602de00614",
+    "summary_shards/summary_000010.json": "3e010e8bee3893d3aa1c32724bf87ec2de79a31d4cbf824b5c1dd700aa2ba98a",
+    "summary_shards/summary_000011.json": "b15693019dec36e757e0fe60614b82a4914205d39acc1e4011c80b6b8ed3c56f",
+    "summary_shards/summary_000012.json": "ad0cb049791abcc317d43ec142481b81b7e4926bb4527d9e94074e2434114a05",
+    "summary_shards/summary_000013.json": "43248be03232aebaeb1f0ca56c15dca70680b8065456e85872b1271f288e52ee",
+    "summary_shards/summary_000014.json": "6bc129caccc959ec561cd986439324de3ad10958cd8d62f80f16074985e19321",
+    "summary_shards/summary_000015.json": "b8bada58479e362b3ca2f80f9991c3feb2a3431535798b94d46c06a5143e9514",
+    "summary_shards/summary_000016.json": "6edfe5a1701a3b35c88e702d5469e7eb4286a206e5fd924adb22bcccac4ee6ac",
+    "summary_shards/summary_000017.json": "2d8b9ee9a582dc9ff79a0b23fdf5fb1b9ead1e2ea5a99a2828dba1ec92e54e31",
+    "summary_shards/summary_000018.json": "0197b56a4e3c6430d6f7a5cf87ba8db19446527c9da12f4d60f0681658beea88",
+    "summary_shards/summary_000019.json": "f7446f0b64447bac7dc219bb181d7a4eb1bf1f88c249bbbbca76ceccfc089f58",
+    "summary_shards/summary_000020.json": "baff9de56002a2c85ed6a3f0b23aab94924b1b423ba34fa37ee5edbd98d4e00c",
+    "summary_shards/summary_000022.json": "43cec57fa4d9116085c2adb650f20bc08620801a6ae930ea91e475225f1b6fdd",
+    "summary_shards/summary_000023.json": "00e9023a93fc61d5560038baf90b618b264dbd60b08743970702a50705a988f0",
+    "summary_shards/summary_000025.json": "45a73365c0cb571e19ceb05aaf1d450db68a841a0a73c0f6e822a5c038ad5d8a",
+    "summary_shards/summary_000026.json": "9fc613760b7e743a9890bdc03d2e7a0ef201fcf928460739a99658c0681cf8c1",
+    "summary_shards/summary_000027.json": "932825409cf5098452c02a3c1d1595d7386e6cdab429539536917c0fc66d1280",
+    "summary_shards/summary_000028.json": "93a43a64cbe93f50b518a77a5332850ada2d983a9f268d9fe79a34384d3cb4f8",
+    "summary_shards/summary_000029.json": "5609ec1551bd1f92006dbb20edd5b007f6ae3c30c120873e875f1e8295a8f8f2",
+    "summary_shards/summary_000030.json": "b69417540f58909bf31e842ba33ab1c2d694ca9a68ce3411a201b18711ea0f3f",
+    "summary_shards/summary_000031.json": "6261c95f92025b8f08d5938bd9e91eb09d186510a3852cc64280209fcd106672",
+    "summary_shards/summary_000032.json": "86beea1674ad32937e4b2db15f5d12ac60d822e632fce88571e102e904e6f8c1",
+    "summary_shards/summary_000033.json": "c8a5ad5fcd24b699daf1c634368fe8a519a4143660cfffe4e64d8bf533650148",
+    "summary_shards/summary_000034.json": "e45b8ea93a94f87bbc35009f7a77c9277dca447f97063ead48d02d9455ab4786",
+    "summary_shards/summary_000035.json": "ecdacb51414676c4d91eca25f99c9778812e71ed2f8191777776d98113e34592",
+    "summary_shards/summary_000036.json": "b32e61f728ba9e5a29c794fa3005a61ae865c004acb0ec254bd9d2b5a8bf2bb3",
+    "summary_shards/summary_000037.json": "699ebf75a73d00120d3dba887874c00d6131cfbe50adaf78f5ff01714066652a",
+    "summary_shards/summary_000038.json": "b539129f030173f3d7c44db47de2997903e067a4dbaf92b43abdc2f0b753b885",
+    "summary_shards/summary_000039.json": "3651d99192a84bd39013caaec3486894f2e704a63eb526c664265f490388482e",
+    "summary_shards/summary_000040.json": "7b009488bbbf1a1483a552ef1d73e0d3eae8cd31342cc5bf2ed48fb4e7295e31",
+    "summary_shards/summary_000041.json": "c0d86738dedfbb3fcda21537951ae68c6dd196eb460414a685c530014e65b28a",
+    "summary_shards/summary_000042.json": "6f6900b56f754fb616cec8bb4370d547f149301e200d437a2beff9df173f2986",
+    "summary_shards/summary_000043.json": "053a0a5b7104d5cc411246ee969b79b084756016009d6d522ee0d853b30a322c",
+    "summary_shards/summary_000044.json": "cce16bb03c16ef9733078c695cca434771b186ce479f26a9188eb4c2af733d6c",
+    "summary_shards/summary_000045.json": "b4870a21e3e75cd740f364aff65af2a0419343d92b3ef0fdeb3b6ee418e6842e",
+    "summary_shards/summary_000046.json": "1ac967efd1c5847e2ca5a6332d96e62b8c49546522bee31952825e30393b2ab6",
+    "summary_shards/summary_000047.json": "5b74a6af03a727cb1410bbf5074f9afc2786f5bc17a6d8b00a34cf5457a8af92",
+    "summary_shards/summary_000048.json": "d524592693aa7739e281483bb0dd5ced52f4845f8d716814c23a2ea8323e86d0",
+    "summary_shards/summary_000049.json": "37d1c4f404503e0b1f44c1a638c83bf909391d096e06b76f5683f8638eccec06",
+    "summary_shards/summary_000050.json": "c1d01c1f9f522a85c0b8a2ea0f3ab41ef12f54b63db3d43e5c97abe3f48bdef7",
+    "summary_shards/summary_000051.json": "dd1a604dd1152bbe4334a18282753b10ab81adcbc44d915b3c7e7def894e9368",
+    "summary_shards/summary_000052.json": "1ebf4530e284ffc5ff0ff33c83437a122c5faf1a68a6219a74bee522dcc62735",
+    "summary_shards/summary_000053.json": "9be9243b65208221f5a582fe93dc4ec7d14406ce053120c6ed2a5faeccc0b898",
+    "summary_shards/summary_000055.json": "aeaa3e076517168084bab3e692f64fc851cc93a13fe08538ea35d8dc9c06e959",
+    "summary_shards/summary_000056.json": "5e7602aae241a5f9404ee061a14a612969e496ca4b7a7536a59a2673e7a01601",
+    "summary_shards/summary_000057.json": "ea9426104075f198174a526237f10b7ae56f0b3c882650287d2f76bac90fd2b8",
+    "summary_shards/summary_000058.json": "cda333d415195e0a4039c09fd28222a1e5c6508a6486f48a3df242584c5b3843",
+    "summary_shards/summary_000059.json": "01248d21dd5b8de0043a4217dcce3a321d59b7ac870da92058ab7ebd68168f8c",
+    "summary_shards/summary_000060.json": "a7c079047d2789f0b5bc0dd89aef818586791f770c8c7fa7aea9dafc5d9195e1",
+    "summary_shards/summary_000061.json": "79324b5cbd68f753a0258d2c9ca5d0bbe7d0dbfca882e5fc47d1d9353ac9ea7a",
+    "summary_shards/summary_000063.json": "66f5fecf5009200abf211cdc487f6147b64876e02d660de730e81823a77e3dc0",
+    "summary_shards/summary_000064.json": "64bd9eff04dc168c1cce19969ddda568c377c9e740956353efca8f02ba03515a",
+    "summary_shards/summary_000065.json": "cd8be8ed720acde06c9d2adeaa0e43708e6e0e8abbeb4fa3abaedcfe06a4e404",
+    "summary_shards/summary_000066.json": "ef3bbb1994729c939509de0fe0304b6b41628a9bb79f9f1748fe52d5cc6af079",
+    "summary_shards/summary_000067.json": "56312ad8a1e2feaf9bde77588f853485de8ef99f5a6f7eef9bb2b687ddf7df07",
+    "summary_shards/summary_000068.json": "ce39dd20a3a6fcadd501562088818af853104af4ca80386633a3f3b27ca06a20",
+    "summary_shards/summary_000069.json": "abf78b0daa0f48c9e0678a3ce9c163b74312f42c1903d271d8b07dcd4b298fba",
+    "summary_shards/summary_000070.json": "16cc32fa5d30441b9c3c00578f4ed6988bb3296a96cf72ba49afa461e4406418",
+    "trace_aggregate_bins.bin": "5838179a037d5954dcea652623ff55b566c1f2d44b179274035afcb73c218c0c",
+    "trace_aggregate_bins_meta.json": "cf9a78ab84b8cf070198e9cc1d5d7293672435c11a57a9c6da7fe529ef0f2932",
+    "trace_event_index.bin": "31ed762fb4913068febb0f78660f950e1f3dcd1d5d86c0911be875a3c38995f4",
+    "trace_event_index_meta.json": "966c4c5c809ee99a9e4e514a9a26d0389a5c597e94377bd95fdcef2c31f9b3e9",
+    "trace_segments.bin": "a809460db6905da3e1563a05ef0f41537695a0764350d60d70a3355454fa6c17",
+    "trace_segments_meta.json": "3b3d44a66f0af57945e28930049d8a80498e2845cc6c11cdf0ac451d6a3c0ead"
+  },
+  "compression": {
+    "total_files": 364,
+    "total_gzip_bytes": 913553151,
+    "total_gzip_mb": 871.23,
+    "refreshed_file_count": 207
+  }
+}

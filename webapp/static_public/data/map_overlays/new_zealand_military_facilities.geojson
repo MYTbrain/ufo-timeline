@@ -1,0 +1,282 @@
+{
+  "type": "FeatureCollection",
+  "name": "new_zealand_military_facilities_temporal_v1",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [174.630278, -36.787778] },
+      "properties": {
+        "name": "RNZAF Base Auckland / Whenuapai",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "air",
+        "branch_label": "Air base",
+        "type": "Air base",
+        "feature_code": "S.AIRB",
+        "source_id": "local:nz:rnzaf_whenuapai",
+        "replaces_source_id": "geonames:6299998",
+        "start_year": 1937,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/whenuapai/"
+        ],
+        "notes": "Current RNZAF Base Auckland at Whenuapai. Enriched replacement for the base GeoNames point so temporal filtering is available."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [175.387778, -40.206111] },
+      "properties": {
+        "name": "RNZAF Base Ohakea",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "air",
+        "branch_label": "Air base",
+        "type": "Air base",
+        "feature_code": "S.AIRB",
+        "source_id": "local:nz:rnzaf_ohakea",
+        "start_year": 1938,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/ohakea/"
+        ],
+        "notes": "Current RNZAF air base. Official NZDF history places the station buildout in the 1937-1939 period."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [173.87, -41.5179] },
+      "properties": {
+        "name": "RNZAF Base Woodbourne",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "air",
+        "branch_label": "Air / support base",
+        "type": "Air support base",
+        "feature_code": "S.AIRB",
+        "source_id": "local:nz:rnzaf_woodbourne",
+        "start_year": 1939,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/air-force/where-we-are/woodbourne/"
+        ],
+        "notes": "Current RNZAF support and training base with WWII-era air force use."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [174.786236, -36.830241] },
+      "properties": {
+        "name": "Devonport Naval Base / HMNZS Philomel",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "naval",
+        "branch_label": "Naval base",
+        "type": "Naval base",
+        "feature_code": "L.NVB",
+        "source_id": "local:nz:devonport_naval_base",
+        "start_year": 1841,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "medium_high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/devonport/"
+        ],
+        "notes": "Current RNZN base at Devonport. Official NZDF page describes the base estate as dating to 1841; HMNZS Philomel naming transferred to the shore base in 1946."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [175.5814, -40.4044] },
+      "properties": {
+        "name": "Linton Military Camp",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "army",
+        "branch_label": "Army base",
+        "type": "Army camp",
+        "feature_code": "S.BRKS",
+        "source_id": "local:nz:linton_military_camp",
+        "start_year": 1942,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/linton/"
+        ],
+        "notes": "Current NZ Army camp. NZDF history places first camp accommodation/use in 1942."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [172.315, -43.615] },
+      "properties": {
+        "name": "Burnham Military Camp",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "army",
+        "branch_label": "Army base",
+        "type": "Army camp",
+        "feature_code": "S.BRKS",
+        "source_id": "local:nz:burnham_military_camp",
+        "start_year": 1923,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/burnham/"
+        ],
+        "notes": "Current NZ Army camp established in 1923."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [175.681667, -39.469167] },
+      "properties": {
+        "name": "Waiouru Military Camp",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "army",
+        "branch_label": "Army base",
+        "type": "Army camp / training area",
+        "feature_code": "S.BRKS",
+        "source_id": "local:nz:waiouru_military_camp",
+        "start_year": 1939,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "medium",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/waiouru/"
+        ],
+        "notes": "Current NZ Army training camp. Start year is a conservative WWII-era approximation pending stronger source refinement."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [174.9441, -37.0497] },
+      "properties": {
+        "name": "Papakura Military Camp",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "army",
+        "branch_label": "Army base",
+        "type": "Army camp",
+        "feature_code": "S.BRKS",
+        "source_id": "local:nz:papakura_military_camp",
+        "start_year": 1939,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/papakura/"
+        ],
+        "notes": "Current NZDF/NZ Army camp with official history placing establishment in 1939."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [175.036, -41.1435] },
+      "properties": {
+        "name": "Trentham Military Camp",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "army",
+        "branch_label": "Army / defence camp",
+        "type": "Army camp",
+        "feature_code": "S.BRKS",
+        "source_id": "local:nz:trentham_military_camp",
+        "start_year": 1914,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "historical_status": "active",
+        "temporal_confidence": "high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://www.nzdf.mil.nz/defence-and-whanau/where-we-are/trentham/"
+        ],
+        "notes": "Current defence camp. NZDF history describes tented camp use beginning in 1914."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [174.671602, -36.788874] },
+      "properties": {
+        "name": "RNZAF Station Hobsonville",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "air",
+        "branch_label": "Former air base",
+        "type": "Former air base / seaplane station",
+        "feature_code": "S.AIRB",
+        "source_id": "local:nz:rnzaf_hobsonville",
+        "start_year": 1928,
+        "end_year": 2002,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "historical_status": "closed",
+        "temporal_confidence": "medium_high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://natlib.govt.nz/records/22574552"
+        ],
+        "notes": "Historic RNZAF seaplane station/base. Integrated with Base Auckland in 1965; closed/redeveloped by the early 2000s."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [172.553, -43.5511] },
+      "properties": {
+        "name": "RNZAF Base Wigram",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "branch": "air",
+        "branch_label": "Former air base",
+        "type": "Former air base / training station",
+        "feature_code": "S.AIRB",
+        "source_id": "local:nz:rnzaf_wigram",
+        "start_year": 1917,
+        "end_year": 1995,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "historical_status": "closed",
+        "temporal_confidence": "medium_high",
+        "coordinate_confidence": "high",
+        "source_urls": [
+          "https://nzhistory.govt.nz/comment/12456"
+        ],
+        "notes": "Historic RNZAF training air base near Christchurch. Closure year is based on public historical summaries."
+      }
+    }
+  ]
+}

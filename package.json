@@ -13,12 +13,19 @@
     "cf:bundle:validate": "python scripts\\validate_cloudflare_bundle.py --bundle-root cloudflare_bundle_r2",
     "cf:r2:upload": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_upload_r2.ps1",
     "cf:pages:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_pages.ps1",
-    "cf:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_public.ps1"
+    "cf:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\cloudflare_deploy_public.ps1",
+    "repro:verify": "python scripts\\reproduction.py verify",
+    "repro:hydrate": "python scripts\\reproduction.py hydrate --offline --expand-gzip",
+    "repro:serve": "python scripts\\reproduction.py serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": "24.18.0",
+    "npm": "11.16.0"
+  },
   "devDependencies": {
     "wrangler": "^4.95.0"
   }
