@@ -1,6 +1,9 @@
 import json
 
-from scripts.audit_static_location_labels import audit_static_location_labels
+from scripts.audit_static_location_labels import (
+    audit_static_location_labels,
+    classify_location_label,
+)
 
 
 def write_summary(root, events):
@@ -134,3 +137,43 @@ def test_location_label_audit_recognizes_state_codes_next_to_punctuation(tmp_pat
     report = audit_static_location_labels(payload_root=root)
 
     assert report["reason_counts"] == {"contradictory_us_state_components": 1}
+    assert report["examples"][0]["severity"] == "review"
+
+
+def test_location_label_audit_keeps_decode_loss_in_review_lane() -> None:
+    findings = classify_location_label(
+        {
+            "event_id": "decode-loss",
+            "source": "mufon",
+            "location_raw": "Florian\ufffdpolis, BR",
+        }
+    )
+
+    assert findings == [("invalid_character_in_location", "review")]
+
+
+def test_location_label_audit_keeps_control_byte_mojibake_in_review_lane() -> None:
+    findings = classify_location_label(
+        {
+            "event_id": "control-byte-mojibake",
+            "source": "phenomenainon_updb",
+            "location_raw": "╪┤█î╪▒\x0f, IR",
+        }
+    )
+
+    assert findings == [("invalid_character_in_location", "review")]
+
+
+def test_location_label_audit_keeps_uncertain_state_duplicates_in_review_lane() -> None:
+    findings = classify_location_label(
+        {
+            "event_id": "uncertain-state",
+            "source": "majestic",
+            "location_raw": "Metropolis, NEAR LEMMON, SD?, South Dakota, USA",
+        }
+    )
+
+    assert findings == [
+        ("majestic_environment_category_prefix", "safe_display_fix"),
+        ("redundant_us_state_components", "review"),
+    ]
