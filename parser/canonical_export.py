@@ -142,6 +142,10 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "geocode_display_name": geocode_display_name,
         "geocode_confidence": geocode_confidence,
         "mapping_notes": mapping_notes,
+        "location_display_normalizations": data.get(
+            "location_display_normalizations"
+        )
+        or [],
         "reviewed_corrections": data.get("reviewed_corrections") or [],
     }
 
@@ -369,6 +373,10 @@ def _extra_data(
             "type_raw": _first_clean(data, "type_raw"),
             "type_normalized": _first_clean(data, "type_normalized"),
             "reviewed_corrections": data.get("reviewed_corrections") or [],
+            "location_display_normalizations": data.get(
+                "location_display_normalizations"
+            )
+            or [],
         },
     }
 

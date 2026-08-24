@@ -10,7 +10,10 @@ reviewed values use distinct display fields.
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
 from typing import Any, Iterable, Mapping
+
+from .location_display import apply_location_display_normalization
 
 
 NAPA_CORRECTION_ID = "majestic-hatch-udb-2481-napa-2026-08-23"
@@ -137,6 +140,151 @@ NAPA_REVIEWED_CORRECTION = {
 }
 
 
+NARRATIVE_LOCATION_CORRECTIONS = {
+    "evt_11849f13c62eec6fb0aa6fc1": {
+        "correction_id": "majestic-overmeire-1022-oslofjord-location-2026-08-24",
+        "target": {
+            "canonical_event_id": "evt_11849f13c62eec6fb0aa6fc1",
+            "event_id": 1843028587236113,
+            "canonical_input_id": "cin_4e1d1f8341be28025601f2a9",
+            "source_native_id": "Overmeire_1022",
+            "source_row_number": 3844,
+            "source_row_hash": "56902aff2095bffeeb27eb9ee882b4d61f8aaeab",
+            "location_sha256": (
+                "b9b329f69f0025483c7a1a1818c459fe78b47691f62e58da272f328842ef5e40"
+            ),
+            "description_sha256": (
+                "e123fc5f323e954d8fd296b0e87e8b9969baf5a81881fb0da65b7da91bc3b52e"
+            ),
+        },
+        "set_fields": {
+            "location_display": "Oslofjord, about 30 km from Oslo, Norway",
+            "city": "Oslo",
+            "state_province": None,
+            "country": "Norway",
+            "location_precision": "region",
+            "mapping_notes": (
+                "Reviewed 2026-08-24. The imported location/0 cell contains a "
+                "narrative rather than a place. The source description identifies "
+                "Oslofjord; a James McDonald interview index describes the site as "
+                "about 30 km from Oslo. No point coordinate is asserted. The full "
+                "source narrative remains preserved in location_raw and raw_fields."
+            ),
+            "source_url_display": (
+                "https://github.com/bbauska/UFO-Dr-James-McDonald/blob/main/"
+                "james-mcdonald-australia.md"
+            ),
+        },
+        "evidence": [
+            {
+                "kind": "source_description",
+                "title": "Overmeire_1022 imported description",
+                "locator": "December 1943; Norway, Oslo (Oslofjorden)",
+            },
+            {
+                "kind": "interview_index",
+                "title": "James McDonald interview with Mrs I Palmer",
+                "url": (
+                    "https://github.com/bbauska/UFO-Dr-James-McDonald/blob/"
+                    "main/james-mcdonald-australia.md"
+                ),
+            },
+        ],
+    },
+    "evt_c20894010b97e5adf60162c6": {
+        "correction_id": "majestic-magonia-811-dunbar-location-2026-08-24",
+        "target": {
+            "canonical_event_id": "evt_c20894010b97e5adf60162c6",
+            "event_id": 3021254738232912,
+            "canonical_input_id": "cin_73e900923672d187cf01462e",
+            "source_native_id": "Magonia_811",
+            "source_row_number": 27609,
+            "source_row_hash": "50c0818284ee4f038eaec15d201f2c29169edb7f",
+            "location_sha256": (
+                "27d61cc9fe4429d566b2e51aa3e97e5526352bcb905c92dbc755e541d17e44ca"
+            ),
+            "description_sha256": (
+                "bac229b51d21263fd5dee7cd9d94659c0f12e81bc405dc8e12ae2128984314e2"
+            ),
+        },
+        "set_fields": {
+            "location_display": (
+                "Interstate 64 near Dunbar, West Virginia, USA"
+            ),
+            "city": "Dunbar",
+            "state_province": "West Virginia",
+            "country": "USA",
+            "location_precision": "city",
+            "mapping_notes": (
+                "Reviewed 2026-08-24. Magonia row 811 shifted the sighting narrative "
+                "into location/0. The Magonia text says Charleston, West Virginia; "
+                "NICAP's chronology places the report on Interstate 64 near Dunbar. "
+                "No exact point coordinate is asserted. The original narrative remains "
+                "preserved in location_raw and raw_fields."
+            ),
+            "source_url_display": "https://www.nicap.org/chronos/1967fullrep.htm",
+        },
+        "evidence": [
+            {
+                "kind": "source_catalog",
+                "title": "Magonia database, entry 811",
+                "url": "https://www.nicap.org/magonia.htm",
+            },
+            {
+                "kind": "case_chronology",
+                "title": "NICAP 1967 chronology",
+                "url": "https://www.nicap.org/chronos/1967fullrep.htm",
+            },
+        ],
+    },
+    "evt_ef86a4241215f54588bb629b": {
+        "correction_id": "majestic-overmeire-2808-hebrides-location-2026-08-24",
+        "target": {
+            "canonical_event_id": "evt_ef86a4241215f54588bb629b",
+            "event_id": 2487272255366338,
+            "canonical_input_id": "cin_fce75f3625e03ebfce6f3b8e",
+            "source_native_id": "Overmeire_2808",
+            "source_row_number": 36623,
+            "source_row_hash": "ffa8d1f3dd5f2ccf51fc0e069402fbf4d4b74a02",
+            "location_sha256": (
+                "bdb88eebb1824ea65341a7edce1993784814736dfc6e027a2ced3fb90b6e2839"
+            ),
+            "description_sha256": (
+                "3f78e71174dacbb2e9726f35ea744fe131bfe904f7931c168015324f17323f4f"
+            ),
+        },
+        "set_fields": {
+            "location_display": (
+                "At sea between St Kilda and Barra, Outer Hebrides, Scotland, UK"
+            ),
+            "city": None,
+            "state_province": "Scotland",
+            "country": "United Kingdom",
+            "location_precision": "region",
+            "mapping_notes": (
+                "Reviewed 2026-08-24. Overmeire_2808 shifted a long narrative into "
+                "location/0. The account places the trawler between St Kilda and "
+                "Barra off northern Scotland. No exact vessel position is supplied, "
+                "so the event remains unmapped at regional precision. The complete "
+                "source narrative remains preserved in location_raw and raw_fields."
+            ),
+        },
+        "evidence": [
+            {
+                "kind": "source_description",
+                "title": "Overmeire_2808 imported account",
+                "locator": "trawler Avel-Mad, between St Kilda and Barra",
+            },
+            {
+                "kind": "bibliographic_source",
+                "title": "Jean Francois Boedec, Les OVNI en Bretagne",
+                "locator": "1978, pages 57-58",
+            },
+        ],
+    },
+}
+
+
 def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]:
     """Return a corrected copy of one event, or an unchanged copy when untargeted.
 
@@ -145,13 +293,19 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
     correction.
     """
 
-    next_event = deepcopy(dict(event))
+    if _is_napa_non_primary_merge_member(event):
+        return deepcopy(dict(event))
+
+    next_event = apply_location_display_normalization(event)
     if not _targets_napa_event(next_event):
-        return next_event
+        return _apply_narrative_location_correction(next_event)
 
     already_applied = _has_napa_correction(next_event)
     _validate_napa_source_guard(next_event, already_applied=already_applied)
     next_event.update(deepcopy(NAPA_REVIEWED_CORRECTION["set_fields"]))
+    # The evidence-reviewed Napa projection supersedes the conservative generic
+    # label formatter that would otherwise omit both contradictory raw states.
+    next_event.pop("location_display_normalizations", None)
 
     existing = next_event.get("reviewed_corrections")
     corrections = (
@@ -176,6 +330,125 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
     return next_event
 
 
+def _apply_narrative_location_correction(
+    event: Mapping[str, Any],
+) -> dict[str, Any]:
+    canonical_event_id = event.get("canonical_event_id")
+    correction = NARRATIVE_LOCATION_CORRECTIONS.get(str(canonical_event_id or ""))
+    if not correction:
+        return deepcopy(dict(event))
+
+    next_event = deepcopy(dict(event))
+    target = correction["target"]
+    errors: list[str] = []
+    _expect(errors, "canonical_event_id", canonical_event_id, target["canonical_event_id"])
+    _expect(errors, "event_id", event.get("event_id"), target["event_id"])
+    if event.get("canonical_input_id") is not None:
+        _expect(
+            errors,
+            "canonical_input_id",
+            event.get("canonical_input_id"),
+            target["canonical_input_id"],
+        )
+    _expect(
+        errors,
+        "canonical_input_ids",
+        event.get("canonical_input_ids"),
+        [target["canonical_input_id"]],
+    )
+    _expect(errors, "duplicate_record_count", event.get("duplicate_record_count"), 1)
+    _expect(errors, "dedupe_strategy", event.get("dedupe_strategy"), "single_record")
+    _expect(errors, "source_name", _first(event, "source_name", "source"), "majestic")
+    _expect(errors, "source_file", event.get("source_file"), "majestic.csv")
+    _expect(
+        errors,
+        "source_native_id",
+        _first(event, "source_native_id", "source_id"),
+        target["source_native_id"],
+    )
+    _expect(errors, "lat", event.get("lat"), None)
+    _expect(errors, "lon", event.get("lon"), None)
+    _expect(errors, "coordinate_source", event.get("coordinate_source"), "unresolved")
+
+    provenance = _source_provenance(event)
+    _expect(errors, "source_provenance.count", len(provenance), 1)
+    if provenance:
+        for key, expected in (
+            ("source_name", "majestic"),
+            ("source_file", "majestic.csv"),
+            ("source_row_number", target["source_row_number"]),
+            ("source_native_id", target["source_native_id"]),
+            ("source_row_hash", target["source_row_hash"]),
+            ("canonical_input_id", target["canonical_input_id"]),
+        ):
+            _expect(errors, f"source_provenance[0].{key}", provenance[0].get(key), expected)
+    source_row_number = event.get("source_row_number")
+    source_row_hash = event.get("source_row_hash")
+    if provenance:
+        source_row_number = source_row_number or provenance[0].get("source_row_number")
+        source_row_hash = source_row_hash or provenance[0].get("source_row_hash")
+    _expect(errors, "source_row_number", source_row_number, target["source_row_number"])
+    _expect(errors, "source_row_hash", source_row_hash, target["source_row_hash"])
+
+    raw_fields = event.get("raw_fields")
+    if not isinstance(raw_fields, Mapping):
+        errors.append("raw_fields: expected preserved source mapping")
+    else:
+        _expect(
+            errors,
+            "raw_fields.location/0.sha256",
+            _sha256_text(raw_fields.get("location/0")),
+            target["location_sha256"],
+        )
+        _expect(
+            errors,
+            "raw_fields.desc.sha256",
+            _sha256_text(raw_fields.get("desc")),
+            target["description_sha256"],
+        )
+    _expect(
+        errors,
+        "location_raw.sha256",
+        _sha256_text(event.get("location_raw")),
+        target["location_sha256"],
+    )
+    _expect(
+        errors,
+        "description.sha256",
+        _sha256_text(event.get("description")),
+        target["description_sha256"],
+    )
+    if errors:
+        raise ValueError(
+            f"Reviewed correction {correction['correction_id']} failed its stale-source guard: "
+            + "; ".join(errors)
+        )
+
+    next_event.update(deepcopy(correction["set_fields"]))
+    next_event.pop("location_display_normalizations", None)
+    corrections = [
+        item
+        for item in next_event.get("reviewed_corrections") or []
+        if isinstance(item, dict)
+        and item.get("correction_id") != correction["correction_id"]
+    ]
+    corrections.append(
+        {
+            "correction_id": correction["correction_id"],
+            "reviewed_at": "2026-08-24",
+            "target": deepcopy(target),
+            "set_fields": deepcopy(correction["set_fields"]),
+            "evidence": deepcopy(correction["evidence"]),
+            "provenance_policy": (
+                "Reviewed display fields affect only the normalized/map projection; "
+                "location_raw, raw source rows, and source identity remain unchanged."
+            ),
+        }
+    )
+    next_event["reviewed_corrections"] = corrections
+    return next_event
+
+
 def apply_reviewed_event_corrections_many(
     events: Iterable[Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -194,6 +467,15 @@ def _targets_napa_event(event: Mapping[str, Any]) -> bool:
     return (
         _first(event, "source_name", "source") == "majestic"
         and _first(event, "source_native_id", "source_id") == "Hatch_UDB_2481"
+    )
+
+
+def _is_napa_non_primary_merge_member(event: Mapping[str, Any]) -> bool:
+    canonical_input_ids = event.get("canonical_input_ids")
+    return bool(
+        isinstance(canonical_input_ids, list)
+        and NAPA_CANONICAL_INPUT_ID in canonical_input_ids
+        and event.get("canonical_input_id") != NAPA_CANONICAL_INPUT_ID
     )
 
 
@@ -355,6 +637,10 @@ def _source_provenance(event: Mapping[str, Any]) -> list[Mapping[str, Any]]:
     if not isinstance(value, list):
         return []
     return [item for item in value if isinstance(item, Mapping)]
+
+
+def _sha256_text(value: Any) -> str:
+    return hashlib.sha256(str(value or "").encode("utf-8")).hexdigest()
 
 
 def _first(event: Mapping[str, Any], *keys: str) -> Any:

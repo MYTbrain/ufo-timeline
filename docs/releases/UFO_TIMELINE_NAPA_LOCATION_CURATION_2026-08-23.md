@@ -104,3 +104,7 @@ rows with full state names and reports 284 state/coordinate contradictions
 before this correction (including Napa). Those rows are a review backlog, not
 an assertion that all 284 coordinates are wrong, and this change does not claim
 to make the corpus-wide anomaly report empty.
+
+The follow-up [production location-label audit](UFO_TIMELINE_LOCATION_LABEL_AUDIT_2026-08-24.md)
+extends this review across all 702,893 v152 events and adds provenance-safe
+display normalization for the systemic structural label defects it identified.

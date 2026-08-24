@@ -129,6 +129,8 @@ def build_canonical_web_artifacts(
 
     reviewed_correction_counts: dict[str, int] = {}
     reviewed_corrected_event_ids: set[str] = set()
+    location_display_normalization_counts: dict[str, int] = {}
+    location_display_normalized_event_ids: set[str] = set()
 
     for record in iter_jsonl(input_path, limit=limit):
         record = apply_reviewed_event_corrections(record)
@@ -144,6 +146,23 @@ def build_canonical_web_artifacts(
             reviewed_corrected_event_ids.add(
                 first_clean(record, "canonical_event_id", "canonical_input_id")
                 or json.dumps(canonical_identity(record), sort_keys=True, separators=(",", ":"))
+            )
+        for normalization in record.get("location_display_normalizations") or []:
+            if not isinstance(normalization, dict):
+                continue
+            policy_id = clean_text(normalization.get("policy_id"))
+            if not policy_id:
+                continue
+            location_display_normalization_counts[policy_id] = (
+                location_display_normalization_counts.get(policy_id, 0) + 1
+            )
+            location_display_normalized_event_ids.add(
+                first_clean(record, "canonical_event_id", "canonical_input_id")
+                or json.dumps(
+                    canonical_identity(record),
+                    sort_keys=True,
+                    separators=(",", ":"),
+                )
             )
         total_events += 1
         compact_event = prune_compact_event(
@@ -293,6 +312,14 @@ def build_canonical_web_artifacts(
                 "applied": bool(reviewed_correction_counts),
                 "event_count": len(reviewed_corrected_event_ids),
                 "correction_counts": dict(sorted(reviewed_correction_counts.items())),
+                "raw_source_fields_preserved": True,
+            },
+            "location_display_normalizations": {
+                "applied": bool(location_display_normalization_counts),
+                "event_count": len(location_display_normalized_event_ids),
+                "policy_counts": dict(
+                    sorted(location_display_normalization_counts.items())
+                ),
                 "raw_source_fields_preserved": True,
             },
         },
@@ -520,6 +547,9 @@ def detail_web_event(record: dict[str, Any], compact_event: dict[str, Any]) -> d
             "source_provenance": source_provenance,
             "mapping_notes": first_clean(record, "mapping_notes"),
             "reviewed_corrections": record.get("reviewed_corrections"),
+            "location_display_normalizations": record.get(
+                "location_display_normalizations"
+            ),
         }
     )
     # Merged-member evidence is review/provenance metadata. Preserve it in the

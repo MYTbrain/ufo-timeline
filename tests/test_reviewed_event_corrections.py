@@ -23,6 +23,7 @@ from parser.reviewed_event_corrections import (
     NAPA_REVIEWED_FIELDS,
     NAPA_SINGLETON_EVENT_IDS,
     NAPA_SOURCE_ROW_HASH,
+    NARRATIVE_LOCATION_CORRECTIONS,
     apply_reviewed_event_corrections,
 )
 from parser.trace_segments import TRACE_EVENT_ROW_STRUCT
@@ -73,6 +74,35 @@ def test_napa_reviewed_correction_is_idempotent() -> None:
     twice = apply_reviewed_event_corrections(once)
 
     assert twice == once
+
+
+def test_magonia_narrative_location_is_replaced_only_in_display_projection() -> None:
+    original = _magonia_811_event()
+
+    corrected = apply_reviewed_event_corrections(original)
+
+    assert corrected["location_raw"] == original["location_raw"]
+    assert corrected["raw_fields"] == original["raw_fields"]
+    assert corrected["location_display"] == (
+        "Interstate 64 near Dunbar, West Virginia, USA"
+    )
+    assert corrected["city"] == "Dunbar"
+    assert corrected["state_province"] == "West Virginia"
+    assert corrected["country"] == "USA"
+    assert corrected["lat"] is None
+    assert corrected["lon"] is None
+    assert corrected["reviewed_corrections"][-1]["correction_id"] == (
+        "majestic-magonia-811-dunbar-location-2026-08-24"
+    )
+    assert apply_reviewed_event_corrections(corrected) == corrected
+
+
+def test_magonia_narrative_location_correction_fails_closed_on_source_change() -> None:
+    stale = _magonia_811_event()
+    stale["raw_fields"]["location/0"] += " changed"
+
+    with pytest.raises(ValueError, match="stale-source guard"):
+        apply_reviewed_event_corrections(stale)
 
 
 @pytest.mark.parametrize(
@@ -290,6 +320,53 @@ def test_canonical_web_build_applies_napa_correction_to_all_map_surfaces(
     assert trace_row["lat"] == pytest.approx(38.300002)
     assert trace_row["lon"] == pytest.approx(-122.300006)
     assert trace_row["sequence_index"] == 0
+
+
+def _magonia_811_event() -> dict[str, object]:
+    correction = NARRATIVE_LOCATION_CORRECTIONS[
+        "evt_c20894010b97e5adf60162c6"
+    ]
+    target = correction["target"]
+    location = (
+        "Charleston (West Virginia) Tad Jones, 38, was driving near Charleston "
+        "when he saw a large, metal sphere, about 6 m in diameter, having four "
+        "legs equipped with wheels and a very small propeller underneath"
+    )
+    description = "Two min later it flew away."
+    return {
+        "canonical_input_id": target["canonical_input_id"],
+        "canonical_input_ids": [target["canonical_input_id"]],
+        "canonical_event_id": target["canonical_event_id"],
+        "event_id": target["event_id"],
+        "source_name": "majestic",
+        "source_file": "majestic.csv",
+        "source_row_number": target["source_row_number"],
+        "source_native_id": target["source_native_id"],
+        "source_row_hash": target["source_row_hash"],
+        "source_provenance": [
+            {
+                "source_name": "majestic",
+                "source_file": "majestic.csv",
+                "source_row_number": target["source_row_number"],
+                "source_native_id": target["source_native_id"],
+                "source_row_hash": target["source_row_hash"],
+                "canonical_input_id": target["canonical_input_id"],
+            }
+        ],
+        "location_raw": location,
+        "city": location,
+        "state_province": None,
+        "country": None,
+        "lat": None,
+        "lon": None,
+        "coordinate_source": "unresolved",
+        "location_precision": "city",
+        "description": description,
+        "summary": description,
+        "raw_fields": {"location/0": location, "desc": description},
+        "dedupe_strategy": "single_record",
+        "duplicate_record_count": 1,
+    }
 
 
 def _napa_event() -> dict[str, object]:

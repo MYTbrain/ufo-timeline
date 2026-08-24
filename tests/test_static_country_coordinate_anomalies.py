@@ -110,6 +110,29 @@ def test_static_country_coordinate_anomaly_check_accepts_corrected_napa_state(tm
     assert report["counts"]["anomaly_rows"] == 0
 
 
+def test_state_qa_falls_back_to_raw_when_display_omits_a_source_conflict(tmp_path):
+    root = tmp_path / "bundle"
+    write_summary(
+        root,
+        [
+            {
+                "event_id": "state-conflict",
+                "location_raw": "Napa Valley, CA, Colorado, USA",
+                "location_display": "Napa Valley, USA",
+                "source": "mufon",
+                "lat": 38.300002,
+                "lon": -122.300006,
+                "coordinate_source": "raw_latlong",
+            }
+        ],
+    )
+
+    report = check_static_country_coordinate_anomalies(payload_root=root)
+
+    assert report["status"] == "needs_attention"
+    assert report["examples"][0]["reason"] == "outside_declared_us_state_bounds"
+
+
 def test_static_country_coordinate_anomaly_check_flags_europe_point_in_atlantic(tmp_path):
     root = tmp_path / "bundle"
     write_summary(
