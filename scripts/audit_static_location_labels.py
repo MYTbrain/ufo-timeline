@@ -157,8 +157,12 @@ def classify_location_label(event: dict[str, Any]) -> list[tuple[str, str]]:
         findings.append(("empty_comma_component", "safe_display_fix"))
     if MARKUP_OR_URL_RE.search(rendered):
         findings.append(("markup_or_url_in_location", "safe_display_fix"))
+    # U+FFFD means the source decoder already lost the original character.
+    # Embedded control bytes also occur in the corpus alongside mojibake, where
+    # removing only the control byte would leave a misleadingly "fixed" place
+    # name.  Both belong in the evidence-backed review lane.
     if "\ufffd" in rendered or any(ord(char) < 32 for char in rendered):
-        findings.append(("invalid_character_in_location", "safe_display_fix"))
+        findings.append(("invalid_character_in_location", "review"))
     if len(rendered) > 180:
         findings.append(("overlong_location_label", "review"))
     if len(parts) > 7:
@@ -214,13 +218,34 @@ def classify_us_state_components(
     if not normalized or normalized[-1] not in US_COUNTRY_TOKENS:
         return []
 
-    admin_parts = normalized[place_index + 1 : -1]
-    states = [state for part in admin_parts if (state := us_state_code(part))]
+    admin_parts = parts[place_index + 1 : -1]
+    state_parts = [
+        (part, state)
+        for part in admin_parts
+        if (state := us_state_code(part))
+    ]
+    states = [state for _part, state in state_parts]
     unique_states = sorted(set(states))
     if len(unique_states) > 1:
-        return [("contradictory_us_state_components", "uncertainty_display_fix")]
+        # A token such as ``MD)`` or ``SD?`` is often part of a parenthetical
+        # route description or an uncertainty-qualified source claim.  The
+        # robust audit recognizer should still surface it, but the generic
+        # display normalizer deliberately accepts only exact administrative
+        # components.  Mark the non-exact cases for review instead of claiming
+        # they are automatically repairable.
+        severity = (
+            "uncertainty_display_fix"
+            if all(is_exact_us_state_component(part) for part, _state in state_parts)
+            else "review"
+        )
+        return [("contradictory_us_state_components", severity)]
     if len(states) > 1:
-        return [("redundant_us_state_components", "safe_display_fix")]
+        severity = (
+            "safe_display_fix"
+            if all(is_exact_us_state_component(part) for part, _state in state_parts)
+            else "review"
+        )
+        return [("redundant_us_state_components", severity)]
     return []
 
 
@@ -230,6 +255,13 @@ def us_state_code(value: Any) -> str | None:
     if text in US_STATE_BOUNDS:
         return text
     return US_STATE_NAME_TO_ABBREVIATION.get(text)
+
+
+def is_exact_us_state_component(value: Any) -> bool:
+    """Return whether the generic display normalizer can consume the token."""
+
+    text = str(value or "").strip().upper().strip(".")
+    return text in US_STATE_BOUNDS or text in US_STATE_NAME_TO_ABBREVIATION
 
 
 def normalize_component(value: Any) -> str:
