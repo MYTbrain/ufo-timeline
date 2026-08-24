@@ -76,6 +76,17 @@ def test_napa_reviewed_correction_is_idempotent() -> None:
     assert twice == once
 
 
+def test_napa_exported_singleton_without_singular_input_id_is_corrected() -> None:
+    exported = _napa_event()
+    exported.pop("canonical_input_id")
+
+    corrected = apply_reviewed_event_corrections(exported)
+
+    assert corrected["location_display"] == NAPA_REVIEWED_FIELDS["location_display"]
+    assert corrected["location_raw"] == exported["location_raw"]
+    assert corrected["canonical_input_ids"] == [NAPA_CANONICAL_INPUT_ID]
+
+
 def test_magonia_narrative_location_is_replaced_only_in_display_projection() -> None:
     original = _magonia_811_event()
 

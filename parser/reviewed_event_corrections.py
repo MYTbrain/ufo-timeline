@@ -472,10 +472,16 @@ def _targets_napa_event(event: Mapping[str, Any]) -> bool:
 
 def _is_napa_non_primary_merge_member(event: Mapping[str, Any]) -> bool:
     canonical_input_ids = event.get("canonical_input_ids")
+    canonical_input_id = event.get("canonical_input_id")
     return bool(
         isinstance(canonical_input_ids, list)
         and NAPA_CANONICAL_INPUT_ID in canonical_input_ids
-        and event.get("canonical_input_id") != NAPA_CANONICAL_INPUT_ID
+        # Exported singleton detail records intentionally omit the singular
+        # canonical_input_id while retaining the complete one-item membership
+        # list.  Only an explicit different representative identifies a true
+        # non-primary merge member.
+        and canonical_input_id is not None
+        and canonical_input_id != NAPA_CANONICAL_INPUT_ID
     )
 
 
