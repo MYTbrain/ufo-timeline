@@ -19,6 +19,7 @@ from parser.canonical_schema import build_location_text, clean_text, stable_hash
 from parser.craft_types import infer_event_craft_type
 from parser.locations import infer_text_precision
 from parser.packed_points import export_packed_points
+from parser.reviewed_event_corrections import apply_reviewed_event_corrections
 from parser.taxonomy import (
     display_shape_for_web_event,
     display_type_for_web_event,
@@ -126,7 +127,43 @@ def build_canonical_web_artifacts(
     coordinate_source_counts: dict[str, int] = {}
     mapped_bounds = MappedBounds()
 
+    reviewed_correction_counts: dict[str, int] = {}
+    reviewed_corrected_event_ids: set[str] = set()
+    location_display_normalization_counts: dict[str, int] = {}
+    location_display_normalized_event_ids: set[str] = set()
+
     for record in iter_jsonl(input_path, limit=limit):
+        record = apply_reviewed_event_corrections(record)
+        record_has_reviewed_correction = False
+        for correction in record.get("reviewed_corrections") or []:
+            if not isinstance(correction, dict):
+                continue
+            correction_id = clean_text(correction.get("correction_id"))
+            if correction_id:
+                reviewed_correction_counts[correction_id] = reviewed_correction_counts.get(correction_id, 0) + 1
+                record_has_reviewed_correction = True
+        if record_has_reviewed_correction:
+            reviewed_corrected_event_ids.add(
+                first_clean(record, "canonical_event_id", "canonical_input_id")
+                or json.dumps(canonical_identity(record), sort_keys=True, separators=(",", ":"))
+            )
+        for normalization in record.get("location_display_normalizations") or []:
+            if not isinstance(normalization, dict):
+                continue
+            policy_id = clean_text(normalization.get("policy_id"))
+            if not policy_id:
+                continue
+            location_display_normalization_counts[policy_id] = (
+                location_display_normalization_counts.get(policy_id, 0) + 1
+            )
+            location_display_normalized_event_ids.add(
+                first_clean(record, "canonical_event_id", "canonical_input_id")
+                or json.dumps(
+                    canonical_identity(record),
+                    sort_keys=True,
+                    separators=(",", ":"),
+                )
+            )
         total_events += 1
         compact_event = prune_compact_event(
             compact_web_event(record, event_id_allocator=event_id_allocator)
@@ -271,6 +308,20 @@ def build_canonical_web_artifacts(
             "summary_raw_source_rows_included": False,
             "summary_source_claims_included": False,
             "summary_full_provenance_included": False,
+            "reviewed_event_corrections": {
+                "applied": bool(reviewed_correction_counts),
+                "event_count": len(reviewed_corrected_event_ids),
+                "correction_counts": dict(sorted(reviewed_correction_counts.items())),
+                "raw_source_fields_preserved": True,
+            },
+            "location_display_normalizations": {
+                "applied": bool(location_display_normalization_counts),
+                "event_count": len(location_display_normalized_event_ids),
+                "policy_counts": dict(
+                    sorted(location_display_normalization_counts.items())
+                ),
+                "raw_source_fields_preserved": True,
+            },
         },
     }
     write_json(output_dir / "event_chunk_manifest.json", chunk_manifest, indent=2)
@@ -391,6 +442,7 @@ def compact_web_event(
         record.get("state_province"),
         record.get("country"),
     )
+    location_display = first_clean(record, "location_display")
     lat, lon = usable_coordinates(record)
     mapped = lat is not None and lon is not None
     location_precision = normalized_location_precision(
@@ -398,8 +450,8 @@ def compact_web_event(
         location_raw=location_raw,
         mapped=mapped,
     )
-    source_url = first_clean(record, "source_url")
-    description = first_clean(record, "description", "summary")
+    source_url = first_clean(record, "source_url_display", "source_url")
+    description = first_clean(record, "description_display", "description", "summary")
     source_provenance = record.get("source_provenance") if isinstance(record.get("source_provenance"), list) else []
     canonical_input_ids = record.get("canonical_input_ids") if isinstance(record.get("canonical_input_ids"), list) else []
     if not canonical_input_ids:
@@ -431,7 +483,9 @@ def compact_web_event(
             "sort_date_iso": first_clean(record, "sort_date_iso", "date_iso"),
             "date_precision": normalized_date_precision(record.get("date_precision")),
             "time_raw": first_clean(record, "time_raw"),
+            "time_display": first_clean(record, "time_display"),
             "location_raw": location_raw,
+            "location_display": location_display,
             "lat": lat,
             "lon": lon,
             "has_coordinates": mapped,
@@ -450,7 +504,8 @@ def compact_web_event(
             "craft_type_reason": craft_inference.get("craft_type_reason"),
             "same_day_match_strength": craft_inference.get("same_day_match_strength"),
             "duration_raw": first_clean(record, "duration_raw"),
-            "summary": first_clean(record, "summary"),
+            "duration_display": first_clean(record, "duration_display"),
+            "summary": first_clean(record, "summary_display", "summary"),
             "description_short": snippet(description, limit=240),
             "links": [source_url] if source_url and source_url.lower().startswith(("http://", "https://")) else [],
         }
@@ -460,8 +515,10 @@ def compact_web_event(
 def detail_web_event(record: dict[str, Any], compact_event: dict[str, Any]) -> dict[str, Any]:
     """Build the lazy full-detail payload while keeping startup summaries compact."""
     detail = dict(compact_event)
-    description = first_clean(record, "description", "summary")
+    description = first_clean(record, "description_display", "description", "summary")
     source_url = first_clean(record, "source_url")
+    source_url_display = first_clean(record, "source_url_display")
+    linked_source_url = source_url_display or source_url
     raw_fields = record.get("raw_fields") if isinstance(record.get("raw_fields"), dict) else None
     source_provenance = record.get("source_provenance") if isinstance(record.get("source_provenance"), list) else None
 
@@ -470,7 +527,10 @@ def detail_web_event(record: dict[str, Any], compact_event: dict[str, Any]) -> d
             "description": description,
             "description_short": snippet(description, limit=360),
             "source_url": source_url,
-            "links": [source_url] if source_url and source_url.lower().startswith(("http://", "https://")) else [],
+            "source_url_display": source_url_display,
+            "links": [linked_source_url]
+            if linked_source_url and linked_source_url.lower().startswith(("http://", "https://"))
+            else [],
             "source_row_number": record.get("source_row_number"),
             "posted_date_raw": first_clean(record, "posted_date_raw"),
             "reported_date_raw": first_clean(record, "reported_date_raw"),
@@ -485,6 +545,11 @@ def detail_web_event(record: dict[str, Any], compact_event: dict[str, Any]) -> d
             "raw_source_missing_columns": record.get("raw_source_missing_columns"),
             "source_row_anomalies": record.get("source_row_anomalies"),
             "source_provenance": source_provenance,
+            "mapping_notes": first_clean(record, "mapping_notes"),
+            "reviewed_corrections": record.get("reviewed_corrections"),
+            "location_display_normalizations": record.get(
+                "location_display_normalizations"
+            ),
         }
     )
     # Merged-member evidence is review/provenance metadata. Preserve it in the
@@ -514,12 +579,14 @@ def compact_summary_event(event: dict[str, Any]) -> dict[str, Any]:
             "sort_date_iso": event.get("sort_date_iso") or event.get("date_iso"),
             "date_precision": event.get("date_precision"),
             "time_raw": event.get("time_raw"),
+            "time_display": event.get("time_display"),
             "time_sort_kind": event.get("time_sort_kind"),
             "time_sort_confidence": event.get("time_sort_confidence"),
             "playback_sort_confidence": event.get("playback_sort_confidence"),
             "playback_sort_reason": event.get("playback_sort_reason"),
             "playback_sort_key": event.get("playback_sort_key"),
             "location_raw": event.get("location_raw"),
+            "location_display": event.get("location_display"),
             "source": event.get("source"),
             "type": event.get("type"),
             "coordinate_source": event.get("coordinate_source"),
@@ -628,13 +695,13 @@ def build_raw_event_block(record: dict[str, Any], detail: dict[str, Any]) -> str
         ("Source file", detail.get("source_file")),
         ("Source ID", detail.get("source_id")),
         ("Source row", detail.get("source_row_number")),
-        ("Date", detail.get("date_raw") or detail.get("sort_date_iso")),
-        ("Time", detail.get("time_raw")),
-        ("Location", detail.get("location_raw")),
+        ("Date", record.get("date_raw") or record.get("sort_date_iso")),
+        ("Time", record.get("time_raw")),
+        ("Location", record.get("location_raw")),
         ("Type", detail.get("type")),
         ("Shape", detail.get("shape_raw") or detail.get("shape_normalized")),
-        ("Duration", detail.get("duration_raw")),
-        ("Description", detail.get("description")),
+        ("Duration", record.get("duration_raw")),
+        ("Description", first_clean(record, "description", "summary")),
     ]
     for label, value in pairs:
         text = clean_text(value)

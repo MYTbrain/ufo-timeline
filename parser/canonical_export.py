@@ -39,14 +39,16 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
     event_hash = _first_clean(data, "event_hash") or stable_hash(identity, length=16).upper()
 
     location_raw = _location_text(data)
+    location_display = _first_clean(data, "location_display")
     all_locations_raw = _all_locations(data, location_raw)
-    description = _first_clean(data, "description", "summary")
+    description = _first_clean(data, "description_display", "description", "summary")
+    raw_description = _first_clean(data, "description", "summary")
     type_label = _first_clean(data, "type_raw", "type", "type_normalized", "shape_raw", "shape_normalized")
     source_name = _first_clean(data, "source_name", "source")
     source_native_id = _first_clean(data, "source_native_id", "source_id")
     source_file = _first_clean(data, "source_file") or "canonical"
     source_raw = _source_raw(source_name, source_native_id)
-    source_url = _first_clean(data, "source_url")
+    source_url = _first_clean(data, "source_url_display", "source_url")
     provenance = _source_provenance(data)
     canonical_input_ids = _canonical_input_ids(data)
     parse_warnings = list(data.get("date_warnings") or [])
@@ -55,14 +57,16 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
     if coordinate_warning:
         parse_warnings.append(coordinate_warning)
 
-    primary_location_text = location_raw
+    primary_location_text = location_display or location_raw
     if lat is not None and lon is not None:
         coordinate_source = _normalized_coordinate_source(data.get("coordinate_source"))
         location_precision = _normalized_location_precision(data.get("location_precision"), mapped=True)
         geocode_display_name = primary_location_text
         geocode_query_used = None
         geocode_confidence = 1.0
-        mapping_notes = "Used coordinates carried by the canonical source record."
+        mapping_notes = _first_clean(data, "mapping_notes") or (
+            "Used coordinates carried by the canonical source record."
+        )
     else:
         coordinate_source = "unresolved"
         location_precision = _normalized_location_precision(data.get("location_precision"), mapped=False)
@@ -71,7 +75,9 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         geocode_display_name = None
         geocode_query_used = primary_location_text
         geocode_confidence = None
-        mapping_notes = "Canonical source record did not include usable coordinates."
+        mapping_notes = _first_clean(data, "mapping_notes") or (
+            "Canonical source record did not include usable coordinates."
+        )
 
     extra_data = _extra_data(data, provenance, canonical_input_ids)
     normalized = {
@@ -94,7 +100,7 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
             location_raw=location_raw,
             type_label=type_label,
             source_raw=source_raw,
-            description=description,
+            description=raw_description,
         ),
         "date_raw": _first_clean(data, "date_raw"),
         "end_date_raw": _first_clean(data, "end_date_raw"),
@@ -103,17 +109,20 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "sort_date_iso": _first_clean(data, "sort_date_iso", "date_iso"),
         "date_precision": _normalized_date_precision(data.get("date_precision")),
         "time_raw": _first_clean(data, "time_raw"),
+        "time_display": _first_clean(data, "time_display"),
         "location_raw": location_raw,
+        "location_display": location_display,
         "location_field_name": "Location" if location_raw else None,
         "all_locations_raw": all_locations_raw,
         "description": description,
-        "summary": _first_clean(data, "summary"),
+        "summary": _first_clean(data, "summary_display", "summary"),
         "type": type_label,
         "type_raw": _first_clean(data, "type_raw"),
         "type_normalized": _first_clean(data, "type_normalized"),
         "shape_raw": _first_clean(data, "shape_raw"),
         "shape_normalized": _first_clean(data, "shape_normalized"),
         "duration_raw": _first_clean(data, "duration_raw"),
+        "duration_display": _first_clean(data, "duration_display"),
         "references": [],
         "links": [source_url] if source_url and URL_RE.match(source_url) else [],
         "source_raw": source_raw,
@@ -133,6 +142,11 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "geocode_display_name": geocode_display_name,
         "geocode_confidence": geocode_confidence,
         "mapping_notes": mapping_notes,
+        "location_display_normalizations": data.get(
+            "location_display_normalizations"
+        )
+        or [],
+        "reviewed_corrections": data.get("reviewed_corrections") or [],
     }
 
     return normalized
@@ -358,6 +372,11 @@ def _extra_data(
             "shape_normalized": _first_clean(data, "shape_normalized"),
             "type_raw": _first_clean(data, "type_raw"),
             "type_normalized": _first_clean(data, "type_normalized"),
+            "reviewed_corrections": data.get("reviewed_corrections") or [],
+            "location_display_normalizations": data.get(
+                "location_display_normalizations"
+            )
+            or [],
         },
     }
 

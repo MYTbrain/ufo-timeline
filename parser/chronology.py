@@ -968,7 +968,12 @@ def derive_event_chronology(event: dict[str, Any]) -> dict[str, Any]:
     }
 
     exact_day = event.get("date_precision") == "exact_day" and bool(event.get("date_iso"))
-    parsed_time = parse_time_for_chronology(event.get("time_raw"), exact_day=exact_day)
+    # Reviewed display times may correct an imported source claim without
+    # rewriting the verbatim ``time_raw`` provenance field.
+    parsed_time = parse_time_for_chronology(
+        event.get("time_display") or event.get("time_raw"),
+        exact_day=exact_day,
+    )
 
     output["time_sort_kind"] = parsed_time.sort_kind
     output["time_sort_confidence"] = parsed_time.sort_confidence

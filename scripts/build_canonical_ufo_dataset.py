@@ -34,6 +34,7 @@ from parser.dedupe import (
     build_deduped_events,
     build_duplicate_candidates,
 )
+from parser.reviewed_event_corrections import apply_reviewed_event_corrections_many
 from parser.taxonomy import normalize_shape_label
 from parser.utils import write_json, write_jsonl
 
@@ -195,6 +196,9 @@ def build_canonical_dataset(
             skipped_files.append(skip_record)
 
     deduped_events, duplicate_groups = build_deduped_events(source_records, strategy=dedupe_strategy)
+    # Apply reviewed normalization only after canonical event identity and
+    # duplicate membership have been fixed from the preserved source rows.
+    deduped_events = apply_reviewed_event_corrections_many(deduped_events)
     duplicate_candidates = build_duplicate_candidates(source_records)
     normalized_events = canonical_events_to_normalized_events(deduped_events)
     map_events = [

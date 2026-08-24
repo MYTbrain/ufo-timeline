@@ -7836,7 +7836,9 @@
   function augmentPackedMapEventDisplayFields(packedEvent, catalogEvent) {
     if (!packedEvent || !catalogEvent) return packedEvent;
     packedEvent.date_raw = catalogEvent.date_raw || "";
+    packedEvent.time_display = catalogEvent.time_display || "";
     packedEvent.location_raw = catalogEvent.location_raw || "";
+    packedEvent.location_display = catalogEvent.location_display || "";
     packedEvent.geocode_display_name = catalogEvent.geocode_display_name || "";
     packedEvent.description_short = catalogEvent.description_short || "";
     return packedEvent;
@@ -9352,7 +9354,7 @@
 
   function displayLocationForEvent(event) {
     if (!event) return "Unknown location";
-    return event.location_raw || event.geocode_display_name || "Unknown location";
+    return event.location_display || event.location_raw || event.geocode_display_name || "Unknown location";
   }
 
   function isPlaceholderLocationText(value) {
@@ -11258,7 +11260,7 @@
 
   function popupResolvedPlaceRow(event) {
     const resolvedPlace = String((event && event.geocode_display_name) || "").trim();
-    if (!resolvedPlace) return "";
+    if (!resolvedPlace || resolvedPlace === String(displayLocationForEvent(event)).trim()) return "";
     return '<div class="popup-row"><span class="popup-label">Resolved Place:</span> ' + escapeHtml(resolvedPlace) + "</div>";
   }
 
@@ -11275,7 +11277,13 @@
       '<button class="secondary-button popup-nav-button" type="button" data-popup-nav="next" data-popup-event-id="' + escapeHtml(event.event_id) + '" aria-label="Next event" title="Next event"' + nextDisabled + '>&#x23ED;</button>' +
       "</div>" +
       "</div>" +
-      '<div class="popup-row"><span class="popup-label">Location Raw:</span> ' + escapeHtml(event.location_raw || "Unknown location") + "</div>" +
+      '<div class="popup-row"><span class="popup-label">Location:</span> ' + escapeHtml(displayLocationForEvent(event)) + "</div>" +
+      (event.location_display && event.location_raw && event.location_display !== event.location_raw
+        ? '<div class="popup-row"><span class="popup-label">Source Location:</span> ' + escapeHtml(event.location_raw) + "</div>"
+        : "") +
+      (event.time_display
+        ? '<div class="popup-row"><span class="popup-label">Reviewed Time:</span> ' + escapeHtml(event.time_display) + "</div>"
+        : "") +
       popupResolvedPlaceRow(event) +
       '<div class="popup-row"><span class="popup-label">Source:</span> ' + escapeHtml(event.source || "Unknown") + "</div>" +
       '<div class="popup-row"><span class="popup-label">Type:</span> ' + escapeHtml(event.type || "Unknown") + "</div>" +
@@ -11382,7 +11390,7 @@
     const hitSize = expandedMobileHitSize(visualSize, MOBILE_DIV_MARKER_HIT_SIZE);
     const half = Math.round(hitSize / 2);
     const marker = L.marker([event.lat, longitude], {
-      title: (event.date_raw || event.sort_date_iso || "Unknown") + " - " + (event.location_raw || event.geocode_display_name || "Unknown location"),
+      title: (event.date_raw || event.sort_date_iso || "Unknown") + " - " + displayLocationForEvent(event),
       bubblingMouseEvents: false,
       icon: L.divIcon({
         className: "",
@@ -16843,7 +16851,7 @@
     if (event.date_precision && event.date_precision !== "exact_day") return "";
     const sourceKey = normalizeVisibleDisplayDuplicateText(event.source, true);
     const dateKey = normalizeVisibleDisplayDuplicateText(event.sort_date_iso || event.date_raw, true);
-    const timeKey = normalizeVisibleDisplayDuplicateText(event.time_raw || event.time || "", true);
+    const timeKey = normalizeVisibleDisplayDuplicateText(event.time_display || event.time_raw || event.time || "", true);
     const locationKey = normalizeVisibleDisplayDuplicateText(displayLocationForEvent(event));
     const typeKey = normalizeVisibleDisplayDuplicateText(
       event.type || event.shape_normalized || event.visual_type_group,
@@ -16861,7 +16869,7 @@
     const fields = [
       normalizeVisibleDisplayDuplicateText(event.source, true),
       normalizeVisibleDisplayDuplicateText(event.sort_date_iso || event.date_raw, true),
-      normalizeVisibleDisplayDuplicateText(event.time_raw || event.time || "", true),
+      normalizeVisibleDisplayDuplicateText(event.time_display || event.time_raw || event.time || "", true),
       normalizeVisibleDisplayDuplicateText(displayLocationForEvent(event)),
       normalizeVisibleDisplayDuplicateText(
         event.type || event.shape_normalized || event.visual_type_group,
@@ -16892,7 +16900,7 @@
     if (event.coordinate_source === "geocoded") score += 40;
     if (event.coordinate_source === "raw_latlong") score += 30;
     if (event.description_short || event.description) score += 20;
-    if (event.time_raw || event.time || event.sort_time_ms != null) score += 10;
+    if (event.time_display || event.time_raw || event.time || event.sort_time_ms != null) score += 10;
     return score;
   }
 
@@ -19409,12 +19417,16 @@
       ["Date Raw", event.date_raw],
       ["Normalized Date", event.sort_date_iso || event.date_iso || ""],
       ["Date Precision", event.date_precision],
+      ...(event.time_display ? [["Reviewed Time", event.time_display]] : []),
       ["Time Raw", event.time_raw],
+      ...(event.location_display ? [["Reviewed Location", event.location_display]] : []),
       ["Location Raw", event.location_raw],
       ["All Raw Locations", (event.all_locations_raw || []).join(" | ")],
       ...(resolvedPlace ? [["Resolved Place", resolvedPlace]] : []),
       ["Coordinate Source", event.coordinate_source],
       ["Location Precision", locationPrecisionDisplayLabel(event.location_precision)],
+      ...(event.duration_display ? [["Reviewed Duration", event.duration_display]] : []),
+      ["Duration Raw", event.duration_raw],
       ["Latitude", event.lat],
       ["Longitude", event.lon],
       ["Source", event.source],
@@ -19424,7 +19436,7 @@
     els.detailPanel.innerHTML =
       '<div class="detail-header">' +
       '<h3 class="detail-title">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</h3>" +
-      '<p class="detail-subtitle">' + escapeHtml(event.location_raw || event.geocode_display_name || "Unknown location") + "</p>" +
+      '<p class="detail-subtitle">' + escapeHtml(displayLocationForEvent(event)) + "</p>" +
       "</div>" +
       '<div class="detail-grid">' +
       summaryRows.map(function (row) {
@@ -20276,7 +20288,10 @@
     const parts = [
       event.raw_event_block || "",
       event.description || "",
+      event.time_display || "",
+      event.location_display || "",
       event.location_raw || "",
+      event.duration_display || "",
       (event.references || []).join("\n"),
       event.source || "",
       event.mapping_notes || "",
@@ -22022,8 +22037,10 @@
       sort_date_iso: sortDateIso,
       date_precision: internCanonicalSummaryString(event.date_precision),
       time_raw: internCanonicalSummaryString(event.time_raw),
+      time_display: internCanonicalSummaryString(event.time_display),
       playback_sort_key: compactPlaybackSortKey,
       location_raw: internCanonicalSummaryString(event.location_raw),
+      location_display: internCanonicalSummaryString(event.location_display),
       source: internCanonicalSummaryString(event.source),
       type: internCanonicalSummaryString(event.type),
       coordinate_source: internCanonicalSummaryString(event.coordinate_source),

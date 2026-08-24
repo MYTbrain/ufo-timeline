@@ -222,7 +222,7 @@ def test_low_precision_filter_copy_does_not_claim_to_filter_place_labels():
         assert 'event.geocode_display_name || "Unresolved"' not in app_js
         popup_row_body = _extract_js_function_body(app_js, "popupResolvedPlaceRow")
         assert "event.geocode_display_name" in popup_row_body
-        assert 'if (!resolvedPlace) return "";' in popup_row_body
+        assert "displayLocationForEvent(event)" in popup_row_body
         assert '...(resolvedPlace ? [["Resolved Place", resolvedPlace]] : [])' in app_js
 
 
@@ -280,7 +280,7 @@ def test_visible_display_dedupe_collapses_exact_same_source_date_location_type()
     assert "visibleDisplayDuplicateKeyCache" not in app_js
     assert 'event.date_precision && event.date_precision !== "exact_day"' in app_js
     assert "event.sort_date_iso || event.date_raw" in app_js
-    assert "event.time_raw || event.time || \"\"" in app_js
+    assert "event.time_display || event.time_raw || event.time || \"\"" in app_js
     assert "displayLocationForEvent(event)" in app_js
     assert "event.type || event.shape_normalized || event.visual_type_group" in app_js
     assert "function suppressVisibleDisplayDuplicates(catalog)" in app_js
@@ -293,6 +293,21 @@ def test_visible_display_dedupe_collapses_exact_same_source_date_location_type()
     assert "return currentVisibleDisplayCatalog(visibleMappedCatalog);" in mapped_body
     assert "currentVisibleDisplayCatalog(result.visibleCatalog).length" in summary_body
 
+
+def test_reviewed_display_fields_are_preferred_without_hiding_raw_provenance():
+    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+
+    location_body = _extract_js_function_body(app_js, "displayLocationForEvent")
+    assert "event.location_display || event.location_raw" in location_body
+    assert "Source Location:" in app_js
+    assert "Reviewed Time" in app_js
+    assert '["Time Raw", event.time_raw]' in app_js
+    assert '["Location Raw", event.location_raw]' in app_js
+    assert '["Duration Raw", event.duration_raw]' in app_js
+    search_body = _extract_js_function_body(app_js, "serializeSearchableEvent")
+    assert "event.time_display" in search_body
+    assert "event.location_display" in search_body
+    assert "event.duration_display" in search_body
 
 def test_map_marker_clicks_do_not_rerender_results_list():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
