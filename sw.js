@@ -1,6 +1,6 @@
 "use strict";
 
-const RELEASE_ID = "location-label-normalization-v1-20260824-corsfix1";
+const RELEASE_ID = "location-label-normalization-v1-20260824-startup-preview1";
 const UPSTREAM_ORIGIN = "https://b0f0a0de.ufo-timeline.pages.dev";
 const UPSTREAM_APP_SHA256 = "b634c6264c4c964deda1cf614fd9b0a6271900311ae6a1e3402fb1bf03230f4d";
 
@@ -301,7 +301,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
       const prior = Array.isArray(event.reviewed_corrections) ? event.reviewed_corrections.filter(function (item) {
         return item && item.correction_id !== correction.correction_id;
       }) : [];
-      prior.push({ correction_id: correction.correction_id, runtime_release: "location-label-normalization-v1-20260824-corsfix1" });
+      prior.push({ correction_id: correction.correction_id, runtime_release: "location-label-normalization-v1-20260824-startup-preview1" });
       event.reviewed_corrections = prior;
     }
     return event;
@@ -369,6 +369,10 @@ function patchAppSource(source) {
     [
       "  function cacheFullEventRecord(event) {\n    if (!event || event.event_id == null) return;",
       "  function cacheFullEventRecord(event) {\n    event = applyRuntimeLocationDisplayNormalization(event);\n    if (!event || event.event_id == null) return;"
+    ],
+    [
+      "    const ready = startup.phase === \"Ready\" && startup.initialViewReady && !startup.errorText;\n    // A provisional preview is useful for startup work, but it is intentionally\n    // kept behind the cover. Dismiss only after the complete initial visual\n    // state (catalog, map, traces, facilities, and tiles) reaches Ready.\n    const canDismiss = ready;",
+      "    // Expose the interactive startup profile while the full canonical catalog\n    // continues ingesting in the background. Startup errors still restore the cover.\n    const canDismiss = startup.previewInteractive && !startup.errorText;"
     ]
   ];
 
