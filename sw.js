@@ -190,6 +190,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
   const RUNTIME_REVIEWED_LOCATION_CORRECTIONS = Object.freeze({
     "3483027136344169": {
       correction_id: "majestic-hatch-udb-2481-napa-2026-08-23",
+      expected_raw: "Farmlands, NAPA VALLEY, CA, Colorado, USA",
       fields: {
         time_display: "10:45",
         location_display: "Napa Valley near Napa, Napa County, California, USA",
@@ -219,6 +220,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
     },
     "1843028587236113": {
       correction_id: "majestic-overmeire-1022-oslofjord-location-2026-08-24",
+      expected_prefix: "At around 10:30 pm, a secretary and three of her friends approached a small fjord.",
       fields: {
         location_display: "Oslofjord, about 30 km from Oslo, Norway",
         city: "Oslo",
@@ -232,6 +234,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
     },
     "3021254738232912": {
       correction_id: "majestic-magonia-811-dunbar-location-2026-08-24",
+      expected_prefix: "Charleston (West Virginia) Tad Jones, 38, was driving near Charleston",
       fields: {
         location_display: "Interstate 64 near Dunbar, West Virginia, USA",
         city: "Dunbar",
@@ -245,6 +248,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
     },
     "2487272255366338": {
       correction_id: "majestic-overmeire-2808-hebrides-location-2026-08-24",
+      expected_prefix: "The trawler \"Avel-Mad, captain Jean Chorlay, returned to the port of Douarnenez",
       fields: {
         location_display: "At sea between St Kilda and Barra, Outer Hebrides, Scotland, UK",
         city: null,
@@ -261,6 +265,15 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
     runtimeApplyGenericLocationDisplay(event);
     const correction = RUNTIME_REVIEWED_LOCATION_CORRECTIONS[String(event.event_id)];
     if (!correction) return event;
+    const source = runtimeNormalizeLocationComponent(event.source_name || event.source);
+    const rawLocation = String(event.location_raw || "");
+    const rawMatches = correction.expected_raw
+      ? rawLocation === correction.expected_raw
+      : rawLocation.indexOf(correction.expected_prefix || "") === 0;
+    if (source !== "majestic" || !rawMatches) {
+      console.error("[ufo-location-release] reviewed correction guard rejected", event.event_id);
+      return event;
+    }
     const fullDetail = Boolean(event.canonical_event_id || event.raw_fields || event.raw_event_block);
     const summaryFields = new Set([
       "time_display", "location_display", "location_precision", "playback_sort_key",
