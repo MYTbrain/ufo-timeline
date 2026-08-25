@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>UFO Timeline — restoring</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #07151c; color: #eef9fb; }
+    main { width: min(34rem, calc(100% - 3rem)); }
+    h1 { font-size: 1.35rem; }
+    p { line-height: 1.55; color: #c6dce1; }
+    code { color: #9fe4ef; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Restoring the UFO Timeline…</h1>
+    <p id="status">Installing the verified map release and corrected location-label layer.</p>
+  </main>
+  <script>
+    (async function () {
+      const status = document.getElementById("status");
+      if (!("serviceWorker" in navigator)) {
+        status.textContent = "This browser does not support the recovery loader.";
+        return;
+      }
+      try {
+        await navigator.serviceWorker.register("/sw.js?v=location-label-normalization-v1-20260824", {
+          scope: "/",
+          updateViaCache: "none",
+        });
+        await navigator.serviceWorker.ready;
+        if (!navigator.serviceWorker.controller) {
+          await new Promise(function (resolve) {
+            navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true });
+            window.setTimeout(resolve, 4000);
+          });
+        }
+        window.location.replace("/?release=location-label-normalization-v1-20260824");
+      } catch (error) {
+        status.textContent = "Recovery loader failed: " + (error && error.message ? error.message : String(error));
+      }
+    })();
+  </script>
+</body>
+</html>
