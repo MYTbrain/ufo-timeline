@@ -1,0 +1,139 @@
+{
+  "schema_version": "claimed_ufo_bases_v1",
+  "overlay_group_id": "claimed_ufo_bases",
+  "overlay_group_name": "Claimed UFO Bases",
+  "sites": [
+    {
+      "site_id": "penniston_origin",
+      "display_name": "Origin",
+      "short_label": "Origin",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 52.0942532,
+      "lng": -13.131269,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Origin / Origin Year 8100 coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_sedona",
+      "display_name": "Sedona, Arizona, USA",
+      "short_label": "Sedona",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 34.800272,
+      "lng": -111.843567,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_belize",
+      "display_name": "Benque Viejo del Carmen, Cayo, Belize",
+      "short_label": "Belize",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 16.763177,
+      "lng": -89.117768,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_nazca",
+      "display_name": "Just outside Nazca, Peru",
+      "short_label": "Nazca",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": -14.701505,
+      "lng": -75.167043,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_naxos",
+      "display_name": "Temple of Apollo / Portara, Naxos, Greece",
+      "short_label": "Naxos",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 37.110195,
+      "lng": 25.372281,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_giza",
+      "display_name": "Giza Desert, Egypt",
+      "short_label": "Giza",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 29.977836,
+      "lng": 31.131649,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "penniston_taian",
+      "display_name": "Shandong / Taian, China",
+      "short_label": "Taian",
+      "source_group": "penniston_8100",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 36.256845,
+      "lng": 117.100632,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "as_listed",
+      "notes": "Coordinate from the Rendlesham/Penniston binary-code message."
+    },
+    {
+      "site_id": "project8200_mthayes",
+      "display_name": "Mt. Hayes Weather/geo cntrl",
+      "short_label": "Mt. Hayes",
+      "source_group": "project_8200",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 63.65,
+      "lng": -146.75,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "page_converted",
+      "notes": "Project 8200 location. Source page gives N 63° 39′, W 146° 45′."
+    },
+    {
+      "site_id": "project8200_mtperdido",
+      "display_name": "Mt. Perdido Main Base",
+      "short_label": "Mt. Perdido",
+      "source_group": "project_8200",
+      "claim_family": "claimed_ufo_bases",
+      "lat": 42.666667,
+      "lng": 0.033333,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "page_converted",
+      "notes": "Project 8200 location. Source page gives N 42° 40′, E 0° 02′."
+    },
+    {
+      "site_id": "project8200_mtinyangani",
+      "display_name": "Mt. Inyangani Maint & Tech",
+      "short_label": "Mt. Inyangani",
+      "source_group": "project_8200",
+      "claim_family": "claimed_ufo_bases",
+      "lat": -18.3,
+      "lng": 32.9,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "page_converted",
+      "notes": "Project 8200 location. Source page gives S 18° 18′, E 32° 54′."
+    },
+    {
+      "site_id": "project8200_mtzeil",
+      "display_name": "Mt. Zeil Personnel Center",
+      "short_label": "Mt. Zeil",
+      "source_group": "project_8200",
+      "claim_family": "claimed_ufo_bases",
+      "lat": -23.5,
+      "lng": 132.4,
+      "geo_precision": "claimed_site",
+      "geo_confidence": "page_converted",
+      "notes": "Project 8200 location. Source page gives S 23° 30′, E 132° 24′."
+    }
+  ]
+}

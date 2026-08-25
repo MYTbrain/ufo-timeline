@@ -1,0 +1,199 @@
+{
+  "bytes_per_row": 72,
+  "counts": {
+    "gap_bucket_counts": {
+      "gap_gt_30": 857,
+      "gap_le_1": 571748,
+      "gap_le_2": 1086,
+      "gap_le_30": 615,
+      "gap_le_7": 636
+    },
+    "mapped_trace_events": 574943,
+    "source_pair_counts": {
+      "majestic->majestic": 4629,
+      "majestic->mufon": 1150,
+      "majestic->nuforc": 664,
+      "majestic->phenomenainon_updb": 1543,
+      "majestic->ufocat": 9503,
+      "mufon->majestic": 1579,
+      "mufon->mufon": 87013,
+      "mufon->nuforc": 4251,
+      "mufon->phenomenainon_updb": 3290,
+      "mufon->ufocat": 5526,
+      "nuforc->majestic": 668,
+      "nuforc->mufon": 4431,
+      "nuforc->nuforc": 49567,
+      "nuforc->phenomenainon_updb": 33623,
+      "nuforc->ufocat": 47225,
+      "phenomenainon_updb->majestic": 1654,
+      "phenomenainon_updb->mufon": 3111,
+      "phenomenainon_updb->nuforc": 33728,
+      "phenomenainon_updb->phenomenainon_updb": 36578,
+      "phenomenainon_updb->ufocat": 41434,
+      "ufocat->majestic": 8959,
+      "ufocat->mufon": 5955,
+      "ufocat->nuforc": 47304,
+      "ufocat->phenomenainon_updb": 41471,
+      "ufocat->ufocat": 100086
+    },
+    "trace_segments": 574942
+  },
+  "endianness": "little",
+  "fields": [
+    {
+      "name": "from_event_id",
+      "offset": 0,
+      "size": 8,
+      "type": "uint64"
+    },
+    {
+      "name": "to_event_id",
+      "offset": 8,
+      "size": 8,
+      "type": "uint64"
+    },
+    {
+      "name": "from_lat",
+      "offset": 16,
+      "size": 8,
+      "type": "float64"
+    },
+    {
+      "name": "from_lon",
+      "offset": 24,
+      "size": 8,
+      "type": "float64"
+    },
+    {
+      "name": "to_lat",
+      "offset": 32,
+      "size": 8,
+      "type": "float64"
+    },
+    {
+      "name": "to_lon",
+      "offset": 40,
+      "size": 8,
+      "type": "float64"
+    },
+    {
+      "name": "from_sort_date_key",
+      "offset": 48,
+      "size": 4,
+      "type": "int32"
+    },
+    {
+      "name": "to_sort_date_key",
+      "offset": 52,
+      "size": 4,
+      "type": "int32"
+    },
+    {
+      "name": "gap_days",
+      "offset": 56,
+      "size": 4,
+      "type": "int32"
+    },
+    {
+      "lookup_table": "gap_buckets",
+      "name": "bucket_id",
+      "offset": 60,
+      "size": 4,
+      "type": "lookup:uint32"
+    },
+    {
+      "lookup_table": "source_pairs",
+      "name": "source_pair_id",
+      "offset": 64,
+      "size": 4,
+      "type": "lookup:uint32"
+    },
+    {
+      "name": "sequence_index",
+      "offset": 68,
+      "size": 4,
+      "type": "uint32"
+    }
+  ],
+  "files": {
+    "metadata": "trace_segments_meta.json",
+    "trace_segments": "trace_segments.bin"
+  },
+  "gap_bucket_definitions": [
+    {
+      "key": "gap_le_1",
+      "label": "≤1 day",
+      "max_days": 1
+    },
+    {
+      "key": "gap_le_2",
+      "label": "≤2 days",
+      "max_days": 2
+    },
+    {
+      "key": "gap_le_7",
+      "label": "≤7 days",
+      "max_days": 7
+    },
+    {
+      "key": "gap_le_30",
+      "label": "≤30 days",
+      "max_days": 30
+    },
+    {
+      "key": "gap_gt_30",
+      "label": ">30 days",
+      "max_days": null
+    }
+  ],
+  "lookup_tables": {
+    "gap_buckets": [
+      null,
+      "gap_gt_30",
+      "gap_le_1",
+      "gap_le_2",
+      "gap_le_30",
+      "gap_le_7"
+    ],
+    "source_pairs": [
+      null,
+      "majestic->majestic",
+      "majestic->mufon",
+      "majestic->nuforc",
+      "majestic->phenomenainon_updb",
+      "majestic->ufocat",
+      "mufon->majestic",
+      "mufon->mufon",
+      "mufon->nuforc",
+      "mufon->phenomenainon_updb",
+      "mufon->ufocat",
+      "nuforc->majestic",
+      "nuforc->mufon",
+      "nuforc->nuforc",
+      "nuforc->phenomenainon_updb",
+      "nuforc->ufocat",
+      "phenomenainon_updb->majestic",
+      "phenomenainon_updb->mufon",
+      "phenomenainon_updb->nuforc",
+      "phenomenainon_updb->phenomenainon_updb",
+      "phenomenainon_updb->ufocat",
+      "ufocat->majestic",
+      "ufocat->mufon",
+      "ufocat->nuforc",
+      "ufocat->phenomenainon_updb",
+      "ufocat->ufocat"
+    ]
+  },
+  "nulls": {
+    "sort_date_key": 0
+  },
+  "render_plan": {
+    "full_window_mode": "summary",
+    "row_order": "canonical_playback_order",
+    "runtime_warning": "Use trace_event_index for exact filtered static trace behavior; this full-sequence segment file is diagnostic/convenience data.",
+    "segment_rule": "consecutive mapped events after canonical playback ordering"
+  },
+  "row_count": 574942,
+  "schema_version": 1,
+  "struct_format": "<QQddddiiiIII"
+}

@@ -1,48 +1,1780 @@
-<!doctype html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" class="app-initializing">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex">
-  <title>UFO Timeline — restoring</title>
-  <style>
-    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #07151c; color: #eef9fb; }
-    main { width: min(34rem, calc(100% - 3rem)); }
-    h1 { font-size: 1.35rem; }
-    p { line-height: 1.55; color: #c6dce1; }
-    code { color: #9fe4ef; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
+  <title>UFO Timeline World Map</title>
+  <link rel="icon" href="data:,">
+  <link rel="dns-prefetch" href="//a.basemaps.cartocdn.com">
+  <link rel="preconnect" href="https://a.basemaps.cartocdn.com">
+  <link rel="stylesheet" href="./vendor/leaflet.css">
+  <link rel="stylesheet" href="./vendor/MarkerCluster.css">
+  <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="./styles.css?v=2026-08-12-context-evidence-v2">
+  <script>
+    // Retire the temporary recovery proxy only for browsers that still have it.
+    // New visitors without an existing root-scoped registration do no SW work.
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        const rootScope = new URL("/", window.location.href).href;
+        const existing = registrations.find(function (registration) {
+          return registration.scope === rootScope;
+        });
+        if (!existing) return undefined;
+        return navigator.serviceWorker.register(
+          "/sw.js?v=direct-pages-location-label-overlay-v1-20260824",
+          { scope: "/", updateViaCache: "none" }
+        ).then(function (registration) {
+          return registration.update();
+        });
+      }).catch(function (error) {
+        console.warn("[service-worker-retirement]", error);
+      });
+    }
+  </script>
+  <script>
+    window.setTimeout(function () {
+      document.documentElement.classList.remove("app-initializing");
+    }, 4000);
+  </script>
 </head>
 <body>
-  <main>
-    <h1>Restoring the UFO Timeline…</h1>
-    <p id="status">Installing the verified map release and corrected location-label layer.</p>
-  </main>
-  <script>
-    (async function () {
-      const status = document.getElementById("status");
-      if (!("serviceWorker" in navigator)) {
-        status.textContent = "This browser does not support the recovery loader.";
-        return;
-      }
-      try {
-        await navigator.serviceWorker.register("/sw.js?v=location-label-normalization-v1-20260824", {
-          scope: "/",
-          updateViaCache: "none",
-        });
-        await navigator.serviceWorker.ready;
-        if (!navigator.serviceWorker.controller) {
-          await new Promise(function (resolve) {
-            navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true });
-            window.setTimeout(resolve, 4000);
-          });
-        }
-        window.location.replace("/?release=location-label-normalization-v1-20260824");
-      } catch (error) {
-        status.textContent = "Recovery loader failed: " + (error && error.message ? error.message : String(error));
-      }
-    })();
-  </script>
+  <div class="page-shell">
+    <div id="protocol-warning" class="protocol-warning" hidden></div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="hero-title-row">
+          <h1>UFO Timeline World Map</h1>
+          <div class="mobile-appearance-controls" aria-label="Mobile appearance controls">
+            <button
+              id="mobile-theme-toggle"
+              class="secondary-button mobile-appearance-button mobile-theme-toggle"
+              type="button"
+              data-mode="dark"
+              aria-label="Switch to light mode"
+              title="Switch to light mode"
+            >
+              <svg class="mobile-appearance-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <g class="mobile-theme-icon-sun">
+                  <circle cx="12" cy="12" r="4.1"></circle>
+                  <path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7M18.6 18.6l-1.7-1.7M7.1 7.1 5.4 5.4"></path>
+                </g>
+                <path class="mobile-theme-icon-moon" d="M15.8 3.8a8 8 0 1 0 4.4 14.8A8.8 8.8 0 0 1 15.8 3.8Z"></path>
+              </svg>
+            </button>
+            <button
+              id="mobile-font-decrease"
+              class="secondary-button mobile-appearance-button mobile-font-button"
+              type="button"
+              aria-label="Decrease font size"
+              title="Decrease font size"
+            ><span aria-hidden="true">A-</span></button>
+            <button
+              id="mobile-font-increase"
+              class="secondary-button mobile-appearance-button mobile-font-button"
+              type="button"
+              aria-label="Increase font size"
+              title="Increase font size"
+            ><span aria-hidden="true">A+</span></button>
+          </div>
+        </div>
+        <p id="hero-event-count-hook" class="hero-hook">Explore UFO events over time</p>
+        <p class="hero-subtext">Compare sightings with airports, military bases, and overlays</p>
+        <p class="hero-attribution">Sightings datasets generously provided by <a href="https://ufosint.com/" target="_blank" rel="noopener noreferrer external">UFOSINT</a>.</p>
+        <div class="hero-view-switcher">
+          <div id="analysis-view-tablist" class="hero-view-tablist" role="tablist" aria-label="Primary data view">
+            <button
+              id="view-tab-map"
+              class="hero-view-tab is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="map-explorer-panel"
+              tabindex="0"
+            >Map Explorer</button>
+            <button
+              id="view-tab-analysis"
+              class="hero-view-tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="analysis-panel"
+              aria-disabled="true"
+              tabindex="-1"
+              disabled
+              title="Analysis becomes available when the core catalog is ready."
+            >Analysis</button>
+          </div>
+          <span id="analysis-tab-status" class="hero-view-status" role="status" aria-live="polite">Analysis is waiting for the core catalog.</span>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div id="appearance-panel" class="hero-toolcard compact-collapsible-panel">
+          <div class="compact-panel-head">
+            <div>
+              <span class="stat-label">Settings</span>
+              <strong class="compact-panel-title">Appearance</strong>
+            </div>
+            <button
+              id="toggle-appearance-panel"
+              class="secondary-button panel-toggle-button compact-toggle-button"
+              type="button"
+              aria-expanded="false"
+              aria-label="Expand appearance settings"
+              title="Expand appearance settings"
+            >+</button>
+          </div>
+          <div id="appearance-panel-body" class="compact-panel-body" hidden>
+            <label class="field compact-field appearance-field">
+              <span>Appearance</span>
+              <select id="appearance-mode">
+                <option value="auto">Auto / system</option>
+                <option value="light">Light</option>
+                <option value="dark" selected>Dark</option>
+              </select>
+            </label>
+            <label class="field compact-field appearance-field">
+              <span>Font Size</span>
+              <select id="font-scale-mode">
+                <option value="small">Small</option>
+                <option value="default" selected>Default</option>
+                <option value="large">Large</option>
+                <option value="xlarge">Extra Large</option>
+              </select>
+            </label>
+            <button id="focus-map-toggle" class="secondary-button focus-map-button" type="button" aria-pressed="false" title="Collapse side panes and full details so the map and timeline dominate the screen.">Focus Map</button>
+          </div>
+        </div>
+        <div id="hero-guide-slot" class="hero-guide-slot"></div>
+      </div>
+    </header>
+
+    <section id="user-guide" class="user-guide" aria-live="polite">
+      <div class="user-guide-head">
+        <div>
+          <p class="eyebrow">Quick Guide</p>
+          <p class="user-guide-title">Use the map and timeline together</p>
+        </div>
+        <button
+          id="toggle-user-guide"
+          class="secondary-button panel-toggle-button compact-toggle-button"
+          type="button"
+          aria-expanded="true"
+          aria-label="Collapse quick guide"
+          title="Collapse quick guide"
+        >-</button>
+      </div>
+        <div id="user-guide-body" class="user-guide-body">
+          <div class="guide-chip"><strong>Craft Only</strong><span>Use "Craft Only" in Type to isolate concrete craft and object shapes.</span></div>
+          <div class="guide-chip"><strong>Map Modes</strong><span>Switch between Points, Clusters, and Heatmap to explore density.</span></div>
+          <div class="guide-chip"><strong>Military / Overlays</strong><span>Toggle airports and military bases to compare sightings with infrastructure.</span></div>
+          <div class="guide-chip"><strong>Timeline</strong><span>Select a date range and press Play to watch events unfold.</span></div>
+          <div class="guide-chip"><strong>Famous Flaps</strong><span>Jump to the famous-flap presets to compare major UFO waves quickly.</span></div>
+          <div class="guide-chip"><strong>Interaction</strong><span>Click any dot to inspect the event. Use "Show Description" for details.</span></div>
+          <div class="guide-chip"><strong>Trace Analysis</strong><span>Use trace controls to reveal patterns between nearby sightings.</span></div>
+          <div class="guide-chip"><strong>Disclaimer</strong><span>Playback Trace is a neutral chronological cursor between mapped events during playback, not a claimed craft route.</span></div>
+        </div>
+    </section>
+
+    <section class="status-strip" aria-live="polite">
+      <p id="app-busy-status" class="busy-status" hidden></p>
+      <div id="dataset-status-slot" class="dataset-status-slot">
+        <div id="hero-status-panel" class="hero-status-panel">
+          <div class="hero-status-head">
+            <div>
+              <span class="stat-label">Dataset Status</span>
+              <strong class="hero-status-title">Counts And Span</strong>
+            </div>
+            <button
+              id="toggle-hero-status"
+              class="secondary-button panel-toggle-button compact-toggle-button"
+              type="button"
+              aria-expanded="false"
+              aria-label="Expand dataset status"
+              title="Expand dataset status"
+            >+</button>
+          </div>
+          <div id="hero-status-grid" class="hero-status-grid" hidden>
+            <div class="hero-status-item">
+              <span class="stat-label">All Events</span>
+              <strong id="total-events-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Mapped Events</span>
+              <strong id="mapped-total-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Filtered Events</span>
+              <strong id="results-count">0</strong>
+            </div>
+            <div class="hero-status-item">
+              <span class="stat-label">Filtered Mapped</span>
+              <strong id="mapped-results-count">0</strong>
+            </div>
+            <div class="hero-status-item hero-status-item-span">
+              <span class="stat-label">Dataset Span</span>
+              <strong id="dataset-span">Loading...</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-panel" aria-live="polite">
+      <div class="timeline-header">
+        <div class="timeline-header-copy">
+          <p class="eyebrow">Chronology Explorer</p>
+        </div>
+      </div>
+      <p id="timeline-panel-collapsed-note" class="note-copy panel-collapsed-note" hidden>Chronology Explorer is collapsed. Expand it to view the timeline, playback controls, and date-window tools.</p>
+      <div id="timeline-panel-body">
+      <div class="timeline-canvas-shell">
+        <div id="timeline-canvas-wrap" class="timeline-canvas-wrap">
+          <canvas id="timeline-canvas" height="164"></canvas>
+          <div id="timeline-selection" class="timeline-selection" hidden>
+            <button id="timeline-handle-left" class="timeline-handle timeline-handle-left" type="button" aria-label="Resize timeline start"></button>
+            <div id="timeline-selection-body" class="timeline-selection-body"></div>
+            <button id="timeline-handle-right" class="timeline-handle timeline-handle-right" type="button" aria-label="Resize timeline end"></button>
+          </div>
+          <div id="timeline-playback-marker" class="timeline-playback-marker" hidden></div>
+        </div>
+        <div id="timeline-ticks" class="timeline-ticks"></div>
+      </div>
+
+      <div class="timeline-panel-toggle-row">
+        <button
+          id="toggle-timeline-panel"
+          class="secondary-button panel-toggle-button compact-toggle-button timeline-toggle-button"
+          type="button"
+          aria-expanded="true"
+          aria-label="Collapse chronology details"
+          title="Collapse chronology details"
+        >-</button>
+      </div>
+
+      <div id="timeline-panel-details" class="timeline-panel-details">
+      <div class="timeline-toolbar">
+        <div class="timeline-control-row timeline-primary-row">
+          <div class="timeline-media-group" role="group" aria-label="Playback and zoom controls">
+            <button id="playback-prev" class="secondary-button icon-button" type="button" aria-label="Previous playback event" title="Previous playback event">&#x23EE;</button>
+            <button id="play-pause" class="secondary-button icon-button timeline-play-button timeline-play-button-primary" type="button" aria-label="Play playback" title="Play playback">&#x25B6;</button>
+            <button id="playback-next" class="secondary-button icon-button" type="button" aria-label="Next playback event" title="Next playback event">&#x23ED;</button>
+            <button id="playback-reset" class="secondary-button icon-button" type="button" aria-label="Reset playback" title="Reset playback">&#x21BB;</button>
+            <button id="timeline-zoom-out" class="secondary-button icon-button" type="button" aria-label="Zoom timeline out" title="Zoom timeline out">&#x2212;</button>
+            <button id="timeline-zoom-in" class="secondary-button icon-button" type="button" aria-label="Zoom timeline in" title="Zoom timeline in">+</button>
+          </div>
+
+          <div id="timeline-control-strip" class="timeline-controls">
+            <label class="field compact-field timeline-select-field timeline-speed-field">
+              <span>Speed</span>
+              <select id="playback-speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="4" selected>4x</option>
+                <option value="6">6x</option>
+                <option value="8">8x</option>
+                <option value="16">16x</option>
+              </select>
+            </label>
+
+            <label class="field compact-field timeline-select-field timeline-window-field">
+              <span>Window Size</span>
+              <select id="playback-window-size">
+                <option value="30">30 days</option>
+                <option value="90">3 months</option>
+                <option value="365" selected>1 year</option>
+                <option value="1826">5 years</option>
+                <option value="3652">10 years</option>
+                <option value="9126">25 years</option>
+                <option value="18262">50 years</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+
+            <label class="field compact-field timeline-select-field timeline-color-field">
+              <span>Color By</span>
+              <select id="color-mode">
+                <option value="single">Single Color</option>
+                <option value="type">Event Type</option>
+                <option value="craft_type" selected>Craft Type</option>
+                <option value="precision">Location Precision</option>
+              </select>
+            </label>
+
+            <button id="reset-time-range" class="secondary-button icon-button timeline-all-time-button" type="button">All Time</button>
+          </div>
+        </div>
+
+        <div class="timeline-control-row timeline-range-row" aria-label="Timeline range and preset controls">
+          <div class="field compact-field timeline-date-field">
+            <label for="timeline-start-date">Window Start</label>
+            <div class="date-hybrid-control">
+              <input id="timeline-start-date" type="text" inputmode="numeric" autocomplete="off" placeholder="1947 or 1947-07-01" aria-describedby="timeline-date-feedback">
+              <button class="secondary-button date-picker-button" type="button" data-date-picker-target="timeline-start-date-picker" aria-label="Choose Window Start from a calendar" title="Choose an exact start date">Calendar</button>
+              <input id="timeline-start-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="start">
+            </div>
+          </div>
+
+          <div class="field compact-field timeline-date-field">
+            <label for="timeline-end-date">Window End</label>
+            <div class="date-hybrid-control">
+              <input id="timeline-end-date" type="text" inputmode="numeric" autocomplete="off" placeholder="2026 or 1952-07" aria-describedby="timeline-date-feedback">
+              <button class="secondary-button date-picker-button" type="button" data-date-picker-target="timeline-end-date-picker" aria-label="Choose Window End from a calendar" title="Choose an exact end date">Calendar</button>
+              <input id="timeline-end-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="end">
+            </div>
+          </div>
+
+            <label class="field compact-field timeline-preset-field">
+            <span>Rolling Window</span>
+            <select id="timeline-window-presets" class="timeline-preset-select" aria-label="Rolling timeline window presets">
+              <option value="">Custom window</option>
+            </select>
+          </label>
+
+          <label class="field compact-field timeline-preset-field timeline-flap-preset-field">
+            <span>Famous Flaps</span>
+            <select id="timeline-flap-presets" class="timeline-preset-select" aria-label="Famous UFO flap presets">
+              <option value="">Choose flap</option>
+            </select>
+          </label>
+          <p id="timeline-date-feedback" class="date-range-feedback" role="status" aria-live="polite" hidden></p>
+        </div>
+      </div>
+
+      <div id="timeline-footer-panel" class="timeline-footer">
+        <div id="timeline-footer-copy" class="timeline-footer-copy">
+          <p id="playback-status" class="status-copy">Playback paused.</p>
+          <p id="playback-current-event" class="note-copy">Current playback event: none selected.</p>
+        </div>
+        <div id="timeline-footer-actions" class="timeline-footer-actions">
+          <label class="checkbox-field inline-checkbox playback-follow-toggle">
+            <input id="follow-playback-results" type="checkbox" checked>
+            <span>Follow Results</span>
+          </label>
+          <label class="checkbox-field inline-checkbox trail-legend-toggle">
+            <input id="show-trail-legend" type="checkbox">
+            <span>Show Trail Legend</span>
+          </label>
+          <button id="open-current-event" class="secondary-button" type="button" disabled>Open Current Event</button>
+        </div>
+      </div>
+      <div id="trace-controls-panel" class="trace-controls">
+          <div class="trace-toolbar">
+            <label class="field compact-field">
+              <span>Trace Mode</span>
+              <select id="trace-mode">
+                <option value="off">None</option>
+                <option value="playback" selected>Playback</option>
+                <option value="static">Static</option>
+              </select>
+            </label>
+            <label id="trace-persistence-field" class="field compact-field">
+              <span>Playback Persistence</span>
+              <select id="trace-persistence">
+                <option value="normal">Fade</option>
+                <option value="slow">Slow Fade</option>
+                <option value="persistent" selected>Hold</option>
+              </select>
+            </label>
+            <div class="trace-width-control">
+              <label class="field compact-field trace-width-field">
+                <span>Trace Width <output id="trace-width-value" for="trace-width-scale">Auto 100%</output></span>
+                <input id="trace-width-scale" type="range" min="5" max="100" step="5" value="100" aria-label="Trace width scale">
+              </label>
+              <label class="field compact-field trace-boldness-field">
+                <span>Boldness <output id="trace-boldness-value" for="trace-boldness-scale">100%</output></span>
+                <input id="trace-boldness-scale" type="range" min="50" max="180" step="5" value="100" aria-label="Trace boldness scale">
+              </label>
+              <div class="trace-width-preview" aria-hidden="true">
+                <span id="trace-width-preview-line"></span>
+              </div>
+              <div id="trace-width-presets" class="trace-width-presets" role="group" aria-label="Trace width presets">
+                <button class="trace-width-preset-button is-active" type="button" data-trace-width-preset="auto" aria-pressed="true">Auto</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="thin" aria-pressed="false">Thin</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="hairline" aria-pressed="false">Hairline</button>
+                <button class="trace-width-preset-button" type="button" data-trace-width-preset="default" aria-pressed="false">Default</button>
+              </div>
+            </div>
+          </div>
+        <div id="trace-bucket-controls" class="trace-bucket-controls" role="group" aria-label="Trace time-gap buckets">
+          <span class="trace-bucket-heading">Gap between sightings (days)</span>
+          <button class="trace-bucket-button is-active" type="button" data-trace-bucket="gap_le_1" aria-pressed="true" aria-label="Up to 1 day">&le;1</button>
+          <button class="trace-bucket-button is-active" type="button" data-trace-bucket="gap_le_2" aria-pressed="true" aria-label="More than 1 and up to 2 days">1&ndash;2</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_le_7" aria-pressed="false" aria-label="More than 2 and up to 7 days">2&ndash;7</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_le_30" aria-pressed="false" aria-label="More than 7 and up to 30 days">7&ndash;30</button>
+          <button class="trace-bucket-button" type="button" data-trace-bucket="gap_gt_30" aria-pressed="false" aria-label="More than 30 days">&gt;30</button>
+        </div>
+        <div id="trace-facility-filter" class="trace-facility-filter" role="group" aria-label="Trace facility proximity filter">
+          <div class="trace-facility-row trace-facility-primary-row">
+            <label class="checkbox-field inline-checkbox trace-facility-toggle">
+              <input id="trace-facility-filter-enabled" type="checkbox">
+              <span>Facility proximity</span>
+            </label>
+            <label class="field compact-field trace-facility-radius">
+              <span>Radius km</span>
+              <input id="trace-facility-radius" type="number" min="1" max="1000" step="1" value="5" disabled>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-evidence-row">
+            <label class="field compact-field trace-facility-evidence-field" for="trace-facility-evidence-mode">
+              <span>Evidence</span>
+              <select id="trace-facility-evidence-mode" disabled aria-describedby="trace-facility-evidence-help">
+                <option value="source_coordinates" selected>Strict mode</option>
+                <option value="include_generalized">Exploratory mode</option>
+              </select>
+            </label>
+            <p id="trace-facility-evidence-help" class="trace-facility-evidence-help">
+              <span aria-hidden="true">Exact coordinates and dates within recorded operating periods.</span>
+              <span class="sr-only">Strict mode includes only source-provided endpoint coordinates with exact event dates, and only when the facility's recorded operating period supports that date. Year-only opening or closing years remain uncertain.</span>
+            </p>
+          </div>
+          <div class="trace-facility-row trace-facility-display-options">
+            <label class="trace-facility-chip trace-facility-linked-only" title="Hide facilities that are not matched to visible traces">
+              <input id="trace-facility-linked-only" type="checkbox" checked disabled aria-label="Only show facilities matched to visible traces">
+              <span>Nearby facilities only</span>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-category-controls" role="group" aria-label="Trace proximity categories">
+            <span class="trace-facility-row-label">Start/End Near Facility</span>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="all" disabled>All</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-class-action="none" disabled>None</button>
+            <label class="trace-facility-chip trace-facility-chip-start">
+              <input type="checkbox" data-trace-facility-class="start" checked disabled aria-label="Start endpoint near facility">
+              <span>Start</span>
+            </label>
+            <label class="trace-facility-chip trace-facility-chip-end">
+              <input type="checkbox" data-trace-facility-class="end" checked disabled aria-label="End endpoint near facility">
+              <span>End</span>
+            </label>
+            <label class="trace-facility-chip trace-facility-chip-between">
+              <input type="checkbox" data-trace-facility-class="between" checked disabled aria-label="Both endpoints near facilities">
+              <span>Both ends</span>
+            </label>
+          </div>
+          <div class="trace-facility-row trace-facility-advanced" role="group" aria-label="Advanced connector intersection">
+            <span class="trace-facility-row-label">Advanced</span>
+            <label class="trace-facility-chip trace-facility-chip-passes">
+              <input type="checkbox" data-trace-facility-class="passes" disabled>
+              <span>Connector intersects facility radius</span>
+            </label>
+            <span class="trace-facility-advanced-note">Turn on Facility proximity and choose Exploratory mode.</span>
+          </div>
+          <div class="trace-facility-row trace-facility-source-controls" role="group" aria-label="Trace proximity facility sources">
+            <span class="trace-facility-row-label">Sources</span>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="all" disabled>All</button>
+            <button class="trace-facility-mini-button" type="button" data-trace-facility-source-action="none" disabled>None</button>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="military" checked disabled>
+              <span>Military</span>
+            </label>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="researchSites" checked disabled>
+              <span>Research</span>
+            </label>
+            <label class="trace-facility-chip">
+              <input type="checkbox" data-trace-facility-source="claimedUfoBases" disabled>
+              <span>Claimed UFO (unverified)</span>
+            </label>
+          </div>
+        </div>
+        <div class="trace-status-shell">
+          <p id="trace-status-summary" class="trace-status trace-status-summary" aria-live="polite" aria-atomic="true">0 traces</p>
+          <details id="trace-status-details" class="trace-status-details">
+            <summary>Info</summary>
+            <p id="trace-status" class="trace-status trace-status-details-copy"></p>
+            <p class="trace-truth-note">Chronology lines connect records in date order; they are not observed travel paths.</p>
+          </details>
+        </div>
+      </div>
+      </div>
+      </div>
+    </section>
+
+    <section id="detail-stage" class="detail-stage" aria-live="polite">
+      <div class="detail-stage-header">
+        <div>
+          <p class="eyebrow">Full Event View</p>
+          <h2 id="detail-stage-title">Full preserved event record</h2>
+        </div>
+        <div class="panel-header-actions">
+          <button id="toggle-detail-panel" class="secondary-button panel-toggle-button" type="button" aria-expanded="true">Minimize</button>
+        </div>
+      </div>
+      <p id="detail-panel-collapsed-note" class="note-copy panel-collapsed-note" hidden>Full Event View is minimized. Select any event again to reopen the preserved record.</p>
+      <div id="detail-stage-body">
+        <div id="detail-panel" class="detail-panel detail-panel-stage">
+          <p class="note-copy">Select a marker or result to inspect the full preserved event record.</p>
+        </div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <div id="filters-pane-shell" class="side-pane side-pane-left">
+      <aside class="controls-panel">
+        <div class="side-pane-toolbar">
+          <button
+            id="toggle-filters-pane"
+            class="secondary-button panel-toggle-button compact-toggle-button"
+            type="button"
+            aria-expanded="true"
+            aria-label="Collapse filters"
+            title="Collapse filters"
+          >-</button>
+        </div>
+        <section id="primary-filters-section" class="panel-section primary-filters-section">
+          <div id="primary-filters-heading-row" class="section-heading-row primary-filters-heading-row">
+            <div class="primary-filters-heading-copy">
+              <h2>Filters</h2>
+              <span id="primary-filters-flap-status" class="primary-filters-flap-status" aria-live="polite">Flap: None</span>
+            </div>
+            <button
+              id="toggle-primary-filters"
+              class="secondary-button subsection-toggle-button compact-toggle-button primary-filters-toggle-button"
+              type="button"
+              aria-expanded="true"
+              aria-label="Collapse filters"
+              title="Collapse filters"
+            >-</button>
+          </div>
+          <div id="primary-filters-body" class="primary-filters-body">
+            <label class="field">
+              <span>Keyword Search</span>
+              <input id="keyword-search" type="search" placeholder="Search raw blocks, descriptions, references, extra data">
+            </label>
+            <p id="search-status" class="status-copy compact-status" hidden></p>
+            <div class="two-column filter-date-grid">
+              <div class="field">
+                <label for="start-date">Start Date</label>
+                <div class="date-hybrid-control">
+                  <input id="start-date" type="text" inputmode="numeric" autocomplete="off" placeholder="1947 or 1947-07-01" aria-describedby="filter-date-feedback">
+                  <button class="secondary-button date-picker-button" type="button" data-date-picker-target="start-date-picker" aria-label="Choose Start Date from a calendar" title="Choose an exact start date">Calendar</button>
+                  <input id="start-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="start">
+                </div>
+              </div>
+              <div class="field">
+                <label for="end-date">End Date</label>
+                <div class="date-hybrid-control">
+                  <input id="end-date" type="text" inputmode="numeric" autocomplete="off" placeholder="2026 or 1952-07" aria-describedby="filter-date-feedback">
+                  <button class="secondary-button date-picker-button" type="button" data-date-picker-target="end-date-picker" aria-label="Choose End Date from a calendar" title="Choose an exact end date">Calendar</button>
+                  <input id="end-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="end">
+                </div>
+              </div>
+            </div>
+            <p id="filter-date-feedback" class="date-range-feedback" role="status" aria-live="polite" hidden></p>
+            <div class="filter-date-quick-actions" aria-label="Date window quick actions">
+              <button id="filter-all-time" class="secondary-button compact-chip-button" type="button">All Time</button>
+              <label class="field compact-field filter-date-quick-select">
+                <span class="sr-only">Famous Flaps</span>
+                <select id="filter-flap-presets" aria-label="Famous flaps quick action">
+                  <option value="">Famous Flaps</option>
+                </select>
+              </label>
+            </div>
+            <label class="checkbox-field">
+              <input id="hide-low-precision" type="checkbox">
+              <span>Hide low-precision coordinates (country, state/province, approximate, and unknown)</span>
+            </label>
+            <label class="checkbox-field">
+              <input id="hide-non-exact-dates" type="checkbox" checked>
+              <span>Hide month/year-only and other non-exact dates</span>
+            </label>
+          </div>
+        </section>
+
+        <section id="map-settings-section" class="panel-section">
+          <h2>Map</h2>
+          <div id="map-overlays-panel" class="overlay-panel">
+            <div class="panel-heading-row panel-heading-row-compact">
+              <h3>Map Overlays</h3>
+            </div>
+            <div class="overlay-chip-group" role="group" aria-label="Map overlays">
+              <button id="overlay-airports" class="overlay-chip" data-overlay-id="airports" data-overlay-kind="airports" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch overlay-chip-swatch-icon overlay-chip-swatch-airports" aria-hidden="true">
+                  <svg viewBox="0 0 20 18" focusable="false"><path d="M10 1c.8 0 1.4.6 1.4 1.4v4.3l6 3.2v1.8l-6-1.6v3.2l2 1.5V16L10 15l-3.4 1v-1.2l2-1.5v-3.2l-6 1.6V9.9l6-3.2V2.4C8.6 1.6 9.2 1 10 1Z"/></svg>
+                </span>
+                <span>Airports</span>
+              </button>
+              <button id="overlay-highways" class="overlay-chip" data-overlay-id="highways" data-overlay-kind="highways" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch overlay-chip-swatch-highways" aria-hidden="true"></span>
+                <span>Highways</span>
+              </button>
+              <button id="overlay-military" class="overlay-chip" data-overlay-id="military" data-overlay-kind="military" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch" aria-hidden="true"></span>
+                <span>Military bases</span>
+              </button>
+            </div>
+            <div id="military-branch-panel" class="overlay-subpanel" hidden>
+              <div class="panel-heading-row panel-heading-row-compact">
+                <h4>Military Branch</h4>
+              </div>
+              <div class="overlay-chip-group overlay-chip-group-branches" role="group" aria-label="Military base branches">
+                <button id="overlay-military-air" class="overlay-chip overlay-chip-branch" data-military-branch="air" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-air" aria-hidden="true">
+                    <svg viewBox="0 0 20 16" focusable="false"><path d="M1 2h18l-3.2 12L10 9.7 4.2 14Z"/></svg>
+                  </span>
+                  <span>Air</span>
+                </button>
+                <button id="overlay-military-naval" class="overlay-chip overlay-chip-branch" data-military-branch="naval" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-naval" aria-hidden="true">⚓</span>
+                  <span>Naval</span>
+                </button>
+                <button id="overlay-military-army" class="overlay-chip overlay-chip-branch" data-military-branch="army" type="button" aria-pressed="true">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-army" aria-hidden="true">
+                    <svg viewBox="0 0 22 16" focusable="false"><path d="M8 3h6l1.5 2H21v2h-6.5l-1-1H7L5.5 8H20l-2 5H5L2 8h2.2l2.3-3H8V3Zm-.8 7.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm3.8 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z"/></svg>
+                  </span>
+                  <span>Army</span>
+                </button>
+                <button id="overlay-military-other" class="overlay-chip overlay-chip-branch" data-military-branch="other" type="button" aria-pressed="false">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-shape overlay-chip-swatch-other" aria-hidden="true"></span>
+                  <span>Other</span>
+                </button>
+              </div>
+              <p id="military-branch-status" class="sr-only" role="status" aria-live="polite">Military overlay off.</p>
+            </div>
+            <div class="overlay-chip-group overlay-chip-group-secondary" role="group" aria-label="Additional map overlays">
+              <button id="overlay-research-sites" class="overlay-chip overlay-chip-secondary-row" data-overlay-id="researchSites" data-overlay-kind="research-sites" type="button" aria-pressed="false">
+                <span class="overlay-chip-swatch overlay-chip-swatch-research-sites" aria-hidden="true"></span>
+                <span class="overlay-chip-label">Research sites</span>
+                <span id="overlay-research-sites-count" class="overlay-chip-count">0</span>
+              </button>
+              <button id="overlay-animal-mutilations" class="overlay-chip overlay-chip-secondary-row is-active" data-overlay-kind="animal-mutilations" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="animal-mutilation-status" aria-label="Animal Mutilation Reports">
+                <span class="overlay-chip-swatch overlay-chip-swatch-animal-mutilations" aria-hidden="true"></span>
+                <span class="overlay-chip-label" aria-hidden="true">Mutilations</span>
+                <span id="overlay-animal-mutilations-count" class="overlay-chip-count" aria-hidden="true">0</span>
+              </button>
+              <div class="animal-mutilation-actions">
+                <button id="animal-mutilation-browser-open" class="secondary-button" type="button" aria-haspopup="dialog" aria-controls="animal-mutilation-browser">Browse all reports</button>
+              </div>
+              <button id="overlay-crop-circles" class="overlay-chip overlay-chip-secondary-row is-active" data-overlay-kind="crop-circles" data-default-enabled="true" type="button" aria-pressed="true" aria-describedby="crop-circle-status">
+                <span class="overlay-chip-swatch overlay-chip-swatch-crop-circles" aria-hidden="true"></span>
+                <span class="overlay-chip-label">Crop circles</span>
+                <span id="overlay-crop-circles-count" class="overlay-chip-count">0</span>
+              </button>
+            </div>
+            <p id="crop-circle-status" class="sr-only crop-circle-status" role="status" aria-live="polite" aria-atomic="true">Crop circles are on by default and will load after the main timeline is ready.</p>
+            <details id="crop-circle-chronology-controls" class="crop-circle-chronology-controls crop-circle-relation-controls" hidden>
+              <summary class="crop-circle-chronology-head">
+                <strong>Crop-circle relationships</strong>
+                <span class="crop-circle-chronology-key" aria-hidden="true"><i></i><i></i></span>
+              </summary>
+              <div class="crop-circle-chronology-body">
+              <p id="crop-circle-selected-summary" class="crop-circle-selected-summary">Select one crop spiral to inspect its radius and related UFO traces.</p>
+
+              <details id="crop-circle-ufo-relation-disclosure" class="crop-circle-relation-group crop-circle-ufo-relation-group" aria-disabled="true">
+                <summary id="crop-circle-ufo-relation-summary">UFO sighting → later crop record</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-ufo-relation-summary">
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Crop record date relative to sighting</span>
+                    <select id="crop-circle-ufo-relation-window" disabled aria-describedby="crop-circle-ufo-relation-help">
+                      <option value="off" selected>Off</option>
+                      <option value="same_day">Same date (order unknown)</option>
+                      <option value="after_1_7">Crop record 1–7 days after sighting</option>
+                      <option value="after_1_30">Crop record 1–30 days after sighting</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>UFO position quality</span>
+                    <select id="crop-circle-ufo-position-quality" disabled>
+                      <option value="source" selected>Source coordinates only</option>
+                      <option value="all">Include geocoded locations</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Selected crop position quality</span>
+                    <select id="crop-circle-ufo-crop-position-quality" disabled>
+                      <option value="field" selected>Exact + candidate field only</option>
+                      <option value="all">Include locality centroid</option>
+                    </select>
+                  </label>
+                </div>
+                <p id="crop-circle-ufo-relation-help" class="crop-circle-control-help">“After” means the selected crop record’s catalog/report date is later than the UFO sighting date. Candidates must also fall inside the selected radius. Locality-centroid crop positions are excluded unless explicitly included; their relation lines are fainter. This does not establish when the formation appeared.</p>
+                <div class="crop-circle-chronology-legend crop-circle-ufo-legend" aria-label="UFO-to-crop relationship line legend">
+                  <span><i class="is-ufo-same-day" aria-hidden="true"></i>Same date (order unknown)</span>
+                  <span><i class="is-ufo-later" aria-hidden="true"></i>UFO sighting → later crop record</span>
+                </div>
+                </div>
+              </details>
+
+              <details id="crop-circle-chronology-disclosure" class="crop-circle-relation-group crop-circle-crop-relation-group" aria-disabled="false">
+                <summary id="crop-circle-chronology-summary">Crop record → later crop record</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-chronology-summary">
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Later crop-record window</span>
+                    <select id="crop-circle-chronology-relation">
+                      <option value="off" selected>Off</option>
+                      <option value="same_day">Same catalog date (order unknown)</option>
+                      <option value="7">Next crop record 1–7 days later</option>
+                      <option value="30">Next crop record 1–30 days later</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Crop position quality</span>
+                    <select id="crop-circle-chronology-coordinate-scope" disabled>
+                      <option value="field" selected>Exact + candidate fields</option>
+                      <option value="all">Include locality centroids</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Maximum crop-record distance</span>
+                    <select id="crop-circle-chronology-max-distance" disabled>
+                      <option value="100">100 km</option>
+                      <option value="250" selected>250 km</option>
+                      <option value="500">500 km</option>
+                      <option value="1000">1,000 km</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="crop-circle-chronology-legend" aria-label="Crop-record progression line legend">
+                  <span><i class="is-same-day" aria-hidden="true"></i>Same catalog date (undirected)</span>
+                  <span><i class="is-later" aria-hidden="true"></i>Earlier → later crop record</span>
+                </div>
+                <p id="crop-circle-chronology-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Crop-to-crop progression is off.</p>
+                </div>
+              </details>
+
+              <details id="crop-circle-radius-disclosure" class="crop-circle-relation-group crop-circle-radius-group" aria-disabled="true">
+                <summary id="crop-circle-radius-summary">Selected crop radius and UFO traces</summary>
+                <div class="crop-circle-relation-body" role="group" aria-labelledby="crop-circle-radius-summary">
+                <div class="crop-circle-relation-grid">
+                  <label class="field compact-field">
+                    <span>Selected crop radius</span>
+                    <select id="crop-circle-radius-km" disabled>
+                      <option value="5">5 km</option>
+                      <option value="10">10 km</option>
+                      <option value="25" selected>25 km</option>
+                      <option value="50">50 km</option>
+                      <option value="100">100 km</option>
+                      <option value="250">250 km</option>
+                      <option value="500">500 km</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Trace hops</span>
+                    <select id="crop-circle-ufo-hop-depth" disabled>
+                      <option value="1" selected>1 — intersecting segment only</option>
+                      <option value="2">2 — plus one adjacent segment</option>
+                      <option value="3">3 hops</option>
+                      <option value="4">4 hops</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Hop direction</span>
+                    <select id="crop-circle-ufo-hop-direction" disabled>
+                      <option value="forward">Forward</option>
+                      <option value="backward">Backward</option>
+                      <option value="both" selected>Both</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="crop-circle-check-list">
+                  <label class="crop-circle-check"><input id="crop-circle-show-radius" type="checkbox" checked disabled><span>Show transparent radius</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-analyze-ufo-traces" type="checkbox" disabled><span>Show intersecting UFO trace network</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-highlight-intersections" type="checkbox" checked disabled><span>Emphasize only trace sections inside radius</span></label>
+                  <label class="crop-circle-check"><input id="crop-circle-focus-mode" type="checkbox" disabled><span>Focus view: show only crop circles, selected relations, and this UFO trace network</span></label>
+                </div>
+                <p class="crop-circle-control-help">Trace analysis is off until explicitly enabled, so selecting a crop record never builds the global UFO trace network automatically. Hop 1 is an existing filtered UFO trace segment that geometrically intersects the selected radius. Outside Focus view, existing traces are left unchanged and only the section inside the radius is emphasized. This trace view is independent of the UFO-to-crop date selector above. Connectors are exploratory, not evidence of travel, causation, or a shared craft.</p>
+                <p id="crop-circle-ufo-relation-status" class="note-copy compact-status" role="status" aria-live="polite" aria-atomic="true">Select a crop record to inspect nearby UFO relations and trace intersections.</p>
+                </div>
+              </details>
+
+              <p class="crop-circle-chronology-caveat">All dates are catalog/report dates. Discovery or publication may lag formation by days or weeks, so the map never labels these links as confirmed formation order or causation.</p>
+              </div>
+            </details>
+            <p id="animal-mutilation-status" class="sr-only animal-mutilation-status" role="status" aria-live="polite" aria-atomic="true">Animal Mutilation Reports are on by default and will load after the main timeline is ready. Browse all reports includes mapped, unmapped, and undated records.</p>
+            <div id="claimed-ufo-bases-panel" class="overlay-subpanel overlay-subpanel-compact overlay-subpanel-claimed-bases">
+              <div class="overlay-chip-group overlay-chip-group-claimed-bases" role="group" aria-label="Claimed UFO Bases controls">
+                <button id="overlay-claimed-ufo-bases-sites" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-sites" type="button" aria-pressed="false">
+                  <span class="overlay-chip-swatch overlay-chip-swatch-claimed-bases" aria-hidden="true"></span>
+                  <span>Show UFO sites</span>
+                </button>
+                <div id="claimed-ufo-bases-traces-row" class="overlay-claimed-bases-traces-row" hidden>
+                  <button id="overlay-claimed-ufo-bases-traces" class="overlay-chip overlay-chip-compact overlay-chip-claimed-control" data-overlay-kind="claimed-ufo-bases-traces" type="button" aria-pressed="false">
+                    <span class="overlay-chip-swatch overlay-chip-swatch-trace" aria-hidden="true"></span>
+                    <span>Show site traces</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div hidden aria-hidden="true">
+              <p id="tile-status"></p>
+              <p id="overlay-status"></p>
+            </div>
+          </div>
+          <div id="map-display-panel" class="overlay-panel overlay-panel-display">
+            <div class="panel-heading-row panel-heading-row-compact">
+              <h3>Map Display</h3>
+            </div>
+            <div class="map-settings-mode-row">
+              <label class="field compact-field">
+                <span>Basemap</span>
+                <select id="basemap-mode"></select>
+              </label>
+              <label class="field compact-field">
+                <span>Mode</span>
+                <select id="map-mode">
+                  <option value="auto">Auto</option>
+                  <option value="points">Points</option>
+                  <option value="clusters">Clusters</option>
+                  <option value="heatmap" selected>Heatmap</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div id="legend-panel" class="legend" hidden>
+            <div class="legend-head">
+              <span id="legend-title" class="legend-title">Legend</span>
+            </div>
+            <div id="legend-body" class="legend-body"></div>
+          </div>
+          <button id="fit-results" class="fit-button" type="button">Fit Map To Filtered Results</button>
+        </section>
+
+        <section id="categories-section" class="panel-section collapsible-panel-section" data-collapsible-section="categories">
+          <div class="section-heading-row">
+            <h2>Categories</h2>
+            <button id="toggle-categories-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="categories" aria-expanded="true" aria-label="Collapse categories" title="Collapse categories">-</button>
+          </div>
+          <div id="categories-section-body" class="collapsible-section-body" data-collapsible-section-body="categories">
+            <div class="field filter-field filter-subsection" data-collapsible-section="source">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Source</span>
+                <button id="toggle-source-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="source" aria-expanded="true" aria-label="Collapse source" title="Collapse source">-</button>
+              </div>
+              <div id="source-section-body" class="collapsible-section-body" data-collapsible-section-body="source">
+                <div class="filter-actions" data-filter-target="source-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                  </div>
+                  <span id="source-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="source-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="source-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Source filter options"></div>
+              </div>
+            </div>
+            <div class="field filter-field filter-subsection" data-collapsible-section="type">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Type</span>
+                <button id="toggle-type-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="type" aria-expanded="true" aria-label="Collapse type" title="Collapse type">-</button>
+              </div>
+              <div id="type-section-body" class="collapsible-section-body" data-collapsible-section-body="type">
+                <div class="filter-actions" data-filter-target="type-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                    <button class="filter-action-button" type="button" data-filter-action="craft_only">Craft Only</button>
+                  </div>
+                  <span id="type-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="type-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="type-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Type filter options"></div>
+              </div>
+            </div>
+            <div class="field filter-field filter-subsection" data-collapsible-section="precision">
+              <div class="filter-subsection-header">
+                <span class="filter-subsection-title">Location Precision</span>
+                <button id="toggle-precision-section" class="secondary-button subsection-toggle-button compact-toggle-button" type="button" data-collapsible-section-toggle="precision" aria-expanded="true" aria-label="Collapse location precision" title="Collapse location precision">-</button>
+              </div>
+              <div id="precision-section-body" class="collapsible-section-body" data-collapsible-section-body="precision">
+                <div class="filter-actions" data-filter-target="precision-filter">
+                  <div class="filter-action-buttons">
+                    <button class="filter-action-button" type="button" data-filter-action="all">All</button>
+                    <button class="filter-action-button" type="button" data-filter-action="none">None</button>
+                    <button class="filter-action-button" type="button" data-filter-action="invert">Invert</button>
+                  </div>
+                  <span id="precision-filter-state" class="filter-state-pill">All active</span>
+                </div>
+                <select id="precision-filter" class="filter-select-model" multiple size="7" hidden></select>
+                <div id="precision-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Location precision filter options"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <h2>Reports</h2>
+          <p class="note-copy">
+            Ranked unresolved locations: <a href="https://b0f0a0de.ufo-timeline.pages.dev/reports/ranked_unresolved_locations.csv">CSV</a> |
+            <a href="https://b0f0a0de.ufo-timeline.pages.dev/reports/ranked_unresolved_locations.json">JSON</a>
+          </p>
+          <p class="note-copy">
+            Full unresolved export: <a href="https://b0f0a0de.ufo-timeline.pages.dev/reports/unresolved_locations.csv">CSV</a> |
+            <a href="https://b0f0a0de.ufo-timeline.pages.dev/reports/unresolved_locations.json">JSON</a>
+          </p>
+        </section>
+      </aside>
+      <button id="expand-filters-pane" class="side-pane-restore side-pane-restore-left" type="button" hidden aria-expanded="false">Show Filters</button>
+      </div>
+
+      <section class="map-panel">
+        <div id="mobile-primary-filters-shell" class="mobile-primary-filters-shell" hidden>
+          <div id="mobile-primary-filters-slot" class="mobile-primary-filters-slot"></div>
+        </div>
+        <section id="map-explorer-panel" class="map-explorer-panel" role="tabpanel" aria-labelledby="view-tab-map" tabindex="0">
+        <div class="map-surface">
+          <aside id="map-control-cluster" class="map-control-cluster" aria-label="Map-adjacent controls">
+            <div id="map-control-cluster-handle" class="map-control-cluster-handle">
+              <div class="map-control-cluster-heading" hidden aria-hidden="true"></div>
+              <div class="map-control-cluster-header-actions">
+                <div class="map-control-header-playback" role="group" aria-label="Playback controls">
+                  <button
+                    id="cluster-header-playback-prev"
+                    class="secondary-button compact-media-button"
+                    type="button"
+                    aria-label="Previous playback event"
+                    title="Previous playback event"
+                  >&#x23EE;</button>
+                  <button
+                    id="cluster-header-play-pause"
+                    class="secondary-button compact-media-button compact-media-button-primary"
+                    type="button"
+                    aria-label="Play playback"
+                    title="Play playback"
+                  >&#x25B6;</button>
+                  <button
+                    id="cluster-header-playback-next"
+                    class="secondary-button compact-media-button"
+                    type="button"
+                    aria-label="Next playback event"
+                    title="Next playback event"
+                  >&#x23ED;</button>
+                  <label class="map-control-header-speed" aria-label="Playback speed">
+                    <select id="cluster-playback-speed" title="Playback speed">
+                      <option value="0.25">0.25x</option>
+                      <option value="0.5">0.5x</option>
+                      <option value="1">1x</option>
+                      <option value="2">2x</option>
+                      <option value="4" selected>4x</option>
+                      <option value="6">6x</option>
+                      <option value="8">8x</option>
+                      <option value="16">16x</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="map-control-quick-row">
+                  <div class="map-control-quick-controls" role="group" aria-label="Map and trace quick controls">
+                  <button
+                    id="cluster-quick-map-mode"
+                    class="secondary-button map-control-quick-button map-control-quick-button-map"
+                    type="button"
+                    data-state="points"
+                    aria-label="Cycle map mode"
+                    title="Cycle map mode"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <g class="quick-map-glyph quick-map-glyph-points">
+                        <circle cx="7" cy="8" r="2.2"></circle>
+                        <circle cx="15.5" cy="7.5" r="2"></circle>
+                        <circle cx="11.5" cy="15.5" r="2.4"></circle>
+                      </g>
+                      <g class="quick-map-glyph quick-map-glyph-heat">
+                        <circle cx="9" cy="10" r="4.4"></circle>
+                        <circle cx="15.5" cy="8.5" r="2.7"></circle>
+                        <circle cx="14" cy="15.5" r="3.6"></circle>
+                      </g>
+                      <g class="quick-map-glyph quick-map-glyph-clusters">
+                        <rect x="4.8" y="5.2" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="13" y="5.2" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="4.8" y="13.4" width="6.2" height="6.2" rx="1.4"></rect>
+                        <rect x="13" y="13.4" width="6.2" height="6.2" rx="1.4"></rect>
+                      </g>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-military"
+                    class="secondary-button map-control-quick-button map-control-quick-button-military"
+                    type="button"
+                    aria-label="Toggle military bases overlay"
+                    title="Toggle military bases overlay"
+                    aria-pressed="false"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M12 3 18.2 5.6v6.1c0 4.1-2.4 7.9-6.2 9.9-3.8-2-6.2-5.8-6.2-9.9V5.6L12 3Z"></path>
+                      <path d="M8.2 9.2h7.6M9.2 12h5.6M10.1 14.8h3.8" class="quick-military-detail"></path>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-research-sites"
+                    class="secondary-button map-control-quick-button map-control-quick-button-research"
+                    type="button"
+                    aria-label="Toggle Research Sites overlay"
+                    title="Toggle Research Sites overlay"
+                    aria-pressed="false"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M9 3h6M10 3v4.2l-4.3 7.3a3 3 0 0 0 2.6 4.5h7.4a3 3 0 0 0 2.6-4.5L14 7.2V3"></path>
+                      <path d="M8.2 13.4h7.6M9.4 10.7h5.2" class="quick-research-detail"></path>
+                    </svg>
+                  </button>
+                  <button
+                    id="cluster-quick-trace"
+                    class="secondary-button map-control-quick-button map-control-quick-button-trace"
+                    type="button"
+                    data-state="none"
+                    aria-label="Cycle trace mode"
+                    title="Cycle trace mode"
+                  >
+                    <svg class="map-control-quick-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="8.2" class="quick-trace-ring"></circle>
+                      <path d="M10 8.8 15.4 12 10 15.2Z" class="quick-trace-play"></path>
+                      <circle cx="12" cy="12" r="3.9" class="quick-trace-static"></circle>
+                    </svg>
+                  </button>
+                  </div>
+                  <div class="map-control-context-controls" role="group" aria-label="Context layer quick toggles">
+                  <button
+                    id="cluster-quick-crop-circles"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-crop"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map crop-circle-status"
+                    aria-label="Hide Crop circles overlay"
+                    title="Hide Crop circles overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-spiral" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    id="cluster-quick-animal-mutilations"
+                    class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-animal"
+                    type="button"
+                    aria-pressed="true"
+                    aria-controls="map animal-mutilation-status"
+                    aria-label="Hide Animal Mutilation Reports overlay"
+                    title="Hide Animal Mutilation Reports overlay"
+                  >
+                    <span class="map-legend-marker-sample map-legend-marker-sample-cow" aria-hidden="true"></span>
+                  </button>
+                  </div>
+                </div>
+                <div class="map-control-proximity-control" role="group" aria-label="Facility proximity quick setting">
+                  <button
+                    id="cluster-quick-facility-proximity"
+                    class="secondary-button map-control-proximity-button"
+                    type="button"
+                    data-state="off"
+                    aria-pressed="false"
+                    aria-controls="trace-facility-filter-enabled trace-facility-radius"
+                    aria-label="Facility proximity quick cycle. Current: Off. Next: 3 kilometers."
+                    title="Facility proximity is off. Click to enable at 3 kilometers."
+                  >
+                    <svg class="map-control-proximity-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="7.5"></circle>
+                      <circle cx="12" cy="12" r="2.5"></circle>
+                      <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"></path>
+                    </svg>
+                    <span class="map-control-proximity-label">Facility proximity</span>
+                    <span id="cluster-quick-facility-value" class="map-control-proximity-value" aria-hidden="true">Off</span>
+                  </button>
+                </div>
+                <div id="map-quick-control-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+                <button
+                  id="toggle-map-control-cluster"
+                  class="secondary-button panel-toggle-button map-control-collapse-button"
+                  type="button"
+                  aria-expanded="true"
+                  aria-label="Collapse controls"
+                  title="Collapse controls"
+                >-</button>
+              </div>
+            </div>
+            <div id="map-control-cluster-body" class="map-control-cluster-body">
+              <details id="map-control-section-view" class="map-control-section" data-map-control-section="view" open>
+                <summary>
+                  <span class="map-control-summary-label">View</span>
+                  <span id="map-control-view-summary-state" class="map-control-summary-state">Heatmap</span>
+                </summary>
+                <div id="map-control-view-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-sightings" class="map-control-section" data-map-control-section="sightings">
+                <summary>
+                  <span class="map-control-summary-label">Sightings</span>
+                  <span id="map-control-sightings-summary-state" class="map-control-summary-state">Craft type</span>
+                </summary>
+                <div id="map-control-sightings-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-overlays" class="map-control-section" data-map-control-section="overlays" open>
+                <summary>
+                  <span class="map-control-summary-label">Overlays</span>
+                  <span id="map-control-overlays-summary-state" class="map-control-summary-state">2 on</span>
+                </summary>
+                <div id="map-control-overlays-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-traces" class="map-control-section" data-map-control-section="traces">
+                <summary>
+                  <span class="map-control-summary-label">Traces</span>
+                  <span id="map-control-traces-summary-state" class="map-control-summary-state">Static</span>
+                </summary>
+                <div id="map-control-traces-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-facility" class="map-control-section" data-map-control-section="facility">
+                <summary>
+                  <span class="map-control-summary-label">Facility proximity</span>
+                  <span id="map-control-facility-summary-state" class="map-control-summary-state">Off</span>
+                </summary>
+                <div id="map-control-facility-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-area" class="map-control-section" data-map-control-section="area">
+                <summary>
+                  <span class="map-control-summary-label">Area selection</span>
+                  <span id="map-control-area-summary-state" class="map-control-summary-state">0 hops</span>
+                </summary>
+                <div id="map-control-area-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-advanced" class="map-control-section" data-map-control-section="advanced">
+                <summary>
+                  <span class="map-control-summary-label">Advanced</span>
+                  <span id="map-control-advanced-summary-state" class="map-control-summary-state">Optional</span>
+                </summary>
+                <div id="map-control-advanced-slot" class="map-control-slot">
+                  <div id="map-label-size-controls" class="map-label-size-controls">
+                    <label class="map-label-size-field" for="map-label-scale-mode">
+                      <span>Map label size</span>
+                      <select id="map-label-scale-mode" aria-describedby="map-label-size-note">
+                        <option value="small">Small</option>
+                        <option value="default" selected>Standard</option>
+                        <option value="large">Large</option>
+                      </select>
+                    </label>
+                    <p id="map-label-size-note" class="map-label-size-note">Large labels may show fewer place names.</p>
+                  </div>
+                </div>
+              </details>
+              <div class="map-control-action-row">
+                <button id="clear-traces" class="secondary-button map-control-action-button map-control-action-button-secondary" type="button">Clear Trace</button>
+                <button id="reset-view" class="secondary-button reset-view-button map-control-action-button" type="button">Reset Map</button>
+              </div>
+            </div>
+            <div
+              id="map-control-cluster-resize-handle"
+              class="map-control-cluster-resize-handle"
+              role="separator"
+              aria-label="Resize controls panel"
+              aria-orientation="vertical"
+            >
+              <span class="map-control-cluster-resize-grip" aria-hidden="true"></span>
+            </div>
+          </aside>
+          <div id="map"></div>
+          <div id="map-startup-overlay" class="map-startup-overlay" aria-live="polite">
+            <div class="map-startup-card">
+              <p class="eyebrow map-startup-eyebrow">Loading Default View</p>
+              <strong id="map-startup-title" class="map-startup-title">Preparing 1954 France Sept-Nov</strong>
+              <p id="map-startup-detail" class="map-startup-detail">Loading the France flap, facility overlays, and static trace view.</p>
+              <div class="map-startup-progress" aria-hidden="true">
+                <div class="map-startup-progress-track">
+                  <div id="map-startup-progress-fill" class="map-startup-progress-fill"></div>
+                </div>
+                <span id="map-startup-progress-label" class="map-startup-progress-label">0%</span>
+              </div>
+            </div>
+          </div>
+          <div id="area-selection-draw-surface" class="area-selection-draw-surface" hidden aria-hidden="true"></div>
+          <div id="map-legend-panel" class="map-legend">
+            <div class="map-legend-head">
+              <strong class="map-legend-title">Legend</strong>
+              <button
+                id="reset-map-legend"
+                class="map-legend-reset-button"
+                type="button"
+                aria-label="Reset legend filters, overlays, and craft colors"
+                title="Reset legend filters, overlays, and craft colors"
+              ><span aria-hidden="true">&#x21BA;</span></button>
+              <button
+                id="toggle-map-legend"
+                class="secondary-button panel-toggle-button compact-toggle-button"
+                type="button"
+                aria-expanded="true"
+                aria-label="Collapse map legend"
+                title="Collapse map legend"
+              >-</button>
+            </div>
+            <span id="map-legend-status" class="sr-only" role="status" aria-live="polite"></span>
+            <div id="map-legend-body" class="map-legend-body"></div>
+          </div>
+          <div id="area-selection-shell" class="area-selection-shell">
+            <section id="area-selection-panel" class="area-selection-panel" aria-live="polite">
+              <div class="area-selection-panel-head">
+                <strong class="area-selection-panel-title">Area Filter</strong>
+                <span id="area-selection-summary" class="area-selection-summary">0 regions</span>
+              </div>
+              <div id="area-selection-empty-state" class="area-selection-empty-state" hidden>No sightings or traces selected.</div>
+              <div class="area-selection-tool-row" role="group" aria-label="Area selection drawing tools">
+                <button
+                  id="area-selection-tool-rectangle"
+                  class="secondary-button area-selection-tool-button"
+                  type="button"
+                  aria-pressed="true"
+                  title="Draw rectangle selection"
+                >Rect</button>
+                <button
+                  id="area-selection-tool-circle"
+                  class="secondary-button area-selection-tool-button"
+                  type="button"
+                  aria-pressed="false"
+                  title="Draw circle selection"
+                >Circle</button>
+                <button
+                  id="exit-area-selection"
+                  class="secondary-button area-selection-tool-button area-selection-tool-button-exit"
+                  type="button"
+                  title="Exit Area Select mode"
+                >Exit</button>
+              </div>
+              <div class="area-selection-action-row" role="group" aria-label="Area selection actions">
+                <button id="undo-area-selection" class="secondary-button area-selection-action-button" type="button">Undo</button>
+                <button id="clear-area-selection" class="secondary-button area-selection-action-button" type="button">Clear</button>
+              </div>
+              <div class="chronological-neighborhood-controls" aria-labelledby="chronological-neighborhood-title">
+                <p id="chronological-neighborhood-title" class="area-selection-option-heading">Chronological Neighborhood</p>
+                <div class="chronological-neighborhood-control-grid">
+                  <label class="field compact-field">
+                    <span>Depth</span>
+                    <select id="area-selection-depth" aria-label="Chronological Neighborhood depth">
+                      <option value="0" selected>0 hops</option>
+                      <option value="1">1 hop</option>
+                      <option value="2">2 hops</option>
+                      <option value="3">3 hops</option>
+                      <option value="4">4 hops</option>
+                    </select>
+                  </label>
+                  <label class="field compact-field">
+                    <span>Direction</span>
+                    <select id="area-selection-direction" aria-label="Chronological Neighborhood direction">
+                      <option value="forward" selected>Forward</option>
+                      <option value="backward">Backward</option>
+                      <option value="both">Both</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="area-selection-option-group">
+                <p class="area-selection-option-heading">Select</p>
+                <label class="area-selection-check">
+                  <input id="area-selection-select-traces" type="checkbox" checked>
+                  <span>Traces intersecting areas</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-select-events" type="checkbox">
+                  <span>Sightings inside areas</span>
+                </label>
+              </div>
+              <div class="area-selection-option-group">
+                <p class="area-selection-option-heading">Show</p>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-selected-traces" type="checkbox" checked>
+                  <span>Selected traces</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-events-from-traces" type="checkbox" checked>
+                  <span>Sightings from traces</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-selected-events" type="checkbox">
+                  <span>Selected sightings</span>
+                </label>
+                <label class="area-selection-check">
+                  <input id="area-selection-show-traces-from-events" type="checkbox">
+                  <span>Traces from sightings</span>
+                </label>
+              </div>
+            </section>
+          </div>
+          <section id="chronological-neighborhood-inspector" class="chronological-neighborhood-inspector" hidden aria-label="Chronological adjacency inspector" aria-live="polite">
+            <div class="chronological-neighborhood-inspector-head">
+              <strong>Chronological Adjacency</strong>
+              <button id="chronological-neighborhood-inspector-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="chronological-neighborhood-inspector-body" class="chronological-neighborhood-inspector-body"></div>
+          </section>
+          <div id="map-playback-date-badge" class="map-playback-date-badge" hidden></div>
+          <div id="map-description-panel" class="map-description-panel" hidden>
+            <div class="map-description-shell">
+              <div class="map-description-head">
+                <strong class="map-description-title">Event Description</strong>
+                <button id="map-description-close" class="secondary-button map-description-close" type="button">Close</button>
+              </div>
+              <pre id="map-description-text" class="map-description-text"></pre>
+              <div class="map-description-actions">
+                <button id="map-description-open-details" class="secondary-button" type="button">Open Full Details</button>
+              </div>
+            </div>
+          </div>
+          <section id="crop-circle-detail-panel" class="crop-circle-detail-panel" hidden aria-hidden="true" aria-label="Crop-circle details" aria-live="polite">
+            <div class="crop-circle-detail-head">
+              <strong>Crop Circle</strong>
+              <button id="crop-circle-detail-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="crop-circle-detail-body" class="crop-circle-detail-body"></div>
+          </section>
+          <section id="animal-mutilation-detail-panel" class="animal-mutilation-detail-panel" hidden aria-hidden="true" aria-label="Animal mutilation report details" aria-live="polite">
+            <div class="animal-mutilation-detail-head">
+              <strong>Animal Mutilation Report</strong>
+              <button id="animal-mutilation-detail-close" class="secondary-button" type="button">Close</button>
+            </div>
+            <div id="animal-mutilation-detail-body" class="animal-mutilation-detail-body"></div>
+          </section>
+        </div>
+        <div
+          id="map-height-resize-rail"
+          class="map-height-resize-rail"
+          role="separator"
+          tabindex="0"
+          aria-label="Resize map height"
+          aria-orientation="horizontal"
+          aria-controls="map map-control-cluster map-legend-panel"
+          aria-valuemin="0"
+          aria-valuemax="2400"
+          aria-valuenow="0"
+          title="Drag down to make the map taller. The default map height is the minimum. Double-click to reset."
+          hidden
+        >
+          <span class="map-height-resize-grip" aria-hidden="true"></span>
+          <span id="map-height-resize-label" class="map-height-resize-label">Drag down to expand map</span>
+        </div>
+        </section>
+        <section id="analysis-panel" class="analysis-panel" role="tabpanel" aria-labelledby="view-tab-analysis" tabindex="0" hidden inert aria-hidden="true">
+          <header class="analysis-header">
+            <div class="analysis-header-copy">
+              <p class="eyebrow">Evidence-first exploration</p>
+              <h2 id="analysis-title">Statistical Analysis</h2>
+              <p id="analysis-scope-summary" class="analysis-scope-summary">Patterns describe the reports matching the current timeline and filters. They do not establish travel, causation, authenticity, or phenomenon incidence.</p>
+            </div>
+            <div class="analysis-header-actions">
+              <div class="analysis-context-controls" aria-label="Context catalogs included in Analysis">
+                <div class="analysis-context-control">
+                  <button id="analysis-include-crop-circles" class="secondary-button analysis-context-switch" type="button" role="switch" aria-checked="true" aria-describedby="analysis-crop-control-status">
+                    <span>Include Crop Circles</span><span class="analysis-switch-track" aria-hidden="true"><span></span></span>
+                  </button>
+                  <a id="analysis-view-crop-analysis" class="analysis-context-view-link" href="#analysis-crop-context">View Crop Analysis</a>
+                  <span id="analysis-crop-control-status" class="analysis-context-control-status" role="status" aria-live="polite">Included</span>
+                </div>
+                <div class="analysis-context-control">
+                  <button id="analysis-include-animal-reports" class="secondary-button analysis-context-switch" type="button" role="switch" aria-checked="true" aria-describedby="analysis-animal-control-status">
+                    <span>Include Animal Reports</span><span class="analysis-switch-track" aria-hidden="true"><span></span></span>
+                  </button>
+                  <a id="analysis-view-animal-analysis" class="analysis-context-view-link" href="#analysis-animal-context">View Animal Analysis</a>
+                  <span id="analysis-animal-control-status" class="analysis-context-control-status" role="status" aria-live="polite">Included</span>
+                </div>
+              </div>
+              <div class="analysis-export-controls" role="group" aria-label="Download Analysis evidence package">
+                <button id="analysis-export-json" class="secondary-button" type="button" disabled>Download JSON</button>
+                <button id="analysis-export-csv" class="secondary-button" type="button" disabled>Download CSV</button>
+              </div>
+            </div>
+          </header>
+          <div id="analysis-workspace-toolbar" class="analysis-workspace-toolbar">
+            <div class="analysis-toolbar-controls">
+              <button
+                id="analysis-date-range-chip"
+                class="secondary-button analysis-date-range-chip"
+                type="button"
+                aria-expanded="false"
+                aria-controls="analysis-date-popover"
+              >
+                <span>Date range</span>
+                <strong id="analysis-date-range-chip-label">All time</strong>
+                <span id="analysis-date-range-chip-mode" class="analysis-date-range-chip-mode">Internal structure</span>
+              </button>
+              <div id="analysis-date-popover" class="analysis-date-popover" aria-hidden="true" inert>
+                <div class="analysis-date-controls" role="group" aria-labelledby="analysis-date-controls-label">
+                  <span id="analysis-date-controls-label" class="sr-only">Analysis date range</span>
+                  <div class="field compact-field analysis-date-field">
+                    <label for="analysis-start-date">From</label>
+                    <div class="date-hybrid-control">
+                      <input id="analysis-start-date" type="text" inputmode="numeric" autocomplete="off" placeholder="1947 or 1947-07-01" aria-describedby="analysis-date-feedback">
+                      <button class="secondary-button date-picker-button" type="button" data-date-picker-target="analysis-start-date-picker" aria-label="Choose Analysis start date from a calendar" title="Choose an exact start date">Calendar</button>
+                      <input id="analysis-start-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="start">
+                    </div>
+                  </div>
+                  <div class="field compact-field analysis-date-field">
+                    <label for="analysis-end-date">To</label>
+                    <div class="date-hybrid-control">
+                      <input id="analysis-end-date" type="text" inputmode="numeric" autocomplete="off" placeholder="2026 or 1952-07" aria-describedby="analysis-date-feedback">
+                      <button class="secondary-button date-picker-button" type="button" data-date-picker-target="analysis-end-date-picker" aria-label="Choose Analysis end date from a calendar" title="Choose an exact end date">Calendar</button>
+                      <input id="analysis-end-date-picker" class="date-native-picker" type="date" tabindex="-1" aria-hidden="true" data-date-group="end">
+                    </div>
+                  </div>
+                  <div class="analysis-date-actions" role="group" aria-label="Apply Analysis date range">
+                    <button id="analysis-all-time" class="secondary-button compact-chip-button" type="button">All Time</button>
+                    <button id="analysis-apply-date-range" class="secondary-button compact-chip-button analysis-date-apply-button" type="button">Apply</button>
+                  </div>
+                  <p id="analysis-date-feedback" class="date-range-feedback" role="alert" aria-live="assertive" hidden></p>
+                </div>
+                <div class="analysis-comparison-controls">
+                  <label class="field compact-field analysis-baseline-field">
+                    <span id="analysis-baseline-label">Reference baseline</span>
+                    <select id="analysis-baseline" aria-describedby="analysis-baseline-note">
+                      <option value="whole_corpus_structure" hidden>All records — internal structure</option>
+                      <option value="other_dates_balanced" selected>Other dates, balanced</option>
+                      <option value="previous_equal_duration">Previous equal-duration period</option>
+                      <option value="full_catalog">Full catalog (descriptive)</option>
+                    </select>
+                  </label>
+                  <div id="analysis-mode-status" class="analysis-mode-status" role="status" aria-live="polite">
+                    <span>Analysis mode</span>
+                    <strong id="analysis-mode-label">Cohort comparison</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="analysis-section-nav" class="analysis-section-nav" role="tablist" aria-label="Analysis sections">
+              <button id="analysis-section-tab-overview" class="is-active" type="button" role="tab" aria-selected="true" aria-controls="analysis-section-overview" tabindex="0">Overview</button>
+              <button id="analysis-section-tab-time" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-time" tabindex="-1">Time</button>
+              <button id="analysis-section-tab-craft" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-craft" tabindex="-1">Craft</button>
+              <button id="analysis-section-tab-geography" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-geography" tabindex="-1">Geography</button>
+              <button id="analysis-section-tab-spatial" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-spatial" tabindex="-1">Spatial Evidence</button>
+              <button id="analysis-section-tab-crops" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-crops" tabindex="-1">Crop Circles</button>
+              <button id="analysis-section-tab-animals" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-animals" tabindex="-1">Animal Reports</button>
+              <button id="analysis-section-tab-facilities" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-facilities" tabindex="-1">Facilities</button>
+              <button id="analysis-section-tab-context" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-context" tabindex="-1">Evidence Gates</button>
+              <button id="analysis-section-tab-sources-quality" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-sources-quality" tabindex="-1">Sources &amp; Quality</button>
+            </div>
+          </div>
+          <p id="analysis-baseline-note" class="analysis-baseline-note">Reference reports preserve the active non-date filters and exclude the selected date window.</p>
+          <p id="analysis-computation-status" class="analysis-computation-status" role="status" aria-live="polite" hidden></p>
+
+          <div id="analysis-state-region" class="analysis-state-region" aria-live="polite" aria-atomic="true">
+            <div id="analysis-loading" class="analysis-state-card analysis-state-loading" role="status">
+              <span class="analysis-loading-indicator" aria-hidden="true"></span>
+              <div><strong>Preparing analysis</strong><p id="analysis-loading-message">Waiting for the first analysis request.</p></div>
+            </div>
+            <div id="analysis-empty" class="analysis-state-card" role="status" hidden>
+              <strong>No reports match this cohort</strong>
+              <p id="analysis-empty-message">Adjust the shared timeline or filters to compare a larger cohort.</p>
+            </div>
+            <div id="analysis-error" class="analysis-state-card analysis-state-error" role="alert" hidden>
+              <strong>Analysis could not be computed</strong>
+              <p id="analysis-error-message">The map and shared filters are still available.</p>
+              <button id="analysis-error-retry" class="secondary-button" type="button">Retry analysis</button>
+            </div>
+          </div>
+
+          <div id="analysis-content" class="analysis-content" hidden inert>
+            <section id="analysis-section-overview" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-overview" aria-hidden="false" tabindex="0">
+              <div class="analysis-section-heading">
+                <div><p class="eyebrow">Cohort overview</p><h3 id="analysis-overview-title">Coverage and comparison</h3></div>
+                <p class="analysis-exploratory-label">Exploratory · descriptive, not causal</p>
+              </div>
+              <div id="analysis-cohort-banner" class="analysis-cohort-banner" aria-label="Active analysis cohort">
+                <div id="analysis-summary-grid" class="analysis-summary-grid">
+                <article id="analysis-active-count-card" class="analysis-summary-card"><span id="analysis-active-count-label">Active reports</span><strong id="analysis-active-count">—</strong></article>
+                <article id="analysis-reference-count-card" class="analysis-summary-card"><span>Reference reports</span><strong id="analysis-reference-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Mapped</span><strong id="analysis-mapped-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Unmapped</span><strong id="analysis-unmapped-count">—</strong></article>
+                <article class="analysis-summary-card"><span>Missing required fields</span><strong id="analysis-missing-count">—</strong></article>
+                </div>
+                <details class="analysis-eligibility-strip analysis-supporting-details" aria-labelledby="analysis-coverage-title">
+                  <summary id="analysis-coverage-title">Evidence pathway details</summary>
+                  <p class="analysis-card-note">Open this only when you need the exact record counts retained at each gate; the visual briefing below shows the same pathway as percentages.</p>
+                  <div id="analysis-coverage-chart" class="analysis-chart" data-analysis-chart="coverage"></div>
+                </details>
+              </div>
+              <div class="analysis-visual-briefing" aria-labelledby="analysis-visual-briefing-title">
+                <div class="analysis-visual-briefing-heading">
+                  <div><p class="eyebrow">Visual briefing</p><h4 id="analysis-visual-briefing-title">The cohort at a glance</h4></div>
+                  <p>Every graphic is linked to the current date range and filters.</p>
+                </div>
+                <div class="analysis-visual-briefing-grid">
+                  <article class="analysis-card analysis-overview-orbit-card"><h5>Evidence coverage</h5><p class="analysis-card-question">How much of the matched cohort survives the key mapping and evidence gates?</p><div id="analysis-overview-coverage-visual" class="analysis-chart" data-analysis-chart="overview-coverage-visual"></div></article>
+                  <article class="analysis-card analysis-overview-mosaic-card"><h5>Craft composition</h5><p class="analysis-card-question">Rebalance the mosaic to reveal the categories hidden by dominant labels such as Light.</p><div id="analysis-overview-craft-mosaic" class="analysis-chart" data-analysis-chart="overview-craft-mosaic"></div></article>
+                  <article class="analysis-card analysis-overview-context-card"><h5>Context pulse</h5><p class="analysis-card-question">See the available crop, animal, and facility evidence without treating proximity as causation.</p><div id="analysis-overview-context-visual" class="analysis-chart" data-analysis-chart="overview-context-visual"></div></article>
+                </div>
+              </div>
+              <details id="analysis-methodology" class="analysis-methodology">
+                <summary>Methodology &amp; data quality</summary>
+                <div class="analysis-methodology-body">
+                  <dl class="analysis-metadata-grid">
+                    <div><dt>Unit</dt><dd id="analysis-unit-label">Reports</dd></div>
+                    <div><dt>Source mix</dt><dd id="analysis-source-mix">Waiting</dd></div>
+                    <div><dt>Date precision</dt><dd id="analysis-date-precision">Waiting</dd></div>
+                    <div><dt>Location precision</dt><dd id="analysis-location-precision">Waiting</dd></div>
+                    <div><dt>Dataset hash</dt><dd id="analysis-dataset-hash">Waiting</dd></div>
+                  </dl>
+                  <p id="analysis-policy-warning" class="analysis-policy-warning">Generalized coordinates remain separated from exact source coordinates. Chronology connectors never enter travel or proximity statistics.</p>
+                </div>
+              </details>
+              <article class="analysis-card analysis-pattern-card analysis-overview-evidence-card" aria-labelledby="analysis-overview-evidence-title">
+                <h4 id="analysis-overview-evidence-title">Evidence signals and qualified patterns</h4>
+                <div class="analysis-overview-evidence-grid">
+                  <section class="analysis-overview-signal-pane" aria-labelledby="analysis-comparison-title"><h5 id="analysis-comparison-title">Adjusted signal spectrum</h5><p class="analysis-card-question">Which supported differences are largest, and how uncertain are they?</p><div id="analysis-comparison-chart" class="analysis-chart" data-analysis-chart="comparison"></div></section>
+                  <section class="analysis-overview-pattern-pane" aria-labelledby="analysis-pattern-title"><div class="analysis-card-heading"><div><p class="eyebrow">Guarded Pattern Finder</p><h5 id="analysis-pattern-title">Qualified exploratory shifts</h5></div><span id="analysis-pattern-count" class="results-count-pill">0</span></div><p class="analysis-card-note">Only findings passing the sample, effect, uncertainty, false-discovery, and stability gates appear here.</p><ol id="analysis-pattern-list" class="analysis-pattern-list"><li class="analysis-pattern-empty">No qualified findings have been computed yet.</li></ol></section>
+                </div>
+              </article>
+            </section>
+
+            <section id="analysis-section-time" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-time" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Time</p><h3 id="analysis-time-title">Reporting activity through time</h3></div><p class="analysis-section-note">Comparisons are reporting-pattern signals, not incidence estimates.</p></div>
+              <p id="analysis-reporting-delay-status" class="analysis-readiness-summary" role="status">Role-preserving reporting-delay evidence loads only when Time is requested.</p>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide analysis-time-series-card"><h4 id="analysis-time-series-title">Adaptive reporting timeline</h4><p id="analysis-time-series-question" class="analysis-card-question">Switch between report volume with uncertainty, source-balanced activity, and collection-change diagnostics on one ordered time axis.</p><div id="analysis-time-series-chart" class="analysis-chart" data-analysis-chart="time-series"></div></article>
+                <details class="analysis-card analysis-card-wide analysis-reporting-delay-card analysis-supporting-details analysis-dashboard-support"><summary>Reporting timing evidence</summary><p class="analysis-card-question">How long after an exact occurrence date was the event explicitly reported, while reported and posted dates remain separate source roles?</p><div id="analysis-reporting-delay-chart" class="analysis-chart" data-analysis-chart="reporting-delay"></div><details class="analysis-supporting-details"><summary>Adjusted reporting-delay comparison</summary><p class="analysis-card-note">Only non-negative exact-day intervals enter source–era–macroregion adjusted comparisons. A present invalid reported date cannot be replaced by a posting date.</p><div id="analysis-reporting-delay-comparison-chart" class="analysis-chart" data-analysis-chart="reporting-delay-comparison"></div></details><details class="analysis-supporting-details"><summary>Reported observation duration</summary><p id="analysis-duration-status" class="analysis-readiness-summary" role="status">Typed duration evidence loads only when Time is requested.</p><p class="analysis-card-question">How are explicit or source-documented observation durations distributed after exact, approximate, censored, and unresolved values are kept distinct?</p><div id="analysis-duration-chart" class="analysis-chart" data-analysis-chart="duration"></div><details class="analysis-supporting-details"><summary>Adjusted duration comparison</summary><p class="analysis-card-note">Only exact values and closed ranges contained within one duration bin can enter source–era–macroregion adjusted comparisons. Approximate UFOCAT codes remain descriptive.</p><div id="analysis-duration-comparison-chart" class="analysis-chart" data-analysis-chart="duration-comparison"></div></details></details><details class="analysis-supporting-details"><summary>Source-clock time of day</summary><p id="analysis-time-of-day-status" class="analysis-readiness-summary" role="status">Typed source-clock evidence loads only when Time is requested.</p><p class="analysis-card-question">How are explicit source clock times distributed after approximate, range, qualitative, midnight/noon sentinel, invalid, and unknown-timezone evidence remain distinct?</p><div id="analysis-time-of-day-chart" class="analysis-chart" data-analysis-chart="time-of-day"></div><details class="analysis-supporting-details"><summary>Adjusted source-clock comparison</summary><p class="analysis-card-note">Only exact, non-sentinel clock values enter source–era–macroregion comparisons. Unknown timezone never becomes UTC, solar time, or twilight state.</p><div id="analysis-time-of-day-comparison-chart" class="analysis-chart" data-analysis-chart="time-of-day-comparison"></div></details></details></details>
+                <details class="analysis-card analysis-card-wide analysis-month-craft-card analysis-supporting-details analysis-dashboard-support"><summary>Recurring month-by-craft signal</summary><p class="analysis-card-question">Which supported craft and month combinations recur beyond their adjusted expectation?</p><div id="analysis-month-year-chart" class="analysis-chart" data-analysis-chart="month-craft"></div></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-craft" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-craft" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Craft</p><h3 id="analysis-craft-title">Reported craft categories</h3></div><p class="analysis-section-note">Unknown and low-confidence classifications stay visible.</p></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-craft-mosaic-card"><h4>Craft composition mosaic</h4><p class="analysis-card-question">Tile area shows report share; color shows whole-corpus intensity or the adjusted difference for a selected date range.</p><div id="analysis-craft-distribution-chart" class="analysis-chart" data-analysis-chart="craft-distribution"></div></article>
+                <details class="analysis-card analysis-craft-era-card analysis-supporting-details analysis-dashboard-support"><summary>Craft by era</summary><p class="analysis-card-question">Which craft categories are over- or under-represented within each chronological era?</p><div id="analysis-craft-era-chart" class="analysis-chart" data-analysis-chart="craft-era"></div></details>
+                <details class="analysis-card analysis-card-wide analysis-confidence-strip-card analysis-supporting-details analysis-dashboard-support"><summary>Classification confidence</summary><div id="analysis-craft-confidence-chart" class="analysis-chart analysis-confidence-strip" data-analysis-chart="craft-confidence"></div><details class="analysis-supporting-details"><summary>Source-reported color evidence</summary><p id="analysis-color-status" class="analysis-readiness-summary" role="status">Typed color evidence loads only when Craft is requested.</p><p class="analysis-card-question">Which explicit source-reported colors remain after object-surface, emitted-light, changing, compound, descriptor-only, and unknown-role evidence stay distinct?</p><div id="analysis-color-chart" class="analysis-chart" data-analysis-chart="color"></div><details class="analysis-supporting-details"><summary>Role-preserving adjusted comparison</summary><p class="analysis-card-note">Comparisons use source, era, macroregion, and the same explicit color role. An unspecified role never becomes object surface or emitted light, and color is never promoted into Pattern Finder.</p><div id="analysis-color-comparison-chart" class="analysis-chart" data-analysis-chart="color-comparison"></div></details></details></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-geography" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-geography" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Geography</p><h3 id="analysis-geography-title">Country evidence</h3></div><p class="analysis-section-note">Reporting geography is not incidence or risk.</p></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide analysis-country-evidence-card"><h4>Country evidence</h4><p class="analysis-card-question">Where are matched reports concentrated by country, and where do supported comparisons differ from conditional expectation?</p><div id="analysis-geography-grid-chart" class="analysis-chart analysis-country-map" data-analysis-chart="geography-grid"></div></article>
+                <details class="analysis-card analysis-card-wide analysis-supporting-details analysis-dashboard-support"><summary>Geography by era</summary><p class="analysis-card-question">How does supported reporting geography change across chronological eras?</p><div id="analysis-geography-time-chart" class="analysis-chart" data-analysis-chart="geography-time"></div></details>
+                <details class="analysis-card analysis-card-wide analysis-supporting-details analysis-geography-sensitivity-card"><summary>Advanced equal-area sensitivity</summary><p class="analysis-card-question">Test whether country results depend on spatial binning. A pinned land silhouette and labeled longitude/latitude grid make each source-coordinate and generalized-coordinate cell geographically recognizable.</p><div id="analysis-geography-sensitivity-chart" class="analysis-chart" data-analysis-chart="geography-sensitivity"></div></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-spatial" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-spatial" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Spatial Evidence</p><h3 id="analysis-spatial-title">Qualified point-based associations</h3></div><p class="analysis-section-note">Report-marker associations only. Chronology connectors are never analyzed.</p></div>
+              <p id="analysis-spatial-status" class="analysis-readiness-summary" role="status">Spatial evidence loads only when this section is requested.</p>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide"><h4>Craft co-occurrence</h4><p class="analysis-card-question">Which craft categories appear near one another more or less often than a stratified null expects?</p><div class="analysis-spatial-eligibility"><h5>High-precision co-occurrence pool</h5><div id="analysis-spatial-eligibility-chart" class="analysis-chart analysis-spatial-eligibility-chart" data-analysis-chart="spatial-eligibility"></div></div><details id="analysis-spatial-matrix-disclosure" class="analysis-supporting-details analysis-spatial-matrix-support"><summary>Craft co-occurrence matrix</summary><div id="analysis-cooccurrence-chart" class="analysis-chart" data-analysis-chart="cooccurrence"></div></details><details class="analysis-supporting-details analysis-dashboard-support"><summary>Coordinate evidence quality</summary><p id="analysis-coordinate-evidence-spatial-status" class="analysis-readiness-summary" role="status">Source-coordinate evidence loads only when Spatial Evidence or Sources &amp; Quality is requested.</p><p class="analysis-card-question">Which mapped reports retain source-provided coordinates after generalized markers, broad-country inconsistencies, and unresolved lineage conflicts remain separate?</p><div id="analysis-coordinate-evidence-spatial-chart" class="analysis-chart" data-analysis-chart="coordinate-evidence-spatial"></div><details class="analysis-supporting-details"><summary>Adjusted coordinate-quality comparison</summary><div id="analysis-coordinate-evidence-spatial-comparison-chart" class="analysis-chart" data-analysis-chart="coordinate-evidence-spatial-comparison"></div></details></details></article>
+                <details id="analysis-spatial-context-disclosure" class="analysis-card analysis-card-wide analysis-supporting-details analysis-dashboard-support"><summary>Context-marker neighborhoods</summary><p class="analysis-card-question">Across distance rings and day lags, where do unique crop or animal location-date clusters have more or fewer qualifying UFO report markers than matched control dates?</p><div id="analysis-context-neighborhood-chart" class="analysis-chart" data-analysis-chart="context-neighborhoods"></div><section id="analysis-context-category-card" class="analysis-card-subsection analysis-context-category-panel" hidden aria-labelledby="analysis-context-category-title"><h5 id="analysis-context-category-title">Craft and context features</h5><p class="analysis-card-question">Which supported craft categories vary across crop morphology or pooled animal species groups?</p><div id="analysis-context-category-chart" class="analysis-chart" data-analysis-chart="context-categories"></div></section></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-crops" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-crops" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Crop circles</p><h3>Crop formations and nearby report context</h3></div><p class="analysis-section-note">Descriptive context only; proximity does not establish a relationship or cause.</p></div>
+              <article id="analysis-crop-context" class="analysis-context-group">
+                <div class="analysis-context-heading"><div><h4 id="analysis-crop-context-title">Crop-circle records</h4><p id="analysis-crop-context-status">Waiting for the enabled context projection.</p></div><span class="analysis-context-badge">Descriptive</span></div>
+                <div id="analysis-crop-excluded" class="analysis-context-excluded" role="status" hidden>
+                  <strong>Crop circles are excluded from this analysis.</strong>
+                  <p>The catalog remains available. Use “Include Crop Circles” above to recompute its descriptive and gated evidence.</p>
+                </div>
+                <div id="analysis-crop-content" class="analysis-context-content">
+                <div class="analysis-card-grid">
+                  <article class="analysis-card analysis-card-span-6"><h5>Records over time</h5><div id="analysis-crop-time-chart" class="analysis-chart" data-analysis-chart="crop-time"></div></article>
+                  <article class="analysis-card analysis-card-span-6 analysis-context-feature-card"><h5>Craft and crop context</h5><p class="analysis-card-question">Which reported craft categories vary across the available crop-morphology lanes?</p><div id="analysis-crop-craft-context-chart" class="analysis-chart" data-analysis-chart="crop-craft-context"></div></article>
+                  <details class="analysis-card analysis-card-span-6 analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Catalog composition</summary><div class="analysis-context-subchart"><h6>Provisional morphology</h6><div id="analysis-crop-morphology-chart" class="analysis-chart" data-analysis-chart="crop-morphology"></div></div><div class="analysis-context-subchart"><h6>Crop type</h6><div id="analysis-crop-type-chart" class="analysis-chart" data-analysis-chart="crop-type"></div></div></details>
+                  <details class="analysis-card analysis-card-wide analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Location, coverage, and point evidence</summary><div class="analysis-context-subchart-grid"><div class="analysis-context-subchart"><h6>Coordinate class</h6><div id="analysis-crop-coordinate-chart" class="analysis-chart" data-analysis-chart="crop-coordinate"></div></div><div class="analysis-context-subchart"><h6>Field coverage</h6><div id="analysis-crop-coverage-chart" class="analysis-chart" data-analysis-chart="crop-coverage"></div></div></div><div class="analysis-context-subchart analysis-context-spatial-subchart"><h6>Bounded-field and locality-marker neighborhoods</h6><p class="analysis-card-question">Distance-ring × day-lag estimates remain separate for bounded field candidates and rough locality markers.</p><div id="analysis-crop-spatial-chart" class="analysis-chart analysis-context-spatial-chart" data-analysis-chart="crop-spatial"></div></div></details>
+                </div>
+                </div>
+              </article>
+            </section>
+
+            <section id="analysis-section-animals" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-animals" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Animal reports</p><h3>Animal reports and nearby sighting context</h3></div><p class="analysis-section-note">Reported and unreviewed; public-marker uncertainty remains explicit.</p></div>
+              <article id="analysis-animal-context" class="analysis-context-group">
+                <div class="analysis-context-heading"><div><h4 id="analysis-animal-context-title">Animal mutilation reports</h4><p id="analysis-animal-context-status">Waiting for the enabled context projection.</p></div><span class="analysis-context-badge">Reported · unreviewed</span></div>
+                <div id="analysis-animal-excluded" class="analysis-context-excluded" role="status" hidden>
+                  <strong>Animal reports are excluded from this analysis.</strong>
+                  <p>The catalog remains available. Use “Include Animal Reports” above to recompute its descriptive and gated evidence.</p>
+                </div>
+                <div id="analysis-animal-content" class="analysis-context-content">
+                <div class="analysis-card-grid">
+                  <article class="analysis-card analysis-card-span-6"><h5>Reports over time</h5><div id="analysis-animal-time-chart" class="analysis-chart" data-analysis-chart="animal-time"></div></article>
+                  <article class="analysis-card analysis-card-span-6 analysis-context-feature-card"><h5>Craft and animal context</h5><p class="analysis-card-question">Which reported craft categories vary across pooled common-language animal groups?</p><div id="analysis-animal-craft-context-chart" class="analysis-chart" data-analysis-chart="animal-craft-context"></div></article>
+                  <details class="analysis-card analysis-card-span-6 analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Report composition</summary><div class="analysis-context-subchart"><h6>Species groups</h6><div id="analysis-animal-species-chart" class="analysis-chart" data-analysis-chart="animal-species"></div></div><div class="analysis-context-subchart"><h6>Review status</h6><div id="analysis-animal-status-chart" class="analysis-chart" data-analysis-chart="animal-status"></div></div></details>
+                  <details class="analysis-card analysis-card-wide analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Date, coverage, and public-marker evidence</summary><div class="analysis-context-subchart-grid"><div class="analysis-context-subchart"><h6>Date precision</h6><div id="analysis-animal-date-precision-chart" class="analysis-chart" data-analysis-chart="animal-date-precision"></div></div><div class="analysis-context-subchart"><h6>Field coverage</h6><div id="analysis-animal-coverage-chart" class="analysis-chart" data-analysis-chart="animal-coverage"></div></div></div><div class="analysis-context-subchart analysis-context-spatial-subchart"><h6>Public-marker uncertainty and contamination audit</h6><p class="analysis-card-question">Generalized public markers support rough association estimates only; originating UFO and publisher matches are audited and excluded.</p><div id="analysis-animal-spatial-chart" class="analysis-chart analysis-context-spatial-chart" data-analysis-chart="animal-spatial"></div></div></details>
+                </div>
+                </div>
+              </article>
+            </section>
+
+            <section id="analysis-section-facilities" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-facilities" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Facilities</p><h3>Craft composition near qualified facilities</h3></div><p class="analysis-section-note">Only temporally active, qualified markers enter inference; claimed UFO sites remain descriptive.</p></div>
+              <article class="analysis-card analysis-card-wide analysis-facility-dashboard-card"><h4>Facility proximity profile</h4><p class="analysis-card-question">How does reported craft composition differ inside qualified facility neighborhoods compared with matched distance bands?</p><div id="analysis-facility-context-chart" class="analysis-chart" data-analysis-chart="facility-context"></div></article>
+            </section>
+
+            <section id="analysis-section-context" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-context" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Evidence gates</p><h3 id="analysis-context-title">Cross-domain readiness and lineage</h3></div><p class="analysis-section-note">This view explains what each context lane can and cannot support.</p></div>
+              <p id="analysis-context-status" class="analysis-section-status analysis-readiness-summary analysis-context-status" role="status" aria-live="polite" data-analysis-state="ready">Evidence-gate details load only when this dashboard is opened.</p>
+              <article class="analysis-card analysis-card-wide analysis-context-readiness-card"><h4>Cross-domain readiness</h4><p class="analysis-card-question">Which crop, animal, and facility evidence lanes pass each provenance, location, date, lineage, review, and sample gate?</p><p class="analysis-card-note">This matrix separates missing analytical contracts from failed evidence gates. It never treats unavailable source facts as zeros or fills them with inferred values.</p><div id="analysis-cross-domain-readiness-chart" class="analysis-chart" data-analysis-chart="cross-domain-readiness"></div><div class="analysis-legacy-chart" hidden aria-hidden="true"><div id="analysis-crop-readiness-chart" data-analysis-chart="crop-readiness"></div><div id="analysis-animal-readiness-chart" data-analysis-chart="animal-readiness"></div></div></article>
+              <article id="analysis-relationship-context" class="analysis-context-group">
+                <div class="analysis-context-heading"><div><h4>Relationship evidence</h4><p>Inherited relationship records remain separate from recomputed proximity evidence.</p></div><span class="analysis-context-badge">Descriptive</span></div>
+                <div class="analysis-card-grid">
+                  <article class="analysis-card analysis-card-wide analysis-relationship-readiness-card"><h5>Relationship reconciliation</h5><p class="analysis-card-question">Which inherited relationship records are explicit-source, computed candidates, analyst-reviewed, reconciled, quarantined, or eligible for independent association testing?</p><div id="analysis-relationship-readiness-chart" class="analysis-chart" data-analysis-chart="relationship-readiness"></div></article>
+                </div>
+              </article>
+            </section>
+
+            <section id="analysis-section-sources-quality" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-sources-quality" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Sources &amp; Quality</p><h3 id="analysis-sources-quality-title">Collection and missingness</h3></div></div>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-span-6 analysis-source-composite-card"><h4>Source collection</h4><section class="analysis-context-subchart"><h5>Source composition</h5><div id="analysis-source-composition-chart" class="analysis-chart" data-analysis-chart="source-composition"></div></section><details class="analysis-supporting-details"><summary>Source mix over time</summary><div id="analysis-source-time-chart" class="analysis-chart" data-analysis-chart="source-time"></div></details><details class="analysis-supporting-details analysis-dashboard-support"><summary>Explicit witness counts</summary><p id="analysis-witness-count-status" class="analysis-readiness-summary" role="status">Witness-count evidence loads only when Sources &amp; Quality is requested.</p><p class="analysis-card-question">What does NUFORC explicitly record for witness count when missing values, source sentinels, qualitative party sizes, credential labels, and extreme counts remain separate?</p><div id="analysis-witness-count-chart" class="analysis-chart" data-analysis-chart="witness-count"></div><p class="analysis-card-note">Descriptive NUFORC evidence only. Active/reference inference, cross-source comparison, Pattern Finder, and credibility or incidence claims are suppressed.</p></details><details class="analysis-supporting-details analysis-dashboard-support"><summary>Coordinate provenance and quality</summary><p id="analysis-coordinate-evidence-status" class="analysis-readiness-summary" role="status">Source-coordinate evidence loads only when this dashboard or Spatial Evidence is requested.</p><p class="analysis-card-question">How much source-coordinate evidence remains usable after origin, precision, broad-country consistency, and unresolved conflicts are kept explicit?</p><div id="analysis-coordinate-evidence-chart" class="analysis-chart" data-analysis-chart="coordinate-evidence"></div><details class="analysis-supporting-details"><summary>Adjusted coordinate-quality comparison</summary><p class="analysis-card-note">Only source-provided coordinates enter source–era–macroregion comparisons. Generalized markers, unresolved rows, and broad-country inconsistencies remain excluded.</p><div id="analysis-coordinate-evidence-comparison-chart" class="analysis-chart" data-analysis-chart="coordinate-evidence-comparison"></div></details></details></article>
+                <details class="analysis-card analysis-card-span-6 analysis-source-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Coverage and event taxonomy</summary><div class="analysis-context-subchart-grid"><section class="analysis-context-subchart"><h5>Missingness and coverage</h5><div id="analysis-quality-missingness-chart" class="analysis-chart" data-analysis-chart="quality-missingness"></div></section><section class="analysis-context-subchart"><h5>Reported event type</h5><div id="analysis-report-type-chart" class="analysis-chart" data-analysis-chart="report-type"></div></section></div></details>
+                <details class="analysis-card analysis-card-wide analysis-source-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Craft classification and source dependence</summary><p class="analysis-card-question">Which craft patterns remain tied to collection practices, and where does the classifier disagree with recorded shape?</p><div class="analysis-context-subchart-grid"><section class="analysis-context-subchart"><h5>Craft by source</h5><div id="analysis-craft-residual-chart" class="analysis-chart" data-analysis-chart="craft-residuals"></div></section><section class="analysis-context-subchart"><h5>Classifier consistency audit</h5><div id="analysis-quality-audit-chart" class="analysis-chart" data-analysis-chart="quality-audit"></div></section></div></details>
+              </div>
+            </section>
+          </div>
+
+          <aside id="analysis-preview-drawer" class="analysis-preview-drawer" aria-labelledby="analysis-preview-title" hidden inert aria-hidden="true">
+            <div class="analysis-preview-heading">
+              <div><p id="analysis-preview-kind" class="eyebrow">Local chart preview</p><h3 id="analysis-preview-title" tabindex="-1">Preview selection</h3></div>
+              <button id="analysis-preview-cancel-top" class="secondary-button analysis-preview-close" type="button" aria-label="Close preview">Close</button>
+            </div>
+            <p id="analysis-preview-summary" class="analysis-preview-summary">Review the proposed cohort before changing the shared filters.</p>
+            <dl class="analysis-preview-metrics">
+              <div><dt>Cohort</dt><dd id="analysis-preview-cohort">—</dd></div>
+              <div><dt>Missingness</dt><dd id="analysis-preview-missingness">—</dd></div>
+              <div><dt>Comparison</dt><dd id="analysis-preview-comparison">—</dd></div>
+            </dl>
+            <div class="analysis-preview-criteria-block"><h4>Changed criteria</h4><ul id="analysis-preview-criteria"></ul></div>
+            <p id="analysis-preview-feedback" class="analysis-preview-feedback" role="status" aria-live="polite"></p>
+            <div class="analysis-preview-actions">
+              <button id="analysis-preview-apply-filters" class="analysis-primary-button" type="button">Apply to filters</button>
+              <button id="analysis-preview-apply-area" class="analysis-primary-button" type="button" hidden>Apply as Area Filter</button>
+              <button id="analysis-preview-cancel" class="secondary-button" type="button">Cancel</button>
+            </div>
+          </aside>
+        </section>
+        <div id="map-timeline-dock" class="map-timeline-dock"></div>
+      </section>
+      <section id="animal-mutilation-browser" class="animal-mutilation-browser" role="dialog" aria-modal="true" aria-labelledby="animal-mutilation-browser-title" aria-describedby="animal-mutilation-browser-intro" aria-hidden="true" tabindex="-1" hidden>
+        <div class="animal-browser-shell">
+          <div class="animal-browser-head">
+            <div>
+              <p class="animal-detail-eyebrow">Context layer · reported_unreviewed</p>
+              <h2 id="animal-mutilation-browser-title">Animal Mutilation Reports</h2>
+            </div>
+            <button id="animal-mutilation-browser-close" class="secondary-button" type="button">Close browser</button>
+          </div>
+          <p id="animal-mutilation-browser-intro" class="animal-science-warning"><strong>Scientific limitation:</strong> These are unreviewed source reports. They assert no UFO cause, never enter craft traces or relationships, and may contain disturbing animal-death descriptions.</p>
+          <div class="animal-browser-filters" role="group" aria-label="Filter animal mutilation reports">
+            <label class="field"><span>Search reports</span><input id="animal-mutilation-search" type="search" autocomplete="off" placeholder="Location, species, report label, or source ID"></label>
+            <label class="field"><span>Species group</span><select id="animal-mutilation-species-filter"><option value="all">All species groups</option></select></label>
+            <label class="field"><span>Map availability</span><select id="animal-mutilation-mapped-filter"><option value="all">Mapped and unmapped</option><option value="mapped">Mapped only</option><option value="unmapped">Unmapped only</option></select></label>
+            <label class="field"><span>Date precision</span><select id="animal-mutilation-date-filter"><option value="all_time">All Time (includes undated)</option><option value="exact_day">Exact day only</option><option value="dated">All dated reports</option><option value="undated">Undated only</option></select></label>
+            <label class="field"><span>From (report interval ends on or after)</span><input id="animal-mutilation-date-start" type="date"></label>
+            <label class="field"><span>Through (report interval starts on or before)</span><input id="animal-mutilation-date-end" type="date"></label>
+          </div>
+          <div class="animal-browser-toolbar">
+            <p id="animal-mutilation-browser-summary" role="status" aria-live="polite" aria-atomic="true">Choose Browse all reports to load the searchable catalog.</p>
+            <button id="animal-mutilation-browser-reset" class="secondary-button" type="button">Reset filters</button>
+          </div>
+          <ol id="animal-mutilation-browser-results" class="animal-browser-results"></ol>
+          <button id="animal-mutilation-browser-more" class="secondary-button animal-browser-more" type="button" hidden>Show more reports</button>
+        </div>
+      </section>
+
+      <div
+        id="side-column-resize-rail"
+        class="side-column-resize-rail"
+        role="separator"
+        aria-label="Resize filters and results column"
+        aria-orientation="vertical"
+        hidden
+      >
+        <span class="side-column-resize-grip" aria-hidden="true"></span>
+      </div>
+
+      <div id="results-pane-shell" class="side-pane side-pane-right">
+      <aside class="inspector-panel">
+        <section class="panel-section results-panel-section">
+          <div class="panel-heading-row panel-heading-row-compact results-heading-row">
+            <div class="results-heading-inline">
+              <h2>Results</h2>
+              <span id="result-summary" class="results-count-pill" aria-live="polite">0</span>
+            </div>
+            <div class="panel-heading-controls results-heading-controls">
+              <label class="field compact-field panel-inline-field results-sort-field">
+                <span class="sr-only">Sort results</span>
+                <select id="results-sort">
+                  <option value="date_desc">Date (newest first)</option>
+                  <option value="date_asc" selected>Date (oldest first)</option>
+                  <option value="location_asc">Location (A-Z)</option>
+                </select>
+              </label>
+              <button
+                id="toggle-results-pane"
+                class="secondary-button panel-toggle-button compact-toggle-button"
+                type="button"
+                aria-expanded="true"
+                aria-label="Collapse results"
+                title="Collapse results"
+              >-</button>
+            </div>
+          </div>
+          <div id="results-area-filter-indicator" class="results-area-filter-indicator" hidden>
+            <span id="results-area-filter-text">Area filter active</span>
+            <button id="results-area-filter-clear" class="secondary-button results-area-filter-clear" type="button">Clear</button>
+          </div>
+          <div id="result-list" class="result-list"></div>
+        </section>
+      </aside>
+      <button id="expand-results-pane" class="side-pane-restore side-pane-restore-right" type="button" hidden aria-expanded="false">Show Results</button>
+      </div>
+    </main>
+
+    <section id="startup-panel" class="startup-panel" aria-live="polite">
+      <div class="startup-header">
+        <div>
+          <p class="eyebrow">Startup Diagnostics</p>
+          <h2>Hosted Data Loader</h2>
+        </div>
+        <p id="startup-overview" class="status-copy">Preparing startup checks...</p>
+      </div>
+      <div class="startup-progress">
+        <div class="startup-progress-track">
+          <div id="startup-progress-fill" class="startup-progress-fill"></div>
+        </div>
+        <span id="startup-progress-label" class="startup-progress-label">0%</span>
+      </div>
+      <div class="startup-metrics">
+        <div class="startup-metric">
+          <span class="startup-metric-label">Phase</span>
+          <strong id="startup-phase">Idle</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Manifests</span>
+          <strong id="startup-manifest-status">Waiting</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Catalog Shards</span>
+          <strong id="startup-catalog-shards">0 / 0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Catalog Events</span>
+          <strong id="startup-catalog-events">0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Mapped Loaded</span>
+          <strong id="startup-mapped-events">0</strong>
+        </div>
+        <div class="startup-metric">
+          <span class="startup-metric-label">Full Event Chunks</span>
+          <strong id="startup-full-chunks">0 / 0</strong>
+        </div>
+      </div>
+      <div class="startup-meta">
+        <p class="status-copy"><strong>Last URL:</strong> <span id="startup-last-url">Waiting...</span></p>
+        <p id="startup-error" class="startup-error" hidden></p>
+      </div>
+    </section>
+    <script id="startup-timing-export" type="application/json"></script>
+    <button
+      id="back-to-top"
+      class="secondary-button back-to-top-button"
+      type="button"
+      hidden
+      aria-label="Back to top"
+      title="Back to top"
+    >&#x2191;</button>
+  </div>
+
+  <script src="./vendor/leaflet.js"></script>
+  <script src="./vendor/leaflet.markercluster.js"></script>
+  <script src="./trace_neighborhood.js?v=2026-08-09-control-panel-area-v1"></script>
+  <script src="./legend_controls.js?v=2026-08-12-viewport-legend-area-traces-v1"></script>
+  <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-12-context-evidence-v2"></script>
+  <script src="./animal_mutilation_bootstrap.js?v=2026-08-12-context-evidence-v2"></script>
+  <script src="./analysis_view.js?v=2026-08-12-context-evidence-v2"></script>
+  <script src="./app.js?v=location-label-overlay-v1-20260824"></script>
 </body>
 </html>

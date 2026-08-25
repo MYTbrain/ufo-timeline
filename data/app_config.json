@@ -1,0 +1,96 @@
+{
+  "canonicalWebArtifacts": {
+    "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunk_manifest.json",
+    "enabled": true,
+    "eventChunksBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/",
+    "filteredTraceAggregation": true,
+    "fullDetails": true,
+    "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/canonical_web_manifest.json",
+    "primaryCatalog": true,
+    "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/summary_manifest.json",
+    "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/summary_shards/",
+    "traceRuntime": true
+  },
+  "defaultTileProvider": "configured",
+  "deploymentProfile": {
+    "generatedAtUtc": "2026-08-11T19:14:53.139621+00:00",
+    "largeDataBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
+    "notes": [
+      "Cloudflare Pages should host app shell and small manifests.",
+      "Large canonical artifacts should live on R2 or be served as gzip artifacts under the Pages file limit."
+    ],
+    "target": "cloudflare_pages_r2"
+  },
+  "generatedAtUtc": "2026-07-31T08:32:50.335399+00:00",
+  "initialCenter": [
+    20.0,
+    0.0
+  ],
+  "initialZoom": 3,
+  "liveGeocodingRan": false,
+  "locationLabelOverlay": {
+    "enabled": true,
+    "entryCount": 68654,
+    "genericDisplayCount": 68650,
+    "gzipBytes": 1219795,
+    "gzipSha256": "689d1b2a3e956f7de7a2997659eb10f4f459b4387645d5e15cc88c3b513e280a",
+    "gzipUrl": "./data/location_label_overlay.json.gz",
+    "reviewedCount": 4,
+    "sourceInventorySha256": "055302012436a2549549a9712da750aca64bf54b4adb7c7ac475aa56ee56593a"
+  },
+  "mappedCount": 580783,
+  "normalizedCount": 702893,
+  "packedPoints": {
+    "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/points.bin",
+    "bytesPerRow": 88,
+    "enabled": true,
+    "mapLayerMode": "all",
+    "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/points_meta.json",
+    "rowCount": 580783,
+    "schemaVersion": 3,
+    "startupPreview": true,
+    "startupPreviewMaxPoints": 80000
+  },
+  "precisionBreakdown": {
+    "city": 542037,
+    "country": 22467,
+    "exact_coords": 110351,
+    "province": 622,
+    "region": 2,
+    "state": 10537,
+    "unknown": 16877
+  },
+  "reports": {
+    "rankedUnresolvedCsv": "https://b0f0a0de.ufo-timeline.pages.dev/reports/ranked_unresolved_locations.csv",
+    "rankedUnresolvedJson": "https://b0f0a0de.ufo-timeline.pages.dev/reports/ranked_unresolved_locations.json",
+    "unresolvedCsv": "https://b0f0a0de.ufo-timeline.pages.dev/reports/unresolved_locations.csv",
+    "unresolvedJson": "https://b0f0a0de.ufo-timeline.pages.dev/reports/unresolved_locations.json"
+  },
+  "startupProfile": {
+    "baseUrl": "./data/startup_profiles/france_1954_flap/",
+    "deployment": "pages",
+    "enabled": true,
+    "id": "france_1954_flap",
+    "label": "1954 France Sept-Nov",
+    "manifestUrl": "./data/startup_profiles/france_1954_flap/manifest.json",
+    "renderBeforeGlobalCatalog": true,
+    "tracePreview": true,
+    "worker": true
+  },
+  "staticAssetVersion": "location-label-overlay-v1-20260824",
+  "tileProviders": [
+    {
+      "id": "none",
+      "label": "No basemap world view",
+      "mode": "none"
+    },
+    {
+      "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
+      "id": "configured",
+      "label": "Light labeled basemap (hosted tiles)",
+      "mode": "tile",
+      "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+    }
+  ],
+  "unresolvedCount": 122110
+}
