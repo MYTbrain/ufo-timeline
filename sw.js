@@ -9,7 +9,13 @@ self.addEventListener("install", function (event) {
 });
 
 self.addEventListener("activate", function (event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async function () {
+    await self.clients.claim();
+    const windows = await self.clients.matchAll({ type: "window" });
+    await Promise.all(windows.map(function (client) {
+      return client.navigate(client.url).catch(function () { return null; });
+    }));
+  })());
 });
 
 function hex(buffer) {
@@ -379,8 +385,6 @@ async function upstreamResponse(request) {
   const incoming = new URL(request.url);
   const upstream = new URL(incoming.pathname + incoming.search, UPSTREAM_ORIGIN);
   const headers = new Headers();
-  const range = request.headers.get("range");
-  if (range && /^bytes=\d+-\d*$/.test(range)) headers.set("range", range);
   const init = {
     method: request.method === "HEAD" ? "HEAD" : "GET",
     headers: headers,
@@ -389,7 +393,16 @@ async function upstreamResponse(request) {
     redirect: "follow",
     cache: incoming.pathname === "/app.js" ? "no-store" : "default",
   };
-  return fetch(upstream.toString(), init);
+  const response = await fetch(upstream.toString(), init);
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.delete("content-length");
+  responseHeaders.delete("content-encoding");
+  const bodyless = request.method === "HEAD" || response.status === 204 || response.status === 205 || response.status === 304;
+  return new Response(bodyless ? null : response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: responseHeaders,
+  });
 }
 
 async function patchedAppResponse(request) {
