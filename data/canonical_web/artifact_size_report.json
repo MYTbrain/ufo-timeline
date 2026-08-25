@@ -1,0 +1,1827 @@
+{
+  "files": [
+    {
+      "bytes": 51108904,
+      "mb": 48.7412,
+      "path": "points.bin"
+    },
+    {
+      "bytes": 41395824,
+      "mb": 39.4781,
+      "path": "trace_segments.bin"
+    },
+    {
+      "bytes": 27597264,
+      "mb": 26.3188,
+      "path": "trace_event_index.bin"
+    },
+    {
+      "bytes": 23954911,
+      "mb": 22.8452,
+      "path": "event_chunks/chunk_000280.json"
+    },
+    {
+      "bytes": 23950070,
+      "mb": 22.8406,
+      "path": "event_chunks/chunk_000241.json"
+    },
+    {
+      "bytes": 23743278,
+      "mb": 22.6434,
+      "path": "event_chunks/chunk_000000.json"
+    },
+    {
+      "bytes": 23660811,
+      "mb": 22.5647,
+      "path": "event_chunks/chunk_000255.json"
+    },
+    {
+      "bytes": 23599818,
+      "mb": 22.5065,
+      "path": "event_chunks/chunk_000216.json"
+    },
+    {
+      "bytes": 23526640,
+      "mb": 22.4368,
+      "path": "event_chunks/chunk_000234.json"
+    },
+    {
+      "bytes": 23523005,
+      "mb": 22.4333,
+      "path": "event_chunks/chunk_000264.json"
+    },
+    {
+      "bytes": 23514585,
+      "mb": 22.4253,
+      "path": "event_chunks/chunk_000231.json"
+    },
+    {
+      "bytes": 23405015,
+      "mb": 22.3208,
+      "path": "event_chunks/chunk_000271.json"
+    },
+    {
+      "bytes": 23360673,
+      "mb": 22.2785,
+      "path": "event_chunks/chunk_000002.json"
+    },
+    {
+      "bytes": 23328041,
+      "mb": 22.2474,
+      "path": "event_chunks/chunk_000011.json"
+    },
+    {
+      "bytes": 23315748,
+      "mb": 22.2356,
+      "path": "event_chunks/chunk_000249.json"
+    },
+    {
+      "bytes": 23305039,
+      "mb": 22.2254,
+      "path": "event_chunks/chunk_000190.json"
+    },
+    {
+      "bytes": 23299160,
+      "mb": 22.2198,
+      "path": "event_chunks/chunk_000257.json"
+    },
+    {
+      "bytes": 23283089,
+      "mb": 22.2045,
+      "path": "event_chunks/chunk_000260.json"
+    },
+    {
+      "bytes": 23282419,
+      "mb": 22.2038,
+      "path": "event_chunks/chunk_000267.json"
+    },
+    {
+      "bytes": 23279415,
+      "mb": 22.201,
+      "path": "event_chunks/chunk_000245.json"
+    },
+    {
+      "bytes": 23260925,
+      "mb": 22.1833,
+      "path": "event_chunks/chunk_000012.json"
+    },
+    {
+      "bytes": 23255045,
+      "mb": 22.1777,
+      "path": "event_chunks/chunk_000276.json"
+    },
+    {
+      "bytes": 23236904,
+      "mb": 22.1604,
+      "path": "event_chunks/chunk_000198.json"
+    },
+    {
+      "bytes": 23233946,
+      "mb": 22.1576,
+      "path": "event_chunks/chunk_000236.json"
+    },
+    {
+      "bytes": 23209565,
+      "mb": 22.1344,
+      "path": "event_chunks/chunk_000273.json"
+    },
+    {
+      "bytes": 23190414,
+      "mb": 22.1161,
+      "path": "event_chunks/chunk_000057.json"
+    },
+    {
+      "bytes": 23189634,
+      "mb": 22.1154,
+      "path": "event_chunks/chunk_000088.json"
+    },
+    {
+      "bytes": 23188587,
+      "mb": 22.1144,
+      "path": "event_chunks/chunk_000203.json"
+    },
+    {
+      "bytes": 23183129,
+      "mb": 22.1092,
+      "path": "event_chunks/chunk_000270.json"
+    },
+    {
+      "bytes": 23177551,
+      "mb": 22.1038,
+      "path": "event_chunks/chunk_000275.json"
+    },
+    {
+      "bytes": 23172291,
+      "mb": 22.0988,
+      "path": "event_chunks/chunk_000225.json"
+    },
+    {
+      "bytes": 23157570,
+      "mb": 22.0848,
+      "path": "event_chunks/chunk_000251.json"
+    },
+    {
+      "bytes": 23147593,
+      "mb": 22.0753,
+      "path": "event_chunks/chunk_000005.json"
+    },
+    {
+      "bytes": 23139552,
+      "mb": 22.0676,
+      "path": "event_chunks/chunk_000278.json"
+    },
+    {
+      "bytes": 23139355,
+      "mb": 22.0674,
+      "path": "event_chunks/chunk_000111.json"
+    },
+    {
+      "bytes": 23099305,
+      "mb": 22.0292,
+      "path": "event_chunks/chunk_000256.json"
+    },
+    {
+      "bytes": 23078676,
+      "mb": 22.0095,
+      "path": "event_chunks/chunk_000279.json"
+    },
+    {
+      "bytes": 23075321,
+      "mb": 22.0063,
+      "path": "event_chunks/chunk_000266.json"
+    },
+    {
+      "bytes": 23063419,
+      "mb": 21.995,
+      "path": "event_chunks/chunk_000272.json"
+    },
+    {
+      "bytes": 23050508,
+      "mb": 21.9827,
+      "path": "event_chunks/chunk_000004.json"
+    },
+    {
+      "bytes": 23044477,
+      "mb": 21.9769,
+      "path": "event_chunks/chunk_000277.json"
+    },
+    {
+      "bytes": 23036315,
+      "mb": 21.9691,
+      "path": "event_chunks/chunk_000148.json"
+    },
+    {
+      "bytes": 23032260,
+      "mb": 21.9653,
+      "path": "event_chunks/chunk_000205.json"
+    },
+    {
+      "bytes": 23031350,
+      "mb": 21.9644,
+      "path": "event_chunks/chunk_000274.json"
+    },
+    {
+      "bytes": 23030301,
+      "mb": 21.9634,
+      "path": "event_chunks/chunk_000066.json"
+    },
+    {
+      "bytes": 23026016,
+      "mb": 21.9593,
+      "path": "event_chunks/chunk_000043.json"
+    },
+    {
+      "bytes": 23020353,
+      "mb": 21.9539,
+      "path": "event_chunks/chunk_000140.json"
+    },
+    {
+      "bytes": 23013001,
+      "mb": 21.9469,
+      "path": "event_chunks/chunk_000215.json"
+    },
+    {
+      "bytes": 23011378,
+      "mb": 21.9454,
+      "path": "event_chunks/chunk_000262.json"
+    },
+    {
+      "bytes": 23009935,
+      "mb": 21.944,
+      "path": "event_chunks/chunk_000079.json"
+    },
+    {
+      "bytes": 23001731,
+      "mb": 21.9362,
+      "path": "event_chunks/chunk_000201.json"
+    },
+    {
+      "bytes": 23000682,
+      "mb": 21.9352,
+      "path": "event_chunks/chunk_000151.json"
+    },
+    {
+      "bytes": 22975332,
+      "mb": 21.911,
+      "path": "event_chunks/chunk_000055.json"
+    },
+    {
+      "bytes": 22972661,
+      "mb": 21.9084,
+      "path": "event_chunks/chunk_000033.json"
+    },
+    {
+      "bytes": 22971103,
+      "mb": 21.907,
+      "path": "event_chunks/chunk_000240.json"
+    },
+    {
+      "bytes": 22968530,
+      "mb": 21.9045,
+      "path": "event_chunks/chunk_000116.json"
+    },
+    {
+      "bytes": 22964762,
+      "mb": 21.9009,
+      "path": "event_chunks/chunk_000242.json"
+    },
+    {
+      "bytes": 22953638,
+      "mb": 21.8903,
+      "path": "event_chunks/chunk_000042.json"
+    },
+    {
+      "bytes": 22947902,
+      "mb": 21.8848,
+      "path": "event_chunks/chunk_000222.json"
+    },
+    {
+      "bytes": 22940485,
+      "mb": 21.8778,
+      "path": "event_chunks/chunk_000121.json"
+    },
+    {
+      "bytes": 22914646,
+      "mb": 21.8531,
+      "path": "event_chunks/chunk_000246.json"
+    },
+    {
+      "bytes": 22909709,
+      "mb": 21.8484,
+      "path": "event_chunks/chunk_000199.json"
+    },
+    {
+      "bytes": 22897919,
+      "mb": 21.8372,
+      "path": "event_chunks/chunk_000226.json"
+    },
+    {
+      "bytes": 22895694,
+      "mb": 21.835,
+      "path": "event_chunks/chunk_000187.json"
+    },
+    {
+      "bytes": 22892195,
+      "mb": 21.8317,
+      "path": "event_chunks/chunk_000186.json"
+    },
+    {
+      "bytes": 22890634,
+      "mb": 21.8302,
+      "path": "event_chunks/chunk_000122.json"
+    },
+    {
+      "bytes": 22873224,
+      "mb": 21.8136,
+      "path": "event_chunks/chunk_000003.json"
+    },
+    {
+      "bytes": 22871599,
+      "mb": 21.8121,
+      "path": "event_chunks/chunk_000263.json"
+    },
+    {
+      "bytes": 22867504,
+      "mb": 21.8082,
+      "path": "event_chunks/chunk_000197.json"
+    },
+    {
+      "bytes": 22864491,
+      "mb": 21.8053,
+      "path": "event_chunks/chunk_000220.json"
+    },
+    {
+      "bytes": 22856817,
+      "mb": 21.798,
+      "path": "event_chunks/chunk_000204.json"
+    },
+    {
+      "bytes": 22855223,
+      "mb": 21.7964,
+      "path": "event_chunks/chunk_000239.json"
+    },
+    {
+      "bytes": 22853914,
+      "mb": 21.7952,
+      "path": "event_chunks/chunk_000224.json"
+    },
+    {
+      "bytes": 22850672,
+      "mb": 21.7921,
+      "path": "event_chunks/chunk_000184.json"
+    },
+    {
+      "bytes": 22850197,
+      "mb": 21.7916,
+      "path": "event_chunks/chunk_000244.json"
+    },
+    {
+      "bytes": 22838530,
+      "mb": 21.7805,
+      "path": "event_chunks/chunk_000228.json"
+    },
+    {
+      "bytes": 22838296,
+      "mb": 21.7803,
+      "path": "event_chunks/chunk_000162.json"
+    },
+    {
+      "bytes": 22838061,
+      "mb": 21.7801,
+      "path": "event_chunks/chunk_000050.json"
+    },
+    {
+      "bytes": 22837746,
+      "mb": 21.7798,
+      "path": "event_chunks/chunk_000001.json"
+    },
+    {
+      "bytes": 22823019,
+      "mb": 21.7657,
+      "path": "event_chunks/chunk_000037.json"
+    },
+    {
+      "bytes": 22809777,
+      "mb": 21.7531,
+      "path": "event_chunks/chunk_000084.json"
+    },
+    {
+      "bytes": 22806013,
+      "mb": 21.7495,
+      "path": "event_chunks/chunk_000230.json"
+    },
+    {
+      "bytes": 22805690,
+      "mb": 21.7492,
+      "path": "event_chunks/chunk_000166.json"
+    },
+    {
+      "bytes": 22803719,
+      "mb": 21.7473,
+      "path": "event_chunks/chunk_000189.json"
+    },
+    {
+      "bytes": 22796045,
+      "mb": 21.74,
+      "path": "event_chunks/chunk_000078.json"
+    },
+    {
+      "bytes": 22791542,
+      "mb": 21.7357,
+      "path": "event_chunks/chunk_000062.json"
+    },
+    {
+      "bytes": 22790409,
+      "mb": 21.7346,
+      "path": "event_chunks/chunk_000254.json"
+    },
+    {
+      "bytes": 22786692,
+      "mb": 21.7311,
+      "path": "event_chunks/chunk_000206.json"
+    },
+    {
+      "bytes": 22780196,
+      "mb": 21.7249,
+      "path": "event_chunks/chunk_000112.json"
+    },
+    {
+      "bytes": 22776772,
+      "mb": 21.7216,
+      "path": "event_chunks/chunk_000221.json"
+    },
+    {
+      "bytes": 22772311,
+      "mb": 21.7174,
+      "path": "event_chunks/chunk_000232.json"
+    },
+    {
+      "bytes": 22769358,
+      "mb": 21.7146,
+      "path": "event_chunks/chunk_000158.json"
+    },
+    {
+      "bytes": 22766139,
+      "mb": 21.7115,
+      "path": "event_chunks/chunk_000109.json"
+    },
+    {
+      "bytes": 22753289,
+      "mb": 21.6992,
+      "path": "event_chunks/chunk_000015.json"
+    },
+    {
+      "bytes": 22733745,
+      "mb": 21.6806,
+      "path": "event_chunks/chunk_000235.json"
+    },
+    {
+      "bytes": 22732516,
+      "mb": 21.6794,
+      "path": "event_chunks/chunk_000229.json"
+    },
+    {
+      "bytes": 22730613,
+      "mb": 21.6776,
+      "path": "event_chunks/chunk_000207.json"
+    },
+    {
+      "bytes": 22726761,
+      "mb": 21.6739,
+      "path": "event_chunks/chunk_000167.json"
+    },
+    {
+      "bytes": 22719417,
+      "mb": 21.6669,
+      "path": "event_chunks/chunk_000217.json"
+    },
+    {
+      "bytes": 22712044,
+      "mb": 21.6599,
+      "path": "event_chunks/chunk_000028.json"
+    },
+    {
+      "bytes": 22702378,
+      "mb": 21.6507,
+      "path": "event_chunks/chunk_000261.json"
+    },
+    {
+      "bytes": 22692680,
+      "mb": 21.6414,
+      "path": "event_chunks/chunk_000258.json"
+    },
+    {
+      "bytes": 22692542,
+      "mb": 21.6413,
+      "path": "event_chunks/chunk_000196.json"
+    },
+    {
+      "bytes": 22691231,
+      "mb": 21.64,
+      "path": "event_chunks/chunk_000177.json"
+    },
+    {
+      "bytes": 22691173,
+      "mb": 21.64,
+      "path": "event_chunks/chunk_000137.json"
+    },
+    {
+      "bytes": 22678877,
+      "mb": 21.6283,
+      "path": "event_chunks/chunk_000147.json"
+    },
+    {
+      "bytes": 22676934,
+      "mb": 21.6264,
+      "path": "event_chunks/chunk_000219.json"
+    },
+    {
+      "bytes": 22676085,
+      "mb": 21.6256,
+      "path": "event_chunks/chunk_000142.json"
+    },
+    {
+      "bytes": 22656739,
+      "mb": 21.6072,
+      "path": "event_chunks/chunk_000024.json"
+    },
+    {
+      "bytes": 22655099,
+      "mb": 21.6056,
+      "path": "event_chunks/chunk_000237.json"
+    },
+    {
+      "bytes": 22650901,
+      "mb": 21.6016,
+      "path": "event_chunks/chunk_000168.json"
+    },
+    {
+      "bytes": 22648157,
+      "mb": 21.599,
+      "path": "event_chunks/chunk_000173.json"
+    },
+    {
+      "bytes": 22644329,
+      "mb": 21.5953,
+      "path": "event_chunks/chunk_000049.json"
+    },
+    {
+      "bytes": 22643377,
+      "mb": 21.5944,
+      "path": "event_chunks/chunk_000056.json"
+    },
+    {
+      "bytes": 22639989,
+      "mb": 21.5912,
+      "path": "event_chunks/chunk_000248.json"
+    },
+    {
+      "bytes": 22639909,
+      "mb": 21.5911,
+      "path": "event_chunks/chunk_000052.json"
+    },
+    {
+      "bytes": 22639439,
+      "mb": 21.5907,
+      "path": "event_chunks/chunk_000223.json"
+    },
+    {
+      "bytes": 22637485,
+      "mb": 21.5888,
+      "path": "event_chunks/chunk_000238.json"
+    },
+    {
+      "bytes": 22627630,
+      "mb": 21.5794,
+      "path": "event_chunks/chunk_000114.json"
+    },
+    {
+      "bytes": 22627459,
+      "mb": 21.5792,
+      "path": "event_chunks/chunk_000208.json"
+    },
+    {
+      "bytes": 22624237,
+      "mb": 21.5762,
+      "path": "event_chunks/chunk_000149.json"
+    },
+    {
+      "bytes": 22622440,
+      "mb": 21.5744,
+      "path": "event_chunks/chunk_000077.json"
+    },
+    {
+      "bytes": 22620188,
+      "mb": 21.5723,
+      "path": "event_chunks/chunk_000159.json"
+    },
+    {
+      "bytes": 22613558,
+      "mb": 21.566,
+      "path": "event_chunks/chunk_000133.json"
+    },
+    {
+      "bytes": 22601824,
+      "mb": 21.5548,
+      "path": "event_chunks/chunk_000071.json"
+    },
+    {
+      "bytes": 22600536,
+      "mb": 21.5536,
+      "path": "event_chunks/chunk_000026.json"
+    },
+    {
+      "bytes": 22596175,
+      "mb": 21.5494,
+      "path": "event_chunks/chunk_000202.json"
+    },
+    {
+      "bytes": 22588055,
+      "mb": 21.5416,
+      "path": "event_chunks/chunk_000259.json"
+    },
+    {
+      "bytes": 22587992,
+      "mb": 21.5416,
+      "path": "event_chunks/chunk_000060.json"
+    },
+    {
+      "bytes": 22579323,
+      "mb": 21.5333,
+      "path": "event_chunks/chunk_000051.json"
+    },
+    {
+      "bytes": 22576559,
+      "mb": 21.5307,
+      "path": "event_chunks/chunk_000193.json"
+    },
+    {
+      "bytes": 22566479,
+      "mb": 21.5211,
+      "path": "event_chunks/chunk_000035.json"
+    },
+    {
+      "bytes": 22566402,
+      "mb": 21.521,
+      "path": "event_chunks/chunk_000019.json"
+    },
+    {
+      "bytes": 22556854,
+      "mb": 21.5119,
+      "path": "event_chunks/chunk_000252.json"
+    },
+    {
+      "bytes": 22544904,
+      "mb": 21.5005,
+      "path": "event_chunks/chunk_000072.json"
+    },
+    {
+      "bytes": 22542501,
+      "mb": 21.4982,
+      "path": "event_chunks/chunk_000034.json"
+    },
+    {
+      "bytes": 22541016,
+      "mb": 21.4968,
+      "path": "event_chunks/chunk_000127.json"
+    },
+    {
+      "bytes": 22537231,
+      "mb": 21.4932,
+      "path": "event_chunks/chunk_000089.json"
+    },
+    {
+      "bytes": 22535708,
+      "mb": 21.4917,
+      "path": "event_chunks/chunk_000059.json"
+    },
+    {
+      "bytes": 22533746,
+      "mb": 21.4899,
+      "path": "event_chunks/chunk_000160.json"
+    },
+    {
+      "bytes": 22532858,
+      "mb": 21.489,
+      "path": "event_chunks/chunk_000172.json"
+    },
+    {
+      "bytes": 22526987,
+      "mb": 21.4834,
+      "path": "event_chunks/chunk_000123.json"
+    },
+    {
+      "bytes": 22519614,
+      "mb": 21.4764,
+      "path": "event_chunks/chunk_000139.json"
+    },
+    {
+      "bytes": 22519362,
+      "mb": 21.4761,
+      "path": "event_chunks/chunk_000030.json"
+    },
+    {
+      "bytes": 22517501,
+      "mb": 21.4744,
+      "path": "event_chunks/chunk_000053.json"
+    },
+    {
+      "bytes": 22514170,
+      "mb": 21.4712,
+      "path": "event_chunks/chunk_000129.json"
+    },
+    {
+      "bytes": 22508678,
+      "mb": 21.4659,
+      "path": "event_chunks/chunk_000265.json"
+    },
+    {
+      "bytes": 22498576,
+      "mb": 21.4563,
+      "path": "event_chunks/chunk_000253.json"
+    },
+    {
+      "bytes": 22495030,
+      "mb": 21.4529,
+      "path": "event_chunks/chunk_000195.json"
+    },
+    {
+      "bytes": 22489348,
+      "mb": 21.4475,
+      "path": "event_chunks/chunk_000103.json"
+    },
+    {
+      "bytes": 22489143,
+      "mb": 21.4473,
+      "path": "event_chunks/chunk_000016.json"
+    },
+    {
+      "bytes": 22487065,
+      "mb": 21.4453,
+      "path": "event_chunks/chunk_000153.json"
+    },
+    {
+      "bytes": 22486472,
+      "mb": 21.4448,
+      "path": "event_chunks/chunk_000165.json"
+    },
+    {
+      "bytes": 22481826,
+      "mb": 21.4403,
+      "path": "event_chunks/chunk_000067.json"
+    },
+    {
+      "bytes": 22467831,
+      "mb": 21.427,
+      "path": "event_chunks/chunk_000163.json"
+    },
+    {
+      "bytes": 22466644,
+      "mb": 21.4259,
+      "path": "event_chunks/chunk_000125.json"
+    },
+    {
+      "bytes": 22465841,
+      "mb": 21.4251,
+      "path": "event_chunks/chunk_000041.json"
+    },
+    {
+      "bytes": 22462734,
+      "mb": 21.4221,
+      "path": "event_chunks/chunk_000214.json"
+    },
+    {
+      "bytes": 22462351,
+      "mb": 21.4218,
+      "path": "event_chunks/chunk_000179.json"
+    },
+    {
+      "bytes": 22454266,
+      "mb": 21.4141,
+      "path": "event_chunks/chunk_000006.json"
+    },
+    {
+      "bytes": 22451676,
+      "mb": 21.4116,
+      "path": "event_chunks/chunk_000036.json"
+    },
+    {
+      "bytes": 22450573,
+      "mb": 21.4105,
+      "path": "event_chunks/chunk_000070.json"
+    },
+    {
+      "bytes": 22449848,
+      "mb": 21.4098,
+      "path": "event_chunks/chunk_000020.json"
+    },
+    {
+      "bytes": 22440619,
+      "mb": 21.401,
+      "path": "event_chunks/chunk_000132.json"
+    },
+    {
+      "bytes": 22437485,
+      "mb": 21.3981,
+      "path": "event_chunks/chunk_000175.json"
+    },
+    {
+      "bytes": 22433387,
+      "mb": 21.3941,
+      "path": "event_chunks/chunk_000038.json"
+    },
+    {
+      "bytes": 22431814,
+      "mb": 21.3926,
+      "path": "event_chunks/chunk_000118.json"
+    },
+    {
+      "bytes": 22429976,
+      "mb": 21.3909,
+      "path": "event_chunks/chunk_000048.json"
+    },
+    {
+      "bytes": 22428642,
+      "mb": 21.3896,
+      "path": "event_chunks/chunk_000180.json"
+    },
+    {
+      "bytes": 22428418,
+      "mb": 21.3894,
+      "path": "event_chunks/chunk_000143.json"
+    },
+    {
+      "bytes": 22428411,
+      "mb": 21.3894,
+      "path": "event_chunks/chunk_000247.json"
+    },
+    {
+      "bytes": 22419845,
+      "mb": 21.3812,
+      "path": "event_chunks/chunk_000029.json"
+    },
+    {
+      "bytes": 22414428,
+      "mb": 21.3761,
+      "path": "event_chunks/chunk_000176.json"
+    },
+    {
+      "bytes": 22407648,
+      "mb": 21.3696,
+      "path": "event_chunks/chunk_000178.json"
+    },
+    {
+      "bytes": 22400110,
+      "mb": 21.3624,
+      "path": "event_chunks/chunk_000018.json"
+    },
+    {
+      "bytes": 22397044,
+      "mb": 21.3595,
+      "path": "event_chunks/chunk_000250.json"
+    },
+    {
+      "bytes": 22394312,
+      "mb": 21.3569,
+      "path": "event_chunks/chunk_000150.json"
+    },
+    {
+      "bytes": 22393896,
+      "mb": 21.3565,
+      "path": "event_chunks/chunk_000009.json"
+    },
+    {
+      "bytes": 22390515,
+      "mb": 21.3533,
+      "path": "event_chunks/chunk_000106.json"
+    },
+    {
+      "bytes": 22379923,
+      "mb": 21.3432,
+      "path": "event_chunks/chunk_000155.json"
+    },
+    {
+      "bytes": 22378833,
+      "mb": 21.3421,
+      "path": "event_chunks/chunk_000092.json"
+    },
+    {
+      "bytes": 22377329,
+      "mb": 21.3407,
+      "path": "event_chunks/chunk_000097.json"
+    },
+    {
+      "bytes": 22372191,
+      "mb": 21.3358,
+      "path": "event_chunks/chunk_000210.json"
+    },
+    {
+      "bytes": 22366235,
+      "mb": 21.3301,
+      "path": "event_chunks/chunk_000110.json"
+    },
+    {
+      "bytes": 22364521,
+      "mb": 21.3285,
+      "path": "event_chunks/chunk_000136.json"
+    },
+    {
+      "bytes": 22363695,
+      "mb": 21.3277,
+      "path": "event_chunks/chunk_000192.json"
+    },
+    {
+      "bytes": 22363134,
+      "mb": 21.3271,
+      "path": "event_chunks/chunk_000218.json"
+    },
+    {
+      "bytes": 22362738,
+      "mb": 21.3268,
+      "path": "event_chunks/chunk_000174.json"
+    },
+    {
+      "bytes": 22359159,
+      "mb": 21.3234,
+      "path": "event_chunks/chunk_000161.json"
+    },
+    {
+      "bytes": 22352234,
+      "mb": 21.3168,
+      "path": "event_chunks/chunk_000007.json"
+    },
+    {
+      "bytes": 22350726,
+      "mb": 21.3153,
+      "path": "event_chunks/chunk_000141.json"
+    },
+    {
+      "bytes": 22344373,
+      "mb": 21.3093,
+      "path": "event_chunks/chunk_000243.json"
+    },
+    {
+      "bytes": 22343793,
+      "mb": 21.3087,
+      "path": "event_chunks/chunk_000213.json"
+    },
+    {
+      "bytes": 22338177,
+      "mb": 21.3033,
+      "path": "event_chunks/chunk_000046.json"
+    },
+    {
+      "bytes": 22336968,
+      "mb": 21.3022,
+      "path": "event_chunks/chunk_000083.json"
+    },
+    {
+      "bytes": 22336586,
+      "mb": 21.3018,
+      "path": "event_chunks/chunk_000211.json"
+    },
+    {
+      "bytes": 22329427,
+      "mb": 21.295,
+      "path": "event_chunks/chunk_000099.json"
+    },
+    {
+      "bytes": 22315552,
+      "mb": 21.2818,
+      "path": "event_chunks/chunk_000045.json"
+    },
+    {
+      "bytes": 22314508,
+      "mb": 21.2808,
+      "path": "event_chunks/chunk_000013.json"
+    },
+    {
+      "bytes": 22313899,
+      "mb": 21.2802,
+      "path": "event_chunks/chunk_000212.json"
+    },
+    {
+      "bytes": 22309037,
+      "mb": 21.2756,
+      "path": "event_chunks/chunk_000008.json"
+    },
+    {
+      "bytes": 22308478,
+      "mb": 21.275,
+      "path": "event_chunks/chunk_000047.json"
+    },
+    {
+      "bytes": 22303254,
+      "mb": 21.27,
+      "path": "event_chunks/chunk_000074.json"
+    },
+    {
+      "bytes": 22300805,
+      "mb": 21.2677,
+      "path": "event_chunks/chunk_000182.json"
+    },
+    {
+      "bytes": 22294571,
+      "mb": 21.2618,
+      "path": "event_chunks/chunk_000157.json"
+    },
+    {
+      "bytes": 22277448,
+      "mb": 21.2454,
+      "path": "event_chunks/chunk_000269.json"
+    },
+    {
+      "bytes": 22272370,
+      "mb": 21.2406,
+      "path": "event_chunks/chunk_000233.json"
+    },
+    {
+      "bytes": 22266495,
+      "mb": 21.235,
+      "path": "event_chunks/chunk_000169.json"
+    },
+    {
+      "bytes": 22265708,
+      "mb": 21.2342,
+      "path": "event_chunks/chunk_000014.json"
+    },
+    {
+      "bytes": 22264291,
+      "mb": 21.2329,
+      "path": "event_chunks/chunk_000188.json"
+    },
+    {
+      "bytes": 22260139,
+      "mb": 21.2289,
+      "path": "event_chunks/chunk_000156.json"
+    },
+    {
+      "bytes": 22258649,
+      "mb": 21.2275,
+      "path": "event_chunks/chunk_000268.json"
+    },
+    {
+      "bytes": 22219404,
+      "mb": 21.1901,
+      "path": "event_chunks/chunk_000200.json"
+    },
+    {
+      "bytes": 22206648,
+      "mb": 21.1779,
+      "path": "event_chunks/chunk_000105.json"
+    },
+    {
+      "bytes": 22206340,
+      "mb": 21.1776,
+      "path": "event_chunks/chunk_000104.json"
+    },
+    {
+      "bytes": 22190000,
+      "mb": 21.162,
+      "path": "event_chunks/chunk_000209.json"
+    },
+    {
+      "bytes": 22189649,
+      "mb": 21.1617,
+      "path": "event_chunks/chunk_000040.json"
+    },
+    {
+      "bytes": 22188644,
+      "mb": 21.1607,
+      "path": "event_chunks/chunk_000144.json"
+    },
+    {
+      "bytes": 22184572,
+      "mb": 21.1569,
+      "path": "event_chunks/chunk_000119.json"
+    },
+    {
+      "bytes": 22183605,
+      "mb": 21.1559,
+      "path": "event_chunks/chunk_000025.json"
+    },
+    {
+      "bytes": 22182994,
+      "mb": 21.1554,
+      "path": "event_chunks/chunk_000120.json"
+    },
+    {
+      "bytes": 22179901,
+      "mb": 21.1524,
+      "path": "event_chunks/chunk_000227.json"
+    },
+    {
+      "bytes": 22173923,
+      "mb": 21.1467,
+      "path": "event_chunks/chunk_000095.json"
+    },
+    {
+      "bytes": 22172412,
+      "mb": 21.1453,
+      "path": "event_chunks/chunk_000102.json"
+    },
+    {
+      "bytes": 22168326,
+      "mb": 21.1414,
+      "path": "event_chunks/chunk_000081.json"
+    },
+    {
+      "bytes": 22167761,
+      "mb": 21.1408,
+      "path": "event_chunks/chunk_000164.json"
+    },
+    {
+      "bytes": 22161843,
+      "mb": 21.1352,
+      "path": "event_chunks/chunk_000194.json"
+    },
+    {
+      "bytes": 22160495,
+      "mb": 21.1339,
+      "path": "event_chunks/chunk_000183.json"
+    },
+    {
+      "bytes": 22148733,
+      "mb": 21.1227,
+      "path": "event_chunks/chunk_000027.json"
+    },
+    {
+      "bytes": 22144306,
+      "mb": 21.1185,
+      "path": "event_chunks/chunk_000138.json"
+    },
+    {
+      "bytes": 22140218,
+      "mb": 21.1146,
+      "path": "event_chunks/chunk_000090.json"
+    },
+    {
+      "bytes": 22136538,
+      "mb": 21.111,
+      "path": "event_chunks/chunk_000117.json"
+    },
+    {
+      "bytes": 22128301,
+      "mb": 21.1032,
+      "path": "event_chunks/chunk_000031.json"
+    },
+    {
+      "bytes": 22118083,
+      "mb": 21.0934,
+      "path": "event_chunks/chunk_000061.json"
+    },
+    {
+      "bytes": 22116408,
+      "mb": 21.0919,
+      "path": "event_chunks/chunk_000101.json"
+    },
+    {
+      "bytes": 22115452,
+      "mb": 21.0909,
+      "path": "event_chunks/chunk_000076.json"
+    },
+    {
+      "bytes": 22115252,
+      "mb": 21.0907,
+      "path": "event_chunks/chunk_000100.json"
+    },
+    {
+      "bytes": 22112311,
+      "mb": 21.0879,
+      "path": "event_chunks/chunk_000021.json"
+    },
+    {
+      "bytes": 22112122,
+      "mb": 21.0878,
+      "path": "event_chunks/chunk_000185.json"
+    },
+    {
+      "bytes": 22108430,
+      "mb": 21.0842,
+      "path": "event_chunks/chunk_000085.json"
+    },
+    {
+      "bytes": 22107992,
+      "mb": 21.0838,
+      "path": "event_chunks/chunk_000096.json"
+    },
+    {
+      "bytes": 22105268,
+      "mb": 21.0812,
+      "path": "event_chunks/chunk_000032.json"
+    },
+    {
+      "bytes": 22101686,
+      "mb": 21.0778,
+      "path": "event_chunks/chunk_000094.json"
+    },
+    {
+      "bytes": 22098887,
+      "mb": 21.0751,
+      "path": "event_chunks/chunk_000065.json"
+    },
+    {
+      "bytes": 22092834,
+      "mb": 21.0694,
+      "path": "event_chunks/chunk_000124.json"
+    },
+    {
+      "bytes": 22091555,
+      "mb": 21.0681,
+      "path": "event_chunks/chunk_000146.json"
+    },
+    {
+      "bytes": 22085257,
+      "mb": 21.0621,
+      "path": "event_chunks/chunk_000181.json"
+    },
+    {
+      "bytes": 22082117,
+      "mb": 21.0591,
+      "path": "event_chunks/chunk_000063.json"
+    },
+    {
+      "bytes": 22074199,
+      "mb": 21.0516,
+      "path": "event_chunks/chunk_000098.json"
+    },
+    {
+      "bytes": 22071931,
+      "mb": 21.0494,
+      "path": "event_chunks/chunk_000154.json"
+    },
+    {
+      "bytes": 22066663,
+      "mb": 21.0444,
+      "path": "event_chunks/chunk_000075.json"
+    },
+    {
+      "bytes": 22063136,
+      "mb": 21.041,
+      "path": "event_chunks/chunk_000073.json"
+    },
+    {
+      "bytes": 22058904,
+      "mb": 21.037,
+      "path": "event_chunks/chunk_000145.json"
+    },
+    {
+      "bytes": 22050588,
+      "mb": 21.0291,
+      "path": "event_chunks/chunk_000128.json"
+    },
+    {
+      "bytes": 22036197,
+      "mb": 21.0154,
+      "path": "event_chunks/chunk_000130.json"
+    },
+    {
+      "bytes": 22033435,
+      "mb": 21.0127,
+      "path": "event_chunks/chunk_000171.json"
+    },
+    {
+      "bytes": 22031064,
+      "mb": 21.0105,
+      "path": "event_chunks/chunk_000152.json"
+    },
+    {
+      "bytes": 22022758,
+      "mb": 21.0025,
+      "path": "event_chunks/chunk_000135.json"
+    },
+    {
+      "bytes": 22021621,
+      "mb": 21.0015,
+      "path": "event_chunks/chunk_000017.json"
+    },
+    {
+      "bytes": 22020719,
+      "mb": 21.0006,
+      "path": "event_chunks/chunk_000058.json"
+    },
+    {
+      "bytes": 22013722,
+      "mb": 20.9939,
+      "path": "event_chunks/chunk_000069.json"
+    },
+    {
+      "bytes": 22002226,
+      "mb": 20.983,
+      "path": "event_chunks/chunk_000191.json"
+    },
+    {
+      "bytes": 21998958,
+      "mb": 20.9798,
+      "path": "event_chunks/chunk_000091.json"
+    },
+    {
+      "bytes": 21987037,
+      "mb": 20.9685,
+      "path": "event_chunks/chunk_000134.json"
+    },
+    {
+      "bytes": 21962997,
+      "mb": 20.9455,
+      "path": "event_chunks/chunk_000170.json"
+    },
+    {
+      "bytes": 21948414,
+      "mb": 20.9316,
+      "path": "event_chunks/chunk_000086.json"
+    },
+    {
+      "bytes": 21931911,
+      "mb": 20.9159,
+      "path": "event_chunks/chunk_000080.json"
+    },
+    {
+      "bytes": 21922232,
+      "mb": 20.9067,
+      "path": "event_chunks/chunk_000107.json"
+    },
+    {
+      "bytes": 21918957,
+      "mb": 20.9035,
+      "path": "event_chunks/chunk_000039.json"
+    },
+    {
+      "bytes": 21886902,
+      "mb": 20.873,
+      "path": "event_chunks/chunk_000022.json"
+    },
+    {
+      "bytes": 21866000,
+      "mb": 20.853,
+      "path": "event_chunks/chunk_000064.json"
+    },
+    {
+      "bytes": 21858001,
+      "mb": 20.8454,
+      "path": "event_chunks/chunk_000068.json"
+    },
+    {
+      "bytes": 21857253,
+      "mb": 20.8447,
+      "path": "event_chunks/chunk_000010.json"
+    },
+    {
+      "bytes": 21841514,
+      "mb": 20.8297,
+      "path": "event_chunks/chunk_000093.json"
+    },
+    {
+      "bytes": 21837154,
+      "mb": 20.8255,
+      "path": "event_chunks/chunk_000023.json"
+    },
+    {
+      "bytes": 21832098,
+      "mb": 20.8207,
+      "path": "event_chunks/chunk_000082.json"
+    },
+    {
+      "bytes": 21788184,
+      "mb": 20.7788,
+      "path": "event_chunks/chunk_000115.json"
+    },
+    {
+      "bytes": 21770139,
+      "mb": 20.7616,
+      "path": "event_chunks/chunk_000044.json"
+    },
+    {
+      "bytes": 21736216,
+      "mb": 20.7293,
+      "path": "event_chunks/chunk_000131.json"
+    },
+    {
+      "bytes": 21717170,
+      "mb": 20.7111,
+      "path": "event_chunks/chunk_000126.json"
+    },
+    {
+      "bytes": 21704687,
+      "mb": 20.6992,
+      "path": "event_chunks/chunk_000113.json"
+    },
+    {
+      "bytes": 21642518,
+      "mb": 20.6399,
+      "path": "event_chunks/chunk_000087.json"
+    },
+    {
+      "bytes": 21572459,
+      "mb": 20.5731,
+      "path": "event_chunks/chunk_000108.json"
+    },
+    {
+      "bytes": 21537719,
+      "mb": 20.54,
+      "path": "event_chunks/chunk_000054.json"
+    },
+    {
+      "bytes": 7787469,
+      "mb": 7.4267,
+      "path": "summary_shards/summary_000000.json"
+    },
+    {
+      "bytes": 7787126,
+      "mb": 7.4264,
+      "path": "summary_shards/summary_000002.json"
+    },
+    {
+      "bytes": 7786598,
+      "mb": 7.4259,
+      "path": "summary_shards/summary_000001.json"
+    },
+    {
+      "bytes": 7784011,
+      "mb": 7.4234,
+      "path": "summary_shards/summary_000003.json"
+    },
+    {
+      "bytes": 7783461,
+      "mb": 7.4229,
+      "path": "summary_shards/summary_000007.json"
+    },
+    {
+      "bytes": 7783145,
+      "mb": 7.4226,
+      "path": "summary_shards/summary_000006.json"
+    },
+    {
+      "bytes": 7780992,
+      "mb": 7.4205,
+      "path": "summary_shards/summary_000012.json"
+    },
+    {
+      "bytes": 7780798,
+      "mb": 7.4203,
+      "path": "summary_shards/summary_000014.json"
+    },
+    {
+      "bytes": 7779984,
+      "mb": 7.4196,
+      "path": "summary_shards/summary_000005.json"
+    },
+    {
+      "bytes": 7779164,
+      "mb": 7.4188,
+      "path": "summary_shards/summary_000019.json"
+    },
+    {
+      "bytes": 7778859,
+      "mb": 7.4185,
+      "path": "summary_shards/summary_000004.json"
+    },
+    {
+      "bytes": 7778345,
+      "mb": 7.418,
+      "path": "summary_shards/summary_000009.json"
+    },
+    {
+      "bytes": 7776705,
+      "mb": 7.4164,
+      "path": "summary_shards/summary_000010.json"
+    },
+    {
+      "bytes": 7775805,
+      "mb": 7.4156,
+      "path": "summary_shards/summary_000008.json"
+    },
+    {
+      "bytes": 7772758,
+      "mb": 7.4127,
+      "path": "summary_shards/summary_000013.json"
+    },
+    {
+      "bytes": 7772416,
+      "mb": 7.4124,
+      "path": "summary_shards/summary_000027.json"
+    },
+    {
+      "bytes": 7772031,
+      "mb": 7.412,
+      "path": "summary_shards/summary_000011.json"
+    },
+    {
+      "bytes": 7770519,
+      "mb": 7.4105,
+      "path": "summary_shards/summary_000016.json"
+    },
+    {
+      "bytes": 7769865,
+      "mb": 7.4099,
+      "path": "summary_shards/summary_000015.json"
+    },
+    {
+      "bytes": 7769722,
+      "mb": 7.4098,
+      "path": "summary_shards/summary_000018.json"
+    },
+    {
+      "bytes": 7769573,
+      "mb": 7.4096,
+      "path": "summary_shards/summary_000023.json"
+    },
+    {
+      "bytes": 7767686,
+      "mb": 7.4078,
+      "path": "summary_shards/summary_000017.json"
+    },
+    {
+      "bytes": 7766524,
+      "mb": 7.4067,
+      "path": "summary_shards/summary_000020.json"
+    },
+    {
+      "bytes": 7765973,
+      "mb": 7.4062,
+      "path": "summary_shards/summary_000021.json"
+    },
+    {
+      "bytes": 7765904,
+      "mb": 7.4061,
+      "path": "summary_shards/summary_000022.json"
+    },
+    {
+      "bytes": 7764844,
+      "mb": 7.4051,
+      "path": "summary_shards/summary_000024.json"
+    },
+    {
+      "bytes": 7764314,
+      "mb": 7.4046,
+      "path": "summary_shards/summary_000029.json"
+    },
+    {
+      "bytes": 7762946,
+      "mb": 7.4033,
+      "path": "summary_shards/summary_000025.json"
+    },
+    {
+      "bytes": 7762246,
+      "mb": 7.4027,
+      "path": "summary_shards/summary_000026.json"
+    },
+    {
+      "bytes": 7760341,
+      "mb": 7.4008,
+      "path": "summary_shards/summary_000028.json"
+    },
+    {
+      "bytes": 7759633,
+      "mb": 7.4002,
+      "path": "summary_shards/summary_000036.json"
+    },
+    {
+      "bytes": 7758952,
+      "mb": 7.3995,
+      "path": "summary_shards/summary_000035.json"
+    },
+    {
+      "bytes": 7756831,
+      "mb": 7.3975,
+      "path": "summary_shards/summary_000039.json"
+    },
+    {
+      "bytes": 7755944,
+      "mb": 7.3966,
+      "path": "summary_shards/summary_000034.json"
+    },
+    {
+      "bytes": 7755827,
+      "mb": 7.3965,
+      "path": "summary_shards/summary_000030.json"
+    },
+    {
+      "bytes": 7755142,
+      "mb": 7.3959,
+      "path": "summary_shards/summary_000031.json"
+    },
+    {
+      "bytes": 7754300,
+      "mb": 7.3951,
+      "path": "summary_shards/summary_000044.json"
+    },
+    {
+      "bytes": 7754043,
+      "mb": 7.3948,
+      "path": "summary_shards/summary_000032.json"
+    },
+    {
+      "bytes": 7752801,
+      "mb": 7.3936,
+      "path": "summary_shards/summary_000037.json"
+    },
+    {
+      "bytes": 7752227,
+      "mb": 7.3931,
+      "path": "summary_shards/summary_000038.json"
+    },
+    {
+      "bytes": 7751663,
+      "mb": 7.3926,
+      "path": "summary_shards/summary_000043.json"
+    },
+    {
+      "bytes": 7751337,
+      "mb": 7.3923,
+      "path": "summary_shards/summary_000042.json"
+    },
+    {
+      "bytes": 7750475,
+      "mb": 7.3914,
+      "path": "summary_shards/summary_000033.json"
+    },
+    {
+      "bytes": 7748815,
+      "mb": 7.3898,
+      "path": "summary_shards/summary_000041.json"
+    },
+    {
+      "bytes": 7746788,
+      "mb": 7.3879,
+      "path": "summary_shards/summary_000045.json"
+    },
+    {
+      "bytes": 7745903,
+      "mb": 7.3871,
+      "path": "summary_shards/summary_000049.json"
+    },
+    {
+      "bytes": 7745681,
+      "mb": 7.3869,
+      "path": "summary_shards/summary_000040.json"
+    },
+    {
+      "bytes": 7745647,
+      "mb": 7.3868,
+      "path": "summary_shards/summary_000051.json"
+    },
+    {
+      "bytes": 7743775,
+      "mb": 7.385,
+      "path": "summary_shards/summary_000048.json"
+    },
+    {
+      "bytes": 7743485,
+      "mb": 7.3848,
+      "path": "summary_shards/summary_000047.json"
+    },
+    {
+      "bytes": 7743225,
+      "mb": 7.3845,
+      "path": "summary_shards/summary_000050.json"
+    },
+    {
+      "bytes": 7743225,
+      "mb": 7.3845,
+      "path": "summary_shards/summary_000055.json"
+    },
+    {
+      "bytes": 7742741,
+      "mb": 7.3841,
+      "path": "summary_shards/summary_000053.json"
+    },
+    {
+      "bytes": 7742411,
+      "mb": 7.3837,
+      "path": "summary_shards/summary_000057.json"
+    },
+    {
+      "bytes": 7741399,
+      "mb": 7.3828,
+      "path": "summary_shards/summary_000054.json"
+    },
+    {
+      "bytes": 7740765,
+      "mb": 7.3822,
+      "path": "summary_shards/summary_000046.json"
+    },
+    {
+      "bytes": 7740143,
+      "mb": 7.3816,
+      "path": "summary_shards/summary_000052.json"
+    },
+    {
+      "bytes": 7737541,
+      "mb": 7.3791,
+      "path": "summary_shards/summary_000058.json"
+    },
+    {
+      "bytes": 7737529,
+      "mb": 7.3791,
+      "path": "summary_shards/summary_000056.json"
+    },
+    {
+      "bytes": 7735075,
+      "mb": 7.3767,
+      "path": "summary_shards/summary_000060.json"
+    },
+    {
+      "bytes": 7733287,
+      "mb": 7.375,
+      "path": "summary_shards/summary_000061.json"
+    },
+    {
+      "bytes": 7732871,
+      "mb": 7.3746,
+      "path": "summary_shards/summary_000062.json"
+    },
+    {
+      "bytes": 7732250,
+      "mb": 7.374,
+      "path": "summary_shards/summary_000065.json"
+    },
+    {
+      "bytes": 7731807,
+      "mb": 7.3736,
+      "path": "summary_shards/summary_000059.json"
+    },
+    {
+      "bytes": 7729792,
+      "mb": 7.3717,
+      "path": "summary_shards/summary_000064.json"
+    },
+    {
+      "bytes": 7727569,
+      "mb": 7.3696,
+      "path": "summary_shards/summary_000068.json"
+    },
+    {
+      "bytes": 7727433,
+      "mb": 7.3695,
+      "path": "summary_shards/summary_000063.json"
+    },
+    {
+      "bytes": 7725574,
+      "mb": 7.3677,
+      "path": "summary_shards/summary_000066.json"
+    },
+    {
+      "bytes": 7720628,
+      "mb": 7.363,
+      "path": "summary_shards/summary_000067.json"
+    },
+    {
+      "bytes": 7718421,
+      "mb": 7.3609,
+      "path": "summary_shards/summary_000069.json"
+    },
+    {
+      "bytes": 7637032,
+      "mb": 7.2832,
+      "path": "trace_aggregate_bins.bin"
+    },
+    {
+      "bytes": 4773101,
+      "mb": 4.552,
+      "path": "event_chunks/chunk_000281.json"
+    },
+    {
+      "bytes": 2331011,
+      "mb": 2.223,
+      "path": "summary_shards/summary_000070.json"
+    },
+    {
+      "bytes": 49771,
+      "mb": 0.0475,
+      "path": "event_chunk_manifest.json"
+    },
+    {
+      "bytes": 13021,
+      "mb": 0.0124,
+      "path": "points_meta.json"
+    },
+    {
+      "bytes": 12829,
+      "mb": 0.0122,
+      "path": "summary_manifest.json"
+    },
+    {
+      "bytes": 8421,
+      "mb": 0.008,
+      "path": "trace_event_index_meta.json"
+    },
+    {
+      "bytes": 8012,
+      "mb": 0.0076,
+      "path": "canonical_web_manifest.json"
+    },
+    {
+      "bytes": 4703,
+      "mb": 0.0045,
+      "path": "trace_segments_meta.json"
+    },
+    {
+      "bytes": 3564,
+      "mb": 0.0034,
+      "path": "trace_aggregate_bins_meta.json"
+    }
+  ],
+  "total_bytes": 7016345174,
+  "total_files": 364,
+  "total_mb": 6691.31
+}

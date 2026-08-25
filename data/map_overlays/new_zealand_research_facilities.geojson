@@ -1,0 +1,183 @@
+{
+  "type": "FeatureCollection",
+  "name": "new_zealand_research_facilities_temporal_v1",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [173.738889, -41.576389] },
+      "properties": {
+        "site_id": "waihopai_station_nz",
+        "entity_id": "waihopai_station",
+        "entity_name": "Waihopai Station",
+        "site_name": "Waihopai Station",
+        "display_name": "Waihopai Station",
+        "short_label": "Waihopai",
+        "category": "defense_research",
+        "roles": [
+          "signals_intelligence",
+          "satellite_communications",
+          "surveillance"
+        ],
+        "significance_tier": 2,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Waihopai Valley, Marlborough, New Zealand",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "start_year": 1989,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "GCSB Waihopai"
+        ],
+        "notes": "GCSB signals-intelligence/listening station. Public GCSB material describes first dish operations in 1989.",
+        "geo_precision_target": "site",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Public coordinate references compiled in New Zealand facility candidate notes",
+        "recommended_anchor": "station coordinate",
+        "source_urls": [
+          "https://www.gcsb.govt.nz/news/gcsb-to-remove-dishes-and-radomes-at-waihopai-station"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [175.249722, -40.314722] },
+      "properties": {
+        "site_id": "tangimoana_station_nz",
+        "entity_id": "tangimoana_station",
+        "entity_name": "Tangimoana Station",
+        "site_name": "Tangimoana Station",
+        "display_name": "Tangimoana Station",
+        "short_label": "Tangimoana",
+        "category": "defense_research",
+        "roles": [
+          "signals_intelligence",
+          "radio_interception",
+          "surveillance"
+        ],
+        "significance_tier": 2,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Tangimoana, Manawatu-Whanganui, New Zealand",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "start_year": 1982,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "GCSB Tangimoana"
+        ],
+        "notes": "GCSB radio communications interception station. National Library topic material describes opening in 1982.",
+        "geo_precision_target": "site",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Public coordinate references compiled in New Zealand facility candidate notes",
+        "recommended_anchor": "station coordinate",
+        "source_urls": [
+          "https://natlib.govt.nz/records/22493967"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [177.865833, -39.260917] },
+      "properties": {
+        "site_id": "rocket_lab_launch_complex_1_nz",
+        "entity_id": "rocket_lab_lc1",
+        "entity_name": "Rocket Lab Launch Complex 1",
+        "site_name": "Launch Complex 1",
+        "display_name": "Rocket Lab Launch Complex 1",
+        "short_label": "Rocket Lab LC-1",
+        "category": "space_launch",
+        "roles": [
+          "space_launch",
+          "rocket_test",
+          "commercial_space"
+        ],
+        "significance_tier": 2,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "space_only",
+        "dod_relevance": false,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Mahia Peninsula, Hawke's Bay, New Zealand",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "start_year": 2016,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Mahia Launch Complex",
+          "Rocket Lab LC-1"
+        ],
+        "notes": "Commercial orbital launch facility. Use 2016 as the site-opening year; first Electron launch activity followed in 2017.",
+        "geo_precision_target": "launch_site",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Public coordinate references compiled in New Zealand facility candidate notes",
+        "recommended_anchor": "launch complex coordinate",
+        "source_urls": [
+          "https://www.rocketlabusa.com/launch/launch-complex-1/"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [170.465, -43.986667] },
+      "properties": {
+        "site_id": "mt_john_observatory_nz",
+        "entity_id": "mt_john_observatory",
+        "entity_name": "University of Canterbury Mt John Observatory",
+        "site_name": "Mt John Observatory",
+        "display_name": "University of Canterbury Mt John Observatory",
+        "short_label": "Mt John Observatory",
+        "category": "observatory",
+        "roles": [
+          "astronomy",
+          "optical_observation",
+          "research_observatory"
+        ],
+        "significance_tier": 3,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "civil_research",
+        "dod_relevance": false,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Lake Tekapo, Canterbury, New Zealand",
+        "country": "New Zealand",
+        "country_code": "NZ",
+        "start_year": 1965,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Mt John Observatory Field Station"
+        ],
+        "notes": "University of Canterbury astronomy observatory and field station.",
+        "geo_precision_target": "observatory",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Public coordinate references compiled in New Zealand facility candidate notes",
+        "recommended_anchor": "observatory coordinate",
+        "source_urls": [
+          "https://www.canterbury.ac.nz/research/research-facilities-and-equipment/field-stations/mt-john-observatory-field-station"
+        ]
+      }
+    }
+  ]
+}

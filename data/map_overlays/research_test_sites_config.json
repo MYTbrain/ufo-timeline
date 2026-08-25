@@ -1,0 +1,73 @@
+{
+  "overlay_id": "infrastructure_sites",
+  "label": "Infrastructure",
+  "default_enabled": false,
+  "default_visibility_mode": "strict_default",
+  "show_expanded_research_toggle": true,
+  "date_window_filtering": {
+    "enabled": true,
+    "start_field": "start_year",
+    "end_field": "end_year",
+    "pre_public_buffer_field": "pre_public_buffer_years"
+  },
+  "category_styles": {
+    "national_lab": {
+      "icon": "beaker",
+      "color": "#7dd3fc"
+    },
+    "defense_research": {
+      "icon": "shield-sword",
+      "color": "#c084fc"
+    },
+    "military_test": {
+      "icon": "crosshair",
+      "color": "#f59e0b"
+    },
+    "contractor": {
+      "icon": "gear",
+      "color": "#34d399"
+    },
+    "space_launch": {
+      "icon": "rocket",
+      "color": "#22d3ee"
+    },
+    "observatory": {
+      "icon": "telescope",
+      "color": "#a7f3d0"
+    },
+    "other_research": {
+      "icon": "landmark",
+      "color": "#94a3b8"
+    }
+  },
+  "popup_fields": [
+    "display_name",
+    "country",
+    "location_label",
+    "category",
+    "roles",
+    "start_year",
+    "end_year",
+    "notes"
+  ],
+  "marker_style": {
+    "shape": "ring",
+    "show_labels_by_default": false,
+    "use_category_color": true,
+    "show_country_in_popup": true
+  },
+  "country_grouping_enabled": true,
+  "international_overlay_expansion": "v0_3_global_core_plus",
+  "countries_covered": [
+    "AU",
+    "CN",
+    "FR",
+    "GB",
+    "KZ",
+    "NZ",
+    "RU",
+    "SE",
+    "US"
+  ],
+  "feature_count": 212
+}

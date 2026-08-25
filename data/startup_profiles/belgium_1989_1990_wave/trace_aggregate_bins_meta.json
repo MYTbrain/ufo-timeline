@@ -1,0 +1,165 @@
+{
+  "bytes_per_row": 52,
+  "cell_indexing": {
+    "latitude_origin_degrees": -90.0,
+    "longitude_origin_degrees": -180.0,
+    "longitude_wrap": "normalize to [-180, 180] before assigning cells"
+  },
+  "counts": {
+    "aggregate_bins": 2089,
+    "aggregate_bins_by_level": {
+      "10deg": 488,
+      "2_5deg": 867,
+      "5deg": 734
+    },
+    "input_segments": 975
+  },
+  "endianness": "little",
+  "fields": [
+    {
+      "lookup_table": "levels",
+      "name": "level_id",
+      "offset": 0,
+      "size": 4,
+      "type": "lookup:uint32"
+    },
+    {
+      "name": "from_lon_cell",
+      "offset": 4,
+      "size": 2,
+      "type": "uint16"
+    },
+    {
+      "name": "from_lat_cell",
+      "offset": 6,
+      "size": 2,
+      "type": "uint16"
+    },
+    {
+      "name": "to_lon_cell",
+      "offset": 8,
+      "size": 2,
+      "type": "uint16"
+    },
+    {
+      "name": "to_lat_cell",
+      "offset": 10,
+      "size": 2,
+      "type": "uint16"
+    },
+    {
+      "lookup_table": "gap_buckets",
+      "name": "gap_bucket_id",
+      "offset": 12,
+      "size": 4,
+      "type": "lookup:uint32"
+    },
+    {
+      "name": "segment_count",
+      "offset": 16,
+      "size": 4,
+      "type": "uint32"
+    },
+    {
+      "name": "from_lat_mean",
+      "offset": 20,
+      "size": 4,
+      "type": "float32"
+    },
+    {
+      "name": "from_lon_mean",
+      "offset": 24,
+      "size": 4,
+      "type": "float32"
+    },
+    {
+      "name": "to_lat_mean",
+      "offset": 28,
+      "size": 4,
+      "type": "float32"
+    },
+    {
+      "name": "to_lon_mean",
+      "offset": 32,
+      "size": 4,
+      "type": "float32"
+    },
+    {
+      "name": "min_sort_date_key",
+      "offset": 36,
+      "size": 4,
+      "type": "int32"
+    },
+    {
+      "name": "max_sort_date_key",
+      "offset": 40,
+      "size": 4,
+      "type": "int32"
+    },
+    {
+      "name": "min_sequence_index",
+      "offset": 44,
+      "size": 4,
+      "type": "uint32"
+    },
+    {
+      "name": "max_sequence_index",
+      "offset": 48,
+      "size": 4,
+      "type": "uint32"
+    }
+  ],
+  "files": {
+    "metadata": "trace_aggregate_bins_meta.json",
+    "trace_aggregate_bins": "trace_aggregate_bins.bin"
+  },
+  "levels": [
+    {
+      "cell_size_degrees": 10.0,
+      "key": "10deg",
+      "label": "10° grid"
+    },
+    {
+      "cell_size_degrees": 5.0,
+      "key": "5deg",
+      "label": "5° grid"
+    },
+    {
+      "cell_size_degrees": 2.5,
+      "key": "2_5deg",
+      "label": "2.5° grid"
+    }
+  ],
+  "lookup_tables": {
+    "gap_buckets": [
+      null,
+      "gap_le_1",
+      "gap_le_2",
+      "gap_le_7",
+      "gap_le_30",
+      "gap_gt_30"
+    ],
+    "levels": [
+      null,
+      "10deg",
+      "5deg",
+      "2_5deg"
+    ]
+  },
+  "nulls": {
+    "sort_date_key": 0
+  },
+  "render_contract": {
+    "authoritative_filtered_source": "trace_event_index.bin",
+    "grouping": "level + from cell + to cell + gap bucket",
+    "input": "full canonical adjacent trace segments",
+    "row_order": "level_then_origin_then_destination_then_gap_bucket",
+    "runtime_warning": "Use for full-universe wide-window LOD only. For arbitrary filtered traces, filter trace_event_index rows first and aggregate/connect adjacent visible rows client-side.",
+    "supported_filter_semantics": [
+      "none/full_universe"
+    ]
+  },
+  "row_count": 2089,
+  "schema_version": 1,
+  "struct_format": "<IHHHHIIffffiiII"
+}

@@ -1,0 +1,3903 @@
+{
+  "type": "FeatureCollection",
+  "name": "ufo_infra_runtime_v0_1",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.62083,
+          -34.7025
+        ]
+      },
+      "properties": {
+        "site_id": "edinburgh_defence_precinct_au",
+        "entity_id": "edinburgh_defence_precinct",
+        "entity_name": "Edinburgh Defence Precinct / RAAF Base Edinburgh",
+        "site_name": "Edinburgh Defence Precinct main anchor",
+        "display_name": "Edinburgh Defence Precinct / RAAF Base Edinburgh",
+        "short_label": "Edinburgh",
+        "category": "defense_research",
+        "roles": [
+          "air_defense",
+          "surveillance",
+          "electronic_warfare",
+          "defense_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Edinburgh, South Australia, Australia",
+        "country": "Australia",
+        "country_code": "AU",
+        "start_year": 1954,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "RAAF Base Edinburgh",
+          "DSTG Edinburgh"
+        ],
+        "notes": "High-signal Australian defense precinct combining air-base, surveillance, and defense-science functions.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / base anchor",
+        "recommended_anchor": "RAAF Base Edinburgh main area"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.16563,
+          -21.816405
+        ]
+      },
+      "properties": {
+        "site_id": "harold_e_holt_exmouth_au",
+        "entity_id": "harold_e_holt",
+        "entity_name": "Naval Communication Station Harold E. Holt",
+        "site_name": "Exmouth strategic communications station",
+        "display_name": "Naval Communication Station Harold E. Holt",
+        "short_label": "Harold E. Holt",
+        "category": "defense_research",
+        "roles": [
+          "strategic_communications",
+          "naval_communications",
+          "signals_intelligence"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Exmouth, Western Australia, Australia",
+        "country": "Australia",
+        "country_code": "AU",
+        "start_year": 1967,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "NCS Harold E. Holt",
+          "Harold E. Holt station"
+        ],
+        "notes": "Strategic VLF naval communications station with long-running allied defense relevance.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / station anchor",
+        "recommended_anchor": "Naval Communication Station Harold E. Holt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          136.776178,
+          -31.325044
+        ]
+      },
+      "properties": {
+        "site_id": "nurrungar_au",
+        "entity_id": "nurrungar",
+        "entity_name": "Joint Defence Facility Nurrungar",
+        "site_name": "Nurrungar missile warning station",
+        "display_name": "Joint Defence Facility Nurrungar",
+        "short_label": "Nurrungar",
+        "category": "defense_research",
+        "roles": [
+          "missile_warning",
+          "space_surveillance",
+          "joint_intelligence_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed",
+        "confidence": "high",
+        "location_label": "Near Woomera, South Australia, Australia",
+        "country": "Australia",
+        "country_code": "AU",
+        "start_year": 1969,
+        "end_year": 1999,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Nurrungar"
+        ],
+        "notes": "Former joint Australia–U.S. missile-warning and space-surveillance facility near Woomera.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / station anchor",
+        "recommended_anchor": "Joint Defence Facility Nurrungar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          133.7375,
+          -23.8
+        ]
+      },
+      "properties": {
+        "site_id": "pine_gap_au",
+        "entity_id": "pine_gap",
+        "entity_name": "Joint Defence Facility Pine Gap",
+        "site_name": "Pine Gap main facility",
+        "display_name": "Joint Defence Facility Pine Gap",
+        "short_label": "Pine Gap",
+        "category": "defense_research",
+        "roles": [
+          "signals_intelligence",
+          "satellite_control",
+          "surveillance"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Near Alice Springs, Northern Territory, Australia",
+        "country": "Australia",
+        "country_code": "AU",
+        "start_year": 1970,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "JDFPG",
+          "Joint Defence Space Research Facility"
+        ],
+        "notes": "Joint Australia–U.S. signals-intelligence and satellite ground facility near Alice Springs.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Nautilus / Wikipedia coordinates",
+        "recommended_anchor": "Pine Gap main facility"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          136.81694,
+          -31.14417
+        ]
+      },
+      "properties": {
+        "site_id": "woomera_au",
+        "entity_id": "woomera",
+        "entity_name": "Woomera Range Complex",
+        "site_name": "RAAF Base Woomera / range complex anchor",
+        "display_name": "Woomera Range Complex — main anchor",
+        "short_label": "Woomera",
+        "category": "military_test",
+        "roles": [
+          "weapons_test",
+          "aerospace_test",
+          "range_operations"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "South Australia, Australia",
+        "country": "Australia",
+        "country_code": "AU",
+        "start_year": 1947,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "RAAF Base Woomera",
+          "Woomera Test Range"
+        ],
+        "notes": "Major Australian weapons and aerospace test range complex.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "RAAF Base Woomera coordinates / range complex anchor",
+        "recommended_anchor": "RAAF Base Woomera"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.29111,
+          40.95806
+        ]
+      },
+      "properties": {
+        "site_id": "jiuquan_cn",
+        "entity_id": "jiuquan",
+        "entity_name": "Jiuquan Satellite Launch Center",
+        "site_name": "Jiuquan main launch complex",
+        "display_name": "Jiuquan Satellite Launch Center — main complex",
+        "short_label": "Jiuquan",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "missile_test",
+          "crewed_space_launch"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Inner Mongolia / Gansu, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Base 20",
+          "Dongfeng base"
+        ],
+        "notes": "China's oldest launch center, with both space-launch and missile-test relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main launch complex anchor",
+        "recommended_anchor": "Jiuquan main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.3721,
+          41.5377
+        ]
+      },
+      "properties": {
+        "site_id": "korla_missile_test_complex_cn",
+        "entity_id": "korla_missile_test_complex",
+        "entity_name": "Korla Missile Test Complex",
+        "site_name": "Korla missile test complex anchor",
+        "display_name": "Korla Missile Test Complex",
+        "short_label": "Korla",
+        "category": "military_test",
+        "roles": [
+          "missile_test",
+          "counterspace_test",
+          "air_defense_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Near Korla, Xinjiang, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 2009,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Korla range complex"
+        ],
+        "notes": "Chinese missile-test complex near Korla with reported missile-defense and counterspace relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Published analysis coordinates / complex anchor",
+        "recommended_anchor": "Korla Missile Test Complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          88.5,
+          42.58333
+        ]
+      },
+      "properties": {
+        "site_id": "lop_nur_test_site_cn",
+        "entity_id": "lop_nur_test_site",
+        "entity_name": "Lop Nur nuclear test site",
+        "site_name": "Lop Nur test site anchor",
+        "display_name": "Lop Nur nuclear test site",
+        "short_label": "Lop Nur",
+        "category": "military_test",
+        "roles": [
+          "nuclear_test",
+          "weapons_development",
+          "test_range"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed_or_restricted",
+        "confidence": "medium",
+        "location_label": "Xinjiang, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 1960,
+        "end_year": 1996,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Project 596 test site",
+          "Malan"
+        ],
+        "notes": "Chinese nuclear test-site lineage at Lop Nur using a practical test-area anchor.",
+        "geo_precision_target": "regional_cluster",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Published test-site coordinates / regional anchor",
+        "recommended_anchor": "Lop Nur test-site anchor"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          111.6084972,
+          38.8490861
+        ]
+      },
+      "properties": {
+        "site_id": "taiyuan_cn",
+        "entity_id": "taiyuan",
+        "entity_name": "Taiyuan Satellite Launch Center",
+        "site_name": "Taiyuan main launch complex",
+        "display_name": "Taiyuan Satellite Launch Center — main complex",
+        "short_label": "Taiyuan",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "missile_test",
+          "sun_synchronous_launch"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Kelan County, Shanxi, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 1966,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Base 25"
+        ],
+        "notes": "Chinese launch and defense test facility with major missile-test relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main launch complex anchor",
+        "recommended_anchor": "Taiyuan main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.9511333,
+          19.6144917
+        ]
+      },
+      "properties": {
+        "site_id": "wenchang_cn",
+        "entity_id": "wenchang",
+        "entity_name": "Wenchang Space Launch Site",
+        "site_name": "Wenchang main launch complex",
+        "display_name": "Wenchang Space Launch Site — main complex",
+        "short_label": "Wenchang",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "heavy_lift_launch",
+          "strategic_space_access"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Wenchang, Hainan, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 2016,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Wenchang Space Launch Center"
+        ],
+        "notes": "China's southern coastal launch site for Long March heavy and newer launch vehicles.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main launch complex anchor",
+        "recommended_anchor": "Wenchang main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.02667,
+          28.24556
+        ]
+      },
+      "properties": {
+        "site_id": "xichang_cn",
+        "entity_id": "xichang",
+        "entity_name": "Xichang Satellite Launch Center",
+        "site_name": "Xichang main launch complex",
+        "display_name": "Xichang Satellite Launch Center — main complex",
+        "short_label": "Xichang",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "anti_satellite_test",
+          "geostationary_launch"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Liangshan, Sichuan, China",
+        "country": "China",
+        "country_code": "CN",
+        "start_year": 1984,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "XSLC"
+        ],
+        "notes": "Chinese launch center with geostationary and military-space relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main launch complex anchor",
+        "recommended_anchor": "Xichang main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.202778,
+          48.595278
+        ]
+      },
+      "properties": {
+        "site_id": "cea_bruyeres_chatel_fr",
+        "entity_id": "cea_bruyeres_chatel",
+        "entity_name": "CEA Bruyères-le-Châtel",
+        "site_name": "Bruyères-le-Châtel defense research campus",
+        "display_name": "CEA Bruyères-le-Châtel",
+        "short_label": "Bruyères-le-Châtel",
+        "category": "defense_research",
+        "roles": [
+          "nuclear_weapons_research",
+          "simulation",
+          "naval_propulsion"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Bruyères-le-Châtel, France",
+        "country": "France",
+        "country_code": "FR",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "DAM Île-de-France center"
+        ],
+        "notes": "CEA DAM defense research campus associated with simulation and strategic programs.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / campus anchor",
+        "recommended_anchor": "CEA Bruyères-le-Châtel campus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.808278,
+          44.658333
+        ]
+      },
+      "properties": {
+        "site_id": "cea_cesta_fr",
+        "entity_id": "cea_cesta",
+        "entity_name": "CEA CESTA",
+        "site_name": "CESTA / Laser Mégajoule campus",
+        "display_name": "CEA CESTA",
+        "short_label": "CESTA",
+        "category": "defense_research",
+        "roles": [
+          "nuclear_deterrence",
+          "high_energy_density_physics",
+          "laser_megajoule"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Le Barp, Gironde, France",
+        "country": "France",
+        "country_code": "FR",
+        "start_year": 1965,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Centre d'études scientifiques et techniques d'Aquitaine",
+          "Laser Mégajoule"
+        ],
+        "notes": "French defense/science campus including Laser Mégajoule and related deterrence research.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published GPS coordinates / campus anchor",
+        "recommended_anchor": "CEA CESTA main campus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.870442,
+          47.58216
+        ]
+      },
+      "properties": {
+        "site_id": "cea_valduc_fr",
+        "entity_id": "cea_valduc",
+        "entity_name": "CEA Valduc",
+        "site_name": "Valduc nuclear weapons support site",
+        "display_name": "CEA Valduc",
+        "short_label": "Valduc",
+        "category": "defense_research",
+        "roles": [
+          "nuclear_weapons_support",
+          "materials_research",
+          "deterrence_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Salives, Côte-d'Or, France",
+        "country": "France",
+        "country_code": "FR",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Valduc center"
+        ],
+        "notes": "French nuclear-weapons support and materials site within the CEA DAM network.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / site anchor",
+        "recommended_anchor": "CEA Valduc site"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.25,
+          44.45
+        ]
+      },
+      "properties": {
+        "site_id": "dga_essais_missiles_fr",
+        "entity_id": "dga_essais_missiles",
+        "entity_name": "DGA Essais de missiles",
+        "site_name": "Biscarrosse missile test site",
+        "display_name": "DGA Essais de missiles",
+        "short_label": "DGA Essais de missiles",
+        "category": "military_test",
+        "roles": [
+          "missile_test",
+          "rocket_test",
+          "weapons_evaluation"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Biscarrosse, France",
+        "country": "France",
+        "country_code": "FR",
+        "start_year": 1967,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Centre d'Essais des Landes",
+          "CEL"
+        ],
+        "notes": "French missile and sounding-rocket test site near Biscarrosse.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / site anchor",
+        "recommended_anchor": "DGA Essais de missiles main site"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          63.305,
+          45.965
+        ]
+      },
+      "properties": {
+        "site_id": "baikonur_kz",
+        "entity_id": "baikonur",
+        "entity_name": "Baikonur Cosmodrome",
+        "site_name": "Baikonur main launch complex",
+        "display_name": "Baikonur Cosmodrome — main complex",
+        "short_label": "Baikonur",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "icbm_test",
+          "strategic_rocketry"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Kyzylorda Region, Kazakhstan",
+        "country": "Kazakhstan",
+        "country_code": "KZ",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "NIIP-5",
+          "Tyuratam"
+        ],
+        "notes": "Historic Soviet/Russian launch and missile-test complex in Kazakhstan.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / main complex anchor",
+        "recommended_anchor": "Baikonur Cosmodrome main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.867,
+          46.383
+        ]
+      },
+      "properties": {
+        "site_id": "sary_shagan_kz",
+        "entity_id": "sary_shagan",
+        "entity_name": "Sary Shagan",
+        "site_name": "Sary Shagan anti-ballistic missile test range",
+        "display_name": "Sary Shagan — anti-ballistic missile test range",
+        "short_label": "Sary Shagan",
+        "category": "military_test",
+        "roles": [
+          "missile_defense_test",
+          "radar_test",
+          "anti_ballistic_missile_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Near Priozersk, Kazakhstan",
+        "country": "Kazakhstan",
+        "country_code": "KZ",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "State Research and Testing Site No. 10"
+        ],
+        "notes": "Major Soviet/Russian anti-ballistic missile and radar test range in Kazakhstan.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Wikipedia primary coordinates / range anchor",
+        "recommended_anchor": "Sary Shagan range anchor near Priozersk"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.717,
+          50.117
+        ]
+      },
+      "properties": {
+        "site_id": "semipalatinsk_test_site_kz",
+        "entity_id": "semipalatinsk_test_site",
+        "entity_name": "Semipalatinsk Test Site",
+        "site_name": "Semipalatinsk nuclear test site anchor",
+        "display_name": "Semipalatinsk Test Site",
+        "short_label": "Semipalatinsk",
+        "category": "military_test",
+        "roles": [
+          "nuclear_test",
+          "weapons_development",
+          "underground_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed",
+        "confidence": "high",
+        "location_label": "Near Semey / Kurchatov, Kazakhstan",
+        "country": "Kazakhstan",
+        "country_code": "KZ",
+        "start_year": 1949,
+        "end_year": 1991,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "The Polygon",
+          "Semipalatinsk-21"
+        ],
+        "notes": "Primary Soviet nuclear weapons test site in Kazakhstan.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published site coordinates / test area anchor",
+        "recommended_anchor": "Semipalatinsk Test Site main anchor"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.20417,
+          48.30861
+        ]
+      },
+      "properties": {
+        "site_id": "akhtubinsk_glits_ru",
+        "entity_id": "akhtubinsk_glits",
+        "entity_name": "929th State Flight Test Centre / Akhtubinsk",
+        "site_name": "Akhtubinsk flight-test complex",
+        "display_name": "929th State Flight Test Centre / Akhtubinsk",
+        "short_label": "Akhtubinsk",
+        "category": "military_test",
+        "roles": [
+          "flight_test",
+          "aviation_r_and_d",
+          "weapons_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Akhtubinsk, Astrakhan Oblast, Russia",
+        "country": "Russia",
+        "country_code": "RU",
+        "start_year": 1948,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "929 GLITs",
+          "Akhtubinsk air base"
+        ],
+        "notes": "Major Russian aviation research and flight-test complex.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / air base anchor",
+        "recommended_anchor": "Akhtubinsk main flight-test base"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.72,
+          48.59
+        ]
+      },
+      "properties": {
+        "site_id": "kapustin_yar_ru",
+        "entity_id": "kapustin_yar",
+        "entity_name": "Kapustin Yar",
+        "site_name": "Kapustin Yar missile and rocket test range",
+        "display_name": "Kapustin Yar — missile and rocket test range",
+        "short_label": "Kapustin Yar",
+        "category": "military_test",
+        "roles": [
+          "missile_test",
+          "rocket_test",
+          "air_and_missile_defense_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Astrakhan Oblast, Russia",
+        "country": "Russia",
+        "country_code": "RU",
+        "start_year": 1946,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "4th State Central Test Range",
+          "Kap Yar"
+        ],
+        "notes": "Foundational Soviet/Russian missile and rocket test range.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / historical range anchor",
+        "recommended_anchor": "Kapustin Yar range anchor"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.93139,
+          73.31778
+        ]
+      },
+      "properties": {
+        "site_id": "novaya_zemlya_matochkin_shar_ru",
+        "entity_id": "novaya_zemlya_matochkin_shar",
+        "entity_name": "Novaya Zemlya test site",
+        "site_name": "Matochkin Shar test area anchor",
+        "display_name": "Novaya Zemlya — Matochkin Shar test area",
+        "short_label": "Novaya Zemlya",
+        "category": "military_test",
+        "roles": [
+          "nuclear_test",
+          "missile_test",
+          "subcritical_testing"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "medium",
+        "location_label": "Novaya Zemlya, Russia",
+        "country": "Russia",
+        "country_code": "RU",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Matochkin Shar",
+          "Central Test Site of Russia"
+        ],
+        "notes": "Novaya Zemlya test-site lineage using the Matochkin Shar area as a practical map anchor.",
+        "geo_precision_target": "regional_cluster",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Published Matochkin Shar test-area coordinates / regional anchor",
+        "recommended_anchor": "Matochkin Shar test area"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          40.57778,
+          62.92556
+        ]
+      },
+      "properties": {
+        "site_id": "plesetsk_ru",
+        "entity_id": "plesetsk",
+        "entity_name": "Plesetsk Cosmodrome",
+        "site_name": "Plesetsk main spaceport complex",
+        "display_name": "Plesetsk Cosmodrome — main complex",
+        "short_label": "Plesetsk",
+        "category": "military_test",
+        "roles": [
+          "military_space_launch",
+          "missile_test",
+          "space_launch"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Mirny, Arkhangelsk Oblast, Russia",
+        "country": "Russia",
+        "country_code": "RU",
+        "start_year": 1957,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "1st State Test Cosmodrome"
+        ],
+        "notes": "Long-running Russian military spaceport and missile/space test complex.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main complex anchor",
+        "recommended_anchor": "Plesetsk main complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          128.334778,
+          51.8845528
+        ]
+      },
+      "properties": {
+        "site_id": "vostochny_amur_ru",
+        "entity_id": "vostochny",
+        "entity_name": "Vostochny Cosmodrome",
+        "site_name": "Vostochny headquarters / launch complex anchor",
+        "display_name": "Vostochny Cosmodrome — main complex",
+        "short_label": "Vostochny",
+        "category": "military_test",
+        "roles": [
+          "space_launch",
+          "strategic_space_access",
+          "launch_vehicle_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Amur Oblast, Russia",
+        "country": "Russia",
+        "country_code": "RU",
+        "start_year": 2011,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Vostochny Cosmodrome HQ"
+        ],
+        "notes": "Post-Soviet Russian launch site built to reduce reliance on Baikonur.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia headquarters coordinates",
+        "recommended_anchor": "Vostochny headquarters / Site 1S area"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.10694,
+          67.89389
+        ]
+      },
+      "properties": {
+        "site_id": "esrange_se",
+        "entity_id": "esrange",
+        "entity_name": "Esrange Space Center",
+        "site_name": "Esrange main space center",
+        "display_name": "Esrange Space Center",
+        "short_label": "Esrange",
+        "category": "defense_research",
+        "roles": [
+          "space_launch",
+          "sounding_rockets",
+          "satellite_ground_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Near Kiruna, Sweden",
+        "country": "Sweden",
+        "country_code": "SE",
+        "start_year": 1966,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Esrange"
+        ],
+        "notes": "Swedish space and research center with rocket, balloon, and emerging orbital launch relevance.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / main center anchor",
+        "recommended_anchor": "Esrange main center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.1667,
+          66.3333
+        ]
+      },
+      "properties": {
+        "site_id": "vidsel_test_range_se",
+        "entity_id": "vidsel_test_range",
+        "entity_name": "Vidsel Test Range",
+        "site_name": "Vidsel test range main anchor",
+        "display_name": "Vidsel Test Range",
+        "short_label": "Vidsel",
+        "category": "military_test",
+        "roles": [
+          "missile_test",
+          "weapons_integration",
+          "flight_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Norrbotten County, Sweden",
+        "country": "Sweden",
+        "country_code": "SE",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "RFN Vidsel",
+          "Vidsel Test and Evaluation Range"
+        ],
+        "notes": "Swedish military test and evaluation range used for missile, weapons, and flight testing.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Published range coordinates / anchor",
+        "recommended_anchor": "Vidsel Test Range anchor"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.140528,
+          51.36925
+        ]
+      },
+      "properties": {
+        "site_id": "awe_aldermaston_gb",
+        "entity_id": "awe_aldermaston",
+        "entity_name": "AWE Aldermaston",
+        "site_name": "Aldermaston nuclear weapons campus",
+        "display_name": "AWE Aldermaston",
+        "short_label": "Aldermaston",
+        "category": "defense_research",
+        "roles": [
+          "nuclear_weapons_design",
+          "warhead_development",
+          "deterrence_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Aldermaston, Berkshire, United Kingdom",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "start_year": 1950,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Atomic Weapons Establishment Aldermaston",
+          "AWRE Aldermaston"
+        ],
+        "notes": "Primary UK nuclear-weapons design and research campus.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / campus anchor",
+        "recommended_anchor": "AWE Aldermaston main campus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.023306,
+          51.407194
+        ]
+      },
+      "properties": {
+        "site_id": "awe_burghfield_gb",
+        "entity_id": "awe_burghfield",
+        "entity_name": "AWE Burghfield",
+        "site_name": "Burghfield warhead assembly and maintenance campus",
+        "display_name": "AWE Burghfield",
+        "short_label": "Burghfield",
+        "category": "defense_research",
+        "roles": [
+          "warhead_assembly",
+          "warhead_maintenance",
+          "decommissioning"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Burghfield, Berkshire, United Kingdom",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "start_year": 1954,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "AWE(B)",
+          "ROF Burghfield"
+        ],
+        "notes": "UK warhead assembly, maintenance, and decommissioning site within the AWE complex.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Published site references / campus anchor",
+        "recommended_anchor": "AWE Burghfield main licensed area"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.74694,
+          51.1575
+        ]
+      },
+      "properties": {
+        "site_id": "boscombe_down_gb",
+        "entity_id": "boscombe_down",
+        "entity_name": "MOD Boscombe Down",
+        "site_name": "Boscombe Down military test and evaluation airfield",
+        "display_name": "MOD Boscombe Down",
+        "short_label": "Boscombe Down",
+        "category": "military_test",
+        "roles": [
+          "flight_test",
+          "aircraft_evaluation",
+          "test_pilot_training"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Amesbury, Wiltshire, United Kingdom",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "start_year": 1917,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "RAF Boscombe Down"
+        ],
+        "notes": "UK military aircraft test and evaluation airfield.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Wikipedia primary coordinates / airfield anchor",
+        "recommended_anchor": "MOD Boscombe Down main airfield"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.704,
+          51.131
+        ]
+      },
+      "properties": {
+        "site_id": "porton_down_gb",
+        "entity_id": "porton_down",
+        "entity_name": "Porton Down",
+        "site_name": "Porton Down defense science campus",
+        "display_name": "Porton Down",
+        "short_label": "Porton Down",
+        "category": "defense_research",
+        "roles": [
+          "chemical_biological_defense",
+          "defense_science",
+          "security_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Wiltshire, United Kingdom",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "start_year": 1916,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "DSTL Porton Down",
+          "Defence Science and Technology Laboratory Porton Down"
+        ],
+        "notes": "Long-running UK chemical, biological, and defense-science campus.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / campus anchor",
+        "recommended_anchor": "Porton Down main campus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.66972,
+          54.35889
+        ]
+      },
+      "properties": {
+        "site_id": "raf_fylingdales_gb",
+        "entity_id": "raf_fylingdales",
+        "entity_name": "RAF Fylingdales",
+        "site_name": "Fylingdales missile warning and space surveillance site",
+        "display_name": "RAF Fylingdales",
+        "short_label": "Fylingdales",
+        "category": "defense_research",
+        "roles": [
+          "missile_warning",
+          "space_surveillance",
+          "radar"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "North York Moors, United Kingdom",
+        "country": "United Kingdom",
+        "country_code": "GB",
+        "start_year": 1963,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "RRH Fylingdales"
+        ],
+        "notes": "UK ballistic-missile early-warning and space-surveillance radar site.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "verified_anchor",
+        "geocode_confidence": "high",
+        "geocode_source": "Published coordinates / radar site anchor",
+        "recommended_anchor": "RAF Fylingdales radar site"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.3878,
+          33.9186
+        ]
+      },
+      "properties": {
+        "site_id": "aerospace_el_segundo_ca",
+        "entity_id": "aerospace_corp",
+        "entity_name": "The Aerospace Corporation",
+        "site_name": "El Segundo campus",
+        "display_name": "The Aerospace Corporation — El Segundo campus",
+        "short_label": "The Aerospace Corporation",
+        "category": "defense_research",
+        "roles": [
+          "national_security_space",
+          "space_systems_engineering",
+          "mission_assurance",
+          "ffrdc_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "El Segundo, California",
+        "start_year": 1960,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "Top-tier national-security space FFRDC.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Aerospace Corporation campus anchor at 2310 E El Segundo Blvd",
+        "recommended_anchor": "El Segundo principal campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.311,
+          47.5303
+        ]
+      },
+      "properties": {
+        "site_id": "boeing_plant_2_seattle_wa",
+        "entity_id": "boeing_seattle_lineage",
+        "entity_name": "Boeing Seattle lineage",
+        "site_name": "Boeing Plant 2 / Air Force Plant 17",
+        "display_name": "Boeing Seattle lineage - Boeing Plant 2 / Air Force Plant 17",
+        "short_label": "Boeing Plant 2",
+        "category": "contractor",
+        "roles": [
+          "bomber_manufacturing",
+          "military_aircraft_production",
+          "aerospace_manufacturing"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "demolished",
+        "confidence": "high",
+        "location_label": "Seattle / Duwamish, Washington",
+        "start_year": 1936,
+        "end_year": 2011,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Boeing Seattle",
+          "Boeing Plant No. 2",
+          "Boeing Air Force Plant 17",
+          "Air Force Plant 17"
+        ],
+        "notes": "Historic Boeing Seattle military-aircraft production plant on the Duwamish waterway; built in 1936 and demolished after cleanup in the early 2010s.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Boeing Plant 2 / Air Force Plant 17 public historical and cleanup references",
+        "recommended_anchor": "Boeing Plant 2 Duwamish / Boeing Field industrial campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.890385,
+          39.165681
+        ]
+      },
+      "properties": {
+        "site_id": "apl_laurel_md",
+        "entity_id": "jhu_apl",
+        "entity_name": "Johns Hopkins Applied Physics Laboratory",
+        "site_name": "APL Laurel campus site-phase",
+        "display_name": "Johns Hopkins Applied Physics Laboratory — APL Laurel campus site-phase",
+        "short_label": "Johns Hopkins Applied Physics Laboratory",
+        "category": "defense_research",
+        "roles": [
+          "weapons_r_and_d",
+          "guided_missiles",
+          "air_defense",
+          "naval_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Silver Spring origin / Laurel, Maryland",
+        "start_year": 1954,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "APL"
+        ],
+        "notes": "Wartime/Navy air-defense and missile lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "APL Laurel campus from latlong snippet / official address 11100 Johns Hopkins Rd",
+        "parent_site_id": "apl_silver_spring_laurel_md",
+        "split_priority": "high",
+        "split_reason": "The correct anchor before 1954 differs from the correct anchor after the move to Laurel",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.019,
+          39.004
+        ]
+      },
+      "properties": {
+        "site_id": "apl_silver_spring_md",
+        "entity_id": "jhu_apl",
+        "entity_name": "Johns Hopkins Applied Physics Laboratory",
+        "site_name": "APL original Silver Spring site-phase",
+        "display_name": "Johns Hopkins Applied Physics Laboratory — APL original Silver Spring site-phase",
+        "short_label": "Johns Hopkins Applied Physics Laboratory",
+        "category": "defense_research",
+        "roles": [
+          "weapons_r_and_d",
+          "guided_missiles",
+          "air_defense",
+          "naval_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Silver Spring origin / Laurel, Maryland",
+        "start_year": 1942,
+        "end_year": 1954,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "APL"
+        ],
+        "notes": "Wartime/Navy air-defense and missile lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Historic Silver Spring APL city/campus-phase anchor",
+        "parent_site_id": "apl_silver_spring_laurel_md",
+        "split_priority": "high",
+        "split_reason": "The correct anchor before 1954 differs from the correct anchor after the move to Laurel",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.978867,
+          41.718292
+        ]
+      },
+      "properties": {
+        "site_id": "argonne_lemont_il",
+        "entity_id": "argonne",
+        "entity_name": "Argonne National Laboratory",
+        "site_name": "Lemont / Argonne site",
+        "display_name": "Argonne National Laboratory — Lemont / Argonne site",
+        "short_label": "Argonne National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_research",
+          "energy_research",
+          "advanced_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Lemont / Argonne area, Illinois",
+        "start_year": 1946,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "Foundational postwar atomic-energy lab.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Argonne campus coordinates from Wikimedia commons snippet",
+        "recommended_anchor": "main Argonne campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.4013,
+          40.6845
+        ]
+      },
+      "properties": {
+        "site_id": "bell_labs_murray_hill_nj",
+        "entity_id": "bell_labs",
+        "entity_name": "Bell Telephone Laboratories / Bell Labs",
+        "site_name": "Murray Hill research campus",
+        "display_name": "Bell Telephone Laboratories / Bell Labs — Murray Hill research campus",
+        "short_label": "Bell Telephone Laboratories / Bell Labs",
+        "category": "defense_research",
+        "roles": [
+          "telecommunications_r_and_d",
+          "electronics",
+          "radar",
+          "cryptography",
+          "strategic_research"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "expanded_research",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "medium",
+        "location_label": "Murray Hill, New Jersey",
+        "start_year": 1941,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Bell Telephone Laboratories",
+          "AT&T Bell Laboratories",
+          "Bell Labs",
+          "Nokia Bell Labs"
+        ],
+        "notes": "Strategic R&D node with documented military relevance; better in expanded research mode than strict DoD mode.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Bell Labs Murray Hill campus anchor",
+        "recommended_anchor": "Murray Hill main research campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.36,
+          38.77
+        ]
+      },
+      "properties": {
+        "site_id": "boeing_hazelwood_mo",
+        "entity_id": "boeing_st_louis_lineage",
+        "entity_name": "Boeing Defense / McDonnell lineage",
+        "site_name": "Boeing Hazelwood site-phase",
+        "display_name": "Boeing Defense / McDonnell lineage — Boeing Hazelwood site-phase",
+        "short_label": "Boeing Defense / McDonnell lineage",
+        "category": "contractor",
+        "roles": [
+          "fighter_manufacturing",
+          "military_aircraft_r_and_d",
+          "advanced_aerospace_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "St. Louis / Berkeley / Hazelwood, Missouri",
+        "start_year": 1941,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "McDonnell Aircraft",
+          "McDonnell Douglas",
+          "Boeing Defense"
+        ],
+        "notes": "Major defense-aircraft lineage cluster.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Hazelwood Boeing defense campus anchor",
+        "parent_site_id": "boeing_st_louis_mo",
+        "split_priority": "high",
+        "split_reason": "One metro point will blur distinct campuses/plants and may create false proximity",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.89465,
+          40.864003
+        ]
+      },
+      "properties": {
+        "site_id": "brookhaven_upton_ny",
+        "entity_id": "brookhaven",
+        "entity_name": "Brookhaven National Laboratory",
+        "site_name": "Camp Upton / Brookhaven site",
+        "display_name": "Brookhaven National Laboratory — Camp Upton / Brookhaven site",
+        "short_label": "Brookhaven National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_research",
+          "physics",
+          "multipurpose_research"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Upton, Long Island, New York",
+        "start_year": 1947,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "Atomic-era lab with broader multipurpose research profile.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Brookhaven coordinates from OpenEI / official map snippets",
+        "recommended_anchor": "main Brookhaven campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.688,
+          35.7
+        ]
+      },
+      "properties": {
+        "site_id": "china_lake_ridgecrest_ca",
+        "entity_id": "china_lake",
+        "entity_name": "Naval Air Weapons Station China Lake",
+        "site_name": "China Lake weapons R&D/test site",
+        "display_name": "Naval Air Weapons Station China Lake — China Lake weapons R&D/test site",
+        "short_label": "Naval Air Weapons Station China Lake",
+        "category": "military_test",
+        "roles": [
+          "weapons_r_and_d",
+          "weapons_test",
+          "naval_air_weapons"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "China Lake / Ridgecrest-Inyokern region, California",
+        "start_year": 1943,
+        "end_year": null,
+        "date_precision_start": "month_year_available_but_year_enough",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "NOTS China Lake"
+        ],
+        "notes": "Major Navy weapons R&D and test site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "NAWS China Lake/Armitage Field campus anchor",
+        "recommended_anchor": "main administrative / base campus area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.199,
+          32.7315
+        ]
+      },
+      "properties": {
+        "site_id": "consolidated_san_diego_ca",
+        "entity_id": "convair_san_diego_lineage",
+        "entity_name": "Consolidated / Convair / General Dynamics San Diego lineage",
+        "site_name": "Consolidated San Diego site-phase",
+        "display_name": "Consolidated / Convair / General Dynamics San Diego lineage — Consolidated San Diego site-phase",
+        "short_label": "Consolidated / Convair / General Dynamics San Diego lineage",
+        "category": "contractor",
+        "roles": [
+          "military_aircraft_manufacturing",
+          "missile_and_space_r_and_d",
+          "advanced_aerospace_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed_or_absorbed",
+        "confidence": "high",
+        "location_label": "San Diego, California",
+        "start_year": 1933,
+        "end_year": 1943,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Consolidated",
+          "Convair",
+          "General Dynamics San Diego"
+        ],
+        "notes": "Major military aircraft and missile lineage cluster.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Consolidated San Diego campus-phase anchor",
+        "parent_site_id": "convair_san_diego_ca",
+        "split_priority": "high",
+        "split_reason": "Different phases of Consolidated / Convair / GD activity occupied different San Diego-area facilities",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.14,
+          32.782
+        ]
+      },
+      "properties": {
+        "site_id": "convair_san_diego_ca",
+        "entity_id": "convair_san_diego_lineage",
+        "entity_name": "Consolidated / Convair / General Dynamics San Diego lineage",
+        "site_name": "Convair / General Dynamics San Diego site-phase",
+        "display_name": "Consolidated / Convair / General Dynamics San Diego lineage — Convair / General Dynamics San Diego site-phase",
+        "short_label": "Consolidated / Convair / General Dynamics San Diego lineage",
+        "category": "contractor",
+        "roles": [
+          "military_aircraft_manufacturing",
+          "missile_and_space_r_and_d",
+          "advanced_aerospace_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed_or_absorbed",
+        "confidence": "high",
+        "location_label": "San Diego, California",
+        "start_year": 1943,
+        "end_year": 1996,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Consolidated",
+          "Convair",
+          "General Dynamics San Diego"
+        ],
+        "notes": "Major military aircraft and missile lineage cluster.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Convair/GD San Diego campus-phase anchor",
+        "parent_site_id": "convair_san_diego_ca",
+        "split_priority": "high",
+        "split_reason": "Different phases of Consolidated / Convair / GD activity occupied different San Diego-area facilities",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.533331,
+          30.483331
+        ]
+      },
+      "properties": {
+        "site_id": "eglin_florida_panhandle",
+        "entity_id": "eglin",
+        "entity_name": "Eglin AFB complex",
+        "site_name": "Valparaiso / Eglin proving-ground lineage",
+        "display_name": "Eglin AFB complex — Valparaiso / Eglin proving-ground lineage",
+        "short_label": "Eglin AFB complex",
+        "category": "military_test",
+        "roles": [
+          "weapons_test",
+          "aircraft_test",
+          "proving_ground"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Eglin / Valparaiso / Fort Walton Beach region, Florida",
+        "start_year": 1935,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Valparaiso Bombing and Gunnery Base",
+          "Eglin Field"
+        ],
+        "notes": "Long-duration proving-ground/test complex.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Eglin AFB coordinates from latitude.to snippet",
+        "recommended_anchor": "main Eglin administrative/base area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.078,
+          41.355
+        ]
+      },
+      "properties": {
+        "site_id": "electric_boat_groton_ct",
+        "entity_id": "electric_boat",
+        "entity_name": "General Dynamics Electric Boat",
+        "site_name": "Groton submarine design/build site",
+        "display_name": "General Dynamics Electric Boat — Groton submarine design/build site",
+        "short_label": "General Dynamics Electric Boat",
+        "category": "contractor",
+        "roles": [
+          "submarine_design",
+          "submarine_construction",
+          "naval_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Groton, Connecticut",
+        "start_year": 1899,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Electric Boat"
+        ],
+        "notes": "Long-duration Navy submarine site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Electric Boat Groton principal shipyard/design campus anchor",
+        "recommended_anchor": "Groton principal shipyard/design campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.23444,
+          32.89361
+        ]
+      },
+      "properties": {
+        "site_id": "general_atomics_torrey_pines_ca",
+        "entity_id": "general_atomics",
+        "entity_name": "General Atomics",
+        "site_name": "Torrey Pines main site",
+        "display_name": "General Atomics — Torrey Pines main site",
+        "short_label": "General Atomics",
+        "category": "contractor",
+        "roles": [
+          "nuclear_research",
+          "defense_technology",
+          "uav_systems",
+          "airborne_sensors"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Torrey Pines / San Diego, California",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "High-signal San Diego defense-tech site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "General Atomics HQ coordinates from Wikipedia snippet",
+        "recommended_anchor": "Torrey Pines main campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.8111,
+          37.235
+        ]
+      },
+      "properties": {
+        "site_id": "groom_lake_nv",
+        "entity_id": "groom_lake",
+        "entity_name": "Groom Lake / Area 51 test site",
+        "site_name": "Groom Lake classified flight-test site",
+        "display_name": "Groom Lake / Area 51 test site — Groom Lake classified flight-test site",
+        "short_label": "Groom Lake / Area 51 test site",
+        "category": "military_test",
+        "roles": [
+          "black_program_flight_test",
+          "reconnaissance_aircraft_test",
+          "classified_r_and_d"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Groom Lake, Nevada",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 1,
+        "aliases": [
+          "Watertown",
+          "Area 51",
+          "The Ranch"
+        ],
+        "notes": "Mid-1950s onward classified flight-test lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Groom Lake operating area anchor",
+        "recommended_anchor": "main Groom Lake operating area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.4917,
+          40.7458
+        ]
+      },
+      "properties": {
+        "site_id": "grumman_bethpage_ny",
+        "entity_id": "grumman_bethpage",
+        "entity_name": "Grumman Aircraft Engineering Corporation / Grumman",
+        "site_name": "Bethpage military aircraft site",
+        "display_name": "Grumman Aircraft Engineering Corporation / Grumman — Bethpage military aircraft site",
+        "short_label": "Grumman Aircraft Engineering Corporation / Grumman",
+        "category": "contractor",
+        "roles": [
+          "military_aircraft_r_and_d",
+          "prototyping",
+          "testing",
+          "military_aircraft_assembly"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed_or_absorbed",
+        "confidence": "high",
+        "location_label": "Bethpage, New York",
+        "start_year": 1942,
+        "end_year": 1996,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Grumman Bethpage",
+          "NWIRP Bethpage"
+        ],
+        "notes": "High-signal military aircraft R&D/assembly site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "NWIRP/Grumman Bethpage coordinates from Wikipedia snippet",
+        "recommended_anchor": "Bethpage principal military aircraft campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.382,
+          33.93
+        ]
+      },
+      "properties": {
+        "site_id": "hughes_el_segundo_ca",
+        "entity_id": "hughes_el_segundo_lineage",
+        "entity_name": "Hughes Aircraft / Hughes Space Systems / Raytheon South Bay lineage",
+        "site_name": "El Segundo space and airborne systems site",
+        "display_name": "Hughes Aircraft / Hughes Space Systems / Raytheon South Bay lineage — El Segundo space and airborne systems site",
+        "short_label": "Hughes Aircraft / Hughes Space Systems / Raytheon South Bay lineage",
+        "category": "contractor",
+        "roles": [
+          "space_systems",
+          "isr",
+          "advanced_electronics",
+          "communications_and_surveillance"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "medium",
+        "location_label": "El Segundo, California",
+        "start_year": 1965,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Hughes Space Systems Division",
+          "Raytheon El Segundo lineage"
+        ],
+        "notes": "Strategic space / airborne systems lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "El Segundo aerospace/electronics campus anchor",
+        "recommended_anchor": "El Segundo principal aerospace/electronics campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.946,
+          33.872
+        ]
+      },
+      "properties": {
+        "site_id": "hughes_fullerton_ca",
+        "entity_id": "hughes_fullerton",
+        "entity_name": "Hughes Aircraft Company",
+        "site_name": "Fullerton Ground Systems site",
+        "display_name": "Hughes Aircraft Company — Fullerton Ground Systems site",
+        "short_label": "Hughes Aircraft Company",
+        "category": "contractor",
+        "roles": [
+          "air_defense_systems",
+          "battlefield_radar",
+          "antisubmarine_systems",
+          "military_computing"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "closed_or_absorbed",
+        "confidence": "high",
+        "location_label": "Fullerton, California",
+        "start_year": 1957,
+        "end_year": 1996,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Hughes Fullerton",
+          "Ground Systems Group"
+        ],
+        "notes": "Air-defense, radar, and naval-systems contract hub.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Hughes Fullerton Ground Systems campus anchor near 1901 W Malvern",
+        "recommended_anchor": "Fullerton Ground Systems main site",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.221,
+          42.103
+        ]
+      },
+      "properties": {
+        "site_id": "ibm_owego_ny",
+        "entity_id": "ibm_federal_systems",
+        "entity_name": "IBM Federal Systems Division / IBM Owego lineage",
+        "site_name": "Owego federal aerospace systems site",
+        "display_name": "IBM Federal Systems Division / IBM Owego lineage — Owego federal aerospace systems site",
+        "short_label": "IBM Federal Systems Division / IBM Owego lineage",
+        "category": "contractor",
+        "roles": [
+          "avionics",
+          "flight_computing",
+          "federal_aerospace_systems",
+          "mission_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "expanded_research",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "legacy_successor_site",
+        "confidence": "medium",
+        "location_label": "Owego, New York",
+        "start_year": 1957,
+        "end_year": 1994,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "IBM Federal Systems Division",
+          "IBM Owego"
+        ],
+        "notes": "Include in expanded contractor/research mode; mixed federal aerospace/national-security signal.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "IBM Owego heliport/campus coordinates from x-plane snippet",
+        "recommended_anchor": "Owego principal federal systems site",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8003,
+          41.1738
+        ]
+      },
+      "properties": {
+        "site_id": "ibm_yorktown_heights_ny",
+        "entity_id": "ibm_research",
+        "entity_name": "IBM Research",
+        "site_name": "Thomas J. Watson Research Center",
+        "display_name": "IBM Research — Thomas J. Watson Research Center",
+        "short_label": "IBM Research",
+        "category": "defense_research",
+        "roles": [
+          "advanced_computing",
+          "strategic_research",
+          "quantum_research",
+          "electronics"
+        ],
+        "significance_tier": 2,
+        "default_visibility_mode": "expanded_research",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "medium",
+        "location_label": "Yorktown Heights, New York",
+        "start_year": 1961,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "IBM Thomas J. Watson Research Center",
+          "IBM Research Yorktown Heights"
+        ],
+        "notes": "Strategic advanced-research node; include in expanded research mode, not strict default.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "IBM Watson Research Center campus anchor",
+        "recommended_anchor": "Thomas J. Watson Research Center main campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.605497,
+          35.0375
+        ]
+      },
+      "properties": {
+        "site_id": "kirtland_albuquerque_nm",
+        "entity_id": "kirtland",
+        "entity_name": "Kirtland AFB complex",
+        "site_name": "Albuquerque Army Air Base / Kirtland lineage",
+        "display_name": "Kirtland AFB complex — Albuquerque Army Air Base / Kirtland lineage",
+        "short_label": "Kirtland AFB complex",
+        "category": "military_test",
+        "roles": [
+          "nuclear_weapons_support",
+          "flight_test",
+          "special_weapons_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Albuquerque, New Mexico",
+        "start_year": 1941,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Albuquerque Army Air Base",
+          "Kirtland Field"
+        ],
+        "notes": "Military air-base lineage with special-weapons relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Kirtland AFB coordinates from latitude.to snippet",
+        "recommended_anchor": "main Kirtland campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.11,
+          33.115
+        ]
+      },
+      "properties": {
+        "site_id": "l3harris_greenville_tx",
+        "entity_id": "l3harris_greenville",
+        "entity_name": "L3Harris",
+        "site_name": "Greenville missionization / ISR site",
+        "display_name": "L3Harris — Greenville missionization / ISR site",
+        "short_label": "L3Harris",
+        "category": "contractor",
+        "roles": [
+          "isr",
+          "aircraft_modification",
+          "mission_systems",
+          "reconnaissance_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "Greenville, Texas",
+        "start_year": 1955,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "ISR and military missionization lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "low",
+        "geocode_source": "Greenville missionization campus approximate city-side anchor",
+        "recommended_anchor": "Greenville missionization campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.31861,
+          35.87833
+        ]
+      },
+      "properties": {
+        "site_id": "lanl_ta3",
+        "entity_id": "los_alamos",
+        "entity_name": "Los Alamos National Laboratory",
+        "site_name": "Los Alamos National Laboratory — TA-3 main campus",
+        "display_name": "Los Alamos National Laboratory — TA-3 main campus",
+        "short_label": "Los Alamos National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_weapons_research",
+          "national_security_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Los Alamos, New Mexico",
+        "start_year": 1943,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Project Y"
+        ],
+        "notes": "Core Manhattan Project / weapons laboratory anchor.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "LANL main site / TA-3 area anchor from LANL/Wikipedia snippet",
+        "parent_site_id": "los_alamos_nm",
+        "split_priority": "high",
+        "split_reason": "A city or generic lab centroid would create false proximity; TA-3 and TA-55 are analytically different and spatially distinct",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.287,
+          35.845
+        ]
+      },
+      "properties": {
+        "site_id": "lanl_ta55",
+        "entity_id": "los_alamos",
+        "entity_name": "Los Alamos National Laboratory",
+        "site_name": "Los Alamos National Laboratory — TA-55 plutonium facility area",
+        "display_name": "Los Alamos National Laboratory — TA-55 plutonium facility area",
+        "short_label": "Los Alamos National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_weapons_research",
+          "national_security_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Los Alamos, New Mexico",
+        "start_year": 1978,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Project Y"
+        ],
+        "notes": "Core Manhattan Project / weapons laboratory anchor.",
+        "geo_precision_target": "exact_site",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "TA-55 campus anchor from LANL/DOE area docs, estimated exact-site vicinity",
+        "parent_site_id": "los_alamos_nm",
+        "split_priority": "high",
+        "split_reason": "A city or generic lab centroid would create false proximity; TA-3 and TA-55 are analytically different and spatially distinct",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.36112,
+          38.95876
+        ]
+      },
+      "properties": {
+        "site_id": "leidos_reston_va",
+        "entity_id": "leidos_lineage",
+        "entity_name": "Leidos",
+        "site_name": "Leidos headquarters",
+        "display_name": "Leidos headquarters",
+        "short_label": "Leidos",
+        "category": "contractor",
+        "roles": [
+          "defense_systems",
+          "intelligence_support",
+          "engineering_services",
+          "federal_services"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_successor",
+        "confidence": "high",
+        "location_label": "Reston, Virginia",
+        "start_year": 2013,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Original SAIC successor"
+        ],
+        "notes": "Modern successor branch retaining original SAIC history.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "low",
+        "geocode_source": "Reston HQ city anchor",
+        "recommended_anchor": "Reston headquarters campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.716272,
+          37.679975
+        ]
+      },
+      "properties": {
+        "site_id": "llnl_livermore_ca",
+        "entity_id": "llnl",
+        "entity_name": "Lawrence Livermore National Laboratory",
+        "site_name": "Livermore main site",
+        "display_name": "Lawrence Livermore National Laboratory — Livermore main site",
+        "short_label": "Lawrence Livermore National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_weapons_research",
+          "strategic_deterrence",
+          "advanced_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Livermore, California",
+        "start_year": 1952,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "UCRL Livermore"
+        ],
+        "notes": "Top-tier nuclear and strategic research site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "LLNL address/maptons snippet 7000 East Ave",
+        "recommended_anchor": "main Livermore campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.4502721,
+          32.771183
+        ]
+      },
+      "properties": {
+        "site_id": "lockheed_fort_worth_tx",
+        "entity_id": "lockheed_fort_worth",
+        "entity_name": "Lockheed Martin Aeronautics",
+        "site_name": "Air Force Plant 4 / Fort Worth aeronautics site",
+        "display_name": "Lockheed Martin Aeronautics — Air Force Plant 4 / Fort Worth aeronautics site",
+        "short_label": "Lockheed Martin Aeronautics",
+        "category": "contractor",
+        "roles": [
+          "fighter_manufacturing",
+          "advanced_military_aircraft",
+          "systems_integration"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Fort Worth, Texas",
+        "start_year": 1942,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Air Force Plant 4"
+        ],
+        "notes": "Core military aircraft production site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Air Force Plant 4 coordinates from maptons snippet",
+        "recommended_anchor": "Air Force Plant 4 / main Fort Worth aeronautics campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.331,
+          38.744
+        ]
+      },
+      "properties": {
+        "site_id": "mcdonnell_berkeley_mo",
+        "entity_id": "boeing_st_louis_lineage",
+        "entity_name": "Boeing Defense / McDonnell lineage",
+        "site_name": "McDonnell / Boeing Berkeley site-phase",
+        "display_name": "Boeing Defense / McDonnell lineage — McDonnell / Boeing Berkeley site-phase",
+        "short_label": "Boeing Defense / McDonnell lineage",
+        "category": "contractor",
+        "roles": [
+          "fighter_manufacturing",
+          "military_aircraft_r_and_d",
+          "advanced_aerospace_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "St. Louis / Berkeley / Hazelwood, Missouri",
+        "start_year": 1939,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "McDonnell Aircraft",
+          "McDonnell Douglas",
+          "Boeing Defense"
+        ],
+        "notes": "Major defense-aircraft lineage cluster.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Berkeley/St. Louis defense campus anchor",
+        "parent_site_id": "boeing_st_louis_mo",
+        "split_priority": "high",
+        "split_reason": "One metro point will blur distinct campuses/plants and may create false proximity",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.2909,
+          42.468868
+        ]
+      },
+      "properties": {
+        "site_id": "mit_ll_hanscom_ma",
+        "entity_id": "mit_lincoln_lab",
+        "entity_name": "MIT Lincoln Laboratory",
+        "site_name": "MIT Lincoln Laboratory — Hanscom-area site-phase",
+        "display_name": "MIT Lincoln Laboratory — Hanscom-area site-phase",
+        "short_label": "MIT Lincoln Laboratory",
+        "category": "defense_research",
+        "roles": [
+          "air_defense",
+          "radar",
+          "command_and_control",
+          "advanced_electronics"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Lexington / Bedford (Hanscom), Massachusetts",
+        "start_year": 1951,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Project Lincoln"
+        ],
+        "notes": "High-signal Cold War air-defense and radar node.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Hanscom AFB coordinates used for Hanscom-area MIT LL phase",
+        "parent_site_id": "mit_ll_lexington_hanscom_ma",
+        "split_priority": "medium",
+        "split_reason": "Lexington campus and Hanscom-related sites are not the same physical point",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.2670446,
+          42.4591187
+        ]
+      },
+      "properties": {
+        "site_id": "mit_ll_lexington_ma",
+        "entity_id": "mit_lincoln_lab",
+        "entity_name": "MIT Lincoln Laboratory",
+        "site_name": "MIT Lincoln Laboratory — Lexington main campus",
+        "display_name": "MIT Lincoln Laboratory — Lexington main campus",
+        "short_label": "MIT Lincoln Laboratory",
+        "category": "defense_research",
+        "roles": [
+          "air_defense",
+          "radar",
+          "command_and_control",
+          "advanced_electronics"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Lexington / Bedford (Hanscom), Massachusetts",
+        "start_year": 1951,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Project Lincoln"
+        ],
+        "notes": "High-signal Cold War air-defense and radar node.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "MIT Lincoln Laboratory maptons snippet / 244 Wood Street campus",
+        "parent_site_id": "mit_ll_lexington_hanscom_ma",
+        "split_priority": "medium",
+        "split_reason": "Lexington campus and Hanscom-related sites are not the same physical point",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.276,
+          42.49
+        ]
+      },
+      "properties": {
+        "site_id": "mitre_bedford_ma",
+        "entity_id": "mitre",
+        "entity_name": "MITRE",
+        "site_name": "MITRE Bedford campus",
+        "display_name": "MITRE Bedford campus",
+        "short_label": "MITRE",
+        "category": "defense_research",
+        "roles": [
+          "air_defense",
+          "systems_engineering",
+          "ffrdc_support",
+          "command_and_control"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Bedford / Hanscom area, Massachusetts",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "SAGE / systems-engineering lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "MITRE Bedford campus anchor near 202 Burlington Rd",
+        "parent_site_id": "mitre_bedford_hanscom_ma",
+        "split_priority": "medium",
+        "split_reason": "Bedford campus and Hanscom-related defense support are geographically distinct enough to matter",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.2909,
+          42.468868
+        ]
+      },
+      "properties": {
+        "site_id": "mitre_hanscom_ma",
+        "entity_id": "mitre",
+        "entity_name": "MITRE",
+        "site_name": "MITRE Hanscom-area support site-phase",
+        "display_name": "MITRE Hanscom-area support site-phase",
+        "short_label": "MITRE",
+        "category": "defense_research",
+        "roles": [
+          "air_defense",
+          "systems_engineering",
+          "ffrdc_support",
+          "command_and_control"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Bedford / Hanscom area, Massachusetts",
+        "start_year": 1958,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "SAGE / systems-engineering lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Hanscom AFB coordinates for Hanscom-area MITRE phase",
+        "parent_site_id": "mitre_bedford_hanscom_ma",
+        "split_priority": "medium",
+        "split_reason": "Bedford campus and Hanscom-related defense support are geographically distinct enough to matter",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.132,
+          33.94
+        ]
+      },
+      "properties": {
+        "site_id": "north_american_downey_ca",
+        "entity_id": "north_american_downey",
+        "entity_name": "North American Aviation",
+        "site_name": "Downey spacecraft and missile-guidance site",
+        "display_name": "North American Aviation — Downey spacecraft and missile-guidance site",
+        "short_label": "North American Aviation",
+        "category": "contractor",
+        "roles": [
+          "spacecraft_design",
+          "missile_guidance",
+          "systems_engineering",
+          "strategic_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "mixed",
+        "dod_relevance": true,
+        "historical_status": "closed_or_absorbed",
+        "confidence": "medium",
+        "location_label": "Downey, California",
+        "start_year": 1950,
+        "end_year": 1996,
+        "date_precision_start": "approximate_year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Autonetics",
+          "North American Downey"
+        ],
+        "notes": "Apollo and Minuteman-guidance lineage; mixed NASA/strategic systems.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Downey principal aerospace campus anchor",
+        "recommended_anchor": "Downey principal aerospace campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.336,
+          33.916
+        ]
+      },
+      "properties": {
+        "site_id": "northrop_hawthorne_ca",
+        "entity_id": "northrop_hawthorne",
+        "entity_name": "Northrop Aircraft Incorporated",
+        "site_name": "Northrop Hawthorne early site-phase",
+        "display_name": "Northrop Aircraft Incorporated — Northrop Hawthorne early site-phase",
+        "short_label": "Northrop Aircraft Incorporated",
+        "category": "contractor",
+        "roles": [
+          "military_aircraft_design",
+          "advanced_aerospace_r_and_d",
+          "flying_wing_research"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "merged_successor_lineage",
+        "confidence": "medium",
+        "location_label": "Hawthorne, California",
+        "start_year": 1939,
+        "end_year": 1994,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Northrop Aircraft"
+        ],
+        "notes": "Late-1930s military aircraft lineage anchor.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Northrop Hawthorne early campus anchor",
+        "parent_site_id": "northrop_hawthorne_ca",
+        "split_priority": "medium",
+        "split_reason": "Early Hawthorne and later South Bay lineage should not share one geocode if both are carried forward",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.38,
+          33.915
+        ]
+      },
+      "properties": {
+        "site_id": "northrop_south_bay_cluster_ca",
+        "entity_id": "northrop_hawthorne",
+        "entity_name": "Northrop Aircraft Incorporated",
+        "site_name": "Northrop South Bay later lineage cluster",
+        "display_name": "Northrop Aircraft Incorporated — Northrop South Bay later lineage cluster",
+        "short_label": "Northrop Aircraft Incorporated",
+        "category": "contractor",
+        "roles": [
+          "military_aircraft_design",
+          "advanced_aerospace_r_and_d",
+          "flying_wing_research"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "merged_successor_lineage",
+        "confidence": "medium",
+        "location_label": "Hawthorne, California",
+        "start_year": 1994,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Northrop Aircraft"
+        ],
+        "notes": "Late-1930s military aircraft lineage anchor.",
+        "geo_precision_target": "regional_cluster",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "South Bay lineage regional cluster anchor",
+        "parent_site_id": "northrop_hawthorne_ca",
+        "split_priority": "medium",
+        "split_reason": "Early Hawthorne and later South Bay lineage should not share one geocode if both are carried forward",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.017,
+          38.82
+        ]
+      },
+      "properties": {
+        "site_id": "nrl_washington_dc",
+        "entity_id": "nrl",
+        "entity_name": "U.S. Naval Research Laboratory",
+        "site_name": "Washington, D.C. main campus",
+        "display_name": "U.S. Naval Research Laboratory — Washington, D.C. main campus",
+        "short_label": "U.S. Naval Research Laboratory",
+        "category": "defense_research",
+        "roles": [
+          "naval_research",
+          "electronics",
+          "surveillance",
+          "advanced_r_and_d"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Washington, D.C.",
+        "start_year": 1923,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "Long-duration Navy research anchor.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "NRL main campus anchor at 4555 Overlook Ave SW",
+        "recommended_anchor": "main Washington campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.310417,
+          35.931306
+        ]
+      },
+      "properties": {
+        "site_id": "ornl_oak_ridge_tn",
+        "entity_id": "ornl",
+        "entity_name": "Oak Ridge National Laboratory",
+        "site_name": "Oak Ridge main site",
+        "display_name": "Oak Ridge National Laboratory — Oak Ridge main site",
+        "short_label": "Oak Ridge National Laboratory",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_research",
+          "energy_research",
+          "national_security_science"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Oak Ridge, Tennessee",
+        "start_year": 1943,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [],
+        "notes": "Manhattan Project-era site with long national-security relevance.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "ORNL visitor center GPS from official ORNL directions",
+        "recommended_anchor": "main ORNL campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.936111,
+          32.100556
+        ]
+      },
+      "properties": {
+        "site_id": "raytheon_tucson_az",
+        "entity_id": "raytheon_tucson",
+        "entity_name": "Raytheon Missile Systems",
+        "site_name": "Tucson missile systems site",
+        "display_name": "Raytheon Missile Systems — Tucson missile systems site",
+        "short_label": "Raytheon Missile Systems",
+        "category": "contractor",
+        "roles": [
+          "missile_r_and_d",
+          "guided_weapons",
+          "air_defense_systems",
+          "missile_manufacturing"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "Tucson, Arizona",
+        "start_year": 1997,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Raytheon Missile Systems"
+        ],
+        "notes": "Raytheon-era missile systems anchor.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Raytheon Missile Systems coordinates from Wikimapia snippet",
+        "recommended_anchor": "main Tucson missile systems campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.5985,
+          34.1945
+        ]
+      },
+      "properties": {
+        "site_id": "rocketdyne_canoga_park_ca",
+        "entity_id": "rocketdyne_canoga",
+        "entity_name": "Rocketdyne",
+        "site_name": "Canoga Park manufacturing / headquarters site",
+        "display_name": "Rocketdyne — Canoga Park manufacturing / headquarters site",
+        "short_label": "Rocketdyne",
+        "category": "contractor",
+        "roles": [
+          "rocket_engine_manufacturing",
+          "missile_propulsion",
+          "space_propulsion"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed_or_reorganized",
+        "confidence": "high",
+        "location_label": "Canoga Park, California",
+        "start_year": 1955,
+        "end_year": 2005,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Rocketdyne Canoga Park"
+        ],
+        "notes": "Propulsion manufacturing/HQ anchor; keep separate from SSFL.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Rocketdyne Canoga Park facility anchor",
+        "recommended_anchor": "Canoga Park main manufacturing / HQ site",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.36112,
+          38.95876
+        ]
+      },
+      "properties": {
+        "site_id": "saic_reston_va",
+        "entity_id": "saic_postsplit",
+        "entity_name": "Science Applications International Corporation",
+        "site_name": "SAIC headquarters",
+        "display_name": "Science Applications International Corporation — SAIC headquarters",
+        "short_label": "Science Applications International Corporation",
+        "category": "contractor",
+        "roles": [
+          "government_services",
+          "mission_integration",
+          "defense_it",
+          "intelligence_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Reston, Virginia",
+        "start_year": 2013,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "SAIC"
+        ],
+        "notes": "Post-2013 SAIC entity.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "low",
+        "geocode_source": "Reston HQ city anchor",
+        "recommended_anchor": "Reston headquarters campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.2416,
+          32.8852
+        ]
+      },
+      "properties": {
+        "site_id": "saic_san_diego_ca",
+        "entity_id": "saic_legacy",
+        "entity_name": "Science Applications International Corporation",
+        "site_name": "SAIC founding / legacy San Diego site",
+        "display_name": "Science Applications International Corporation — SAIC founding / legacy San Diego site",
+        "short_label": "Science Applications International Corporation",
+        "category": "contractor",
+        "roles": [
+          "defense_systems_engineering",
+          "government_services",
+          "intelligence_support",
+          "mission_integration"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "legacy_predecessor",
+        "confidence": "high",
+        "location_label": "San Diego / La Jolla, California",
+        "start_year": 1969,
+        "end_year": 2013,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "SAIC"
+        ],
+        "notes": "Use for SAIC before the 2013 split.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "SAIC Campus Point campus anchor at 10260 Campus Point Dr",
+        "recommended_anchor": "principal legacy San Diego campus/office cluster used for SAIC early defense work",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.536,
+          35.05
+        ]
+      },
+      "properties": {
+        "site_id": "sandia_albuquerque_nm",
+        "entity_id": "sandia",
+        "entity_name": "Sandia National Laboratories",
+        "site_name": "Albuquerque / Sandia Base lineage",
+        "display_name": "Sandia National Laboratories — Albuquerque / Sandia Base lineage",
+        "short_label": "Sandia National Laboratories",
+        "category": "national_lab",
+        "roles": [
+          "nuclear_weapons_engineering",
+          "national_security_engineering"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Albuquerque, New Mexico",
+        "start_year": 1945,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Z Division",
+          "Sandia Laboratory"
+        ],
+        "notes": "Weapons engineering and national-security lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Sandia Albuquerque main campus / Eubank area anchor",
+        "recommended_anchor": "main Sandia campus / Sandia Base area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.191,
+          41.173
+        ]
+      },
+      "properties": {
+        "site_id": "sikorsky_bridgeport_1943",
+        "entity_id": "sikorsky_stratford_lineage",
+        "entity_name": "Sikorsky Aircraft",
+        "site_name": "Sikorsky Bridgeport production site-phase",
+        "display_name": "Sikorsky Aircraft — Sikorsky Bridgeport production site-phase",
+        "short_label": "Sikorsky Aircraft",
+        "category": "contractor",
+        "roles": [
+          "military_helicopter_r_and_d",
+          "rotary_wing_manufacturing",
+          "naval_and_air_force_rotorcraft"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "Stratford / Bridgeport, Connecticut",
+        "start_year": 1943,
+        "end_year": 1956,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Sikorsky Stratford",
+          "Sikorsky Bridgeport"
+        ],
+        "notes": "Long military rotorcraft lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Sikorsky Bridgeport production-phase anchor",
+        "parent_site_id": "sikorsky_stratford_ct",
+        "split_priority": "high",
+        "split_reason": "These are multiple physically distinct locations across time",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.163,
+          41.1845
+        ]
+      },
+      "properties": {
+        "site_id": "sikorsky_stratford_1929",
+        "entity_id": "sikorsky_stratford_lineage",
+        "entity_name": "Sikorsky Aircraft",
+        "site_name": "Sikorsky Stratford early site-phase",
+        "display_name": "Sikorsky Aircraft — Sikorsky Stratford early site-phase",
+        "short_label": "Sikorsky Aircraft",
+        "category": "contractor",
+        "roles": [
+          "military_helicopter_r_and_d",
+          "rotary_wing_manufacturing",
+          "naval_and_air_force_rotorcraft"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "Stratford / Bridgeport, Connecticut",
+        "start_year": 1929,
+        "end_year": 1943,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Sikorsky Stratford",
+          "Sikorsky Bridgeport"
+        ],
+        "notes": "Long military rotorcraft lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Sikorsky Stratford early campus anchor",
+        "parent_site_id": "sikorsky_stratford_ct",
+        "split_priority": "high",
+        "split_reason": "These are multiple physically distinct locations across time",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.1514,
+          41.1802
+        ]
+      },
+      "properties": {
+        "site_id": "sikorsky_stratford_hq_1956",
+        "entity_id": "sikorsky_stratford_lineage",
+        "entity_name": "Sikorsky Aircraft",
+        "site_name": "Sikorsky Stratford HQ site-phase",
+        "display_name": "Sikorsky Aircraft — Sikorsky Stratford HQ site-phase",
+        "short_label": "Sikorsky Aircraft",
+        "category": "contractor",
+        "roles": [
+          "military_helicopter_r_and_d",
+          "rotary_wing_manufacturing",
+          "naval_and_air_force_rotorcraft"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "high",
+        "location_label": "Stratford / Bridgeport, Connecticut",
+        "start_year": 1956,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Sikorsky Stratford",
+          "Sikorsky Bridgeport"
+        ],
+        "notes": "Long military rotorcraft lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Sikorsky Stratford HQ campus anchor",
+        "parent_site_id": "sikorsky_stratford_ct",
+        "split_priority": "high",
+        "split_reason": "These are multiple physically distinct locations across time",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.35,
+          34.196
+        ]
+      },
+      "properties": {
+        "site_id": "skunkworks_burbank_ca",
+        "entity_id": "skunkworks_palmdale",
+        "entity_name": "Lockheed Martin Skunk Works",
+        "site_name": "Skunk Works — Burbank origin site-phase",
+        "display_name": "Lockheed Martin Skunk Works — Skunk Works — Burbank origin site-phase",
+        "short_label": "Skunk Works",
+        "category": "contractor",
+        "roles": [
+          "advanced_aerospace_r_and_d",
+          "black_programs",
+          "prototype_development"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "medium",
+        "location_label": "Palmdale / Antelope Valley, California",
+        "start_year": 1943,
+        "end_year": 1990,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Lockheed Advanced Development Projects",
+          "Skunk Works"
+        ],
+        "notes": "Advanced-defense lineage in Antelope Valley.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Burbank Skunk Works origin campus anchor near Lockheed Burbank plant",
+        "parent_site_id": "skunkworks_palmdale_ca",
+        "split_priority": "high",
+        "split_reason": "Skunk Works originated in Burbank, not Palmdale; Using one Palmdale point from 1943 onward would be historically wrong",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.118676,
+          34.614734
+        ]
+      },
+      "properties": {
+        "site_id": "skunkworks_palmdale_ca",
+        "entity_id": "skunkworks_palmdale",
+        "entity_name": "Lockheed Martin Skunk Works",
+        "site_name": "Skunk Works — Palmdale / Antelope Valley site-phase",
+        "display_name": "Lockheed Martin Skunk Works — Skunk Works — Palmdale / Antelope Valley site-phase",
+        "short_label": "Skunk Works",
+        "category": "contractor",
+        "roles": [
+          "advanced_aerospace_r_and_d",
+          "black_programs",
+          "prototype_development"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active_lineage",
+        "confidence": "medium",
+        "location_label": "Palmdale / Antelope Valley, California",
+        "start_year": 1956,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Lockheed Advanced Development Projects",
+          "Skunk Works"
+        ],
+        "notes": "Advanced-defense lineage in Antelope Valley.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Skunk Works Palmdale coordinates from taggedwiki/Wikipedia snippet",
+        "parent_site_id": "skunkworks_palmdale_ca",
+        "split_priority": "high",
+        "split_reason": "Skunk Works originated in Burbank, not Palmdale; Using one Palmdale point from 1943 onward would be historically wrong",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.698,
+          34.232
+        ]
+      },
+      "properties": {
+        "site_id": "ssfl_simi_hills_ca",
+        "entity_id": "ssfl",
+        "entity_name": "Santa Susana Field Laboratory",
+        "site_name": "SSFL rocket and propulsion test site",
+        "display_name": "Santa Susana Field Laboratory — SSFL rocket and propulsion test site",
+        "short_label": "Santa Susana Field Laboratory",
+        "category": "military_test",
+        "roles": [
+          "rocket_engine_testing",
+          "missile_propulsion_test",
+          "space_propulsion_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "closed",
+        "confidence": "high",
+        "location_label": "Simi Hills / Ventura County, California",
+        "start_year": 1948,
+        "end_year": 2006,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Santa Susana Field Laboratory"
+        ],
+        "notes": "Rocket engine / propulsion test site; separate from Rocketdyne HQ/manufacturing.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Santa Susana Field Laboratory main test area anchor",
+        "recommended_anchor": "SSFL main test area anchor",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.3855,
+          33.9025
+        ]
+      },
+      "properties": {
+        "site_id": "trw_space_park_redondo_ca",
+        "entity_id": "trw_space_systems",
+        "entity_name": "TRW Inc.",
+        "site_name": "TRW Space Park",
+        "display_name": "TRW Inc. — TRW Space Park",
+        "short_label": "TRW Inc.",
+        "category": "contractor",
+        "roles": [
+          "space_systems",
+          "satellite_payloads",
+          "missile_and_space_r_and_d",
+          "advanced_aerospace_systems"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "acquired_successor_site",
+        "confidence": "high",
+        "location_label": "Redondo Beach / South Bay, California",
+        "start_year": 1961,
+        "end_year": 2002,
+        "date_precision_start": "year",
+        "date_precision_end": "year",
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Space Park",
+          "TRW Space Park"
+        ],
+        "notes": "TRW aerospace/space systems anchor.",
+        "geo_precision_target": "campus",
+        "geocode_status": "estimated_anchor",
+        "geocode_confidence": "medium",
+        "geocode_source": "Space Park campus anchor at 1 Space Park Dr",
+        "recommended_anchor": "Space Park principal campus",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.568664,
+          32.557831
+        ]
+      },
+      "properties": {
+        "site_id": "white_sands_nm",
+        "entity_id": "white_sands",
+        "entity_name": "White Sands Missile Range",
+        "site_name": "White Sands test range",
+        "display_name": "White Sands Missile Range — White Sands test range",
+        "short_label": "White Sands Missile Range",
+        "category": "military_test",
+        "roles": [
+          "missile_test",
+          "rocket_test",
+          "space_related_test"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "White Sands / Tularosa Basin, New Mexico",
+        "start_year": 1945,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "White Sands Proving Ground"
+        ],
+        "notes": "Premier missile and rocket test site.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "White Sands coordinates from latitude.to snippet",
+        "recommended_anchor": "main headquarters / cantonment area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.067406,
+          39.819527
+        ]
+      },
+      "properties": {
+        "site_id": "wright_patterson_dayton_oh",
+        "entity_id": "wright_patterson",
+        "entity_name": "Wright-Patterson AFB research-acquisition complex",
+        "site_name": "Wright / Patterson lineage",
+        "display_name": "Wright-Patterson AFB research-acquisition complex — Wright / Patterson lineage",
+        "short_label": "Wright-Patterson AFB research-acquisition complex",
+        "category": "military_test",
+        "roles": [
+          "aviation_r_and_d",
+          "acquisition",
+          "test_support"
+        ],
+        "significance_tier": 1,
+        "default_visibility_mode": "strict_default",
+        "site_phase_scope": "defense_only",
+        "dod_relevance": true,
+        "historical_status": "active",
+        "confidence": "high",
+        "location_label": "Dayton region, Ohio",
+        "start_year": 1948,
+        "end_year": null,
+        "date_precision_start": "year",
+        "date_precision_end": null,
+        "pre_public_buffer_years": 0,
+        "aliases": [
+          "Wright Field",
+          "Patterson Field"
+        ],
+        "notes": "Aviation R&D/acquisition lineage.",
+        "geo_precision_target": "campus",
+        "geocode_status": "verified",
+        "geocode_confidence": "high",
+        "geocode_source": "Wright-Patterson coordinates from latlong.net snippet",
+        "recommended_anchor": "modern combined Wright-Patterson main area",
+        "country": "United States",
+        "country_code": "US"
+      }
+    }
+  ]
+}

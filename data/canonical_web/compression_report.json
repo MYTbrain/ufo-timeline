@@ -1,0 +1,2558 @@
+{
+  "files": [
+    {
+      "bytes": 51108904,
+      "gzip_bytes": 17263818,
+      "gzip_path": "points.bin.gz",
+      "gzip_ratio": 0.338,
+      "path": "points.bin"
+    },
+    {
+      "bytes": 41395824,
+      "gzip_bytes": 15035066,
+      "gzip_path": "trace_segments.bin.gz",
+      "gzip_ratio": 0.363,
+      "path": "trace_segments.bin"
+    },
+    {
+      "bytes": 27597264,
+      "gzip_bytes": 14486599,
+      "gzip_path": "trace_event_index.bin.gz",
+      "gzip_ratio": 0.525,
+      "path": "trace_event_index.bin"
+    },
+    {
+      "bytes": 23954911,
+      "gzip_bytes": 2824599,
+      "gzip_path": "event_chunks/chunk_000280.json.gz",
+      "gzip_ratio": 0.118,
+      "path": "event_chunks/chunk_000280.json"
+    },
+    {
+      "bytes": 23950070,
+      "gzip_bytes": 3022580,
+      "gzip_path": "event_chunks/chunk_000241.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000241.json"
+    },
+    {
+      "bytes": 23743278,
+      "gzip_bytes": 3220645,
+      "gzip_path": "event_chunks/chunk_000000.json.gz",
+      "gzip_ratio": 0.136,
+      "path": "event_chunks/chunk_000000.json"
+    },
+    {
+      "bytes": 23660811,
+      "gzip_bytes": 2966124,
+      "gzip_path": "event_chunks/chunk_000255.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000255.json"
+    },
+    {
+      "bytes": 23599818,
+      "gzip_bytes": 2897527,
+      "gzip_path": "event_chunks/chunk_000216.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000216.json"
+    },
+    {
+      "bytes": 23526640,
+      "gzip_bytes": 3012428,
+      "gzip_path": "event_chunks/chunk_000234.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000234.json"
+    },
+    {
+      "bytes": 23523005,
+      "gzip_bytes": 2855235,
+      "gzip_path": "event_chunks/chunk_000264.json.gz",
+      "gzip_ratio": 0.121,
+      "path": "event_chunks/chunk_000264.json"
+    },
+    {
+      "bytes": 23514585,
+      "gzip_bytes": 2902643,
+      "gzip_path": "event_chunks/chunk_000231.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000231.json"
+    },
+    {
+      "bytes": 23405015,
+      "gzip_bytes": 2874814,
+      "gzip_path": "event_chunks/chunk_000271.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000271.json"
+    },
+    {
+      "bytes": 23360673,
+      "gzip_bytes": 3113425,
+      "gzip_path": "event_chunks/chunk_000002.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000002.json"
+    },
+    {
+      "bytes": 23328041,
+      "gzip_bytes": 3084691,
+      "gzip_path": "event_chunks/chunk_000011.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000011.json"
+    },
+    {
+      "bytes": 23315748,
+      "gzip_bytes": 2828883,
+      "gzip_path": "event_chunks/chunk_000249.json.gz",
+      "gzip_ratio": 0.121,
+      "path": "event_chunks/chunk_000249.json"
+    },
+    {
+      "bytes": 23305039,
+      "gzip_bytes": 2899601,
+      "gzip_path": "event_chunks/chunk_000190.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000190.json"
+    },
+    {
+      "bytes": 23299160,
+      "gzip_bytes": 2853521,
+      "gzip_path": "event_chunks/chunk_000257.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000257.json"
+    },
+    {
+      "bytes": 23283089,
+      "gzip_bytes": 2841346,
+      "gzip_path": "event_chunks/chunk_000260.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000260.json"
+    },
+    {
+      "bytes": 23282419,
+      "gzip_bytes": 2808529,
+      "gzip_path": "event_chunks/chunk_000267.json.gz",
+      "gzip_ratio": 0.121,
+      "path": "event_chunks/chunk_000267.json"
+    },
+    {
+      "bytes": 23279415,
+      "gzip_bytes": 2847410,
+      "gzip_path": "event_chunks/chunk_000245.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000245.json"
+    },
+    {
+      "bytes": 23260925,
+      "gzip_bytes": 3053259,
+      "gzip_path": "event_chunks/chunk_000012.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000012.json"
+    },
+    {
+      "bytes": 23255045,
+      "gzip_bytes": 2797914,
+      "gzip_path": "event_chunks/chunk_000276.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000276.json"
+    },
+    {
+      "bytes": 23236904,
+      "gzip_bytes": 2912977,
+      "gzip_path": "event_chunks/chunk_000198.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000198.json"
+    },
+    {
+      "bytes": 23233946,
+      "gzip_bytes": 2857662,
+      "gzip_path": "event_chunks/chunk_000236.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000236.json"
+    },
+    {
+      "bytes": 23209565,
+      "gzip_bytes": 2782703,
+      "gzip_path": "event_chunks/chunk_000273.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000273.json"
+    },
+    {
+      "bytes": 23190414,
+      "gzip_bytes": 3105777,
+      "gzip_path": "event_chunks/chunk_000057.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000057.json"
+    },
+    {
+      "bytes": 23189634,
+      "gzip_bytes": 3083610,
+      "gzip_path": "event_chunks/chunk_000088.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000088.json"
+    },
+    {
+      "bytes": 23188587,
+      "gzip_bytes": 2882512,
+      "gzip_path": "event_chunks/chunk_000203.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000203.json"
+    },
+    {
+      "bytes": 23183129,
+      "gzip_bytes": 2877319,
+      "gzip_path": "event_chunks/chunk_000270.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000270.json"
+    },
+    {
+      "bytes": 23177551,
+      "gzip_bytes": 2783631,
+      "gzip_path": "event_chunks/chunk_000275.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000275.json"
+    },
+    {
+      "bytes": 23172291,
+      "gzip_bytes": 2933067,
+      "gzip_path": "event_chunks/chunk_000225.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000225.json"
+    },
+    {
+      "bytes": 23157570,
+      "gzip_bytes": 2824801,
+      "gzip_path": "event_chunks/chunk_000251.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000251.json"
+    },
+    {
+      "bytes": 23147593,
+      "gzip_bytes": 3100568,
+      "gzip_path": "event_chunks/chunk_000005.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000005.json"
+    },
+    {
+      "bytes": 23139552,
+      "gzip_bytes": 2785134,
+      "gzip_path": "event_chunks/chunk_000278.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000278.json"
+    },
+    {
+      "bytes": 23139355,
+      "gzip_bytes": 2958323,
+      "gzip_path": "event_chunks/chunk_000111.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000111.json"
+    },
+    {
+      "bytes": 23099305,
+      "gzip_bytes": 2836323,
+      "gzip_path": "event_chunks/chunk_000256.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000256.json"
+    },
+    {
+      "bytes": 23078676,
+      "gzip_bytes": 2770369,
+      "gzip_path": "event_chunks/chunk_000279.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000279.json"
+    },
+    {
+      "bytes": 23075321,
+      "gzip_bytes": 2806709,
+      "gzip_path": "event_chunks/chunk_000266.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000266.json"
+    },
+    {
+      "bytes": 23063419,
+      "gzip_bytes": 2753867,
+      "gzip_path": "event_chunks/chunk_000272.json.gz",
+      "gzip_ratio": 0.119,
+      "path": "event_chunks/chunk_000272.json"
+    },
+    {
+      "bytes": 23050508,
+      "gzip_bytes": 3108112,
+      "gzip_path": "event_chunks/chunk_000004.json.gz",
+      "gzip_ratio": 0.135,
+      "path": "event_chunks/chunk_000004.json"
+    },
+    {
+      "bytes": 23044477,
+      "gzip_bytes": 2769664,
+      "gzip_path": "event_chunks/chunk_000277.json.gz",
+      "gzip_ratio": 0.12,
+      "path": "event_chunks/chunk_000277.json"
+    },
+    {
+      "bytes": 23036315,
+      "gzip_bytes": 2921246,
+      "gzip_path": "event_chunks/chunk_000148.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000148.json"
+    },
+    {
+      "bytes": 23032260,
+      "gzip_bytes": 2972779,
+      "gzip_path": "event_chunks/chunk_000205.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000205.json"
+    },
+    {
+      "bytes": 23031350,
+      "gzip_bytes": 2842212,
+      "gzip_path": "event_chunks/chunk_000274.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000274.json"
+    },
+    {
+      "bytes": 23030301,
+      "gzip_bytes": 2977960,
+      "gzip_path": "event_chunks/chunk_000066.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000066.json"
+    },
+    {
+      "bytes": 23026016,
+      "gzip_bytes": 2993044,
+      "gzip_path": "event_chunks/chunk_000043.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000043.json"
+    },
+    {
+      "bytes": 23020353,
+      "gzip_bytes": 2996699,
+      "gzip_path": "event_chunks/chunk_000140.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000140.json"
+    },
+    {
+      "bytes": 23013001,
+      "gzip_bytes": 2868291,
+      "gzip_path": "event_chunks/chunk_000215.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000215.json"
+    },
+    {
+      "bytes": 23011378,
+      "gzip_bytes": 2840772,
+      "gzip_path": "event_chunks/chunk_000262.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000262.json"
+    },
+    {
+      "bytes": 23009935,
+      "gzip_bytes": 2967751,
+      "gzip_path": "event_chunks/chunk_000079.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000079.json"
+    },
+    {
+      "bytes": 23001731,
+      "gzip_bytes": 2873385,
+      "gzip_path": "event_chunks/chunk_000201.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000201.json"
+    },
+    {
+      "bytes": 23000682,
+      "gzip_bytes": 2911838,
+      "gzip_path": "event_chunks/chunk_000151.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000151.json"
+    },
+    {
+      "bytes": 22975332,
+      "gzip_bytes": 3081685,
+      "gzip_path": "event_chunks/chunk_000055.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000055.json"
+    },
+    {
+      "bytes": 22972661,
+      "gzip_bytes": 3043101,
+      "gzip_path": "event_chunks/chunk_000033.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000033.json"
+    },
+    {
+      "bytes": 22971103,
+      "gzip_bytes": 2825279,
+      "gzip_path": "event_chunks/chunk_000240.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000240.json"
+    },
+    {
+      "bytes": 22968530,
+      "gzip_bytes": 2989422,
+      "gzip_path": "event_chunks/chunk_000116.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000116.json"
+    },
+    {
+      "bytes": 22964762,
+      "gzip_bytes": 2841107,
+      "gzip_path": "event_chunks/chunk_000242.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000242.json"
+    },
+    {
+      "bytes": 22953638,
+      "gzip_bytes": 3013844,
+      "gzip_path": "event_chunks/chunk_000042.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000042.json"
+    },
+    {
+      "bytes": 22947902,
+      "gzip_bytes": 2852644,
+      "gzip_path": "event_chunks/chunk_000222.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000222.json"
+    },
+    {
+      "bytes": 22940485,
+      "gzip_bytes": 2943103,
+      "gzip_path": "event_chunks/chunk_000121.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000121.json"
+    },
+    {
+      "bytes": 22914646,
+      "gzip_bytes": 2819336,
+      "gzip_path": "event_chunks/chunk_000246.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000246.json"
+    },
+    {
+      "bytes": 22909709,
+      "gzip_bytes": 2858864,
+      "gzip_path": "event_chunks/chunk_000199.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000199.json"
+    },
+    {
+      "bytes": 22897919,
+      "gzip_bytes": 2826047,
+      "gzip_path": "event_chunks/chunk_000226.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000226.json"
+    },
+    {
+      "bytes": 22895694,
+      "gzip_bytes": 2885558,
+      "gzip_path": "event_chunks/chunk_000187.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000187.json"
+    },
+    {
+      "bytes": 22892195,
+      "gzip_bytes": 2881392,
+      "gzip_path": "event_chunks/chunk_000186.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000186.json"
+    },
+    {
+      "bytes": 22890634,
+      "gzip_bytes": 2943700,
+      "gzip_path": "event_chunks/chunk_000122.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000122.json"
+    },
+    {
+      "bytes": 22873224,
+      "gzip_bytes": 3084376,
+      "gzip_path": "event_chunks/chunk_000003.json.gz",
+      "gzip_ratio": 0.135,
+      "path": "event_chunks/chunk_000003.json"
+    },
+    {
+      "bytes": 22871599,
+      "gzip_bytes": 2778986,
+      "gzip_path": "event_chunks/chunk_000263.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000263.json"
+    },
+    {
+      "bytes": 22867504,
+      "gzip_bytes": 2863959,
+      "gzip_path": "event_chunks/chunk_000197.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000197.json"
+    },
+    {
+      "bytes": 22864491,
+      "gzip_bytes": 2902968,
+      "gzip_path": "event_chunks/chunk_000220.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000220.json"
+    },
+    {
+      "bytes": 22856817,
+      "gzip_bytes": 2855828,
+      "gzip_path": "event_chunks/chunk_000204.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000204.json"
+    },
+    {
+      "bytes": 22855223,
+      "gzip_bytes": 2817314,
+      "gzip_path": "event_chunks/chunk_000239.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000239.json"
+    },
+    {
+      "bytes": 22853914,
+      "gzip_bytes": 2837876,
+      "gzip_path": "event_chunks/chunk_000224.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000224.json"
+    },
+    {
+      "bytes": 22850672,
+      "gzip_bytes": 2937426,
+      "gzip_path": "event_chunks/chunk_000184.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000184.json"
+    },
+    {
+      "bytes": 22850197,
+      "gzip_bytes": 2888811,
+      "gzip_path": "event_chunks/chunk_000244.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000244.json"
+    },
+    {
+      "bytes": 22838530,
+      "gzip_bytes": 2834498,
+      "gzip_path": "event_chunks/chunk_000228.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000228.json"
+    },
+    {
+      "bytes": 22838296,
+      "gzip_bytes": 2868709,
+      "gzip_path": "event_chunks/chunk_000162.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000162.json"
+    },
+    {
+      "bytes": 22838061,
+      "gzip_bytes": 2988717,
+      "gzip_path": "event_chunks/chunk_000050.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000050.json"
+    },
+    {
+      "bytes": 22837746,
+      "gzip_bytes": 3082085,
+      "gzip_path": "event_chunks/chunk_000001.json.gz",
+      "gzip_ratio": 0.135,
+      "path": "event_chunks/chunk_000001.json"
+    },
+    {
+      "bytes": 22823019,
+      "gzip_bytes": 3055113,
+      "gzip_path": "event_chunks/chunk_000037.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000037.json"
+    },
+    {
+      "bytes": 22809777,
+      "gzip_bytes": 2934085,
+      "gzip_path": "event_chunks/chunk_000084.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000084.json"
+    },
+    {
+      "bytes": 22806013,
+      "gzip_bytes": 2824536,
+      "gzip_path": "event_chunks/chunk_000230.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000230.json"
+    },
+    {
+      "bytes": 22805690,
+      "gzip_bytes": 2879830,
+      "gzip_path": "event_chunks/chunk_000166.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000166.json"
+    },
+    {
+      "bytes": 22803719,
+      "gzip_bytes": 2867613,
+      "gzip_path": "event_chunks/chunk_000189.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000189.json"
+    },
+    {
+      "bytes": 22796045,
+      "gzip_bytes": 2963659,
+      "gzip_path": "event_chunks/chunk_000078.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000078.json"
+    },
+    {
+      "bytes": 22791542,
+      "gzip_bytes": 2963089,
+      "gzip_path": "event_chunks/chunk_000062.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000062.json"
+    },
+    {
+      "bytes": 22790409,
+      "gzip_bytes": 2775783,
+      "gzip_path": "event_chunks/chunk_000254.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000254.json"
+    },
+    {
+      "bytes": 22786692,
+      "gzip_bytes": 2846067,
+      "gzip_path": "event_chunks/chunk_000206.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000206.json"
+    },
+    {
+      "bytes": 22780196,
+      "gzip_bytes": 2938005,
+      "gzip_path": "event_chunks/chunk_000112.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000112.json"
+    },
+    {
+      "bytes": 22776772,
+      "gzip_bytes": 2857389,
+      "gzip_path": "event_chunks/chunk_000221.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000221.json"
+    },
+    {
+      "bytes": 22772311,
+      "gzip_bytes": 2819495,
+      "gzip_path": "event_chunks/chunk_000232.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000232.json"
+    },
+    {
+      "bytes": 22769358,
+      "gzip_bytes": 2915627,
+      "gzip_path": "event_chunks/chunk_000158.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000158.json"
+    },
+    {
+      "bytes": 22766139,
+      "gzip_bytes": 2900558,
+      "gzip_path": "event_chunks/chunk_000109.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000109.json"
+    },
+    {
+      "bytes": 22753289,
+      "gzip_bytes": 3025129,
+      "gzip_path": "event_chunks/chunk_000015.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000015.json"
+    },
+    {
+      "bytes": 22733745,
+      "gzip_bytes": 2803651,
+      "gzip_path": "event_chunks/chunk_000235.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000235.json"
+    },
+    {
+      "bytes": 22732516,
+      "gzip_bytes": 2807209,
+      "gzip_path": "event_chunks/chunk_000229.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000229.json"
+    },
+    {
+      "bytes": 22730613,
+      "gzip_bytes": 2917476,
+      "gzip_path": "event_chunks/chunk_000207.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000207.json"
+    },
+    {
+      "bytes": 22726761,
+      "gzip_bytes": 2869894,
+      "gzip_path": "event_chunks/chunk_000167.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000167.json"
+    },
+    {
+      "bytes": 22719417,
+      "gzip_bytes": 2812053,
+      "gzip_path": "event_chunks/chunk_000217.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000217.json"
+    },
+    {
+      "bytes": 22712044,
+      "gzip_bytes": 3008443,
+      "gzip_path": "event_chunks/chunk_000028.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000028.json"
+    },
+    {
+      "bytes": 22702378,
+      "gzip_bytes": 2762485,
+      "gzip_path": "event_chunks/chunk_000261.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000261.json"
+    },
+    {
+      "bytes": 22692680,
+      "gzip_bytes": 2775910,
+      "gzip_path": "event_chunks/chunk_000258.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000258.json"
+    },
+    {
+      "bytes": 22692542,
+      "gzip_bytes": 2855857,
+      "gzip_path": "event_chunks/chunk_000196.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000196.json"
+    },
+    {
+      "bytes": 22691231,
+      "gzip_bytes": 2916758,
+      "gzip_path": "event_chunks/chunk_000177.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000177.json"
+    },
+    {
+      "bytes": 22691173,
+      "gzip_bytes": 2940838,
+      "gzip_path": "event_chunks/chunk_000137.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000137.json"
+    },
+    {
+      "bytes": 22678877,
+      "gzip_bytes": 2892880,
+      "gzip_path": "event_chunks/chunk_000147.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000147.json"
+    },
+    {
+      "bytes": 22676934,
+      "gzip_bytes": 2830873,
+      "gzip_path": "event_chunks/chunk_000219.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000219.json"
+    },
+    {
+      "bytes": 22676085,
+      "gzip_bytes": 2912848,
+      "gzip_path": "event_chunks/chunk_000142.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000142.json"
+    },
+    {
+      "bytes": 22656739,
+      "gzip_bytes": 3033185,
+      "gzip_path": "event_chunks/chunk_000024.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000024.json"
+    },
+    {
+      "bytes": 22655099,
+      "gzip_bytes": 2802555,
+      "gzip_path": "event_chunks/chunk_000237.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000237.json"
+    },
+    {
+      "bytes": 22650901,
+      "gzip_bytes": 2864789,
+      "gzip_path": "event_chunks/chunk_000168.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000168.json"
+    },
+    {
+      "bytes": 22648157,
+      "gzip_bytes": 2860078,
+      "gzip_path": "event_chunks/chunk_000173.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000173.json"
+    },
+    {
+      "bytes": 22644329,
+      "gzip_bytes": 3105245,
+      "gzip_path": "event_chunks/chunk_000049.json.gz",
+      "gzip_ratio": 0.137,
+      "path": "event_chunks/chunk_000049.json"
+    },
+    {
+      "bytes": 22643377,
+      "gzip_bytes": 2956574,
+      "gzip_path": "event_chunks/chunk_000056.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000056.json"
+    },
+    {
+      "bytes": 22639989,
+      "gzip_bytes": 2781717,
+      "gzip_path": "event_chunks/chunk_000248.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000248.json"
+    },
+    {
+      "bytes": 22639909,
+      "gzip_bytes": 2946712,
+      "gzip_path": "event_chunks/chunk_000052.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000052.json"
+    },
+    {
+      "bytes": 22639439,
+      "gzip_bytes": 2839702,
+      "gzip_path": "event_chunks/chunk_000223.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000223.json"
+    },
+    {
+      "bytes": 22637485,
+      "gzip_bytes": 2811139,
+      "gzip_path": "event_chunks/chunk_000238.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000238.json"
+    },
+    {
+      "bytes": 22627630,
+      "gzip_bytes": 2964601,
+      "gzip_path": "event_chunks/chunk_000114.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000114.json"
+    },
+    {
+      "bytes": 22627459,
+      "gzip_bytes": 2821263,
+      "gzip_path": "event_chunks/chunk_000208.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000208.json"
+    },
+    {
+      "bytes": 22624237,
+      "gzip_bytes": 2870506,
+      "gzip_path": "event_chunks/chunk_000149.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000149.json"
+    },
+    {
+      "bytes": 22622440,
+      "gzip_bytes": 2958021,
+      "gzip_path": "event_chunks/chunk_000077.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000077.json"
+    },
+    {
+      "bytes": 22620188,
+      "gzip_bytes": 2891331,
+      "gzip_path": "event_chunks/chunk_000159.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000159.json"
+    },
+    {
+      "bytes": 22613558,
+      "gzip_bytes": 2983557,
+      "gzip_path": "event_chunks/chunk_000133.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000133.json"
+    },
+    {
+      "bytes": 22601824,
+      "gzip_bytes": 2967453,
+      "gzip_path": "event_chunks/chunk_000071.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000071.json"
+    },
+    {
+      "bytes": 22600536,
+      "gzip_bytes": 2988703,
+      "gzip_path": "event_chunks/chunk_000026.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000026.json"
+    },
+    {
+      "bytes": 22596175,
+      "gzip_bytes": 2839492,
+      "gzip_path": "event_chunks/chunk_000202.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000202.json"
+    },
+    {
+      "bytes": 22588055,
+      "gzip_bytes": 2754156,
+      "gzip_path": "event_chunks/chunk_000259.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000259.json"
+    },
+    {
+      "bytes": 22587992,
+      "gzip_bytes": 2946959,
+      "gzip_path": "event_chunks/chunk_000060.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000060.json"
+    },
+    {
+      "bytes": 22579323,
+      "gzip_bytes": 2959028,
+      "gzip_path": "event_chunks/chunk_000051.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000051.json"
+    },
+    {
+      "bytes": 22576559,
+      "gzip_bytes": 2853228,
+      "gzip_path": "event_chunks/chunk_000193.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000193.json"
+    },
+    {
+      "bytes": 22566479,
+      "gzip_bytes": 2964165,
+      "gzip_path": "event_chunks/chunk_000035.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000035.json"
+    },
+    {
+      "bytes": 22566402,
+      "gzip_bytes": 3062767,
+      "gzip_path": "event_chunks/chunk_000019.json.gz",
+      "gzip_ratio": 0.136,
+      "path": "event_chunks/chunk_000019.json"
+    },
+    {
+      "bytes": 22556854,
+      "gzip_bytes": 2763325,
+      "gzip_path": "event_chunks/chunk_000252.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000252.json"
+    },
+    {
+      "bytes": 22544904,
+      "gzip_bytes": 2931526,
+      "gzip_path": "event_chunks/chunk_000072.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000072.json"
+    },
+    {
+      "bytes": 22542501,
+      "gzip_bytes": 2962591,
+      "gzip_path": "event_chunks/chunk_000034.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000034.json"
+    },
+    {
+      "bytes": 22541016,
+      "gzip_bytes": 2867113,
+      "gzip_path": "event_chunks/chunk_000127.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000127.json"
+    },
+    {
+      "bytes": 22537231,
+      "gzip_bytes": 2912292,
+      "gzip_path": "event_chunks/chunk_000089.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000089.json"
+    },
+    {
+      "bytes": 22535708,
+      "gzip_bytes": 2940397,
+      "gzip_path": "event_chunks/chunk_000059.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000059.json"
+    },
+    {
+      "bytes": 22533746,
+      "gzip_bytes": 2859741,
+      "gzip_path": "event_chunks/chunk_000160.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000160.json"
+    },
+    {
+      "bytes": 22532858,
+      "gzip_bytes": 2837156,
+      "gzip_path": "event_chunks/chunk_000172.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000172.json"
+    },
+    {
+      "bytes": 22526987,
+      "gzip_bytes": 2891154,
+      "gzip_path": "event_chunks/chunk_000123.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000123.json"
+    },
+    {
+      "bytes": 22519614,
+      "gzip_bytes": 2872994,
+      "gzip_path": "event_chunks/chunk_000139.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000139.json"
+    },
+    {
+      "bytes": 22519362,
+      "gzip_bytes": 2960913,
+      "gzip_path": "event_chunks/chunk_000030.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000030.json"
+    },
+    {
+      "bytes": 22517501,
+      "gzip_bytes": 2926544,
+      "gzip_path": "event_chunks/chunk_000053.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000053.json"
+    },
+    {
+      "bytes": 22514170,
+      "gzip_bytes": 2896383,
+      "gzip_path": "event_chunks/chunk_000129.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000129.json"
+    },
+    {
+      "bytes": 22508678,
+      "gzip_bytes": 2735355,
+      "gzip_path": "event_chunks/chunk_000265.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000265.json"
+    },
+    {
+      "bytes": 22498576,
+      "gzip_bytes": 2755876,
+      "gzip_path": "event_chunks/chunk_000253.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000253.json"
+    },
+    {
+      "bytes": 22495030,
+      "gzip_bytes": 2839692,
+      "gzip_path": "event_chunks/chunk_000195.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000195.json"
+    },
+    {
+      "bytes": 22489348,
+      "gzip_bytes": 2923914,
+      "gzip_path": "event_chunks/chunk_000103.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000103.json"
+    },
+    {
+      "bytes": 22489143,
+      "gzip_bytes": 2979921,
+      "gzip_path": "event_chunks/chunk_000016.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000016.json"
+    },
+    {
+      "bytes": 22487065,
+      "gzip_bytes": 2865095,
+      "gzip_path": "event_chunks/chunk_000153.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000153.json"
+    },
+    {
+      "bytes": 22486472,
+      "gzip_bytes": 2872956,
+      "gzip_path": "event_chunks/chunk_000165.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000165.json"
+    },
+    {
+      "bytes": 22481826,
+      "gzip_bytes": 2922809,
+      "gzip_path": "event_chunks/chunk_000067.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000067.json"
+    },
+    {
+      "bytes": 22467831,
+      "gzip_bytes": 2856896,
+      "gzip_path": "event_chunks/chunk_000163.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000163.json"
+    },
+    {
+      "bytes": 22466644,
+      "gzip_bytes": 2945021,
+      "gzip_path": "event_chunks/chunk_000125.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000125.json"
+    },
+    {
+      "bytes": 22465841,
+      "gzip_bytes": 2942556,
+      "gzip_path": "event_chunks/chunk_000041.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000041.json"
+    },
+    {
+      "bytes": 22462734,
+      "gzip_bytes": 2824544,
+      "gzip_path": "event_chunks/chunk_000214.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000214.json"
+    },
+    {
+      "bytes": 22462351,
+      "gzip_bytes": 2854393,
+      "gzip_path": "event_chunks/chunk_000179.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000179.json"
+    },
+    {
+      "bytes": 22454266,
+      "gzip_bytes": 3017716,
+      "gzip_path": "event_chunks/chunk_000006.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000006.json"
+    },
+    {
+      "bytes": 22451676,
+      "gzip_bytes": 2969038,
+      "gzip_path": "event_chunks/chunk_000036.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000036.json"
+    },
+    {
+      "bytes": 22450573,
+      "gzip_bytes": 2917608,
+      "gzip_path": "event_chunks/chunk_000070.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000070.json"
+    },
+    {
+      "bytes": 22449848,
+      "gzip_bytes": 2994606,
+      "gzip_path": "event_chunks/chunk_000020.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000020.json"
+    },
+    {
+      "bytes": 22440619,
+      "gzip_bytes": 2875272,
+      "gzip_path": "event_chunks/chunk_000132.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000132.json"
+    },
+    {
+      "bytes": 22437485,
+      "gzip_bytes": 2835656,
+      "gzip_path": "event_chunks/chunk_000175.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000175.json"
+    },
+    {
+      "bytes": 22433387,
+      "gzip_bytes": 2953900,
+      "gzip_path": "event_chunks/chunk_000038.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000038.json"
+    },
+    {
+      "bytes": 22431814,
+      "gzip_bytes": 2924231,
+      "gzip_path": "event_chunks/chunk_000118.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000118.json"
+    },
+    {
+      "bytes": 22429976,
+      "gzip_bytes": 2963590,
+      "gzip_path": "event_chunks/chunk_000048.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000048.json"
+    },
+    {
+      "bytes": 22428642,
+      "gzip_bytes": 2822282,
+      "gzip_path": "event_chunks/chunk_000180.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000180.json"
+    },
+    {
+      "bytes": 22428418,
+      "gzip_bytes": 2887650,
+      "gzip_path": "event_chunks/chunk_000143.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000143.json"
+    },
+    {
+      "bytes": 22428411,
+      "gzip_bytes": 2753196,
+      "gzip_path": "event_chunks/chunk_000247.json.gz",
+      "gzip_ratio": 0.123,
+      "path": "event_chunks/chunk_000247.json"
+    },
+    {
+      "bytes": 22419845,
+      "gzip_bytes": 2973606,
+      "gzip_path": "event_chunks/chunk_000029.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000029.json"
+    },
+    {
+      "bytes": 22414428,
+      "gzip_bytes": 2842935,
+      "gzip_path": "event_chunks/chunk_000176.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000176.json"
+    },
+    {
+      "bytes": 22407648,
+      "gzip_bytes": 2842175,
+      "gzip_path": "event_chunks/chunk_000178.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000178.json"
+    },
+    {
+      "bytes": 22400110,
+      "gzip_bytes": 2998495,
+      "gzip_path": "event_chunks/chunk_000018.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000018.json"
+    },
+    {
+      "bytes": 22397044,
+      "gzip_bytes": 2770960,
+      "gzip_path": "event_chunks/chunk_000250.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000250.json"
+    },
+    {
+      "bytes": 22394312,
+      "gzip_bytes": 2850034,
+      "gzip_path": "event_chunks/chunk_000150.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000150.json"
+    },
+    {
+      "bytes": 22393896,
+      "gzip_bytes": 2994535,
+      "gzip_path": "event_chunks/chunk_000009.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000009.json"
+    },
+    {
+      "bytes": 22390515,
+      "gzip_bytes": 2871960,
+      "gzip_path": "event_chunks/chunk_000106.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000106.json"
+    },
+    {
+      "bytes": 22379923,
+      "gzip_bytes": 2858750,
+      "gzip_path": "event_chunks/chunk_000155.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000155.json"
+    },
+    {
+      "bytes": 22378833,
+      "gzip_bytes": 2904727,
+      "gzip_path": "event_chunks/chunk_000092.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000092.json"
+    },
+    {
+      "bytes": 22377329,
+      "gzip_bytes": 2885773,
+      "gzip_path": "event_chunks/chunk_000097.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000097.json"
+    },
+    {
+      "bytes": 22372191,
+      "gzip_bytes": 2819742,
+      "gzip_path": "event_chunks/chunk_000210.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000210.json"
+    },
+    {
+      "bytes": 22366235,
+      "gzip_bytes": 2912176,
+      "gzip_path": "event_chunks/chunk_000110.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000110.json"
+    },
+    {
+      "bytes": 22364521,
+      "gzip_bytes": 2845093,
+      "gzip_path": "event_chunks/chunk_000136.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000136.json"
+    },
+    {
+      "bytes": 22363695,
+      "gzip_bytes": 2843176,
+      "gzip_path": "event_chunks/chunk_000192.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000192.json"
+    },
+    {
+      "bytes": 22363134,
+      "gzip_bytes": 2792406,
+      "gzip_path": "event_chunks/chunk_000218.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000218.json"
+    },
+    {
+      "bytes": 22362738,
+      "gzip_bytes": 2835365,
+      "gzip_path": "event_chunks/chunk_000174.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000174.json"
+    },
+    {
+      "bytes": 22359159,
+      "gzip_bytes": 2845121,
+      "gzip_path": "event_chunks/chunk_000161.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000161.json"
+    },
+    {
+      "bytes": 22352234,
+      "gzip_bytes": 3019539,
+      "gzip_path": "event_chunks/chunk_000007.json.gz",
+      "gzip_ratio": 0.135,
+      "path": "event_chunks/chunk_000007.json"
+    },
+    {
+      "bytes": 22350726,
+      "gzip_bytes": 2935448,
+      "gzip_path": "event_chunks/chunk_000141.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000141.json"
+    },
+    {
+      "bytes": 22344373,
+      "gzip_bytes": 2775325,
+      "gzip_path": "event_chunks/chunk_000243.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000243.json"
+    },
+    {
+      "bytes": 22343793,
+      "gzip_bytes": 2793214,
+      "gzip_path": "event_chunks/chunk_000213.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000213.json"
+    },
+    {
+      "bytes": 22338177,
+      "gzip_bytes": 2923675,
+      "gzip_path": "event_chunks/chunk_000046.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000046.json"
+    },
+    {
+      "bytes": 22336968,
+      "gzip_bytes": 2876715,
+      "gzip_path": "event_chunks/chunk_000083.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000083.json"
+    },
+    {
+      "bytes": 22336586,
+      "gzip_bytes": 2778686,
+      "gzip_path": "event_chunks/chunk_000211.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000211.json"
+    },
+    {
+      "bytes": 22329427,
+      "gzip_bytes": 2890758,
+      "gzip_path": "event_chunks/chunk_000099.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000099.json"
+    },
+    {
+      "bytes": 22315552,
+      "gzip_bytes": 2950320,
+      "gzip_path": "event_chunks/chunk_000045.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000045.json"
+    },
+    {
+      "bytes": 22314508,
+      "gzip_bytes": 2995669,
+      "gzip_path": "event_chunks/chunk_000013.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000013.json"
+    },
+    {
+      "bytes": 22313899,
+      "gzip_bytes": 2799190,
+      "gzip_path": "event_chunks/chunk_000212.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000212.json"
+    },
+    {
+      "bytes": 22309037,
+      "gzip_bytes": 2993622,
+      "gzip_path": "event_chunks/chunk_000008.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000008.json"
+    },
+    {
+      "bytes": 22308478,
+      "gzip_bytes": 2923286,
+      "gzip_path": "event_chunks/chunk_000047.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000047.json"
+    },
+    {
+      "bytes": 22303254,
+      "gzip_bytes": 2926864,
+      "gzip_path": "event_chunks/chunk_000074.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000074.json"
+    },
+    {
+      "bytes": 22300805,
+      "gzip_bytes": 2819851,
+      "gzip_path": "event_chunks/chunk_000182.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000182.json"
+    },
+    {
+      "bytes": 22294571,
+      "gzip_bytes": 2841028,
+      "gzip_path": "event_chunks/chunk_000157.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000157.json"
+    },
+    {
+      "bytes": 22277448,
+      "gzip_bytes": 2704610,
+      "gzip_path": "event_chunks/chunk_000269.json.gz",
+      "gzip_ratio": 0.121,
+      "path": "event_chunks/chunk_000269.json"
+    },
+    {
+      "bytes": 22272370,
+      "gzip_bytes": 2767148,
+      "gzip_path": "event_chunks/chunk_000233.json.gz",
+      "gzip_ratio": 0.124,
+      "path": "event_chunks/chunk_000233.json"
+    },
+    {
+      "bytes": 22266495,
+      "gzip_bytes": 2826395,
+      "gzip_path": "event_chunks/chunk_000169.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000169.json"
+    },
+    {
+      "bytes": 22265708,
+      "gzip_bytes": 2974685,
+      "gzip_path": "event_chunks/chunk_000014.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000014.json"
+    },
+    {
+      "bytes": 22264291,
+      "gzip_bytes": 2867566,
+      "gzip_path": "event_chunks/chunk_000188.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000188.json"
+    },
+    {
+      "bytes": 22260139,
+      "gzip_bytes": 2852270,
+      "gzip_path": "event_chunks/chunk_000156.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000156.json"
+    },
+    {
+      "bytes": 22258649,
+      "gzip_bytes": 2718920,
+      "gzip_path": "event_chunks/chunk_000268.json.gz",
+      "gzip_ratio": 0.122,
+      "path": "event_chunks/chunk_000268.json"
+    },
+    {
+      "bytes": 22219404,
+      "gzip_bytes": 2810382,
+      "gzip_path": "event_chunks/chunk_000200.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000200.json"
+    },
+    {
+      "bytes": 22206648,
+      "gzip_bytes": 2873759,
+      "gzip_path": "event_chunks/chunk_000105.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000105.json"
+    },
+    {
+      "bytes": 22206340,
+      "gzip_bytes": 2872164,
+      "gzip_path": "event_chunks/chunk_000104.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000104.json"
+    },
+    {
+      "bytes": 22190000,
+      "gzip_bytes": 2812249,
+      "gzip_path": "event_chunks/chunk_000209.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000209.json"
+    },
+    {
+      "bytes": 22189649,
+      "gzip_bytes": 2914411,
+      "gzip_path": "event_chunks/chunk_000040.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000040.json"
+    },
+    {
+      "bytes": 22188644,
+      "gzip_bytes": 2841887,
+      "gzip_path": "event_chunks/chunk_000144.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000144.json"
+    },
+    {
+      "bytes": 22184572,
+      "gzip_bytes": 2845370,
+      "gzip_path": "event_chunks/chunk_000119.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000119.json"
+    },
+    {
+      "bytes": 22183605,
+      "gzip_bytes": 2954326,
+      "gzip_path": "event_chunks/chunk_000025.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000025.json"
+    },
+    {
+      "bytes": 22182994,
+      "gzip_bytes": 2867486,
+      "gzip_path": "event_chunks/chunk_000120.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000120.json"
+    },
+    {
+      "bytes": 22179901,
+      "gzip_bytes": 2764454,
+      "gzip_path": "event_chunks/chunk_000227.json.gz",
+      "gzip_ratio": 0.125,
+      "path": "event_chunks/chunk_000227.json"
+    },
+    {
+      "bytes": 22173923,
+      "gzip_bytes": 2868983,
+      "gzip_path": "event_chunks/chunk_000095.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000095.json"
+    },
+    {
+      "bytes": 22172412,
+      "gzip_bytes": 2864063,
+      "gzip_path": "event_chunks/chunk_000102.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000102.json"
+    },
+    {
+      "bytes": 22168326,
+      "gzip_bytes": 2890287,
+      "gzip_path": "event_chunks/chunk_000081.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000081.json"
+    },
+    {
+      "bytes": 22167761,
+      "gzip_bytes": 2837650,
+      "gzip_path": "event_chunks/chunk_000164.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000164.json"
+    },
+    {
+      "bytes": 22161843,
+      "gzip_bytes": 2789376,
+      "gzip_path": "event_chunks/chunk_000194.json.gz",
+      "gzip_ratio": 0.126,
+      "path": "event_chunks/chunk_000194.json"
+    },
+    {
+      "bytes": 22160495,
+      "gzip_bytes": 2809914,
+      "gzip_path": "event_chunks/chunk_000183.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000183.json"
+    },
+    {
+      "bytes": 22148733,
+      "gzip_bytes": 2945035,
+      "gzip_path": "event_chunks/chunk_000027.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000027.json"
+    },
+    {
+      "bytes": 22144306,
+      "gzip_bytes": 2846827,
+      "gzip_path": "event_chunks/chunk_000138.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000138.json"
+    },
+    {
+      "bytes": 22140218,
+      "gzip_bytes": 2877118,
+      "gzip_path": "event_chunks/chunk_000090.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000090.json"
+    },
+    {
+      "bytes": 22136538,
+      "gzip_bytes": 2864601,
+      "gzip_path": "event_chunks/chunk_000117.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000117.json"
+    },
+    {
+      "bytes": 22128301,
+      "gzip_bytes": 2946726,
+      "gzip_path": "event_chunks/chunk_000031.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000031.json"
+    },
+    {
+      "bytes": 22118083,
+      "gzip_bytes": 2899224,
+      "gzip_path": "event_chunks/chunk_000061.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000061.json"
+    },
+    {
+      "bytes": 22116408,
+      "gzip_bytes": 2855329,
+      "gzip_path": "event_chunks/chunk_000101.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000101.json"
+    },
+    {
+      "bytes": 22115452,
+      "gzip_bytes": 2902761,
+      "gzip_path": "event_chunks/chunk_000076.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000076.json"
+    },
+    {
+      "bytes": 22115252,
+      "gzip_bytes": 2876412,
+      "gzip_path": "event_chunks/chunk_000100.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000100.json"
+    },
+    {
+      "bytes": 22112311,
+      "gzip_bytes": 2952810,
+      "gzip_path": "event_chunks/chunk_000021.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000021.json"
+    },
+    {
+      "bytes": 22112122,
+      "gzip_bytes": 2799764,
+      "gzip_path": "event_chunks/chunk_000185.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000185.json"
+    },
+    {
+      "bytes": 22108430,
+      "gzip_bytes": 2878930,
+      "gzip_path": "event_chunks/chunk_000085.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000085.json"
+    },
+    {
+      "bytes": 22107992,
+      "gzip_bytes": 2852719,
+      "gzip_path": "event_chunks/chunk_000096.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000096.json"
+    },
+    {
+      "bytes": 22105268,
+      "gzip_bytes": 2936733,
+      "gzip_path": "event_chunks/chunk_000032.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000032.json"
+    },
+    {
+      "bytes": 22101686,
+      "gzip_bytes": 2878270,
+      "gzip_path": "event_chunks/chunk_000094.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000094.json"
+    },
+    {
+      "bytes": 22098887,
+      "gzip_bytes": 2886301,
+      "gzip_path": "event_chunks/chunk_000065.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000065.json"
+    },
+    {
+      "bytes": 22092834,
+      "gzip_bytes": 2841137,
+      "gzip_path": "event_chunks/chunk_000124.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000124.json"
+    },
+    {
+      "bytes": 22091555,
+      "gzip_bytes": 2847937,
+      "gzip_path": "event_chunks/chunk_000146.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000146.json"
+    },
+    {
+      "bytes": 22085257,
+      "gzip_bytes": 2813691,
+      "gzip_path": "event_chunks/chunk_000181.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000181.json"
+    },
+    {
+      "bytes": 22082117,
+      "gzip_bytes": 2950430,
+      "gzip_path": "event_chunks/chunk_000063.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000063.json"
+    },
+    {
+      "bytes": 22074199,
+      "gzip_bytes": 2854672,
+      "gzip_path": "event_chunks/chunk_000098.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000098.json"
+    },
+    {
+      "bytes": 22071931,
+      "gzip_bytes": 2814005,
+      "gzip_path": "event_chunks/chunk_000154.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000154.json"
+    },
+    {
+      "bytes": 22066663,
+      "gzip_bytes": 2883733,
+      "gzip_path": "event_chunks/chunk_000075.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000075.json"
+    },
+    {
+      "bytes": 22063136,
+      "gzip_bytes": 2896655,
+      "gzip_path": "event_chunks/chunk_000073.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000073.json"
+    },
+    {
+      "bytes": 22058904,
+      "gzip_bytes": 2838198,
+      "gzip_path": "event_chunks/chunk_000145.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000145.json"
+    },
+    {
+      "bytes": 22050588,
+      "gzip_bytes": 2837259,
+      "gzip_path": "event_chunks/chunk_000128.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000128.json"
+    },
+    {
+      "bytes": 22036197,
+      "gzip_bytes": 2846600,
+      "gzip_path": "event_chunks/chunk_000130.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000130.json"
+    },
+    {
+      "bytes": 22033435,
+      "gzip_bytes": 2796252,
+      "gzip_path": "event_chunks/chunk_000171.json.gz",
+      "gzip_ratio": 0.127,
+      "path": "event_chunks/chunk_000171.json"
+    },
+    {
+      "bytes": 22031064,
+      "gzip_bytes": 2819001,
+      "gzip_path": "event_chunks/chunk_000152.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000152.json"
+    },
+    {
+      "bytes": 22022758,
+      "gzip_bytes": 2838582,
+      "gzip_path": "event_chunks/chunk_000135.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000135.json"
+    },
+    {
+      "bytes": 22021621,
+      "gzip_bytes": 2953167,
+      "gzip_path": "event_chunks/chunk_000017.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000017.json"
+    },
+    {
+      "bytes": 22020719,
+      "gzip_bytes": 2915600,
+      "gzip_path": "event_chunks/chunk_000058.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000058.json"
+    },
+    {
+      "bytes": 22013722,
+      "gzip_bytes": 2881979,
+      "gzip_path": "event_chunks/chunk_000069.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000069.json"
+    },
+    {
+      "bytes": 22002226,
+      "gzip_bytes": 2809738,
+      "gzip_path": "event_chunks/chunk_000191.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000191.json"
+    },
+    {
+      "bytes": 21998958,
+      "gzip_bytes": 2958493,
+      "gzip_path": "event_chunks/chunk_000091.json.gz",
+      "gzip_ratio": 0.134,
+      "path": "event_chunks/chunk_000091.json"
+    },
+    {
+      "bytes": 21987037,
+      "gzip_bytes": 2851687,
+      "gzip_path": "event_chunks/chunk_000134.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000134.json"
+    },
+    {
+      "bytes": 21962997,
+      "gzip_bytes": 2803985,
+      "gzip_path": "event_chunks/chunk_000170.json.gz",
+      "gzip_ratio": 0.128,
+      "path": "event_chunks/chunk_000170.json"
+    },
+    {
+      "bytes": 21948414,
+      "gzip_bytes": 2870560,
+      "gzip_path": "event_chunks/chunk_000086.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000086.json"
+    },
+    {
+      "bytes": 21931911,
+      "gzip_bytes": 2851416,
+      "gzip_path": "event_chunks/chunk_000080.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000080.json"
+    },
+    {
+      "bytes": 21922232,
+      "gzip_bytes": 2847330,
+      "gzip_path": "event_chunks/chunk_000107.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000107.json"
+    },
+    {
+      "bytes": 21918957,
+      "gzip_bytes": 2912567,
+      "gzip_path": "event_chunks/chunk_000039.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000039.json"
+    },
+    {
+      "bytes": 21886902,
+      "gzip_bytes": 2921661,
+      "gzip_path": "event_chunks/chunk_000022.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000022.json"
+    },
+    {
+      "bytes": 21866000,
+      "gzip_bytes": 2878744,
+      "gzip_path": "event_chunks/chunk_000064.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000064.json"
+    },
+    {
+      "bytes": 21858001,
+      "gzip_bytes": 2881609,
+      "gzip_path": "event_chunks/chunk_000068.json.gz",
+      "gzip_ratio": 0.132,
+      "path": "event_chunks/chunk_000068.json"
+    },
+    {
+      "bytes": 21857253,
+      "gzip_bytes": 2947916,
+      "gzip_path": "event_chunks/chunk_000010.json.gz",
+      "gzip_ratio": 0.135,
+      "path": "event_chunks/chunk_000010.json"
+    },
+    {
+      "bytes": 21841514,
+      "gzip_bytes": 2831428,
+      "gzip_path": "event_chunks/chunk_000093.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000093.json"
+    },
+    {
+      "bytes": 21837154,
+      "gzip_bytes": 2914664,
+      "gzip_path": "event_chunks/chunk_000023.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000023.json"
+    },
+    {
+      "bytes": 21832098,
+      "gzip_bytes": 2853728,
+      "gzip_path": "event_chunks/chunk_000082.json.gz",
+      "gzip_ratio": 0.131,
+      "path": "event_chunks/chunk_000082.json"
+    },
+    {
+      "bytes": 21788184,
+      "gzip_bytes": 2814726,
+      "gzip_path": "event_chunks/chunk_000115.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000115.json"
+    },
+    {
+      "bytes": 21770139,
+      "gzip_bytes": 2888378,
+      "gzip_path": "event_chunks/chunk_000044.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000044.json"
+    },
+    {
+      "bytes": 21736216,
+      "gzip_bytes": 2821341,
+      "gzip_path": "event_chunks/chunk_000131.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000131.json"
+    },
+    {
+      "bytes": 21717170,
+      "gzip_bytes": 2804237,
+      "gzip_path": "event_chunks/chunk_000126.json.gz",
+      "gzip_ratio": 0.129,
+      "path": "event_chunks/chunk_000126.json"
+    },
+    {
+      "bytes": 21704687,
+      "gzip_bytes": 2821505,
+      "gzip_path": "event_chunks/chunk_000113.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000113.json"
+    },
+    {
+      "bytes": 21642518,
+      "gzip_bytes": 2822650,
+      "gzip_path": "event_chunks/chunk_000087.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000087.json"
+    },
+    {
+      "bytes": 21572459,
+      "gzip_bytes": 2802621,
+      "gzip_path": "event_chunks/chunk_000108.json.gz",
+      "gzip_ratio": 0.13,
+      "path": "event_chunks/chunk_000108.json"
+    },
+    {
+      "bytes": 21537719,
+      "gzip_bytes": 2860114,
+      "gzip_path": "event_chunks/chunk_000054.json.gz",
+      "gzip_ratio": 0.133,
+      "path": "event_chunks/chunk_000054.json"
+    },
+    {
+      "bytes": 7787469,
+      "gzip_bytes": 737154,
+      "gzip_path": "summary_shards/summary_000000.json.gz",
+      "gzip_ratio": 0.095,
+      "path": "summary_shards/summary_000000.json"
+    },
+    {
+      "bytes": 7787126,
+      "gzip_bytes": 735723,
+      "gzip_path": "summary_shards/summary_000002.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000002.json"
+    },
+    {
+      "bytes": 7786598,
+      "gzip_bytes": 737097,
+      "gzip_path": "summary_shards/summary_000001.json.gz",
+      "gzip_ratio": 0.095,
+      "path": "summary_shards/summary_000001.json"
+    },
+    {
+      "bytes": 7784011,
+      "gzip_bytes": 734935,
+      "gzip_path": "summary_shards/summary_000003.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000003.json"
+    },
+    {
+      "bytes": 7783461,
+      "gzip_bytes": 732714,
+      "gzip_path": "summary_shards/summary_000007.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000007.json"
+    },
+    {
+      "bytes": 7783145,
+      "gzip_bytes": 734290,
+      "gzip_path": "summary_shards/summary_000006.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000006.json"
+    },
+    {
+      "bytes": 7780992,
+      "gzip_bytes": 731819,
+      "gzip_path": "summary_shards/summary_000012.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000012.json"
+    },
+    {
+      "bytes": 7780798,
+      "gzip_bytes": 731275,
+      "gzip_path": "summary_shards/summary_000014.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000014.json"
+    },
+    {
+      "bytes": 7779984,
+      "gzip_bytes": 731568,
+      "gzip_path": "summary_shards/summary_000005.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000005.json"
+    },
+    {
+      "bytes": 7779164,
+      "gzip_bytes": 726249,
+      "gzip_path": "summary_shards/summary_000019.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000019.json"
+    },
+    {
+      "bytes": 7778859,
+      "gzip_bytes": 733567,
+      "gzip_path": "summary_shards/summary_000004.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000004.json"
+    },
+    {
+      "bytes": 7778345,
+      "gzip_bytes": 732769,
+      "gzip_path": "summary_shards/summary_000009.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000009.json"
+    },
+    {
+      "bytes": 7776705,
+      "gzip_bytes": 728197,
+      "gzip_path": "summary_shards/summary_000010.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000010.json"
+    },
+    {
+      "bytes": 7775805,
+      "gzip_bytes": 731410,
+      "gzip_path": "summary_shards/summary_000008.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000008.json"
+    },
+    {
+      "bytes": 7772758,
+      "gzip_bytes": 726333,
+      "gzip_path": "summary_shards/summary_000013.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000013.json"
+    },
+    {
+      "bytes": 7772416,
+      "gzip_bytes": 723290,
+      "gzip_path": "summary_shards/summary_000027.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000027.json"
+    },
+    {
+      "bytes": 7772031,
+      "gzip_bytes": 729192,
+      "gzip_path": "summary_shards/summary_000011.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000011.json"
+    },
+    {
+      "bytes": 7770519,
+      "gzip_bytes": 725976,
+      "gzip_path": "summary_shards/summary_000016.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000016.json"
+    },
+    {
+      "bytes": 7769865,
+      "gzip_bytes": 726988,
+      "gzip_path": "summary_shards/summary_000015.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000015.json"
+    },
+    {
+      "bytes": 7769722,
+      "gzip_bytes": 726305,
+      "gzip_path": "summary_shards/summary_000018.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000018.json"
+    },
+    {
+      "bytes": 7769573,
+      "gzip_bytes": 722978,
+      "gzip_path": "summary_shards/summary_000023.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000023.json"
+    },
+    {
+      "bytes": 7767686,
+      "gzip_bytes": 726672,
+      "gzip_path": "summary_shards/summary_000017.json.gz",
+      "gzip_ratio": 0.094,
+      "path": "summary_shards/summary_000017.json"
+    },
+    {
+      "bytes": 7766524,
+      "gzip_bytes": 724657,
+      "gzip_path": "summary_shards/summary_000020.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000020.json"
+    },
+    {
+      "bytes": 7765973,
+      "gzip_bytes": 722414,
+      "gzip_path": "summary_shards/summary_000021.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000021.json"
+    },
+    {
+      "bytes": 7765904,
+      "gzip_bytes": 721331,
+      "gzip_path": "summary_shards/summary_000022.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000022.json"
+    },
+    {
+      "bytes": 7764844,
+      "gzip_bytes": 722052,
+      "gzip_path": "summary_shards/summary_000024.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000024.json"
+    },
+    {
+      "bytes": 7764314,
+      "gzip_bytes": 719246,
+      "gzip_path": "summary_shards/summary_000029.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000029.json"
+    },
+    {
+      "bytes": 7762946,
+      "gzip_bytes": 722411,
+      "gzip_path": "summary_shards/summary_000025.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000025.json"
+    },
+    {
+      "bytes": 7762246,
+      "gzip_bytes": 721126,
+      "gzip_path": "summary_shards/summary_000026.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000026.json"
+    },
+    {
+      "bytes": 7760341,
+      "gzip_bytes": 721095,
+      "gzip_path": "summary_shards/summary_000028.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000028.json"
+    },
+    {
+      "bytes": 7759633,
+      "gzip_bytes": 720410,
+      "gzip_path": "summary_shards/summary_000036.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000036.json"
+    },
+    {
+      "bytes": 7758952,
+      "gzip_bytes": 716585,
+      "gzip_path": "summary_shards/summary_000035.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000035.json"
+    },
+    {
+      "bytes": 7756831,
+      "gzip_bytes": 716223,
+      "gzip_path": "summary_shards/summary_000039.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000039.json"
+    },
+    {
+      "bytes": 7755944,
+      "gzip_bytes": 719072,
+      "gzip_path": "summary_shards/summary_000034.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000034.json"
+    },
+    {
+      "bytes": 7755827,
+      "gzip_bytes": 719237,
+      "gzip_path": "summary_shards/summary_000030.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000030.json"
+    },
+    {
+      "bytes": 7755142,
+      "gzip_bytes": 719609,
+      "gzip_path": "summary_shards/summary_000031.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000031.json"
+    },
+    {
+      "bytes": 7754300,
+      "gzip_bytes": 713665,
+      "gzip_path": "summary_shards/summary_000044.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000044.json"
+    },
+    {
+      "bytes": 7754043,
+      "gzip_bytes": 718425,
+      "gzip_path": "summary_shards/summary_000032.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000032.json"
+    },
+    {
+      "bytes": 7752801,
+      "gzip_bytes": 717076,
+      "gzip_path": "summary_shards/summary_000037.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000037.json"
+    },
+    {
+      "bytes": 7752227,
+      "gzip_bytes": 715538,
+      "gzip_path": "summary_shards/summary_000038.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000038.json"
+    },
+    {
+      "bytes": 7751663,
+      "gzip_bytes": 712843,
+      "gzip_path": "summary_shards/summary_000043.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000043.json"
+    },
+    {
+      "bytes": 7751337,
+      "gzip_bytes": 714409,
+      "gzip_path": "summary_shards/summary_000042.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000042.json"
+    },
+    {
+      "bytes": 7750475,
+      "gzip_bytes": 717785,
+      "gzip_path": "summary_shards/summary_000033.json.gz",
+      "gzip_ratio": 0.093,
+      "path": "summary_shards/summary_000033.json"
+    },
+    {
+      "bytes": 7748815,
+      "gzip_bytes": 713693,
+      "gzip_path": "summary_shards/summary_000041.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000041.json"
+    },
+    {
+      "bytes": 7746788,
+      "gzip_bytes": 709444,
+      "gzip_path": "summary_shards/summary_000045.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000045.json"
+    },
+    {
+      "bytes": 7745903,
+      "gzip_bytes": 710890,
+      "gzip_path": "summary_shards/summary_000049.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000049.json"
+    },
+    {
+      "bytes": 7745681,
+      "gzip_bytes": 712979,
+      "gzip_path": "summary_shards/summary_000040.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000040.json"
+    },
+    {
+      "bytes": 7745647,
+      "gzip_bytes": 707509,
+      "gzip_path": "summary_shards/summary_000051.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000051.json"
+    },
+    {
+      "bytes": 7743775,
+      "gzip_bytes": 712429,
+      "gzip_path": "summary_shards/summary_000048.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000048.json"
+    },
+    {
+      "bytes": 7743485,
+      "gzip_bytes": 711982,
+      "gzip_path": "summary_shards/summary_000047.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000047.json"
+    },
+    {
+      "bytes": 7743225,
+      "gzip_bytes": 711410,
+      "gzip_path": "summary_shards/summary_000050.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000050.json"
+    },
+    {
+      "bytes": 7743225,
+      "gzip_bytes": 707831,
+      "gzip_path": "summary_shards/summary_000055.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000055.json"
+    },
+    {
+      "bytes": 7742741,
+      "gzip_bytes": 708062,
+      "gzip_path": "summary_shards/summary_000053.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000053.json"
+    },
+    {
+      "bytes": 7742411,
+      "gzip_bytes": 706093,
+      "gzip_path": "summary_shards/summary_000057.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000057.json"
+    },
+    {
+      "bytes": 7741399,
+      "gzip_bytes": 706018,
+      "gzip_path": "summary_shards/summary_000054.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000054.json"
+    },
+    {
+      "bytes": 7740765,
+      "gzip_bytes": 710563,
+      "gzip_path": "summary_shards/summary_000046.json.gz",
+      "gzip_ratio": 0.092,
+      "path": "summary_shards/summary_000046.json"
+    },
+    {
+      "bytes": 7740143,
+      "gzip_bytes": 707477,
+      "gzip_path": "summary_shards/summary_000052.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000052.json"
+    },
+    {
+      "bytes": 7737541,
+      "gzip_bytes": 706262,
+      "gzip_path": "summary_shards/summary_000058.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000058.json"
+    },
+    {
+      "bytes": 7737529,
+      "gzip_bytes": 707204,
+      "gzip_path": "summary_shards/summary_000056.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000056.json"
+    },
+    {
+      "bytes": 7735075,
+      "gzip_bytes": 705043,
+      "gzip_path": "summary_shards/summary_000060.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000060.json"
+    },
+    {
+      "bytes": 7733287,
+      "gzip_bytes": 702839,
+      "gzip_path": "summary_shards/summary_000061.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000061.json"
+    },
+    {
+      "bytes": 7732871,
+      "gzip_bytes": 701238,
+      "gzip_path": "summary_shards/summary_000062.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000062.json"
+    },
+    {
+      "bytes": 7732250,
+      "gzip_bytes": 699803,
+      "gzip_path": "summary_shards/summary_000065.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000065.json"
+    },
+    {
+      "bytes": 7731807,
+      "gzip_bytes": 703950,
+      "gzip_path": "summary_shards/summary_000059.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000059.json"
+    },
+    {
+      "bytes": 7729792,
+      "gzip_bytes": 702130,
+      "gzip_path": "summary_shards/summary_000064.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000064.json"
+    },
+    {
+      "bytes": 7727569,
+      "gzip_bytes": 696485,
+      "gzip_path": "summary_shards/summary_000068.json.gz",
+      "gzip_ratio": 0.09,
+      "path": "summary_shards/summary_000068.json"
+    },
+    {
+      "bytes": 7727433,
+      "gzip_bytes": 699831,
+      "gzip_path": "summary_shards/summary_000063.json.gz",
+      "gzip_ratio": 0.091,
+      "path": "summary_shards/summary_000063.json"
+    },
+    {
+      "bytes": 7725574,
+      "gzip_bytes": 698144,
+      "gzip_path": "summary_shards/summary_000066.json.gz",
+      "gzip_ratio": 0.09,
+      "path": "summary_shards/summary_000066.json"
+    },
+    {
+      "bytes": 7720628,
+      "gzip_bytes": 698218,
+      "gzip_path": "summary_shards/summary_000067.json.gz",
+      "gzip_ratio": 0.09,
+      "path": "summary_shards/summary_000067.json"
+    },
+    {
+      "bytes": 7718421,
+      "gzip_bytes": 697063,
+      "gzip_path": "summary_shards/summary_000069.json.gz",
+      "gzip_ratio": 0.09,
+      "path": "summary_shards/summary_000069.json"
+    },
+    {
+      "bytes": 7637032,
+      "gzip_bytes": 4197566,
+      "gzip_path": "trace_aggregate_bins.bin.gz",
+      "gzip_ratio": 0.55,
+      "path": "trace_aggregate_bins.bin"
+    },
+    {
+      "bytes": 4773101,
+      "gzip_bytes": 577964,
+      "gzip_path": "event_chunks/chunk_000281.json.gz",
+      "gzip_ratio": 0.121,
+      "path": "event_chunks/chunk_000281.json"
+    },
+    {
+      "bytes": 2331011,
+      "gzip_bytes": 210095,
+      "gzip_path": "summary_shards/summary_000070.json.gz",
+      "gzip_ratio": 0.09,
+      "path": "summary_shards/summary_000070.json"
+    },
+    {
+      "bytes": 49771,
+      "gzip_bytes": 7573,
+      "gzip_path": "event_chunk_manifest.json.gz",
+      "gzip_ratio": 0.152,
+      "path": "event_chunk_manifest.json"
+    },
+    {
+      "bytes": 13021,
+      "gzip_bytes": 2266,
+      "gzip_path": "points_meta.json.gz",
+      "gzip_ratio": 0.174,
+      "path": "points_meta.json"
+    },
+    {
+      "bytes": 12829,
+      "gzip_bytes": 1950,
+      "gzip_path": "summary_manifest.json.gz",
+      "gzip_ratio": 0.152,
+      "path": "summary_manifest.json"
+    },
+    {
+      "bytes": 8421,
+      "gzip_bytes": 1336,
+      "gzip_path": "trace_event_index_meta.json.gz",
+      "gzip_ratio": 0.159,
+      "path": "trace_event_index_meta.json"
+    },
+    {
+      "bytes": 8012,
+      "gzip_bytes": 2302,
+      "gzip_path": "canonical_web_manifest.json.gz",
+      "gzip_ratio": 0.287,
+      "path": "canonical_web_manifest.json"
+    },
+    {
+      "bytes": 4703,
+      "gzip_bytes": 1084,
+      "gzip_path": "trace_segments_meta.json.gz",
+      "gzip_ratio": 0.23,
+      "path": "trace_segments_meta.json"
+    },
+    {
+      "bytes": 3564,
+      "gzip_bytes": 972,
+      "gzip_path": "trace_aggregate_bins_meta.json.gz",
+      "gzip_ratio": 0.273,
+      "path": "trace_aggregate_bins_meta.json"
+    }
+  ],
+  "gzip_ratio": 0.13,
+  "total_bytes": 7016345174,
+  "total_files": 364,
+  "total_gzip_bytes": 913569916,
+  "total_gzip_mb": 871.25,
+  "total_mb": 6691.31
+}
