@@ -7019,12 +7019,15 @@
 
   function renderMapStartupOverlay(percent) {
     if (!els.mapStartupOverlay) return;
-    // The startup profile is deliberately interactive before the full canonical
-    // catalog finishes ingesting.  Let users work with that preview instead of
-    // blocking the entire map behind the cover while 71 summary shards load.
-    // Catalog loading and the existing startup diagnostics continue in the
-    // background, and a real startup error still brings the cover back.
-    const canDismiss = startup.previewInteractive && !startup.errorText;
+    // The cover protects users from seeing the deliberately provisional
+    // startup profile, partial result cards, and map-layer refinement. Reveal
+    // the map only after the existing final visual gate has settled the full
+    // initial map, trace canvas, facility overlays, and basemap tiles.
+    const canDismiss = (
+      startup.phase === "Ready" &&
+      startup.initialViewReady &&
+      !startup.errorText
+    );
     const now = typeof performance !== "undefined" && typeof performance.now === "function"
       ? performance.now()
       : Date.now();
