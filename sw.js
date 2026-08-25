@@ -301,7 +301,7 @@ const RUNTIME_NORMALIZER_SOURCE = String.raw`
       const prior = Array.isArray(event.reviewed_corrections) ? event.reviewed_corrections.filter(function (item) {
         return item && item.correction_id !== correction.correction_id;
       }) : [];
-      prior.push({ correction_id: correction.correction_id, runtime_release: "location-label-normalization-v1-20260824" });
+      prior.push({ correction_id: correction.correction_id, runtime_release: "location-label-normalization-v1-20260824-corsfix1" });
       event.reviewed_corrections = prior;
     }
     return event;
