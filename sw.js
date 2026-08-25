@@ -1,6 +1,6 @@
 "use strict";
 
-const RELEASE_ID = "location-label-normalization-v1-20260824";
+const RELEASE_ID = "location-label-normalization-v1-20260824-corsfix1";
 const UPSTREAM_ORIGIN = "https://b0f0a0de.ufo-timeline.pages.dev";
 const UPSTREAM_APP_SHA256 = "b634c6264c4c964deda1cf614fd9b0a6271900311ae6a1e3402fb1bf03230f4d";
 
@@ -378,9 +378,14 @@ function patchAppSource(source) {
 async function upstreamResponse(request) {
   const incoming = new URL(request.url);
   const upstream = new URL(incoming.pathname + incoming.search, UPSTREAM_ORIGIN);
+  const headers = new Headers();
+  const range = request.headers.get("range");
+  if (range && /^bytes=\d+-\d*$/.test(range)) headers.set("range", range);
   const init = {
-    method: request.method,
-    headers: request.headers,
+    method: request.method === "HEAD" ? "HEAD" : "GET",
+    headers: headers,
+    mode: "cors",
+    credentials: "omit",
     redirect: "follow",
     cache: incoming.pathname === "/app.js" ? "no-store" : "default",
   };
@@ -420,8 +425,8 @@ async function patchedAppResponse(request) {
 self.addEventListener("fetch", function (event) {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname === "/sw.js") return;
-  if (url.pathname === "/app.js") {
+  if ((request.method !== "GET" && request.method !== "HEAD") || url.origin !== self.location.origin || url.pathname === "/sw.js") return;
+  if (url.pathname === "/app.js" && request.method === "GET") {
     event.respondWith(patchedAppResponse(request));
     return;
   }
