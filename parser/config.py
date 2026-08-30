@@ -174,7 +174,7 @@ def load_config(config_path: str | Path) -> AppConfig:
             tile_url=str(
                 web.get(
                     "tile_url",
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 )
             ),
             tile_attribution=str(

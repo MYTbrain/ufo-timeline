@@ -1400,8 +1400,9 @@ def test_mobile_map_overlays_and_focus_styles_remain_accessible():
     assert ".trace-facility-chip:focus-within" in styles_css
     assert "outline: 3px solid var(--focus-ring)" in styles_css
     assert "overscroll-behavior: contain" in styles_css
-    assert 'rel="dns-prefetch" href="//a.basemaps.cartocdn.com"' in index_html
-    assert 'rel="preconnect" href="https://a.basemaps.cartocdn.com"' in index_html
+    assert 'rel="dns-prefetch" href="//tile.openstreetmap.org"' in index_html
+    assert 'rel="preconnect" href="https://tile.openstreetmap.org"' in index_html
+    assert "basemaps.cartocdn.com" not in index_html
 
 
 def test_mobile_basemap_uses_lighter_single_origin_tiles():
@@ -1411,6 +1412,26 @@ def test_mobile_basemap_uses_lighter_single_origin_tiles():
     assert "window.innerWidth <= 768" in app_js
     assert 'String(provider.url).replace(/\\{r\\}/g, "")' in app_js
     assert 'tileOptions.subdomains = "a"' in app_js
+
+
+def test_default_basemap_uses_the_official_keyless_openstreetmap_endpoint():
+    config_py = Path("parser/config.py").read_text(encoding="utf-8")
+    example_config = Path("config.example.yaml").read_text(encoding="utf-8")
+    deployed_config = Path("data/app_config.json").read_text(encoding="utf-8")
+    deployed_index = Path("index.html").read_text(encoding="utf-8")
+
+    official_url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    for payload in (config_py, example_config, deployed_config):
+        assert official_url in payload
+    assert "basemaps.cartocdn.com" not in example_config
+    assert "basemaps.cartocdn.com" not in deployed_config
+    assert "carto.com/attributions" not in deployed_config
+    assert "https://www.openstreetmap.org/copyright" in deployed_config
+    assert 'rel="preconnect" href="https://tile.openstreetmap.org"' in deployed_index
+    assert "2026-08-29-basemap-provider-repair-v1" in deployed_index
+    assert "Label sizing requires a basemap with a separate label layer" in Path(
+        "app.js"
+    ).read_text(encoding="utf-8")
 
 
 def test_packed_startup_preview_becomes_interactive_before_catalog_hydration():

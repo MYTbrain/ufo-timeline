@@ -17111,7 +17111,7 @@
     els.mapLabelScaleModeSelect.disabled = !supported;
     els.mapLabelScaleModeSelect.title = supported
       ? "Resize the hosted place labels"
-      : "Label sizing is available with the hosted labeled basemap";
+      : "Label sizing requires a basemap with a separate label layer";
   }
 
   function noteHostedTileError() {

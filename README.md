@@ -139,6 +139,8 @@ Example override:
 
 - Edit the `web.tile_url` and `web.tile_attribution` values in your config file.
 - The frontend reads those values from `/api/app-config`, so no JavaScript edits are required for a basic tile-provider swap.
+- The example configuration uses OpenStreetMap's standard raster endpoint and visible attribution. Production use must follow the [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/); do not bulk-download or prefetch tiles.
+- Providers can change access requirements. If hosted tiles become unavailable, keep the built-in no-basemap world view available rather than hiding provider notices or attribution.
 
 ### Geocoders
 
