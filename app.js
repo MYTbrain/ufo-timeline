@@ -19,9 +19,18 @@
   if (!FLAP_PRESET_LABELS) {
     throw new Error("Famous flap preset labels failed to load.");
   }
+  const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
+  const FAMOUS_CASES = window.UfoFamousCasePresets;
+  if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
+    throw new Error("Direction summaries or famous case presets failed to load.");
+  }
   const PLAYBACK_PERFORMANCE = window.UfoPlaybackPerformance;
   if (!PLAYBACK_PERFORMANCE) {
     throw new Error("Playback performance support failed to load.");
+  }
+  const TRACE_INTERSECTION_LAYER = window.UfoTraceIntersectionLayer;
+  if (!TRACE_INTERSECTION_LAYER || typeof TRACE_INTERSECTION_LAYER.createController !== "function") {
+    throw new Error("Trace convergence-cell support failed to load.");
   }
   const LOW_PRECISION_VALUES = new Set([
     "country",
@@ -875,6 +884,7 @@
     catalogManifest: [],
     chunkManifest: [],
     map: null,
+    traceIntersectionController: null,
     clusterLayer: null,
     pointLayer: null,
     pointRenderer: null,
@@ -898,8 +908,10 @@
     cropTraceHiddenPaneStyles: new Map(),
     cropCircleOverlayEnabled: false,
     cropCircleOverlayVisibleCount: null,
+    cropCircleOverlayDateScope: "window",
     animalMutilationOverlayEnabled: false,
     animalMutilationOverlayVisibleCount: null,
+    animalMutilationOverlayDateScope: "window",
     quickContextButtonObservers: [],
     playbackCursorMarker: null,
     playbackActiveMarker: null,
@@ -1298,6 +1310,8 @@
   };
 
   const state = {
+    famousCaseId: "",
+    famousCaseOrder: FAMOUS_CASES.normalizeCaseOrder(safeStorageGet("ufo-famous-case-order-v1")),
     filteredCatalog: [],
     filteredMappedCatalog: [],
     filteredPlaybackEventCount: 0,
@@ -1372,7 +1386,6 @@
     showTrailLegend: false,
     timelineDataVersion: 0,
     busyState: {
-      startup: "",
       timelineSync: "",
       mapRender: "",
       detailLoad: "",
@@ -1641,6 +1654,8 @@
     resultsAreaFilterIndicator: document.querySelector("#results-area-filter-indicator"),
     resultsAreaFilterText: document.querySelector("#results-area-filter-text"),
     resultsAreaFilterClearButton: document.querySelector("#results-area-filter-clear"),
+    resultsCaseContext: document.querySelector("#results-case-context"),
+    resultsFamousCaseSummary: document.querySelector("#results-famous-case-summary"),
     resultList: document.querySelector("#result-list"),
     resultsLimitSelect: document.querySelector("#results-limit"),
     mapTimelineDock: document.querySelector("#map-timeline-dock"),
@@ -1658,6 +1673,8 @@
     areaSelectionShell: document.querySelector("#area-selection-shell"),
     areaSelectionPanel: document.querySelector("#area-selection-panel"),
     areaSelectionSummary: document.querySelector("#area-selection-summary"),
+    areaDirectionSummary: document.querySelector("#area-direction-summary"),
+    areaDirectionSummaryBody: document.querySelector("#area-direction-summary-body"),
     areaSelectionEmptyState: document.querySelector("#area-selection-empty-state"),
     areaSelectionRectangleButton: document.querySelector("#area-selection-tool-rectangle"),
     areaSelectionCircleButton: document.querySelector("#area-selection-tool-circle"),
@@ -1705,6 +1722,11 @@
     analysisWorkspaceToolbar: document.querySelector("#analysis-workspace-toolbar"),
     analysisModeLabel: document.querySelector("#analysis-mode-label"),
     filterFlapPresets: document.querySelector("#filter-flap-presets"),
+    filterFamousCases: document.querySelector("#filter-famous-cases"),
+    famousCaseOrderButtons: Array.from(document.querySelectorAll("[data-famous-case-order]")),
+    famousCaseSearch: document.querySelector("#famous-case-search"),
+    famousCaseSearchStatus: document.querySelector("#famous-case-search-status"),
+    famousCaseDetails: document.querySelector("#famous-case-details"),
     sourceFilter: document.querySelector("#source-filter"),
     sourceFilterPane: document.querySelector("#source-filter-pane"),
     sourceFilterState: document.querySelector("#source-filter-state"),
@@ -1837,6 +1859,8 @@
     mapControlSightingsSlot: document.querySelector("#map-control-sightings-slot"),
     mapControlOverlaysSlot: document.querySelector("#map-control-overlays-slot"),
     mapControlTracesSlot: document.querySelector("#map-control-traces-slot"),
+    mapControlIntersectionsSlot: document.querySelector("#map-control-intersections-slot"),
+    traceIntersectionControls: document.querySelector("#trace-intersection-controls"),
     mapControlFacilitySlot: document.querySelector("#map-control-facility-slot"),
     mapControlAreaSlot: document.querySelector("#map-control-area-slot"),
     mapControlAdvancedSlot: document.querySelector("#map-control-advanced-slot"),
@@ -2609,6 +2633,17 @@
       fillOpacity: isPreview ? Math.min(0.18, REGION_SELECTION_SHAPE_FILL_OPACITY + 0.04) : REGION_SELECTION_SHAPE_FILL_OPACITY,
       dashArray: isPreview ? "7 5" : "9 6",
     };
+    const casePulse = runtime.famousCaseCirclePulse;
+    if (!isPreview && shape.type === "circle" && casePulse && casePulse.shapeId === shape.id) {
+      if (casePulse.highlighted) {
+        style.weight += 2;
+        style.opacity = 1;
+        style.fillOpacity = Math.max(style.fillOpacity, 0.3);
+      } else {
+        style.opacity = 0.25;
+        style.fillOpacity = 0.02;
+      }
+    }
     if (shape.type === "circle") {
       return L.circle([shape.center.lat, shape.center.lng], Object.assign({}, style, {
         radius: shape.radiusMeters,
@@ -2650,6 +2685,37 @@
         runtime.regionSelectionLayer.addLayer(layer);
       }
     });
+  }
+
+  function clearFamousCaseCirclePulse() {
+    const pulse = runtime.famousCaseCirclePulse;
+    if (!pulse) return;
+    window.clearTimeout(pulse.timerId);
+    runtime.famousCaseCirclePulse = null;
+    renderRegionSelectionShapes();
+  }
+
+  function pulseFamousCaseCircle() {
+    clearFamousCaseCirclePulse();
+    const shapeId = runtime.famousCaseShapeId;
+    if (!shapeId) return;
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pulse = { shapeId: shapeId, step: 0, highlighted: true, timerId: null };
+    runtime.famousCaseCirclePulse = pulse;
+    renderRegionSelectionShapes();
+    function advance() {
+      if (runtime.famousCaseCirclePulse !== pulse) return;
+      pulse.step += 1;
+      const stillPresent = state.regionSelection.shapes.some(function (shape) { return shape.id === shapeId; });
+      if (reducedMotion || !stillPresent || pulse.step >= 4) {
+        clearFamousCaseCirclePulse();
+        return;
+      }
+      pulse.highlighted = pulse.step % 2 === 0;
+      renderRegionSelectionShapes();
+      pulse.timerId = window.setTimeout(advance, 450);
+    }
+    pulse.timerId = window.setTimeout(advance, reducedMotion ? 900 : 450);
   }
 
   function syncRegionSelectionModeCompatibilityFlag() {
@@ -2791,7 +2857,7 @@
     }
 
     if (els.resultsAreaFilterIndicator) {
-      els.resultsAreaFilterIndicator.hidden = !hasAreaFilter;
+      els.resultsAreaFilterIndicator.hidden = !hasAreaFilter || famousCaseTraceSelectionActive();
     }
     if (els.resultsAreaFilterText) {
       els.resultsAreaFilterText.textContent = hasAreaFilter
@@ -2805,6 +2871,9 @@
     renderMapControlSectionSummaries();
 
     syncRegionSelectionMapInteraction();
+    renderAreaDirectionSummary(result, hasAreaFilter);
+    if (state.famousCaseId) renderFamousCasePicker();
+    renderFamousCaseResultsSummary(result);
   }
 
   function refreshRegionSelectionRenderState(options) {
@@ -3295,6 +3364,7 @@
       sightings: window.innerWidth >= 1180,
       overlays: true,
       traces: state.traceMode !== "off",
+      intersections: false,
       facility: Boolean(state.traceFacilityFilter && state.traceFacilityFilter.enabled),
       area: Boolean(state.regionSelection && state.regionSelection.drawingActive),
       advanced: false,
@@ -4459,7 +4529,256 @@
     renderTimelinePresetSelect(els.timelineWindowPresets, TIMELINE_WINDOW_PRESET_BUTTONS, "Custom window");
     renderTimelinePresetSelect(els.timelineFlapPresets, TIMELINE_FLAP_PRESET_BUTTONS, "Choose flap");
     renderTimelinePresetSelect(els.filterFlapPresets, TIMELINE_FLAP_PRESET_BUTTONS, "Famous Flaps");
+    renderFamousCasePicker();
     updateTimelinePresetButtonStates();
+  }
+
+  function renderFamousCasePicker() {
+    if (!els.filterFamousCases) return;
+    const query = els.famousCaseSearch ? els.famousCaseSearch.value : "";
+    const order = FAMOUS_CASES.normalizeCaseOrder(state.famousCaseOrder);
+    const matches = FAMOUS_CASES.filterCases(query, order);
+    const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+    const choices = matches.slice();
+    if (activeCase && !choices.some(function (item) { return item.id === activeCase.id; })) {
+      choices.unshift(activeCase);
+    }
+    const orderedChoices = FAMOUS_CASES.sortCases(choices, order);
+    (els.famousCaseOrderButtons || []).forEach(function (button) {
+      button.setAttribute("aria-pressed", button.dataset.famousCaseOrder === order ? "true" : "false");
+    });
+    els.filterFamousCases.innerHTML = '<option value="">' +
+      (activeCase ? "Clear case preset" : "Choose a famous case") + "</option>" +
+      orderedChoices.map(function (item) {
+        return '<option value="' + escapeHtml(item.id) + '" title="' + escapeHtml(item.location) + '">' +
+          escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + "</option>";
+      }).join("") + (choices.length ? "" : '<option disabled>No cases match this search</option>');
+    els.filterFamousCases.value = state.famousCaseId || "";
+    if (els.famousCaseSearchStatus) {
+      els.famousCaseSearchStatus.textContent = query.trim()
+        ? formatNumber(matches.length) + " of " + formatNumber(FAMOUS_CASES.CASES.length) + " cases match"
+        : formatNumber(FAMOUS_CASES.CASES.length) + " cases · search names, places, or years";
+    }
+    if (!els.famousCaseDetails) return;
+    els.famousCaseDetails.hidden = !activeCase;
+    if (!activeCase) {
+      els.famousCaseDetails.innerHTML = "";
+      return;
+    }
+    els.famousCaseDetails.innerHTML = '<div class="famous-case-card-heading"><strong>' +
+      escapeHtml(activeCase.name) + '</strong><button type="button" class="secondary-button famous-case-clear" data-clear-famous-case aria-label="Clear famous case preset">Clear</button></div>';
+  }
+
+  function renderFamousCaseResultsSummary(result) {
+    if (!els.resultsFamousCaseSummary) return;
+    const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+    els.resultsFamousCaseSummary.hidden = !activeCase;
+    if (!activeCase) {
+      els.resultsFamousCaseSummary.innerHTML = "";
+      runtime.famousCaseResultsContextId = "";
+      runtime.famousCaseResultsMarkup = "";
+      runtime.famousCaseResultsDetailsOpen = false;
+      return;
+    }
+    if (runtime.famousCaseResultsContextId !== activeCase.id) {
+      runtime.famousCaseResultsContextId = activeCase.id;
+      runtime.famousCaseResultsMarkup = "";
+      runtime.famousCaseResultsDetailsOpen = false;
+    }
+    const selection = FAMOUS_CASES.buildSelectionWindow(activeCase);
+    const hasVicinity = (state.regionSelection.shapes || []).some(function (shape) {
+      return shape.id === runtime.famousCaseShapeId;
+    });
+    const caseTraceResult = hasVicinity ? (result || currentRegionSelectionResult()) : null;
+    const connectionCount = caseTraceResult ? caseTraceResult.visibleTraceCount : 0;
+    const status = connectionCount
+      ? formatNumber(connectionCount) + " same-day connection" + (connectionCount === 1 ? "" : "s")
+      : famousCaseTraceStatusText(caseTraceResult, hasVicinity);
+    const currentDates = ordinalToIso(state.timeRangeStartOrdinal) + " to " + ordinalToIso(state.timeRangeEndOrdinal);
+    const markup = '<h3 class="results-famous-case-title">' + escapeHtml(activeCase.name) + '</h3>' +
+      '<p class="results-famous-case-meta">Reported ' + escapeHtml(FAMOUS_CASES.formatCaseDate(activeCase)) +
+      ' · ' + escapeHtml(activeCase.location) + '</p>' +
+      '<p class="results-famous-case-meta">Viewing ' + escapeHtml(currentDates) + '</p>' +
+      '<div class="results-famous-case-connections"><p role="status">' + escapeHtml(status) + '</p>' +
+      '<button type="button" class="secondary-button" data-fit-famous-case-traces' +
+      (connectionCount ? '' : ' disabled') + '>Fit connections</button></div>' +
+      '<details data-case-results-details><summary>Case details &amp; sources</summary><div class="results-famous-case-details-body">' +
+      '<p>' + escapeHtml(activeCase.description) + '</p>' +
+      (activeCase.dateNote && activeCase.dateNote !== "Reported event date; the preset does not establish a case match."
+        ? '<p>' + escapeHtml(activeCase.dateNote) + '</p>' : '') +
+      '<p>' + (hasVicinity
+        ? 'Within ' + formatNumber(selection.radiusKm) + ' km of an approximate case location.'
+        : 'Case vicinity has been cleared or edited.') +
+      ' Candidate reports, not verified case matches. Other filters apply.</p>' +
+      '<p>Default viewing dates include one day before and after the reported dates. Date changes keep the case selected until Clear.</p>' +
+      '<p>Connections join neighboring reports of the same craft category on the same calendar date. Dashed, double-headed arrows mean report order is unknown. These links are excluded from directional percentages and do not establish a flight path.</p>' +
+      '<div class="famous-case-sources">' + activeCase.sources.map(function (source) {
+        return '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' +
+          escapeHtml(source.title) + '</a>';
+      }).join("") + '</div></div></details>';
+    // Native disclosure state does not change the content cache. Ordinary
+    // refreshes leave focused controls intact; changed content retains the state.
+    if (runtime.famousCaseResultsMarkup !== markup) {
+      els.resultsFamousCaseSummary.innerHTML = runtime.famousCaseResultsDetailsOpen
+        ? markup.replace('<details data-case-results-details>', '<details data-case-results-details open>')
+        : markup;
+      runtime.famousCaseResultsMarkup = markup;
+    }
+  }
+
+  function bindFamousCaseActions(container) {
+    if (!container) return;
+    container.addEventListener("click", function (event) {
+      if (event.target.closest("[data-clear-famous-case]")) clearFamousCasePreset();
+      if (event.target.closest("[data-fit-famous-case-traces]")) fitFamousCaseTraces();
+    });
+    container.addEventListener("toggle", function (event) {
+      if (event.target.hasAttribute("data-case-results-details")) {
+        runtime.famousCaseResultsDetailsOpen = Boolean(event.target.open);
+      }
+    }, true);
+  }
+
+  function famousCaseTraceSelectionActive() {
+    return Boolean(state.famousCaseId && !state.regionSelection.pointOnly &&
+      (state.regionSelection.shapes || []).some(function (shape) {
+        return shape.id === runtime.famousCaseShapeId;
+      }));
+  }
+
+  function famousCaseTraceStatusText(result, hasVicinity) {
+    if (!hasVicinity) return "Case vicinity cleared or edited; case connection focus is inactive.";
+    if (normalizeTraceMode(state.traceMode) === "off") return "Case traces are off. Choose Static in Traces to show connections.";
+    if (!traceBucketActive("gap_le_1")) return "Same-day traces are disabled. Enable the ≤1-day bucket in Traces.";
+    if (!state.regionSelection.showTracesAssociatedWithSelectedEvents) return "Enable Traces from sightings in Area Selection to show case connections.";
+    const reportCount = result ? result.selectedEventCount : 0;
+    const connectionCount = result ? result.visibleTraceCount : 0;
+    if (!reportCount) return "No mapped reports match the case vicinity, dates, and current filters.";
+    const countText = formatNumber(reportCount) + " report" + (reportCount === 1 ? "" : "s") + " in the case vicinity";
+    if (connectionCount) return formatNumber(connectionCount) + " same-day, same-type connection" +
+      (connectionCount === 1 ? "" : "s") + " · " + countText + ". Endpoints may extend beyond the vicinity.";
+    const selectedTypes = els.typeFilter && els.typeFilter.selectedOptions
+      ? Array.from(els.typeFilter.selectedOptions).map(function (option) { return option.value; }) : [];
+    const typeHint = selectedTypes.length && (!selectedTypes.includes("Sighting") || !selectedTypes.includes("Unknown"))
+      ? " Type → All can include reports labeled Sighting or Unknown that have an inferred craft category." : "";
+    return countText + "; no same-day, same-type connections are available under the current filters." +
+      (traceFacilityFilterEnabled() ? " Facility proximity also filters connections." : "") + typeHint;
+  }
+
+  function fitFamousCaseTraces() {
+    if (!runtime.map || !famousCaseTraceSelectionActive()) return;
+    const result = currentRegionSelectionResult();
+    const segments = result.visibleTraceSegments || [];
+    if (!segments.length) return;
+    const bounds = L.latLngBounds([]);
+    const center = runtime.map.getCenter().lng;
+    segments.forEach(function (segment) {
+      const midpoint = (segment.from[1] + segment.to[1]) / 2;
+      const offset = 360 * Math.round((center - midpoint) / 360);
+      bounds.extend([segment.from[0], segment.from[1] + offset]);
+      bounds.extend([segment.to[0], segment.to[1] + offset]);
+    });
+    if (bounds.isValid()) runtime.map.fitBounds(bounds.pad(0.15), { maxZoom: 7, animate: false });
+  }
+
+  function clearFamousCasePreset(options) {
+    if (!state.famousCaseId) return;
+    clearFamousCaseCirclePulse();
+    const config = options || {};
+    const previous = runtime.famousCasePreviousSelection;
+    state.famousCaseId = "";
+    runtime.famousCasePreviousSelection = null;
+    const stillOwnsArea = (state.regionSelection.shapes || []).length === 1 &&
+      state.regionSelection.shapes[0].id === runtime.famousCaseShapeId;
+    runtime.famousCaseShapeId = null;
+    if (previous && stillOwnsArea) {
+      state.regionSelection = previous.regionSelection;
+      state.analysisCountryAreaFilter = previous.countryArea;
+      invalidateRegionSelectionResult();
+      renderRegionSelectionShapes();
+      renderRegionSelectionUi();
+    }
+    if (previous && runtime.famousCaseGapBucketOwned) {
+      state.traceBucketVisibility.gap_le_1 = previous.sameDayBucketVisible;
+      invalidateTraceSequenceCache();
+      invalidateRegionSelectionResult();
+    }
+    if (previous && runtime.famousCaseTraceModeOwned) {
+      setTraceMode(previous.traceMode, { famousCasePreset: true });
+    } else {
+      renderTraceControls();
+    }
+    runtime.famousCaseTraceModeOwned = false;
+    runtime.famousCaseGapBucketOwned = false;
+    if (previous && config.restoreDate !== false) {
+      setTimeRange(previous.startOrdinal, previous.endOrdinal, {
+        mode: previous.mode, autofitVisible: false,
+      });
+    }
+    renderFamousCasePicker();
+    if (!config.deferRefresh) scheduleRefresh({ immediate: true });
+  }
+
+  function applyFamousCasePreset(caseId) {
+    const item = FAMOUS_CASES.getCase(caseId);
+    if (!item) {
+      clearFamousCasePreset();
+      return;
+    }
+    const extent = selectionClampExtent();
+    if (!extent) {
+      if (els.famousCaseSearchStatus) els.famousCaseSearchStatus.textContent = "The catalog is loading. Select this case again when it is ready.";
+      return;
+    }
+    const selection = FAMOUS_CASES.buildSelectionWindow(item);
+    if (isoToOrdinal(item.startIso) < extent.minOrdinal || isoToOrdinal(item.endIso) > extent.maxOrdinal) {
+      renderFamousCasePicker();
+      if (els.famousCaseSearchStatus) els.famousCaseSearchStatus.textContent = "This case's dates are outside the available catalog. Your current selection is unchanged.";
+      return;
+    }
+    if (!state.famousCaseId) {
+      runtime.famousCasePreviousSelection = {
+        regionSelection: Object.assign({}, state.regionSelection, {
+          shapes: state.regionSelection.shapes.slice(), drawingActive: false, modeActive: false,
+        }),
+        countryArea: state.analysisCountryAreaFilter,
+        startOrdinal: state.timeRangeStartOrdinal,
+        endOrdinal: state.timeRangeEndOrdinal,
+        mode: state.timeRangeMode,
+        traceMode: normalizeTraceMode(state.traceMode),
+        sameDayBucketVisible: traceBucketActive("gap_le_1"),
+      };
+    }
+    setRegionSelectionDrawingActive(false, { skipRender: true });
+    clearPendingDateInputEdits();
+    setDateRangeFeedback("");
+    resetPlayback({ preserveSelection: true });
+    clearCraftLegendSoloState();
+    state.famousCaseId = item.id;
+    setTimeRange(isoToOrdinal(selection.startIso), isoToOrdinal(selection.endIso), {
+      mode: "custom", autofitVisible: false, clampAnchor: "start",
+    });
+    applyAnalysisAreaFilter({
+      center: { lat: selection.center[0], lng: selection.center[1] },
+      radiusMeters: selection.radiusKm * 1000,
+    });
+    runtime.famousCaseShapeId = state.regionSelection.shapes[0].id;
+    Object.assign(state.regionSelection, {
+      pointOnly: false, selectEvents: true, selectTraces: false,
+      showSelectedEvents: true, showSelectedTraces: false,
+      showEventsAssociatedWithSelectedTraces: false,
+      showTracesAssociatedWithSelectedEvents: true,
+      depth: 0,
+    });
+    state.traceBucketVisibility.gap_le_1 = true;
+    runtime.famousCaseGapBucketOwned = true;
+    runtime.famousCaseTraceModeOwned = true;
+    invalidateTraceSequenceCache();
+    setTraceMode("static", { famousCasePreset: true });
+    if (runtime.map) runtime.map.panTo(selection.center, { animate: false });
+    pulseFamousCaseCircle();
+    renderFamousCasePicker();
+    scheduleRefresh({ immediate: true });
   }
 
   function flapStatusLabelForPreset(presetId) {
@@ -5778,6 +6097,12 @@
       "traces",
       traceState === "none" ? "Off" : traceState === "playback" ? "Playback" : "Static"
     );
+    setMapControlSummaryState(
+      "intersections",
+      runtime.traceIntersectionController
+        ? runtime.traceIntersectionController.getSummaryText()
+        : "Off"
+    );
     const facility = traceFacilityFilterState();
     setMapControlSummaryState(
       "facility",
@@ -5822,11 +6147,15 @@
     return "Fade";
   }
 
-  function setTraceMode(mode) {
+  function setTraceMode(mode, options) {
+    if (!options || !options.famousCasePreset) runtime.famousCaseTraceModeOwned = false;
     const previousMode = normalizeTraceMode(state.traceMode);
     const nextMode = normalizeTraceMode(mode);
     const visibilityModeChanged = previousMode === "static" || nextMode === "static";
     state.traceMode = nextMode;
+    if (runtime.traceIntersectionController) {
+      runtime.traceIntersectionController.notifyTraceModeChanged(nextMode);
+    }
     if (previousMode === "playback" && nextMode !== "playback") {
       clearPlaybackTrailHistory();
     }
@@ -5860,6 +6189,155 @@
       : (active ? "Hide " + label + " overlay" : "Show " + label + " overlay");
     button.setAttribute("aria-label", actionLabel);
     button.title = actionLabel;
+  }
+
+  function normalizeCropCircleDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : "window";
+  }
+
+  function cropCircleDateScope() {
+    const bootstrap = window.UfoCropCircleBootstrap;
+    if (bootstrap && typeof bootstrap.getDesiredDateScope === "function") {
+      return normalizeCropCircleDateScope(bootstrap.getDesiredDateScope());
+    }
+    const layer = window.UfoCropCircleLayer;
+    if (layer && typeof layer.getStatus === "function") {
+      const status = layer.getStatus();
+      if (status && status.dateScope) return normalizeCropCircleDateScope(status.dateScope);
+    }
+    return normalizeCropCircleDateScope(runtime.cropCircleOverlayDateScope);
+  }
+
+  function currentQuickCropCircleState() {
+    if (!cropCircleOverlayActive()) {
+      return {
+        key: "off",
+        currentLabel: "Off",
+        nextLabel: "Time window",
+      };
+    }
+    if (cropCircleDateScope() === "all") {
+      return {
+        key: "all",
+        currentLabel: "All time",
+        nextLabel: "Off",
+      };
+    }
+    return {
+      key: "window",
+      currentLabel: "Time window",
+      nextLabel: "All time",
+    };
+  }
+
+  function setCropCircleDateScope(value) {
+    const nextScope = normalizeCropCircleDateScope(value);
+    runtime.cropCircleOverlayDateScope = nextScope;
+    const bootstrap = window.UfoCropCircleBootstrap;
+    if (bootstrap && typeof bootstrap.setDateScope === "function") {
+      bootstrap.setDateScope(nextScope);
+    } else if (window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.setDateScope === "function") {
+      window.UfoCropCircleLayer.setDateScope(nextScope);
+    }
+    renderMapControlQuickButtons();
+    return nextScope;
+  }
+
+  function cycleQuickCropCircleState() {
+    const current = currentQuickCropCircleState();
+    if (current.key === "window") {
+      setCropCircleDateScope("all");
+      announceMapQuickControl("Crop circles now show all time. The selected UFO time window is unchanged.");
+      return Promise.resolve("all");
+    }
+    if (current.key === "all") {
+      return setContextLayerEnabled("crops", false, "crop-quick").then(function () {
+        renderMapControlQuickButtons();
+        announceMapQuickControl("Crop circles hidden.");
+        return "off";
+      });
+    }
+    setCropCircleDateScope("window");
+    return setContextLayerEnabled("crops", true, "crop-quick").then(function () {
+      renderMapControlQuickButtons();
+      announceMapQuickControl("Crop circles now follow the selected time window.");
+      return "window";
+    });
+  }
+
+  function normalizeAnimalMutilationDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : "window";
+  }
+
+  function animalMutilationDateScope() {
+    const bootstrap = window.UfoAnimalMutilationBootstrap;
+    if (bootstrap && typeof bootstrap.getDesiredDateScope === "function") {
+      return normalizeAnimalMutilationDateScope(bootstrap.getDesiredDateScope());
+    }
+    const layer = window.UfoAnimalMutilationLayer;
+    if (layer && typeof layer.getStatus === "function") {
+      const status = layer.getStatus();
+      if (status && status.dateScope) return normalizeAnimalMutilationDateScope(status.dateScope);
+    }
+    return normalizeAnimalMutilationDateScope(runtime.animalMutilationOverlayDateScope);
+  }
+
+  function currentQuickAnimalMutilationState() {
+    if (!animalMutilationOverlayActive()) {
+      return {
+        key: "off",
+        currentLabel: "Off",
+        nextLabel: "Time window",
+      };
+    }
+    if (animalMutilationDateScope() === "all") {
+      return {
+        key: "all",
+        currentLabel: "All time",
+        nextLabel: "Off",
+      };
+    }
+    return {
+      key: "window",
+      currentLabel: "Time window",
+      nextLabel: "All time",
+    };
+  }
+
+  function setAnimalMutilationDateScope(value) {
+    const nextScope = normalizeAnimalMutilationDateScope(value);
+    runtime.animalMutilationOverlayDateScope = nextScope;
+    const bootstrap = window.UfoAnimalMutilationBootstrap;
+    if (bootstrap && typeof bootstrap.setDateScope === "function") {
+      bootstrap.setDateScope(nextScope);
+    } else if (window.UfoAnimalMutilationLayer && typeof window.UfoAnimalMutilationLayer.setDateScope === "function") {
+      window.UfoAnimalMutilationLayer.setDateScope(nextScope);
+    }
+    renderMapControlQuickButtons();
+    renderMapLegend();
+    return nextScope;
+  }
+
+  function cycleQuickAnimalMutilationState() {
+    const current = currentQuickAnimalMutilationState();
+    if (current.key === "window") {
+      setAnimalMutilationDateScope("all");
+      announceMapQuickControl("Animal Mutilation Reports now show all time. The selected UFO time window is unchanged.");
+      return Promise.resolve("all");
+    }
+    if (current.key === "all") {
+      return setContextLayerEnabled("animals", false, "animal-quick").then(function () {
+        renderMapControlQuickButtons();
+        announceMapQuickControl("Animal Mutilation Reports hidden.");
+        return "off";
+      });
+    }
+    setAnimalMutilationDateScope("window");
+    return setContextLayerEnabled("animals", true, "animal-quick").then(function () {
+      renderMapControlQuickButtons();
+      announceMapQuickControl("Animal Mutilation Reports now follow the selected time window.");
+      return "window";
+    });
   }
 
   function observeQuickContextCanonicalButton(canonicalButton) {
@@ -5957,23 +6435,46 @@
     }
 
     if (els.clusterQuickCropCirclesButton) {
-      const cropActive = cropCircleOverlayActive();
-      setQuickContextButtonState(
-        els.clusterQuickCropCirclesButton,
-        els.overlayCropCirclesToggle,
-        cropActive,
-        "Crop circles"
+      const cropState = currentQuickCropCircleState();
+      const busy = Boolean(els.overlayCropCirclesToggle && (
+        els.overlayCropCirclesToggle.disabled || els.overlayCropCirclesToggle.getAttribute("aria-busy") === "true"
+      ));
+      els.clusterQuickCropCirclesButton.dataset.state = cropState.key;
+      setQuickButtonPressedState(els.clusterQuickCropCirclesButton, cropState.key !== "off");
+      els.clusterQuickCropCirclesButton.disabled = busy;
+      if (busy) els.clusterQuickCropCirclesButton.setAttribute("aria-busy", "true");
+      else els.clusterQuickCropCirclesButton.removeAttribute("aria-busy");
+      els.clusterQuickCropCirclesButton.setAttribute(
+        "aria-label",
+        busy
+          ? "Crop circles are loading."
+          : "Crop circles quick cycle. Current: " + cropState.currentLabel + ". Next: " + cropState.nextLabel + "."
       );
+      els.clusterQuickCropCirclesButton.title = busy
+        ? "Crop circles are loading."
+        : "Crop circles: " + cropState.currentLabel + ". Click for " + cropState.nextLabel + ".";
     }
 
     if (els.clusterQuickAnimalMutilationsButton) {
-      const animalActive = animalMutilationOverlayActive();
-      setQuickContextButtonState(
-        els.clusterQuickAnimalMutilationsButton,
-        els.overlayAnimalMutilationsToggle,
-        animalActive,
-        "Animal Mutilation Reports"
+      const animalState = currentQuickAnimalMutilationState();
+      const busy = Boolean(els.overlayAnimalMutilationsToggle && (
+        els.overlayAnimalMutilationsToggle.disabled ||
+        els.overlayAnimalMutilationsToggle.getAttribute("aria-busy") === "true"
+      ));
+      els.clusterQuickAnimalMutilationsButton.dataset.state = animalState.key;
+      setQuickButtonPressedState(els.clusterQuickAnimalMutilationsButton, animalState.key !== "off");
+      els.clusterQuickAnimalMutilationsButton.disabled = busy;
+      if (busy) els.clusterQuickAnimalMutilationsButton.setAttribute("aria-busy", "true");
+      else els.clusterQuickAnimalMutilationsButton.removeAttribute("aria-busy");
+      els.clusterQuickAnimalMutilationsButton.setAttribute(
+        "aria-label",
+        busy
+          ? "Animal Mutilation Reports are loading."
+          : "Animal Mutilation Reports quick cycle. Current: " + animalState.currentLabel + ". Next: " + animalState.nextLabel + "."
       );
+      els.clusterQuickAnimalMutilationsButton.title = busy
+        ? "Animal Mutilation Reports are loading."
+        : "Animal Mutilation Reports: " + animalState.currentLabel + ". Click for " + animalState.nextLabel + ".";
     }
 
     if (els.analysisCropCirclesButton) {
@@ -6122,6 +6623,9 @@
     const activeBucketText = activeLabels.length ? activeLabels.join(", ") : "none";
     if (state.traceMode === "off") {
       return "Trace overlay off. Active buckets: " + activeBucketText + ".";
+    }
+    if (famousCaseTraceSelectionActive()) {
+      return famousCaseTraceStatusText(currentRegionSelectionResult(), true);
     }
     if (state.traceMode === "static") {
       const metrics = runtime.staticTraceRenderMetrics || null;
@@ -6355,6 +6859,7 @@
     return (
       path.indexOf("/data/canonical_web/") !== -1 ||
       path.indexOf("/data/analysis_v2/") !== -1 ||
+      path.indexOf("/data/trace_intersection_feasibility_v1/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
       path.endsWith("/data/app_config.json") ||
       path.endsWith("/data/points.bin") ||
@@ -6367,7 +6872,8 @@
   function resolveAssetPath(relativePath) {
     const url = new URL(relativePath, document.baseURI);
     const shellPinnedAsset = url.pathname.endsWith("/data/app_config.json") ||
-      url.pathname.indexOf("/data/analysis_v2/") !== -1;
+      url.pathname.indexOf("/data/analysis_v2/") !== -1 ||
+      url.pathname.indexOf("/data/trace_intersection_feasibility_v1/") !== -1;
     const versionToken = shellPinnedAsset
       ? (APP_SHELL_RELEASE_TOKEN || staticAssetVersionToken())
       : staticAssetVersionToken();
@@ -6995,39 +7501,16 @@
       els.startupError.textContent = "";
     }
     renderMapStartupOverlay(percent);
-    renderStartupBackgroundStatus();
     updateStartupProbeTitle(runtime.startupTiming.summary);
-  }
-
-  function renderStartupBackgroundStatus() {
-    if (!Object.prototype.hasOwnProperty.call(state.busyState, "startup")) return;
-    let message = "";
-    if (startup.previewInteractive && startup.phase !== "Ready" && !startup.errorText) {
-      const loadedShards = Math.max(0, Number(startup.loadedCatalogShards) || 0);
-      const totalShards = Math.max(0, Number(startup.totalCatalogShards) || 0);
-      const loadedEvents = Math.max(0, Number(startup.catalogEventsLoaded) || 0);
-      const progress = totalShards
-        ? " (" + formatNumber(loadedShards) + " / " + formatNumber(totalShards) + " catalog shards; " +
-          formatNumber(loadedEvents) + " events loaded)"
-        : "";
-      message = "Preview ready. The complete catalog is still loading in the background" + progress + ".";
-    }
-    if (state.busyState.startup === message) return;
-    state.busyState.startup = message;
-    renderBusyStatus();
   }
 
   function renderMapStartupOverlay(percent) {
     if (!els.mapStartupOverlay) return;
-    // The cover protects users from seeing the deliberately provisional
-    // startup profile, partial result cards, and map-layer refinement. Reveal
-    // the map only after the existing final visual gate has settled the full
-    // initial map, trace canvas, facility overlays, and basemap tiles.
-    const canDismiss = (
-      startup.phase === "Ready" &&
-      startup.initialViewReady &&
-      !startup.errorText
-    );
+    const ready = startup.phase === "Ready" && startup.initialViewReady && !startup.errorText;
+    // A provisional preview is useful for startup work, but it is intentionally
+    // kept behind the cover. Dismiss only after the complete initial visual
+    // state (catalog, map, traces, facilities, and tiles) reaches Ready.
+    const canDismiss = ready;
     const now = typeof performance !== "undefined" && typeof performance.now === "function"
       ? performance.now()
       : Date.now();
@@ -13050,7 +13533,8 @@
       '<button class="craft-legend-label-button" type="button" data-craft-legend-solo-key="' +
       escapeHtml(entry.key) + '" aria-pressed="' + (soloActive ? "true" : "false") +
       '" aria-label="' + escapeHtml(soloTitle) + '" title="' + escapeHtml(soloTitle) + '">' +
-      escapeHtml(entry.label) +
+      LEGEND_CONTROLS.craftSymbolMarkup(entry.key) +
+      '<span class="craft-legend-label-text">' + escapeHtml(entry.label) + "</span>" +
       "</button>" +
       '<strong class="craft-legend-count" aria-label="' + escapeHtml(countLabel) + '">' +
       escapeHtml(formattedCount) +
@@ -13167,6 +13651,7 @@
   function buildMapLegendMarkerRow(label, color, shape, options) {
     const config = options || {};
     const active = config.active !== false;
+    const stateLabel = String(config.stateLabel || "").trim();
     const hasCount = Number.isFinite(Number(config.count));
     const count = hasCount ? Math.max(0, Number(config.count)) : 0;
     const singularNoun = String(config.countNounSingular || "event");
@@ -13188,10 +13673,15 @@
       '" style="--overlay-marker-color:' +
       escapeHtml(color) +
       '" aria-hidden="true"></span>';
+    const stateHtml = stateLabel
+      ? '<span class="map-legend-item-state" data-state="' +
+        escapeHtml(String(config.stateKey || "")) +
+        '">' + escapeHtml(stateLabel) + "</span>"
+      : "";
     return (
       '<div class="map-legend-item' + (active ? "" : " is-disabled") + '">' +
       buildMapLegendToggleButton(sampleHtml, Object.assign({}, config, { label })) +
-      '<span class="map-legend-item-label">' + escapeHtml(label) + "</span>" +
+      '<span class="map-legend-item-label">' + escapeHtml(label) + stateHtml + "</span>" +
       countHtml +
       "</div>"
     );
@@ -13586,6 +14076,7 @@
     const rows = [];
     const overlayCounts = currentOverlayCountModel();
     const cropCirclesActive = cropCircleOverlayActive();
+    const cropCircleState = currentQuickCropCircleState();
     rows.push(buildMapLegendMarkerRow(
       "Crop circles",
       "#d8ff3e",
@@ -13601,10 +14092,16 @@
           count: overlayCounts.cropCircles,
           countNounSingular: "crop record",
           countNounPlural: "crop records",
+          stateKey: cropCircleState.key,
+          stateLabel: cropCircleState.currentLabel,
+          title: cropCirclesActive
+            ? "Hide Crop circles overlay. Current: " + cropCircleState.currentLabel + "."
+            : "Show Crop circles overlay. Current: Off.",
         }
       )
     ));
     const animalMutilationsActive = animalMutilationOverlayActive();
+    const animalMutilationState = currentQuickAnimalMutilationState();
     rows.push(buildMapLegendMarkerRow(
       "Animal Mutilation Reports",
       "#101417",
@@ -13620,6 +14117,11 @@
           count: overlayCounts.animalMutilations,
           countNounSingular: "mapped report",
           countNounPlural: "mapped reports",
+          stateKey: animalMutilationState.key,
+          stateLabel: animalMutilationState.currentLabel,
+          title: animalMutilationsActive
+            ? "Hide Animal Mutilation Reports overlay. Current: " + animalMutilationState.currentLabel + "."
+            : "Show Animal Mutilation Reports overlay. Current: Off.",
         }
       )
     ));
@@ -13705,10 +14207,15 @@
     if (craftTraceColoringActive()) {
       return [
         buildMapLegendLineRow(
-          "Earlier endpoint craft \u2192 later endpoint craft",
-          "height:4px;border-top:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0 50%,#fb7185 50% 100%);opacity:0.92;"
+          famousCaseTraceSelectionActive() ? "Same-date, same-craft report connections" : "Earlier endpoint craft \u2192 later endpoint craft",
+          famousCaseTraceSelectionActive()
+            ? "height:4px;border-top:0;border-radius:999px;background:#38bdf8;opacity:0.92;"
+            : "height:4px;border-top:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0 50%,#fb7185 50% 100%);opacity:0.92;"
         ),
-        buildMapLegendNoteRow("Matching craft types use one continuous color. Unknown endpoints use gray."),
+        buildMapLegendNoteRow(famousCaseTraceSelectionActive()
+          ? "Each connection uses one craft category color. Dashed, double-headed arrows indicate unknown report order."
+          : "Matching craft types use one continuous color. Unknown endpoints use gray."),
+        buildMapLegendNoteRow("Single-headed arrows follow report chronology. Unknown-order links are excluded from directional percentages; arrows do not establish craft travel."),
         buildMapLegendNoteRow(
           traceFacilityFilterEnabled()
             ? "Facility evidence uses outlines and dashes; craft hue takes precedence."
@@ -13779,7 +14286,9 @@
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
       !cropCircleOverlayActive() ||
+      cropCircleDateScope() !== "window" ||
       !animalMutilationOverlayActive() ||
+      animalMutilationDateScope() !== "window" ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -14083,10 +14592,15 @@
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
+    setCropCircleDateScope("window");
     if (cropCircleOverlayActive() && window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.resetControls === "function") {
       window.UfoCropCircleLayer.resetControls();
     } else if (!cropCircleOverlayActive() && els.overlayCropCirclesToggle) {
       els.overlayCropCirclesToggle.click();
+    }
+    setAnimalMutilationDateScope("window");
+    if (animalMutilationOverlayActive() && window.UfoAnimalMutilationLayer && typeof window.UfoAnimalMutilationLayer.resetControls === "function") {
+      window.UfoAnimalMutilationLayer.resetControls();
     }
     if (!animalMutilationOverlayActive() && els.overlayAnimalMutilationsToggle) {
       els.overlayAnimalMutilationsToggle.click();
@@ -17731,6 +18245,7 @@
       normalizeTraceMode(state.traceMode),
       activeTraceBuckets().map(function (bucket) { return bucket.key; }).join(","),
       traceFacilityFilterSignature(),
+      famousCaseTraceSelectionActive() ? state.famousCaseId + ":same-day-craft" : "chronology",
       state.filterGeneration,
     ].join("|");
   }
@@ -19270,7 +19785,32 @@
     if (mode !== "static" && mode !== "playback") {
       return [];
     }
-    return buildCanonicalTraceSegments();
+    return famousCaseTraceSelectionActive() ? buildFamousCaseTraceSegments() : buildCanonicalTraceSegments();
+  }
+
+  function buildFamousCaseTraceSegments() {
+    const bucket = traceBucketForKey("gap_le_1");
+    if (!bucket || !traceBucketActive(bucket.key)) return [];
+    const cacheKey = "famous-case-same-day-craft|" + state.famousCaseId + "|" + canonicalTraceSegmentsCacheKey();
+    if (runtime.traceSequenceCacheKey === cacheKey && runtime.traceSequenceCacheValue) return runtime.traceSequenceCacheValue;
+    const facilityContext = createTraceFacilityClassificationContext();
+    const rawSegments = TRACE_NEIGHBORHOOD.buildSameDayCraftTraceSegments(
+      state.filteredMappedCatalog.filter(eventMatchesTimeRange)
+    );
+    const segments = rawSegments.map(function (segment) {
+      const wrapped = shortestWrappedSegment({ lat: segment.from[0], lon: segment.from[1] },
+        { lat: segment.to[0], lon: segment.to[1] });
+      return applyTraceFacilityFilterToSegmentWithContext(Object.assign({}, segment, {
+        from: wrapped.from, to: wrapped.to, bucket: bucket,
+      }), facilityContext);
+    }).filter(Boolean);
+    segments.forEach(function (segment, index) {
+      segment.sequenceIndex = index;
+      segment.sequenceRatio = segments.length <= 1 ? 1 : index / (segments.length - 1);
+    });
+    runtime.traceSequenceCacheKey = cacheKey;
+    runtime.traceSequenceCacheValue = segments;
+    return segments;
   }
 
   function worldIndicesNearReferenceLongitude(referenceLongitude) {
@@ -20462,23 +21002,47 @@
     metrics.visibleEventCount = visibleEventIds.size;
     updateRegionSelectionMetrics(metrics);
 
+    const visibleTraceSegments = visibleTraceIds.size
+      ? neighborhood.segments.filter(function (segment) {
+          return visibleTraceIds.has(segment.traceId);
+        })
+      : [];
+    const caseResultsCatalog = famousCaseTraceSelectionActive() ? [] : null;
+    const caseResultEndpointIds = new Set();
+    const caseResultAreaEventIds = new Set();
+    const caseResultLinkedEventIds = new Set();
+    const caseResultSeenIds = new Set();
+    if (caseResultsCatalog) {
+      visibleTraceSegments.forEach(function (segment) {
+        [segment.fromEventId, segment.toEventId].forEach(function (eventId) {
+          if (eventId != null) caseResultEndpointIds.add(String(eventId));
+        });
+      });
+    }
     const visibleCatalog = [];
     const visibleMappedCatalog = [];
-    if (visibleEventIds.size) {
+    if (visibleEventIds.size || caseResultEndpointIds.size) {
       for (const event of state.filteredCatalog) {
-        if (!visibleEventIds.has(String(event.event_id))) continue;
+        const eventId = String(event.event_id);
+        // Results can inspect both ends of a displayed case connection without
+        // expanding the area cohort used by the map, playback, and statistics.
+        if (caseResultsCatalog && !caseResultSeenIds.has(eventId) &&
+          (visibleEventIds.has(eventId) || caseResultEndpointIds.has(eventId))) {
+          caseResultSeenIds.add(eventId);
+          caseResultsCatalog.push(event);
+          if (event.has_coordinates && pointInsideAnyRegionShape(event.lat, event.lon, shapes)) {
+            caseResultAreaEventIds.add(eventId);
+          } else {
+            caseResultLinkedEventIds.add(eventId);
+          }
+        }
+        if (!visibleEventIds.has(eventId)) continue;
         visibleCatalog.push(event);
         if (event.has_coordinates) {
           visibleMappedCatalog.push(event);
         }
       }
     }
-    const visibleTraceSegments = visibleTraceIds.size
-      ? neighborhood.segments.filter(function (segment) {
-          return visibleTraceIds.has(segment.traceId);
-        })
-      : [];
-
     return {
       active: true,
       shapeCount: shapes.length,
@@ -20488,6 +21052,9 @@
       visibleTraceIds: visibleTraceIds,
       visibleCatalog: visibleCatalog,
       visibleMappedCatalog: visibleMappedCatalog,
+      caseResultsCatalog: caseResultsCatalog,
+      caseResultAreaEventIds: caseResultAreaEventIds,
+      caseResultLinkedEventIds: caseResultLinkedEventIds,
       traceSegments: pointOnly ? [] : index.segments,
       visibleTraceSegments: visibleTraceSegments,
       neighborhoodSegments: neighborhood.segments,
@@ -20557,6 +21124,8 @@
   }
 
   function traceLinkedVisibilityAffectsRendering() {
+    // A case's local reports remain visible even without a matching connection.
+    if (famousCaseTraceSelectionActive()) return false;
     if (areaFilterHasActiveSelection() && state.regionSelection.pointOnly) return false;
     if (!traceModeIncludesStatic()) return false;
     // Facility proximity classifies traces and facility markers only. Sighting
@@ -21428,6 +21997,41 @@
     return currentVisibleDisplayCatalog(visibleCatalog);
   }
 
+  function currentResultsPaneCatalog() {
+    if (famousCaseTraceSelectionActive() && regionSelectionAffectsRendering()) {
+      const result = currentRegionSelectionResult();
+      // Keep every distinct report id at a trace endpoint inspectable, even
+      // when two source records have the same display fingerprint.
+      if (Array.isArray(result.caseResultsCatalog)) return result.caseResultsCatalog;
+    }
+    return currentVisibleResultsCatalog();
+  }
+
+  function famousCaseResultMembership(eventId, result) {
+    if (!famousCaseTraceSelectionActive()) return "";
+    const context = result || currentRegionSelectionResult();
+    const key = String(eventId);
+    if (context.caseResultAreaEventIds && context.caseResultAreaEventIds.has(key)) return "area";
+    if (context.caseResultLinkedEventIds && context.caseResultLinkedEventIds.has(key)) return "connected";
+    return "";
+  }
+
+  function renderResultsCaseContext(result) {
+    renderFamousCaseResultsSummary(result);
+    if (!els.resultsCaseContext) return;
+    const active = famousCaseTraceSelectionActive() && regionSelectionAffectsRendering();
+    els.resultsCaseContext.hidden = !active;
+    if (!active) {
+      els.resultsCaseContext.textContent = "";
+      return;
+    }
+    const context = result || currentRegionSelectionResult();
+    const areaCount = context.caseResultAreaEventIds ? context.caseResultAreaEventIds.size : 0;
+    const linkedCount = context.caseResultLinkedEventIds ? context.caseResultLinkedEventIds.size : 0;
+    els.resultsCaseContext.textContent = formatNumber(areaCount) + " in selected area · " +
+      formatNumber(linkedCount) + " connected outside area";
+  }
+
   function visibleResultsEventIdSet() {
     const visibleCatalog = currentVisibleResultsCatalog();
     const cacheKey = [
@@ -21917,7 +22521,9 @@
 
     const eventId = state.highlightedMapEventId != null ? state.highlightedMapEventId : state.selectedEventId;
     const event = eventId != null ? getCatalogEventById(eventId) : null;
-    if (!event || !event.has_coordinates || !eventVisibleUnderActiveTraceAndRegionFilters(event.event_id)) {
+    if (!event || !event.has_coordinates ||
+      (!eventVisibleUnderActiveTraceAndRegionFilters(event.event_id) &&
+       famousCaseResultMembership(event.event_id) !== "connected")) {
       clearMapSelectionOverlay();
       return;
     }
@@ -22427,6 +23033,9 @@
       previousMode !== state.timeRangeMode
     ) {
       refreshTemporalOverlayLayersForCurrentWindow();
+      if (runtime.traceIntersectionController) {
+        runtime.traceIntersectionController.notifyTimelineRangeChanged();
+      }
     }
   }
 
@@ -23444,7 +24053,9 @@
     if (options && options.reason === "playback") {
       runtime.resultsProgrammaticScrollUntil = performance.now() + 300;
     }
-    const visibleCatalog = currentVisibleResultsCatalog();
+    const visibleCatalog = currentResultsPaneCatalog();
+    const caseResultContext = famousCaseTraceSelectionActive() ? currentRegionSelectionResult() : null;
+    renderResultsCaseContext(caseResultContext);
     const traceVisibilityPending = Boolean(
       runtime.traceLinkedVisibilityCacheValue &&
       runtime.traceLinkedVisibilityCacheValue.pending
@@ -23506,6 +24117,11 @@
     }
 
     const cardsMarkup = displayed.map(function (event) {
+      const caseMembership = famousCaseResultMembership(event.event_id, caseResultContext);
+      const caseClass = caseMembership === "area" ? " is-case-area"
+        : caseMembership === "connected" ? " is-case-connected" : "";
+      const caseLabel = caseMembership === "area" ? "In selected area"
+        : caseMembership === "connected" ? "Connected outside area" : "";
       const mappedBadge = event.has_coordinates
         ? '<span class="badge badge-mapped">Mapped</span>'
         : '<span class="badge badge-unmapped">Unmapped</span>';
@@ -23517,9 +24133,10 @@
       const expandedClass = state.expandedResultId === event.event_id ? " is-expanded" : "";
       const summary = escapeHtml(displayLocationForEvent(event));
       return (
-        '<article class="result-card' + activeClass + playbackClass + expandedClass + '" data-result-card-event-id="' + escapeHtml(event.event_id) + '">' +
+        '<article class="result-card' + caseClass + activeClass + playbackClass + expandedClass + '" data-result-card-event-id="' + escapeHtml(event.event_id) + '">' +
         '<button class="result-card-button" type="button" data-event-id="' + escapeHtml(event.event_id) + '">' +
         '<div class="result-card-head"><span class="result-date">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</span></div>" +
+        (caseLabel ? '<span class="result-case-membership">' + caseLabel + '</span>' : '') +
         '<div class="result-badges">' + mappedBadge + precisionBadge + "</div>" +
         '<div class="result-location">' + summary + "</div>" +
         '<div class="result-meta">' + escapeHtml(event.source || "Unknown source") + " | " + escapeHtml(event.type || "Unknown type") + "</div>" +
@@ -23557,7 +24174,7 @@
     if (!els.resultList || eventId == null) return;
     const tries = Number.isFinite(attempt) ? attempt : 0;
     const reason = options && options.reason ? options.reason : "selection";
-    const display = resultIndexByEventIdForDisplay(currentVisibleResultsCatalog());
+    const display = resultIndexByEventIdForDisplay(currentResultsPaneCatalog());
     const ordered = display.ordered;
     const targetIndex = display.indexByEventId.get(eventId);
     if (targetIndex == null || targetIndex < 0) return;
@@ -23657,7 +24274,7 @@
     if (remainingDistance > RESULTS_LOAD_MORE_THRESHOLD_PX) {
       return;
     }
-    const total = currentVisibleResultsCatalog().length;
+    const total = currentResultsPaneCatalog().length;
     const shifted = PLAYBACK_PERFORMANCE.shiftResultsWindow({
       total: total,
       currentStart: state.resultsWindowStart,
@@ -23680,7 +24297,7 @@
   }
 
   function shiftResultsWindow(direction) {
-    const total = currentVisibleResultsCatalog().length;
+    const total = currentResultsPaneCatalog().length;
     const shifted = PLAYBACK_PERFORMANCE.shiftResultsWindow({
       total: total,
       currentStart: state.resultsWindowStart,
@@ -25711,6 +26328,8 @@
     if (!event) return "Missing endpoint record";
     return String(
       event.location ||
+      event.location_raw ||
+      event.geocode_display_name ||
       event.place ||
       event.city ||
       event.title ||
@@ -25722,6 +26341,46 @@
   function chronologicalNeighborhoodDateLabel(event) {
     if (!event) return "Missing";
     return String(event.date_raw || event.sort_date_iso || event.date || "Missing");
+  }
+
+  function currentAreaDirectionSummary(result) {
+    const direction = state.regionSelection.direction || "forward";
+    if (runtime.areaDirectionSummaryResult !== result || runtime.areaDirectionSummaryDirection !== direction) {
+      runtime.areaDirectionSummaryResult = result;
+      runtime.areaDirectionSummaryDirection = direction;
+      runtime.areaDirectionSummary = TRACE_DIRECTIONS.summarizeDirections(
+        result.visibleTraceSegments || [], { direction: direction }
+      );
+    }
+    return runtime.areaDirectionSummary;
+  }
+
+  function renderAreaDirectionSummary(result, hasAreaFilter) {
+    if (!els.areaDirectionSummary || !els.areaDirectionSummaryBody) return;
+    const segments = result.visibleTraceSegments || [];
+    els.areaDirectionSummary.hidden = !hasAreaFilter || result.pointOnly || !segments.length;
+    if (els.areaDirectionSummary.hidden) {
+      els.areaDirectionSummaryBody.innerHTML = "";
+      runtime.areaDirectionSummaryMarkup = "";
+      return;
+    }
+    const markup = TRACE_DIRECTIONS.summaryMarkup(currentAreaDirectionSummary(result));
+    if (runtime.areaDirectionSummaryMarkup !== markup) {
+      els.areaDirectionSummaryBody.innerHTML = markup;
+      runtime.areaDirectionSummaryMarkup = markup;
+    }
+  }
+
+  function currentUnorderedConnectionGroups(segments) {
+    if (!runtime.map) return TRACE_DIRECTIONS.groupUnorderedConnections(segments);
+    return TRACE_DIRECTIONS.groupUnorderedConnections(segments, {
+      project: function (point) {
+        const longitude = ((((point[1] + 180) % 360) + 360) % 360) - 180;
+        const projected = runtime.map.project([point[0], longitude], runtime.map.getZoom());
+        return [projected.x, projected.y];
+      },
+      pixelTolerance: 1,
+    });
   }
 
   function renderChronologicalNeighborhoodInspector() {
@@ -25742,7 +26401,8 @@
     const craftStyle = TRACE_NEIGHBORHOOD.resolveCraftEndpointStyle(fromEvent, toEvent, CRAFT_TYPE_COLORS);
     const distanceKm = TRACE_NEIGHBORHOOD.haversineKm(segment.from, segment.to);
     const elapsedDays = Number.isFinite(Number(segment.gapDays)) ? Math.abs(Number(segment.gapDays)) : null;
-    const impliedSpeedKph = distanceKm != null && elapsedDays != null && elapsedDays > 0
+    const sameDayOrderUnknown = TRACE_DIRECTIONS.segmentOrderUncertain(segment);
+    const impliedSpeedKph = !sameDayOrderUnknown && distanceKm != null && elapsedDays != null && elapsedDays > 0
       ? distanceKm / (elapsedDays * 24)
       : null;
     const neighborhood = segment.neighborhood || {};
@@ -25750,26 +26410,67 @@
       ? neighborhood.regionIds.join(", ")
       : "Missing";
     const values = [
-      ["Connection", "Chronological adjacency only"],
-      ["Earlier endpoint", chronologicalNeighborhoodEndpointLabel(fromEvent) + " (" + String(segment.fromEventId || "Missing") + ")"],
-      ["Earlier date", chronologicalNeighborhoodDateLabel(fromEvent)],
-      ["Earlier craft type", craftStyle.fromLabel],
-      ["Later endpoint", chronologicalNeighborhoodEndpointLabel(toEvent) + " (" + String(segment.toEventId || "Missing") + ")"],
-      ["Later date", chronologicalNeighborhoodDateLabel(toEvent)],
-      ["Later craft type", craftStyle.toLabel],
-      ["Elapsed time", elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
+      ["Connection", sameDayOrderUnknown
+        ? (segment.source === "famous_case_same_day_craft" ? "Same calendar date and craft category; report order uncertain" : "Report connection; chronological order uncertain")
+        : "Chronological adjacency only"],
+      [sameDayOrderUnknown ? "Endpoint A" : "Earlier endpoint", chronologicalNeighborhoodEndpointLabel(fromEvent) + " (" + String(segment.fromEventId || "Missing") + ")"],
+      [sameDayOrderUnknown ? "Date A" : "Earlier date", chronologicalNeighborhoodDateLabel(fromEvent)],
+      [sameDayOrderUnknown ? "Craft type A" : "Earlier craft type", craftStyle.fromLabel],
+      [sameDayOrderUnknown ? "Endpoint B" : "Later endpoint", chronologicalNeighborhoodEndpointLabel(toEvent) + " (" + String(segment.toEventId || "Missing") + ")"],
+      [sameDayOrderUnknown ? "Date B" : "Later date", chronologicalNeighborhoodDateLabel(toEvent)],
+      [sameDayOrderUnknown ? "Craft type B" : "Later craft type", craftStyle.toLabel],
+      ["Elapsed time", sameDayOrderUnknown
+        ? (elapsedDays === 0 ? "Same calendar date; elapsed hours and order uncertain" : "Elapsed hours and report order uncertain")
+        : elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
       ["Derived distance", distanceKm == null ? "Missing" : distanceKm.toFixed(1) + " km (great-circle estimate)"],
       ["Derived implied speed", impliedSpeedKph == null ? "Missing or undefined" : impliedSpeedKph.toFixed(1) + " km/h"],
       [
-        "Hop / direction",
+        sameDayOrderUnknown ? "Hop / ordering" : "Hop / direction",
         String(neighborhood.hop == null ? 1 : neighborhood.hop) + " / " +
-          String(neighborhood.direction || "forward"),
+          (sameDayOrderUnknown ? "Unordered report connection" : String(neighborhood.direction || "forward")),
       ],
       ["Region attribution", regionIds],
     ];
+    const description = TRACE_DIRECTIONS.describeSegment(segment, { direction: state.regionSelection.direction });
+    const directions = description.directions;
+    const directionSummary = currentAreaDirectionSummary(result);
+    if (description.orderUncertain && description.orientation) {
+      values.splice(1, 0, ["Map connection axis", description.orientation.axisLabel +
+        "; no travel direction assigned. Excluded from directional percentages."]);
+    }
+    directions.forEach(function (entry) {
+      const sector = directionSummary.sectors.find(function (row) { return row.key === entry.sector; });
+        values.splice(1, 0, [
+        "Map direction (" + entry.direction + ")",
+        entry.label + " (" + entry.sector + "), " + Math.round(entry.bearing) + "° · " +
+          sector.count + " / " + directionSummary.denominator + " directions (" +
+          TRACE_DIRECTIONS.formatPercentage(sector.percentage) + ") in the current selection",
+      ]);
+    });
     if (els.chronologicalNeighborhoodInspectorBody) {
+      const sharedGroup = sameDayOrderUnknown
+        ? currentUnorderedConnectionGroups(result.visibleTraceSegments || []).find(function (group) {
+            return group.segments.some(function (member) { return member.traceId === segment.traceId; });
+          }) : null;
+      const sharedLinksMarkup = sharedGroup && sharedGroup.segments.length > 1
+        ? '<section class="neighborhood-shared-links"><strong>' + sharedGroup.segments.length +
+          ' report links share this map line</strong><p>One arrow marks this overlap. Choose a link to inspect its reports.</p><div role="group" aria-label="Report links sharing this map line">' +
+          sharedGroup.segments.map(function (member, index) {
+            const fromLabel = chronologicalNeighborhoodEndpointLabel(getCatalogEventById(member.fromEventId));
+            const toLabel = chronologicalNeighborhoodEndpointLabel(getCatalogEventById(member.toEventId));
+            return '<button type="button" class="secondary-button" data-neighborhood-trace-id="' + escapeHtml(member.traceId) +
+              '" aria-pressed="' + (member.traceId === segment.traceId ? 'true' : 'false') + '">Link ' + (index + 1) +
+              ': ' + escapeHtml(fromLabel) + ' ↔ ' + escapeHtml(toLabel) + '</button>';
+          }).join('') + '</div></section>' : '';
       els.chronologicalNeighborhoodInspectorBody.innerHTML =
-        '<p class="chronological-neighborhood-inspector-note">This connection is adjacency in the filtered chronology. It is exploratory and is not evidence of travel or the same craft.</p>' +
+        sharedLinksMarkup +
+        '<p class="chronological-neighborhood-inspector-note">' +
+        (sameDayOrderUnknown
+          ? 'Report order is uncertain and may use estimates or record identifiers. The dashed, double-headed arrow shows an undirected connection between locations. It is excluded from directional percentages; travel direction and origin are unestablished.'
+          : 'This connection is adjacency in the filtered chronology. It is exploratory and is not evidence of travel or the same craft.') + '</p>' +
+        TRACE_DIRECTIONS.summaryMarkup(directionSummary, {
+          selectedSectors: directions.map(function (entry) { return entry.sector; }),
+        }) +
         '<dl class="chronological-neighborhood-inspector-grid">' +
         values.map(function (entry) {
           return "<dt>" + escapeHtml(entry[0]) + "</dt><dd>" + escapeHtml(entry[1]) + "</dd>";
@@ -25781,6 +26482,16 @@
     }
   }
 
+  function selectNeighborhoodReportLink(traceId) {
+    const result = currentRegionSelectionResult();
+    const member = (result.visibleTraceSegments || []).find(function (segment) {
+      return String(segment.traceId) === String(traceId);
+    });
+    if (!member) return;
+    runtime.neighborhoodInspectorTraceId = member.traceId;
+    renderChronologicalNeighborhoodInspector();
+  }
+
   function neighborhoodArrowAngle(copy, direction) {
     if (!runtime.map) return 0;
     const fromPoint = runtime.map.latLngToLayerPoint(copy.from);
@@ -25788,6 +26499,63 @@
     let degrees = Math.atan2(toPoint.y - fromPoint.y, toPoint.x - fromPoint.x) * (180 / Math.PI);
     if (direction === "backward") degrees += 180;
     return Math.round(degrees * 10) / 10;
+  }
+
+  function neighborhoodPointAlongCopy(copy, fraction) {
+    const fromPoint = runtime.map.latLngToLayerPoint(copy.from);
+    const toPoint = runtime.map.latLngToLayerPoint(copy.to);
+    return runtime.map.layerPointToLatLng(L.point(
+      fromPoint.x + (toPoint.x - fromPoint.x) * fraction,
+      fromPoint.y + (toPoint.y - fromPoint.y) * fraction
+    ));
+  }
+
+  function neighborhoodBadgePosition(copy, traceId, directionIndex, occupied) {
+    let hash = 0;
+    for (const character of String(traceId)) hash = ((hash * 31) + character.charCodeAt(0)) >>> 0;
+    const base = 0.28 + ((hash % 997) / 997) * 0.44;
+    const offsets = directionIndex ? [0.09, -0.09, 0.18, -0.18, 0.27, -0.27] : [0, 0.09, -0.09, 0.18, -0.18, 0.27];
+    let position = null;
+    let key = "";
+    for (const offset of offsets) {
+      position = neighborhoodPointAlongCopy(copy, clamp(base + offset, 0.15, 0.85));
+      const point = runtime.map.latLngToContainerPoint(position);
+      key = Math.round(point.x / 36) + ":" + Math.round(point.y / 36);
+      if (!occupied.has(key)) break;
+    }
+    occupied.add(key);
+    return position;
+  }
+
+  function renderChronologicalNeighborhoodBadge(copy, segment, entry, directionIndex, occupiedBadgeCells, directionSummary, group) {
+    const sector = directionSummary.sectors.find(function (row) { return row.key === entry.sector; });
+    const sharedCount = group ? group.segments.length : 1;
+    const label = entry.orderUncertain
+      ? "Report order unknown · " + entry.axisLabel + " connection axis · " +
+        (sharedCount > 1 ? sharedCount + " report links share this line · " : "") +
+        "excluded from directional percentages · open connection details"
+      : entry.label + " report link · " + TRACE_DIRECTIONS.formatPercentage(sector.percentage) +
+        " of ordered connections · open direction breakdown";
+    const badge = L.marker(neighborhoodBadgePosition(copy, group ? group.key : segment.traceId, directionIndex, occupiedBadgeCells), {
+      pane: "neighborhoodTracePane",
+      interactive: true,
+      keyboard: true,
+      title: label,
+      alt: label,
+      icon: L.divIcon({
+        className: "chronological-neighborhood-arrow-shell",
+        html: TRACE_DIRECTIONS.directionBadgeMarkup(entry, {
+          arrowAngle: neighborhoodArrowAngle(copy, entry.direction),
+        }),
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+      }),
+    });
+    badge.on("click", function () {
+      runtime.neighborhoodInspectorTraceId = segment.traceId;
+      renderChronologicalNeighborhoodInspector();
+    });
+    badge.addTo(runtime.neighborhoodTraceLayer);
   }
 
   function renderChronologicalNeighborhoodOverlay() {
@@ -25805,6 +26573,9 @@
       return;
     }
     const segments = result.visibleTraceSegments || [];
+    renderAreaDirectionSummary(result, true);
+    const directionSummary = currentAreaDirectionSummary(result);
+    const occupiedBadgeCells = new Set();
     setChronologicalNeighborhoodPaneInteractive(segments.length > 0);
     const densityProfile = normalTraceDensityProfile(Math.max(1, segments.length));
     segments.forEach(function (rawSegment) {
@@ -25841,7 +26612,7 @@
           weight: scaledTraceStrokeWeight(rawOutlineWeight),
         };
         outlineLine.addTo(runtime.neighborhoodTraceLayer);
-        const midpoint = interpolateLatLngPair(copy.from, copy.to, 0.5);
+        const midpoint = neighborhoodPointAlongCopy(copy, 0.5);
         const parts = craftTraceColoringActive() && segment.fromCraftColor && segment.toCraftColor
           ? [
               { points: [copy.from, midpoint], color: segment.fromCraftColor },
@@ -25874,19 +26645,18 @@
           });
           line.addTo(runtime.neighborhoodTraceLayer);
         });
-        const arrowAngle = neighborhoodArrowAngle(copy, direction);
-        const arrowGlyph = direction === "both" ? "\u2194" : "\u279c";
-        L.marker(midpoint, {
-          pane: "neighborhoodTracePane",
-          interactive: false,
-          icon: L.divIcon({
-            className: "chronological-neighborhood-arrow-shell",
-            html: '<span class="chronological-neighborhood-arrow" style="transform:rotate(' +
-              arrowAngle + 'deg)">' + arrowGlyph + "</span>",
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
-          }),
-        }).addTo(runtime.neighborhoodTraceLayer);
+        const description = TRACE_DIRECTIONS.describeSegment(rawSegment, { direction: direction });
+        const badgeEntries = description.directions;
+        badgeEntries.forEach(function (entry, directionIndex) {
+          renderChronologicalNeighborhoodBadge(copy, segment, entry, directionIndex, occupiedBadgeCells, directionSummary);
+        });
+      });
+    });
+    currentUnorderedConnectionGroups(segments).forEach(function (group) {
+      const representative = group.representative;
+      const entry = TRACE_DIRECTIONS.describeSegment(representative).orientation;
+      wrappedSegmentCopies(representative).forEach(function (copy) {
+        renderChronologicalNeighborhoodBadge(copy, representative, entry, 0, occupiedBadgeCells, directionSummary, group);
       });
     });
     renderChronologicalNeighborhoodInspector();
@@ -27314,6 +28084,7 @@
         deferNonEssentialDecorations: useInteractiveDensityPreview || deferLargeWindowDecorations,
       });
     }
+    if (state.famousCaseId) renderRegionSelectionUi();
     if (deferLargeWindowDecorations && state.activeView !== "analysis") {
       runtime.largeWindowTraceRefinementMetrics = {
         generation: rangeGeneration,
@@ -28119,6 +28890,7 @@
   }
 
   function eventVisibleInCurrentResults(eventId) {
+    if (famousCaseTraceSelectionActive()) return Boolean(famousCaseResultMembership(eventId));
     return visibleResultsEventIdSet().has(eventId);
   }
 
@@ -28135,6 +28907,12 @@
   }
 
   function resetFilterControlsToDefaultState() {
+    clearFamousCaseCirclePulse();
+    state.famousCaseId = "";
+    runtime.famousCasePreviousSelection = null;
+    runtime.famousCaseShapeId = null;
+    if (els.famousCaseSearch) els.famousCaseSearch.value = "";
+    renderFamousCasePicker();
     if (els.keywordInput) {
       els.keywordInput.value = "";
     }
@@ -28676,6 +29454,7 @@
       const detail = event && event.detail ? event.detail : {};
       const priorEnabled = runtime.analysisContextEnabledState.crops;
       runtime.cropCircleOverlayEnabled = Boolean(detail.enabled);
+      runtime.cropCircleOverlayDateScope = normalizeCropCircleDateScope(detail.dateScope);
       const cropAnalysisEnabled = Boolean(els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true");
       runtime.analysisContextEnabledState.crops = cropAnalysisEnabled;
       runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
@@ -28698,6 +29477,7 @@
       const detail = event && event.detail ? event.detail : {};
       const priorEnabled = runtime.analysisContextEnabledState.animals;
       runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
+      runtime.animalMutilationOverlayDateScope = normalizeAnimalMutilationDateScope(detail.dateScope);
       const animalAnalysisEnabled = Boolean(els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true");
       runtime.analysisContextEnabledState.animals = animalAnalysisEnabled;
       runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
@@ -29159,27 +29939,19 @@
 
     if (els.clusterQuickCropCirclesButton) {
       els.clusterQuickCropCirclesButton.addEventListener("click", function () {
-        if (!els.overlayCropCirclesToggle) return;
-        els.overlayCropCirclesToggle.click();
-        renderMapControlQuickButtons();
-        const nextActive = els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true";
-        announceMapQuickControl(
-          nextActive ? "Crop circles are turning on." : "Crop circles hidden."
-        );
+        cycleQuickCropCircleState().catch(function (error) {
+          announceMapQuickControl("Crop-circle mode could not be changed.");
+          console.error(error);
+        });
       });
     }
 
     if (els.clusterQuickAnimalMutilationsButton) {
       els.clusterQuickAnimalMutilationsButton.addEventListener("click", function () {
-        if (!els.overlayAnimalMutilationsToggle) return;
-        els.overlayAnimalMutilationsToggle.click();
-        renderMapControlQuickButtons();
-        const nextActive = els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true";
-        announceMapQuickControl(
-          nextActive
-            ? "Animal Mutilation Reports are turning on."
-            : "Animal Mutilation Reports hidden."
-        );
+        cycleQuickAnimalMutilationState().catch(function (error) {
+          announceMapQuickControl("Animal-report mode could not be changed.");
+          console.error(error);
+        });
       });
     }
 
@@ -29350,6 +30122,12 @@
         closeChronologicalNeighborhoodInspector();
       });
     }
+    if (els.chronologicalNeighborhoodInspectorBody) {
+      els.chronologicalNeighborhoodInspectorBody.addEventListener("click", function (event) {
+        const choice = event.target.closest("[data-neighborhood-trace-id]");
+        if (choice) selectNeighborhoodReportLink(choice.getAttribute("data-neighborhood-trace-id"));
+      });
+    }
 
     mapControlSectionElements().forEach(function (section) {
       section.addEventListener("toggle", function () {
@@ -29399,6 +30177,24 @@
         applyTimelinePreset(els.filterFlapPresets.value);
       });
     }
+
+    if (els.filterFamousCases) {
+      els.filterFamousCases.addEventListener("change", function () {
+        applyFamousCasePreset(els.filterFamousCases.value);
+      });
+    }
+    if (els.famousCaseSearch) {
+      els.famousCaseSearch.addEventListener("input", renderFamousCasePicker);
+    }
+    (els.famousCaseOrderButtons || []).forEach(function (button) {
+      button.addEventListener("click", function () {
+        state.famousCaseOrder = FAMOUS_CASES.normalizeCaseOrder(button.dataset.famousCaseOrder);
+        safeStorageSet("ufo-famous-case-order-v1", state.famousCaseOrder);
+        renderFamousCasePicker();
+      });
+    });
+    bindFamousCaseActions(els.famousCaseDetails);
+    bindFamousCaseActions(els.resultsFamousCaseSummary);
 
     if (els.collapsibleSectionToggleButtons && els.collapsibleSectionToggleButtons.length) {
       els.collapsibleSectionToggleButtons.forEach(function (button) {
@@ -29611,6 +30407,7 @@
           const key = button.getAttribute("data-trace-bucket");
           if (!key || !traceBucketForKey(key)) return;
           state.traceBucketVisibility[key] = !state.traceBucketVisibility[key];
+          if (key === "gap_le_1") runtime.famousCaseGapBucketOwned = false;
           renderTraceControls();
           invalidateTraceSequenceCache();
           invalidateRegionSelectionResult();
@@ -30125,6 +30922,9 @@
     runtime.map.createPane("researchSiteAreaPane");
     runtime.map.getPane("researchSiteAreaPane").style.zIndex = "355";
     runtime.map.getPane("researchSiteAreaPane").style.pointerEvents = "none";
+    runtime.map.createPane("traceIntersectionPane");
+    runtime.map.getPane("traceIntersectionPane").style.zIndex = "420";
+    runtime.map.getPane("traceIntersectionPane").style.pointerEvents = "auto";
     runtime.map.createPane("tracePane");
     runtime.map.getPane("tracePane").style.zIndex = "430";
     runtime.map.getPane("tracePane").style.pointerEvents = "none";
@@ -30163,6 +30963,25 @@
     runtime.neighborhoodTraceLayer = L.layerGroup().addTo(runtime.map);
     runtime.selectionLayer = L.layerGroup().addTo(runtime.map);
     runtime.playbackLayer = L.layerGroup().addTo(runtime.map);
+    const traceIntersectionController = TRACE_INTERSECTION_LAYER.createController({
+      map: runtime.map,
+      L: L,
+      root: els.traceIntersectionControls,
+      resolveAssetPath: resolveAssetPath,
+      getTimelineRange: function () {
+        return {
+          startOrdinal: state.timeRangeStartOrdinal,
+          endOrdinal: state.timeRangeEndOrdinal,
+        };
+      },
+      getTraceMode: function () {
+        return state.traceMode;
+      },
+      setTraceMode: setTraceMode,
+      onStatusChange: renderMapControlSectionSummaries,
+    });
+    runtime.traceIntersectionController = traceIntersectionController;
+    traceIntersectionController.initialize();
     ensureCropTraceFocusLayers();
     registerCropTimelineExtensionApi();
     syncMapZoomControlPlacement();
@@ -30194,6 +31013,7 @@
       refreshResearchSiteOverlayForViewport();
       syncPointLayerMarkerSizing();
       syncOverlayMarkerSizing();
+      if (regionSelectionAffectsRendering()) renderChronologicalNeighborhoodOverlay();
       scheduleMapProjectionRefresh();
       scheduleStaticTraceViewportRefresh();
       scheduleMapViewportLegendRefresh();
@@ -30559,6 +31379,7 @@
 
   async function applyStartupFitBeforeReady() {
     if (!runtime.map || !state.filteredMappedCatalog.length) return false;
+    if (state.famousCaseId) return false;
     if (state.selectedEventId != null) return false;
     if (state.playbackState === "playing") return false;
     if (Math.abs(runtime.map.getZoom() - MAP_DEFAULT_INITIAL_ZOOM) > 0.01) return false;
@@ -31114,6 +31935,22 @@
           emphasisLayerVisible: Boolean(runtime.map && runtime.cropTraceEmphasisLayer && runtime.map.hasLayer(runtime.cropTraceEmphasisLayer)),
           isolation: Boolean(runtime.map && runtime.map.getContainer && runtime.map.getContainer().classList.contains("crop-circle-focus-active")),
         },
+        cropCircleOverlay: {
+          active: cropCircleOverlayActive(),
+          dateScope: cropCircleDateScope(),
+          displayMode: currentQuickCropCircleState().key,
+          visibleRecordCount: Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
+            ? Number(runtime.cropCircleOverlayVisibleCount)
+            : null,
+        },
+        animalMutilationOverlay: {
+          active: animalMutilationOverlayActive(),
+          dateScope: animalMutilationDateScope(),
+          displayMode: currentQuickAnimalMutilationState().key,
+          visibleRecordCount: Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+            ? Number(runtime.animalMutilationOverlayVisibleCount)
+            : null,
+        },
         filterGeneration: {
           requested: state.filterGeneration,
           active: runtime.activeFilterGeneration,
@@ -31269,7 +32106,8 @@
             : Array.from(regionResult.visibleEventIds || []).map(String)
         ).sort(),
         visibleMappedEventIds: (regionResult.visibleMappedCatalog || []).map(function (event) { return String(event.event_id); }).sort(),
-        resultEventIds: currentVisibleResultsCatalog().map(function (event) { return String(event.event_id); }).sort(),
+        resultEventIds: currentResultsPaneCatalog().map(function (event) { return String(event.event_id); }).sort(),
+        areaResultEventIds: currentVisibleResultsCatalog().map(function (event) { return String(event.event_id); }).sort(),
         visibleTraceIds: Array.from(regionResult.visibleTraceIds || []).map(String).sort(),
         pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
         chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
@@ -31350,7 +32188,7 @@
       };
     },
     getFirstRenderedResultId: function () {
-      const ordered = sortResultsForDisplay(currentVisibleResultsCatalog());
+      const ordered = sortResultsForDisplay(currentResultsPaneCatalog());
       return ordered.length ? ordered[0].event_id : null;
     },
     getStableDetailProbeEventId: function () {
@@ -31504,6 +32342,11 @@
     },
     getStaticTraceAggregationStatus: function () {
       return runtime.staticTraceAggregationStatus;
+    },
+    getTraceIntersectionStatus: function () {
+      return runtime.traceIntersectionController
+        ? runtime.traceIntersectionController.getStatus()
+        : null;
     },
     getStaticTraceRenderMetrics: function () {
       return staticTraceRenderMetricsSnapshot();

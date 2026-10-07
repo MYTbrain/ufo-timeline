@@ -115,6 +115,129 @@
     };
   }
 
+  function sameDayFiniteNumber(value) {
+    if (typeof value !== "number" && typeof value !== "string") return null;
+    if (typeof value === "string" && !value.trim()) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function sameDayCalendarDate(event) {
+    if (!event || event.date_precision !== "exact_day") return "";
+    const day = String(event.sort_date_iso || event.date_iso || "");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return "";
+    const timestamp = Date.parse(day + "T00:00:00Z");
+    return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === day ? day : "";
+  }
+
+  function sameDayChronologyKey(event) {
+    // Match the application's canonical same-day sorting without mutating its
+    // records. These are presentation keys; they do not establish travel order.
+    if (Array.isArray(event.playback_sort_key) && event.playback_sort_key.length) {
+      return event.playback_sort_key.map(function (value) {
+        if (value == null || typeof value === "string") return value;
+        return typeof value === "number" && Number.isFinite(value) ? value : null;
+      });
+    }
+    const confidenceRanks = { high: 0, medium: 1, low: 2, none: 3 };
+    function confidenceRank(value) {
+      return Object.prototype.hasOwnProperty.call(confidenceRanks, value) ? confidenceRanks[value] : 3;
+    }
+    const utcMidpoint = sameDayFiniteNumber(event.estimated_utc_timestamp_ms);
+    const utcStart = sameDayFiniteNumber(event.estimated_utc_range_start_ms);
+    const utcEnd = sameDayFiniteNumber(event.estimated_utc_range_end_ms);
+    if (utcMidpoint != null && utcStart != null && utcEnd != null) {
+      return [1, utcMidpoint, Math.abs(utcEnd - utcStart), confidenceRank(event.playback_sort_confidence), 0];
+    }
+    const localMinutes = sameDayFiniteNumber(event.parsed_time_local_minutes);
+    if (localMinutes != null && localMinutes >= 0 && localMinutes < 1440) {
+      const start = sameDayFiniteNumber(event.parsed_time_local_range_start_minutes);
+      const end = sameDayFiniteNumber(event.parsed_time_local_range_end_minutes);
+      const width = start == null || end == null ? null : Math.abs(end - start + (end < start ? 1440 : 0));
+      return [2, localMinutes, width, confidenceRank(event.playback_sort_confidence || event.time_sort_confidence), 0];
+    }
+    return [3, null, null, 3, 0];
+  }
+
+  function compareSameDayKeyValues(left, right) {
+    if (left == null && right == null) return 0;
+    if (left == null) return -1;
+    if (right == null) return 1;
+    if (typeof left === "number" && typeof right === "number") return left < right ? -1 : left > right ? 1 : 0;
+    return String(left) < String(right) ? -1 : String(left) > String(right) ? 1 : 0;
+  }
+
+  function buildSameDayCraftTraceSegments(events) {
+    const recognizedCrafts = new Set(CRAFT_TYPE_ORDER.filter(function (key) {
+      return key !== "unknown" && key !== "conventional_or_explained" && key !== "non_ufo_context";
+    }));
+    const recordsById = new Map();
+    const conflictingIds = new Set();
+    (Array.isArray(events) ? events : []).forEach(function (event) {
+      if (!event || event.event_id == null || event.has_coordinates === false) return;
+      const id = String(event.event_id);
+      if (!id.trim() || conflictingIds.has(id)) return;
+      const day = sameDayCalendarDate(event);
+      const craft = canonicalCraftTypeKey(event);
+      const lat = sameDayFiniteNumber(event.lat);
+      const lon = sameDayFiniteNumber(event.lon);
+      if (!day || !recognizedCrafts.has(craft) || lat == null || lon == null || lat < -90 || lat > 90 || lon < -180 || lon > 180) return;
+      const key = sameDayChronologyKey(event);
+      const record = { id, day, craft, lat, lon, key };
+      const signature = JSON.stringify([day, craft, lat, lon, key]);
+      const existing = recordsById.get(id);
+      if (existing && existing.signature !== signature) {
+        // Conflicting copies of one event cannot define an honest unique
+        // endpoint. Exclude that id rather than pick an input-order winner.
+        recordsById.delete(id);
+        conflictingIds.add(id);
+      } else if (!existing) {
+        record.signature = signature;
+        recordsById.set(id, record);
+      }
+    });
+    const records = Array.from(recordsById.values()).sort(function (left, right) {
+      const dayOrder = compareSameDayKeyValues(left.day, right.day);
+      if (dayOrder) return dayOrder;
+      const craftOrder = compareSameDayKeyValues(left.craft, right.craft);
+      if (craftOrder) return craftOrder;
+      const keyLength = Math.max(left.key.length, right.key.length);
+      for (let index = 0; index < keyLength; index += 1) {
+        const order = compareSameDayKeyValues(left.key[index], right.key[index]);
+        if (order) return order;
+      }
+      return compareSameDayKeyValues(left.id, right.id);
+    });
+    const segments = [];
+    for (let index = 1; index < records.length; index += 1) {
+      const from = records[index - 1];
+      const to = records[index];
+      if (from.day !== to.day || from.craft !== to.craft) continue;
+      const longitudeDifference = ((((to.lon - from.lon + 180) % 360) + 360) % 360) - 180;
+      const sameLatitude = Math.abs(from.lat - to.lat) < 1e-12;
+      const samePole = sameLatitude && Math.abs(Math.abs(from.lat) - 90) < 1e-12;
+      // Keep every report in chain order but emit only distinct-location links.
+      // A repeated place therefore remains the endpoint of the next remote
+      // neighbor without adding a zero-length, undrawable connection.
+      if (sameLatitude && (Math.abs(longitudeDifference) < 1e-12 || samePole)) continue;
+      segments.push({
+        traceId: from.id + "->" + to.id,
+        fromEventId: from.id,
+        toEventId: to.id,
+        eventIds: [from.id, to.id],
+        from: [from.lat, from.lon],
+        to: [to.lat, to.lon],
+        gapDays: 0,
+        source: "famous_case_same_day_craft",
+        sameDayOrderKnown: false,
+        craftType: from.craft,
+        sortDateIso: from.day,
+        sequenceIndex: segments.length,
+      });
+    }
+    return segments;
+  }
+
   function nearestPointHit(target, candidates, defaultTolerance) {
     const targetX = Number(target && target.x);
     const targetY = Number(target && target.y);
@@ -1508,6 +1631,7 @@
     canonicalCraftTypeKey,
     resolveCraftType,
     resolveCraftEndpointStyle,
+    buildSameDayCraftTraceSegments,
     nearestPointHit,
     normalizeDepth,
     normalizeAreaDepth,

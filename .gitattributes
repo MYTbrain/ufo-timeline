@@ -1,0 +1,7 @@
+# Preserve the historical scientific builder bytes pinned by the feasibility manifest.
+scripts/trace_intersection_feasibility.py -text
+data/trace_intersection_feasibility_v1/*.json -text
+
+# Minified generated payloads are reviewed through their manifest and hash checks.
+data/trace_intersection_feasibility_v1/strict_25km_7d_buffer1.json -diff
+data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff

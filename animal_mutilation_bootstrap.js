@@ -8,6 +8,7 @@
 
   let loadPromise = null;
   let desiredEnabled = true;
+  let desiredDateScope = "window";
   let defaultActivationStarted = false;
 
   function setStatus(message, isError) {
@@ -38,7 +39,7 @@
     setStatus("Loading Animal Mutilation Reports…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./animal_mutilation_layer.js?v=2026-08-12-context-evidence-v2";
+      script.src = "./animal_mutilation_layer.js?v=2026-08-13-animal-three-state-v1";
       script.async = true;
       script.onload = function () {
         if (!window.UfoAnimalMutilationLayer) {
@@ -72,12 +73,29 @@
     setDesiredToggleState(true);
     return ensureRuntime().then(function (layer) {
       if (!desiredEnabled) return false;
+      if (typeof layer.setDateScope === "function") layer.setDateScope(desiredDateScope);
       return layer.setEnabled(true);
     });
   }
 
+  function normalizeDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : "window";
+  }
+
+  function setDateScope(value) {
+    desiredDateScope = normalizeDateScope(value);
+    if (window.UfoAnimalMutilationLayer && typeof window.UfoAnimalMutilationLayer.setDateScope === "function") {
+      return window.UfoAnimalMutilationLayer.setDateScope(desiredDateScope);
+    }
+    return desiredDateScope;
+  }
+
   function setEnabled(enabled, origin) {
+    const wasEnabled = desiredEnabled;
     desiredEnabled = Boolean(enabled);
+    if (desiredEnabled && !wasEnabled && String(origin || "") !== "animal-quick") {
+      setDateScope("window");
+    }
     setDesiredToggleState(desiredEnabled);
     if (toggle) toggle.dataset.contextChangeOrigin = String(origin || "shared-control");
     if (!desiredEnabled) {
@@ -104,8 +122,15 @@
 
   window.UfoAnimalMutilationBootstrap = Object.freeze({
     setEnabled: setEnabled,
+    setDateScope: setDateScope,
     getDesiredEnabled: function () { return desiredEnabled; },
+    getDesiredDateScope: function () { return desiredDateScope; },
     ensureLoaded: ensureRuntime,
+  });
+
+  window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
+    const detail = event && event.detail ? event.detail : {};
+    if (detail.dateScope) desiredDateScope = normalizeDateScope(detail.dateScope);
   });
 
   if (toggle) {

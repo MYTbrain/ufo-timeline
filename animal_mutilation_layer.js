@@ -5,6 +5,7 @@
   const POLL_INTERVAL_MS = 250;
   const MAX_DETAIL_CHUNKS = 5;
   const BROWSER_PAGE_SIZE = 100;
+  const DEFAULT_DATE_SCOPE = "window";
   const ROW = Object.freeze({
     id: 0, lat: 1, lon: 2, start: 3, end: 4, datePrecision: 5, species: 6, chunk: 7,
     coordinateEvidenceClass: 8, coordinateUncertaintyM: 9,
@@ -40,6 +41,7 @@
     detailRestoresBrowser: false,
     visibleRecords: null,
     visiblePositions: null,
+    dateScope: DEFAULT_DATE_SCOPE,
     lastViewKey: "",
     pollTimer: null,
     markerHitContainer: null,
@@ -183,6 +185,8 @@
     window.dispatchEvent(new window.CustomEvent("ufo:animal-mutilation-statechange", {
       detail: Object.assign({
         enabled: state.enabled,
+        dateScope: state.dateScope,
+        displayMode: state.enabled ? state.dateScope : "off",
         visibleRecords: state.visibleRecords,
         visiblePositions: state.visiblePositions,
         totalRecords: state.manifest ? Number(state.manifest.counts.records) : null,
@@ -450,8 +454,10 @@
 
   function viewKey(context) {
     return [
-      context.timeRangeStartOrdinal, context.timeRangeEndOrdinal,
-      context.timeRangeIsAllTime ? 1 : 0,
+      state.dateScope,
+      state.dateScope === "all" ? "all" : context.timeRangeStartOrdinal,
+      state.dateScope === "all" ? "all" : context.timeRangeEndOrdinal,
+      state.dateScope === "all" ? "all" : (context.timeRangeIsAllTime ? 1 : 0),
       context.hideLowPrecisionCoordinates ? 1 : 0,
       context.hideNonExactDates ? 1 : 0,
       context.filterGeneration,
@@ -461,12 +467,35 @@
   function pointMatches(row, context) {
     if (context.hideLowPrecisionCoordinates && coordinateEvidenceClassForRow(row) !== "source_exact") return false;
     if (context.hideNonExactDates && Number(row[ROW.datePrecision]) !== 0) return false;
+    if (state.dateScope === "all") return true;
     if (row[ROW.start] == null || row[ROW.end] == null) return Boolean(context.timeRangeIsAllTime);
     const start = Number(row[ROW.start]);
     const end = Number(row[ROW.end]);
     if (Number.isFinite(Number(context.timeRangeStartOrdinal)) && end < Number(context.timeRangeStartOrdinal)) return false;
     if (Number.isFinite(Number(context.timeRangeEndOrdinal)) && start > Number(context.timeRangeEndOrdinal)) return false;
     return true;
+  }
+
+  function normalizeDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : DEFAULT_DATE_SCOPE;
+  }
+
+  function setDateScope(value) {
+    const nextScope = normalizeDateScope(value);
+    if (nextScope === state.dateScope) return state.dateScope;
+    state.dateScope = nextScope;
+    state.lastViewKey = "";
+    if (state.enabled) {
+      const context = extensionContext();
+      if (context && context.map) render(context, true);
+    } else {
+      dispatchState({ dateScope: state.dateScope, displayMode: "off" });
+    }
+    return state.dateScope;
+  }
+
+  function resetControls() {
+    return setDateScope(DEFAULT_DATE_SCOPE);
   }
 
   function markerForRows(rows) {
@@ -518,17 +547,25 @@
     if (!state.map.hasLayer(state.layer)) state.layer.addTo(state.map);
     state.visibleRecords = visibleRecords;
     state.visiblePositions = state.markers.length;
+    const dateScopeNote = state.dateScope === "all"
+      ? " All-time animal-report dates are shown; the UFO timeline window is unchanged."
+      : " Animal-report dates follow the selected UFO timeline window.";
     if (context.hideLowPrecisionCoordinates) {
       if (!visibleRecords) {
         setStatus("No mapped animal reports with source-exact coordinates match the current filters. Clear Exact coordinates only to include source-bounded and generalized locations.");
       } else {
         setStatus(
           plural(visibleRecords, "source-exact mapped report", "source-exact mapped reports") + " at " +
-          plural(state.visiblePositions, "source-supported position", "source-supported positions") + "."
+          plural(state.visiblePositions, "source-supported position", "source-supported positions") + "." +
+          dateScopeNote
         );
       }
     } else if (!visibleRecords) {
-      setStatus("No mapped animal reports match the current date filters. Undated reports appear only in All Time; all reports remain available in Browse all reports.");
+      setStatus(
+        state.dateScope === "all"
+          ? "No mapped animal reports match the current coordinate and date-quality filters. All reports remain available in Browse all reports."
+          : "No mapped animal reports match the current date filters. Undated reports appear only in All Time; all reports remain available in Browse all reports."
+      );
     } else {
       setStatus(
         plural(visibleRecords, "mapped report", "mapped reports") + " at " +
@@ -537,7 +574,7 @@
         coordinateCounts.bounded.toLocaleString() + " source-bounded, " +
         coordinateCounts.generalized.toLocaleString() + " generalized or otherwise non-strict" +
         ". " + plural(state.manifest.counts.unmapped, "unmapped report", "unmapped reports") +
-        " remain available in Browse all reports."
+        " remain available in Browse all reports." + dateScopeNote
       );
     }
     dispatchState();
@@ -1087,11 +1124,15 @@
 
   window.UfoAnimalMutilationLayer = Object.freeze({
     setEnabled: setEnabled,
+    setDateScope: setDateScope,
+    resetControls: resetControls,
     openBrowser: openBrowser,
     closeBrowser: closeBrowser,
     getStatus: function () {
       return {
         enabled: state.enabled,
+        dateScope: state.dateScope,
+        displayMode: state.enabled ? state.dateScope : "off",
         loaded: Boolean(state.manifest && state.points),
         catalogLoaded: Boolean(state.catalog),
         visibleRecords: state.visibleRecords,

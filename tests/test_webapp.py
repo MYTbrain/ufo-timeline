@@ -295,7 +295,7 @@ def test_visible_display_dedupe_collapses_exact_same_source_date_location_type()
 
 
 def test_reviewed_display_fields_are_preferred_without_hiding_raw_provenance():
-    app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
+    app_js = Path("app.js").read_text(encoding="utf-8")
 
     location_body = _extract_js_function_body(app_js, "displayLocationForEvent")
     assert "event.location_display || event.location_raw" in location_body

@@ -7,13 +7,17 @@ Local parser + map explorer for the UFO/UAP chronology text files in this worksp
 - `parser/` contains event parsing, date normalization, location heuristics, geocoder abstractions, caching, and the end-to-end pipeline.
 - `data/` holds generated JSON outputs, unresolved-location reports, manual overrides, and a small sample chronology file.
 - `cache/` stores the persistent geocode cache as JSONL.
-- `webapp/` contains the FastAPI app and static Leaflet frontend.
+- The repository root contains the deployable Pages frontend; `webapp/` contains the optional local FastAPI app.
 - `scripts/` contains the CLI entry points for parsing and running the local app.
 - `tests/` contains parser/date/geocoder/backend tests plus a small Node-based frontend utility test.
 
 ## Git Repository Scope
 
 The repository contains the product source, tests, documentation, configuration examples, and small static overlay assets. Large source corpora, generated datasets, caches, release bundles, and local deployment state are intentionally excluded from Git. Full-catalog parsing requires separately provisioned chronology inputs; production-scale static data should remain in external object storage such as Cloudflare R2.
+
+## Case and trace navigation
+
+The map includes a searchable catalog of 85 famous cases, alphabetical or chronological ordering, arrow direction summaries, craft silhouettes in the legend, and Results cards for both nearby and connected reports. Case context and sources are available in Results. See [direction and case navigation](docs/DIRECTION_AND_CASE_NAVIGATION.md) and [case provenance](docs/FAMOUS_CASE_PRESETS.md).
 
 ## Setup
 

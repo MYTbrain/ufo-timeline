@@ -8,6 +8,7 @@
   const CROP_IVORY = "#fff8df";
   const CROP_LIME = "#d8ff3e";
   const MIN_EDGE_KM = 0.001;
+  const DEFAULT_DATE_SCOPE = "window";
   const ROW = Object.freeze({
     id: 0,
     lat: 1,
@@ -36,6 +37,7 @@
     detailChunkCache: new Map(),
     visibleRecords: null,
     visiblePositions: null,
+    dateScope: DEFAULT_DATE_SCOPE,
     activeDetail: null,
     activeRow: null,
     activePositionRows: null,
@@ -145,6 +147,8 @@
     window.dispatchEvent(new window.CustomEvent("ufo:crop-circle-statechange", {
       detail: Object.assign({
         enabled: state.enabled,
+        dateScope: state.dateScope,
+        displayMode: state.enabled ? state.dateScope : "off",
         visibleRecords: state.visibleRecords,
         visiblePositions: state.visiblePositions,
         totalRecords: state.manifest && state.manifest.counts ? Number(state.manifest.counts.events) : null,
@@ -272,8 +276,9 @@
 
   function viewKey(context) {
     return [
-      context.timeRangeStartOrdinal,
-      context.timeRangeEndOrdinal,
+      state.dateScope,
+      state.dateScope === "all" ? "all" : context.timeRangeStartOrdinal,
+      state.dateScope === "all" ? "all" : context.timeRangeEndOrdinal,
       context.hideLowPrecisionCoordinates ? 1 : 0,
       context.hideNonExactDates ? 1 : 0,
     ].join("|");
@@ -284,9 +289,29 @@
     if (context.hideLowPrecisionCoordinates && row[ROW.coordinate] !== 0) return false;
     const start = Number(row[ROW.start]);
     const end = Number(row[ROW.end]);
-    if (Number.isFinite(context.timeRangeStartOrdinal) && end < context.timeRangeStartOrdinal) return false;
-    if (Number.isFinite(context.timeRangeEndOrdinal) && start > context.timeRangeEndOrdinal) return false;
+    if (state.dateScope !== "all") {
+      if (Number.isFinite(context.timeRangeStartOrdinal) && end < context.timeRangeStartOrdinal) return false;
+      if (Number.isFinite(context.timeRangeEndOrdinal) && start > context.timeRangeEndOrdinal) return false;
+    }
     return true;
+  }
+
+  function normalizeDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : DEFAULT_DATE_SCOPE;
+  }
+
+  function setDateScope(value) {
+    const nextScope = normalizeDateScope(value);
+    if (nextScope === state.dateScope) return state.dateScope;
+    state.dateScope = nextScope;
+    state.lastViewKey = "";
+    state.chronology.graphKey = "";
+    if (state.enabled) {
+      renderPoints(true);
+    } else {
+      dispatchLayerState({ dateScope: state.dateScope, displayMode: "off" });
+    }
+    return state.dateScope;
   }
 
   function positionKey(row) {
@@ -453,9 +478,12 @@
     const descriptionNote = Number.isFinite(sourceDescriptionCount)
       ? " Source narratives captured for " + sourceDescriptionCount.toLocaleString() + " of " + state.manifest.counts.events.toLocaleString() + " records."
       : "";
+    const dateScopeNote = state.dateScope === "all"
+      ? " All-time crop-circle dates are shown; the UFO timeline window is unchanged."
+      : " Crop-circle dates follow the selected UFO timeline window.";
     setStatus(
       visibleRecords.toLocaleString() + " records at " + positions.size.toLocaleString() + " mapped positions visible (" +
-      state.manifest.counts.events.toLocaleString() + " records total)." + exactNote + descriptionNote
+      state.manifest.counts.events.toLocaleString() + " records total)." + dateScopeNote + exactNote + descriptionNote
     );
     dispatchLayerState({
       enabled: true,
@@ -1486,6 +1514,7 @@
     syncChronologyControlState();
     setChronologyStatus("Crop-to-crop progression is off.");
     setUfoRelationStatus("Select a crop record to inspect nearby UFO relations and trace intersections.");
+    setDateScope(DEFAULT_DATE_SCOPE);
     return true;
   }
 
@@ -1653,6 +1682,7 @@
 
   window.UfoCropCircleLayer = Object.freeze({
     setEnabled,
+    setDateScope,
     resetControls,
     setChronology: function (options) {
       const settings = options || {};
@@ -1694,6 +1724,8 @@
     getStatus: function () {
       return {
         enabled: state.enabled,
+        dateScope: state.dateScope,
+        displayMode: state.enabled ? state.dateScope : "off",
         loaded: Boolean(state.points),
         mappedCount: state.points ? state.points.length : 0,
         renderedCount: state.layer && typeof state.layer.getLayers === "function"

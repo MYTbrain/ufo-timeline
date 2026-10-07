@@ -13,6 +13,35 @@
 
   const EVENT_SELECTION_MODES = new Set(["all", "subset", "none"]);
   const SAFE_CRAFT_COLOR_KEY = /^[a-z0-9][a-z0-9_-]{0,63}$/i;
+  // Decorative category silhouettes accompany the written legend labels.
+  // Only these fixed SVG fragments are inserted; input never becomes markup.
+  const CRAFT_SYMBOLS = Object.freeze({
+    disc_saucer: '<path d="M7 11a5 5 0 0 1 10 0" fill="currentColor" fill-opacity=".18"/><ellipse cx="12" cy="13" rx="10" ry="3" fill="currentColor" fill-opacity=".18"/><path d="m6 16 1 2m5-1v2m6-3-1 2"/>',
+    sphere_orb: '<circle cx="12" cy="12" r="8.5" fill="currentColor" fill-opacity=".18"/><path d="M7 10a5 5 0 0 1 4-3"/>',
+    triangle: '<path d="M12 3 22 20H2Z" fill="currentColor" fill-opacity=".22"/><circle cx="12" cy="8" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/><circle cx="17" cy="17" r=".8" fill="currentColor"/>',
+    cigar_cylinder: '<rect x="2" y="8" width="20" height="8" rx="4" fill="currentColor" fill-opacity=".22"/><path d="M6 8v8m12-8v8" stroke-opacity=".45"/>',
+    oval_egg: '<path d="M12 3c4 0 7 7 7 11a7 7 0 0 1-14 0c0-4 3-11 7-11Z" fill="currentColor" fill-opacity=".22"/>',
+    chevron_boomerang: '<path d="m2 15 10-9 10 9-3 3-7-6-7 6Z" fill="currentColor" fill-opacity=".3"/>',
+    rectangle_box: '<path d="M3 7h15v13H3Zm0 0 3-3h15v13l-3 3m0-13 3-3" fill="currentColor" fill-opacity=".15"/>',
+    fireball_meteor_like: '<circle cx="8" cy="16" r="4" fill="currentColor" fill-opacity=".3"/><path d="m5 11 9-8m-3 9 9-9m-7 14 8-8"/>',
+    formation: '<circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="7" cy="11" r="2" fill="currentColor"/><circle cx="17" cy="11" r="2" fill="currentColor"/><circle cx="3" cy="17" r="2" fill="currentColor"/><circle cx="21" cy="17" r="2" fill="currentColor"/>',
+    cone: '<path d="M3 18 12 3l9 15" fill="currentColor" fill-opacity=".22"/><ellipse cx="12" cy="18" rx="9" ry="3" fill="currentColor" fill-opacity=".18"/>',
+    diamond: '<path d="m12 2 9 10-9 10L3 12Z" fill="currentColor" fill-opacity=".22"/>',
+    teardrop: '<path d="M12 2c-2 5-8 8-8 13a8 8 0 0 0 16 0c0-5-6-8-8-13Z" fill="currentColor" fill-opacity=".22"/>',
+    dumbbell_barbell: '<path d="M6 9h12v6H6Z" fill="currentColor" fill-opacity=".2"/><circle cx="5" cy="12" r="4" fill="currentColor" fill-opacity=".3"/><circle cx="19" cy="12" r="4" fill="currentColor" fill-opacity=".3"/>',
+    light: '<path d="m12 2 2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2Z" fill="currentColor" fill-opacity=".25"/><path d="m5 5 2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
+    conventional_or_explained: '<path d="M12 2c-1 0-1 2-1 3v4l-9 6v2l9-3v5l-3 2v1l4-1 4 1v-1l-3-2v-5l9 3v-2l-9-6V5c0-1 0-3-1-3Z" fill="currentColor" fill-opacity=".28"/>',
+    non_ufo_context: '<path d="M5 2h10l4 4v16H5Zm10 0v5h4"/><path d="M8 11h8m-8 4h8m-8 4h5" stroke-opacity=".7"/>',
+    unknown: '<circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/><path d="M9 9a3 3 0 1 1 5 2c-1 1-2 1-2 3"/><circle cx="12" cy="17" r=".8" fill="currentColor" stroke="none"/>',
+  });
+
+  function craftSymbolMarkup(key) {
+    const symbolKey = typeof key === "string" && Object.prototype.hasOwnProperty.call(CRAFT_SYMBOLS, key)
+      ? key
+      : "unknown";
+    return '<svg class="craft-legend-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+      CRAFT_SYMBOLS[symbolKey] + "</g></svg>";
+  }
 
   function normalizeHexColor(value) {
     const normalized = String(value == null ? "" : value).trim().toLowerCase();
@@ -451,6 +480,7 @@
   return Object.freeze({
     applyCraftBulkSelection,
     countViewportEventsByKey,
+    craftSymbolMarkup,
     createCraftSelectionState,
     eventKeyActive,
     mapViewportContainsCoordinates,

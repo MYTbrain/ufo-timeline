@@ -3262,12 +3262,30 @@ button:focus {
 }
 
 .craft-legend-label-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   width: 100%;
   min-width: 0;
   padding: 6px 5px;
   border-radius: 8px;
   text-align: left;
   line-height: 1.25;
+}
+
+.craft-legend-symbol {
+  display: block;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--ink);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.craft-legend-label-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .craft-legend-count {
@@ -4204,6 +4222,34 @@ button:focus {
   color: var(--muted);
 }
 
+.neighborhood-shared-links {
+  padding: 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.neighborhood-shared-links p {
+  margin: 5px 0 8px;
+  color: var(--muted);
+}
+
+.neighborhood-shared-links [role="group"] {
+  display: grid;
+  gap: 6px;
+}
+
+.neighborhood-shared-links button {
+  min-height: 38px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.neighborhood-shared-links button[aria-pressed="true"] {
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
 .chronological-neighborhood-inspector-grid {
   display: grid;
   grid-template-columns: minmax(100px, 0.42fr) minmax(0, 1fr);
@@ -4225,6 +4271,266 @@ button:focus {
 .chronological-neighborhood-arrow-shell {
   background: transparent;
   border: 0;
+}
+
+/* Direction uses a neutral palette; craft colors stay on the trace strokes. */
+.trace-direction-badge {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: var(--direction-tone, #454545);
+  color: var(--direction-ink, #ffffff);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 1px #202020, 0 2px 5px #0006;
+  cursor: pointer;
+}
+
+.trace-direction-badge-arrow {
+  display: block;
+  font: 900 22px/1 Arial, sans-serif;
+  transform: rotate(var(--direction-arrow-angle, 0deg));
+  transform-origin: center;
+}
+
+.trace-direction-badge.is-order-uncertain {
+  border-style: dashed;
+  background: #969696;
+  color: #111111;
+}
+
+.trace-direction-badge.is-order-uncertain .trace-direction-badge-arrow {
+  font-size: 25px;
+}
+
+.chronological-neighborhood-arrow-shell:focus-visible .trace-direction-badge {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.area-direction-summary {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
+  color: var(--ink);
+}
+
+.area-direction-summary > summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.area-direction-summary[hidden],
+.famous-case-details[hidden] {
+  display: none;
+}
+
+.trace-direction-summary {
+  margin-top: 10px;
+  color: var(--ink);
+}
+
+.trace-direction-summary h4 {
+  margin: 0 0 5px;
+  font-size: 0.86rem;
+}
+
+.trace-direction-summary p {
+  margin: 5px 0;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.trace-direction-denominator {
+  font-weight: 700;
+}
+
+.trace-direction-note,
+.trace-direction-exclusions,
+.trace-direction-chart figcaption {
+  color: var(--muted);
+}
+
+.trace-direction-data {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.trace-direction-chart {
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.trace-direction-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.trace-direction-chart figcaption {
+  font-size: 0.67rem;
+}
+
+.trace-direction-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.trace-direction-table th,
+.trace-direction-table td {
+  padding: 4px 3px;
+  border-bottom: 1px solid var(--panel-border);
+  text-align: right;
+}
+
+.trace-direction-table th:first-child {
+  text-align: left;
+}
+
+.trace-direction-table abbr {
+  text-decoration: none;
+}
+
+.trace-direction-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+}
+
+.trace-direction-table .is-selected-direction {
+  background: var(--surface-muted);
+  font-weight: 800;
+  outline: 1px solid var(--muted);
+  outline-offset: -1px;
+}
+
+.area-direction-summary .trace-direction-data {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.area-direction-summary .trace-direction-chart {
+  width: min(185px, 100%);
+  margin: 0 auto;
+}
+
+.famous-case-picker {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 14px;
+}
+
+.famous-case-picker .field {
+  margin: 0;
+}
+
+.famous-case-order {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+}
+
+.famous-case-order-button {
+  min-width: 0;
+  min-height: 30px;
+  padding: 5px 3px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.famous-case-order-button[aria-pressed="true"] {
+  border-color: var(--input-border);
+  background: var(--button-bg);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.famous-case-picker input,
+.famous-case-picker select {
+  width: 100%;
+  min-width: 0;
+}
+
+.famous-case-search-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.famous-case-details {
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--surface-muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.famous-case-card-heading {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.famous-case-clear {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  min-height: 28px;
+  font-size: 0.7rem;
+}
+
+.famous-case-details p {
+  margin: 6px 0;
+}
+
+.famous-case-trace-status {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.famous-case-details [data-fit-famous-case-traces] {
+  width: 100%;
+  margin: 5px 0;
+  min-height: 32px;
+}
+
+.famous-case-location,
+.famous-case-dates,
+.famous-case-date-note,
+.famous-case-scope {
+  color: var(--muted);
+}
+
+.famous-case-scope {
+  padding-top: 7px;
+  border-top: 1px solid var(--panel-border);
+  font-size: 0.7rem;
+}
+
+.famous-case-sources {
+  display: grid;
+  gap: 5px;
+  margin-top: 8px;
 }
 
 .chronological-neighborhood-arrow {
@@ -4564,17 +4870,85 @@ button:focus {
   border-color: #596b00;
 }
 
+.map-control-context-button-crop,
+.map-control-context-button-animal {
+  position: relative;
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.map-control-context-button-crop[data-state="all"] {
+  background: rgba(216, 255, 62, 0.28);
+  border-color: #475700;
+  box-shadow: inset 0 0 0 1px rgba(216, 255, 62, 0.34), 0 0 0 1px rgba(216, 255, 62, 0.12);
+}
+
+.map-control-context-button-crop[data-state="all"]::after {
+  content: "\221E";
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 1px solid var(--panel-bg);
+  border-radius: 999px;
+  background: #475700;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .map-control-context-button-animal[aria-pressed="true"] {
   background: rgba(233, 242, 255, 0.2);
   border-color: #33404a;
+}
+
+.map-control-context-button-animal[data-state="all"] {
+  background: rgba(233, 242, 255, 0.34);
+  border-color: #263139;
+  box-shadow: inset 0 0 0 1px rgba(233, 242, 255, 0.38), 0 0 0 1px rgba(51, 64, 74, 0.18);
+}
+
+.map-control-context-button-animal[data-state="all"]::after {
+  content: "\221E";
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 1px solid var(--panel-bg);
+  border-radius: 999px;
+  background: #33404a;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
 }
 
 :root[data-theme="dark"] .map-control-context-button-crop[aria-pressed="true"] {
   border-color: rgba(216, 255, 62, 0.72);
 }
 
+:root[data-theme="dark"] .map-control-context-button-crop[data-state="all"] {
+  background: rgba(216, 255, 62, 0.24);
+  border-color: rgba(216, 255, 62, 0.92);
+}
+
 :root[data-theme="dark"] .map-control-context-button-animal[aria-pressed="true"] {
   border-color: rgba(233, 242, 255, 0.76);
+}
+
+:root[data-theme="dark"] .map-control-context-button-animal[data-state="all"] {
+  background: rgba(233, 242, 255, 0.3);
+  border-color: rgba(233, 242, 255, 0.94);
 }
 
 .map-control-context-button[aria-pressed="false"] .map-legend-marker-sample {
@@ -5362,6 +5736,322 @@ button:focus {
   border-radius: 12px;
 }
 
+.trace-intersection-controls {
+  display: grid;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.76rem;
+}
+
+.trace-intersection-enable-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--panel-border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface-soft));
+  cursor: pointer;
+}
+
+.trace-intersection-enable-row > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.trace-intersection-enable-row strong {
+  font-size: 0.8rem;
+}
+
+.trace-intersection-enable-row small {
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.trace-intersection-enable-row input {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.trace-intersection-method-note,
+.trace-intersection-time-note,
+.trace-intersection-facility-note,
+.trace-intersection-mini-note,
+.trace-intersection-empty-copy,
+.trace-intersection-sensitivity {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.69rem;
+  line-height: 1.42;
+}
+
+.trace-intersection-method-note {
+  padding: 0 2px;
+}
+
+.trace-intersection-trace-visibility-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.trace-intersection-trace-visibility-row input {
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+
+.trace-intersection-time-note {
+  padding: 7px 8px;
+  border-left: 3px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.trace-intersection-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.trace-intersection-field-grid label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+.trace-intersection-field-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  padding: 6px 7px;
+  color: var(--ink);
+  font-size: 0.7rem;
+}
+
+.trace-intersection-legend,
+.trace-intersection-status {
+  padding: 7px 8px;
+  border: 1px solid var(--status-border);
+  border-radius: 9px;
+  background: var(--status-bg);
+  color: var(--muted);
+  font-size: 0.67rem;
+  line-height: 1.4;
+}
+
+.trace-intersection-status.is-error {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.trace-intersection-overlay-button {
+  justify-self: start;
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 0.7rem;
+}
+
+.trace-intersection-hotspot-field {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+.trace-intersection-hotspot-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 7px;
+  color: var(--ink);
+  font-size: 0.69rem;
+}
+
+.trace-intersection-zoom-button {
+  width: 100%;
+  min-height: 34px;
+  font-size: 0.7rem;
+}
+
+.trace-intersection-inspector {
+  display: grid;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 11px;
+  background: var(--surface-soft);
+}
+
+.trace-intersection-inspector-heading {
+  display: grid;
+  gap: 2px;
+}
+
+.trace-intersection-inspector-heading strong {
+  font-size: 0.79rem;
+}
+
+.trace-intersection-inspector-heading span {
+  color: var(--accent);
+  font-size: 0.69rem;
+  font-weight: 800;
+}
+
+.trace-intersection-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.trace-intersection-metrics > div {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  padding: 6px 4px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-soft));
+  text-align: center;
+}
+
+.trace-intersection-metrics strong {
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.trace-intersection-metrics span {
+  color: var(--muted);
+  font-size: 0.58rem;
+  line-height: 1.15;
+}
+
+.trace-intersection-inspector details {
+  border-top: 1px solid var(--panel-separator);
+}
+
+.map-control-section .trace-intersection-inspector details > summary {
+  min-height: 0;
+  padding: 7px 1px 5px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.map-control-section .trace-intersection-inspector details > summary::after {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-width: 1.5px;
+}
+
+.trace-intersection-rank-list,
+.trace-intersection-axis-list {
+  display: grid;
+  gap: 4px;
+  margin: 3px 0 5px;
+  padding: 0;
+  list-style: none;
+}
+
+.trace-intersection-rank-list li,
+.trace-intersection-axis-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.trace-intersection-rank-list span,
+.trace-intersection-axis-list strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.trace-intersection-rank-list strong {
+  flex: 0 0 auto;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.trace-intersection-axis-list li {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.trace-intersection-map-cell {
+  cursor: pointer;
+  transition: fill-opacity 100ms ease, stroke-width 100ms ease;
+}
+
+.trace-intersection-centroid-icon {
+  border: 0;
+  background: transparent;
+}
+
+.trace-intersection-centroid-button {
+  display: block;
+  width: var(--trace-intersection-cell-size, 14px);
+  height: var(--trace-intersection-cell-size, 14px);
+  margin: 0;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: var(--trace-intersection-cell-color, #21b6c7);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.74), 0 0 0 1px rgba(8, 23, 32, 0.58);
+}
+
+.trace-intersection-centroid-button:hover,
+.trace-intersection-centroid-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  transform: scale(1.12);
+}
+
+.trace-intersection-centroid-button.is-selected {
+  border-width: 3px;
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 5px rgba(0, 0, 0, 0.78);
+}
+
+.trace-intersection-map-cell:hover {
+  fill-opacity: 0.92;
+}
+
+.trace-intersection-map-cell.is-selected {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.72));
+}
+
+@media (max-width: 430px) {
+  .trace-intersection-field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .trace-intersection-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .map-control-slot .area-selection-shell {
   position: static;
   inset: auto;
@@ -5610,7 +6300,39 @@ button:focus {
 
 .map-legend-item-label {
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
   line-height: 1.25;
+}
+
+.map-legend-item-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 1px 6px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.map-legend-item-state[data-state="all"] {
+  border-color: rgba(216, 255, 62, 0.52);
+  color: #596b00;
+}
+
+:root[data-theme="dark"] .map-legend-item-state[data-state="all"] {
+  color: #d8ff3e;
+}
+
+.map-legend-item-state[data-state="off"] {
+  opacity: 0.72;
 }
 
 .map-legend-item-count {
@@ -6833,6 +7555,87 @@ button:focus {
   display: none;
 }
 
+.results-case-context {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.results-case-context[hidden] {
+  display: none;
+}
+
+.results-famous-case-summary {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  background: var(--card);
+}
+
+.results-famous-case-summary[hidden] {
+  display: none;
+}
+
+.results-famous-case-title {
+  margin: 0 0 5px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.results-famous-case-meta {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.results-famous-case-connections {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.results-famous-case-connections p {
+  flex: 1 1 100px;
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.results-famous-case-connections button {
+  min-height: 32px;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+}
+
+.results-famous-case-summary summary {
+  padding: 8px 0 2px;
+  color: var(--accent-strong);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.results-famous-case-details-body {
+  max-height: min(240px, 28vh);
+  overflow: auto;
+  margin-top: 8px;
+  padding-top: 2px;
+  border-top: 1px solid var(--panel-border);
+  font-size: 0.74rem;
+  line-height: 1.55;
+  scrollbar-gutter: stable;
+}
+
+.results-famous-case-details-body p {
+  margin: 8px 0;
+}
+
 .results-area-filter-clear {
   min-height: 32px;
   padding: 6px 10px;
@@ -6969,6 +7772,26 @@ button:focus {
   background: var(--card);
   color: inherit;
   overflow: hidden;
+}
+
+.result-card.is-case-area {
+  border-inline-start: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--card));
+}
+
+.result-card.is-case-connected {
+  border-inline-start: 3px dashed var(--muted);
+}
+
+.result-case-membership {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.is-case-area .result-case-membership {
+  color: var(--accent-strong);
 }
 
 .result-card.is-active {

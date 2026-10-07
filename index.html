@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="./styles.css?v=2026-08-12-context-evidence-v2">
+  <link rel="stylesheet" href="./styles.css?v=2026-10-06-case-context-v10">
   <script>
     // Retire the temporary recovery proxy only for browsers that still have it.
     // New visitors without an existing root-scoped registration do no SW work.
@@ -571,6 +571,24 @@
                 </select>
               </label>
             </div>
+            <div class="famous-case-picker">
+              <label class="field compact-field">
+                <span>Famous Sightings &amp; Cases</span>
+                <select id="filter-famous-cases" aria-describedby="famous-case-search-status">
+                  <option value="">Choose a famous case</option>
+                </select>
+              </label>
+              <div class="famous-case-order" role="group" aria-label="Sort famous cases">
+                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="alphabetical" aria-pressed="true" title="A–Z by case name">Alphabetical</button>
+                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="chronological" aria-pressed="false" title="Oldest first, using the reported start date">Chronological</button>
+              </div>
+              <label class="field compact-field famous-case-search-field">
+                <span class="sr-only">Search famous cases</span>
+                <input id="famous-case-search" type="search" placeholder="Find a case, place, or year…" autocomplete="off" aria-controls="filter-famous-cases">
+              </label>
+              <p id="famous-case-search-status" class="famous-case-search-status" role="status" aria-live="polite"></p>
+              <div id="famous-case-details" class="famous-case-details" hidden></div>
+            </div>
             <label class="checkbox-field">
               <input id="hide-low-precision" type="checkbox">
               <span>Hide low-precision coordinates (country, state/province, approximate, and unknown)</span>
@@ -1032,9 +1050,10 @@
                     class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-crop"
                     type="button"
                     aria-pressed="true"
+                    data-state="window"
                     aria-controls="map crop-circle-status"
-                    aria-label="Hide Crop circles overlay"
-                    title="Hide Crop circles overlay"
+                    aria-label="Crop circles quick cycle. Current: Time window. Next: All time."
+                    title="Crop circles: Time window. Click for All time."
                   >
                     <span class="map-legend-marker-sample map-legend-marker-sample-spiral" aria-hidden="true"></span>
                   </button>
@@ -1043,9 +1062,10 @@
                     class="secondary-button map-control-quick-button map-control-context-button map-control-context-button-animal"
                     type="button"
                     aria-pressed="true"
+                    data-state="window"
                     aria-controls="map animal-mutilation-status"
-                    aria-label="Hide Animal Mutilation Reports overlay"
-                    title="Hide Animal Mutilation Reports overlay"
+                    aria-label="Animal Mutilation Reports quick cycle. Current: Time window. Next: All time."
+                    title="Animal Mutilation Reports: Time window. Click for All time."
                   >
                     <span class="map-legend-marker-sample map-legend-marker-sample-cow" aria-hidden="true"></span>
                   </button>
@@ -1110,6 +1130,103 @@
                   <span id="map-control-traces-summary-state" class="map-control-summary-state">Static</span>
                 </summary>
                 <div id="map-control-traces-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-intersections" class="map-control-section" data-map-control-section="intersections">
+                <summary>
+                  <span class="map-control-summary-label">Convergence cells</span>
+                  <span id="map-control-intersections-summary-state" class="map-control-summary-state">Off</span>
+                </summary>
+                <div id="map-control-intersections-slot" class="map-control-slot">
+                  <section id="trace-intersection-controls" class="trace-intersection-controls" aria-label="Trace convergence cell controls">
+                    <label class="trace-intersection-enable-row" for="trace-intersection-enabled">
+                      <span>
+                        <strong>Show convergence cells</strong>
+                        <small>Proper interior crossings of qualified report-neighbor connectors</small>
+                      </span>
+                      <input id="trace-intersection-enabled" type="checkbox" role="switch" aria-describedby="trace-intersection-method-note">
+                    </label>
+                    <p id="trace-intersection-method-note" class="trace-intersection-method-note">
+                      Exploratory associations, not observed flight paths. Start and end effects are excluded. The layer loads only when enabled.
+                    </p>
+                    <label class="trace-intersection-trace-visibility-row" for="trace-intersection-hide-traces">
+                      <input id="trace-intersection-hide-traces" type="checkbox" checked>
+                      <span>Hide ordinary traces while cells are shown</span>
+                    </label>
+                    <div class="trace-intersection-field-grid">
+                      <label>
+                        <span>Endpoint exclusion</span>
+                        <select id="trace-intersection-endpoint-buffer">
+                          <option value="buffer5" selected>5 km · conservative</option>
+                          <option value="buffer1">1 km · sensitive</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Cell resolution</span>
+                        <select id="trace-intersection-resolution">
+                          <option value="equal_area_24792_km2">9,573 mi² cells</option>
+                          <option value="equal_area_2497_km2">964 mi² cells</option>
+                          <option value="equal_area_259_km2" selected>100 mi² cells</option>
+                          <option value="equal_area_26_km2">10 mi² cells</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Craft scope</span>
+                        <select id="trace-intersection-craft-scope">
+                          <option value="all_no_lights" selected>All recognized craft — lights excluded</option>
+                          <option value="cross_craft">Cross-craft — mixed included</option>
+                          <option value="same_craft">Same-craft only</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Time scope</span>
+                        <select id="trace-intersection-time-scope">
+                          <option value="all_time" selected>All catalog years · no separation limit</option>
+                          <option value="timeline">Current Timeline range</option>
+                          <option value="within_5_years">Connector dates within 5 years</option>
+                          <option value="within_10_years">Connector dates within 10 years</option>
+                          <option value="within_25_years">Connector dates within 25 years</option>
+                          <option value="within_50_years">Connector dates within 50 years</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Cell color</span>
+                        <select id="trace-intersection-metric">
+                          <option value="lift" selected>Opportunity-normalized lift</option>
+                          <option value="crossings">Crossing count</option>
+                          <option value="unique_connectors">Unique crossing connectors</option>
+                          <option value="period_coverage">Five-year period coverage</option>
+                          <option value="same_period_share">Same-period share</option>
+                          <option value="buffer_survival">Endpoint-buffer survival</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Minimum support</span>
+                        <select id="trace-intersection-support">
+                          <option value="limited_candidate" selected>Limited or repeated</option>
+                          <option value="repeated_candidate">Repeated only</option>
+                          <option value="all">All · descriptive included</option>
+                        </select>
+                      </label>
+                    </div>
+                    <p class="trace-intersection-time-note">
+                      Five-year periods summarize recurrence; they do not cap the analysis. “All catalog years” is the default.
+                    </p>
+                    <div id="trace-intersection-legend" class="trace-intersection-legend">Layer off · data loads only when enabled</div>
+                    <div id="trace-intersection-status" class="trace-intersection-status" role="status" aria-live="polite">Off. Facilities and other overlays are unchanged.</div>
+                    <label class="trace-intersection-hotspot-field" for="trace-intersection-cell-select">
+                      <span>Inspect hotspot</span>
+                      <select id="trace-intersection-cell-select" disabled>
+                        <option value="">Enable the layer first</option>
+                      </select>
+                    </label>
+                    <button id="trace-intersection-zoom-selected" class="secondary-button trace-intersection-zoom-button" type="button" disabled>Zoom to selected cell</button>
+                    <button id="trace-intersection-open-overlays" class="secondary-button trace-intersection-overlay-button" type="button">Open facility overlays</button>
+                    <p class="trace-intersection-facility-note">Military bases and research sites remain separate evidence layers and draw above these cells. Visual proximity does not establish a relationship.</p>
+                    <div id="trace-intersection-inspector" class="trace-intersection-inspector">
+                      <p class="trace-intersection-empty-copy">Enable the layer, then select a hotspot to inspect its craft mix, recurrence, and endpoint-buffer sensitivity.</p>
+                    </div>
+                  </section>
+                </div>
               </details>
               <details id="map-control-section-facility" class="map-control-section" data-map-control-section="facility">
                 <summary>
@@ -1282,6 +1399,10 @@
                   <span>Traces from sightings</span>
                 </label>
               </div>
+              <details id="area-direction-summary" class="area-direction-summary" hidden>
+                <summary>Direction breakdown</summary>
+                <div id="area-direction-summary-body"></div>
+              </details>
             </section>
           </div>
           <section id="chronological-neighborhood-inspector" class="chronological-neighborhood-inspector" hidden aria-label="Chronological adjacency inspector" aria-live="polite">
@@ -1697,10 +1818,12 @@
               >-</button>
             </div>
           </div>
+          <section id="results-famous-case-summary" class="results-famous-case-summary" aria-label="Selected famous case" hidden></section>
           <div id="results-area-filter-indicator" class="results-area-filter-indicator" hidden>
             <span id="results-area-filter-text">Area filter active</span>
             <button id="results-area-filter-clear" class="secondary-button results-area-filter-clear" type="button">Clear</button>
           </div>
+          <p id="results-case-context" class="results-case-context" role="status" hidden></p>
           <div id="result-list" class="result-list"></div>
         </section>
       </aside>
@@ -1766,13 +1889,16 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
-  <script src="./trace_neighborhood.js?v=2026-08-09-control-panel-area-v1"></script>
-  <script src="./legend_controls.js?v=2026-08-12-viewport-legend-area-traces-v1"></script>
+  <script src="./trace_neighborhood.js?v=2026-10-06-case-traces-v4"></script>
+  <script src="./trace_direction_summary.js?v=2026-10-06-shared-arrows-v8"></script>
+  <script src="./legend_controls.js?v=2026-10-06-legend-case-labels-v3"></script>
   <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
+  <script src="./famous_case_presets.js?v=2026-10-06-case-focus-v5"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./crop_circle_bootstrap.js?v=2026-08-12-context-evidence-v2"></script>
-  <script src="./animal_mutilation_bootstrap.js?v=2026-08-12-context-evidence-v2"></script>
+  <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
+  <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
   <script src="./analysis_view.js?v=2026-08-12-context-evidence-v2"></script>
-  <script src="./app.js?v=2026-08-29-basemap-provider-repair-v1"></script>
+  <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
+  <script src="./app.js?v=2026-10-06-case-context-v10"></script>
 </body>
 </html>

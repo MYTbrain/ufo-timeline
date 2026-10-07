@@ -35,7 +35,12 @@ cache/
 live_probe/
 
 # Generated datasets, packaged transfers, and deployment bundles
-data/
+/data/*
+!/data/trace_intersection_feasibility_v1/
+/data/trace_intersection_feasibility_v1/*
+!/data/trace_intersection_feasibility_v1/manifest.json
+!/data/trace_intersection_feasibility_v1/strict_25km_7d_buffer1.json
+!/data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json
 UFO Databases/
 share_packages/
 cloudflare_bundle*/

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trace Convergence Feasibility Lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./vendor/leaflet.css">
+  <link rel="stylesheet" href="./trace_intersection_feasibility.css">
+</head>
+<body>
+  <main class="feasibility-shell">
+    <header class="feasibility-header">
+      <div>
+        <p class="eyebrow">UFO Timeline · bounded prototype</p>
+        <h1>Trace Convergence Feasibility Lab</h1>
+        <p class="lede">Interior crossings only. No endpoints or trace fan-out are drawn.</p>
+      </div>
+      <a class="back-link" href="./index.html">Return to UFO Timeline</a>
+    </header>
+
+    <section class="claim-boundary" aria-label="Scientific interpretation boundary">
+      <strong>Exploratory association geometry—not observed travel.</strong>
+      These connectors join qualified report neighbors within the selected distance and date limits. Hotspots may reveal useful structure or reporting artifacts, but do not establish craft paths, origins, destinations, or causation.
+    </section>
+
+    <section class="workspace" aria-label="Trace intersection feasibility map">
+      <aside class="control-panel">
+        <div class="control-heading">
+          <div>
+            <p class="eyebrow">View controls</p>
+            <h2>Intersection-only map</h2>
+          </div>
+          <span id="load-status" class="status-pill" role="status">Loading…</span>
+        </div>
+
+        <label class="control-field">
+          <span>Endpoint exclusion</span>
+          <select id="profile-select">
+            <option value="buffer1">Discovery · remove first/last 1 km</option>
+            <option value="buffer5">Conservative · remove first/last 5 km</option>
+          </select>
+        </label>
+
+        <label class="control-field">
+          <span>Cell resolution</span>
+          <select id="resolution-select"></select>
+        </label>
+
+        <label class="control-field">
+          <span>Color cells by</span>
+          <select id="metric-select">
+            <option value="lift">Opportunity-normalized lift</option>
+            <option value="raw">Raw interior crossings</option>
+            <option value="persistence">Five-year periods represented</option>
+            <option value="same_craft">Same-craft connector crossings</option>
+            <option value="different_craft">Different-craft connector crossings</option>
+            <option value="mixed">Mixed-endpoint connector crossings</option>
+            <option value="craft">Crossings involving selected craft</option>
+          </select>
+        </label>
+
+        <label id="craft-field" class="control-field" hidden>
+          <span>Craft involvement</span>
+          <select id="craft-select"></select>
+        </label>
+
+        <label class="control-field">
+          <span>Minimum screening tier</span>
+          <select id="support-select">
+            <option value="all">Show every crossing cell</option>
+            <option value="limited_candidate" selected>Limited candidates and above</option>
+            <option value="repeated_candidate">Repeated candidates only</option>
+          </select>
+        </label>
+
+        <p class="small-note">The default spans all qualified catalog years. Five-year periods summarize recurrence; they are not a five-year analysis limit. The recognized-craft pool excludes generic lights.</p>
+
+        <div id="summary-cards" class="summary-cards" aria-live="polite"></div>
+
+        <div class="legend-block">
+          <div class="legend-title-row">
+            <strong id="legend-title">Opportunity-normalized lift</strong>
+            <span id="legend-range"></span>
+          </div>
+          <div class="legend-gradient" aria-hidden="true"></div>
+          <div class="legend-labels"><span>Lower</span><span>Higher</span></div>
+          <p id="legend-note" class="small-note">Lift compares crossings with local connector-pair opportunities. It is a screening statistic, not a formal significance test.</p>
+        </div>
+      </aside>
+
+      <section class="map-panel">
+        <div id="intersection-map" aria-label="Equal-area trace intersection cell map"></div>
+        <p class="map-caption">Cells use equal steps in longitude and sin(latitude), rather than ordinary latitude/longitude squares, so each covers the same surface area.</p>
+      </section>
+
+      <aside id="cell-inspector" class="inspector-panel" aria-live="polite">
+        <div class="empty-inspector">
+          <p class="eyebrow">Cell inspector</p>
+          <h2>Select a hotspot</h2>
+          <p>Choose a cell to compare raw density with opportunity-normalized lift, endpoint-buffer sensitivity, craft signatures, temporal recurrence, and connector dominance.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./vendor/leaflet.js"></script>
+  <script src="./trace_intersection_feasibility.js"></script>
+</body>
+</html>

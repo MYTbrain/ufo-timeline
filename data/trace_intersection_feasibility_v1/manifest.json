@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "trace-intersection-feasibility-v1-20260819",
+  "artifactStatus": "integrated_local_not_deployed",
+  "analysisRole": "qualified_report_neighbor_connector_intersection_feasibility",
+  "claimBoundary": {
+    "observedTravelPaths": false,
+    "originsOrDestinations": false,
+    "causalInference": false,
+    "chronologyTraceParity": false,
+    "description": "Interior crossings of bounded qualified report-neighbor connectors. Connectors are exploratory associations, not observed craft movement."
+  },
+  "source": {
+    "releaseId": "analysis-evidence-lab-v2.3-20260812",
+    "manifest": {
+      "file": "../analysis_v2/manifest.json",
+      "bytes": 95801,
+      "sha256": "6008b8b906fda2bff877846168edb81e5a873c6c988ded37343b02e036da5467"
+    },
+    "qualifiedPoints": {
+      "file": "../analysis_v2/ufo_spatial_points_v2.json",
+      "rows": 33801,
+      "bytes": 3366574,
+      "sha256": "89e5a877af7402450e74981ad6d12c8ff2ac0bfc2b68b3f01452862123ff58c1"
+    },
+    "qualifiedNeighbors": {
+      "file": "../analysis_v2/ufo_point_neighbors_v1.json",
+      "rows": 42575,
+      "bytes": 2058964,
+      "sha256": "9de03bdcc8d285b0dedcbc659ba28b2126008b807a08c308a62e9551bee5d51d"
+    }
+  },
+  "builder": {
+    "file": "scripts/trace_intersection_feasibility.py",
+    "sha256": "eaec5ae4175e46ac9dfac0df547c7d061b6d77ec2e658a8ed2bfae7c5435b8d9",
+    "deterministicCompactJson": true
+  },
+  "sharedParameters": {
+    "maximumDistanceKm": 25.0,
+    "maximumDayLag": 7,
+    "minimumCrossingAngleDegrees": 15.0,
+    "connectorCount": 5992,
+    "sharedEndpointPairsExcluded": 10900,
+    "cellAreasKm2": [24791.770243, 2497.201444, 258.851518, 25.893026],
+    "axisDirected": false,
+    "fiveYearBandsAreAnalysisLimit": false,
+    "defaultCrossingDateSeparationLimited": false,
+    "genericLightsEligible": false
+  },
+  "artifacts": {
+    "buffer1": {
+      "file": "strict_25km_7d_buffer1.json",
+      "bytes": 2807018,
+      "sha256": "415975b4d61de009f68cecfb5ff60da1d4edb5a72e181d03736646aeb851d983",
+      "endpointBufferKm": 1.0,
+      "properInteriorCrossings": 2375,
+      "sameCraftCrossings": 562,
+      "differentHomotypicCraftCrossings": 101,
+      "mixedEndpointCraftCrossings": 1712,
+      "crossingCellsByResolution": [81, 127, 205, 406]
+    },
+    "buffer5": {
+      "file": "strict_25km_7d_buffer5.json",
+      "bytes": 1584487,
+      "sha256": "70756f2a2f21a954cc2d7ba017e61062a0115b48fbf36d9ba54774c76eaafc71",
+      "endpointBufferKm": 5.0,
+      "properInteriorCrossings": 363,
+      "sameCraftCrossings": 78,
+      "differentHomotypicCraftCrossings": 19,
+      "mixedEndpointCraftCrossings": 266,
+      "crossingCellsByResolution": [38, 49, 77, 121]
+    }
+  },
+  "screeningPolicy": {
+    "descriptiveOnly": "All remaining cells",
+    "limitedCandidate": "At least 5 crossings, 4 unique crossing connectors, and no connector contributes more than 60 percent of crossings",
+    "repeatedCandidate": "At least 20 crossings, 10 unique crossing connectors, 3 five-year periods, and no connector contributes more than 35 percent of crossings",
+    "formalSignificanceTest": false
+  },
+  "rebuildCommands": [
+    "python scripts/trace_intersection_feasibility.py --endpoint-buffer-km 1 --output webapp/static_public/data/trace_intersection_feasibility_v1/strict_25km_7d_buffer1.json",
+    "python scripts/trace_intersection_feasibility.py --endpoint-buffer-km 5 --output webapp/static_public/data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json"
+  ],
+  "retention": {
+    "purpose": "Deterministic qualified-connector intersection profiles for the lazy local convergence-cell map layer",
+    "canonicalInputsRemain": "webapp/static_public/data/analysis_v2",
+    "fullDatasetCopied": false,
+    "productionPromotion": false,
+    "decision": "retain_with_integrated_source_until_validation_and_release_review"
+  }
+}
