@@ -1,0 +1,664 @@
+{
+  "release_id": "quality-20261007",
+  "manifest_sha256": "af8a6c80d0e5cc38ccd94165b3923d68f29c23855056011b81aa252f66c9b114",
+  "passed": true,
+  "objects": [
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_color_v1/color_projection_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "ca149dc68acc295631502f4a49e8672657fea9d2c08e95b785344d2fa92c1573",
+      "bytes": 1070408
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_coordinate_evidence_v1/coordinate_evidence_projection_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "6e1db739ea2210d6e6b02ef9b7edcf1730b58aede10249974200beaba88f63be",
+      "bytes": 2140021
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_coordinate_evidence_v1/coordinate_original_evidence_v1_000.json.gz",
+      "status": "uploaded",
+      "sha256": "7257843f39404c358eea81b307d3125a8be2e0439fba90f6bfe84dcc72a33755",
+      "bytes": 1195420
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_duration_v1/duration_projection_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "a1d4d6f1b787ece1ff2bb4288424700442fff4ac746b2443f8e06388aaa9bdcb",
+      "bytes": 3886484
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_projection_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "feca92b0688a0a70aebb657bb229403dcaad7457d1f29ce6a026d89cdb328027",
+      "bytes": 3778892
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_000.json.gz",
+      "status": "uploaded",
+      "sha256": "7f9fa0b30695eefa099684b5e985b1b1cead24fdaceed82db30fcbb4bc27c052",
+      "bytes": 1546640
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_001.json.gz",
+      "status": "uploaded",
+      "sha256": "6542a71bf8a2a5547d1aed24eb5b6e3169e13cc551f02d04be06ea4121250e72",
+      "bytes": 1552958
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_002.json.gz",
+      "status": "uploaded",
+      "sha256": "50815d84795d26dde952e8ecdafa1fb39ee6c81f7aa671154ae7976c8f0a79ef",
+      "bytes": 1548103
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_003.json.gz",
+      "status": "uploaded",
+      "sha256": "faf6d7ca95dc36ded3724cf1fe3856e4bdb5a5d755751c00cd368929d815a96f",
+      "bytes": 1546840
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_004.json.gz",
+      "status": "uploaded",
+      "sha256": "92bce6e52d451aef2bb382e340485d0c6cca19c6113f251bf1bee3c09637decd",
+      "bytes": 1548646
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_reporting_delay_v1/reporting_delay_role_evidence_v1_005.json.gz",
+      "status": "uploaded",
+      "sha256": "733b6ab9cd16c3e26b92cf5bdb72e1c6d675d9d0cf7a80919b207dba170384be",
+      "bytes": 631833
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_time_of_day_v1/time_of_day_projection_v1_000.json.gz",
+      "status": "uploaded",
+      "sha256": "728b52a656c2dc4ffda26264867d5e9ec96e804e125b6b88d06f34af6cef6c2a",
+      "bytes": 2690269
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_time_of_day_v1/time_of_day_projection_v1_001.json.gz",
+      "status": "uploaded",
+      "sha256": "59391e4232260b17df83269b896501fff16cadcafb3efab94c863a87783fa87e",
+      "bytes": 2696974
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_time_of_day_v1/time_of_day_projection_v1_002.json.gz",
+      "status": "uploaded",
+      "sha256": "8638dcd13f651d8ca021923d2d772c6443b7c4237b294816b65e8a4eba968b4b",
+      "bytes": 2697294
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_time_of_day_v1/time_of_day_projection_v1_003.json.gz",
+      "status": "uploaded",
+      "sha256": "fcb3b5341ae285e048978816423abacb9743e98355bfccc012e9f313a911e403",
+      "bytes": 357433
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_v2/ufo_geography_v1.bin.gz",
+      "status": "uploaded",
+      "sha256": "9177cfcd375928fab5eb8799b37c880799cfcfccc5f8b9368fc829d44d232750",
+      "bytes": 4526454
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_v2/ufo_geography_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "7ae340e0f567c9e656fb0c93a002a5b4027b173a0e98b1fa3b493d7df226d0c4",
+      "bytes": 7001105
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_v2/ufo_point_neighbors_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "ec3a07740f609118a04d2bd71ec95dba4f653b2297d4df334d209aa0ad2df629",
+      "bytes": 637241
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_v2/ufo_spatial_points_v2.json.gz",
+      "status": "uploaded",
+      "sha256": "f71b339a1031c741385ddb55cff48fed452c37ba4f457436681e6a1ad1f5ef21",
+      "bytes": 1259038
+    },
+    {
+      "key": "releases/quality-20261007/analysis_delta/analysis_witness_count_v1/witness_count_projection_v1_000.json.gz",
+      "status": "uploaded",
+      "sha256": "e434ed61b3495173c73ed5e839dcce011c3d0e659ffad7e5b9f6a857b3f87ab2",
+      "bytes": 1760539
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/canonical_web_manifest.json",
+      "status": "reused_identical",
+      "sha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e",
+      "bytes": 6655
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/canonical_web_manifest.json.gz",
+      "status": "reused_identical",
+      "sha256": "d04713235d8c675a8d58e99008c41057f634ce83c850c2d84f36c37209214f61",
+      "bytes": 2402
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/event_chunk_manifest.json",
+      "status": "reused_identical",
+      "sha256": "fc63811513069fc0a092b96e82ed4884b1c4aa88e37ba890081304389031099c",
+      "bytes": 37642
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/event_chunk_manifest.json.gz",
+      "status": "reused_identical",
+      "sha256": "4725ee1c4a739b9f5097a15f2401aa3097632cfa4e643066e9f448ad8b8532a0",
+      "bytes": 7773
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/points.bin.gz",
+      "status": "reused_identical",
+      "sha256": "ee1df779550cc584eca2fd49ab522c1d1d4dc93ace9b6e8d54908c3bc5b25c0e",
+      "bytes": 16738192
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/points_meta.json",
+      "status": "reused_identical",
+      "sha256": "71ac60919b2badac7badaa25cd4049d98084a6d0c34f84b8e15e36914362d8dd",
+      "bytes": 8820
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/points_meta.json.gz",
+      "status": "reused_identical",
+      "sha256": "ffa64f1a00c2d97018af7c56d3c0ef2345b80f8d277412a6bee4ac87d813d49c",
+      "bytes": 2301
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_manifest.json",
+      "status": "reused_identical",
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb",
+      "bytes": 9773
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_manifest.json.gz",
+      "status": "reused_identical",
+      "sha256": "4b6fbbda6f2fced2eed7eba3244c8aaac7680cb822ae46288d4c88051c072fb1",
+      "bytes": 2050
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000000.json.gz",
+      "status": "reused_identical",
+      "sha256": "010c190faabacc95f1cbf565eb6f393a710369289a766f0b2b5b96e085fe3935",
+      "bytes": 736805
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000001.json.gz",
+      "status": "reused_identical",
+      "sha256": "2b7af8331cf394c44f3564f2d11f4f7aa27b7e5a1a11b882b370dcf12b8dc253",
+      "bytes": 736237
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000002.json.gz",
+      "status": "reused_identical",
+      "sha256": "c8c0317850064ca1d88550a4ef8df62af92cefa99d4d05ffa72ba407c15b2da2",
+      "bytes": 734608
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000003.json.gz",
+      "status": "reused_identical",
+      "sha256": "346ced97b94d7f2e3548892621c082ab06d7ccf478056810d86d0de6daf74423",
+      "bytes": 733176
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000004.json.gz",
+      "status": "reused_identical",
+      "sha256": "af0880120df43132dec04a1cc3164cfc06e57213415000e296c4e6e5f0bdbbe3",
+      "bytes": 733068
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000005.json.gz",
+      "status": "reused_identical",
+      "sha256": "3e4fe09e5eba5d1cf8b75e2bbf7f9ab92e84872d23863f514ca0dcd6dd58c1fb",
+      "bytes": 730566
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000006.json.gz",
+      "status": "reused_identical",
+      "sha256": "754f913dd265f250da4e9a16599012145e0c87088a82b993f30c1c21e8a7d221",
+      "bytes": 733887
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000007.json.gz",
+      "status": "reused_identical",
+      "sha256": "7228abc42078a4c9683c516ae0d70bdd360e0b89abeaaf69b7c57d27ad6ae4c1",
+      "bytes": 731654
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000008.json.gz",
+      "status": "reused_identical",
+      "sha256": "6f2f7433c4d1788c8e78a61f1279fe1de14ff2bb2eb9192f8dd3a6632d900a2c",
+      "bytes": 730367
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000009.json.gz",
+      "status": "reused_identical",
+      "sha256": "8a6c8f198e14001fdb2f7104dd902c60f71814bd11cabdd97001c4b7068222db",
+      "bytes": 730573
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000010.json.gz",
+      "status": "reused_identical",
+      "sha256": "9dd5ca6a2c7ed2facfe01896c72eb401f06466421868415ff129031fec811668",
+      "bytes": 726934
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000011.json.gz",
+      "status": "reused_identical",
+      "sha256": "567a58a2cfa1c0608f649e6eb7bed4c22ab43b03b2c5fbe78d96329ba0b0deb3",
+      "bytes": 727284
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000012.json.gz",
+      "status": "reused_identical",
+      "sha256": "63de13c889702a9e5692d35e62cf82c4e43499b663e79805e74c27d25e33432e",
+      "bytes": 730232
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000013.json.gz",
+      "status": "reused_identical",
+      "sha256": "6cd351250984f5abeb96796095e0f79187487c26aff05df7d0fe1a5ea288c652",
+      "bytes": 725635
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000014.json.gz",
+      "status": "reused_identical",
+      "sha256": "5ee6d7ec18fa51d7b2d9c3fd3d11ce30c1b8ee66d5713d98332533c9ba8ef240",
+      "bytes": 729914
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000015.json.gz",
+      "status": "reused_identical",
+      "sha256": "abc42621af38a71b4ce1e6809db37a53e30923f0c7377e47eaf72437079602c1",
+      "bytes": 724690
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000016.json.gz",
+      "status": "reused_identical",
+      "sha256": "171161683ef9b8d1875db22a239dd93bfbbc99479e70f9db8a02fd6775631583",
+      "bytes": 724246
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000017.json.gz",
+      "status": "reused_identical",
+      "sha256": "5ddf46dad779a924e050c17285486a4ccaa3ed455db8f27d9571d6f09457c300",
+      "bytes": 725418
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000018.json.gz",
+      "status": "reused_identical",
+      "sha256": "05b7247214ee5aa1268b9dcd767a3721efbae10f77a793136b3d64afcb63c6d8",
+      "bytes": 725858
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000019.json.gz",
+      "status": "reused_identical",
+      "sha256": "efe6ce00c79fe843c1af24e6e68675b9286cecb8b16b4d1b7d3c7f73a397bd76",
+      "bytes": 725630
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000020.json.gz",
+      "status": "reused_identical",
+      "sha256": "32257db8ba6c26b6ffd3591a19346b63cb83dc61e7deb7596faffa331b5260db",
+      "bytes": 722949
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000021.json.gz",
+      "status": "reused_identical",
+      "sha256": "d17775afec3c533b2e5904e0c4c595b60b00da759f3dff3de846665256a660c7",
+      "bytes": 722141
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000022.json.gz",
+      "status": "reused_identical",
+      "sha256": "18e6048e1205e3db52a30a1bdbdda8bc021b4b843daef22031649bd27ad507c3",
+      "bytes": 720896
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000023.json.gz",
+      "status": "reused_identical",
+      "sha256": "13b32f55d69bc1dde7e37d1d51b41403ed61ad80d697c5a31333c51a403fa06e",
+      "bytes": 721477
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000024.json.gz",
+      "status": "reused_identical",
+      "sha256": "97b26a15000271edc9e5c438e2b380991b906a9828b697f24349b33612bac025",
+      "bytes": 720358
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000025.json.gz",
+      "status": "reused_identical",
+      "sha256": "77d37828979a3ea25b82238a06c46907c4d784654b447307ce75176a83871826",
+      "bytes": 721806
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000026.json.gz",
+      "status": "uploaded",
+      "sha256": "16ea02825bcce2ac4510365321a07a541ce5a4533dbcd2221e4da4469349634d",
+      "bytes": 719687
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000027.json.gz",
+      "status": "uploaded",
+      "sha256": "27435bd4a27da6aba62434fe4e36acac2d146f40a9e18cffe14796dedae9fa98",
+      "bytes": 722207
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000028.json.gz",
+      "status": "uploaded",
+      "sha256": "336d304e5d7a0328f704bb16eb0640183a8907a69441dc9829b758043b94b2b2",
+      "bytes": 719898
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000029.json.gz",
+      "status": "uploaded",
+      "sha256": "757f291a3b86bd0b88e8501be4fe431a744e8f459f2f08e98591c5cd935ec9b0",
+      "bytes": 717396
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000030.json.gz",
+      "status": "uploaded",
+      "sha256": "f75eb73923c4a913a5b274792d52e018913785b2fedee5a19499f1dc527da412",
+      "bytes": 717543
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000031.json.gz",
+      "status": "uploaded",
+      "sha256": "3fde370dc0ec3332260efbf65be627288d234e18eada6c0547618a1d735db40b",
+      "bytes": 717840
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000032.json.gz",
+      "status": "uploaded",
+      "sha256": "62ffc6c6289010ad54dd9262f1b44bfabc79fedd6d8c221751b2c838aad6f82a",
+      "bytes": 716775
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000033.json.gz",
+      "status": "uploaded",
+      "sha256": "effc5413defc9234cc6980552afacb282dd351a67fb12059ae99c35cd9841fcd",
+      "bytes": 718380
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000034.json.gz",
+      "status": "uploaded",
+      "sha256": "9424bed6f8bc53c9754e3bae3f74a61d9cc14ea64db2e050a4635513dcc8557d",
+      "bytes": 718289
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000035.json.gz",
+      "status": "uploaded",
+      "sha256": "023795dab340e324423caa8373b73d5855281f913bc49663b13d62395e5e62b2",
+      "bytes": 715459
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000036.json.gz",
+      "status": "uploaded",
+      "sha256": "a6f326797b663fe4b6cbe1d8ee31007f349ac72b0933862065f8155dfac10abb",
+      "bytes": 718918
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000037.json.gz",
+      "status": "uploaded",
+      "sha256": "ccd6b38363665403c2bf46053210c07c836d65dc6b132258b74c7de499078bd4",
+      "bytes": 716405
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000038.json.gz",
+      "status": "uploaded",
+      "sha256": "527f7d05332e8d2558878bf041f47c6b59f3ab4d9c53f6528c72512ea5d9796f",
+      "bytes": 714699
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000039.json.gz",
+      "status": "uploaded",
+      "sha256": "7814e31e4509e8327fb815b685848114b91eca2b78e8a7cbe9b00677c2fcb7f7",
+      "bytes": 714864
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000040.json.gz",
+      "status": "uploaded",
+      "sha256": "7a59e5fb6ad6722be1c65d98bf54eb9b8a06323c7c27a057f37fd6c0064e5e74",
+      "bytes": 711656
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000041.json.gz",
+      "status": "uploaded",
+      "sha256": "6f61cf5906417960024cf3a40b080c03e04918e93ef69ad50e698790d1e183fb",
+      "bytes": 712543
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000042.json.gz",
+      "status": "uploaded",
+      "sha256": "13d19a13cf222237f36b33a7d0cb059159433a8eb15d21bc22ba45046c3d7001",
+      "bytes": 712101
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000043.json.gz",
+      "status": "uploaded",
+      "sha256": "29035d4f1d6c9f5262e42de056eb11e68eea4809fa29f94fe369c4dd321d65d8",
+      "bytes": 712542
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000044.json.gz",
+      "status": "uploaded",
+      "sha256": "1b4c57a9b54d68510f6f4ec83941b686e36bb94484ad86f5b0191f8b1315c315",
+      "bytes": 712991
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000045.json.gz",
+      "status": "uploaded",
+      "sha256": "53eeffe728907bb522c1296ffff480cd69d43724d537f024620c03dd1ef290c6",
+      "bytes": 708389
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000046.json.gz",
+      "status": "uploaded",
+      "sha256": "70386d220c81592a44b95d45a95d00950b59b437136e097ae64bf2cc9b1716c6",
+      "bytes": 708409
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000047.json.gz",
+      "status": "uploaded",
+      "sha256": "3443225292939f1e29b52efe487bb0e98ebe8cbe456d0efd9d0d1fa2c937a439",
+      "bytes": 711098
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000048.json.gz",
+      "status": "uploaded",
+      "sha256": "377f71e8b61788cc0ff6ac04feb8ad798dc661df70b328bf227c9abd75f6be27",
+      "bytes": 711191
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000049.json.gz",
+      "status": "uploaded",
+      "sha256": "4a04755110a04d576cf5d510aae1c770d15a9df4aefadf4cf9e1afda5a7f1e99",
+      "bytes": 710042
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000050.json.gz",
+      "status": "uploaded",
+      "sha256": "2c3d78d33a5c66afa9081730056753be9c4b8c4c594f1b6cb117f83f66c6f0a4",
+      "bytes": 710060
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000051.json.gz",
+      "status": "uploaded",
+      "sha256": "ee3989826654b7de62a02963596e85f5ac5066769fe5b83b4463c46b79d8305f",
+      "bytes": 706947
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000052.json.gz",
+      "status": "uploaded",
+      "sha256": "1b7435e6e1f02fd968f221c2f7dbf987330306df6214923d39e7a5a02337a4cc",
+      "bytes": 706963
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000053.json.gz",
+      "status": "uploaded",
+      "sha256": "9e04ca4b681226dff6d1b75e99d23aee74b47c12dbe6d2f021945d73ac6c781c",
+      "bytes": 706210
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000054.json.gz",
+      "status": "uploaded",
+      "sha256": "4c9ae15bcf199083ac0e437dd2b40a1d21297789e2c06652e4cf07076e5e8220",
+      "bytes": 706325
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000055.json.gz",
+      "status": "uploaded",
+      "sha256": "5856183cd15e5c2ddc4c4d7d2856ccc5469848971619be4985cae222925eb3ff",
+      "bytes": 705461
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000056.json.gz",
+      "status": "uploaded",
+      "sha256": "e5b552f7751e3d103d94d426e49248e1d143f5dc374495b56738403edeba0b8b",
+      "bytes": 705269
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000057.json.gz",
+      "status": "uploaded",
+      "sha256": "991b4baf875ead301c655698ed326bd6b0394b209c449c72ceb48458d760e7f2",
+      "bytes": 704933
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000058.json.gz",
+      "status": "uploaded",
+      "sha256": "53bf6f44dd4bab41e66372cea0d6f5cc5a022c545449dc9539917472aaa29a4d",
+      "bytes": 706260
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000059.json.gz",
+      "status": "uploaded",
+      "sha256": "68af60e0d26ee7f2ed62a7c2869ee1f04cf2ae568ad7f521dc947f372dce2214",
+      "bytes": 702695
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000060.json.gz",
+      "status": "uploaded",
+      "sha256": "d2e658949e96ee87b5c97b1a9612f32db2af41bade093dedbdb10ef47db5312b",
+      "bytes": 703292
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000061.json.gz",
+      "status": "uploaded",
+      "sha256": "3868ebee16bdae8426a5c2050e570b2b7141453f7ed7f5e6b265b76d7a028d6d",
+      "bytes": 701129
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000062.json.gz",
+      "status": "uploaded",
+      "sha256": "f2a3c93ef41aaf1d68452cbdf5dbe186df47a748ab3d917b691327a86de5c211",
+      "bytes": 700976
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000063.json.gz",
+      "status": "uploaded",
+      "sha256": "102ef623c03cf4d2ea5f660db4a24dad120dc5123af25e2763f95061f81f3260",
+      "bytes": 697952
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000064.json.gz",
+      "status": "uploaded",
+      "sha256": "0800545ae192a518b1c23ed241637abd04191b208e6696a06aafe6654c5be68e",
+      "bytes": 700889
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000065.json.gz",
+      "status": "uploaded",
+      "sha256": "ce69d6db485e0167277babd2552c06a5a1c10be2bb2f94723236422cd96291e3",
+      "bytes": 699640
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000066.json.gz",
+      "status": "uploaded",
+      "sha256": "e14a89dfec6c2e2bf3c1be5276e9963de1815fe2b088e52dc7555fe521332101",
+      "bytes": 698124
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000067.json.gz",
+      "status": "uploaded",
+      "sha256": "c355a5fa3b51a078eae620058b8f7a40b141ac55f5f5a963b018c1cfbcf83ffe",
+      "bytes": 697136
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000068.json.gz",
+      "status": "uploaded",
+      "sha256": "56ae084013be90765697f47202a968b386945c8537e8166f577fb75f5821e2bf",
+      "bytes": 695716
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000069.json.gz",
+      "status": "uploaded",
+      "sha256": "d21f5c3d2a657b73593dbc397c753fe561064205e2ec3b3ad292f601bb417652",
+      "bytes": 695215
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/summary_shards/summary_000070.json.gz",
+      "status": "uploaded",
+      "sha256": "b6e5a6dc4e98b20be0c7044060473722ecd6cd49ec19af5c75c4774473527443",
+      "bytes": 209895
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_aggregate_bins.bin.gz",
+      "status": "uploaded",
+      "sha256": "95e825cbbdd683cf863bc1ed06971cd08ea693e198e941c058454422410a6311",
+      "bytes": 4226990
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_aggregate_bins_meta.json",
+      "status": "uploaded",
+      "sha256": "cdc84bda7025733ee56402d21acf6b0b95ca7282b1a15047cb84f9f73fbc3bf9",
+      "bytes": 2530
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_aggregate_bins_meta.json.gz",
+      "status": "uploaded",
+      "sha256": "5f87aec6ed2296d2981387dd5dca7acbc067915f28f6dfacc6cd182bf772a8a7",
+      "bytes": 1013
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_event_index.bin.gz",
+      "status": "uploaded",
+      "sha256": "61db319238c3e2082d05ede6016fc3cfb2638471c0edcddfb161c3b0e550218e",
+      "bytes": 14289114
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_event_index_meta.json",
+      "status": "uploaded",
+      "sha256": "1a0de8601203533b46dd99c512fef3474887267002cd02d42f5453f24b277c52",
+      "bytes": 5676
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_event_index_meta.json.gz",
+      "status": "uploaded",
+      "sha256": "86bced0efcd8e38658b3c648bb9cce348df9b2da1aa7bb0153a2d8ddd4729ff5",
+      "bytes": 1353
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_segments.bin.gz",
+      "status": "uploaded",
+      "sha256": "8c7c7ffa7e246d37dc52d88d43ce79367f44c67c4f30fa39a5be98457ac39d90",
+      "bytes": 15048755
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_segments_meta.json",
+      "status": "uploaded",
+      "sha256": "4a252a1c8d6f862dd4f0e42d82a8510b9f07739e9f629b2f919ef36069c4b0a0",
+      "bytes": 3360
+    },
+    {
+      "key": "releases/quality-20261007/map_delta/trace_segments_meta.json.gz",
+      "status": "uploaded",
+      "sha256": "8ddf9fe4f86575746e76674850def35d486a00f34ca2e2043fff049f8b750488",
+      "bytes": 1124
+    }
+  ],
+  "failures": [],
+  "published_bytes": 144814933,
+  "original_objects_replaced": false
+}

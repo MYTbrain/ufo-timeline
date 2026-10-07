@@ -48,8 +48,19 @@ reviewable pins; source rebuilds require the separately retained canonical input
   tests pass. Publication additionally verifies the frozen public asset inventory
   and exercises the actual preview in a browser.
 
-Publication IDs, commit pins, exact byte inventories and final verification are
-recorded in the release's publication receipt after deployment.
+Production is [ufo-timeline.pages.dev](https://ufo-timeline.pages.dev/), deployment
+`2fcb3b0d-8043-4ae6-9feb-a0cadd0ff593`. The immutable preview verifies 109 new
+R2 objects and 152 public Pages assets; the final production check verifies those
+152 Pages assets and their changed cache policies. Cloudflare's exact Analytics
+HTML insertion is recorded separately from the source-byte hashes.
+
+Publication IDs, commit pins, exact byte inventories and browser verification are
+recorded in [the publication receipt](../releases/quality-20261007/publication_receipt.json).
+The small portable runtime contract is [reproduction/quality_release.json](../reproduction/quality_release.json).
+It names active assets and supports streaming verification or bounded hydration
+with explicit shared inputs. It does not restore the obsolete campaign workflow.
+The exact public source bytes and evidence bytes are preserved by Git attributes
+across operating systems. All 153 frozen Pages inventory files match the Git index.
 
 ## Storage and retention
 

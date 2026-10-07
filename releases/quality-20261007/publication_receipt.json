@@ -1,0 +1,207 @@
+{
+  "release_id": "quality-20261007",
+  "published_at_utc": "2026-10-07T08:53:35.268919+00:00",
+  "public_url": "https://ufo-timeline.pages.dev",
+  "current_deployment": {
+    "Id": "2fcb3b0d-8043-4ae6-9feb-a0cadd0ff593",
+    "Environment": "Production",
+    "Branch": "main",
+    "Source": "96d36d8",
+    "Deployment": "https://2fcb3b0d.ufo-timeline.pages.dev",
+    "Status": "42 seconds ago",
+    "Build": "https://dash.cloudflare.com/f19eee6af8d32295458eda8abec46eac/pages/view/ufo-timeline/2fcb3b0d-8043-4ae6-9feb-a0cadd0ff593"
+  },
+  "retained_production_rollback": {
+    "Id": "78cc3660-5750-4685-a095-fee6dce37fbf",
+    "Environment": "Production",
+    "Branch": "main",
+    "Source": "eb5269c",
+    "Deployment": "https://78cc3660.ufo-timeline.pages.dev",
+    "Status": "2 hours ago",
+    "Build": "https://dash.cloudflare.com/f19eee6af8d32295458eda8abec46eac/pages/view/ufo-timeline/78cc3660-5750-4685-a095-fee6dce37fbf"
+  },
+  "superseded_production_rollback_designation": "f88416b1-1e96-45fa-8b2a-a1edbfc5fdae",
+  "runtime_commit": "96d36d8abdf9e9f22d85cb416d024cdae260221d",
+  "repository": "https://github.com/MYTbrain/ufo-timeline",
+  "pages_tree_sha256": "68017beeb7957a59f04d54eba1425b6fcac8beaedd327a73072c44abf323e1e0",
+  "counts": {
+    "source_representations": 702893,
+    "mapped": 582877,
+    "unmapped": 120016,
+    "accepted_changed_records": 3730,
+    "approximate_date_downgrades": 11,
+    "detail_patches": 4451
+  },
+  "validation": {
+    "preview": {
+      "passed": true,
+      "pages_url": "https://ab9ea742.ufo-timeline.pages.dev",
+      "pages_files_verified": 152,
+      "headers_control_file_pinned_locally_not_requested": true,
+      "provider_html_transformations": [
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "404.html"
+        },
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "index.html"
+        },
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "trace_intersection_feasibility.html"
+        }
+      ],
+      "changed_asset_cache_policies_verified": 78,
+      "new_r2_objects_verified": 109,
+      "r2_verification_reused_from_immutable_preview": false,
+      "parallel_streams": 4,
+      "inherited_original_objects": 366,
+      "inherited_objects_reused_from_original_pinned_contract": true,
+      "full_corpus_downloaded_or_copied": false
+    },
+    "production": {
+      "passed": true,
+      "pages_url": "https://ufo-timeline.pages.dev",
+      "pages_files_verified": 152,
+      "headers_control_file_pinned_locally_not_requested": true,
+      "provider_html_transformations": [
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "404.html"
+        },
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "index.html"
+        },
+        {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "trace_intersection_feasibility.html"
+        }
+      ],
+      "changed_asset_cache_policies_verified": 78,
+      "new_r2_objects_verified": 0,
+      "r2_verification_reused_from_immutable_preview": true,
+      "parallel_streams": 4,
+      "inherited_original_objects": 366,
+      "inherited_objects_reused_from_original_pinned_contract": true,
+      "full_corpus_downloaded_or_copied": false
+    },
+    "detail_integration": {
+      "schemaVersion": 1,
+      "completedAtUtc": "2026-10-07T08:40:30.909641+00:00",
+      "status": "passed",
+      "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec",
+      "sealedMapReceiptSha256": "4c5cd6aa00de0eb9be1a54387a2d249ebce3b4c754922949cb85183e229bcf5d",
+      "compressedOverlaySha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+      "productModule": {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\webapp\\static_public\\quality_detail_overlay.js",
+        "bytes": 6194,
+        "sha256": "551037551db9425112744387495e5f3af9d66bdd498df1f316109c28ed7ac0a6"
+      },
+      "sourceChunksRead": 282,
+      "checks": {
+        "guardsAccepted": 4451,
+        "acceptedCorrectionsAgreeWithSummaries": 3730,
+        "metadataOnlyRecords": 721,
+        "dateReviews": 726,
+        "incidentMembers": 4,
+        "dateDowngrades": 11,
+        "prunedUnmappedMetadataRecordsPreserved": 265,
+        "originalObjectsUnchanged": 4451,
+        "protectedFieldsUnchanged": 4451,
+        "compressedPayloadIntegrityVerified": true
+      },
+      "supersedesFailureReceipt": "detail_overlay_integration_failure.json",
+      "storage": {
+        "sourceCorpusCopied": false,
+        "temporaryFixturesWritten": false,
+        "sealedRuntimeFilesModified": false,
+        "newFilesLargerThan100MiB": []
+      }
+    },
+    "browser_smoke": {
+      "passed": true,
+      "live_mapped_count": 582877,
+      "cash_landrum_full_details_loaded": true,
+      "florence_results": {
+        "inside": 1,
+        "connected_outside": 2
+      },
+      "geography_status": "Country geography ready",
+      "browser_errors": [],
+      "proof": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\releases\\quality-20261007\\release_metadata\\production_proof.png",
+        "bytes": 19030,
+        "sha256": "bcc43e71df684b95681de7d759dfa3ab9487f34c31e2198cdcbcc7746b359021"
+      }
+    },
+    "git_source_inventory": "All 153 frozen Pages source files match exact Git index bytes after scoped byte-preservation attributes."
+  },
+  "runtime_contract": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\releases\\quality-20261007\\release_metadata\\quality_runtime_contract.json",
+    "bytes": 167738,
+    "sha256": "f57fd50edd68c9b91f83739f721c1a9f3f296e7f699e15cda8a5a445b163d3b8"
+  },
+  "source_quality_manifest": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\quality_view_manifest.json",
+    "bytes": 67799,
+    "sha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+  },
+  "local_quality_rollback": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261006\\quality_view_manifest.json",
+    "bytes": 63060,
+    "sha256": "2e03a89245329ac37d9fab1cf630b8ba2f95301e15c7f490f70969d6a187818b"
+  },
+  "storage": {
+    "canonical_release_parts": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\releases\\quality-20261007",
+      "files": 315,
+      "bytes": 286322735,
+      "files_larger_than_100MiB": []
+    },
+    "current_pages_candidate": {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\quality-20261007-pages",
+      "files": 153,
+      "bytes": 28176967,
+      "files_larger_than_100MiB": []
+    },
+    "rollback_pages_candidate": {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\interface-pages-candidate",
+      "files": 151,
+      "bytes": 26115918,
+      "files_larger_than_100MiB": []
+    },
+    "original_detail_chunks_copied": false,
+    "approximate_net_local_growth_MiB": 310,
+    "c_free_GiB": 131.34,
+    "superseded_large_local_staging": [],
+    "cleanup_proposal": "No superseded large local build exists. Retain current delta parts, current Pages source/candidate, one known-good rollback candidate, shared original assets, and unique evidence. Small preliminary contract and failed-check receipt remain explicitly historical provenance."
+  },
+  "preview_commit_metadata_note": "Preview was labeled Source 0; its exact frozen asset tree was verified. Production correctly identifies the runtime commit. Preview is a test of the current release, not another designated rollback.",
+  "data_deletions_performed": false
+}
