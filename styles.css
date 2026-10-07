@@ -7636,6 +7636,32 @@ button:focus {
   margin: 8px 0;
 }
 
+.results-case-catalog-entries {
+  max-height: min(300px, 35vh);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.results-case-catalog-entry {
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px dashed var(--panel-border);
+  border-radius: 8px;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.results-case-catalog-entry p {
+  margin: 4px 0 8px;
+  color: var(--muted);
+}
+
+.results-case-catalog-entry button {
+  min-height: 32px;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+}
+
 .results-area-filter-clear {
   min-height: 32px;
   padding: 6px 10px;

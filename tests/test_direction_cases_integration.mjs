@@ -73,7 +73,7 @@ function casePanelElement() {
 function caseHarness() {
   let mapZoom = 5.25;
   const originalRegion = { shapes: [{ id: "user-area", type: "circle", center: { lat: 42, lng: -70 }, radiusMeters: 40000 }], drawingActive: true, modeActive: true, depth: 3, direction: "both", pointOnly: false };
-  const state = { famousCaseId: "", famousCaseOrder: "alphabetical", regionSelection: originalRegion, analysisCountryAreaFilter: "Canada", timeRangeStartOrdinal: isoToOrdinal("2000-01-01"), timeRangeEndOrdinal: isoToOrdinal("2010-12-31"), timeRangeMode: "custom", traceMode: "off", traceBucketVisibility: { gap_le_1: false, gap_le_2: true, gap_le_7: false } };
+  const state = { famousCaseId: "", famousCaseOrder: "alphabetical", regionSelection: originalRegion, analysisCountryAreaFilter: "Canada", timeRangeStartOrdinal: isoToOrdinal("2000-01-01"), timeRangeEndOrdinal: isoToOrdinal("2010-12-31"), timeRangeMode: "custom", traceMode: "off", traceBucketVisibility: { gap_le_1: false, gap_le_2: true, gap_le_7: false }, timelineDataVersion: 0, filterGeneration: 0, lastKeyword: "", lastKeywordMatches: null };
   const runtime = { map: {
     getZoom() { return mapZoom; },
     setView(center, zoom) { mapZoom = zoom; calls.views.push({ center: [...center], zoom }); },
@@ -81,15 +81,25 @@ function caseHarness() {
   }, traceIntersectionController: { notifyTraceModeChanged(mode) { calls.modeNotifications.push(mode); }, notifyTimelineRangeChanged: noOp } };
   const orderButtons = ["alphabetical", "chronological"].map(order => ({ dataset: { famousCaseOrder: order }, attributes: {}, setAttribute(name, value) { this.attributes[name] = value; } }));
   const els = { keywordInput: { value: "existing research query" }, famousCaseSearch: { value: "" }, famousCaseOrderButtons: orderButtons, famousCaseSearchStatus: { textContent: "" }, filterFamousCases: { innerHTML: "", value: "" }, famousCaseDetails: casePanelElement(), resultsFamousCaseSummary: casePanelElement() };
-  const calls = { refreshes: 0, views: [], pans: [], pulses: [], pulseClears: 0, areaRefreshes: 0, shapeIds: 0, drawingStops: 0, modeNotifications: [], playbackClears: 0, traceFits: 0 };
-  const control = { extent: { minOrdinal: isoToOrdinal("1500-01-01"), maxOrdinal: isoToOrdinal("2030-12-31") }, result: { selectedEventCount: 2, visibleTraceCount: 1 }, facilityEnabled: false };
+  const calls = { refreshes: 0, views: [], pans: [], pulses: [], pulseClears: 0, areaRefreshes: 0, shapeIds: 0, drawingStops: 0, modeNotifications: [], playbackClears: 0, traceFits: 0, coveragePointChecks: 0 };
+  const control = { extent: { minOrdinal: isoToOrdinal("1500-01-01"), maxOrdinal: isoToOrdinal("2030-12-31") }, result: { selectedEventCount: 2, visibleTraceCount: 1 }, facilityEnabled: false, catalog: [],
+    startup: { phase: "Ready", totalCatalogShards: 1, ingestedCatalogShards: 1 },
+    filters: { keyword: "", sourceMode: "all", typeMode: "all", precisionMode: "all", selectedSources: new Set(), selectedTypes: new Set(), selectedPrecisions: new Set(), hideLowPrecision: false, hideNonExactDates: false } };
   const context = loadFunctions([
     "timelinePresetMatchesCurrentRange", "updateTimelinePresetButtonStates", "setTimeRange",
-    "renderFamousCasePicker", "renderFamousCaseResultsSummary", "bindFamousCaseActions", "clearFamousCasePreset", "applyFamousCasePreset", "applyAnalysisAreaFilter", "applyTimelinePreset", "applyFullTimeRange",
-    "famousCaseTraceSelectionActive", "famousCaseTraceStatusText", "normalizeTraceMode", "traceBucketActive", "setTraceMode",
+    "renderFamousCasePicker", "renderFamousCaseResultsSummary", "famousCaseCatalogEntries", "renderFamousCaseCatalogEntries", "bindFamousCaseActions", "clearFamousCasePreset", "applyFamousCasePreset", "applyAnalysisAreaFilter", "applyTimelinePreset", "applyFullTimeRange",
+    "famousCaseTraceSelectionActive", "famousCaseTraceStatusText", "currentFamousCaseVicinityCoverage", "famousCaseVicinityCoverageText", "normalizeTraceMode", "traceBucketActive", "setTraceMode",
+    "eventMatchesTimeRange", "eventMatchesNonDateFilters", "worldIndicesNearReferenceLongitude", "wrappedLongitudesNearReference", "localProjectedMeters", "pointInsideCircleShape", "pointInsideRegionShape", "regionSelectionShapeBounds", "pointMayIntersectRegionShapeBounds",
   ], {
     state, runtime, els, FAMOUS_CASES: cases, isoToOrdinal, ordinalToIso, escapeHtml, clamp,
     formatNumber: String,
+    catalog: control.catalog, startup: control.startup,
+    getCatalogEventById: () => null,
+    currentFilterSelections: () => control.filters,
+    eventMatchesMapLegendEventSelection: () => true,
+    LOW_PRECISION_VALUES: new Set(["country", "state_province", "approximate", "unknown"]),
+    REGION_SELECTION_EARTH_RADIUS_METERS: 6371008.8,
+    normalizeLongitude: value => ((((Number(value) + 180) % 360) + 360) % 360) - 180,
     selectionClampExtent() { return control.extent; },
     setRegionSelectionDrawingActive(active) { state.regionSelection.drawingActive = active; state.regionSelection.modeActive = active; calls.drawingStops += 1; },
     refreshRegionSelectionRenderState() { calls.areaRefreshes += 1; },
@@ -118,6 +128,8 @@ function caseHarness() {
       ["test-rolling", { kind: "rolling", days: 7 }],
     ]),
   });
+  const pointInside = context.pointInsideRegionShape;
+  context.pointInsideRegionShape = function (...arguments_) { calls.coveragePointChecks += 1; return pointInside(...arguments_); };
   return { context, state, runtime, els, calls, control, originalRegion };
 }
 
@@ -286,10 +298,86 @@ traceStatus.context.applyFamousCasePreset(kecksberg.id);
 assert.match(traceStatus.context.famousCaseTraceStatusText({ selectedEventCount: 1, visibleTraceCount: 0 }, true), /1 report.*no same-day, same-type connections/);
 traceStatus.control.facilityEnabled = true;
 assert.match(traceStatus.context.famousCaseTraceStatusText({ selectedEventCount: 1, visibleTraceCount: 0 }, true), /Facility proximity also filters connections/);
-assert.match(traceStatus.context.famousCaseTraceStatusText({ selectedEventCount: 0, visibleTraceCount: 0 }, true), /No mapped reports/);
+assert.match(traceStatus.context.famousCaseTraceStatusText({ selectedEventCount: 0, visibleTraceCount: 0 }, true), /No mapped reports in this vicinity/);
 traceStatus.context.setTraceMode("off");
 assert.match(traceStatus.context.famousCaseTraceStatusText(traceStatus.control.result, true), /Case traces are off/);
 assert.match(traceStatus.context.famousCaseTraceStatusText(traceStatus.control.result, false), /vicinity cleared or edited/);
+
+const coverage = caseHarness();
+coverage.context.applyFamousCasePreset(kecksberg.id);
+const coverageShape = coverage.state.regionSelection.shapes[0];
+const coverageDate = isoToOrdinal(kecksberg.startIso);
+const coverageReport = (id, extra = {}) => ({ event_id: id, has_coordinates: true,
+  lat: coverageShape.center.lat, lon: coverageShape.center.lng, sort_ordinal: coverageDate,
+  source: "ufocat", type: "Diamond", location_precision: "city", date_precision: "exact_day", ...extra });
+coverage.control.catalog.push(
+  coverageReport("inside-one"),
+  coverageReport("inside-two", { lat: coverageShape.center.lat + 0.1, type: "Unknown", date_precision: "month", location_precision: "country" }),
+  coverageReport("elsewhere", { lat: coverageShape.center.lat + 2 }),
+  coverageReport("different-date", { sort_ordinal: coverageDate + 30 }),
+  coverageReport("unmapped", { has_coordinates: false, lat: null, lon: null }),
+  coverageReport("invalid-coordinate", { lat: null }),
+);
+coverage.control.filters.selectedTypes = new Set(["Triangle"]);
+let coverageResult = coverage.context.currentFamousCaseVicinityCoverage();
+assert.equal(coverageResult.status, "ready");
+assert.equal(coverageResult.mappedCount, 2, "coverage ignores current report filters but requires valid mapped points in the current date window and circle");
+assert.equal(coverageResult.includedCount, 0);
+assert.equal(coverageResult.excludedCount, 2);
+const cachedCoverageEvents = coverage.runtime.famousCaseVicinityCoverageCacheValue;
+const initialCoveragePointChecks = coverage.calls.coveragePointChecks;
+coverage.context.currentFamousCaseVicinityCoverage();
+assert.equal(coverage.runtime.famousCaseVicinityCoverageCacheValue, cachedCoverageEvents);
+assert.equal(coverage.calls.coveragePointChecks, initialCoveragePointChecks, "unchanged coverage reuses its date/geometry scan");
+coverage.context.setTraceMode("off");
+assert.match(coverage.context.famousCaseTraceStatusText({ selectedEventCount: 0, visibleTraceCount: 0 }, true), /2 mapped vicinity reports hidden by current filters/);
+assert.ok(!coverage.context.famousCaseTraceStatusText({ selectedEventCount: 0, visibleTraceCount: 0 }, true).includes("Case traces are off"), "zero-record coverage explains missing results before trace visibility hints");
+coverage.control.filters.selectedTypes = new Set();
+coverageResult = coverage.context.currentFamousCaseVicinityCoverage();
+assert.equal(coverageResult.includedCount, 2, "filter changes reevaluate the cached vicinity cohort with the actual UI predicate");
+assert.equal(coverageResult.excludedCount, 0);
+assert.equal(coverage.calls.coveragePointChecks, initialCoveragePointChecks, "filter changes do not rescan the unfiltered catalog");
+coverage.control.filters.hideNonExactDates = true;
+assert.equal(coverage.context.currentFamousCaseVicinityCoverage().excludedCount, 1, "non-exact date filtering is included in the diagnostic");
+coverage.control.filters.hideNonExactDates = false;
+coverage.control.filters.keyword = "specific";
+coverage.state.lastKeyword = "specific";
+coverage.state.lastKeywordMatches = new Set(["inside-one"]);
+assert.equal(coverage.context.currentFamousCaseVicinityCoverage().includedCount, 1, "coverage uses full-text keyword membership rather than guessing from summary text");
+coverage.state.lastKeyword = "old search";
+assert.match(coverage.context.famousCaseVicinityCoverageText(coverage.context.currentFamousCaseVicinityCoverage()), /Updating filters/, "pending keyword matches do not become a definitive hidden-report count");
+coverage.control.filters.keyword = "";
+coverage.state.lastKeyword = "";
+coverage.state.lastKeywordMatches = null;
+coverageShape.radiusMeters = 1;
+coverageResult = coverage.context.currentFamousCaseVicinityCoverage();
+assert.equal(coverageResult.mappedCount, 1, "changing the circle radius invalidates unfiltered coverage");
+assert.notEqual(coverage.runtime.famousCaseVicinityCoverageCacheValue, cachedCoverageEvents);
+const radiusCache = coverage.runtime.famousCaseVicinityCoverageCacheValue;
+coverageShape.center.lng += 10;
+coverageResult = coverage.context.currentFamousCaseVicinityCoverage();
+assert.equal(coverageResult.mappedCount, 0, "changing the circle center invalidates coverage");
+assert.notEqual(coverage.runtime.famousCaseVicinityCoverageCacheValue, radiusCache);
+const emptyCoverageText = coverage.context.famousCaseTraceStatusText({ selectedEventCount: 0, visibleTraceCount: 0 }, true);
+assert.match(emptyCoverageText, /before filters/);
+assert.ok(!/case is absent|case is missing|not in the database/.test(emptyCoverageText), "vicinity coverage does not infer historical case identity or database absence");
+assert.ok(!emptyCoverageText.includes("Case traces are off"));
+const beforeDateCache = coverage.runtime.famousCaseVicinityCoverageCacheValue;
+coverage.context.setTimeRange(coverageDate + 10, coverageDate + 11, { mode: "custom" });
+coverage.context.currentFamousCaseVicinityCoverage();
+assert.notEqual(coverage.runtime.famousCaseVicinityCoverageCacheValue, beforeDateCache, "date changes invalidate coverage even when both windows have zero points");
+coverage.control.catalog.push(coverageReport("newly-loaded", { lon: coverageShape.center.lng, sort_ordinal: coverageDate + 10 }));
+assert.equal(coverage.context.currentFamousCaseVicinityCoverage().mappedCount, 1, "newly ingested catalog rows invalidate cached coverage");
+const loadedCoverageCache = coverage.runtime.famousCaseVicinityCoverageCacheValue;
+coverage.state.timelineDataVersion += 1;
+coverage.context.currentFamousCaseVicinityCoverage();
+assert.notEqual(coverage.runtime.famousCaseVicinityCoverageCacheValue, loadedCoverageCache, "a catalog data-version change invalidates coverage");
+coverage.control.startup.ingestedCatalogShards = 0;
+assert.match(coverage.context.famousCaseVicinityCoverageText(coverage.context.currentFamousCaseVicinityCoverage()), /catalog loads/, "partial catalog coverage cannot imply absence");
+coverage.control.startup.phase = "Failed";
+assert.match(coverage.context.famousCaseVicinityCoverageText(coverage.context.currentFamousCaseVicinityCoverage()), /unavailable/);
+coverage.state.regionSelection.shapes = [];
+assert.equal(coverage.context.currentFamousCaseVicinityCoverage(), null, "edited or cleared case areas have no owned vicinity diagnostic");
 
 const manualDate = caseHarness();
 const preCaseManualDates = [manualDate.state.timeRangeStartOrdinal, manualDate.state.timeRangeEndOrdinal];

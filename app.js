@@ -4557,7 +4557,7 @@
     if (els.famousCaseSearchStatus) {
       els.famousCaseSearchStatus.textContent = query.trim()
         ? formatNumber(matches.length) + " of " + formatNumber(FAMOUS_CASES.CASES.length) + " cases match"
-        : formatNumber(FAMOUS_CASES.CASES.length) + " cases · search names, places, or years";
+        : formatNumber(FAMOUS_CASES.CASES.length) + " historical presets · search names, places, or years";
     }
     if (!els.famousCaseDetails) return;
     els.famousCaseDetails.hidden = !activeCase;
@@ -4569,6 +4569,39 @@
       escapeHtml(activeCase.name) + '</strong><button type="button" class="secondary-button famous-case-clear" data-clear-famous-case aria-label="Clear famous case preset">Clear</button></div>';
   }
 
+  function famousCaseCatalogEntries(activeCase) {
+    return ((activeCase && activeCase.catalogRefs) || []).map(function (reference) {
+      const event = getCatalogEventById(reference.eventId);
+      // Fail closed when the referenced record is absent or a new catalog has
+      // changed its identity fields. Never create an event from a preset.
+      const available = Boolean(event && event.source === reference.source &&
+        event.sort_date_iso === reference.dateIso);
+      const unresolved = available && reference.mappingStatus === "needs_review" &&
+        event.lat === reference.reviewedLat && event.lon === reference.reviewedLon;
+      const mappingNote = !available ? "Referenced entry is unavailable in the loaded catalog."
+        : !event.has_coordinates ? "No map coordinates; this entry cannot seed traces."
+        : unresolved ? reference.mappingNote : "Mapped catalog entry.";
+      return { reference: reference, event: available ? event : null, mappingNote: mappingNote,
+        mappingIssue: !available || !event.has_coordinates || unresolved };
+    });
+  }
+
+  function renderFamousCaseCatalogEntries(activeCase) {
+    const entries = famousCaseCatalogEntries(activeCase);
+    if (!entries.length) return '<p class="results-famous-case-meta">Historical preset · database identity not yet checked</p>';
+    const availableCount = entries.filter(function (entry) { return entry.event; }).length;
+    const issueCount = entries.filter(function (entry) { return entry.mappingIssue; }).length;
+    return '<details data-case-catalog-entries><summary>' + formatNumber(availableCount) +
+      ' database record' + (availableCount === 1 ? '' : 's') +
+      (issueCount ? ' · mapping issues' : '') + '</summary><div class="results-case-catalog-entries">' +
+      '<p class="results-famous-case-meta">Source records about this case, not separate incidents. Inspectable independently of map filters.</p>' +
+      entries.map(function (entry) {
+        return '<article class="results-case-catalog-entry"><strong>' + escapeHtml(entry.reference.sourceRef) + '</strong>' +
+          '<p>' + escapeHtml(entry.mappingNote) + '</p><button type="button" class="secondary-button" data-inspect-famous-case-record="' +
+          escapeHtml(entry.reference.eventId) + '"' + (entry.event ? '' : ' disabled') + '>Full Details</button></article>';
+      }).join('') + '</div></details>';
+  }
+
   function renderFamousCaseResultsSummary(result) {
     if (!els.resultsFamousCaseSummary) return;
     const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
@@ -4578,12 +4611,14 @@
       runtime.famousCaseResultsContextId = "";
       runtime.famousCaseResultsMarkup = "";
       runtime.famousCaseResultsDetailsOpen = false;
+      runtime.famousCaseCatalogEntriesOpen = false;
       return;
     }
     if (runtime.famousCaseResultsContextId !== activeCase.id) {
       runtime.famousCaseResultsContextId = activeCase.id;
       runtime.famousCaseResultsMarkup = "";
       runtime.famousCaseResultsDetailsOpen = false;
+      runtime.famousCaseCatalogEntriesOpen = false;
     }
     const selection = FAMOUS_CASES.buildSelectionWindow(activeCase);
     const hasVicinity = (state.regionSelection.shapes || []).some(function (shape) {
@@ -4599,6 +4634,7 @@
       '<p class="results-famous-case-meta">Reported ' + escapeHtml(FAMOUS_CASES.formatCaseDate(activeCase)) +
       ' · ' + escapeHtml(activeCase.location) + '</p>' +
       '<p class="results-famous-case-meta">Viewing ' + escapeHtml(currentDates) + '</p>' +
+      renderFamousCaseCatalogEntries(activeCase) +
       '<div class="results-famous-case-connections"><p role="status">' + escapeHtml(status) + '</p>' +
       '<button type="button" class="secondary-button" data-fit-famous-case-traces' +
       (connectionCount ? '' : ' disabled') + '>Fit connections</button></div>' +
@@ -4619,9 +4655,12 @@
     // Native disclosure state does not change the content cache. Ordinary
     // refreshes leave focused controls intact; changed content retains the state.
     if (runtime.famousCaseResultsMarkup !== markup) {
-      els.resultsFamousCaseSummary.innerHTML = runtime.famousCaseResultsDetailsOpen
-        ? markup.replace('<details data-case-results-details>', '<details data-case-results-details open>')
-        : markup;
+      let displayedMarkup = runtime.famousCaseResultsDetailsOpen
+        ? markup.replace('<details data-case-results-details>', '<details data-case-results-details open>') : markup;
+      if (runtime.famousCaseCatalogEntriesOpen) {
+        displayedMarkup = displayedMarkup.replace('<details data-case-catalog-entries>', '<details data-case-catalog-entries open>');
+      }
+      els.resultsFamousCaseSummary.innerHTML = displayedMarkup;
       runtime.famousCaseResultsMarkup = markup;
     }
   }
@@ -4631,10 +4670,23 @@
     container.addEventListener("click", function (event) {
       if (event.target.closest("[data-clear-famous-case]")) clearFamousCasePreset();
       if (event.target.closest("[data-fit-famous-case-traces]")) fitFamousCaseTraces();
+      const recordButton = event.target.closest("[data-inspect-famous-case-record]");
+      if (recordButton) {
+        const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+        const entry = famousCaseCatalogEntries(activeCase).find(function (candidate) {
+          return candidate.reference.eventId === recordButton.getAttribute("data-inspect-famous-case-record");
+        });
+        if (entry && entry.event) openFullEventView(entry.event.event_id, {
+          centerMap: false, openPopup: false, scrollIntoView: true,
+        }).catch(function (error) { console.error(error); });
+      }
     });
     container.addEventListener("toggle", function (event) {
       if (event.target.hasAttribute("data-case-results-details")) {
         runtime.famousCaseResultsDetailsOpen = Boolean(event.target.open);
+      }
+      if (event.target.hasAttribute("data-case-catalog-entries")) {
+        runtime.famousCaseCatalogEntriesOpen = Boolean(event.target.open);
       }
     }, true);
   }
@@ -4646,14 +4698,78 @@
       }));
   }
 
+  function currentFamousCaseVicinityCoverage() {
+    if (!state.famousCaseId) return null;
+    const shape = (state.regionSelection.shapes || []).find(function (candidate) {
+      return candidate.id === runtime.famousCaseShapeId && candidate.type === "circle";
+    });
+    if (!shape || !shape.center) return null;
+    const cacheKey = [
+      state.timelineDataVersion,
+      catalog.length,
+      state.timeRangeMode,
+      state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal,
+      shape.id,
+      shape.center.lat,
+      shape.center.lng,
+      shape.radiusMeters,
+    ].join("|");
+    if (runtime.famousCaseVicinityCoverageCacheKey !== cacheKey || !runtime.famousCaseVicinityCoverageCacheValue) {
+      const events = [];
+      const bounds = regionSelectionShapeBounds(shape);
+      for (const event of catalog) {
+        if (!event.has_coordinates || !eventMatchesTimeRange(event)) continue;
+        if (event.lat == null || event.lon == null ||
+          !Number.isFinite(Number(event.lat)) || !Number.isFinite(Number(event.lon))) continue;
+        if (!pointMayIntersectRegionShapeBounds(Number(event.lat), Number(event.lon), bounds)) continue;
+        if (pointInsideRegionShape(Number(event.lat), Number(event.lon), shape)) events.push(event);
+      }
+      runtime.famousCaseVicinityCoverageCacheKey = cacheKey;
+      runtime.famousCaseVicinityCoverageCacheValue = events;
+    }
+    const events = runtime.famousCaseVicinityCoverageCacheValue;
+    const filters = currentFilterSelections();
+    let includedCount = 0;
+    for (const event of events) {
+      if (eventMatchesNonDateFilters(event, filters, state.lastKeywordMatches)) includedCount += 1;
+    }
+    const catalogComplete = startup.totalCatalogShards > 0 &&
+      startup.ingestedCatalogShards >= startup.totalCatalogShards;
+    const filtersPending = Boolean(filters.keyword && filters.keyword !== state.lastKeyword) ||
+      (Number.isFinite(state.filterGeneration) && Number.isFinite(runtime.activeFilterGeneration) &&
+        state.filterGeneration !== runtime.activeFilterGeneration);
+    return {
+      status: catalogComplete ? "ready" : (startup.phase === "Failed" ? "unavailable" : "loading"),
+      mappedCount: events.length,
+      includedCount,
+      excludedCount: events.length - includedCount,
+      filtersPending,
+    };
+  }
+
+  function famousCaseVicinityCoverageText(coverage) {
+    if (!coverage) return "";
+    if (coverage.status === "loading") return "Checking vicinity coverage while the catalog loads.";
+    if (coverage.status === "unavailable") return "Vicinity coverage is unavailable because the catalog did not finish loading.";
+    if (coverage.filtersPending) return "Updating filters for this vicinity.";
+    if (!coverage.mappedCount) return "No mapped reports in this vicinity for these dates, before filters.";
+    const countText = formatNumber(coverage.mappedCount) + " mapped vicinity report" +
+      (coverage.mappedCount === 1 ? "" : "s");
+    if (!coverage.includedCount && coverage.excludedCount) return countText + " hidden by current filters.";
+    return countText + " before filters" + (coverage.excludedCount
+      ? " · " + formatNumber(coverage.excludedCount) + " hidden by current filters." : ".");
+  }
+
   function famousCaseTraceStatusText(result, hasVicinity) {
     if (!hasVicinity) return "Case vicinity cleared or edited; case connection focus is inactive.";
+    const reportCount = result ? result.selectedEventCount : 0;
+    const connectionCount = result ? result.visibleTraceCount : 0;
+    if (!reportCount) return famousCaseVicinityCoverageText(currentFamousCaseVicinityCoverage()) ||
+      "No mapped reports match the case vicinity, dates, and current filters.";
     if (normalizeTraceMode(state.traceMode) === "off") return "Case traces are off. Choose Static in Traces to show connections.";
     if (!traceBucketActive("gap_le_1")) return "Same-day traces are disabled. Enable the ≤1-day bucket in Traces.";
     if (!state.regionSelection.showTracesAssociatedWithSelectedEvents) return "Enable Traces from sightings in Area Selection to show case connections.";
-    const reportCount = result ? result.selectedEventCount : 0;
-    const connectionCount = result ? result.visibleTraceCount : 0;
-    if (!reportCount) return "No mapped reports match the case vicinity, dates, and current filters.";
     const countText = formatNumber(reportCount) + " report" + (reportCount === 1 ? "" : "s") + " in the case vicinity";
     if (connectionCount) return formatNumber(connectionCount) + " same-day, same-type connection" +
       (connectionCount === 1 ? "" : "s") + " · " + countText + ". Endpoints may extend beyond the vicinity.";
@@ -24107,6 +24223,9 @@
         emptyMessage = regionResult.visibleTraceCount > 0
           ? "No sightings are currently visible for the active area filter. Adjust the display toggles or drawn regions."
           : "No sightings or traces selected. Adjust the drawn regions or clear the area filter.";
+      }
+      if (famousCaseTraceSelectionActive()) {
+        emptyMessage = "No nearby mapped results. Check the case records and coverage above.";
       }
       els.resultList.innerHTML = '<p class="note-copy">' + escapeHtml(emptyMessage) + "</p>";
       els.resultList.scrollTop = 0;

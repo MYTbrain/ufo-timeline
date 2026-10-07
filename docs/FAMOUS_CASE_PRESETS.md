@@ -6,7 +6,7 @@ sighting corpus. Inclusion does not identify an object's origin or validate a
 historical claim. Known natural explanations, hoax controversies, and conflicting
 accounts are represented alongside unresolved reports.
 
-The canonical implementation is `webapp/static_public/famous_case_presets.js`.
+The current production implementation is the repository-root `famous_case_presets.js`.
 It exports `UfoFamousCasePresets` in the browser and CommonJS in Node. Its immutable
 records hold names, aliases, reported dates, short attributed descriptions,
 approximate navigation centers and radii, and labeled source references. New
@@ -40,6 +40,21 @@ releases the selection. The card shows both sourced dates and the active viewing
 range. Other existing filters
 may produce fewer results or none. A zero-result window does not mean that the
 historical report is absent from every source.
+
+The Results summary now checks the complete loaded catalog for mapped records
+inside the active circle/date window before applying filters. It distinguishes
+an empty vicinity from nearby records hidden by filters and waits for catalog
+ingestion before claiming zero coverage. These counts are contextual candidates,
+not verified case membership.
+
+Reviewed `catalogRefs` identify original records explicitly naming a case or
+describing its distinct source account. The Results summary lists these records
+separately, with direct Full Details access even when they are unmapped, misplaced,
+or excluded by the map filters. It does not manufacture points, enlarge the
+circle, or change map/statistical cohorts. Identity fields fail closed on catalog
+drift; mapping notes are scoped to the reviewed coordinates. Multiple source
+entries are not independent incidents. See the October 6 catalog identity and
+vicinity coverage audits in `docs/releases/`.
 
 Case presets also enable direct same-day, same-category report connections.
 The graph groups exact-date, mapped, recognized-craft records from the filtered

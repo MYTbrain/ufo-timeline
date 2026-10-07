@@ -38,6 +38,11 @@
       aliases: Object.freeze(aliases),
       description: description,
       sources: Object.freeze(Array.isArray(sources) ? sources : [sources]),
+      // Explicit source identity crosswalks, separate from date/vicinity candidates.
+      // A reference never supplies or repairs an event's coordinates.
+      catalogRefs: Object.freeze((settings.catalogRefs || []).map(function (reference) {
+        return Object.freeze(Object.assign({}, reference));
+      })),
     }));
   }
 
@@ -57,7 +62,15 @@
     ["flying saucers", "Cascade Mountains", "Mount Rainier"], "Pilot Kenneth Arnold reported nine objects near Mount Rainier, helping popularize the term flying saucer.",
     source("Smithsonian: 1947, Year of the Flying Saucer", "https://airandspace.si.edu/stories/editorial/1947-year-flying-saucer", "museum history"), { radiusKm: 200 });
   add("maury_island", "Maury Island", "1947-06-21", null, "Puget Sound, Washington, United States", [47.37, -122.45], 9,
-    ["Harold Dahl", "Fred Crisman", "Maury Island hoax"], "Harold Dahl's claimed debris encounter became a prominent, widely disputed early saucer story.", wiki("Maury_Island_incident"));
+    ["Harold Dahl", "Fred Crisman", "Maury Island hoax"], "Harold Dahl's claimed debris encounter became a prominent, widely disputed early saucer story.", wiki("Maury_Island_incident"), { catalogRefs: [
+      { eventId: "1022815602953765", source: "ufocat", dateIso: "1947-06-21", sourceRef: "UFOCAT PRN 114181 / IRN 11570", mappingStatus: "needs_review", reviewedLat: 47.50012, reviewedLon: -120.50147, mappingNote: "Stored map point is about 147 km from Maury Island; location needs review.", identityEvidence: "Source names DAHL and describes six tire-shaped objects over Puget Sound." },
+      { eventId: "3788857718621447", source: "majestic", dateIso: "1947-06-21", sourceRef: "Maj2 233", mappingStatus: "unmapped", identityEvidence: "Description explicitly says Maury Island Incident." },
+      { eventId: "834979913809692", source: "majestic", dateIso: "1947-06-21", sourceRef: "Magonia 56", mappingStatus: "unmapped", identityEvidence: "Narrative names Harold A. Dahl and the six tire-shaped objects near Maury Island." },
+      { eventId: "2940389522932652", source: "majestic", dateIso: "1947-06-21", sourceRef: "Eberhart 931", mappingStatus: "unmapped", identityEvidence: "Narrative names Harold A. Dahl, his son Charles and six doughnut-shaped objects near Maury Island." },
+      { eventId: "1761834897578309", source: "majestic", dateIso: "1947-06-21", sourceRef: "Johnson 3565", mappingStatus: "unmapped", identityEvidence: "Narrative names Harold A. Dahl and Maury Island, with alleged metal fragments." },
+      { eventId: "1899321965915825", source: "majestic", dateIso: "1947-06-21", sourceRef: "Overmeire 1184", mappingStatus: "unmapped", identityEvidence: "Narrative describes Dahl, Fred L. Crisman and the six objects at Maury Island." },
+      { eventId: "3365016448763449", source: "majestic", dateIso: "1947-06-21", sourceRef: "rr0 607", mappingStatus: "unmapped", identityEvidence: "Description explicitly opens Start of the Maury Island affair and names Dahl/Crisman." }
+    ] });
   add("flight_105", "United Airlines Flight 105", "1947-07-04", null, "Boise–Pendleton route, United States", [44.75, -117.65], 7,
     ["Emil Smith", "Ralph Stephens", "Marty Morrow"], "An airliner crew reported multiple objects along its Pacific Northwest route during the 1947 sighting wave.", wiki("Flight_105_UFO_sighting"), { radiusKm: 250 });
   add("rhodes", "Rhodes photographs", "1947-07-07", null, "Phoenix, Arizona, United States", [33.45, -112.07], 9,
@@ -186,7 +199,14 @@
   add("rendlesham", "Rendlesham Forest", "1980-12-26", "1980-12-28", "Rendlesham, Suffolk, England", [52.09, 1.43], 9,
     ["RAF Woodbridge", "RAF Bentwaters", "Charles Halt", "Jim Penniston", "John Burroughs"], "US Air Force personnel reported lights near Woodbridge; the Halt memorandum and later accounts differ in details and interpretation.", wiki("Rendlesham_Forest_incident"));
   add("cash_landrum", "Cash–Landrum", "1980-12-29", null, "Dayton–Huffman, Texas, United States", [30.08, -95.1], 9,
-    ["Betty Cash", "Vickie Landrum", "Colby Landrum", "Texas diamond"], "Three witnesses attributed illness to an encounter with a bright object; their lawsuit and reported health effects did not establish the object's identity.", wiki("Cash%E2%80%93Landrum_incident"));
+    ["Betty Cash", "Vickie Landrum", "Colby Landrum", "Texas diamond"], "Three witnesses attributed illness to an encounter with a bright object; their lawsuit and reported health effects did not establish the object's identity.", wiki("Cash%E2%80%93Landrum_incident"), { catalogRefs: [
+      { eventId: "4435047138615330", source: "ufocat", dateIso: "1980-12-29", sourceRef: "UFOCAT IRN 111830", mappingStatus: "needs_review", reviewedLat: 31.25044, reviewedLon: -99.25061, mappingNote: "Stored map point is about 418 km from Huffman; location needs review.", identityEvidence: "Raw source names CASH=LANDRUM; location HUFFMAN, Harris, TX, US." },
+      { eventId: "2777607620134637", source: "majestic", dateIso: "1980-12-29", sourceRef: "Eberhart 6220", mappingStatus: "unmapped", mappingNote: "No map coordinates; this entry cannot seed traces.", identityEvidence: "Names Betty J. Cash, Vickie and Colby Landrum in the encounter narrative." },
+      { eventId: "1525578423981311", source: "majestic", dateIso: "1980-12-29", sourceRef: "rr0 2895", mappingStatus: "unmapped", mappingNote: "No map coordinates; this entry cannot seed traces.", identityEvidence: "Description explicitly titled Cash/Landrum Incident." },
+      { eventId: "2789274609070155", source: "majestic", dateIso: "1980-12-29", sourceRef: "Maj2 725", mappingStatus: "unmapped", mappingNote: "No map coordinates; this entry cannot seed traces.", identityEvidence: "Description explicitly says Cash-Landrum incident." },
+      { eventId: "1440440470049090", source: "majestic", dateIso: "1980-12-29", sourceRef: "Overmeire 3094", mappingStatus: "unmapped", mappingNote: "No map coordinates; this entry cannot seed traces.", identityEvidence: "Description names Cash-Landrum, Bette Cash and Vicky Landrum." },
+      { eventId: "1380717117749497", source: "majestic", dateIso: "1980-12-29", sourceRef: "Johnson 8644", mappingStatus: "unmapped", mappingNote: "No map coordinates; this entry cannot seed traces.", identityEvidence: "Narrative names Betty Cash, Vickie Landrum and grandson Colby." }
+    ] });
   add("trans_provence", "Trans-en-Provence", "1981-01-08", null, "Trans-en-Provence, France", [43.5, 6.49], 9,
     ["Renato Nicolai", "GEPAN", "landing trace"], "A witness described a landed object, and GEPAN examined ground and plant samples; the cause of the traces remains debated.", wiki("Trans-en-Provence_case"));
   add("nancy", "Nancy / amaranth case", "1982-10-21", null, "Nancy, France", [48.69, 6.18], 9,
@@ -200,7 +220,9 @@
   add("belgian_triangle", "Eupen / Belgian triangle reports", "1989-11-29", "1989-11-30", "Eupen, Belgium", [50.63, 6.03], 8,
     ["Belgium triangle", "Belgian wave", "Eupen gendarmes", "SOBEPS"], "Police and civilian accounts of lights near Eupen marked the opening of the Belgian wave; this window focuses on those reports.", wiki("Belgian_UFO_wave"), { radiusKm: 150 });
   add("calvine", "Calvine photograph", "1990-08-04", null, "Calvine, Perthshire, Scotland", [56.77, -3.98], 9,
-    ["Calvine diamond", "Calvine UFO", "Craig Lindsay"], "A photograph attributed to a Perthshire sighting became public decades later; its subject and original account remain disputed.", wiki("Calvine_UFO"));
+    ["Calvine diamond", "Calvine UFO", "Craig Lindsay"], "A photograph attributed to a Perthshire sighting became public decades later; its subject and original account remain disputed.", wiki("Calvine_UFO"), { catalogRefs: [
+      { eventId: "2681305045272129", source: "majestic", dateIso: "1990-08-04", sourceRef: "Eberhart 6917", mappingStatus: "unmapped", identityEvidence: "Calvine account identifies two hikers, a diamond-shaped object, RAF Harrier and photographs." }
+    ] });
   add("montreal", "Montreal / Place Bonaventure", "1990-11-07", null, "Montreal, Quebec, Canada", [45.5, -73.57], 9,
     ["Montreal lights", "Place Bonaventure", "Hotel Bonaventure"], "Witnesses reported a formation of lights above Montreal; investigators considered atmospheric and reflected-light explanations.", wiki("UFO_sightings_in_Canada#Montreal"));
   add("michigan_1994", "Lake Michigan radar reports", "1994-03-08", null, "West Michigan, United States", [42.6, -86.1], 7,
@@ -225,11 +247,15 @@
     ["Erath County", "Dublin Texas", "Angelia Joiner", "Stephenville UFO"], "Witnesses reported unusual lights around Stephenville. Radar analyses and military flight information prompted competing interpretations.",
     source("MUFON Journal: February 2008 reports", "https://documents.theblackvault.com/documents/MUFON/Journals/2008/February_2008.pdf", "research publication mirror"), { radiusKm: 150 });
   add("norway_spiral", "Norway spiral", "2009-12-09", null, "Tromsø region, Norway", [69.65, 18.96], 7,
-    ["Norwegian spiral", "Bulava", "Tromso"], "A spectacular spiral prompted UFO speculation; Russia acknowledged a failed missile test associated with the display.", wiki("2009_Norwegian_spiral_anomaly"), { radiusKm: 300 });
+    ["Norwegian spiral", "Bulava", "Tromso"], "A spectacular spiral prompted UFO speculation; Russia acknowledged a failed missile test associated with the display.", wiki("2009_Norwegian_spiral_anomaly"), { radiusKm: 300, catalogRefs: [
+      { eventId: "1218480407598414", source: "majestic", dateIso: "2009-12-09", sourceRef: "Eberhart 7594", mappingStatus: "unmapped", identityEvidence: "Narrative identifies the blue beam and gray spiral seen across northern Norway." }
+    ] });
   add("harbour_mille", "Harbour Mille lights", "2010-01-25", null, "Harbour Mille, Newfoundland, Canada", [47.57, -54.85], 9,
     ["Newfoundland lights", "Harbor Mille", "missile shaped"], "Residents described objects over coastal Newfoundland; public photographs and later explanations are distinct evidence types.", wiki("UFO_sightings_in_Canada#Harbour_Mille_incident"));
   add("hangzhou", "Hangzhou Xiaoshan Airport", "2010-07-07", null, "Hangzhou, Zhejiang, China", [30.23, 120.43], 9,
-    ["Xiaoshan", "Hangzhou airport", "China airport closure"], "A reported unidentified object accompanied an airport closure. Widely circulated photographs should not be assumed to depict the reported object.", wiki("UFO_sightings_in_China#2010"));
+    ["Xiaoshan", "Hangzhou airport", "China airport closure"], "A reported unidentified object accompanied an airport closure. Widely circulated photographs should not be assumed to depict the reported object.", wiki("UFO_sightings_in_China#2010"), { catalogRefs: [
+      { eventId: "2003214068068190", source: "majestic", dateIso: "2010-07-07", sourceRef: "Eberhart 7606", mappingStatus: "unmapped", identityEvidence: "Narrative identifies the airport shutdown and diverted flights at Hangzhou Xiaoshan." }
+    ] });
 
   function normalizeCaseOrder(order) {
     return String(order || "").trim().toLowerCase() === "chronological" ? "chronological" : "alphabetical";
