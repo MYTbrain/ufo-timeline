@@ -54,3 +54,20 @@ No newly created file exceeds 100 MiB. Approximate growth for source checkout,
 Git objects, small QA images, and the candidate is below 80 MiB. The temporary
 preview becomes superseded after production passes; removing that preview is the
 only new cleanup proposal. No historical dataset or release directory is deleted.
+
+## Hosted preview acceptance
+
+Preview deployment `d60a8856-e538-4515-9c73-72cbe863953a` served source
+`c548a27538da7a1ed9efa9328f4791d269e8bd8b` at
+<https://d60a8856.ufo-timeline.pages.dev>. Twelve critical hosted asset hashes
+matched the prepared inventory, including the current configuration, label gzip,
+retirement worker, and new interface modules. Browser checks showed six links,
+five area reports and three outside endpoints for Frederick Valentich. Changing
+the end date retained the case; Fit worked; the outside Gallipolis Ferry Full
+Details loaded event `56304148725268` with preserved source fields. No browser
+errors or warnings were captured. `docs/ui/famous-case-hosted-preview.png` records
+the map, legend silhouettes, compact Results context, and outside report card.
+
+Production is published from this release on GitHub main. The final local
+publication receipt beside the inventory records the confirmed production
+UUID/source and retains the baseline UUID as the one public rollback.
