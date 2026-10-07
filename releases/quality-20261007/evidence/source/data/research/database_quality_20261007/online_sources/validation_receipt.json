@@ -1,0 +1,9 @@
+{
+  "accepted_real_data_guards_passed": 14,
+  "source_detail_pin_checks_passed": 14,
+  "negative_guard_controls_passed": 84,
+  "mapped_reference_recoveries": 13,
+  "text_only_locality_enrichment": 1,
+  "base_raw_dates_narratives_and_ids_unchanged": true,
+  "no_object_coordinate_claims": true
+}

@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "reviewed_date": "2026-10-07",
+  "authorities": [
+    {
+      "key": "bluebook_pan_am_203_19520508",
+      "urls": [
+        "https://thedailydialectics.com/bluebook/scans/1950s/1952-05-9612806-ATLANTICOCEAN.pdf"
+      ],
+      "document_role": "Primary Air Force record and witness form, hosted as a microfilm scan mirror; not the mirror AI summary.",
+      "fact_summary": "Witness form p5 places the observing aircraft at 31 degrees20 minutes N,70 degrees W on8 May1952; p2 Air Force message specifies70 degrees00 minutes W.",
+      "local_files": [
+        {
+          "path": "bluebook_19520508_atlantic.pdf",
+          "sha256": "2390e117ecea8e34e0049def41b1df7aa4a8e41dd0ff34be2cec83809b7af187"
+        },
+        {
+          "path": "bluebook_coordinate_review_page_02.png",
+          "sha256": "a1c698d677008dfb91628fa48c6c59d383db4e51f533bdf38247d481856ffeb4"
+        },
+        {
+          "path": "bluebook_coordinate_review_page_05.png",
+          "sha256": "88a01bcfe5f6ed81b82289bd6facd218ad6fc88bc34810b91b1a383731431cc5"
+        }
+      ]
+    },
+    {
+      "key": "ukab_2017195",
+      "urls": [
+        "https://www.airproxboard.org.uk/Documents/Download/1715/676d6913-3528-4d32-8e66-50e2f5ec8c7b/1813"
+      ],
+      "document_role": "Original UK Airprox Board assessment,case2017195,p5.",
+      "fact_summary": "14 July2017,1920 UTC,A319 encounter near Uckfield is reported at5056N00003E; altitude FL70.",
+      "local_files": [
+        {
+          "path": "ukab_2017195_original.pdf",
+          "sha256": "a49369debbe37c821f537d429512547372f7b3bf6d971025cfde23db29dd195e"
+        },
+        {
+          "path": "ukab_2017195_original_p05.png",
+          "sha256": "52f46ec1bfe2b75f8aad0d216d4547ebc113bb7efb88776281de47cb833afa22"
+        }
+      ]
+    },
+    {
+      "key": "ukab_2019098",
+      "urls": [
+        "https://www.airproxboard.org.uk/Documents/Download/1713/767ba307-2c1e-4031-b39d-ff0193e0fb9a/2315"
+      ],
+      "document_role": "Original UK Airprox Board assessment,case2019098,p5.",
+      "fact_summary": "28 April2019,1240 UTC,A319 encounter12nm east of Gatwick is reported at5109N00007E and FL117; dark green object with a white feature.",
+      "local_files": [
+        {
+          "path": "ukab_2019098_original.pdf",
+          "sha256": "4ede51edb5ee5ea54fc79e22bfd4156e5bf5d0bdab825f468469624f3679d241"
+        },
+        {
+          "path": "ukab_2019098_original_p05.png",
+          "sha256": "1669b4a2f0bf8c6b1097bc8ec610c0132b025748f5be839d2df598241cfe6b4f"
+        }
+      ]
+    },
+    {
+      "key": "ukab_2019091",
+      "urls": [
+        "https://www.airproxboard.org.uk/Documents/Download/1713/767ba307-2c1e-4031-b39d-ff0193e0fb9a/2315"
+      ],
+      "document_role": "Original UK Airprox Board assessment,case2019091,p3.",
+      "fact_summary": "5 May2019,1400 UTC,A320 encounter8nm southeast of Crawley is reported at5102N00000W and FL060; white cube with a rounded top.",
+      "local_files": [
+        {
+          "path": "ukab_2019098_original.pdf",
+          "sha256": "4ede51edb5ee5ea54fc79e22bfd4156e5bf5d0bdab825f468469624f3679d241"
+        },
+        {
+          "path": "ukab_2019098_original_p03.png",
+          "sha256": "e005d18733a0f37c4ffffc386e244fbc51370c00f22306085f64cc95d71bffed"
+        }
+      ]
+    },
+    {
+      "key": "heathrow_reference",
+      "urls": [
+        "https://planning.hillingdon.gov.uk/OcellaWeb/viewDocument?file=dv_pl_files%5C2382_APP_2023_2906%5CAviation+Glint+%26+Glare+Assessment.pdf&module=pl"
+      ],
+      "document_role": "Technical geographic baseline prepared for the London Borough of Hillingdon; current aerodrome reference, not historical tower coordinates.",
+      "fact_summary": "Published assessment Table5-13,p25,gives the Heathrow aerodrome reference point51 degrees28 minutes39.04 seconds N,000 degrees27 minutes39.85 seconds W.",
+      "local_files": [
+        {
+          "path": "heathrow_published_reference_assessment.pdf",
+          "sha256": "dc2bda2c755a351684d0b973024164d460418349550c469d239db5a771e80368"
+        },
+        {
+          "path": "heathrow_reference_coordinate_table.png",
+          "sha256": "fc2d515b99086c9f736e78d0cb5894d80136cfb43269f0edb44a35629c0e2c88"
+        }
+      ]
+    },
+    {
+      "key": "vatican_observer_facility",
+      "urls": [
+        "https://www.turismoroma.it/en/places/vatican-museums-and-sistine-chapel",
+        "https://www.museivaticani.va/content/museivaticani/en/info.html"
+      ],
+      "document_role": "Municipality of Rome tourism department location marker and institution address.",
+      "fact_summary": "Rome municipal museum page publishes facility reference latitude41.906949,longitude12.453317. Museum institution address is Viale Vaticano.",
+      "local_files": [
+        {
+          "path": "vatican_museums_rome_municipal_page.html",
+          "sha256": "5e58c99a15aa99d66c961637692ded10a90ad1040aca6ef0012523084d45162d"
+        }
+      ]
+    },
+    {
+      "key": "walla_walla_observer_airport",
+      "urls": [
+        "https://forecast.weather.gov/MapClick.php?FcstType=text&lat=46.0946&lg=en&lon=-118.2858&unit=1"
+      ],
+      "document_role": "National Weather Service station metadata within the named airport; not the witness tower point.",
+      "fact_summary": "NWS identifies Walla Walla Regional Airport,KALW,at latitude46.09462 N,longitude118.2858 W.",
+      "local_files": [
+        {
+          "path": "walla_walla_nws_airport_station.html",
+          "sha256": "de70d383c7851bff564005c8b893346f5f2aa3661baca44253171be792e2e51d"
+        }
+      ]
+    },
+    {
+      "key": "condon_barra_case48",
+      "urls": [
+        "https://files.ncas.org/condon/text/case48.htm"
+      ],
+      "document_role": "Original Colorado project investigator text mirrored by NCAS; preserves contrary photo evidence.",
+      "fact_summary": "Hartmann case48 identifies Barra da Tijuca near Rio and the7 May1952 photographs; it disputes lighting consistency and says object distance was not satisfactorily justified.",
+      "local_files": [
+        {
+          "path": "condon_case48_primary_investigation_text.html",
+          "sha256": "ee2e79b05030373ad046b6039975b9d8bd2aca974dc64f25289b4a823b96289c"
+        }
+      ]
+    }
+  ],
+  "accepted": [
+    {
+      "event_id": 166977243187363,
+      "source": "phenomenainon_updb",
+      "source_id": "5177646",
+      "date_iso": "1952-05-08",
+      "authority_key": "bluebook_pan_am_203_19520508",
+      "required_source_tokens": [
+        "Flight 203",
+        "Gallagher",
+        "2:27",
+        "31 degrees"
+      ],
+      "set_fields": {
+        "lat": 31.333333333333332,
+        "lon": -70,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "Atlantic Ocean; Pan Am Flight203 reported observer position31 degrees20 minutes N,70 degrees W"
+      },
+      "scope": "primary_document_observer_position",
+      "geographic_role": "source_reported_observer_position",
+      "match_note": "Date,flight203 or source-native NICAP case link,and distinctive crew/account facts individually match the scanned original incident.",
+      "coordinate_role_note": "Aircraft observer position stated by source; historical datum and accuracy unknown. Report notation is rounded, and it does not establish object coordinates.",
+      "conflicts_preserved": [
+        "Secondary accounts differ on DC4/Constellation,route direction,altitude and time zone; these fields remain unchanged."
+      ]
+    },
+    {
+      "event_id": 645818102175856,
+      "source": "majestic",
+      "source_id": "Johnson_2649",
+      "date_iso": "1952-05-08",
+      "authority_key": "bluebook_pan_am_203_19520508",
+      "required_source_tokens": [
+        "flight 203",
+        "2:27",
+        "three round",
+        "Atlantic"
+      ],
+      "set_fields": {
+        "lat": 31.333333333333332,
+        "lon": -70,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "Atlantic Ocean; Pan Am Flight203 reported observer position31 degrees20 minutes N,70 degrees W"
+      },
+      "scope": "primary_document_observer_position",
+      "geographic_role": "source_reported_observer_position",
+      "match_note": "Date,flight203 or source-native NICAP case link,and distinctive crew/account facts individually match the scanned original incident.",
+      "coordinate_role_note": "Aircraft observer position stated by source; historical datum and accuracy unknown. Report notation is rounded, and it does not establish object coordinates.",
+      "conflicts_preserved": [
+        "Secondary accounts differ on DC4/Constellation,route direction,altitude and time zone; these fields remain unchanged."
+      ]
+    },
+    {
+      "event_id": 205161409262372,
+      "source": "majestic",
+      "source_id": "NICAP_DB_983",
+      "date_iso": "1952-05-08",
+      "authority_key": "bluebook_pan_am_203_19520508",
+      "required_source_tokens": [
+        "520508",
+        "Constellation",
+        "Atlantic"
+      ],
+      "set_fields": {
+        "lat": 31.333333333333332,
+        "lon": -70,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "Atlantic Ocean; Pan Am Flight203 reported observer position31 degrees20 minutes N,70 degrees W"
+      },
+      "scope": "primary_document_observer_position",
+      "geographic_role": "source_reported_observer_position",
+      "match_note": "Date,flight203 or source-native NICAP case link,and distinctive crew/account facts individually match the scanned original incident.",
+      "coordinate_role_note": "Aircraft observer position stated by source; historical datum and accuracy unknown. Report notation is rounded, and it does not establish object coordinates.",
+      "conflicts_preserved": [
+        "Secondary accounts differ on DC4/Constellation,route direction,altitude and time zone; these fields remain unchanged."
+      ]
+    },
+    {
+      "event_id": 3092701539773317,
+      "source": "majestic",
+      "source_id": "Eberhart_1813",
+      "date_iso": "1952-05-08",
+      "authority_key": "bluebook_pan_am_203_19520508",
+      "required_source_tokens": [
+        "Clayton C. Gallagher",
+        "2:27",
+        "two smaller orange",
+        "Atlantic"
+      ],
+      "set_fields": {
+        "lat": 31.333333333333332,
+        "lon": -70,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "Atlantic Ocean; Pan Am Flight203 reported observer position31 degrees20 minutes N,70 degrees W"
+      },
+      "scope": "primary_document_observer_position",
+      "geographic_role": "source_reported_observer_position",
+      "match_note": "Date,flight203 or source-native NICAP case link,and distinctive crew/account facts individually match the scanned original incident.",
+      "coordinate_role_note": "Aircraft observer position stated by source; historical datum and accuracy unknown. Report notation is rounded, and it does not establish object coordinates.",
+      "conflicts_preserved": [
+        "Secondary accounts differ on DC4/Constellation,route direction,altitude and time zone; these fields remain unchanged."
+      ]
+    },
+    {
+      "event_id": 4442650310869472,
+      "source": "majestic",
+      "source_id": "Eberhart_7721",
+      "date_iso": "2017-07-14",
+      "authority_key": "ukab_2017195",
+      "required_source_tokens": [
+        "Airbus A319",
+        "7 seconds",
+        "cube",
+        "Gatwick"
+      ],
+      "set_fields": {
+        "lat": 50.93333333333333,
+        "lon": 0.05,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "Uckfield, Sussex; UKAB2017195 published encounter reference"
+      },
+      "scope": "primary_document_encounter_reference",
+      "geographic_role": "published_aircraft_encounter_reference",
+      "match_note": "Date,aircraft type,distinctive object description and encounter narrative independently match the original numbered assessment.",
+      "coordinate_role_note": "Published incident/aircraft encounter reference rounded to arcminutes. Coordinate accuracy and exact object position unknown; departure airport is not substituted.",
+      "conflicts_preserved": []
+    },
+    {
+      "event_id": 3914992049774335,
+      "source": "majestic",
+      "source_id": "Eberhart_7797",
+      "date_iso": "2019-04-28",
+      "authority_key": "ukab_2019098",
+      "required_source_tokens": [
+        "Airbus A319",
+        "dark green",
+        "white light",
+        "right-hand wing"
+      ],
+      "set_fields": {
+        "lat": 51.15,
+        "lon": 0.11666666666666667,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "12nm east of Gatwick; UKAB2019098 published encounter reference"
+      },
+      "scope": "primary_document_encounter_reference",
+      "geographic_role": "published_aircraft_encounter_reference",
+      "match_note": "Date,aircraft type,distinctive object description and encounter narrative independently match the original numbered assessment.",
+      "coordinate_role_note": "Published incident/aircraft encounter reference rounded to arcminutes. Coordinate accuracy and exact object position unknown; departure airport is not substituted.",
+      "conflicts_preserved": [
+        "Original UKAB specifies FL117; preserved secondary account says17,000 feet. No altitude or narrative is overwritten."
+      ]
+    },
+    {
+      "event_id": 394311797631986,
+      "source": "majestic",
+      "source_id": "Eberhart_7798",
+      "date_iso": "2019-05-05",
+      "authority_key": "ukab_2019091",
+      "required_source_tokens": [
+        "Airbus A320",
+        "white",
+        "cube",
+        "ball"
+      ],
+      "set_fields": {
+        "lat": 51.03333333333333,
+        "lon": 0.0,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_source_coordinates",
+        "location_precision": "approximate",
+        "location_raw": "8nm southeast of Crawley; UKAB2019091 published encounter reference"
+      },
+      "scope": "primary_document_encounter_reference",
+      "geographic_role": "published_aircraft_encounter_reference",
+      "match_note": "Date,aircraft type,distinctive object description and encounter narrative independently match the original numbered assessment.",
+      "coordinate_role_note": "Published incident/aircraft encounter reference rounded to arcminutes. Coordinate accuracy and exact object position unknown; departure airport is not substituted.",
+      "conflicts_preserved": []
+    },
+    {
+      "event_id": 914899774380314,
+      "source": "majestic",
+      "source_id": "Eberhart_3285",
+      "date_iso": "1959-02-25",
+      "authority_key": "heathrow_reference",
+      "required_source_tokens": [
+        "officials",
+        "runways",
+        "Heathrow"
+      ],
+      "set_fields": {
+        "lat": 51.47751111111111,
+        "lon": -0.4610694444444445,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Heathrow Airport (observer facility reference), London, England",
+        "city": "Heathrow Airport"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "Original narrative places officials and their sighting above a runway at London Airport,explicitly identified as Heathrow.",
+      "coordinate_role_note": "Current airport reference marker only. Historical tower,runway,witness spot and object positions are unknown; city-level precision avoids presenting the reference as exact coordinates.",
+      "conflicts_preserved": [
+        "No original historical tower position is inferred. Dates and narratives remain unchanged."
+      ]
+    },
+    {
+      "event_id": 2696559789237035,
+      "source": "majestic",
+      "source_id": "Eberhart_1598",
+      "date_iso": "1950-11-05",
+      "authority_key": "heathrow_reference",
+      "required_source_tokens": [
+        "employees",
+        "Heathrow"
+      ],
+      "set_fields": {
+        "lat": 51.47751111111111,
+        "lon": -0.4610694444444445,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Heathrow Airport (observer facility reference), London, England",
+        "city": "Heathrow Airport"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "Original narrative identifies four ground airline employees seeing the object over Heathrow.",
+      "coordinate_role_note": "Current airport reference marker only. Historical tower,runway,witness spot and object positions are unknown; city-level precision avoids presenting the reference as exact coordinates.",
+      "conflicts_preserved": [
+        "No original historical tower position is inferred. Dates and narratives remain unchanged."
+      ]
+    },
+    {
+      "event_id": 3558300102639348,
+      "source": "majestic",
+      "source_id": "Eberhart_4093",
+      "date_iso": "1966-09-15",
+      "authority_key": "heathrow_reference",
+      "required_source_tokens": [
+        "personnel",
+        "Air Traffic Control",
+        "Heathrow"
+      ],
+      "set_fields": {
+        "lat": 51.47751111111111,
+        "lon": -0.4610694444444445,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Heathrow Airport (observer facility reference), London, England",
+        "city": "Heathrow Airport"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "Original narrative identifies Heathrow Air Traffic Control personnel as witnesses.",
+      "coordinate_role_note": "Current airport reference marker only. Historical tower,runway,witness spot and object positions are unknown; city-level precision avoids presenting the reference as exact coordinates.",
+      "conflicts_preserved": [
+        "No original historical tower position is inferred. Dates and narratives remain unchanged.",
+        "Raw date is September1966 only. Existing sort_date_iso1966-09-15 is a display/sort approximation and remains unchanged; no exact day is asserted."
+      ]
+    },
+    {
+      "event_id": 2996664095795393,
+      "source": "nuforc",
+      "source_id": "56603",
+      "date_iso": "1966-07-01",
+      "authority_key": "heathrow_reference",
+      "required_source_tokens": [
+        "took a photo",
+        "Heathrow airport",
+        "1966"
+      ],
+      "set_fields": {
+        "lat": 51.47751111111111,
+        "lon": -0.4610694444444445,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Heathrow Airport (observer facility reference), London, England",
+        "city": "Heathrow Airport"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "Preserved native NUFORC56603 account explicitly identifies the photographer at Heathrow; objects were noticed only later in the image.",
+      "coordinate_role_note": "Current airport reference marker only. Historical tower,runway,witness spot and object positions are unknown; city-level precision avoids presenting the reference as exact coordinates.",
+      "conflicts_preserved": [
+        "No original historical tower position is inferred. Dates and narratives remain unchanged."
+      ]
+    },
+    {
+      "event_id": 4044628187767533,
+      "source": "mufon",
+      "source_id": "23616",
+      "date_iso": "2009-04-17",
+      "authority_key": "vatican_observer_facility",
+      "required_source_tokens": [
+        "Vatican Museums",
+        "window",
+        "Rome"
+      ],
+      "set_fields": {
+        "lat": 41.906949,
+        "lon": 12.453317,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Vatican Museums (observer facility reference), Rome",
+        "city": "Vatican Museums"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "The preserved native MUFON23616 account explicitly says the photo was taken through a window in the Vatican Museums.",
+      "coordinate_role_note": "Facility reference identifies photographer context only. The room,window,object range and object identity are unknown.",
+      "conflicts_preserved": [
+        "Source countryIT is preserved; marker is for the Vatican Museums facility and is not a new sovereign-country assertion."
+      ]
+    },
+    {
+      "event_id": 4407654828832430,
+      "source": "nuforc",
+      "source_id": "1255",
+      "date_iso": "1996-02-03",
+      "authority_key": "walla_walla_observer_airport",
+      "required_source_tokens": [
+        "controller",
+        "Walla Walla Airport",
+        "tower"
+      ],
+      "set_fields": {
+        "lat": 46.09462,
+        "lon": -118.2858,
+        "has_coordinates": true,
+        "coordinate_source": "reviewed_location_authority",
+        "location_precision": "city",
+        "location_raw": "Walla Walla Regional Airport (observer facility reference), Washington, United States",
+        "city": "Walla Walla Regional Airport"
+      },
+      "scope": "observer_facility_reference",
+      "geographic_role": "observer_facility_reference",
+      "match_note": "Preserved NUFORC1255 account places the observing controller in the Walla Walla airport tower.",
+      "coordinate_role_note": "Named airport reference uses a government weather-station point within the airport. It is not the historical tower or an exact witness/object point.",
+      "conflicts_preserved": []
+    },
+    {
+      "event_id": 3709596494025957,
+      "source": "majestic",
+      "source_id": "Johnson_2614",
+      "date_iso": "1952-05-07",
+      "authority_key": "condon_barra_case48",
+      "required_source_tokens": [
+        "Barra da Tijuca",
+        "Keffel",
+        "Martins",
+        "1952"
+      ],
+      "set_fields": {
+        "location_raw": "Barra da Tijuca, Rio de Janeiro, Brazil",
+        "city": "Barra da Tijuca",
+        "state_province": "Rio de Janeiro",
+        "country": "BR"
+      },
+      "scope": "primary_source_locality_enrichment",
+      "geographic_role": "reported_locality_unmapped",
+      "match_note": "Preserved account date,witness names and five-photo sequence match the original investigator case.",
+      "coordinate_role_note": "Text/locality recovery only. No source-supported photographer coordinate is assigned.",
+      "conflicts_preserved": [
+        "Investigator text disputes lighting consistency and object-distance estimates; preserved source account presents a more favorable assessment. Both are retained as evidence,not resolved by majority vote."
+      ]
+    }
+  ],
+  "policy": "Guarded sparse source/observer reference recovery; every target remains a preserved original record."
+}

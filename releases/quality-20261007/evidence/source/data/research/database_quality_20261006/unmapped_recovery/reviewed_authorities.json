@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-07",
+  "reviewScope": "Agent review of primary gazetteer, municipal and aviation sources. Facts below are retained review evidence; no claim that full remote page bytes were archived.",
+  "authorities": {
+    "istanbul_geonames_745044": {
+      "name": "Istanbul",
+      "countryCode": "TR",
+      "featureClass": "P",
+      "featureCode": "PPLA",
+      "geonameId": "745044",
+      "lat": 41.01384,
+      "lon": 28.94966,
+      "coordinateRole": "reported_city_reference",
+      "locationPrecision": "city",
+      "observationPointKnown": false,
+      "objectPointKnown": false,
+      "urls": ["https://www.geonames.org/745044/istanbul.html", "https://istanbuluseyret.ibb.gov.tr/istanbul-hakkinda/"],
+      "reviewEvidence": "GeoNames identifies a P/PPLA populated city in TR and gives this numeric reference point; its hierarchy distinguishes the city feature from the administrative feature. The municipal source confirms Istanbul is a city. The SQL native ID5466312 has the identical name/country/class/point.",
+      "limit": "City reference only. Exact observer and object positions within or around the reported city are not supplied; no city-boundary centroid or exact observation position is inferred."
+    },
+    "st_austell_geonames_2638853": {
+      "name": "St Austell",
+      "countryCode": "GB",
+      "admin": "Cornwall",
+      "featureClass": "P",
+      "featureCode": "PPL",
+      "geonameId": "2638853",
+      "lat": 50.3425,
+      "lon": -4.77442,
+      "coordinateRole": "reported_locality_reference",
+      "locationPrecision": "city",
+      "observationPointKnown": false,
+      "objectPointKnown": false,
+      "urls": ["https://www.geonames.org/2638853/st-austell.html", "https://www.staustell-tc.gov.uk/About_St_Austell_15216.aspx"],
+      "reviewEvidence": "GeoNames feature2638853 is P/PPL St Austell with GB, England, Cornwall hierarchy. It is distinct from the administrative civil-parish feature. The local town council identifies St Austell as a town in Cornwall.",
+      "limit": "Town reference only. The source account looks out to sea; neither the viewing site nor the object position is supplied."
+    },
+    "mojave_faa_mhv": {
+      "name": "Mojave Airport / Mojave Air and Space Port",
+      "countryCode": "US",
+      "admin": "California",
+      "featureClass": "airport",
+      "facilityIdentifiers": ["MHV", "KMHV"],
+      "latitudeSourceText": "35-03-32.2000N",
+      "longitudeSourceText": "118-09-02.2000W",
+      "lat": 35.05894444444445,
+      "lon": -118.15061111111112,
+      "coordinateRole": "reported_observer_facility_reference",
+      "locationPrecision": "city",
+      "observationPointKnown": false,
+      "objectPointKnown": false,
+      "urls": ["https://www.gcr1.com/5010ReportRouter/MHV.pdf", "https://aeronav.faa.gov/d-tpp/2507/09353AD.PDF", "https://www.mojaveairport.com/"],
+      "reviewEvidence": "FAA Airport Master Record fields19 and20 publish the airport latitude/longitude and label latitude estimated. FAA airport diagram identifies MHV at Mojave, California. The account explicitly names KMHV and the airport aircraft boneyard; KEDW is departure context.",
+      "limit": "Airport reference marker only. It does not locate the photographer within the boneyard or the photographed object. The airport coordinate is estimated and must not be labeled a measured observation point."
+    }
+  }
+}

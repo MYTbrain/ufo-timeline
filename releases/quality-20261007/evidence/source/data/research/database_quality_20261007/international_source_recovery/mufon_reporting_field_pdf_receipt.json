@@ -1,0 +1,27 @@
+{
+  "source_url": "https://www.mufon.com/wp-content/uploads/2024/11/JULY_2023_MUFON_Journal_WEB.pdf",
+  "retrieved_at_utc": "2026-10-07",
+  "whole_remote_pdf_sha256": "bd0ae566b4bbc0b359c25daa74b484e7db7ccc18ebc9c82e44c90e93d4887909",
+  "whole_remote_pdf_bytes": 1913630,
+  "whole_remote_pdf_retained": false,
+  "source_pdf_page_index": 12,
+  "printed_page": 13,
+  "retained_page": {
+    "path": "mufon_journal_2023_07_page13_source.pdf",
+    "sha256": "7f4cce9ef058c1d52b263cd0543bd893590233e9345976d40ae9b609568fe8b9",
+    "bytes": 101946
+  },
+  "extracted_images": [
+    {
+      "path": "mufon_journal_page13_image_0.jpg",
+      "bytes": 31614,
+      "sha256": "74fd0fc8b8c68dbe09df6e57e0607589311c64445ace37a931eea564462b5d1e"
+    },
+    {
+      "path": "mufon_journal_page13_image_1.jpg",
+      "bytes": 34137,
+      "sha256": "e1ce8c9aa091aa3bf75faf498f980893b9bbce4c2c256e02b18fd7d1b910131a"
+    }
+  ],
+  "retention": "Only relevant reporting-field evidence page and images retained; original remains available at publisher URL."
+}

@@ -6,13 +6,13 @@
     "longitude_wrap": "normalize to [-180, 180] before assigning cells"
   },
   "counts": {
-    "aggregate_bins": 2089,
+    "aggregate_bins": 2094,
     "aggregate_bins_by_level": {
-      "10deg": 488,
-      "2_5deg": 867,
-      "5deg": 734
+      "10deg": 487,
+      "2_5deg": 870,
+      "5deg": 737
     },
-    "input_segments": 975
+    "input_segments": 978
   },
   "endianness": "little",
   "fields": [
@@ -159,7 +159,7 @@
       "none/full_universe"
     ]
   },
-  "row_count": 2089,
+  "row_count": 2094,
   "schema_version": 1,
   "struct_format": "<IHHHHIIffffiiII"
 }

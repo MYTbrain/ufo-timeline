@@ -1,0 +1,1655 @@
+{
+  "method": "All accepted full narratives pass conservative fixed-local-observer and whole-account exclusion rules; all provisional texts and all 79 initial source/country strata inspected for marker role and named-place disagreements. Known false settings are explicit negative controls. No claim of exhaustive semantic/location truth validation.",
+  "rows": [
+    {
+      "event_id": 4501684672421339,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Iver Heath, , GB",
+      "fixed_context": "Retained native MUFON 135961 explicitly puts observer out the back of the warehouse, taking a reference-lamppost photograph; past paragliding is background, not an airborne observation.",
+      "description_sha256": "2e2452491dbf3c1c6b8095ae542c37482130888d237ff706397f4fe7463e573c",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3341750306639954,
+      "source": "mufon",
+      "country": "DE",
+      "location_raw": "Calw, , DE",
+      "fixed_context": "auf unserem balkon",
+      "description_sha256": "1db8853b848bf0ac7c662c42ec5da55be60e0d188f0897e9bd0394bd54bfe0ed",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1755148035736581,
+      "source": "mufon",
+      "country": "ZM",
+      "location_raw": "Kitwe, , ZM",
+      "fixed_context": "kitchen sink",
+      "description_sha256": "29dd6495131217036055044bd79cb307248ff27900505bb27270584b8a5bbbf4",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 164301452998110,
+      "source": "nuforc",
+      "country": "LK",
+      "location_raw": "Kannattota (Sri Lanka), , Sri Lanka",
+      "fixed_context": "Native NUFORC 61642 confirms declared Kannattota location, four family observers sitting out to watch the sky; date is explicitly approximate and assigned by publisher.",
+      "description_sha256": "faf6c232c798876e26343c45c8dc6f33c840cac6913d1f65b2c4103fd489e30f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 811617361710041,
+      "source": "nuforc",
+      "country": "IE",
+      "location_raw": "Fermoy, , Ireland",
+      "fixed_context": "Retained native NUFORC 161978 puts observer opening a gate to get the car out, then stargazing. Travelling refers to the lights, not the observer; no journey or moving-car observation is described.",
+      "description_sha256": "ab1e47c32a9c89d2307c7daa96cfa6470d1b23f0519f88772238e3f5d0c5d3ad",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2741276091661954,
+      "source": "nuforc",
+      "country": "NZ",
+      "location_raw": "Taumarunui (New Zealand), , New Zealand",
+      "fixed_context": "Native NUFORC 123853 confirms Taumarunui location and three friends stargazing beside trees/field; no travelling observer is described.",
+      "description_sha256": "078b5bd0eaf49fbacb706de8625e527327666f08f20d46ad3d01874286fb9ac3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 664032857715698,
+      "source": "nuforc",
+      "country": "ZA",
+      "location_raw": "Riebeek Kasteel (South Africa), , South-Africa",
+      "fixed_context": "Retained native NUFORC 91458 puts observer outside evening stargazing, calling daughter outside, then going inside the house and returning; fixed household scene, not a travelling observer.",
+      "description_sha256": "8b3d3a7a304fc2f0c284485a49ba148d92b18f7ba527d4893230bdb1cca59674",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 363014509208948,
+      "source": "nuforc",
+      "country": "CZ",
+      "location_raw": "Brodek u Přerova, Olomouc Region, Czechia",
+      "fixed_context": "Native NUFORC 188154 explicitly records Viewed From: Land, one observer, declared Brodek u Prerova locality, and objects disappearing overhead.",
+      "description_sha256": "9d984fdabd14c9cfa1847c58774f69e0b84ac37aa5223598a5424609efe688f5",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 828032841660496,
+      "source": "nuforc",
+      "country": "PT",
+      "location_raw": "Costa da Caparica (Portugal), , Portugal",
+      "fixed_context": "my house",
+      "description_sha256": "2063eadda6909a210cee28162510a8464cc93703a4e8becb783e01ace890c516",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4050654705644176,
+      "source": "nuforc",
+      "country": "NO",
+      "location_raw": "Kristiansand (Norway), , Norway",
+      "fixed_context": "my house",
+      "description_sha256": "395794bc15c7e8ce694b0cf1e5afd1aebda02dfbe3e96082e52ea60dd2ae50c8",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1406929267032038,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Somain, , FR",
+      "fixed_context": "ma maison",
+      "description_sha256": "b7cdf28a6db8244e06e8984049d3fc3ef1ca16a7c92e77b96fd3780d3232ba73",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1633289187534236,
+      "source": "nuforc",
+      "country": "GR",
+      "location_raw": "Foinikounta, , Greece",
+      "fixed_context": "on balcony",
+      "description_sha256": "cf1a7747e6f8720a84abd9b3dc4e0297bc54d84123d3ae247d565f1c2733e210",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3367877388523958,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Confolens, , FR",
+      "fixed_context": "back garden",
+      "description_sha256": "ebcd8f8115ca57d813755bdae7ab20299e0ad15ab41cde264d0151c5b4976c45",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4088109549731707,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Ghaziabad, Uttar Pradesh, India",
+      "fixed_context": "our home",
+      "description_sha256": "2d9a33090455b79340bd5c82af1876d9038df9ac6aec17c800ca35dd2a42b4d5",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2966113558242667,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Tijuana, Baja California, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "76e6c024b5566f8e5d45055782bda6315da3eae9ac5640b45c07999bea79427d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2687695140035842,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Aranmula, Kerala, India",
+      "fixed_context": "my house",
+      "description_sha256": "611505779b2c49655320ddca809ee2ea051ed2b20e84153a1c7614be72cef19b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1255397654138737,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Marcellus, , FR",
+      "fixed_context": "ma maison",
+      "description_sha256": "be7a4fed612906cfb74d8f8f81ed133739c0d51b42b26dce4117016a0c0ebf38",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1019708854930325,
+      "source": "mufon",
+      "country": "PT",
+      "location_raw": "Oliveira do Hospital, , PT",
+      "fixed_context": "my house",
+      "description_sha256": "ddb829aaef5ed26fb748b8b2db56c43a20053db579cf4843291985dc54b6f222",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1279458685912061,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Mexicali, Baja California, Mexico",
+      "fixed_context": "outside my house",
+      "description_sha256": "4e510f36eca5cd35aa9933204f9cf0ca9d6ec96906730e025f81cd32ae9febd3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 524355941902146,
+      "source": "nuforc",
+      "country": "MY",
+      "location_raw": "Kemayan (Malaysia), , Malaysia",
+      "fixed_context": "outside the house",
+      "description_sha256": "9ea62cf7a827f968833a106ec632b9cd04c43ff8c80abfa4bc3abf19301aeb21",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3818508660746258,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "foz do iguaçu, Paraná, Brazil",
+      "fixed_context": "on the porch",
+      "description_sha256": "ed5daa5d6dcbb3f214211d0c1084caf976f7de4f066a6ba584cc327f89cf6682",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1058524809885433,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Volmerange-Les-Mines, , FR",
+      "fixed_context": "dans mon jardin",
+      "description_sha256": "e110d19f0ca7940e2ab4bbb13c3d81ea5432502947df2103871b209375e29588",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2878913516593789,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Ibiporã, Paraná, Brazil",
+      "fixed_context": "looked out the window",
+      "description_sha256": "761ec16d7796e811dee5e793282434222261a6d2d3c8128f55417d9b7ee1885f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3752191857907008,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Rueil Malmaison (France), , France",
+      "fixed_context": "in the garden",
+      "description_sha256": "6348b859dcd3f68a70715a2aed03fc04c7ba5c118dff98b3c52f8db09f78d677",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4333858902016287,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "San Miguel de Allende, Guanajuato, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "79c1fc5eab6faaddb2c89c343cececb78718edaa203468a33b5762931b091d5d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1839346493530061,
+      "source": "nuforc",
+      "country": "FI",
+      "location_raw": "Helsinki, Uusimaa, Finland",
+      "fixed_context": "my window",
+      "description_sha256": "8e76b5d6f4f41a0ee7c52960e5f9b4092bef059f91d2638556993de7285e6532",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3064394369445530,
+      "source": "nuforc",
+      "country": "TR",
+      "location_raw": "Avanos, Nevşehir Province, Turkey",
+      "fixed_context": "my balcony",
+      "description_sha256": "cd1ea0dd355e7e788473dd968a4c8681bd48b55caf7c3a7ea208732fa814325f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4168637605276554,
+      "source": "nuforc",
+      "country": "ZA",
+      "location_raw": "Trichardt (South Africa), , South Africa",
+      "fixed_context": "my window",
+      "description_sha256": "9bd1bf77cca522b479502dc56f3b6dad356374fbb0f72427d7b4226447160e2e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 989880859699175,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Holmfirth, , GB",
+      "fixed_context": "looking out of my window",
+      "description_sha256": "369a2ba128e05ab1768702cf359c2a322e9a41630ba76eebb2a406d6cc23ad20",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2164366888691445,
+      "source": "mufon",
+      "country": "DE",
+      "location_raw": "Merzig, , DE",
+      "fixed_context": "on my balcony",
+      "description_sha256": "73adb2b1c9202ea7d0cd0aaf58342862f5be59c3c0bec57377c534ffdc1f6ce1",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2379696778219993,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "hemsby, , GB",
+      "fixed_context": "looked out the window",
+      "description_sha256": "67af50744c430a34e97b484122230d86b2f2553b0e0cf1b6012281d359396f28",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 920061521144437,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Dom Feliciano (Brazil), , Brazil",
+      "fixed_context": "my house",
+      "description_sha256": "7e9d4bcc97b799e875e58344eedb0cf62e0bdf2a83bbde21add9073030dba0de",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2620684545179486,
+      "source": "mufon",
+      "country": "BR",
+      "location_raw": "Salto de Pirapora, , BR",
+      "fixed_context": "kitchen window",
+      "description_sha256": "d4c681c165019f6661659dace2a938bae61359d2ec934fe297cced05bd7a0f30",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3115754660879170,
+      "source": "nuforc",
+      "country": "IE",
+      "location_raw": "Colbinstown (Ireland), , Ireland",
+      "fixed_context": "my house",
+      "description_sha256": "c87792bd1f7faa2a9bc85d547826995f79c68bc0cb1383de7f94ad6a75988b6e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1892736199931334,
+      "source": "mufon",
+      "country": "NL",
+      "location_raw": "Roermond, , NL",
+      "fixed_context": "my house",
+      "description_sha256": "1fed23d5eed5eca6608e4b33e511389e5951c431dc0fce98a0a93040c42b5cca",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2832396996442476,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Dunblane, , GB",
+      "fixed_context": "my window",
+      "description_sha256": "5df3fec4741c7495315254798443cde72be99f54fab4b6ef1d0fbccb3f4961ec",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 75173896340988,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Tonteg, , GB",
+      "fixed_context": "my bedroom",
+      "description_sha256": "b6f76b9a2b69efe3dcaa775774d4865fb2ce0fc4185e92691e13c08376aa5a10",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 254456145917602,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Hoylake, , GB",
+      "fixed_context": "looking out of the window",
+      "description_sha256": "cedb2209167d97f65473a174c44e92442d6966515a8f645ea5c09815f973b8c6",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1662759113940133,
+      "source": "nuforc",
+      "country": "BE",
+      "location_raw": "Waregem (Belgium), , Belgium",
+      "fixed_context": "in our yard",
+      "description_sha256": "0318cae82993bfff28ab663991a55fe9c733916941b1e1b27dc9491d9c6a0835",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 870632839054165,
+      "source": "mufon",
+      "country": "ZA",
+      "location_raw": "Mmametlhake, , ZA",
+      "fixed_context": "my house",
+      "description_sha256": "1d9cc3eee62561d73622fc41b4f77d7c3546b0d97e90b239373e3a0981df0d83",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 823924360445178,
+      "source": "nuforc",
+      "country": "PH",
+      "location_raw": "Bacoor, Calabarzon, Philippines",
+      "fixed_context": "outside the house",
+      "description_sha256": "38ca2a1f221d8ad60f499bf28a3e807977354d3892d38a15aa6891f90310997f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3430846896833872,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "San Luis Río Colorado, Sonora, Mexico",
+      "fixed_context": "our house",
+      "description_sha256": "9d71c76d5178e92beac7d8601bdc6122314a33ef6936d99d14ba57349cbb0d04",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3326100471025573,
+      "source": "nuforc",
+      "country": "HU",
+      "location_raw": "Békéssámson, , Hungary",
+      "fixed_context": "in the yard",
+      "description_sha256": "e4549b59205f02f7771a5cffd6e16c166923eabfde2226c291c45ce9ff34b221",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3242734128752707,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Sao Bernardo do Campo (Brazil), , Brazil",
+      "fixed_context": "on the balcony",
+      "description_sha256": "a25ea42d21b28fc15616f327e4bef06bc7a54ed50b011052d410a3c1166cde6d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3762591269635432,
+      "source": "mufon",
+      "country": "ZA",
+      "location_raw": "Randpark, , ZA",
+      "fixed_context": "our house",
+      "description_sha256": "59bfea652a975051507e185e6d9f37e69e1671c0db26903e7c920ff3f223e1cb",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3071832540901463,
+      "source": "nuforc",
+      "country": "SR",
+      "location_raw": "Paramaribo (Suriname), , Suriname",
+      "fixed_context": "my house",
+      "description_sha256": "4cf64feb68873a657213ab12b2aebb1977b5e4cad233a4d65c699a919381f339",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2248439297087176,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Saint-Vincent-des-Bois, Normandy, France",
+      "fixed_context": "on the patio",
+      "description_sha256": "8ccd415bb672eb3c655192d47043dec44ebaa562093d9b996b86de3ab8eaf6f1",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2153136913987321,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Ilhabela, São Paulo, Brazil",
+      "fixed_context": "looking through the window",
+      "description_sha256": "4a5b399ff17424f05a30b45245decda2a70c0679675de9c738b9a8e43ce061c4",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3676125068037801,
+      "source": "nuforc",
+      "country": "JM",
+      "location_raw": "May Pen (Jamaica), , Jamaica",
+      "fixed_context": "our house",
+      "description_sha256": "38aa1aa05a77e840751ecd8c7179ad318bd0bd5b3fadbd7c9776b1f898299a8c",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1784583136110632,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Saint-Quay-Portrieux, , FR",
+      "fixed_context": "depuis la terrasse",
+      "description_sha256": "6833f197575c8b0ce92b95090234d796fbb97fca1ea664f0a210214411d7f830",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3795749849949869,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Siliguri (India), , India",
+      "fixed_context": "my bedroom",
+      "description_sha256": "a050674278c43e390b51b37ef748627987951cd7eddbab96b3cf2a59fedc43ae",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3678801625172459,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Malinalco, Mexico, Mexico",
+      "fixed_context": "on the balcony",
+      "description_sha256": "4c51763f48f061170046ae8ec92bcf4cdc62b5f5c57fc5db36bacab28154b359",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2146453876673912,
+      "source": "nuforc",
+      "country": "IT",
+      "location_raw": "Naples (Italy), , Italy",
+      "fixed_context": "on the balcony",
+      "description_sha256": "b7e039360a08a9805d7fab172fa6942fe55471ada52a2772109d096c5be74a8e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1906970773214466,
+      "source": "nuforc",
+      "country": "IT",
+      "location_raw": "Salerno, Campania, Italy",
+      "fixed_context": "on my balcony",
+      "description_sha256": "25c1a78df11e78a452995ab770e7155a96740c07d23ba7a98144d9c4d4f0bcb6",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2261527937900162,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Canappeville, Normandy, France",
+      "fixed_context": "my house",
+      "description_sha256": "65351a2cdb8f934795a2567907441d6228e2dd1096c6787ff81a2f88d76f0de5",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2448461502196895,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Vernoux-En-Vivarais, , FR",
+      "fixed_context": "my window",
+      "description_sha256": "baee26d01be2fb5fbf823aecafbc3ed7d7cdc20e6117eaf719e83b42141d2ca6",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3539524789572069,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Alfredo V. Bonfil, Quintana Roo, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "fd9254939361d5af032f31876717e3b6513430f3ea23b9f5a704f19f18760b27",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1698029099025580,
+      "source": "nuforc",
+      "country": "TR",
+      "location_raw": "Ümraniye, Istanbul, Turkey",
+      "fixed_context": "my home",
+      "description_sha256": "5c81d235602661d66cbfe125b7260064304fb6e83f8ed8b4c98400edb8844eb1",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 904831116463898,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Lymm, , GB",
+      "fixed_context": "my house",
+      "description_sha256": "fdaf8ae4947026d906b51f8784b7c3e9cfb29dec71f164fde2065b244398f9d8",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1376655091274306,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Tepalcatepec, Michoacán, Mexico",
+      "fixed_context": "my home",
+      "description_sha256": "c343edb5dc3ff217631a8081b34c4668b52cc21eb4086ed20734fac3332ab0e4",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3684043419250264,
+      "source": "nuforc",
+      "country": "SE",
+      "location_raw": "Karlsborg, Västra Götaland, Sweden",
+      "fixed_context": "my window",
+      "description_sha256": "21fcd0fb43ec69016709f898952d774369346534b2d4317959c2a24629dfbd8c",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1760836336673695,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Otacílio Costa, Santa Catarina, Brazil",
+      "fixed_context": "my house",
+      "description_sha256": "3c37a4eac0c7fe08a41c81353e3154d48ad15afe7d90f81174c4c246d55e2163",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 922499532394535,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Amiens, Hauts-de-France, France",
+      "fixed_context": "my bedroom",
+      "description_sha256": "8dae29ab12acecb2fe64725f85ca25f186b29f5addcf75add6fe347ecaee9e3d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 63205884924958,
+      "source": "mufon",
+      "country": "HR",
+      "location_raw": "Nuštar, , HR",
+      "fixed_context": "my backyard",
+      "description_sha256": "f39e28520b54e9213cf387ce6877189a3b0355b69573166cba45fe3d91a6e7d2",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4176031477990523,
+      "source": "mufon",
+      "country": "RE",
+      "location_raw": "La Possession, , RE",
+      "fixed_context": "sur le balcon",
+      "description_sha256": "93f683bf8500aa95d7a91b1e6a6e56fbb4dc1d25670f520736cf39b011b65cab",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1810164852801972,
+      "source": "nuforc",
+      "country": "BN",
+      "location_raw": "Seria, , Brunei",
+      "fixed_context": "my house",
+      "description_sha256": "52d249ab655ca945743dc12cb024611fe7ac963a6d06924f82dd3c1f5fabf742",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1955490994881614,
+      "source": "nuforc",
+      "country": "LK",
+      "location_raw": "Moratuwa, Western Province, Sri Lanka",
+      "fixed_context": "my home",
+      "description_sha256": "b5b57eb945edb474af12f1f4c9dd8475421cfaa2a3c5a17ddec6d2d23a42803b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3460239747721763,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Erumely, Kerala, India",
+      "fixed_context": "my home",
+      "description_sha256": "e6ce99ffd53e82d0d2260279e52eac3be3b921170cf3cfce7a9c717a90b7064a",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3682169179507186,
+      "source": "nuforc",
+      "country": "AR",
+      "location_raw": "Villa Angela, Chaco, Argentina",
+      "fixed_context": "outside the house",
+      "description_sha256": "544c9c792f1a8a4569c81f731a498e2b382d60a4f9097e08ece5e72c638e2217",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2588860029727182,
+      "source": "mufon",
+      "country": "PT",
+      "location_raw": "Sacavem, , PT",
+      "fixed_context": "my house",
+      "description_sha256": "a886e088c669be5f2a24d8602825a646c7ad5d5fdf121aac8f52bdfd240bf5bb",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2793936627204089,
+      "source": "mufon",
+      "country": "AL",
+      "location_raw": "Vore, , AL",
+      "fixed_context": "back yard",
+      "description_sha256": "fd04018d8399429b66449223ea38a0161a91b0a7c619445bbab864e83d657ab5",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3389984219536772,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Belo Horizonte, Minas Gerais, Brazil",
+      "fixed_context": "my home",
+      "description_sha256": "2203d1029bfdeae4ce05c76292aa3c9adac9641cecfb3e701ce4423245e9d1c4",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4050488684537670,
+      "source": "mufon",
+      "country": "IL",
+      "location_raw": "Hadera, , IL",
+      "fixed_context": "at home",
+      "description_sha256": "6ea2f27f89168593d22249a38b29a24dedbcb0321ff2303e9da72faf4a42b069",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3405867723084215,
+      "source": "mufon",
+      "country": "LT",
+      "location_raw": "Šeduva, , LT",
+      "fixed_context": "my window",
+      "description_sha256": "08a2d03f40788989f5e44997bb8571fd8f3fa0eb8f3b99d41ddeff39ba93850f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1475682265575989,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Lhuitre (France), , France",
+      "fixed_context": "my window",
+      "description_sha256": "b5e7942875b4747fb0a0ad49212af6a5f4ba2e9bbfa80a0d5f8a312fecb773a7",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4248763402076448,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "João Pessoa, Paraíba, Brazil",
+      "fixed_context": "backyard",
+      "description_sha256": "cbeb64213d7024e9b42f1824fc74ecfc036bde907dacb9c133359d7712b06949",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3683142950603278,
+      "source": "nuforc",
+      "country": "BE",
+      "location_raw": "Lombise (Belgium), , Belgium",
+      "fixed_context": "our bedroom",
+      "description_sha256": "72bd22f4687f8600e3ad8d8dc587d7a2537c3f958f0b116b335da628d8090722",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 120352616959085,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Bar-Le-Duc, , FR",
+      "fixed_context": "ma terrasse",
+      "description_sha256": "bac840f89e9e94a1414a2fb4f6e42f45a33b097df390be2b43a87e28e71e46ce",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4076839741680488,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Haridwar, Uttarakhand, India",
+      "fixed_context": "my house",
+      "description_sha256": "98caa71cfb63e6f76fe36bde41ba6aebe46a871299114b572eedfd29a231928a",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 50443373833614,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Pompertuzat, , FR",
+      "fixed_context": "sur la terrasse",
+      "description_sha256": "c8b4fa0e8cb7f3b43a1c7edc8cb48495931d8212cbeeef81c1199fc22a5136e9",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 953428123515335,
+      "source": "mufon",
+      "country": "AT",
+      "location_raw": "Wieselburg, , AT",
+      "fixed_context": "looking out my window",
+      "description_sha256": "33c0def1fb23d03619aab00ea76698d280c9c27bdcca03a9e27e62487fce946b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4046614236434693,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Inguiniel, , FR",
+      "fixed_context": "dans mon jardin",
+      "description_sha256": "ddf597af6b425dfb22767ac5985453b1d99ff67ecc521b4407306eeec4ab4cd7",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3229872747627399,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Campo Grande, Mato Grosso do Sul, Brazil",
+      "fixed_context": "backyard",
+      "description_sha256": "5bf4ab992fa07be440ba6ac0b06aaead053dd2d453ddff447f20b115992a5bb3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1077795206304007,
+      "source": "nuforc",
+      "country": "PK",
+      "location_raw": "Okara (Pakistan), , Pakistan",
+      "fixed_context": "my house",
+      "description_sha256": "9558e2abfcc5dff5c41500c70504f86899a92195f8d52f3dfd2b03a660a4c852",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1683318972671210,
+      "source": "nuforc",
+      "country": "BE",
+      "location_raw": "Bornem (Belgium), , Belgium",
+      "fixed_context": "in the garden",
+      "description_sha256": "6adaf056204af0511fc8b2f5d13dca3f530fa52d7cab3eae23e6a3e530a7678d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 959999714637718,
+      "source": "nuforc",
+      "country": "SE",
+      "location_raw": "Vårby, Stockholm, Sweden",
+      "fixed_context": "on the balcony",
+      "description_sha256": "5dea780a623594ade89d246fdb06d828b5cbbb96a9acecec423f7174825c2764",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1987682927354631,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Villeperrot, , FR",
+      "fixed_context": "dans mon jardin",
+      "description_sha256": "0fd127c92eadce4b1930c142c45a42311a8b3d9d4075a2b0ba0805dfa44647c1",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1406021346901371,
+      "source": "mufon",
+      "country": "FI",
+      "location_raw": "Vihti, , FI",
+      "fixed_context": "kitchen window",
+      "description_sha256": "2b6c262d2a06f3307276e68082510b9623bdf8c08d57088af05a22d9883182fc",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4125260088489468,
+      "source": "mufon",
+      "country": "DE",
+      "location_raw": "Pleiskirchen, , DE",
+      "fixed_context": "our yard",
+      "description_sha256": "75b5213a3dba0d37d6835ac015de7cbf996cd8b0c619d2e9c350220d1ad8044a",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2400771840823492,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Dammarie les Lys, , FR",
+      "fixed_context": "mon balcon",
+      "description_sha256": "9feed7d4195e96976aed534325a6a54eedfd1dc4784f3a7f9acecbb7971cffd9",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2701472982059355,
+      "source": "mufon",
+      "country": "CH",
+      "location_raw": "Zumikon, , CH",
+      "fixed_context": "my home",
+      "description_sha256": "9ecfff8582c148a8296b2c041e5b2cbfc3339e62308ed8f01e8af63792be2b85",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4040807550898235,
+      "source": "mufon",
+      "country": "HU",
+      "location_raw": "Mezokovesd, , HU",
+      "fixed_context": "my backyard",
+      "description_sha256": "6d35b0d219895c6c5d0c323e68eef772c5c89866e73c8b6a3d1e705650d50322",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 980010481928436,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Saline, , GB",
+      "fixed_context": "our window",
+      "description_sha256": "2b52ef0525ad8ed97157153c0467371d558eab41a74cabb0941a4ae038344af7",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4056468140140378,
+      "source": "nuforc",
+      "country": "PE",
+      "location_raw": "Pucallpa, Ucayali, Peru",
+      "fixed_context": "backyard",
+      "description_sha256": "7c116d5f6d27d91a82363ea0d41994ab44ae0192d0625d8e82b2c3ec252a895f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 103893144830692,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Rishton, , GB",
+      "fixed_context": "my house",
+      "description_sha256": "5fba1094d1c0e6c659237aa37275853b7046aff4952ef8b511ca85acdca7ff7b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 905158865496535,
+      "source": "nuforc",
+      "country": "NZ",
+      "location_raw": "Whangārei, Northland, New Zealand",
+      "fixed_context": "looked out the window",
+      "description_sha256": "84194d2709f1feb7a57877bedc15efe1a655f89f4314d1c8163e788087ca41ec",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3930037765350787,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Artur Nogueira, São Paulo, Brazil",
+      "fixed_context": "looked out the window",
+      "description_sha256": "2bd3313941ab08953db81865506067cfe373c822f46742cdd50677f72720be77",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3738793559007893,
+      "source": "mufon",
+      "country": "IN",
+      "location_raw": "Kalamboli, , IN",
+      "fixed_context": "my terrace",
+      "description_sha256": "0344697665f9097e3a334b103f8e41220bad9ae7a58b04690b39efbfb9c6961b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1087225045275115,
+      "source": "nuforc",
+      "country": "LV",
+      "location_raw": "Sigulda (Latvia), , Latvia",
+      "fixed_context": "backyard",
+      "description_sha256": "916d8dce9b9cab3981f159fa82289af387931321d6de9d7bb15162d4d0d1306f",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 978223975667631,
+      "source": "mufon",
+      "country": "UG",
+      "location_raw": "Kampala, , UG",
+      "fixed_context": "our house",
+      "description_sha256": "6274cb4f2d82b752c055e36b692c9d0b25057010b60b7ce3d2ef55d351408c0b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 208507700885448,
+      "source": "mufon",
+      "country": "DE",
+      "location_raw": "Rheinstetten, , DE",
+      "fixed_context": "in my garden",
+      "description_sha256": "0f614dcccacec08319766f52e5ba84276d40ed488d12281de3badd95c08b5524",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2346209866478826,
+      "source": "nuforc",
+      "country": "BD",
+      "location_raw": "Jessore, Khulna Division, Bangladesh",
+      "fixed_context": "my rooftop",
+      "description_sha256": "ec372b01f298dbc6a3bc9f732c010da7952830c6c8a59030065e24f4585472a2",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4385626344639133,
+      "source": "nuforc",
+      "country": "TN",
+      "location_raw": "Monastir (Tunisia), , Tunisia",
+      "fixed_context": "my backyard",
+      "description_sha256": "f425b08da7e13930e220f0f6873a07c4a945c012c9a6fd00146e19b1b4bb5ebf",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3256319936146482,
+      "source": "nuforc",
+      "country": "FR",
+      "location_raw": "Plonevez du Faou (France), , France",
+      "fixed_context": "my window",
+      "description_sha256": "e56b673911d3499b299d44d64e385b4b7f8c2062bcfa92ad712e473b2732a463",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1749882595847250,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Tijuana, Baja California, Mexico",
+      "fixed_context": "on my balcony",
+      "description_sha256": "4fd9ae6baf12ca0bf94d65fc750a70a1538f7f08a01f10dcbea117f5edbaeadf",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3796017895889629,
+      "source": "nuforc",
+      "country": "IT",
+      "location_raw": "Chiavari (Italy), , Italy",
+      "fixed_context": "in the garden",
+      "description_sha256": "840a255d9ab8b664fe2004c6fce2195c095bf2d39e0311111523069bab0636b8",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3143342725974687,
+      "source": "nuforc",
+      "country": "RO",
+      "location_raw": "Pitesti (Romania), , Romania",
+      "fixed_context": "on the porch",
+      "description_sha256": "ead9960523a10bc5931451bca4535649ad9a3c9bc0f0171bdf459d8fff8d703e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2915639524906806,
+      "source": "nuforc",
+      "country": "CH",
+      "location_raw": "Lauwil, Basel-Landschaft, Switzerland",
+      "fixed_context": "my house",
+      "description_sha256": "ae8711e0ca1d1e18f90f4de71640240ace85650a25da3f4ac087e57601ec083b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3903198398122609,
+      "source": "nuforc",
+      "country": "ZA",
+      "location_raw": "Sandton, Gauteng, South Africa",
+      "fixed_context": "on the balcony",
+      "description_sha256": "9e24a79b25991a054bde1dfbbb7b0fe3a82e093478397252319902c584600b14",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3355388357417228,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Mazatlán, Sinaloa, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "5ec790ca63177711cea64ccb33827f02836059c1b709a8092099dbe33f28bc29",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 995287649659053,
+      "source": "mufon",
+      "country": "BE",
+      "location_raw": "Wangenies, , BE",
+      "fixed_context": "ma maison",
+      "description_sha256": "8ba916fc7e44f6040339905ead2edc39676d79355de90924b31991e5a77e4203",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3732387653759509,
+      "source": "nuforc",
+      "country": "DK",
+      "location_raw": "Vejen (Denmark), , Denmark",
+      "fixed_context": "my house",
+      "description_sha256": "9891928377f001451120f07a604d295d5027415c5fabfcd79406d327cccaf330",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 627558549424632,
+      "source": "nuforc",
+      "country": "MU",
+      "location_raw": "Quatre Bornes (Mauritius), , Mauritius",
+      "fixed_context": "looking out of the window",
+      "description_sha256": "def92e176d7f4dd2635327bd4ee593adf8ed38c4e90cccad9820b247b667f0a4",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 648209055854942,
+      "source": "nuforc",
+      "country": "PH",
+      "location_raw": "Davao (Philippines), , Philippines",
+      "fixed_context": "our house",
+      "description_sha256": "a6bbf4bd9aa5e126b478f93609a281789d808accf066bcc03a738c9c75e14845",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4063633393453902,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "La Monja, Querétaro, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "97bfecb449053a8995909f92cbd01325caa8bf381622fb0a60623371d0ecbe9d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1976068780256005,
+      "source": "nuforc",
+      "country": "MA",
+      "location_raw": "Rabat, Rabat-Salé-Kénitra, Morocco",
+      "fixed_context": "in the garden",
+      "description_sha256": "b632ebb70c56f8826e814390df0a464ee585c72d8919517f53e659686a2d2353",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3381055437966875,
+      "source": "nuforc",
+      "country": "DE",
+      "location_raw": "Gelsenkirchen (Germany), , Germany",
+      "fixed_context": "on the balcony",
+      "description_sha256": "79c6b52876bd9042431e9bbe3b8a3bae08dd02300e816a20c9081b0d4d66da7c",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 572904418491419,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Lorient, , FR",
+      "fixed_context": "depuis mon balcon",
+      "description_sha256": "ef941af5620768b0290b3d2c2e64166c501901524f973ae1799d9f6f44d32551",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3827649177154344,
+      "source": "nuforc",
+      "country": "AR",
+      "location_raw": "Temperley (Argentina), , Argentina",
+      "fixed_context": "my bedroom",
+      "description_sha256": "228ddf9a26c25893122c001682d6eeb76a5afa0b616c10080a6947422e43b077",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 573279643987545,
+      "source": "nuforc",
+      "country": "LK",
+      "location_raw": "Jaffna (Sri Lanka), , Sri lanka",
+      "fixed_context": "our house",
+      "description_sha256": "61a2b10cea986ef92605656388a2629775e5f990cdce500c9807aa9d1a69f925",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2903591383147528,
+      "source": "nuforc",
+      "country": "PH",
+      "location_raw": "Cebu City, Central Visayas, Philippines",
+      "fixed_context": "outside our house",
+      "description_sha256": "28b1d681b69ebc157aaeef678674a6730f923d2c032382be4af1545309979018",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1655830659935497,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Blaydon On Tyne, , GB",
+      "fixed_context": "back garden",
+      "description_sha256": "d97c9f9012263e2a26b9862131437a752d546929594c6bae6c895a3989b97c77",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1275442922088451,
+      "source": "nuforc",
+      "country": "IL",
+      "location_raw": "Ashkelon, Southern District, Israel",
+      "fixed_context": "on my balcony",
+      "description_sha256": "85f73c742e6eae7e0a6eb9b7adc41c83bc7989f27cf7e07a66f0c37830e350e6",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2018884786988682,
+      "source": "nuforc",
+      "country": "PH",
+      "location_raw": "Tagbilaran City (Philippines), , Philippines",
+      "fixed_context": "my house",
+      "description_sha256": "a37bd79d5218830b3013f5360404549d17f7261d63c186be51e57a291860df54",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2012821403787500,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Chipping Ongar, , GB",
+      "fixed_context": "my bedroom",
+      "description_sha256": "4b9f056ccb4a003c72ba0830a98e764f87ca7c47a9c256384899247c1df31261",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3724438945430387,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Le Touquet-Paris-Plage, , FR",
+      "fixed_context": "sur le jardin",
+      "description_sha256": "b30fa751a1ee5c9e34aa58ea4e4dce861495aa95d237b817c5e17f9971536efc",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3933332946132181,
+      "source": "nuforc",
+      "country": "DE",
+      "location_raw": "Gilching (Germany), , Germany",
+      "fixed_context": "on my balcony",
+      "description_sha256": "2440f6ed932770a3f37ea5af5c94038e07a27c41ef5f27187991d05be68b4557",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2146830214078070,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Tourcoing, , FR",
+      "fixed_context": "sur mon balcon",
+      "description_sha256": "119e24ebfb4d9d19efd28b37222c9785297c6afa4e5dc049522f177a0332846d",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 359001840494396,
+      "source": "nuforc",
+      "country": "HU",
+      "location_raw": "Szekesfehervar (Hungary), , Hungary",
+      "fixed_context": "on my balcony",
+      "description_sha256": "a4825a469814f3f5bedd7fe1781d0515c10fec2b73d39501417f8bfb1c3ba2f9",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2957191538349650,
+      "source": "mufon",
+      "country": "IT",
+      "location_raw": "Limbiate, , IT",
+      "fixed_context": "at home",
+      "description_sha256": "522ff9687a0db4ad51c27c6100cf0df8aa6d8c2fc7e3259c65d5eb696934b3e2",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 621482916408258,
+      "source": "mufon",
+      "country": "BE",
+      "location_raw": "MOUSCRON, , BE",
+      "fixed_context": "dans le jardin",
+      "description_sha256": "4f94250ba29291f1ca9800d0434581db7f0dfe0ff5d7ded0e7bfff3af328afe3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3695475226680981,
+      "source": "nuforc",
+      "country": "TH",
+      "location_raw": "Hat Yai, Songkhla, Thailand",
+      "fixed_context": "my balcony",
+      "description_sha256": "f40f481349faebf96e0758bfdaadf111df6be0bce138d3db55eb454b79cc5c67",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1548346706538016,
+      "source": "nuforc",
+      "country": "NP",
+      "location_raw": "Nagarjun, Bagmati Province, Nepal",
+      "fixed_context": "in the garden",
+      "description_sha256": "012c51a6c91fcd3ce3bbfd6c9e5c72edea4535c09c5a8ef3d26bcc71fdcd18ff",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4248323146600543,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Limavady, , GB",
+      "fixed_context": "from home",
+      "description_sha256": "569de5cc259ecaabd16e335eb8b80788f8aac3d14439958ab0a9586c1c58fcfe",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 354807937724349,
+      "source": "nuforc",
+      "country": "IE",
+      "location_raw": "Blanchardstown (Ireland), , Ireland",
+      "fixed_context": "backyard",
+      "description_sha256": "04171811f636a59a9da12db2cb69315cf5e0a31d4f4833c5b12215a075f2d586",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3697367490348370,
+      "source": "mufon",
+      "country": "AT",
+      "location_raw": "Wiener Neustadt, , AT",
+      "fixed_context": "my terrace",
+      "description_sha256": "c9a189f1ff07b42d8ff2406709b5cdd5d2eb160107455c5b27ece6a7bc5252d7",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1148176524541537,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Zirimondiro, Michoacán, Mexico",
+      "fixed_context": "my house",
+      "description_sha256": "dd09ec42be7aa1db72e27f2872dcf85d27cac7c00732afa72d7a018510fc3040",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1118030851531998,
+      "source": "mufon",
+      "country": "BE",
+      "location_raw": "Ixelles, , BE",
+      "fixed_context": "ma terrasse",
+      "description_sha256": "f3f2b0cf3126ee044b0449e8987ced3751564aea867a330be2668fd559521244",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3249348925303457,
+      "source": "mufon",
+      "country": "IE",
+      "location_raw": "Tuam, , IE",
+      "fixed_context": "my house",
+      "description_sha256": "13e1d1bdebf1d4444db0e1854e304ce9f77203663856f4f7033f131379495b1e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 600681047803770,
+      "source": "nuforc",
+      "country": "CH",
+      "location_raw": "Köniz (Switzerland), , Switzerland",
+      "fixed_context": "our house",
+      "description_sha256": "4907c0df8f8053a9255e1744274f02ebc731759817c525e7fba9bf700e834900",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4030125056015395,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Dasuya (India), , India",
+      "fixed_context": "our house",
+      "description_sha256": "443a69c0228738e5123998e5577eddb59685762325a9d3f24039fdefcf3ddb7a",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1205577412098915,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Ciudad Victoria, Tamaulipas, Mexico",
+      "fixed_context": "my backyard",
+      "description_sha256": "d8e5b4c552c973204a2e951b375e5b9ec57df30fb1b4fe26a70cf2366a731ef9",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3944374887896374,
+      "source": "nuforc",
+      "country": "ES",
+      "location_raw": "La Carolina, Andalusia, Spain",
+      "fixed_context": "my house",
+      "description_sha256": "b6b352ea4d370630b89140dbeddfcf4bafc498aef0239b4a24e873bbd936b1e2",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 574680775421736,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "São Joaquim de Bicas, Minas Gerais, Brazil",
+      "fixed_context": "at home",
+      "description_sha256": "5ab8776d3f37c2ad77116593778ed8dac038588d1846271b9a83a3379c4da8f3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2895876393824964,
+      "source": "nuforc",
+      "country": "DE",
+      "location_raw": "Gemmrigheim (Germany), , Germany",
+      "fixed_context": "on balcony",
+      "description_sha256": "213e64918c907c9b345cd28455868f6eff83469c8acaeeebf280bdc87a20f922",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1377616424526680,
+      "source": "nuforc",
+      "country": "DE",
+      "location_raw": "Wuppertal (Germany), , Germany",
+      "fixed_context": "my window",
+      "description_sha256": "887e4e20b9ea9c9d60de9bb1a4917fb1e29536bcc08a1d47822385b2baae7a39",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3582141877897419,
+      "source": "nuforc",
+      "country": "GB",
+      "location_raw": "Shepshed, , United Kingdom",
+      "fixed_context": "my house",
+      "description_sha256": "5b111b5c36696b7e40af32c007f46c60d0c4400704ca3b02c25b1db1b9b5f552",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3168390587997705,
+      "source": "nuforc",
+      "country": "ZA",
+      "location_raw": "Robertson, Western Cape, South Africa",
+      "fixed_context": "our garden",
+      "description_sha256": "2ddb551fc136205b17d855b1f2425b83f1bdb5f5eda9acce4ef072c97e877df0",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 33379296156143,
+      "source": "nuforc",
+      "country": "ES",
+      "location_raw": "Torre del Mar, Andalusia, Spain",
+      "fixed_context": "my house",
+      "description_sha256": "d92f6c3f359a2823084ba362c4b053f4ff2f0317fb0df060bdfbe79bbe42ab4a",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2539183450801550,
+      "source": "nuforc",
+      "country": "GB",
+      "location_raw": "Nottingham, , United Kingdom",
+      "fixed_context": "my home",
+      "description_sha256": "b0146319d4e18064726926ff267affe9ebf2a4dc9da6539ff50eba0a8639d3b6",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2034735866809043,
+      "source": "nuforc",
+      "country": "VE",
+      "location_raw": "El Dividive, Trujillo, Venezuela",
+      "fixed_context": "my house",
+      "description_sha256": "4eb42acea0e0aeae099b2cf141d2118fe738957e84d2f1f6b2831b8fd5d856ba",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1791421694610344,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Farmborough, , GB",
+      "fixed_context": "in the garden",
+      "description_sha256": "4555f99f42bf4507fcccf384dea0eab09b45e7b03d0af919547504f1b6ac6d73",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2116727093632462,
+      "source": "nuforc",
+      "country": "IN",
+      "location_raw": "Nashik, Maharashtra, India",
+      "fixed_context": "our balcony",
+      "description_sha256": "5fc95b85e4cb4887201058bc1b6d89370b02fcb7ff3084d42b1bf80034d58ab9",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 480167993294377,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Mexicali, Baja California, Mexico",
+      "fixed_context": "outside my house",
+      "description_sha256": "eafafc973297b20571dcfdd89314dc9b36434cbdcf74084bfd9c22bd800dc5bc",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2055115707558420,
+      "source": "nuforc",
+      "country": "MX",
+      "location_raw": "Cancún, Quintana Roo, Mexico",
+      "fixed_context": "on the balcony",
+      "description_sha256": "6f805a34475c20f00ce967c2580ca171358027fddb7b3f8d3b5ea4dd8e592d73",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2269964016715270,
+      "source": "mufon",
+      "country": "GB",
+      "location_raw": "Euxton, , GB",
+      "fixed_context": "my bedroom",
+      "description_sha256": "fb23e9d28f744e1f99403ba2bcfc8b39fcd2dcab601a0bbfefb7c8c7ffcead74",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4260616767822771,
+      "source": "mufon",
+      "country": "IT",
+      "location_raw": "Castello di Brianza, , IT",
+      "fixed_context": "at home",
+      "description_sha256": "0447482efb986b03ab0c79848cd82b28d3b971077ad8cae4bec971f8ca211f8e",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 818448720296828,
+      "source": "nuforc",
+      "country": "BR",
+      "location_raw": "Foz do Iguaçu (Brazil), , Brazil",
+      "fixed_context": "my balcony",
+      "description_sha256": "b52e2d7b5a8228c1aefcab2baf45147afc1bfb6c25e3368827ba052e64f2c080",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1552676706466622,
+      "source": "mufon",
+      "country": "FR",
+      "location_raw": "Loisey, , FR",
+      "fixed_context": "ma maison",
+      "description_sha256": "c02e6ce94a30b99fc2b7495627cc46f54dda7d644329710039df8e6477206be3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4344849017531034,
+      "source": "nuforc",
+      "country": "QA",
+      "location_raw": "Doha, , Qatar",
+      "fixed_context": "backyard",
+      "description_sha256": "f8c6a5af177e0d65b4960dacc43d8c26a89f075365e246f12dca80eeb0e8b11b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 4287343567793583,
+      "source": "mufon",
+      "country": "NL",
+      "location_raw": "Zaandijk, , NL",
+      "fixed_context": "on the balcony",
+      "description_sha256": "e13554810f90d66979fda33c04cf419a854b32eeb2fe2a041f1ee5fec81272b3",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3266968747254533,
+      "source": "nuforc",
+      "country": "ZA",
+      "location_raw": "Meyerton, Gauteng, South Africa",
+      "fixed_context": "our house",
+      "description_sha256": "826367e336813162fefdb12581771c301de06914c02c4e7305ce2810418d3a91",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 3952715894400735,
+      "source": "nuforc",
+      "country": "IR",
+      "location_raw": "Sanandaj, Kurdistan Province, Iran",
+      "fixed_context": "at home",
+      "description_sha256": "1f2e82f2bb91b3f9f1dba178313d8f50959c1732c52bb11e1c37b04f1da3d12b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 1916809284119505,
+      "source": "nuforc",
+      "country": "MD",
+      "location_raw": "Pripiceni-Răzeși, Rezina, Moldova",
+      "fixed_context": "our house",
+      "description_sha256": "7edea0032c3c8b6827920087836861dd0dc7fb3429b7645414b35d311fa63d60",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    },
+    {
+      "event_id": 2720388227648271,
+      "source": "nuforc",
+      "country": "BE",
+      "location_raw": "Mol, Flanders, Belgium",
+      "fixed_context": "my backyard",
+      "description_sha256": "4e309902167b377dc216c47bf0d85361e877d9b872ec3d3a4c298e3e008a0d7b",
+      "full_description_reviewed_by_context_screen": true,
+      "scope": "publisher_declared_nearest_locality_reference"
+    }
+  ]
+}

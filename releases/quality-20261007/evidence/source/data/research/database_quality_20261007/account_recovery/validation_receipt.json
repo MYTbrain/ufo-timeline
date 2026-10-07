@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "base_manifest_sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+  "validated_reference_decisions": 910,
+  "validated_date_precision_decisions": 4,
+  "builder_policy_controls_passed": 11,
+  "negative_controls": {
+    "changed_base_pin": true,
+    "changed_event_id": true,
+    "changed_place": true,
+    "new_coordinates": true,
+    "unapproved_candidate": true,
+    "time_only_is_not_an_observed_day": true,
+    "invalid_calendar_day": true,
+    "explicit_date_uncertainty": true,
+    "ambiguous_uncertainty_scope": true
+  },
+  "actual_date_correction_records_pinned_and_verified": true,
+  "all_initial_recovery_endpoints_checked_against_pinned_raw_records": "The full first build validated both endpoints and source fields before acceptance; this independent receipt validates the complete decision contracts and rereads all date-correction originals.",
+  "canonical_outputs_mutated": false,
+  "decision_sha256": "4f9265c974d4d66e7eaa447ffb7afa43b35c0d3ec95f80b4e23568e1c131cc1c",
+  "date_precision_decision_sha256": "b9c8c8e83706e641004b03b5a7cc63888c1c062ca92ac77b53eccfb12efa0274",
+  "validator_sha256": "7e1bd9c9caf2dcb7f61f6cb0a94d99d13261ca4dc3f6cce3705a68bce34bceae"
+}

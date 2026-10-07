@@ -21,6 +21,7 @@
   }
   const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
+  const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
     throw new Error("Direction summaries or famous case presets failed to load.");
   }
@@ -8070,6 +8071,7 @@
 
   function applyLocationLabelOverlay(event, options) {
     if (!event || event.event_id == null) return event;
+    if (event.quality_view_changes || (runtime.detailQualityOverlay && runtime.detailQualityOverlay.hasPatch(event.event_id))) return event;
     const overlay = runtime.locationLabelOverlay;
     if (!overlay || overlay.status !== PACKED_POINTS_STATUS.READY || !overlay.patchesByEventId) return event;
     const patch = overlay.patchesByEventId.get(String(event.event_id));
@@ -8080,6 +8082,32 @@
     return detailPatch
       ? Object.assign({}, event, patch, detailPatch)
       : Object.assign({}, event, patch);
+  }
+
+  async function loadDetailQualityOverlayRuntime() {
+    const config = runtime.appConfig && runtime.appConfig.detailQualityOverlay;
+    runtime.detailQualityOverlay = null;
+    if (!config || config.enabled !== true) return;
+    if (!QUALITY_DETAILS || !browserCanDecodeGzipJson()) {
+      throw createStartupError("Reviewed report corrections could not be loaded.", "./quality_detail_overlay.js",
+        "Use a current browser with compressed-data and integrity verification support.");
+    }
+    const url = resolveAssetPath(config.gzipUrl);
+    const payload = await retryStaticAssetLoad("Reviewed report corrections", async function () {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw createStartupError("Reviewed report corrections returned HTTP " + response.status + ".", url);
+      const bytes = await response.arrayBuffer();
+      await QUALITY_DETAILS.verifyCompressedPayload(bytes, config);
+      const stream = new Response(bytes).body.pipeThrough(new DecompressionStream("gzip"));
+      return new Response(stream).json();
+    });
+    runtime.detailQualityOverlay = QUALITY_DETAILS.createIndex(payload, config);
+    recordStartupDecision("detailQualityOverlay", { enabled: true, patchCount: runtime.detailQualityOverlay.patchCount,
+      qualityManifestSha256: config.qualityManifestSha256 });
+  }
+
+  function applyDetailQualityOverlay(event) {
+    return runtime.detailQualityOverlay ? QUALITY_DETAILS.apply(runtime.detailQualityOverlay, event) : event;
   }
 
   async function fetchGzipArrayBuffer(relativePath, label) {
@@ -24718,7 +24746,7 @@
         );
       }
       const overlaidEvents = events.map(function (event) {
-        return applyLocationLabelOverlay(event, { detail: true });
+        return applyLocationLabelOverlay(applyDetailQualityOverlay(event), { detail: true });
       });
       cacheChunkData(cacheKey, overlaidEvents);
       return overlaidEvents;
@@ -31204,6 +31232,8 @@
     startup.appConfigLoaded = true;
     state.currentTileProviderId = preferredTileProviderId(runtime.appConfig);
     renderStartupDiagnostics();
+
+    await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
 
     await measureStartupStep("location label overlay load", function () {
       return loadLocationLabelOverlayRuntime();

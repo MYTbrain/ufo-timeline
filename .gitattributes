@@ -5,3 +5,13 @@ data/trace_intersection_feasibility_v1/*.json -text
 # Minified generated payloads are reviewed through their manifest and hash checks.
 data/trace_intersection_feasibility_v1/strict_25km_7d_buffer1.json -diff
 data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
+
+# Published artifact and scientific evidence hashes name exact bytes on Windows too.
+/data/** -text
+/releases/quality-20261007/** -text
+/scripts/build_quality_map_release.py -text
+/scripts/build_quality_analysis_release.py -text
+/scripts/prepare_quality_release.py -text
+/scripts/upload_quality_delta.py -text
+/scripts/package_quality_release_evidence.py -text
+/scripts/verify_quality_publication.py -text

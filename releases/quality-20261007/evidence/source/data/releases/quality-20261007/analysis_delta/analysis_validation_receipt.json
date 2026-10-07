@@ -1,0 +1,143 @@
+{
+  "checks": [
+    "Every declared local file has correct size/hash; all new R2 projections are gzip-only.",
+    "Geography binary/JSON share the effective 582,877-row mapped subsequence with contiguous row indices and unique IDs.",
+    "19 changed JSON projections decode to pinned bytes, declared widths/counts and ordered catalog row indices.",
+    "Catalog, attribute and all point-derived analysis freshness pins match effective map inputs; base pins remain separate.",
+    "No raw projection/corpus/index copy, no >100 MiB file; final map receipt and65 MiB cap confirmed."
+  ],
+  "passed": 5,
+  "failed": 0,
+  "analysis_receipt_sha256": "7458c39b3301bb10da506579f68f1e9a0e648ac2e49bc16ad1c47dce1c4b676a",
+  "map_receipt_sha256": "4c5cd6aa00de0eb9be1a54387a2d249ebce3b4c754922949cb85183e229bcf5d",
+  "effective_catalog_manifest_sha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e",
+  "artifact_bytes_excluding_receipts": 44270122,
+  "summary": {
+    "analysis_color_v1": {
+      "manifest_sha256": "d0b0f6945bb13fe9fd5efa086da62bcd2fa62734f4f0ecfe6faa7a79ba427b8a",
+      "counts": {
+        "catalogRows": 702893,
+        "normalizedCatalogPct": 9.972642,
+        "normalizedRows": 70097,
+        "rawColorRows": 79215,
+        "roleSpecificRows": 1207,
+        "roleUnspecifiedRows": 77994,
+        "uniqueSourceRawValues": 4859
+      },
+      "status": "ready_descriptive_cross_source"
+    },
+    "analysis_coordinate_evidence_v1": {
+      "manifest_sha256": "ba243205d94e2b6460f3f6c476d93b303746b94bcdf6ee197f0006d4232db197",
+      "counts": {
+        "catalogRows": 702893,
+        "checkedCountryRows": 101466,
+        "explicitCountryRows": 103850,
+        "rawCoordinateTextRows": 110351,
+        "sourceCoordinateRows": 110352,
+        "typedCatalogPct": 15.657433,
+        "typedRows": 110055
+      },
+      "status": "ready_descriptive"
+    },
+    "analysis_duration_v1": {
+      "manifest_sha256": "8f3b63853c036175104c13f9ca913adaadfeedc0fc17e9b43ea29f5048f02dc2",
+      "counts": {
+        "catalogRows": 702893,
+        "descriptiveBinnedRows": 242082,
+        "inferentialBinnedRows": 110089,
+        "normalizedCatalogPct": 35.003905,
+        "normalizedRows": 246040,
+        "rawDurationRows": 290081,
+        "uniqueSourceRawValues": 18118
+      },
+      "status": "ready_descriptive"
+    },
+    "analysis_reporting_delay_v1": {
+      "manifest_sha256": "5cca32af7dbef99d42daef64cf1246562ecf8464c19cc438c72e9ae780bc517c",
+      "counts": {
+        "catalogRows": 702893,
+        "dateRoleEvidenceRows": 270461,
+        "typedCatalogPct": 37.17792,
+        "typedRows": 261321
+      },
+      "status": "ready_descriptive"
+    },
+    "analysis_time_of_day_v1": {
+      "manifest_sha256": "227cd8791136d3d31359108f440c5256992780e378f33dba40c5e32fa3a88e33",
+      "counts": {
+        "catalogRows": 702893,
+        "descriptiveBinnedRows": 512354,
+        "exactInferentialRows": 511394,
+        "rawTimeRows": 626438,
+        "sentinelAmbiguousRows": 70199,
+        "typedCatalogPct": 74.417728,
+        "typedRows": 523077,
+        "uniqueSourceRawValues": 8715
+      },
+      "status": "ready_descriptive"
+    },
+    "analysis_v1": {
+      "manifest_sha256": "016af992ca22f63552186e8cdac6f5ee70c3efed4ba64d5279869d66a3dc77d0",
+      "counts": {
+        "animalReports": 1184,
+        "cropCircles": 7745,
+        "mappedAnimalReports": 518,
+        "ufoCatalog": 702893,
+        "unmappedAnimalReports": 666
+      },
+      "status": null
+    },
+    "analysis_v2": {
+      "manifest_sha256": "a92c48317f3cd67f997714ae8b1dded5e58bb252c986a0fa4ee8d898bbe38dd3",
+      "counts": {
+        "animalContextRecords": 1184,
+        "animalKilometerEligible": 0,
+        "animalPublicMarkerAnalysisRecords": 340,
+        "animalStrictAnalysisClusters": 0,
+        "animalStrictAnalysisRecords": 0,
+        "contextIndependentObservedRows": 12217,
+        "contextLocationDateClusters": 3893,
+        "contextObservedNeighborRows": 12633,
+        "contextUfoNeighborRows": 63848,
+        "cropBoundedAnalysisRecords": 427,
+        "cropContextRecords": 7745,
+        "cropKilometerEligible": 1,
+        "cropLocalityAnalysisRecords": 3225,
+        "cropStrictAnalysisClusters": 1,
+        "cropStrictAnalysisRecords": 1,
+        "facilityInferentialEligible": 70,
+        "facilityMarkers": 1800,
+        "relationshipAssociationEligible": 0,
+        "relationshipRows": 1804,
+        "ufoConfigurationNeighborPairs": 2012,
+        "ufoConfigurationPoints": 1270,
+        "ufoGeographyCountryAssigned": 563665,
+        "ufoGeographyRows": 582877,
+        "ufoNeighborEligiblePoints": 33800,
+        "ufoNeighborPairs": 42574,
+        "ufoSpatialPoints": 33800
+      },
+      "status": null
+    },
+    "analysis_witness_count_v1": {
+      "manifest_sha256": "27e29ca42ef872f1278f830a7ef9a21a499ed6abf850dc3411538adfe8e7e3f1",
+      "counts": {
+        "catalogRows": 702893,
+        "credentialTaggedRows": 1710,
+        "descriptiveBinnedRows": 135868,
+        "exactCountRows": 135868,
+        "extremeCountRows1000Plus": 84,
+        "highCountRows100Plus": 446,
+        "maximumExactCount": 20000,
+        "negativeSentinelRows": 89,
+        "rawWitnessCountRows": 145289,
+        "typedCatalogPct": 19.329827,
+        "typedRows": 135868,
+        "uniqueSourceRawValues": 229,
+        "zeroSentinelRows": 9332
+      },
+      "status": "ready_descriptive"
+    }
+  },
+  "canonical_data_mutated": false
+}

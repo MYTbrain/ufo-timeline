@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-07",
+  "provider": "NUFORC official original report pages",
+  "scope": "Bounded spread of original native report IDs plus explicit date-uncertainty controls. These checks do not replace independent retained-source and geographic gates for all accepted recoveries.",
+  "verified": [
+    {"native_id":"10199","url":"https://nuforc.org/sighting/?id=10199","title":"NUFORC UFO Sighting 10199","occurred":"1999-10-11 06:10 Local","location":"Somerset?, WI, USA","date_is_approximate":false,"finding":"Original ambiguous locality and interstate observer route confirm exclusion; no city-reference transfer accepted."},
+    {"native_id":"11277","url":"https://nuforc.org/sighting/?id=11277","title":"NUFORC UFO Sighting 11277","occurred":"1999-09-10 22:00 Local - Date is Approximate","location":"Cotton, MN, USA","date_is_approximate":true,"finding":"Retained raw field contains a generic approximation label; the official original page explicitly scopes the uncertainty to the date. Cause of the label difference is unestablished."},
+    {"native_id":"11415","url":"https://nuforc.org/sighting/?id=11415","title":"NUFORC UFO Sighting 11415","occurred":"1999-12-17 22:15 Local","location":"Ashgrove, MO, USA","date_is_approximate":false,"finding":"Native report, observed day and city match the independently gated account/reference transfer."},
+    {"native_id":"11757","url":"https://nuforc.org/sighting/?id=11757","title":"NUFORC UFO Sighting 11757","occurred":"1999-08-27 22:30 Local - Date is Approximate","location":"Brier, WA, USA","date_is_approximate":true,"finding":"Retained raw field contains a generic approximation label; the official original page explicitly scopes the uncertainty to the date. Cause of the label difference is unestablished."},
+    {"native_id":"31901","url":"https://nuforc.org/sighting/?id=31901","title":"NUFORC UFO Sighting 31901","occurred":"1964-07-01 12:00 Local - Date is Approximate","location":"Laurel Springs, NJ, USA","date_is_approximate":true,"finding":"Original page explicitly marks an approximate occurrence date; the stored calendar day is retained."},
+    {"native_id":"40718","url":"https://nuforc.org/sighting/?id=40718","title":"NUFORC UFO Sighting 40718","occurred":"1947-06-15 14:00 Local - Date is Approximate","location":"Gackle, ND, USA","date_is_approximate":true,"finding":"Original page and publisher note explicitly mark an approximate occurrence date; the stored calendar day is retained."},
+    {"native_id":"109952","url":"https://nuforc.org/sighting/?id=109952","title":"NUFORC UFO Sighting 109952","occurred":"2007-06-19 03:30 Local - Approximate","location":"Nabb, IN, USA","date_is_approximate":false,"finding":"Even the original page leaves date/time approximation scope unclear. Excluded from transfers and no date-precision overwrite accepted."},
+    {"native_id":"112405","url":"https://nuforc.org/sighting/?id=112405","title":"NUFORC UFO Sighting 112405","occurred":"2008-11-30 23:00 Local","location":"Brier, WA, USA","date_is_approximate":false,"finding":"Native report, observed day and city match the independently gated account/reference transfer."},
+    {"native_id":"166818","url":"https://nuforc.org/sighting/?id=166818","title":"NUFORC UFO Sighting 166818","occurred":"1967-07-10 13:00 Local","location":"leading tickles, NL, Canada","date_is_approximate":false,"finding":"Native report, observed day and Canadian province/city match the independently gated account/reference transfer."}
+  ],
+  "unavailable_in_web_tool": ["10984","11156","11234","60031","95228","144724","45378","68706","150647","49333","68624","166928"],
+  "unavailable_interpretation": "Tool access failure is not evidence that an account or source report does not exist.",
+  "geographic_feature_authority": {"url":"https://www.geonames.org/export/codes.html","finding":"Populated-place features identify settlements; administrative features identify subdivisions. Accepted city-reference transfers independently exclude administrative marker coordinates."}
+}

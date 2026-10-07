@@ -1,0 +1,76 @@
+{
+  "completed_at_utc": "2026-10-07T08:13:15.365388+00:00",
+  "quality_manifest_sha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec",
+  "baseline_manifest_sha256": "fba5d2116aa974c4a39ca0095302e819aeb9669e94050b53b40ed187468a44e1",
+  "baseline_full_source_receipt_sha256": "9aa35414a0dab5d5baed0f19116b333470ad3f932bfdf32533d10e8f879de68f",
+  "validation": {
+    "base_records": 702893,
+    "effective_records": 702893,
+    "base_mapped": 580783,
+    "effective_mapped": 582877,
+    "effective_unmapped": 120016,
+    "modified_records": 3730,
+    "accepted_decisions": 3730,
+    "date_review_annotations": 726,
+    "precision_transitions": {
+      "city -> state": 1404,
+      "exact_coords -> city": 1,
+      "city -> unknown": 3,
+      "city -> exact_coords": 1,
+      "unknown -> city": 1,
+      "city -> approximate": 12,
+      "unknown -> approximate": 1,
+      "country -> city": 1,
+      "country -> approximate": 2
+    },
+    "date_precision_transitions": {
+      "exact_day -> approximate": 11
+    },
+    "incident_relationship_members": 4,
+    "summary_shards_validated": 71,
+    "original_account_links": 113539,
+    "strict_base_projection_candidates": 47788,
+    "strict_effective_projection_candidates": 47788,
+    "strict_candidates_invalidated_by_quality_edits": 0
+  },
+  "new_lanes": {
+    "account_reverse_recovery/accepted_reverse_recovery_decisions.jsonl": {
+      "accepted_decisions": 148,
+      "new_map_references": 148,
+      "date_precision_downgrades": 0
+    },
+    "account_reverse_recovery/accepted_reverse_date_precision_decisions.jsonl": {
+      "accepted_decisions": 1,
+      "new_map_references": 0,
+      "date_precision_downgrades": 1
+    },
+    "international_source_recovery/accepted_international_source_decisions.jsonl": {
+      "accepted_decisions": 166,
+      "new_map_references": 165,
+      "date_precision_downgrades": 3
+    },
+    "extended_online_recovery/accepted_extended_online_recovery_decisions.jsonl": {
+      "accepted_decisions": 26,
+      "new_map_references": 26,
+      "date_precision_downgrades": 2
+    },
+    "coordinate_notation_recovery/accepted_coordinate_decisions.jsonl": {
+      "accepted_decisions": 10,
+      "new_map_references": 10,
+      "date_precision_downgrades": 1
+    }
+  },
+  "additional_unique_changed_records": 351,
+  "additional_map_references": 349,
+  "additional_date_precision_downgrades": 7,
+  "overlapping_new_or_baseline_records": [],
+  "canonical_data_mutated": false,
+  "production_published": false,
+  "retained_local_quality_rollback": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261006\\quality_view_manifest.json",
+    "sha256": "2e03a89245329ac37d9fab1cf630b8ba2f95301e15c7f490f70969d6a187818b",
+    "accepted_decisions": 1632,
+    "effective_mapped": 580786,
+    "retained_as_local_quality_rollback": true
+  }
+}

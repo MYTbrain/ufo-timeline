@@ -2,11 +2,11 @@
   "bytes_per_row": 72,
   "counts": {
     "gap_bucket_counts": {
-      "gap_le_1": 965,
+      "gap_le_1": 968,
       "gap_le_2": 9,
       "gap_le_7": 1
     },
-    "mapped_trace_events": 976,
+    "mapped_trace_events": 979,
     "source_pair_counts": {
       "majestic->majestic": 43,
       "majestic->mufon": 22,
@@ -14,11 +14,11 @@
       "majestic->phenomenainon_updb": 16,
       "majestic->ufocat": 59,
       "mufon->majestic": 27,
-      "mufon->mufon": 39,
+      "mufon->mufon": 40,
       "mufon->nuforc": 5,
       "mufon->phenomenainon_updb": 13,
       "mufon->ufocat": 35,
-      "nuforc->majestic": 4,
+      "nuforc->majestic": 5,
       "nuforc->mufon": 4,
       "nuforc->nuforc": 11,
       "nuforc->phenomenainon_updb": 21,
@@ -27,14 +27,14 @@
       "phenomenainon_updb->mufon": 19,
       "phenomenainon_updb->nuforc": 17,
       "phenomenainon_updb->phenomenainon_updb": 33,
-      "phenomenainon_updb->ufocat": 79,
-      "ufocat->majestic": 59,
+      "phenomenainon_updb->ufocat": 80,
+      "ufocat->majestic": 58,
       "ufocat->mufon": 34,
-      "ufocat->nuforc": 51,
-      "ufocat->phenomenainon_updb": 78,
-      "ufocat->ufocat": 237
+      "ufocat->nuforc": 52,
+      "ufocat->phenomenainon_updb": 79,
+      "ufocat->ufocat": 236
     },
-    "trace_segments": 975
+    "trace_segments": 978
   },
   "endianness": "little",
   "fields": [
@@ -191,7 +191,7 @@
     "runtime_warning": "Use trace_event_index for exact filtered static trace behavior; this full-sequence segment file is diagnostic/convenience data.",
     "segment_rule": "consecutive mapped events after canonical playback ordering"
   },
-  "row_count": 975,
+  "row_count": 978,
   "schema_version": 1,
   "struct_format": "<QQddddiiiIII"
 }

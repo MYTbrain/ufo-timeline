@@ -1,0 +1,21 @@
+{
+  "reviewed_by": "parallel gazetteer_recovery agent",
+  "review_date": "2026-10-07",
+  "mode": "bounded read-only review; no artifacts changed",
+  "accepted_decision_sha256": "acfd55ef304f779e23d06f843d1e180d7bd1c9acc9562461de790ceff2e85a1c",
+  "accepted_records_reviewed": 10,
+  "shared_detail_chunks_checked": 8,
+  "material_defects_found": [],
+  "checks": [
+    "All ten source snapshots and full-record hashes match actual shared source details",
+    "Core and optional date-precision guards, native single-member provenance and detail locators match",
+    "Authority receipt hashes and pinned source codebook match",
+    "All ten narratives and raw fields reviewed against code, report and authority facts"
+  ],
+  "scope_notes": [
+    "Udine PRN31210 includes an in-flight observer setting. Blank LFLG codebook semantics identify a named-place coordinate, not the witness position; the accepted archival-named-reference role preserves this distinction.",
+    "Ash Grove remains an approximate municipality-area reference with an unknown farm position and conflicting June/fall dates. No automatic merge is established.",
+    "Wallops, Rytro and Daly City holds are appropriate under the evidence presently available."
+  ],
+  "retention": "Retain this small review receipt with the accepted sidecar and continuation verification provenance."
+}

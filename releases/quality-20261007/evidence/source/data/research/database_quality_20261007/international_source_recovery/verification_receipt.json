@@ -1,0 +1,89 @@
+{
+  "checks": [
+    {
+      "control": "unique sparse decisions",
+      "result": "passed"
+    },
+    {
+      "control": "point count and explicit non-measured uncertainty",
+      "result": "passed"
+    },
+    {
+      "control": "core guard coverage with permitted exact-day ninth guard",
+      "result": "passed"
+    },
+    {
+      "control": "no raw, craft or stored-date mutations",
+      "result": "passed"
+    },
+    {
+      "control": "native approximate days retain stored calendar date",
+      "result": "passed"
+    },
+    {
+      "control": "date-only point remains withheld",
+      "result": "passed"
+    },
+    {
+      "control": "all prior decision ids excluded",
+      "result": "passed"
+    },
+    {
+      "control": "aircraft-window false positive held",
+      "result": "passed"
+    },
+    {
+      "control": "forced form-country selection held",
+      "result": "passed"
+    },
+    {
+      "control": "native form city versus narrative town conflict held",
+      "result": "passed"
+    },
+    {
+      "control": "remote video and later photograph-viewing roles held",
+      "result": "passed"
+    },
+    {
+      "control": "kayak dock and resort scopes held",
+      "result": "passed"
+    },
+    {
+      "control": "Jersey versus GB St Helier dependency ambiguity held",
+      "result": "passed"
+    },
+    {
+      "control": "travelling lights do not relocate stationary gate observer",
+      "result": "passed"
+    },
+    {
+      "control": "Stuttgart flight-path comparison does not relocate balcony observer",
+      "result": "passed"
+    },
+    {
+      "control": "mismatched publisher field rejected",
+      "result": "passed"
+    },
+    {
+      "control": "native id mismatch rejected",
+      "result": "passed"
+    },
+    {
+      "control": "composite native account withheld",
+      "result": "passed"
+    },
+    {
+      "control": "existing mapped coordinates never overwritten",
+      "result": "passed"
+    },
+    {
+      "control": "accepted populated-place country/admin and cluster guards",
+      "result": "passed"
+    }
+  ],
+  "passed": 20,
+  "failed": 0,
+  "accepted_decision_sha256": "c5b9ab001586bfa76320ea67b6bdcd8c1557e5c3249ce72c8c5881f53789a467",
+  "base_manifest_sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+  "canonical_dataset_mutated": false
+}

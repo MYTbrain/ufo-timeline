@@ -1,0 +1,21 @@
+[
+  {
+    "link_id": "online-incident-pan-am-flight203-19520508",
+    "status": "accepted_source_supported_incident_identity",
+    "member_event_ids": [
+      166977243187363,
+      645818102175856,
+      205161409262372,
+      3092701539773317
+    ],
+    "primary_document_reference": "Blue Book mirror case9612806;original Air Force fileT52-11949;Pan Am Flight203;8 May1952",
+    "basis": "Individual source-native case reference or distinctive date,time,crew and narrative identify the same historical incident.",
+    "not_independent_incident_count": true,
+    "do_not_merge_records": true,
+    "retain_all_narratives_conflicts_and_member_provenance": true,
+    "authority_key": "bluebook_pan_am_203_19520508",
+    "primary_source_urls": [
+      "https://thedailydialectics.com/bluebook/scans/1950s/1952-05-9612806-ATLANTICOCEAN.pdf"
+    ]
+  }
+]

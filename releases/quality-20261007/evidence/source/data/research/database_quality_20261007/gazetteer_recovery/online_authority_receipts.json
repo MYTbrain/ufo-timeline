@@ -1,0 +1,8 @@
+{
+  "retrieved_at_utc": "2026-10-07T07:22:15.716146+00:00",
+  "url": "https://download.geonames.org/export/dump/admin1CodesASCII.txt",
+  "bytes": 151583,
+  "sha256": "1da92a6323a5fec3176f3f743bf4cf4040fd56a876da55e46fbca23c863aa60a",
+  "role": "Names and codes for exact country/admin1 jurisdiction checking only; no city coordinates inferred from admin centers.",
+  "documentation_url": "https://download.geonames.org/export/dump/readme.txt"
+}

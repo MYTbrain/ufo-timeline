@@ -1,0 +1,299 @@
+[
+  {
+    "authority_key": "handsworth",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1001473/",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "primary_publisher_document_extract_returned_by_web_tool",
+    "retained_artifact": {
+      "path": "handsworth_primary_web_extract.txt",
+      "bytes": 2651,
+      "sha256": "6775a82f95ec2c12aa3b279fa832a4eb5efa81590e20ffe82b72f853546b9f6b"
+    },
+    "reviewed_fact_summary": "Historic England identifies Handsworth Park in Birmingham at SP0516590321 and records Handsworth's incorporation into Birmingham in 1911 after its earlier Staffordshire status. This distinguishes Birmingham Handsworth from distant namesakes; source West Midland label is retained.",
+    "reviewed_fact_sha256": "a503a8dddc3fac28835768e5e107320f46623442aabad62b2a055bfd6de05a86",
+    "reference_ngr": "SP0516590321",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "hall_green",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1245354",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "hall_green_nhle_1245354.html",
+      "bytes": 122125,
+      "sha256": "95bf7ac95e7bb355255ae19a3a6ed3ac439be1d57456ff4feae4be1ee676e20f"
+    },
+    "reviewed_fact_summary": "Official listing places Hall Green's Three Magpies on Shirley/School Road in Birmingham at SP1128381576, close to the source SP1181 grid. It disambiguates the locality, without substituting the building for the archival reference or changing the source Warwick label.",
+    "reviewed_fact_sha256": "c15edd8e3b973bd5a5cb016c6b6714df4687353d0b231227cd4e0e2fefdcba00",
+    "reference_ngr": "SP1128381576",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "willian",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1347290",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "willian_nhle_1347290.html",
+      "bytes": 117957,
+      "sha256": "1a63e51336f9657422cf5d39afbc5a121ff5fc053732628c59f1b5dd71e20a1d"
+    },
+    "reviewed_fact_summary": "Official listing identifies Willian, Hertfordshire at TL2248830783. The archive TL2230 reference agrees with this locality; report month precision is unchanged.",
+    "reviewed_fact_sha256": "9b1e01fcbdd9ac8e448c7d0f58234c70407ec9b653035923520db1cdd940ff3d",
+    "reference_ngr": "TL2248830783",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "ewell",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1277324",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "ewell_nhle_1277324.html",
+      "bytes": 125152,
+      "sha256": "e3845abb21705586be1085b6dc0f7af84a858f41f9e24efe3027bc28f9ab8328"
+    },
+    "reviewed_fact_summary": "Official listing identifies Ewell, Surrey and publishes TQ2203462897. The source TQ2262 grid aligns with this Ewell rather than distant Temple Ewell.",
+    "reviewed_fact_sha256": "4657447b29136c647e10ceeec2d59a80151500fb8fb00b3bbee623276bf28b8c",
+    "reference_ngr": "TQ2203462897",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "penn",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1124968",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "penn_nhle_1124968.html",
+      "bytes": 116043,
+      "sha256": "c8b54417bc3c832af2ca3c26ae413cc072cdc51659cae591b42b082b720c7144"
+    },
+    "reviewed_fact_summary": "Official listing places Penn in Buckinghamshire at SU9110893321, agreeing with archive SU9193 and resolving distant Penn namesakes.",
+    "reviewed_fact_sha256": "bfe01e03fa2b9e7f340b5b10edaf420fd3889f06992ea9a7d02695a02efec4c8",
+    "reference_ngr": "SU9110893321",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "wells",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1382952",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "wells_nhle_1382952.html",
+      "bytes": 119052,
+      "sha256": "177305d755e5e18d4a090178d84b3b0803beacc872f4fa27fec4f23caa150dbc"
+    },
+    "reviewed_fact_summary": "Official listing places Wells in Somerset at ST5497445737. The archive ST5445 reference agrees with Wells, Somerset rather than other places of that name.",
+    "reviewed_fact_sha256": "53634cd8d551109dfe48d102f03565847cdf79258c015b2499ca566c14d62985",
+    "reference_ngr": "ST5497445737",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "rushton",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1224437",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "rushton_nhle_1224437.html",
+      "bytes": 117903,
+      "sha256": "4c3e96cf39ee190bfd2d0750934e7656dcb3f27eba2c682a49631f8a857617f1"
+    },
+    "reviewed_fact_summary": "Official listing identifies Rushton, Wroxeter and Uppington, Shropshire at SJ6066708079, agreeing with source SJ6008 and resolving distant same-name localities.",
+    "reviewed_fact_sha256": "85754244165f7179076f9ebc0887b738d48e8182fa03bfe5edbb194cc210cf47",
+    "reference_ngr": "SJ6066708079",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "hanwell",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1216364",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "hanwell_nhle_1216364.html",
+      "bytes": 120868,
+      "sha256": "6353326f3ac693d2e04c701ad5d77a91293779964d522ee46410b4ab29b07ad8"
+    },
+    "reviewed_fact_summary": "Official listing locates Hanwell, Oxfordshire at SP4357243575, consistent with source SP4343; the London Hanwell namesake is excluded.",
+    "reviewed_fact_sha256": "48a316c67f97b2c82e25fbd1d90fe4141b0c2ecf02f0f2da43b98cb9c7ad86c6",
+    "reference_ngr": "SP4357243575",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "barnby",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1032106",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "barnby_nhle_1032106.html",
+      "bytes": 118209,
+      "sha256": "7f82097351261fc86762a586742d5fce4200e6aa06a44da77e154b94ef7fe45b"
+    },
+    "reviewed_fact_summary": "Official listing locates Barnby in Suffolk at TM4807389938, agreeing with archive TM4789 rather than other Barnby namesakes.",
+    "reviewed_fact_sha256": "bcd529e083fb5f71089807a76ce857461a25ad5fe2f69f38462952586fd89b6c",
+    "reference_ngr": "TM4807389938",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "weeton",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1149990",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "weeton_nhle_1149990.html",
+      "bytes": 117762,
+      "sha256": "8b200a1fda2b528f7c162b6c14bf9093c8f0732c638900078db81626599dc969"
+    },
+    "reviewed_fact_summary": "Official listing places Weeton at SE2838346503 in North Yorkshire. It confirms the locality matching archive SE2846, despite a blank source county field and distant Weeton namesakes.",
+    "reviewed_fact_sha256": "f92cd0530e0469eab4382a3f39ccf1ebd0e3a2aa0e9ee1f7cd2992410149977f",
+    "reference_ngr": "SE2838346503",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "ruspidge",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1213344",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "ruspidge_nhle_1213344.html",
+      "bytes": 118201,
+      "sha256": "d48039d9aa1db325f5f9c375956af2c8a663a92d2b5597530f71d2185e3b1255"
+    },
+    "reviewed_fact_summary": "Official listing locates Ruspidge Methodist Church in Ruspidge and Soudley, Gloucestershire at SO6501111663, agreeing with archive SO6512.",
+    "reviewed_fact_sha256": "f5dc8d83acfe33408bd0f01cab4265b70b94bdd85a36d8b252af9bc22a0f1644",
+    "reference_ngr": "SO6501111663",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "norden",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1441459",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "norden_nhle_1441459.html",
+      "bytes": 121674,
+      "sha256": "fede6f49e4ba2839eb384897088afd45d51ff3cc4e00a19856d8e2308e597cb6"
+    },
+    "reviewed_fact_summary": "Official listing locates Norden's memorial at SD8639514458 in Rochdale, agreeing with archive SD8614. The Lancashire archive label is preserved; the point is the source reference, not this memorial.",
+    "reviewed_fact_sha256": "e153b92f38d53a302f2179a5539a0072b755545e7ebfbaa8e21dd3ccfc761666",
+    "reference_ngr": "SD8639514458",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "badbury",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1002679",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "badbury_nhle_1002679.html",
+      "bytes": 121464,
+      "sha256": "c8ab8e14791a3ffdb89cc5828b60a1d67d8e40fb140d0c9035ecde77e6ce9c31"
+    },
+    "reviewed_fact_summary": "Official scheduled-monument record identifies Badbury Rings in Dorset at ST9641902982. The archive ST9602 reference agrees with the named hillfort; a populated-place requirement was inappropriate for this landmark.",
+    "reviewed_fact_sha256": "7bb843d92cbe5ba08ccec7827d1efa6828f4c87153f8c480706b530271fda0fb",
+    "reference_ngr": "ST9641902982",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "isle_grain",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1085755",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "isle_grain_nhle_1085755.html",
+      "bytes": 117403,
+      "sha256": "4ecbed0a7b0e97fde2ede7ad472e51ddbcda3131022eb0d32d24deb5a11ef794"
+    },
+    "reviewed_fact_summary": "Official listing identifies Isle of Grain at TQ8887476789. The source's punctuation-shortened ISLE.GRAIN and TQ8676 reference agree with this wider island/locality. The source marsh/sheep narrative is preserved; no church observer point is inferred.",
+    "reviewed_fact_sha256": "1153806157e38cf02b2dcfd43b065c92dcacc72af9b8a3fc4a4902534e024ba4",
+    "reference_ngr": "TQ8887476789",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "hogs_back",
+    "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/004_Locality_description_and_interpretation",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "hogs_back_bgs_OR15004.html",
+      "bytes": 86519,
+      "sha256": "97b3c312db79347a28ffca780732dd5de753bfc4a088c1197dbc526488f06283"
+    },
+    "reviewed_fact_summary": "British Geological Survey's original OR/15/004 report locates sampling sites on the Hog's Back structure in Surrey, including SU9431448321. Archive SU9348 lies on this named ridge; no populated-place coordinate or exact observer site is invented.",
+    "reviewed_fact_sha256": "32b3ab11810a26c0c0bcbc9780cf00047320591378c7c75e13358e0613dc4313",
+    "reference_ngr": "SU9431448321",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "colwell_bay",
+    "url": "https://data.jncc.gov.uk/data/94dbee01-ece8-4587-a874-bd697d797388/gcr-v15-british-tertiary-stratigraphy-c5.pdf",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "primary_publisher_document_extract_returned_by_web_tool",
+    "retained_artifact": {
+      "path": "colwell_bay_primary_web_extract.txt",
+      "bytes": 3678,
+      "sha256": "1cb7dc99ff251dd95e4d30ea6889ab4b92f287c6418cef523d2c09f32eff971a"
+    },
+    "reviewed_fact_summary": "JNCC Geological Conservation Review volume15 chapter5 identifies Colwell Bay, Isle of Wight as SZ327878-SZ331887. The archival SZ3288 grid agrees with this coastal locality; a populated-place gate was inappropriate.",
+    "reviewed_fact_sha256": "5f2bbbe215ed86860526382d230bfdd5eacb7ac91a792bdcb4f36a68f6004c99",
+    "reference_ngr": "SZ327878",
+    "source_record_point_substitution": false
+  },
+  {
+    "authority_key": "fort_huachuca_nps_nomination",
+    "url": "https://npgallery.nps.gov/NRHP/GetAsset/NHLS/74000443_text",
+    "retrieved_date": "2026-10-07",
+    "retained_encoding": "original_source_bytes",
+    "retained_artifact": {
+      "path": "fort_huachuca_nps_74000443.pdf",
+      "bytes": 590755,
+      "sha256": "c0dc6567c6214c4fac4c2797ed84bfed8eb64df70f0b1c3c635dfb30ebd6538c"
+    },
+    "reviewed_fact_summary": "NPS nomination74000443 identifies Fort Huachuca military reservation west of Sierra Vista, Cochise County, Arizona. Page4 publishes six zone12 UTM boundary references for its historical district. These bound a named-place anchor within the installation; the historical datum and exact witness building are not established.",
+    "source_pages": [
+      1,
+      4
+    ],
+    "visual_coordinate_review_artifact": {
+      "path": "fort_huachuca_nps_review_p04.png",
+      "bytes": 267426,
+      "sha256": "a55570a25e5dcab36ab1c65da964fb17772a374f6694b10b24ab3037ae606a0a"
+    },
+    "utm_zone": 12,
+    "published_utm_boundary": [
+      [
+        559900,
+        3490260
+      ],
+      [
+        560220,
+        3490800
+      ],
+      [
+        560580,
+        3491220
+      ],
+      [
+        560740,
+        3490600
+      ],
+      [
+        560585,
+        3490060
+      ],
+      [
+        560045,
+        3490155
+      ]
+    ],
+    "boundary_mean_utm_reference": [
+      560345.0,
+      3490515.8333333335
+    ],
+    "reference_derivation": "Mean of six historical district boundary references; inverse UTM approximation, then rounding to0.01degree. This is an installation-locality anchor, not the installation boundary center or a source-published observer coordinate.",
+    "historical_datum": "not stated in reviewed document; not asserted",
+    "alternative_ellipsoid_spread_m": 186.58,
+    "city_reference_precision_only": true,
+    "reviewed_fact_sha256": "a452d46daf628012a205e9cd0be6798abb7da0684c34ec2d5f8b71d9c6c91c82"
+  }
+]

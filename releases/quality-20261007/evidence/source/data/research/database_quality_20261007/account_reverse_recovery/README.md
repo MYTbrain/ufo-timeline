@@ -1,0 +1,11 @@
+# Independent original-account place recovery
+
+This new lane researches the 3,440 original accounts that remain unmapped while an explicit UPDB republication has a point. It never uses the UPDB point as geographic proof or copies it to an original record. The original declared observation place, admin, country, date and native source record determine candidates; independent geographic authorities and conservative ambiguity checks determine whether an approximate reference is supported.
+
+The lane excludes every prior/current accepted event ID and active parallel-lane ownership. It leaves composite memberships, uncertain occurrence dates, route/airborne cases, conflicting jurisdictions, distant homonyms and unsupported spelling edits in a research queue. Source city-sector text is retained, and a municipality reference is accepted only with independent municipality authority and `location_precision=approximate`; it does not locate the sector or observer.
+
+Final result: 148 independently supported original locality references and one source-confirmed date-precision downgrade on 149 distinct records. The accepted sidecars are sealed after parent handoff; do not rewrite them during integration. See REPORT.md, reverse_validation.json and storage_inventory.json.
+
+Rebuild: run `research_reverse_recovery.py`, `finalize_reverse_recovery.py`, then `verify_geographic_controls.py` with `py -3` from the project root, with the retained municipality authority/manual-context registry and shared pinned canonical/source/reference inputs. Only sparse decisions, compact evidence, census, report and verification receipts are written. Existing accepted lanes, root reader/manifest, the corpus and production assets are not edited. The finalizer reconstructs precision and verifies every accepted original against the shared reader.
+
+Retention: preserve accepted sparse decisions and source evidence as this lane's canonical research output; the unchanged served catalog and current quality package remain the rollback. The temporary derived analysis has a documented purpose and reproducible inputs. Expected new storage is below 20 MiB; no artifact larger than 100 MiB or full-corpus copy is created. No protected dataset, unique analysis or release is deleted, and no large superseded staging tree is retained.

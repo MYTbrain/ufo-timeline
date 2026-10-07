@@ -1,0 +1,7 @@
+{
+  "official_OS_Lite_test_points": 115,
+  "approximate_Helmert_vs_Lite_max_m": 4.676750785218681,
+  "mean_m": 1.8605110026178848,
+  "model": "Approximate OS inverse projection + Helmert, not OSTN15",
+  "test_source": "OSTN15-OSGM15-Lite-DevelopersPack.zip"
+}

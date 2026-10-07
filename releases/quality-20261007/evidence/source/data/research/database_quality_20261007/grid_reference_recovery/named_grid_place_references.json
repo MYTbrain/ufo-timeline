@@ -1,0 +1,1565 @@
+{
+  "zip_path": "cache\\map_overlays\\allCountries.zip",
+  "names_requested": 71,
+  "matched_name_keys": 53,
+  "references": {
+    "whickham": [
+      {
+        "id": "2634155",
+        "name": "Whickham",
+        "ascii": "Whickham",
+        "lat": 54.94561,
+        "lon": -1.67635,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E5",
+        "feature_code": "PPL",
+        "line_sha256": "88c8f16f4606097020a6f76ee58ac9e7476dfc89adb242cad802f2be9aebe0fe"
+      }
+    ],
+    "whetstone": [
+      {
+        "id": "2634156",
+        "name": "Whetstone",
+        "ascii": "Whetstone",
+        "lat": 52.56667,
+        "lon": -1.18333,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H5",
+        "feature_code": "PPL",
+        "line_sha256": "498f214c3a041db4b7f21d82d95fc78394151492eb2ec4172d4c046a54d55230"
+      },
+      {
+        "id": "2634157",
+        "name": "Whetstone",
+        "ascii": "Whetstone",
+        "lat": 51.63333,
+        "lon": -0.16667,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPL",
+        "line_sha256": "380c0ada99d73d57c3b473d5469a4cf27bdd6c1812d5e78049d68629821c9228"
+      }
+    ],
+    "wells": [
+      {
+        "id": "2634567",
+        "name": "Wells-next-the-Sea",
+        "ascii": "Wells-next-the-Sea",
+        "lat": 52.95164,
+        "lon": 0.8511,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I9",
+        "feature_code": "PPL",
+        "line_sha256": "5e2a601eeec46fdc70efb569f689d2fd77d80a8d3883b57cdc9d453794b7164c"
+      },
+      {
+        "id": "2634569",
+        "name": "Wells",
+        "ascii": "Wells",
+        "lat": 51.20794,
+        "lon": -2.64896,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPL",
+        "line_sha256": "493eb80d812785f38fd7b4955e6505eb7467a859a38202c0d363b8fd9b97641b"
+      }
+    ],
+    "weeton": [
+      {
+        "id": "2634601",
+        "name": "Weeton",
+        "ascii": "Weeton",
+        "lat": 53.91667,
+        "lon": -1.56667,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J7",
+        "feature_code": "PPL",
+        "line_sha256": "5257dd5b56588c2bcbefed5802267a3685028abca2ef07b1eae83ee4be4b49bd"
+      },
+      {
+        "id": "2634602",
+        "name": "Weeton",
+        "ascii": "Weeton",
+        "lat": 53.82154,
+        "lon": -2.93869,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H2",
+        "feature_code": "PPL",
+        "line_sha256": "20e33f0ce651f0e672646ddf6e654e84c650e5be60a35ed9311545a1ea5f24f0"
+      }
+    ],
+    "wednesfield": [
+      {
+        "id": "2634616",
+        "name": "Wednesfield",
+        "ascii": "Wednesfield",
+        "lat": 52.5963,
+        "lon": -2.08508,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q3",
+        "feature_code": "PPL",
+        "line_sha256": "ba0439cdc513128c86e839f002287ba07ac3097cae1e0e3fe369d0919a6c1c1f"
+      }
+    ],
+    "wanborough": [
+      {
+        "id": "2634815",
+        "name": "Wanborough",
+        "ascii": "Wanborough",
+        "lat": 51.54263,
+        "lon": -1.69837,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "N9",
+        "feature_code": "PPLA3",
+        "line_sha256": "84c4b4ea73fe02f40ad2111ff2b52f059a767d532e08ef772d46e2f1218f78ba"
+      },
+      {
+        "id": "7116381",
+        "name": "Wanborough",
+        "ascii": "Wanborough",
+        "lat": 51.23183,
+        "lon": -0.66459,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "N7",
+        "feature_code": "PPLX",
+        "line_sha256": "f90ea35859951afda7b0b1571c1e24a079175bf4020e5f331a7202da04a7069e"
+      }
+    ],
+    "upholland": [
+      {
+        "id": "2635156",
+        "name": "Up Holland",
+        "ascii": "Up Holland",
+        "lat": 53.53333,
+        "lon": -2.71667,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H2",
+        "feature_code": "PPL",
+        "line_sha256": "75b7ce19206fb7d55c9cc17af06b504bde91690da90dd8e70476a6a98632d8dd"
+      }
+    ],
+    "tintinhull": [
+      {
+        "id": "2635790",
+        "name": "Tintinhull",
+        "ascii": "Tintinhull",
+        "lat": 50.97329,
+        "lon": -2.71371,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPL",
+        "line_sha256": "359921888af8f1825703de0f1301884d061f0010ceead1257bbe9a2337706e31"
+      }
+    ],
+    "terling": [
+      {
+        "id": "2636097",
+        "name": "Terling",
+        "ascii": "Terling",
+        "lat": 51.80612,
+        "lon": 0.56837,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E4",
+        "feature_code": "PPL",
+        "line_sha256": "612611b29f3fb9c1e2a3cc11caad3a5dbd5b04a6bbed41dd61a1f9deac61ee88"
+      }
+    ],
+    "ewell": [
+      {
+        "id": "2636119",
+        "name": "Temple Ewell",
+        "ascii": "Temple Ewell",
+        "lat": 51.15254,
+        "lon": 1.26926,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G5",
+        "feature_code": "PPL",
+        "line_sha256": "f2db5d293381c80770411d7f25ef5cb7be1ede86ca94a19773bdf0290cb168c9"
+      },
+      {
+        "id": "6690867",
+        "name": "Ewell",
+        "ascii": "Ewell",
+        "lat": 51.34948,
+        "lon": -0.2494,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "N7",
+        "feature_code": "PPLX",
+        "line_sha256": "42f51414831c93cff0771fc7bc533a58e328e9b876f19c74980313707c1910b8"
+      }
+    ],
+    "stebbing": [
+      {
+        "id": "2636981",
+        "name": "Stebbing",
+        "ascii": "Stebbing",
+        "lat": 51.89111,
+        "lon": 0.41422,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E4",
+        "feature_code": "PPL",
+        "line_sha256": "a331b7791520a7f3e041156aa591d07293deb08469720d4679a190a709efddb9"
+      }
+    ],
+    "stamfordham": [
+      {
+        "id": "2637101",
+        "name": "Stamfordham",
+        "ascii": "Stamfordham",
+        "lat": 55.04335,
+        "lon": -1.87978,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J6",
+        "feature_code": "PPL",
+        "line_sha256": "cb9c76ceab0009a6f01df0bd3406f869fe0406ff54256f1aacf8525a48c7ac23"
+      }
+    ],
+    "staffin": [
+      {
+        "id": "2637144",
+        "name": "Staffin",
+        "ascii": "Staffin",
+        "lat": 57.62408,
+        "lon": -6.20659,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "V3",
+        "feature_code": "PPL",
+        "line_sha256": "03951a35eb3acf0cbce582ca53f42066af286ec3e71f0764a3a0090b9d3532b7"
+      }
+    ],
+    "southtown": [
+      {
+        "id": "2637309",
+        "name": "Southtown",
+        "ascii": "Southtown",
+        "lat": 52.6,
+        "lon": 1.73333,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I9",
+        "feature_code": "PPL",
+        "line_sha256": "5b277754a537021bee4646f0feb628524aecb9da33d37b5a24d74ae9152b9502"
+      },
+      {
+        "id": "13270180",
+        "name": "South Town",
+        "ascii": "South Town",
+        "lat": 51.12108,
+        "lon": -1.06211,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "F2",
+        "feature_code": "PPLX",
+        "line_sha256": "0cf5e925ea2bab50fc0c90f36f849f818118c44813d56eefa8fb256e06e09a8b"
+      },
+      {
+        "id": "13282695",
+        "name": "Southtown",
+        "ascii": "Southtown",
+        "lat": 58.84777,
+        "lon": -2.89172,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "V9",
+        "feature_code": "PPLL",
+        "line_sha256": "63f8fce5f1e00650d5ed0fa7e97f01280a00d2136386ce6445e46d8eb23f4324"
+      }
+    ],
+    "sittingbourne": [
+      {
+        "id": "2637802",
+        "name": "Sittingbourne",
+        "ascii": "Sittingbourne",
+        "lat": 51.34128,
+        "lon": 0.73282,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G5",
+        "feature_code": "PPL",
+        "line_sha256": "fa3f2f576039f2060e223588e69d68a893c4683afa648f39358fa7fbb60da718"
+      }
+    ],
+    "sinderby": [
+      {
+        "id": "2637815",
+        "name": "Sinderby",
+        "ascii": "Sinderby",
+        "lat": 54.23192,
+        "lon": -1.47209,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J7",
+        "feature_code": "PPL",
+        "line_sha256": "aaa5b4e8ec4f017d4335848661263b0f0b34161ec8972daeb5a5537078c43ad1"
+      }
+    ],
+    "sandringham": [
+      {
+        "id": "2638559",
+        "name": "Sandringham",
+        "ascii": "Sandringham",
+        "lat": 52.83094,
+        "lon": 0.507,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I9",
+        "feature_code": "PPL",
+        "line_sha256": "9271c3057339c4ff1888e2864252c83b764d5c240dbc6f84e31a9f0ad7367fab"
+      }
+    ],
+    "rushton": [
+      {
+        "id": "2638941",
+        "name": "Rushton",
+        "ascii": "Rushton",
+        "lat": 52.43869,
+        "lon": -0.76175,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "NNH",
+        "feature_code": "PPL",
+        "line_sha256": "a857870cb05dec7df50c5699c3b14f4c763ef17c046127f224786ca4cc709cff"
+      },
+      {
+        "id": "13276816",
+        "name": "Rushton",
+        "ascii": "Rushton",
+        "lat": 50.67845,
+        "lon": -2.17133,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D6",
+        "feature_code": "PPL",
+        "line_sha256": "4810f698f2ab867170e092c031fe1d8f39bc373dc7ab0704f2cdc285be174bdc"
+      },
+      {
+        "id": "13278374",
+        "name": "Rushton",
+        "ascii": "Rushton",
+        "lat": 52.67034,
+        "lon": -2.5865,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L6",
+        "feature_code": "PPL",
+        "line_sha256": "515671620b91160acab3bf45a6a35933b5cf5e8555a55effc0cd2583ecb6f926"
+      },
+      {
+        "id": "13278779",
+        "name": "Rushton",
+        "ascii": "Rushton",
+        "lat": 53.17019,
+        "lon": -2.62468,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Z8",
+        "feature_code": "PPL",
+        "line_sha256": "8e6f94edc341cea7c679e946ff85112d233c40fd75438b561972c246ef589dc0"
+      }
+    ],
+    "rockferry": [
+      {
+        "id": "2639253",
+        "name": "Rock Ferry",
+        "ascii": "Rock Ferry",
+        "lat": 53.36923,
+        "lon": -3.00418,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q1",
+        "feature_code": "PPL",
+        "line_sha256": "ad18b4e1a605b7f16ffedb8d765adb308356b1d4e6997c65fe7e8af672bd3093"
+      }
+    ],
+    "ranton": [
+      {
+        "id": "2639637",
+        "name": "Ranton",
+        "ascii": "Ranton",
+        "lat": 52.81391,
+        "lon": -2.21496,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M9",
+        "feature_code": "PPL",
+        "line_sha256": "0539ec82d78bea09c4c1a054bfc0f3f9d0b9d4d0e242069697977cf3727891df"
+      }
+    ],
+    "puriton": [
+      {
+        "id": "2639844",
+        "name": "Puriton",
+        "ascii": "Puriton",
+        "lat": 51.16933,
+        "lon": -2.97198,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPL",
+        "line_sha256": "a569dc885c4ff655fe261c098098df0f4aa2166691b03fac678771afe1738321"
+      }
+    ],
+    "poynings": [
+      {
+        "id": "2639942",
+        "name": "Poynings",
+        "ascii": "Poynings",
+        "lat": 50.89437,
+        "lon": -0.20462,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "P6",
+        "feature_code": "PPL",
+        "line_sha256": "0e5196d92d16871176ea1185bd01be765d7a5a7b95b0d203e86bd8b6d515e4c8"
+      }
+    ],
+    "powick": [
+      {
+        "id": "2639947",
+        "name": "Powick",
+        "ascii": "Powick",
+        "lat": 52.16667,
+        "lon": -2.25,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q4",
+        "feature_code": "PPL",
+        "line_sha256": "29472b0cafa157a323f9a6012f7d39c87a0341a901d39272b9d5ce2412c3e2d6"
+      }
+    ],
+    "penn": [
+      {
+        "id": "2640448",
+        "name": "Penn",
+        "ascii": "Penn",
+        "lat": 51.63123,
+        "lon": -0.6769,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "B9",
+        "feature_code": "PPL",
+        "line_sha256": "d8e558c924d27315b48fa7b86b855560439e7cbc526232dd70013060f4d8d8ac"
+      },
+      {
+        "id": "13270798",
+        "name": "Penn",
+        "ascii": "Penn",
+        "lat": 52.56185,
+        "lon": -2.1601,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q3",
+        "feature_code": "PPLX",
+        "line_sha256": "9a00eb68d5fac8d24c1f55112cb1e15e9cbef4931d61da6efddf19909300ec29"
+      },
+      {
+        "id": "13276255",
+        "name": "Penn",
+        "ascii": "Penn",
+        "lat": 50.75466,
+        "lon": -2.93341,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D6",
+        "feature_code": "PPL",
+        "line_sha256": "79e4a530741047575ea773179244092e17fc17318a8d1c9c145c09b5952ccc75"
+      }
+    ],
+    "ollerton": [
+      {
+        "id": "2640976",
+        "name": "Ollerton",
+        "ascii": "Ollerton",
+        "lat": 53.21667,
+        "lon": -1.01667,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J9",
+        "feature_code": "PPL",
+        "line_sha256": "76774508ce28e699d37adfa5ad352cec361375db701cac5262ad4b843e50b8cf"
+      },
+      {
+        "id": "12262486",
+        "name": "Ollerton",
+        "ascii": "Ollerton",
+        "lat": 53.2883,
+        "lon": -2.33258,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Z7",
+        "feature_code": "PPL",
+        "line_sha256": "b13caabe58a90b21046bec5f5dd20c7a1d49df86c6234fd965736765fd8da05f"
+      },
+      {
+        "id": "13278203",
+        "name": "Ollerton",
+        "ascii": "Ollerton",
+        "lat": 52.82581,
+        "lon": -2.51982,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L6",
+        "feature_code": "PPL",
+        "line_sha256": "ffe3723557c0a2d7b61ec931df04fbc5d54ab4575a42543cb4abc7885130a309"
+      }
+    ],
+    "northfield": [
+      {
+        "id": "2641355",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 52.41667,
+        "lon": -1.96667,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "A7",
+        "feature_code": "PPL",
+        "line_sha256": "8c7bead55c13a7dd94e8ea87c8391c304deb166d10a364e1c949fb24e95fe3ac"
+      },
+      {
+        "id": "12048011",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 51.49844,
+        "lon": -0.31519,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPLX",
+        "line_sha256": "3e6114d0d469896b248295db3fb4a4c80b658e9acd4627d1a60274ae95fddc5e"
+      },
+      {
+        "id": "13265983",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 52.05037,
+        "lon": -0.70893,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I6",
+        "feature_code": "PPLX",
+        "line_sha256": "872dbf8554760947f763aeecca72f4e2c1461b72eb1f0e13d2a5ae66eebd2d76"
+      },
+      {
+        "id": "13266055",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 55.95027,
+        "lon": -3.13653,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "U8",
+        "feature_code": "PPLX",
+        "line_sha256": "e2fb8e05cb5fb5d317051061a29477eb0f9ea564ecc6fe325d05550985960931"
+      },
+      {
+        "id": "13266247",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 53.73031,
+        "lon": -0.43315,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E1",
+        "feature_code": "PPLX",
+        "line_sha256": "19fa0f2cbc38a12f6a8959cceca056f9c6ddce65dfc9160d5a8d444e72cdab9d"
+      },
+      {
+        "id": "13266316",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 51.29005,
+        "lon": -2.43512,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "A4",
+        "feature_code": "PPLX",
+        "line_sha256": "c91e20a140f65de2ecdae4bda6a79603dafca879654515309805b7c3a300254f"
+      },
+      {
+        "id": "13266904",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 51.64288,
+        "lon": -2.15344,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E6",
+        "feature_code": "PPLX",
+        "line_sha256": "59c5d0648b53e7bff89bb49a5e9c4314af836c2cb1dc527894f20f84ce17190d"
+      },
+      {
+        "id": "13269740",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 57.16556,
+        "lon": -2.16333,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "T5",
+        "feature_code": "PPLX",
+        "line_sha256": "632c4c8b168ed74a8f2f23ae85f00cbe82c79fcd9f483c45a022d0a156cdae6c"
+      },
+      {
+        "id": "13269773",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 55.98117,
+        "lon": -4.07381,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "V8",
+        "feature_code": "PPLX",
+        "line_sha256": "b4b13bce9f1499c59df1b0205a82b3c9a12eaa8c8c7bf50f2e180bc059562b5d"
+      },
+      {
+        "id": "13271105",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 53.43744,
+        "lon": -1.36006,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L3",
+        "feature_code": "PPLX",
+        "line_sha256": "6c00d033022fb17b599585032de7ba4980c5f7d3c47bf846c0141ae1ebdf6023"
+      },
+      {
+        "id": "13272167",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 51.12448,
+        "lon": -3.01371,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPLX",
+        "line_sha256": "ba592713292a3458ecb9fffefb81f2ab982b7293641ccb795e77098dd633f244"
+      },
+      {
+        "id": "13272406",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 51.05802,
+        "lon": -2.74039,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPLX",
+        "line_sha256": "0677978477838de21429467c0a826ac4f967f40f96fb61963edfc72c0068cd7f"
+      },
+      {
+        "id": "13272783",
+        "name": "North Field",
+        "ascii": "North Field",
+        "lat": 52.3494,
+        "lon": 0.32598,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C3",
+        "feature_code": "PPLX",
+        "line_sha256": "1d96c7c4a0897e105bc8f4d8542329e8d6039c2137653098b3ccbfc7099e0741"
+      },
+      {
+        "id": "13277666",
+        "name": "Northfield",
+        "ascii": "Northfield",
+        "lat": 57.71739,
+        "lon": -4.1773,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "V3",
+        "feature_code": "PPL",
+        "line_sha256": "36e05799345bc0831fc40ace9c229c27d3daf8821331f86970219c363f33733e"
+      }
+    ],
+    "niton": [
+      {
+        "id": "2641480",
+        "name": "Niton",
+        "ascii": "Niton",
+        "lat": 50.58702,
+        "lon": -1.28489,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G2",
+        "feature_code": "PPL",
+        "line_sha256": "c9097f2a048f597ad1ec2a7531825b2e2d16d9ce2853ead9826cc1be2eecb5cb"
+      }
+    ],
+    "marham": [
+      {
+        "id": "2643041",
+        "name": "Marham",
+        "ascii": "Marham",
+        "lat": 52.65921,
+        "lon": 0.52159,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I9",
+        "feature_code": "PPL",
+        "line_sha256": "3f79aab2154c4ac706716bfa9bbd8387f59086a03f346f83a892c00806afc7d1"
+      }
+    ],
+    "knowle": [
+      {
+        "id": "2645099",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 52.38333,
+        "lon": -1.73333,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M2",
+        "feature_code": "PPL",
+        "line_sha256": "a851d8c9a2706654bc54b3d1bb6445a014a1e4df26b862a46943b5120e86974b"
+      },
+      {
+        "id": "12261619",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 50.63646,
+        "lon": -3.34248,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D4",
+        "feature_code": "PPL",
+        "line_sha256": "e84f27c14d312668911858a1f2d95791837a489698e7327f4f90c124a1c8e946"
+      },
+      {
+        "id": "12261981",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 50.88096,
+        "lon": -1.20477,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "F2",
+        "feature_code": "PPL",
+        "line_sha256": "024bef5e26d179e63e4590ac0c944fe6d4f103a0b78bb51f090ca4c82e440963"
+      },
+      {
+        "id": "12266012",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 51.12696,
+        "lon": -4.1555,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D4",
+        "feature_code": "PPL",
+        "line_sha256": "484a3cfc90afdebd67ff62c21c79c9318565eec7968d7752edf789074f64e71e"
+      },
+      {
+        "id": "13267073",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 51.34583,
+        "lon": -1.76273,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "P8",
+        "feature_code": "PPLX",
+        "line_sha256": "c3c27841d712d279c3395424e9546c92ed11c6346dde0b1b65acc67ee3420300"
+      },
+      {
+        "id": "13275312",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 52.36527,
+        "lon": -2.59464,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L6",
+        "feature_code": "PPL",
+        "line_sha256": "32350cb26f41dd586b044fbb3caf1a6bd6d305ae8014175ec210f7308506c088"
+      },
+      {
+        "id": "13280880",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 50.85541,
+        "lon": -3.41701,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D4",
+        "feature_code": "PPL",
+        "line_sha256": "1960ee721d46d487c520f276606a97bc131207f883aec7d4c4804df9e73f46d9"
+      },
+      {
+        "id": "13280962",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 50.80049,
+        "lon": -3.72881,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D4",
+        "feature_code": "PPL",
+        "line_sha256": "cd266876e0fbf37883ad556de92ad2da98879969529fcb08a12a49d847eb1d3e"
+      },
+      {
+        "id": "13281528",
+        "name": "Knowle",
+        "ascii": "Knowle",
+        "lat": 51.15458,
+        "lon": -2.95223,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "M3",
+        "feature_code": "PPL",
+        "line_sha256": "bb24cbb99b26d8cd61ae8104277f20d3720f034d1ee44a2ce988edc2847f1107"
+      }
+    ],
+    "hucclecote": [
+      {
+        "id": "2646463",
+        "name": "Hucclecote",
+        "ascii": "Hucclecote",
+        "lat": 51.85362,
+        "lon": -2.18784,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E6",
+        "feature_code": "PPL",
+        "line_sha256": "de947d986c027e0404eff648d172c02c0b754c0bd9f25a8e5db88063527aa8d3"
+      }
+    ],
+    "heptonstall": [
+      {
+        "id": "2647078",
+        "name": "Heptonstall",
+        "ascii": "Heptonstall",
+        "lat": 53.74914,
+        "lon": -2.02093,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C2",
+        "feature_code": "PPL",
+        "line_sha256": "abc5b0b3292de12592f50ce7870d10b2e4c0d31e15b46835da710529151b462e"
+      }
+    ],
+    "hanwell": [
+      {
+        "id": "2647515",
+        "name": "Hanwell",
+        "ascii": "Hanwell",
+        "lat": 52.09124,
+        "lon": -1.36763,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "K2",
+        "feature_code": "PPLA4",
+        "line_sha256": "879e804da048f10bd3acfcdb66ccf926c8a4bec146118e24b99279a65d83cb96"
+      },
+      {
+        "id": "2647516",
+        "name": "Hanwell",
+        "ascii": "Hanwell",
+        "lat": 51.51809,
+        "lon": -0.33517,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPL",
+        "line_sha256": "55b09409ba1049fa90e7ca4242556279ea9f902e3a55a030b03b7ea8d3e23060"
+      }
+    ],
+    "handsworth": [
+      {
+        "id": "2647531",
+        "name": "Handsworth",
+        "ascii": "Handsworth",
+        "lat": 53.37084,
+        "lon": -1.37621,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L9",
+        "feature_code": "PPL",
+        "line_sha256": "84cb6c9f627377f1566c18c462b6ebd016d816678db7098dd7f06d3c9180ed5d"
+      },
+      {
+        "id": "11551175",
+        "name": "Handsworth",
+        "ascii": "Handsworth",
+        "lat": 52.51006,
+        "lon": -1.92673,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "A7",
+        "feature_code": "PPL",
+        "line_sha256": "d73498dbe62cd4a47c5fc57ad3c7bc18fa1d32128bb176d98acea0788b68c8d3"
+      }
+    ],
+    "doddington": [
+      {
+        "id": "2648122",
+        "name": "Great Doddington",
+        "ascii": "Great Doddington",
+        "lat": 52.27435,
+        "lon": -0.70862,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "NNH",
+        "feature_code": "PPL",
+        "line_sha256": "5c51db6dac2d9f1709dad81ed17714e4b24eb5f0b55a0061249ac292229e6be5"
+      },
+      {
+        "id": "2651179",
+        "name": "Doddington",
+        "ascii": "Doddington",
+        "lat": 55.58548,
+        "lon": -2.00415,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J6",
+        "feature_code": "PPLA3",
+        "line_sha256": "eb8fc6e71aad4a542461a4a67c501a8c1d7b41c51ad703d3daf253a47d709068"
+      },
+      {
+        "id": "2651180",
+        "name": "Doddington",
+        "ascii": "Doddington",
+        "lat": 53.21667,
+        "lon": -0.65,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H7",
+        "feature_code": "PPL",
+        "line_sha256": "ecc4eb3e4ef0a157eb1789d0b3fd4d6c3c0a1652ffe1a898f2a2b0c168172318"
+      },
+      {
+        "id": "2651181",
+        "name": "Doddington",
+        "ascii": "Doddington",
+        "lat": 52.49671,
+        "lon": 0.06017,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C3",
+        "feature_code": "PPL",
+        "line_sha256": "a961236304c9656aac6b0db9f8dd5ed36ac8113585cf8cca58c0f3489bb018aa"
+      },
+      {
+        "id": "2651182",
+        "name": "Doddington",
+        "ascii": "Doddington",
+        "lat": 51.28138,
+        "lon": 0.77226,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G5",
+        "feature_code": "PPL",
+        "line_sha256": "32d651dba258302b7b034469bf240eaf90c7117055b2abe60d634ed17c6c2238"
+      },
+      {
+        "id": "12265322",
+        "name": "Doddington",
+        "ascii": "Doddington",
+        "lat": 52.38142,
+        "lon": -2.56353,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L6",
+        "feature_code": "PPL",
+        "line_sha256": "2268893f64f520eb2607bfb22053fdde543ae82c657c3dadf7c14007d3554949"
+      }
+    ],
+    "crackleybank": [
+      {
+        "id": "2652172",
+        "name": "Crackleybank",
+        "ascii": "Crackleybank",
+        "lat": 52.69587,
+        "lon": -2.35818,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L6",
+        "feature_code": "PPL",
+        "line_sha256": "c4c1464428761b15e54dcadb22146990edc94a00fcbdedc0567f6328f9f4c88b"
+      }
+    ],
+    "clifton": [
+      {
+        "id": "2652829",
+        "name": "Clifton upon Teme",
+        "ascii": "Clifton upon Teme",
+        "lat": 52.25218,
+        "lon": -2.42154,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q4",
+        "feature_code": "PPL",
+        "line_sha256": "09372afb47184452e6a17608ca7b54532950a867558eb50c1fc10a89fd362b30"
+      },
+      {
+        "id": "2652830",
+        "name": "Clifton upon Dunsmore",
+        "ascii": "Clifton upon Dunsmore",
+        "lat": 52.3828,
+        "lon": -1.22137,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "P3",
+        "feature_code": "PPL",
+        "line_sha256": "7a9eefa443edd72d0eeaf5d71f627cd6dee3319a715701f28a6143a9ebbb2e41"
+      },
+      {
+        "id": "2652838",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 54.63331,
+        "lon": -2.72324,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C9",
+        "feature_code": "PPL",
+        "line_sha256": "4af8862b1584308e6582c1c1a737f4dd40aaf9c4fc0d4e0fa29166bbd83bcc9a"
+      },
+      {
+        "id": "2652839",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.97446,
+        "lon": -1.10121,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q5",
+        "feature_code": "PPL",
+        "line_sha256": "f20494983d8edecbe870931a32cf0e36f59673846e6da5e1bdcf6fa87711b1d8"
+      },
+      {
+        "id": "2652840",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.0,
+        "lon": -1.75,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D3",
+        "feature_code": "PPL",
+        "line_sha256": "024c7eb62cd14bb81b77472fe406b125d823032415b278a20024fa7857da1377"
+      },
+      {
+        "id": "2652841",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 52.9,
+        "lon": -1.18333,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J8",
+        "feature_code": "PPL",
+        "line_sha256": "972c40b0aba080b9ecc994202d7994c4914ef8e9687032b280c7a798a9f0a96c"
+      },
+      {
+        "id": "2652842",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 52.0399,
+        "lon": -0.30051,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Z6",
+        "feature_code": "PPLA3",
+        "line_sha256": "03bb873853707a96562d8098e7551ad3486f0f0956e5c2aff2ee251733cc9dd4"
+      },
+      {
+        "id": "2652843",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 51.46111,
+        "lon": -2.62,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "B7",
+        "feature_code": "PPLX",
+        "line_sha256": "a3a7f4d28d3851b589232870306a51b91f9766805d9cd4ccafaa2d255df9a67c"
+      },
+      {
+        "id": "10104137",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 56.43937,
+        "lon": -4.72116,
+        "country": "GB",
+        "admin1": "SCT",
+        "admin2": "W6",
+        "feature_code": "PPL",
+        "line_sha256": "5228abb730b370dd1b640a886f899d0383c240c0abb83f7daf1b688282a8aa2c"
+      },
+      {
+        "id": "12264699",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 51.98215,
+        "lon": -1.28996,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "K2",
+        "feature_code": "PPL",
+        "line_sha256": "0c31bd02688cd627701aa7ab539881c44833ccda58fe5742e1ed6a26af70c5eb"
+      },
+      {
+        "id": "12264980",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.5212,
+        "lon": -2.32293,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L5",
+        "feature_code": "PPL",
+        "line_sha256": "4b8109405de24414c0ded731b407f29724af12c213d62ae16044e9a63c3a0820"
+      },
+      {
+        "id": "12266024",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.4616,
+        "lon": -1.21948,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D5",
+        "feature_code": "PPL",
+        "line_sha256": "19303392e27a12d572169d18f91a544da52b9d652b85ea5baff8a8c7b27214a6"
+      },
+      {
+        "id": "12266480",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.7666,
+        "lon": -2.81393,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H2",
+        "feature_code": "PPL",
+        "line_sha256": "0f5653fe97cfd026598e29f120fd0ba9324e7773b27528c0e88c4b51efe9fba0"
+      },
+      {
+        "id": "13269045",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.31323,
+        "lon": -2.71265,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "E9",
+        "feature_code": "PPLX",
+        "line_sha256": "86a7ca7bf3729938419960357f7ef3b1f55390554361a08ccbf2df8e26db2321"
+      },
+      {
+        "id": "13271987",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.43349,
+        "lon": -1.34291,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L3",
+        "feature_code": "PPLX",
+        "line_sha256": "cd7bb006c7bb66bfe101c158b67632dc27bdc6810382ad5453671d34ebcea2e8"
+      },
+      {
+        "id": "13280021",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 53.92908,
+        "lon": -1.70806,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J7",
+        "feature_code": "PPL",
+        "line_sha256": "9ed5277fd43c72cfbfe5cd47b7664a96eec7048672fbf2f784089d809b08e5f8"
+      },
+      {
+        "id": "13281206",
+        "name": "Clifton",
+        "ascii": "Clifton",
+        "lat": 51.15312,
+        "lon": -4.00184,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D4",
+        "feature_code": "PPL",
+        "line_sha256": "84673c7940f0130cc35e19ea5d17a6a81ce2950ae7790407040fd9475665b78b"
+      }
+    ],
+    "chale": [
+      {
+        "id": "2653396",
+        "name": "Chale",
+        "ascii": "Chale",
+        "lat": 50.59561,
+        "lon": -1.31836,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G2",
+        "feature_code": "PPLA3",
+        "line_sha256": "4208d5cf84df61e5cd3dba3c32678030090d3f26bf06fb81e1667705f91536ac"
+      }
+    ],
+    "brightwalton": [
+      {
+        "id": "2654708",
+        "name": "Brightwalton",
+        "ascii": "Brightwalton",
+        "lat": 51.51072,
+        "lon": -1.38771,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "P4",
+        "feature_code": "PPL",
+        "line_sha256": "46f4aa9d2a95c27a367f361412e7d62696c2f045eb9aeeddf4a53aa997cb87aa"
+      }
+    ],
+    "bray": [
+      {
+        "id": "2654853",
+        "name": "Bray",
+        "ascii": "Bray",
+        "lat": 51.5034,
+        "lon": -0.68768,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "P9",
+        "feature_code": "PPLA3",
+        "line_sha256": "b0cca227ff7e708e278fbea44d653f0f65afd0ae72ebe8477072f77d257d700a"
+      }
+    ],
+    "bexley": [
+      {
+        "id": "2655775",
+        "name": "Bexley",
+        "ascii": "Bexley",
+        "lat": 51.44162,
+        "lon": 0.14866,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPLL",
+        "line_sha256": "7ed78d53e2d4ab02885dafd0f0e620b5347b29bcd964fd2d5089755f43f74a57"
+      }
+    ],
+    "benenden": [
+      {
+        "id": "2655904",
+        "name": "Benenden",
+        "ascii": "Benenden",
+        "lat": 51.06691,
+        "lon": 0.58125,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G5",
+        "feature_code": "PPL",
+        "line_sha256": "d555a4d175d32339616fe800bd6e9a75d84419123467204c9748b12efae1dbac"
+      }
+    ],
+    "barnby": [
+      {
+        "id": "2656298",
+        "name": "Barnby in the Willows",
+        "ascii": "Barnby in the Willows",
+        "lat": 53.06234,
+        "lon": -0.71929,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J9",
+        "feature_code": "PPL",
+        "line_sha256": "feb7c90306ee6e18c41def79047ee4234c649855cad21e7258bf4a17e17fc4eb"
+      },
+      {
+        "id": "2656300",
+        "name": "Barnby",
+        "ascii": "Barnby",
+        "lat": 52.44829,
+        "lon": 1.64205,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "N5",
+        "feature_code": "PPL",
+        "line_sha256": "169c744b07c7bf0ab3ab6b401f4bb2366f1c5f807d58b37bad8f64ec01fdf6c4"
+      }
+    ],
+    "barkisland": [
+      {
+        "id": "2656329",
+        "name": "Barkisland",
+        "ascii": "Barkisland",
+        "lat": 53.67614,
+        "lon": -1.9184,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C2",
+        "feature_code": "PPL",
+        "line_sha256": "d6c4ffb81388651a37ace57511bd7d8eaaaabb0713b24a704a20cfebb9489e42"
+      }
+    ],
+    "astoningham": [
+      {
+        "id": "2656861",
+        "name": "Aston Ingham",
+        "ascii": "Aston Ingham",
+        "lat": 51.91017,
+        "lon": -2.45969,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "F7",
+        "feature_code": "PPL",
+        "line_sha256": "1247ad0e31ce6b48ea5a3418450ed65c39000adb7f7ae4ef7d0902befff8ad59"
+      }
+    ],
+    "forestgate": [
+      {
+        "id": "6690991",
+        "name": "Forest Gate",
+        "ascii": "Forest Gate",
+        "lat": 51.55085,
+        "lon": 0.02369,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPLX",
+        "line_sha256": "327a49ab0ca8c4819650cda2724283a6e16a0917add297fdb6b7ff35a079112d"
+      }
+    ],
+    "prenton": [
+      {
+        "id": "6694080",
+        "name": "Prenton",
+        "ascii": "Prenton",
+        "lat": 53.36762,
+        "lon": -3.05479,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q1",
+        "feature_code": "PPL",
+        "line_sha256": "2977e23aad59d36fb00cf3b7634eda58c49020624c165f4fe7b4b544463f6748"
+      }
+    ],
+    "lightwater": [
+      {
+        "id": "7116406",
+        "name": "Lightwater",
+        "ascii": "Lightwater",
+        "lat": 51.34846,
+        "lon": -0.67147,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "N7",
+        "feature_code": "PPL",
+        "line_sha256": "d56d7f82f6eb1ae15c196554fc44114a276b569b6d079dc099cd489b435b5004"
+      }
+    ],
+    "totlandbay": [
+      {
+        "id": "8031355",
+        "name": "Totland Bay",
+        "ascii": "Totland Bay",
+        "lat": 50.67387,
+        "lon": -1.5556,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "G2",
+        "feature_code": "PPL",
+        "line_sha256": "db339775b857111cb7134196d11b998f67e82680d213f1cdddcd598de1c4c099"
+      }
+    ],
+    "hallgreen": [
+      {
+        "id": "8604608",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.4275,
+        "lon": -1.84287,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "A7",
+        "feature_code": "PPL",
+        "line_sha256": "e34ea40c6b3874a285a4e89c8c3ae6a3bbaddbf6be24b31d95fbaf6a4af13e81"
+      },
+      {
+        "id": "12265675",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 53.63307,
+        "lon": -1.51914,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "O7",
+        "feature_code": "PPL",
+        "line_sha256": "f1150c79099b917512fb8ae822f074460e0bb4a0308e63423ac505273957d184"
+      },
+      {
+        "id": "13267823",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 53.07922,
+        "lon": -1.31185,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J9",
+        "feature_code": "PPLX",
+        "line_sha256": "6f732cc65f2f0946d07854b2fc0a755fce1e88ac8ddd13278bd9062cd11843f3"
+      },
+      {
+        "id": "13270483",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.55024,
+        "lon": -2.07123,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q3",
+        "feature_code": "PPLX",
+        "line_sha256": "c34f787adb53d86c127e46c7fb2bd5140ab071ff1e41e054dd59b8a001360f25"
+      },
+      {
+        "id": "13271173",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.44433,
+        "lon": -1.47689,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "C7",
+        "feature_code": "PPLX",
+        "line_sha256": "abd140b6d129c785b20cfa2a611d86889ae9c23af4f22fa1c84b47e49885cd4b"
+      },
+      {
+        "id": "13272134",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.54557,
+        "lon": -1.99109,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "L7",
+        "feature_code": "PPLX",
+        "line_sha256": "72014a869f5560367f0a30e80e8f091050d4c42272b4f44285f8a7fb16389505"
+      },
+      {
+        "id": "13273179",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 53.54239,
+        "lon": -2.7364,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H2",
+        "feature_code": "PPLX",
+        "line_sha256": "093a2618a406474534a1a0a5daaf04b25240ad169adfa89e89f9ef72ebdd7b7a"
+      },
+      {
+        "id": "13273321",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.10609,
+        "lon": -2.28512,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "Q4",
+        "feature_code": "PPL",
+        "line_sha256": "f49a245249bda5c44215b4af92966aef1c7b07d3402d6e38937e90bb7142b2e7"
+      },
+      {
+        "id": "13276084",
+        "name": "Hall Green",
+        "ascii": "Hall Green",
+        "lat": 52.69914,
+        "lon": 0.86048,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "I9",
+        "feature_code": "PPL",
+        "line_sha256": "df262bb1ab68d2207a3716e55cab0dc27a1bcad9a8b27740d57c5c9d696aacb5"
+      }
+    ],
+    "telegraphhill": [
+      {
+        "id": "12047980",
+        "name": "Telegraph Hill",
+        "ascii": "Telegraph Hill",
+        "lat": 51.4675,
+        "lon": -0.04441,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPLX",
+        "line_sha256": "45875e5960f500542b221a4657124eb90d440cf3f709c523784f2b447afcc9ea"
+      }
+    ],
+    "leegreen": [
+      {
+        "id": "12048024",
+        "name": "Lee Green",
+        "ascii": "Lee Green",
+        "lat": 51.4525,
+        "lon": 0.0071,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "GLA",
+        "feature_code": "PPLX",
+        "line_sha256": "a10bfafc3fd00fc3f4140e9b8e91e36cf67613a8d91253a6ea96a84a9aa94330"
+      }
+    ],
+    "northstainley": [
+      {
+        "id": "12262201",
+        "name": "North Stainley",
+        "ascii": "North Stainley",
+        "lat": 54.18099,
+        "lon": -1.56495,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "J7",
+        "feature_code": "PPL",
+        "line_sha256": "9c660f90a56396885319212eb9ad600ff9794549b8b7af74e17dc2e3c27492d3"
+      }
+    ],
+    "norden": [
+      {
+        "id": "13274628",
+        "name": "Norden",
+        "ascii": "Norden",
+        "lat": 53.77331,
+        "lon": -2.42487,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "H2",
+        "feature_code": "PPL",
+        "line_sha256": "6f33aade2296e5ca54de3e32bceadc31bba54dca403bf7f6b66c2a514d212455"
+      },
+      {
+        "id": "13276672",
+        "name": "Norden",
+        "ascii": "Norden",
+        "lat": 50.65124,
+        "lon": -2.08282,
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "D6",
+        "feature_code": "PPL",
+        "line_sha256": "48e85631f7101bbdcbedc8f92205d4d3bd342a89a48da392f1cd50d98348bedc"
+      }
+    ]
+  }
+}

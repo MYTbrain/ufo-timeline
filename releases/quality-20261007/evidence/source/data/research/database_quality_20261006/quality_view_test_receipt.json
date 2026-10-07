@@ -1,0 +1,37 @@
+{
+  "completed_at_utc": "2026-10-07T07:14:45.880792+00:00",
+  "reader_sha256": "314d8787bde5e125a20c8c8972b20daca98e11d7aef67aee6ca220f07d2a56e8",
+  "manifest_sha256": "2e03a89245329ac37d9fab1cf630b8ba2f95301e15c7f490f70969d6a187818b",
+  "full_source_guard_integration": {
+    "tests_passed": 13,
+    "elapsed_seconds": 60.284,
+    "scope": "Every accepted edit and date annotation checked against actual pinned full source records; identity, dates, raw fields and retained members unchanged. Prior passing run before additional annotation pin/locator checks and chunk-batched projection."
+  },
+  "final_focused_suite": {
+    "tests_run": 14,
+    "passed": true,
+    "test_names": [
+      "test_compatible_edits_use_original_guards",
+      "test_complete_effective_census",
+      "test_conflicting_edits_rejected",
+      "test_date_annotation_missing_guards_rejected",
+      "test_date_annotation_wrong_base_rejected",
+      "test_date_role_is_review_annotation",
+      "test_invalid_coordinates_rejected",
+      "test_nested_source_cache_is_not_exposed",
+      "test_optional_projection_uses_full_pinned_records",
+      "test_quarantine_preserves_report",
+      "test_research_candidate_rejected",
+      "test_source_date_cannot_be_overwritten",
+      "test_stale_guard_rejected",
+      "test_wrong_base_rejected"
+    ],
+    "failures": 0,
+    "errors": 0
+  },
+  "parallel_lane_suites": {
+    "account_links": 13,
+    "location_corrections": 8,
+    "unmapped_recovery": "218 decisions with complete source/roundtrip/locator/status checks"
+  }
+}

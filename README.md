@@ -21,6 +21,9 @@ The map includes a searchable catalog of 85 famous cases, alphabetical or chrono
 
 ## Setup
 
+The October 7 quality release carries reviewed corrections consistently through
+the map, traces, details and analysis. See [release and validation notes](docs/QUALITY_RELEASE_20261007.md).
+
 1. Install Python 3.11+.
 2. Install the Python dependencies:
 

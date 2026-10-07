@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "reviewed_date": "2026-10-07",
+  "reviewed": [
+    {
+      "event_id": 4167486410067877,
+      "reason": "May8 UFOCAT native52308 contains11 retained members. Strong primary source case lead, but no coordinate edit without auditing allmember location evidence.",
+      "status": "abstain_composite_member_review_required"
+    },
+    {
+      "event_id": 4282806256229547,
+      "reason": "Same date,flight203 reference but source says600 miles west of Jacksonville. Conflict is retained; no silent replacement from a related account.",
+      "status": "abstain_explicit_direction_conflict"
+    },
+    {
+      "event_id": 593868611462365,
+      "reason": "Short translation lacks nativeflight number or original reference sufficiently specific for automated cross-account assignment.",
+      "status": "abstain_original_case_identity_not_fully_pinned"
+    },
+    {
+      "event_id": 2186178291410296,
+      "reason": "Apparently related Pan Am incident, but source uses approximate1am and different aircraft details. Requires cited French Ruppelt page review.",
+      "status": "abstain_original_case_identity_not_fully_pinned"
+    },
+    {
+      "event_id": 3247103323413822,
+      "reason": "General policy/nuclear-stockpile timeline entry shares a derived sort date with an Airprox report. It is not an aircraft sighting.",
+      "status": "abstain_context_record"
+    },
+    {
+      "event_id": 631459321514936,
+      "reason": "Fort Monmouth is an aviation-case locality reference; without source aircraft coordinates, the facility center is not an observerpoint.",
+      "status": "abstain_airborne_observer_unlocated"
+    },
+    {
+      "event_id": 2358729060732326,
+      "reason": "Zoom Earth view URL coordinate is image browsing context, not a witness point or verified object location.",
+      "status": "abstain_remote_image_center_role"
+    },
+    {
+      "event_id": 1666021398344434,
+      "reason": "Hampton record combines groundbridge,tower,radar and airborne locations; one Hampton city coordinate would hide distinct roles.",
+      "status": "abstain_multiple_observer_sites"
+    },
+    {
+      "event_id": 3637104124162757,
+      "reason": "Airborne route between Boston and Provincetown cannot be located from Boston\u2019s city point.",
+      "status": "abstain_route"
+    },
+    {
+      "event_id": 2766185594250281,
+      "reason": "Offshore northeast of Jacksonville lacks observation coordinates; original incident report remains needed.",
+      "status": "abstain_offshore_route"
+    },
+    {
+      "event_id": 3179475632971669,
+      "reason": "Three miles northeast of Moisant Airport is a reported airborne offset. No guessed airport center or coordinate is accepted.",
+      "status": "abstain_airborne_offset"
+    },
+    {
+      "event_id": 1332660658457674,
+      "reason": "Vatican Fox News telecast case is remote-image context. The reporter was not an observer at a known Vatican site.",
+      "status": "abstain_media_context"
+    },
+    {
+      "event_id": 4063592950489728,
+      "reason": "CNN live telecast source position is not established; cannot turn Vatican broadcast label into witnesscoordinates.",
+      "status": "abstain_media_context"
+    }
+  ],
+  "nuforc_original_report_access": {
+    "attempted_urls": [
+      "https://nuforc.org/sighting/?id=173446",
+      "https://nuforc.org/sighting/?id=5383",
+      "https://nuforc.org/webreports/reports/173/S173446.html"
+    ],
+    "result": "HTTP403 in bounded direct requests; webopen alsofailed. No online NUFORC facts claimed recovered.",
+    "next_step": "Use preserved native report texts plus independently verified locality authority; requestsource export or restorepublicaccess if more report evidence is needed."
+  }
+}

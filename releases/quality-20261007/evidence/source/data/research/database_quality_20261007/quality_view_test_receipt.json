@@ -1,0 +1,112 @@
+{
+  "completed_at_utc": "2026-10-07T07:45:01.406411+00:00",
+  "passed": true,
+  "reader_sha256": "e45c9b6164db2decc634f55ee1b5ec9dd0ea11d19a9c9684cd2c129b11552d8a",
+  "manifest_sha256": "fba5d2116aa974c4a39ca0095302e819aeb9669e94050b53b40ed187468a44e1",
+  "integration_validator_sha256": "2dd9cedd57eed82a36fad3abdd758d125256f6004be059a50e165aea7f637f4e",
+  "elapsed_seconds": 51.491,
+  "new_lanes": {
+    "account_recovery/accepted_account_recovery_decisions.jsonl": 910,
+    "account_recovery/accepted_date_precision_decisions.jsonl": 4,
+    "gazetteer_recovery/accepted_gazetteer_recovery_decisions.jsonl": 795,
+    "online_sources/accepted_online_recovery_decisions.jsonl": 14,
+    "grid_reference_recovery/accepted_grid_recovery_decisions.jsonl": 24
+  },
+  "new_source_details_verified": 1747,
+  "requested_chunks_hashed_and_decoded_once": 282,
+  "protected_raw_fields_native_ids_members_record_counts_and_sort_days_unchanged": true,
+  "exact_summary_detail_edits_agree": true,
+  "date_precision_downgrades_verified": 4,
+  "pan_am_relationship_detail_members_verified": 4,
+  "pan_am_auto_merge_suppression_count": 0,
+  "additional_detail_checks": {
+    "native_source_row_hash_checks": 914,
+    "detail_deep_copy_isolation_checks": 1,
+    "source_details_verified": 1747,
+    "raw_fields_digest_checks": 795,
+    "full_source_digest_checks": 14
+  },
+  "negative_controls_passed": 24,
+  "negative_control_names": [
+    "stale_base",
+    "stale_guard_coordinate_source",
+    "stale_guard_has_coordinates",
+    "stale_guard_lat",
+    "stale_guard_location_precision",
+    "stale_guard_location_raw",
+    "stale_guard_lon",
+    "stale_guard_sort_date_iso",
+    "stale_guard_source",
+    "unaccepted_candidate",
+    "conflicting_edits",
+    "latitude_outside_range",
+    "nonfinite_point",
+    "boolean_coordinate",
+    "false_mapped_status_with_point",
+    "prohibited_sort_date_edit",
+    "prohibited_raw_source_edit",
+    "missing_guard",
+    "date_precision_without_guard",
+    "date_precision_upgrade",
+    "date_precision_wrong_before",
+    "path_escape",
+    "undeclared_shared_root",
+    "wrong_explicit_detail_locator"
+  ],
+  "compatible_original_guard_edits_passed": true,
+  "decision_accessor_deep_copy_isolation_passed": true,
+  "prior_full_source_checks_inherited": {
+    "accepted_decisions": 1632,
+    "receipt_path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261006\\quality_view_test_receipt.json",
+    "receipt_sha256": "d99388ca096c1c329268d5c4fa9ba4d0c4c8b90b2998d3bbbc4724bb8a7f9904",
+    "manifest_sha256": "2e03a89245329ac37d9fab1cf630b8ba2f95301e15c7f490f70969d6a187818b",
+    "full_source_guard_integration": {
+      "tests_passed": 13,
+      "elapsed_seconds": 60.284,
+      "scope": "Every accepted edit and date annotation checked against actual pinned full source records; identity, dates, raw fields and retained members unchanged. Prior passing run before additional annotation pin/locator checks and chunk-batched projection."
+    },
+    "prior_sidecar_and_base_pins_rechecked_by_current_reader": true
+  },
+  "combined_summary_validation": {
+    "base_records": 702893,
+    "effective_records": 702893,
+    "base_mapped": 580783,
+    "effective_mapped": 582528,
+    "effective_unmapped": 120365,
+    "modified_records": 3379,
+    "accepted_decisions": 3379,
+    "date_review_annotations": 726,
+    "precision_transitions": {
+      "city -> state": 1404,
+      "exact_coords -> city": 1,
+      "city -> unknown": 3,
+      "city -> exact_coords": 1,
+      "unknown -> city": 1,
+      "city -> approximate": 4,
+      "unknown -> approximate": 1,
+      "country -> city": 1,
+      "country -> approximate": 2
+    },
+    "date_precision_transitions": {
+      "exact_day -> approximate": 4
+    },
+    "incident_relationship_members": 4,
+    "summary_shards_validated": 71,
+    "original_account_links": 113539,
+    "strict_base_projection_candidates": 47788,
+    "strict_effective_projection_candidates": 47788,
+    "strict_candidates_invalidated_by_quality_edits": 0
+  },
+  "canonical_data_mutated": false,
+  "full_catalog_copied": false,
+  "storage": {
+    "created_files": [
+      "integration_validation.py",
+      "quality_view_test_receipt.json"
+    ],
+    "purpose": "Small rebuildable source-detail verification script and receipt",
+    "retention": "Retain with sparse correction view provenance",
+    "files_over_100_mib": [],
+    "superseded_staging_artifacts": []
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "retrieved_at_utc": "2026-10-07T07:33:08.404951+00:00",
+  "method": "Browser reads of public primary sources; facts paraphrased and hashed as normalized receipts. These are not claimed to be full-page byte hashes.",
+  "facts": [
+    {
+      "url": "https://download.geonames.org/export/dump/readme.txt",
+      "fact": "Official export documents WGS84 latitude/longitude, populated-place class P, administrative code columns and primary/ascii/alternate names. Gazetteer assertions are supplied without an accuracy warranty.",
+      "role": "Source schema and honest precision scope",
+      "fact_sha256": "f2d192707211fdbd8b7e4f92ee2a4df789a15df442a354168603c0ff800dc161"
+    },
+    {
+      "url": "https://www.geonames.org/5404198/twentynine-palms.html",
+      "fact": "GeoNames feature 5404198 currently shows Twentynine Palms as a populated place, 34.13556,-116.05417, California, San Bernardino County, matching retained cached reference coordinates.",
+      "role": "Online representative reference-coordinate validation",
+      "fact_sha256": "f48af775954f08b21883c5c64d91f430a9736deda44484f53f0470a5fa8712c7"
+    },
+    {
+      "url": "https://www.geonames.org/5589173/coeur-d-alene.html",
+      "fact": "GeoNames feature 5589173 currently shows Coeur d Alene as a populated place, 47.67768,-116.78047, Idaho, Kootenai County, matching retained cached reference coordinates.",
+      "role": "Online representative populated-place identity validation",
+      "fact_sha256": "87da9f3257547499b159c37d2ae713f8541f3bb33768deefa6cb41972815a4ba"
+    },
+    {
+      "url": "https://www.ci.twentynine-palms.ca.us/about",
+      "fact": "Municipal website independently identifies Twentynine Palms as a California city.",
+      "role": "Independent official spelling and city identity",
+      "fact_sha256": "766eba0bab84be713e0de54cbf633f80b86c0c86673b836c4b217e9345c99117"
+    },
+    {
+      "url": "https://www.cdaid.org/government",
+      "fact": "Official municipal website uses the Coeur d Alene identity and an ID postal address.",
+      "role": "Independent official spelling and state identity",
+      "fact_sha256": "10d25c293e9ec61b5666827c30a04a5976b247462c6854e1be635bcefcbcd55b"
+    },
+    {
+      "url": "https://pascoeasypay.pascocountyfl.net/contact-us",
+      "fact": "Pasco County lists its Land O Lakes service center using Land O Lakes, FL 34637.",
+      "role": "Independent official punctuation and state identity; no exact observer position inferred",
+      "fact_sha256": "63826a12baafd3a16c3e65fe1363d388d0cdddb0dab19dda145ba07f1ed7a057"
+    },
+    {
+      "url": "https://nuforc.org/sighting/?id=533",
+      "fact": "Original publisher record 533 uses Twenty Nine Palms, CA, USA but describes past military guard duty. This record is withheld for source-role/site review, not assigned a city observer position.",
+      "role": "Online original-case check with scientifically useful abstention",
+      "fact_sha256": "1e6fdcaedf1d840faff5e0fedd8021d8761521806a690d08d4eb8d6158092056"
+    },
+    {
+      "url": "https://nuforc.org/sighting/?id=94282",
+      "fact": "Attempted original publisher retrieval unavailable through web tool; location remains supported by retained pinned publisher fields, not this live retrieval.",
+      "role": "Explicit failed source lookup receipt",
+      "fact_sha256": "c377d6ef93e32fe4e32ada3bc621b36380f363c62cc17d0aefcb952829b5dda8"
+    }
+  ]
+}

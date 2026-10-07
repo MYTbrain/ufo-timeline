@@ -1,0 +1,11 @@
+# Original-account reference recovery
+
+This lane researches the complete existing original-account crosswalk for unmapped UPDB republications. It retains guarded, sparse decisions over the shared canonical catalog; it does not copy the corpus or change production data.
+
+The accepted location role is an approximate reported observer-city reference, never a measured object position. Identity, original observed date, significant narrative agreement, retained source membership, craft label, raw place fields, country/admin context and an independently matching populated-place authority must all agree. Administrative markers and route/airborne context remain excluded. Reverse UPDB-to-original transfers require further source research and are not automatically applied.
+
+Inputs are the existing pinned canonical gzip chunks, the October 6 original-account crosswalk and quality decisions, and the shared GeoNames archive. Each accepted decision retains source fields, before values, exact detail locators, hashes and evidence. Direct official NUFORC checks are recorded separately; they do not substitute for record-by-record validation of the whole accepted population.
+
+Rebuild from the project root with `py -3 data/research/database_quality_20261007/account_recovery/build_account_recoveries.py`, then validate with `py -3 data/research/database_quality_20261007/account_recovery/validate_recoveries.py`. The build reads shared files in place and produces only compact decisions, receipts, a review queue and reports. The finalizer preserves official online date evidence, excludes uncertain occurrence dates, and applies the exact-name same-admin homonym screen. The retained small reference screen is reused only with its pinned shared authority and complete requested tuple coverage. Intended growth is below 25 MiB; no file or directory larger than 100 MiB is created. If the inputs change, the build fails instead of silently recycling decisions.
+
+Retention: keep these decisions and research receipts as the current source-backed recovery lane. The original canonical catalog remains the reversible baseline. This folder is not a duplicate deployment or a rollback corpus. No superseded large staging tree is created and no raw input, database, release or analysis is deleted.

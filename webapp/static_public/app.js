@@ -19,9 +19,19 @@
   if (!FLAP_PRESET_LABELS) {
     throw new Error("Famous flap preset labels failed to load.");
   }
+  const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
+  const FAMOUS_CASES = window.UfoFamousCasePresets;
+  const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
+  if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
+    throw new Error("Direction summaries or famous case presets failed to load.");
+  }
   const PLAYBACK_PERFORMANCE = window.UfoPlaybackPerformance;
   if (!PLAYBACK_PERFORMANCE) {
     throw new Error("Playback performance support failed to load.");
+  }
+  const TRACE_INTERSECTION_LAYER = window.UfoTraceIntersectionLayer;
+  if (!TRACE_INTERSECTION_LAYER || typeof TRACE_INTERSECTION_LAYER.createController !== "function") {
+    throw new Error("Trace convergence-cell support failed to load.");
   }
   const LOW_PRECISION_VALUES = new Set([
     "country",
@@ -75,6 +85,8 @@
   const FILTER_PANE_HEIGHT_STORAGE_PREFIX = "ufoTimeline.filterPaneHeight.";
   const THEME_MODE_STORAGE_KEY = "ufoTimeline.themeMode";
   const FONT_SCALE_STORAGE_KEY = "ufoTimeline.fontScaleMode";
+  const MAP_LABEL_SCALE_STORAGE_KEY = "ufoTimeline.mapLabelScaleMode.v1";
+  const CRAFT_COLOR_OVERRIDES_STORAGE_KEY = "ufoTimeline.craftTypeColors.v1";
   const GUIDE_VISIBILITY_STORAGE_KEY = "ufoTimeline.userGuideCollapsed";
   const TRAIL_LEGEND_STORAGE_KEY = "ufoTimeline.showTrailLegend";
   const TRACE_WIDTH_SCALE_STORAGE_KEY = "ufoTimeline.traceWidthScale";
@@ -85,15 +97,13 @@
   const FILTER_SECTION_COLLAPSE_STORAGE_KEY = "ufoTimeline.filterSectionCollapse";
   const PRIMARY_FILTERS_COLLAPSE_STORAGE_KEY = "ufoTimeline.primaryFiltersCollapsed";
   const MAP_CONTROL_CLUSTER_STORAGE_KEY = "ufoTimeline.mapControlCluster";
+  const MAP_CONTROL_SECTION_SESSION_KEY = "ufoTimeline.mapControlSections.v1";
   const MAP_SURFACE_HEIGHT_STORAGE_KEY = "ufoTimeline.mapSurfaceHeight.v1";
   const HEADER_STATS_COLLAPSE_STORAGE_KEY = "ufoTimeline.headerStatsCollapsed";
   const APPEARANCE_PANEL_COLLAPSE_STORAGE_KEY = "ufoTimeline.appearancePanelCollapsed";
   const MAP_LEGEND_COLLAPSE_STORAGE_KEY = "ufoTimeline.mapLegendCollapsed";
   const SINGLE_COLOR = "#0f5f73";
   const DEFAULT_COLOR_MODE = "craft_type";
-  const COUNTRY_LABEL_MIN_AREA = 140;
-  const COUNTRY_LABEL_MIN_ZOOM = 2;
-  const MAJOR_CITY_LABEL_MIN_ZOOM = 3;
   const MAX_CACHED_EVENT_CHUNKS = 6;
   const MAX_CACHED_FULL_EVENTS = 160;
   const MAP_AUTO_POINTS_THRESHOLD = 1200;
@@ -230,7 +240,7 @@
     "source_coordinates",
   ]);
   const TRACE_FACILITY_ENDPOINT_ACCENT_RATIO = 0.1;
-  const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH = 1;
+  const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH = 0;
   const CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DIRECTION = "forward";
   const CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR = "#0b1620";
   const CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR = "#f8fafc";
@@ -360,6 +370,7 @@
   const CANONICAL_WEB_ARTIFACTS_DEFAULT_EVENT_CHUNKS_BASE_URL = "./data/canonical_web/event_chunks/";
   const CANONICAL_WEB_ARTIFACTS_DEFAULT_SUMMARY_MANIFEST_URL = "./data/canonical_web/summary_manifest.json";
   const CANONICAL_WEB_ARTIFACTS_DEFAULT_SUMMARY_SHARDS_BASE_URL = "./data/canonical_web/summary_shards/";
+  const LOCATION_LABEL_OVERLAY_DEFAULT_GZIP_URL = "./data/location_label_overlay.json.gz";
   const PACKED_POINTS_STARTUP_PREVIEW_MAX_POINTS = 80000;
   const PACKED_POINTS_STARTUP_PREVIEW_HARD_MAX_POINTS = 120000;
   const PACKED_POINTS_STATUS = Object.freeze({
@@ -414,12 +425,12 @@
 
   const OVERLAY_VISUALS = Object.freeze({
     airports: {
-      chipColor: "#e14f9e",
-      chipTint: "rgba(225, 79, 158, 0.18)",
-      pointStroke: "rgba(134, 21, 80, 0.96)",
-      pointFill: "rgba(242, 112, 180, 0.84)",
+      chipColor: "#b9c5d0",
+      chipTint: "rgba(185, 197, 208, 0.18)",
+      pointStroke: "rgba(78, 91, 103, 0.96)",
+      pointFill: "rgba(185, 197, 208, 0.9)",
       pointRadius: 4.8,
-      lineColor: "rgba(225, 79, 158, 0.88)",
+      lineColor: "rgba(185, 197, 208, 0.88)",
     },
     highways: {
       chipColor: "#c78a24",
@@ -471,14 +482,14 @@
   });
 
   const MILITARY_BRANCH_SHAPES = Object.freeze({
-    air: "circle",
-    naval: "triangle",
-    army: "square",
+    air: "air-chevron",
+    naval: "anchor",
+    army: "tank",
     other: "hex",
   });
 
   const OVERLAY_MARKER_SHAPES = Object.freeze({
-    airports: "diamond",
+    airports: "airplane",
   });
 
   const RESEARCH_SITE_CATEGORY_LABELS = Object.freeze({
@@ -486,6 +497,9 @@
     defense_research: "Defense research",
     military_test: "Military test",
     contractor: "Contractor",
+    observatory: "Observatory",
+    space_launch: "Space Launch",
+    other_research: "Other research facility",
   });
 
   const RESEARCH_SITE_FALLBACK_CATEGORY_COLORS = Object.freeze({
@@ -493,7 +507,29 @@
     defense_research: "#c084fc",
     military_test: "#f59e0b",
     contractor: "#34d399",
+    observatory: "#a7f3d0",
+    space_launch: "#22d3ee",
+    other_research: "#94a3b8",
   });
+
+  const RESEARCH_SITE_CATEGORY_SHAPES = Object.freeze({
+    national_lab: "beaker",
+    defense_research: "shield-sword",
+    military_test: "crosshair",
+    contractor: "gear",
+    observatory: "telescope",
+    space_launch: "rocket",
+    other_research: "landmark",
+  });
+
+  const RESEARCH_SITE_LEGACY_ICON_ALIASES = Object.freeze({
+    lab: "beaker",
+    radar: "shield-sword",
+    range: "crosshair",
+    factory: "gear",
+  });
+
+  const RESEARCH_SITE_FALLBACK_CATEGORY = "other_research";
 
   const RESEARCH_SITE_AREA_MAX_CIRCLE_RADIUS_KM = 30;
   const RESEARCH_SITE_AREA_MAX_LONG_SIDE_KM = 40;
@@ -503,6 +539,7 @@
   const RESEARCH_SITE_DEFAULT_DOT_OPACITY = 0.9;
   const RESEARCH_SITE_DEFAULT_AREA_OPACITY = 0.1;
   const RESEARCH_SITE_DEFAULT_AREA_STROKE_OPACITY = 0.3;
+  const RESEARCH_SITE_SYMBOL_MIN_SIZE_PX = 14;
 
   const TYPE_GROUP_ORDER = [
     "UFO/UAP sighting",
@@ -564,7 +601,8 @@
 
   const CRAFT_TYPE_ORDER = TRACE_NEIGHBORHOOD.CRAFT_TYPE_ORDER;
   const CRAFT_TYPE_LABELS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_LABELS;
-  const CRAFT_TYPE_COLORS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_COLORS;
+  const DEFAULT_CRAFT_TYPE_COLORS = TRACE_NEIGHBORHOOD.CRAFT_TYPE_COLORS;
+  const CRAFT_TYPE_COLORS = Object.assign({}, DEFAULT_CRAFT_TYPE_COLORS);
 
   const PLAYBACK_TRAIL_BUCKETS = [
     { key: "gap_le_1", label: "\u22641 day", maxDays: 1, color: "#ff2d75", opacity: 0.92, weight: 5.4, glow: true, dashArray: "" },
@@ -592,6 +630,11 @@
     xlarge: 1.24,
   });
   const FONT_SCALE_ORDER = Object.freeze(["small", "default", "large", "xlarge"]);
+  const MAP_LABEL_TILE_ZOOM_STEPS = Object.freeze({
+    small: -1,
+    default: 0,
+    large: 1,
+  });
 
   const DEFAULT_INITIAL_TIMELINE_RANGE = Object.freeze({
     startIso: "1954-09-01",
@@ -684,37 +727,6 @@
     "teardrop",
     "triangle",
   ]);
-
-  const MAJOR_CITY_LABELS = [
-    { name: "New York", lat: 40.7128, lon: -74.006 },
-    { name: "Los Angeles", lat: 34.0522, lon: -118.2437 },
-    { name: "Mexico City", lat: 19.4326, lon: -99.1332 },
-    { name: "Sao Paulo", lat: -23.5505, lon: -46.6333 },
-    { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
-    { name: "London", lat: 51.5072, lon: -0.1276 },
-    { name: "Paris", lat: 48.8566, lon: 2.3522 },
-    { name: "Berlin", lat: 52.52, lon: 13.405 },
-    { name: "Moscow", lat: 55.7558, lon: 37.6173 },
-    { name: "Cairo", lat: 30.0444, lon: 31.2357 },
-    { name: "Lagos", lat: 6.5244, lon: 3.3792 },
-    { name: "Johannesburg", lat: -26.2041, lon: 28.0473 },
-    { name: "Nairobi", lat: -1.2921, lon: 36.8219 },
-    { name: "Istanbul", lat: 41.0082, lon: 28.9784 },
-    { name: "Riyadh", lat: 24.7136, lon: 46.6753 },
-    { name: "Delhi", lat: 28.6139, lon: 77.209 },
-    { name: "Mumbai", lat: 19.076, lon: 72.8777 },
-    { name: "Beijing", lat: 39.9042, lon: 116.4074 },
-    { name: "Shanghai", lat: 31.2304, lon: 121.4737 },
-    { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
-    { name: "Seoul", lat: 37.5665, lon: 126.978 },
-    { name: "Singapore", lat: 1.3521, lon: 103.8198 },
-    { name: "Sydney", lat: -33.8688, lon: 151.2093 },
-    { name: "Perth", lat: -31.9523, lon: 115.8613 },
-    { name: "Honolulu", lat: 21.3069, lon: -157.8583 },
-    { name: "Anchorage", lat: 61.2181, lon: -149.9003 },
-    { name: "Reykjavik", lat: 64.1466, lon: -21.9426 },
-    { name: "Santiago", lat: -33.4489, lon: -70.6693 },
-  ];
 
   const LANDMASS_POLYGONS = [
     {
@@ -873,6 +885,7 @@
     catalogManifest: [],
     chunkManifest: [],
     map: null,
+    traceIntersectionController: null,
     clusterLayer: null,
     pointLayer: null,
     pointRenderer: null,
@@ -882,10 +895,25 @@
     worldReferenceLayer: null,
     worldReferenceData: null,
     worldReferencePromise: null,
-    countryLabelMarkers: [],
-    cityLabelMarkers: [],
     playbackLayer: null,
     playbackTrailCanvasLayer: null,
+    cropTraceRadiusLayer: null,
+    cropTraceRelationLayer: null,
+    cropTraceNetworkLayer: null,
+    cropTraceEmphasisLayer: null,
+    cropTraceFocusConfig: null,
+    cropTraceFocusResult: null,
+    cropTraceFocusRequestGeneration: 0,
+    cropTraceRelationRenderState: null,
+    cropTraceRelationZoomHandler: null,
+    cropTraceHiddenPaneStyles: new Map(),
+    cropCircleOverlayEnabled: false,
+    cropCircleOverlayVisibleCount: null,
+    cropCircleOverlayDateScope: "window",
+    animalMutilationOverlayEnabled: false,
+    animalMutilationOverlayVisibleCount: null,
+    animalMutilationOverlayDateScope: "window",
+    quickContextButtonObservers: [],
     playbackCursorMarker: null,
     playbackActiveMarker: null,
     cursorAnimationFrameId: null,
@@ -933,6 +961,10 @@
     mapLegendEventBaseMode: DEFAULT_COLOR_MODE,
     mapLegendEventBaseGeneration: 0,
     mapLegendInteractionVersion: 0,
+    mapLegendViewportCountsCatalogRef: null,
+    mapLegendViewportCountsCacheKey: "",
+    mapLegendViewportCountsCacheValue: null,
+    mapLegendViewportRefreshFrameId: null,
     craftTypeResolutionByKey: new Map(),
     mapLegendFilteredEventIdSetCacheKey: "",
     mapLegendFilteredEventIdSetCacheValue: null,
@@ -998,13 +1030,89 @@
     catalogFacetWorkerRowsQueued: 0,
     catalogFacetWorkerLastError: "",
     catalogFacetWorkerStorage: null,
+    analysisViewController: null,
+    analysisRequestId: 0,
+    analysisDebounceTimerId: null,
+    analysisFullInferenceTimerId: null,
+    analysisPendingRequest: null,
+    analysisLastResult: null,
+    analysisLastError: "",
+    analysisCache: new Map(),
+    analysisContextPromise: null,
+    analysisContextManifest: null,
+    analysisContextLoaded: false,
+    analysisContextWorkerReady: false,
+    analysisV2ManifestPromise: null,
+    analysisV2OverviewManifestRequested: false,
+    analysisV2OverviewManifestError: "",
+    analysisSpatialPromise: null,
+    analysisSpatialManifest: null,
+    analysisSpatialWorkerReady: false,
+    analysisSpatialRequested: false,
+    analysisGeographyPromise: null,
+    analysisGeographyManifest: null,
+    analysisGeographyWorkerReady: false,
+    analysisGeographyRequested: false,
+    analysisDurationPromise: null,
+    analysisDurationManifest: null,
+    analysisDurationWorkerReady: false,
+    analysisDurationRequested: false,
+    analysisDurationError: "",
+    analysisReportingDelayPromise: null,
+    analysisReportingDelayManifest: null,
+    analysisReportingDelayWorkerReady: false,
+    analysisReportingDelayRequested: false,
+    analysisReportingDelayError: "",
+    analysisTimeOfDayPromise: null,
+    analysisTimeOfDayManifest: null,
+    analysisTimeOfDayWorkerReady: false,
+    analysisTimeOfDayRequested: false,
+    analysisTimeOfDayError: "",
+    analysisWitnessCountPromise: null,
+    analysisWitnessCountManifest: null,
+    analysisWitnessCountWorkerReady: false,
+    analysisWitnessCountRequested: false,
+    analysisWitnessCountError: "",
+    analysisColorPromise: null,
+    analysisColorManifest: null,
+    analysisColorWorkerReady: false,
+    analysisColorRequested: false,
+    analysisColorError: "",
+    analysisCoordinateEvidencePromise: null,
+    analysisCoordinateEvidenceManifest: null,
+    analysisCoordinateEvidenceWorkerReady: false,
+    analysisCoordinateEvidenceRequested: false,
+    analysisCoordinateEvidenceError: "",
+    analysisCoordinateEvidenceLoadPending: false,
+    analysisTimeEvidenceLoadPending: false,
+    analysisRelationshipPromise: null,
+    analysisRelationshipWorkerReady: false,
+    analysisRelationshipRequested: false,
+    analysisContextSpatialPromise: null,
+    analysisContextSpatialWorkerReady: false,
+    analysisContextSpatialRequested: false,
+    analysisContextEvidencePromise: null,
+    analysisContextEvidenceWorkerReady: false,
+    analysisContextEvidenceRequested: false,
+    analysisContextEvidenceError: "",
+    analysisContextEvidenceRenderPending: false,
+    analysisCancellationGeneration: 0,
+    analysisMapControlState: new Map(),
+    analysisRestoreFocusElement: null,
+    analysisPerformanceSamples: [],
+    analysisComputationPhase: "idle",
+    analysisMapRenderPending: false,
+    analysisContextEnabledState: { crops: null, animals: null },
+    analysisContextMutationPromises: { crops: null, animals: null },
+    analysisDatePopoverOpen: false,
+    analysisDateMediaQuery: null,
     catalogSummaryMemory: {
       prunedEvents: 0,
       fallbackPlaybackKeysReleased: 0,
       compactPlaybackKeys: 0,
       unusedPropertiesReleased: 0,
       summaryShardCachesReleased: 0,
-      pooledStringFields: 13,
+      pooledStringFields: 15,
       uniqueStringValues: 0,
       stringPoolReleased: false,
     },
@@ -1073,6 +1181,8 @@
     neighborhoodSeedCacheValue: null,
     neighborhoodTraceLayer: null,
     neighborhoodInspectorTraceId: null,
+    areaEventRepresentation: "hidden",
+    areaEventLayerTransition: null,
     neighborhoodBuildMetrics: null,
     neighborhoodTraversalMetrics: null,
     neighborhoodPerformanceSamples: [],
@@ -1101,6 +1211,8 @@
     isMobileLandscapeLayout: false,
     timelineDockMounted: false,
     renderedWrapWorldIndex: null,
+    mapEventLayerLoadedBounds: null,
+    mapEventLayerLoadedRepresentation: "",
     catalogExactDayAscending: true,
     lastCatalogExactDayEvent: null,
     packedPoints: {
@@ -1126,6 +1238,18 @@
     packedStartupPreviewCount: 0,
     packedStartupPreviewSourceRowCount: 0,
     packedMapLayerCache: new Map(),
+    locationLabelOverlay: {
+      enabled: false,
+      status: PACKED_POINTS_STATUS.NOT_LOADED,
+      reason: "Location label overlay has not been loaded.",
+      patchesByEventId: new Map(),
+      reviewedPatchesByEventId: new Map(),
+      entryCount: 0,
+      genericDisplayCount: 0,
+      reviewedCount: 0,
+      sourceInventorySha256: "",
+      url: LOCATION_LABEL_OVERLAY_DEFAULT_GZIP_URL,
+    },
     canonicalWebArtifacts: {
       enabled: false,
       status: PACKED_POINTS_STATUS.NOT_LOADED,
@@ -1187,6 +1311,8 @@
   };
 
   const state = {
+    famousCaseId: "",
+    famousCaseOrder: FAMOUS_CASES.normalizeCaseOrder(safeStorageGet("ufo-famous-case-order-v1")),
     filteredCatalog: [],
     filteredMappedCatalog: [],
     filteredPlaybackEventCount: 0,
@@ -1213,7 +1339,13 @@
     filterToken: 0,
     filterGeneration: 0,
     currentTileLayer: null,
+    currentTileLabelLayer: null,
+    currentTileLabelZoomSteps: null,
+    currentTileErrorCount: 0,
     currentTileProviderId: "configured",
+    activeView: "map",
+    analysisBaselineMode: "other_dates_balanced",
+    analysisCountryAreaFilter: "",
     lastKeyword: "",
     lastKeywordMatches: null,
     keywordActive: false,
@@ -1231,6 +1363,8 @@
     themeMode: "dark",
     resolvedTheme: "dark",
     fontScaleMode: "default",
+    mapLabelScaleMode: "default",
+    craftTypeColorOverrides: {},
     appearancePanelCollapsed: true,
     userGuideCollapsed: true,
     colorMode: DEFAULT_COLOR_MODE,
@@ -1263,6 +1397,7 @@
     headerStatsCollapsed: true,
     mapLegendCollapsed: false,
     mapLegendEventSelection: defaultMapLegendEventSelectionState(),
+    mapLegendCraftSolo: null,
     primaryFiltersCollapsed: false,
     mapControlClusterHeight: null,
     mapControlClusterPosition: {
@@ -1375,11 +1510,11 @@
 
   function defaultRegionSelectionState() {
     return {
-      panelOpen: false,
       drawingActive: false,
       modeActive: false,
       tool: "rectangle",
       shapes: [],
+      pointOnly: false,
       selectTraces: true,
       selectEvents: false,
       showSelectedTraces: true,
@@ -1462,6 +1597,7 @@
       overlayVisibility: defaultOverlayVisibilityState(),
       claimedUfoBaseVisibility: defaultClaimedUfoBaseVisibilityState(),
       mapLegendEventSelection: defaultMapLegendEventSelectionState(DEFAULT_COLOR_MODE),
+      mapLegendCraftSolo: null,
       regionSelection: defaultRegionSelectionState(),
       traceFacilityFilter: defaultTraceFacilityFilterState(),
       militaryBranchVisibility: defaultMilitaryBranchVisibilityState(),
@@ -1510,6 +1646,7 @@
     datasetSpan: document.querySelector("#dataset-span"),
     appearanceModeSelect: document.querySelector("#appearance-mode"),
     fontScaleModeSelect: document.querySelector("#font-scale-mode"),
+    mapLabelScaleModeSelect: document.querySelector("#map-label-scale-mode"),
     userGuide: document.querySelector("#user-guide"),
     userGuideBody: document.querySelector("#user-guide-body"),
     toggleUserGuideButton: document.querySelector("#toggle-user-guide"),
@@ -1518,6 +1655,8 @@
     resultsAreaFilterIndicator: document.querySelector("#results-area-filter-indicator"),
     resultsAreaFilterText: document.querySelector("#results-area-filter-text"),
     resultsAreaFilterClearButton: document.querySelector("#results-area-filter-clear"),
+    resultsCaseContext: document.querySelector("#results-case-context"),
+    resultsFamousCaseSummary: document.querySelector("#results-famous-case-summary"),
     resultList: document.querySelector("#result-list"),
     resultsLimitSelect: document.querySelector("#results-limit"),
     mapTimelineDock: document.querySelector("#map-timeline-dock"),
@@ -1533,9 +1672,10 @@
     mapHeightResizeLabel: document.querySelector("#map-height-resize-label"),
     areaSelectionDrawSurface: document.querySelector("#area-selection-draw-surface"),
     areaSelectionShell: document.querySelector("#area-selection-shell"),
-    toggleAreaSelectionButton: document.querySelector("#toggle-area-selection"),
     areaSelectionPanel: document.querySelector("#area-selection-panel"),
     areaSelectionSummary: document.querySelector("#area-selection-summary"),
+    areaDirectionSummary: document.querySelector("#area-direction-summary"),
+    areaDirectionSummaryBody: document.querySelector("#area-direction-summary-body"),
     areaSelectionEmptyState: document.querySelector("#area-selection-empty-state"),
     areaSelectionRectangleButton: document.querySelector("#area-selection-tool-rectangle"),
     areaSelectionCircleButton: document.querySelector("#area-selection-tool-circle"),
@@ -1561,15 +1701,33 @@
     endDateInput: document.querySelector("#end-date"),
     timelineStartDateInput: document.querySelector("#timeline-start-date"),
     timelineEndDateInput: document.querySelector("#timeline-end-date"),
+    analysisStartDateInput: document.querySelector("#analysis-start-date"),
+    analysisEndDateInput: document.querySelector("#analysis-end-date"),
     startDatePicker: document.querySelector("#start-date-picker"),
     endDatePicker: document.querySelector("#end-date-picker"),
     timelineStartDatePicker: document.querySelector("#timeline-start-date-picker"),
     timelineEndDatePicker: document.querySelector("#timeline-end-date-picker"),
+    analysisStartDatePicker: document.querySelector("#analysis-start-date-picker"),
+    analysisEndDatePicker: document.querySelector("#analysis-end-date-picker"),
     datePickerButtons: Array.from(document.querySelectorAll("[data-date-picker-target]")),
     filterDateFeedback: document.querySelector("#filter-date-feedback"),
     timelineDateFeedback: document.querySelector("#timeline-date-feedback"),
+    analysisDateFeedback: document.querySelector("#analysis-date-feedback"),
     filterAllTimeButton: document.querySelector("#filter-all-time"),
+    analysisAllTimeButton: document.querySelector("#analysis-all-time"),
+    analysisApplyDateButton: document.querySelector("#analysis-apply-date-range"),
+    analysisDateRangeChip: document.querySelector("#analysis-date-range-chip"),
+    analysisDateRangeChipLabel: document.querySelector("#analysis-date-range-chip-label"),
+    analysisDateRangeChipMode: document.querySelector("#analysis-date-range-chip-mode"),
+    analysisDatePopover: document.querySelector("#analysis-date-popover"),
+    analysisWorkspaceToolbar: document.querySelector("#analysis-workspace-toolbar"),
+    analysisModeLabel: document.querySelector("#analysis-mode-label"),
     filterFlapPresets: document.querySelector("#filter-flap-presets"),
+    filterFamousCases: document.querySelector("#filter-famous-cases"),
+    famousCaseOrderButtons: Array.from(document.querySelectorAll("[data-famous-case-order]")),
+    famousCaseSearch: document.querySelector("#famous-case-search"),
+    famousCaseSearchStatus: document.querySelector("#famous-case-search-status"),
+    famousCaseDetails: document.querySelector("#famous-case-details"),
     sourceFilter: document.querySelector("#source-filter"),
     sourceFilterPane: document.querySelector("#source-filter-pane"),
     sourceFilterState: document.querySelector("#source-filter-state"),
@@ -1620,6 +1778,7 @@
     traceModeSelect: document.querySelector("#trace-mode"),
     tracePersistenceSelect: document.querySelector("#trace-persistence"),
     tracePersistenceField: document.querySelector("#trace-persistence-field"),
+    traceStatusSummary: document.querySelector("#trace-status-summary"),
     traceStatus: document.querySelector("#trace-status"),
     clearTracesButton: document.querySelector("#clear-traces"),
     traceControlsPanel: document.querySelector("#trace-controls-panel"),
@@ -1634,11 +1793,12 @@
     traceFacilityEvidenceMode: document.querySelector("#trace-facility-evidence-mode"),
     traceFacilityEvidenceHelp: document.querySelector("#trace-facility-evidence-help"),
     traceFacilityLinkedOnly: document.querySelector("#trace-facility-linked-only"),
-    traceFacilityRadiusPresetButtons: Array.from(document.querySelectorAll("[data-trace-facility-radius-preset]")),
     traceFacilityClassInputs: Array.from(document.querySelectorAll("[data-trace-facility-class]")),
     traceFacilityClassActionButtons: Array.from(document.querySelectorAll("[data-trace-facility-class-action]")),
     traceFacilitySourceInputs: Array.from(document.querySelectorAll("[data-trace-facility-source]")),
     traceFacilitySourceActionButtons: Array.from(document.querySelectorAll("[data-trace-facility-source-action]")),
+    traceFacilityFilter: document.querySelector("#trace-facility-filter"),
+    traceFacilityAdvanced: document.querySelector(".trace-facility-advanced"),
     playbackPrevButton: document.querySelector("#playback-prev"),
     playPauseButton: document.querySelector("#play-pause"),
     playbackNextButton: document.querySelector("#playback-next"),
@@ -1656,6 +1816,10 @@
     clusterQuickMilitaryButton: document.querySelector("#cluster-quick-military"),
     clusterQuickResearchSitesButton: document.querySelector("#cluster-quick-research-sites"),
     clusterQuickTraceButton: document.querySelector("#cluster-quick-trace"),
+    clusterQuickCropCirclesButton: document.querySelector("#cluster-quick-crop-circles"),
+    clusterQuickAnimalMutilationsButton: document.querySelector("#cluster-quick-animal-mutilations"),
+    analysisCropCirclesButton: document.querySelector("#analysis-toggle-crop-circles"),
+    analysisAnimalReportsButton: document.querySelector("#analysis-toggle-animal-reports"),
     clusterQuickFacilityProximityButton: document.querySelector("#cluster-quick-facility-proximity"),
     clusterQuickFacilityValue: document.querySelector("#cluster-quick-facility-value"),
     mapQuickControlStatus: document.querySelector("#map-quick-control-status"),
@@ -1672,6 +1836,8 @@
     resultsSortSelect: document.querySelector("#results-sort"),
     traceBucketButtons: Array.from(document.querySelectorAll("[data-trace-bucket]")),
     mapSettingsSection: document.querySelector("#map-settings-section"),
+    mapSettingsOverlayPanel: document.querySelector("#map-settings-section > .overlay-panel:not(.overlay-panel-display)"),
+    mapSettingsDisplayPanel: document.querySelector("#map-settings-section > .overlay-panel-display"),
     overlayAirportsToggle: document.querySelector("#overlay-airports"),
     overlayHighwaysToggle: document.querySelector("#overlay-highways"),
     overlayMilitaryToggle: document.querySelector("#overlay-military"),
@@ -1679,6 +1845,8 @@
     overlayClaimedUfoBasesSitesToggle: document.querySelector("#overlay-claimed-ufo-bases-sites"),
     overlayClaimedUfoBasesTracesRow: document.querySelector("#claimed-ufo-bases-traces-row"),
     overlayClaimedUfoBasesTracesToggle: document.querySelector("#overlay-claimed-ufo-bases-traces"),
+    overlayCropCirclesToggle: document.querySelector("#overlay-crop-circles"),
+    overlayAnimalMutilationsToggle: document.querySelector("#overlay-animal-mutilations"),
     militaryBranchPanel: document.querySelector("#military-branch-panel"),
     militaryBranchStatus: document.querySelector("#military-branch-status"),
     mapControlCluster: document.querySelector("#map-control-cluster"),
@@ -1688,9 +1856,18 @@
     mapControlClusterResizeHandle: document.querySelector("#map-control-cluster-resize-handle"),
     toggleMapControlClusterButton: document.querySelector("#toggle-map-control-cluster"),
     sideColumnResizeRail: document.querySelector("#side-column-resize-rail"),
-    mapControlPlaybackSlot: document.querySelector("#map-control-playback-slot"),
-    mapControlTraceSlot: document.querySelector("#map-control-trace-slot"),
-    mapControlOverlaySlot: document.querySelector("#map-control-overlay-slot"),
+    mapControlViewSlot: document.querySelector("#map-control-view-slot"),
+    mapControlSightingsSlot: document.querySelector("#map-control-sightings-slot"),
+    mapControlOverlaysSlot: document.querySelector("#map-control-overlays-slot"),
+    mapControlTracesSlot: document.querySelector("#map-control-traces-slot"),
+    mapControlIntersectionsSlot: document.querySelector("#map-control-intersections-slot"),
+    traceIntersectionControls: document.querySelector("#trace-intersection-controls"),
+    mapControlFacilitySlot: document.querySelector("#map-control-facility-slot"),
+    mapControlAreaSlot: document.querySelector("#map-control-area-slot"),
+    mapControlAdvancedSlot: document.querySelector("#map-control-advanced-slot"),
+    overlayResearchSitesCount: document.querySelector("#overlay-research-sites-count"),
+    overlayCropCirclesCount: document.querySelector("#overlay-crop-circles-count"),
+    overlayAnimalMutilationsCount: document.querySelector("#overlay-animal-mutilations-count"),
     mapPlaybackDateBadge: document.querySelector("#map-playback-date-badge"),
     mapLegendPanel: document.querySelector("#map-legend-panel"),
     mapLegendBody: document.querySelector("#map-legend-body"),
@@ -1756,6 +1933,24 @@
     }
   }
 
+  function safeSessionStorageGet(key) {
+    try {
+      return window.sessionStorage ? window.sessionStorage.getItem(key) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function safeSessionStorageSet(key, value) {
+    try {
+      if (window.sessionStorage) {
+        window.sessionStorage.setItem(key, value);
+      }
+    } catch (error) {
+      // Session persistence is optional in restricted static-hosting contexts.
+    }
+  }
+
   function normalizeTraceWidthScale(value) {
     const numeric = Number(value);
     return clamp(
@@ -1798,11 +1993,15 @@
     const playbackLineCount = runtime.playbackTrailLines.reduce(function (total, entry) {
       return total + ((entry && entry.lines && entry.lines.length) || 0);
     }, 0);
+    const neighborhoodSegmentCount = regionSelectionAffectsRendering()
+      ? ((currentRegionSelectionResult().visibleTraceSegments || []).length)
+      : 0;
     const renderedSegments = Math.max(
       0,
       Number(metrics.renderedSegments) || 0,
       Number(runtime.staticTraceRenderedSegments) || 0,
-      playbackLineCount
+      playbackLineCount,
+      neighborhoodSegmentCount
     );
     const sourceSegments = Math.max(
       renderedSegments,
@@ -1959,6 +2158,31 @@
     return Math.max(0, numeric * traceBoldnessScale());
   }
 
+  function refreshScalableLeafletTraceLine(line) {
+    const baseStyle = line && line._ufoTraceBaseStyle ? line._ufoTraceBaseStyle : {};
+    const rawWeight = Number.isFinite(baseStyle.rawWeight) ? baseStyle.rawWeight : baseStyle.weight;
+    const rawOpacity = Number.isFinite(baseStyle.rawOpacity) ? baseStyle.rawOpacity : baseStyle.opacity;
+    if (!line || typeof line.setStyle !== "function" || !Number.isFinite(rawWeight)) return false;
+    const scaledWeight = scaledTraceStrokeWeight(rawWeight);
+    const nextStyle = { weight: scaledWeight };
+    if (Number.isFinite(rawOpacity)) {
+      nextStyle.opacity = scaledTraceOpacity(rawOpacity);
+    }
+    line.setStyle(nextStyle);
+    line._ufoTraceBaseStyle.weight = scaledWeight;
+    if (Number.isFinite(rawOpacity)) {
+      line._ufoTraceBaseStyle.opacity = nextStyle.opacity;
+    }
+    return true;
+  }
+
+  function refreshNeighborhoodTraceRendering() {
+    if (!runtime.neighborhoodTraceLayer || typeof runtime.neighborhoodTraceLayer.eachLayer !== "function") return;
+    runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
+      refreshScalableLeafletTraceLine(layer);
+    });
+  }
+
   function refreshTraceWidthRendering() {
     if (runtime.staticTraceLayer && typeof runtime.staticTraceLayer._redraw === "function") {
       runtime.staticTraceLayer._redraw();
@@ -1966,25 +2190,15 @@
     if (runtime.claimedUfoBaseTraceLayer && typeof runtime.claimedUfoBaseTraceLayer._redraw === "function") {
       runtime.claimedUfoBaseTraceLayer._redraw();
     }
+    if (runtime.playbackTrailCanvasLayer && typeof runtime.playbackTrailCanvasLayer._redraw === "function") {
+      runtime.playbackTrailCanvasLayer._redraw();
+    }
     runtime.playbackTrailLines.forEach(function (entry) {
       (entry.lines || []).forEach(function (line) {
-        const baseStyle = line && line._ufoTraceBaseStyle ? line._ufoTraceBaseStyle : {};
-        const rawWeight = Number.isFinite(baseStyle.rawWeight) ? baseStyle.rawWeight : baseStyle.weight;
-        const rawOpacity = Number.isFinite(baseStyle.rawOpacity) ? baseStyle.rawOpacity : baseStyle.opacity;
-        if (line && typeof line.setStyle === "function" && Number.isFinite(rawWeight)) {
-          const scaledWeight = scaledTraceStrokeWeight(rawWeight);
-          const nextStyle = { weight: scaledWeight };
-          if (Number.isFinite(rawOpacity)) {
-            nextStyle.opacity = scaledTraceOpacity(rawOpacity);
-          }
-          line.setStyle(nextStyle);
-          line._ufoTraceBaseStyle.weight = scaledWeight;
-          if (Number.isFinite(rawOpacity)) {
-            line._ufoTraceBaseStyle.opacity = nextStyle.opacity;
-          }
-        }
+        refreshScalableLeafletTraceLine(line);
       });
     });
+    refreshNeighborhoodTraceRendering();
     renderTrailLegend();
     renderMapLegend();
     renderTraceStatus();
@@ -2420,6 +2634,17 @@
       fillOpacity: isPreview ? Math.min(0.18, REGION_SELECTION_SHAPE_FILL_OPACITY + 0.04) : REGION_SELECTION_SHAPE_FILL_OPACITY,
       dashArray: isPreview ? "7 5" : "9 6",
     };
+    const casePulse = runtime.famousCaseCirclePulse;
+    if (!isPreview && shape.type === "circle" && casePulse && casePulse.shapeId === shape.id) {
+      if (casePulse.highlighted) {
+        style.weight += 2;
+        style.opacity = 1;
+        style.fillOpacity = Math.max(style.fillOpacity, 0.3);
+      } else {
+        style.opacity = 0.25;
+        style.fillOpacity = 0.02;
+      }
+    }
     if (shape.type === "circle") {
       return L.circle([shape.center.lat, shape.center.lng], Object.assign({}, style, {
         radius: shape.radiusMeters,
@@ -2463,6 +2688,37 @@
     });
   }
 
+  function clearFamousCaseCirclePulse() {
+    const pulse = runtime.famousCaseCirclePulse;
+    if (!pulse) return;
+    window.clearTimeout(pulse.timerId);
+    runtime.famousCaseCirclePulse = null;
+    renderRegionSelectionShapes();
+  }
+
+  function pulseFamousCaseCircle() {
+    clearFamousCaseCirclePulse();
+    const shapeId = runtime.famousCaseShapeId;
+    if (!shapeId) return;
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pulse = { shapeId: shapeId, step: 0, highlighted: true, timerId: null };
+    runtime.famousCaseCirclePulse = pulse;
+    renderRegionSelectionShapes();
+    function advance() {
+      if (runtime.famousCaseCirclePulse !== pulse) return;
+      pulse.step += 1;
+      const stillPresent = state.regionSelection.shapes.some(function (shape) { return shape.id === shapeId; });
+      if (reducedMotion || !stillPresent || pulse.step >= 4) {
+        clearFamousCaseCirclePulse();
+        return;
+      }
+      pulse.highlighted = pulse.step % 2 === 0;
+      renderRegionSelectionShapes();
+      pulse.timerId = window.setTimeout(advance, 450);
+    }
+    pulse.timerId = window.setTimeout(advance, reducedMotion ? 900 : 450);
+  }
+
   function syncRegionSelectionModeCompatibilityFlag() {
     if (!state.regionSelection) return;
     state.regionSelection.modeActive = Boolean(state.regionSelection.drawingActive);
@@ -2483,6 +2739,11 @@
   }
 
   function regionSelectionSummaryText(result) {
+    const countryLabel = analysisCountryAreaFilterLabel();
+    if (countryLabel) {
+      const mappedCount = Array.isArray(state.filteredMappedCatalog) ? state.filteredMappedCatalog.length : 0;
+      return "Country: " + countryLabel + " · " + formatNumber(mappedCount) + " mapped report points · point-only";
+    }
     if (!result || !result.active) {
       return regionSelectionDrawingActive() ? "Drawing active" : "No regions";
     }
@@ -2490,11 +2751,14 @@
     const visibleSightings = Array.isArray(result.visibleCatalog)
       ? currentVisibleDisplayCatalog(result.visibleCatalog).length
       : result.visibleEventCount;
-    const depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
+    if (state.regionSelection.pointOnly) {
+      return regionLabel + " · " + visibleSightings + " mapped report points · point-only";
+    }
+    const depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
     const direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
     return regionLabel + " - " + visibleSightings + " sightings - " + result.visibleTraceCount +
-      " traces - " + depth + " hop" + (depth === 1 ? "" : "s") + " " + direction;
-    return regionLabel + " · " + result.visibleEventCount + " sightings · " + result.visibleTraceCount + " traces";
+      " traces - " + depth + " hop" + (depth === 1 ? "" : "s") +
+      (depth === 0 ? " direct" : " " + direction);
   }
 
   function syncRegionSelectionMapInteraction() {
@@ -2514,26 +2778,14 @@
 
   function renderRegionSelectionUi() {
     const hasShapes = regionSelectionHasActiveShapes();
-    const panelOpen = regionSelectionPanelOpen();
+    const countryLabel = analysisCountryAreaFilterLabel();
+    const hasCountryArea = Boolean(countryLabel);
+    const hasAreaFilter = hasShapes || hasCountryArea;
     const drawingActive = regionSelectionDrawingActive();
-    const result = hasShapes ? currentRegionSelectionResult() : emptyRegionSelectionResult();
-
-    if (els.toggleAreaSelectionButton) {
-      const buttonLabel = hasShapes
-        ? "Area Filter · " + result.shapeCount
-        : "Area Select";
-      els.toggleAreaSelectionButton.textContent = buttonLabel;
-      els.toggleAreaSelectionButton.classList.toggle("is-active", panelOpen || hasShapes);
-      els.toggleAreaSelectionButton.setAttribute("aria-pressed", panelOpen ? "true" : "false");
-      els.toggleAreaSelectionButton.title = panelOpen
-        ? "Close Area Filter"
-        : hasShapes
-          ? "Area filter active"
-          : "Area Select";
-    }
+    const result = hasAreaFilter ? currentRegionSelectionResult() : emptyRegionSelectionResult();
 
     if (els.areaSelectionPanel) {
-      els.areaSelectionPanel.hidden = !panelOpen;
+      els.areaSelectionPanel.hidden = false;
     }
     if (els.areaSelectionSummary) {
       els.areaSelectionSummary.textContent = regionSelectionSummaryText(result);
@@ -2553,21 +2805,21 @@
     }
 
     if (els.areaSelectionRectangleButton) {
-      const pressed = state.regionSelection.tool === "rectangle";
+      const pressed = drawingActive && state.regionSelection.tool === "rectangle";
       els.areaSelectionRectangleButton.setAttribute("aria-pressed", pressed ? "true" : "false");
     }
     if (els.areaSelectionCircleButton) {
-      const pressed = state.regionSelection.tool === "circle";
+      const pressed = drawingActive && state.regionSelection.tool === "circle";
       els.areaSelectionCircleButton.setAttribute("aria-pressed", pressed ? "true" : "false");
     }
     if (els.exitAreaSelectionButton) {
-      els.exitAreaSelectionButton.disabled = !panelOpen;
+      els.exitAreaSelectionButton.disabled = !drawingActive;
     }
     if (els.undoAreaSelectionButton) {
-      els.undoAreaSelectionButton.disabled = !hasShapes;
+      els.undoAreaSelectionButton.disabled = !hasAreaFilter;
     }
     if (els.clearAreaSelectionButton) {
-      els.clearAreaSelectionButton.disabled = !hasShapes;
+      els.clearAreaSelectionButton.disabled = !hasAreaFilter;
     }
 
     if (els.areaSelectionSelectTracesToggle) {
@@ -2593,25 +2845,36 @@
       els.areaSelectionShowTracesFromEventsToggle.disabled = !state.regionSelection.selectEvents;
     }
     if (els.areaSelectionDepthSelect) {
-      els.areaSelectionDepthSelect.value = String(TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth));
+      els.areaSelectionDepthSelect.value = String(TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth));
     }
     if (els.areaSelectionDirectionSelect) {
       els.areaSelectionDirectionSelect.value = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
+      const directionInactive = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth) === 0;
+      els.areaSelectionDirectionSelect.disabled = directionInactive;
+      els.areaSelectionDirectionSelect.setAttribute("aria-disabled", directionInactive ? "true" : "false");
+      els.areaSelectionDirectionSelect.title = directionInactive
+        ? "Direction is not applicable at 0 hops; your prior choice is retained."
+        : "Choose chronological expansion direction.";
     }
 
     if (els.resultsAreaFilterIndicator) {
-      els.resultsAreaFilterIndicator.hidden = !hasShapes;
+      els.resultsAreaFilterIndicator.hidden = !hasAreaFilter || famousCaseTraceSelectionActive();
     }
     if (els.resultsAreaFilterText) {
-      els.resultsAreaFilterText.textContent = hasShapes
+      els.resultsAreaFilterText.textContent = hasAreaFilter
         ? "Area filter active · " + regionSelectionSummaryText(result)
         : "Area filter active";
     }
     if (els.resultsAreaFilterClearButton) {
-      els.resultsAreaFilterClearButton.disabled = !hasShapes;
+      els.resultsAreaFilterClearButton.disabled = !hasAreaFilter;
     }
 
+    renderMapControlSectionSummaries();
+
     syncRegionSelectionMapInteraction();
+    renderAreaDirectionSummary(result, hasAreaFilter);
+    if (state.famousCaseId) renderFamousCasePicker();
+    renderFamousCaseResultsSummary(result);
   }
 
   function refreshRegionSelectionRenderState(options) {
@@ -2622,25 +2885,15 @@
     if (!config.skipResults) {
       renderResults({ preserveScroll: true });
     }
-    if (!config.skipMap) {
+    if (!config.skipMap && state.activeView !== "analysis") {
       renderMap();
+    } else if (!config.skipMap && state.activeView === "analysis") {
+      runtime.analysisMapRenderPending = true;
     }
     renderStats();
     renderPlaybackStatus();
-  }
-
-  function setRegionSelectionPanelOpen(open, options) {
-    const config = options || {};
-    const nextOpen = Boolean(open);
-    const currentOpen = regionSelectionPanelOpen();
-    if (currentOpen !== nextOpen || typeof state.regionSelection.panelOpen !== "boolean") {
-      state.regionSelection.panelOpen = nextOpen;
-    } else if (!config.skipRender) {
-      renderRegionSelectionUi();
-      return;
-    }
-    if (!config.skipRender) {
-      renderRegionSelectionUi();
+    if (!config.skipAnalysis) {
+      scheduleAnalysisCompute("area filter changed");
     }
   }
 
@@ -2663,6 +2916,8 @@
     }
     if (!nextActive) {
       clearRegionSelectionDrawRuntime();
+    } else {
+      openMapControlSection("area");
     }
     if (!config.skipRender) {
       renderRegionSelectionUi();
@@ -2690,8 +2945,17 @@
 
   function undoLastRegionSelectionShape() {
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(true, { skipRender: true });
     if (!regionSelectionHasActiveShapes()) {
+      if (state.analysisCountryAreaFilter) {
+        state.analysisCountryAreaFilter = "";
+        state.regionSelection.pointOnly = false;
+        refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+        window.clearTimeout(scheduleRefresh._timer);
+        refreshFilters().catch(function (error) {
+          console.error("[analysis country area clear]", error);
+        });
+        return;
+      }
       renderRegionSelectionUi();
       return;
     }
@@ -2700,13 +2964,23 @@
   }
 
   function clearAllRegionSelectionShapes() {
-    const hadShapes = regionSelectionHasActiveShapes();
+    const hadCountryArea = Boolean(state.analysisCountryAreaFilter);
+    const hadShapes = regionSelectionHasActiveShapes() || hadCountryArea;
     state.regionSelection.shapes = [];
+    state.analysisCountryAreaFilter = "";
+    state.regionSelection.pointOnly = false;
     clearChronologicalNeighborhoodInteractionLayer();
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(false, { skipRender: true });
     if (!hadShapes) {
       renderRegionSelectionUi();
+      return;
+    }
+    if (hadCountryArea) {
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      window.clearTimeout(scheduleRefresh._timer);
+      refreshFilters().catch(function (error) {
+        console.error("[analysis country area clear]", error);
+      });
       return;
     }
     refreshRegionSelectionRenderState();
@@ -2776,10 +3050,20 @@
       return true;
     }
 
+    const replacedCountryArea = Boolean(state.analysisCountryAreaFilter);
+    state.analysisCountryAreaFilter = "";
     state.regionSelection.shapes = state.regionSelection.shapes.concat([nextShape]);
+    state.regionSelection.pointOnly = false;
     setRegionSelectionDrawingActive(false, { skipRender: true });
-    setRegionSelectionPanelOpen(false, { skipRender: true });
-    refreshRegionSelectionRenderState();
+    if (replacedCountryArea) {
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      window.clearTimeout(scheduleRefresh._timer);
+      refreshFilters().catch(function (error) {
+        console.error("[analysis country area replace]", error);
+      });
+    } else {
+      refreshRegionSelectionRenderState();
+    }
     event.preventDefault();
     return true;
   }
@@ -2845,6 +3129,56 @@
     if (!(options && options.skipPersist)) {
       safeStorageSet(FONT_SCALE_STORAGE_KEY, normalizedMode);
     }
+  }
+
+  function applyMapLabelScaleMode(mode, options) {
+    const normalizedMode = Object.prototype.hasOwnProperty.call(MAP_LABEL_TILE_ZOOM_STEPS, mode)
+      ? mode
+      : "default";
+    state.mapLabelScaleMode = normalizedMode;
+    document.documentElement.setAttribute("data-map-label-scale-mode", normalizedMode);
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.value = normalizedMode;
+    }
+    if (runtime.map) {
+      state.currentTileErrorCount = 0;
+      refreshHostedBasemapLabelLayer();
+      scheduleMapInvalidate();
+    }
+    if (!(options && options.skipPersist)) {
+      safeStorageSet(MAP_LABEL_SCALE_STORAGE_KEY, normalizedMode);
+    }
+  }
+
+  function readCraftTypeColorOverrides() {
+    const stored = safeStorageGet(CRAFT_COLOR_OVERRIDES_STORAGE_KEY);
+    if (!stored) return {};
+    try {
+      return LEGEND_CONTROLS.normalizeCraftColorOverrides(
+        JSON.parse(stored),
+        DEFAULT_CRAFT_TYPE_COLORS
+      );
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function syncCraftTypeColorPalette() {
+    Object.keys(CRAFT_TYPE_COLORS).forEach(function (key) {
+      delete CRAFT_TYPE_COLORS[key];
+    });
+    Object.assign(CRAFT_TYPE_COLORS, DEFAULT_CRAFT_TYPE_COLORS, state.craftTypeColorOverrides);
+  }
+
+  function craftTypeColorsAreCustomized() {
+    return Object.keys(state.craftTypeColorOverrides || {}).length > 0;
+  }
+
+  function persistCraftTypeColorOverrides() {
+    safeStorageSet(
+      CRAFT_COLOR_OVERRIDES_STORAGE_KEY,
+      JSON.stringify(state.craftTypeColorOverrides || {})
+    );
   }
 
   function stepFontScale(direction) {
@@ -3025,6 +3359,60 @@
     return Array.from(document.querySelectorAll(".map-control-slot"));
   }
 
+  function defaultMapControlSectionOpenState() {
+    return {
+      view: true,
+      sightings: window.innerWidth >= 1180,
+      overlays: true,
+      traces: state.traceMode !== "off",
+      intersections: false,
+      facility: Boolean(state.traceFacilityFilter && state.traceFacilityFilter.enabled),
+      area: Boolean(state.regionSelection && state.regionSelection.drawingActive),
+      advanced: false,
+    };
+  }
+
+  function readMapControlSectionOpenState() {
+    const defaults = defaultMapControlSectionOpenState();
+    const rawValue = safeSessionStorageGet(MAP_CONTROL_SECTION_SESSION_KEY);
+    if (!rawValue) return defaults;
+    try {
+      const parsed = JSON.parse(rawValue);
+      if (!parsed || typeof parsed !== "object") return defaults;
+      Object.keys(defaults).forEach(function (key) {
+        if (typeof parsed[key] === "boolean") defaults[key] = parsed[key];
+      });
+    } catch (error) {
+      return defaults;
+    }
+    return defaults;
+  }
+
+  function persistMapControlSectionOpenState() {
+    const snapshot = {};
+    mapControlSectionElements().forEach(function (section) {
+      const key = String(section.getAttribute("data-map-control-section") || "").trim();
+      if (key) snapshot[key] = Boolean(section.open);
+    });
+    safeSessionStorageSet(MAP_CONTROL_SECTION_SESSION_KEY, JSON.stringify(snapshot));
+  }
+
+  function applyMapControlSectionOpenState(openState) {
+    const stateSnapshot = openState && typeof openState === "object"
+      ? openState
+      : readMapControlSectionOpenState();
+    mapControlSectionElements().forEach(function (section) {
+      const key = String(section.getAttribute("data-map-control-section") || "").trim();
+      section.open = Boolean(stateSnapshot[key]);
+    });
+  }
+
+  function setMapControlSummaryState(sectionKey, text) {
+    const target = document.querySelector("#map-control-" + sectionKey + "-summary-state");
+    if (!target) return;
+    target.textContent = String(text || "").trim();
+  }
+
   function mapControlClusterVisibleBodyChildren() {
     if (!els.mapControlClusterBody) return [];
     return Array.from(els.mapControlClusterBody.children).filter(function (child) {
@@ -3106,9 +3494,8 @@
   function openMapControlSection(sectionKey) {
     const targetSection = mapControlSectionElement(sectionKey);
     if (!targetSection) return null;
-    mapControlSectionElements().forEach(function (section) {
-      section.open = section === targetSection;
-    });
+    targetSection.open = true;
+    persistMapControlSectionOpenState();
     return targetSection;
   }
 
@@ -3122,13 +3509,13 @@
 
     if (guideKey === "map-modes") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("overlay");
+      openMapControlSection("view");
       return;
     }
 
     if (guideKey === "military-overlays") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("overlay");
+      openMapControlSection("overlays");
       return;
     }
 
@@ -3148,7 +3535,7 @@
 
     if (guideKey === "trace-analysis") {
       setMapControlClusterCollapsed(false, { skipPersist: true });
-      openMapControlSection("trace");
+      openMapControlSection("traces");
       return;
     }
 
@@ -3165,7 +3552,7 @@
       return els.mapModeSelect;
     }
     if (guideKey === "military-overlays") {
-      return els.overlayMilitaryToggle || mapControlSectionElement("overlay");
+      return els.overlayMilitaryToggle || mapControlSectionElement("overlays");
     }
     if (guideKey === "timeline") {
       return els.timelineCanvasWrap;
@@ -3177,7 +3564,7 @@
       return els.mapSurface || document.querySelector("#map");
     }
     if (guideKey === "trace-analysis") {
-      return els.traceControlsPanel || mapControlSectionElement("trace");
+      return els.traceControlsPanel || mapControlSectionElement("traces");
     }
     if (guideKey === "disclaimer") {
       return els.timelineCanvasWrap || els.timelinePanel;
@@ -3205,8 +3592,7 @@
   }
 
   function preferredMapControlScrollContainer(target) {
-    if (!target) return els.mapControlClusterBody;
-    return target.closest(".map-control-slot") || els.mapControlClusterBody;
+    return els.mapControlClusterBody;
   }
 
   function flashGuideTarget(target) {
@@ -3408,56 +3794,6 @@
     const bodyHeight = Math.max(96, clusterHeight - headerHeight - resizeHeight);
     els.mapControlClusterBody.style.height = bodyHeight + "px";
     els.mapControlClusterBody.style.maxHeight = bodyHeight + "px";
-
-    const sections = mapControlSectionElements();
-    const openSection = sections.find(function (section) {
-      return section.open;
-    });
-    if (!openSection) {
-      return;
-    }
-
-    const openSummary = openSection.querySelector("summary");
-    const openSlot = openSection.querySelector(".map-control-slot");
-    if (!openSummary || !openSlot) {
-      return;
-    }
-
-    const bodyStyle = window.getComputedStyle(els.mapControlClusterBody);
-    const bodyGap = parseFloat(bodyStyle.rowGap || bodyStyle.gap || "0") || 0;
-    const bodyPaddingTop = parseFloat(bodyStyle.paddingTop || "0") || 0;
-    const bodyPaddingBottom = parseFloat(bodyStyle.paddingBottom || "0") || 0;
-    const bodyContentHeight = Math.max(
-      96,
-      els.mapControlClusterBody.clientHeight - bodyPaddingTop - bodyPaddingBottom
-    );
-    const visibleChildren = mapControlClusterVisibleBodyChildren();
-    const siblingHeight = visibleChildren.reduce(function (total, child) {
-      if (child === openSection) return total;
-      return total + Math.round(child.getBoundingClientRect().height || child.clientHeight || 0);
-    }, 0);
-    const gapTotal = Math.max(0, visibleChildren.length - 1) * bodyGap;
-
-    const closedSections = sections.filter(function (section) {
-      return section !== openSection;
-    });
-    closedSections.forEach(function (section) {
-      section.style.flex = "0 0 auto";
-    });
-    openSection.style.flex = "0 0 auto";
-
-    const openSummaryHeight = Math.round(openSummary.getBoundingClientRect().height);
-    const openSectionHeight = Math.max(
-      openSummaryHeight + 112,
-      bodyContentHeight - siblingHeight - gapTotal
-    );
-    const slotHeight = Math.max(112, openSectionHeight - openSummaryHeight - 2);
-
-    openSection.style.height = openSectionHeight + "px";
-    openSection.style.maxHeight = openSectionHeight + "px";
-    openSlot.style.flex = "1 1 auto";
-    openSlot.style.height = slotHeight + "px";
-    openSlot.style.maxHeight = slotHeight + "px";
   }
 
   function applyMapControlClusterState(options) {
@@ -3577,16 +3913,45 @@
   function mountMapControlCluster() {
     if (runtime.mapControlClusterMounted) return;
 
-    if (els.mapControlTraceSlot) {
-      if (els.traceControlsPanel) {
-        els.mapControlTraceSlot.appendChild(els.traceControlsPanel);
+    if (els.mapControlViewSlot) {
+      if (els.mapSettingsDisplayPanel) {
+        els.mapControlViewSlot.appendChild(els.mapSettingsDisplayPanel);
+      }
+      if (els.fitResultsButton) {
+        els.mapControlViewSlot.appendChild(els.fitResultsButton);
       }
     }
 
-    if (els.mapControlOverlaySlot && els.mapSettingsSection) {
-      els.mapControlOverlaySlot.appendChild(els.mapSettingsSection);
+    if (els.mapControlSightingsSlot && els.legendPanel) {
+      els.mapControlSightingsSlot.appendChild(els.legendPanel);
     }
 
+    if (els.mapControlOverlaysSlot && els.mapSettingsOverlayPanel) {
+      els.mapControlOverlaysSlot.appendChild(els.mapSettingsOverlayPanel);
+    }
+
+    if (els.mapControlTracesSlot && els.traceControlsPanel) {
+      els.mapControlTracesSlot.appendChild(els.traceControlsPanel);
+    }
+
+    if (els.mapControlFacilitySlot && els.traceFacilityFilter) {
+      els.mapControlFacilitySlot.appendChild(els.traceFacilityFilter);
+    }
+
+    if (els.mapControlAdvancedSlot && els.traceFacilityAdvanced) {
+      els.mapControlAdvancedSlot.appendChild(els.traceFacilityAdvanced);
+    }
+
+    if (els.mapControlAreaSlot && els.areaSelectionShell) {
+      els.mapControlAreaSlot.appendChild(els.areaSelectionShell);
+    }
+
+    if (els.mapSettingsSection) {
+      els.mapSettingsSection.hidden = true;
+      els.mapSettingsSection.setAttribute("aria-hidden", "true");
+    }
+
+    applyMapControlSectionOpenState();
     runtime.mapControlClusterMounted = true;
   }
 
@@ -4165,7 +4530,389 @@
     renderTimelinePresetSelect(els.timelineWindowPresets, TIMELINE_WINDOW_PRESET_BUTTONS, "Custom window");
     renderTimelinePresetSelect(els.timelineFlapPresets, TIMELINE_FLAP_PRESET_BUTTONS, "Choose flap");
     renderTimelinePresetSelect(els.filterFlapPresets, TIMELINE_FLAP_PRESET_BUTTONS, "Famous Flaps");
+    renderFamousCasePicker();
     updateTimelinePresetButtonStates();
+  }
+
+  function renderFamousCasePicker() {
+    if (!els.filterFamousCases) return;
+    const query = els.famousCaseSearch ? els.famousCaseSearch.value : "";
+    const order = FAMOUS_CASES.normalizeCaseOrder(state.famousCaseOrder);
+    const matches = FAMOUS_CASES.filterCases(query, order);
+    const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+    const choices = matches.slice();
+    if (activeCase && !choices.some(function (item) { return item.id === activeCase.id; })) {
+      choices.unshift(activeCase);
+    }
+    const orderedChoices = FAMOUS_CASES.sortCases(choices, order);
+    (els.famousCaseOrderButtons || []).forEach(function (button) {
+      button.setAttribute("aria-pressed", button.dataset.famousCaseOrder === order ? "true" : "false");
+    });
+    els.filterFamousCases.innerHTML = '<option value="">' +
+      (activeCase ? "Clear case preset" : "Choose a famous case") + "</option>" +
+      orderedChoices.map(function (item) {
+        const unmatched = item.catalogReview && item.catalogReview.status === "no_confirmed_match";
+        return '<option value="' + escapeHtml(item.id) + '" title="' + escapeHtml(item.location) + '">' +
+          escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + (unmatched ? " · no confirmed record" : "") + "</option>";
+      }).join("") + (choices.length ? "" : '<option disabled>No cases match this search</option>');
+    els.filterFamousCases.value = state.famousCaseId || "";
+    if (els.famousCaseSearchStatus) {
+      els.famousCaseSearchStatus.textContent = query.trim()
+        ? formatNumber(matches.length) + " of " + formatNumber(FAMOUS_CASES.CASES.length) + " cases match"
+        : formatNumber(FAMOUS_CASES.CASES.length) + " historical presets · search names, places, or years";
+    }
+    if (!els.famousCaseDetails) return;
+    els.famousCaseDetails.hidden = !activeCase;
+    if (!activeCase) {
+      els.famousCaseDetails.innerHTML = "";
+      return;
+    }
+    els.famousCaseDetails.innerHTML = '<div class="famous-case-card-heading"><strong>' +
+      escapeHtml(activeCase.name) + '</strong><button type="button" class="secondary-button famous-case-clear" data-clear-famous-case aria-label="Clear famous case preset">Clear</button></div>';
+  }
+
+  function famousCaseCatalogEntries(activeCase) {
+    return ((activeCase && activeCase.catalogRefs) || []).map(function (reference) {
+      const event = getCatalogEventById(reference.eventId);
+      // Fail closed when the referenced record is absent or a new catalog has
+      // changed its identity fields. Never create an event from a preset.
+      const available = Boolean(event && event.source === reference.source &&
+        event.sort_date_iso === reference.dateIso);
+      const unresolved = available && reference.mappingStatus === "needs_review" &&
+        event.lat === reference.reviewedLat && event.lon === reference.reviewedLon;
+      const reviewedPosition = available && event.lat === reference.reviewedLat && event.lon === reference.reviewedLon;
+      const mappingNote = !available ? "Referenced entry is unavailable in the loaded catalog."
+        : !event.has_coordinates ? "No map coordinates; this entry cannot seed traces."
+        : (unresolved || reviewedPosition) && reference.mappingNote ? reference.mappingNote : "Mapped catalog entry.";
+      return { reference: reference, event: available ? event : null, mappingNote: mappingNote,
+        mappingIssue: !available || !event.has_coordinates || unresolved,
+        dateConflict: reference.dateIso < activeCase.startIso || reference.dateIso > activeCase.endIso };
+    });
+  }
+
+  function renderFamousCaseCatalogEntries(activeCase) {
+    const entries = famousCaseCatalogEntries(activeCase);
+    if (!entries.length) return '<p class="results-famous-case-meta results-case-catalog-status">' +
+      (activeCase.catalogReview ? 'Database review: no confirmed case record.' : 'Historical preset · database identity not yet checked') + '</p>';
+    const issueCount = entries.filter(function (entry) { return entry.mappingIssue; }).length;
+    const dateConflictCount = entries.filter(function (entry) { return entry.dateConflict; }).length;
+    return '<details data-case-catalog-entries><summary>' + formatNumber(entries.length) +
+      ' matched database record' + (entries.length === 1 ? '' : 's') +
+      (issueCount ? ' · mapping issues' : '') + '</summary><div class="results-case-catalog-entries">' +
+      '<p class="results-famous-case-meta">Source records about this case, not separate incidents. Inspectable independently of map filters.</p>' +
+      (dateConflictCount ? '<p class="results-famous-case-meta">Some source dates differ from the preset. Stored dates are shown below.</p>' : '') +
+      entries.map(function (entry) {
+        const recordType = entry.event ? entry.event.type : '';
+        const roleLabels = { original_case_image_reference: 'Case image reference',
+          original_case_radar_prelude_account: 'Radar prelude account',
+          original_case_data_retrieval_account: 'Case data retrieval account' };
+        const roleLabel = roleLabels[entry.reference.recordRole];
+        return '<article class="results-case-catalog-entry"><strong>' + escapeHtml(entry.reference.sourceRef) + '</strong>' +
+          '<p class="results-case-catalog-record-meta">' + escapeHtml(entry.reference.dateIso) +
+          (entry.event && entry.event.date_precision && entry.event.date_precision !== 'exact_day'
+            ? ' · ' + escapeHtml(entry.event.date_precision.replace(/_/g, ' ')) : '') +
+          (recordType ? ' · ' + escapeHtml(recordType) : '') + (roleLabel ? ' · ' + roleLabel : '') +
+          (entry.dateConflict ? ' · outside reported dates' : '') + '</p>' +
+          (entry.reference.dateWindowIssue ? '<p>' + escapeHtml(entry.reference.dateWindowIssue) + '</p>' : '') +
+          '<p>' + escapeHtml(entry.mappingNote) + '</p><button type="button" class="secondary-button" data-inspect-famous-case-record="' +
+          escapeHtml(entry.reference.eventId) + '"' + (entry.event ? '' : ' disabled') + '>Full Details</button></article>';
+      }).join('') + '</div></details>';
+  }
+
+  function renderFamousCaseResultsSummary(result) {
+    if (!els.resultsFamousCaseSummary) return;
+    const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+    els.resultsFamousCaseSummary.hidden = !activeCase;
+    if (!activeCase) {
+      els.resultsFamousCaseSummary.innerHTML = "";
+      runtime.famousCaseResultsContextId = "";
+      runtime.famousCaseResultsMarkup = "";
+      runtime.famousCaseResultsDetailsOpen = false;
+      runtime.famousCaseCatalogEntriesOpen = false;
+      return;
+    }
+    if (runtime.famousCaseResultsContextId !== activeCase.id) {
+      runtime.famousCaseResultsContextId = activeCase.id;
+      runtime.famousCaseResultsMarkup = "";
+      runtime.famousCaseResultsDetailsOpen = false;
+      runtime.famousCaseCatalogEntriesOpen = false;
+    }
+    const selection = FAMOUS_CASES.buildSelectionWindow(activeCase);
+    const hasVicinity = (state.regionSelection.shapes || []).some(function (shape) {
+      return shape.id === runtime.famousCaseShapeId;
+    });
+    const caseTraceResult = hasVicinity ? (result || currentRegionSelectionResult()) : null;
+    const connectionCount = caseTraceResult ? caseTraceResult.visibleTraceCount : 0;
+    const status = connectionCount
+      ? formatNumber(connectionCount) + " same-day connection" + (connectionCount === 1 ? "" : "s")
+      : famousCaseTraceStatusText(caseTraceResult, hasVicinity);
+    const currentDates = ordinalToIso(state.timeRangeStartOrdinal) + " to " + ordinalToIso(state.timeRangeEndOrdinal);
+    const markup = '<h3 class="results-famous-case-title">' + escapeHtml(activeCase.name) + '</h3>' +
+      '<p class="results-famous-case-meta">Reported ' + escapeHtml(FAMOUS_CASES.formatCaseDate(activeCase)) +
+      ' · ' + escapeHtml(activeCase.location) + '</p>' +
+      '<p class="results-famous-case-meta">Viewing ' + escapeHtml(currentDates) + '</p>' +
+      renderFamousCaseCatalogEntries(activeCase) +
+      '<div class="results-famous-case-connections"><p role="status">' + escapeHtml(status) + '</p>' +
+      '<button type="button" class="secondary-button" data-fit-famous-case-traces' +
+      (connectionCount ? '' : ' disabled') + '>Fit connections</button></div>' +
+      '<details data-case-results-details><summary>Case details &amp; sources</summary><div class="results-famous-case-details-body">' +
+      '<p>' + escapeHtml(activeCase.description) + '</p>' +
+      (activeCase.catalogReview && activeCase.catalogReview.note ? '<p>Database review: ' + escapeHtml(activeCase.catalogReview.note) + '</p>' : '') +
+      (activeCase.dateNote && activeCase.dateNote !== "Reported event date; the preset does not establish a case match."
+        ? '<p>' + escapeHtml(activeCase.dateNote) + '</p>' : '') +
+      '<p>' + (hasVicinity
+        ? 'Within ' + formatNumber(selection.radiusKm) + ' km of an approximate case location.'
+        : 'Case vicinity has been cleared or edited.') +
+      ' Candidate reports, not verified case matches. Other filters apply.</p>' +
+      '<p>Default viewing dates include one day before and after the reported dates. Date changes keep the case selected until Clear.</p>' +
+      '<p>Connections join neighboring reports of the same craft category on the same calendar date. Dashed, double-headed arrows mean report order is unknown. These links are excluded from directional percentages and do not establish a flight path.</p>' +
+      '<div class="famous-case-sources">' + activeCase.sources.map(function (source) {
+        return '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' +
+          escapeHtml(source.title) + '</a>';
+      }).join("") + '</div></div></details>';
+    // Native disclosure state does not change the content cache. Ordinary
+    // refreshes leave focused controls intact; changed content retains the state.
+    if (runtime.famousCaseResultsMarkup !== markup) {
+      let displayedMarkup = runtime.famousCaseResultsDetailsOpen
+        ? markup.replace('<details data-case-results-details>', '<details data-case-results-details open>') : markup;
+      if (runtime.famousCaseCatalogEntriesOpen) {
+        displayedMarkup = displayedMarkup.replace('<details data-case-catalog-entries>', '<details data-case-catalog-entries open>');
+      }
+      els.resultsFamousCaseSummary.innerHTML = displayedMarkup;
+      runtime.famousCaseResultsMarkup = markup;
+    }
+  }
+
+  function bindFamousCaseActions(container) {
+    if (!container) return;
+    container.addEventListener("click", function (event) {
+      if (event.target.closest("[data-clear-famous-case]")) clearFamousCasePreset();
+      if (event.target.closest("[data-fit-famous-case-traces]")) fitFamousCaseTraces();
+      const recordButton = event.target.closest("[data-inspect-famous-case-record]");
+      if (recordButton) {
+        const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+        const entry = famousCaseCatalogEntries(activeCase).find(function (candidate) {
+          return candidate.reference.eventId === recordButton.getAttribute("data-inspect-famous-case-record");
+        });
+        if (entry && entry.event) openFullEventView(entry.event.event_id, {
+          centerMap: false, openPopup: false, scrollIntoView: true,
+        }).catch(function (error) { console.error(error); });
+      }
+    });
+    container.addEventListener("toggle", function (event) {
+      if (event.target.hasAttribute("data-case-results-details")) {
+        runtime.famousCaseResultsDetailsOpen = Boolean(event.target.open);
+      }
+      if (event.target.hasAttribute("data-case-catalog-entries")) {
+        runtime.famousCaseCatalogEntriesOpen = Boolean(event.target.open);
+      }
+    }, true);
+  }
+
+  function famousCaseTraceSelectionActive() {
+    return Boolean(state.famousCaseId && !state.regionSelection.pointOnly &&
+      (state.regionSelection.shapes || []).some(function (shape) {
+        return shape.id === runtime.famousCaseShapeId;
+      }));
+  }
+
+  function currentFamousCaseVicinityCoverage() {
+    if (!state.famousCaseId) return null;
+    const shape = (state.regionSelection.shapes || []).find(function (candidate) {
+      return candidate.id === runtime.famousCaseShapeId && candidate.type === "circle";
+    });
+    if (!shape || !shape.center) return null;
+    const cacheKey = [
+      state.timelineDataVersion,
+      catalog.length,
+      state.timeRangeMode,
+      state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal,
+      shape.id,
+      shape.center.lat,
+      shape.center.lng,
+      shape.radiusMeters,
+    ].join("|");
+    if (runtime.famousCaseVicinityCoverageCacheKey !== cacheKey || !runtime.famousCaseVicinityCoverageCacheValue) {
+      const events = [];
+      const bounds = regionSelectionShapeBounds(shape);
+      for (const event of catalog) {
+        if (!event.has_coordinates || !eventMatchesTimeRange(event)) continue;
+        if (event.lat == null || event.lon == null ||
+          !Number.isFinite(Number(event.lat)) || !Number.isFinite(Number(event.lon))) continue;
+        if (!pointMayIntersectRegionShapeBounds(Number(event.lat), Number(event.lon), bounds)) continue;
+        if (pointInsideRegionShape(Number(event.lat), Number(event.lon), shape)) events.push(event);
+      }
+      runtime.famousCaseVicinityCoverageCacheKey = cacheKey;
+      runtime.famousCaseVicinityCoverageCacheValue = events;
+    }
+    const events = runtime.famousCaseVicinityCoverageCacheValue;
+    const filters = currentFilterSelections();
+    let includedCount = 0;
+    for (const event of events) {
+      if (eventMatchesNonDateFilters(event, filters, state.lastKeywordMatches)) includedCount += 1;
+    }
+    const catalogComplete = startup.totalCatalogShards > 0 &&
+      startup.ingestedCatalogShards >= startup.totalCatalogShards;
+    const filtersPending = Boolean(filters.keyword && filters.keyword !== state.lastKeyword) ||
+      (Number.isFinite(state.filterGeneration) && Number.isFinite(runtime.activeFilterGeneration) &&
+        state.filterGeneration !== runtime.activeFilterGeneration);
+    return {
+      status: catalogComplete ? "ready" : (startup.phase === "Failed" ? "unavailable" : "loading"),
+      mappedCount: events.length,
+      includedCount,
+      excludedCount: events.length - includedCount,
+      filtersPending,
+    };
+  }
+
+  function famousCaseVicinityCoverageText(coverage) {
+    if (!coverage) return "";
+    if (coverage.status === "loading") return "Checking vicinity coverage while the catalog loads.";
+    if (coverage.status === "unavailable") return "Vicinity coverage is unavailable because the catalog did not finish loading.";
+    if (coverage.filtersPending) return "Updating filters for this vicinity.";
+    if (!coverage.mappedCount) return "No mapped reports in this vicinity for these dates, before filters.";
+    const countText = formatNumber(coverage.mappedCount) + " mapped vicinity report" +
+      (coverage.mappedCount === 1 ? "" : "s");
+    if (!coverage.includedCount && coverage.excludedCount) return countText + " hidden by current filters.";
+    return countText + " before filters" + (coverage.excludedCount
+      ? " · " + formatNumber(coverage.excludedCount) + " hidden by current filters." : ".");
+  }
+
+  function famousCaseTraceStatusText(result, hasVicinity) {
+    if (!hasVicinity) return "Case vicinity cleared or edited; case connection focus is inactive.";
+    const reportCount = result ? result.selectedEventCount : 0;
+    const connectionCount = result ? result.visibleTraceCount : 0;
+    if (!reportCount) return famousCaseVicinityCoverageText(currentFamousCaseVicinityCoverage()) ||
+      "No mapped reports match the case vicinity, dates, and current filters.";
+    if (normalizeTraceMode(state.traceMode) === "off") return "Case traces are off. Choose Static in Traces to show connections.";
+    if (!traceBucketActive("gap_le_1")) return "Same-day traces are disabled. Enable the ≤1-day bucket in Traces.";
+    if (!state.regionSelection.showTracesAssociatedWithSelectedEvents) return "Enable Traces from sightings in Area Selection to show case connections.";
+    const countText = formatNumber(reportCount) + " report" + (reportCount === 1 ? "" : "s") + " in the case vicinity";
+    if (connectionCount) return formatNumber(connectionCount) + " same-day, same-type connection" +
+      (connectionCount === 1 ? "" : "s") + " · " + countText + ". Endpoints may extend beyond the vicinity.";
+    const selectedTypes = els.typeFilter && els.typeFilter.selectedOptions
+      ? Array.from(els.typeFilter.selectedOptions).map(function (option) { return option.value; }) : [];
+    const typeHint = selectedTypes.length && (!selectedTypes.includes("Sighting") || !selectedTypes.includes("Unknown"))
+      ? " Type → All can include reports labeled Sighting or Unknown that have an inferred craft category." : "";
+    return countText + "; no same-day, same-type connections are available under the current filters." +
+      (traceFacilityFilterEnabled() ? " Facility proximity also filters connections." : "") + typeHint;
+  }
+
+  function fitFamousCaseTraces() {
+    if (!runtime.map || !famousCaseTraceSelectionActive()) return;
+    const result = currentRegionSelectionResult();
+    const segments = result.visibleTraceSegments || [];
+    if (!segments.length) return;
+    const bounds = L.latLngBounds([]);
+    const center = runtime.map.getCenter().lng;
+    segments.forEach(function (segment) {
+      const midpoint = (segment.from[1] + segment.to[1]) / 2;
+      const offset = 360 * Math.round((center - midpoint) / 360);
+      bounds.extend([segment.from[0], segment.from[1] + offset]);
+      bounds.extend([segment.to[0], segment.to[1] + offset]);
+    });
+    if (bounds.isValid()) runtime.map.fitBounds(bounds.pad(0.15), { maxZoom: 7, animate: false });
+  }
+
+  function clearFamousCasePreset(options) {
+    if (!state.famousCaseId) return;
+    clearFamousCaseCirclePulse();
+    const config = options || {};
+    const previous = runtime.famousCasePreviousSelection;
+    state.famousCaseId = "";
+    runtime.famousCasePreviousSelection = null;
+    const stillOwnsArea = (state.regionSelection.shapes || []).length === 1 &&
+      state.regionSelection.shapes[0].id === runtime.famousCaseShapeId;
+    runtime.famousCaseShapeId = null;
+    if (previous && stillOwnsArea) {
+      state.regionSelection = previous.regionSelection;
+      state.analysisCountryAreaFilter = previous.countryArea;
+      invalidateRegionSelectionResult();
+      renderRegionSelectionShapes();
+      renderRegionSelectionUi();
+    }
+    if (previous && runtime.famousCaseGapBucketOwned) {
+      state.traceBucketVisibility.gap_le_1 = previous.sameDayBucketVisible;
+      invalidateTraceSequenceCache();
+      invalidateRegionSelectionResult();
+    }
+    if (previous && runtime.famousCaseTraceModeOwned) {
+      setTraceMode(previous.traceMode, { famousCasePreset: true });
+    } else {
+      renderTraceControls();
+    }
+    runtime.famousCaseTraceModeOwned = false;
+    runtime.famousCaseGapBucketOwned = false;
+    if (previous && config.restoreDate !== false) {
+      setTimeRange(previous.startOrdinal, previous.endOrdinal, {
+        mode: previous.mode, autofitVisible: false,
+      });
+    }
+    renderFamousCasePicker();
+    if (!config.deferRefresh) scheduleRefresh({ immediate: true });
+  }
+
+  function applyFamousCasePreset(caseId) {
+    const item = FAMOUS_CASES.getCase(caseId);
+    if (!item) {
+      clearFamousCasePreset();
+      return;
+    }
+    const extent = selectionClampExtent();
+    if (!extent) {
+      if (els.famousCaseSearchStatus) els.famousCaseSearchStatus.textContent = "The catalog is loading. Select this case again when it is ready.";
+      return;
+    }
+    const selection = FAMOUS_CASES.buildSelectionWindow(item);
+    if (isoToOrdinal(item.startIso) < extent.minOrdinal || isoToOrdinal(item.endIso) > extent.maxOrdinal) {
+      renderFamousCasePicker();
+      if (els.famousCaseSearchStatus) els.famousCaseSearchStatus.textContent = "This case's dates are outside the available catalog. Your current selection is unchanged.";
+      return;
+    }
+    if (!state.famousCaseId) {
+      runtime.famousCasePreviousSelection = {
+        regionSelection: Object.assign({}, state.regionSelection, {
+          shapes: state.regionSelection.shapes.slice(), drawingActive: false, modeActive: false,
+        }),
+        countryArea: state.analysisCountryAreaFilter,
+        startOrdinal: state.timeRangeStartOrdinal,
+        endOrdinal: state.timeRangeEndOrdinal,
+        mode: state.timeRangeMode,
+        traceMode: normalizeTraceMode(state.traceMode),
+        sameDayBucketVisible: traceBucketActive("gap_le_1"),
+      };
+    }
+    setRegionSelectionDrawingActive(false, { skipRender: true });
+    clearPendingDateInputEdits();
+    setDateRangeFeedback("");
+    resetPlayback({ preserveSelection: true });
+    clearCraftLegendSoloState();
+    state.famousCaseId = item.id;
+    setTimeRange(isoToOrdinal(selection.startIso), isoToOrdinal(selection.endIso), {
+      mode: "custom", autofitVisible: false, clampAnchor: "start",
+    });
+    applyAnalysisAreaFilter({
+      center: { lat: selection.center[0], lng: selection.center[1] },
+      radiusMeters: selection.radiusKm * 1000,
+    });
+    runtime.famousCaseShapeId = state.regionSelection.shapes[0].id;
+    Object.assign(state.regionSelection, {
+      pointOnly: false, selectEvents: true, selectTraces: false,
+      showSelectedEvents: true, showSelectedTraces: false,
+      showEventsAssociatedWithSelectedTraces: false,
+      showTracesAssociatedWithSelectedEvents: true,
+      depth: 0,
+    });
+    state.traceBucketVisibility.gap_le_1 = true;
+    runtime.famousCaseGapBucketOwned = true;
+    runtime.famousCaseTraceModeOwned = true;
+    invalidateTraceSequenceCache();
+    setTraceMode("static", { famousCasePreset: true });
+    if (runtime.map) runtime.map.panTo(selection.center, { animate: false });
+    pulseFamousCaseCircle();
+    renderFamousCasePicker();
+    scheduleRefresh({ immediate: true });
   }
 
   function flapStatusLabelForPreset(presetId) {
@@ -4220,6 +4967,7 @@
     clearPendingDateInputEdits();
     setDateRangeFeedback("");
     invalidatePlaybackForTimeChange();
+    clearCraftLegendSoloState();
 
     if (preset.kind === "rolling") {
       const anchorEnd = state.timeRangeEndOrdinal != null ? state.timeRangeEndOrdinal : extent.maxOrdinal;
@@ -5451,6 +6199,61 @@
     };
   }
 
+  function mapControlColorModeLabel() {
+    if (state.colorMode === "craft_type") return "Craft type";
+    if (state.colorMode === "type") return "Event type";
+    if (state.colorMode === "precision") return "Precision";
+    return "Single color";
+  }
+
+  function activeOverlayControlCount() {
+    let count = Object.keys(state.overlayVisibility || {}).filter(function (key) {
+      return Boolean(state.overlayVisibility[key]);
+    }).length;
+    if (claimedUfoBaseSitesVisible()) count += 1;
+    if (claimedUfoBaseTracesVisible()) count += 1;
+    if (cropCircleOverlayActive()) count += 1;
+    if (animalMutilationOverlayActive()) count += 1;
+    return count;
+  }
+
+  function renderMapControlSectionSummaries() {
+    const mapState = currentQuickMapModeState();
+    setMapControlSummaryState(
+      "view",
+      mapState === "heatmap" ? "Heatmap" : mapState === "clusters" ? "Clusters" : "Points"
+    );
+    setMapControlSummaryState("sightings", mapControlColorModeLabel());
+    const overlayCount = activeOverlayControlCount();
+    setMapControlSummaryState("overlays", formatNumber(overlayCount) + " on");
+    const traceState = currentQuickTraceState();
+    setMapControlSummaryState(
+      "traces",
+      traceState === "none" ? "Off" : traceState === "playback" ? "Playback" : "Static"
+    );
+    setMapControlSummaryState(
+      "intersections",
+      runtime.traceIntersectionController
+        ? runtime.traceIntersectionController.getSummaryText()
+        : "Off"
+    );
+    const facility = traceFacilityFilterState();
+    setMapControlSummaryState(
+      "facility",
+      facility.enabled ? formatNumber(Math.round(facility.radiusKm)) + " km" : "Off"
+    );
+    const areaDepth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
+    const shapeCount = Array.isArray(state.regionSelection.shapes) ? state.regionSelection.shapes.length : 0;
+    setMapControlSummaryState(
+      "area",
+      areaDepth + " hop" + (areaDepth === 1 ? "" : "s") + (shapeCount ? " · " + shapeCount + " region" + (shapeCount === 1 ? "" : "s") : "")
+    );
+    setMapControlSummaryState(
+      "advanced",
+      facility.classes && facility.classes.passes ? "Passes on" : "Optional"
+    );
+  }
+
   function announceMapQuickControl(message) {
     if (!els.mapQuickControlStatus) return;
     els.mapQuickControlStatus.textContent = message;
@@ -5478,11 +6281,15 @@
     return "Fade";
   }
 
-  function setTraceMode(mode) {
+  function setTraceMode(mode, options) {
+    if (!options || !options.famousCasePreset) runtime.famousCaseTraceModeOwned = false;
     const previousMode = normalizeTraceMode(state.traceMode);
     const nextMode = normalizeTraceMode(mode);
     const visibilityModeChanged = previousMode === "static" || nextMode === "static";
     state.traceMode = nextMode;
+    if (runtime.traceIntersectionController) {
+      runtime.traceIntersectionController.notifyTraceModeChanged(nextMode);
+    }
     if (previousMode === "playback" && nextMode !== "playback") {
       clearPlaybackTrailHistory();
     }
@@ -5500,6 +6307,188 @@
     if (!button) return;
     button.setAttribute("aria-pressed", pressed ? "true" : "false");
     button.classList.toggle("is-active", Boolean(pressed));
+  }
+
+  function setQuickContextButtonState(button, canonicalButton, active, label) {
+    if (!button) return;
+    const busy = Boolean(canonicalButton && (
+      canonicalButton.disabled || canonicalButton.getAttribute("aria-busy") === "true"
+    ));
+    setQuickButtonPressedState(button, active);
+    button.disabled = busy;
+    if (busy) button.setAttribute("aria-busy", "true");
+    else button.removeAttribute("aria-busy");
+    const actionLabel = busy
+      ? label + " are loading"
+      : (active ? "Hide " + label + " overlay" : "Show " + label + " overlay");
+    button.setAttribute("aria-label", actionLabel);
+    button.title = actionLabel;
+  }
+
+  function normalizeCropCircleDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : "window";
+  }
+
+  function cropCircleDateScope() {
+    const bootstrap = window.UfoCropCircleBootstrap;
+    if (bootstrap && typeof bootstrap.getDesiredDateScope === "function") {
+      return normalizeCropCircleDateScope(bootstrap.getDesiredDateScope());
+    }
+    const layer = window.UfoCropCircleLayer;
+    if (layer && typeof layer.getStatus === "function") {
+      const status = layer.getStatus();
+      if (status && status.dateScope) return normalizeCropCircleDateScope(status.dateScope);
+    }
+    return normalizeCropCircleDateScope(runtime.cropCircleOverlayDateScope);
+  }
+
+  function currentQuickCropCircleState() {
+    if (!cropCircleOverlayActive()) {
+      return {
+        key: "off",
+        currentLabel: "Off",
+        nextLabel: "Time window",
+      };
+    }
+    if (cropCircleDateScope() === "all") {
+      return {
+        key: "all",
+        currentLabel: "All time",
+        nextLabel: "Off",
+      };
+    }
+    return {
+      key: "window",
+      currentLabel: "Time window",
+      nextLabel: "All time",
+    };
+  }
+
+  function setCropCircleDateScope(value) {
+    const nextScope = normalizeCropCircleDateScope(value);
+    runtime.cropCircleOverlayDateScope = nextScope;
+    const bootstrap = window.UfoCropCircleBootstrap;
+    if (bootstrap && typeof bootstrap.setDateScope === "function") {
+      bootstrap.setDateScope(nextScope);
+    } else if (window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.setDateScope === "function") {
+      window.UfoCropCircleLayer.setDateScope(nextScope);
+    }
+    renderMapControlQuickButtons();
+    return nextScope;
+  }
+
+  function cycleQuickCropCircleState() {
+    const current = currentQuickCropCircleState();
+    if (current.key === "window") {
+      setCropCircleDateScope("all");
+      announceMapQuickControl("Crop circles now show all time. The selected UFO time window is unchanged.");
+      return Promise.resolve("all");
+    }
+    if (current.key === "all") {
+      return setContextLayerEnabled("crops", false, "crop-quick").then(function () {
+        renderMapControlQuickButtons();
+        announceMapQuickControl("Crop circles hidden.");
+        return "off";
+      });
+    }
+    setCropCircleDateScope("window");
+    return setContextLayerEnabled("crops", true, "crop-quick").then(function () {
+      renderMapControlQuickButtons();
+      announceMapQuickControl("Crop circles now follow the selected time window.");
+      return "window";
+    });
+  }
+
+  function normalizeAnimalMutilationDateScope(value) {
+    return String(value || "").toLowerCase() === "all" ? "all" : "window";
+  }
+
+  function animalMutilationDateScope() {
+    const bootstrap = window.UfoAnimalMutilationBootstrap;
+    if (bootstrap && typeof bootstrap.getDesiredDateScope === "function") {
+      return normalizeAnimalMutilationDateScope(bootstrap.getDesiredDateScope());
+    }
+    const layer = window.UfoAnimalMutilationLayer;
+    if (layer && typeof layer.getStatus === "function") {
+      const status = layer.getStatus();
+      if (status && status.dateScope) return normalizeAnimalMutilationDateScope(status.dateScope);
+    }
+    return normalizeAnimalMutilationDateScope(runtime.animalMutilationOverlayDateScope);
+  }
+
+  function currentQuickAnimalMutilationState() {
+    if (!animalMutilationOverlayActive()) {
+      return {
+        key: "off",
+        currentLabel: "Off",
+        nextLabel: "Time window",
+      };
+    }
+    if (animalMutilationDateScope() === "all") {
+      return {
+        key: "all",
+        currentLabel: "All time",
+        nextLabel: "Off",
+      };
+    }
+    return {
+      key: "window",
+      currentLabel: "Time window",
+      nextLabel: "All time",
+    };
+  }
+
+  function setAnimalMutilationDateScope(value) {
+    const nextScope = normalizeAnimalMutilationDateScope(value);
+    runtime.animalMutilationOverlayDateScope = nextScope;
+    const bootstrap = window.UfoAnimalMutilationBootstrap;
+    if (bootstrap && typeof bootstrap.setDateScope === "function") {
+      bootstrap.setDateScope(nextScope);
+    } else if (window.UfoAnimalMutilationLayer && typeof window.UfoAnimalMutilationLayer.setDateScope === "function") {
+      window.UfoAnimalMutilationLayer.setDateScope(nextScope);
+    }
+    renderMapControlQuickButtons();
+    renderMapLegend();
+    return nextScope;
+  }
+
+  function cycleQuickAnimalMutilationState() {
+    const current = currentQuickAnimalMutilationState();
+    if (current.key === "window") {
+      setAnimalMutilationDateScope("all");
+      announceMapQuickControl("Animal Mutilation Reports now show all time. The selected UFO time window is unchanged.");
+      return Promise.resolve("all");
+    }
+    if (current.key === "all") {
+      return setContextLayerEnabled("animals", false, "animal-quick").then(function () {
+        renderMapControlQuickButtons();
+        announceMapQuickControl("Animal Mutilation Reports hidden.");
+        return "off";
+      });
+    }
+    setAnimalMutilationDateScope("window");
+    return setContextLayerEnabled("animals", true, "animal-quick").then(function () {
+      renderMapControlQuickButtons();
+      announceMapQuickControl("Animal Mutilation Reports now follow the selected time window.");
+      return "window";
+    });
+  }
+
+  function observeQuickContextCanonicalButton(canonicalButton) {
+    if (!canonicalButton || typeof window.MutationObserver !== "function") return;
+    const observer = new window.MutationObserver(function (mutations) {
+      renderMapControlQuickButtons();
+      if (mutations.some(function (mutation) {
+        return mutation.attributeName === "aria-pressed";
+      })) {
+        renderMapLegend();
+      }
+    });
+    observer.observe(canonicalButton, {
+      attributes: true,
+      attributeFilter: ["aria-pressed", "aria-busy", "disabled"],
+    });
+    runtime.quickContextButtonObservers.push(observer);
   }
 
   function renderMapControlQuickButtons() {
@@ -5579,6 +6568,67 @@
         "Trace mode: " + traceModeLabel + ". Click to switch to " + nextTraceLabel + ".";
     }
 
+    if (els.clusterQuickCropCirclesButton) {
+      const cropState = currentQuickCropCircleState();
+      const busy = Boolean(els.overlayCropCirclesToggle && (
+        els.overlayCropCirclesToggle.disabled || els.overlayCropCirclesToggle.getAttribute("aria-busy") === "true"
+      ));
+      els.clusterQuickCropCirclesButton.dataset.state = cropState.key;
+      setQuickButtonPressedState(els.clusterQuickCropCirclesButton, cropState.key !== "off");
+      els.clusterQuickCropCirclesButton.disabled = busy;
+      if (busy) els.clusterQuickCropCirclesButton.setAttribute("aria-busy", "true");
+      else els.clusterQuickCropCirclesButton.removeAttribute("aria-busy");
+      els.clusterQuickCropCirclesButton.setAttribute(
+        "aria-label",
+        busy
+          ? "Crop circles are loading."
+          : "Crop circles quick cycle. Current: " + cropState.currentLabel + ". Next: " + cropState.nextLabel + "."
+      );
+      els.clusterQuickCropCirclesButton.title = busy
+        ? "Crop circles are loading."
+        : "Crop circles: " + cropState.currentLabel + ". Click for " + cropState.nextLabel + ".";
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      const animalState = currentQuickAnimalMutilationState();
+      const busy = Boolean(els.overlayAnimalMutilationsToggle && (
+        els.overlayAnimalMutilationsToggle.disabled ||
+        els.overlayAnimalMutilationsToggle.getAttribute("aria-busy") === "true"
+      ));
+      els.clusterQuickAnimalMutilationsButton.dataset.state = animalState.key;
+      setQuickButtonPressedState(els.clusterQuickAnimalMutilationsButton, animalState.key !== "off");
+      els.clusterQuickAnimalMutilationsButton.disabled = busy;
+      if (busy) els.clusterQuickAnimalMutilationsButton.setAttribute("aria-busy", "true");
+      else els.clusterQuickAnimalMutilationsButton.removeAttribute("aria-busy");
+      els.clusterQuickAnimalMutilationsButton.setAttribute(
+        "aria-label",
+        busy
+          ? "Animal Mutilation Reports are loading."
+          : "Animal Mutilation Reports quick cycle. Current: " + animalState.currentLabel + ". Next: " + animalState.nextLabel + "."
+      );
+      els.clusterQuickAnimalMutilationsButton.title = busy
+        ? "Animal Mutilation Reports are loading."
+        : "Animal Mutilation Reports: " + animalState.currentLabel + ". Click for " + animalState.nextLabel + ".";
+    }
+
+    if (els.analysisCropCirclesButton) {
+      setQuickContextButtonState(
+        els.analysisCropCirclesButton,
+        els.overlayCropCirclesToggle,
+        cropCircleOverlayActive(),
+        "Crop circles"
+      );
+    }
+
+    if (els.analysisAnimalReportsButton) {
+      setQuickContextButtonState(
+        els.analysisAnimalReportsButton,
+        els.overlayAnimalMutilationsToggle,
+        animalMutilationOverlayActive(),
+        "Animal reports"
+      );
+    }
+
     if (els.clusterQuickFacilityProximityButton) {
       const facilityState = currentQuickFacilityProximityState();
       els.clusterQuickFacilityProximityButton.dataset.state = facilityState.key;
@@ -5594,6 +6644,7 @@
         els.clusterQuickFacilityValue.textContent = facilityState.valueLabel;
       }
     }
+    renderMapControlSectionSummaries();
   }
 
   function applyFullTimeRange() {
@@ -5659,11 +6710,56 @@
     els.trailLegend.hidden = !shouldShow;
   }
 
+  function visiblePlaybackTraceCount() {
+    return runtime.playbackTrailLines.reduce(function (count, entry) {
+      const visible = entry &&
+        traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) &&
+        playbackTrailEntryVisibleUnderFacilityFilter(entry);
+      return count + (visible ? 1 : 0);
+    }, 0);
+  }
+
+  function currentVisibleTraceCount() {
+    if (state.traceMode === "off") return 0;
+    if (traceFacilityFilterEnabled()) {
+      const stats = traceFacilityFilterStatsSnapshot();
+      if (stats.candidateSegments || stats.matchedSegments) {
+        return Math.max(0, Math.round(Number(stats.matchedSegments) || 0));
+      }
+    }
+    if (state.traceMode === "static") {
+      const metrics = runtime.staticTraceRenderMetrics || {};
+      return Math.max(0, Math.round(Number(
+        metrics.viewportSourceSegments ||
+        metrics.totalSegments ||
+        metrics.renderedSegments ||
+        runtime.staticTraceTotalSegments ||
+        runtime.staticTraceRenderedSegments ||
+        0
+      )));
+    }
+    return visiblePlaybackTraceCount();
+  }
+
+  function traceStatusSummaryText() {
+    const count = currentVisibleTraceCount();
+    return formatNumber(count) + " trace" + (count === 1 ? "" : "s");
+  }
+
+  function renderTraceStatusSummary() {
+    if (els.traceStatusSummary) {
+      els.traceStatusSummary.textContent = traceStatusSummaryText();
+    }
+  }
+
   function traceStatusText() {
     const activeLabels = activeTraceBuckets().map(function (bucket) { return bucket.label; });
     const activeBucketText = activeLabels.length ? activeLabels.join(", ") : "none";
     if (state.traceMode === "off") {
       return "Trace overlay off. Active buckets: " + activeBucketText + ".";
+    }
+    if (famousCaseTraceSelectionActive()) {
+      return famousCaseTraceStatusText(currentRegionSelectionResult(), true);
     }
     if (state.traceMode === "static") {
       const metrics = runtime.staticTraceRenderMetrics || null;
@@ -5705,8 +6801,10 @@
   function renderTraceStatus() {
     renderTraceWidthControls();
     renderTraceBoldnessControls();
-    if (!els.traceStatus) return;
-    els.traceStatus.textContent = traceStatusText();
+    renderTraceStatusSummary();
+    if (els.traceStatus) {
+      els.traceStatus.textContent = traceStatusText();
+    }
   }
 
   function renderTraceControls() {
@@ -5753,33 +6851,25 @@
       els.traceFacilityEvidenceMode.disabled = !facilityFilter.enabled;
     }
     if (els.traceFacilityEvidenceHelp) {
-      els.traceFacilityEvidenceHelp.textContent = evidenceMode === "source_coordinates"
-        ? "Strict: only source-provided endpoint coordinates with exact event dates are included, and only when the facility's recorded operating period supports that date. Year-only opening or closing years remain uncertain."
-        : "Exploratory: generalized locations, non-exact event dates, and uncertain facility operating dates may create coincidental proximity; these are labeled Possible.";
+      els.traceFacilityEvidenceHelp.innerHTML = evidenceMode === "source_coordinates"
+        ? '<span aria-hidden="true">Exact coordinates and dates within recorded operating periods.</span>' +
+          '<span class="sr-only">Strict mode includes only source-provided endpoint coordinates with exact event dates, and only when the facility\'s recorded operating period supports that date. Year-only opening or closing years remain uncertain.</span>'
+        : '<span aria-hidden="true">Generalized locations or dates are exploratory and labeled Possible.</span>' +
+          '<span class="sr-only">Exploratory mode may include generalized locations, non-exact event dates, and uncertain facility operating dates. These can create coincidental proximity and are labeled Possible.</span>';
     }
     if (els.traceFacilityLinkedOnly) {
       els.traceFacilityLinkedOnly.checked = Boolean(facilityFilter.onlyShowTraceLinkedFacilities);
       els.traceFacilityLinkedOnly.disabled = !facilityFilter.enabled;
     }
-    if (els.traceFacilityRadiusPresetButtons && els.traceFacilityRadiusPresetButtons.length) {
-      els.traceFacilityRadiusPresetButtons.forEach(function (button) {
-        const value = normalizeTraceFacilityRadiusKm(button.getAttribute("data-trace-facility-radius-preset"));
-        const active = Math.round(value) === Math.round(facilityFilter.radiusKm);
-        button.disabled = !facilityFilter.enabled;
-        button.classList.toggle("is-active", active);
-        button.setAttribute("aria-pressed", active ? "true" : "false");
-      });
-    }
-
     if (els.traceFacilityClassInputs && els.traceFacilityClassInputs.length) {
       els.traceFacilityClassInputs.forEach(function (input) {
         const key = input.getAttribute("data-trace-facility-class");
         input.checked = Boolean(facilityFilter.classes[key]);
         input.disabled = !facilityFilter.enabled || (key === "passes" && evidenceMode !== "include_generalized");
         if (key === "passes") {
-          input.title = evidenceMode === "include_generalized"
-            ? "Advanced geometric intersection only; this connector is not an observed path"
-            : "Connector intersection is unavailable in strict source-coordinate mode";
+          input.title = facilityFilter.enabled && evidenceMode === "include_generalized"
+            ? "Connector intersection option enabled"
+            : "Turn on Facility proximity and choose Exploratory mode.";
         }
       });
     }
@@ -5902,6 +6992,8 @@
     const path = url.pathname || "";
     return (
       path.indexOf("/data/canonical_web/") !== -1 ||
+      path.indexOf("/data/analysis_v2/") !== -1 ||
+      path.indexOf("/data/trace_intersection_feasibility_v1/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
       path.endsWith("/data/app_config.json") ||
       path.endsWith("/data/points.bin") ||
@@ -5913,7 +7005,10 @@
 
   function resolveAssetPath(relativePath) {
     const url = new URL(relativePath, document.baseURI);
-    const versionToken = url.pathname.endsWith("/data/app_config.json")
+    const shellPinnedAsset = url.pathname.endsWith("/data/app_config.json") ||
+      url.pathname.indexOf("/data/analysis_v2/") !== -1 ||
+      url.pathname.indexOf("/data/trace_intersection_feasibility_v1/") !== -1;
+    const versionToken = shellPinnedAsset
       ? (APP_SHELL_RELEASE_TOKEN || staticAssetVersionToken())
       : staticAssetVersionToken();
     if (versionToken && shouldVersionStaticAsset(url) && !url.searchParams.has("v")) {
@@ -6811,6 +7906,208 @@
       }
     }
     return fetchJsonWithRetry(rawPath, label);
+  }
+
+  const LOCATION_LABEL_OVERLAY_REVIEWED_FIELDS = Object.freeze(new Set([
+    "location_display",
+    "location_precision",
+    "time_display",
+    "duration_display",
+    "summary_display",
+    "description_display",
+    "source_url_display",
+    "mapping_notes",
+    "city",
+    "state_province",
+    "country",
+    "playback_sort_key",
+    "playback_sort_reason",
+  ]));
+  const LOCATION_LABEL_OVERLAY_SUMMARY_FIELDS = Object.freeze(new Set([
+    "location_display",
+    "location_precision",
+    "time_display",
+    "playback_sort_key",
+    "playback_sort_reason",
+  ]));
+
+  function locationLabelOverlayConfig() {
+    const config = runtime.appConfig && runtime.appConfig.locationLabelOverlay;
+    return config && typeof config === "object" ? config : { enabled: false };
+  }
+
+  function setLocationLabelOverlayRuntime(status, reason, values) {
+    runtime.locationLabelOverlay = Object.assign({
+      enabled: status === PACKED_POINTS_STATUS.READY,
+      status,
+      reason: reason || "",
+      patchesByEventId: new Map(),
+      reviewedPatchesByEventId: new Map(),
+      entryCount: 0,
+      genericDisplayCount: 0,
+      reviewedCount: 0,
+      sourceInventorySha256: "",
+      url: LOCATION_LABEL_OVERLAY_DEFAULT_GZIP_URL,
+    }, values || {});
+    recordStartupDecision("locationLabelOverlay", {
+      enabled: runtime.locationLabelOverlay.enabled,
+      status: runtime.locationLabelOverlay.status,
+      reason: runtime.locationLabelOverlay.reason,
+      entryCount: runtime.locationLabelOverlay.entryCount,
+      genericDisplayCount: runtime.locationLabelOverlay.genericDisplayCount,
+      reviewedCount: runtime.locationLabelOverlay.reviewedCount,
+      sourceInventorySha256: runtime.locationLabelOverlay.sourceInventorySha256,
+      url: runtime.locationLabelOverlay.url,
+    });
+    return runtime.locationLabelOverlay;
+  }
+
+  function indexLocationLabelOverlay(payload, config, url) {
+    if (!payload || Number(payload.schema_version) !== 1) {
+      throw createStartupError(
+        "Location label overlay has an unsupported schema.",
+        url,
+        "The Pages-hosted label overlay must use schema_version 1."
+      );
+    }
+    const labels = Array.isArray(payload.labels) ? payload.labels : [];
+    const reviewed = Array.isArray(payload.reviewed) ? payload.reviewed : [];
+    const declaredCounts = payload.counts && typeof payload.counts === "object" ? payload.counts : {};
+    const patchesByEventId = new Map();
+    const reviewedPatchesByEventId = new Map();
+    for (const row of labels) {
+      if (!Array.isArray(row) || row.length !== 2 || row[0] == null || !String(row[1] || "").trim()) {
+        throw createStartupError("Location label overlay contains an invalid label row.", url);
+      }
+      const eventId = String(row[0]);
+      if (patchesByEventId.has(eventId)) {
+        throw createStartupError("Location label overlay contains duplicate event ID " + eventId + ".", url);
+      }
+      patchesByEventId.set(eventId, { location_display: String(row[1]) });
+    }
+    const reviewedEventIds = new Set();
+    for (const row of reviewed) {
+      if (!Array.isArray(row) || row.length !== 2 || row[0] == null || !row[1] || typeof row[1] !== "object") {
+        throw createStartupError("Location label overlay contains an invalid reviewed row.", url);
+      }
+      const eventId = String(row[0]);
+      if (!patchesByEventId.has(eventId) || reviewedEventIds.has(eventId)) {
+        throw createStartupError("Location label overlay has an invalid reviewed event ID " + eventId + ".", url);
+      }
+      const patch = row[1];
+      for (const fieldName of Object.keys(patch)) {
+        if (!LOCATION_LABEL_OVERLAY_REVIEWED_FIELDS.has(fieldName)) {
+          throw createStartupError("Location label overlay contains disallowed field " + fieldName + ".", url);
+        }
+      }
+      const summaryPatch = {};
+      for (const fieldName of Object.keys(patch)) {
+        if (LOCATION_LABEL_OVERLAY_SUMMARY_FIELDS.has(fieldName)) {
+          summaryPatch[fieldName] = patch[fieldName];
+        }
+      }
+      patchesByEventId.set(eventId, Object.assign({}, patchesByEventId.get(eventId), summaryPatch));
+      reviewedPatchesByEventId.set(eventId, Object.assign({}, patch));
+      reviewedEventIds.add(eventId);
+    }
+
+    const entryCount = patchesByEventId.size;
+    const reviewedCount = reviewedEventIds.size;
+    const genericDisplayCount = entryCount - reviewedCount;
+    const expectedEntryCount = Number(config.entryCount);
+    const expectedGenericCount = Number(config.genericDisplayCount);
+    const expectedReviewedCount = Number(config.reviewedCount);
+    const sourceInventorySha256 = String(payload.source_inventory_sha256 || "");
+    if (
+      entryCount !== Number(declaredCounts.entries) ||
+      genericDisplayCount !== Number(declaredCounts.generic_displays) ||
+      reviewedCount !== Number(declaredCounts.reviewed) ||
+      entryCount !== expectedEntryCount ||
+      genericDisplayCount !== expectedGenericCount ||
+      reviewedCount !== expectedReviewedCount ||
+      sourceInventorySha256 !== String(config.sourceInventorySha256 || "")
+    ) {
+      throw createStartupError(
+        "Location label overlay counts or source inventory do not match app_config.",
+        url,
+        "Refuse to apply a partial or stale display-label overlay."
+      );
+    }
+
+    return setLocationLabelOverlayRuntime(PACKED_POINTS_STATUS.READY, "", {
+      enabled: true,
+      patchesByEventId,
+      reviewedPatchesByEventId,
+      entryCount,
+      genericDisplayCount,
+      reviewedCount,
+      sourceInventorySha256,
+      url,
+    });
+  }
+
+  async function loadLocationLabelOverlayRuntime() {
+    const config = locationLabelOverlayConfig();
+    const gzipUrl = String(config.gzipUrl || LOCATION_LABEL_OVERLAY_DEFAULT_GZIP_URL);
+    if (config.enabled !== true) {
+      return setLocationLabelOverlayRuntime(
+        PACKED_POINTS_STATUS.DISABLED,
+        "Location label overlay is disabled in app_config.",
+        { url: gzipUrl }
+      );
+    }
+    if (!browserCanDecodeGzipJson()) {
+      throw createStartupError(
+        "This browser cannot decode the required location label overlay.",
+        resolveAssetPath(gzipUrl),
+        "Use a current browser with DecompressionStream support."
+      );
+    }
+    const payload = await retryStaticAssetLoad("Location label overlay gzip", function () {
+      return fetchGzipJson(gzipUrl, "Location label overlay");
+    });
+    return indexLocationLabelOverlay(payload, config, resolveAssetPath(gzipUrl));
+  }
+
+  function applyLocationLabelOverlay(event, options) {
+    if (!event || event.event_id == null) return event;
+    if (event.quality_view_changes || (runtime.detailQualityOverlay && runtime.detailQualityOverlay.hasPatch(event.event_id))) return event;
+    const overlay = runtime.locationLabelOverlay;
+    if (!overlay || overlay.status !== PACKED_POINTS_STATUS.READY || !overlay.patchesByEventId) return event;
+    const patch = overlay.patchesByEventId.get(String(event.event_id));
+    if (!patch) return event;
+    const detailPatch = options && options.detail === true && overlay.reviewedPatchesByEventId
+      ? overlay.reviewedPatchesByEventId.get(String(event.event_id))
+      : null;
+    return detailPatch
+      ? Object.assign({}, event, patch, detailPatch)
+      : Object.assign({}, event, patch);
+  }
+
+  async function loadDetailQualityOverlayRuntime() {
+    const config = runtime.appConfig && runtime.appConfig.detailQualityOverlay;
+    runtime.detailQualityOverlay = null;
+    if (!config || config.enabled !== true) return;
+    if (!QUALITY_DETAILS || !browserCanDecodeGzipJson()) {
+      throw createStartupError("Reviewed report corrections could not be loaded.", "./quality_detail_overlay.js",
+        "Use a current browser with compressed-data and integrity verification support.");
+    }
+    const url = resolveAssetPath(config.gzipUrl);
+    const payload = await retryStaticAssetLoad("Reviewed report corrections", async function () {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw createStartupError("Reviewed report corrections returned HTTP " + response.status + ".", url);
+      const bytes = await response.arrayBuffer();
+      await QUALITY_DETAILS.verifyCompressedPayload(bytes, config);
+      const stream = new Response(bytes).body.pipeThrough(new DecompressionStream("gzip"));
+      return new Response(stream).json();
+    });
+    runtime.detailQualityOverlay = QUALITY_DETAILS.createIndex(payload, config);
+    recordStartupDecision("detailQualityOverlay", { enabled: true, patchCount: runtime.detailQualityOverlay.patchCount,
+      qualityManifestSha256: config.qualityManifestSha256 });
+  }
+
+  function applyDetailQualityOverlay(event) {
+    return runtime.detailQualityOverlay ? QUALITY_DETAILS.apply(runtime.detailQualityOverlay, event) : event;
   }
 
   async function fetchGzipArrayBuffer(relativePath, label) {
@@ -7839,6 +9136,7 @@
     packedEvent.time_display = catalogEvent.time_display || "";
     packedEvent.location_raw = catalogEvent.location_raw || "";
     packedEvent.location_display = catalogEvent.location_display || "";
+    packedEvent.location_precision = catalogEvent.location_precision || packedEvent.location_precision || "unknown";
     packedEvent.geocode_display_name = catalogEvent.geocode_display_name || "";
     packedEvent.description_short = catalogEvent.description_short || "";
     return packedEvent;
@@ -8000,7 +9298,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-12-context-evidence-v2");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -8046,10 +9344,2237 @@
       type: event.type || "",
       visualTypeGroup: eventLegendKeyForMode(event, "type"),
       craftType: eventLegendKeyForMode(event, "craft_type"),
+      craftConfidence: event.craft_type_confidence || "none",
+      craftSource: event.craft_type_source || "none",
+      sameDayMatchStrength: event.same_day_match_strength || "none",
+      shape: event.shape_normalized || event.type || "",
       precision: event.location_precision || "",
       datePrecision: event.date_precision || "",
+      coordinateSource: event.coordinate_source || "unresolved",
+      country: event.country || "unknown",
+      adminRegion: event.state_province || event.admin_region || "unknown",
+      duplicateLineage: event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || "",
+      mapped: Boolean(event.has_coordinates),
+      lat: Number.isFinite(Number(event.lat)) ? Number(event.lat) : null,
+      lon: Number.isFinite(Number(event.lon)) ? Number(event.lon) : null,
       sortOrdinal: Number.isFinite(Number(event.sort_ordinal)) ? Number(event.sort_ordinal) : null,
     };
+  }
+
+  const ANALYSIS_BASELINE_MODES = new Set([
+    "other_dates_balanced",
+    "other_dates_matched",
+    "previous_equal_duration",
+    "full_catalog",
+  ]);
+  // Identity of the sealed 702,893-row catalog actually served to the browser.
+  // The larger pre-merge source corpus is recorded separately in the manifest.
+  const ANALYSIS_CATALOG_DATASET_SHA256 = "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b";
+
+  const ANALYSIS_MAP_ONLY_CONTROL_SELECTOR = [
+    "#focus-map-toggle",
+    "#basemap-mode",
+    "#map-mode",
+    "#fit-results",
+    "#overlay-airports",
+    "#overlay-highways",
+    "#overlay-military",
+    "#overlay-research-sites",
+    "#overlay-claimed-ufo-bases-sites",
+    "#overlay-claimed-ufo-bases-traces",
+    "#military-branch-panel button",
+    "#crop-circle-chronology-controls button",
+    "#crop-circle-chronology-controls input",
+    "#crop-circle-chronology-controls select",
+    "#trace-controls-panel button",
+    "#trace-controls-panel input",
+    "#trace-controls-panel select",
+  ].join(",");
+
+  function contextLayerAnalysisStatus(globalName, toggleElement) {
+    const layer = window[globalName];
+    const requestedEnabled = Boolean(toggleElement && toggleElement.getAttribute("aria-pressed") === "true");
+    let status = null;
+    if (layer && typeof layer.getStatus === "function") {
+      try {
+        status = layer.getStatus();
+      } catch (error) {
+        status = null;
+      }
+    }
+    const merged = Object.assign({ loaded: false }, status || {});
+    // The shared toggle is the requested context state and the sole state that
+    // Analysis may send to the worker. A lazily mounting layer can briefly
+    // report its prior runtime state after the shared control has already
+    // changed; allowing that stale value to win produces a checked Analysis
+    // switch beside an "excluded" result panel.
+    merged.enabled = requestedEnabled;
+    return merged;
+  }
+
+  function analysisRegionShapesSnapshot() {
+    const shapes = (state.regionSelection && Array.isArray(state.regionSelection.shapes)
+      ? state.regionSelection.shapes
+      : []).map(function (shape) {
+      if (shape && shape.type === "circle") {
+        return {
+          id: String(shape.id || ""),
+          type: "circle",
+          center: shape.center ? {
+            lat: Number(shape.center.lat),
+            lng: Number(shape.center.lng),
+          } : null,
+          radiusMeters: Number(shape.radiusMeters),
+        };
+      }
+      return {
+        id: String(shape && shape.id ? shape.id : ""),
+        type: "rectangle",
+        bounds: shape && shape.bounds ? {
+          north: Number(shape.bounds.north),
+          south: Number(shape.bounds.south),
+          east: Number(shape.bounds.east),
+          west: Number(shape.bounds.west),
+        } : null,
+      };
+    });
+    if (state.analysisCountryAreaFilter) {
+      shapes.unshift({
+        id: "analysis-country-area",
+        type: "country",
+        country: String(state.analysisCountryAreaFilter),
+      });
+    }
+    return shapes;
+  }
+
+  function getAnalysisFilterSnapshot() {
+    const filters = currentFilterSelections();
+    const cropStatus = contextLayerAnalysisStatus("UfoCropCircleLayer", els.overlayCropCirclesToggle);
+    const animalStatus = contextLayerAnalysisStatus("UfoAnimalMutilationLayer", els.overlayAnimalMutilationsToggle);
+    const contextManifest = runtime.analysisContextManifest || {};
+    return {
+      generation: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+      requestedGeneration: Number(state.filterGeneration) || 0,
+      activeView: state.activeView,
+      baselineMode: state.analysisBaselineMode,
+      timeRange: {
+        mode: state.timeRangeMode,
+        startOrdinal: state.timeRangeStartOrdinal,
+        endOrdinal: state.timeRangeEndOrdinal,
+        startIso: state.timeRangeStartOrdinal == null ? null : ordinalToIso(state.timeRangeStartOrdinal),
+        endIso: state.timeRangeEndOrdinal == null ? null : ordinalToIso(state.timeRangeEndOrdinal),
+      },
+      filters: {
+        keyword: filters.keyword,
+        sourceMode: filters.sourceMode,
+        typeMode: filters.typeMode,
+        precisionMode: filters.precisionMode,
+        selectedSources: Array.from(filters.selectedSources).sort(),
+        selectedTypes: Array.from(filters.selectedTypes).sort(),
+        selectedPrecisions: Array.from(filters.selectedPrecisions).sort(),
+        legendEventMode: filters.legendEventMode,
+        legendColorMode: filters.legendColorMode,
+        selectedLegendEventKeys: Array.from(filters.selectedLegendEventKeys).sort(),
+        hideLowPrecision: filters.hideLowPrecision,
+        hideNonExactDates: filters.hideNonExactDates,
+      },
+      areaFilter: {
+        active: regionSelectionHasActiveShapes() || Boolean(state.analysisCountryAreaFilter),
+        pointOnly: Boolean(state.regionSelection.pointOnly),
+        country: state.analysisCountryAreaFilter || null,
+        shapes: analysisRegionShapesSnapshot(),
+      },
+      contextLayers: {
+        crops: cropStatus,
+        animals: animalStatus,
+      },
+      contextReleaseHashes: analysisContextReleaseHashes(contextManifest),
+      denominatorCounts: {
+        catalogReports: catalog.length,
+        catalogMapped: Number(startup.mappedCatalogEventsLoaded) || 0,
+        matchedNonDateReports: state.timelineCatalog.length,
+        activeReports: state.filteredCatalog.length,
+        activeMapped: state.filteredMappedCatalog.length,
+        activeUnmapped: Math.max(0, state.filteredCatalog.length - state.filteredMappedCatalog.length),
+        activeDated: state.filteredPlaybackEventCount,
+        activeSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
+        activeExactDates: state.filteredExactDateEventIdSet.size,
+      },
+    };
+  }
+
+  function applyAnalysisMultiSelectValues(filterKey, rawValues) {
+    if (rawValues == null) return false;
+    const selectElement = filterSelectByKey(filterKey);
+    if (!selectElement) return false;
+    const values = Array.isArray(rawValues) ? rawValues : [rawValues];
+    const requested = new Set(values.map(String));
+    const available = allOptionValues(selectElement);
+    const selected = available.filter(function (value) { return requested.has(value); });
+    setOptionSelection(selectElement, false);
+    if (!selected.length) {
+      setMultiSelectMode(filterKey, "none");
+    } else if (selected.length === available.length) {
+      setMultiSelectMode(filterKey, "all");
+    } else {
+      const selectedSet = new Set(selected);
+      Array.from(selectElement.options).forEach(function (option) {
+        option.selected = selectedSet.has(option.value);
+      });
+      setMultiSelectMode(filterKey, "subset");
+    }
+    renderMultiSelectState(filterKey);
+    return true;
+  }
+
+  function analysisOrdinalValue(value, side) {
+    if (typeof value === "number" && Number.isFinite(value)) return Math.round(value);
+    const normalized = normalizeDateBoundary(String(value || ""), side);
+    return normalized ? isoToOrdinal(normalized) : null;
+  }
+
+  function applyAnalysisAreaFilter(area) {
+    const candidate = area && area.area ? area.area : area;
+    if (!candidate) return false;
+    const country = String(candidate.country || candidate.countryName || "").trim();
+    if (String(candidate.type || "").toLowerCase() === "country" && country) {
+      state.analysisCountryAreaFilter = country;
+      state.regionSelection.shapes = [];
+      Object.assign(state.regionSelection, {
+        drawingActive: false,
+        modeActive: false,
+        selectTraces: false,
+        selectEvents: true,
+        showSelectedTraces: false,
+        showSelectedEvents: true,
+        showEventsAssociatedWithSelectedTraces: false,
+        showTracesAssociatedWithSelectedEvents: false,
+        combineMode: "any",
+        displayMode: "hide-unselected",
+        pointOnly: true,
+      });
+      refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+      return true;
+    }
+    let shape = null;
+    const rawBounds = candidate.bounds || candidate;
+    if (
+      Number.isFinite(Number(rawBounds.north)) &&
+      Number.isFinite(Number(rawBounds.south)) &&
+      Number.isFinite(Number(rawBounds.east)) &&
+      Number.isFinite(Number(rawBounds.west))
+    ) {
+      shape = {
+        id: nextRegionSelectionShapeId(),
+        type: "rectangle",
+        bounds: {
+          north: clamp(Number(rawBounds.north), -90, 90),
+          south: clamp(Number(rawBounds.south), -90, 90),
+          east: Number(rawBounds.east),
+          west: Number(rawBounds.west),
+        },
+      };
+    } else if (
+      candidate.center &&
+      Number.isFinite(Number(candidate.center.lat)) &&
+      Number.isFinite(Number(candidate.center.lng)) &&
+      Number.isFinite(Number(candidate.radiusMeters))
+    ) {
+      shape = {
+        id: nextRegionSelectionShapeId(),
+        type: "circle",
+        center: {
+          lat: clamp(Number(candidate.center.lat), -90, 90),
+          lng: Number(candidate.center.lng),
+        },
+        radiusMeters: Math.max(1, Number(candidate.radiusMeters)),
+      };
+    }
+    if (!shape) return false;
+    state.analysisCountryAreaFilter = "";
+    state.regionSelection.shapes = [shape];
+    Object.assign(state.regionSelection, {
+      drawingActive: false,
+      modeActive: false,
+      selectTraces: false,
+      selectEvents: true,
+      showSelectedTraces: false,
+      showSelectedEvents: true,
+      showEventsAssociatedWithSelectedTraces: false,
+      showTracesAssociatedWithSelectedEvents: false,
+      combineMode: "any",
+      displayMode: "hide-unselected",
+      pointOnly: true,
+    });
+    refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+    return true;
+  }
+
+  function applyAnalysisFilterPatch(rawPatch) {
+    const patch = rawPatch && rawPatch.patch ? rawPatch.patch : (rawPatch || {});
+    let changed = false;
+    const filterPatch = patch.filters && typeof patch.filters === "object" ? patch.filters : patch;
+    const datePatch = patch.dateRange || patch.timeRange || (
+      patch.startOrdinal != null && patch.endOrdinal != null ? patch : null
+    );
+    if (datePatch) {
+      const startOrdinal = analysisOrdinalValue(
+        datePatch.startOrdinal != null ? datePatch.startOrdinal : (datePatch.start || datePatch.startIso),
+        "start"
+      );
+      const endOrdinal = analysisOrdinalValue(
+        datePatch.endOrdinal != null ? datePatch.endOrdinal : (datePatch.end || datePatch.endIso),
+        "end"
+      );
+      if (startOrdinal != null && endOrdinal != null) {
+        invalidatePlaybackForTimeChange();
+        setTimeRange(startOrdinal, endOrdinal, { mode: "custom", autofitVisible: false });
+        changed = true;
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "keyword") && els.keywordInput) {
+      els.keywordInput.value = String(filterPatch.keyword || "");
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "sources") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedSources")) {
+      changed = applyAnalysisMultiSelectValues(
+        "source",
+        Object.prototype.hasOwnProperty.call(filterPatch, "sources") ? filterPatch.sources : filterPatch.selectedSources
+      ) || changed;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "types") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedTypes")) {
+      changed = applyAnalysisMultiSelectValues(
+        "type",
+        Object.prototype.hasOwnProperty.call(filterPatch, "types") ? filterPatch.types : filterPatch.selectedTypes
+      ) || changed;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "precisions") || Object.prototype.hasOwnProperty.call(filterPatch, "selectedPrecisions")) {
+      changed = applyAnalysisMultiSelectValues(
+        "precision",
+        Object.prototype.hasOwnProperty.call(filterPatch, "precisions") ? filterPatch.precisions : filterPatch.selectedPrecisions
+      ) || changed;
+    }
+    const craftValues = Object.prototype.hasOwnProperty.call(filterPatch, "craftTypes")
+      ? filterPatch.craftTypes
+      : filterPatch.selectedCraftTypes;
+    if (craftValues != null) {
+      const selectedCraftTypes = (Array.isArray(craftValues) ? craftValues : [craftValues]).map(String);
+      state.colorMode = "craft_type";
+      if (els.colorModeSelect) els.colorModeSelect.value = "craft_type";
+      state.mapLegendEventSelection = selectedCraftTypes.length
+        ? { mode: "subset", colorMode: "craft_type", selectedKeys: selectedCraftTypes }
+        : { mode: "none", colorMode: "craft_type", selectedKeys: [] };
+      clearCraftLegendSoloState();
+      invalidateMapLegendEventFilterCaches();
+      renderLegend();
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "hideLowPrecision") && els.hideLowPrecisionToggle) {
+      els.hideLowPrecisionToggle.checked = Boolean(filterPatch.hideLowPrecision);
+      changed = true;
+    }
+    if (Object.prototype.hasOwnProperty.call(filterPatch, "hideNonExactDates") && els.hideNonExactDatesToggle) {
+      els.hideNonExactDatesToggle.checked = Boolean(filterPatch.hideNonExactDates);
+      changed = true;
+    }
+    const areaCandidate = patch.area || patch.areaFilter || (patch.kind === "area" ? patch : null);
+    const areaChanged = areaCandidate ? applyAnalysisAreaFilter(areaCandidate) : false;
+    if (!changed) {
+      if (areaChanged) {
+        window.clearTimeout(scheduleRefresh._timer);
+        return refreshFilters().then(function () {
+          return { applied: true, areaApplied: true, generation: state.filterGeneration };
+        });
+      }
+      return Promise.reject(new Error("This preview does not contain an applicable shared-filter change."));
+    }
+    window.clearTimeout(scheduleRefresh._timer);
+    return refreshFilters().then(function () {
+      return { applied: true, areaApplied: areaChanged, generation: state.filterGeneration };
+    });
+  }
+
+  function setAnalysisMapOnlyControlsAvailable(available) {
+    const controls = Array.from(document.querySelectorAll(ANALYSIS_MAP_ONLY_CONTROL_SELECTOR));
+    controls.forEach(function (control) {
+      if (available) {
+        const prior = runtime.analysisMapControlState.get(control);
+        if (!prior) return;
+        control.disabled = prior.disabled;
+        if (prior.ariaDisabled == null) control.removeAttribute("aria-disabled");
+        else control.setAttribute("aria-disabled", prior.ariaDisabled);
+        if (prior.title == null) control.removeAttribute("title");
+        else control.setAttribute("title", prior.title);
+        control.removeAttribute("data-analysis-unavailable");
+        runtime.analysisMapControlState.delete(control);
+        return;
+      }
+      if (!runtime.analysisMapControlState.has(control)) {
+        runtime.analysisMapControlState.set(control, {
+          disabled: Boolean(control.disabled),
+          ariaDisabled: control.getAttribute("aria-disabled"),
+          title: control.getAttribute("title"),
+        });
+      }
+      control.disabled = true;
+      control.setAttribute("aria-disabled", "true");
+      control.setAttribute("data-analysis-unavailable", "true");
+      control.title = "Available in Map Explorer.";
+    });
+  }
+
+  function restoreMapAfterAnalysis() {
+    if (!runtime.map) return;
+    window.requestAnimationFrame(function () {
+      if (runtime.analysisMapRenderPending) {
+        renderMap();
+        refreshActiveTimeFilteredOverlayLayers();
+        runtime.analysisMapRenderPending = false;
+      }
+      runtime.map.invalidateSize({ animate: false, pan: false });
+      scheduleMapProjectionRefresh();
+      scheduleMapInvalidate();
+      renderRegionSelectionShapes();
+      renderMapSelectionOverlay();
+      if (currentPlaybackEvent()) syncPlaybackOverlayToCurrentEvent();
+    });
+  }
+
+  function handleAnalysisViewChange(nextView) {
+    const normalized = nextView === "analysis" ? "analysis" : "map";
+    if (state.activeView === normalized) return;
+    state.activeView = normalized;
+    if (normalized === "analysis") {
+      if (state.playbackState === "playing") pausePlayback();
+      setAnalysisMapOnlyControlsAvailable(false);
+      scheduleAnalysisCompute("analysis opened", { immediate: true });
+      return;
+    }
+    runtime.analysisPendingRequest = null;
+    window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    runtime.analysisFullInferenceTimerId = null;
+    setAnalysisMapOnlyControlsAvailable(true);
+    restoreMapAfterAnalysis();
+  }
+
+  function analysisContextLayerConfig(domainValue) {
+    const domain = String(domainValue || "").toLowerCase();
+    if (domain === "crops" || domain === "crop" || domain === "cropcircles") {
+      return {
+        domain: "crops",
+        label: "Crop Circles",
+        button: els.overlayCropCirclesToggle,
+        bootstrapName: "UfoCropCircleBootstrap",
+        layerName: "UfoCropCircleLayer",
+      };
+    }
+    if (domain === "animals" || domain === "animal" || domain === "animalreports") {
+      return {
+        domain: "animals",
+        label: "Animal Reports",
+        button: els.overlayAnimalMutilationsToggle,
+        bootstrapName: "UfoAnimalMutilationBootstrap",
+        layerName: "UfoAnimalMutilationLayer",
+      };
+    }
+    throw new Error("Unknown Analysis context domain: " + domainValue);
+  }
+
+  function setContextLayerEnabled(domainValue, enabledValue, originValue) {
+    const config = analysisContextLayerConfig(domainValue);
+    const enabled = Boolean(enabledValue);
+    const origin = String(originValue || "analysis");
+    const existing = runtime.analysisContextMutationPromises[config.domain];
+    const operation = Promise.resolve(existing).catch(function () {}).then(function () {
+      if (config.button) {
+        config.button.setAttribute("aria-pressed", enabled ? "true" : "false");
+        config.button.classList.toggle("is-active", enabled);
+        config.button.setAttribute("aria-busy", "true");
+      }
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: enabled,
+          busy: true,
+          message: (enabled ? "Including " : "Excluding ") + config.label + "...",
+        });
+      }
+      const bootstrap = window[config.bootstrapName];
+      const layer = window[config.layerName];
+      if (bootstrap && typeof bootstrap.setEnabled === "function") {
+        return bootstrap.setEnabled(enabled, origin);
+      }
+      if (layer && typeof layer.setEnabled === "function") {
+        return layer.setEnabled(enabled);
+      }
+      throw new Error(config.label + " runtime is not available.");
+    }).then(function (result) {
+      runtime.analysisContextEnabledState[config.domain] = enabled;
+      renderMapControlQuickButtons();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: enabled,
+          busy: false,
+          message: config.label + (enabled ? " included in shared context." : " excluded from shared context."),
+        });
+      }
+      return { domain: config.domain, enabled: enabled, origin: origin, result: result };
+    }).catch(function (error) {
+      runtime.analysisContextEnabledState[config.domain] = enabled;
+      if (config.button) {
+        config.button.setAttribute("aria-pressed", enabled ? "true" : "false");
+        config.button.classList.toggle("is-active", enabled);
+      }
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState(config.domain, {
+          enabled: enabled,
+          busy: false,
+          message: enabled
+            ? config.label + " included in Analysis; its optional map overlay is unavailable."
+            : config.label + " excluded from Analysis.",
+        });
+      }
+      runtime.analysisCache.clear();
+      scheduleAnalysisCompute(config.domain + " analysis context changed", { immediate: true });
+      return {
+        domain: config.domain,
+        enabled: enabled,
+        origin: origin,
+        overlayAvailable: false,
+        error: error && error.message ? error.message : String(error),
+      };
+    }).finally(function () {
+      if (config.button) config.button.removeAttribute("aria-busy");
+      if (runtime.analysisContextMutationPromises[config.domain] === operation) {
+        runtime.analysisContextMutationPromises[config.domain] = null;
+      }
+    });
+    runtime.analysisContextMutationPromises[config.domain] = operation;
+    return operation;
+  }
+
+  function initializeAnalysisView() {
+    if (!window.UfoAnalysisView || typeof window.UfoAnalysisView.AnalysisViewController !== "function") {
+      console.warn("Analysis view controls are unavailable.");
+      return null;
+    }
+    const controller = new window.UfoAnalysisView.AnalysisViewController({
+      document: document,
+      onViewChange: function (viewChange) {
+        handleAnalysisViewChange(
+          viewChange && typeof viewChange === "object" ? viewChange.activeView : viewChange
+        );
+      },
+      onBaselineChange: function (baselineChange) {
+        const requestedMode = baselineChange && typeof baselineChange === "object"
+          ? baselineChange.baselineMode
+          : baselineChange;
+        const nextMode = ANALYSIS_BASELINE_MODES.has(String(requestedMode))
+          ? String(requestedMode)
+          : "other_dates_balanced";
+        state.analysisBaselineMode = nextMode;
+        syncAnalysisDateRangeSummary();
+        // The cache signature already includes the reference baseline and every
+        // scientific input. Preserve other exact baseline results so a warm
+        // comparison can be restored without recomputation.
+        scheduleAnalysisCompute("baseline changed", { immediate: true });
+      },
+      onApplyFilterPreview: function (preview) {
+        return applyAnalysisFilterPatch(preview);
+      },
+      onApplyAreaPreview: function (preview) {
+        return applyAnalysisFilterPatch({ area: preview && (preview.area || preview.patch || preview) });
+      },
+      onCancelPreview: function () {},
+      onRetryAnalysis: function () {
+        if (runtime.analysisCoordinateEvidenceError) {
+          ensureAnalysisCoordinateEvidenceArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisReportingDelayError) {
+          ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisTimeOfDayError) {
+          ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisWitnessCountError) {
+          ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisColorError) {
+          ensureAnalysisColorArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisDurationError) {
+          ensureAnalysisDurationArtifact().catch(function () { return null; });
+          return;
+        }
+        if (runtime.analysisContextEvidenceError) {
+          ensureAnalysisContextEvidence().catch(function () { return null; });
+          return;
+        }
+        scheduleAnalysisCompute("manual retry", { immediate: true });
+      },
+      onContextLayerChange: function (change) {
+        return setContextLayerEnabled(
+          change && change.domain,
+          change && change.enabled,
+          change && change.origin ? change.origin : "analysis"
+        );
+      },
+      onSpatialEvidenceRequested: function () {
+        return ensureAnalysisSpatialArtifacts().catch(function () { return null; });
+      },
+      onGeographyRequested: function () {
+        return ensureAnalysisGeographyArtifact().catch(function () { return null; });
+      },
+      onSectionActivate: function (change) {
+        if (change && change.sectionKey === "time") {
+          if (state.activeView === "analysis") {
+            requestAnalysisTimeEvidence();
+          } else {
+            // On first activation, section navigation runs before the core
+            // Analysis request is queued. Let the useful dashboard render
+            // first, then hydrate the optional Time sidecars.
+            runtime.analysisTimeEvidenceLoadPending = true;
+          }
+        }
+        if (change && ["context", "crops", "animals", "facilities"].indexOf(change.sectionKey) !== -1) {
+          ensureAnalysisContextEvidence().catch(function () { return null; });
+        }
+        if (change && ["spatial", "sources_quality"].indexOf(change.sectionKey) !== -1) {
+          if (state.activeView === "analysis") {
+            requestAnalysisCoordinateEvidence();
+          } else {
+            runtime.analysisCoordinateEvidenceLoadPending = true;
+          }
+        }
+        if (change && change.sectionKey === "sources_quality") {
+          ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
+        }
+        if (change && change.sectionKey === "craft") {
+          ensureAnalysisColorArtifact().catch(function () { return null; });
+        }
+      },
+      onRenderComplete: function () {
+        if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {
+          runtime.analysisTimeEvidenceLoadPending = false;
+          requestAnalysisTimeEvidence();
+        }
+        if (runtime.analysisCoordinateEvidenceLoadPending && state.activeView === "analysis") {
+          runtime.analysisCoordinateEvidenceLoadPending = false;
+          requestAnalysisCoordinateEvidence();
+        }
+        if (runtime.analysisContextEvidenceRenderPending) {
+          runtime.analysisContextEvidenceRenderPending = false;
+          setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+        }
+      },
+      getFilterSnapshot: getAnalysisFilterSnapshot,
+      getWorldReferenceData: function () { return runtime.worldReferenceData; },
+    });
+    runtime.analysisViewController = controller;
+    controller.setAnalysisEnabled(false, "Analysis becomes available when the core catalog is ready.");
+    controller.setActiveView("map", { source: "startup" });
+    window.AnalysisViewController = controller;
+    window.getAnalysisFilterSnapshot = getAnalysisFilterSnapshot;
+    window.applyAnalysisFilterPatch = applyAnalysisFilterPatch;
+    window.setContextLayerEnabled = setContextLayerEnabled;
+    window.UfoTimelineAnalysis = Object.freeze({
+      setActiveView: function (view) { return controller.setActiveView(view, { source: "api" }); },
+      getAnalysisFilterSnapshot: getAnalysisFilterSnapshot,
+      applyAnalysisFilterPatch: applyAnalysisFilterPatch,
+      setContextLayerEnabled: setContextLayerEnabled,
+    });
+    return controller;
+  }
+
+  function analysisManifestArtifact(manifest, domain) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const aliases = domain === "cropCircles"
+      ? ["cropCircles", "crop_circles", "crops"]
+      : ["animalReports", "animal_reports", "animals", "animalMutilations"];
+    for (const key of aliases) {
+      if (artifacts[key]) return artifacts[key];
+    }
+    const projections = manifest && manifest.projections && typeof manifest.projections === "object"
+      ? manifest.projections
+      : {};
+    for (const key of aliases) {
+      if (projections[key]) return projections[key];
+    }
+    return null;
+  }
+
+  function analysisArtifactFile(artifact) {
+    if (typeof artifact === "string") return artifact;
+    if (!artifact || typeof artifact !== "object") return "";
+    return String(artifact.gzipFile || artifact.gzip_file || artifact.file || artifact.path || artifact.url || artifact.href || "");
+  }
+
+  function analysisArtifactSha256(artifact) {
+    if (!artifact || typeof artifact !== "object") return "";
+    return String(artifact.sha256 || artifact.sha_256 || artifact.hash || "");
+  }
+
+  function analysisContextReleaseHashes(manifest) {
+    if (!manifest || typeof manifest !== "object") return {};
+    const cropArtifact = analysisManifestArtifact(manifest, "cropCircles");
+    const animalArtifact = analysisManifestArtifact(manifest, "animalReports");
+    const explicit = manifest.releaseHashes || manifest.hashes || {};
+    return {
+      cropCircles: String(explicit.cropCircles || explicit.crop_circles || analysisArtifactSha256(cropArtifact) || ""),
+      animalReports: String(explicit.animalReports || explicit.animal_reports || analysisArtifactSha256(animalArtifact) || ""),
+      manifest: String(explicit.manifest || manifest.sha256 || manifest.manifest_sha256 || ""),
+    };
+  }
+
+  function analysisCatalogDatasetHash() {
+    const manifest = runtime.analysisContextManifest || {};
+    const candidates = [
+      manifest.ufoCatalog,
+      manifest.ufo_catalog,
+      manifest.catalog,
+      manifest.sources && (manifest.sources.ufoCatalog || manifest.sources.ufo_catalog || manifest.sources.catalog),
+      manifest.datasets && (manifest.datasets.ufoCatalog || manifest.datasets.ufo_catalog || manifest.datasets.catalog),
+    ];
+    for (const candidate of candidates) {
+      if (!candidate || typeof candidate !== "object") continue;
+      const hash = candidate.sha256 || candidate.sha_256 || candidate.hash;
+      if (hash) return String(hash);
+    }
+    const canonicalManifest = runtime.canonicalWebArtifacts && runtime.canonicalWebArtifacts.manifest;
+    if (canonicalManifest && typeof canonicalManifest === "object") {
+      const hash = canonicalManifest.sha256 || canonicalManifest.sha_256 || canonicalManifest.dataset_hash;
+      if (hash) return String(hash);
+    }
+    return ANALYSIS_CATALOG_DATASET_SHA256;
+  }
+
+  function analysisContextArtifactUrl(manifestUrl, artifact) {
+    const file = analysisArtifactFile(artifact);
+    if (!file) return "";
+    try {
+      if (/^(?:\.\/)?data\//.test(file)) {
+        return new URL(resolveAssetPath("./" + file.replace(/^\.\//, "")), document.baseURI).toString();
+      }
+      return new URL(file, manifestUrl).toString();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function setAnalysisContextProjectionsInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.resolve(false);
+    const cropArtifact = analysisManifestArtifact(manifest, "cropCircles");
+    const animalArtifact = analysisManifestArtifact(manifest, "animalReports");
+    const urls = {
+      manifest: manifestUrl,
+      cropCircles: analysisContextArtifactUrl(manifestUrl, cropArtifact),
+      animalReports: analysisContextArtifactUrl(manifestUrl, animalArtifact),
+    };
+    if (!urls.cropCircles || !urls.animalReports) {
+      return Promise.reject(new Error("Analysis context manifest does not identify both compact projections."));
+    }
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-context-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Analysis context projections timed out."));
+      }, 15000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisContextProjectionsSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisContextWorkerReady = true;
+          resolve(message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Analysis context projection setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisContextProjections",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        contextReleaseHashes: analysisContextReleaseHashes(manifest),
+        manifest: manifest,
+        urls: urls,
+      });
+    });
+  }
+
+  function ensureAnalysisContextProjections() {
+    if (runtime.analysisContextWorkerReady) return Promise.resolve(runtime.analysisContextManifest);
+    if (runtime.analysisContextPromise) return runtime.analysisContextPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v1/manifest.json"), document.baseURI).toString();
+    runtime.analysisContextPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Analysis manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisContextManifest = manifest;
+        runtime.analysisContextLoaded = true;
+        return setAnalysisContextProjectionsInWorker(manifest, manifestUrl).then(function () {
+          return manifest;
+        });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("context projections ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisContextPromise = null;
+        runtime.analysisLastError = error && error.message ? error.message : String(error);
+        console.warn("[analysis] " + runtime.analysisLastError);
+        return null;
+      });
+    return runtime.analysisContextPromise;
+  }
+
+  function analysisV2ArtifactHashes(manifest) {
+    const hashes = {};
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      hashes[key] = String(artifacts[key] && artifacts[key].sha256 || "");
+    });
+    hashes.manifest = String(manifest && manifest.releaseId || "") + ":" + String(manifest && manifest.schemaVersion || "");
+    return hashes;
+  }
+
+  function attachAnalysisV2ContextPulseSummary(resultValue) {
+    const result = resultValue && typeof resultValue === "object" ? resultValue : resultValue;
+    const manifest = runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+    const summary = manifest && typeof manifest === "object"
+      ? (manifest.contextPulseSummary || manifest.context_pulse_summary)
+      : null;
+    if (result && typeof result === "object" && summary && typeof summary === "object") {
+      result.contextPulseSummary = summary;
+    }
+    return result;
+  }
+
+  function ensureAnalysisV2Manifest(manifestUrl) {
+    const existing = runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+    if (existing) return Promise.resolve(existing);
+    if (runtime.analysisV2ManifestPromise) return runtime.analysisV2ManifestPromise;
+    runtime.analysisV2ManifestPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Analysis v2 manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        if (!runtime.analysisGeographyManifest) runtime.analysisGeographyManifest = manifest;
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisV2ManifestPromise = null;
+        throw error;
+      });
+    return runtime.analysisV2ManifestPromise;
+  }
+
+  function setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-spatial-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Spatial evidence artifacts timed out."));
+      }, 20000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisSpatialArtifactsSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisSpatialWorkerReady = true;
+          runtime.analysisRelationshipWorkerReady = true;
+          runtime.analysisContextSpatialWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Spatial evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisSpatialArtifacts",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function setAnalysisGeographyArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-geography-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Country geography projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisGeographyArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisGeographyWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Country geography setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisGeographyArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisGeographyArtifact() {
+    runtime.analysisGeographyRequested = true;
+    if (runtime.analysisGeographyWorkerReady) return Promise.resolve(runtime.analysisGeographyManifest);
+    if (runtime.analysisGeographyPromise) return runtime.analysisGeographyPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("geography", "loading", "Loading country assignments...");
+    }
+    const manifestPromise = ensureAnalysisV2Manifest(manifestUrl);
+    runtime.analysisGeographyPromise = Promise.all([manifestPromise, ensureWorldReferenceData()])
+      .then(function (values) {
+        return values[0];
+      })
+      .then(function (manifest) {
+        runtime.analysisGeographyManifest = manifest;
+        return setAnalysisGeographyArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("geography", "ready", "Country geography ready.");
+        }
+        scheduleAnalysisCompute("country geography ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisGeographyPromise = null;
+        runtime.analysisGeographyWorkerReady = false;
+        runtime.analysisGeographyRequested = false;
+        const message = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("geography", "error", message);
+        }
+        console.error("[analysis geography]", error);
+        throw error;
+      });
+    return runtime.analysisGeographyPromise;
+  }
+
+  function analysisDurationArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    ["durationValueDictionary", "durationProjection"].forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.durationManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisDurationArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-duration-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed duration projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisDurationArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisDurationWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed duration setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisDurationArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisDurationArtifact() {
+    runtime.analysisDurationRequested = true;
+    if (runtime.analysisDurationWorkerReady) return Promise.resolve(runtime.analysisDurationManifest);
+    if (runtime.analysisDurationPromise) return runtime.analysisDurationPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_duration_v1/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("time", "loading", "Loading typed duration evidence...");
+    }
+    runtime.analysisDurationPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Duration manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisDurationManifest = manifest;
+        return setAnalysisDurationArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisDurationError = "";
+        runtime.analysisCache.clear();
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("time", "ready", "Typed duration evidence ready.");
+        }
+        scheduleAnalysisCompute("typed duration evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisDurationPromise = null;
+        runtime.analysisDurationWorkerReady = false;
+        runtime.analysisDurationRequested = false;
+        runtime.analysisDurationError = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("time", "error", runtime.analysisDurationError);
+        }
+        console.error("[analysis duration]", error);
+        throw error;
+      });
+    return runtime.analysisDurationPromise;
+  }
+
+  function analysisReportingDelayArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.reportingDelayManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisReportingDelayArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-reporting-delay-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed reporting-delay projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisReportingDelayArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisReportingDelayWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed reporting-delay setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisReportingDelayArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisReportingDelayArtifact() {
+    runtime.analysisReportingDelayRequested = true;
+    if (runtime.analysisReportingDelayWorkerReady) return Promise.resolve(runtime.analysisReportingDelayManifest);
+    if (runtime.analysisReportingDelayPromise) return runtime.analysisReportingDelayPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_reporting_delay_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-reporting-delay-status");
+    if (statusElement) statusElement.textContent = "Loading role-preserving reporting-delay evidence...";
+    runtime.analysisReportingDelayPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Reporting-delay manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisReportingDelayManifest = manifest;
+        return setAnalysisReportingDelayArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisReportingDelayError = "";
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("typed reporting-delay evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisReportingDelayPromise = null;
+        runtime.analysisReportingDelayWorkerReady = false;
+        runtime.analysisReportingDelayRequested = false;
+        runtime.analysisReportingDelayError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Reporting-delay evidence failed closed: " + runtime.analysisReportingDelayError;
+        console.error("[analysis reporting delay]", error);
+        throw error;
+      });
+    return runtime.analysisReportingDelayPromise;
+  }
+
+  function analysisTimeOfDayArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.timeOfDayManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisTimeOfDayArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-time-of-day-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed time-of-day projection timed out."));
+      }, 45000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisTimeOfDayArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisTimeOfDayWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed time-of-day setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisTimeOfDayArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisTimeOfDayArtifact() {
+    runtime.analysisTimeOfDayRequested = true;
+    if (runtime.analysisTimeOfDayWorkerReady) return Promise.resolve(runtime.analysisTimeOfDayManifest);
+    if (runtime.analysisTimeOfDayPromise) return runtime.analysisTimeOfDayPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_time_of_day_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-time-of-day-status");
+    if (statusElement) statusElement.textContent = "Loading provenance-preserving source-clock evidence...";
+    runtime.analysisTimeOfDayPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Time-of-day manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisTimeOfDayManifest = manifest;
+        return setAnalysisTimeOfDayArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisTimeOfDayError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Source-clock evidence ready; timezone and sentinel safeguards remain explicit.";
+        scheduleAnalysisCompute("typed time-of-day evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisTimeOfDayPromise = null;
+        runtime.analysisTimeOfDayWorkerReady = false;
+        runtime.analysisTimeOfDayRequested = false;
+        runtime.analysisTimeOfDayError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Time-of-day evidence failed closed: " + runtime.analysisTimeOfDayError;
+        console.error("[analysis time of day]", error);
+        throw error;
+      });
+    return runtime.analysisTimeOfDayPromise;
+  }
+
+  function requestAnalysisTimeEvidence() {
+    ensureAnalysisDurationArtifact().catch(function () { return null; });
+    ensureAnalysisReportingDelayArtifact().catch(function () { return null; });
+    ensureAnalysisTimeOfDayArtifact().catch(function () { return null; });
+  }
+
+  function analysisWitnessCountArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.witnessCountManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisWitnessCountArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-witness-count-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed witness-count projection timed out."));
+      }, 45000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisWitnessCountArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisWitnessCountWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed witness-count setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisWitnessCountArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisWitnessCountArtifact() {
+    runtime.analysisWitnessCountRequested = true;
+    if (runtime.analysisWitnessCountWorkerReady) return Promise.resolve(runtime.analysisWitnessCountManifest);
+    if (runtime.analysisWitnessCountPromise) return runtime.analysisWitnessCountPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_witness_count_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-witness-count-status");
+    if (statusElement) statusElement.textContent = "Loading explicit NUFORC witness-count evidence...";
+    runtime.analysisWitnessCountPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Witness-count manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisWitnessCountManifest = manifest;
+        return setAnalysisWitnessCountArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisWitnessCountError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; single-source limits remain enforced.";
+        scheduleAnalysisCompute("typed witness-count evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisWitnessCountPromise = null;
+        runtime.analysisWitnessCountWorkerReady = false;
+        runtime.analysisWitnessCountRequested = false;
+        runtime.analysisWitnessCountError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Witness-count evidence failed closed: " + runtime.analysisWitnessCountError;
+        console.error("[analysis witness count]", error);
+        throw error;
+      });
+    return runtime.analysisWitnessCountPromise;
+  }
+
+  function analysisColorArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.colorManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisColorArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-color-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed color projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisColorArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisColorWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed color setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisColorArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisColorArtifact() {
+    runtime.analysisColorRequested = true;
+    if (runtime.analysisColorWorkerReady) return Promise.resolve(runtime.analysisColorManifest);
+    if (runtime.analysisColorPromise) return runtime.analysisColorPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_color_v1/manifest.json"), document.baseURI).toString();
+    const statusElement = document.getElementById("analysis-color-status");
+    if (statusElement) statusElement.textContent = "Loading provenance-preserving source-reported color evidence...";
+    runtime.analysisColorPromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Color manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisColorManifest = manifest;
+        return setAnalysisColorArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisColorError = "";
+        runtime.analysisCache.clear();
+        if (statusElement) statusElement.textContent = "Typed color evidence ready; object, emitted-light, changing, compound, and unknown-role evidence remain distinct.";
+        scheduleAnalysisCompute("typed color evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisColorPromise = null;
+        runtime.analysisColorWorkerReady = false;
+        runtime.analysisColorRequested = false;
+        runtime.analysisColorError = error && error.message ? error.message : String(error);
+        if (statusElement) statusElement.textContent = "Color evidence failed closed: " + runtime.analysisColorError;
+        console.error("[analysis color]", error);
+        throw error;
+      });
+    return runtime.analysisColorPromise;
+  }
+
+  function analysisCoordinateEvidenceArtifactHashes(manifest) {
+    const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
+      ? manifest.artifacts
+      : {};
+    const hashes = {};
+    Object.keys(artifacts).sort().forEach(function (key) {
+      if (artifacts[key] && artifacts[key].sha256) hashes[key] = String(artifacts[key].sha256);
+    });
+    if (manifest && manifest.releaseId) hashes.coordinateEvidenceManifest = String(manifest.releaseId);
+    return hashes;
+  }
+
+  function setAnalysisCoordinateEvidenceStatus(message) {
+    ["analysis-coordinate-evidence-status", "analysis-coordinate-evidence-spatial-status"].forEach(function (id) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = String(message || "");
+    });
+  }
+
+  function setAnalysisCoordinateEvidenceArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-coordinate-evidence-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Typed coordinate-evidence projection timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisCoordinateEvidenceArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisCoordinateEvidenceWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Typed coordinate-evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisCoordinateEvidenceArtifact",
+        requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        cancellationGeneration: runtime.analysisCancellationGeneration,
+        manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisCoordinateEvidenceArtifact() {
+    runtime.analysisCoordinateEvidenceRequested = true;
+    if (runtime.analysisCoordinateEvidenceWorkerReady) return Promise.resolve(runtime.analysisCoordinateEvidenceManifest);
+    if (runtime.analysisCoordinateEvidencePromise) return runtime.analysisCoordinateEvidencePromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_coordinate_evidence_v1/manifest.json"), document.baseURI).toString();
+    setAnalysisCoordinateEvidenceStatus("Loading provenance-preserving coordinate evidence...");
+    runtime.analysisCoordinateEvidencePromise = fetch(manifestUrl, { cache: "force-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Coordinate-evidence manifest request failed (" + response.status + ").");
+        return response.json();
+      })
+      .then(function (manifest) {
+        runtime.analysisCoordinateEvidenceManifest = manifest;
+        return setAnalysisCoordinateEvidenceArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCoordinateEvidenceError = "";
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("typed coordinate evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisCoordinateEvidencePromise = null;
+        runtime.analysisCoordinateEvidenceWorkerReady = false;
+        runtime.analysisCoordinateEvidenceRequested = false;
+        runtime.analysisCoordinateEvidenceError = error && error.message ? error.message : String(error);
+        setAnalysisCoordinateEvidenceStatus("Coordinate evidence failed closed: " + runtime.analysisCoordinateEvidenceError);
+        console.error("[analysis coordinate evidence]", error);
+        throw error;
+      });
+    return runtime.analysisCoordinateEvidencePromise;
+  }
+
+  function requestAnalysisCoordinateEvidence() {
+    ensureAnalysisCoordinateEvidenceArtifact().catch(function () { return null; });
+  }
+
+  function setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-relationships-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Relationship evidence timed out."));
+      }, 15000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisRelationshipArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisRelationshipWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Relationship evidence setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisRelationshipArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisRelationshipArtifact(optionsValue) {
+    const options = optionsValue || {};
+    runtime.analysisRelationshipRequested = true;
+    if (runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady) {
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisRelationshipPromise) return runtime.analysisRelationshipPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    runtime.analysisRelationshipPromise = ensureAnalysisV2Manifest(manifestUrl)
+      .then(function (manifest) {
+        return setAnalysisRelationshipArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (!options.deferCompute) scheduleAnalysisCompute("relationship evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisRelationshipPromise = null;
+        runtime.analysisRelationshipWorkerReady = false;
+        runtime.analysisRelationshipRequested = false;
+        console.error("[analysis relationships]", error);
+        throw error;
+      });
+    return runtime.analysisRelationshipPromise;
+  }
+
+  function setAnalysisContextSpatialArtifactInWorker(manifest, manifestUrl) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) return Promise.reject(new Error("The Analysis worker is unavailable."));
+    return new Promise(function (resolve, reject) {
+      const requestId = "analysis-context-spatial-" + (++runtime.catalogFacetWorkerRequestId) + "-" + Date.now();
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        worker.removeEventListener("message", onMessage);
+        reject(new Error("Context point-neighborhood evidence timed out."));
+      }, 30000);
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisContextSpatialArtifactSet") {
+          if (settled) return;
+          settled = true;
+          finish();
+          runtime.analysisContextSpatialWorkerReady = true;
+          resolve(message.snapshot || message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          reject(new Error(message.error || message.message || "Context point-neighborhood setup failed."));
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "setAnalysisContextSpatialArtifact",
+        requestId: requestId,
+        filterGeneration: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
+        manifest: manifest,
+        urls: { manifest: manifestUrl },
+      });
+    });
+  }
+
+  function ensureAnalysisContextSpatialArtifact(optionsValue) {
+    const options = optionsValue || {};
+    runtime.analysisContextSpatialRequested = true;
+    if (runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady) {
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisContextSpatialPromise) return runtime.analysisContextSpatialPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    runtime.analysisContextSpatialPromise = ensureAnalysisV2Manifest(manifestUrl)
+      .then(function (manifest) {
+        return setAnalysisContextSpatialArtifactInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        if (!options.deferCompute) scheduleAnalysisCompute("context point-neighborhood evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisContextSpatialPromise = null;
+        runtime.analysisContextSpatialWorkerReady = false;
+        runtime.analysisContextSpatialRequested = false;
+        console.error("[analysis context spatial]", error);
+        throw error;
+      });
+    return runtime.analysisContextSpatialPromise;
+  }
+
+  function analysisContextEvidenceArtifactsReady() {
+    return Boolean(
+      runtime.analysisSpatialWorkerReady ||
+      (runtime.analysisRelationshipWorkerReady && runtime.analysisContextSpatialWorkerReady)
+    );
+  }
+
+  function analysisResultHasContextEvidence(resultValue) {
+    const result = resultValue && typeof resultValue === "object" ? resultValue : {};
+    const spatial = result.spatialEvidence && typeof result.spatialEvidence === "object"
+      ? result.spatialEvidence
+      : (result.spatial && typeof result.spatial === "object" ? result.spatial : {});
+    const status = String(spatial.status || "").trim().toLowerCase();
+    const associations = spatial.contextAssociations && typeof spatial.contextAssociations === "object"
+      ? spatial.contextAssociations
+      : spatial.context_associations;
+    const relationships = spatial.relationshipSummary && typeof spatial.relationshipSummary === "object"
+      ? spatial.relationshipSummary
+      : spatial.relationship_summary;
+    return status.indexOf("context_evidence_ready") !== -1
+      || Boolean(associations && Array.isArray(associations.lanes))
+      || Boolean(relationships && Array.isArray(relationships.cells));
+  }
+
+  function setAnalysisContextEvidenceSectionState(stateValue, messageValue) {
+    if (!runtime.analysisViewController || typeof runtime.analysisViewController.setSectionState !== "function") return;
+    runtime.analysisViewController.setSectionState("context", stateValue, messageValue);
+  }
+
+  function ensureAnalysisContextEvidence() {
+    runtime.analysisContextEvidenceRequested = true;
+    if (analysisContextEvidenceArtifactsReady()) {
+      runtime.analysisContextEvidenceWorkerReady = true;
+      runtime.analysisContextEvidenceError = "";
+      if (analysisResultHasContextEvidence(runtime.analysisLastResult) && !runtime.analysisContextEvidenceRenderPending) {
+        setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+      } else {
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");
+        scheduleAnalysisCompute("context evidence render pending", { immediate: true });
+      }
+      return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
+    }
+    if (runtime.analysisContextEvidencePromise) return runtime.analysisContextEvidencePromise;
+    setAnalysisContextEvidenceSectionState("loading", "Loading relationship and point-neighborhood evidence...");
+    runtime.analysisContextEvidencePromise = Promise.all([
+      ensureAnalysisRelationshipArtifact({ deferCompute: true }),
+      ensureAnalysisContextSpatialArtifact({ deferCompute: true }),
+    ]).then(function (values) {
+      if (!analysisContextEvidenceArtifactsReady()) {
+        throw new Error("Context evidence setup completed without both required worker artifacts.");
+      }
+      runtime.analysisContextEvidenceWorkerReady = true;
+      runtime.analysisContextEvidenceError = "";
+      runtime.analysisCache.clear();
+      setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");
+      if (!runtime.analysisSpatialRequested) {
+        scheduleAnalysisCompute("context evidence ready", { immediate: true });
+      }
+      return values[0] || values[1] || null;
+    }).catch(function (error) {
+      // A concurrent full Spatial load supersedes these narrow worker requests.
+      // In that case Spatial owns the recomputation and already contains both
+      // Context artifacts, so this narrow loader should converge to ready.
+      if (analysisContextEvidenceArtifactsReady()) {
+        runtime.analysisContextEvidenceWorkerReady = true;
+        runtime.analysisContextEvidenceError = "";
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded from Spatial Evidence; updating the selected date and filters...");
+        return runtime.analysisSpatialManifest || runtime.analysisGeographyManifest;
+      }
+      runtime.analysisContextEvidencePromise = null;
+      runtime.analysisContextEvidenceWorkerReady = false;
+      runtime.analysisContextEvidenceRequested = false;
+      runtime.analysisContextEvidenceError = error && error.message ? error.message : String(error);
+      runtime.analysisContextEvidenceRenderPending = false;
+      setAnalysisContextEvidenceSectionState("error", runtime.analysisContextEvidenceError + " Select Context or Retry to try again.");
+      console.error("[analysis context evidence]", error);
+      throw error;
+    });
+    return runtime.analysisContextEvidencePromise;
+  }
+
+  function ensureAnalysisSpatialArtifacts() {
+    runtime.analysisSpatialRequested = true;
+    if (runtime.analysisSpatialWorkerReady) return Promise.resolve(runtime.analysisSpatialManifest);
+    if (runtime.analysisSpatialPromise) return runtime.analysisSpatialPromise;
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+      runtime.analysisViewController.setSectionState("spatial", "loading", "Loading spatial evidence artifacts...");
+    }
+    const contextPartialSetups = [
+      runtime.analysisRelationshipPromise,
+      runtime.analysisContextSpatialPromise,
+    ].filter(Boolean);
+    const contextPartialSetupsSettled = Promise.all(contextPartialSetups.map(function (promise) {
+      return Promise.resolve(promise).catch(function () { return null; });
+    }));
+    runtime.analysisSpatialPromise = Promise.all([
+      ensureAnalysisV2Manifest(manifestUrl),
+      contextPartialSetupsSettled,
+    ])
+      .then(function (values) { return values[0]; })
+      .then(function (manifest) {
+        runtime.analysisSpatialManifest = manifest;
+        return setAnalysisSpatialArtifactsInWorker(manifest, manifestUrl).then(function () { return manifest; });
+      })
+      .then(function (manifest) {
+        runtime.analysisCache.clear();
+        runtime.analysisContextEvidenceWorkerReady = true;
+        runtime.analysisContextEvidenceError = "";
+        setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded from Spatial Evidence; updating the selected date and filters...");
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("spatial", "ready", "Spatial evidence artifacts ready.");
+        }
+        scheduleAnalysisCompute("spatial evidence ready", { immediate: true });
+        return manifest;
+      })
+      .catch(function (error) {
+        runtime.analysisSpatialPromise = null;
+        runtime.analysisSpatialWorkerReady = false;
+        runtime.analysisSpatialRequested = false;
+        const message = error && error.message ? error.message : String(error);
+        if (runtime.analysisViewController && typeof runtime.analysisViewController.setSectionState === "function") {
+          runtime.analysisViewController.setSectionState("spatial", "error", message);
+        }
+        if (analysisContextEvidenceArtifactsReady()) {
+          runtime.analysisContextEvidenceWorkerReady = true;
+          runtime.analysisContextEvidenceError = "";
+          runtime.analysisCache.clear();
+          setAnalysisContextEvidenceSectionState("loading", "Context evidence remains available; updating the selected date and filters...");
+          scheduleAnalysisCompute("context evidence ready after spatial setup failure", { immediate: true });
+        }
+        console.error("[analysis spatial]", error);
+        throw error;
+      });
+    return runtime.analysisSpatialPromise;
+  }
+
+  function analysisComputeCacheKey(snapshot) {
+    const filters = snapshot && snapshot.filters ? snapshot.filters : {};
+    const area = snapshot && snapshot.areaFilter ? snapshot.areaFilter : {};
+    const context = snapshot && snapshot.contextLayers ? snapshot.contextLayers : {};
+    return JSON.stringify({
+      generation: snapshot ? snapshot.generation : 0,
+      baselineMode: snapshot ? snapshot.baselineMode : "other_dates_balanced",
+      timeRange: snapshot ? snapshot.timeRange : null,
+      filters: filters,
+      areaPointOnly: Boolean(area.pointOnly),
+      areaShapes: area.shapes || [],
+      crops: Boolean(context.crops && context.crops.enabled),
+      animals: Boolean(context.animals && context.animals.enabled),
+      contextHashes: snapshot && snapshot.contextReleaseHashes
+        ? snapshot.contextReleaseHashes
+        : analysisContextReleaseHashes(runtime.analysisContextManifest),
+      spatialRequested: Boolean(runtime.analysisSpatialRequested),
+      spatialReady: Boolean(runtime.analysisSpatialWorkerReady),
+      geographyRequested: Boolean(runtime.analysisGeographyRequested),
+      geographyReady: Boolean(runtime.analysisGeographyWorkerReady),
+      durationRequested: Boolean(runtime.analysisDurationRequested),
+      durationReady: Boolean(runtime.analysisDurationWorkerReady),
+      durationHashes: analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+      reportingDelayRequested: Boolean(runtime.analysisReportingDelayRequested),
+      reportingDelayReady: Boolean(runtime.analysisReportingDelayWorkerReady),
+      reportingDelayHashes: analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+      timeOfDayRequested: Boolean(runtime.analysisTimeOfDayRequested),
+      timeOfDayReady: Boolean(runtime.analysisTimeOfDayWorkerReady),
+      timeOfDayHashes: analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+      witnessCountRequested: Boolean(runtime.analysisWitnessCountRequested),
+      witnessCountReady: Boolean(runtime.analysisWitnessCountWorkerReady),
+      witnessCountHashes: analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+      colorRequested: Boolean(runtime.analysisColorRequested),
+      colorReady: Boolean(runtime.analysisColorWorkerReady),
+      colorHashes: analysisColorArtifactHashes(runtime.analysisColorManifest),
+      coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
+      coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
+      coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
+      relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
+      relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
+      contextSpatialRequested: Boolean(runtime.analysisContextSpatialRequested),
+      contextSpatialReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
+      artifactHashes: Object.assign(
+        {},
+        analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+        analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+        analysisColorArtifactHashes(runtime.analysisColorManifest),
+        analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
+      ),
+      datasetHash: analysisCatalogDatasetHash(),
+    });
+  }
+
+  function analysisResponseEnvelopeMatchesCurrentState(pending, message, snapshotOrSignature) {
+    const currentSignature = typeof snapshotOrSignature === "string"
+      ? snapshotOrSignature
+      : analysisComputeCacheKey(snapshotOrSignature || getAnalysisFilterSnapshot());
+    return Boolean(
+      pending &&
+      Number(pending.cancellationGeneration || 0) === Number(message && message.cancellationGeneration || 0) &&
+      window.UfoAnalysisView &&
+      typeof window.UfoAnalysisView.analysisRequestEnvelopeMatches === "function" &&
+      window.UfoAnalysisView.analysisRequestEnvelopeMatches(pending, message, currentSignature)
+    );
+  }
+
+  function trimAnalysisResultCache() {
+    while (runtime.analysisCache.size > 24) {
+      const oldestKey = runtime.analysisCache.keys().next().value;
+      runtime.analysisCache.delete(oldestKey);
+    }
+  }
+
+  function computeAnalysisViaWorker(snapshot, optionsValue) {
+    const options = optionsValue || {};
+    const analysisPhase = options.quickMode ? "quick" : "full";
+    const worker = ensureCatalogFacetWorker();
+    if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) {
+      return Promise.reject(new Error("The analysis worker is still indexing the catalog."));
+    }
+    const generation = Number(snapshot.generation) || 0;
+    const analysisSignature = analysisComputeCacheKey(snapshot);
+    const workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, generation);
+    const requestId = "analysis-compute-" + analysisPhase + "-" + (++runtime.analysisRequestId) + "-" + Date.now();
+    const cancellationGeneration = ++runtime.analysisCancellationGeneration;
+    runtime.analysisPendingRequest = {
+      requestId: requestId,
+      generation: generation,
+      baselineMode: snapshot.baselineMode,
+      signature: analysisSignature,
+      timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+      timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+      cancellationGeneration: cancellationGeneration,
+      analysisPhase: analysisPhase,
+    };
+    return new Promise(function (resolve, reject) {
+      let settled = false;
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        finish();
+        if (!runtime.analysisPendingRequest || runtime.analysisPendingRequest.requestId !== requestId) {
+          resolve(null);
+        } else {
+          reject(new Error("Analysis computation timed out."));
+        }
+      }, options.quickMode ? 8000 : ((runtime.analysisSpatialRequested || runtime.analysisContextSpatialRequested) ? 30000 : 15000));
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+      }
+      function onMessage(event) {
+        const message = event.data || {};
+        if (message.requestId !== requestId) return;
+        if (message.type === "analysisComputed") {
+          if (settled) return;
+          settled = true;
+          finish();
+          const envelopeMatches = analysisResponseEnvelopeMatchesCurrentState(
+            runtime.analysisPendingRequest,
+            message
+          );
+          if (!envelopeMatches || state.activeView !== "analysis") {
+            runtime.discardedWorkerResults += 1;
+            resolve(null);
+            return;
+          }
+          resolve(message);
+          return;
+        }
+        if (message.type === "catalogFacetWorkerError" || message.type === "analysisWorkerError") {
+          if (settled) return;
+          settled = true;
+          finish();
+          if (!runtime.analysisPendingRequest || runtime.analysisPendingRequest.requestId !== requestId) {
+            resolve(null);
+          } else {
+            reject(new Error(message.error || message.message || "Analysis computation failed."));
+          }
+        }
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "computeAnalysis",
+        requestId: requestId,
+        analysisSignature: analysisSignature,
+        filterGeneration: generation,
+        generation: generation,
+        cancellationGeneration: cancellationGeneration,
+        baselineMode: snapshot.baselineMode,
+        datasetHash: analysisCatalogDatasetHash(),
+        contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
+        artifactHashes: Object.assign(
+          {},
+          analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+          analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+          analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+          analysisColorArtifactHashes(runtime.analysisColorManifest),
+          analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest)
+        ),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
+        analysisPhase: analysisPhase,
+        quickMode: Boolean(options.quickMode),
+        selectedDomains: Array.isArray(options.selectedDomains)
+          ? options.selectedDomains.slice()
+          : (runtime.analysisSpatialRequested
+            ? ["overview", "time", "craft", "geography", "spatial", "sources_quality", "context"]
+            : ["overview", "time", "craft", "geography", "sources_quality", "context"]),
+        spatialPermutationCount: 499,
+        spatialBootstrapCount: 199,
+        spatialMinimumStratumSize: 20,
+        contextLayers: {
+          cropCirclesEnabled: Boolean(snapshot.contextLayers.crops && snapshot.contextLayers.crops.enabled),
+          animalMutilationsEnabled: Boolean(snapshot.contextLayers.animals && snapshot.contextLayers.animals.enabled),
+        },
+        filters: workerFilters,
+        keywordEventIds: workerFilters.keywordEventIds,
+        areaFilterEventIds: null,
+        areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+        timeRangeMode: snapshot.timeRange.mode,
+        fullTimeRange: snapshot.timeRange.mode === "full",
+        timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+        timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+        lowPrecisionValues: workerFilters.lowPrecisionValues,
+      });
+    });
+  }
+
+  function setAnalysisComputationPhase(phase, message) {
+    runtime.analysisComputationPhase = String(phase || "idle");
+    if (runtime.analysisViewController && typeof runtime.analysisViewController.setComputationPhase === "function") {
+      runtime.analysisViewController.setComputationPhase(runtime.analysisComputationPhase, message || "");
+    }
+  }
+
+  function renderAnalysisWorkerResult(message, cacheKey, startedAt, optionsValue) {
+    const options = optionsValue || {};
+    if (!message || !message.result || !runtime.analysisViewController) return false;
+    if (runtime.analysisPendingRequest && runtime.analysisPendingRequest.requestId === message.requestId) {
+      runtime.analysisPendingRequest = null;
+    }
+    const result = attachAnalysisV2ContextPulseSummary(message.result);
+    runtime.analysisLastResult = result;
+    runtime.analysisLastError = "";
+    if (options.cacheResult !== false) {
+      runtime.analysisCache.set(cacheKey, result);
+      trimAnalysisResultCache();
+    }
+    const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
+    runtime.analysisPerformanceSamples.push({
+      generation: message.filterGeneration,
+      baselineMode: String(result.baseline && result.baseline.mode || message.baselineMode),
+      requestedBaselineMode: message.baselineMode,
+      durationMs: durationMs,
+      cacheHit: Boolean(message.cacheHit),
+      analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
+      inferenceDeferred: Boolean(result.inferenceDeferred),
+      recordedAt: Date.now(),
+    });
+    if (runtime.analysisPerformanceSamples.length > 50) runtime.analysisPerformanceSamples.shift();
+    if (analysisContextEvidenceArtifactsReady() && analysisResultHasContextEvidence(result)) {
+      runtime.analysisContextEvidenceRenderPending = true;
+      setAnalysisContextEvidenceSectionState("loading", "Context evidence computed; rendering the selected Context view...");
+    }
+    runtime.analysisViewController.renderAnalysisResult(result, {
+      baselineMode: String(result.baseline && result.baseline.mode || message.baselineMode),
+      datasetHash: message.datasetHash,
+      estimatorVersion: message.estimatorVersion,
+      artifactHashes: Object.assign(
+        {},
+        analysisContextReleaseHashes(runtime.analysisContextManifest),
+        analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+        analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+        analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+        analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+        analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+        analysisColorArtifactHashes(runtime.analysisColorManifest),
+        analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
+        result.artifactHashes || {},
+        message.artifactHashes || {}
+      ),
+      filterSnapshot: getAnalysisFilterSnapshot(),
+      durationMs: durationMs,
+      analysisPhase: String(message.analysisPhase || (result.inferenceDeferred ? "quick" : "full")),
+      analysisMode: String(message.analysisMode || result.analysisMode || "cohort_comparison"),
+      comparisonState: String(message.comparisonState || result.comparisonState || result.baseline && result.baseline.comparisonState || "inferential"),
+    });
+    runtime.analysisViewController.setAnalysisState(
+      result.summary && Number(result.summary.activeCount) === 0 ? "empty" : "ready",
+      result.summary && Number(result.summary.activeCount) === 0
+        ? "No reports match the active cohort. Adjust filters or the timeline range."
+        : ""
+    );
+    if (result.inferenceDeferred) {
+      setAnalysisComputationPhase(
+        "inference",
+        "Core cohort view ready. Computing adjusted effects, 95% intervals, and bias-sensitivity checks off the main thread."
+      );
+    } else {
+      setAnalysisComputationPhase("ready", "Adjusted evidence computation complete.");
+    }
+    return true;
+  }
+
+  function computeAnalysisForCurrentView(reason) {
+    if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
+      return Promise.resolve(null);
+    }
+    if (
+      !runtime.analysisSpatialManifest &&
+      !runtime.analysisGeographyManifest &&
+      !runtime.analysisV2OverviewManifestRequested
+    ) {
+      runtime.analysisV2OverviewManifestRequested = true;
+      const overviewManifestUrl = new URL(resolveAssetPath("./data/analysis_v2/manifest.json"), document.baseURI).toString();
+      return ensureAnalysisV2Manifest(overviewManifestUrl)
+        .then(function () {
+          runtime.analysisV2OverviewManifestError = "";
+          return computeAnalysisForCurrentView(reason);
+        })
+        .catch(function (error) {
+          runtime.analysisV2OverviewManifestError = error && error.message ? error.message : String(error);
+          console.warn("[analysis overview manifest] " + runtime.analysisV2OverviewManifestError);
+          return computeAnalysisForCurrentView(reason);
+        });
+    }
+    ensureAnalysisContextProjections();
+    const snapshot = getAnalysisFilterSnapshot();
+    const cacheKey = analysisComputeCacheKey(snapshot);
+    const cached = attachAnalysisV2ContextPulseSummary(runtime.analysisCache.get(cacheKey));
+    if (cached) {
+      runtime.analysisPendingRequest = null;
+      runtime.analysisLastResult = cached;
+      runtime.analysisViewController.renderAnalysisResult(cached, {
+        baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
+        estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
+        artifactHashes: Object.assign(
+          {},
+          analysisContextReleaseHashes(runtime.analysisContextManifest),
+          analysisV2ArtifactHashes(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest),
+          analysisDurationArtifactHashes(runtime.analysisDurationManifest),
+          analysisReportingDelayArtifactHashes(runtime.analysisReportingDelayManifest),
+          analysisTimeOfDayArtifactHashes(runtime.analysisTimeOfDayManifest),
+          analysisWitnessCountArtifactHashes(runtime.analysisWitnessCountManifest),
+          analysisColorArtifactHashes(runtime.analysisColorManifest),
+          analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
+          cached.artifactHashes || {}
+        ),
+        filterSnapshot: snapshot,
+        cacheHit: true,
+        analysisMode: String(cached.analysisMode || "cohort_comparison"),
+        comparisonState: String(cached.comparisonState || cached.baseline && cached.baseline.comparisonState || "inferential"),
+      });
+      runtime.analysisViewController.setAnalysisState(
+        cached.summary && Number(cached.summary.activeCount) === 0 ? "empty" : "ready",
+        cached.summary && Number(cached.summary.activeCount) === 0
+          ? "No reports match the active cohort. Adjust filters or the timeline range."
+          : ""
+      );
+      setAnalysisComputationPhase("ready", "Adjusted evidence computation restored from cache.");
+      return Promise.resolve(cached);
+    }
+    if (!runtime.analysisLastResult) {
+      runtime.analysisViewController.setAnalysisState("loading", "Computing the first evidence summary...");
+    } else {
+      setAnalysisComputationPhase("updating", "Updating the cohort view for the active filters...");
+    }
+    const quickStartedAt = performance.now();
+    return computeAnalysisViaWorker(snapshot, {
+      quickMode: true,
+      selectedDomains: ["overview", "time", "sources_quality", "context"],
+    }).then(function (quickMessage) {
+      if (!quickMessage) return null;
+      renderAnalysisWorkerResult(quickMessage, cacheKey, quickStartedAt, { cacheResult: false });
+      if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
+      window.clearTimeout(runtime.analysisFullInferenceTimerId);
+      runtime.analysisFullInferenceTimerId = window.setTimeout(function () {
+        runtime.analysisFullInferenceTimerId = null;
+        if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
+        const fullStartedAt = performance.now();
+        computeAnalysisViaWorker(snapshot).then(function (fullMessage) {
+          if (!fullMessage) return;
+          renderAnalysisWorkerResult(fullMessage, cacheKey, fullStartedAt, { cacheResult: true });
+        }).catch(function (error) {
+          runtime.analysisLastError = error && error.message ? error.message : String(error);
+          if (runtime.analysisViewController && state.activeView === "analysis") {
+            setAnalysisComputationPhase("error", "Adjusted evidence update failed: " + runtime.analysisLastError);
+          }
+          console.error("[analysis] " + (reason || "full inference") + ":", error);
+        });
+      // Full inference stays off the main thread. Queue it after the quick
+      // result without an artificial hold so warm adjusted results satisfy the
+      // interaction-latency contract while retaining the complete estimator.
+      }, 0);
+      return quickMessage.result;
+    }).catch(function (error) {
+      runtime.analysisLastError = error && error.message ? error.message : String(error);
+      if (runtime.analysisViewController && state.activeView === "analysis") {
+        if (runtime.analysisLastResult) {
+          setAnalysisComputationPhase("error", "Adjusted evidence update failed: " + runtime.analysisLastError);
+        } else {
+          runtime.analysisViewController.setAnalysisState("error", runtime.analysisLastError);
+        }
+      }
+      console.error("[analysis] " + (reason || "compute") + ":", error);
+      return null;
+    });
+  }
+
+  function scheduleAnalysisCompute(reason, options) {
+    if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
+    runtime.analysisPendingRequest = null;
+    window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    runtime.analysisFullInferenceTimerId = null;
+    window.clearTimeout(runtime.analysisDebounceTimerId);
+    const delay = options && options.immediate ? 0 : 180;
+    runtime.analysisDebounceTimerId = window.setTimeout(function () {
+      runtime.analysisDebounceTimerId = null;
+      computeAnalysisForCurrentView(reason || "state changed");
+    }, delay);
+    return true;
   }
 
   function postCatalogFacetWorkerRows(events) {
@@ -8094,6 +11619,7 @@
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
       timeRangeEndOrdinal: state.timeRangeEndOrdinal,
       lowPrecisionValues: Array.from(LOW_PRECISION_VALUES),
+      selectedAreaCountry: state.analysisCountryAreaFilter || "",
       generation: Number.isFinite(Number(generation)) ? Number(generation) : state.filterGeneration,
     };
   }
@@ -8930,7 +12456,7 @@
     const mismatches = [];
     let missingCatalog = 0;
     for (const rowIndex of rowIndexes) {
-      const projected = readPackedPointEvent(packedPoints, rowIndex);
+      const projected = applyLocationLabelOverlay(readPackedPointEvent(packedPoints, rowIndex));
       if (!projected) {
         mismatches.push({ rowIndex, field: "row", packed: null, catalog: "projectable event" });
         continue;
@@ -10101,7 +13627,92 @@
     renderMultiSelectState(filterKey);
   }
 
+  function currentCraftLegendState(availableKeys) {
+    return LEGEND_CONTROLS.normalizeCraftSelectionState(
+      {
+        selection: state.mapLegendEventSelection,
+        solo: state.mapLegendCraftSolo,
+      },
+      availableKeys,
+      "craft_type"
+    );
+  }
+
+  function assignCraftLegendState(nextState) {
+    state.mapLegendEventSelection = LEGEND_CONTROLS.normalizeEventSelection(
+      nextState && nextState.selection,
+      "craft_type"
+    );
+    state.mapLegendCraftSolo = nextState && nextState.solo ? nextState.solo : null;
+  }
+
+  function clearCraftLegendSoloState() {
+    state.mapLegendCraftSolo = null;
+  }
+
+  function craftLegendSoloKey() {
+    return state.mapLegendCraftSolo && state.mapLegendCraftSolo.key
+      ? String(state.mapLegendCraftSolo.key)
+      : "";
+  }
+
+  function buildCraftLegendBulkControls() {
+    return (
+      '<div class="legend-bulk-controls" role="group" aria-label="Craft visibility actions">' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="all">All</button>' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="none">None</button>' +
+      '<button class="legend-bulk-button" type="button" data-craft-legend-bulk="invert">Invert</button>' +
+      "</div>"
+    );
+  }
+
+  function buildCraftLegendRow(entry, surface) {
+    const active = Boolean(entry.active);
+    const soloActive = craftLegendSoloKey() === entry.key;
+    const formattedCount = formatNumber(entry.count);
+    const countLabel = formattedCount + (Number(entry.count) === 1 ? " event" : " events") +
+      " visible on the current map";
+    const toggleAttribute = surface === "map"
+      ? 'data-map-legend-event-key="' + escapeHtml(entry.key) + '"'
+      : 'data-craft-legend-toggle-key="' + escapeHtml(entry.key) + '"';
+    const soloTitle = soloActive
+      ? "Restore the previous craft selection"
+      : "Show only " + entry.label;
+    const colorTitle = "Choose color for " + entry.label + " sightings and traces";
+    const customColor = Object.prototype.hasOwnProperty.call(
+      state.craftTypeColorOverrides || {},
+      entry.key
+    );
+    const surfaceClass = surface === "map" ? "map-legend-item" : "legend-item";
+    return (
+      '<div class="' + surfaceClass + ' craft-legend-row' + (active ? "" : " is-disabled") + '">' +
+      '<button class="craft-legend-swatch-button" type="button" ' + toggleAttribute +
+      ' aria-pressed="' + (active ? "true" : "false") + '" aria-label="Toggle ' +
+      escapeHtml(entry.label) + '" title="Toggle ' + escapeHtml(entry.label) + '">' +
+      '<span class="legend-swatch" style="background:' + escapeHtml(entry.color) + '" aria-hidden="true"></span>' +
+      "</button>" +
+      '<button class="craft-legend-label-button" type="button" data-craft-legend-solo-key="' +
+      escapeHtml(entry.key) + '" aria-pressed="' + (soloActive ? "true" : "false") +
+      '" aria-label="' + escapeHtml(soloTitle) + '" title="' + escapeHtml(soloTitle) + '">' +
+      LEGEND_CONTROLS.craftSymbolMarkup(entry.key) +
+      '<span class="craft-legend-label-text">' + escapeHtml(entry.label) + "</span>" +
+      "</button>" +
+      '<strong class="craft-legend-count" aria-label="' + escapeHtml(countLabel) + '">' +
+      escapeHtml(formattedCount) +
+      "</strong>" +
+      '<label class="craft-color-picker' + (customColor ? " is-custom" : "") + '" title="' +
+      escapeHtml(colorTitle) + '">' +
+      '<input class="craft-color-input" type="color" data-craft-color-key="' +
+      escapeHtml(entry.key) + '" value="' + escapeHtml(entry.color) + '" aria-label="' +
+      escapeHtml(colorTitle) + '">' +
+      '<span class="craft-color-wheel" aria-hidden="true"></span>' +
+      "</label>" +
+      "</div>"
+    );
+  }
+
   function renderLegend() {
+    renderMapControlSectionSummaries();
     if (state.colorMode === "single") {
       els.legendPanel.hidden = true;
       els.legendBody.innerHTML = "";
@@ -10111,7 +13722,7 @@
     const orderedEntries = state.colorMode === "type"
       ? buildTypeLegendEntries()
       : state.colorMode === "craft_type"
-        ? buildCraftTypeLegendEntries()
+        ? buildMapLegendEventEntries()
         : buildPrecisionLegendEntries();
 
     if (!orderedEntries.length) {
@@ -10127,7 +13738,7 @@
       : state.colorMode === "craft_type"
         ? "Legend: Craft Type"
         : "Legend: Location Precision";
-    els.legendBody.innerHTML = orderedEntries.map(function (entry) {
+    const legendRows = orderedEntries.map(function (entry) {
       if (state.colorMode === "type") {
         return (
           '<div class="legend-item' + (entry.active ? "" : " is-disabled") + '">' +
@@ -10143,6 +13754,10 @@
         );
       }
 
+      if (state.colorMode === "craft_type") {
+        return buildCraftLegendRow(entry, "panel");
+      }
+
       return (
         '<div class="legend-item">' +
         '<span class="legend-item-label">' +
@@ -10153,6 +13768,9 @@
         "</div>"
       );
     }).join("");
+    els.legendBody.innerHTML =
+      (state.colorMode === "craft_type" ? buildCraftLegendBulkControls() : "") +
+      legendRows;
 
     if (state.colorMode === "type") {
       els.legendBody.querySelectorAll("[data-legend-partial]").forEach(function (input) {
@@ -10162,11 +13780,12 @@
     renderMapLegend();
   }
 
-  function buildMapLegendSection(title, rows) {
+  function buildMapLegendSection(title, rows, controlsHtml) {
     if (!rows.length) return "";
     return (
       '<section class="map-legend-section">' +
       '<div class="map-legend-heading">' + escapeHtml(title) + "</div>" +
+      (controlsHtml || "") +
       rows.join("") +
       "</section>"
     );
@@ -10193,12 +13812,16 @@
   function buildMapLegendMarkerRow(label, color, shape, options) {
     const config = options || {};
     const active = config.active !== false;
+    const stateLabel = String(config.stateLabel || "").trim();
     const hasCount = Number.isFinite(Number(config.count));
     const count = hasCount ? Math.max(0, Number(config.count)) : 0;
-    const countNoun = count === 1 ? "event" : "events";
+    const singularNoun = String(config.countNounSingular || "event");
+    const pluralNoun = String(config.countNounPlural || singularNoun + "s");
+    const countNoun = count === 1 ? singularNoun : pluralNoun;
+    const countContext = String(config.countContext || "under the current filters");
     const countHtml = hasCount
       ? '<span class="map-legend-item-count" title="' +
-        escapeHtml(formatNumber(count) + " " + countNoun + " under the current filters") +
+        escapeHtml(formatNumber(count) + " " + countNoun + " " + countContext) +
         '" aria-label="' +
         escapeHtml(formatNumber(count) + " " + countNoun) +
         '">' +
@@ -10210,11 +13833,16 @@
       escapeHtml(shape) +
       '" style="--overlay-marker-color:' +
       escapeHtml(color) +
-      '"></span>';
+      '" aria-hidden="true"></span>';
+    const stateHtml = stateLabel
+      ? '<span class="map-legend-item-state" data-state="' +
+        escapeHtml(String(config.stateKey || "")) +
+        '">' + escapeHtml(stateLabel) + "</span>"
+      : "";
     return (
       '<div class="map-legend-item' + (active ? "" : " is-disabled") + '">' +
       buildMapLegendToggleButton(sampleHtml, Object.assign({}, config, { label })) +
-      '<span class="map-legend-item-label">' + escapeHtml(label) + "</span>" +
+      '<span class="map-legend-item-label">' + escapeHtml(label) + stateHtml + "</span>" +
       countHtml +
       "</div>"
     );
@@ -10309,21 +13937,95 @@
     return rows;
   }
 
-  function mapLegendEventCountsForCurrentMode() {
+  function currentMapViewportBoundsSnapshot() {
+    if (!runtime.map || typeof runtime.map.getBounds !== "function") {
+      return { south: -90, west: -180, north: 90, east: 180 };
+    }
+    const bounds = runtime.map.getBounds();
+    return {
+      south: Number(bounds.getSouth()),
+      west: Number(bounds.getWest()),
+      north: Number(bounds.getNorth()),
+      east: Number(bounds.getEast()),
+    };
+  }
+
+  function mapViewportBoundsCacheKey(bounds) {
+    return [bounds.south, bounds.west, bounds.north, bounds.east].map(function (value) {
+      return Number.isFinite(value) ? value.toFixed(6) : "invalid";
+    }).join(",");
+  }
+
+  function mapLegendEventUniverseKeysForCurrentMode() {
+    const keys = [];
     if (
       runtime.mapLegendEventBaseMode === state.colorMode &&
-      runtime.mapLegendEventBaseCounts instanceof Map &&
-      runtime.mapLegendEventBaseCounts.size
+      runtime.mapLegendEventBaseCounts instanceof Map
     ) {
-      return new Map(runtime.mapLegendEventBaseCounts);
+      runtime.mapLegendEventBaseCounts.forEach(function (_count, key) {
+        keys.push(key);
+      });
+    }
+    const selection = normalizedMapLegendEventSelection();
+    keys.push.apply(keys, selection.selectedKeys || []);
+    if (state.mapLegendCraftSolo && Array.isArray(state.mapLegendCraftSolo.universeKeys)) {
+      keys.push.apply(keys, state.mapLegendCraftSolo.universeKeys);
+    }
+    if (state.colorMode === "single" && (keys.length || state.filteredCatalog.length)) {
+      keys.push("all_events");
+    }
+    return LEGEND_CONTROLS.uniqueKeys(keys);
+  }
+
+  function mapLegendEventCountsForCurrentMode() {
+    const visibleMappedCatalog = currentVisibleMappedCatalog();
+    const viewportBounds = currentMapViewportBoundsSnapshot();
+    const universeKeys = mapLegendEventUniverseKeysForCurrentMode();
+    const eventSelection = normalizedMapLegendEventSelection();
+    const cacheKey = [
+      state.timelineDataVersion,
+      state.filterGeneration,
+      runtime.activeFilterGeneration,
+      state.colorMode,
+      mapLegendEventSelectionSignature(),
+      regionSelectionAffectsRendering() ? runtime.regionSelectionResultCacheKey : "",
+      traceLinkedVisibilityAffectsRendering() ? runtime.traceLinkedVisibilityCacheKey : "",
+      regionSelectionAffectsRendering() ? runtime.areaEventRepresentation : state.effectiveMapMode,
+      mapViewportBoundsCacheKey(viewportBounds),
+      universeKeys.join(","),
+    ].join("|");
+    if (
+      runtime.mapLegendViewportCountsCatalogRef === visibleMappedCatalog &&
+      runtime.mapLegendViewportCountsCacheKey === cacheKey &&
+      runtime.mapLegendViewportCountsCacheValue instanceof Map
+    ) {
+      return runtime.mapLegendViewportCountsCacheValue;
     }
 
-    const counts = new Map();
-    for (const event of state.filteredCatalog) {
-      const key = eventLegendKeyForMode(event, state.colorMode);
-      counts.set(key, (counts.get(key) || 0) + 1);
-    }
+    const events = regionSelectionAffectsRendering() && runtime.areaEventRepresentation === "hidden"
+      ? []
+      : visibleMappedCatalog;
+    const counts = LEGEND_CONTROLS.countViewportEventsByKey(
+      events,
+      viewportBounds,
+      function (event) {
+        const key = eventLegendKeyForMode(event, state.colorMode);
+        return LEGEND_CONTROLS.eventKeyActive(eventSelection, key, state.colorMode) ? key : "";
+      },
+      universeKeys
+    );
+    runtime.mapLegendViewportCountsCatalogRef = visibleMappedCatalog;
+    runtime.mapLegendViewportCountsCacheKey = cacheKey;
+    runtime.mapLegendViewportCountsCacheValue = counts;
     return counts;
+  }
+
+  function scheduleMapViewportLegendRefresh() {
+    if (runtime.mapLegendViewportRefreshFrameId != null) return;
+    runtime.mapLegendViewportRefreshFrameId = window.requestAnimationFrame(function () {
+      runtime.mapLegendViewportRefreshFrameId = null;
+      renderLegend();
+    });
   }
 
   function orderedMapLegendEventKeys(counts, selection) {
@@ -10365,8 +14067,24 @@
   }
 
   function buildMapLegendEventEntries() {
-    const selection = normalizedMapLegendEventSelection();
     const counts = mapLegendEventCountsForCurrentMode();
+    if (state.colorMode === "craft_type") {
+      const availableKeys = LEGEND_CONTROLS.uniqueKeys(Array.from(counts.keys()));
+      if (!availableKeys.length) {
+        clearCraftLegendSoloState();
+      } else {
+        const currentState = {
+          selection: state.mapLegendEventSelection,
+          solo: state.mapLegendCraftSolo,
+        };
+        assignCraftLegendState(
+          state.mapLegendCraftSolo
+            ? LEGEND_CONTROLS.normalizeCraftSelectionState(currentState, availableKeys, "craft_type")
+            : LEGEND_CONTROLS.replaceCraftSelectionUniverse(currentState, availableKeys, "craft_type")
+        );
+      }
+    }
+    const selection = normalizedMapLegendEventSelection();
     return orderedMapLegendEventKeys(counts, selection).map(function (key) {
       return {
         key,
@@ -10391,12 +14109,16 @@
   function buildMapLegendEventRows() {
     const selection = normalizedMapLegendEventSelection();
     return buildMapLegendEventEntries().map(function (entry) {
+      if (state.colorMode === "craft_type") {
+        return buildCraftLegendRow(entry, "map");
+      }
       return buildMapLegendMarkerRow(entry.label, entry.color, "circle", {
         active: entry.active,
         controlAttribute: "data-map-legend-event-key",
         controlValue: entry.key,
         title: mapLegendEventToggleTitle(entry, selection),
         count: entry.count,
+        countContext: "visible on the current map",
       });
     });
   }
@@ -10412,8 +14134,8 @@
     const payload = runtime.overlayPayloads.get("researchSites");
     const features = Array.isArray(payload && payload.features) ? payload.features : [];
     features.forEach(function (feature) {
-      const category = String(feature && feature.properties ? feature.properties.category || "" : "").trim();
-      if (category) categories.add(category);
+      const properties = feature && feature.properties ? feature.properties : {};
+      categories.add(researchSiteDisplayCategory(properties));
     });
     const preferred = Object.keys(RESEARCH_SITE_CATEGORY_LABELS).filter(function (category) {
       return categories.has(category);
@@ -10430,9 +14152,9 @@
   }
 
   function researchCategoryVisible(category) {
-    if (!category) return true;
-    if (!Object.prototype.hasOwnProperty.call(state.researchCategoryVisibility, category)) return true;
-    return Boolean(state.researchCategoryVisibility[category]);
+    const displayCategory = researchSiteDisplayCategory(category);
+    if (!Object.prototype.hasOwnProperty.call(state.researchCategoryVisibility, displayCategory)) return true;
+    return Boolean(state.researchCategoryVisibility[displayCategory]);
   }
 
   function mapLegendOverlayToggleOptions(attribute, value, label, active) {
@@ -10444,8 +14166,126 @@
     };
   }
 
+  function cropCircleOverlayActive() {
+    return Boolean(runtime.cropCircleOverlayEnabled || (
+      els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true"
+    ));
+  }
+
+  function animalMutilationOverlayActive() {
+    return Boolean(runtime.animalMutilationOverlayEnabled || (
+      els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true"
+    ));
+  }
+
+  function currentOverlayCountModel() {
+    const researchPayload = runtime.overlayPayloads.get("researchSites");
+    const researchFeatures = researchPayload
+      ? overlayFeaturesForDisplay("researchSites", researchPayload)
+      : [];
+    const researchByCategory = new Map();
+    researchFeatures.forEach(function (feature) {
+      const properties = feature && feature.properties ? feature.properties : {};
+      const category = researchSiteDisplayCategory(properties);
+      researchByCategory.set(category, (researchByCategory.get(category) || 0) + 1);
+    });
+    return {
+      researchSites: researchFeatures.length,
+      researchByCategory,
+      cropCircles: Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
+        ? Math.max(0, Number(runtime.cropCircleOverlayVisibleCount))
+        : 0,
+      animalMutilations: Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+        ? Math.max(0, Number(runtime.animalMutilationOverlayVisibleCount))
+        : 0,
+    };
+  }
+
+  function renderCompactOverlayCounts() {
+    const counts = currentOverlayCountModel();
+    if (els.overlayResearchSitesCount) {
+      els.overlayResearchSitesCount.textContent = formatNumber(counts.researchSites);
+    }
+    if (els.overlayCropCirclesCount) {
+      els.overlayCropCirclesCount.textContent = formatNumber(counts.cropCircles);
+    }
+    if (els.overlayAnimalMutilationsCount) {
+      els.overlayAnimalMutilationsCount.textContent = formatNumber(counts.animalMutilations);
+    }
+    if (els.overlayResearchSitesToggle) {
+      els.overlayResearchSitesToggle.setAttribute(
+        "aria-label",
+        "Research sites, " + formatNumber(counts.researchSites) + " visible"
+      );
+    }
+    if (els.overlayCropCirclesToggle) {
+      els.overlayCropCirclesToggle.setAttribute(
+        "aria-label",
+        "Crop circles, " + formatNumber(counts.cropCircles) + " visible"
+      );
+    }
+    if (els.overlayAnimalMutilationsToggle) {
+      els.overlayAnimalMutilationsToggle.setAttribute(
+        "aria-label",
+        "Animal Mutilation Reports, " + formatNumber(counts.animalMutilations) + " mapped reports visible"
+      );
+    }
+    return counts;
+  }
+
   function buildMapLegendOverlayRows() {
     const rows = [];
+    const overlayCounts = currentOverlayCountModel();
+    const cropCirclesActive = cropCircleOverlayActive();
+    const cropCircleState = currentQuickCropCircleState();
+    rows.push(buildMapLegendMarkerRow(
+      "Crop circles",
+      "#d8ff3e",
+      "spiral",
+      Object.assign(
+        mapLegendOverlayToggleOptions(
+          "data-map-legend-crop-circles",
+          "crop_circles",
+          "Crop circles",
+          cropCirclesActive
+        ),
+        {
+          count: overlayCounts.cropCircles,
+          countNounSingular: "crop record",
+          countNounPlural: "crop records",
+          stateKey: cropCircleState.key,
+          stateLabel: cropCircleState.currentLabel,
+          title: cropCirclesActive
+            ? "Hide Crop circles overlay. Current: " + cropCircleState.currentLabel + "."
+            : "Show Crop circles overlay. Current: Off.",
+        }
+      )
+    ));
+    const animalMutilationsActive = animalMutilationOverlayActive();
+    const animalMutilationState = currentQuickAnimalMutilationState();
+    rows.push(buildMapLegendMarkerRow(
+      "Animal Mutilation Reports",
+      "#101417",
+      "cow",
+      Object.assign(
+        mapLegendOverlayToggleOptions(
+          "data-map-legend-animal-mutilations",
+          "animal_mutilations",
+          "Animal Mutilation Reports",
+          animalMutilationsActive
+        ),
+        {
+          count: overlayCounts.animalMutilations,
+          countNounSingular: "mapped report",
+          countNounPlural: "mapped reports",
+          stateKey: animalMutilationState.key,
+          stateLabel: animalMutilationState.currentLabel,
+          title: animalMutilationsActive
+            ? "Hide Animal Mutilation Reports overlay. Current: " + animalMutilationState.currentLabel + "."
+            : "Show Animal Mutilation Reports overlay. Current: Off.",
+        }
+      )
+    ));
     const airportsActive = Boolean(state.overlayVisibility.airports);
     rows.push(buildMapLegendMarkerRow(
       "Airports",
@@ -10475,11 +14315,19 @@
     researchLegendCategories().forEach(function (category) {
       const active = Boolean(state.overlayVisibility.researchSites && researchCategoryVisible(category));
       const label = researchSiteCategoryLabel(category);
+      const categoryStyle = researchSiteCategoryStyle(category);
       rows.push(buildMapLegendMarkerRow(
         label,
-        researchSiteCategoryStyle(category).color,
-        "ring",
-        mapLegendOverlayToggleOptions("data-map-legend-research-category", category, label, active)
+        categoryStyle.color,
+        categoryStyle.shape,
+        Object.assign(
+          mapLegendOverlayToggleOptions("data-map-legend-research-category", category, label, active),
+          {
+            count: overlayCounts.researchByCategory.get(category) || 0,
+            countNounSingular: "research site",
+            countNounPlural: "research sites",
+          }
+        )
       ));
     });
 
@@ -10520,10 +14368,15 @@
     if (craftTraceColoringActive()) {
       return [
         buildMapLegendLineRow(
-          "Earlier endpoint craft \u2192 later endpoint craft",
-          "height:4px;border-top:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0 50%,#fb7185 50% 100%);opacity:0.92;"
+          famousCaseTraceSelectionActive() ? "Same-date, same-craft report connections" : "Earlier endpoint craft \u2192 later endpoint craft",
+          famousCaseTraceSelectionActive()
+            ? "height:4px;border-top:0;border-radius:999px;background:#38bdf8;opacity:0.92;"
+            : "height:4px;border-top:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0 50%,#fb7185 50% 100%);opacity:0.92;"
         ),
-        buildMapLegendNoteRow("Matching craft types use one continuous color. Unknown endpoints use gray."),
+        buildMapLegendNoteRow(famousCaseTraceSelectionActive()
+          ? "Each connection uses one craft category color. Dashed, double-headed arrows indicate unknown report order."
+          : "Matching craft types use one continuous color. Unknown endpoints use gray."),
+        buildMapLegendNoteRow("Single-headed arrows follow report chronology. Unknown-order links are excluded from directional percentages; arrows do not establish craft travel."),
         buildMapLegendNoteRow(
           traceFacilityFilterEnabled()
             ? "Facility evidence uses outlines and dashes; craft hue takes precedence."
@@ -10590,8 +14443,13 @@
     const researchCategories = researchLegendCategories();
     return (
       eventSelection.mode !== "all" ||
+      craftTypeColorsAreCustomized() ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
+      !cropCircleOverlayActive() ||
+      cropCircleDateScope() !== "window" ||
+      !animalMutilationOverlayActive() ||
+      animalMutilationDateScope() !== "window" ||
       !booleanStateMatchesDefaults(state.militaryBranchVisibility, defaultMilitaryBranchVisibilityState()) ||
       !booleanStateMatchesDefaults(
         state.researchCategoryVisibility,
@@ -10608,11 +14466,11 @@
     els.resetMapLegendButton.setAttribute(
       "aria-label",
       dirty
-        ? "Reset legend event filters and overlays"
-        : "Legend event filters and overlays are at their defaults"
+        ? "Reset legend filters, overlays, and craft colors"
+        : "Legend filters, overlays, and craft colors are at their defaults"
     );
     els.resetMapLegendButton.title = dirty
-      ? "Reset legend event filters and overlays"
+      ? "Reset legend filters, overlays, and craft colors"
       : "Legend is already at its default state";
   }
 
@@ -10639,19 +14497,85 @@
     invalidateStaticTraceRenderCaches();
   }
 
+  function invalidateCraftTypeColorRenderingCaches() {
+    runtime.craftTypeResolutionByKey.clear();
+    runtime.craftTypeLegendEntriesCacheKey = "";
+    runtime.craftTypeLegendEntriesCacheValue = null;
+    runtime.timelineRenderCacheKey = "";
+    runtime.timelineRenderCacheValue = null;
+    invalidateTraceSequenceCache();
+    invalidateStaticTraceRenderCaches();
+  }
+
+  function applyCraftTypeColorOverride(key, color, options) {
+    const previous = JSON.stringify(state.craftTypeColorOverrides || {});
+    state.craftTypeColorOverrides = LEGEND_CONTROLS.updateCraftColorOverride(
+      state.craftTypeColorOverrides,
+      key,
+      color,
+      DEFAULT_CRAFT_TYPE_COLORS
+    );
+    if (JSON.stringify(state.craftTypeColorOverrides) === previous) return false;
+
+    syncCraftTypeColorPalette();
+    invalidateCraftTypeColorRenderingCaches();
+    if (!(options && options.skipPersist)) {
+      persistCraftTypeColorOverrides();
+    }
+    renderLegend();
+    renderTrailLegend();
+    renderTimeline();
+    renderMap();
+    restylePlaybackTrailEntriesForColorMode();
+    renderPlaybackStatus();
+
+    const normalizedKey = String(key || "");
+    const restoredDefault = !Object.prototype.hasOwnProperty.call(
+      state.craftTypeColorOverrides,
+      normalizedKey
+    );
+    announceMapLegendStatus(
+      mapLegendEventEntryLabel(normalizedKey) +
+      (restoredDefault
+        ? " color restored to its default."
+        : " color updated for sightings and traces.")
+    );
+    return true;
+  }
+
+  function handleCraftColorInput(event) {
+    const input = event && event.target && event.target.closest
+      ? event.target.closest("[data-craft-color-key]")
+      : null;
+    if (!input || state.colorMode !== "craft_type") return false;
+    applyCraftTypeColorOverride(input.getAttribute("data-craft-color-key"), input.value);
+    return true;
+  }
+
   function toggleMapLegendEventKey(key) {
     const current = normalizedMapLegendEventSelection();
     const entries = buildMapLegendEventEntries();
-    const next = LEGEND_CONTROLS.toggleEventKey(
-      current,
-      key,
-      entries.map(function (entry) { return entry.key; }),
-      state.colorMode
-    );
-    state.mapLegendEventSelection = next;
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    if (state.colorMode === "craft_type") {
+      assignCraftLegendState(LEGEND_CONTROLS.toggleCraftKey(
+        currentCraftLegendState(availableKeys),
+        key,
+        availableKeys,
+        "craft_type"
+      ));
+    } else {
+      state.mapLegendEventSelection = LEGEND_CONTROLS.toggleEventKey(
+        current,
+        key,
+        availableKeys,
+        state.colorMode
+      );
+      clearCraftLegendSoloState();
+    }
+    const next = normalizedMapLegendEventSelection();
     invalidateMapLegendEventFilterCaches();
     resetPlayback({ preserveSelection: true });
-    renderMapLegend();
+    renderLegend();
     if (next.mode === "all") {
       announceMapLegendStatus("All event categories are shown.");
     } else if (next.mode === "none") {
@@ -10662,6 +14586,52 @@
         (next.selectedKeys.length === 1 ? " event category is selected." : " event categories are selected.")
       );
     }
+    scheduleRefresh({ immediate: true });
+  }
+
+  function toggleCraftLegendSoloKey(key) {
+    if (state.colorMode !== "craft_type") return;
+    const entries = buildMapLegendEventEntries();
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    const wasActiveSolo = craftLegendSoloKey() === String(key || "");
+    assignCraftLegendState(LEGEND_CONTROLS.toggleCraftSolo(
+      currentCraftLegendState(availableKeys),
+      key,
+      availableKeys,
+      "craft_type"
+    ));
+    invalidateMapLegendEventFilterCaches();
+    resetPlayback({ preserveSelection: true });
+    renderLegend();
+    announceMapLegendStatus(
+      wasActiveSolo
+        ? "The previous craft selection was restored."
+        : "Showing only " + mapLegendEventEntryLabel(key) + ". Select the same label again to restore the prior selection."
+    );
+    scheduleRefresh({ immediate: true });
+  }
+
+  function applyCraftLegendBulkAction(action) {
+    if (state.colorMode !== "craft_type") return;
+    const entries = buildMapLegendEventEntries();
+    const availableKeys = entries.map(function (entry) { return entry.key; });
+    assignCraftLegendState(LEGEND_CONTROLS.applyCraftBulkSelection(
+      currentCraftLegendState(availableKeys),
+      action,
+      availableKeys,
+      "craft_type"
+    ));
+    invalidateMapLegendEventFilterCaches();
+    resetPlayback({ preserveSelection: true });
+    renderLegend();
+    const normalizedAction = String(action || "").toLowerCase();
+    announceMapLegendStatus(
+      normalizedAction === "all"
+        ? "All craft types are shown."
+        : normalizedAction === "none"
+          ? "All craft types are hidden."
+          : "Craft-type visibility was inverted."
+    );
     scheduleRefresh({ immediate: true });
   }
 
@@ -10773,18 +14743,43 @@
 
   function resetMapLegendControls() {
     const eventSelectionWasFiltered = normalizedMapLegendEventSelection().mode !== "all";
+    const craftColorsWereCustomized = craftTypeColorsAreCustomized();
     state.mapLegendEventSelection = defaultMapLegendEventSelectionState(state.colorMode);
+    clearCraftLegendSoloState();
+    state.craftTypeColorOverrides = {};
+    syncCraftTypeColorPalette();
+    persistCraftTypeColorOverrides();
     state.overlayVisibility = defaultOverlayVisibilityState();
     state.claimedUfoBaseVisibility = defaultClaimedUfoBaseVisibilityState();
     state.militaryBranchVisibility = defaultMilitaryBranchVisibilityState();
     state.researchCategoryVisibility = defaultResearchCategoryVisibilityState(researchLegendCategories());
+    setCropCircleDateScope("window");
+    if (cropCircleOverlayActive() && window.UfoCropCircleLayer && typeof window.UfoCropCircleLayer.resetControls === "function") {
+      window.UfoCropCircleLayer.resetControls();
+    } else if (!cropCircleOverlayActive() && els.overlayCropCirclesToggle) {
+      els.overlayCropCirclesToggle.click();
+    }
+    setAnimalMutilationDateScope("window");
+    if (animalMutilationOverlayActive() && window.UfoAnimalMutilationLayer && typeof window.UfoAnimalMutilationLayer.resetControls === "function") {
+      window.UfoAnimalMutilationLayer.resetControls();
+    }
+    if (!animalMutilationOverlayActive() && els.overlayAnimalMutilationsToggle) {
+      els.overlayAnimalMutilationsToggle.click();
+    }
     invalidateMapLegendEventFilterCaches();
+    if (craftColorsWereCustomized) {
+      invalidateCraftTypeColorRenderingCaches();
+      restylePlaybackTrailEntriesForColorMode();
+    }
     resetPlayback({ preserveSelection: true });
     renderOverlayControls();
     syncOverlayVisibility();
     syncClaimedUfoBaseVisibility();
-    renderMapLegend();
-    announceMapLegendStatus("Legend event filters and overlays were reset to their defaults.");
+    renderLegend();
+    if (craftColorsWereCustomized) {
+      renderTimeline();
+    }
+    announceMapLegendStatus("Legend filters, overlays, and craft colors were reset to their defaults.");
     if (eventSelectionWasFiltered) {
       scheduleRefresh({ immediate: true });
     } else {
@@ -10793,13 +14788,18 @@
   }
 
   function renderMapLegend() {
+    renderCompactOverlayCounts();
     if (!els.mapLegendBody) return;
     renderMapLegendHeaderControls();
     const eventRows = buildMapLegendEventRows();
     const overlayRows = buildMapLegendOverlayRows();
     const trailRows = buildMapLegendTrailRows();
     els.mapLegendBody.innerHTML = [
-      buildMapLegendSection("Events", eventRows),
+      buildMapLegendSection(
+        "Events",
+        eventRows,
+        state.colorMode === "craft_type" ? buildCraftLegendBulkControls() : ""
+      ),
       buildMapLegendSection("Overlays", overlayRows),
       buildMapLegendSection(mapLegendTrailSectionTitle(), trailRows),
     ].join("");
@@ -11478,55 +15478,6 @@
     );
   }
 
-  function boundsArea(bounds) {
-    if (!bounds || !bounds.isValid()) return 0;
-    const southWest = bounds.getSouthWest();
-    const northEast = bounds.getNorthEast();
-    return Math.abs((northEast.lat - southWest.lat) * (northEast.lng - southWest.lng));
-  }
-
-  function featureDisplayName(feature) {
-    if (!feature || !feature.properties) return "";
-    return feature.properties.name || feature.properties.admin || "";
-  }
-
-  function createReferenceLabelMarker(lat, lon, html, className) {
-    return L.marker([lat, lon], {
-      interactive: false,
-      keyboard: false,
-      icon: L.divIcon({
-        className,
-        html,
-        iconSize: null,
-      }),
-    });
-  }
-
-  function syncReferenceMarkersVisibility(markers, shouldShow) {
-    for (const marker of markers) {
-      const visible = runtime.worldReferenceLayer.hasLayer(marker);
-      if (shouldShow(marker) && !visible) {
-        marker.addTo(runtime.worldReferenceLayer);
-      } else if (!shouldShow(marker) && visible) {
-        runtime.worldReferenceLayer.removeLayer(marker);
-      }
-    }
-  }
-
-  function updateWorldReferenceLabelVisibility() {
-    if (!runtime.map || !runtime.worldReferenceLayer || state.currentTileProviderId !== "none") {
-      return;
-    }
-
-    const zoom = runtime.map.getZoom();
-    syncReferenceMarkersVisibility(runtime.countryLabelMarkers, function (marker) {
-      return zoom >= (marker.options.minReferenceZoom || COUNTRY_LABEL_MIN_ZOOM);
-    });
-    syncReferenceMarkersVisibility(runtime.cityLabelMarkers, function () {
-      return zoom >= MAJOR_CITY_LABEL_MIN_ZOOM;
-    });
-  }
-
   function addGeoJsonCountryLayer() {
     const geoJson = runtime.worldReferenceData;
     if (!geoJson || !Array.isArray(geoJson.features) || !geoJson.features.length) {
@@ -11536,55 +15487,21 @@
     const landStroke = cssThemeValue("--land-stroke", "rgba(42, 63, 72, 0.52)");
     const landFill = cssThemeValue("--land-fill", "rgba(231, 239, 231, 0.76)");
 
-    runtime.countryLabelMarkers = [];
-    runtime.cityLabelMarkers = [];
-
     L.geoJSON(geoJson, {
-      style: function (feature) {
-        const name = featureDisplayName(feature);
-        const isAntarctica = name === "Antarctica";
+      style: function () {
         return {
-          color: isAntarctica ? landStroke : landStroke,
-          weight: isAntarctica ? 0.7 : 0.85,
+          color: landStroke,
+          weight: 0.85,
           opacity: 1,
           fillColor: landFill,
-          fillOpacity: isAntarctica ? 0.52 : 0.74,
+          fillOpacity: 0.74,
           interactive: false,
           smoothFactor: 1.2,
           className: "land-outline",
         };
       },
-      onEachFeature: function (feature, layer) {
-        const name = featureDisplayName(feature);
-        if (!name || name === "Antarctica") return;
-
-        const bounds = layer.getBounds();
-        const area = boundsArea(bounds);
-        if (!bounds.isValid() || area < COUNTRY_LABEL_MIN_AREA) return;
-
-        const center = bounds.getCenter();
-        const minZoom = area > 2500 ? 2 : area > 900 ? 3 : 4;
-        const labelMarker = createReferenceLabelMarker(
-          center.lat,
-          center.lng,
-          '<span class="country-label-pill">' + escapeHtml(name) + "</span>",
-          "country-label-marker"
-        );
-        labelMarker.options.minReferenceZoom = minZoom;
-        runtime.countryLabelMarkers.push(labelMarker);
-      },
     }).addTo(runtime.worldReferenceLayer);
 
-    runtime.cityLabelMarkers = MAJOR_CITY_LABELS.map(function (city) {
-      return createReferenceLabelMarker(
-        city.lat,
-        city.lon,
-        '<span class="city-label-pill">' + escapeHtml(city.name) + "</span>",
-        "major-city-label-marker"
-      );
-    });
-
-    updateWorldReferenceLabelVisibility();
     return true;
   }
 
@@ -11641,8 +15558,6 @@
 
   function drawWorldReferenceLayer() {
     runtime.worldReferenceLayer.clearLayers();
-    runtime.countryLabelMarkers = [];
-    runtime.cityLabelMarkers = [];
     addGraticule();
     if (!addGeoJsonCountryLayer()) {
       addLandMasses();
@@ -11695,6 +15610,56 @@
     }
   }
 
+  function currentMapEventRepresentation() {
+    return regionSelectionAffectsRendering()
+      ? runtime.areaEventRepresentation
+      : state.effectiveMapMode;
+  }
+
+  function rememberMapEventLayerLoadedViewport(representation, bounds) {
+    if (!bounds) {
+      runtime.mapEventLayerLoadedBounds = null;
+      runtime.mapEventLayerLoadedRepresentation = "";
+      return;
+    }
+    let west = Number(bounds.getWest());
+    let east = Number(bounds.getEast());
+    while (east < west) east += 360;
+    runtime.mapEventLayerLoadedBounds = {
+      south: Number(bounds.getSouth()) - TRACE_VIEWPORT_LAT_PAD,
+      west: west - TRACE_VIEWPORT_LON_PAD,
+      north: Number(bounds.getNorth()) + TRACE_VIEWPORT_LAT_PAD,
+      east: east + TRACE_VIEWPORT_LON_PAD,
+    };
+    runtime.mapEventLayerLoadedRepresentation = representation;
+  }
+
+  function mapEventLayerLoadedViewportContainsCurrentBounds(representation) {
+    const loaded = runtime.mapEventLayerLoadedBounds;
+    if (
+      !runtime.map ||
+      !loaded ||
+      runtime.mapEventLayerLoadedRepresentation !== representation
+    ) {
+      return false;
+    }
+    const bounds = runtime.map.getBounds();
+    const south = Number(bounds.getSouth());
+    const north = Number(bounds.getNorth());
+    if (south < loaded.south || north > loaded.north) return false;
+    let west = Number(bounds.getWest());
+    let east = Number(bounds.getEast());
+    while (east < west) east += 360;
+    if ((loaded.east - loaded.west) >= 360) return true;
+    if ((east - west) >= 360) return false;
+    const loadedCenter = (loaded.west + loaded.east) / 2;
+    const currentCenter = (west + east) / 2;
+    const worldOffset = Math.round((loadedCenter - currentCenter) / 360) * 360;
+    west += worldOffset;
+    east += worldOffset;
+    return west >= loaded.west && east <= loaded.east;
+  }
+
   function refreshWrappedWorldRendering(force) {
     const nextWorldIndex = currentWrappedWorldIndex();
     if (!force && runtime.renderedWrapWorldIndex === nextWorldIndex) {
@@ -11702,9 +15667,12 @@
     }
 
     runtime.renderedWrapWorldIndex = nextWorldIndex;
-    if (state.effectiveMapMode === MAP_RENDERERS.events) {
+    const representation = currentMapEventRepresentation();
+    if (representation === "hidden") {
+      clearMapDataLayers();
+    } else if (representation === MAP_RENDERERS.events) {
       renderPointLayer();
-    } else if (state.effectiveMapMode === MAP_RENDERERS.clusters) {
+    } else if (representation === MAP_RENDERERS.clusters) {
       renderClusterLayer();
     } else if (runtime.heatmapLayer && runtime.map.hasLayer(runtime.heatmapLayer) && typeof runtime.heatmapLayer._reset === "function") {
       runtime.heatmapLayer._reset();
@@ -11717,6 +15685,30 @@
     }
     scheduleStaticTraceViewportRefresh();
     return true;
+  }
+
+  function refreshMapEventLayerForViewportChange() {
+    if (!runtime.map) return false;
+    const representation = currentMapEventRepresentation();
+    if (
+      representation === MAP_RENDERERS.events &&
+      runtime.pointLayer &&
+      runtime.map.hasLayer(runtime.pointLayer)
+    ) {
+      if (mapEventLayerLoadedViewportContainsCurrentBounds(representation)) return false;
+      renderPointLayer();
+      return true;
+    }
+    if (
+      representation === MAP_RENDERERS.clusters &&
+      runtime.clusterLayer &&
+      runtime.map.hasLayer(runtime.clusterLayer)
+    ) {
+      if (mapEventLayerLoadedViewportContainsCurrentBounds(representation)) return false;
+      renderClusterLayer();
+      return true;
+    }
+    return false;
   }
 
   function scheduleMapProjectionRefresh() {
@@ -11776,6 +15768,7 @@
     }
     const rebuiltWrappedWorld = refreshWrappedWorldRendering();
     if (!rebuiltWrappedWorld) {
+      refreshMapEventLayerForViewportChange();
       scheduleMapProjectionRefresh();
     }
     if (mapMoveEndFollowsRecentZoom()) {
@@ -11783,6 +15776,7 @@
     } else {
       refreshStaticTraceLayerForViewportChange();
     }
+    scheduleMapViewportLegendRefresh();
   }
 
   function panelConfig(panelKey) {
@@ -12420,7 +16414,7 @@
   function researchSiteFeatureVisible(feature) {
     const properties = feature && feature.properties ? feature.properties : {};
     if (researchSiteRecommendedIncludeValue(properties) === "no") return false;
-    const category = researchSiteStringValue(properties, "category");
+    const category = researchSiteDisplayCategory(properties);
     if (!researchCategoryVisible(category)) return false;
     return overlayFeatureVisibleInCurrentTimeWindow(feature);
   }
@@ -12491,19 +16485,33 @@
     return String(value).trim();
   }
 
+  function researchSiteDisplayCategory(value) {
+    const rawCategory = value && typeof value === "object"
+      ? researchSiteStringValue(value, "category")
+      : String(value || "").trim();
+    return rawCategory || RESEARCH_SITE_FALLBACK_CATEGORY;
+  }
+
   function researchSiteCategoryStyle(category) {
+    const displayCategory = researchSiteDisplayCategory(category);
     const overlayCfg = overlayConfig("researchSites");
     const categoryStyles = overlayCfg && overlayCfg.category_styles ? overlayCfg.category_styles : null;
-    const style = categoryStyles && category ? categoryStyles[category] : null;
+    const style = categoryStyles ? categoryStyles[displayCategory] : null;
+    const configuredIcon = String((style && style.icon) || "").trim();
+    const semanticShape = RESEARCH_SITE_CATEGORY_SHAPES[displayCategory];
+    const legacyShape = RESEARCH_SITE_LEGACY_ICON_ALIASES[configuredIcon];
+    const configuredShape = Object.values(RESEARCH_SITE_CATEGORY_SHAPES).indexOf(configuredIcon) !== -1
+      ? configuredIcon
+      : legacyShape;
     return {
-      color: (style && style.color) || RESEARCH_SITE_FALLBACK_CATEGORY_COLORS[category] || OVERLAY_VISUALS.researchSites.chipColor,
-      icon: (style && style.icon) || "lab",
+      color: (style && style.color) || RESEARCH_SITE_FALLBACK_CATEGORY_COLORS[displayCategory] || OVERLAY_VISUALS.researchSites.chipColor,
+      shape: semanticShape || configuredShape || RESEARCH_SITE_CATEGORY_SHAPES[RESEARCH_SITE_FALLBACK_CATEGORY],
     };
   }
 
   function researchSiteCategoryLabel(category) {
-    if (!category) return "";
-    return RESEARCH_SITE_CATEGORY_LABELS[category] || humanizeTokenLabel(category);
+    const displayCategory = researchSiteDisplayCategory(category);
+    return RESEARCH_SITE_CATEGORY_LABELS[displayCategory] || humanizeTokenLabel(displayCategory);
   }
 
   function researchSiteOperationDates(properties) {
@@ -12625,7 +16633,8 @@
         return;
       }
       if (field === "category") {
-        const categoryLabel = researchSiteCategoryLabel(researchSiteStringValue(properties, "category"));
+        const rawCategory = researchSiteStringValue(properties, "category");
+        const categoryLabel = rawCategory ? researchSiteCategoryLabel(rawCategory) : "";
         if (categoryLabel) {
           rows.push(buildOverlayPopupRow("Category", categoryLabel));
         }
@@ -12858,13 +16867,14 @@
     if (els.militaryBranchStatus) {
       const activeBranches = activeMilitaryBranches();
       els.militaryBranchStatus.textContent = !militaryVisible
-        ? "Military overlay is off. Turn it on to inspect global installations by branch."
+        ? "Military overlay off."
         : activeBranches.length
-          ? "Showing " + activeBranches.map(militaryBranchLabel).join(", ").toLowerCase() + "."
-          : "Military overlay is on, but no branch types are selected.";
+          ? "Military branches: " + activeBranches.map(militaryBranchLabel).join(", ").toLowerCase() + "."
+          : "Military overlay on; no branches selected.";
     }
     renderClaimedUfoBaseControls();
     renderFocusMapButton();
+    renderMapControlSectionSummaries();
     renderMapLegend();
     renderMapControlQuickButtons();
   }
@@ -12914,9 +16924,10 @@
       ].filter(Boolean).join(" | ");
     }
     if (overlayId === "researchSites") {
+      const rawCategory = researchSiteStringValue(properties, "category");
       return [
         researchSiteStringValue(properties, ["region_or_city", "location_label"]),
-        researchSiteCategoryLabel(researchSiteStringValue(properties, "category")) ||
+        (rawCategory ? researchSiteCategoryLabel(rawCategory) : "") ||
           researchSiteStringValue(properties, "facility_type"),
         researchSiteOperationDates(properties),
       ].filter(Boolean).join(" | ");
@@ -12969,9 +16980,10 @@
     const properties = feature && feature.properties ? feature.properties : {};
     const overlayCfg = overlayConfig("researchSites");
     const markerStyle = overlayCfg && overlayCfg.marker_style ? overlayCfg.marker_style : null;
-    const category = researchSiteStringValue(properties, "category");
-    const baseColor = markerStyle && markerStyle.use_category_color && category
-      ? researchSiteCategoryStyle(category).color
+    const category = researchSiteDisplayCategory(properties);
+    const categoryStyle = researchSiteCategoryStyle(category);
+    const baseColor = markerStyle && markerStyle.use_category_color
+      ? categoryStyle.color
       : overlayVisual("researchSites").chipColor;
 
     if (researchSiteHasContextMarker(properties)) {
@@ -12979,7 +16991,7 @@
       const baseOpacity = researchSiteNumberValue(properties, "marker_dot_opacity");
       return {
         color: baseColor,
-        shape: "circle",
+        shape: categoryStyle.shape,
         opacity: clamp(
           (Number.isFinite(baseOpacity) ? baseOpacity : RESEARCH_SITE_DEFAULT_DOT_OPACITY) *
             researchSiteMarkerEmphasis(properties),
@@ -12996,7 +17008,7 @@
 
     return {
       color: baseColor,
-      shape: (markerStyle && markerStyle.shape) || "ring",
+      shape: categoryStyle.shape,
     };
   }
 
@@ -13057,10 +17069,11 @@
   }
 
   function resolvedOverlayMarkerVisualSize(descriptor, overlayId) {
+    const minimumSize = overlayId === "researchSites" ? RESEARCH_SITE_SYMBOL_MIN_SIZE_PX : 6;
     if (descriptor && Number.isFinite(descriptor.fixedSizePx) && descriptor.fixedSizePx > 0) {
-      return clamp(descriptor.fixedSizePx, 6, MAP_OVERLAY_MAX_SIZE);
+      return clamp(descriptor.fixedSizePx, minimumSize, MAP_OVERLAY_MAX_SIZE);
     }
-    return zoomScaledOverlayMarkerSize(overlayId);
+    return clamp(zoomScaledOverlayMarkerSize(overlayId), minimumSize, MAP_OVERLAY_MAX_SIZE);
   }
 
   function createOverlayMarkerIcon(descriptor, overlayId) {
@@ -13709,10 +17722,128 @@
     for (const provider of providers) {
       const option = document.createElement("option");
       option.value = provider.id;
-      option.textContent = provider.label;
+      option.textContent = String(provider.label || "").replace(/\s*\(hosted tiles\)\s*$/i, "");
       if (provider.id === state.currentTileProviderId) option.selected = true;
       els.basemapMode.append(option);
     }
+  }
+
+  function resolvedTileProviderUrl(provider) {
+    if (!provider || !provider.url) return "";
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    const preferStandardResolutionTiles = Boolean(
+      window.innerWidth <= 768 ||
+      BROWSER_PERFORMANCE_PROFILE.constrainedDevice ||
+      (connection && connection.saveData)
+    );
+    return preferStandardResolutionTiles
+      ? String(provider.url).replace(/\{r\}/g, "")
+      : String(provider.url);
+  }
+
+  function cartoCompositeTileUrls(providerUrl) {
+    const normalizedUrl = String(providerUrl || "");
+    if (
+      normalizedUrl.indexOf(".basemaps.cartocdn.com/") === -1 ||
+      normalizedUrl.indexOf("/light_all/") === -1
+    ) {
+      return null;
+    }
+    return {
+      base: normalizedUrl.replace("/light_all/", "/light_nolabels/"),
+      labels: normalizedUrl.replace("/light_all/", "/light_only_labels/"),
+    };
+  }
+
+  function hostedTileOptions(provider, providerUrl) {
+    const tileOptions = {
+      attribution: provider.attribution || "",
+      maxZoom: 18,
+      noWrap: false,
+    };
+    if (String(providerUrl).indexOf("{s}.basemaps.cartocdn.com") !== -1) {
+      tileOptions.subdomains = "a";
+    }
+    return tileOptions;
+  }
+
+  function highResolutionCartoTileUrl(providerUrl) {
+    const normalizedUrl = String(providerUrl || "");
+    if (normalizedUrl.indexOf("{r}") !== -1) {
+      return normalizedUrl.replace(/\{r\}/g, "@2x");
+    }
+    return normalizedUrl.replace(/(\.(?:png|webp))(\?.*)?$/i, "@2x$1$2");
+  }
+
+  function effectiveMapLabelTileZoomSteps() {
+    const desiredSteps = MAP_LABEL_TILE_ZOOM_STEPS[state.mapLabelScaleMode] || 0;
+    if (desiredSteps <= 0 || !runtime.map) return desiredSteps;
+    return Math.min(desiredSteps, Math.max(0, Math.floor(runtime.map.getZoom())));
+  }
+
+  function syncMapLabelScaleControlAvailability(supported) {
+    if (!els.mapLabelScaleModeSelect) return;
+    els.mapLabelScaleModeSelect.disabled = !supported;
+    els.mapLabelScaleModeSelect.title = supported
+      ? "Resize the hosted place labels"
+      : "Label sizing requires a basemap with a separate label layer";
+  }
+
+  function noteHostedTileError() {
+    if (state.currentTileProviderId === "none") return;
+    state.currentTileErrorCount += 1;
+    if (state.currentTileErrorCount < 3) return;
+    setTileStatus("Remote tiles failed, so the map fell back to local geography.");
+    els.basemapMode.value = "none";
+    setBasemap("none");
+  }
+
+  function refreshHostedBasemapLabelLayer() {
+    if (!runtime.map) return;
+    const provider = (runtime.appConfig.tileProviders || []).find(function (item) {
+      return item.id === state.currentTileProviderId;
+    });
+    const providerUrl = resolvedTileProviderUrl(provider);
+    const compositeUrls = cartoCompositeTileUrls(providerUrl);
+    syncMapLabelScaleControlAvailability(Boolean(compositeUrls));
+
+    if (!compositeUrls) {
+      if (state.currentTileLabelLayer && runtime.map.hasLayer(state.currentTileLabelLayer)) {
+        state.currentTileLabelLayer.off("tileerror", noteHostedTileError);
+        runtime.map.removeLayer(state.currentTileLabelLayer);
+      }
+      state.currentTileLabelLayer = null;
+      state.currentTileLabelZoomSteps = null;
+      return;
+    }
+
+    const zoomSteps = effectiveMapLabelTileZoomSteps();
+    if (
+      state.currentTileLabelLayer &&
+      runtime.map.hasLayer(state.currentTileLabelLayer) &&
+      state.currentTileLabelZoomSteps === zoomSteps
+    ) {
+      return;
+    }
+    if (state.currentTileLabelLayer && runtime.map.hasLayer(state.currentTileLabelLayer)) {
+      state.currentTileLabelLayer.off("tileerror", noteHostedTileError);
+      runtime.map.removeLayer(state.currentTileLabelLayer);
+    }
+
+    const labelUrl = zoomSteps > 0
+      ? highResolutionCartoTileUrl(compositeUrls.labels)
+      : compositeUrls.labels;
+    const labelTileOptions = hostedTileOptions(provider, labelUrl);
+    labelTileOptions.pane = "basemapLabelPane";
+    labelTileOptions.className = "hosted-basemap-label-tile";
+    labelTileOptions.tileSize = 256 * Math.pow(2, zoomSteps);
+    labelTileOptions.zoomOffset = -zoomSteps;
+    labelTileOptions.minZoom = Math.max(0, zoomSteps);
+    const labelLayer = L.tileLayer(labelUrl, labelTileOptions);
+    labelLayer.on("tileerror", noteHostedTileError);
+    labelLayer.addTo(runtime.map);
+    state.currentTileLabelLayer = labelLayer;
+    state.currentTileLabelZoomSteps = zoomSteps;
   }
 
   function setBasemap(providerId) {
@@ -13720,9 +17851,17 @@
     if (!runtime.map) return;
 
     if (state.currentTileLayer) {
+      state.currentTileLayer.off("tileerror", noteHostedTileError);
       runtime.map.removeLayer(state.currentTileLayer);
       state.currentTileLayer = null;
     }
+    if (state.currentTileLabelLayer) {
+      state.currentTileLabelLayer.off("tileerror", noteHostedTileError);
+      runtime.map.removeLayer(state.currentTileLabelLayer);
+      state.currentTileLabelLayer = null;
+      state.currentTileLabelZoomSteps = null;
+    }
+    state.currentTileErrorCount = 0;
 
     runtime.map.eachLayer(function (layer) {
       if (layer instanceof L.TileLayer) {
@@ -13740,8 +17879,8 @@
       }
       document.querySelector("#map").classList.add("map-mode-none");
       document.querySelector("#map").classList.remove("map-mode-tile");
-      updateWorldReferenceLabelVisibility();
-      setTileStatus("No-basemap mode: local geography, country borders, and major labels.");
+      syncMapLabelScaleControlAvailability(false);
+      setTileStatus("No-basemap mode: local geography and country borders.");
       scheduleMapInvalidate();
       scheduleMapProjectionRefresh();
       window.setTimeout(scheduleMapProjectionRefresh, 90);
@@ -13754,36 +17893,15 @@
     document.querySelector("#map").classList.remove("map-mode-none");
     document.querySelector("#map").classList.add("map-mode-tile");
 
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
-    const preferStandardResolutionTiles = Boolean(
-      window.innerWidth <= 768 ||
-      BROWSER_PERFORMANCE_PROFILE.constrainedDevice ||
-      (connection && connection.saveData)
-    );
-    const providerUrl = preferStandardResolutionTiles
-      ? String(provider.url).replace(/\{r\}/g, "")
-      : provider.url;
-    const tileOptions = {
-      attribution: provider.attribution || "",
-      maxZoom: 18,
-      noWrap: false,
-    };
-    if (String(providerUrl).indexOf("{s}.basemaps.cartocdn.com") !== -1) {
-      tileOptions.subdomains = "a";
-    }
-
-    let tileErrorCount = 0;
-    const layer = L.tileLayer(providerUrl, tileOptions);
-    layer.on("tileerror", function () {
-      tileErrorCount += 1;
-      if (tileErrorCount >= 3) {
-        setTileStatus("Remote tiles failed, so the map fell back to local geography.");
-        els.basemapMode.value = "none";
-        setBasemap("none");
-      }
-    });
+    const providerUrl = resolvedTileProviderUrl(provider);
+    const compositeUrls = cartoCompositeTileUrls(providerUrl);
+    const baseUrl = compositeUrls ? compositeUrls.base : providerUrl;
+    const tileOptions = hostedTileOptions(provider, baseUrl);
+    const layer = L.tileLayer(baseUrl, tileOptions);
+    layer.on("tileerror", noteHostedTileError);
     layer.addTo(runtime.map);
     state.currentTileLayer = layer;
+    refreshHostedBasemapLabelLayer();
     setTileStatus("Hosted labeled basemap active. If blocked, the map falls back to local geography.");
     scheduleMapInvalidate();
     scheduleMapProjectionRefresh();
@@ -13887,6 +18005,7 @@
     runtime.playbackTrailLines = runtime.playbackTrailLines.filter(function (candidate) {
       return candidate !== entry;
     });
+    renderTraceStatusSummary();
     if (!config.suppressCanvasSync) {
       syncPlaybackTrailCanvas();
     }
@@ -14142,12 +18261,25 @@
     );
   }
 
+  function analysisCountryAreaFilterLabel() {
+    return String(state.analysisCountryAreaFilter || "").trim();
+  }
+
+  function analysisCountryAreaFilterActive() {
+    return Boolean(analysisCountryAreaFilterLabel());
+  }
+
+  function areaFilterHasActiveSelection() {
+    return regionSelectionHasActiveShapes() || analysisCountryAreaFilterActive();
+  }
+
   function regionSelectionModeActive() {
     return regionSelectionDrawingActive();
   }
 
   function regionSelectionPanelOpen() {
-    return Boolean(state.regionSelection && state.regionSelection.panelOpen);
+    const section = mapControlSectionElement("area");
+    return Boolean(section && section.open);
   }
 
   function regionSelectionDrawingActive() {
@@ -14159,7 +18291,7 @@
   }
 
   function regionSelectionAffectsRendering() {
-    return regionSelectionHasActiveShapes();
+    return areaFilterHasActiveSelection();
   }
 
   function nextRegionSelectionShapeId() {
@@ -14240,7 +18372,8 @@
       regionState.showSelectedEvents ? "1" : "0",
       regionState.showEventsAssociatedWithSelectedTraces ? "1" : "0",
       regionState.showTracesAssociatedWithSelectedEvents ? "1" : "0",
-      TRACE_NEIGHBORHOOD.normalizeDepth(regionState.depth),
+      regionState.pointOnly ? "1" : "0",
+      TRACE_NEIGHBORHOOD.normalizeAreaDepth(regionState.depth),
       TRACE_NEIGHBORHOOD.normalizeDirection(regionState.direction),
     ].join("");
   }
@@ -14273,6 +18406,7 @@
       normalizeTraceMode(state.traceMode),
       activeTraceBuckets().map(function (bucket) { return bucket.key; }).join(","),
       traceFacilityFilterSignature(),
+      famousCaseTraceSelectionActive() ? state.famousCaseId + ":same-day-craft" : "chronology",
       state.filterGeneration,
     ].join("|");
   }
@@ -14354,6 +18488,59 @@
       visibleEventCount: state.filteredCatalog.length,
       visibleTraceCount: 0,
       emptyMessage: "",
+    };
+  }
+
+  function countryAreaFilterResult() {
+    const countryLabel = analysisCountryAreaFilterLabel();
+    const visibleCatalog = Array.isArray(state.filteredCatalog) ? state.filteredCatalog : [];
+    const visibleMappedCatalog = Array.isArray(state.filteredMappedCatalog) ? state.filteredMappedCatalog : [];
+    const visibleEventCount = visibleCatalog.length;
+    const visibleMappedCount = visibleMappedCatalog.length;
+    updateRegionSelectionMetrics({
+      active: true,
+      reason: "worker-filtered country report points only",
+      shapeCount: 0,
+      eventPointsAvailable: visibleMappedCount,
+      eventPointsBroadPhaseRejected: 0,
+      eventPointsExactTested: visibleMappedCount,
+      traceSegmentsAvailable: 0,
+      traceSegmentsBroadPhaseRejected: 0,
+      traceSegmentsExactTested: 0,
+      associatedTraceIndexEntries: 0,
+      selectedTraceCount: 0,
+      selectedEventCount: visibleMappedCount,
+      visibleTraceCount: 0,
+      visibleEventCount: visibleEventCount,
+      needsTraceSegments: false,
+      chronologyIndexUsed: false,
+      country: countryLabel,
+    });
+    return {
+      active: true,
+      areaKind: "country",
+      country: countryLabel,
+      shapeCount: 0,
+      selectedEventIds: new Set(),
+      selectedTraceIds: new Set(),
+      visibleEventIds: new Set(),
+      visibleTraceIds: new Set(),
+      visibleCatalog: visibleCatalog,
+      visibleMappedCatalog: visibleMappedCatalog,
+      traceSegments: [],
+      visibleTraceSegments: [],
+      neighborhoodSegments: [],
+      neighborhoodEventIds: new Set(),
+      neighborhood: null,
+      selectedEventCount: visibleMappedCount,
+      selectedTraceCount: 0,
+      visibleEventCount: visibleEventCount,
+      visibleTraceCount: 0,
+      pointOnly: true,
+      chronologyIndexUsed: false,
+      emptyMessage: visibleEventCount
+        ? ""
+        : "No reports match the active Country Area Filter and shared filters.",
     };
   }
 
@@ -15759,7 +19946,32 @@
     if (mode !== "static" && mode !== "playback") {
       return [];
     }
-    return buildCanonicalTraceSegments();
+    return famousCaseTraceSelectionActive() ? buildFamousCaseTraceSegments() : buildCanonicalTraceSegments();
+  }
+
+  function buildFamousCaseTraceSegments() {
+    const bucket = traceBucketForKey("gap_le_1");
+    if (!bucket || !traceBucketActive(bucket.key)) return [];
+    const cacheKey = "famous-case-same-day-craft|" + state.famousCaseId + "|" + canonicalTraceSegmentsCacheKey();
+    if (runtime.traceSequenceCacheKey === cacheKey && runtime.traceSequenceCacheValue) return runtime.traceSequenceCacheValue;
+    const facilityContext = createTraceFacilityClassificationContext();
+    const rawSegments = TRACE_NEIGHBORHOOD.buildSameDayCraftTraceSegments(
+      state.filteredMappedCatalog.filter(eventMatchesTimeRange)
+    );
+    const segments = rawSegments.map(function (segment) {
+      const wrapped = shortestWrappedSegment({ lat: segment.from[0], lon: segment.from[1] },
+        { lat: segment.to[0], lon: segment.to[1] });
+      return applyTraceFacilityFilterToSegmentWithContext(Object.assign({}, segment, {
+        from: wrapped.from, to: wrapped.to, bucket: bucket,
+      }), facilityContext);
+    }).filter(Boolean);
+    segments.forEach(function (segment, index) {
+      segment.sequenceIndex = index;
+      segment.sequenceRatio = segments.length <= 1 ? 1 : index / (segments.length - 1);
+    });
+    runtime.traceSequenceCacheKey = cacheKey;
+    runtime.traceSequenceCacheValue = segments;
+    return segments;
   }
 
   function worldIndicesNearReferenceLongitude(referenceLongitude) {
@@ -16030,9 +20242,10 @@
   }
 
   function currentChronologicalNeighborhoodIndex() {
+    const appliedFilterGeneration = Number(runtime.activeFilterGeneration) || 0;
     const cacheKey = [
       "chronological-neighborhood",
-      state.filterGeneration,
+      appliedFilterGeneration,
       state.timelineDataVersion,
       state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
       state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
@@ -16047,7 +20260,7 @@
     const index = TRACE_NEIGHBORHOOD.buildNeighborhoodIndex(
       segments,
       state.filteredMappedCatalog,
-      state.filterGeneration,
+      appliedFilterGeneration,
       { cellSizeDegrees: CHRONOLOGICAL_NEIGHBORHOOD_SPATIAL_CELL_DEGREES }
     );
     runtime.neighborhoodAdjacencyCacheKey = cacheKey;
@@ -16055,7 +20268,7 @@
     runtime.neighborhoodSeedCacheKey = "";
     runtime.neighborhoodSeedCacheValue = null;
     runtime.neighborhoodBuildMetrics = {
-      generation: state.filterGeneration,
+      generation: appliedFilterGeneration,
       segmentCount: index.segments.length,
       eventCount: index.eventCount,
       durationMs: Math.round((performance.now() - startedAt) * 100) / 100,
@@ -16065,6 +20278,643 @@
     }, runtime.neighborhoodBuildMetrics));
     runtime.neighborhoodPerformanceSamples = runtime.neighborhoodPerformanceSamples.slice(-60);
     return index;
+  }
+
+  function cropTraceNeighborhoodCacheKey() {
+    return [
+      "crop-trace-neighborhood",
+      Number(runtime.activeFilterGeneration) || 0,
+      state.timelineDataVersion,
+      state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
+      catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      activeTraceBuckets().map(function (bucket) { return bucket.key; }).join(","),
+      traceFacilityFilterSignature(),
+    ].join("|");
+  }
+
+  function cropTraceCircle(config) {
+    const crop = config && config.crop ? config.crop : {};
+    const lat = Number(crop.lat);
+    const lng = Number(crop.lon);
+    const radiusKm = clamp(Number(config && config.radiusKm) || 25, 1, 1000);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return {
+      id: "crop:" + String(crop.id || "selected"),
+      type: "circle",
+      center: { lat: lat, lng: lng },
+      radiusMeters: radiusKm * 1000,
+    };
+  }
+
+  function cropCountryExcludedFromInference(crop) {
+    const value = String(crop && (crop.countryCode || crop.country) || "").trim().toLowerCase();
+    return value.indexOf("united kingdom") !== -1 || [
+      "gb", "gbr", "uk", "united kingdom", "great britain", "england", "scotland", "wales", "northern ireland",
+    ].indexOf(value) !== -1;
+  }
+
+  function ufoEventMatchesCropDate(event, crop, relationWindow) {
+    if (!eventHasExactDateEvidence(event)) return false;
+    if (Number(crop && crop.datePrecisionCode) !== 0) return false;
+    const cropOrdinal = Number(crop && crop.startOrdinal);
+    const eventOrdinal = Number(event.sort_ordinal);
+    if (!Number.isFinite(cropOrdinal) || !Number.isFinite(eventOrdinal)) return false;
+    const gapDays = cropOrdinal - eventOrdinal;
+    if (relationWindow === "same_day") return gapDays === 0;
+    if (relationWindow === "after_1_7") return gapDays >= 1 && gapDays <= 7;
+    if (relationWindow === "after_1_30") return gapDays >= 1 && gapDays <= 30;
+    return false;
+  }
+
+  function cropPointMayIntersectCircleBounds(lat, lon, bounds) {
+    const latitude = Number(lat);
+    const longitude = Number(lon);
+    if (!bounds || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return false;
+    if (latitude < Number(bounds.south) || latitude > Number(bounds.north)) return false;
+    if (Number(bounds.east) - Number(bounds.west) >= 360) return true;
+    const referenceLongitude = Number(bounds.referenceLongitude);
+    const nearbyLongitude = referenceLongitude + shortestLongitudeDelta(referenceLongitude, longitude);
+    return nearbyLongitude >= Number(bounds.west) && nearbyLongitude <= Number(bounds.east);
+  }
+
+  function cropTraceSegmentNearCircle(segment, referenceLongitude) {
+    if (!segment || !Array.isArray(segment.from) || !Array.isArray(segment.to)) return null;
+    const fromLat = Number(segment.from[0]);
+    const toLat = Number(segment.to[0]);
+    const normalizedFrom = normalizeLongitude(Number(segment.from[1]));
+    if (![fromLat, toLat, normalizedFrom, Number(segment.to[1]), referenceLongitude].every(Number.isFinite)) return null;
+    let fromLon = normalizedFrom;
+    let toLon = fromLon + shortestLongitudeDelta(fromLon, Number(segment.to[1]));
+    const midpoint = (fromLon + toLon) / 2;
+    const shift = Math.round((referenceLongitude - midpoint) / 360) * 360;
+    fromLon += shift;
+    toLon += shift;
+    return {
+      from: [fromLat, fromLon],
+      to: [toLat, toLon],
+    };
+  }
+
+  function cropTraceSegmentMayIntersectCircleBounds(segment, bounds) {
+    if (!bounds) return false;
+    const copy = cropTraceSegmentNearCircle(segment, Number(bounds.referenceLongitude));
+    if (!copy) return false;
+    const south = Math.min(copy.from[0], copy.to[0]);
+    const north = Math.max(copy.from[0], copy.to[0]);
+    if (north < Number(bounds.south) || south > Number(bounds.north)) return false;
+    if (Number(bounds.east) - Number(bounds.west) >= 360) return true;
+    const west = Math.min(copy.from[1], copy.to[1]);
+    const east = Math.max(copy.from[1], copy.to[1]);
+    return east >= Number(bounds.west) && west <= Number(bounds.east);
+  }
+
+  function cropRelationDateCandidates(crop, relationWindow) {
+    const cropOrdinal = Number(crop && crop.startOrdinal);
+    if (!Number.isFinite(cropOrdinal)) return [];
+    let minimumOrdinal = cropOrdinal;
+    let maximumOrdinal = cropOrdinal;
+    if (relationWindow === "after_1_7") {
+      minimumOrdinal = cropOrdinal - 7;
+      maximumOrdinal = cropOrdinal - 1;
+    } else if (relationWindow === "after_1_30") {
+      minimumOrdinal = cropOrdinal - 30;
+      maximumOrdinal = cropOrdinal - 1;
+    }
+    if (runtime.filteredMappedCatalogDateAsc && state.filteredMappedPlaybackEvents.length) {
+      return state.filteredMappedPlaybackEvents.slice(
+        lowerBoundTimelineEventIndex(state.filteredMappedPlaybackEvents, minimumOrdinal),
+        upperBoundTimelineEventIndex(state.filteredMappedPlaybackEvents, maximumOrdinal)
+      );
+    }
+    return state.filteredMappedCatalog;
+  }
+
+  function cropRelationEventCandidates(circle, config) {
+    const relation = config && config.ufoRelation ? config.ufoRelation : {};
+    const relationWindow = String(relation.window || "off");
+    if (relationWindow === "off" || cropCountryExcludedFromInference(config.crop)) return [];
+    if (Number(config.crop && config.crop.coordinateCode) > 1 && relation.cropPositionQuality !== "all") return [];
+    const sourceCoordinatesOnly = relation.positionQuality !== "all";
+    const bounds = TRACE_NEIGHBORHOOD.circleBounds(
+      [circle.center.lat, circle.center.lng],
+      circle.radiusMeters / 1000
+    );
+    const events = [];
+    for (const event of cropRelationDateCandidates(config.crop, relationWindow)) {
+      if (!event) continue;
+      if (sourceCoordinatesOnly && !eventHasSourceCoordinateEvidence(event)) continue;
+      if (!ufoEventMatchesCropDate(event, config.crop, relationWindow)) continue;
+      if (!cropPointMayIntersectCircleBounds(event.lat, event.lon, bounds)) continue;
+      if (!TRACE_NEIGHBORHOOD.pointInsideCircle(
+        [Number(event.lat), Number(event.lon)],
+        [circle.center.lat, circle.center.lng],
+        circle.radiusMeters / 1000
+      )) continue;
+      const distanceKm = TRACE_NEIGHBORHOOD.haversineKm(
+        [Number(event.lat), Number(event.lon)],
+        [circle.center.lat, circle.center.lng]
+      );
+      events.push({ event: event, distanceKm: Number(distanceKm) || 0 });
+    }
+    events.sort(function (left, right) {
+      return left.distanceKm - right.distanceKm ||
+        Number(left.event.sort_ordinal) - Number(right.event.sort_ordinal) ||
+        String(left.event.event_id).localeCompare(String(right.event.event_id));
+    });
+    return events.slice(0, 300);
+  }
+
+  function cropTraceSeedSegments(segments, circle) {
+    const seeds = [];
+    const bounds = TRACE_NEIGHBORHOOD.circleBounds(
+      [circle.center.lat, circle.center.lng],
+      circle.radiusMeters / 1000
+    );
+    for (const segment of segments) {
+      if (!cropTraceSegmentMayIntersectCircleBounds(segment, bounds)) continue;
+      const intersection = TRACE_NEIGHBORHOOD.clipSegmentToCircle(
+        segment,
+        [circle.center.lat, circle.center.lng],
+        circle.radiusMeters / 1000
+      );
+      if (!intersection) continue;
+      seeds.push({
+        segment: segment,
+        clips: [{
+          from: intersection.from,
+          to: intersection.to,
+          startRatio: intersection.startFraction,
+          endRatio: intersection.endFraction,
+        }],
+      });
+    }
+    seeds.sort(function (left, right) {
+      return Number(left.segment.sequenceIndex) - Number(right.segment.sequenceIndex) ||
+        String(left.segment.traceId).localeCompare(String(right.segment.traceId));
+    });
+    return seeds;
+  }
+
+  function cropTraceLocalNeighborhood(segments, seeds, depth, direction) {
+    const localSegments = new Map();
+    const neighborRadius = Math.max(0, depth - 1);
+    seeds.forEach(function (seed) {
+      const sequenceIndex = Number(seed.segment && seed.segment.sequenceIndex);
+      if (!Number.isInteger(sequenceIndex)) return;
+      const startIndex = Math.max(0, sequenceIndex - neighborRadius);
+      const endIndex = Math.min(segments.length - 1, sequenceIndex + neighborRadius);
+      for (let index = startIndex; index <= endIndex; index += 1) {
+        const segment = segments[index];
+        if (segment && segment.traceId != null) localSegments.set(String(segment.traceId), segment);
+      }
+    });
+    const index = TRACE_NEIGHBORHOOD.buildAdjacencyIndex(
+      Array.from(localSegments.values()),
+      Number(runtime.activeFilterGeneration) || 0
+    );
+    return TRACE_NEIGHBORHOOD.traverseNeighborhood({
+      index: index,
+      depth: depth,
+      direction: direction,
+      traceSeeds: seeds.map(function (seed) {
+        return { traceId: String(seed.segment.traceId), regionIds: ["crop-radius"] };
+      }),
+    });
+  }
+
+  function ensureCropTraceFocusLayers() {
+    if (!runtime.map || typeof L === "undefined") return false;
+    const paneDefinitions = [
+      ["cropCircleRadiusPane", "425"],
+      ["cropCircleRelationPane", "485"],
+      ["cropCircleTracePane", "490"],
+      ["cropCircleEmphasisPane", "500"],
+    ];
+    paneDefinitions.forEach(function (definition) {
+      if (!runtime.map.getPane(definition[0])) runtime.map.createPane(definition[0]);
+      const pane = runtime.map.getPane(definition[0]);
+      pane.style.zIndex = definition[1];
+      pane.style.pointerEvents = "none";
+    });
+    if (!runtime.cropTraceRadiusLayer) runtime.cropTraceRadiusLayer = L.layerGroup();
+    if (!runtime.cropTraceRelationLayer) runtime.cropTraceRelationLayer = L.layerGroup();
+    if (!runtime.cropTraceNetworkLayer) runtime.cropTraceNetworkLayer = L.layerGroup();
+    if (!runtime.cropTraceEmphasisLayer) runtime.cropTraceEmphasisLayer = L.layerGroup();
+    return true;
+  }
+
+  function clearCropTraceLayer(layer) {
+    if (layer && typeof layer.clearLayers === "function") layer.clearLayers();
+    if (runtime.map && layer && runtime.map.hasLayer(layer)) runtime.map.removeLayer(layer);
+  }
+
+  function cropTraceFocusSetIsolation(active) {
+    if (!runtime.map || typeof runtime.map.getContainer !== "function") return;
+    const container = runtime.map.getContainer();
+    if (container && container.classList) {
+      container.classList.toggle("crop-circle-focus-active", Boolean(active));
+    }
+    const hiddenPaneNames = [
+      "overlayPane",
+      "shadowPane",
+      "markerPane",
+      "tooltipPane",
+      "popupPane",
+      "regionSelectionPane",
+      "researchSiteAreaPane",
+      "tracePane",
+      "playbackTracePane",
+      "neighborhoodTracePane",
+      "claimedBaseTracePane",
+      "claimedBaseMarkerPane",
+      "cropCircleChronologyPane",
+    ];
+    hiddenPaneNames.forEach(function (paneName) {
+      const pane = runtime.map.getPane(paneName);
+      if (active) {
+        if (!pane || !pane.style || runtime.cropTraceHiddenPaneStyles.has(paneName)) return;
+        runtime.cropTraceHiddenPaneStyles.set(paneName, {
+          opacity: pane.style.opacity,
+          pointerEvents: pane.style.pointerEvents,
+        });
+        pane.style.opacity = "0";
+        pane.style.pointerEvents = "none";
+        return;
+      }
+      if (!runtime.cropTraceHiddenPaneStyles.has(paneName)) return;
+      const previous = runtime.cropTraceHiddenPaneStyles.get(paneName);
+      if (pane && pane.style) {
+        pane.style.opacity = previous.opacity;
+        pane.style.pointerEvents = previous.pointerEvents;
+      }
+      runtime.cropTraceHiddenPaneStyles.delete(paneName);
+    });
+  }
+
+  function cropTraceNearestCopy(segment, referenceLongitude) {
+    const copies = wrappedSegmentCopies(segment, referenceLongitude, worldIndicesNearReferenceLongitude(referenceLongitude));
+    copies.sort(function (left, right) {
+      const leftMid = (Number(left.from[1]) + Number(left.to[1])) / 2;
+      const rightMid = (Number(right.from[1]) + Number(right.to[1])) / 2;
+      return Math.abs(leftMid - referenceLongitude) - Math.abs(rightMid - referenceLongitude);
+    });
+    return copies[0] || { from: segment.from, to: segment.to };
+  }
+
+  function cropTraceAddStroke(layer, from, to, options) {
+    if (!layer || typeof L === "undefined" || typeof L.polyline !== "function") return;
+    layer.addLayer(L.polyline([from, to], Object.assign({
+      interactive: false,
+      bubblingMouseEvents: false,
+      smoothFactor: 1,
+    }, options || {})));
+  }
+
+  function cropTraceAddStyledSegment(layer, segment, referenceLongitude, options) {
+    const config = options || {};
+    const copy = config.copy || cropTraceNearestCopy(segment, referenceLongitude);
+    const from = config.from || copy.from;
+    const to = config.to || copy.to;
+    const rawOpacity = Number.isFinite(Number(config.opacity)) ? Number(config.opacity) : Number(segment.opacity || 0.75);
+    const opacity = scaledTraceOpacity(rawOpacity);
+    const rawWeight = Number.isFinite(Number(config.weight)) ? Number(config.weight) : Number(segment.weight || 2);
+    const weight = scaledTraceStrokeWeight(rawWeight);
+    const outlineWeight = scaledTraceStrokeWeight(rawWeight + Number(config.outlineExtra || 2.4));
+    const dashArray = config.dashArray != null ? config.dashArray : (segment.dashArray || "");
+    if (config.outline !== false) {
+      cropTraceAddStroke(layer, from, to, {
+        pane: config.pane || "cropCircleTracePane",
+        color: CROP_TRACE_OUTLINE_COLOR,
+        opacity: Math.min(0.92, opacity + 0.12),
+        weight: outlineWeight,
+        dashArray: dashArray,
+      });
+    }
+    if (segment.fromCraftColor && segment.toCraftColor) {
+      const startRatio = Number.isFinite(Number(config.startRatio)) ? Number(config.startRatio) : 0;
+      const endRatio = Number.isFinite(Number(config.endRatio)) ? Number(config.endRatio) : 1;
+      if (endRatio <= 0.5) {
+        cropTraceAddStroke(layer, from, to, {
+          pane: config.pane || "cropCircleTracePane",
+          color: segment.fromCraftColor,
+          opacity: opacity,
+          weight: weight,
+          dashArray: dashArray,
+        });
+        return;
+      }
+      if (startRatio >= 0.5) {
+        cropTraceAddStroke(layer, from, to, {
+          pane: config.pane || "cropCircleTracePane",
+          color: segment.toCraftColor,
+          opacity: opacity,
+          weight: weight,
+          dashArray: dashArray,
+        });
+        return;
+      }
+      const splitRatio = clamp((0.5 - startRatio) / Math.max(0.000001, endRatio - startRatio), 0, 1);
+      const midpoint = [
+        Number(from[0]) + ((Number(to[0]) - Number(from[0])) * splitRatio),
+        Number(from[1]) + ((Number(to[1]) - Number(from[1])) * splitRatio),
+      ];
+      cropTraceAddStroke(layer, from, midpoint, {
+        pane: config.pane || "cropCircleTracePane",
+        color: segment.fromCraftColor,
+        opacity: opacity,
+        weight: weight,
+        dashArray: dashArray,
+      });
+      cropTraceAddStroke(layer, midpoint, to, {
+        pane: config.pane || "cropCircleTracePane",
+        color: segment.toCraftColor,
+        opacity: opacity,
+        weight: weight,
+        dashArray: dashArray,
+      });
+      return;
+    }
+    cropTraceAddStroke(layer, from, to, {
+      pane: config.pane || "cropCircleTracePane",
+      color: segment.color || (segment.bucket && segment.bucket.color) || "#38bdf8",
+      opacity: opacity,
+      weight: weight,
+      dashArray: dashArray,
+    });
+  }
+
+  const CROP_TRACE_OUTLINE_COLOR = "#111827";
+  const CROP_RELATION_COLOR = "#ffb000";
+
+  function cropTraceDrawRadius(circle, crop, showRadius) {
+    clearCropTraceLayer(runtime.cropTraceRadiusLayer);
+    if (!showRadius) return;
+    const uncertain = Number(crop && crop.coordinateCode) >= 2;
+    runtime.cropTraceRadiusLayer.addLayer(L.circle([circle.center.lat, circle.center.lng], {
+      pane: "cropCircleRadiusPane",
+      radius: circle.radiusMeters,
+      color: CROP_TRACE_OUTLINE_COLOR,
+      opacity: 0.82,
+      weight: 5,
+      fill: false,
+      interactive: false,
+      dashArray: uncertain ? "7 6" : null,
+    }));
+    runtime.cropTraceRadiusLayer.addLayer(L.circle([circle.center.lat, circle.center.lng], {
+      pane: "cropCircleRadiusPane",
+      radius: circle.radiusMeters,
+      color: "#d8ff3e",
+      opacity: 0.94,
+      weight: 2,
+      fillColor: "#d8ff3e",
+      fillOpacity: 0.085,
+      interactive: false,
+      dashArray: uncertain ? "7 6" : null,
+    }));
+    runtime.cropTraceRadiusLayer.addTo(runtime.map);
+  }
+
+  function cropTraceDrawRelationArrow(event, circle, sameDay, uncertainCropPosition) {
+    const wrappedEventLongitudes = wrappedLongitudesNearReference(Number(event.lon), circle.center.lng);
+    wrappedEventLongitudes.sort(function (left, right) {
+      return Math.abs(left - circle.center.lng) - Math.abs(right - circle.center.lng);
+    });
+    const from = [Number(event.lat), wrappedEventLongitudes[0]];
+    const to = [circle.center.lat, circle.center.lng];
+    const dashArray = sameDay ? "2 7" : "9 7";
+    cropTraceAddStroke(runtime.cropTraceRelationLayer, from, to, {
+      pane: "cropCircleRelationPane",
+      color: CROP_TRACE_OUTLINE_COLOR,
+      opacity: uncertainCropPosition ? 0.54 : 0.88,
+      weight: 5.2,
+      dashArray: dashArray,
+    });
+    cropTraceAddStroke(runtime.cropTraceRelationLayer, from, to, {
+      pane: "cropCircleRelationPane",
+      color: CROP_RELATION_COLOR,
+      opacity: uncertainCropPosition ? 0.64 : 0.98,
+      weight: 2.2,
+      dashArray: dashArray,
+    });
+    if (sameDay || !runtime.map || typeof runtime.map.latLngToLayerPoint !== "function") return;
+    const start = runtime.map.latLngToLayerPoint(from);
+    const end = runtime.map.latLngToLayerPoint(to);
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.sqrt((dx * dx) + (dy * dy));
+    if (!Number.isFinite(length) || length < 18) return;
+    const ux = dx / length;
+    const uy = dy / length;
+    const tip = { x: end.x - (ux * 12), y: end.y - (uy * 12) };
+    const back = { x: tip.x - (ux * 10), y: tip.y - (uy * 10) };
+    const left = runtime.map.layerPointToLatLng([back.x - (uy * 5), back.y + (ux * 5)]);
+    const right = runtime.map.layerPointToLatLng([back.x + (uy * 5), back.y - (ux * 5)]);
+    const tipLatLng = runtime.map.layerPointToLatLng([tip.x, tip.y]);
+    [left, right].forEach(function (wing) {
+      cropTraceAddStroke(runtime.cropTraceRelationLayer, [wing.lat, wing.lng], [tipLatLng.lat, tipLatLng.lng], {
+        pane: "cropCircleRelationPane",
+        color: CROP_TRACE_OUTLINE_COLOR,
+        opacity: uncertainCropPosition ? 0.56 : 0.9,
+        weight: 5,
+      });
+      cropTraceAddStroke(runtime.cropTraceRelationLayer, [wing.lat, wing.lng], [tipLatLng.lat, tipLatLng.lng], {
+        pane: "cropCircleRelationPane",
+        color: CROP_RELATION_COLOR,
+        opacity: uncertainCropPosition ? 0.68 : 1,
+        weight: 2,
+      });
+    });
+  }
+
+  function removeCropTraceRelationZoomHandler() {
+    if (runtime.map && runtime.cropTraceRelationZoomHandler && typeof runtime.map.off === "function") {
+      runtime.map.off("zoomend", runtime.cropTraceRelationZoomHandler);
+    }
+    runtime.cropTraceRelationZoomHandler = null;
+  }
+
+  function installCropTraceRelationZoomHandler() {
+    removeCropTraceRelationZoomHandler();
+    if (!runtime.map || !runtime.cropTraceRelationRenderState || typeof runtime.map.on !== "function") return;
+    runtime.cropTraceRelationZoomHandler = function () {
+      const relationState = runtime.cropTraceRelationRenderState;
+      if (!relationState) return;
+      cropTraceRenderRelations(
+        relationState.events,
+        relationState.circle,
+        relationState.relationWindow,
+        relationState.crop,
+        false
+      );
+    };
+    runtime.map.on("zoomend", runtime.cropTraceRelationZoomHandler);
+  }
+
+  function cropTraceRenderRelations(events, circle, relationWindow, crop, rememberState) {
+    if (rememberState !== false) {
+      runtime.cropTraceRelationRenderState = events.length
+        ? { events: events, circle: circle, relationWindow: relationWindow, crop: crop }
+        : null;
+      if (runtime.cropTraceRelationRenderState) installCropTraceRelationZoomHandler();
+      else removeCropTraceRelationZoomHandler();
+    }
+    clearCropTraceLayer(runtime.cropTraceRelationLayer);
+    const sameDay = relationWindow === "same_day";
+    const uncertainCropPosition = Number(crop && crop.coordinateCode) > 1;
+    events.forEach(function (entry) {
+      cropTraceDrawRelationArrow(entry.event, circle, sameDay, uncertainCropPosition);
+    });
+    if (events.length) runtime.cropTraceRelationLayer.addTo(runtime.map);
+  }
+
+  function cropTraceRenderNetwork(neighborhood, seeds, circle, emphasizeIntersections, isolation) {
+    clearCropTraceLayer(runtime.cropTraceNetworkLayer);
+    clearCropTraceLayer(runtime.cropTraceEmphasisLayer);
+    const density = normalTraceDensityProfile(neighborhood.segments.length);
+    const renderBaseline = Boolean(isolation || normalizeTraceMode(state.traceMode) === "off");
+    if (renderBaseline) {
+      neighborhood.segments.forEach(function (rawSegment) {
+        const segment = styleTraceSegmentForDensity(rawSegment, density);
+        const hop = Math.max(1, Number(rawSegment.neighborhood && rawSegment.neighborhood.hop) || 1);
+        cropTraceAddStyledSegment(runtime.cropTraceNetworkLayer, segment, circle.center.lng, {
+          pane: "cropCircleTracePane",
+          opacity: Math.max(0.28, Number(segment.opacity || 0.7) * (hop === 1 ? 1 : 0.72)),
+          weight: Math.max(1.05, Number(segment.weight || 2)),
+          dashArray: hop > 1 ? "6 6" : (segment.dashArray || ""),
+          outline: false,
+        });
+      });
+      if (neighborhood.segments.length) runtime.cropTraceNetworkLayer.addTo(runtime.map);
+    }
+    if (!emphasizeIntersections) return;
+    seeds.forEach(function (seed) {
+      const segment = styleTraceSegmentForDensity(seed.segment, density);
+      seed.clips.forEach(function (clip) {
+        cropTraceAddStyledSegment(runtime.cropTraceEmphasisLayer, segment, circle.center.lng, {
+          pane: "cropCircleEmphasisPane",
+          from: clip.from,
+          to: clip.to,
+          startRatio: clip.startRatio,
+          endRatio: clip.endRatio,
+          opacity: 1,
+          weight: Math.max(4.2, Number(segment.weight || 2) + 3),
+          outlineExtra: 3.2,
+          dashArray: "",
+        });
+      });
+    });
+    if (seeds.length) runtime.cropTraceEmphasisLayer.addTo(runtime.map);
+  }
+
+  function clearCropTraceFocus(reason) {
+    runtime.cropTraceFocusRequestGeneration += 1;
+    runtime.cropTraceFocusConfig = null;
+    runtime.cropTraceFocusResult = null;
+    clearCropTraceLayer(runtime.cropTraceRadiusLayer);
+    clearCropTraceLayer(runtime.cropTraceRelationLayer);
+    runtime.cropTraceRelationRenderState = null;
+    removeCropTraceRelationZoomHandler();
+    clearCropTraceLayer(runtime.cropTraceNetworkLayer);
+    clearCropTraceLayer(runtime.cropTraceEmphasisLayer);
+    cropTraceFocusSetIsolation(false);
+    return Boolean(reason || true);
+  }
+
+  function setCropTraceFocus(config) {
+    if (!ensureCropTraceFocusLayers()) throw new Error("The map is not ready for crop-circle trace analysis.");
+    const circle = cropTraceCircle(config);
+    if (!circle) throw new Error("The selected crop record has no usable mapped position.");
+    const requestGeneration = ++runtime.cropTraceFocusRequestGeneration;
+    const depth = TRACE_NEIGHBORHOOD.normalizeDepth(config && config.hops ? config.hops.depth : 1);
+    const direction = TRACE_NEIGHBORHOOD.normalizeDirection(config && config.hops ? config.hops.direction : "both");
+    const traceAnalysisEnabled = Boolean(config && config.traceAnalysisEnabled);
+    let seeds = [];
+    let neighborhood = { segments: [], events: [] };
+    if (traceAnalysisEnabled) {
+      const segments = buildCanonicalTraceSegments();
+      seeds = cropTraceSeedSegments(segments, circle);
+      neighborhood = cropTraceLocalNeighborhood(segments, seeds, depth, direction);
+    }
+    const relationEvents = cropRelationEventCandidates(circle, config || {});
+    if (requestGeneration !== runtime.cropTraceFocusRequestGeneration) return runtime.cropTraceFocusResult;
+    runtime.cropTraceFocusConfig = Object.assign({}, config, { radiusKm: circle.radiusMeters / 1000 });
+    cropTraceDrawRadius(circle, config.crop, config.showRadius !== false);
+    cropTraceRenderRelations(
+      relationEvents,
+      circle,
+      config && config.ufoRelation ? String(config.ufoRelation.window || "off") : "off",
+      config.crop
+    );
+    cropTraceRenderNetwork(
+      neighborhood,
+      seeds,
+      circle,
+      config.emphasizeIntersections !== false,
+      Boolean(config.isolation && config.traceAnalysisEnabled)
+    );
+    cropTraceFocusSetIsolation(Boolean(config.isolation && traceAnalysisEnabled));
+    const result = {
+      generation: Number(runtime.activeFilterGeneration) || 0,
+      requestGeneration: requestGeneration,
+      radiusKm: circle.radiusMeters / 1000,
+      relationEventCount: relationEvents.length,
+      relationCapped: relationEvents.length >= 300,
+      intersectingTraceCount: seeds.length,
+      reachedTraceCount: neighborhood.segments.length,
+      reachedEventCount: neighborhood.events.length,
+      depth: depth,
+      direction: direction,
+      traceAnalysisEnabled: traceAnalysisEnabled,
+      baselineNetworkRendered: Boolean(traceAnalysisEnabled && (
+        config.isolation || normalizeTraceMode(state.traceMode) === "off"
+      )),
+      excludedUkInference: cropCountryExcludedFromInference(config.crop),
+      cropDateExact: Number(config.crop && config.crop.datePrecisionCode) === 0,
+      cropPositionEligible: Number(config.crop && config.crop.coordinateCode) <= 1 ||
+        Boolean(config.ufoRelation && config.ufoRelation.cropPositionQuality === "all"),
+      cropPositionIncludedByOverride: Number(config.crop && config.crop.coordinateCode) > 1 &&
+        Boolean(config.ufoRelation && config.ufoRelation.cropPositionQuality === "all"),
+      radiusBelowCoordinateUncertainty: Number.isFinite(Number(config.crop && config.crop.coordinateUncertaintyKm)) &&
+        Number(config.crop.coordinateUncertaintyKm) > (circle.radiusMeters / 1000),
+      coordinateUncertaintyKm: Number.isFinite(Number(config.crop && config.crop.coordinateUncertaintyKm))
+        ? Number(config.crop.coordinateUncertaintyKm)
+        : null,
+      traceModeIndependent: true,
+      warnings: [
+        "UFO traces are filtered chronological connectors, not observed flight paths.",
+        "Crop dates are catalog/report dates and may lag formation.",
+      ],
+    };
+    runtime.cropTraceFocusResult = result;
+    return result;
+  }
+
+  function cropTimelineExtensionContext() {
+    return {
+      map: runtime.map,
+      timeRangeStartOrdinal: state.timeRangeStartOrdinal,
+      timeRangeEndOrdinal: state.timeRangeEndOrdinal,
+      timeRangeIsAllTime: state.timeRangeMode === "full",
+      hideLowPrecisionCoordinates: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
+      hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
+      colorMode: state.colorMode,
+      filterGeneration: Number(runtime.activeFilterGeneration) || 0,
+      timelineDataVersion: state.timelineDataVersion,
+      traceMode: state.traceMode,
+      traceContextKey: cropTraceNeighborhoodCacheKey() + "|" + state.colorMode + "|" + state.traceMode +
+        "|width=" + traceWidthScale() + "|boldness=" + traceBoldnessScale(),
+    };
+  }
+
+  function registerCropTimelineExtensionApi() {
+    const extensions = window.UfoTimelineExtensions;
+    if (!extensions || typeof extensions.registerCoreApi !== "function") return false;
+    return extensions.registerCoreApi({
+      getContext: cropTimelineExtensionContext,
+      setCropTraceFocus: setCropTraceFocus,
+      clearCropTraceFocus: clearCropTraceFocus,
+    });
   }
 
   function regionIdsForPoint(event, shapes, shapeBounds) {
@@ -16088,6 +20938,47 @@
       if (intersects) regionIds.push(String(shape.id));
     });
     return regionIds;
+  }
+
+  function currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds) {
+    const cacheKey = [
+      "point-only-region-seeds",
+      Number(runtime.activeFilterGeneration) || 0,
+      state.filterGeneration,
+      state.timelineDataVersion,
+      state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
+      state.timeRangeEndOrdinal == null ? "" : state.timeRangeEndOrdinal,
+      catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      regionSelectionShapesSignature(),
+    ].join("|");
+    if (runtime.neighborhoodSeedCacheKey === cacheKey && runtime.neighborhoodSeedCacheValue) {
+      return runtime.neighborhoodSeedCacheValue;
+    }
+    const eventSeeds = [];
+    let candidateEventCount = 0;
+    for (const event of state.filteredMappedCatalog) {
+      if (!event || event.event_id == null) continue;
+      if (event.lat == null || event.lon == null || event.lat === "" || event.lon === "") continue;
+      const lat = Number(event.lat);
+      const lon = Number(event.lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+      if (!pointMayIntersectAnyRegionShape(lat, lon, shapeBounds)) continue;
+      candidateEventCount += 1;
+      const regionIds = regionIdsForPoint({ lat: lat, lon: lon }, shapes, shapeBounds);
+      if (regionIds.length) {
+        eventSeeds.push({ eventId: String(event.event_id), regionIds: regionIds });
+      }
+    }
+    const seeds = {
+      eventSeeds: eventSeeds,
+      traceSeeds: [],
+      candidateEventCount: candidateEventCount,
+      candidateTraceCount: 0,
+      source: "mapped_report_points_only",
+    };
+    runtime.neighborhoodSeedCacheKey = cacheKey;
+    runtime.neighborhoodSeedCacheValue = seeds;
+    return seeds;
   }
 
   function currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds) {
@@ -16143,56 +21034,110 @@
     const selectedTraceIds = new Set();
     const visibleEventIds = new Set();
     const visibleTraceIds = new Set();
-    const index = currentChronologicalNeighborhoodIndex();
-    const seeds = currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);
+    const pointOnly = Boolean(state.regionSelection.pointOnly);
+    const index = pointOnly ? null : currentChronologicalNeighborhoodIndex();
+    const seeds = pointOnly
+      ? currentPointOnlyRegionSelectionSeeds(shapes, shapeBounds)
+      : currentChronologicalNeighborhoodSeeds(index, shapes, shapeBounds);
     const eventSeeds = seeds.eventSeeds;
     const traceSeeds = state.regionSelection.selectTraces ? seeds.traceSeeds : [];
+    const areaDepth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
+    let neighborhood;
 
-    if (state.regionSelection.selectEvents) {
-      eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
-    }
-    traceSeeds.forEach(function (seed) { selectedTraceIds.add(seed.traceId); });
-
-    const neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({
-      index: index,
-      depth: state.regionSelection.depth,
-      direction: state.regionSelection.direction,
-      eventSeeds: eventSeeds,
-      traceSeeds: traceSeeds,
-    });
-
-    if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
-      selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
-    }
-    const showsReachedTraces = Boolean(
-      (state.regionSelection.selectTraces && state.regionSelection.showSelectedTraces) ||
-      (state.regionSelection.selectEvents && state.regionSelection.showTracesAssociatedWithSelectedEvents)
-    );
-    if (showsReachedTraces) {
-      neighborhood.segmentIds.forEach(function (traceId) { visibleTraceIds.add(traceId); });
-    }
-    const showsReachedEvents = Boolean(
-      (state.regionSelection.selectTraces && state.regionSelection.showEventsAssociatedWithSelectedTraces) ||
-      (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents)
-    );
-    if (showsReachedEvents) {
-      neighborhood.eventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+    if (pointOnly) {
+      if (state.regionSelection.selectEvents) {
+        eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
+      }
+      if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
+        selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
+      neighborhood = {
+        depth: 0,
+        direction: "point_only",
+        eventIds: new Set(selectedEventIds),
+        segmentIds: new Set(),
+        segments: [],
+        metrics: {
+          reachedSegments: 0,
+          reachedEvents: selectedEventIds.size,
+        },
+      };
+    } else if (areaDepth === 0) {
+      const zeroHop = TRACE_NEIGHBORHOOD.computeAreaZeroHopSelection({
+        index,
+        eventSeeds,
+        traceSeeds,
+        selectEvents: state.regionSelection.selectEvents,
+        selectTraces: state.regionSelection.selectTraces,
+        showSelectedEvents: state.regionSelection.showSelectedEvents,
+        showSelectedTraces: state.regionSelection.showSelectedTraces,
+        showEventsAssociatedWithSelectedTraces: state.regionSelection.showEventsAssociatedWithSelectedTraces,
+        showTracesAssociatedWithSelectedEvents: state.regionSelection.showTracesAssociatedWithSelectedEvents,
+      });
+      zeroHop.selectedEventIds.forEach(function (id) { selectedEventIds.add(id); });
+      zeroHop.selectedTraceIds.forEach(function (id) { selectedTraceIds.add(id); });
+      zeroHop.visibleEventIds.forEach(function (id) { visibleEventIds.add(id); });
+      zeroHop.visibleTraceIds.forEach(function (id) { visibleTraceIds.add(id); });
+      neighborhood = {
+        generation: zeroHop.generation,
+        depth: 0,
+        direction: "direct",
+        eventIds: zeroHop.neighborhoodEventIds,
+        segmentIds: new Set(zeroHop.neighborhoodSegments.map(function (segment) { return segment.traceId; })),
+        segments: zeroHop.neighborhoodSegments,
+        metrics: zeroHop.metrics,
+        zeroHopPlan: zeroHop.plan,
+      };
+    } else {
+      if (state.regionSelection.selectEvents) {
+        eventSeeds.forEach(function (seed) { selectedEventIds.add(seed.eventId); });
+      }
+      traceSeeds.forEach(function (seed) { selectedTraceIds.add(seed.traceId); });
+      neighborhood = TRACE_NEIGHBORHOOD.traverseNeighborhood({
+        index,
+        depth: areaDepth,
+        direction: state.regionSelection.direction,
+        eventSeeds,
+        traceSeeds,
+      });
+      if (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents) {
+        selectedEventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
+      const showsReachedTraces = Boolean(
+        (state.regionSelection.selectTraces && state.regionSelection.showSelectedTraces) ||
+        (state.regionSelection.selectEvents && state.regionSelection.showTracesAssociatedWithSelectedEvents)
+      );
+      if (showsReachedTraces) {
+        neighborhood.segmentIds.forEach(function (traceId) { visibleTraceIds.add(traceId); });
+      }
+      const showsReachedEvents = Boolean(
+        (state.regionSelection.selectTraces && state.regionSelection.showEventsAssociatedWithSelectedTraces) ||
+        (state.regionSelection.selectEvents && state.regionSelection.showSelectedEvents)
+      );
+      if (showsReachedEvents) {
+        neighborhood.eventIds.forEach(function (eventId) { visibleEventIds.add(eventId); });
+      }
     }
 
     const traversalDurationMs = Math.round((performance.now() - startedAt) * 100) / 100;
     const metrics = {
       active: true,
-      reason: "computed cached chronological neighborhood",
+      reason: pointOnly
+        ? "computed point-only area selection"
+        : areaDepth === 0
+          ? "computed direct zero-hop area selection"
+          : "computed cached chronological neighborhood",
       generation: state.filterGeneration,
       shapeCount: shapes.length,
       eventPointsAvailable: state.filteredMappedCatalog.length,
       eventPointsBroadPhaseRejected: Math.max(0, state.filteredMappedCatalog.length - seeds.candidateEventCount),
       eventPointsExactTested: seeds.candidateEventCount,
-      traceSegmentsAvailable: index.segments.length,
-      traceSegmentsBroadPhaseRejected: Math.max(0, index.segments.length - seeds.candidateTraceCount),
+      traceSegmentsAvailable: pointOnly ? 0 : index.segments.length,
+      traceSegmentsBroadPhaseRejected: pointOnly ? 0 : Math.max(0, index.segments.length - seeds.candidateTraceCount),
       traceSegmentsExactTested: seeds.candidateTraceCount,
       associatedTraceIndexEntries: neighborhood.metrics.reachedSegments,
-      needsTraceSegments: true,
+      needsTraceSegments: !pointOnly,
+      chronologyIndexUsed: !pointOnly,
       depth: neighborhood.depth,
       direction: neighborhood.direction,
       reachedTraceCount: neighborhood.metrics.reachedSegments,
@@ -16218,23 +21163,47 @@
     metrics.visibleEventCount = visibleEventIds.size;
     updateRegionSelectionMetrics(metrics);
 
+    const visibleTraceSegments = visibleTraceIds.size
+      ? neighborhood.segments.filter(function (segment) {
+          return visibleTraceIds.has(segment.traceId);
+        })
+      : [];
+    const caseResultsCatalog = famousCaseTraceSelectionActive() ? [] : null;
+    const caseResultEndpointIds = new Set();
+    const caseResultAreaEventIds = new Set();
+    const caseResultLinkedEventIds = new Set();
+    const caseResultSeenIds = new Set();
+    if (caseResultsCatalog) {
+      visibleTraceSegments.forEach(function (segment) {
+        [segment.fromEventId, segment.toEventId].forEach(function (eventId) {
+          if (eventId != null) caseResultEndpointIds.add(String(eventId));
+        });
+      });
+    }
     const visibleCatalog = [];
     const visibleMappedCatalog = [];
-    if (visibleEventIds.size) {
+    if (visibleEventIds.size || caseResultEndpointIds.size) {
       for (const event of state.filteredCatalog) {
-        if (!visibleEventIds.has(String(event.event_id))) continue;
+        const eventId = String(event.event_id);
+        // Results can inspect both ends of a displayed case connection without
+        // expanding the area cohort used by the map, playback, and statistics.
+        if (caseResultsCatalog && !caseResultSeenIds.has(eventId) &&
+          (visibleEventIds.has(eventId) || caseResultEndpointIds.has(eventId))) {
+          caseResultSeenIds.add(eventId);
+          caseResultsCatalog.push(event);
+          if (event.has_coordinates && pointInsideAnyRegionShape(event.lat, event.lon, shapes)) {
+            caseResultAreaEventIds.add(eventId);
+          } else {
+            caseResultLinkedEventIds.add(eventId);
+          }
+        }
+        if (!visibleEventIds.has(eventId)) continue;
         visibleCatalog.push(event);
         if (event.has_coordinates) {
           visibleMappedCatalog.push(event);
         }
       }
     }
-    const visibleTraceSegments = visibleTraceIds.size
-      ? neighborhood.segments.filter(function (segment) {
-          return visibleTraceIds.has(segment.traceId);
-        })
-      : [];
-
     return {
       active: true,
       shapeCount: shapes.length,
@@ -16244,7 +21213,10 @@
       visibleTraceIds: visibleTraceIds,
       visibleCatalog: visibleCatalog,
       visibleMappedCatalog: visibleMappedCatalog,
-      traceSegments: index.segments,
+      caseResultsCatalog: caseResultsCatalog,
+      caseResultAreaEventIds: caseResultAreaEventIds,
+      caseResultLinkedEventIds: caseResultLinkedEventIds,
+      traceSegments: pointOnly ? [] : index.segments,
       visibleTraceSegments: visibleTraceSegments,
       neighborhoodSegments: neighborhood.segments,
       neighborhoodEventIds: neighborhood.eventIds,
@@ -16253,15 +21225,39 @@
       selectedTraceCount: selectedTraceIds.size,
       visibleEventCount: visibleEventIds.size,
       visibleTraceCount: visibleTraceIds.size,
+      pointOnly: pointOnly,
+      chronologyIndexUsed: !pointOnly,
       emptyMessage: (!visibleEventIds.size && !visibleTraceIds.size)
-        ? "No sightings or chronological adjacencies match the current filters and regions."
+        ? (pointOnly
+          ? "No mapped report points match the current filters and area."
+          : "No sightings or chronological adjacencies match the current filters and regions.")
         : "",
     };
   }
 
   function currentRegionSelectionResult() {
-    if (!regionSelectionHasActiveShapes()) {
+    if (!areaFilterHasActiveSelection()) {
       return emptyRegionSelectionResult();
+    }
+
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      const countryCacheKey = [
+        "country",
+        analysisCountryAreaFilterLabel(),
+        state.timelineDataVersion,
+        state.filterGeneration,
+        catalogEventIdIdentityKey(state.filteredCatalog),
+        catalogEventIdIdentityKey(state.filteredMappedCatalog),
+      ].join("|");
+      if (runtime.regionSelectionResultCacheKey === countryCacheKey && runtime.regionSelectionResultCacheValue) {
+        runtime.regionSelectionResultCacheHits += 1;
+        return runtime.regionSelectionResultCacheValue;
+      }
+      runtime.regionSelectionResultCacheMisses += 1;
+      const countryResult = countryAreaFilterResult();
+      runtime.regionSelectionResultCacheKey = countryCacheKey;
+      runtime.regionSelectionResultCacheValue = countryResult;
+      return countryResult;
     }
 
     const cacheKey = [
@@ -16289,6 +21285,9 @@
   }
 
   function traceLinkedVisibilityAffectsRendering() {
+    // A case's local reports remain visible even without a matching connection.
+    if (famousCaseTraceSelectionActive()) return false;
+    if (areaFilterHasActiveSelection() && state.regionSelection.pointOnly) return false;
     if (!traceModeIncludesStatic()) return false;
     // Facility proximity classifies traces and facility markers only. Sighting
     // hotspots and result rows must continue to use the normal filtered catalog.
@@ -17159,6 +22158,41 @@
     return currentVisibleDisplayCatalog(visibleCatalog);
   }
 
+  function currentResultsPaneCatalog() {
+    if (famousCaseTraceSelectionActive() && regionSelectionAffectsRendering()) {
+      const result = currentRegionSelectionResult();
+      // Keep every distinct report id at a trace endpoint inspectable, even
+      // when two source records have the same display fingerprint.
+      if (Array.isArray(result.caseResultsCatalog)) return result.caseResultsCatalog;
+    }
+    return currentVisibleResultsCatalog();
+  }
+
+  function famousCaseResultMembership(eventId, result) {
+    if (!famousCaseTraceSelectionActive()) return "";
+    const context = result || currentRegionSelectionResult();
+    const key = String(eventId);
+    if (context.caseResultAreaEventIds && context.caseResultAreaEventIds.has(key)) return "area";
+    if (context.caseResultLinkedEventIds && context.caseResultLinkedEventIds.has(key)) return "connected";
+    return "";
+  }
+
+  function renderResultsCaseContext(result) {
+    renderFamousCaseResultsSummary(result);
+    if (!els.resultsCaseContext) return;
+    const active = famousCaseTraceSelectionActive() && regionSelectionAffectsRendering();
+    els.resultsCaseContext.hidden = !active;
+    if (!active) {
+      els.resultsCaseContext.textContent = "";
+      return;
+    }
+    const context = result || currentRegionSelectionResult();
+    const areaCount = context.caseResultAreaEventIds ? context.caseResultAreaEventIds.size : 0;
+    const linkedCount = context.caseResultLinkedEventIds ? context.caseResultLinkedEventIds.size : 0;
+    els.resultsCaseContext.textContent = formatNumber(areaCount) + " in selected area · " +
+      formatNumber(linkedCount) + " connected outside area";
+  }
+
   function visibleResultsEventIdSet() {
     const visibleCatalog = currentVisibleResultsCatalog();
     const cacheKey = [
@@ -17207,12 +22241,21 @@
     if (!regionSelectionAffectsRendering()) {
       return true;
     }
+    // Country assignment is already applied atomically by the worker-owned
+    // catalog filter, so every event reaching this renderer is in-country.
+    // Avoid materializing a second browser-sized event-id set.
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      return true;
+    }
     return currentRegionSelectionResult().visibleEventIds.has(String(eventId));
   }
 
   function traceVisibleUnderRegionSelection(traceId) {
     if (!regionSelectionAffectsRendering()) {
       return true;
+    }
+    if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+      return false;
     }
     return currentRegionSelectionResult().visibleTraceIds.has(String(traceId));
   }
@@ -17535,6 +22578,7 @@
         suppressCanvasSync: true,
       });
     }
+    renderTraceStatusSummary();
     syncPlaybackTrailCanvas();
     syncTraceFacilityDisplayRestriction();
 
@@ -17638,7 +22682,9 @@
 
     const eventId = state.highlightedMapEventId != null ? state.highlightedMapEventId : state.selectedEventId;
     const event = eventId != null ? getCatalogEventById(eventId) : null;
-    if (!event || !event.has_coordinates || !eventVisibleUnderActiveTraceAndRegionFilters(event.event_id)) {
+    if (!event || !event.has_coordinates ||
+      (!eventVisibleUnderActiveTraceAndRegionFilters(event.event_id) &&
+       famousCaseResultMembership(event.event_id) !== "connected")) {
       clearMapSelectionOverlay();
       return;
     }
@@ -17881,8 +22927,10 @@
     return [
       els.startDateInput,
       els.timelineStartDateInput,
+      els.analysisStartDateInput,
       els.endDateInput,
       els.timelineEndDateInput,
+      els.analysisEndDateInput,
     ].filter(Boolean);
   }
 
@@ -17890,14 +22938,16 @@
     return [
       els.startDatePicker,
       els.timelineStartDatePicker,
+      els.analysisStartDatePicker,
       els.endDatePicker,
       els.timelineEndDatePicker,
+      els.analysisEndDatePicker,
     ].filter(Boolean);
   }
 
   function setDateRangeFeedback(message) {
     const text = String(message || "");
-    [els.filterDateFeedback, els.timelineDateFeedback].forEach(function (feedback) {
+    [els.filterDateFeedback, els.timelineDateFeedback, els.analysisDateFeedback].forEach(function (feedback) {
       if (!feedback) return;
       feedback.textContent = text;
       feedback.hidden = !text;
@@ -17912,6 +22962,95 @@
     });
   }
 
+  function setAnalysisDateRangeFeedback(message) {
+    const text = String(message || "");
+    if (els.analysisDateFeedback) {
+      els.analysisDateFeedback.textContent = text;
+      els.analysisDateFeedback.hidden = !text;
+    }
+    [els.analysisStartDateInput, els.analysisEndDateInput].forEach(function (input) {
+      if (!input) return;
+      if (text) {
+        input.setAttribute("aria-invalid", "true");
+      } else {
+        input.removeAttribute("aria-invalid");
+      }
+    });
+  }
+
+  function analysisDateRangeUsesPopover() {
+    if (!runtime.analysisDateMediaQuery && typeof window.matchMedia === "function") {
+      runtime.analysisDateMediaQuery = window.matchMedia("(max-width: 760px)");
+    }
+    return Boolean(runtime.analysisDateMediaQuery && runtime.analysisDateMediaQuery.matches);
+  }
+
+  function analysisModeLabelForState() {
+    if (state.timeRangeMode === "full") return "Internal structure";
+    if (state.analysisBaselineMode === "full_catalog") return "Descriptive overlap";
+    if (state.analysisBaselineMode === "previous_equal_duration") return "Prior-period comparison";
+    return "Balanced comparison";
+  }
+
+  function syncAnalysisDateRangeSummary(startValue, endValue) {
+    const startText = String(startValue == null
+      ? (state.timeRangeStartOrdinal == null ? "" : ordinalToIso(state.timeRangeStartOrdinal))
+      : startValue);
+    const endText = String(endValue == null
+      ? (state.timeRangeEndOrdinal == null ? "" : ordinalToIso(state.timeRangeEndOrdinal))
+      : endValue);
+    const fullRange = state.timeRangeMode === "full";
+    const rangeLabel = fullRange
+      ? "All time"
+      : (startText && endText ? startText + " – " + endText : "Choose dates");
+    const modeLabel = analysisModeLabelForState();
+    if (els.analysisDateRangeChipLabel) els.analysisDateRangeChipLabel.textContent = rangeLabel;
+    if (els.analysisDateRangeChipMode) els.analysisDateRangeChipMode.textContent = modeLabel;
+    if (els.analysisModeLabel) els.analysisModeLabel.textContent = modeLabel;
+    if (els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.setAttribute(
+        "aria-label",
+        "Analysis date range: " + rangeLabel + ". Mode: " + modeLabel + "."
+      );
+    }
+  }
+
+  function syncAnalysisDatePopoverState() {
+    if (!els.analysisDatePopover || !els.analysisDateRangeChip) return;
+    const mobile = analysisDateRangeUsesPopover();
+    const expanded = !mobile || runtime.analysisDatePopoverOpen;
+    els.analysisDateRangeChip.setAttribute("aria-expanded", expanded ? "true" : "false");
+    els.analysisDatePopover.hidden = !expanded;
+    els.analysisDatePopover.inert = !expanded;
+    els.analysisDatePopover.setAttribute("aria-hidden", expanded ? "false" : "true");
+    els.analysisDatePopover.classList.toggle("is-mobile-open", mobile && expanded);
+  }
+
+  function setAnalysisDatePopoverOpen(open, options) {
+    runtime.analysisDatePopoverOpen = Boolean(open);
+    syncAnalysisDatePopoverState();
+    if (options && options.restoreFocus && els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.focus({ preventScroll: true });
+    }
+  }
+
+  function initializeAnalysisDateRangeControls() {
+    analysisDateRangeUsesPopover();
+    syncAnalysisDatePopoverState();
+    syncAnalysisDateRangeSummary();
+    const mediaQuery = runtime.analysisDateMediaQuery;
+    if (!mediaQuery) return;
+    const handleViewportChange = function () {
+      if (!mediaQuery.matches) runtime.analysisDatePopoverOpen = false;
+      syncAnalysisDatePopoverState();
+    };
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleViewportChange);
+    } else if (typeof mediaQuery.addListener === "function") {
+      mediaQuery.addListener(handleViewportChange);
+    }
+  }
+
   function nativePickerValueForIso(value) {
     const normalized = String(value || "");
     return /^(?!0000)\d{4}-\d{2}-\d{2}$/.test(normalized) ? normalized : "";
@@ -17920,16 +23059,20 @@
   function syncNativeDatePickers(startValue, endValue) {
     const startNative = nativePickerValueForIso(startValue);
     const endNative = nativePickerValueForIso(endValue);
-    [els.startDatePicker, els.timelineStartDatePicker].forEach(function (picker) {
+    [els.startDatePicker, els.timelineStartDatePicker, els.analysisStartDatePicker].forEach(function (picker) {
       if (picker) picker.value = startNative;
     });
-    [els.endDatePicker, els.timelineEndDatePicker].forEach(function (picker) {
+    [els.endDatePicker, els.timelineEndDatePicker, els.analysisEndDatePicker].forEach(function (picker) {
       if (picker) picker.value = endNative;
     });
   }
 
   function isDateInputElement(element) {
     return dateInputElements().indexOf(element) !== -1;
+  }
+
+  function isAnalysisDateInputElement(element) {
+    return element === els.analysisStartDateInput || element === els.analysisEndDateInput;
   }
 
   function markDateInputPending(input) {
@@ -17962,7 +23105,10 @@
     setDateInputValueFromState(els.endDateInput, endValue);
     setDateInputValueFromState(els.timelineStartDateInput, startValue);
     setDateInputValueFromState(els.timelineEndDateInput, endValue);
+    setDateInputValueFromState(els.analysisStartDateInput, startValue);
+    setDateInputValueFromState(els.analysisEndDateInput, endValue);
     syncNativeDatePickers(startValue, endValue);
+    syncAnalysisDateRangeSummary(startValue, endValue);
   }
 
   function applyStartupPreviewTimeRangeInputs() {
@@ -18048,6 +23194,9 @@
       previousMode !== state.timeRangeMode
     ) {
       refreshTemporalOverlayLayersForCurrentWindow();
+      if (runtime.traceIntersectionController) {
+        runtime.traceIntersectionController.notifyTimelineRangeChanged();
+      }
     }
   }
 
@@ -18072,8 +23221,8 @@
 
   function mirrorDateFieldValue(group, value, sourceElement) {
     const inputs = group === "start"
-      ? [els.startDateInput, els.timelineStartDateInput]
-      : [els.endDateInput, els.timelineEndDateInput];
+      ? [els.startDateInput, els.timelineStartDateInput, els.analysisStartDateInput]
+      : [els.endDateInput, els.timelineEndDateInput, els.analysisEndDateInput];
 
     for (const input of inputs) {
       if (input !== sourceElement) {
@@ -18088,27 +23237,66 @@
     mirrorDateFieldValue(group, input.value, input);
   }
 
-  function commitDateInputs() {
-    window.clearTimeout(runtime.timeInputTimerId);
-    runtime.timeInputTimerId = null;
-    const startIso = normalizeDateBoundary(els.startDateInput.value, "start");
-    const endIso = normalizeDateBoundary(els.endDateInput.value, "end");
+  function validateDateRangeCandidate(startValue, endValue) {
+    const startIso = normalizeDateBoundary(startValue, "start");
+    const endIso = normalizeDateBoundary(endValue, "end");
     if (!startIso || !endIso) {
-      setDateRangeFeedback("Use YYYY, YYYY-MM, or a valid YYYY-MM-DD date.");
-      return false;
+      return {
+        valid: false,
+        message: "Use YYYY, YYYY-MM, or a valid YYYY-MM-DD date.",
+      };
     }
     const startOrdinal = isoToOrdinal(startIso);
     const endOrdinal = isoToOrdinal(endIso);
     if (startOrdinal > endOrdinal) {
-      setDateRangeFeedback("Start date must be on or before End date. The last valid range is still active.");
+      return {
+        valid: false,
+        message: "Start date must be on or before End date. The last valid range is still active.",
+      };
+    }
+    return {
+      valid: true,
+      startIso: startIso,
+      endIso: endIso,
+      startOrdinal: startOrdinal,
+      endOrdinal: endOrdinal,
+      message: "",
+    };
+  }
+
+  function commitDateInputs(options) {
+    window.clearTimeout(runtime.timeInputTimerId);
+    runtime.timeInputTimerId = null;
+    const candidate = validateDateRangeCandidate(
+      options && Object.prototype.hasOwnProperty.call(options, "startValue")
+        ? options.startValue
+        : els.startDateInput.value,
+      options && Object.prototype.hasOwnProperty.call(options, "endValue")
+        ? options.endValue
+        : els.endDateInput.value
+    );
+    if (!candidate.valid) {
+      if (options && options.feedbackScope === "analysis") {
+        setAnalysisDateRangeFeedback(candidate.message);
+      } else {
+        setDateRangeFeedback(candidate.message);
+      }
       return false;
     }
     setDateRangeFeedback("");
     clearPendingDateInputEdits();
     invalidatePlaybackForTimeChange();
-    setTimeRange(startOrdinal, endOrdinal, { mode: "custom", autofitVisible: false });
+    setTimeRange(candidate.startOrdinal, candidate.endOrdinal, { mode: "custom", autofitVisible: false });
     scheduleCurrentTimeRangeState();
     return true;
+  }
+
+  function commitAnalysisDateInputs() {
+    return commitDateInputs({
+      startValue: els.analysisStartDateInput ? els.analysisStartDateInput.value : els.startDateInput.value,
+      endValue: els.analysisEndDateInput ? els.analysisEndDateInput.value : els.endDateInput.value,
+      feedbackScope: "analysis",
+    });
   }
 
   function getCurrentKeyword() {
@@ -19026,7 +24214,9 @@
     if (options && options.reason === "playback") {
       runtime.resultsProgrammaticScrollUntil = performance.now() + 300;
     }
-    const visibleCatalog = currentVisibleResultsCatalog();
+    const visibleCatalog = currentResultsPaneCatalog();
+    const caseResultContext = famousCaseTraceSelectionActive() ? currentRegionSelectionResult() : null;
+    renderResultsCaseContext(caseResultContext);
     const traceVisibilityPending = Boolean(
       runtime.traceLinkedVisibilityCacheValue &&
       runtime.traceLinkedVisibilityCacheValue.pending
@@ -19070,11 +24260,17 @@
       let emptyMessage = traceVisibilityPending
         ? "Refining exact trace-linked sightings. Results will appear automatically while the map remains usable."
         : "No matching events are currently visible. Adjust the time window or filters to repopulate the result set.";
-      if (regionSelectionAffectsRendering() && regionSelectionHasActiveShapes()) {
+      if (analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()) {
+        emptyMessage = "No reports match the active Country Area Filter for " +
+          analysisCountryAreaFilterLabel() + ". Adjust the shared filters or clear the Area Filter.";
+      } else if (regionSelectionAffectsRendering() && regionSelectionHasActiveShapes()) {
         const regionResult = currentRegionSelectionResult();
         emptyMessage = regionResult.visibleTraceCount > 0
           ? "No sightings are currently visible for the active area filter. Adjust the display toggles or drawn regions."
           : "No sightings or traces selected. Adjust the drawn regions or clear the area filter.";
+      }
+      if (famousCaseTraceSelectionActive()) {
+        emptyMessage = "No nearby mapped results. Check the case records and coverage above.";
       }
       els.resultList.innerHTML = '<p class="note-copy">' + escapeHtml(emptyMessage) + "</p>";
       els.resultList.scrollTop = 0;
@@ -19085,6 +24281,11 @@
     }
 
     const cardsMarkup = displayed.map(function (event) {
+      const caseMembership = famousCaseResultMembership(event.event_id, caseResultContext);
+      const caseClass = caseMembership === "area" ? " is-case-area"
+        : caseMembership === "connected" ? " is-case-connected" : "";
+      const caseLabel = caseMembership === "area" ? "In selected area"
+        : caseMembership === "connected" ? "Connected outside area" : "";
       const mappedBadge = event.has_coordinates
         ? '<span class="badge badge-mapped">Mapped</span>'
         : '<span class="badge badge-unmapped">Unmapped</span>';
@@ -19096,9 +24297,10 @@
       const expandedClass = state.expandedResultId === event.event_id ? " is-expanded" : "";
       const summary = escapeHtml(displayLocationForEvent(event));
       return (
-        '<article class="result-card' + activeClass + playbackClass + expandedClass + '" data-result-card-event-id="' + escapeHtml(event.event_id) + '">' +
+        '<article class="result-card' + caseClass + activeClass + playbackClass + expandedClass + '" data-result-card-event-id="' + escapeHtml(event.event_id) + '">' +
         '<button class="result-card-button" type="button" data-event-id="' + escapeHtml(event.event_id) + '">' +
         '<div class="result-card-head"><span class="result-date">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</span></div>" +
+        (caseLabel ? '<span class="result-case-membership">' + caseLabel + '</span>' : '') +
         '<div class="result-badges">' + mappedBadge + precisionBadge + "</div>" +
         '<div class="result-location">' + summary + "</div>" +
         '<div class="result-meta">' + escapeHtml(event.source || "Unknown source") + " | " + escapeHtml(event.type || "Unknown type") + "</div>" +
@@ -19136,7 +24338,7 @@
     if (!els.resultList || eventId == null) return;
     const tries = Number.isFinite(attempt) ? attempt : 0;
     const reason = options && options.reason ? options.reason : "selection";
-    const display = resultIndexByEventIdForDisplay(currentVisibleResultsCatalog());
+    const display = resultIndexByEventIdForDisplay(currentResultsPaneCatalog());
     const ordered = display.ordered;
     const targetIndex = display.indexByEventId.get(eventId);
     if (targetIndex == null || targetIndex < 0) return;
@@ -19236,7 +24438,7 @@
     if (remainingDistance > RESULTS_LOAD_MORE_THRESHOLD_PX) {
       return;
     }
-    const total = currentVisibleResultsCatalog().length;
+    const total = currentResultsPaneCatalog().length;
     const shifted = PLAYBACK_PERFORMANCE.shiftResultsWindow({
       total: total,
       currentStart: state.resultsWindowStart,
@@ -19259,7 +24461,7 @@
   }
 
   function shiftResultsWindow(direction) {
-    const total = currentVisibleResultsCatalog().length;
+    const total = currentResultsPaneCatalog().length;
     const shifted = PLAYBACK_PERFORMANCE.shiftResultsWindow({
       total: total,
       currentStart: state.resultsWindowStart,
@@ -19483,7 +24685,8 @@
     }
 
     const promise = (async function () {
-      const events = await fetchJson("./data/event_chunks/" + manifestEntry.file, "Event chunk " + chunkId);
+      const events = (await fetchJson("./data/event_chunks/" + manifestEntry.file, "Event chunk " + chunkId))
+        .map(function (event) { return applyLocationLabelOverlay(event, { detail: true }); });
       cacheChunkData(chunkId, events);
       if (!loadedEventChunkIds.has(chunkId)) {
         loadedEventChunkIds.add(chunkId);
@@ -19542,8 +24745,11 @@
           "Serve a valid canonical web event chunk file."
         );
       }
-      cacheChunkData(cacheKey, events);
-      return events;
+      const overlaidEvents = events.map(function (event) {
+        return applyLocationLabelOverlay(applyDetailQualityOverlay(event), { detail: true });
+      });
+      cacheChunkData(cacheKey, overlaidEvents);
+      return overlaidEvents;
     })()
       .catch(function (error) {
         throw error;
@@ -20962,6 +26168,8 @@
       runtime.map.removeLayer(runtime.heatmapLayer);
     }
     markerByEventId.clear();
+    runtime.mapEventLayerLoadedBounds = null;
+    runtime.mapEventLayerLoadedRepresentation = "";
   }
 
   function resolveNormalAutoMapMode(mappedCount) {
@@ -21108,6 +26316,7 @@
       }
     }
     runtime.renderedWrapWorldIndex = primaryWorldIndex;
+    rememberMapEventLayerLoadedViewport(MAP_RENDERERS.events, bounds);
     runtime.pointLayer.addTo(runtime.map);
     syncPointLayerMarkerSizing();
   }
@@ -21139,6 +26348,7 @@
       }
     }
     runtime.renderedWrapWorldIndex = primaryWorldIndex;
+    rememberMapEventLayerLoadedViewport(MAP_RENDERERS.clusters, bounds);
     runtime.clusterLayer.addTo(runtime.map);
   }
 
@@ -21282,6 +26492,8 @@
     if (!event) return "Missing endpoint record";
     return String(
       event.location ||
+      event.location_raw ||
+      event.geocode_display_name ||
       event.place ||
       event.city ||
       event.title ||
@@ -21293,6 +26505,46 @@
   function chronologicalNeighborhoodDateLabel(event) {
     if (!event) return "Missing";
     return String(event.date_raw || event.sort_date_iso || event.date || "Missing");
+  }
+
+  function currentAreaDirectionSummary(result) {
+    const direction = state.regionSelection.direction || "forward";
+    if (runtime.areaDirectionSummaryResult !== result || runtime.areaDirectionSummaryDirection !== direction) {
+      runtime.areaDirectionSummaryResult = result;
+      runtime.areaDirectionSummaryDirection = direction;
+      runtime.areaDirectionSummary = TRACE_DIRECTIONS.summarizeDirections(
+        result.visibleTraceSegments || [], { direction: direction }
+      );
+    }
+    return runtime.areaDirectionSummary;
+  }
+
+  function renderAreaDirectionSummary(result, hasAreaFilter) {
+    if (!els.areaDirectionSummary || !els.areaDirectionSummaryBody) return;
+    const segments = result.visibleTraceSegments || [];
+    els.areaDirectionSummary.hidden = !hasAreaFilter || result.pointOnly || !segments.length;
+    if (els.areaDirectionSummary.hidden) {
+      els.areaDirectionSummaryBody.innerHTML = "";
+      runtime.areaDirectionSummaryMarkup = "";
+      return;
+    }
+    const markup = TRACE_DIRECTIONS.summaryMarkup(currentAreaDirectionSummary(result));
+    if (runtime.areaDirectionSummaryMarkup !== markup) {
+      els.areaDirectionSummaryBody.innerHTML = markup;
+      runtime.areaDirectionSummaryMarkup = markup;
+    }
+  }
+
+  function currentUnorderedConnectionGroups(segments) {
+    if (!runtime.map) return TRACE_DIRECTIONS.groupUnorderedConnections(segments);
+    return TRACE_DIRECTIONS.groupUnorderedConnections(segments, {
+      project: function (point) {
+        const longitude = ((((point[1] + 180) % 360) + 360) % 360) - 180;
+        const projected = runtime.map.project([point[0], longitude], runtime.map.getZoom());
+        return [projected.x, projected.y];
+      },
+      pixelTolerance: 1,
+    });
   }
 
   function renderChronologicalNeighborhoodInspector() {
@@ -21313,7 +26565,8 @@
     const craftStyle = TRACE_NEIGHBORHOOD.resolveCraftEndpointStyle(fromEvent, toEvent, CRAFT_TYPE_COLORS);
     const distanceKm = TRACE_NEIGHBORHOOD.haversineKm(segment.from, segment.to);
     const elapsedDays = Number.isFinite(Number(segment.gapDays)) ? Math.abs(Number(segment.gapDays)) : null;
-    const impliedSpeedKph = distanceKm != null && elapsedDays != null && elapsedDays > 0
+    const sameDayOrderUnknown = TRACE_DIRECTIONS.segmentOrderUncertain(segment);
+    const impliedSpeedKph = !sameDayOrderUnknown && distanceKm != null && elapsedDays != null && elapsedDays > 0
       ? distanceKm / (elapsedDays * 24)
       : null;
     const neighborhood = segment.neighborhood || {};
@@ -21321,22 +26574,67 @@
       ? neighborhood.regionIds.join(", ")
       : "Missing";
     const values = [
-      ["Connection", "Chronological adjacency only"],
-      ["Earlier endpoint", chronologicalNeighborhoodEndpointLabel(fromEvent) + " (" + String(segment.fromEventId || "Missing") + ")"],
-      ["Earlier date", chronologicalNeighborhoodDateLabel(fromEvent)],
-      ["Earlier craft type", craftStyle.fromLabel],
-      ["Later endpoint", chronologicalNeighborhoodEndpointLabel(toEvent) + " (" + String(segment.toEventId || "Missing") + ")"],
-      ["Later date", chronologicalNeighborhoodDateLabel(toEvent)],
-      ["Later craft type", craftStyle.toLabel],
-      ["Elapsed time", elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
+      ["Connection", sameDayOrderUnknown
+        ? (segment.source === "famous_case_same_day_craft" ? "Same calendar date and craft category; report order uncertain" : "Report connection; chronological order uncertain")
+        : "Chronological adjacency only"],
+      [sameDayOrderUnknown ? "Endpoint A" : "Earlier endpoint", chronologicalNeighborhoodEndpointLabel(fromEvent) + " (" + String(segment.fromEventId || "Missing") + ")"],
+      [sameDayOrderUnknown ? "Date A" : "Earlier date", chronologicalNeighborhoodDateLabel(fromEvent)],
+      [sameDayOrderUnknown ? "Craft type A" : "Earlier craft type", craftStyle.fromLabel],
+      [sameDayOrderUnknown ? "Endpoint B" : "Later endpoint", chronologicalNeighborhoodEndpointLabel(toEvent) + " (" + String(segment.toEventId || "Missing") + ")"],
+      [sameDayOrderUnknown ? "Date B" : "Later date", chronologicalNeighborhoodDateLabel(toEvent)],
+      [sameDayOrderUnknown ? "Craft type B" : "Later craft type", craftStyle.toLabel],
+      ["Elapsed time", sameDayOrderUnknown
+        ? (elapsedDays === 0 ? "Same calendar date; elapsed hours and order uncertain" : "Elapsed hours and report order uncertain")
+        : elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
       ["Derived distance", distanceKm == null ? "Missing" : distanceKm.toFixed(1) + " km (great-circle estimate)"],
       ["Derived implied speed", impliedSpeedKph == null ? "Missing or undefined" : impliedSpeedKph.toFixed(1) + " km/h"],
-      ["Hop / direction", String(neighborhood.hop || 1) + " / " + String(neighborhood.direction || "forward")],
+      [
+        sameDayOrderUnknown ? "Hop / ordering" : "Hop / direction",
+        String(neighborhood.hop == null ? 1 : neighborhood.hop) + " / " +
+          (sameDayOrderUnknown ? "Unordered report connection" : String(neighborhood.direction || "forward")),
+      ],
       ["Region attribution", regionIds],
     ];
+    const description = TRACE_DIRECTIONS.describeSegment(segment, { direction: state.regionSelection.direction });
+    const directions = description.directions;
+    const directionSummary = currentAreaDirectionSummary(result);
+    if (description.orderUncertain && description.orientation) {
+      values.splice(1, 0, ["Map connection axis", description.orientation.axisLabel +
+        "; no travel direction assigned. Excluded from directional percentages."]);
+    }
+    directions.forEach(function (entry) {
+      const sector = directionSummary.sectors.find(function (row) { return row.key === entry.sector; });
+        values.splice(1, 0, [
+        "Map direction (" + entry.direction + ")",
+        entry.label + " (" + entry.sector + "), " + Math.round(entry.bearing) + "° · " +
+          sector.count + " / " + directionSummary.denominator + " directions (" +
+          TRACE_DIRECTIONS.formatPercentage(sector.percentage) + ") in the current selection",
+      ]);
+    });
     if (els.chronologicalNeighborhoodInspectorBody) {
+      const sharedGroup = sameDayOrderUnknown
+        ? currentUnorderedConnectionGroups(result.visibleTraceSegments || []).find(function (group) {
+            return group.segments.some(function (member) { return member.traceId === segment.traceId; });
+          }) : null;
+      const sharedLinksMarkup = sharedGroup && sharedGroup.segments.length > 1
+        ? '<section class="neighborhood-shared-links"><strong>' + sharedGroup.segments.length +
+          ' report links share this map line</strong><p>One arrow marks this overlap. Choose a link to inspect its reports.</p><div role="group" aria-label="Report links sharing this map line">' +
+          sharedGroup.segments.map(function (member, index) {
+            const fromLabel = chronologicalNeighborhoodEndpointLabel(getCatalogEventById(member.fromEventId));
+            const toLabel = chronologicalNeighborhoodEndpointLabel(getCatalogEventById(member.toEventId));
+            return '<button type="button" class="secondary-button" data-neighborhood-trace-id="' + escapeHtml(member.traceId) +
+              '" aria-pressed="' + (member.traceId === segment.traceId ? 'true' : 'false') + '">Link ' + (index + 1) +
+              ': ' + escapeHtml(fromLabel) + ' ↔ ' + escapeHtml(toLabel) + '</button>';
+          }).join('') + '</div></section>' : '';
       els.chronologicalNeighborhoodInspectorBody.innerHTML =
-        '<p class="chronological-neighborhood-inspector-note">This connection is adjacency in the filtered chronology. It is exploratory and is not evidence of travel or the same craft.</p>' +
+        sharedLinksMarkup +
+        '<p class="chronological-neighborhood-inspector-note">' +
+        (sameDayOrderUnknown
+          ? 'Report order is uncertain and may use estimates or record identifiers. The dashed, double-headed arrow shows an undirected connection between locations. It is excluded from directional percentages; travel direction and origin are unestablished.'
+          : 'This connection is adjacency in the filtered chronology. It is exploratory and is not evidence of travel or the same craft.') + '</p>' +
+        TRACE_DIRECTIONS.summaryMarkup(directionSummary, {
+          selectedSectors: directions.map(function (entry) { return entry.sector; }),
+        }) +
         '<dl class="chronological-neighborhood-inspector-grid">' +
         values.map(function (entry) {
           return "<dt>" + escapeHtml(entry[0]) + "</dt><dd>" + escapeHtml(entry[1]) + "</dd>";
@@ -21348,6 +26646,16 @@
     }
   }
 
+  function selectNeighborhoodReportLink(traceId) {
+    const result = currentRegionSelectionResult();
+    const member = (result.visibleTraceSegments || []).find(function (segment) {
+      return String(segment.traceId) === String(traceId);
+    });
+    if (!member) return;
+    runtime.neighborhoodInspectorTraceId = member.traceId;
+    renderChronologicalNeighborhoodInspector();
+  }
+
   function neighborhoodArrowAngle(copy, direction) {
     if (!runtime.map) return 0;
     const fromPoint = runtime.map.latLngToLayerPoint(copy.from);
@@ -21355,6 +26663,63 @@
     let degrees = Math.atan2(toPoint.y - fromPoint.y, toPoint.x - fromPoint.x) * (180 / Math.PI);
     if (direction === "backward") degrees += 180;
     return Math.round(degrees * 10) / 10;
+  }
+
+  function neighborhoodPointAlongCopy(copy, fraction) {
+    const fromPoint = runtime.map.latLngToLayerPoint(copy.from);
+    const toPoint = runtime.map.latLngToLayerPoint(copy.to);
+    return runtime.map.layerPointToLatLng(L.point(
+      fromPoint.x + (toPoint.x - fromPoint.x) * fraction,
+      fromPoint.y + (toPoint.y - fromPoint.y) * fraction
+    ));
+  }
+
+  function neighborhoodBadgePosition(copy, traceId, directionIndex, occupied) {
+    let hash = 0;
+    for (const character of String(traceId)) hash = ((hash * 31) + character.charCodeAt(0)) >>> 0;
+    const base = 0.28 + ((hash % 997) / 997) * 0.44;
+    const offsets = directionIndex ? [0.09, -0.09, 0.18, -0.18, 0.27, -0.27] : [0, 0.09, -0.09, 0.18, -0.18, 0.27];
+    let position = null;
+    let key = "";
+    for (const offset of offsets) {
+      position = neighborhoodPointAlongCopy(copy, clamp(base + offset, 0.15, 0.85));
+      const point = runtime.map.latLngToContainerPoint(position);
+      key = Math.round(point.x / 36) + ":" + Math.round(point.y / 36);
+      if (!occupied.has(key)) break;
+    }
+    occupied.add(key);
+    return position;
+  }
+
+  function renderChronologicalNeighborhoodBadge(copy, segment, entry, directionIndex, occupiedBadgeCells, directionSummary, group) {
+    const sector = directionSummary.sectors.find(function (row) { return row.key === entry.sector; });
+    const sharedCount = group ? group.segments.length : 1;
+    const label = entry.orderUncertain
+      ? "Report order unknown · " + entry.axisLabel + " connection axis · " +
+        (sharedCount > 1 ? sharedCount + " report links share this line · " : "") +
+        "excluded from directional percentages · open connection details"
+      : entry.label + " report link · " + TRACE_DIRECTIONS.formatPercentage(sector.percentage) +
+        " of ordered connections · open direction breakdown";
+    const badge = L.marker(neighborhoodBadgePosition(copy, group ? group.key : segment.traceId, directionIndex, occupiedBadgeCells), {
+      pane: "neighborhoodTracePane",
+      interactive: true,
+      keyboard: true,
+      title: label,
+      alt: label,
+      icon: L.divIcon({
+        className: "chronological-neighborhood-arrow-shell",
+        html: TRACE_DIRECTIONS.directionBadgeMarkup(entry, {
+          arrowAngle: neighborhoodArrowAngle(copy, entry.direction),
+        }),
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+      }),
+    });
+    badge.on("click", function () {
+      runtime.neighborhoodInspectorTraceId = segment.traceId;
+      renderChronologicalNeighborhoodInspector();
+    });
+    badge.addTo(runtime.neighborhoodTraceLayer);
   }
 
   function renderChronologicalNeighborhoodOverlay() {
@@ -21365,33 +26730,53 @@
       closeChronologicalNeighborhoodInspector();
       return;
     }
-    setChronologicalNeighborhoodPaneInteractive(true);
     const result = currentRegionSelectionResult();
+    if (result.pointOnly) {
+      setChronologicalNeighborhoodPaneInteractive(false);
+      closeChronologicalNeighborhoodInspector();
+      return;
+    }
     const segments = result.visibleTraceSegments || [];
-    const endpointIds = new Set();
+    renderAreaDirectionSummary(result, true);
+    const directionSummary = currentAreaDirectionSummary(result);
+    const occupiedBadgeCells = new Set();
+    setChronologicalNeighborhoodPaneInteractive(segments.length > 0);
     const densityProfile = normalTraceDensityProfile(Math.max(1, segments.length));
     segments.forEach(function (rawSegment) {
       const segment = styleTraceSegmentForDensity(rawSegment, densityProfile);
       const neighborhood = rawSegment.neighborhood || {};
-      const hop = TRACE_NEIGHBORHOOD.normalizeDepth(neighborhood.hop || 1);
+      const hop = TRACE_NEIGHBORHOOD.normalizeAreaDepth(
+        neighborhood.hop == null ? 1 : neighborhood.hop
+      );
       const direction = neighborhood.direction || state.regionSelection.direction || "forward";
-      const weight = Math.max(2.2, 5.6 - ((hop - 1) * 0.72));
-      const opacity = Math.max(0.48, 0.96 - ((hop - 1) * 0.13));
-      const dashArray = hop === 1 ? null : hop === 2 ? "10 7" : hop === 3 ? "6 7" : "2 7";
+      const visualHop = Math.max(1, hop);
+      const rawWeight = Math.max(2.2, 5.6 - ((visualHop - 1) * 0.72));
+      const rawOpacity = Math.max(0.48, 0.96 - ((visualHop - 1) * 0.13));
+      const dashArray = visualHop === 1 ? null : visualHop === 2 ? "10 7" : visualHop === 3 ? "6 7" : "2 7";
       const outlineColor = state.resolvedTheme === "dark"
         ? CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR
         : CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR;
       wrappedSegmentCopies(segment).forEach(function (copy) {
-        L.polyline([copy.from, copy.to], {
+        const selectedTrace = result.selectedTraceIds.has(segment.traceId);
+        const rawOutlineOpacity = selectedTrace ? 0.88 : 0.56;
+        const rawOutlineWeight = rawWeight + (selectedTrace ? 3.2 : 2);
+        const outlineLine = L.polyline([copy.from, copy.to], {
           pane: "neighborhoodTracePane",
           color: outlineColor,
-          opacity: result.selectedTraceIds.has(segment.traceId) ? 0.88 : 0.56,
-          weight: weight + (result.selectedTraceIds.has(segment.traceId) ? 3.2 : 2),
+          opacity: scaledTraceOpacity(rawOutlineOpacity),
+          weight: scaledTraceStrokeWeight(rawOutlineWeight),
           dashArray: dashArray,
           interactive: false,
           className: "chronological-neighborhood-outline hop-" + hop,
-        }).addTo(runtime.neighborhoodTraceLayer);
-        const midpoint = interpolateLatLngPair(copy.from, copy.to, 0.5);
+        });
+        outlineLine._ufoTraceBaseStyle = {
+          rawOpacity: rawOutlineOpacity,
+          opacity: scaledTraceOpacity(rawOutlineOpacity),
+          rawWeight: rawOutlineWeight,
+          weight: scaledTraceStrokeWeight(rawOutlineWeight),
+        };
+        outlineLine.addTo(runtime.neighborhoodTraceLayer);
+        const midpoint = neighborhoodPointAlongCopy(copy, 0.5);
         const parts = craftTraceColoringActive() && segment.fromCraftColor && segment.toCraftColor
           ? [
               { points: [copy.from, midpoint], color: segment.fromCraftColor },
@@ -21402,12 +26787,18 @@
           const line = L.polyline(part.points, {
             pane: "neighborhoodTracePane",
             color: part.color,
-            opacity: opacity,
-            weight: weight,
+            opacity: scaledTraceOpacity(rawOpacity),
+            weight: scaledTraceStrokeWeight(rawWeight),
             dashArray: dashArray,
             interactive: true,
             className: "chronological-neighborhood-segment hop-" + hop + " direction-" + direction,
           });
+          line._ufoTraceBaseStyle = {
+            rawOpacity: rawOpacity,
+            opacity: scaledTraceOpacity(rawOpacity),
+            rawWeight: rawWeight,
+            weight: scaledTraceStrokeWeight(rawWeight),
+          };
           line.on("click", function (leafletEvent) {
             const pointHit = renderedPointMarkerHitAtLatLng(leafletEvent && leafletEvent.latlng);
             if (pointHit && activateMapPointEvent(pointHit.candidate.eventId, {
@@ -21418,47 +26809,19 @@
           });
           line.addTo(runtime.neighborhoodTraceLayer);
         });
-        const arrowAngle = neighborhoodArrowAngle(copy, direction);
-        const arrowGlyph = direction === "both" ? "\u2194" : "\u279c";
-        L.marker(midpoint, {
-          pane: "neighborhoodTracePane",
-          interactive: false,
-          icon: L.divIcon({
-            className: "chronological-neighborhood-arrow-shell",
-            html: '<span class="chronological-neighborhood-arrow" style="transform:rotate(' +
-              arrowAngle + 'deg)">' + arrowGlyph + "</span>",
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
-          }),
-        }).addTo(runtime.neighborhoodTraceLayer);
+        const description = TRACE_DIRECTIONS.describeSegment(rawSegment, { direction: direction });
+        const badgeEntries = description.directions;
+        badgeEntries.forEach(function (entry, directionIndex) {
+          renderChronologicalNeighborhoodBadge(copy, segment, entry, directionIndex, occupiedBadgeCells, directionSummary);
+        });
       });
-      (segment.eventIds || []).forEach(function (eventId) { endpointIds.add(String(eventId)); });
     });
-    endpointIds.forEach(function (eventId) {
-      const event = getCatalogEventById(eventId);
-      if (!event || !event.has_coordinates) return;
-      const marker = L.circleMarker([event.lat, closestWrappedLongitude(event.lon)], {
-        pane: "neighborhoodTracePane",
-        radius: 7,
-        weight: 2.5,
-        color: state.resolvedTheme === "dark" ? "#f8fafc" : "#0b1620",
-        fillColor: colorForEvent(event),
-        fillOpacity: 0.96,
-        opacity: 0.95,
-        interactive: true,
-        className: "chronological-neighborhood-endpoint",
-        ufoEventId: Number(eventId),
+    currentUnorderedConnectionGroups(segments).forEach(function (group) {
+      const representative = group.representative;
+      const entry = TRACE_DIRECTIONS.describeSegment(representative).orientation;
+      wrappedSegmentCopies(representative).forEach(function (copy) {
+        renderChronologicalNeighborhoodBadge(copy, representative, entry, 0, occupiedBadgeCells, directionSummary, group);
       });
-      marker.bindTooltip(
-        escapeHtml(chronologicalNeighborhoodEndpointLabel(event)) + "<br>" +
-        escapeHtml(chronologicalNeighborhoodDateLabel(event)),
-        { direction: "top" }
-      );
-      marker.bindPopup(buildPopupContent(event), { maxWidth: 360 });
-      marker.on("click", function () {
-        activateMapPointEvent(eventId, { marker });
-      });
-      marker.addTo(runtime.neighborhoodTraceLayer);
     });
     renderChronologicalNeighborhoodInspector();
   }
@@ -21494,15 +26857,31 @@
         state.mapMode = state.effectiveMapMode;
       }
       syncMapModeControl();
+      const areaFilterActive = regionSelectionAffectsRendering();
+      const nextAreaEventRepresentation = areaFilterActive
+        ? TRACE_NEIGHBORHOOD.resolveAreaEventRepresentation({
+            requestedMode: state.mapMode,
+            effectiveMode: state.effectiveMapMode,
+            active: true,
+            showEvents: currentVisibleMappedCatalog().length > 0,
+          })
+        : TRACE_NEIGHBORHOOD.normalizeAreaEventRepresentation(state.effectiveMapMode);
+      runtime.areaEventLayerTransition = TRACE_NEIGHBORHOOD.planAreaEventLayerTransition(
+        runtime.areaEventRepresentation,
+        nextAreaEventRepresentation
+      );
+      runtime.areaEventRepresentation = nextAreaEventRepresentation;
       const measureLayer = runtime.startupTiming.active
         ? function (name, fn) { return measureStartupStepSync(name, fn); }
         : function (name, fn) { return fn(); };
 
-      if (state.effectiveMapMode === MAP_RENDERERS.heatmap) {
+      if (nextAreaEventRepresentation === "hidden") {
+        clearMapDataLayers();
+      } else if (nextAreaEventRepresentation === MAP_RENDERERS.heatmap) {
         measureLayer("renderHeatmapLayer()", function () {
           renderHeatmapLayer(config);
         });
-      } else if (state.effectiveMapMode === MAP_RENDERERS.clusters) {
+      } else if (nextAreaEventRepresentation === MAP_RENDERERS.clusters) {
         measureLayer("renderClusterLayer()", function () {
           renderClusterLayer(config);
         });
@@ -21520,6 +26899,7 @@
       }
       scheduleMapInvalidate();
       scheduleMapDescriptionPosition();
+      scheduleMapViewportLegendRefresh();
     } finally {
       clearBusyState("mapRender");
     }
@@ -21953,6 +27333,7 @@
       runtime.pendingStaticTraceRenderTimerId = null;
     }
     renderStaticTraceLayer({ reason: "viewport_refresh" });
+    refreshNeighborhoodTraceRendering();
   }
 
   function scheduleStaticTraceViewportRefresh() {
@@ -22013,9 +27394,6 @@
       "time_sort_kind",
       "time_sort_confidence",
       "craft_type_label",
-      "craft_type_confidence",
-      "craft_type_source",
-      "same_day_match_strength",
     ];
     for (const propertyName of unusedSummaryProperties) {
       if (Object.prototype.hasOwnProperty.call(event, propertyName)) {
@@ -22051,6 +27429,12 @@
       shape_normalized: internCanonicalSummaryString(event.shape_normalized),
       visual_type_group: internCanonicalSummaryString(event.visual_type_group),
       craft_type_inferred: internCanonicalSummaryString(event.craft_type_inferred),
+      craft_type_confidence: internCanonicalSummaryString(event.craft_type_confidence),
+      craft_type_source: internCanonicalSummaryString(event.craft_type_source),
+      same_day_match_strength: internCanonicalSummaryString(event.same_day_match_strength || "none"),
+      country: internCanonicalSummaryString(event.country || "unknown"),
+      state_province: internCanonicalSummaryString(event.state_province || event.admin_region || "unknown"),
+      duplicate_lineage_id: internCanonicalSummaryString(event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || ""),
       sort_ordinal: event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null,
     };
   }
@@ -22067,6 +27451,7 @@
   }
 
   function hydrateCatalogEvent(event) {
+    event = applyLocationLabelOverlay(event);
     event = compactCanonicalSummaryEventForRuntime(event);
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
     event.location_precision = event.location_precision || "unknown";
@@ -22794,13 +28179,17 @@
             "live density preview \u00b7 release the timeline to refresh exact result cards and traces."
         );
       }
-      renderMap({
-        interactiveTimeRange: true,
-        forceTimelineDensityPreview: true,
-        deferNonEssentialDecorations: true,
-        overrideMappedCount: densityPreview.mappedCount,
-        overrideHeatmapEvents: densityPreview.events,
-      });
+      if (state.activeView === "analysis") {
+        runtime.analysisMapRenderPending = true;
+      } else {
+        renderMap({
+          interactiveTimeRange: true,
+          forceTimelineDensityPreview: true,
+          deferNonEssentialDecorations: true,
+          overrideMappedCount: densityPreview.mappedCount,
+          overrideHeatmapEvents: densityPreview.events,
+        });
+      }
       renderPlaybackStatus({ playbackStep: true });
       runtime.lastInteractiveTimelinePreviewMetrics = {
         generation: rangeGeneration,
@@ -22826,6 +28215,7 @@
           formatNumber(densityPreview.mappedCount) +
           " mapped. Release the timeline for exact results and trace-linked visibility."
       );
+      scheduleAnalysisCompute("interactive date preview");
       return;
     }
 
@@ -22850,11 +28240,16 @@
     const deferLargeWindowDecorations = !interactive &&
       !regionSelectionAffectsRendering() &&
       state.filteredMappedCatalog.length > MAP_INTERACTIVE_TIMELINE_EXACT_THRESHOLD;
-    renderMap({
-      interactiveTimeRange: interactive,
-      deferNonEssentialDecorations: useInteractiveDensityPreview || deferLargeWindowDecorations,
-    });
-    if (deferLargeWindowDecorations) {
+    if (state.activeView === "analysis") {
+      runtime.analysisMapRenderPending = true;
+    } else {
+      renderMap({
+        interactiveTimeRange: interactive,
+        deferNonEssentialDecorations: useInteractiveDensityPreview || deferLargeWindowDecorations,
+      });
+    }
+    if (state.famousCaseId) renderRegionSelectionUi();
+    if (deferLargeWindowDecorations && state.activeView !== "analysis") {
       runtime.largeWindowTraceRefinementMetrics = {
         generation: rangeGeneration,
         renderedSegments: 0,
@@ -22862,7 +28257,7 @@
       };
       scheduleLargeWindowTraceRefinement(rangeGeneration);
     }
-    if (!interactive) {
+    if (!interactive && state.activeView !== "analysis") {
       refreshActiveTimeFilteredOverlayLayers();
     }
     renderPlaybackStatus(interactive ? { playbackStep: true } : null);
@@ -22876,9 +28271,15 @@
     if (interactive) {
       clearBusyState("timelineSync");
     } else {
-      setBusyState("timelineSync", "Map updated. Refreshing exact filter and legend counts...");
+      setBusyState(
+        "timelineSync",
+        state.activeView === "analysis"
+          ? "Timeline updated. Refreshing exact filter, legend, and analysis counts..."
+          : "Map updated. Refreshing exact filter and legend counts..."
+      );
       scheduleTimeRangeFacetRefresh(rangeGeneration);
     }
+    scheduleAnalysisCompute(interactive ? "interactive date change" : "date change");
   }
 
   function scheduleCurrentTimeRangeState() {
@@ -23083,10 +28484,13 @@
         });
       }
 
-      if (!config.secondaryOnly && !config.skipMap) {
+      if (!config.secondaryOnly && !config.skipMap && state.activeView !== "analysis") {
         measureStep("renderMap()", function () {
           renderMap(config.mapOptions);
         });
+        runtime.analysisMapRenderPending = false;
+      } else if (!config.secondaryOnly && !config.skipMap && state.activeView === "analysis") {
+        runtime.analysisMapRenderPending = true;
       }
 
       if (!config.secondaryOnly) {
@@ -23147,6 +28551,7 @@
     });
     finalizeFilteredCatalogState(keywordMatches);
     renderFilteredState();
+    scheduleAnalysisCompute("filter generation applied");
     return true;
   }
 
@@ -23649,6 +29054,7 @@
   }
 
   function eventVisibleInCurrentResults(eventId) {
+    if (famousCaseTraceSelectionActive()) return Boolean(famousCaseResultMembership(eventId));
     return visibleResultsEventIdSet().has(eventId);
   }
 
@@ -23665,6 +29071,12 @@
   }
 
   function resetFilterControlsToDefaultState() {
+    clearFamousCaseCirclePulse();
+    state.famousCaseId = "";
+    runtime.famousCasePreviousSelection = null;
+    runtime.famousCaseShapeId = null;
+    if (els.famousCaseSearch) els.famousCaseSearch.value = "";
+    renderFamousCasePicker();
     if (els.keywordInput) {
       els.keywordInput.value = "";
     }
@@ -23767,6 +29179,16 @@
       defaults.mapLegendEventSelection,
       defaults.colorMode
     );
+    state.mapLegendCraftSolo = defaults.mapLegendCraftSolo;
+    state.analysisCountryAreaFilter = "";
+    state.regionSelection = Object.assign({}, defaults.regionSelection, {
+      shapes: defaults.regionSelection.shapes.slice(),
+    });
+    clearRegionSelectionDrawRuntime();
+    clearChronologicalNeighborhoodInteractionLayer();
+    invalidateRegionSelectionResult();
+    renderRegionSelectionShapes();
+    renderRegionSelectionUi();
     state.militaryBranchVisibility = Object.assign({}, defaults.militaryBranchVisibility);
     state.researchCategoryVisibility = Object.assign({}, defaults.researchCategoryVisibility);
     state.traceBucketVisibility = Object.assign({}, defaults.traceBucketVisibility);
@@ -23884,6 +29306,9 @@
     }
     if (els.fontScaleModeSelect) {
       els.fontScaleModeSelect.value = state.fontScaleMode;
+    }
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.value = state.mapLabelScaleMode;
     }
     if (els.showTrailLegendToggle) {
       els.showTrailLegendToggle.checked = state.showTrailLegend;
@@ -24189,6 +29614,56 @@
     if (runtime.eventHandlersAttached) return;
     runtime.eventHandlersAttached = true;
 
+    window.addEventListener("ufo:crop-circle-statechange", function (event) {
+      const detail = event && event.detail ? event.detail : {};
+      const priorEnabled = runtime.analysisContextEnabledState.crops;
+      runtime.cropCircleOverlayEnabled = Boolean(detail.enabled);
+      runtime.cropCircleOverlayDateScope = normalizeCropCircleDateScope(detail.dateScope);
+      const cropAnalysisEnabled = Boolean(els.overlayCropCirclesToggle && els.overlayCropCirclesToggle.getAttribute("aria-pressed") === "true");
+      runtime.analysisContextEnabledState.crops = cropAnalysisEnabled;
+      runtime.cropCircleOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
+        ? Number(detail.visibleRecords)
+        : null;
+      renderOverlayControls();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState("crops", {
+          enabled: cropAnalysisEnabled,
+          busy: Boolean(detail.busy),
+        });
+      }
+      if (priorEnabled !== null && priorEnabled !== cropAnalysisEnabled) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("crop context layer changed");
+      }
+    });
+
+    window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
+      const detail = event && event.detail ? event.detail : {};
+      const priorEnabled = runtime.analysisContextEnabledState.animals;
+      runtime.animalMutilationOverlayEnabled = Boolean(detail.enabled);
+      runtime.animalMutilationOverlayDateScope = normalizeAnimalMutilationDateScope(detail.dateScope);
+      const animalAnalysisEnabled = Boolean(els.overlayAnimalMutilationsToggle && els.overlayAnimalMutilationsToggle.getAttribute("aria-pressed") === "true");
+      runtime.analysisContextEnabledState.animals = animalAnalysisEnabled;
+      runtime.animalMutilationOverlayVisibleCount = Number.isFinite(Number(detail.visibleRecords))
+        ? Number(detail.visibleRecords)
+        : null;
+      renderOverlayControls();
+      if (runtime.analysisViewController && typeof runtime.analysisViewController.setContextControlState === "function") {
+        runtime.analysisViewController.setContextControlState("animals", {
+          enabled: animalAnalysisEnabled,
+          busy: Boolean(detail.busy),
+        });
+      }
+      if (priorEnabled !== null && priorEnabled !== animalAnalysisEnabled) {
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("animal context layer changed");
+      }
+    });
+
+    [els.overlayCropCirclesToggle, els.overlayAnimalMutilationsToggle].forEach(
+      observeQuickContextCanonicalButton
+    );
+
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
         resetPlayback({ preserveSelection: true });
@@ -24246,19 +29721,34 @@
     [
       [els.startDateInput, "start"],
       [els.timelineStartDateInput, "start"],
+      [els.analysisStartDateInput, "start"],
       [els.endDateInput, "end"],
       [els.timelineEndDateInput, "end"],
+      [els.analysisEndDateInput, "end"],
     ].forEach(function (entry) {
       const input = entry[0];
       const group = entry[1];
       if (!input) return;
       input.addEventListener("input", function () {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          setAnalysisDateRangeFeedback("");
+          return;
+        }
         handleDateInputEdit(input, group);
       });
       input.addEventListener("change", function () {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          return;
+        }
         handleDateInputEdit(input, group);
       });
       input.addEventListener("blur", function (event) {
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          return;
+        }
         handleDateInputEdit(input, group);
         if (isDateInputElement(event.relatedTarget)) return;
         commitDateInputs();
@@ -24266,6 +29756,11 @@
       input.addEventListener("keydown", function (event) {
         if (event.key !== "Enter") return;
         event.preventDefault();
+        if (isAnalysisDateInputElement(input)) {
+          markDateInputPending(input);
+          commitAnalysisDateInputs();
+          return;
+        }
         handleDateInputEdit(input, group);
         commitDateInputs();
       });
@@ -24292,9 +29787,19 @@
       picker.addEventListener("change", function () {
         if (!picker.value) return;
         const group = picker.getAttribute("data-date-group") === "end" ? "end" : "start";
+        const analysisPicker = picker === els.analysisStartDatePicker || picker === els.analysisEndDatePicker;
+        if (analysisPicker) {
+          const analysisInput = group === "start" ? els.analysisStartDateInput : els.analysisEndDateInput;
+          if (analysisInput) {
+            analysisInput.value = picker.value;
+            markDateInputPending(analysisInput);
+          }
+          commitAnalysisDateInputs();
+          return;
+        }
         const inputs = group === "start"
-          ? [els.startDateInput, els.timelineStartDateInput]
-          : [els.endDateInput, els.timelineEndDateInput];
+          ? [els.startDateInput, els.timelineStartDateInput, els.analysisStartDateInput]
+          : [els.endDateInput, els.timelineEndDateInput, els.analysisEndDateInput];
         clearPendingDateInputEdits();
         inputs.forEach(function (input) {
           if (!input) return;
@@ -24304,6 +29809,47 @@
         commitDateInputs();
       });
     });
+
+    if (els.analysisDateRangeChip) {
+      els.analysisDateRangeChip.addEventListener("click", function () {
+        if (!analysisDateRangeUsesPopover()) return;
+        setAnalysisDatePopoverOpen(!runtime.analysisDatePopoverOpen);
+        if (runtime.analysisDatePopoverOpen && els.analysisStartDateInput) {
+          window.setTimeout(function () { els.analysisStartDateInput.focus({ preventScroll: true }); }, 0);
+        }
+      });
+    }
+
+    if (els.analysisDatePopover) {
+      els.analysisDatePopover.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !analysisDateRangeUsesPopover()) return;
+        event.preventDefault();
+        setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+      });
+    }
+
+    document.addEventListener("pointerdown", function (event) {
+      if (!runtime.analysisDatePopoverOpen || !analysisDateRangeUsesPopover()) return;
+      if (els.analysisWorkspaceToolbar && els.analysisWorkspaceToolbar.contains(event.target)) return;
+      setAnalysisDatePopoverOpen(false);
+    });
+
+    if (els.analysisApplyDateButton) {
+      els.analysisApplyDateButton.addEventListener("click", function () {
+        if (commitAnalysisDateInputs() && analysisDateRangeUsesPopover()) {
+          setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+        }
+      });
+    }
+
+    if (els.analysisAllTimeButton) {
+      els.analysisAllTimeButton.addEventListener("click", function () {
+        applyFullTimeRange();
+        if (analysisDateRangeUsesPopover()) {
+          setAnalysisDatePopoverOpen(false, { restoreFocus: true });
+        }
+      });
+    }
 
     els.basemapMode.addEventListener("change", function () {
       setBasemap(els.basemapMode.value);
@@ -24324,6 +29870,12 @@
     if (els.fontScaleModeSelect) {
       els.fontScaleModeSelect.addEventListener("change", function () {
         applyFontScaleMode(els.fontScaleModeSelect.value);
+      });
+    }
+
+    if (els.mapLabelScaleModeSelect) {
+      els.mapLabelScaleModeSelect.addEventListener("change", function () {
+        applyMapLabelScaleMode(els.mapLabelScaleModeSelect.value);
       });
     }
 
@@ -24402,19 +29954,51 @@
     }
 
     if (els.mapLegendBody) {
+      els.mapLegendBody.addEventListener("change", function (event) {
+        handleCraftColorInput(event);
+      });
+
       els.mapLegendBody.addEventListener("click", function (event) {
         const eventButton = event.target.closest("[data-map-legend-event-key]");
+        const craftSoloButton = event.target.closest("[data-craft-legend-solo-key]");
+        const craftBulkButton = event.target.closest("[data-craft-legend-bulk]");
         const overlayButton = event.target.closest("[data-map-legend-overlay]");
+        const cropCircleButton = event.target.closest("[data-map-legend-crop-circles]");
+        const animalMutilationButton = event.target.closest("[data-map-legend-animal-mutilations]");
         const militaryButton = event.target.closest("[data-map-legend-military-branch]");
         const researchButton = event.target.closest("[data-map-legend-research-category]");
         const claimedButton = event.target.closest("[data-map-legend-claimed-control]");
-        const button = eventButton || overlayButton || militaryButton || researchButton || claimedButton;
+        const button = eventButton || craftSoloButton || craftBulkButton || overlayButton || cropCircleButton || animalMutilationButton || militaryButton || researchButton || claimedButton;
         if (!button) return;
         event.preventDefault();
         event.stopPropagation();
 
         if (eventButton) {
           toggleMapLegendEventKey(eventButton.getAttribute("data-map-legend-event-key"));
+          return;
+        }
+        if (craftSoloButton) {
+          toggleCraftLegendSoloKey(craftSoloButton.getAttribute("data-craft-legend-solo-key"));
+          return;
+        }
+        if (craftBulkButton) {
+          applyCraftLegendBulkAction(craftBulkButton.getAttribute("data-craft-legend-bulk"));
+          return;
+        }
+        if (cropCircleButton) {
+          if (!els.overlayCropCirclesToggle) return;
+          els.overlayCropCirclesToggle.click();
+          announceMapLegendStatus(
+            "Crop circles overlay " + (runtime.cropCircleOverlayEnabled ? "shown." : "updating.")
+          );
+          return;
+        }
+        if (animalMutilationButton) {
+          if (!els.overlayAnimalMutilationsToggle) return;
+          els.overlayAnimalMutilationsToggle.click();
+          announceMapLegendStatus(
+            "Animal Mutilation Reports overlay " + (runtime.animalMutilationOverlayEnabled ? "shown." : "updating.")
+          );
           return;
         }
         if (overlayButton) {
@@ -24517,6 +30101,40 @@
       });
     }
 
+    if (els.clusterQuickCropCirclesButton) {
+      els.clusterQuickCropCirclesButton.addEventListener("click", function () {
+        cycleQuickCropCircleState().catch(function (error) {
+          announceMapQuickControl("Crop-circle mode could not be changed.");
+          console.error(error);
+        });
+      });
+    }
+
+    if (els.clusterQuickAnimalMutilationsButton) {
+      els.clusterQuickAnimalMutilationsButton.addEventListener("click", function () {
+        cycleQuickAnimalMutilationState().catch(function (error) {
+          announceMapQuickControl("Animal-report mode could not be changed.");
+          console.error(error);
+        });
+      });
+    }
+
+    if (els.analysisCropCirclesButton) {
+      els.analysisCropCirclesButton.addEventListener("click", function () {
+        if (!els.overlayCropCirclesToggle) return;
+        els.overlayCropCirclesToggle.click();
+        renderMapControlQuickButtons();
+      });
+    }
+
+    if (els.analysisAnimalReportsButton) {
+      els.analysisAnimalReportsButton.addEventListener("click", function () {
+        if (!els.overlayAnimalMutilationsToggle) return;
+        els.overlayAnimalMutilationsToggle.click();
+        renderMapControlQuickButtons();
+      });
+    }
+
     if (els.clusterQuickFacilityProximityButton) {
       els.clusterQuickFacilityProximityButton.addEventListener("click", function () {
         cycleQuickFacilityProximity();
@@ -24548,18 +30166,9 @@
       els.areaSelectionDrawSurface.addEventListener("pointerdown", startRegionSelectionDraw);
     }
 
-    if (els.toggleAreaSelectionButton) {
-      els.toggleAreaSelectionButton.addEventListener("click", function () {
-        const nextPanelOpen = !regionSelectionPanelOpen();
-        setRegionSelectionDrawingActive(false, { skipRender: true });
-        setRegionSelectionPanelOpen(nextPanelOpen);
-      });
-    }
-
     if (els.areaSelectionRectangleButton) {
       els.areaSelectionRectangleButton.addEventListener("click", function () {
         setRegionSelectionTool("rectangle", { skipRender: true });
-        setRegionSelectionPanelOpen(true, { skipRender: true });
         setRegionSelectionDrawingActive(true);
       });
     }
@@ -24567,15 +30176,13 @@
     if (els.areaSelectionCircleButton) {
       els.areaSelectionCircleButton.addEventListener("click", function () {
         setRegionSelectionTool("circle", { skipRender: true });
-        setRegionSelectionPanelOpen(true, { skipRender: true });
         setRegionSelectionDrawingActive(true);
       });
     }
 
     if (els.exitAreaSelectionButton) {
       els.exitAreaSelectionButton.addEventListener("click", function () {
-        setRegionSelectionDrawingActive(false, { skipRender: true });
-        setRegionSelectionPanelOpen(false);
+        setRegionSelectionDrawingActive(false);
       });
     }
 
@@ -24661,7 +30268,7 @@
     if (els.areaSelectionDepthSelect) {
       els.areaSelectionDepthSelect.addEventListener("change", function () {
         applyRegionSelectionOptionChanges(function (regionState) {
-          regionState.depth = TRACE_NEIGHBORHOOD.normalizeDepth(els.areaSelectionDepthSelect.value);
+          regionState.depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(els.areaSelectionDepthSelect.value);
         });
       });
     }
@@ -24679,16 +30286,23 @@
         closeChronologicalNeighborhoodInspector();
       });
     }
+    if (els.chronologicalNeighborhoodInspectorBody) {
+      els.chronologicalNeighborhoodInspectorBody.addEventListener("click", function (event) {
+        const choice = event.target.closest("[data-neighborhood-trace-id]");
+        if (choice) selectNeighborhoodReportLink(choice.getAttribute("data-neighborhood-trace-id"));
+      });
+    }
 
     mapControlSectionElements().forEach(function (section) {
       section.addEventListener("toggle", function () {
-        if (section.open) {
-          mapControlSectionElements().forEach(function (candidate) {
-            if (candidate !== section) {
-              candidate.open = false;
-            }
-          });
+        if (
+          section.getAttribute("data-map-control-section") === "area" &&
+          !section.open &&
+          regionSelectionDrawingActive()
+        ) {
+          setRegionSelectionDrawingActive(false);
         }
+        persistMapControlSectionOpenState();
         window.requestAnimationFrame(function () {
           window.requestAnimationFrame(function () {
             applyMapControlClusterState();
@@ -24727,6 +30341,24 @@
         applyTimelinePreset(els.filterFlapPresets.value);
       });
     }
+
+    if (els.filterFamousCases) {
+      els.filterFamousCases.addEventListener("change", function () {
+        applyFamousCasePreset(els.filterFamousCases.value);
+      });
+    }
+    if (els.famousCaseSearch) {
+      els.famousCaseSearch.addEventListener("input", renderFamousCasePicker);
+    }
+    (els.famousCaseOrderButtons || []).forEach(function (button) {
+      button.addEventListener("click", function () {
+        state.famousCaseOrder = FAMOUS_CASES.normalizeCaseOrder(button.dataset.famousCaseOrder);
+        safeStorageSet("ufo-famous-case-order-v1", state.famousCaseOrder);
+        renderFamousCasePicker();
+      });
+    });
+    bindFamousCaseActions(els.famousCaseDetails);
+    bindFamousCaseActions(els.resultsFamousCaseSummary);
 
     if (els.collapsibleSectionToggleButtons && els.collapsibleSectionToggleButtons.length) {
       els.collapsibleSectionToggleButtons.forEach(function (button) {
@@ -24800,6 +30432,7 @@
       const legendEventFilterWasActive = normalizedMapLegendEventSelection().mode !== "all";
       state.colorMode = els.colorModeSelect.value;
       state.mapLegendEventSelection = defaultMapLegendEventSelectionState(state.colorMode);
+      clearCraftLegendSoloState();
       runtime.mapLegendEventBaseCounts = new Map();
       runtime.mapLegendEventBaseMode = state.colorMode;
       invalidateMapLegendEventFilterCaches();
@@ -24826,11 +30459,29 @@
     });
 
     els.legendBody.addEventListener("change", function (event) {
+      if (handleCraftColorInput(event)) return;
       const toggle = event.target.closest("[data-legend-type-toggle]");
       if (!toggle || state.colorMode !== "type") return;
       invalidatePlaybackForTimeChange();
       toggleLegendTypeGroup(toggle.getAttribute("data-legend-type-toggle"), toggle.checked);
       scheduleRefresh({ immediate: true });
+    });
+
+    els.legendBody.addEventListener("click", function (event) {
+      const toggle = event.target.closest("[data-craft-legend-toggle-key]");
+      const solo = event.target.closest("[data-craft-legend-solo-key]");
+      const bulk = event.target.closest("[data-craft-legend-bulk]");
+      const target = toggle || solo || bulk;
+      if (!target || state.colorMode !== "craft_type") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (toggle) {
+        toggleMapLegendEventKey(toggle.getAttribute("data-craft-legend-toggle-key"));
+      } else if (solo) {
+        toggleCraftLegendSoloKey(solo.getAttribute("data-craft-legend-solo-key"));
+      } else {
+        applyCraftLegendBulkAction(bulk.getAttribute("data-craft-legend-bulk"));
+      }
     });
 
     els.playbackSpeedSelect.addEventListener("change", function () {
@@ -24920,6 +30571,7 @@
           const key = button.getAttribute("data-trace-bucket");
           if (!key || !traceBucketForKey(key)) return;
           state.traceBucketVisibility[key] = !state.traceBucketVisibility[key];
+          if (key === "gap_le_1") runtime.famousCaseGapBucketOwned = false;
           renderTraceControls();
           invalidateTraceSequenceCache();
           invalidateRegionSelectionResult();
@@ -24972,16 +30624,6 @@
         syncTraceFacilityDisplayRestriction();
         renderTraceControls();
         renderMapLegend();
-      });
-    }
-
-    if (els.traceFacilityRadiusPresetButtons && els.traceFacilityRadiusPresetButtons.length) {
-      els.traceFacilityRadiusPresetButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-          traceFacilityFilterState().radiusKm = normalizeTraceFacilityRadiusKm(button.getAttribute("data-trace-facility-radius-preset"));
-          persistTraceFacilityFilterState();
-          refreshTracesForFacilityFilterChange();
-        });
       });
     }
 
@@ -25438,9 +31080,15 @@
     });
     runtime.map.createPane("regionSelectionPane");
     runtime.map.getPane("regionSelectionPane").style.zIndex = "350";
+    runtime.map.createPane("basemapLabelPane");
+    runtime.map.getPane("basemapLabelPane").style.zIndex = "250";
+    runtime.map.getPane("basemapLabelPane").style.pointerEvents = "none";
     runtime.map.createPane("researchSiteAreaPane");
     runtime.map.getPane("researchSiteAreaPane").style.zIndex = "355";
     runtime.map.getPane("researchSiteAreaPane").style.pointerEvents = "none";
+    runtime.map.createPane("traceIntersectionPane");
+    runtime.map.getPane("traceIntersectionPane").style.zIndex = "420";
+    runtime.map.getPane("traceIntersectionPane").style.pointerEvents = "auto";
     runtime.map.createPane("tracePane");
     runtime.map.getPane("tracePane").style.zIndex = "430";
     runtime.map.getPane("tracePane").style.pointerEvents = "none";
@@ -25479,6 +31127,27 @@
     runtime.neighborhoodTraceLayer = L.layerGroup().addTo(runtime.map);
     runtime.selectionLayer = L.layerGroup().addTo(runtime.map);
     runtime.playbackLayer = L.layerGroup().addTo(runtime.map);
+    const traceIntersectionController = TRACE_INTERSECTION_LAYER.createController({
+      map: runtime.map,
+      L: L,
+      root: els.traceIntersectionControls,
+      resolveAssetPath: resolveAssetPath,
+      getTimelineRange: function () {
+        return {
+          startOrdinal: state.timeRangeStartOrdinal,
+          endOrdinal: state.timeRangeEndOrdinal,
+        };
+      },
+      getTraceMode: function () {
+        return state.traceMode;
+      },
+      setTraceMode: setTraceMode,
+      onStatusChange: renderMapControlSectionSummaries,
+    });
+    runtime.traceIntersectionController = traceIntersectionController;
+    traceIntersectionController.initialize();
+    ensureCropTraceFocusLayers();
+    registerCropTimelineExtensionApi();
     syncMapZoomControlPlacement();
     ensureMapScaleControl();
     if (els.mapControlCluster && L.DomEvent) {
@@ -25504,14 +31173,20 @@
       runtime.lastMapZoomEndAt = typeof performance !== "undefined" && typeof performance.now === "function"
         ? performance.now()
         : Date.now();
-      updateWorldReferenceLabelVisibility();
+      refreshHostedBasemapLabelLayer();
       refreshResearchSiteOverlayForViewport();
       syncPointLayerMarkerSizing();
       syncOverlayMarkerSizing();
+      if (regionSelectionAffectsRendering()) renderChronologicalNeighborhoodOverlay();
       scheduleMapProjectionRefresh();
       scheduleStaticTraceViewportRefresh();
+      scheduleMapViewportLegendRefresh();
     });
     runtime.map.on("moveend", handleMapMoveEnd);
+    runtime.map.on("resize", function () {
+      refreshMapEventLayerForViewportChange();
+      scheduleMapViewportLegendRefresh();
+    });
     runtime.map.on("viewreset", scheduleMapProjectionRefresh);
     runtime.map.on("move zoom", scheduleMapDescriptionPosition);
     runtime.map.on("popupclose", function (event) {
@@ -25557,6 +31232,12 @@
     startup.appConfigLoaded = true;
     state.currentTileProviderId = preferredTileProviderId(runtime.appConfig);
     renderStartupDiagnostics();
+
+    await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
+
+    await measureStartupStep("location label overlay load", function () {
+      return loadLocationLabelOverlayRuntime();
+    });
 
     await setStartupPhaseAndPaint("Preparing map", "Loading the world reference layer and checking map libraries.", STARTUP_PROGRESS.preparingMap);
     await measureStartupStep("prepare map", async function () {
@@ -25864,6 +31545,7 @@
 
   async function applyStartupFitBeforeReady() {
     if (!runtime.map || !state.filteredMappedCatalog.length) return false;
+    if (state.famousCaseId) return false;
     if (state.selectedEventId != null) return false;
     if (state.playbackState === "playing") return false;
     if (Math.abs(runtime.map.getZoom() - MAP_DEFAULT_INITIAL_ZOOM) > 0.01) return false;
@@ -25881,8 +31563,10 @@
   }
 
   function waitForInitialMapTilesToSettle(timeoutMs) {
-    const layer = state.currentTileLayer;
-    if (!layer || !runtime.map || !runtime.map.hasLayer(layer) || !mapTileLayerIsLoading(layer)) {
+    const layers = [state.currentTileLayer, state.currentTileLabelLayer].filter(function (layer) {
+      return Boolean(layer && runtime.map && runtime.map.hasLayer(layer) && mapTileLayerIsLoading(layer));
+    });
+    if (!layers.length) {
       return Promise.resolve(true);
     }
     return new Promise(function (resolve) {
@@ -25897,23 +31581,32 @@
         settled = true;
         window.clearTimeout(timeoutId);
         if (pollTimerId) window.clearTimeout(pollTimerId);
-        if (typeof layer.off === "function") layer.off("load", handleLoad);
+        layers.forEach(function (layer) {
+          if (typeof layer.off === "function") layer.off("load", handleLoad);
+        });
         resolve(Boolean(completed));
       }
 
       function handleLoad() {
-        finish(true);
+        if (!layers.some(mapTileLayerIsLoading)) {
+          finish(true);
+        }
       }
 
       function poll() {
-        if (state.currentTileLayer !== layer || !mapTileLayerIsLoading(layer)) {
+        const activeLayers = [state.currentTileLayer, state.currentTileLabelLayer];
+        if (!layers.some(function (layer) {
+          return activeLayers.indexOf(layer) !== -1 && mapTileLayerIsLoading(layer);
+        })) {
           finish(true);
           return;
         }
         pollTimerId = window.setTimeout(poll, 50);
       }
 
-      if (typeof layer.on === "function") layer.on("load", handleLoad);
+      layers.forEach(function (layer) {
+        if (typeof layer.on === "function") layer.on("load", handleLoad);
+      });
       pollTimerId = window.setTimeout(poll, 50);
     });
   }
@@ -26159,6 +31852,7 @@
 
     const storedThemeMode = safeStorageGet(THEME_MODE_STORAGE_KEY) || "dark";
     const storedFontScaleMode = safeStorageGet(FONT_SCALE_STORAGE_KEY) || "default";
+    const storedMapLabelScaleMode = safeStorageGet(MAP_LABEL_SCALE_STORAGE_KEY) || "default";
     const storedGuideVisibility = safeStorageGet(GUIDE_VISIBILITY_STORAGE_KEY);
     const storedMapControlClusterState = readMapControlClusterState();
     const defaultGuideCollapsed = true;
@@ -26175,6 +31869,8 @@
       ? "manual"
       : normalizeTraceWidthMode(storedTraceWidthMode);
     state.traceBoldnessScale = normalizeTraceBoldnessScale(storedTraceBoldnessScale);
+    state.craftTypeColorOverrides = readCraftTypeColorOverrides();
+    syncCraftTypeColorPalette();
     state.traceFacilityFilter = readTraceFacilityFilterState();
     state.filterSectionCollapse = readFilterSectionCollapseState();
     state.mapControlClusterCollapsed = storedMapControlClusterState.collapsed;
@@ -26196,6 +31892,7 @@
     state.panelCollapse.timeline = useCompactTimelinePanelCollapse();
     applyThemeMode(storedThemeMode, { skipPersist: true });
     applyFontScaleMode(storedFontScaleMode, { skipPersist: true });
+    applyMapLabelScaleMode(storedMapLabelScaleMode, { skipPersist: true });
     setAppearancePanelCollapsed(state.appearancePanelCollapsed, { skipPersist: true });
     setUserGuideCollapsed(storedGuideVisibility == null ? defaultGuideCollapsed : storedGuideVisibility === "1", { skipPersist: true });
     setPrimaryFiltersCollapsed(state.primaryFiltersCollapsed, { skipPersist: true });
@@ -26243,6 +31940,8 @@
     applyMobileLandscapeResultsColumnWidth();
     bindMapControlClusterResizing();
     initializeMapSurfaceHeightResize();
+    initializeAnalysisView();
+    initializeAnalysisDateRangeControls();
     document.documentElement.classList.remove("app-initializing");
     renderStartupDiagnostics();
 
@@ -26317,6 +32016,12 @@
     }
     startup.initialViewReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
+    if (runtime.analysisViewController) {
+      runtime.analysisViewController.setAnalysisEnabled(true, "");
+    }
+    window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", {
+      detail: { phase: "Ready" },
+    }));
     recordStartupMilestone("time to Ready");
     finalizeStartupTimingSummary();
     logStartupTimingSummary();
@@ -26354,8 +32059,11 @@
         mapMode: state.mapMode,
         effectiveMapMode: state.effectiveMapMode,
         fontScaleMode: state.fontScaleMode,
+        mapLabelScaleMode: state.mapLabelScaleMode,
         userGuideCollapsed: state.userGuideCollapsed,
         areaSelection: {
+          active: areaFilterHasActiveSelection(),
+          country: analysisCountryAreaFilterLabel() || null,
           panelOpen: regionSelectionPanelOpen(),
           drawingActive: regionSelectionDrawingActive(),
           modeActive: regionSelectionModeActive(),
@@ -26364,7 +32072,9 @@
           selectedTraceCount: regionResult.selectedTraceCount,
           visibleEventCount: regionResult.visibleEventCount,
           visibleTraceCount: regionResult.visibleTraceCount,
-          depth: TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth),
+          pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
+          chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
+          depth: TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth),
           direction: TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction),
           neighborhoodEventCount: regionResult.neighborhoodEventIds ? regionResult.neighborhoodEventIds.size : 0,
           neighborhoodTraceCount: regionResult.neighborhoodSegments ? regionResult.neighborhoodSegments.length : 0,
@@ -26374,11 +32084,38 @@
           interactionPanePointerEvents: runtime.map && runtime.map.getPane("neighborhoodTracePane")
             ? runtime.map.getPane("neighborhoodTracePane").style.pointerEvents
             : "",
+          eventRepresentation: runtime.areaEventRepresentation,
+          eventLayerTransition: runtime.areaEventLayerTransition,
         },
         chronologicalNeighborhood: {
           build: runtime.neighborhoodBuildMetrics,
           traversal: runtime.neighborhoodTraversalMetrics,
           performanceSamples: runtime.neighborhoodPerformanceSamples.slice(),
+        },
+        cropTraceFocus: {
+          config: runtime.cropTraceFocusConfig,
+          result: runtime.cropTraceFocusResult,
+          radiusLayerVisible: Boolean(runtime.map && runtime.cropTraceRadiusLayer && runtime.map.hasLayer(runtime.cropTraceRadiusLayer)),
+          relationLayerVisible: Boolean(runtime.map && runtime.cropTraceRelationLayer && runtime.map.hasLayer(runtime.cropTraceRelationLayer)),
+          networkLayerVisible: Boolean(runtime.map && runtime.cropTraceNetworkLayer && runtime.map.hasLayer(runtime.cropTraceNetworkLayer)),
+          emphasisLayerVisible: Boolean(runtime.map && runtime.cropTraceEmphasisLayer && runtime.map.hasLayer(runtime.cropTraceEmphasisLayer)),
+          isolation: Boolean(runtime.map && runtime.map.getContainer && runtime.map.getContainer().classList.contains("crop-circle-focus-active")),
+        },
+        cropCircleOverlay: {
+          active: cropCircleOverlayActive(),
+          dateScope: cropCircleDateScope(),
+          displayMode: currentQuickCropCircleState().key,
+          visibleRecordCount: Number.isFinite(Number(runtime.cropCircleOverlayVisibleCount))
+            ? Number(runtime.cropCircleOverlayVisibleCount)
+            : null,
+        },
+        animalMutilationOverlay: {
+          active: animalMutilationOverlayActive(),
+          dateScope: animalMutilationDateScope(),
+          displayMode: currentQuickAnimalMutilationState().key,
+          visibleRecordCount: Number.isFinite(Number(runtime.animalMutilationOverlayVisibleCount))
+            ? Number(runtime.animalMutilationOverlayVisibleCount)
+            : null,
         },
         filterGeneration: {
           requested: state.filterGeneration,
@@ -26390,6 +32127,9 @@
         },
         mapLegend: {
           eventSelection: normalizedMapLegendEventSelection(),
+          craftSolo: state.mapLegendCraftSolo,
+          craftTypeColorOverrides: Object.assign({}, state.craftTypeColorOverrides),
+          craftTypeColors: Object.assign({}, CRAFT_TYPE_COLORS),
           controlsDirty: mapLegendControlsAreDirty(),
           overlayVisibility: Object.assign({}, state.overlayVisibility),
           claimedUfoBaseVisibility: Object.assign({}, state.claimedUfoBaseVisibility),
@@ -26479,8 +32219,45 @@
         heatmapPerformance: runtime.heatmapLayer && runtime.heatmapLayer._dataBuildMetrics
           ? Object.assign({}, runtime.heatmapLayer._dataBuildMetrics)
           : null,
+        analysis: {
+          activeView: state.activeView,
+          baselineMode: state.analysisBaselineMode,
+          contextLoaded: runtime.analysisContextLoaded,
+          contextWorkerReady: runtime.analysisContextWorkerReady,
+          mapRenderPending: runtime.analysisMapRenderPending,
+          cacheEntries: runtime.analysisCache.size,
+          pendingRequest: runtime.analysisPendingRequest,
+          lastError: runtime.analysisLastError,
+          computationPhase: runtime.analysisComputationPhase,
+          contextEvidence: {
+            requested: Boolean(runtime.analysisContextEvidenceRequested),
+            ready: analysisContextEvidenceArtifactsReady(),
+            relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
+            relationshipReady: Boolean(runtime.analysisRelationshipWorkerReady || runtime.analysisSpatialWorkerReady),
+            neighborhoodRequested: Boolean(runtime.analysisContextSpatialRequested),
+            neighborhoodReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
+            error: runtime.analysisContextEvidenceError || "",
+          },
+          performanceSamples: runtime.analysisPerformanceSamples.slice(),
+        },
         browserPerformanceProfile: runtime.browserPerformanceProfile,
       };
+    },
+    getAnalysisFilterSnapshot: getAnalysisFilterSnapshot,
+    getAnalysisRequestSignatureForTest: function (snapshot) {
+      return analysisComputeCacheKey(snapshot || getAnalysisFilterSnapshot());
+    },
+    analysisResponseEnvelopeMatchesForTest: function (pending, message, snapshotOrSignature) {
+      return analysisResponseEnvelopeMatchesCurrentState(pending, message, snapshotOrSignature);
+    },
+    scheduleAnalysisComputeForTest: scheduleAnalysisCompute,
+    setActiveAnalysisViewForTest: function (view) {
+      if (!runtime.analysisViewController) return false;
+      return runtime.analysisViewController.setActiveView(view, { source: "test" });
+    },
+    applyAnalysisFilterPatchForTest: applyAnalysisFilterPatch,
+    computeAnalysisForTest: function () {
+      return computeAnalysisForCurrentView("test");
     },
     getFilterParitySnapshot: function () {
       const regionResult = currentRegionSelectionResult();
@@ -26489,8 +32266,17 @@
         activeGeneration: runtime.activeFilterGeneration,
         filteredEventIds: state.filteredCatalog.map(function (event) { return String(event.event_id); }).sort(),
         filteredMappedEventIds: state.filteredMappedCatalog.map(function (event) { return String(event.event_id); }).sort(),
-        visibleEventIds: Array.from(regionResult.visibleEventIds || []).map(String).sort(),
+        visibleEventIds: (
+          analysisCountryAreaFilterActive() && !regionSelectionHasActiveShapes()
+            ? state.filteredCatalog.map(function (event) { return String(event.event_id); })
+            : Array.from(regionResult.visibleEventIds || []).map(String)
+        ).sort(),
+        visibleMappedEventIds: (regionResult.visibleMappedCatalog || []).map(function (event) { return String(event.event_id); }).sort(),
+        resultEventIds: currentResultsPaneCatalog().map(function (event) { return String(event.event_id); }).sort(),
+        areaResultEventIds: currentVisibleResultsCatalog().map(function (event) { return String(event.event_id); }).sort(),
         visibleTraceIds: Array.from(regionResult.visibleTraceIds || []).map(String).sort(),
+        pointOnly: Boolean(regionResult.pointOnly || state.regionSelection.pointOnly),
+        chronologyIndexUsed: Boolean(regionResult.chronologyIndexUsed),
         neighborhoodTraceIds: (regionResult.neighborhoodSegments || []).map(function (segment) {
           return String(segment.traceId);
         }).sort(),
@@ -26499,20 +32285,35 @@
     getMapLegendSnapshotForTest: function () {
       return {
         eventSelection: normalizedMapLegendEventSelection(),
+        craftSolo: state.mapLegendCraftSolo,
+        craftTypeColorOverrides: Object.assign({}, state.craftTypeColorOverrides),
+        craftTypeColors: Object.assign({}, CRAFT_TYPE_COLORS),
         controlsDirty: mapLegendControlsAreDirty(),
         eventEntries: buildMapLegendEventEntries(),
+        viewportBounds: currentMapViewportBoundsSnapshot(),
         overlayVisibility: Object.assign({}, state.overlayVisibility),
         claimedUfoBaseVisibility: Object.assign({}, state.claimedUfoBaseVisibility),
         militaryBranchVisibility: Object.assign({}, state.militaryBranchVisibility),
         researchCategoryVisibility: Object.assign({}, state.researchCategoryVisibility),
       };
     },
+    setCraftTypeColorForTest: function (key, color) {
+      applyCraftTypeColorOverride(key, color, { skipPersist: true });
+      return this.getMapLegendSnapshotForTest();
+    },
+    setMapLabelScaleModeForTest: function (mode) {
+      applyMapLabelScaleMode(mode, { skipPersist: true });
+      return state.mapLabelScaleMode;
+    },
     setAreaSelectionForTest: function (shapes, options) {
       state.regionSelection.shapes = (Array.isArray(shapes) ? shapes : []).map(function (shape, index) {
         return Object.assign({ id: "test-region-" + (index + 1) }, shape);
       });
       Object.assign(state.regionSelection, options || {});
-      state.regionSelection.depth = TRACE_NEIGHBORHOOD.normalizeDepth(state.regionSelection.depth);
+      if (!options || !Object.prototype.hasOwnProperty.call(options, "pointOnly")) {
+        state.regionSelection.pointOnly = false;
+      }
+      state.regionSelection.depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(state.regionSelection.depth);
       state.regionSelection.direction = TRACE_NEIGHBORHOOD.normalizeDirection(state.regionSelection.direction);
       refreshRegionSelectionRenderState();
       return this.getFilterParitySnapshot();
@@ -26520,24 +32321,6 @@
     clearAreaSelectionForTest: function () {
       clearAllRegionSelectionShapes();
       return this.getFilterParitySnapshot();
-    },
-    activateNeighborhoodEndpointForTest: function () {
-      if (!runtime.neighborhoodTraceLayer) return null;
-      let endpointMarker = null;
-      runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
-        if (
-          !endpointMarker &&
-          layer &&
-          layer.options &&
-          layer.options.ufoEventId != null &&
-          typeof layer.fire === "function"
-        ) {
-          endpointMarker = layer;
-        }
-      });
-      if (!endpointMarker) return null;
-      endpointMarker.fire("click");
-      return Number(endpointMarker.options.ufoEventId);
     },
     activateRenderedPointForTest: function () {
       let pointMarker = null;
@@ -26571,7 +32354,7 @@
       };
     },
     getFirstRenderedResultId: function () {
-      const ordered = sortResultsForDisplay(currentVisibleResultsCatalog());
+      const ordered = sortResultsForDisplay(currentResultsPaneCatalog());
       return ordered.length ? ordered[0].event_id : null;
     },
     getStableDetailProbeEventId: function () {
@@ -26607,11 +32390,25 @@
     },
     getNeighborhoodSnapshotForTest: function () {
       const result = currentRegionSelectionResult();
+      const renderedTraceStyles = [];
+      if (runtime.neighborhoodTraceLayer && typeof runtime.neighborhoodTraceLayer.eachLayer === "function") {
+        runtime.neighborhoodTraceLayer.eachLayer(function (layer) {
+          if (!layer || !layer._ufoTraceBaseStyle) return;
+          renderedTraceStyles.push({
+            className: layer.options && layer.options.className ? layer.options.className : "",
+            weight: layer.options ? Number(layer.options.weight) : null,
+            opacity: layer.options ? Number(layer.options.opacity) : null,
+            rawWeight: Number(layer._ufoTraceBaseStyle.rawWeight),
+            rawOpacity: Number(layer._ufoTraceBaseStyle.rawOpacity),
+          });
+        });
+      }
       return {
         build: runtime.neighborhoodBuildMetrics,
         traversal: runtime.neighborhoodTraversalMetrics,
         selectedEventIds: Array.from(result.selectedEventIds || []).map(String).sort(),
         selectedTraceIds: Array.from(result.selectedTraceIds || []).map(String).sort(),
+        renderedTraceStyles,
         visibleEvents: (result.visibleMappedCatalog || []).map(function (event) {
           return {
             eventId: String(event.event_id),
@@ -26661,6 +32458,19 @@
     getPackedPointsStatus: function () {
       return packedPointsStatusSnapshot();
     },
+    getLocationLabelOverlayStatus: function () {
+      const overlay = runtime.locationLabelOverlay || {};
+      return {
+        enabled: Boolean(overlay.enabled),
+        status: overlay.status || PACKED_POINTS_STATUS.NOT_LOADED,
+        reason: overlay.reason || "",
+        entryCount: Number(overlay.entryCount) || 0,
+        genericDisplayCount: Number(overlay.genericDisplayCount) || 0,
+        reviewedCount: Number(overlay.reviewedCount) || 0,
+        sourceInventorySha256: overlay.sourceInventorySha256 || "",
+        url: overlay.url || "",
+      };
+    },
     getPackedPointRow: function (rowIndex, options) {
       return runtime.packedPoints && runtime.packedPoints.status === PACKED_POINTS_STATUS.READY
         ? runtime.packedPoints.getRow(rowIndex, options)
@@ -26698,6 +32508,11 @@
     },
     getStaticTraceAggregationStatus: function () {
       return runtime.staticTraceAggregationStatus;
+    },
+    getTraceIntersectionStatus: function () {
+      return runtime.traceIntersectionController
+        ? runtime.traceIntersectionController.getStatus()
+        : null;
     },
     getStaticTraceRenderMetrics: function () {
       return staticTraceRenderMetricsSnapshot();
@@ -26783,6 +32598,12 @@
     },
     validatePackedPointsCatalogParity: function (options) {
       return validatePackedPointsCatalogParity(options);
+    },
+    setCropTraceFocus: function (options) {
+      return setCropTraceFocus(options || {});
+    },
+    clearCropTraceFocus: function (reason) {
+      return clearCropTraceFocus(reason || "debug clear");
     },
     openFullEvent: function (eventId, options) {
       return openFullEventView(eventId, Object.assign({

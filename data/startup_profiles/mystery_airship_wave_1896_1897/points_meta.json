@@ -422,13 +422,39 @@
       "raw_latlong"
     ],
     "craft_type_confidences": [
-      null
+      null,
+      "high",
+      "low",
+      "medium",
+      "none"
     ],
     "craft_type_sources": [
-      null
+      null,
+      "description",
+      "none",
+      "raw_fields",
+      "shape_normalized",
+      "shape_raw",
+      "type_normalized",
+      "type_raw",
+      "ufocat_hynek_code",
+      "ufocat_hynek_daylight_disc",
+      "ufocat_type_code"
     ],
     "craft_types": [
-      null
+      null,
+      "chevron_boomerang",
+      "cigar_cylinder",
+      "cone",
+      "conventional_or_explained",
+      "disc_saucer",
+      "fireball_meteor_like",
+      "light",
+      "non_ufo_context",
+      "oval_egg",
+      "sphere_orb",
+      "triangle",
+      "unknown"
     ],
     "date_precisions": [
       null,
@@ -442,7 +468,11 @@
       "state"
     ],
     "same_day_match_strengths": [
-      null
+      null,
+      "medium",
+      "none",
+      "strong",
+      "weak"
     ],
     "shapes": [
       null,

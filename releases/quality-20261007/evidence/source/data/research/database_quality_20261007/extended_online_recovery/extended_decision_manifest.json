@@ -1,0 +1,32 @@
+{
+  "review_date": "2026-10-07",
+  "accepted_count": 26,
+  "counts_by_kind": {
+    "restore_source_grid_reference_after_primary_locality_review": 20,
+    "source_explicit_ground_observer_installation_reference": 6
+  },
+  "reviewed_british_grid_records": 59,
+  "reviewed_named_installation_records": 11,
+  "withheld_count": 44,
+  "previous_accepted_overlap": [],
+  "base_manifest_sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+  "decision_artifact": {
+    "path": "accepted_extended_online_recovery_decisions.jsonl",
+    "bytes": 125142,
+    "sha256": "af33f5229ed47e9f3ed66ac46c96e827f7886e626c29b7c41ec262cab680b9f5"
+  },
+  "authority_fact_receipts_artifact": {
+    "path": "primary_geographic_fact_receipts.json",
+    "bytes": 15070,
+    "sha256": "5dd5e76b1426226fdb4637bdbd30ac2e8527b286f72301fdf22a6d0fdfd49715"
+  },
+  "source_detail_chunks_hashed_and_read": 26,
+  "date_precision_downgrades_preserving_stored_dates": 2,
+  "projection_reader": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\grid_reference_recovery\\british_grid.py",
+    "sha256": "efe054c9229355e34fe461a7967e57af85fc38d9d55f12fc9e29512b6625027e"
+  },
+  "canonical_or_production_mutated": false,
+  "no_independent_sighting_count_claim": true,
+  "coordinate_role": "20 literal coarse British archival references;6 coarse named ground-observer installation references. No exact witness or object coordinate is asserted."
+}

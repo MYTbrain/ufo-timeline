@@ -1,0 +1,10 @@
+{
+  "url": "https://download.geonames.org/export/dump/admin2Codes.txt",
+  "retrieved_at_utc": "2026-10-07T07:31:29.857199+00:00",
+  "full_remote_stream_bytes": 2375143,
+  "full_remote_stream_sha256": "4920594123aab0628998b8160899ceacd23c3494079e300057b53cb5ed349195",
+  "retained_GB_rows": 185,
+  "retained_bytes": 9063,
+  "retained_sha256": "c720daaf6569b38b7ca2c0c9244ce53c775043bc162d26a2707ba9278802e099",
+  "scope": "Current GeoNames GB administrative names/codes. Historical county equivalence is not established. Exact country-prefix filter retains only GB rows; entire source was hashed as streamed, never copied to disk."
+}

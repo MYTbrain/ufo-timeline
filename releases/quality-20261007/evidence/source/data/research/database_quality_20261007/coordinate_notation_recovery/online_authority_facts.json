@@ -1,0 +1,140 @@
+{
+  "facts": [
+    {
+      "key": "ashgrove_native",
+      "url": "https://nuforc.org/sighting/?id=18233",
+      "kind": "original_publisher_account",
+      "facts": [
+        "Native report18233 has form location Ash Grove, Maryland, but narrative places the witnesses on a farm outside Ashgrove, Missouri.",
+        "Official publisher note explicitly marks the date approximate.",
+        "The retained June1 calendar anchor is not asserted to be the incident day; the narrative says fall1968."
+      ],
+      "wording_policy": "Paraphrased factual receipt; not full page bytes.",
+      "retrieved_at_utc": "2026-10-07T08:00:01.283834+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "143fbac0d91eeb1cc7cd62bc7bd66aa020ee814c05b314013d517f08a40615b8"
+    },
+    {
+      "key": "ashgrove_municipal",
+      "url": "https://ashgrovemo.socs.net/",
+      "kind": "municipal_authority",
+      "facts": [
+        "Municipal site identifies the City of Ash Grove in Missouri."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283880+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "80eab61bc0ece8f14ca5d65df4c721cf8d97405d3dc7a12020a5c17a84703312"
+    },
+    {
+      "key": "fareham_council",
+      "url": "https://www.fareham.gov.uk/about_the_council/",
+      "kind": "municipal_authority",
+      "facts": [
+        "Fareham town is within Fareham Borough; local government services are split with Hampshire County Council."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283895+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "ac4d7ed61a695d5c0dca118cf7ccfb0a66b640c36615fee61e36500d96fe406c"
+    },
+    {
+      "key": "mishicot_county",
+      "url": "https://manitowoccountywi.gov/residents/community/communities-in-the-county/",
+      "kind": "county_authority",
+      "facts": [
+        "County authority lists both village and town of Mishicot within Manitowoc County, Wisconsin."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283904+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "8c0fbfef17fe237ff02160b09c5f088980792e911c905573f1dbcc660f40d0d9"
+    },
+    {
+      "key": "mishicot_town",
+      "url": "https://www.townofmishicot.org/about/",
+      "kind": "municipal_authority",
+      "facts": [
+        "Official town site locates Mishicot in northeastern Manitowoc County, Wisconsin, and distinguishes the surrounding town from the village."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283911+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "7e57a255255a5c546af2dd78e12bbcbfe816e215cb51eb7a6eb9727e990491d2"
+    },
+    {
+      "key": "udine_municipal",
+      "url": "https://www.comune.udine.it/it/",
+      "kind": "municipal_authority",
+      "facts": [
+        "Official Udine municipal site confirms the city name and Italian municipal identity."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283917+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "0415745e69775b27ca78740d7caf97d855a35ec74c3167092423718a0a8e6bf1"
+    },
+    {
+      "key": "gravelbourg_municipal",
+      "url": "https://www.gravelbourg.ca/home.html",
+      "kind": "municipal_authority",
+      "facts": [
+        "Town site identifies Gravelbourg in Saskatchewan."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283922+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "4a1820fa516d21cfaf04ad2df6d732cf608cbcba387b51174e1052b57c9df9b6"
+    },
+    {
+      "key": "fortoglethorpe_municipal",
+      "url": "https://fortogov.com/city-manager/",
+      "kind": "municipal_authority",
+      "facts": [
+        "Official city page names Fort Oglethorpe, Georgia, within Catoosa County."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283927+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "9550d93390964cd99e04449863cce21cd5642a0f46393a229ca1ae2e3575d4b4"
+    },
+    {
+      "key": "columbiacrossroads_county",
+      "url": "https://www.bradfordcountypa.gov/208/Columbia-Township",
+      "kind": "county_authority",
+      "facts": [
+        "Bradford County Pennsylvania page identifies Columbia Cross Roads and its local community context."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283932+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "e52234f95b0237547e07c82a19618b1136e97df60894ed719f844d67916efa56"
+    },
+    {
+      "key": "wallops_nasa",
+      "url": "https://www.nasa.gov/wallops/visitor-center/plan-your-visit/",
+      "kind": "federal_authority_abstention_evidence",
+      "facts": [
+        "NASA distinguishes the postal locality Wallops Island from the physical island, main base and visitor center; visitor center is not on the island.",
+        "This does not establish the observer location of any reviewed Wallops sighting."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283937+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "8ae1f00865549d1c4533bd699e6c6c7803f3eb28a84d63e1789d8b15117b0860"
+    },
+    {
+      "key": "rytro_native",
+      "url": "https://nuforc.org/sighting/?id=148376",
+      "kind": "original_publisher_account_abstention_evidence",
+      "facts": [
+        "Publisher location is Rytro, Poland; narrative describes a boating dock of a kayak from Piwniczna, without naming the dock.",
+        "An exact observer point was not established."
+      ],
+      "retrieved_at_utc": "2026-10-07T08:00:01.283943+00:00",
+      "retrieval_method": "web tool parsed/cached primary page; factual receipt rather than retained full response bytes",
+      "fact_receipt_sha256": "66b2aff8a7ea83a4162c3c41a3730b663ae4f77739b515590f1ac9553333222a"
+    }
+  ],
+  "access_limitations": [
+    {
+      "url": "https://nuforc.org/sighting/?id=167561",
+      "result": "inaccessible through web tool; retained canonical original account used instead"
+    },
+    {
+      "url": "https://nuforc.org/sighting/?id=63563",
+      "result": "inaccessible through web tool; no current original-page content claimed"
+    }
+  ]
+}

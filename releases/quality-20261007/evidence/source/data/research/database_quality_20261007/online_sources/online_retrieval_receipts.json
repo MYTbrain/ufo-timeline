@@ -1,0 +1,26 @@
+[
+  {
+    "key": "vatican_museums_rome_municipal_page",
+    "url": "https://www.turismoroma.it/en/places/vatican-museums-and-sistine-chapel",
+    "retrieved_date": "2026-10-07",
+    "bytes": 151798,
+    "sha256": "5e58c99a15aa99d66c961637692ded10a90ad1040aca6ef0012523084d45162d",
+    "file": "vatican_museums_rome_municipal_page.html"
+  },
+  {
+    "key": "walla_walla_nws_airport_station",
+    "url": "https://forecast.weather.gov/MapClick.php?FcstType=text&lat=46.0946&lg=en&lon=-118.2858&unit=1",
+    "retrieved_date": "2026-10-07",
+    "bytes": 46191,
+    "sha256": "de70d383c7851bff564005c8b893346f5f2aa3661baca44253171be792e2e51d",
+    "file": "walla_walla_nws_airport_station.html"
+  },
+  {
+    "key": "condon_case48_primary_investigation_text",
+    "url": "https://files.ncas.org/condon/text/case48.htm",
+    "retrieved_date": "2026-10-07",
+    "bytes": 7054,
+    "sha256": "ee2e79b05030373ad046b6039975b9d8bd2aca974dc64f25289b4a823b96289c",
+    "file": "condon_case48_primary_investigation_text.html"
+  }
+]

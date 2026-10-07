@@ -1,0 +1,21 @@
+{
+  "reviewed_at_utc": "2026-10-07T07:44:19.078063+00:00",
+  "reviewer_task": "/root/original_account_recovery",
+  "mode": "read_only_parallel_review",
+  "scope": [
+    "sparse_quality_view.py",
+    "assemble_quality_view.py"
+  ],
+  "file_pins": {
+    "sparse_quality_view.py": "e45c9b6164db2decc634f55ee1b5ec9dd0ea11d19a9c9684cd2c129b11552d8a",
+    "assemble_quality_view.py": "b21c4b5402c24c00c9ed8582ac1ebac96cf697e612daf9b0d9163afcd65a3c9f"
+  },
+  "material_findings": [],
+  "reported_checks": [
+    "Four actual precision edits restrict exact_day to approximate; stored sort dates and source provenance retained.",
+    "All four Pan Am records retain separate narratives and source membership with incident relationship metadata.",
+    "Shared prior sidecars explicitly pinned and retained.",
+    "Six invalid-edit controls reject date promotion, sort-date overwrite, missing/stale precision guard, unaccepted candidate and provenance edits."
+  ],
+  "combined_full_detail_verification": "Separate integration_validation.py receipt; not substituted by this review."
+}

@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "review_date": "2026-10-07",
+  "accepted_detail_guards_and_full_source_digests_verified": 26,
+  "summary_detail_exact_edit_agreement_verified": 26,
+  "all_raw_source_dates_native_ids_members_and_counts_preserved": true,
+  "source_detail_chunks_hashed_and_decoded_once": 26,
+  "date_precision_downgrades_preserving_stored_dates_verified": 2,
+  "stale_guard_rejection_controls_passed": 210,
+  "other_rejection_controls_passed": 108,
+  "counts_by_kind": {
+    "restore_source_grid_reference_after_primary_locality_review": 20,
+    "source_explicit_ground_observer_installation_reference": 6
+  },
+  "all44_withheld_records_disjoint_from_accepted": true,
+  "sensitive_abstention_gate_assertions_passed": 8,
+  "utm_numerical_sanity_check_passed": true,
+  "no_exact_witness_or_object_coordinate_claims": true,
+  "reader_used_sha256": "e45c9b6164db2decc634f55ee1b5ec9dd0ea11d19a9c9684cd2c129b11552d8a",
+  "reviewed_parent_contract_sha256": "fba5d2116aa974c4a39ca0095302e819aeb9669e94050b53b40ed187468a44e1",
+  "current_parent_manifest_sha256": "fba5d2116aa974c4a39ca0095302e819aeb9669e94050b53b40ed187468a44e1",
+  "prior_reader_and_manifest_unchanged": true,
+  "decision_artifact_sha256": "af33f5229ed47e9f3ed66ac46c96e827f7886e626c29b7c41ec262cab680b9f5",
+  "validator_sha256": "f0631a07358da9ac8b7aedec790f4ef2fd4655230b80647331ac3b6800f2130e",
+  "canonical_data_mutated": false
+}

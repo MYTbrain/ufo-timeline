@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-10-07T07:36:34.795727+00:00",
+  "counts": {
+    "withheld": 59,
+    "accepted_source_grid_reference": 24
+  },
+  "source_grid_candidates": 83,
+  "accepted_decisions_sha256": "c07fc0a77aa9c1060199d9a4e8424fcfcbbba538aaa3e280a39cf28b47288d95",
+  "source_candidates_sha256": "be1469cd9eddcaf95553abb532d8e5c1417edd890c1394067c452d05319ce5e8",
+  "named_place_reference_sha256": "b69783d7f1a2759ed5d4522a5ad8a9f16994dca5577b12ae14a4ebdb76adc717",
+  "official_projection_pack": {
+    "url": "https://www.ordnancesurvey.co.uk/documents/resources/OSTN15-OSGM15-Lite-DevelopersPack.zip",
+    "bytes": 1260148,
+    "sha256": "0594285d3b4b8042558c42a5084f54db01c544332e417a63b0dea2b1ae977ed8"
+  },
+  "official_test_points": 115,
+  "maximum_difference_from_official_Lite_m": 4.676750785218681,
+  "negative_grid_format_controls_passed": 4,
+  "canonical_or_production_mutated": false
+}

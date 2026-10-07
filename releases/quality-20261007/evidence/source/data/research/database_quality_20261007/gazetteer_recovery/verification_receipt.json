@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "control_tests": [
+    {
+      "test": "Paris, , US",
+      "pass": true,
+      "withheld_reason": "required_admin_missing"
+    },
+    {
+      "test": "Texas, TX, US",
+      "pass": true,
+      "withheld_reason": "country_or_admin_as_city"
+    },
+    {
+      "test": "Ocean, FL, US",
+      "pass": true,
+      "withheld_reason": "route_area_facility_or_role_review"
+    },
+    {
+      "test": "Unknown, CA, US",
+      "pass": true,
+      "withheld_reason": "route_area_facility_or_role_review"
+    },
+    {
+      "test": "Toronto, ON, CN",
+      "pass": true,
+      "withheld_reason": "unknown_admin"
+    },
+    {
+      "test": "Springfield (near highway), IL, USA",
+      "pass": true,
+      "withheld_reason": "unsupported_parenthetic_qualifier"
+    },
+    {
+      "test": "Land O'Lakes, FL, USA",
+      "pass": true,
+      "parsed_country": "US",
+      "parsed_admin1": "FL"
+    },
+    {
+      "test": "Coeur d Alene, ID, US",
+      "pass": true,
+      "parsed_country": "US",
+      "parsed_admin1": "ID"
+    },
+    {
+      "test": "Cancun, Quintana Roo, Mexico",
+      "pass": true,
+      "parsed_country": "MX",
+      "parsed_admin1": "23"
+    },
+    {
+      "test": "Hyvink\u00e4\u00e4 (Finland), , Finland",
+      "pass": true,
+      "parsed_country": "FI",
+      "parsed_admin1": null
+    },
+    {
+      "test": "Rio does not match various",
+      "pass": true
+    },
+    {
+      "test": "Rio word-boundary positive",
+      "pass": true
+    },
+    {
+      "test": "Real Tramore distant exact alternate-name homonym withheld",
+      "pass": true,
+      "screens": [
+        "ambiguous_separate_localities"
+      ]
+    }
+  ],
+  "control_tests_passed": 13,
+  "accepted_row_invariants_passed": 795,
+  "accepted_sha256": "baab642bb50d1c9bf7cc0c4e66f841fd302116a90cca470099f3e17ddc7a5c9e",
+  "accepted_source_counts": {
+    "mufon": 368,
+    "nuforc": 427
+  },
+  "accepted_country_counts": {
+    "US": 320,
+    "MA": 4,
+    "CR": 2,
+    "MX": 19,
+    "ZA": 15,
+    "ES": 12,
+    "FR": 82,
+    "CA": 55,
+    "SE": 8,
+    "BG": 3,
+    "DE": 26,
+    "SK": 2,
+    "SN": 1,
+    "NL": 3,
+    "GB": 24,
+    "HU": 6,
+    "IN": 16,
+    "CL": 6,
+    "NO": 6,
+    "CH": 8,
+    "VE": 1,
+    "SI": 1,
+    "PE": 1,
+    "BR": 18,
+    "BE": 5,
+    "TR": 1,
+    "AU": 2,
+    "AL": 2,
+    "FI": 3,
+    "RU": 5,
+    "IT": 21,
+    "DK": 5,
+    "NZ": 11,
+    "VN": 1,
+    "PL": 2,
+    "KE": 1,
+    "PH": 4,
+    "ID": 3,
+    "LS": 1,
+    "SV": 1,
+    "MY": 1,
+    "HR": 4,
+    "RS": 6,
+    "GR": 8,
+    "PK": 5,
+    "JP": 4,
+    "TZ": 1,
+    "IL": 2,
+    "IE": 6,
+    "PA": 1,
+    "BB": 2,
+    "BY": 1,
+    "PT": 5,
+    "AR": 4,
+    "CU": 1,
+    "BN": 1,
+    "RO": 4,
+    "EC": 2,
+    "BA": 2,
+    "IS": 3,
+    "MT": 4,
+    "DO": 2,
+    "CN": 1,
+    "NA": 1,
+    "AT": 4,
+    "BS": 1,
+    "LB": 2,
+    "TH": 2,
+    "UY": 1,
+    "CO": 1,
+    "UA": 1,
+    "AF": 1,
+    "IQ": 1,
+    "LK": 1,
+    "SA": 1,
+    "IR": 1
+  },
+  "accepted_feature_code_counts": {
+    "PPL": 534,
+    "PPLA2": 111,
+    "PPLA": 68,
+    "PPLA4": 5,
+    "PPLA3": 54,
+    "PPLX": 13,
+    "PPLC": 10
+  },
+  "manual_conflict_ids_excluded": [
+    "3596957757159509",
+    "2068665841008283",
+    "1056425395401390",
+    "2359677565752869",
+    "793111016136350",
+    "95974574473341",
+    "3613131912203057",
+    "3105695137242900",
+    "2853515771572554",
+    "1190866286801709",
+    "3697185535564941"
+  ],
+  "limitations": "Full source rows and gzip pins were already checked once in the final review build; this focused verification checks effective accepted metadata and actual withheld homonym/role controls, not a second catalog rewrite."
+}

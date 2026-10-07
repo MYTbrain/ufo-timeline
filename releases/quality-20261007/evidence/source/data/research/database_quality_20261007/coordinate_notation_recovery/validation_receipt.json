@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-10-07T08:01:54.261317+00:00",
+  "accepted_changed_records": 10,
+  "new_map_references": 10,
+  "source_coordinate_candidates": 141,
+  "accepted_ufocat_candidates": 8,
+  "additional_original_publisher_recoveries": 2,
+  "unresolved_source_coordinate_records": 133,
+  "literal_notation_negative_controls_passed": 7,
+  "literal_notation_known_value_controls_passed": 4,
+  "date_precision_downgrades": 1,
+  "accepted_sha256": "acfd55ef304f779e23d06f843d1e180d7bd1c9acc9562461de790ceff2e85a1c",
+  "source_candidates_sha256": "ccac5ac86fce0ffe88b86a3a354fcd2d7c0f7c8bc4dc35661d1019c977752289",
+  "primary_fact_receipts_sha256": "fee8901932f8435eed585744184cdb1b136b61e7ef24cc6e805814f2ea29a179",
+  "geographic_authorities_sha256": "b367c6ff056f37958496323806f477477358d828f7755c5016c8cf4bec0aaa6b",
+  "raw_dates_narratives_members_and_native_ids_preserved": true,
+  "canonical_data_mutated": false,
+  "retention": "Retain sparse decisions, source/evidence pins and unresolved worklist. Shared sources and baseline remain unchanged."
+}

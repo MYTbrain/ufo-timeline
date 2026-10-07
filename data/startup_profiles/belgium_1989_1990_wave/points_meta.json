@@ -134,8 +134,8 @@
     "points": "points.bin"
   },
   "input": {
-    "event_count": 976,
-    "mapped_event_count": 976,
+    "event_count": 979,
+    "mapped_event_count": 979,
     "row_order": "input_order",
     "skipped_event_count": 0
   },
@@ -417,19 +417,52 @@
     "coordinate_sources": [
       null,
       "geocoded",
-      "raw_latlong"
+      "raw_latlong",
+      "source_account_city_reference"
     ],
     "craft_type_confidences": [
-      null
+      null,
+      "high",
+      "low",
+      "medium",
+      "none"
     ],
     "craft_type_sources": [
-      null
+      null,
+      "description",
+      "none",
+      "raw_fields",
+      "shape_normalized",
+      "shape_raw",
+      "type_normalized",
+      "type_raw",
+      "ufocat_hynek_code",
+      "ufocat_hynek_daylight_disc",
+      "ufocat_type_code"
     ],
     "craft_types": [
-      null
+      null,
+      "chevron_boomerang",
+      "cigar_cylinder",
+      "cone",
+      "conventional_or_explained",
+      "diamond",
+      "disc_saucer",
+      "dumbbell_barbell",
+      "fireball_meteor_like",
+      "formation",
+      "light",
+      "non_ufo_context",
+      "oval_egg",
+      "rectangle_box",
+      "sphere_orb",
+      "teardrop",
+      "triangle",
+      "unknown"
     ],
     "date_precisions": [
       null,
+      "approximate",
       "exact_day",
       "month"
     ],
@@ -440,7 +473,11 @@
       "state"
     ],
     "same_day_match_strengths": [
-      null
+      null,
+      "medium",
+      "none",
+      "strong",
+      "weak"
     ],
     "shapes": [
       null,
@@ -515,7 +552,7 @@
     "sort_date_key": 0,
     "sort_time_ms": -9223372036854775808
   },
-  "row_count": 976,
+  "row_count": 979,
   "schema_version": 3,
   "struct_format": "<QddiqIIIIIIIIIIIIi"
 }

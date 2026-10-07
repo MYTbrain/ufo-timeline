@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "base_manifest_sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+  "review_date": "2026-10-07",
+  "accepted_count": 14,
+  "point_recoveries": 13,
+  "counts_by_scope": {
+    "primary_document_observer_position": 4,
+    "primary_document_encounter_reference": 3,
+    "observer_facility_reference": 6,
+    "primary_source_locality_enrichment": 1
+  },
+  "unique_incident_claim": "No count of independent sightings; Pan Am account representations concern one historical incident.",
+  "decision_file": {
+    "path": "accepted_online_recovery_decisions.jsonl",
+    "bytes": 40087,
+    "sha256": "e7b25c6abcec42257700c3d9f79e3c5811038ff265b3e32cc5bbbfc63635305d"
+  },
+  "online_evidence_pins": {
+    "bluebook_19520508_atlantic.pdf": {
+      "bytes": 3460757,
+      "sha256": "2390e117ecea8e34e0049def41b1df7aa4a8e41dd0ff34be2cec83809b7af187"
+    },
+    "bluebook_coordinate_review_page_02.png": {
+      "bytes": 2499754,
+      "sha256": "a1c698d677008dfb91628fa48c6c59d383db4e51f533bdf38247d481856ffeb4"
+    },
+    "bluebook_coordinate_review_page_05.png": {
+      "bytes": 2123607,
+      "sha256": "88a01bcfe5f6ed81b82289bd6facd218ad6fc88bc34810b91b1a383731431cc5"
+    },
+    "ukab_2017195_original.pdf": {
+      "bytes": 90249,
+      "sha256": "a49369debbe37c821f537d429512547372f7b3bf6d971025cfde23db29dd195e"
+    },
+    "ukab_2017195_original_p05.png": {
+      "bytes": 147097,
+      "sha256": "52f46ec1bfe2b75f8aad0d216d4547ebc113bb7efb88776281de47cb833afa22"
+    },
+    "ukab_2019098_original.pdf": {
+      "bytes": 178151,
+      "sha256": "4ede51edb5ee5ea54fc79e22bfd4156e5bf5d0bdab825f468469624f3679d241"
+    },
+    "ukab_2019098_original_p05.png": {
+      "bytes": 185884,
+      "sha256": "1669b4a2f0bf8c6b1097bc8ec610c0132b025748f5be839d2df598241cfe6b4f"
+    },
+    "ukab_2019098_original_p03.png": {
+      "bytes": 179454,
+      "sha256": "e005d18733a0f37c4ffffc386e244fbc51370c00f22306085f64cc95d71bffed"
+    },
+    "heathrow_published_reference_assessment.pdf": {
+      "bytes": 924588,
+      "sha256": "dc2bda2c755a351684d0b973024164d460418349550c469d239db5a771e80368"
+    },
+    "heathrow_reference_coordinate_table.png": {
+      "bytes": 83392,
+      "sha256": "fc2d515b99086c9f736e78d0cb5894d80136cfb43269f0edb44a35629c0e2c88"
+    },
+    "vatican_museums_rome_municipal_page.html": {
+      "bytes": 151798,
+      "sha256": "5e58c99a15aa99d66c961637692ded10a90ad1040aca6ef0012523084d45162d"
+    },
+    "walla_walla_nws_airport_station.html": {
+      "bytes": 46191,
+      "sha256": "de70d383c7851bff564005c8b893346f5f2aa3661baca44253171be792e2e51d"
+    },
+    "condon_case48_primary_investigation_text.html": {
+      "bytes": 7054,
+      "sha256": "ee2e79b05030373ad046b6039975b9d8bd2aca974dc64f25289b4a823b96289c"
+    }
+  },
+  "canonical_data_mutated": false,
+  "safeguards": [
+    "Pinned base and source detail guards",
+    "Only single-member records accepted",
+    "Every account independently matched to source evidence",
+    "Observer/incident/facility role retained",
+    "No airport departure or destination inferred as encounter",
+    "No object position asserted",
+    "Conflicts and source narratives preserved"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "event_id": 995287649659053,
+  "native_source": "mufon",
+  "native_id": "141275",
+  "method": "Single existing pinned source record checked; all other 165 accepted decision lines preserved byte-for-byte. No 125-chunk rebuild.",
+  "detail_locator": {
+    "chunk_id": "chunk_000209",
+    "detail_index": 2017,
+    "detail_gzip_sha256": "9f058c8a9689786c369c83706db90c5981035847951582614edf6c97b12c81ee"
+  },
+  "raw_fields_json_sha256": "ff892c34089df46eade0a5351bf920ea912f35cc70372281be788408871ce651",
+  "full_record_json_sha256": "26b5353afb3d99cd42a6cf515bceb5cc8811db595b536abb52de7b494ce2b96b",
+  "description_sha256": "8ba916fc7e44f6040339905ead2edc39676d79355de90924b31991e5a77e4203",
+  "native_date_statement": "La date exacte n'est pas celle que j'ai indiquée car cela remonte à trop longtemps mais je sais que c'était un mardi durant la fin de l'automne 1989 ou au début de l'hiver vers 19h (je connais l'heure approximative et le jour car nous revenions d'être allé faire les courses comme chaque semaine. Et je connais la période car à 19h il ne fait noir que pendant quelques mois de l'année.)",
+  "interpretation": "The witness rejects the entered exact date and recalls a weekday and season. No replacement calendar day is established.",
+  "stored_sort_date_iso": "1989-11-14",
+  "old_date_precision": "exact_day",
+  "new_date_precision": "approximate",
+  "raw_fields_and_narrative_unchanged": true,
+  "existing_locality_reference_unchanged": true,
+  "previous_accepted_decision_sha256": "93011d8e22bf016e23bfac76c65329e820c95946ea9e20b4116c4cf688d5977b",
+  "accepted_decision_sha256": "c5b9ab001586bfa76320ea67b6bdcd8c1557e5c3249ce72c8c5881f53789a467",
+  "accepted_rows": 166,
+  "point_references": 165,
+  "date_precision_downgrades": 3,
+  "other_165_decision_lines_byte_identical": true,
+  "canonical_dataset_mutated": false,
+  "source_chunks_rechecked": 1,
+  "checked_at": "2026-10-07"
+}

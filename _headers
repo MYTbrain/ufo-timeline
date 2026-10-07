@@ -6,6 +6,12 @@
 /app.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/quality_detail_overlay.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/quality_detail_patches.json.gz
+  Cache-Control: public, max-age=0, must-revalidate
+
 /sw.js
   Cache-Control: no-store
   Service-Worker-Allowed: /
@@ -61,6 +67,24 @@
 /data/analysis_v1/manifest.json
   Cache-Control: public, max-age=0, must-revalidate
 
+/data/analysis_color_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_coordinate_evidence_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_duration_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_reporting_delay_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_time_of_day_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/analysis_witness_count_v1/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
 /data/analysis_v1/crop_circles.json
   Cache-Control: public, max-age=31536000, immutable
 
@@ -77,13 +101,13 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 /data/analysis_v2/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /data/startup_profiles/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /data/canonical_web/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /vendor/*
   Cache-Control: public, max-age=31536000, immutable

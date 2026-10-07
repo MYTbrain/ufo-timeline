@@ -1,0 +1,2211 @@
+
+
+--- PAGE 1 ---
+ 
+THE 
+Concord, New Hampshire, March 3, 1992 based on sketch by Bob Dix, Union Leader, Manchester, NH 
+   
+ 
+Donald A. Johnson, Ph.D. 
+with 
+David R. Saunders, Ph.D. 
+ 
+USER'S GUIDE 
+ 
+UFOCAT 2023 
+Copyright © 2023, Donald A. Johnson, Ph.D.
+J.Allen Hynek Center for UFO Studies 
+ 
+April 2023 
+ 
+Published by: 
+Sun River Research Institute, 16 Old Woodhill Rd., Bow, NH 03304-4906 
+Tel. 603-774-3040 Fax. 603-774-3072 
+
+
+--- PAGE 2 ---
+ Page 1  
+  
+
+
+--- PAGE 3 ---
+ Page 2 
+  
+TABLE OF CONTENTS 
+ Page
+ 
+ Introduction 4 
+  Scope of Database 5 
+  Structure of the Database 6 
+  Availability 6 
+  Inputs to UFOCAT 2002 7 
+  Blanks or Errors in the Database 7 
+  Organization of this User’s Guide 8   
+ Outline of Typical UFOCAT 2002 Record (Table 1) 9 
+ Source Information 
+  Primary Record Number 11 
+  Handedness - "X2" 11 
+  Indirect Record Number 11 
+  Relationship between PRN and IRN - "X1" 11 
+  UFOCAT 2002 Record Number  11 
+  Author’s or Investigator’s Name 11 
+  Level of Entry of Source 12 
+  Name of Direct Source 12 
+  Codes for Level of Entry (Table 2) 13 
+  Within Source ID (“PAGEVOL” Field) 14 
+   Indirect Source 15 
+ Date of Sighting  
+  Year, Month and Day 16 
+  Time 17 
+  Flag Field for Date/Time 18 
+  Time Zone 19 
+ Weather 20 
+ Location Information  
+  Local Terrain 21 
+  Special Location of Witness(es) 22 
+  Location Field (City, Town or Village) 22 
+  Special Location of the Phenomenon 23 
+  Region Field 24 
+  State Field 24 
+  County Field 25  
+ Witness Information  
+  Number of Witnesses 25 
+  Age of Principal Witness 25 
+  Sex of Principal Witness 26 
+  Special Codes for Witnesses (Police, Military, etc.) 26 
+  Names of Witnesses 27 
+
+
+--- PAGE 4 ---
+ Page 3  
+  
+TABLE OF CONTENTS (CONTINUED) 
+ Page 
+ 
+ Absolute Sidereal Time 27  
+ Hynek Classification Code 28 
+ Vallee Classification Code 29 
+ SVP Credibility Code 30 
+ Type of Report 31 
+  Sub-Type of Reports 32 
+  Key to Sub-Type Codes 32 
+ Explainability of Report 36 
+ Explanation Field 37 
+ 
+ UFO Characteristics 
+  Number of Objects 38 
+  Duration of Observation 38 
+  Size of Object(s) 39 
+  Apparent or Angular Size 40 
+  Distance from UFO(s) 41 
+  Color of UFO(s) 42 
+  Shape of UFO(s) 43 
+  Sound from UFO(s) 44 
+ Geographical Coordinates 45 
+ Notes  46 
+ User Defined Field 46 
+ 
+ 
+Appendix A List of Reference Sources 47 
+ 
+Appendix B  UFOCAT 2002 Country Codes and Names 63 
+ 
+Appendix C UFOCAT 2002 States and World Regions 67 
+
+
+--- PAGE 5 ---
+ Page 4 
+  
+                    
+ 
+INTRODUCTION 
+ 
+“As a bibliography of raw UFO reports, UFOCAT is without peer.” 
+-- Allan Hendry, The UFO Handbook, 1979 
+ 
+ UFOCAT 2002 refers to a computer database of over 120,000 UFO reports and related 
+information released in April 2002.  It is the result of a 30-year effort that began during the Air 
+Force sponsored Colorado UFO Project, also known as the “Condon Committee.”  UFOCAT 
+was begun by Dr. David R. Saunders, who at the time was a co-Principal Investigator on the 
+Colorado UFO study and professor of Psychology at the University of Colorado
+1.  Dr. Jacques 
+Vallee contributed a large computer catalogue of approximately 6,000 cases at the project’s 
+inception. 
+ 
+ The UFOCAT database has existed in some form or another since the spring of 1967 
+but went through an eight-year hiatus from 1982 to 1990 when it was neither updated nor 
+utilized.  In 1976 Dr. Saunders gave his version of UFOCAT to the Center for UFO Studies 
+(CUFOS).  From then until 1982 it was maintained and updated by Fred Merritt at the Chicago 
+office of CUFOS.  In those days the database was kept on a large IBM mainframe computer at 
+a nearby computer facility, with magnetic tape backup.  It eventually proved to be too 
+expensive an endeavor for the Center to mainta in on a mainframe, and consequently it was 
+removed from active use and stored on tape.  
+ 
+ In 1990 I obtained a copy of UFOCAT on ten 3.5" diskettes from Dr. Saunders courtesy 
+of Dr. John Derr of the U.S. Geological Survey.  Dr. Derr had created the diskette version from 
+one of the magnetic tape backups for his research use.  Unfortunately he was unable to read 
+the first portion of the tape and so we were missing the first 10,000 records. Mark Rodeghier, 
+Director of CUFOS, provided me with an older magnetic tape backup copy of UFOCAT.  By 
+merging the two sources of data I was able to recreate the catalogue as it existed in 1982.  
+Since then several tens of thousands of additional records have been added. UFOCAT99 was 
+first released in the Autumn of 1999 with over 111,000 records, and the current UFOCAT 2002 
+version has over 146,000 records. 
+ 
+ With the great strides made in recent years in computer software and hardware 
+technology, and with the substantial reduction in costs of computer RAM memory and disk 
+storage, it made sense to revise the UFOCAT file structure.  First using dBase IV and later 
+Microsoft Access 97 the file was converted to a modern relational database.  Most of the 
+single-letter codes from the 1970’s version were replaced with longer, more understandable 
+names.  Several fields were added.  A special emphasis was placed on improving the 
+identification of the source for each UFO report, including the full name of the author and a 
+much longer mnemonic code for the reference citation. 
+ 
+ In the late 1970s and early 1980s several researchers prominent in the UFO field 
+criticized the use of UFOCAT for conducting research.  Perhaps foremost among these critics 
+ 
+1 As a Condon Committee member, David Saunders was a proponent for taking the UFO phenomenon seriously. 
+Dr. Edward U. Condon dismissed him from the study for releasing the infamous Low memorandum.  In the memo 
+project administrator Robert Low wrote “the trick would be to…[convince] the public it would appear a totally 
+objective study…but to the scientific community would present the image of a group of nonbelievers…having an 
+almost zero expectation of finding a saucer.”  Saunders  wrote his response to the Condon whitewash in his book 
+UFOs? Yes! Where the Condon Committee Went Wrong.  (Signet, 1968). 
+ 
+ 
+
+
+--- PAGE 6 ---
+ Page 5  
+  
+were Allan Hendry and Dr. Willy Smith.  While we agree that many of these criticisms were 
+indeed valid, we disagree with the central premise that it is impossible to use UFOCAT 2002 to 
+conduct meaningful research.  
+ 
+ We would first caution potential users not to expect to be able to begin and end their 
+research using only UFOCAT 2002—there are too many gaps in the data and, just like the 
+Internet, not every source of information is as reliable and accurate as the next.  The results 
+obtained from UFOCAT 2002 are best thought of as a reference guide to the original sources 
+for the crucial details.  Otherwise, the distinction between poorly investigated reports and 
+exhaustively studied sightings will be lost.  However, you will substantially improve your search 
+for information by accessing UFOCAT 2002.  What was true when Allan Hendry wrote his 
+critique of UFOCAT in 1979 is even truer today: UFOCAT 2002 is without peer as a reference 
+source. Thousands of hours went into creating it, and months have gone into revising it to 
+improve its ease of use.  It exists today as the most comprehensive reference tool and 
+bibliographic source on UFO reports in existence. 
+ 
+Scope of the Database
+ 
+ The UFOCAT 2002 database exists as a set of MS Access97 tables, queries, forms, 
+and reports.  The database requires approximately 50 megabytes of disk storage space.  In 
+addition to the main table, three smaller tables contain expanded information about country 
+names and region codes ( WORLD); U.S. county names, U.S. county census data and 
+geographical coordinates (COUNTIES); and additional bibliographic information about sources 
+referenced by UFOCAT 2002 (SOURCES). 
+ 
+ The basic unit of the UFOCAT 2002 is the record.  Physically, a record consists of 49 
+fields. Forty-one of the fields are defined as char acter strings. Eight fields are numeric fields: 
+PRN, IRN, URN, X2, TZONE, AST, SIZE, and DIST.  Dates are defined as character strings in 
+order to include characterizations when the precise date or time is unknown, such as “Night” or 
+“Dawn.” 
+ 
+ Most entries in the UFOCAT 2002 describe UFO events, but some non-UFO events 
+have been included.  In the past these non-UFO events have included such things as nuclear 
+test explosions, aircraft crashes, major electrical power failures, and the deaths of major UFO 
+figures. Also included are the dates that crop circle markings or other unusual traces were 
+discovered.  These non-UFO events are distinguishable by having a first-digit code of zero (0) 
+for TYPE.  To the extent that they have potential ufological interest, other non-UFO events 
+may also be eligible for inclusion in the future. 
+ 
+ Typically, each record for a UFO event reflects the input of one witness or group of 
+witnesses about one event as reported via one source; in practice, there is unavoidable 
+confounding of both witnesses and events, and sources are not always unambiguous. As a 
+basic principle, UFOCAT 2002 has aimed to include any reasonable class of material deemed 
+to be of interest. A closely related principle established in the earlier versions of UFOCAT was 
+that a given record should accurately reflect the data 
+as given by its source, even when those 
+data are known to be inaccurate. This rule still holds with some exceptions. Some exceptions 
+to this rule in UFOCAT 2002 have been made when the inaccuracy would cause a major 
+misreading of the report. In addition, spelling errors in place names or witness names of only a 
+single letter or two have been corrected because they are inconsequential, and it allows the 
+user to distinguish mistakes that are flagged as truly erroneous errors. Special codes are used 
+to flag data suspected of inaccuracy or known to be inaccurate. 
+ 
+
+
+--- PAGE 7 ---
+ Page 6 
+  
+ The existing UFOCAT 2002 fields and codes will undoubtedly be in need of future 
+expansion due to the dynamic nature and complexity of the UFO phenomena. This UFOCAT 
+2002 User's Guide is an attempt to describe the structure, content, and coding conventions as 
+they currently exist. 
+ 
+Structure of the Database 
+ 
+ With the help of the queries provided with the UFOCAT 2002 database, a block of 
+records describing the same event can be obtained.  The entries within each block all refer to 
+the same event, but are based on different sources. The chronologically earliest report of a 
+given event, or the most complete account available, is treated as the primary record for that 
+event. 
+ 
+Availability of the Information Contained in the UFOCAT 2002 Database
+ 
+ UFOCAT 2002 has become a very large database.  David Saunders invested the lion’s 
+share of the work, even though his contributions ended in 1976.  Ted Bloecher, Fred Merritt, 
+Luis Schoenherr, and Paul Ferrughelli have made noteworthy contributions of material 
+specifically coded for UFOCAT 2002, and many others have made data available in diverse 
+forms. All of these contributions have helped greatly, but much more work remains.  Some 
+UFO investigators have invested a great deal of their personal time with no monetary 
+compensation, so their personal wishes regarding the confidentiality and availability of their 
+material should be respected. 
+ 
+ One particular problem in this area was resolved by allowing contributors to specify 
+"levels of availability" for their material; these specifications lead to codes in the LEVEL field 
+for each record.  The codes assigned to published material make them freely available; the 
+codes assigned to unpublished material invoke varying degrees of confidentiality, starting with 
+the witness names. Contributors who fear inappropriate use of their material can effectively 
+"classify" it, and some have elected this option.  Of course, we reserve the right not to accept 
+material for UFOCAT 2002 if there are too many strings attached.  Currently, less than 10% of 
+the primary records hold back more than witness names and this percentage will be reduced 
+in future releases. 
+ 
+ Needless to say, UFOCAT 2002 serves no purpose unless it is used.  Those with a 
+scientific interest in the UFO problem and who will, in turn, make their findings freely available 
+are welcome to purchase and use this database. However, it is also possible to misuse the 
+data.  The major contributors to the file, including CUFOS, have agreed that two general 
+restrictions are necessary--a qualitative restriction and a publication restriction. 
+ 
+ The qualitative restriction is implemented by distinguishing between published and 
+unpublished sources.  Records based on unpublished sources remain under the control of 
+those sources, both as to content and availability. Unpublished entries that do not have the 
+author’s approval to release the names of witnesses have been reduced to their initial letter. 
+Entries based on published sources have not been censored.  The operational meaning of 
+"published" and "unpublished" is contained in the coding of the SOURCE field for each 
+UFOCAT 2002 record and is described in detail in this Users' Guide. 
+ 
+ The publication restriction applies to every purchaser and user of the database.  The 
+basic intent is that UFOCAT 2002 should be used to further our common understanding of 
+ufology, but not for "ulterior" purposes.  All users are expected to honor this intent when it 
+comes time to publish.  UFOCAT 2002 is a creative work and as such is protected by 
+
+
+--- PAGE 8 ---
+ Page 7  
+  
+international copyright laws.  Permission to reproduce or publish material extracted from 
+UFOCAT 2002 must be obtained in writing from the author or publisher. 
+ 
+Inputs to UFOCAT 2002
+ 
+ All persons interested in the pursuit of ufology as an interdisciplinary science are 
+invited to contribute reports for UFOCAT 2002.  Unique, unpublished investigations file data 
+are always welcome.  Citations for material published in book form up through the 1970’s is 
+already coded for most of the UFO literature.  Material published in periodical form or in 
+newspaper sources and many of the books published since 1980 is only partially coded.
+ 
+Before actually encoding anything, an inquiry is in order.   Write to: Donald A. Johnson, 
+Sun River Research, 16 Old Woodhill Road , Bow, NH 03304.  Or you may email 
+us at ufocat@aol.com. 
+ 
+ In the case of file material, it is nec essary to devise an appropriate numbering system 
+for source identification, so that when UFOCAT 2002 queries are performed the internal 
+structure of each source can be preserved.  For source files that are maintained 
+chronologically, this is already automatic (i.e. simply number by year, month, day, and time). 
+ 
+ Data entry can be achieved through using the Access97 screen form designed and 
+included in the UFOCAT 2002 database. When using the screen form provided to enter new 
+material it is not necessary that all fields be entered by you.  It is recommended that the new 
+record include those information items that will help to match the record with possible 
+duplicates, and determine proper primary record number assignment. 
+This includes date, 
+time, place, witness name(s), "indirect source", type of report, and the name of 
+the author or investigator of the report .  Additional coding will be essential for 
+potentially primary entries and for entries based on new investigations. 
+ 
+ In order to maintain quality control, all mergers of new data into the primary version of 
+UFOCAT 2002 will continue to be centralized.  Edited submissions will be returned 
+electronically to contributors, who may then verify or add to the proposed additions to the 
+UFOCAT 2002 catalogue, and email them back.  Such files will include the permanent ID 
+numbers assigned by the system.  We expect that material will continue to be prepared for 
+UFOCAT 2002 more or less continuously.  We hope that you can expect a short turnaround 
+time for your files of new or revised entries, but please keep in mind that this is a volunteer 
+effort. 
+ 
+Blanks and/or Errors in the Database
+ 
+ A general principle of coding has been followed that a blank indicates data either 
+missing from the report or at least unknown to the person making the entry.  Errors of omission 
+can hardly be avoided, but we would like to have any error of commission called to our 
+attention--unless it is already flagged as an error of the source. 
+ 
+Organization of this User's Guide 
+ 
+ It is a relatively simple process to create additional tables that include specialized 
+detail coding and free format text.  New tables may be relationally linked to UFOCAT 2002 by 
+the record ID or the appropriate key.  It is natural, therefore, to order this User's Guide in 
+terms of the positions occupied by the fields in the UFOCAT 2002 record.  The internal 
+
+
+--- PAGE 9 ---
+ Page 8 
+  
+organization therefore parallels the arrangement most often used for generating reports and 
+listings. 
+ 
+ As a result of this structure, certain formats are more convenient for data acquisition 
+than other formats.  In particular, we recommend that submissions not already in UFOCAT 
+2002 format use character strings for the defined fields with the same length as those used in 
+UFOCAT 2002.  It is relatively easy to append records into the Access97 database from Excel 
+97 spreadsheets provided  the lengths of those fields do not exceed the length described 
+herein. The use of "exotic" field types is also discouraged.  A left-to-right rearrangement of the 
+fields creates only minor inconvenience. However, the data record of specific codes that do 
+not conform to the specifications outlined and detailed on the following pages may present 
+much greater difficulties and confusion.  Computer translation of idiosyncratic codes is 
+possible, but even so it will be worthwhile only for large files. 
+ 
+ Each page of this User's Guide beyond this introduction is labeled according to the 
+position of the described field within a typical event-record.  Table 1, below, outlines the whole 
+record and serves as an index.  The structure of the UFOCAT table has changed since the 
+last release with the addition of four more fields: Ufonaut, Height, Uniform, and LST.  
+Accommodation of other forms of data will occur by employing additional relational databases, 
+such as an IMAGES table which is currently under  construction, so that extra records will be 
+created only for the cases that need them. 
+
+
+--- PAGE 10 ---
+ Page 9  
+  
+Table 1: Outline of Typical UFOCAT 2002 Record 
+ 
+Field Width Type of Information
+ 
+PRN N Primary record ID number (indicates first record for that case) 
+X2 N Order of primacy for records in a block concerning same incident 
+IRN  N Indirect record ID number (blank for primary entries) 
+X1  1 Flag for order of entries referring to the same report 
+URN  N UFOCAT 2002 record ID number (permanent unique reference number) 
+AUTHOR 30 Author's or Investigator's Name 
+LEVEL  1 Level of source 
+SOURCE 12 Code for identification of the direct source (see Appendix A) 
+PAGEVOL  8 Position within source 
+ISOURCE 12 Code for identification of the indirect source 
+IPAGEVOL  8 Position within indirect source 
+YEAR  4 Year 
+MO 2 Month 
+DAY  2 Day 
+TIME  5 Time (Hour and Minute) 
+TZ 1 Special flag for reporting accuracy of date and time 
+TZONE N Time Zone 
+WEA  8 Weather 
+TER  8 Terrain (e.g. “forest”) 
+VFLG  3 Vehicle Flag (e.g. a period indicates the witness is in a car) 
+LOCATION 30 Place-name location 
+LFLG  1 Special flag for reporting accuracy about location  
+REGION  2 Region of world abbreviation 
+STATE  3 State (or country) abbreviation (see Appendix B) 
+COUNTY  8 County (or province) 
+WITNESSES  8 Number of witnesses 
+AGE  2 Age of principal witness or age composition of group 
+SEX  1 Sex of principal witness or gender composition of group 
+MIS  1 Flag for military or police witnesses 
+NAMES 30 Witness name(s) 
+AST  N Absolute Sidereal Time (computed) 
+HYNEK  3 Hynek classification code 
+
+
+--- PAGE 11 ---
+ Page 10 
+  
+VALLEE 3 Vallee classification code 
+SVP 3 Credibility 
+TYPE 12 Type and subtype of report (as indicated by source) 
+EXPLN  1 Flag for explainability of the report 
+EXPLAN  2 Explanation of report (as given by source) 
+OBJS  8 Number of objects (UFOs) reported 
+DUR  8 Duration of event 
+SIZE  N Size of object estimated by witnesses 
+ANGLSIZ  3 Apparent size 
+DIST N Distance from UFO at closest approach estimated by witnesses 
+COLOR  8 Color of UFO 
+SHAPE  8 Shape of UFO 
+SOUND 8 Sound (if any) associated with UFO 
+LONGITUDE  8 Longitude 
+X3  1 Coordinate flags 
+LATITUDE  8 Latitude 
+NOTES 200 Short narrative of UFO incident including key words 
+Ufonaut 16 Classification of type of UFO humanoid/alien reported 
+ 
+Height N Height of Ufonaut reported, in feet 
+ 
+Uniform 16 Description of uniform worn by Ufonaut 
+ 
+LST N Local sidereal time 
+ 
+USER 
+DEFINED 
+FIELD 32 Field available for User definitions or labels that can be used for custom-
+ized searches. Contains Local Sidereal Time (LST) prefixed with "RA" 
+
+
+--- PAGE 12 ---
+ Page 11  
+  
+FIELD NAME: PRN DATA TYPE: Number 
+ 
+ This field contains the primary record number ("PRN").  It points to the "URN" or 
+UFOCAT 2002 record number of the record with the most primary source of information about 
+the UFO event.  Filtering records by this number will provide all references to the same event. 
+ 
+FIELD NAME: X2 DATA TYPE: Number 
+ 
+ Despite its cryptic name, this field is one of the most important within the record, 
+because it provides information on the "handedness" of the record.  Primary records are 
+identified with a zero.  Filtering records for this value is the most common way to find only the 
+primary entries for a search, and is used to conduct statistical tallies without double counting 
+events. Records coded with a "1" indicate investigations that are based upon an independent 
+investigation of the UFO event, but was not chosen as the primary record.  Records coded 
+with a "2" reference the primary source or some other source and is therefore a secondary 
+source of information. Records coded with a "3" clearly reference only a secondary source, 
+and are therefore even further removed from the original report. 
+ 
+FIELD NAME: IRN DATA TYPE: Number 
+ 
+ This field contains the indirect record number ("IRN"). It points to the "URN" or 
+UFOCAT 2002 record that is most closely associated with the source. Typically this refers to 
+the source cited by the author when he or she is not the primary source. If the author or 
+investigator is the primary source then this field will be blank. 
+ 
+ 
+FIELD NAME: X1 WIDTH: 1 character 
+ 
+ This field is left over from an earlier version of UFOCAT, and expresses the degree of 
+confidence the coder had about the strength of the relationship between the URN and the 
+IRN.  Primary records will not have an indirect source and this field will be left blank. Clear 
+matches are coded with a "=" and possible matches are coded with a "-". 
+ 
+FIELD NAME: URN DATA TYPE: Number 
+ 
+ The UFOCAT 2002 record ID number.  This is a permanent, unique reference number 
+assigned to each record in the database.  Every record with have an URN regardless of the 
+paucity of other information contained within it. 
+ 
+FIELD NAME: AUTHOR WIDTH: 30 characters 
+ 
+ This field contains the name of the first author or UFO investigator who was 
+responsible for writing the report, article, or book from which the record is referenced in the 
+SOURCE field.  It is possible that the author is unknown or was not recorded at the time the 
+entry was made. This field would then contain the name of the editor of the magazine or 
+journal in which the report appeared the name of the magazine or journal, or the name of the 
+organization responsible for the report.  The surname of the first author is listed first, followed 
+by first name and middle initial, up to 30 characters.  
+ 
+FIELD NAME: LEVEL WIDTH: 1 character 
+
+
+--- PAGE 13 ---
+ Page 12 
+  
+ 
+ This field contains a numeric code (0 – 9) for the level of entry of the source (see Table 
+2).  Primary sources for a given UFO event will tend to be associated with low-numbered 
+codes in this field (source codes of 0 through 3). Type 3 sources (investigation files) are the 
+most preferred for additions to the catalogue because they are the most likely to contain the 
+most information with the fewest inaccuracies. 
+ 
+ 
+FIELD NAME: SOURCE WIDTH: 12 characters  
+ 
+ A 12-character abbreviation describes the source of the report.  This field is a unique 
+identifier for the source (i.e. an investigations file, a periodical, a book, or a list of UFO 
+reports). The SOURCE field is used to match UFOCAT 2002 table entries with descriptive 
+information about the source (e.g. title, year of publication, etc) in the SOURCES table.  
+Together with the volume number and page citation found in the PAGEVOL field, this code 
+should be sufficient to allow the specific source to actually be located in its original form.  
+ 
+ It will normally be true that all entries coded from the same direct source will have the 
+same code for level of source.  However, there are a few important exceptions.  Primary 
+sources for a given UFO event will tend to be associated with low-numbered codes in the level 
+field (source LEVEL codes of 2 or 3).  
+ 
+ If the direct source is an individual the following abbreviation scheme applies. 
+Ordinarily, the first column of the field will contain the first letter of the first name (capitalized).  
+The second column will contain the first letter of the last name (capitalized), followed by the 
+remainder of the last name in lower case, followed by a number if the source is published.  In 
+the case where an author has written more than one book, the number code ranks the books 
+or published works in order of publication.  In the case of a book with two or more authors, the 
+author first mentioned is the one coded. 
+ 
+ A periodical is indicated by its name (up to 12 characters).  A periodical that is the 
+work of one author is treated as an individual's publication, with the full name appearing in the 
+AUTHOR field. 
+ 
+ 
+
+
+--- PAGE 14 ---
+ Page 13  
+  
+Table 2: Level of Entry 
+ 
+ Specific codes for level of entry of source have the following meanings:   
+ 
+9 The direct source is essentially a list, with no narrative information.  The list may or may 
+not have been computerized and/or used in a statistical study by the original compiler.  
+Within-source identification numbers are the serial numbers assigned by the original 
+compiler, if given (see PAGEVOL Scheme 2). 
+ 
+8 The direct source is a (presumably) revised work. (Cf. 7) This will typically include 
+paperback editions and translations.  The content of such editions is rarely novel, but 
+the page numbering is often different.  See APPENDIX A: INDEX TO DIRECT 
+SOURCES to see what specific edition may have been coded as 8 (see PAGEVOL  
+Scheme 1). 
+ 
+7 The direct source is the first edition of a book or monograph, in the native language of 
+the author.  Within-source identification numbers are page numbers in this edition (see 
+PAGEVOL Scheme 1). 
+ 
+6 The direct source is an author's files.  There is no predictable within-source 
+identification (see PAGEVOL Scheme 3 or 5). 
+ 
+5 The direct source is a periodical devoted pr imarily or frequently to ufology.  Within-
+source identification codes are based on year and month and page of publication (see 
+PAGEVOL Scheme 4). 
+ 
+4 The direct source is a periodical of general circulation, including newspapers and most 
+magazines.  Within-source identification codes are based on year, month, and day of 
+publication (see PAGEVOL Scheme 5).  (Except for Project Bluebook). 
+ 
+3 The direct source is an investigations file.  Within-source identification schemas vary 
+from source to source (see PAGEVOL Scheme 3 or 5 or 6). 
+ 
+2 The direct source is an investigations file.  Witness names are automatically 
+confidential, and some detailed data are confidential. 
+ 
+1 The direct source is an investigations file.  The entire case is confidential, and may be 
+reported only as a tally in statistical summaries. 
+ 
+0 The direct source is an investigations file.  Status as type 1 or 2 or 3 has not been 
+determined. 
+ 
+A blank The record does not refer to an event. 
+or any 
+alphabetic 
+code  
+ 
+
+
+--- PAGE 15 ---
+ Page 14 
+  
+FIELD NAME: PAGEVOL WIDTH: 8 characters 
+ 
+Identification within Source
+ 
+ The first seven columns of the PAGEVOL field provides the page number or other 
+useful identifying information to enable the user to locate the original documentation from 
+which the record has been coded.  A supplementary purpose of the code, when this is 
+feasible, is to indicate the date when the coded information became available, so that relative 
+dates may be inferred from listings. 
+ 
+ Several types of coding are used, depending on the nature of the overall source.  For 
+any one direct source, a consistent scheme of identification will be used, according to the 
+following key: 
+ 
+Scheme 1  Page number in a published source. (Level 7 or 8) Letters may be used 
+to separate appendices. 
+ 
+Scheme 2  Sequential number in a published source.  (Level 9) 3-4 digits. 
+ 
+Scheme 3  Acquisition numbers.  These are used only in small, unpublished files. 
+ 
+Scheme 4  Year/Month/Page of publication in a level 5 source. This will be the 
+preferred scheme for any specialized periodicals that have their own 
+specific source codes. The use of issue numbers, although practiced 
+widely, is not recommended. Four digits are used for the year plus two 
+digits for the month and two digits for the page. 
+ 
+Scheme 5  Year/Month/Day of publication.  This will be the preferred scheme for all 
+material derived from chronological files. Four digits are used for year, 2 
+digits for month plus 2 digits for day. In the past the letters A through L 
+were used as codes for the months, and the letters A through Z were 
+used as codes for the day or page number. These codes have been 
+replaced with numbers. 
+ 
+Scheme 6  Blank.  Used only in small, unpublished files. 
+
+
+--- PAGE 16 ---
+ Page 15  
+  
+FIELD NAME: ISOURCE WIDTH: 12 characters  
+ 
+ A 12-character abbreviation describes the indirect source of the report. The "indirect 
+source" of any record is the source that is ci ted or credited by the author. This field serves two 
+purposes.  First, it provides the essential information by which records referring to the same 
+event may be grouped into blocks and primary entries recognized as such.  Second, in the 
+case of primary entries, it provides a general indication of the quality of the witness's 
+contribution to the original input. 
+ 
+ Any code that appears in SOURCE may appear in ISOURCE when that source is cited 
+as an indirect source.  However, the ISOURCE  won’t always to be a unique identifier for the 
+indirect source because sometimes the exact details of the reference are vague.  For 
+example, it may only refer to a person as the source without citing the publication.   
+ 
+ If the indirect source is an individual the first character in that field will contain the first 
+letter of that person’s first name (capitalized).  The second column will contain the first letter of 
+the last name (capitalized) followed by the remainder of the last name in lower case. A 
+number will follow the name if the citation is to a book by that person.  In the case where an 
+author has written more than one book, these numbers rank the books in order of publication. 
+In the case of a book with two or more authors, the author first mentioned is the one coded.  If 
+more than one source is cited, the most recent one should be treated as the indirect source. 
+ 
+ A periodical is indicated by its name (up to 12 characters).  A periodical that is the 
+work of one author is treated as an individual's publication, with the full name appearing in the 
+AUTHOR field.  In addition to the codes borrowed from SOURCE , the following miscellaneous 
+codes may be given as the indirect source (listed here in order of priority): 
+ 
+ * (Asterisk).  The immediate indirect source for this record is a first-hand written 
+report of an on-the-scene investigation written by the investigator or the 
+equivalent. 
+ 
+ + (Plus sign).  The indirect source for this record is a standardized report form 
+completed by or with the witness for inclusion in the file designated by the 
+direct source code. 
+ 
+ ' (Apostrophe).  The indirect source for this record is a description of firsthand 
+observations prepared by the witness and reported in a scientific journal. 
+ 
+ . (Period).  Either the indirect source for this record is a letter written by the 
+witness(es), or the direct source is based on an unstructured interview with the 
+witnesses (as by a newspaper reporter).  The latter interpretation will apply 
+when the LEVEL code is 4.  
+ 
+ , (Comma).  The indirect source for this record is a published account in a 
+newspaper or other non-scientific periodical.  Note that a comma "," is 
+appropriate the SOURCE is a wire-service story.  If the SOURCE is a local 
+news story (published in the same county as the event), the last column of 
+PAGEVOL should be coded "." on the assumption that the witnesses were 
+interviewed. 
+
+
+--- PAGE 17 ---
+YEAR, MONTH, and DAY 
+ 
+ The need for including the chronological date of the UFO event is obvious.  Not only is 
+the date of an event a fundamental piece of identifying information, but it is necessary for any 
+analyses of waves, cycles, or evolutionary aspects of the phenomena. The coding is relatively 
+straightforward. These fields are arranged in the sequence year-month-day. 
+ 
+ These data appear as given by the source, without elaboration or modification.  The TZ 
+field serves as a flag field to contain any necessary comments. Missing data were simply 
+omitted, with character codes provided to repr esent approximate information. Trailing zeros are 
+included in these fields only when they are significant. For recurrent or prolonged events, 
+date/time is recorded at the time of initial onset. 
+ 
+FIELD NAME: YEAR WIDTH: 4 characters 
+ 
+ This 4-character field contains the year of the event. When the precise year is not known, 
+the decade of the event is coded with a period (.) in the last column. For example, an event 
+which occurred in the 1960's for which the exact year is not known would be coded "196." If an 
+event occurred early, in the middle, or late in a decade, but the exact year is uncertain, it can be 
+coded with a "E", "M", or "L" in the last column.  For example, "196L" indicates an event that 
+occurred late in the 1960s, possibly 1968 or 1969. 
+ 
+FIELD NAME: MO WIDTH: 2 characters 
+ 
+ This 2-character field represents the month of the event, using "01" through "12" to 
+stand for January through December.  When the precise month is not known the first column 
+will be blank; the second column will then contain another blank, or one of the following 
+alphabetic codes -- 
+ 
+ E Early (approximately January-April) 
+ F Fall (approximately October-December). 
+ L Late (approximately September-December) 
+ M Middle or Summer (approximately May-August) 
+ S Spring (approximately April-June) 
+ W Winter (approximately January-March) 
+ 
+FIELD NAME: DAY  WIDTH: 2 characters 
+ 
+ This field represents the day of the event, using "01" through "31" in the obvious fashion. 
+When the precise day cannot be coded the first column will be blank; the second column may 
+then contain another blank, or one of the following alphabetic codes -- 
+ 
+ E Early (approximately the first week) 
+ M Middle 
+ L Late (approximately the last week) 
+   
+
+
+--- PAGE 18 ---
+FIELD NAME: TIME WIDTH: 5 characters 
+ 
+ This five-character field represents the hour and minute in which the event occurred. 
+The first two columns of the TIME field represent the hour of the event, using "00" through "23" 
+in the obvious fashion; 2400 should be treated as 0000 of the following day.  If the precise hour 
+could not be coded the TIME field will either be blank or contain one of the following codes -- 
+ 
+ Day Daytime 
+ Night Night 
+ Morn Morning 
+ After Afternoon 
+ Even Evening 
+ Dawn Sunrise or dawn 
+ Noon Noon (sun at zenith) 
+ Dusk Sunset or dusk 
+ MidD Midday 
+ MidN Midnight 
+  Pdawn Predawn (the day listed is about to dawn) 
+ 
+ The third and fourth columns of  TIME represent the minute of the onset of the event, 
+using "00" through "59" in the obvious fashion.  "00" is not coded unless this is known to be 
+reasonably accurate.  If the precise minute is not known, the fourth column in the field will be 
+left blank, and the third column may then contain ---  
+ 
+ - "early" or "before" 
+ + "late" or "after" 
+ Page 17  
+  
+
+
+--- PAGE 19 ---
+FIELD NAME: TZ WIDTH: 2 character 
+ 
+ This field is used to flag whether the date is approximate or if the time is coded as 
+standard or daylight time, or GMT.  This field is also used to call attention to certain unusual 
+conditions affecting the date/time coding.  Any of the following codes may appear in the TZ 
+field, with the indicated meanings: 
+ 
+ * The date/time field is coded in GMT (otherwise known as Greenwich mean time, 
+Universal time or Z-time).  Note that the GMT date may not be the same as the 
+local time date. 
+ 
+ + The date/time field is coded in local daylight-savings time (one hour faster than 
+standard time).  Again, the date may differ from the standard time date. 
+ 
+ . The date/time field is definitely in local standard time.  Use of this code 
+corresponds to explicit mention by the source that the time-scale is standard 
+time. 
+ 
+- The date is approximate, plus or minus one or two days.  If the date is known 
+less precisely than this, an alphabetic code is used in the second column of the 
+DAY field.2 
+ 
+ ' The date is definitely a date-of-publication, and may be interpreted as "not later 
+than". 
+ 
+ = The date is as given by the direct source, but is believed (or known) to be in 
+error. 
+                     
+2  A code of either "-" or "=" will normally exclude the entire record from consideration in chronological 
+summaries or analysis 
+ 
+ Page 18 
+  
+
+
+--- PAGE 20 ---
+ 
+FIELD NAME: TZONE DATA TYPE: Number 
+ 
+ This field is used to indicate the Time Zone of the event, for calculating Universal Time 
+or Sidereal Time.  Zone times are the Standard Times kept on land and sea compared with 12 
+hours (noon) Greenwich Mean Time.  The codes for the continental United States are 4 (Pacific 
+Standard Time), 5 Mountain Standard Time, 6 (Central Standard Time), and 7 (Eastern 
+Standard Time).  Table 3 shows the number codes for TZONE and the frequency of primary 
+entries for each zone.  
+ 
+Table 3: Time Zones of the World and Frequency of Primary UFO Cases 
+ 
+TZONE States N
+1 American Samoa, Kiribati 12 
+2 Hawaiian Islands, French Polynesia 183 
+3 Alaska 362 
+4 West Coast US & Canada 6767 
+5 Rocky Mountains 3903 
+6 Midwest US, Mexico, Central America 10671 
+7 East Coast US & Canada, Colombia, Peru, & Ecuador 20079 
+8 Canadian Maritime, Puerto Rico, Venezuela, western 
+Brazil, Bolivia, Paraguay, & Chile
+1291 
+8.5 Newfoundland 137 
+9 Brazil, Uruguay, Argentina,  & Greenland 2938 
+10 Atlantic Ocean 4 
+11 Azores, Cape Verde 22 
+12 Great Britain, Ireland, Iceland, Portugal, & west 6401 
+13 Western & Central Europe, North Africa, Nigeria, 
+Congo 
+10157 
+14 Eastern Europe, Turkey, Greece, Near East, Egypt, 
+Zimbabwe, South Africa, Namibia 
+1171 
+15 Western Russia, Saudi Arabia, West Africa 435 
+15.5 Iran 55 
+16 Russia (Perm & Volgograd), Georgia, Armenia, 
+Azerbaijan, U.A.E., Oman 
+53 
+17 Pakistan, Uzbekistan, western Kazakstan 21 
+17.5 India, Sri Lanka 77 
+18 Kazakhstan, Tajikistan 115 
+18.5 Burma 7 
+19 Russia (Siberia), Thailand, Vietnam, Indonesia 
+(Sumatra & Java) 
+114 
+20 China, Taiwan, Philippines, Malaysia, Borneo, 
+Western Australia 
+469 
+21 Japan, Korea, Yakutia, New Guinea  519 
+21.5 South Australia, Northern Territory 508 
+22 Papua New Guinea, Eastern Australia, Russian Far 
+East 
+2130 
+23 Solomon Islands 1 
+24 New Zealand, Fiji, Kamchatka Peninsula 937 
+ Page 19  
+  
+
+
+--- PAGE 21 ---
+FIELD NAME: WEA WIDTH: 8 characters 
+ 
+Field for Weather Conditions
+ 
+ The following 8-character abbreviations are used in the WEA field to indicate weather 
+conditions that may be relevant to proper evaluation of a given sighting report.  This code is a 
+recent addition to UFOCAT 2002 and typically is not systematically reported except in certain 
+primary sources. 
+ 
+Table 4: Weather Conditions and Frequency of Primary UFO Cases 
+  
+WEA Description N
+Calm No wind, calm 1
+Clear Visibility unrestricted 2309
+Clouds Some clouds present 1
+Cloudy Cloudy 746
+Fog Foggy 123
+Ice Ice on surface 48
+Muddy Muddy (recent rain) 22
+Overcast Overcast 285
+Partial Partially sunny 3
+Rain Raining 159
+Snow Snow on surface 179
+Storm Severe stormy weather 40
+Thunder Thunderstorm 29
+Undrcast Undercast (used for aircraft flying above cloud cover) 28
+ Page 20 
+  
+
+
+--- PAGE 22 ---
+FIELD NAME: TER WIDTH: 8 characters  
+ 
+Field for Local Terrain
+ 
+ The following abbreviations are used to indicate features of terrain and local landmarks 
+in the vicinity of the UFO event that may be relevant to proper evaluation of a given sighting 
+report. The pertinent data are not systematically av ailable from all sources, but are commonly 
+provided in the more interesting cases. It should be emphasized that this field applies 
+regardless of whether the terrain as featured figures directly in the scenario of the report. 
+ 
+Table 5: Terrain and Frequency of Unexplained Primary UFO Cases 
+ 
+TER N TER N TER N TER N 
+Airfield 437  2 Junkyard 1 Saltflat 1
+Airport 288 Dam      60 Kennel 1  1
+AptBldg 17 Desert   99 Kitchen  14 School   117
+Arsenal 3  2 Lake 751 Sewer    1
+Balcony 1  1 Lane 10  
+Bar  1 DriveIn 1 Lumber 1 Shop     3
+Bedroom 124  4 Military 170 Shopyard 1
+Bridge   22 Dump 20 Mill     1 Shore 532
+Building 347 Electric 477 Mine     130 Smelter 3
+  EmptyLot 2 Missile 177  
+   1 Mountain 759 SpaceCnt 4
+  Factory  64 Mudflat  1  1
+  Fairgrou 2 Nuclear 221 Stable 5
+  Farm 873 Observat 1 Stadium 10
+  Fazenda  1 Ocean 1320 Street   29
+  Field 193 Office   4 Studio   2
+  FireTowr 108 Oilfield 9 Suburbs 178
+   Orchard  6 Swamp 108
+  Forest 624 Park     19 Taiga 1
+  Garden 32 Parking  5 Town 193
+ 1 Glacier 1 Pasture 62  
+Bushland 2 Golfcour 24 Patio    4 Trailer  4
+BusStop 1 Grange   1 Plains   1 TrailrPk 7
+Cabin    8 Grotto   1 Plantatn 1 Tundra 2
+Camp 15 Grove    1 Plateau  1 Veldt    2
+Camper   4 Hedgerow 1 Prairie  3 Village  45
+Campsite 26 Highway 1289 Quarry   16  4
+Canal    7 Hill 28 RaceTrac 3  1
+Canyon   19 Home     36 Railroad 269 Warplane 150
+Caravan  4 Hospital 56 Ranch 45 Warship 11
+Cemetery 58 Hotel 6 Ravine   2 Waterfal 2
+ 1 House 180 Refinery 3  3
+Church 19 Housing 3 Restaura 7 Zoo 1
+City 1395 Hunting  6 River 282 Woods 18
+CityHall 7 Ice 106 Road 467 Yard     881
+Clearing 11 Indoors  10 Roadside 17  
+Cliffs   1 Island   1 Rocky 18  
+Clinic   1 Jungle   3 Rural 413  
+ Page 21  
+  
+
+
+--- PAGE 23 ---
+FIELD NAME: VFLG  WIDTH: 1 characters 
+ 
+Flag Field for Special Location of the Witness(es) in a Vehicle
+ 
+ The following one-column codes are used in VFLG field to call attention to the special 
+location of the witnesses, specifically whether they were located in a spacecraft, flying aircraft, 
+boat, ship, or moving automobile during at least some portion of the sighting.  Some of the 
+conditions flagged are relatively rare, but others are quite common.  It is conceivable that more 
+than one of these flags will apply to the same record.  In such a case, priority in coding has 
+been given to the flag code closest to the bottom of the list. 
+ 
+ ( The witness(es) were located in an orbiting spacecraft. 
+ ' The witness(es) were located in a flying aircraft. 
+ , The witness(es) were located in a boat, i.e., on water. 
+ . The witness(es) were located in a moving automobile (or moving 
+motorcycle) during at least some portion of the sighting. 
+ 
+ # Witness(es) in a flying aircraft were in communication with surface-based 
+witness(es) during at least some portion of the actual sighting. (If two or 
+more groups of witness(es) made independent observations, then theore-
+tically there should be distinct entries for each.) 
+ 
+ 
+FIELD NAME: LOCATION WIDTH: 30 characters 
+ 
+Geographic Place-Name
+ 
+ Places are specified by sources in many ways and with many degrees of precision.  If 
+geodetic coordinates are given, they have been coded directly into the fields LONGITUDE and 
+LATITUDE.  Most typically, the source names a city or town, and the state or country containing 
+that city or town.  In such cases, the city or town is entered in the LOCATION field, and the 
+state or country is found in the STATE field. 
+ 
+ UFOCAT 2002 has adopted a standard transliteration for names not normally spelled in 
+the Roman alphabet ( World Atlas, New York: DK Publishing, 1997).  Where alternate Roman 
+spellings or names exist, UFOCAT 2002 regards as correct the spelling used by the people who 
+live there.  For example, the names of cities in Ukraine have been changed to their preferred 
+Ukrainian spelling from Russian. 
+ 
+ Place-names begin in the first column, with any necessary modifiers placed after.  Thus, 
+you will find locations which are described as “10 miles southwest of Louisville” in UFOCAT 
+2002 as "LOUISVILLE SW 1OM", not as "10M SW LOUISVILLE".  "LOUISVILLE SW10M" and 
+"LOUISVILLE, OH RIVER " are other forms that are acceptable and will usually sort into the 
+proper place without confusion. 
+ 
+ Sometimes a place is described as between two namable places.  Both will be named, 
+the closer one first, with the two separated by a "=".  The first name will be spelled out 
+completely while  the second one may be abbreviated, depending upon space limitations. 
+ 
+ Page 22 
+  
+
+
+--- PAGE 24 ---
+ Some foreign place-names cannot be fully spelled in 30 characters and have been 
+abbreviated. With few exceptions, this will take t he form of truncation, so that sorting will still 
+occur as if there had been room for the whole name.  The primary exception is that " SAINT" is 
+always abbreviated to " ST", and "SAINTE" to " STE" (note absence of any period).  Imbedded 
+periods are used, however, to indicate omission of trivial words which frequently occur in foreign 
+place names, e.g., "Paray-le-Monial" is coded as " PARAY.MONIAL"; such shortening has been 
+used even when the unshortened name would have been less than 30 characters. 
+ 
+ The result of these coding rules is that county codes and coordinates become assigned 
+simply on the basis of the place-name given, ignoring the meaning of any modifiers.  Better 
+coordinates may be computed during an analysis.  If the county or state is found to be wrong, 
+the place-name has been flagged as an error with the correct county or state code inserted. 
+ 
+FIELD NAME: LFLG 
+WIDTH: 1 character 
+ 
+Flag Field for Location of the Phenomenon
+ 
+ The following one-column codes are used in the LFLG field to call attention to special 
+factors affecting the proper interpretation of location.  
+ 
+ - The location named is only approximate.  E.g., the source said near Los 
+Angeles, or referred to the Baltimore area, or the like. 
+ 
+ + The coordinate information in the LONGITUDE and LATITUDE fields is the spe-
+cific witness location for this sighting.  Otherwise it may be assumed that any co-
+ordinates merely refer to the named place, regardless of where the witness was 
+located. 
+ 
+ * The coordinate information in the LONGITUDE and LATITUDE fields is the spe-
+cific location of the phenomenon, as determined from traces or other strong 
+evidence. 
+ 
+ = The place-name in the LOCATION field is that given by the direct source, but is 
+believed (or known) to be in error.  Place-names will not be considered to be in 
+error for purposes of this coding unless they would locate the event in the wrong 
+county (see the COUNTY field).  Incorrect place-names, which appear to be 
+merely misspellings, have been routinely corrected. 
+ 
+ 
+ Page 23  
+  
+
+
+--- PAGE 25 ---
+FIELD NAME: REGION WIDTH: 2 characters 
+ 
+ Whereas the location information in the LOCATION field permits easy recognition of 
+events in the context of source documentation, the location information in the REGION, STATE, 
+and COUNTY fields assigns events to statistically useful geographic areas. 
+ 
+ The largest geographic division is the world REGION field.  This field contains a one or 
+two letter abbreviation for the continent, ocean, or major region of the world in which the UFO 
+event occurred.  The WORLD table contains these region codes and names for providing 
+headings for geographically indexed lists.  The following are the existing abbreviations and 
+counts -- 
+Table 6: World Regions and Frequency of Unexplained UFO Cases 
+ 
+REGION Description N 
+  
+A Atlantic Ocean, including Iceland 361 
+AA Antarctica 44 
+AF Africa 972 
+AS Asia 1453 
+AU Australia and Oceania, including Papua New Guinea 4075 
+CA Central America, including Puerto Rico 752 
+CN Canada 4566 
+EU Europe, including Russia west of the Ural Mountains 20127 
+I Indian Ocean 29 
+M Mediterranean Sea 36 
+ME Middle East 217 
+NA North America (unspecified US or CN) 14 
+P Pacific Ocean, including Hawaii 428 
+SA South America 4452 
+US United States, excluding Hawaii and Puerto Rico 40648 
+W World 25 
+XX Outer Space 106 
+RE Roman Empire (historical) 6 
+ 
+ 
+FIELD NAME: STATE WIDTH: 3 characters 
+ 
+State (or Country) 
+ 
+ The STATE field represents a major political unit.  We use these for statistics because 
+of the wide variety of data that have already been tabulated and published according to political 
+divisions and subdivisions.  The fact that political units differ in area, population, etc., presents 
+no new problem in analysis.  Any attempt to create artificial units of equal area, for example, 
+would not create units of equal population, but would destroy the possibility of using existing 
+tabulations of demographic data. In order to make demographic and other data available for 
+computer analysis, the COUNTY table includes a "master record" for each geopolitical unit 
+definable by coding in the STATE and COUNTY fields.  They are used, among other things, to 
+provide heading lines for geographically sorted lists. 
+ 
+ Page 24 
+  
+
+
+--- PAGE 26 ---
+ The STATE field code is normally a three-letter code indicating the country wherein an 
+event has occurred or a two-letter code indicating the state or province of the USA, Canada, or 
+Australia. The provinces of Canada and the states of Australia and the USA have been given 
+distinct codes in order to allow even further subdivision into counties; these more specific codes 
+should be used whenever possible.  One-letter and two-letter codes have been assigned to the 
+continents, oceans, and seas, which may be used when necessary.  A current list of all codes is 
+contained in the WORLD.DBF database and is provided in Appendix B.  The STATE codes for 
+the 50 States in the United States, plus the District of Columbia, correspond exactly to the two-
+letter US Postal Service ZIP code abbreviations. If the code you need is missing, please do not 
+invent a new one; consult the UFOCAT 2002 project director. 
+ 
+ 
+FIELD NAME: COUNTY WIDTH: 12 characters 
+ 
+County (Province)
+ 
+ The COUNTY field represents a minor political subdivision where an event has been 
+observed.  Experience has shown that the approximately 3150 counties of the USA provide a 
+usable geographic classification.  Even when two versions of the same event refer to it by 
+different place-names, they still almost always lead to the same region-state-county coding and 
+thereby associate the two reports.  The principle of tallying no more than one similar record per 
+county per date effectively eliminates such duplications from summary statistics.  A n explicit list 
+of the county codes for the USA can be found in the COUNTIES  table, which is too large to 
+publish in this guide. 
+ 
+ 
+FIELD NAME: WITNESSES WIDTH: 8 Characters 
+ 
+ The first three columns of the WITNESSES field contain the number of witnesses.  This 
+will normally be a straightforward numerical code, right justified with leading blanks.  "-" may prefix 
+the number with the meaning "about". "+" may prefix the number with the meaning "at least." (A 
+reference in the text to a plural number of witnesses would usually have been coded as "+2".)  If 
+the number of witnesses was large, "C" may have been suffixed to mean "hundred," or "K" may 
+have been suffixed to mean "thousand."  If the number of witnesses is only vaguely specified, a 
+single letter may appear in the third column, as follows -- 
+ 
+ F few 
+ G group 
+ M many or multiple 
+ N numerous 
+ S several 
+ 
+FIELD NAME: AGE WIDTH: 2 Characters 
+ 
+ AGE contains the age of the "principal witness" in years.  The principal witness’s last name 
+will appear in the NAMES field listed first (see below).  He or she may have been the sole witness, 
+or the member of a group whose experience was t he most completely recorded.  Typically, that 
+person may also have been the first one to observe the UFO, or may have been the 
+spokesperson for a group all sharing the same experience. Creation of this field occurred in 1976, 
+so the coding for entries with record numbers below 81,000 is spotty; this is also an information 
+item not systematically available except in primary sources. 
+ Page 25  
+  
+
+
+--- PAGE 27 ---
+ If no "principle witness" could be recognized, or if this person's age is not given, this field 
+may include a code to indicate the composition of the witness group.  In such cases, the first 
+character will be a digit indicating the total number of families represented in the group; the 
+second character will be a letter according to the following key: 
+ 
+ A Adult (marital status unknown or mixed) 
+ C Children 
+ T Teenager 
+ S Adults, single 
+ M Adults, married 
+ X Mixed Y and W 
+ Y Young; all under 20 (mixed C and T) 
+ W All over 20 (Mixed S and M) 
+ 
+FIELD NAME: SEX WIDTH: 1 Character 
+ 
+ The SEX field contains an alphabetic code to indicate sex.  The letters "M" and "F" are 
+used only when all the witnesses are of the same sex.  "C" will refer to a couple (husband and 
+wife).  Children of these parents may also be present.  Any other defined situation has been coded 
+"X", meaning mixed.  A blank will indicate the data are simply missing or uncoded. 
+ 
+FIELD NAME: MIS WIDTH: 1 Character 
+ 
+ The MIS field is a flag field for witness data.  The codes that currently appear are -- 
+ 
+  # indicates that the witness(es) were military personnel 
+  + indicates that the witness(es) were police. 
+  = indicates that the witness name copied from the source is incorrect or 
+misspelled. 
+ 
+ 
+FIELD NAME: NAMES WIDTH: 30 Characters 
+ 
+Witness Names
+ 
+ There can be little doubt that it has been helpful to include witness names.  This was not 
+done in the first version of UFOCAT in an attempt to preserve the privacy of the witnesses, and in 
+the erroneous belief that witness names were not necessary for identifying the sighting (in the 
+sense of matching a record with other reports of the same event).  In truth, data are frequently 
+incomplete and/or erroneous, and witness names provide the major source of confirmation when 
+matching entries that otherwise agree only imperfectly. 
+ 
+ In addition, the mere fact that a witness name is known at all may be an important piece of 
+data in some analyses.  Witnesses who remain anonymous or who request confidentiality are 
+probably different from witnesses who permit or even seek publicity. 
+ 
+ Page 26 
+  
+
+
+--- PAGE 28 ---
+ The major problem with witness names is t hat many investigators have (quite properly) 
+agreed to keep some or all witness identification data confidential or to assign pseudonyms.  In 
+order to be able to use the witness names for its file management purposes, UFOCAT 2002 has 
+been modified to honor these commitments of confidentiality. This means that unpublished names 
+appearing in the file have been reduced to show only the initial letter in the CD version that you 
+receive. 
+ 
+ The guidelines for coding witness names are similar to those discussed in connection with 
+place names.  To facilitate sorting, the last name of the major witness is spelled in full.  Only last 
+names are coded.  The last names or initials of  other known witnesses will be separated from 
+each other and the main witness by a "=".  Names or acronyms of organizations may also be 
+given, enclosed in parentheses, e.g., "(USAF)". If the true witness name is held in confidence by 
+an investigator, then often the investigator's name may be substituted and is enclosed in reverse 
+parentheses, e.g., ")CUFOS(". 
+ 
+FIELD NAME: AST DATA TYPE: Number 
+ 
+Absolute Sidereal Time 
+ 
+ Another measure of time is sidereal time, or "star time".  Solar time differs from sidereal 
+time because the Earth revolves around the Sun in a great elliptical orbit, and it takes the Earth an 
+additional 4 minutes to return to the same position relative to the Sun than it does to return to the 
+same position relative to a distant star.  On the vernal equinox (March 22nd) the two systems are 
+in sync, but every day after that the sidereal cl ock runs 4 minutes faster, until by the autumnal 
+equinox the two systems are 12 hours apart.  The sidereal clock continues to run 4 minutes 
+ahead each day and by the time a year has passed the sidereal clock is 24 hours ahead of the 
+solar clock.  However, the apparent gap begins to narrow until by the vernal equinox the two time 
+systems are once again in sync.  Absolute Si dereal Time (AST) is a measure of the mean 
+sidereal time, rather than the local sidereal time.  For the UFOCAT 2002 database, 0 hour or 
+midnight on the AST clock occurs when the celestial plane that intersects Epsilon Eridanus (3h 
+30m Right Ascension) is aligned with the zenith at Puy de Dome, France, w hich is located at 
+2.933 East longitude, 45.766 degrees N latitude. 
+ 
+ In practice AST is calculated less precisely by using the Time Zone field (TZONE) rather 
+than geographical coordinates to determine the difference in hours between the local sidereal 
+time and the sidereal time of the UFO event in Puy de Dome, France.  AST is stored as a 4-digit 
+integer and rounded to the nearest hour.  
+ 
+ 
+FIELD NAME: HYNEK WIDTH: 3 characters 
+ 
+ This field provides for a two or three character code for the UFO report according to Dr. J. 
+Allen Hynek's prototypes (see The UFO Experience: A Scientific Inquiry, Henry Regnery, 1972). 
+These codes are shown in table 7. Some of these have been expanded over the years.  For 
+example, CE4 was added to describe abduction reports; NO was added to differentiate structured 
+nocturnal objects with definite physical features from nocturnal lights; and DO was added to 
+describe daylight objects that were not disc-shaped. 
+ Page 27  
+  
+
+
+--- PAGE 29 ---
+ 
+Table 7: HYNEK UFO Report Categories Used in UFOCAT 2002 
+ 
+I. Sightings of distant UFOs 
+ 
+  Code  Description
+ 
+  NL  Nocturnal Lights 
+  ND  Nocturnal Discs 
+  NO  Nocturnal Objects 
+ 
+  DD  Daylight Discs 
+  DL  Daylight Light 
+  DO  Daylight Objects 
+ 
+  RV  Radar-Visual UFO Reports 
+  RR  Radar UFO Reports 
+ 
+II. Close encounter UFO events 
+ 
+  Code  Description 
+ 
+  CE1 Close Encounters of the First Kind 
+  CE2 Close Encounters of the Second Kind 
+  CE3 Close Encounters of the Third Kind (Entity Reports) 
+  CE4 Close Encounters of the Fourth Kind  (Abduction Reports) 
+ 
+ 
+III. Miscellaneous events possibly related to the UFO phenomenon 
+ 
+ Code Description 
+ 
+ AM Animal mutilation reports (other than cattle) 
+ BH "Black" or mystery helicopter sightings 
+ CM Cattle mutilation reports 
+ CR Accounts of Crashed Discs and their retrieval 
+ MIB MIB reports, e.g. military imposters, mystery investigators, 
+or other forms of interference with report investigation 
+ TC Trace Reports without the presence of a UFO (e.g. crop 
+circles) 
+ 
+ Page 28 
+  
+
+
+--- PAGE 30 ---
+FIELD NAME: VALLEE WIDTH: 3 characters  
+ 
+ This field provides for a three character code for the UFO report according to Dr. Jacques 
+Vallee's classification system (see Confrontations: A Scientist's Search for Alien Contact, 
+Ballantine, 1990). These codes are shown and described in table 8 below. Reports of anomalous 
+events fall into four broad groups: anomalies ( no UFO present), close encounters, maneuvers, 
+and flybys.  Vallee's categories of close encounters correspond to Hynek's categories, with the 
+exception that contactee cases are classified as CE4 cases in VALLEE whereas in the HYNEK 
+classification contactee cases remain classified as CE3 cases, with CE4 reserved exclusively for 
+reports of abduction. 
+ 
+Table 8: VALLEE UFO Report Categories Used in UFOCAT 2002 
+ 
+Anomalies 
+(no UFO) 
+ 
+Flybys 
+ 
+AN1 
+An anomaly with no lasting physical 
+effects such as amorphous lights or 
+unexplained explosions. 
+FB1 
+A simple sighting of a UFO "flying by" 
+in the sky, or remaining stationary in 
+one place. 
+AN2 
+Anomalies with lasting physical effects, 
+such as some poltergeist phenomena, 
+apports (materialized objects), and 
+areas of flattened grass. 
+FB2 A flyby accompanied by physical 
+evidence. 
+AN3 
+An anomaly with associated entities, 
+such as reports of ghosts, bigfoot, 
+dwarfs. 
+FB3 A flyby of an object accompanied by 
+observation of occupants on board. 
+AN4 
+Anomalous reports in which witnesses 
+experienced personal interaction with 
+entities in the rea lity of the entities 
+themselves, including out-of-body 
+experiences. 
+FB4 A flyby where the witness experienced 
+a transformation of his or her reality. 
+AN5 
+Cases of anomalous injuries or deaths, 
+such as spontaneous combustion, 
+unexplained wounds, and permanent 
+healing. 
+FB5 A flyby in which the witnesses suffered 
+permanent injuries. 
+Close 
+Encounters 
+ 
+Maneuvers 
+ 
+CE1 Close encounters with no physical 
+effects. MA1 A sighting of a UFO that involves an 
+object with a discontinuous trajectory. 
+CE2 
+Close encounters with physical effects, 
+such as electromagnetic interference or 
+physical traces left behind. 
+MA2 
+Cases of UFOs with discontinuous 
+trajectories that give rise to physical 
+effects. 
+CE3 Close encounters with associated 
+entities, seen in the vicinity of a UFO. MA3 
+A sighting of a maneuvering object or 
+objects accompanied by observation of 
+occupants on board. 
+CE4 
+Close encounters in which witnesses 
+experienced personal interaction with 
+entities in the realit y of the entities 
+themselves. 
+MA4 
+Instances of maneuvers accompanied 
+by a sense of transformation of reality 
+for the percipient. 
+CE5 Cases of close encounters resulting in 
+permanent injuries or deaths. MA5 
+A report involving a maneuvering UFO 
+in which the witnesses suffered 
+permanent injuries. 
+ Page 29  
+  
+
+
+--- PAGE 31 ---
+FIELD NAME: SVP WIDTH: 3 characters 
+ 
+The SVP Credibility Rating 
+ 
+ A classification system developed by Dr. Jacques Vallee as a way of assigning credibility to a 
+report.  The system appears to have the advantage that it is simple enough to be applied quickly with 
+enough mnemonic value that it does not require constant reference to a reference manual.  It is a 
+three digit code based on 3 components:  (1) the reliability of the source, (2) a site visit status, and 
+(3) the plausibility of possible explanations. 
+ 
+First Digit: Source Reliability (S) 
+ 
+0 Unknown source or unreliable source 
+1 Report attributed to a known source of uncalibrated reliability 
+2 Reliable source, secondhand 
+3 Reliable source, firsthand 
+4 Firsthand personal interview with the witness of proven reliability, by a source of 
+proven reliability 
+ 
+Second Digit: Site Visit (V) 
+ 
+0 No site visit, or answer unknown 
+1 Site visit by a casual person not familiar with such phenomena 
+2 Site visit by persons familiar with such phenomena 
+3 Site visit by a reliable investigator with some experience 
+4 Site visit by a skilled analyst 
+ 
+Third Digit: Possible Explanations (P) 
+ 
+0 Data consistent with one or more natural causes 
+1 Natural explanation requires only slight modification of the data 
+2 Natural explanation requires gross alteration of one parameter 
+3 Natural explanation requires gross alteration of several parameters 
+4 No natural explanation possible, given the evidence 
+ Page 30 
+  
+
+
+--- PAGE 32 ---
+ 
+FIELD NAME: TYPE WIDTH: 12 characters 
+ 
+Type of Report (from Saunders)
+ 
+ Type of report appears in the first column of the TYPE field, and is a one-digit code ranging from 0 
+through 9.  This also comprises an approximate scale of "strangeness."  Reports that seem to call for more 
+than one of these codes have been assigned the highest number that fits.  Provision is made for further sub-
+classification of the major types defined in the first column.  Definitions for these types follow -- 
+ 
+ 0 The direct source considers that this was not properly regarded as a UFO report in the first 
+place, though it may have definite ufological interest.  UFO reports that later became 
+explained should receive other codes based on their apparent phenomenology. 
+ 
+ 1 The UFO was essentially stationary throughout  the period of its reported observation.  
+Motion up to and including 15 degrees per hour (which is the apparent motion of heavenly 
+bodies) is considered essentially stationary. 
+ 
+ 2 The UFO moved in a continuous trajectory at a speed greater than 15 degrees per hour. 
+ 
+ 3 The UFO moved in a non-continuous trajectory, with a single discontinuity -- such as 
+turning a sharp corner or pausing to hover. 
+ 
+ 4 The UFO moved in a non-continuous trajecto ry, with more than one discontinuity.  This 
+includes all types of complex trajectories. 
+ 
+ 5 The UFO "entered the frame of reference" of the witness.  This may be indicated in many 
+different ways, which are suggested by the sub-classifications.  Vallee's "Type I," Keel's 
+"Low Level," and Hynek's "Encounter" cases are all at least Type 5. So are all photo cases, 
+radar cases, EM cases, or cases "investigated" by the witness. 
+ 
+ 6 The UFO "landed" within the frame of reference of the witness.  A "landing" is deemed to 
+have occurred if the minimum separation of the object from the ground is less than or equal 
+to the major dimension of the object.  Actual  physical traces may or not be reported. (A 
+remote "landing" is treated as a subclass of Type 3.) 
+ 
+ 7 One or more "occupants" were reported by the witness outside of the object. (An occupant-
+only report is also treated as a Type 7; the number of objects coded in the TEXT field will 
+simply be zero.) An inside occupant report is Type 6, sub-type 0. 
+ 
+ 8 The witness reports that there was in telligent communication associated with his 
+experience, at a level of abstraction that would normally require the use of language.  Thus, 
+telepathic communication can qualify, but mere gestures and/or repetition of light signals do 
+not automatically qualify.  Unintelligible "language" is Type 6 or 7, sub-type L. 
+ 
+ 9 The UFO apparently caused lasting physical or functional effects in the witness, or on other 
+animal life, which remain after the UFO is gone.  These effects may be either "good" or 
+"bad".  (The "contactee syndrome" is lasting enough, but is treated as Type 8 on grounds 
+that it is at least superficially non-physical.)  Cases of abduction and missing time fall into 
+this category, as do cattle mutilation reports. 
+ 
+ Page 31  
+  
+
+
+--- PAGE 33 ---
+Sub-Type(s) of Reports
+ 
+ In prior versions of UFOCAT 2002 it proved particularly difficult to deal with the more 
+interesting cases, which often presented combinations of apparently codeable sub-types.  In view 
+of this situation, the ground rules for coding sub-type were changed, primarily to enlarge the 
+capacity and potential usefulness of this field of data. 
+ 
+ In UFOCAT 2002 the whole field from the second column through the last column is to be 
+interpreted as a unit.  The first character--Type of Report--will always be a digit; the definitions of 
+these codes have been tightened, with the effect of down-rating a few reports.  The next group of 
+characters will consist of letters, interpretable as one or more sub-type codes; as noted in the key, 
+some letters may have more than one meaning depending on the context of prior type and sub-
+type codes in the character sequence.  (For example, S can refer to still photographs: the position 
+of S in context can indicate whether this is a photo of an object, or of trace marks, or of a radar 
+screen, etc.) 
+ 
+ It will be noted that a few sub-type codes are defined as double letters; these codes 
+necessarily include the meaning of the same letter occurring only once.  In effect, the first letter in 
+the double is the single-letter code, and the repeat letter is a special example of a code whose 
+meaning depends on the context provided by the first. 
+ 
+Table 9: KEY TO SUB-TYPE CODES 
+ 
+ 0 Miscellaneous non-UFO reports 
+ 0A Aircraft accidents 
+ 0B Balloon launches (high-altitude, Skyhook, etc.) 
+ 0C Conjunctions (astronomical) 
+ 0D Death (e.g., of an investigator) 
+ 0E Electromagnetic phenomena 
+ 0H Humanoid report (without UFO, normal stature with human features) 
+ 0L Little man report (without UFO, e.g. dwarf, height under 5' tall) 
+ 0M Monster report (without UFO, e.g. Sasquatch, creature over 6'6" tall) 
+ 0N Artificial cloud 
+ 0P Power failures 
+ 0Q Earthquakes 
+ 0R Satellite re-entries 
+ 0T Various traces (without UFO) (# of objects now becomes number of trace marks) 
+ 0V Rocket launches 
+ 0W Weather phenomena 
+ 0X Explosions and skyquakes 
+ Page 32 
+  
+
+
+--- PAGE 34 ---
+KEY TO SUB-TYPE CODES (Continued) 
+ 
+ 1 Reports of stationary UFOs 
+ 1A Astronomical anomalies (moon bridges, Martian explosions, etc) 
+ 1B Balloon-like behavior (high altitudes, "Skyhook", etc.) 
+ 1C Comets (i.e., in the position of a comet) 
+ 1E Electromagnetic anomalies (LDES, unknown signals, etc.) 
+ 1J Jupiter (i.e., in the position of Jupiter) 
+ 1L Moon (i.e., in the position of the moon) 
+ 1M Mars (i.e., in the position of mars) 
+ 1P Sun 
+ 1S Star (specifically nameable) 
+ 1V Venus (i.e., in the position of Venus) 
+ 1X Explosion (in place) 
+ 
+ 2 Continuously moving UFOs 
+ 2A Aircraft-like behavior 
+ 2B Balloon-like behavior (hot-air or weather) 
+ 2C Cloud-cigar shaped object(s) 
+ 2D Disc-shaped object(s) 
+ 2E Echo satellite (=O) 
+ 2F Fireball 
+ 2G Green fireball 
+ 2I Instrumented observation 
+ 2L "Ghost Lights" 
+ 2M Meteor-like behavior 
+ 2P Procession of objects (possibly seen singly) 
+ 2S Sputnik satellite (=O) 
+ 2X  Bolide 
+ 2Z Crescent-shaped object 
+ 
+ 3 UFOs with non-continuous trajectories 
+ 3C Cloud-cigar shaped object(s) 
+ 3D Disc-shaped object(s) 
+ 3H Hovered 
+ 3L Landed (remotely) 
+ 3TG "Angel hair" 
+ 3W Independent witnesses 
+ 3X  Exploded 
+ 3Z Crescent-shaped object 
+ 
+ Page 33  
+  
+
+
+--- PAGE 35 ---
+ KEY TO SUB-TYPE CODES (Continued) 
+ 
+ 4 Trajectories with multiple discontinuities 
+ 4^ Vertical ascent 
+ 4C Cloud-cigar with satellite object(s) 
+ 4D Disc-shaped object(s) 
+ 4H Multiple hovering 
+ 4L Falling leaf maneuver 
+ 4W Independent witnesses 
+ 4Y "Angel hair" residue associated with UFO presence 
+ 4ZZ Zigzag maneuver 
+ 
+ 5 Encounter reports without landing 
+ 5^ Vertical ascent 
+ 5A Acrobatics 
+ 5B Buzzing 
+ 5C Chasing-pacing 
+ 5D Disc shape 
+ 5E EM effect 
+ 5G Gravity effect or other strange field--"Mass displacement" 
+ 5H Sketch (this must not accompany an S) 
+ 5I Instrumented observation 
+ 5II Internal comparison 
+ 5K Interference with investigation 
+ 5M Animals present (This M must precede any S) 
+ 5N Noise or sound 
+ 5O Inside occupant (This O must be in second column) 
+ 5_O Ring or circle (This O must not be in second column) 
+ 5P Physiological effects (transient) 
+ 5Q Quantitative analysis 
+ 5R Radar observation without visual confirmation 
+ 5RR Multiple radar  
+ 5S Still picture 
+ 5SD Photo of disc 
+ 5SL Luminous/transparent (photo) 
+ 5SM Movies (This M must follow the S) 
+ 5SS Structured photo 
+ 5SZ Point in motion 
+ 5T Physical trace(s) correlated with object(s) 
+ 5TF Altered field (trace) 
+ 5TJ Remnant (trace) 
+ 5TT Ground marks (trace) 
+ 5TU Chemical change (trace) 
+ 5TX Radioactivity (This X must follow the T) 
+ 5V Radar/visual confirmation 
+ 5W Independent witnesses 
+ 5Y Psychic effects/testimony obtained under hypnosis 
+ 5ZZ Zigzag maneuver 
+ Page 34 
+  
+
+
+--- PAGE 36 ---
+ 
+ KEY TO SUB-TYPE CODES (Continued) 
+ 
+ 6 Landing reports without outside occupants 
+ 6A through 6Z    Same as for Type 5 
+ 
+ 7 outside occupant reports without contact 
+ 7A through 7Z  Same as for Type 5 except: 
+ 7L Unintelligible language 
+ 7M Monster (i.e., non-humanoid or giant, with UFO also seen) 
+ 
+ 8 Contact reports 
+ 8A through 8Z  Same as for Type 7 except: 
+ 8K "MIB" or "Men in Black" incident, harassment or intimidation 
+ 
+ 9 Interference; the UFO changes something living 
+ 9A Abduction or disappearance 
+ 9B Teleportation or abduction and return 
+ 9C Contact effects 
+ 9D Death 
+ 9F Other functional effects 
+ 9H Healing effects of any kind 
+ 9L Lapse of time experienced by witness(es) 
+ 9M Animal mutilations 
+ 9O occupants involved 
+ 9R Remote (ray) effects 
+ 9T Trace-handling effects 
+ 9X  Explosion(s) 
+ 9Y Hypnotic effects 
+ 9Z Miscellaneous accidents 
+ 
+ Page 35  
+  
+
+
+--- PAGE 37 ---
+FIELD NAME: EXPL WIDTH: 1 character 
+ 
+Explainability of Report
+ 
+ Explainability (EXPL) is a one-character field, which appears following the TYPE field.  It 
+may be a punctuation mark or a special character.  This coding is used to indicate the con-
+ventional or unconventional direction of the direct source's explanation for the report, and the 
+degree of certainty that the source attaches to the explanation.  Thus: 
+ 
+ = The direct source is sure that this report has a conventional explanation, which is 
+identified in the EXPLAN field. (This code is used with a majority of the Project 
+Blue Book entries, and it could likely be assigned to almost all entries of Type 1.) 
+ 
+ - The direct source says that this report "probably" or "possibly" has a conventional 
+explanation, which is identified in the EXPLAN field. 
+ 
+  (blank) The direct source offers no particular explanation for this report. (This code is used 
+for Blue Book reports that are "explained" as "insufficient information.") 
+ 
+ + The direct source says or implies that this report probably does require an 
+unconventional explanation.  This code indicates a "better than average" UFO 
+report, even for this source.  This code is used for all Project Bluebook cases listed 
+as "unidentified" or "unknown." 
+ 
+ * The direct source is virtually certain that this report requires an unconventional 
+explanation.  This code should be reserved for cases that can "stand on their own." 
+ This code is also assigned to certain cases where, in the judgment of the coder, 
+the official explanation is impossible; the code would otherwise be "-".  This coding 
+may be found used with Blue Book cases and cases reviewed by noted debunkers 
+such as Dr. Donald Menzel, Philip Klass, and some of the investigators associated 
+with the Colorado UFO Study of 1966-69 (the Condon Project). 
+ 
+ 
+FIELD NAME: EXPLAN WIDTH: 10 characters 
+ 
+Type of Explanation
+ 
+ This is a code or abbreviation for the explanation of a UFO report, according to the key on 
+the following page.  The explanation coded is that of the direct source and may or may not be 
+accurate.  The examples given in parentheses are not exhaustive and merely help to indicate the 
+range of possibilities covered by each code.  In some cases a combination of causes (such as a 
+star and a false radar return) may have been responsible for the report.  In those cases the more 
+important cause has been recorded, as judged by the coder. 
+ Page 36 
+  
+
+
+--- PAGE 38 ---
+Table 10: Type of Explanation 
+ 
+EXPLAN Count Description 
+Aircraft 2803 Airplane, helicopter, blimp, aircraft lights, or exhaust trail 
+Animals 41 Animals or traces left by terrestrial species 
+AnomProp 29 Anomalous Propagation (radar) 
+Aurora 2 Aurora borealis/australis borealis 
+Balloon 1793 Balloon 
+Birds 49 Birds or traces left by birds 
+Blimp 8 Blimp or dirigible 
+Bolide 1 Slow moving meteor 
+Cloud 84 Cloud(s) 
+Coincidenc 78 Coincidence (film flaw, combination of other explanations) 
+Comet 1 Comet 
+Debris 188 Debris  
+EM 150 Electromagnetic (ball lightning, aurora borealis) 
+FalseTarge 3 False Target (radar) 
+Fireball 1 Fireball, fiery meteor 
+Flare 130 Flare (flash bomb, gun firing, fire)  
+Hallucinat 6 Hallucination 
+Helicopter 1 Helicopter 
+Hoax 499 Hoax (witness is the perpetrator) 
+Inversion 3 Temperature inversion 
+Junk 7 Manufactured by-product or debris 
+Jupiter 149 Jupiter 
+Lensflare 6 Lens flare 
+Light 2 Street light or other terrestrial light 
+Lights 1 Street lights, car headlights, or other terrestrial lights 
+Malfunct 77 Equipment malfunction 
+Mars 126 Mars 
+Meteor 2768 Meteor (or meteorite for trace cases) 
+Mirage 167 Mirage 
+Missile 1 Missile track 
+Moon 67 Moon 
+Natural 179 Other natural phenomena (natural minerals, rocks, trees or plants) 
+Op-error 2 Operator error (radar) 
+Planet 843 Planet (unspecified) 
+Prank 81 Prank (witness is the victim of a hoax) 
+Psych 130 Psychological explanation (psychosis, delusion, etc.) 
+Quake 7 Earthquake 
+RadarChaff 3 Radar chaff 
+Re-entry 202 Re-entry of satellite 
+Reflection 389 Reflection (of light phenomena, sun dogs) 
+Rocket 176 Rocket launch, exhaust trail 
+Rumor 1 Rumor of event that never occurred 
+Satelite 879 Orbiting satellite of terrestrial origin 
+Saturn 1 Saturn 
+SpiderGoss 6 Spider Goss 
+Star 796 Star 
+Trawlers 1 Ships at sea, fishing boats, lights of shrimp boats, etc. 
+Unreliable 1 Unreliable witness (see hoax) 
+Venus 94 Venus 
+Weather 76 Weather phenomena 
+Wind 1 Wind 
+ 
+ Page 37  
+  
+
+
+--- PAGE 39 ---
+ 
+FIELD NAME: NUMOBJ WIDTH: 3 characters 
+ 
+Number of objects 
+ 
+ The NUMOBJ field contains the number of reported objects.  This will normally be a 
+straightforward numerical code, right justified in the third column with leading blanks.  "-" may be 
+prefixed with the meaning "about".  "+" may be prefixed with the meaning "at least."  Normally, the 
+number of objects will be coded as the largest number seen at the same time during any phase of 
+the sighting.  However, for a procession of UFOs (report type “2P” or “3P”), the maximum possible 
+number of objects has been coded, on the assumption that each object seen was different.  For 
+trace cases without a UFO seen (report type “0T”) the number of "objects" is the number of trace 
+marks reported.  If no object is involved in the report, the third column will be explicitly coded as 
+"0" (zero). 
+ 
+ If the number of objects is not precisely given by the source, single letter codes may 
+appear in the third column, as shown below.  Note that all of these codes are parallel in meaning 
+with the codes for number of witnesses. 
+ 
+ F few 
+ G group 
+ M many 
+ N numerous 
+ S several 
+ 
+FIELD NAME: DUR WIDTH: 3 characters 
+ 
+Duration of observation 
+ 
+ The DUR field contains the estimated duration of observation.  This will normally be given 
+in minutes, right justified with leading blanks: "+" may prefix the quantity with the meaning "at 
+least."  All durations are regarded as approximate, so that the "-" prefix is not used.  If time is 
+reported in seconds, this will be converted to tenths of minutes (rounding up) and punched with a 
+preceding decimal point. (Thus, ".0" includes reports up to 2 seconds; ".1" includes reports from 3 
+through 8 seconds; etc.).  If time is reported in hours or days, "H" or "D" will appear in the third 
+character as a suffix.  However, please note that times reported in hours and minutes, or as hours 
+and fractions of an hour, have usually been converted to the total number of minutes. 
+ 
+ A few letter codes also are used, as follows -- 
+ 
+  B brief 
+ VB very brief 
+ .F a few seconds 
+ .S several seconds 
+ SH several hours 
+ Page 38 
+  
+
+
+--- PAGE 40 ---
+FIELD NAME: SIZE DATA TYPE: Number  
+ 
+Size of Object 
+ 
+ Where an estimate of the size of the UFO is reported, the SIZE field will contain a 
+quantity.  This will be based on the largest possible value.  In other words, size will be assessed in 
+terms of the largest dimension of the object as observed at its point of closest approach to the 
+witness(es).  The basic purpose of the code is to indicate the importance of the sighting, and to 
+indicate the degree of further detail that should be expected in the report.  For report type “0T”, 
+the size of the "object" is the size of the trace mark reported. 
+ 
+ If both absolute and angular size data were reported, preference has been given to 
+coding the absolute size. Commonly neither is reported and this field is blank. 
+ 
+ When absolute size is reported, the code will be a whole number.  This number will be 
+the base-2 logarithm of the largest dimension of the object expressed in feet.  For example, a disc 
+reported as 25 feet in diameter by 6 feet thick is coded "5".  A sphere 3 inches in diameter is 
+coded "-2".  A cigar-shaped object 900 feet long is coded "10".  Codes of absolute size do not 
+contain any non-numeric characters other than "-".  Use the following table to convert base-2 
+logarithms to size in feet: 
+ 
+Table 11: Size of UFO (Log Base-2) 
+  
+SIZE N Size in Feet Meters Miles 
+-2 25 .3 ft 8 cm  
+-1 23 .5 ft 15 cm  
+0 134 1 ft 0.3 m  
+1 124 2 ft 0.6 m  
+2 211 4 ft  (3 - 5 ft) 1.2 m  
+3 347 8 ft  (6 - 11 ft)  2.4 m  
+4 654 16 ft (12 - 22 ft) 5 m  
+5 726 32 ft (23 - 45 ft)  10 m  
+6 462 64 ft (46 - 90 ft) 20 m  
+7 307 128 ft (91 - 180 ft) 39 m  
+8 200 256 ft (181 - 361 ft)  78 m  
+9 93 512 (362 - 724 ft) 156 m  
+10 34 1028 ft (725 - 1448 ft)  314 m 1/4 
+11 8 2048 ft (1449 - 2896 ft)  627 m 1/2 
+12 4 4096 ft (2897 - 5793 ft)  1248 m 1 
+13 4 8192 (5794 - 11,585 ft) 2497 m  2 
+14 0 16384 (11,586 - 23,170 ft) 4994 m 4 
+ Page 39  
+  
+
+
+--- PAGE 41 ---
+FIELD NAME: ANGSZ WIDTH: 3 characters 
+ 
+Apparent (or angular) Size of Object 
+ 
+ When angular size is reported, the code appearing in the ANGSZ field will usually be a 
+number preceded by a decimal point, according to the following key -- 
+ 
+  . strictly a point source 
+ .0 a non-point source smaller than the moon (or sun) 
+ .1 angular size about equal to the sun or moon 
+ .2 angular size about twice that of sun or moon 
+ .3 angular size about three times that of sun or moon, etc. 
+ 
+ Angular size is also imprecisely reported by witnesses, in terms of some equivalent object, 
+presumably (but not always explicitly) held at arm's length.  Also, qualitative descriptions such as 
+"immense" or "huge" give some very rough method of describing size.  Some of these qualitative 
+descriptions of size are coded by a letter preceded by a left parentheses "(" in the second column, 
+based on codes developed by Dr. Claude Poher (C. Poher, Etudes Statistiques Portant Sur 1000 
+Temoignages D'Observation D'U.F.O.).  A list of these codes follows – 
+ 
+ (A "immense", "huge", "incredibly large" without an exact estimate 
+ (B the size of a quarter ("une piece de cinq francs") held at arm’s 
+length 
+ (C the size of an orange ("une orange") held at arm’s length 
+ (D the size of a melon ("un melon" - "un assiette") 
+ (E "40 cm" ("comme une citrouille) 
+ (F "1 metre" 
+ (G "2 metres" 
+ (H "like an airplane", ("comme un avion"), the size of a typical 
+commercial aircraft 
+ Page 40 
+  
+
+
+--- PAGE 42 ---
+FIELD NAME: DIST  DATA TYPE: Number  
+ 
+Distance from Object 
+ 
+ Where an estimate of the distance from the UFO is reported, the DIST field will contain a 
+quantity.  This will be based on the closest approach.  In other words, distance will be assessed in 
+terms of the shortest distance reported between the observers and the UFO. The basic purpose 
+of the code is to indicate the importance of the sighting, and to indicate the amount of further 
+detail that should be expected in the report. 
+ 
+ As is the case with the coding for the estimated size of the UFO, this number is the 
+base-2 logarithm of the shortest distance to the object expressed in feet.  For example, a distance 
+of 200 feet is coded as "8". A distance of half a mile (2640 feet) is coded "11".  Distances of more 
+than a mile are ordinarily not recorded, and distances where the witness actually touches the 
+UFO can be coded as "-1". This field was first added to the database in 1998 so most cases lack 
+coding for this important attribute.  Codes of estimated distance do not contain any non-numeric 
+characters.  Use the following table to convert base-2 logarithms of the estimated distance to the 
+UFO to average distances in feet, meters, or miles: 
+ 
+Table 12: Distance from UFO (Log Base-2) 
+  
+  
+DIST N Distance in Feet Meters Miles 
+-1 1 .5 ft 15 cm  
+0 3 1 ft 0.3 m  
+1 2 2 ft 0.6 m  
+2 2 4 ft  (3 - 5 ft) 1.2 m  
+3 7 8 ft  (6 - 11 ft) 2.4 m  
+4 18 16 ft (12 - 22 ft) 5 m  
+5 20 32 ft (23 - 45 ft)  10 m  
+6 26 64 ft (46 - 90 ft) 20 m  
+7 31 128 ft (91 - 180 ft) 39 m  
+8 48 256 ft (181 - 361 ft)  78 m  
+9 19 512 (362 - 724 ft) 156 m  
+10 9 1,028 ft (725 - 1,448 ft)  314 m 1/4 
+11 3 2,048 ft (1,449 - 2,896 ft)  627 m 1/2 
+12 1 4,096 ft (2,897 - 5,793 ft)   1,248 m 1 
+13 1 8,192 (5,794 - 11,585 ft) 2,497 m  2 
+14 1 16,384 (11,586 - 23,170 ft) 4,994 m 4 
+ Page 41  
+  
+
+
+--- PAGE 43 ---
+ FIELD NAME: COLOR  WIDTH: 8 characters 
+ 
+ The COLOR field contains an 8-character abbreviation for the principal color of the UFO 
+that was reported.  If more than one object is reported, the principal color of the largest object is 
+recorded.  If 2 or more colors are reported, or if the object has multi-colored lights, it is coded as 
+"Multi."  Objects described as "reddish orange" are coded as "Orange". If the object changed 
+colors that fact will be indicated first as "Changed". The abbreviations include the following – 
+ 
+Table 13: Color of UFO 
+ 
+COLOR N %
+  
+Aluminum 15 1
+Amber 13 1
+Beige 2 
+Black 40 2
+Blue 111 5
+BluGray 1 
+BluGreen 6 
+Bluish 2 
+Bright 13 1
+Bronze 1 
+Brown 8 
+Changed 45 2
+Chrome 1 
+Clear 1 
+Copper 2 
+Dark 41 2
+Fire 61 3
+Fluoresc 3 
+Glowing 1 
+Gold 8 
+Gray 98 4
+Green 264 12
+Luminous 47 2
+Metallic 140 6
+Multi 220 10
+Orange 238 11
+Pearl 1 
+Phosphor 15 1
+Pink 9 
+Red 368 16
+Rust 2 
+Shiny 23 1
+Silver 152 7
+Tan 2 
+Transpar 6 
+Violet 11 
+ 
+  
+  
+  
+COLOR N %
+  
+White 203 9
+Yellow 68 3
+Zinc 2 
+ Page 42 
+  
+
+
+--- PAGE 44 ---
+FIELD NAME: SHAPE  WIDTH: 8 characters 
+ The SHAPE field contains an 8-character abbreviation for the principal shape of the 
+UFO that was reported.  If more than one object is reported, the shape of the largest object is 
+recorded. Boomerang shaped UFOs are coded as "V-Shape".  If a UFO changes shape, that 
+information takes precedence and is coded as "Polymorf".  Multi-sided objects (hexagons, 
+pentagons, octagons, etc.) are all classed together under "Polygon". The abbreviations 
+include the following – 
+Table 14: Shape of UFO 
+SHAPE N % SHAPE N %
+Aircraft 7 Hemisphr 1 
+Arrow 9 L-Shape 1 
+Badge 1 Lampshad 1 
+Ball 417 5% Lens 4 
+Banana 5 Light 436 5%
+Bat 1 Lights 407 5%
+Beam 14 Linear 1 
+Beehive 2 Lozenge 1 
+Blimp 32 MantaRay 3 
+Bottle 1 Missile 1 
+Bowl 4 Object 97 1%
+BowTie 3 Oblong 25 
+Box 50 1% Odd 6 
+Bulb 3 Orb 12 
+Bullet 16 Oval 131 2%
+Capsule 2 Ovoid 136 2%
+Cigar 360 4% Pear 1 
+Circle 4 Polygon 29 
+Circular 11 Polymorf 37 
+Cloud 5 Pyramid 3 
+Cone 52 1% Rectangl 26 
+Copter 17 Ring 13
+Crescent 128 1% Rocket 1
+Cross 6 Round 121 1%
+Crown 6 Saturn 5
+Cube 1 Schliere 3
+Cylinder 61 1% Sparks 1
+Delta 110 1% Sphere 26
+Diamond 26 Spindle 1
+Dirigibl 2 Square 1
+Disc 4925 56% Star 2 
+DomeDisc 483 6% T-Shape 1 
+Dumbell 2 Teardrop 2
+Ellipse 58 1% Top 18
+Elliptic 1 Torpedo 4
+Elongate 7 Triangle 178 2%
+FanBlade 1 Tube 1
+Fish 2 V-Shape 88 1%
+Flare 2 Walnut 3
+Flash 1 Wedge 1
+Football 22 Wing 5
+Fuselage 5 X-Shape 2
+Globe 18 Y-Shape 3
+ Page 43  
+  
+
+
+--- PAGE 45 ---
+FIELD NAME: SOUND  WIDTH: 8 characters 
+ 
+ The SOUND field contains an 8-character abbreviation for the principal sound if any 
+reported in the presence of the UFO.  If the UFO was completely silent, the field will be coded 
+"NoSound".  This field was first added to the database in 1998 so most of the cases lack 
+information about this important attribute.  The abbreviations include the following – 
+Table 15: Sound from UFO 
+SOUND N % SOUND N %
+    
+AirCondn 1 Oscillat 1  
+Aircraft 4 Popping 1  
+Beater 1 Pulsate 4  
+Beeping 6 Pulsing 2  
+Bloop 2 Purring 2  
+Blowing 1 Quake 2  
+Boom 8 Rain 3  
+Booms 1 Revving 1  
+Buzzing 32 1% Roar 19 1% 
+Chirring 7 Roaring 3  
+Chorus 2 Rumbling 22 1% 
+Clack 1 Rustling 1  
+Clatter 4 Scraping 3  
+Copter 19 1% SewingMa 3  
+Crying 1 Shrill 2  
+Diesel 1 Sizzling 5  
+Drill 2 Sonar 1  
+Droning 11 Sputter 4  
+ElecMotr 2 Squeaks 1  
+Electric 2 Steady 1  
+Engine 5 Steam 2  
+Explosn 4 Strange 5  
+Faint 6 Swishing 10  
+FuseBurn 1 Thrashin 1  
+Grinding 2 Throb 3  
+Growling 2 Thud 1  
+Highpitc 10 Thunder 2  
+Hissing 39 1% Ticktick 3  
+Humming 179 5% Tones 1  
+Intense 3 Train 3  
+Jet 15 TuneFork 1  
+Jets 3 Turbine 5  
+Knock 1 Tweeting 1  
+Loud 2 Unusual 2  
+LoudPop 1 Vacuum 2  
+LowHum 10 Whine 17  
+Masked 14 Whining 3  
+Metallic 2 Whirring 11  
+Moaning 2 Whistle 127 4% 
+Motor 5 Whooping 1  
+Noise 860 25% Whoosh 6  
+NoSound 1846 54% Wind 3  
+Odd 1 WoooWooo 2  
+ Page 44 
+  
+
+
+--- PAGE 46 ---
+ 
+Geographical Coordinates
+ 
+ The purpose of this coding is to provide the computer with precise information from 
+which it may determine longitude and latitude.  Precision to the nearest .001 degree will locate 
+any point within 50 meters; greater precision seems unnecessary, and may be illusory in most 
+regions.  Since the best maps of various areas do not all use the same coordinate system, 
+UFOCAT 2002 allows coordinate information to be provided in any of four different systems. 
+ 
+FIELD NAME: LONGITUDE WIDTH: 8 characters 
+ 
+ The LONGITUDE field always contains information related to longitude.  Either a 
+decimal point (“. ") or a minute-point (" ' ") will appear in the fifth column.  The number of non-
+blank digits indicates the known precision. 
+ 
+FIELD NAME: X3 WIDTH: 1 character 
+ 
+ The field X3 identifies the coordinate system being used.  A blank in X3 implies the 
+English System, which is the most common.  In this system there are 360 degrees in a full 
+circle, and the meridian of zero longitude passes through Greenwich Observatory, London.  
+Fractional degrees may be in either decimals or minutes; any seconds must be manually 
+converted and coded as tenths of minutes.  West and North are positive; East and South are 
+negative. 
+ 
+ An "M" in X3 implies the French Metric System.  In this system there are 400 degrees 
+per full circle, and the meridian of zero longitude passes through Cathedral de Notre Dame, 
+Paris.  All fractional degrees are decimal.  West and North are positive; East and South are 
+negative.  A "Q" in X3 implies that the coordinates are supposed to be in the English System 
+but seem questionable and have not been checked.  An "=" in X3 implies that the coordinates 
+are known to be in error. 
+ 
+FIELD NAME: LATITUDE WIDTH: 8 characters 
+ 
+ The LATITUDE field always contains information related to latitude.  Either a decimal 
+point or a minute-point will appear in the fifth column of the field. 
+ 
+ The occurrence of letters in both the first two columns of LATITUDE normally implies 
+use of the British National Grid System.  In this  system its metric distances locate any point 
+east and north from a base-point placed southwest of Land's End, Cornwall.  The two-letter 
+code identifies a square 100 kilometers on a side, effectively giving "degrees" from the base-
+point.  Fractional "degrees" are measured within the square, from its southwest corner.  Note 
+that this results in East longitude being positive; North latitude is positive as usual. 
+ Page 45  
+  
+
+
+--- PAGE 47 ---
+ 
+FIELD NAME: NOTES WIDTH: 200 characters 
+ 
+ The NOTES field is included to provide unformatted text describing interesting 
+aspects of the UFO report.  The user may use this field to search for key text phrases.  
+Because this field was added in 1998, only a small fraction of records contain information, 
+and volunteers are needed to update this field. 
+ 
+ The NOTES field may also contain certain explanatory phrases indicating why 
+numerical coordinates were not entered for the LONGITUDE and LATITUDE fields.  For 
+example -- 
+ 
+ Various Sites  The report includes sightings from more than one location. 
+ 
+ More than One There is more than one place by this name; better information 
+is needed. 
+ 
+ No Such Place There is no place having this name; either the report is in 
+error or the place-name is fictitious. 
+ 
+ 
+ 
+ Page 46 
+  

@@ -1,0 +1,2696 @@
+{
+  "schemaVersion": 1,
+  "counts": {
+    "content_review": 22190,
+    "accountIdentityLinks": 113539,
+    "bothEndpointsSingleSourceMembers": 109350,
+    "date_review": 3220,
+    "composite_membership_review": 4189,
+    "mapping_review": 23182,
+    "substantialNarrativeSupported": 87530,
+    "agreeing_republication": 47788,
+    "strictProjectionEligible": 47788,
+    "craft_label_review": 12970
+  },
+  "reviewFlagCounts": {
+    "insufficient_prior_substantial_narrative_evidence": 26009,
+    "primary_unmapped": 16892,
+    "different_or_missing_stored_dates": 3306,
+    "composite_or_member_identity_review": 4189,
+    "mapping_disagreement_over_75km": 5647,
+    "UPDB_unmapped": 20438,
+    "craft_classification_differs_or_missing": 22603,
+    "mapping_coordinates_differ_at_most_75km": 1174
+  },
+  "sourcePartitions": {
+    "mufon": {
+      "content_review": 11358,
+      "date_review": 3125,
+      "composite_membership_review": 2539,
+      "mapping_review": 11725,
+      "agreeing_republication": 36510,
+      "craft_label_review": 9000
+    },
+    "nuforc": {
+      "mapping_review": 11457,
+      "agreeing_republication": 11278,
+      "date_review": 95,
+      "craft_label_review": 3970,
+      "content_review": 10832,
+      "composite_membership_review": 1650
+    }
+  },
+  "examples": {
+    "content_review": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:46",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "46",
+        "primary": {
+          "eventId": "895713128075619",
+          "chunk": "chunk_000008",
+          "index": 643,
+          "current": {
+            "event_id": "895713128075619",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "46",
+            "source_row_number": 23,
+            "sort_date_iso": "1964-06-14",
+            "date_raw": "1964-06-14",
+            "date_precision": "exact_day",
+            "location_raw": "Dale, IN, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 40.01671,
+            "lon": -86.4,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_0580e7389b896b3bcec16bce"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "46",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "46"
+          }
+        },
+        "updb": {
+          "eventId": "344968826446100",
+          "chunk": "chunk_000058",
+          "index": 2198,
+          "current": {
+            "event_id": "344968826446100",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5550008",
+            "source_row_number": 293987,
+            "sort_date_iso": "1964-06-14",
+            "date_raw": "1964-06-14",
+            "date_precision": "exact_day",
+            "location_raw": "DALE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 40.01671,
+            "lon": -86.4,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_2a20252262bb082f4ff6bcd3"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5550008",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "46"
+          }
+        },
+        "partition": "content_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:76",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "76",
+        "primary": {
+          "eventId": "3525286953099749",
+          "chunk": "chunk_000086",
+          "index": 1966,
+          "current": {
+            "event_id": "3525286953099749",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "76",
+            "source_row_number": 38,
+            "sort_date_iso": "1989-01-18",
+            "date_raw": "1989-01-18",
+            "date_precision": "exact_day",
+            "location_raw": "Gainsville, FL, US",
+            "coordinate_source": "unresolved",
+            "location_precision": "city",
+            "has_coordinates": false,
+            "lat": null,
+            "lon": null,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_4022f1a41cbd5739aa0cda46"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "76",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "76"
+          }
+        },
+        "updb": {
+          "eventId": "2529188812967851",
+          "chunk": "chunk_000131",
+          "index": 1300,
+          "current": {
+            "event_id": "2529188812967851",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5550001",
+            "source_row_number": 290042,
+            "sort_date_iso": "1989-01-18",
+            "date_raw": "1989-01-18",
+            "date_precision": "exact_day",
+            "location_raw": "GAINSVILLE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 28.75054,
+            "lon": -82.5001,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_65f2d7ded219c5dbf0289849"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5550001",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "76"
+          }
+        },
+        "partition": "content_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "insufficient_prior_substantial_narrative_evidence",
+          "primary_unmapped"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": false,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": null
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:160",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "160",
+        "primary": {
+          "eventId": "4449414222219267",
+          "chunk": "chunk_000112",
+          "index": 1308,
+          "current": {
+            "event_id": "4449414222219267",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "160",
+            "source_row_number": 78,
+            "sort_date_iso": "1988-11-15",
+            "date_raw": "1988-11-15",
+            "date_precision": "exact_day",
+            "location_raw": "Cantonment, FL, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 30.60853,
+            "lon": -87.33998,
+            "craft_type_inferred": "oval_egg"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_557d928330d29a2392df1318"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "160",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "160"
+          }
+        },
+        "updb": {
+          "eventId": "2865251307808470",
+          "chunk": "chunk_000175",
+          "index": 1792,
+          "current": {
+            "event_id": "2865251307808470",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549997",
+            "source_row_number": 293967,
+            "sort_date_iso": "1988-11-15",
+            "date_raw": "1988-11-15",
+            "date_precision": "exact_day",
+            "location_raw": "CANTONMENT, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 30.60853,
+            "lon": -87.33998,
+            "craft_type_inferred": "oval_egg"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_8eaeaa41cdc56d08683addd2"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549997",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "160"
+          }
+        },
+        "partition": "content_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:424",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "424",
+        "primary": {
+          "eventId": "2555810983583263",
+          "chunk": "chunk_000124",
+          "index": 1269,
+          "current": {
+            "event_id": "2555810983583263",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "424",
+            "source_row_number": 221,
+            "sort_date_iso": "1974-04-01",
+            "date_raw": "1974-04-01",
+            "date_precision": "exact_day",
+            "location_raw": "Pascagoula, MS, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 30.36576,
+            "lon": -88.55613,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_5fc53b602d6931618c4847e3"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "424",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "424"
+          }
+        },
+        "updb": {
+          "eventId": "3258907418186961",
+          "chunk": "chunk_000260",
+          "index": 2089,
+          "current": {
+            "event_id": "3258907418186961",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549978",
+            "source_row_number": 293922,
+            "sort_date_iso": "1974-04-01",
+            "date_raw": "1974-04-01",
+            "date_precision": "exact_day",
+            "location_raw": "PASCAGOULA, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 30.36576,
+            "lon": -88.55613,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_e819d80bbc181debe90fa0d1"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549978",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "424"
+          }
+        },
+        "partition": "content_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      }
+    ],
+    "date_review": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:208",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "208",
+        "primary": {
+          "eventId": "186784761357858",
+          "chunk": "chunk_000280",
+          "index": 2373,
+          "current": {
+            "event_id": "186784761357858",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "208",
+            "source_row_number": 109,
+            "sort_date_iso": "",
+            "date_raw": "1988-10-00",
+            "date_precision": "unknown",
+            "location_raw": "Greensburg, IN, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 39.33727,
+            "lon": -85.48358,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_ffb1535c67abaa9a2a8a738a"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "208",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "208"
+          }
+        },
+        "updb": {
+          "eventId": "930407127863229",
+          "chunk": "chunk_000185",
+          "index": 226,
+          "current": {
+            "event_id": "930407127863229",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549996",
+            "source_row_number": 293976,
+            "sort_date_iso": "1988-10-01",
+            "date_raw": "1988-10-01",
+            "date_precision": "exact_day",
+            "location_raw": "GREENSBURG, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 39.33727,
+            "lon": -85.48358,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_97b61ad5d1f84aaab5ff7558"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549996",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "208"
+          }
+        },
+        "partition": "date_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "different_or_missing_stored_dates",
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": false,
+          "bothExactDay": false
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:340",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "340",
+        "primary": {
+          "eventId": "328308625440659",
+          "chunk": "chunk_000101",
+          "index": 402,
+          "current": {
+            "event_id": "328308625440659",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "340",
+            "source_row_number": 177,
+            "sort_date_iso": "",
+            "date_raw": "1962-07-00",
+            "date_precision": "unknown",
+            "location_raw": "No City Provided, MI, US",
+            "coordinate_source": "unresolved",
+            "location_precision": "city",
+            "has_coordinates": false,
+            "lat": null,
+            "lon": null,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_4bed633b89608123fde80065"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "340",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "340"
+          }
+        },
+        "updb": {
+          "eventId": "1954510031682454",
+          "chunk": "chunk_000200",
+          "index": 2492,
+          "current": {
+            "event_id": "1954510031682454",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549984",
+            "source_row_number": 293966,
+            "sort_date_iso": "1962-07-01",
+            "date_raw": "1962-07-01",
+            "date_precision": "exact_day",
+            "location_raw": "NO CITY PROVIDED, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 44.25029,
+            "lon": -85.50033,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_a773eb61ed82be5e73d0a677"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549984",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "340"
+          }
+        },
+        "partition": "date_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "different_or_missing_stored_dates",
+          "insufficient_prior_substantial_narrative_evidence",
+          "primary_unmapped"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": false,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": null
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": false,
+          "bothExactDay": false
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:478",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "478",
+        "primary": {
+          "eventId": "1770966110444357",
+          "chunk": "chunk_000149",
+          "index": 1250,
+          "current": {
+            "event_id": "1770966110444357",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "478",
+            "source_row_number": 244,
+            "sort_date_iso": "",
+            "date_raw": "1968-00-00",
+            "date_precision": "unknown",
+            "location_raw": "Page, ND, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 47.15971,
+            "lon": -97.5712,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_76236f77a2c965915a03cab9"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "478",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "478"
+          }
+        },
+        "updb": {
+          "eventId": "3485443068000437",
+          "chunk": "chunk_000234",
+          "index": 636,
+          "current": {
+            "event_id": "3485443068000437",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549977",
+            "source_row_number": 293958,
+            "sort_date_iso": "1968-01-01",
+            "date_raw": "1968-01-01",
+            "date_precision": "exact_day",
+            "location_raw": "PAGE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 47.15971,
+            "lon": -97.5712,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_ca786a9cedd9c2b93bb33426"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549977",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "478"
+          }
+        },
+        "partition": "date_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "different_or_missing_stored_dates",
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": false,
+          "bothExactDay": false
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:484",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "484",
+        "primary": {
+          "eventId": "3929150673467948",
+          "chunk": "chunk_000096",
+          "index": 858,
+          "current": {
+            "event_id": "3929150673467948",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "484",
+            "source_row_number": 249,
+            "sort_date_iso": "",
+            "date_raw": "1978-10-00",
+            "date_precision": "unknown",
+            "location_raw": "Ludlow, VT, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 43.39591,
+            "lon": -72.70065,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_47f145481b57686051b5cc1e"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "484",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "484"
+          }
+        },
+        "updb": {
+          "eventId": "1069315465768394",
+          "chunk": "chunk_000280",
+          "index": 61,
+          "current": {
+            "event_id": "1069315465768394",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549975",
+            "source_row_number": 293941,
+            "sort_date_iso": "1978-10-01",
+            "date_raw": "1978-10-01",
+            "date_precision": "exact_day",
+            "location_raw": "LUDLOW, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 43.39591,
+            "lon": -72.70065,
+            "craft_type_inferred": "unknown"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_fe9072315004b56ea12645b1"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549975",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "484"
+          }
+        },
+        "partition": "date_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "different_or_missing_stored_dates",
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": false,
+          "bothExactDay": false
+        }
+      }
+    ],
+    "composite_membership_review": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:406",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "406",
+        "primary": {
+          "eventId": "3269323812826704",
+          "chunk": "chunk_000135",
+          "index": 1630,
+          "current": {
+            "event_id": "3269323812826704",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "406",
+            "source_row_number": 207,
+            "sort_date_iso": "",
+            "date_raw": "1988-09-00",
+            "date_precision": "unknown",
+            "location_raw": "Delaware City, DE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 39.57775,
+            "lon": -75.58945,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_699d48b2fc80510655e5308a"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "406",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "406"
+          }
+        },
+        "updb": {
+          "eventId": "2084391740773877",
+          "chunk": "chunk_000104",
+          "index": 1041,
+          "current": {
+            "event_id": "2084391740773877",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549980",
+            "source_row_number": 106788,
+            "sort_date_iso": "1988-09-01",
+            "date_raw": "1988-09-01",
+            "date_precision": "exact_day",
+            "location_raw": "DELAWARE CITY, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 39.57775,
+            "lon": -75.58945,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 2,
+            "sourceProvenanceCount": 2,
+            "canonicalInputIds": [
+              "cin_4ea6af1213eddb6a40c047fe",
+              "cin_9ada301edc3dd4bd3d642a58"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": false,
+            "soleMemberAgreesWithPrimarySource": false
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549980",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "406"
+          }
+        },
+        "partition": "composite_membership_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "composite_or_member_identity_review",
+          "different_or_missing_stored_dates",
+          "insufficient_prior_substantial_narrative_evidence"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "not_in_existing_strong_narrative_screen",
+          "significantTokenJaccard": null,
+          "sharedSignificantTokens": null
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": false,
+          "bothExactDay": false
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:1042",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "1042",
+        "primary": {
+          "eventId": "1517938965060951",
+          "chunk": "chunk_000187",
+          "index": 2234,
+          "current": {
+            "event_id": "1517938965060951",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "1042",
+            "source_row_number": 703,
+            "sort_date_iso": "1974-01-01",
+            "date_raw": "1974-01-01",
+            "date_precision": "exact_day",
+            "location_raw": "WI, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "state",
+            "has_coordinates": true,
+            "lat": 44.268543,
+            "lon": -89.616508,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_9a746b6ef0a22d4478dd7f7a"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "1042",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1042"
+          }
+        },
+        "updb": {
+          "eventId": "1111542670295552",
+          "chunk": "chunk_000191",
+          "index": 2232,
+          "current": {
+            "event_id": "1111542670295552",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549902",
+            "source_row_number": 293952,
+            "sort_date_iso": "1974-01-01",
+            "date_raw": "1974-01-01",
+            "date_precision": "exact_day",
+            "location_raw": "US",
+            "coordinate_source": "unresolved",
+            "location_precision": "country",
+            "has_coordinates": false,
+            "lat": null,
+            "lon": null,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 2,
+            "sourceProvenanceCount": 2,
+            "canonicalInputIds": [
+              "cin_9e64941d4395fa17ef45ea09",
+              "cin_cbeb14f87f54b07cf518d22c"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": false,
+            "soleMemberAgreesWithPrimarySource": false
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549902",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1042"
+          }
+        },
+        "partition": "composite_membership_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "composite_or_member_identity_review",
+          "UPDB_unmapped"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 1.0,
+          "sharedSignificantTokens": 39
+        },
+        "mappingEvidence": {
+          "bothMapped": false,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": null
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:1372",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "1372",
+        "primary": {
+          "eventId": "395808570487645",
+          "chunk": "chunk_000011",
+          "index": 1189,
+          "current": {
+            "event_id": "395808570487645",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "1372",
+            "source_row_number": 1030,
+            "sort_date_iso": "2001-11-03",
+            "date_raw": "2001-11-03",
+            "date_precision": "exact_day",
+            "location_raw": "Ocean City, MD, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 38.3365,
+            "lon": -75.08491,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_07afba0983feab85a8e72d5c"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "1372",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1372"
+          }
+        },
+        "updb": {
+          "eventId": "907333858405640",
+          "chunk": "chunk_000188",
+          "index": 628,
+          "current": {
+            "event_id": "907333858405640",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549847",
+            "source_row_number": 293893,
+            "sort_date_iso": "2001-11-03",
+            "date_raw": "2001-11-03",
+            "date_precision": "exact_day",
+            "location_raw": "OCEAN CITY, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 38.3365,
+            "lon": -75.08491,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 2,
+            "sourceProvenanceCount": 2,
+            "canonicalInputIds": [
+              "cin_9ad09b8ad12621f1ca323395",
+              "cin_cbe49f85d73cd2b1f8fe8183"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": false,
+            "soleMemberAgreesWithPrimarySource": false
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549847",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1372"
+          }
+        },
+        "partition": "composite_membership_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "composite_or_member_identity_review"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9592,
+          "sharedSignificantTokens": 47
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:1606",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "1606",
+        "primary": {
+          "eventId": "1765125709580689",
+          "chunk": "chunk_000053",
+          "index": 1639,
+          "current": {
+            "event_id": "1765125709580689",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "1606",
+            "source_row_number": 1263,
+            "sort_date_iso": "2002-04-01",
+            "date_raw": "2002-04-01",
+            "date_precision": "exact_day",
+            "location_raw": "Phoenix, AZ, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 33.44838,
+            "lon": -112.07404,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 2,
+            "sourceProvenanceCount": 2,
+            "canonicalInputIds": [
+              "cin_26240f6f3a8c25a82a8dfa1a",
+              "cin_69feb7f24a817401888b506a"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": false,
+            "soleMemberAgreesWithPrimarySource": false
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "1606",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1606"
+          }
+        },
+        "updb": {
+          "eventId": "4184908747851363",
+          "chunk": "chunk_000064",
+          "index": 2079,
+          "current": {
+            "event_id": "4184908747851363",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549809",
+            "source_row_number": 105119,
+            "sort_date_iso": "2002-04-01",
+            "date_raw": "2002-04-01",
+            "date_precision": "exact_day",
+            "location_raw": "PHOENIX, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 33.44838,
+            "lon": -112.07404,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 2,
+            "sourceProvenanceCount": 2,
+            "canonicalInputIds": [
+              "cin_2ec3181e1f1f179406a80d83",
+              "cin_f5e2761a6bfc2e09d0623e85"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": false,
+            "soleMemberAgreesWithPrimarySource": false
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549809",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1606"
+          }
+        },
+        "partition": "composite_membership_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "composite_or_member_identity_review"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9855,
+          "sharedSignificantTokens": 68
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      }
+    ],
+    "mapping_review": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:766",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "766",
+        "primary": {
+          "eventId": "1549416030945271",
+          "chunk": "chunk_000124",
+          "index": 921,
+          "current": {
+            "event_id": "1549416030945271",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "766",
+            "source_row_number": 428,
+            "sort_date_iso": "2000-08-09",
+            "date_raw": "2000-08-09",
+            "date_precision": "exact_day",
+            "location_raw": "Lake Havasu City, CA, US",
+            "coordinate_source": "unresolved",
+            "location_precision": "city",
+            "has_coordinates": false,
+            "lat": null,
+            "lon": null,
+            "craft_type_inferred": "cone"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_5fa44ddb2bd53110f2eb38cf"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "766",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "766"
+          }
+        },
+        "updb": {
+          "eventId": "82932330727358",
+          "chunk": "chunk_000264",
+          "index": 1987,
+          "current": {
+            "event_id": "82932330727358",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549947",
+            "source_row_number": 293980,
+            "sort_date_iso": "2000-08-09",
+            "date_raw": "2000-08-09",
+            "date_precision": "exact_day",
+            "location_raw": "LAKE HAVASU CITY, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 34.4839,
+            "lon": -114.32245,
+            "craft_type_inferred": "cone"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_ec9cfee4052db2e674fc7402"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549947",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "766"
+          }
+        },
+        "partition": "mapping_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "primary_unmapped"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9524,
+          "sharedSignificantTokens": 40
+        },
+        "mappingEvidence": {
+          "bothMapped": false,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": null
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:808",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "808",
+        "primary": {
+          "eventId": "296349301621992",
+          "chunk": "chunk_000248",
+          "index": 2096,
+          "current": {
+            "event_id": "296349301621992",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "808",
+            "source_row_number": 470,
+            "sort_date_iso": "2000-07-22",
+            "date_raw": "2000-07-22",
+            "date_precision": "exact_day",
+            "location_raw": "WARREN, OHIO to ASHTABULA, OH, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 41.23756,
+            "lon": -80.81842,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_da88a9818551ef67937018bd"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "808",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "808"
+          }
+        },
+        "updb": {
+          "eventId": "3787435826739864",
+          "chunk": "chunk_000174",
+          "index": 620,
+          "current": {
+            "event_id": "3787435826739864",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549940",
+            "source_row_number": 293972,
+            "sort_date_iso": "2000-07-22",
+            "date_raw": "2000-07-22",
+            "date_precision": "exact_day",
+            "location_raw": "WARREN, OHIO TO ASHTABULA, US",
+            "coordinate_source": "unresolved",
+            "location_precision": "city",
+            "has_coordinates": false,
+            "lat": null,
+            "lon": null,
+            "craft_type_inferred": "formation"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_8d4877928f72e8c80d005c6e"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549940",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "808"
+          }
+        },
+        "partition": "mapping_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "UPDB_unmapped",
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.95,
+          "sharedSignificantTokens": 57
+        },
+        "mappingEvidence": {
+          "bothMapped": false,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": null
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:826",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "826",
+        "primary": {
+          "eventId": "2219459734270633",
+          "chunk": "chunk_000214",
+          "index": 696,
+          "current": {
+            "event_id": "2219459734270633",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "826",
+            "source_row_number": 488,
+            "sort_date_iso": "1996-03-31",
+            "date_raw": "1996-03-31",
+            "date_precision": "exact_day",
+            "location_raw": "Lexington, NC, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 35.82403,
+            "lon": -80.25338,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_b525f00b65ae2aeb65128f24"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "826",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "826"
+          }
+        },
+        "updb": {
+          "eventId": "1375149129209690",
+          "chunk": "chunk_000082",
+          "index": 1032,
+          "current": {
+            "event_id": "1375149129209690",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549937",
+            "source_row_number": 293988,
+            "sort_date_iso": "1996-03-31",
+            "date_raw": "1996-03-31",
+            "date_precision": "exact_day",
+            "location_raw": "LEXINGTON, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 37.98869,
+            "lon": -84.47772,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_3c982e60cf089623dd410dfa"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549937",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "826"
+          }
+        },
+        "partition": "mapping_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "mapping_disagreement_over_75km"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9286,
+          "sharedSignificantTokens": 39
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": 446.031749
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:838",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "838",
+        "primary": {
+          "eventId": "3132442533252165",
+          "chunk": "chunk_000170",
+          "index": 699,
+          "current": {
+            "event_id": "3132442533252165",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "838",
+            "source_row_number": 500,
+            "sort_date_iso": "1990-01-24",
+            "date_raw": "1990-01-24",
+            "date_precision": "exact_day",
+            "location_raw": "Martville, NY, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 43.28007,
+            "lon": -76.62717,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_8989d7b8133bd48020da94c5"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "838",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "838"
+          }
+        },
+        "updb": {
+          "eventId": "2542865994398722",
+          "chunk": "chunk_000216",
+          "index": 207,
+          "current": {
+            "event_id": "2542865994398722",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549935",
+            "source_row_number": 293979,
+            "sort_date_iso": "1990-01-24",
+            "date_raw": "1990-01-24",
+            "date_precision": "exact_day",
+            "location_raw": "MARTVILLE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 40.77427,
+            "lon": -73.96981,
+            "craft_type_inferred": "rectangle_box"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_b6fb62be89299f1066feb488"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549935",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "838"
+          }
+        },
+        "partition": "mapping_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "mapping_disagreement_over_75km",
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9759,
+          "sharedSignificantTokens": 81
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": false,
+          "distanceKm": 354.660078
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      }
+    ],
+    "agreeing_republication": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:784",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "784",
+        "primary": {
+          "eventId": "107457982045795",
+          "chunk": "chunk_000203",
+          "index": 1350,
+          "current": {
+            "event_id": "107457982045795",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "784",
+            "source_row_number": 446,
+            "sort_date_iso": "2000-08-18",
+            "date_raw": "2000-08-18",
+            "date_precision": "exact_day",
+            "location_raw": "San Francisco, CA, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 37.77493,
+            "lon": -122.41942,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_aa0e0426ce63e0a933ac5045"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "784",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "784"
+          }
+        },
+        "updb": {
+          "eventId": "1749139929413781",
+          "chunk": "chunk_000000",
+          "index": 890,
+          "current": {
+            "event_id": "1749139929413781",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549943",
+            "source_row_number": 293900,
+            "sort_date_iso": "2000-08-18",
+            "date_raw": "2000-08-18",
+            "date_precision": "exact_day",
+            "location_raw": "SAN FRANCISCO, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 37.77493,
+            "lon": -122.41942,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_003f80acd279cfbc21379748"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549943",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "784"
+          }
+        },
+        "partition": "agreeing_republication",
+        "strictProjectionEligible": true,
+        "reviewFlags": [],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9583,
+          "sharedSignificantTokens": 23
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:796",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "796",
+        "primary": {
+          "eventId": "3644862344915073",
+          "chunk": "chunk_000123",
+          "index": 1295,
+          "current": {
+            "event_id": "3644862344915073",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "796",
+            "source_row_number": 458,
+            "sort_date_iso": "2000-08-28",
+            "date_raw": "2000-08-28",
+            "date_precision": "exact_day",
+            "location_raw": "Fresno, CA, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 36.74773,
+            "lon": -119.77237,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_5ee9e4d5f11770fb244d26bd"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "796",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "796"
+          }
+        },
+        "updb": {
+          "eventId": "4294783114585061",
+          "chunk": "chunk_000225",
+          "index": 1410,
+          "current": {
+            "event_id": "4294783114585061",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549942",
+            "source_row_number": 293938,
+            "sort_date_iso": "2000-08-28",
+            "date_raw": "2000-08-28",
+            "date_precision": "exact_day",
+            "location_raw": "FRESNO, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 36.74773,
+            "lon": -119.77237,
+            "craft_type_inferred": "triangle"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_c0fdb285e9230599b44dff72"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549942",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "796"
+          }
+        },
+        "partition": "agreeing_republication",
+        "strictProjectionEligible": true,
+        "reviewFlags": [],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9697,
+          "sharedSignificantTokens": 64
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:814",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "814",
+        "primary": {
+          "eventId": "2460735177987492",
+          "chunk": "chunk_000173",
+          "index": 936,
+          "current": {
+            "event_id": "2460735177987492",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "814",
+            "source_row_number": 476,
+            "sort_date_iso": "1999-01-27",
+            "date_raw": "1999-01-27",
+            "date_precision": "exact_day",
+            "location_raw": "Prior Lake, MN, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 44.7133,
+            "lon": -93.42273,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_8c6e864793d7c3246e0394fb"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "814",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "814"
+          }
+        },
+        "updb": {
+          "eventId": "3822325416830444",
+          "chunk": "chunk_000259",
+          "index": 965,
+          "current": {
+            "event_id": "3822325416830444",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549939",
+            "source_row_number": 293961,
+            "sort_date_iso": "1999-01-27",
+            "date_raw": "1999-01-27",
+            "date_precision": "exact_day",
+            "location_raw": "PRIOR LAKE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 44.7133,
+            "lon": -93.42273,
+            "craft_type_inferred": "disc_saucer"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_e671bf92810b68cc46340614"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549939",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "814"
+          }
+        },
+        "partition": "agreeing_republication",
+        "strictProjectionEligible": true,
+        "reviewFlags": [],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.8667,
+          "sharedSignificantTokens": 26
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:898",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "898",
+        "primary": {
+          "eventId": "354785968578196",
+          "chunk": "chunk_000254",
+          "index": 2165,
+          "current": {
+            "event_id": "354785968578196",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "898",
+            "source_row_number": 559,
+            "sort_date_iso": "2000-09-05",
+            "date_raw": "2000-09-05",
+            "date_precision": "exact_day",
+            "location_raw": "Dearborn, MI, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 42.32226,
+            "lon": -83.17631,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_e1404d8d2491e3db51027964"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "898",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "898"
+          }
+        },
+        "updb": {
+          "eventId": "3566855706116852",
+          "chunk": "chunk_000178",
+          "index": 1919,
+          "current": {
+            "event_id": "3566855706116852",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549927",
+            "source_row_number": 293954,
+            "sort_date_iso": "2000-09-05",
+            "date_raw": "2000-09-05",
+            "date_precision": "exact_day",
+            "location_raw": "DEARBORN, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 42.32226,
+            "lon": -83.17631,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_9193183c2e6c3c2031db0b6c"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549927",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "898"
+          }
+        },
+        "partition": "agreeing_republication",
+        "strictProjectionEligible": true,
+        "reviewFlags": [],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9667,
+          "sharedSignificantTokens": 58
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      }
+    ],
+    "craft_label_review": [
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:886",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "886",
+        "primary": {
+          "eventId": "911921100296612",
+          "chunk": "chunk_000163",
+          "index": 2263,
+          "current": {
+            "event_id": "911921100296612",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "886",
+            "source_row_number": 547,
+            "sort_date_iso": "2000-10-22",
+            "date_raw": "2000-10-22",
+            "date_precision": "exact_day",
+            "location_raw": "Barnesville, MN, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 46.65218,
+            "lon": -96.41979,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_837679da98cad5e62ef56059"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "886",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "886"
+          }
+        },
+        "updb": {
+          "eventId": "2070159537637512",
+          "chunk": "chunk_000138",
+          "index": 1768,
+          "current": {
+            "event_id": "2070159537637512",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549926",
+            "source_row_number": 293936,
+            "sort_date_iso": "2000-10-22",
+            "date_raw": "2000-10-22",
+            "date_precision": "exact_day",
+            "location_raw": "BARNESVILLE, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 46.65218,
+            "lon": -96.41979,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_6c4e50a010f75bab1c4ff78c"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549926",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "886"
+          }
+        },
+        "partition": "craft_label_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9722,
+          "sharedSignificantTokens": 35
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:958",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "958",
+        "primary": {
+          "eventId": "1777918987873046",
+          "chunk": "chunk_000030",
+          "index": 1881,
+          "current": {
+            "event_id": "1777918987873046",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "958",
+            "source_row_number": 619,
+            "sort_date_iso": "1998-11-23",
+            "date_raw": "1998-11-23",
+            "date_precision": "exact_day",
+            "location_raw": "Granbury, TX, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 32.44208,
+            "lon": -97.7942,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_1531718148ab4d92cb511ba4"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "958",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "958"
+          }
+        },
+        "updb": {
+          "eventId": "691903537422989",
+          "chunk": "chunk_000103",
+          "index": 1605,
+          "current": {
+            "event_id": "691903537422989",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549915",
+            "source_row_number": 293970,
+            "sort_date_iso": "1998-11-23",
+            "date_raw": "1998-11-23",
+            "date_precision": "exact_day",
+            "location_raw": "GRANBURY, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 32.44208,
+            "lon": -97.7942,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_4e006b3feefe2b92a274929a"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549915",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "958"
+          }
+        },
+        "partition": "craft_label_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9474,
+          "sharedSignificantTokens": 54
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:1006",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "1006",
+        "primary": {
+          "eventId": "1510944331208835",
+          "chunk": "chunk_000024",
+          "index": 620,
+          "current": {
+            "event_id": "1510944331208835",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "1006",
+            "source_row_number": 667,
+            "sort_date_iso": "1998-03-21",
+            "date_raw": "1998-03-21",
+            "date_precision": "exact_day",
+            "location_raw": "Vancouver, BC, CA",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 49.24966,
+            "lon": -123.11934,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_1081f559e8bb4f00269243f0"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "1006",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1006"
+          }
+        },
+        "updb": {
+          "eventId": "342301577988272",
+          "chunk": "chunk_000276",
+          "index": 821,
+          "current": {
+            "event_id": "342301577988272",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549907",
+            "source_row_number": 293934,
+            "sort_date_iso": "1998-03-21",
+            "date_raw": "1998-03-21",
+            "date_precision": "exact_day",
+            "location_raw": "VANCOUVER, CA",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 49.24966,
+            "lon": -123.11934,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_fa2a88f8bd6de1ca2c69ac05"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549907",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1006"
+          }
+        },
+        "partition": "craft_label_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9744,
+          "sharedSignificantTokens": 38
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "accountKey": "mufon:1030",
+        "upstreamSource": "mufon",
+        "upstreamNativeId": "1030",
+        "primary": {
+          "eventId": "2340731624019261",
+          "chunk": "chunk_000193",
+          "index": 746,
+          "current": {
+            "event_id": "2340731624019261",
+            "source": "mufon",
+            "source_file": "mufonpy.csv",
+            "source_id": "1030",
+            "source_row_number": 691,
+            "sort_date_iso": "2001-01-29",
+            "date_raw": "2001-01-29",
+            "date_precision": "exact_day",
+            "location_raw": "Eureka, CA, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 40.80207,
+            "lon": -124.16367,
+            "craft_type_inferred": "light"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_9fc5fbe255767b1ee2c757f4"
+            ],
+            "memberSourceFamilies": [
+              "mufon"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "mufon",
+            "nativeId": "1030",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1030"
+          }
+        },
+        "updb": {
+          "eventId": "1283724448121689",
+          "chunk": "chunk_000092",
+          "index": 1040,
+          "current": {
+            "event_id": "1283724448121689",
+            "source": "phenomenainon_updb",
+            "source_file": "phenomenAInon_UPDB.csv",
+            "source_id": "5549903",
+            "source_row_number": 105913,
+            "sort_date_iso": "2001-01-29",
+            "date_raw": "2001-01-29",
+            "date_precision": "exact_day",
+            "location_raw": "EUREKA, US",
+            "coordinate_source": "geocoded",
+            "location_precision": "city",
+            "has_coordinates": true,
+            "lat": 40.80207,
+            "lon": -124.16367,
+            "craft_type_inferred": "sphere_orb"
+          },
+          "memberGuard": {
+            "retainedMemberCount": 1,
+            "sourceProvenanceCount": 1,
+            "canonicalInputIds": [
+              "cin_44c151bad71ef4734488e03e"
+            ],
+            "memberSourceFamilies": [
+              "phenomenainon_updb"
+            ],
+            "ledgerConsistent": true,
+            "singleSourceMember": true,
+            "soleMemberAgreesWithPrimarySource": true
+          },
+          "nativeIdentityEvidence": {
+            "datasetSource": "phenomenainon_updb",
+            "nativeId": "5549903",
+            "upstreamSource": "mufon",
+            "upstreamNativeId": "1030"
+          }
+        },
+        "partition": "craft_label_review",
+        "strictProjectionEligible": false,
+        "reviewFlags": [
+          "craft_classification_differs_or_missing"
+        ],
+        "narrativeEvidence": {
+          "priorScreen": "strong_narrative_screen",
+          "significantTokenJaccard": 0.9589,
+          "sharedSignificantTokens": 70
+        },
+        "mappingEvidence": {
+          "bothMapped": true,
+          "exactSameStoredCoordinates": true,
+          "distanceKm": 0.0
+        },
+        "storedDateEvidence": {
+          "sameStoredDate": true,
+          "bothExactDay": true
+        }
+      }
+    ]
+  },
+  "manifestPath": "account_links_manifest.json",
+  "storage": {
+    "newFilesOver100MiB": [],
+    "retention": "Retain compact account enrichment evidence; existing canonical/runtime/rollback unchanged; no staging/corpus copy.",
+    "destination": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261006\\account_links",
+    "newCanonicalResearchArtifact": "original_account_links.jsonl.gz",
+    "baseCanonicalRetained": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web",
+    "runtimeAndKnownGoodRollback": "Unchanged; no deployment in this lane.",
+    "supersededArtifacts": "Initial oversized sidecar format replaced in place; no staging or backup retained.",
+    "cleanupProposal": "None; retain bounded unique evidence and reproducible helpers.",
+    "laneBudgetBytes": 26214400,
+    "fileInventory": {
+      "account_link_loader.py": 11801,
+      "ACCOUNT_LINK_QUALITY.md": 8659,
+      "account_link_quality_receipt.json": 93130,
+      "account_links_manifest.json": 62652,
+      "build_original_account_crosswalk.py": 16731,
+      "mufon_primary_date_evidence.csv.gz": 3364837,
+      "original_account_links.jsonl.gz": 21055014,
+      "test_account_link_loader.py": 8445
+    },
+    "approxNetDiskGrowthBytes": 24621269
+  },
+  "existingSupport": {
+    "parser": "parser/merged_member_craft_evidence.py preserves candidate/member evidence without promoting it; parser/dedupe.py retains source/input provenance.",
+    "runtime": "app.js coordinate/context evidence uses optional manifest/projection worker loading and fails closed; no account identity sidecar loader exists in current frontend.",
+    "canonicalMerge": "scripts/apply_reviewed_event_merges_to_canonical_web.py requires reviewed incident sidecars and rewrites canonical assets; it is not invoked for this identity enrichment."
+  },
+  "elapsedSeconds": 29.39,
+  "validation": {
+    "completedAtUtc": "2026-10-07T07:10:31.440425+00:00",
+    "command": "python -B -m unittest -q test_account_link_loader.py",
+    "testsPassed": 13,
+    "elapsedSeconds": 4.955,
+    "fullCrosswalkRowsValidated": 113539,
+    "strictEligibleRowsValidated": 47788,
+    "actualPinnedFullDetailConsumers": [
+      "mufon",
+      "nuforc"
+    ],
+    "canonicalEventIdExtraFieldAccepted": true,
+    "filteredOnlyUpdbPreserved": true,
+    "sourceCoordinateMembershipDriftFailsClosed": true,
+    "sourceBaseWrites": false
+  },
+  "helperProvenance": {
+    "build_original_account_crosswalk.py": {
+      "bytes": 16731,
+      "sha256": "b3aea305eee92ba706b313c9abbc296b41f2931d5109f99d4958004e99635d96"
+    },
+    "account_link_loader.py": {
+      "bytes": 11801,
+      "sha256": "71d86adf995c40984c9e25a2d5b74aa06c41fa1c6e2c7b2faa0b2315dbea21a4"
+    },
+    "test_account_link_loader.py": {
+      "bytes": 8445,
+      "sha256": "386600e6eeb666223b4409d6895d999ce577ebd2a7ada30f36d989585b028d87"
+    },
+    "ACCOUNT_LINK_QUALITY.md": {
+      "bytes": 8659,
+      "sha256": "dbbac2a0309b42b843cdd85af5cff494d7880bba750cefde2c0497e666ce67fc"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "scope": "Final source-supported sealed sidecars for continuation 02; no raw data copies or automatic merging.",
+  "artifacts": [
+    {
+      "path": "account_reverse_recovery/accepted_reverse_recovery_decisions.jsonl",
+      "bytes": 629553,
+      "sha256": "3ef2dd8bd7a64ee826d2a020410a3f3fb71cd1dc75a7af0c701418da95497fbe",
+      "encoding": "jsonl",
+      "rows": 148
+    },
+    {
+      "path": "account_reverse_recovery/accepted_reverse_date_precision_decisions.jsonl",
+      "bytes": 2343,
+      "sha256": "77a2dd4e8604cf24197300453e32485e901cd4170d839edd01471017b527df07",
+      "encoding": "jsonl",
+      "rows": 1
+    },
+    {
+      "path": "international_source_recovery/accepted_international_source_decisions.jsonl",
+      "bytes": 700992,
+      "sha256": "c5b9ab001586bfa76320ea67b6bdcd8c1557e5c3249ce72c8c5881f53789a467",
+      "encoding": "jsonl",
+      "rows": 166
+    },
+    {
+      "path": "extended_online_recovery/accepted_extended_online_recovery_decisions.jsonl",
+      "bytes": 125142,
+      "sha256": "af33f5229ed47e9f3ed66ac46c96e827f7886e626c29b7c41ec262cab680b9f5",
+      "encoding": "jsonl",
+      "rows": 26
+    },
+    {
+      "path": "coordinate_notation_recovery/accepted_coordinate_decisions.jsonl",
+      "bytes": 40063,
+      "sha256": "acfd55ef304f779e23d06f843d1e180d7bd1c9acc9562461de790ceff2e85a1c",
+      "encoding": "jsonl",
+      "rows": 10
+    }
+  ]
+}

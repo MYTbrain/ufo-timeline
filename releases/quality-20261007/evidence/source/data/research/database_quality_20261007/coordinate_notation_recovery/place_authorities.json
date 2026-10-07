@@ -1,0 +1,400 @@
+{
+  "generated_at_utc": "2026-10-07T07:57:18.719118+00:00",
+  "shared_archive_sha256": "310d96cddfec6c9d7a6ca901707473e7a0e03ec442487c0ddba69e33076cc748",
+  "records": {
+    "gravelbourg": [
+      {
+        "id": "5965462",
+        "name": "Gravelbourg",
+        "ascii_name": "Gravelbourg",
+        "lat": 49.88336,
+        "lon": -106.55122,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "CA",
+        "admin1": "11",
+        "admin2": "4703068",
+        "population": "1109",
+        "authority_line_sha256": "9ed7ecd34e5746a01bab118e42886848f980bb497027853b30c9453a3fed530e",
+        "primary_name_matches": [
+          "gravelbourg"
+        ],
+        "exact_alias_matches": [
+          "gravelbourg"
+        ],
+        "url": "https://www.geonames.org/5965462/"
+      }
+    ],
+    "udine": [
+      {
+        "id": "3165072",
+        "name": "Udine",
+        "ascii_name": "Udine",
+        "lat": 46.0693,
+        "lon": 13.23715,
+        "feature_class": "P",
+        "feature_code": "PPLA2",
+        "country": "IT",
+        "admin1": "06",
+        "admin2": "UD",
+        "population": "100170",
+        "authority_line_sha256": "43e0f919548f154ed3be1631d76663f8f643d1dcbfac102b26b7843c976fc9c7",
+        "primary_name_matches": [
+          "udine"
+        ],
+        "exact_alias_matches": [
+          "udine"
+        ],
+        "url": "https://www.geonames.org/3165072/"
+      }
+    ],
+    "dalycity": [
+      {
+        "id": "5341430",
+        "name": "Daly City",
+        "ascii_name": "Daly City",
+        "lat": 37.70577,
+        "lon": -122.46192,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "CA",
+        "admin2": "081",
+        "population": "106562",
+        "authority_line_sha256": "ff0b3499f5f6d19cdee8dd8a177d2d6c46071551de9b2405c5facae7949a34b1",
+        "primary_name_matches": [
+          "dalycity"
+        ],
+        "exact_alias_matches": [
+          "dalycity"
+        ],
+        "url": "https://www.geonames.org/5341430/"
+      }
+    ],
+    "wallopsisland": [],
+    "ashgrove": [
+      {
+        "id": "5887556",
+        "name": "Ashgrove",
+        "ascii_name": "Ashgrove",
+        "lat": 43.60861,
+        "lon": -79.89444,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "CA",
+        "admin1": "08",
+        "admin2": "3524",
+        "population": "0",
+        "authority_line_sha256": "9f191e7aaccca4c7eda62cabe55c037dc1b1cbb62fe034d491633ef8dd5a88c9",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/5887556/"
+      },
+      {
+        "id": "13271678",
+        "name": "Ashgrove",
+        "ascii_name": "Ashgrove",
+        "lat": 51.32005,
+        "lon": -2.41926,
+        "feature_class": "P",
+        "feature_code": "PPLX",
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "A4",
+        "population": "0",
+        "authority_line_sha256": "80d901bb8e6a309d245a452c2d642d0a1b1dfd3c87ef6ca084a8d4158ab6df28",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/13271678/"
+      },
+      {
+        "id": "4267699",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 39.1614,
+        "lon": -98.362,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "KS",
+        "admin2": "105",
+        "population": "0",
+        "authority_line_sha256": "2aed2052d6bbd345974c5471b77769d5c3cd9c9ef4b81cbdbb655035d9ffff44",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4267699/"
+      },
+      {
+        "id": "4375172",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 37.31533,
+        "lon": -93.5852,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "MO",
+        "admin2": "077",
+        "population": "1466",
+        "authority_line_sha256": "2ed6a131c1027b3b77aa07a6376add09cc3d6ff7b2331d06aa12345a756718ca",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4375172/"
+      },
+      {
+        "id": "4744861",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 38.92844,
+        "lon": -77.24137,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "VA",
+        "admin2": "059",
+        "population": "0",
+        "authority_line_sha256": "f071e38ed216fb214c398f83357a58b660fa647934b60612f612b18774fca562",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4744861/"
+      },
+      {
+        "id": "4847257",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 40.87085,
+        "lon": -92.55297,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "IA",
+        "admin2": "051",
+        "population": "0",
+        "authority_line_sha256": "b7ce1f856484ef512456f59ce9f4c577c450a61b9928f0a0e30e5daa6fd02549",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4847257/"
+      },
+      {
+        "id": "4906114",
+        "name": "Pitchin",
+        "ascii_name": "Pitchin",
+        "lat": 40.60309,
+        "lon": -87.86642,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "IL",
+        "admin2": "075",
+        "population": "0",
+        "authority_line_sha256": "a8df2a445fbc85e69aabb41786aa2372a8b32effc6de8c385c08d335cab124d4",
+        "primary_name_matches": [],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4906114/"
+      },
+      {
+        "id": "4917685",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 40.54781,
+        "lon": -86.84779,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "IN",
+        "admin2": "157",
+        "population": "0",
+        "authority_line_sha256": "c5769a79eb6fe7f012b13bb7c2af4cf5797e731ccdf90d5e20fc9511a0c173f2",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/4917685/"
+      },
+      {
+        "id": "5107412",
+        "name": "Ash Grove",
+        "ascii_name": "Ash Grove",
+        "lat": 43.03202,
+        "lon": -73.33122,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "NY",
+        "admin2": "115",
+        "population": "0",
+        "authority_line_sha256": "bfd5b8ba2fbc7a0f24518faa7b7628fe289efe42d4c3cebe56987b41dc7154f8",
+        "primary_name_matches": [
+          "ashgrove"
+        ],
+        "exact_alias_matches": [
+          "ashgrove"
+        ],
+        "url": "https://www.geonames.org/5107412/"
+      }
+    ],
+    "fortoglethorpe": [
+      {
+        "id": "4195850",
+        "name": "Fort Oglethorpe",
+        "ascii_name": "Fort Oglethorpe",
+        "lat": 34.94896,
+        "lon": -85.2569,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "GA",
+        "admin2": "047",
+        "population": "9803",
+        "authority_line_sha256": "a898685fe35794cf83a454883ea781542735576ffd1b4fd0c20e2f44e0c5819a",
+        "primary_name_matches": [
+          "fortoglethorpe"
+        ],
+        "exact_alias_matches": [
+          "fortoglethorpe"
+        ],
+        "url": "https://www.geonames.org/4195850/"
+      },
+      {
+        "id": "4214085",
+        "name": "Old Fort Estates",
+        "ascii_name": "Old Fort Estates",
+        "lat": 34.95285,
+        "lon": -85.23884,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "GA",
+        "admin2": "047",
+        "population": "0",
+        "authority_line_sha256": "fedd1367f801bef6bc3c46deb33613af38ae330b2c33a36a8aaa34b6e50dd1ba",
+        "primary_name_matches": [],
+        "exact_alias_matches": [
+          "fortoglethorpe"
+        ],
+        "url": "https://www.geonames.org/4214085/"
+      }
+    ],
+    "columbiacrossroads": [
+      {
+        "id": "5185033",
+        "name": "Columbia Cross Roads",
+        "ascii_name": "Columbia Cross Roads",
+        "lat": 41.83591,
+        "lon": -76.8019,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "PA",
+        "admin2": "015",
+        "population": "600",
+        "authority_line_sha256": "b89b762551f4185980038bb12604cc60179f7c3cac6736750871d756d33fab79",
+        "primary_name_matches": [
+          "columbiacrossroads"
+        ],
+        "exact_alias_matches": [
+          "columbiacrossroads"
+        ],
+        "url": "https://www.geonames.org/5185033/"
+      }
+    ],
+    "fareham": [
+      {
+        "id": "2649692",
+        "name": "Fareham",
+        "ascii_name": "Fareham",
+        "lat": 50.85162,
+        "lon": -1.17929,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "GB",
+        "admin1": "ENG",
+        "admin2": "F2",
+        "population": "42210",
+        "authority_line_sha256": "64b7f727ebece24643b32811f6ebe1d4fbddc624873fc18c2e41750aa647df16",
+        "primary_name_matches": [
+          "fareham"
+        ],
+        "exact_alias_matches": [
+          "fareham"
+        ],
+        "url": "https://www.geonames.org/2649692/"
+      }
+    ],
+    "mishicot": [
+      {
+        "id": "5263207",
+        "name": "Mishicot",
+        "ascii_name": "Mishicot",
+        "lat": 44.23916,
+        "lon": -87.64119,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "US",
+        "admin1": "WI",
+        "admin2": "071",
+        "population": "1407",
+        "authority_line_sha256": "1cd93928d0ef8c6fcd68fe178224884eb63ba52b97e4f0bd2b734f0950214a55",
+        "primary_name_matches": [
+          "mishicot"
+        ],
+        "exact_alias_matches": [
+          "mishicot"
+        ],
+        "url": "https://www.geonames.org/5263207/"
+      }
+    ],
+    "rytro": [
+      {
+        "id": "759815",
+        "name": "Rytro",
+        "ascii_name": "Rytro",
+        "lat": 49.48904,
+        "lon": 20.66631,
+        "feature_class": "P",
+        "feature_code": "PPL",
+        "country": "PL",
+        "admin1": "77",
+        "admin2": "1210",
+        "population": "3700",
+        "authority_line_sha256": "88ad64456cf42de24215be725cc9506436da0e80be8ada1eadb19a3b4f62fb19",
+        "primary_name_matches": [
+          "rytro"
+        ],
+        "exact_alias_matches": [
+          "rytro"
+        ],
+        "url": "https://www.geonames.org/759815/"
+      }
+    ]
+  },
+  "policy": "Exact primary/ascii/alias geographic facts; manual source interpretation is required before acceptance."
+}

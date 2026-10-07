@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "accessed_utc": "2026-10-07",
+  "purpose": "Native publisher checks supplement each record-specific pinned original observation-field and context checks. A few live checks never authorize blanket coordinate transfer.",
+  "updb_points_used": false,
+  "primary_publisher_checks": [
+    {
+      "native_source": "nuforc",
+      "native_id": "11998",
+      "url": "https://nuforc.org/sighting/?id=11998",
+      "status": "confirmed_native_date_place",
+      "observed_day": "2000-01-01",
+      "published_place": "Laporte, TX, USA",
+      "supported_facts": "Original observer works a stationary security detail near La Porte power/chemical plants. Place and original observed-day agree with pinned archival original."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "75841",
+      "url": "https://nuforc.org/sighting/?id=75841",
+      "status": "confirmed_native_date_place",
+      "observed_day": "2010-06-18",
+      "published_place": "Cape May Courthouse, NJ, USA",
+      "supported_facts": "Original observer outside at home by car; native name/date/location agree. References to other sightings and Morristown do not relocate this observation."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "164276",
+      "url": "https://nuforc.org/sighting/?id=164276",
+      "status": "confirmed_native_date_place",
+      "observed_day": "2021-08-03",
+      "published_place": "Staten Island New York, NY, USA",
+      "supported_facts": "Observer filming stars outdoors by home; native date and location agree."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "75819",
+      "url": "https://nuforc.org/sighting/?id=75819",
+      "status": "confirmed_native_date_place",
+      "observed_day": "2010-06-16",
+      "published_place": "Cape May Courthouse, NJ, USA",
+      "supported_facts": "Original observer steps from own front door and driveway; native date/place agree."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "158870",
+      "url": "https://nuforc.org/sighting/?id=158870",
+      "status": "access_unavailable",
+      "observed_day": null,
+      "published_place": null,
+      "supported_facts": "Tool could not retrieve official page. Retained pinned original supplies native identity, observation date and place; lack of web access is not evidence of absence."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "14489",
+      "url": "https://nuforc.org/sighting/?id=14489",
+      "status": "access_unavailable",
+      "observed_day": null,
+      "published_place": null,
+      "supported_facts": "Tool could not retrieve official page. Pinned original places observer in rented-house hot tub at Long Beach Island; reference remains source named locality, not offshore craft position."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "125959",
+      "url": "https://nuforc.org/sighting/?id=125959",
+      "status": "confirmed_remote_observation_exclusion",
+      "observed_day": "2016-01-17",
+      "published_place": "Joppatown, MD, USA",
+      "supported_facts": "Original is ISS live-feed screenshots. Submitted locality is not a local observation place; coordinate recovery withheld."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "144849",
+      "url": "https://nuforc.org/sighting/?id=144849",
+      "status": "confirmed_native_date_place",
+      "observed_day": "1984-09-01",
+      "published_place": "Houston Texas, TX, USA",
+      "supported_facts": "Native observed date and location agree; observer drying car, not driving. No explicit Approximate date marker in retrieved original."
+    },
+    {
+      "native_source": "nuforc",
+      "native_id": "40415",
+      "url": "https://nuforc.org/sighting/?id=40415",
+      "status": "access_unavailable_403",
+      "observed_day": null,
+      "published_place": null,
+      "supported_facts": "Official retrieval returned 403. Pinned source original states North Phoenix early morning November 2nd; municipality reference remains approximate and not an observer point."
+    }
+  ],
+  "geographic_reference_definition": {
+    "url": "https://www.geonames.org/export/codes.html",
+    "supports": "P features describe populated places; administrative A features are distinct. Accepted points are archival locality references, not measured observer/object positions."
+  },
+  "municipality_authorities_registry": "municipality_authorities.json",
+  "additional_primary_municipal_checks": [
+    {
+      "url": "https://www.danbury-ct.gov/?nid=1",
+      "supports": "Official City of Danbury, Connecticut; supports repeated matching CT source-place cleanup."
+    },
+    {
+      "url": "https://www.cityofelcentro.org/27/Government",
+      "supports": "Official City of El Centro, California; source elcentro spacing normalization resolves declared CA locality."
+    }
+  ],
+  "copyright_policy": "Compact paraphrased facts and short field values only; no copied full online pages."
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "retrieved_at_utc": "2026-10-07",
+  "retention": "Compact paraphrased fact receipts, exact publisher URLs and source locators. These are analyst receipts, not hashes of complete downloaded HTML. Full local records remain pinned by their canonical detail gzip and raw-field hashes. The single relevant MUFON PDF page additionally has remote-byte and extracted-page hashes.",
+  "publisher_field_semantics": [
+    {
+      "url": "https://nuforc.org/reportform/",
+      "status": "official_public_form_checked",
+      "facts": "The form has separate sighting-location and personal-contact sections. It requests event address/map coordinates, permits exact-address omission, and distinguishes land, boat and aircraft observer settings. This establishes current field role; it does not prove unchanged historical forms or truth of every submitted city."
+    },
+    {
+      "url": "https://www.mufon.com/wp-content/uploads/2024/11/JULY_2023_MUFON_Journal_WEB.pdf",
+      "status": "official_publisher_pdf_visually_checked",
+      "locator": "PDF zero-based page 12, printed page 13, second extracted image",
+      "quote": "Event City (nearest)",
+      "facts": "Official CMS search screenshot distinguishes event-country, event-state/province, event-county and nearest event-city fields. Its results screenshot labels Location of Event. This supports a declared nearest-city reference rather than precise witness/object coordinates.",
+      "hash_receipt": "mufon_reporting_field_pdf_receipt.json"
+    },
+    {
+      "url": "https://mufon.com/",
+      "status": "official_publisher_counterexample_checked",
+      "locator": "Last 20 Reports table, native case 139117",
+      "facts": "Table city is Helotes, Texas, United States, while German account summary locates the event in Altlengbach, Lower Austria. This is an explicit negative control: publisher field semantics alone cannot establish a correct observation locality. This native case is outside the new 1,529-candidate lane."
+    }
+  ],
+  "native_report_checks": [
+    {"event_id": 164301452998110, "native_id": "61642", "url": "https://nuforc.org/sighting/?id=61642", "status": "original_page_verified", "facts": "Public location is Kannattota, Sri Lanka; four observers; family sitting out watching the sky. The original page explicitly flags the day as approximate and says NUFORC assigned an arbitrary day. Preserve stored day, downgrade exact-day precision only."},
+    {"event_id": 2741276091661954, "native_id": "123853", "url": "https://nuforc.org/sighting/?id=123853", "status": "original_page_verified", "facts": "Public location is Taumarunui, New Zealand; three observers, friends watching stars by trees and a field. No travelling observer setting is described. Supports publisher-declared locality reference only."},
+    {"event_id": 363014509208948, "native_id": "188154", "url": "https://nuforc.org/sighting/?id=188154", "status": "original_page_verified", "facts": "Public location is Brodek u Prerova, Olomouc Region, Czechia. One observer, explicitly viewed from land. Two successive objects disappear overhead. Supports declared locality, not exact observer or craft position."},
+    {"event_id": 524355941902146, "native_id": "35392", "url": "https://nuforc.org/sighting/?id=35392", "status": "original_page_verified", "facts": "Public location is Kemayan, Malaysia. Siblings outside their house looking for Halley's comet; reporting observer sees orange point turn sharply. No event-city name is repeated in the narrative, but household setting and native location field agree without a named-place conflict."},
+    {"event_id": 627558549424632, "native_id": "42037", "url": "https://nuforc.org/sighting/?id=42037", "status": "original_page_verified", "facts": "Public location is Quatre Bornes, Mauritius, with two observers and five-second duration. Account describes looking out a window at three glowing balloon-like objects. No travel or aircraft setting is supplied; accepted only as declared locality reference."},
+    {"event_id": 3698405880998991, "native_id": "36964", "url": "https://nuforc.org/sighting/?id=36964", "status": "original_page_verified", "facts": "Public location is Kirkkonummi, Finland. Original occurrence line and NUFORC note explicitly flag an approximate day. Account does not establish specific fixed observer setting in this narrow pass, so no point is added; exact-day precision is downgraded while stored day remains unchanged."},
+    {"event_id": 2957926359810408, "native_id": "148376", "url": "https://nuforc.org/sighting/?id=148376", "status": "original_page_verified_with_unresolved_location_role", "facts": "Public city is Rytro, Poland. Account places observer at an unnamed kayak dock associated with travel from Piwniczna. Exact dock-to-city relationship is not independently established; point remains withheld in this lane."},
+    {"event_id": 2346209866478826, "native_id": "191645", "url": "https://nuforc.org/sighting/?id=191645", "status": "public_page_verification_challenge", "facts": "Public page produced a verification challenge. No live report-content verification is claimed. Accepted locality uses the full pinned native record and declared Jessore field; its rooftop setting and Jashore narrative spelling are retained."},
+    {"event_id": 1633289187534236, "native_id": "180703", "url": "https://nuforc.org/sighting/?id=180703", "status": "public_page_unavailable", "facts": "Public page unavailable through the web reader. No live-content verification is claimed; accepted locality relies on pinned native location and household balcony narrative."},
+    {"event_id": 811617361710041, "native_id": "161978", "url": "https://nuforc.org/sighting/?id=161978", "status": "public_page_unavailable", "facts": "Original Fermoy page could not be read live. Full pinned native account places observer at a gate opening it to get the car out before stargazing; travelling describes the lights. Manual role review supports fixed local land-observer setting, not travelling observer. No live-content verification is claimed."},
+    {"event_id": 664032857715698, "native_id": "91458", "url": "https://nuforc.org/sighting/?id=91458", "status": "public_page_unavailable", "facts": "Public Riebeek Kasteel page could not be read. Pinned narrative describes outside house and daughter joining; retained native declared locality remains sufficient only for bounded city reference, without claiming live verification."}
+  ],
+  "independent_geographic_identity_checks": [
+    {"url": "https://www.kitwecouncil.gov.zm/", "status": "official_city_identity_checked", "facts": "Kitwe City Council identifies its location as Copperbelt Province, Zambia. Used to corroborate municipality/country identity, not a witness address or precise event position."},
+    {"url": "https://www.statistikportal.de/de/gemeindeverzeichnis/08235085", "status": "official_geographic_identity_checked", "facts": "German statistical authority identifies Calw as a city in Baden-Wurttemberg, Karlsruhe region, Calw district. City identity corroborates the pinned populated-place authority."},
+    {"url": "https://buckinghamshire.moderngov.co.uk/ecSDDisplay.aspx?ID=1177&RPID=0", "status": "official_locality_context_checked", "facts": "Buckinghamshire Council lists Iver Heath ward under Iver Parish Council. This checks locality context; no individual event point in Iver Heath is accepted solely on this authority."},
+    {"url": "https://lannuaire.service-public.gouv.fr/hauts-de-france/pas-de-calais/9e825cb6-2874-4b22-98be-a0f7d17c4c54", "status": "official_short_name_correspondence_checked", "facts": "French public-service directory titles the municipal entry Le Touquet and gives its address in Le Touquet-Paris-Plage. Supports the retained account's Touquet shorthand without fuzzy renaming of source data."},
+    {"url": "https://dao.jessore.gov.bd/en", "status": "search_index_only_direct_fetch_403", "facts": "Government search result identifies the District Accounts and Finance Office as Jashore on a Jessore-domain government URL; direct page was forbidden. This corroborates spelling context at district level only, not a new city-coordinate or exact witness-point authority."}
+  ],
+  "limitations": "Only seven original NUFORC reports were individually read online; five of those support accepted points, one supports a date-only downgrade, and one is a held dock-location case. Other accepted rows are checked against their full pinned retained native records, not claimed individually re-fetched online. Independent municipality pages corroborate place identity; coordinates remain from the already pinned GeoNames populated-place authority."
+}

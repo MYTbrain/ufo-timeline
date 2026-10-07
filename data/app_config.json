@@ -1,14 +1,14 @@
 {
   "canonicalWebArtifacts": {
-    "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunk_manifest.json",
+    "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/event_chunk_manifest.json",
     "enabled": true,
     "eventChunksBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/",
     "filteredTraceAggregation": true,
     "fullDetails": true,
-    "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/canonical_web_manifest.json",
+    "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/canonical_web_manifest.json",
     "primaryCatalog": true,
-    "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/summary_manifest.json",
-    "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/summary_shards/",
+    "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/summary_manifest.json",
+    "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/summary_shards/",
     "traceRuntime": true
   },
   "defaultTileProvider": "configured",
@@ -38,27 +38,27 @@
     "reviewedCount": 4,
     "sourceInventorySha256": "055302012436a2549549a9712da750aca64bf54b4adb7c7ac475aa56ee56593a"
   },
-  "mappedCount": 580783,
+  "mappedCount": 582877,
   "normalizedCount": 702893,
   "packedPoints": {
-    "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/points.bin",
+    "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points.bin",
     "bytesPerRow": 88,
     "enabled": true,
     "mapLayerMode": "all",
-    "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/points_meta.json",
-    "rowCount": 580783,
+    "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points_meta.json",
+    "rowCount": 582877,
     "schemaVersion": 3,
     "startupPreview": true,
     "startupPreviewMaxPoints": 80000
   },
   "precisionBreakdown": {
-    "city": 542037,
-    "country": 22467,
-    "exact_coords": 110351,
+    "approximate": 15,
+    "city": 540621,
+    "country": 22464,
+    "exact_coords": 110352,
     "province": 622,
-    "region": 2,
-    "state": 10537,
-    "unknown": 16877
+    "state": 11941,
+    "unknown": 16878
   },
   "reports": {
     "rankedUnresolvedCsv": "https://b0f0a0de.ufo-timeline.pages.dev/reports/ranked_unresolved_locations.csv",
@@ -77,7 +77,7 @@
     "tracePreview": true,
     "worker": true
   },
-  "staticAssetVersion": "location-label-overlay-v1-20260824",
+  "staticAssetVersion": "quality20261007",
   "tileProviders": [
     {
       "id": "none",
@@ -92,5 +92,20 @@
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
     }
   ],
-  "unresolvedCount": 122110
+  "unresolvedCount": 120016,
+  "detailQualityOverlay": {
+    "enabled": true,
+    "gzipUrl": "./data/quality_detail_patches.json.gz",
+    "gzipSha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+    "patchCount": 4451,
+    "baseManifestSha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+    "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+  },
+  "dataQualityRelease": {
+    "id": "quality-20261007",
+    "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec",
+    "baseManifestSha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+    "effectiveMappedCount": 582877,
+    "effectiveUnmappedCount": 120016
+  }
 }

@@ -1,0 +1,263 @@
+[
+  {
+    "key": "handsworth",
+    "file": "handworth_nhle_1001473.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1001473/",
+    "place": "Handsworth",
+    "ngr": "SP0516590321",
+    "ids": [
+      "3549517007044085",
+      "3580375114205215",
+      "127114629727811"
+    ],
+    "tokens": [
+      "Handsworth",
+      "Birmingham",
+      "Staffordshire",
+      "1911"
+    ],
+    "fact": "Historic England identifies Handsworth Park in Birmingham at SP0516590321 and records Handsworth's incorporation into Birmingham in 1911 after its earlier Staffordshire status. This distinguishes Birmingham Handsworth from distant namesakes; source West Midland label is retained."
+  },
+  {
+    "key": "hall_green",
+    "file": "hall_green_nhle_1245354.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1245354",
+    "place": "Hall Green",
+    "ngr": "SP1128381576",
+    "ids": [
+      "4270969404758704",
+      "205444517315464",
+      "3651942985227401"
+    ],
+    "tokens": [
+      "Hall Green",
+      "Birmingham",
+      "SP1128381576"
+    ],
+    "fact": "Official listing places Hall Green's Three Magpies on Shirley/School Road in Birmingham at SP1128381576, close to the source SP1181 grid. It disambiguates the locality, without substituting the building for the archival reference or changing the source Warwick label."
+  },
+  {
+    "key": "willian",
+    "file": "willian_nhle_1347290.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1347290",
+    "place": "Willian",
+    "ngr": "TL2248830783",
+    "ids": [
+      "3423773675566883"
+    ],
+    "tokens": [
+      "Willian",
+      "Hertfordshire",
+      "TL 22488 30783"
+    ],
+    "fact": "Official listing identifies Willian, Hertfordshire at TL2248830783. The archive TL2230 reference agrees with this locality; report month precision is unchanged."
+  },
+  {
+    "key": "ewell",
+    "file": "ewell_nhle_1277324.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1277324",
+    "place": "Ewell",
+    "ngr": "TQ2203462897",
+    "ids": [
+      "3847776070870965"
+    ],
+    "tokens": [
+      "Ewell",
+      "Surrey",
+      "TQ2203462897"
+    ],
+    "fact": "Official listing identifies Ewell, Surrey and publishes TQ2203462897. The source TQ2262 grid aligns with this Ewell rather than distant Temple Ewell."
+  },
+  {
+    "key": "penn",
+    "file": "penn_nhle_1124968.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1124968",
+    "place": "Penn",
+    "ngr": "SU9110893321",
+    "ids": [
+      "2230554054223884"
+    ],
+    "tokens": [
+      "Penn",
+      "Buckinghamshire",
+      "SU 91108 93321"
+    ],
+    "fact": "Official listing places Penn in Buckinghamshire at SU9110893321, agreeing with archive SU9193 and resolving distant Penn namesakes."
+  },
+  {
+    "key": "wells",
+    "file": "wells_nhle_1382952.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1382952",
+    "place": "Wells",
+    "ngr": "ST5497445737",
+    "ids": [
+      "1023141148073244"
+    ],
+    "tokens": [
+      "Wells",
+      "Somerset",
+      "ST 54974 45737"
+    ],
+    "fact": "Official listing places Wells in Somerset at ST5497445737. The archive ST5445 reference agrees with Wells, Somerset rather than other places of that name."
+  },
+  {
+    "key": "rushton",
+    "file": "rushton_nhle_1224437.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1224437",
+    "place": "Rushton",
+    "ngr": "SJ6066708079",
+    "ids": [
+      "2167850847033573"
+    ],
+    "tokens": [
+      "Rushton",
+      "Shropshire",
+      "SJ 60667 08079"
+    ],
+    "fact": "Official listing identifies Rushton, Wroxeter and Uppington, Shropshire at SJ6066708079, agreeing with source SJ6008 and resolving distant same-name localities."
+  },
+  {
+    "key": "hanwell",
+    "file": "hanwell_nhle_1216364.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1216364",
+    "place": "Hanwell",
+    "ngr": "SP4357243575",
+    "ids": [
+      "2127334650940686"
+    ],
+    "tokens": [
+      "Hanwell",
+      "Oxfordshire",
+      "SP 43572 43575"
+    ],
+    "fact": "Official listing locates Hanwell, Oxfordshire at SP4357243575, consistent with source SP4343; the London Hanwell namesake is excluded."
+  },
+  {
+    "key": "barnby",
+    "file": "barnby_nhle_1032106.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1032106",
+    "place": "Barnby",
+    "ngr": "TM4807389938",
+    "ids": [
+      "3297308899551655"
+    ],
+    "tokens": [
+      "Barnby",
+      "Suffolk",
+      "TM 48073 89938"
+    ],
+    "fact": "Official listing locates Barnby in Suffolk at TM4807389938, agreeing with archive TM4789 rather than other Barnby namesakes."
+  },
+  {
+    "key": "weeton",
+    "file": "weeton_nhle_1149990.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1149990",
+    "place": "Weeton",
+    "ngr": "SE2838346503",
+    "ids": [
+      "2385269450020678"
+    ],
+    "tokens": [
+      "Weeton",
+      "North Yorkshire",
+      "SE 28383 46503"
+    ],
+    "fact": "Official listing places Weeton at SE2838346503 in North Yorkshire. It confirms the locality matching archive SE2846, despite a blank source county field and distant Weeton namesakes."
+  },
+  {
+    "key": "ruspidge",
+    "file": "ruspidge_nhle_1213344.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1213344",
+    "place": "Ruspidge",
+    "ngr": "SO6501111663",
+    "ids": [
+      "1488809833531446"
+    ],
+    "tokens": [
+      "Ruspidge",
+      "Gloucestershire",
+      "SO 65011 11663"
+    ],
+    "fact": "Official listing locates Ruspidge Methodist Church in Ruspidge and Soudley, Gloucestershire at SO6501111663, agreeing with archive SO6512."
+  },
+  {
+    "key": "norden",
+    "file": "norden_nhle_1441459.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1441459",
+    "place": "Norden",
+    "ngr": "SD8639514458",
+    "ids": [
+      "2763921852658054"
+    ],
+    "tokens": [
+      "Norden",
+      "Rochdale",
+      "SD8639514458"
+    ],
+    "fact": "Official listing locates Norden's memorial at SD8639514458 in Rochdale, agreeing with archive SD8614. The Lancashire archive label is preserved; the point is the source reference, not this memorial."
+  },
+  {
+    "key": "badbury",
+    "file": "badbury_nhle_1002679.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1002679",
+    "place": "Badbury Rings",
+    "ngr": "ST9641902982",
+    "ids": [
+      "160032045646197"
+    ],
+    "tokens": [
+      "Badbury Rings",
+      "Dorset",
+      "ST 96419 02982"
+    ],
+    "fact": "Official scheduled-monument record identifies Badbury Rings in Dorset at ST9641902982. The archive ST9602 reference agrees with the named hillfort; a populated-place requirement was inappropriate for this landmark."
+  },
+  {
+    "key": "isle_grain",
+    "file": "isle_grain_nhle_1085755.html",
+    "url": "https://historicengland.org.uk/listing/the-list/list-entry/1085755",
+    "place": "Isle of Grain",
+    "ngr": "TQ8887476789",
+    "ids": [
+      "2993037291430228"
+    ],
+    "tokens": [
+      "Isle of Grain",
+      "TQ 88874 76789"
+    ],
+    "fact": "Official listing identifies Isle of Grain at TQ8887476789. The source's punctuation-shortened ISLE.GRAIN and TQ8676 reference agree with this wider island/locality. The source marsh/sheep narrative is preserved; no church observer point is inferred."
+  },
+  {
+    "key": "hogs_back",
+    "file": "hogs_back_bgs_OR15004.html",
+    "url": "https://earthwise.bgs.ac.uk/index.php/OR/15/004_Locality_description_and_interpretation",
+    "place": "Hog's Back",
+    "ngr": "SU9431448321",
+    "ids": [
+      "4100264622305653"
+    ],
+    "tokens": [
+      "Hog's Back",
+      "Surrey",
+      "94314",
+      "48321"
+    ],
+    "fact": "British Geological Survey's original OR/15/004 report locates sampling sites on the Hog's Back structure in Surrey, including SU9431448321. Archive SU9348 lies on this named ridge; no populated-place coordinate or exact observer site is invented."
+  },
+  {
+    "key": "colwell_bay",
+    "file": "colwell_bay_jncc_gcr15_c5.pdf",
+    "url": "https://data.jncc.gov.uk/data/94dbee01-ece8-4587-a874-bd697d797388/gcr-v15-british-tertiary-stratigraphy-c5.pdf",
+    "place": "Colwell Bay",
+    "ngr": "SZ327878",
+    "ids": [
+      "2544245600181369"
+    ],
+    "tokens": [
+      "COLWELL BAY",
+      "327878",
+      "331887"
+    ],
+    "fact": "JNCC Geological Conservation Review volume15 chapter5 identifies Colwell Bay, Isle of Wight as SZ327878-SZ331887. The archival SZ3288 grid agrees with this coastal locality; a populated-place gate was inappropriate."
+  }
+]
