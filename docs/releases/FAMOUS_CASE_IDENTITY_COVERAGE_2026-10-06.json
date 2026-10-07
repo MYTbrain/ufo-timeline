@@ -1,0 +1,2237 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-06",
+  "scope": "All 85 historical presets; explicit source identities separate from vicinity candidates",
+  "canonicalManifestSha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b",
+  "summaryManifestSha256": "9c50d0e608fc89d1dc7523cde5f407a45e2d10a9e6adefaf83384d1a8a209bdc",
+  "chunkManifestSha256": "833ca33e18ca17768b2e1852d36ad28bd45f9544e88d1821677a67ac176a9d19",
+  "inputAudits": [
+    {
+      "file": "docs/releases/famous-case-identity-audit/group-a.json",
+      "sha256": "f816a1f75a22954ba8733f0d1d46a341f97a2abfa9a8556c41de9dcc3aaf381a"
+    },
+    {
+      "file": "docs/releases/famous-case-identity-audit/group-b.json",
+      "sha256": "f3c5373fe8eb28646a13b667f83b514f9f11738925f860b4ea221034a8f28015"
+    },
+    {
+      "file": "docs/releases/famous-case-identity-audit/group-c.json",
+      "sha256": "bfba025f25c6b3711c6bb92acebd6532131d3824df121f1d2aa636f7dbfdd982"
+    }
+  ],
+  "productionR2Base": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731",
+  "productionPinContractSha256": "fd014efcdf39616680a84b52f94ffe47358f0e24996efca40ea425a3b404d58e",
+  "summaryShardsVerifiedAgainstProductionPins": 71,
+  "liveR2BytesFetched": false,
+  "summaryRecordsChecked": 702893,
+  "referencedDetailChunks": [
+    {
+      "id": "chunk_000000",
+      "sha256": "46e97140fba1cc8b0c377665e155c80a3370d68b55a3dfc7731f95c10ed5616d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000001",
+      "sha256": "9007eddae46cf29ba19b388b4c43c39ce1bf966ca38633b847fbdc0beb16ce5e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000002",
+      "sha256": "cf30a604b8c06363a53d0626c0e8d831766fa5de9884c21a0b8ad8e415e5fe0c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000003",
+      "sha256": "fb50a53ac7564abf77cc8a7b6c3ab7cb4a3409870b05cf17ae7cf2ce4a62933d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000004",
+      "sha256": "af2bb11812aab6fafce0db2e50898cc85079a98a135b2243c37989bb1e320193",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000005",
+      "sha256": "34ccfb8f27a7917c81f4a139b8a6354f6e8f6bcf9873e7d965c78c93d8544ea2",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000006",
+      "sha256": "0eeeaaa2e116a974d737879ae234f4729984bfd6bf43239559f287b5c5d9be4b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000007",
+      "sha256": "9697efbf8335f054275bd5d47ab42a4ff34a278713030ebacfe3f2b5980f5f45",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000008",
+      "sha256": "e022131b05b5d4636974b085c2196f8533c46975c6df26e2837824f276a44d72",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000009",
+      "sha256": "bf7f1e592a61f30d4aa8b0a7962a43ce31e6cbd7f38664faf4a5cb7797cb245e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000010",
+      "sha256": "57edea4f93106666d96d442ba9e85b4d8419586c28378515fee3a556d894f1f8",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000011",
+      "sha256": "eb5ed31b3aecf85323d59af33b76469cd17ddbbbd057496916f4dd858e3e5d36",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000012",
+      "sha256": "d8d1acff7ebf8a549e05816b533a6731cb34ed50103fc19edd438120be927d3f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000013",
+      "sha256": "05c8beeaa47bd3276a3d6a80d18c373c891ed59a27a4e7a662f544cbd7d36c7f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000014",
+      "sha256": "750effa406b181edff1f7d39a68591e6b07fed293cf06274dda5fb4eaa399b00",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000015",
+      "sha256": "67b73f52de1e3fa3e3394624bc57834aea7b433409247ffcd24b5d2b30c7a456",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000016",
+      "sha256": "5add94e91d41d0ec23e86e30cdf0ef06de89d1e479e7eb8dc265b375cbc736bc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000017",
+      "sha256": "c84945115717dff53ed310a9e32a54baba82328b79264cef0503f3e24044199b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000018",
+      "sha256": "80bc365b2f1f06963c7eca731888a360ecc66ad1d6cab58a4a7c6b7eb2eee3d4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000019",
+      "sha256": "a596333ef7e09dd0b1586b8a253f0ff9de252cf712e1ac56c179668fa1099d50",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000020",
+      "sha256": "ee4973259542ce008c4b9649f83d9dcce779b8a4e4b12401f2d4c19a747986ef",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000021",
+      "sha256": "b35d0e4efa2ca630e3a2370202f0330b25825ae56d5a8deff6ae7b4b674c25d8",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000023",
+      "sha256": "a52b49abeb982bd5f7390f5c3224f9278b9f02be12923f8987eb8e5a2d151514",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000024",
+      "sha256": "f9f8b0546172ec1c10d307b5177f940d95866624bc91284112e16083a68ab9e7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000025",
+      "sha256": "a46f11c4e89bddba94f0fe946e403b323acba49beca3d96e8f386e6a502f783e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000026",
+      "sha256": "11b1f8cee4f95f359074570850b55c67146f592c8621ed769731df4b055f5da3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000027",
+      "sha256": "06c5c16bd349c3868b41df0dac199ada79a303730844e08b0cca0e9069a12788",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000028",
+      "sha256": "842dca6d5d62607baf685135fe2350ad1f2d5b1a090d235ecbd0b1797fb6ed94",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000029",
+      "sha256": "1ba4c194522d4ec40d63a513c59ddc507268c74a24822e553970220074a01f75",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000030",
+      "sha256": "84a22ce4b1f29b4c8670ee8190b83b9d4eaaaa52c1e2e7006cc8da8c178100e1",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000031",
+      "sha256": "83d3651aef978cd25be501f6ed0cf1e509af6b14bfb70e9b28ca30aca655c73b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000032",
+      "sha256": "0a975c9a1dda8044fbeb8f5aab13d4ee3c2f4553da5f38529fd1493478f270b4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000033",
+      "sha256": "08c36c59e15db307e22c8e1d3b98fdeb09477dfbcad80c5e5831f1ba22aad15e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000035",
+      "sha256": "5e5a069d7eb10f7da1408348715a1f5b06e66503204a1cec13fb5cc2d81adce0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000036",
+      "sha256": "79e2afd33bc998bc23e98c1f410de287d50ebe3ab53be770d8c98a03a02b7d5b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000037",
+      "sha256": "004726f68ded84fe61415cd409fce8e24914296c68d9fdb1648f27964facca2b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000039",
+      "sha256": "d31c48f8221ed0e380d72f35832efd1519848cd83f938f526e4afd722a45c9a3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000040",
+      "sha256": "4d1806274733e2fdec7028a15c91a824b121b8edcb4fb00c406c6d99460d2419",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000041",
+      "sha256": "c4ebc5c5586beb842289143c75a71d594a65cea5f5a947de34c5096dbfb82009",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000042",
+      "sha256": "cc64f9c74acf58f6809c99cab4bfdcb1483aa1e9863f6aec6547a1f87a36af4e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000043",
+      "sha256": "29243e2e7c5e62f1e4304c5505cfb128facad6885d7d4131d931eb1f41aedee1",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000044",
+      "sha256": "0fe50f14cb7878a5161929131ae37839d876426e4602ac9d170e6f7f6cc91dd6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000045",
+      "sha256": "7e26c8c7bd04feeff074ef93ba1c82a06fc86aad15b39c550b9a68d43cacd5c9",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000047",
+      "sha256": "9a6c06d33560e53151fd9d219863318cf814771633718107a397fab6b9dc02e6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000048",
+      "sha256": "bfa664f4360b359b1f9437be21e3ba2c35b2bf51caa7b1c3a55e1130f64a7a6c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000049",
+      "sha256": "6d66e025587a50d4e11e7f002b073397f9e661a86731229e641b922f699a6117",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000050",
+      "sha256": "663c9123336bd3c375f8c59d859ea8f896421596649af6a3b5ef65e2869d54af",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000051",
+      "sha256": "7588e1bb6e7201c42d5b89c43d164b4b26b20401430b64580cbe718ed4897afa",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000052",
+      "sha256": "7c262abc3c38110ffcf0f508e728486d4147d872ab0d6abf40f6f1653d68f252",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000053",
+      "sha256": "2fdc73f2d5807a3b3918f05ac09399b165b9d8665cf7fd9ba73a336d6f273300",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000054",
+      "sha256": "1abe4372893527c34cb884acd4bbae51c95314baacf4364a9c040e4a0f7b52ee",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000055",
+      "sha256": "899d68c2acfd491fe92b227d30bd3fde46b8a854134ef3f215fc4cbd19a5098a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000056",
+      "sha256": "6dc4c58ca76b83593a81e8cc17ca184b531ed8c2dcf8a79bdba39dc4aba9a91a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000057",
+      "sha256": "a40530bca5d0ca6401aee06b36454de77ab64973b7af98339eb6910d339ce3d2",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000058",
+      "sha256": "3e5fe5d9b25fc953e7d664f246342da964ca5648d6a27402c462af5b4faa22fc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000059",
+      "sha256": "e3a1b09464f76e9029e217ede31207eaa82a50ad02a4834cf4114a9a3789abfa",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000060",
+      "sha256": "2ba6e106dc9713f5d116f6e528726f130ce5e649e88ac85589a1a4fd329194c7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000061",
+      "sha256": "6bf638aa47fdbd531f87a9027f3bb70a38408afe5dcf278341daeffad6f3f3cb",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000062",
+      "sha256": "e80837dc43073e8f7f9508cf5417d132586c1a119051011bf7883294a8fc1d10",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000063",
+      "sha256": "9d60c34deb72452259bec1b9e68035c97ca2a912e7ec638cd8d07203c7b097f6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000065",
+      "sha256": "e2548bd3ce3e0b63c08420cf250c3b5341878ac711ced38a8b18c69996688fcc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000066",
+      "sha256": "5bed6c377777fc9f9ac238fe919d3ce50530be5a37bbbc6e808de39d1df9b0cf",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000067",
+      "sha256": "28ae9adb93268746f791ea2164c98b294811c8c448ceaf082edf6a308f981422",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000068",
+      "sha256": "375f2ed1504b690ca7fdb22a688278a533a97d0b4356eeb7d801150ce10fb9d4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000069",
+      "sha256": "a020488743acd3827d972d6c6448a15d0892c0f0e64865a9eba21b8f3ffdd91a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000070",
+      "sha256": "06ea999f1f457f74930364bd1d6ecdfaef63efd8773207e08916d523520a0c09",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000071",
+      "sha256": "eb5a39c7644cc88dd1ab2f7c5d3ce1d78bd262b52561f514137b53b62095e67a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000072",
+      "sha256": "c81c69798a44a1caa5f0c8462d1bd6f333254115136e733e375406206390979e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000073",
+      "sha256": "98702db3d20544694e66d751a6caa0d02b4d0cb7916391e24066772c63e4f29e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000074",
+      "sha256": "1bcdbe2d977348c312cca051e3f5fae1b5dfbe1c078a88d7998d6c024b4fd826",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000075",
+      "sha256": "8aa89ce2698b3eefd48fdeaab2cffe266588b277580b518d1e3fff5898bc4a12",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000076",
+      "sha256": "a70c3b594f5bebffa7d2d9ad1ede7314a9d888a4886a439324522cae08931fcb",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000077",
+      "sha256": "27d3874d8d718b8e7d2121b1285c2e6ffc71b95f2e792747bf14f313efb652a0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000079",
+      "sha256": "9d89b92a9f69fdc4be3c42f1365a8bede3887887158762650bc5e2b41dc6603b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000080",
+      "sha256": "8e385b7a2f534e3a853584c0ac6a829687500d52418bacc7c1ea2aa2a275d893",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000081",
+      "sha256": "23e66573b8dafe9090e65605fd772ef4c3c1e0c732047c3dc7f208efc69803ba",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000082",
+      "sha256": "8583f2178252bbe1224bd4a80ec6b7e77e46d183b9c2363711288d3da839556b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000083",
+      "sha256": "b987da1f1e0835364ac36063f3a46f90b70c6f03ffa36f969c8c34f307ca3096",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000084",
+      "sha256": "c37482a3721aabe17f37207e27d5329daecddd74685a1d99b66a6e2e67dc1fc5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000085",
+      "sha256": "5aeea315f7dd762468e55eb90acf57c8defee5c22c889e5f56d5edab6cdb0c7a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000086",
+      "sha256": "77f1be958cb806d334058511165d3a48c8ef55a9e04d835377a5118db207c8d5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000087",
+      "sha256": "dcd1351438accd04c2fa38ac5401d31cf95aa7b1436be73339aa294c484502a2",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000088",
+      "sha256": "e3bc1efe46a17ca9ccda7dda0f7ca505909c1b392ae694618be5ed47c6699cfb",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000089",
+      "sha256": "7e1995dc4c3b666f8b557a8d576676cdf5a4b2a04a2b913e2fc2660570e7c592",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000090",
+      "sha256": "ffbddfd47250f1fa4f01e9277a3bfd0b23e2c88faf0cc2c7200252bca1b24b9f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000091",
+      "sha256": "18f134ed5090b356fea200114b1438ed2763b6b54fb6321a500fcf8d319e219d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000092",
+      "sha256": "00dc6aeefac14be4ec88ed34c1300c16e2da6911de83fc0bd5aed2ba0f9c9c94",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000093",
+      "sha256": "3eb441bb47f0e0204b71901a665ddb2ef3db01421c72879d507356d6d617aa78",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000094",
+      "sha256": "33f26c6c1e99a555dc2e8372af458e71f567263244370c94f89c5d816c907dc6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000096",
+      "sha256": "c4001b086a8ba05955b4be5dedd4eeaab76df0a7dce4022834801fdaa789dc26",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000098",
+      "sha256": "270a23ec23ac5fa4348c38c17e4baef299d5a122a3e62f5cd484029b5773b669",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000099",
+      "sha256": "328fbacd5ba0bea357bfdd190b23a0d64074bb97d42024b930e2b44dbe320b59",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000101",
+      "sha256": "febcb4b13547576b9ab76380a9a014614fb88519205b39179f1370f3f0549eea",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000102",
+      "sha256": "2c364b92c5a2360d0cecb07e5857bafd2d3d0c9c8b047cea2476680f1c35f460",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000103",
+      "sha256": "f262b8136b49777cdb72ccf3484d80bc3023599f6d79a693b0ea009003921dd9",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000104",
+      "sha256": "16d13aecb3777ecf311821da43bdc9aaf59be62001321f5777a0973bcc5e461a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000105",
+      "sha256": "6251f3c52184569cc688e897c97558fe0b4271deef05b2810263c6ce28492db4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000106",
+      "sha256": "727fd1fe7b45e39da2b2cb49d63a2cc247dfaa96e3207c60eab81d7e20681719",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000107",
+      "sha256": "ab11f731d0e7d400f18f58e9d1590ce6815a991957e20322ce0758cf31870fdb",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000108",
+      "sha256": "24785af15a4cdc12b14ef36f2d50d83802117342c6f38a0b4672553b41e6aa3c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000109",
+      "sha256": "e3816fe358194afee276b130007c50f63b1f8220aa59e7c0e2dde18a6cf1625b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000110",
+      "sha256": "00a59ad73f9322828cca68cb697ea8b9f8759f11f6abb768f2f9ded04e55a3e4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000111",
+      "sha256": "395b4b58d3ede3e8cab9003824b28f9f42f023ef8f3e6a1497380d996d8fa81c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000112",
+      "sha256": "51468c6522b5471bd43edf1058fce709ab035b382f41f37827c40357eaaae5a7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000113",
+      "sha256": "571cd1ad7351e7b63bb13e885225c7c5a0e08440c24f69d864325b2b13e85c78",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000115",
+      "sha256": "628daa000af97206ddc02d6f6d0944c7d94d4bfba429779fe2f40cac3d7590f6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000117",
+      "sha256": "0db5089eb339234b105517b05090b1c2c940e03cb8c78445df9193b874cc1933",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000118",
+      "sha256": "cd8935da18ca6f81a5e0f144cd533e9f0c84edd089378875f1353c4ccf6a4353",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000119",
+      "sha256": "bb31c3cca746f3aee29794c653eb3c9a0f02baa1bc89363f322b3a771b44d5c1",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000120",
+      "sha256": "0d1cd14cbec72b733bfb06d9c789ec3b5b4b0514496a38246b20c5e489e13073",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000121",
+      "sha256": "cfe53995d30fa2c807be12522353c911a94a6b15b392f0d0f47e7d0bdab982e5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000122",
+      "sha256": "f2a8068883809ee1895b5df0375f60220bc742e3e72518699aaf4b8d2c37ff7d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000124",
+      "sha256": "c2e9de11b4c0052a2f8cd583d5617675dfb6d7151bfda29a9ccb6014cec467b4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000125",
+      "sha256": "9f520aafd5fad96ed55c9ab433a65346581a78abfe866204ba2decc2bbde49e3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000126",
+      "sha256": "2e98c56357b1e5ede9eff103e60d74fa7f33a1fe10b94f9cb4b810e6cac4c5ab",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000128",
+      "sha256": "2911c45bb382171cf943c8eb47740e42fc5db5b5be121487f4f5ca4483b1fd29",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000129",
+      "sha256": "b9e47884bbed0ed5dbebe15d55a4dcfaa33140ce1f4124f9d6ed284bcfd54492",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000130",
+      "sha256": "4f40c623c1d5cae38dc1274b19bfbf1caf7b36e99e7a44d4acca60d1c8ce0da2",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000131",
+      "sha256": "c1695235ae01473563ed8be1ec95cd1992c502af5d014c8274d0ed0e063e25f1",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000132",
+      "sha256": "00fafb21a7075adaed9197c1cf169e77cf34e512cee115d7e23424b0ebcb94c4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000133",
+      "sha256": "21c0177b70488d639e9f4488b2c0baca5c350fa597fe0b547ba124a7b480dc70",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000134",
+      "sha256": "e39161f08ec345fdf788b452dea6611ac0a8fde7c32bc2b97684e356a6df58cf",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000135",
+      "sha256": "2930d7fa2a0fb7569103c23507b015e4413e3a19ea500003e540e6234c04f591",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000136",
+      "sha256": "14d716e359f38e191f146267b472efc4eadd83cfc90f569bf8749f22766bda3f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000137",
+      "sha256": "d62273f4e2a92275d55fa549f9bfdc7eff23cd80f1d08ee3187a8214b2942f08",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000139",
+      "sha256": "e82b74989fb2ed3940b8be9797bc8eb1d88a13640f491470b2a367434f26500b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000140",
+      "sha256": "cc087d6a97c7d9924f17d1f1441dc75c74f88f023cb60144b189a500fd8fd130",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000141",
+      "sha256": "12fdf2a82313c58819531f84ea318000a65456f4152bdae148bbe942a5046cd3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000142",
+      "sha256": "3ae2eb3ac4e06260d350d1699371a882f3f44b5390e877a7ddf3d8a7594886ce",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000144",
+      "sha256": "381e1cbed052c868cc70898d996e4fc8452085901c06c348519d10887c866264",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000145",
+      "sha256": "1dec0fe13f9d1db86348b999a93497902a58b5a89f71cab28b5b055359a6b2cc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000146",
+      "sha256": "86b94328efb179ca6edabf8640a50693cfee40fccf17c4f2b7291ac1dd9b9923",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000147",
+      "sha256": "530e3654b07dfe5b67e8da02a228f955f19f7a4134814719de6e816cdccae7f0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000148",
+      "sha256": "11d7463d31af410d0256cecefb99cf4b23d6f2fa306f652f79d8c18cdd6be53e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000149",
+      "sha256": "57065e5e9fb31caa5e677e181a25cf2b6adeacaa74cbeffc345ad7bdc62db154",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000150",
+      "sha256": "b0f32a49c18c90146d9c95af9881455aa5855df19de5d7dbde64fd31f2504890",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000151",
+      "sha256": "e9ca7c07088f639d2562fa0f0bc1aecdacd39b8757af64d9621103b5e1585fec",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000152",
+      "sha256": "869a30903cf9fb75d556bc22de66fb2198fbc43cd152e07b4537e6d3a52b3b83",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000153",
+      "sha256": "b12987a0be4c06b879d6c4974dee48a2c19fb3375037e71be51619b2b749912c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000154",
+      "sha256": "b48941d4fa593fe3e49844d8b4fab6a024ca72c93d1843dc7854aec9f28850fe",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000155",
+      "sha256": "35ad55b59c62557f192abdc8220c5d99c81d4f4fae583a6bfb1eb212203c8cbe",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000156",
+      "sha256": "48121e20f09b87d2f0586272c353af031e464e835d7584db1e176ff7df47862f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000157",
+      "sha256": "69ef6937dac3b04862b98f0ddda960bf7b41a987f05686581e99168818aff20f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000158",
+      "sha256": "362280d289658a4dffc9c4fde8082bf512ef8fe7d433d3e3e071dc12f3397ab7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000159",
+      "sha256": "b9014fdb909b00773ff9957d273034a5971fa5f8f451264bb4c019c2026288f7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000160",
+      "sha256": "6eb0a52db2871a5fa0b3e777d1d953236f40c5795864b88238b028e7b0e96382",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000161",
+      "sha256": "6a61df21e51fe8176d0fc5a931d790651f27fea7a8275223ec03337361f99861",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000162",
+      "sha256": "6f63f271a1e32fb283df74a27e73dce80e522b9de5ad5ed7e1f3bf2572860e62",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000163",
+      "sha256": "c8fb7c33b72ae92c6ac5bfa50bbf1547e03c621f8babb689e8fbf494fcfefbc6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000164",
+      "sha256": "ad02c655454f4c36260417300f02f0743588bcfd8fdb7a1bc9346dfcf0e80fd5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000165",
+      "sha256": "f234d601420fdd6206c0b796d69cae01861d39eef32437643405dff9a3667e61",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000166",
+      "sha256": "71594586bab7a2966ac8754fecc5c91e8533825726a66c2681bd1919dc756ab4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000167",
+      "sha256": "3f4091943c6e728ac7f8934bc4c2250f0fc68e890d0b8a9c12eb1532c9f2822f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000168",
+      "sha256": "1bf362d34b80e446e55062e84a1c55149f8b6195b565c55e287c9c674b50a214",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000169",
+      "sha256": "c31c56b98ce5f6eec10080745262cad905b2819d65b0361afbcdabea0a04fbab",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000170",
+      "sha256": "8581d64f82252957f7cf8f7f09b67607f696387b03956ff12f2b6e16aea809be",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000171",
+      "sha256": "4e00b52cf77ec717850fc6163ad00998782310cb1bd7c314896c8f510f001cc7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000172",
+      "sha256": "164f5298ecaad7727362f32814f41f750ae69bdf8d6716798099e8dc7ddead94",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000173",
+      "sha256": "541ffd5df90b1e93b008527158b32b740f3368306bbdecdf7e044dc091d733ac",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000174",
+      "sha256": "05968998e44a57e894577f831cf2019d0c6dbfbe49bc5f9a1172f1d9195182bc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000175",
+      "sha256": "a4f4f9e3d83f828ea13bb65e94dab0549f7fb5e121ba6a1628303d15328bd25b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000176",
+      "sha256": "410e1f811d1eed17c9298be654ec2c318c583a66be96d482923eb9327a0223d6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000177",
+      "sha256": "fa042a1bab8e60a815d981969a87c8035e21eb5c9f649fe612836532b75d2105",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000178",
+      "sha256": "0ecaa7192396cc932c2a67bfd125670900f0e50b9387928159203f4fee3eafe6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000179",
+      "sha256": "2f0e69bc764b32059e3b501fe291a95fb55caebd9e2754e93c5ec5dc7d7c4eec",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000180",
+      "sha256": "69c17b2485f30ac885f5cb2e0df58ea7aaac016c677202dcec4579af5bae1929",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000181",
+      "sha256": "7e7544f949058199253585fb67fc0e84f4793e175054f30121f93c22a795f0ff",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000182",
+      "sha256": "432be9cf14e68a47d391a633016ded941dae26a57ac8c32c620cde581cf4ada0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000183",
+      "sha256": "f3940b87254c18f3591a91c6730e67744fd1b8c33a7652fdd8c033cab80f56f2",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000184",
+      "sha256": "6972327da04882d5b608c4ad89a0e009cce3db3988eff80dfce463da30de366c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000185",
+      "sha256": "6f05c4a8005d444de9af1640aea65c5fb3eb4094b1567d0e990fc751b1ae7968",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000186",
+      "sha256": "e73871cb5a3ffc0bfc550d10ec2b396d235f8aee50d2d51fa795959684b98408",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000188",
+      "sha256": "abc580db2446e3da2c11e4d81e0b3bf793df9423ddd24205bab738aac2e31657",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000189",
+      "sha256": "6a45fd98870673c0d668d8835531d24170d38267df5c7dd993651bdc4861f170",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000191",
+      "sha256": "164701a48a5725ae0a1e88d7c3e9f8b7d1b4bea8875c8615b20294eb3c713a20",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000192",
+      "sha256": "afce55e7ffc7da6826a5b4328cdef0f65e091cc92556cc22a58ff23c326ed204",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000193",
+      "sha256": "d30b1b0e0637beda670599f703ecc3b272a9ceff4d0efb413f460eefc01d3b9d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000194",
+      "sha256": "b453c72476b2c2b912e9fc75f87be0971a4bb12d87561ba8fe424fbbb881d2a7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000196",
+      "sha256": "c80c2c5fbc8eb54c4c438928c2ae96b7675f1998a7a951743e68a325577a1697",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000198",
+      "sha256": "4d813818d87209f66b262e83bba9dedf2b6afae5b36830870c783fdcde59a5b4",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000199",
+      "sha256": "5990fbdc91e22c57e57bec8d6af899157bb0e14f4ceac3e4fbc7ecd180385005",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000200",
+      "sha256": "659bf74847893cf426a5edd3c3fbc4fd0c6536f09322c7570acc2f6362f12d5e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000201",
+      "sha256": "ab784899dad08e4cca6d0bd46950fa7f50b15a90d115d8b101ece342bba89a3f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000202",
+      "sha256": "f505af02cc1885c0a7337c7a6b8eab4770f0dfb9b0a0be7de1a3e3bd9c8ba01f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000204",
+      "sha256": "8ab7367d15d8466b6877db1ee257cc06858d1107ae416addc5084652a1863b6c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000205",
+      "sha256": "3dde24f86e36ab878b72f31f2829745078d2c0b8ed127a879f48c2b543acff29",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000206",
+      "sha256": "c6100aff0887f0615469d8947daf995767feeffc3ff87eea112f4b42d41160d6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000207",
+      "sha256": "363c0147693761a66c4008a56ed5431d1a51e0c31a14cdc69a59950ed5830f89",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000208",
+      "sha256": "2ecdfab80008ba61b2e734e44b24d1e257d19edf59419dd3e5e95a9e4395b257",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000209",
+      "sha256": "9f058c8a9689786c369c83706db90c5981035847951582614edf6c97b12c81ee",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000210",
+      "sha256": "d9302177c84b07e2d2e4d8480b8926d5e984e605d722f9415f62689219f43eda",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000211",
+      "sha256": "93f7b41b3324f96ef162c29573ebdb48f51fa65b38df5e0fdabb64829b761be6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000212",
+      "sha256": "476f2f954ef003c9cbd8afb04ba404ecad584e1f8113fdf5e1ea89e06b653b1d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000214",
+      "sha256": "e8757db6bcee317311399fd7019dbf00377a9af924bc759788c6e89ce933cd0a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000215",
+      "sha256": "48d83b9a8f3c09b0fe66edacb9b6ffd522e0c388a21c7cca6816d1fb584bf7ef",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000216",
+      "sha256": "66a659cdd9b6b843b3ce573c9b1d210684e273d01bd1f5814c6f70a08b85cd00",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000217",
+      "sha256": "62fe5edb13bb95b57d29db3867b7975ca1383940f40ef9ebc2e4481f6cf628f9",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000218",
+      "sha256": "0465de645ea539893a303ec224ca7aa76ec1e842c08b6a29c74b849d85ace53e",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000219",
+      "sha256": "06685680d2d5350c135096568c9e645f8bef84652e3b33b6be9b033f07b9a543",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000220",
+      "sha256": "85b251743bb6ae8a9b1cfb96f2ea3aec529a47a06997174ad723702590176680",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000221",
+      "sha256": "97df710518ef4258ec28b2284c4df0d86ac54075b3c07c5f39e585bc5bfc69d6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000222",
+      "sha256": "27076dcf9522faa576f8afe13528aaa064955166c7c4ce91705fb77eb2c130c6",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000223",
+      "sha256": "417c4415367d7fb9f278c5a7bf1e52fd743f9e8009bb50e66b03f624d01951d5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000224",
+      "sha256": "701160d82fa6780d1326b1a1374163d6876e2339b3888700956262706da7216d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000225",
+      "sha256": "d5ea1fbeb18afd672bf9e79cbd26165821a14d0edf9a332a9cfecad356419b02",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000226",
+      "sha256": "588d9eaa35891e6e081f1f0c889aea2df41be5dc6e0a1394fc7f3f510aff87d8",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000227",
+      "sha256": "ae15bd26689730e21f71a93ded8e23c38e68298fa7c36a2ef9aaf3274d3d1ef3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000229",
+      "sha256": "e00ab73f84ba495e59019b26e6afac95dfd0527bc4ada0f7e79f28001edea435",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000231",
+      "sha256": "90fa30e34b4cdd49e60203c8a2101440571c1198adbd8da1bb5cc7e058dc31e8",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000232",
+      "sha256": "c2b7a8ae5a8006f171bfc5d231011e9fed4a7f2e79ac1022e720e790b612f803",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000233",
+      "sha256": "96800185730e1dc1a6c25ad3613609b8c97c752142c3b24444e4f51985ad2a8b",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000234",
+      "sha256": "0172f53c9925251ebfa42d0e97d8e938b4d9cdbeffcab402fd770c4a148900ef",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000235",
+      "sha256": "6fa578c200287cde367e43854c8d1d701b91678d125d098d31a9ff3789eec7e7",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000236",
+      "sha256": "f231fc68990ebaed021654961c6c3a3ba0894978e7d9b972759371c560f4684f",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000238",
+      "sha256": "bc2cf6fd3cf18736d47321fdafa4a490007520b38d8749cb11c45f5e5f7faa01",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000239",
+      "sha256": "55ddb9e76e1ce8aa8f1f61f892ef44f8fff6948085dd6ad2c60d86d5aef9692d",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000240",
+      "sha256": "d059bc86043388abda0e193e0f96215aba5a59bdc7bd34546acacbf2d5814bc0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000242",
+      "sha256": "293b4a41d94ede0dc2165540b1a829ff70370fb74f3eeaabd0796d9bf80dcc66",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000243",
+      "sha256": "3681e7962cec0fb297c4f9f1420234ac272b2f275955ad0905ae3f43aabc1806",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000244",
+      "sha256": "ddc715af2f700447b514d66379c70a9c404e12d168e57938947e6f5ba352c578",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000246",
+      "sha256": "e1687be81613517dd2611fc33aa32555ac984ea70b6754c2bc7caf2d6454d9fc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000247",
+      "sha256": "c8d390f6a74c8a4d1c436620ac32e7b9fc4b95828e792c8bf6bbad218654d446",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000248",
+      "sha256": "1dba5e60cb7bb6c505941625e14d1f304dacac517fe51ba29d3f5da1b6e0dc90",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000249",
+      "sha256": "38d0521ed251a8849d8a6e3b08ede36cd753bfb3c92db5ad3f1fbc1abedd28d5",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000250",
+      "sha256": "5f12cf724e437446ad51a62a9e78132766d7f891b07be66e5ff1dbcf54ca027a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000251",
+      "sha256": "38a742b86f378a80aad4d73a37ad7e758bfd4a3c059e865e3d77b512bee781e3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000252",
+      "sha256": "8e11b7d3804be952fc769c8e2aba9250766426358881ad88534311d8ae489a27",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000253",
+      "sha256": "4ea7c5a2b92b2d2c2e9e922cdd7fddebd7cbe0317d094e78e8096fd8c70303bf",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000254",
+      "sha256": "9cb8e96d42dee558c21f0ec72c292190fdae1141bb4325d749e667e36cdee948",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000255",
+      "sha256": "eb7bded60906c70962f2f2c9c1144e70c5753bf49f5328b89a248fabec056c26",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000256",
+      "sha256": "37c41469bfd198929b1ad1a3f31f259c5fcc9b79100fb10110c592cf181991ca",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000257",
+      "sha256": "4ef2baae677dce8d0147ac2b696f6a0c431e9dcd6974a56a2595336c45c3962c",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000258",
+      "sha256": "6473c8ab08b9984b61ec73bb096855a45b14fc3d5dcd6b4c65ae9a22693ec1a3",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000259",
+      "sha256": "971a0c4b6ffe3843c449e9010e5e987f78b94e0f06c60b7a2922022fdca3ed87",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000261",
+      "sha256": "2519944d7d188b6a8f6fd877919a98ae21364ac2996020e033455a0d9a48f82a",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000262",
+      "sha256": "bd287442cf72a890fe944f9ef23d9af85d6b74fa06d13992860a7d35503fa2e0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000263",
+      "sha256": "84b519366cc1dc97192945318787b6616daef5bb35b6f0faa52bd3747984d5a0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000264",
+      "sha256": "2293aecd25cbcb6e47381529e88e792d4b04633c84de68a416925c6aa87d27ee",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000265",
+      "sha256": "56fe4d8cc545e1e7f72ce3ef084b03aa9c4bc78194260b7ef9b7a1f5b1460064",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000266",
+      "sha256": "5d4912cd38dfd49014aba8651016db56627015e5e11861a2c4a9ca312bad6088",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000267",
+      "sha256": "ee58729f2669879d0ef7b7634226404ef508f1fe46428e71bec22a29857bacdd",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000268",
+      "sha256": "76c8a70ec5318620e313a9c96d02315435a11ea90662bd512df0570438c89004",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000269",
+      "sha256": "5fffa43fb3fb7dcfdf32cafe523e994ffbc79a3f8045874421a7e42fe60ad3bc",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000270",
+      "sha256": "45c2db591177ce131c12d9758a4bd32dfc7287c607fabd7558d315f5e7c3dc83",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000271",
+      "sha256": "3de946b6387084e37ee8e6dbbf7af2ef3de1e53ba9922f24ccdfb62baed45f23",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000272",
+      "sha256": "d7a3a25b44fea16eec2e171b2a30bea199038c0341c62a67578be770a9470734",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000273",
+      "sha256": "099aaee372403f349d99b70ccb6f51242fa255f8a5be4bd7daba8225984606ed",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000274",
+      "sha256": "d15917e4ee3eeb00655546e2f71ee91503ecd281de7675f69d7ab15fe3085934",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000275",
+      "sha256": "b3d6ff6a61cf1becf709a08bef0b6ea3e7adcf8242c6716178834f34bb1c3c74",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000276",
+      "sha256": "ecc04f5fab1fc2afeef8c183b9472e3c793bff3eeaf93d06c48fcc6c5a6df544",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000277",
+      "sha256": "94a2aa2cd4cf5d8fd172e2196c789d745f7af10262bfa3cd7adb71b6353a58de",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000278",
+      "sha256": "79c3b4941abe8a5155cf38392b26a8e7cb5330dcfcb695d6fb2717bb2a9fb944",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000279",
+      "sha256": "1a51952b1f8d752f41b251284e483ad978405f13dc3905ad6f165583d7b659e0",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000280",
+      "sha256": "64e6aa787923c19dd14e818d25a698289cb712a48773d47aa1256fcd5f294fb9",
+      "matchedProductionPin": true
+    },
+    {
+      "id": "chunk_000281",
+      "sha256": "32291f2f3df9f1a1af3bde84cf105137bce5a08bf3a256495068ff659d54735c",
+      "matchedProductionPin": true
+    }
+  ],
+  "caseCount": 85,
+  "matchedCaseCount": 84,
+  "referenceCount": 702,
+  "runtimePresetsSha256": "17b06e8f2cdf327c00800a43f447696828835b0f9f3fab5e02d7cbc76e1c4e2b",
+  "cases": [
+    {
+      "caseId": "case_alderney",
+      "name": "Alderney pilot sightings",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_vilas_boas",
+      "name": "Antônio Vilas-Boas",
+      "status": "matched",
+      "recordCount": 10,
+      "mappingCounts": {
+        "unmapped": 7,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_ariel_school",
+      "name": "Ariel School",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_aurora",
+      "name": "Aurora airship story",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 3
+    },
+    {
+      "caseId": "case_basel",
+      "name": "Basel sky broadsheet",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_los_angeles",
+      "name": "Battle of Los Angeles",
+      "status": "matched",
+      "recordCount": 15,
+      "mappingCounts": {
+        "mapped": 8,
+        "unmapped": 7
+      },
+      "sourceDateOutsidePresetCount": 5
+    },
+    {
+      "caseId": "case_berkshire",
+      "name": "Berkshire County / Labor Day",
+      "status": "no_confirmed_match",
+      "recordCount": 0,
+      "mappingCounts": {},
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_berwyn",
+      "name": "Berwyn Mountains",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "unmapped": 7,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_betty_barney_hill",
+      "name": "Betty and Barney Hill",
+      "status": "matched",
+      "recordCount": 9,
+      "mappingCounts": {
+        "unmapped": 7,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_bonilla",
+      "name": "Bonilla observation",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_broad_haven",
+      "name": "Broad Haven school",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_calvine",
+      "name": "Calvine photograph",
+      "status": "matched",
+      "recordCount": 1,
+      "mappingCounts": {
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_cash_landrum",
+      "name": "Cash–Landrum",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "unmapped": 6,
+        "needs_review": 2
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_ohare",
+      "name": "Chicago O’Hare",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_chiles_whitted",
+      "name": "Chiles–Whitted",
+      "status": "matched",
+      "recordCount": 15,
+      "mappingCounts": {
+        "mapped": 7,
+        "unmapped": 8
+      },
+      "sourceDateOutsidePresetCount": 8
+    },
+    {
+      "caseId": "case_colares",
+      "name": "Colares / Operation Saucer",
+      "status": "matched",
+      "recordCount": 67,
+      "mappingCounts": {
+        "unmapped": 19,
+        "mapped": 48
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_coyne",
+      "name": "Coyne helicopter encounter",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_cussac",
+      "name": "Cussac encounter",
+      "status": "matched",
+      "recordCount": 9,
+      "mappingCounts": {
+        "unmapped": 6,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_delphos",
+      "name": "Delphos ground-ring report",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_eagle_river",
+      "name": "Eagle River / Joe Simonton",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_ellsworth",
+      "name": "Ellsworth radar encounter",
+      "status": "matched",
+      "recordCount": 11,
+      "mappingCounts": {
+        "unmapped": 6,
+        "mapped": 5
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_belgian_triangle",
+      "name": "Eupen / Belgian triangle reports",
+      "status": "matched",
+      "recordCount": 11,
+      "mappingCounts": {
+        "unmapped": 9,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_exeter",
+      "name": "Exeter / Kensington",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 3,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_falcon_lake",
+      "name": "Falcon Lake",
+      "status": "matched",
+      "recordCount": 3,
+      "mappingCounts": {
+        "unmapped": 2,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_farmington",
+      "name": "Farmington sightings",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "mapped": 4,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_flatwoods",
+      "name": "Flatwoods encounter",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "unmapped": 7,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_florence",
+      "name": "Florence stadium sighting",
+      "status": "matched",
+      "recordCount": 2,
+      "mappingCounts": {
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_valentich",
+      "name": "Frederick Valentich",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "unmapped": 7,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_gorman",
+      "name": "Gorman pursuit",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 5
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_gulf_breeze",
+      "name": "Gulf Breeze photographs",
+      "status": "matched",
+      "recordCount": 31,
+      "mappingCounts": {
+        "mapped": 14,
+        "unmapped": 17
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_hangzhou",
+      "name": "Hangzhou Xiaoshan Airport",
+      "status": "matched",
+      "recordCount": 1,
+      "mappingCounts": {
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_harbour_mille",
+      "name": "Harbour Mille lights",
+      "status": "matched",
+      "recordCount": 1,
+      "mappingCounts": {
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_jal_1628",
+      "name": "Japan Air Lines Flight 1628",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 5
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_jimmy_carter",
+      "name": "Jimmy Carter sighting",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_john_lennon",
+      "name": "John Lennon and May Pang",
+      "status": "matched",
+      "recordCount": 2,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_kaikoura",
+      "name": "Kaikōura lights",
+      "status": "matched",
+      "recordCount": 25,
+      "mappingCounts": {
+        "unmapped": 13,
+        "mapped": 12
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_kecksburg",
+      "name": "Kecksburg",
+      "status": "matched",
+      "recordCount": 15,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 10
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_kelly_hopkinsville",
+      "name": "Kelly–Hopkinsville",
+      "status": "matched",
+      "recordCount": 12,
+      "mappingCounts": {
+        "unmapped": 9,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_kenneth_arnold",
+      "name": "Kenneth Arnold",
+      "status": "matched",
+      "recordCount": 16,
+      "mappingCounts": {
+        "unmapped": 10,
+        "mapped": 6
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_kirtland",
+      "name": "Kirtland tower sighting",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 6,
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_michigan_1994",
+      "name": "Lake Michigan radar reports",
+      "status": "matched",
+      "recordCount": 10,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 5
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_lakenheath",
+      "name": "Lakenheath–Bentwaters",
+      "status": "matched",
+      "recordCount": 13,
+      "mappingCounts": {
+        "mapped": 4,
+        "unmapped": 9
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_levelland",
+      "name": "Levelland vehicle reports",
+      "status": "matched",
+      "recordCount": 12,
+      "mappingCounts": {
+        "unmapped": 10,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_lubbock",
+      "name": "Lubbock Lights",
+      "status": "matched",
+      "recordCount": 12,
+      "mappingCounts": {
+        "unmapped": 9,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_malmstrom",
+      "name": "Malmstrom missile controversy",
+      "status": "matched",
+      "recordCount": 8,
+      "mappingCounts": {
+        "mapped": 5,
+        "unmapped": 3
+      },
+      "sourceDateOutsidePresetCount": 3
+    },
+    {
+      "caseId": "case_mantell",
+      "name": "Mantell pursuit",
+      "status": "matched",
+      "recordCount": 11,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 10
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_mariana",
+      "name": "Mariana film",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 3
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_maury_island",
+      "name": "Maury Island",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "needs_review": 1,
+        "unmapped": 6
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_mcminnville",
+      "name": "McMinnville photographs",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 5
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_michigan_1966",
+      "name": "Michigan swamp-gas controversy",
+      "status": "matched",
+      "recordCount": 9,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 7
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_minot",
+      "name": "Minot radar and visual reports",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "mapped": 3,
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_montreal",
+      "name": "Montreal / Place Bonaventure",
+      "status": "matched",
+      "recordCount": 2,
+      "mappingCounts": {
+        "unmapped": 1,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_nancy",
+      "name": "Nancy / amaranth case",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_nash_fortenberry",
+      "name": "Nash–Fortenberry",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 6
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_green_fireballs",
+      "name": "New Mexico green fireballs",
+      "status": "matched",
+      "recordCount": 15,
+      "mappingCounts": {
+        "mapped": 4,
+        "unmapped": 11
+      },
+      "sourceDateOutsidePresetCount": 6
+    },
+    {
+      "caseId": "case_norway_spiral",
+      "name": "Norway spiral",
+      "status": "matched",
+      "recordCount": 1,
+      "mappingCounts": {
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_nuremberg",
+      "name": "Nuremberg sky broadsheet",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 3
+    },
+    {
+      "caseId": "case_oloron",
+      "name": "Oloron angel-hair reports",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_pascagoula",
+      "name": "Pascagoula",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_petrozavodsk",
+      "name": "Petrozavodsk lights",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_phoenix",
+      "name": "Phoenix Lights",
+      "status": "matched",
+      "recordCount": 9,
+      "mappingCounts": {
+        "mapped": 6,
+        "unmapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_portage",
+      "name": "Portage County police pursuit",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "unmapped": 6,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_quarouble",
+      "name": "Quarouble / Marius Dewilde",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_rb47",
+      "name": "RB-47 encounter",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_red_bluff",
+      "name": "Red Bluff police sighting",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 3,
+        "needs_review": 1,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_rendlesham",
+      "name": "Rendlesham Forest",
+      "status": "matched",
+      "recordCount": 20,
+      "mappingCounts": {
+        "mapped": 5,
+        "unmapped": 15
+      },
+      "sourceDateOutsidePresetCount": 5
+    },
+    {
+      "caseId": "case_rhodes",
+      "name": "Rhodes photographs",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 3,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_robert_taylor",
+      "name": "Robert Taylor / Livingston",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 3
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_roswell",
+      "name": "Roswell debris case",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "mapped": 3,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 4
+    },
+    {
+      "caseId": "case_shag_harbour",
+      "name": "Shag Harbour",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "mapped": 2,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_socorro",
+      "name": "Socorro / Lonnie Zamora",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_illinois_triangle",
+      "name": "Southern Illinois police sightings",
+      "status": "matched",
+      "recordCount": 10,
+      "mappingCounts": {
+        "mapped": 6,
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_stephenville",
+      "name": "Stephenville lights",
+      "status": "matched",
+      "recordCount": 1,
+      "mappingCounts": {
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_tehran",
+      "name": "Tehran intercept",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "needs_review": 1,
+        "unmapped": 4,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 2
+    },
+    {
+      "caseId": "case_trans_provence",
+      "name": "Trans-en-Provence",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_travis_walton",
+      "name": "Travis Walton",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 5,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_tremonton",
+      "name": "Tremonton film",
+      "status": "matched",
+      "recordCount": 4,
+      "mappingCounts": {
+        "unmapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_trindade",
+      "name": "Trindade Island photographs",
+      "status": "matched",
+      "recordCount": 5,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_flight_105",
+      "name": "United Airlines Flight 105",
+      "status": "matched",
+      "recordCount": 3,
+      "mappingCounts": {
+        "unmapped": 2,
+        "mapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_nimitz",
+      "name": "USS Nimitz / Tic Tac",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 6
+      },
+      "sourceDateOutsidePresetCount": 1
+    },
+    {
+      "caseId": "case_valensole",
+      "name": "Valensole / Maurice Massé",
+      "status": "matched",
+      "recordCount": 6,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_varginha",
+      "name": "Varginha",
+      "status": "matched",
+      "recordCount": 7,
+      "mappingCounts": {
+        "unmapped": 4,
+        "mapped": 3
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_voronezh",
+      "name": "Voronezh park reports",
+      "status": "matched",
+      "recordCount": 3,
+      "mappingCounts": {
+        "mapped": 1,
+        "unmapped": 2
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_washington",
+      "name": "Washington radar sightings",
+      "status": "matched",
+      "recordCount": 21,
+      "mappingCounts": {
+        "unmapped": 17,
+        "mapped": 4
+      },
+      "sourceDateOutsidePresetCount": 0
+    },
+    {
+      "caseId": "case_westall",
+      "name": "Westall school",
+      "status": "matched",
+      "recordCount": 3,
+      "mappingCounts": {
+        "needs_review": 1,
+        "mapped": 1,
+        "unmapped": 1
+      },
+      "sourceDateOutsidePresetCount": 0
+    }
+  ]
+}

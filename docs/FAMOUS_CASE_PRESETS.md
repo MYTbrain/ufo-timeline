@@ -47,14 +47,25 @@ an empty vicinity from nearby records hidden by filters and waits for catalog
 ingestion before claiming zero coverage. These counts are contextual candidates,
 not verified case membership.
 
+All 85 presets now have a completed, bounded database identity review. Their
+`catalogReview` separates matched cases from cases with no confirmed source
+identity; an empty vicinity does not substitute for this decision. The generated
+crosswalk is rebuilt from the three reviewed group JSONs by
+`scripts/build_famous_case_identity_crosswalk.py`, which checks production data
+pins, source/date identity and original-detail pointers without changing data.
+
 Reviewed `catalogRefs` identify original records explicitly naming a case or
 describing its distinct source account. The Results summary lists these records
 separately, with direct Full Details access even when they are unmapped, misplaced,
 or excluded by the map filters. It does not manufacture points, enlarge the
 circle, or change map/statistical cohorts. Identity fields fail closed on catalog
 drift; mapping notes are scoped to the reviewed coordinates. Multiple source
-entries are not independent incidents. See the October 6 catalog identity and
-vicinity coverage audits in `docs/releases/`.
+entries are not independent incidents. Stored dates outside the reported preset
+are shown explicitly, along with non-exact precision and distinct image/radar
+context roles where relevant. Unconfirmed presets are marked in the dropdown.
+See `docs/releases/FAMOUS_CASE_FULL_IDENTITY_REVIEW_2026-10-06.md` and its
+machine-readable receipt for the complete list; the earlier vicinity audit is
+a separate geographic candidate-coverage check.
 
 Case presets also enable direct same-day, same-category report connections.
 The graph groups exact-date, mapped, recognized-craft records from the filtered

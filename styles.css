@@ -7642,6 +7642,16 @@ button:focus {
   scrollbar-gutter: stable;
 }
 
+.results-case-catalog-status {
+  padding: 6px 8px;
+  border-left: 2px solid var(--panel-border);
+  background: var(--panel-soft);
+}
+
+.results-case-catalog-record-meta {
+  font-size: 0.69rem;
+}
+
 .results-case-catalog-entry {
   margin-top: 8px;
   padding: 8px;

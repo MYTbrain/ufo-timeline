@@ -4550,8 +4550,9 @@
     els.filterFamousCases.innerHTML = '<option value="">' +
       (activeCase ? "Clear case preset" : "Choose a famous case") + "</option>" +
       orderedChoices.map(function (item) {
+        const unmatched = item.catalogReview && item.catalogReview.status === "no_confirmed_match";
         return '<option value="' + escapeHtml(item.id) + '" title="' + escapeHtml(item.location) + '">' +
-          escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + "</option>";
+          escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + (unmatched ? " · no confirmed record" : "") + "</option>";
       }).join("") + (choices.length ? "" : '<option disabled>No cases match this search</option>');
     els.filterFamousCases.value = state.famousCaseId || "";
     if (els.famousCaseSearchStatus) {
@@ -4578,25 +4579,40 @@
         event.sort_date_iso === reference.dateIso);
       const unresolved = available && reference.mappingStatus === "needs_review" &&
         event.lat === reference.reviewedLat && event.lon === reference.reviewedLon;
+      const reviewedPosition = available && event.lat === reference.reviewedLat && event.lon === reference.reviewedLon;
       const mappingNote = !available ? "Referenced entry is unavailable in the loaded catalog."
         : !event.has_coordinates ? "No map coordinates; this entry cannot seed traces."
-        : unresolved ? reference.mappingNote : "Mapped catalog entry.";
+        : (unresolved || reviewedPosition) && reference.mappingNote ? reference.mappingNote : "Mapped catalog entry.";
       return { reference: reference, event: available ? event : null, mappingNote: mappingNote,
-        mappingIssue: !available || !event.has_coordinates || unresolved };
+        mappingIssue: !available || !event.has_coordinates || unresolved,
+        dateConflict: reference.dateIso < activeCase.startIso || reference.dateIso > activeCase.endIso };
     });
   }
 
   function renderFamousCaseCatalogEntries(activeCase) {
     const entries = famousCaseCatalogEntries(activeCase);
-    if (!entries.length) return '<p class="results-famous-case-meta">Historical preset · database identity not yet checked</p>';
-    const availableCount = entries.filter(function (entry) { return entry.event; }).length;
+    if (!entries.length) return '<p class="results-famous-case-meta results-case-catalog-status">' +
+      (activeCase.catalogReview ? 'Database review: no confirmed case record.' : 'Historical preset · database identity not yet checked') + '</p>';
     const issueCount = entries.filter(function (entry) { return entry.mappingIssue; }).length;
-    return '<details data-case-catalog-entries><summary>' + formatNumber(availableCount) +
-      ' database record' + (availableCount === 1 ? '' : 's') +
+    const dateConflictCount = entries.filter(function (entry) { return entry.dateConflict; }).length;
+    return '<details data-case-catalog-entries><summary>' + formatNumber(entries.length) +
+      ' matched database record' + (entries.length === 1 ? '' : 's') +
       (issueCount ? ' · mapping issues' : '') + '</summary><div class="results-case-catalog-entries">' +
       '<p class="results-famous-case-meta">Source records about this case, not separate incidents. Inspectable independently of map filters.</p>' +
+      (dateConflictCount ? '<p class="results-famous-case-meta">Some source dates differ from the preset. Stored dates are shown below.</p>' : '') +
       entries.map(function (entry) {
+        const recordType = entry.event ? entry.event.type : '';
+        const roleLabels = { original_case_image_reference: 'Case image reference',
+          original_case_radar_prelude_account: 'Radar prelude account',
+          original_case_data_retrieval_account: 'Case data retrieval account' };
+        const roleLabel = roleLabels[entry.reference.recordRole];
         return '<article class="results-case-catalog-entry"><strong>' + escapeHtml(entry.reference.sourceRef) + '</strong>' +
+          '<p class="results-case-catalog-record-meta">' + escapeHtml(entry.reference.dateIso) +
+          (entry.event && entry.event.date_precision && entry.event.date_precision !== 'exact_day'
+            ? ' · ' + escapeHtml(entry.event.date_precision.replace(/_/g, ' ')) : '') +
+          (recordType ? ' · ' + escapeHtml(recordType) : '') + (roleLabel ? ' · ' + roleLabel : '') +
+          (entry.dateConflict ? ' · outside reported dates' : '') + '</p>' +
+          (entry.reference.dateWindowIssue ? '<p>' + escapeHtml(entry.reference.dateWindowIssue) + '</p>' : '') +
           '<p>' + escapeHtml(entry.mappingNote) + '</p><button type="button" class="secondary-button" data-inspect-famous-case-record="' +
           escapeHtml(entry.reference.eventId) + '"' + (entry.event ? '' : ' disabled') + '>Full Details</button></article>';
       }).join('') + '</div></details>';
@@ -4640,6 +4656,7 @@
       (connectionCount ? '' : ' disabled') + '>Fit connections</button></div>' +
       '<details data-case-results-details><summary>Case details &amp; sources</summary><div class="results-famous-case-details-body">' +
       '<p>' + escapeHtml(activeCase.description) + '</p>' +
+      (activeCase.catalogReview && activeCase.catalogReview.note ? '<p>Database review: ' + escapeHtml(activeCase.catalogReview.note) + '</p>' : '') +
       (activeCase.dateNote && activeCase.dateNote !== "Reported event date; the preset does not establish a case match."
         ? '<p>' + escapeHtml(activeCase.dateNote) + '</p>' : '') +
       '<p>' + (hasVicinity

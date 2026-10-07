@@ -556,7 +556,8 @@ const chronologicalChoices = Array.from(picker.els.filterFamousCases.innerHTML.m
 assert.deepEqual(chronologicalChoices.map(item => item.id), cases.sortCases(chronologicalChoices, "chronological").map(item => item.id));
 const chronologicalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([^<]+)<\/option>/g)];
 for (const option of chronologicalLabels) {
-  assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "chronological")), "the picker forwards chronological order to its year-first label formatter");
+  const suffix = cases.getCase(option[1]).catalogReview?.status === "no_confirmed_match" ? " · no confirmed record" : "";
+  assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "chronological")) + suffix, "the picker keeps the year first and identifies unmatched presets");
   assert.match(option[2], /^\d{4}(?:–\d{4})? · /);
 }
 assert.equal(picker.els.famousCaseOrderButtons[1].attributes["aria-pressed"], "true");
@@ -564,7 +565,10 @@ assert.equal(picker.els.famousCaseOrderButtons[0].attributes["aria-pressed"], "f
 picker.state.famousCaseOrder = "alphabetical";
 picker.context.renderFamousCasePicker();
 const alphabeticalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([^<]+)<\/option>/g)];
-for (const option of alphabeticalLabels) assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "alphabetical")));
+for (const option of alphabeticalLabels) {
+  const suffix = cases.getCase(option[1]).catalogReview?.status === "no_confirmed_match" ? " · no confirmed record" : "";
+  assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "alphabetical")) + suffix);
+}
 assert.equal(picker.els.famousCaseOrderButtons[0].attributes["aria-pressed"], "true");
 assert.equal(picker.els.filterFamousCases.value, kecksberg.id, "changing case order preserves the selected case");
 assert.equal(picker.els.famousCaseSearch.value, "1952", "changing case order preserves search text");

@@ -19,8 +19,13 @@ function extract(name) {
   assert.fail(name);
 }
 const cash = cases.getCase("case_cash_landrum");
-assert.equal(cash.catalogRefs.length, 6);
+assert.ok(cash.catalogRefs.length >= 6);
+const cashMappedRef = cash.catalogRefs.find(ref => ref.eventId === "4435047138615330");
+assert.ok(cashMappedRef, "The original reviewed Cash source reference is retained");
 for (const preset of cases.CASES) {
+  assert.ok(Object.isFrozen(preset.catalogReview), "Every one of the 85 cases has a completed identity review");
+  assert.ok(["matched", "no_confirmed_match"].includes(preset.catalogReview.status));
+  assert.equal(preset.catalogReview.status === "matched", preset.catalogRefs.length > 0);
   assert.ok(Object.isFrozen(preset.catalogRefs));
   assert.equal(new Set(preset.catalogRefs.map(ref => ref.eventId)).size, preset.catalogRefs.length);
   for (const ref of preset.catalogRefs) {
@@ -42,25 +47,29 @@ const context = vm.createContext({
   clearFamousCasePreset() {}, fitFamousCaseTraces() {},
 });
 vm.runInContext(["famousCaseCatalogEntries", "renderFamousCaseCatalogEntries", "bindFamousCaseActions"].map(extract).join("\n"), context);
-assert.equal(context.famousCaseCatalogEntries(cash).filter(row => row.mappingIssue).length, 6);
-assert.match(context.renderFamousCaseCatalogEntries(cash), /6 database records · mapping issues/);
+assert.equal(context.famousCaseCatalogEntries(cash).filter(row => row.mappingIssue).length,
+  cash.catalogRefs.filter(ref => ref.mappingStatus !== "mapped").length);
+assert.ok(context.renderFamousCaseCatalogEntries(cash).includes(`${cash.catalogRefs.length} matched database records · mapping issues`));
 assert.match(context.renderFamousCaseCatalogEntries(cash), /not separate incidents/);
 const handlers = {};
 context.bindFamousCaseActions({ addEventListener: (name, handler) => { handlers[name] = handler; } });
 const targetFor = id => ({ closest: selector => selector === "[data-inspect-famous-case-record]"
   ? { getAttribute: () => id } : null });
-handlers.click({ target: targetFor(cash.catalogRefs[0].eventId) });
-assert.equal(opened.id, Number(cash.catalogRefs[0].eventId));
+handlers.click({ target: targetFor(cashMappedRef.eventId) });
+assert.equal(opened.id, Number(cashMappedRef.eventId));
 assert.equal(opened.options.centerMap, false, "inspecting a misplaced record must not pan the map to it");
 assert.equal(opened.options.openPopup, false);
 opened = undefined;
 handlers.click({ target: targetFor("12345") });
 assert.equal(opened, undefined, "only a reviewed active-case reference can be opened through this action");
-records.get(cash.catalogRefs[0].eventId).lat = 30.03;
-assert.equal(context.famousCaseCatalogEntries(cash)[0].mappingIssue, false, "old mapping notes do not override a future coordinate change");
-records.get(cash.catalogRefs[0].eventId).source = "different-source";
-assert.equal(context.famousCaseCatalogEntries(cash)[0].event, null, "identity drift fails closed");
+records.get(cashMappedRef.eventId).lat = 30.03;
+assert.equal(context.famousCaseCatalogEntries(cash).find(row => row.reference.eventId === cashMappedRef.eventId).mappingIssue, false, "old mapping notes do not override a future coordinate change");
+records.get(cashMappedRef.eventId).source = "different-source";
+assert.equal(context.famousCaseCatalogEntries(cash).find(row => row.reference.eventId === cashMappedRef.eventId).event, null, "identity drift fails closed");
 assert.match(context.renderFamousCaseCatalogEntries(cash), /disabled/);
-assert.match(context.renderFamousCaseCatalogEntries(cases.getCase("case_mariana")), /database identity not yet checked/);
-assert.equal(cases.getCase("case_mariana").catalogRefs.length, 0, "nearby candidates do not create identity references");
+assert.ok(cases.getCase("case_mariana").catalogRefs.length > 0, "Nonempty vicinities also receive actual source identity review");
+assert.match(context.renderFamousCaseCatalogEntries({ startIso: "2020-01-01", endIso: "2020-01-01", catalogRefs: [], catalogReview: { status: "no_confirmed_match" } }), /no confirmed case record/);
+const dateConflict = { ...cash, startIso: "1981-01-01", endIso: "1981-01-01" };
+assert.match(context.renderFamousCaseCatalogEntries(dateConflict), /source dates differ from the preset/);
+assert.match(context.renderFamousCaseCatalogEntries(dateConflict), /1980-12-29.*outside reported dates/);
 console.log("Famous case catalog reference checks passed");

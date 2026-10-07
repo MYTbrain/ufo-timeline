@@ -1,5 +1,9 @@
 # Famous-case catalog coverage repair
 
+This records the initial 16-reference repair. The subsequent full-list identity
+review in `FAMOUS_CASE_FULL_IDENTITY_REVIEW_2026-10-06.md` supersedes its limited
+identity scope; this document remains part of the release provenance trail.
+
 Cash–Landrum showed no nearby map results despite six explicitly identifying
 catalog records. Five have no coordinates; the UFOCAT entry is geocoded roughly
 418 km from Huffman. Maury Island has a similar misplaced point and six unmapped

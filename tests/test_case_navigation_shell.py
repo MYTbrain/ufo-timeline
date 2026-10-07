@@ -70,10 +70,10 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
         "trace_neighborhood.js": "2026-10-06-case-traces-v4",
         "trace_direction_summary.js": "2026-10-06-shared-arrows-v8",
         "legend_controls.js": "2026-10-06-legend-case-labels-v3",
-        "famous_case_presets.js": "2026-10-06-case-records-v6",
+        "famous_case_presets.js": "2026-10-06-all-case-records-v7",
     }
     for filename, token in expected.items():
         assert (ROOT / filename).is_file()
         assert script_paths.index(filename) < script_paths.index("app.js")
         assert f"./{filename}?v={token}" in parser.scripts
-    assert "./app.js?v=2026-10-06-case-coverage-v11" in parser.scripts
+    assert "./app.js?v=2026-10-06-all-case-coverage-v12" in parser.scripts
