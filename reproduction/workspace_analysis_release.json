@@ -3,18 +3,17 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "published_verified",
+    "status": "prepared_for_deployment",
     "production_url": "https://ufo-timeline.pages.dev",
-    "publication_receipt": "releases/map-polar-bounds-20261008/publication_receipt.json",
-    "browser_qa": "releases/map-polar-bounds-20261008/browser_qa.json",
+    "publication_receipt": "releases/trace-chronology-20261008/publication_receipt.json",
+    "browser_qa": "releases/trace-chronology-20261008/production-browser-verification.json",
     "runtime_inventory_authoritative_across_docs_only_redeployments": true,
-    "production_deployment_id": "1d4474fb-6a1b-4862-b826-ed938fdf77da",
-    "production_source_commit": "cb08a8d3cce8f073f14377e363da0f177dfa2107",
-    "production_verification": "releases/map-polar-bounds-20261008/production_verification.json"
+    "runtime_source_commit": "4e51824",
+    "production_verification": "releases/trace-chronology-20261008/production-verification.json"
   },
   "retained_rollback": {
-    "deployment_id": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
-    "source_commit": "258c4dd",
+    "deployment_id": "a70bc14c-550c-4057-b461-bca4fd7aba27",
+    "source_commit": "7e6bf70ab238db4dbbd091f2f4fb7b390a696582",
     "after_production_validation_only": false,
     "protected_sources_deleted": false
   },
@@ -24,8 +23,8 @@
   },
   "frozen_delivery_plan": {
     "path": "releases/workspace-analysis-20261008/delivery_plan.json",
-    "bytes": 255349,
-    "sha256": "c1bbd1f8393c27850ee32341806649847c9a03a6b66b1cf45429360b5d33e66c"
+    "bytes": 256840,
+    "sha256": "5c44cff52b0a503bf7d14d2bf60b99d7a2194b9e3c42c558ff2cda4a1155ffc3"
   },
   "pages": [
     {
@@ -44,8 +43,8 @@
     },
     {
       "path": "_headers",
-      "bytes": 3915,
-      "sha256": "da07b11a7c94fa1b58deacd663d407d294edaa8c924136ed651d458f8923ae1b",
+      "bytes": 4224,
+      "sha256": "7077b72488227069325a21060dc0e47905af5b8a72720f3a207660540d37cd82",
       "requires_revalidation": false,
       "allow_pages_analytics": false
     },
@@ -149,15 +148,15 @@
     },
     {
       "path": "app.js",
-      "bytes": 1352669,
-      "sha256": "ca5774eb6f19dc448a0d6639470c4a79bca0e70326a77acb08022f22158a5478",
+      "bytes": 1361212,
+      "sha256": "9ac8bcd7011df3b630d8925ee819f97cafcdf50c8d9b4bd24376ffbafc4adcf0",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "catalog_filter_worker.js",
       "bytes": 254598,
-      "sha256": "352f53bbb6b8dd118ed08450470ac6bb6e05c737ef8ac4b71b28877b920c9fa8",
+      "sha256": "e7672a64faf4334700a8ea9fd8f3e7ccaaf1dd55565407db1e0d80239cb79a27",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -275,8 +274,8 @@
     },
     {
       "path": "data/app_config.json",
-      "bytes": 6328,
-      "sha256": "4c0439738d576f09aee86beadeecabc133f733aee0085276f87c02c7ea661c9d",
+      "bytes": 6663,
+      "sha256": "15bce84573034ca4b0f2656516e65cbb68249b97c045152f612f85a4b7e72f3b",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -953,6 +952,20 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "data/trace_chronology/evidence.json.gz",
+      "bytes": 3488744,
+      "sha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
+      "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/trace_chronology/manifest.json",
+      "bytes": 1494,
+      "sha256": "7e1b7519251196866f2e00c42408e6c8fd52e3d1564cba33017d69cf1b0e980f",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "data/trace_intersection_feasibility_v1/manifest.json",
       "bytes": 3878,
       "sha256": "444ebc22663c537eda32acbc63c79a0e3d3f80791ba1dcbc506cfd2af94e0a03",
@@ -996,8 +1009,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 150693,
-      "sha256": "7b5776bd8d491b8ad0dfa061f85b6c03986df9a830c8eeb90b2ecbf397a94fc5",
+      "bytes": 150772,
+      "sha256": "d76eba9e02f081184f947807b9f327c8bbe96dfec112cdc3a5739eecde9cfec6",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1044,17 +1057,24 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "trace_chronology.js",
+      "bytes": 10946,
+      "sha256": "9908f3fef0176495684d753963a14596ec9c72042484475ee12da3a0d71a9983",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "trace_direction_summary.js",
-      "bytes": 27736,
-      "sha256": "fc8e4c2e6a8bdc9d9da8c8268aa6177b5ca60f78fa35d312580af634c99496be",
-      "requires_revalidation": false,
+      "bytes": 27841,
+      "sha256": "b554fdd444c0415032da2f158c356e71e230630776790c61c81450cb2d6d5e1e",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "trace_facility_worker.js",
-      "bytes": 50544,
-      "sha256": "db15ff031bef3e6bbbc70ca96cda48936012acb1f38d45368443197fa11fce71",
-      "requires_revalidation": false,
+      "bytes": 52516,
+      "sha256": "f0ca492f9815b9713856c72a0eb02ef1429466577396359d22c085c8ef61e295",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
@@ -1087,9 +1107,9 @@
     },
     {
       "path": "trace_neighborhood.js",
-      "bytes": 60524,
-      "sha256": "ac14157fbc9e4fddcabd99617e7bb5d1c0cb68999b54f5cacb8553d4d4cfd03b",
-      "requires_revalidation": false,
+      "bytes": 61083,
+      "sha256": "1b6fae6da5f309d42ad28167ac27ccffc2c5aca10ebffc14eff9f9c8c6ecf6fc",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
@@ -1261,9 +1281,9 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_count": 176,
-  "pages_total_bytes": 28746111,
-  "pages_tree_sha256": "cd70b5415ef1b2c828e1cb31d8a4df0b2902851c785b371150934e9b65baf6ac",
+  "pages_count": 179,
+  "pages_total_bytes": 32261041,
+  "pages_tree_sha256": "ee385bee01d98b1bbb0b7170ee3d4364cb004219331079eb45ae25577b2912f3",
   "new_runtime_objects": [
     {
       "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/context_rows.json.gz",
@@ -4180,6 +4200,18 @@
       "bytes": 11367,
       "sha256": "0432ca5238c04b47b1b3d77e739ea57496815992528e29017e3af503d6bdc1bb",
       "role": "reviewed attribute manifest"
+    },
+    {
+      "repo_relative_path": "data/trace_chronology/evidence.json.gz",
+      "bytes": 3488744,
+      "sha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
+      "role": "guarded source-clock UTC timing overlay"
+    },
+    {
+      "repo_relative_path": "data/trace_chronology/manifest.json",
+      "bytes": 1494,
+      "sha256": "7e1b7519251196866f2e00c42408e6c8fd52e3d1564cba33017d69cf1b0e980f",
+      "role": "guarded source-clock UTC timing overlay"
     }
   ],
   "cache_policy": {
@@ -4205,22 +4237,34 @@
   },
   "storage": {
     "current_pages_candidate": ".tmp/workspace-analysis-20261008-pages",
-    "pages_candidate_bytes": 28746111,
+    "pages_candidate_bytes": 32261041,
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "rollback_deployment_after_success": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
+    "rollback_deployment_after_success": "a70bc14c-550c-4057-b461-bca4fd7aba27",
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
-    "approximate_net_project_growth_MiB": 35
+    "approximate_net_project_growth_MiB": 35,
+    "this_deployment_stage_growth_bytes": 3513086,
+    "full_corpus_or_bundle_copied": false
   },
-  "runtime_revision": "map-polar-bounds-20261008",
+  "runtime_revision": "trace-chronology-20261008",
   "previous_publication": {
     "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev",
-    "publication_receipt": "releases/map-chronology-fit-20261008/publication_receipt.json",
-    "browser_qa": "releases/map-chronology-fit-20261008/browser_qa.json",
+    "publication_receipt": "releases/map-polar-bounds-20261008/publication_receipt.json",
+    "browser_qa": "releases/map-polar-bounds-20261008/browser_qa.json",
     "runtime_inventory_authoritative_across_docs_only_redeployments": true,
-    "production_source_commit": "a834f14e305e4559b1d6745ad41986ba5e245dc6",
-    "production_deployment_id": "5483977b-fd45-432b-b370-d0fa091a3771",
-    "production_verification": "releases/map-chronology-fit-20261008/production_verification.json"
+    "production_deployment_id": "1d4474fb-6a1b-4862-b826-ed938fdf77da",
+    "production_source_commit": "cb08a8d3cce8f073f14377e363da0f177dfa2107",
+    "production_verification": "releases/map-polar-bounds-20261008/production_verification.json"
+  },
+  "trace_chronology_contract": {
+    "traceChronologyEvidenceUrl": "./data/trace_chronology/evidence.json.gz",
+    "traceChronologyEvidenceGzipSha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
+    "traceChronologyEvidenceSha256": "145148d5aaf01c92ecba71680603defe34f4759925ed154faadbe0f2e15075db",
+    "traceChronologyEvidenceRowCount": 213364,
+    "release_id": "trace-chronology-20261008",
+    "manifest_path": "data/trace_chronology/manifest.json",
+    "canonical_records_mutated": false,
+    "audit": "docs/TRACE_CHRONOLOGY_AUDIT_20261008.md"
   }
 }
