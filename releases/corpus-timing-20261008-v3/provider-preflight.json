@@ -1,0 +1,27 @@
+{
+  "name": "ufo-timeline",
+  "build_config": {
+    "build_command": "",
+    "destination_dir": "",
+    "root_dir": "",
+    "web_analytics_tag": "c1972b1da5c347ffb1147b133a190a88",
+    "web_analytics_token": "df011473b8f34ae9a926359e4a1743e6"
+  },
+  "source": {
+    "owner": "MYTbrain",
+    "repo_name": "ufo-timeline",
+    "production_branch": "main",
+    "production_deployments_enabled": true
+  },
+  "latest_deployment": {
+    "id": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",
+    "environment": "production",
+    "url": "https://192e21f6.ufo-timeline.pages.dev",
+    "latest_stage": {
+      "name": "deploy",
+      "started_on": "2026-10-08T12:09:16.41081Z",
+      "ended_on": "2026-10-08T12:09:23.980866Z",
+      "status": "success"
+    }
+  }
+}

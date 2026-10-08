@@ -22,8 +22,8 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "dc834bac-2108-4de3-baad-47044e2ec51c"
-RUNTIME_REVISION = "guided-tours-20261008"
-RETAINED_ROLLBACK = "0fb396aa-2876-4343-b8b8-87796880a177"
+RUNTIME_REVISION = "corpus-timing-20261008-v3"
+RETAINED_ROLLBACK = "192e21f6-9c44-4b89-8d88-361e1c3d10d6"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
@@ -88,7 +88,7 @@ def assemble(check_only=False):
     # never become Pages assets merely because they live alongside runtime data.
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
-                   "analysis_repair_detail_overlay.js", "trace_chronology.js",
+                   "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
@@ -311,9 +311,9 @@ def main():
                 old_paths = {r["path"] for r in previous["pages"]}
                 new_paths = {r["path"] for r in plan["pages"]}
                 require(old_paths <= new_paths and new_paths - old_paths <= {
-                    "trace_chronology.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
+                    "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
                     "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
-                }, "Candidate file inventory changed beyond the reviewed timing and guided Help assets")
+                }, "Candidate file inventory changed beyond the reviewed timing, radar and guided Help assets")
             else:
                 require(not PAGES.exists(), "Refusing extra/overwritten Pages candidate")
             for row in plan["pages"]:
