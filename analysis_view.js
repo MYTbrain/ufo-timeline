@@ -133,6 +133,10 @@
     crop_exact_site_formation_date: Object.freeze(["location", "date", "review"]),
     crop_bounded_marker_lane: Object.freeze(["location", "date"]),
     crop_locality_marker_lane: Object.freeze(["location", "date"]),
+    crop_strict_balanced_cohort: Object.freeze(["sample"]),
+    animal_strict_balanced_cohort: Object.freeze(["sample"]),
+    crop_strict_context_clusters: Object.freeze(["sample"]),
+    animal_strict_context_clusters: Object.freeze(["sample"]),
     facility_descriptive_inventory: Object.freeze(["provenance"]),
     facility_inferential_markers: Object.freeze(["location", "date", "sample"]),
     context_observed_neighbors: Object.freeze(["location", "date", "sample"]),
@@ -151,6 +155,18 @@
       location: "crop_bounded_marker_lane",
       date: "crop_bounded_marker_lane",
       review: "crop_exact_site_formation_date",
+    }),
+    cropstrict: Object.freeze({
+      location: "crop_exact_site_formation_date",
+      date: "crop_exact_site_formation_date",
+      review: "crop_exact_site_formation_date",
+      sample: "crop_strict_balanced_cohort",
+    }),
+    animalstrict: Object.freeze({
+      location: "animal_exact_site_reviewed",
+      date: "animal_exact_site_reviewed",
+      review: "animal_exact_site_reviewed",
+      sample: "animal_strict_balanced_cohort",
     }),
     croplocality: Object.freeze({
       location: "crop_locality_marker_lane",
@@ -850,12 +866,19 @@
   }
 
   function plainLanguageLabel(value) {
-    const raw = cleanText(value);
-    const speciesKey = raw.toLowerCase().replace(/[\s/-]+/g, "_");
-    if (Object.prototype.hasOwnProperty.call(SPECIES_DISPLAY_LABELS, speciesKey)) return SPECIES_DISPLAY_LABELS[speciesKey];
+    const raw = cleanText(value, "Unknown");
+    if (raw.toLowerCase() === "unknown") return "Unknown";
     return raw.indexOf("_") === -1
       ? raw
       : raw.replace(/_/g, " ").replace(/\b\w/g, function (letter) { return letter.toUpperCase(); });
+  }
+
+  function morphologyDisplayLabel(value) {
+    const raw = cleanText(value, "unknown");
+    const key = raw.toLowerCase().replace(/[\s/-]+/g, "_");
+    if (key === "unknown") return "Unknown morphology";
+    if (key === "other_sparse_morphology") return "Other morphologies (limited sample)";
+    return plainLanguageLabel(raw);
   }
 
   function isDumbbellBarbellCraft(value) {
@@ -1006,6 +1029,48 @@
     const explicit = firstDefined(item, ["inferenceEligible", "inference_eligible", "qualified"], null);
     if (explicit != null) return Boolean(explicit);
     return !suppressionReason(item);
+  }
+
+  function fieldCoverageItems(value, summaryValue, options) {
+    const config = options || {};
+    const summary = summaryValue || {};
+    const availableLabels = {
+      "Any required analysis field": "All required analysis fields",
+      "Unmapped location": "Mapped location",
+      "Missing date ordinal": "Known report date",
+      "Unknown craft": "Known craft classification",
+      "Unknown craft confidence": "Known craft confidence",
+      "Unknown shape": "Known recorded shape",
+    };
+    return asArray(value).filter(isObject).map(function (item, index) {
+      const rawLabel = datumLabel(item, index);
+      const total = Math.max(0, finiteNumber(firstDefined(item, ["total", "totalN", "denominator", "activeTotal"], summary.activeCount), 0));
+      const count = Math.max(0, Math.min(total, finiteNumber(firstDefined(item, ["count", "observed", "value"], 0), 0)));
+      const present = config.countsAreMissing ? total - count : count;
+      return {
+        label: config.countsAreMissing ? (availableLabels[rawLabel] || rawLabel) : rawLabel,
+        present,
+        missing: total - present,
+        total,
+        share: total > 0 ? present / total : null,
+      };
+    });
+  }
+
+  function eligibilityEndpointStages(items) {
+    const stages = asArray(items).filter(isObject);
+    if (stages.length < 3) return stages;
+    const first = stages[0];
+    const last = stages[stages.length - 1];
+    const input = Math.max(0, finiteNumber(firstDefined(first, ["inputN", "input_n", "totalN", "total_n", "count", "passedN", "passed_n"], 0), 0));
+    const passed = Math.max(0, finiteNumber(firstDefined(last, ["passedN", "passed_n", "eligibleN", "eligible_n", "count", "value"], 0), 0));
+    return [first, Object.assign({}, last, {
+      inputN: input,
+      passedN: passed,
+      failedN: Math.max(0, input - passed),
+      excludedN: Math.max(0, input - passed),
+      criteria: "Combined exclusions across all release eligibility gates. The complete table retains each stage.",
+    })];
   }
 
   function evidenceStatusLabel(item) {
@@ -2474,6 +2539,10 @@
           ? config.onExportEvidence
           : (typeof config.onEvidenceExport === "function" ? config.onEvidenceExport : null),
         onSectionActivate: typeof config.onSectionActivate === "function" ? config.onSectionActivate : null,
+        onComparisonSettingsChange: typeof config.onComparisonSettingsChange === "function" ? config.onComparisonSettingsChange : null,
+        onPlanetaryHeatmapRequest: typeof config.onPlanetaryHeatmapRequest === "function" ? config.onPlanetaryHeatmapRequest : null,
+        getComparisonLoadingState: typeof config.getComparisonLoadingState === "function" ? config.getComparisonLoadingState : null,
+        onComparisonRetry: typeof config.onComparisonRetry === "function" ? config.onComparisonRetry : null,
         onGeographyRequested: typeof config.onGeographyRequested === "function" ? config.onGeographyRequested : null,
         onSpatialEvidenceRequested: typeof config.onSpatialEvidenceRequested === "function" ? config.onSpatialEvidenceRequested : null,
         onRenderComplete: typeof config.onRenderComplete === "function" ? config.onRenderComplete : null,
@@ -2562,44 +2631,83 @@
       this.listeners.push([element, eventName, handler]);
     }
 
-    _setDeferredDisclosureJobs(disclosureId, jobs) {
+    _setDeferredDisclosureJobs(disclosureId, jobs, options) {
+      const config = options || {};
       const entry = {
         version: this.resultRenderVersion,
+        sectionId: cleanText(config.sectionId, "analysis-section-spatial"),
+        targets: asArray(config.targets).slice(),
         jobs: asArray(jobs).filter(function (job) { return typeof job === "function"; }),
         rendered: false,
+        pending: false,
+        generation: 0,
       };
       this.deferredDisclosureJobs.set(disclosureId, entry);
       const disclosure = this.document.getElementById(disclosureId);
-      if (disclosure && disclosure.open) this._renderDeferredDisclosure(disclosureId);
+      if (disclosure) disclosure.setAttribute("aria-busy", "false");
       return entry;
+    }
+
+    _ownsDeferredDisclosure(entry) {
+      return this.activeView === "analysis" && this._activeRenderKeys().indexOf(entry.sectionId) !== -1;
+    }
+
+    _invalidateDeferredDisclosureTargets(targetIds) {
+      const targets = new Set(asArray(targetIds));
+      this.deferredDisclosureJobs.forEach((entry, disclosureId) => {
+        if (!entry.targets.some(function (targetId) { return targets.has(targetId); })) return;
+        entry.generation += 1;
+        entry.pending = false;
+        entry.rendered = false;
+        const disclosure = this.document.getElementById(disclosureId);
+        if (disclosure) disclosure.setAttribute("aria-busy", "false");
+      });
+    }
+
+    _renderActiveDeferredDisclosures() {
+      this.deferredDisclosureJobs.forEach((entry, disclosureId) => {
+        if (this.renderedPlanVersions.get(entry.sectionId) === this.resultRenderVersion && this._ownsDeferredDisclosure(entry)) {
+          this._renderDeferredDisclosure(disclosureId);
+        }
+      });
     }
 
     _renderDeferredDisclosure(disclosureId) {
       const disclosure = this.document.getElementById(disclosureId);
       const entry = this.deferredDisclosureJobs.get(disclosureId);
-      if (!disclosure || !disclosure.open || !entry || entry.rendered || entry.version !== this.resultRenderVersion) return false;
-      entry.rendered = true;
+      if (!disclosure || !disclosure.open || !entry || entry.rendered || entry.pending
+          || entry.version !== this.resultRenderVersion || !this._ownsDeferredDisclosure(entry)
+          || this.renderedPlanVersions.get(entry.sectionId) !== this.resultRenderVersion) return false;
+      if (!entry.jobs.length) return false;
+      entry.pending = true;
+      const generation = ++entry.generation;
       disclosure.setAttribute("aria-busy", "true");
       let index = 0;
       const runNext = () => {
-        if (this.deferredDisclosureJobs.get(disclosureId) !== entry || entry.version !== this.resultRenderVersion || !disclosure.open) {
-          entry.rendered = false;
+        if (this.deferredDisclosureJobs.get(disclosureId) !== entry || generation !== entry.generation) return;
+        if (entry.version !== this.resultRenderVersion || !disclosure.open || !this._ownsDeferredDisclosure(entry)) {
+          entry.pending = false;
           disclosure.setAttribute("aria-busy", "false");
           return;
         }
-        entry.jobs[index]();
+        try {
+          entry.jobs[index]();
+        } catch (error) {
+          entry.pending = false;
+          disclosure.setAttribute("aria-busy", "false");
+          this._applyAnalysisState("error", cleanText(error && error.message, "Analysis charts could not be rendered."));
+          return;
+        }
         index += 1;
         if (index >= entry.jobs.length) {
+          entry.pending = false;
+          entry.rendered = true;
           disclosure.setAttribute("aria-busy", "false");
           return;
         }
         if (this.requestRenderFrame) this.requestRenderFrame(runNext);
         else runNext();
       };
-      if (!entry.jobs.length) {
-        disclosure.setAttribute("aria-busy", "false");
-        return false;
-      }
       if (this.requestRenderFrame) this.requestRenderFrame(runNext);
       else runNext();
       return true;
@@ -3040,11 +3148,9 @@
 
     _exportEvidence(format) {
       if (!this.latestResult) return null;
-      let filterSnapshot = null;
-      if (this.callbacks.getFilterSnapshot) {
-        try { filterSnapshot = this.callbacks.getFilterSnapshot(); } catch (_error) { filterSnapshot = null; }
-      }
-      const evidencePackage = buildEvidencePackage(this.latestResult, Object.assign({}, this.latestMeta, { filterSnapshot }));
+      // Export the snapshot that produced this rendered result, including
+      // when the shared controls already describe a newer pending cohort.
+      const evidencePackage = buildEvidencePackage(this.latestResult, this.latestMeta);
       const normalizedFormat = format === "csv" ? "csv" : "json";
       const text = normalizedFormat === "csv"
         ? evidencePackageToCsv(evidencePackage)
@@ -3138,6 +3244,7 @@
       if (firstAnalysisActivation) this.analysisInitialized = true;
       if (nextView === "analysis") {
         this.refreshSectionNavigation({ honorHash: true, focus: false });
+        this._renderActiveSectionIfNeeded();
       }
       if (!config.silent && this.callbacks.onViewChange) {
         this.callbacks.onViewChange({
@@ -3306,6 +3413,7 @@
     }
 
     _clearRenderTargets(targetIds) {
+      this._invalidateDeferredDisclosureTargets(targetIds);
       asArray(targetIds).forEach((targetId) => {
         const target = this.document.getElementById(targetId);
         if (target) this._clear(target);
@@ -3326,10 +3434,10 @@
         asArray(plan && plan.targets).forEach((targetId) => {
           const target = this.document.getElementById(targetId);
           if (!target || !target.children || !target.children.length) return;
-          this._clear(target);
           clearedTargetIds.push(targetId);
         });
       });
+      this._clearRenderTargets(clearedTargetIds);
       return clearedTargetIds;
     }
 
@@ -3360,7 +3468,10 @@
       const planKeys = this._activeRenderKeys().filter((key) => {
         return this.renderPlans.has(key) && this.renderedPlanVersions.get(key) !== version;
       });
-      if (!planKeys.length) return false;
+      if (!planKeys.length) {
+        this._renderActiveDeferredDisclosures();
+        return false;
+      }
       if (this.renderPending) this._cancelActiveRenderScope();
       const jobs = [];
       const targetIds = [];
@@ -3383,6 +3494,7 @@
       jobs.push(() => {
         if (!ownsActiveScope()) return;
         planKeys.forEach((key) => this.renderedPlanVersions.set(key, version));
+        this._renderActiveDeferredDisclosures();
       });
       this.activeRenderPlanKeys = planKeys.slice();
       this.activeRenderTargetIds = Array.from(new Set(targetIds));
@@ -3760,11 +3872,39 @@
       this._appendDataTable(container, config.caption || "Adjusted effects and uncertainty", tableHeadings, tableRows);
     }
 
+    _renderFieldCoverage(chartId, items, summary, options) {
+      const config = options || {};
+      const rows = fieldCoverageItems(items, summary, config);
+      const container = this._prepareChart(chartId, rows, summary, "Field coverage is unavailable for this cohort.");
+      if (!container) return;
+      container.appendChild(this._element("p", "analysis-chart-meta", "Descriptive field coverage in the active cohort. Missing means unavailable in this analysis projection; it does not establish absence in the original source."));
+      const list = this._element("ul", "analysis-bar-list");
+      list.setAttribute("aria-label", config.caption || "Descriptive field coverage");
+      rows.forEach((row) => {
+        const item = this._element("li", "analysis-bar-row");
+        item.appendChild(this._element("span", "analysis-bar-label", row.label));
+        item.setAttribute("title", row.label);
+        const track = this._element("span", "analysis-bar-track");
+        track.setAttribute("aria-hidden", "true");
+        const fill = this._element("span", "analysis-bar-fill");
+        fill.style.width = ((row.share || 0) * 100).toFixed(2) + "%";
+        track.appendChild(fill);
+        item.appendChild(track);
+        item.appendChild(this._element("span", "analysis-bar-value", formatCount(row.present) + " / " + formatCount(row.total) + " · " + (row.share == null ? "N/A" : formatPercent(row.share))));
+        item.setAttribute("aria-label", row.label + ": " + formatCount(row.present) + " present, " + formatCount(row.missing) + " missing, " + formatCount(row.total) + " total; " + (row.share == null ? "coverage not applicable to an empty cohort" : formatPercent(row.share) + " coverage"));
+        list.appendChild(item);
+      });
+      container.appendChild(list);
+      this._appendDataTable(container, config.caption || "Descriptive field coverage", ["Field", "Present", "Missing", "Total", "Coverage"], rows.map(function (row) {
+        return [row.label, formatCount(row.present), formatCount(row.missing), formatCount(row.total), row.share == null ? "N/A" : formatPercent(row.share)];
+      }));
+    }
+
     _renderEligibilityFunnel(chartId, items, summary, options) {
       const config = options || {};
       const allStages = asArray(items).filter(isObject);
       const stages = config.endpointsOnly && allStages.length > 2
-        ? [allStages[0], allStages[allStages.length - 1]]
+        ? eligibilityEndpointStages(allStages)
         : allStages.slice(0, config.limit || 8);
       const container = this._prepareChart(chartId, stages, summary, config.emptyMessage || "Eligibility stages are unavailable for this cohort.");
       if (!container) return;
@@ -3773,6 +3913,14 @@
       const list = this._element("ol", "analysis-eligibility-funnel");
       list.setAttribute("aria-label", config.caption || "Analysis eligibility funnel");
       const rows = [];
+      if (config.releaseScope) {
+        container.appendChild(this._element("p", "analysis-chart-meta", "Release-wide eligibility across the complete sealed catalog. These counts are not reduced by the current date, source, type, or area filters."));
+        const activeSupport = config.activeSupport || {};
+        const activeQuery = firstDefined(activeSupport, ["activeQueryReports"], summary.activeCount);
+        const qualified = firstDefined(activeSupport, ["activeQualifiedEndpoints"], null);
+        container.appendChild(this._element("p", "analysis-chart-meta", "Active query: " + formatCount(activeQuery) + " reports"
+          + (qualified == null ? "; qualified endpoint support is unavailable." : "; " + formatCount(qualified) + " qualified spatial endpoints.")));
+      }
       let previous = denominator;
       stages.forEach((stage, index) => {
         const label = datumLabel(stage, index);
@@ -3796,6 +3944,17 @@
       });
       container.appendChild(list);
       this._appendDataTable(container, config.caption || "Eligibility funnel", ["Stage", "Input n", "Eligible n", "Excluded n", "Retention", "Policy"], rows);
+      if (config.endpointsOnly && allStages.length > 2) {
+        let prior = denominator;
+        const completeRows = allStages.map(function (stage, index) {
+          const input = firstDefined(stage, ["inputN", "input_n"], prior);
+          const passed = firstDefined(stage, ["passedN", "passed_n", "eligibleN", "eligible_n", "count", "value"], input);
+          const excluded = firstDefined(stage, ["failedN", "failed_n", "excludedN", "excluded_n"], Math.max(0, Number(input) - Number(passed)));
+          prior = Number(passed) || 0;
+          return [datumLabel(stage, index), formatCount(input), formatCount(passed), formatCount(excluded), Number(input) > 0 ? formatPercent(Number(passed) / Number(input)) : "N/A"];
+        });
+        this._appendDataTable(container, "Complete release eligibility funnel", ["Release stage", "Input n", "Eligible n", "Excluded at stage", "Stage retention"], completeRows);
+      }
     }
 
     _renderCoverageOrbit(chartId, items, summary) {
@@ -4056,7 +4215,7 @@
         const rawLabel = datumLabel(item, index);
         const label = config.labelKind === "craft"
           ? craftDisplayLabel(rawLabel)
-          : (config.labelKind === "species" ? speciesDisplayLabel(rawLabel) : plainLanguageLabel(rawLabel));
+          : (config.labelKind === "species" ? speciesDisplayLabel(rawLabel) : (config.labelKind === "morphology" ? morphologyDisplayLabel(rawLabel) : plainLanguageLabel(rawLabel)));
         const value = datumValue(item, config.valueKeys);
         const reference = hideReference ? null : datumReference(item, config.referenceKeys);
         const listItem = this._element("li", "analysis-bar-item");
@@ -5699,6 +5858,7 @@
           valueKeys: ["log2Enrichment", "log2_enrichment", "adjustedResidual", "adjusted_residual", "standardizedResidual", "standardized_residual"],
           craftRows: true,
           speciesColumns: laneKey === "animal_public_marker",
+          columnLabelFormatter: laneKey === "animal_public_marker" ? speciesDisplayLabel : morphologyDisplayLabel,
           effectOnly: true,
           inspectable: true,
         });
@@ -5733,7 +5893,7 @@
               craftDisplayLabel(firstDefined(cell, ["row", "rowLabel"], "Unknown")),
               laneKey === "animal_public_marker"
                 ? speciesDisplayLabel(firstDefined(cell, ["column", "columnLabel"], "Unknown"))
-                : plainLanguageLabel(firstDefined(cell, ["column", "columnLabel"], "Unknown")),
+                : morphologyDisplayLabel(firstDefined(cell, ["column", "columnLabel"], "Unknown")),
               formatCount(firstDefined(cell, ["observedClusterCount", "observedCount", "observed"], 0)),
               formatDecimal(firstDefined(cell, ["expectedClusterCount", "expectedCount", "expected"], 0), 2),
               formatDecimal(firstDefined(cell, ["log2Enrichment", "log2_enrichment"], 0), 2),
@@ -6345,9 +6505,9 @@
           statusElement.textContent = "Witness count is not estimable for this cohort. Missing values, qualitative party sizes, source sentinels, and unresolved text remain uncoerced.";
         } else {
           statusElement.textContent = formatCount(typedRows) + " typed explicit-field rows from " + formatCount(sourceCount)
-            + " source (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
+            + " source collection" + (sourceCount === 1 ? "" : "s") + " (" + formatPercent(catalogRows > 0 ? typedRows / catalogRows : 0) + " of matched reports); "
             + formatCount(exactRows) + " retain positive integer counts, "
-            + formatCount(Math.max(0, rawRows - typedRows)) + " source sentinels remain excluded, and "
+            + formatCount(Math.max(0, rawRows - typedRows)) + " unresolved or nonpositive values remain untyped, and "
             + formatCount(extremeRows) + " counts of 1,000+ remain visible in the audit lane. "
             + "Exact-count median " + formatCount(exactSummary.median) + ", p90 " + formatCount(exactSummary.p90) + ".";
         }
@@ -6361,7 +6521,7 @@
         return;
       }
       this._renderBars("analysis-witness-count-chart", firstArray(assessment, ["distribution", "bins"]), summary, {
-        caption: "Explicit NUFORC witness-count distribution",
+        caption: "Explicit reported witness-count distribution",
         valueKeys: ["activeShare"],
         referenceKeys: ["referenceShare"],
         valueFormat: "percent",
@@ -6371,7 +6531,7 @@
       });
       this._appendChartPolicy(
         "analysis-witness-count-chart",
-        "Only the explicit NUFORC field is used. Missing, zero/negative source sentinels, approximate values, ranges, lower bounds, qualitative party sizes, and unsupported text are never coerced to exact witnesses. Credential suffixes are metadata, not credibility evidence."
+        "Reported counts use documented source-field contracts. Collection labels do not establish underlying-source independence, so comparisons remain disabled. Missing, zero/negative sentinels, approximate values, ranges, lower bounds, qualitative party sizes, and unsupported text are never coerced to exact witnesses. Credential suffixes are metadata, not credibility evidence."
       );
     }
 
@@ -6504,6 +6664,7 @@
         spatialEligibility: Array.isArray(spatialEligibility)
           ? spatialEligibility
           : firstArray(spatialEligibility, ["stages", "funnel", "items"]),
+        spatialEligibilityMetadata: isObject(spatialEligibility) ? spatialEligibility : {},
         contextAssociations: firstDefined(spatial, ["contextAssociations", "context_associations"], {}),
         facilities: firstDefined(spatial, ["facility", "facilities", "facilityContext", "facility_context"], {}),
         crossDomainReadiness,
@@ -6596,6 +6757,32 @@
         disclosure.textContent = contextMembershipDisclosure(contextData, domainSummary, contextSummary.unitLabel);
       }
       return contextSummary;
+    }
+
+    _renderComparisonEvidence(evidence) {
+      const target = this.document.getElementById("analysis-comparisons-chart");
+      if (target && typeof globalThis !== "undefined" && globalThis.UfoAnalysisComparisonsView) globalThis.UfoAnalysisComparisonsView.render(target,
+        evidence && evidence.status !== "loading" ? evidence : (this.callbacks.getComparisonLoadingState ? this.callbacks.getComparisonLoadingState() : { status: "loading" }), {
+          onSettingsChange: this.callbacks.onComparisonSettingsChange,
+          onHeatmapRequest: this.callbacks.onPlanetaryHeatmapRequest,
+          retry: this.callbacks.onComparisonRetry,
+        });
+    }
+
+    renderAnalysisComparisonEvidence(evidence, metaOverrides) {
+      if (!this.latestResult) return false;
+      this.latestResult = Object.assign({}, this.latestResult, { comparisonEvidence: evidence,
+        artifactHashes: Object.assign({}, this.latestResult.artifactHashes || {}, evidence && evidence.artifactHashes || {}) });
+      this.latestMeta = Object.assign({}, this.latestMeta, metaOverrides || {});
+      const key = "analysis-section-comparisons";
+      const plan = { jobs: [() => this._renderComparisonEvidence(this.latestResult.comparisonEvidence)], targets: ["analysis-comparisons-chart"] };
+      this.renderPlans.set(key, plan);
+      this.renderedPlanVersions.delete(key);
+      if (this._activeRenderKeys().indexOf(key) !== -1) {
+        plan.jobs[0]();
+        this.renderedPlanVersions.set(key, this.resultRenderVersion);
+      }
+      return true;
     }
 
     renderAnalysisResult(result, metaOverrides) {
@@ -6696,7 +6883,7 @@
       const spatialCooccurrenceJob = () => this._renderCooccurrenceEvidence("analysis-cooccurrence-chart", data.cooccurrence, summary, { caption: "Point-based craft co-occurrence evidence", defaultKind: "filter", primaryCountLabel: "Observed", comparisonCountLabel: "Expected", primaryCountKeys: ["observedCount", "observed_count"], comparisonCountKeys: ["expectedCount", "expected_count"], effectLabel: "Log2 observed/expected enrichment", valueKeys: ["log2Enrichment", "log2_enrichment"], nullValue: 0, axisLimit: 6, emptyMessage: "Not estimable until the qualified point-neighbor artifact and stratified null results are available." });
       spatialJobs.push(() => {
         if (!this.document.getElementById("analysis-spatial-eligibility-chart")) return;
-        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", endpointsOnly: true });
+        this._renderEligibilityFunnel("analysis-spatial-eligibility-chart", data.spatialEligibility, summary, { caption: "High-precision co-occurrence pool", endpointsOnly: true, releaseScope: data.spatialEligibilityMetadata.scope === "sealed_full_catalog", activeSupport: data.spatialEligibilityMetadata });
       });
       const spatialContextJobs = [
         () => this._renderContextAssociations("analysis-context-neighborhood-chart", data.contextAssociations, summary, { emptyMessage: "Context-marker neighborhood evidence loads with the pinned point-neighbor artifact." }),
@@ -6715,7 +6902,7 @@
         caption: "100% stacked source composition by period",
         defaultKind: "filter",
       }));
-      sourcesQualityJobs.push(() => this._renderHeatmap("analysis-quality-missingness-chart", data.missingness, summary, { caption: "Field missingness and coverage", rowHeading: "Field", defaultKind: "filter", effectOnly: true }));
+      sourcesQualityJobs.push(() => this._renderFieldCoverage("analysis-quality-missingness-chart", data.missingness, summary, { caption: "Field availability in the active cohort", countsAreMissing: true }));
       sourcesQualityJobs.push(() => {
         this._renderHeatmap("analysis-quality-audit-chart", data.audit, summary, { caption: "Classifier consistency audit", rowHeading: "Recorded class", defaultKind: "filter", effectOnly: true, craftRows: true, craftColumns: true });
         this._appendChartPolicy("analysis-quality-audit-chart", data.auditPolicy);
@@ -6734,10 +6921,10 @@
       if (cropSummary) {
         cropContextJobs.push(() => this._renderReadiness("analysis-crop-readiness-chart", data.cropReadiness, cropSummary, { emptyMessage: "Detailed crop-association readiness loads with Spatial Evidence; descriptive catalog health remains available here." }));
         cropContextJobs.push(() => this._renderSeries("analysis-crop-time-chart", firstArray(crops, ["time", "series", "yearly"]), cropSummary, { caption: "Crop-circle records by period", axisKind: "year", singleSeries: this.currentAnalysisMode === "whole_corpus_structure", singleSeriesLabel: "All crop-circle records" }));
-        cropContextJobs.push(() => this._renderBars("analysis-crop-morphology-chart", firstArray(crops, ["morphology", "types", "distribution"]), cropSummary, { caption: "Provisional crop morphology" }));
-        cropContextJobs.push(() => this._renderBars("analysis-crop-type-chart", firstArray(crops, ["crop", "cropType", "cropTypes"]), cropSummary, { caption: "Crop-circle crop types" }));
+        cropContextJobs.push(() => this._renderBars("analysis-crop-morphology-chart", firstArray(crops, ["morphology", "types", "distribution"]), cropSummary, { caption: "Provisional crop morphology", labelKind: "morphology" }));
+        cropContextJobs.push(() => this._renderBars("analysis-crop-type-chart", firstArray(crops, ["crop", "cropType", "cropTypes"]), cropSummary, { caption: "Source crop-field values" }));
         cropContextJobs.push(() => this._renderBars("analysis-crop-coordinate-chart", firstArray(crops, ["coordinateClass", "coordinateClasses", "coordinate_class"]), cropSummary, { caption: "Crop-circle coordinate classes" }));
-        cropContextJobs.push(() => this._renderHeatmap("analysis-crop-coverage-chart", firstDefined(crops, ["coverage", "missingness"], []), cropSummary, { caption: "Crop-circle field coverage", rowHeading: "Field" }));
+        cropContextJobs.push(() => this._renderFieldCoverage("analysis-crop-coverage-chart", firstDefined(crops, ["coverage", "missingness"], []), cropSummary, { caption: "Crop-circle field coverage" }));
         cropContextJobs.push(() => this._renderContextCategoryAssociations("analysis-crop-craft-context-chart", "", data.contextAssociations, cropSummary, { allowedLanes: ["crop_bounded", "crop_locality"] }));
         cropContextJobs.push(() => this._renderContextAssociations("analysis-crop-spatial-chart", data.contextAssociations, cropSummary, {
           allowedLanes: ["crop_bounded", "crop_locality"],
@@ -6757,7 +6944,7 @@
         animalContextJobs.push(() => this._renderBars("analysis-animal-species-chart", firstArray(animals, ["species", "speciesGroups", "distribution"]), animalSummary, { caption: "Animal report species groups", labelKind: "species" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-status-chart", firstArray(animals, ["statusBreakdown", "reviewStatus", "status"]), animalSummary, { caption: "Animal report review status" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-date-precision-chart", firstArray(animals, ["datePrecision", "datePrecisions", "date_precision"]), animalSummary, { caption: "Animal report date precision" }));
-        animalContextJobs.push(() => this._renderHeatmap("analysis-animal-coverage-chart", firstDefined(animals, ["coverage", "missingness"], []), animalSummary, { caption: "Animal report field coverage", rowHeading: "Field" }));
+        animalContextJobs.push(() => this._renderFieldCoverage("analysis-animal-coverage-chart", firstDefined(animals, ["coverage", "missingness"], []), animalSummary, { caption: "Animal report field coverage" }));
         animalContextJobs.push(() => this._renderContextCategoryAssociations("analysis-animal-craft-context-chart", "", data.contextAssociations, animalSummary, { allowedLanes: ["animal_public_marker"] }));
         animalContextJobs.push(() => this._renderContextAssociations("analysis-animal-spatial-chart", data.contextAssociations, animalSummary, {
           allowedLanes: ["animal_public_marker"],
@@ -6777,8 +6964,8 @@
       }, []));
       this.resultRenderVersion += 1;
       this.renderedPlanVersions.clear();
-      this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob]);
-      this._setDeferredDisclosureJobs("analysis-spatial-context-disclosure", spatialContextJobs);
+      this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob], { sectionId: "analysis-section-spatial", targets: ["analysis-cooccurrence-chart"] });
+      this._setDeferredDisclosureJobs("analysis-spatial-context-disclosure", spatialContextJobs, { sectionId: "analysis-section-spatial", targets: ["analysis-context-neighborhood-chart", "analysis-context-category-chart"] });
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
@@ -6789,6 +6976,7 @@
         ["analysis-section-crops", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-craft-context-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
         ["analysis-section-animals", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-craft-context-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
         ["analysis-section-facilities", { jobs: [spatialFacilityJob], targets: ["analysis-facility-context-chart"] }],
+        ["analysis-section-comparisons", { jobs: [() => this._renderComparisonEvidence(this.latestResult.comparisonEvidence)], targets: ["analysis-comparisons-chart"] }],
         ["analysis-section-context", { jobs: contextOverviewJobs.concat(relationshipContextJobs), targets: ["analysis-cross-domain-readiness-chart", "analysis-relationship-readiness-chart"] }],
         ["analysis-section-sources-quality", { jobs: sourcesQualityJobs, targets: ["analysis-report-type-chart", "analysis-craft-residual-chart", "analysis-source-composition-chart", "analysis-source-time-chart", "analysis-quality-missingness-chart", "analysis-quality-audit-chart", "analysis-witness-count-chart", "analysis-coordinate-evidence-chart", "analysis-coordinate-evidence-comparison-chart"] }],
       ]);
@@ -6842,17 +7030,52 @@
       if (chartId && this.document.getElementById(chartId)) {
         const button = this._element("button", "secondary-button analysis-pattern-link", "Open supporting chart");
         button.type = "button";
-        button.addEventListener("click", () => {
-          const chart = this.document.getElementById(chartId);
-          if (chart && typeof chart.scrollIntoView === "function") chart.scrollIntoView({ behavior: "smooth", block: "center" });
-          if (chart) {
-            chart.setAttribute("tabindex", "-1");
-            if (typeof chart.focus === "function") chart.focus({ preventScroll: true });
-          }
-        });
+        button.addEventListener("click", () => this._openSupportingChart(chartId));
         item.appendChild(button);
       }
       return item;
+    }
+
+    _openSupportingChart(chartId) {
+      const initialChart = this.document.getElementById(chartId);
+      if (!initialChart) return false;
+      const section = initialChart.closest(".analysis-section");
+      if (!section) return false;
+      this.navigateToSection(section.id, { updateHash: true, focus: false, source: "supporting-chart" });
+      // Let the local preview reveal a grouped native card before it is
+      // measured, scrolled, or focused. Product rendering remains authoritative.
+      if (this.documentView && typeof this.documentView.CustomEvent === "function") {
+        this.document.dispatchEvent(new this.documentView.CustomEvent("analysis-preview-reveal-chart", {
+          detail: { chartId, sectionId: section.id },
+        }));
+      }
+      let remainingFrames = 120;
+      const reveal = () => {
+        if (this.activeView !== "analysis" || this.activeSectionId !== section.id) return;
+        const chart = this.document.getElementById(chartId);
+        if (!chart) return;
+        let ancestor = chart.parentElement;
+        let disclosureBusy = false;
+        while (ancestor && ancestor !== section) {
+          if (ancestor.tagName && ancestor.tagName.toLowerCase() === "details") {
+            ancestor.open = true;
+            if (ancestor.id) this._renderDeferredDisclosure(ancestor.id);
+            disclosureBusy = disclosureBusy || ancestor.getAttribute("aria-busy") === "true";
+          }
+          ancestor = ancestor.parentElement;
+        }
+        if ((this.renderPending || disclosureBusy) && remainingFrames-- > 0 && this.requestRenderFrame) {
+          this.requestRenderFrame(reveal);
+          return;
+        }
+        chart.setAttribute("tabindex", "-1");
+        if (typeof chart.scrollIntoView === "function") {
+          chart.scrollIntoView({ behavior: this._prefersReducedMotion() ? "auto" : "smooth", block: "center" });
+        }
+        if (typeof chart.focus === "function") chart.focus({ preventScroll: true });
+      };
+      reveal();
+      return true;
     }
 
     renderPatternFindings(findings, patternGroups) {
@@ -7047,6 +7270,8 @@
     evidencePackageRows,
     evidencePackageToCsv,
     estimateAvailable,
+    fieldCoverageItems,
+    eligibilityEndpointStages,
     heatmapDisplayItems,
     humanGeographyLabel,
     inferPreviewCriteria,

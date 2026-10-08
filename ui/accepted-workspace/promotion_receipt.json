@@ -1,0 +1,89 @@
+{
+  "schema": "accepted-workspace-ui-promotion-v1",
+  "version": "2026-10-08-accepted-workspace-v1",
+  "promoted": true,
+  "alreadyPromoted": true,
+  "checkOnly": true,
+  "assets": [
+    {
+      "path": "ui/accepted-workspace/polish.css",
+      "bytes": 2243,
+      "sha256": "1f7c77a465df33f3c446a8d005bdfd464ac7e0f6740df6b11cbc953d366add50"
+    },
+    {
+      "path": "ui/accepted-workspace/laptop.css",
+      "bytes": 3102,
+      "sha256": "222e4b31e31de037fe0a4740cb7a5ccb2320e26fdabdba3a4297230fbab21ffc"
+    },
+    {
+      "path": "ui/accepted-workspace/workspace-preview.css",
+      "bytes": 2850,
+      "sha256": "63dbbe48efaa0915605a4e2d0b84d46c9f05d60454abc77d3585e29d03593e14"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-preview.css",
+      "bytes": 7023,
+      "sha256": "202cbbf5db97ce81e84bfc63320e7df895bdfe713ba13cd015e507bd33c92c4c"
+    },
+    {
+      "path": "ui/accepted-workspace/site-workflow-preview.css",
+      "bytes": 1937,
+      "sha256": "16bcae0b3c3b353a1bca611c1ed530b34c85425749ec5ca92d6c12030fe1af0e"
+    },
+    {
+      "path": "ui/accepted-workspace/chronology-preview.css",
+      "bytes": 5616,
+      "sha256": "d7fffee5866db4ea7b0c18ebef664b47d697aa28a4c937cf765b9803258375ac"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.css",
+      "bytes": 7836,
+      "sha256": "f7c7ccd87d3e061a9e1efdbfd0d51f2ba5172f8daec053767a9ffb76369360b9"
+    },
+    {
+      "path": "ui/accepted-workspace/workspace-preview.js",
+      "bytes": 2001,
+      "sha256": "2548612a0817a54d38102cb7ede116d6cd78e54222153d0f61219e6856d4891f"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-preview.js",
+      "bytes": 11755,
+      "sha256": "12cc430981f53c54c3810ce43cb8ae40bd1fc645df2a217c5d8c5e5eb1dea264"
+    },
+    {
+      "path": "ui/accepted-workspace/site-workflow-preview.js",
+      "bytes": 13519,
+      "sha256": "b78e55c494c57b52d62c3e206c9c2da5fd63538683660251e397526026f67744"
+    },
+    {
+      "path": "ui/accepted-workspace/chronology-preview.js",
+      "bytes": 2819,
+      "sha256": "7fb0a645ce36559d8cf469ce0114c6c056e7178aecef191a050914efd548a429"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-view-groups.js",
+      "bytes": 4726,
+      "sha256": "914c9b695c0595d0c933ce3a31232d71a9d139107174c888a28db35240f9e730"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 14348,
+      "sha256": "3d180fc237cb45fa430465d5fa950ad140c274abc141e4799b321f669cd762b8"
+    },
+    {
+      "path": "ui/accepted-workspace/polish.js",
+      "bytes": 2226,
+      "sha256": "5e6bde1d450512524cbbaf60436c59f4a18dbfaee27c3679066cd522e410fcdd"
+    }
+  ],
+  "assetBytes": 82001,
+  "transformSourceSha256": "ab49c57fcef549511fcc87d1673ce1db6eb24ec133f281e39049b286b9a8a9b9",
+  "transformedSourceFiles": [
+    "index.html",
+    "app.js",
+    "analysis_view.js"
+  ],
+  "excludedWithdrawnAsset": "laptop.js",
+  "datasetCopies": 0,
+  "purpose": "Accepted local whole-site presentation promoted as self-contained product assets; no data copies."
+}

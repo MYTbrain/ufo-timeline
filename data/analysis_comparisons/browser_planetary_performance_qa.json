@@ -1,0 +1,154 @@
+{
+  "schemaId": "ufo-planetary-browser-performance-qa-v1",
+  "generatedAt": "2026-10-08T03:08:51.396Z",
+  "previewUrl": "http://127.0.0.1:8168/whole-site.html#analysis-section-comparisons",
+  "eligibleReports": [
+    {
+      "domain": "ufo",
+      "count": 334397
+    },
+    {
+      "domain": "crops",
+      "count": 6430
+    },
+    {
+      "domain": "animals",
+      "count": 928
+    }
+  ],
+  "options": {
+    "windowDays": 30,
+    "planet": "Venus",
+    "aspectPartner": "Mars",
+    "aspectOrbDegrees": 3,
+    "zodiacSystem": "sidereal",
+    "ayanamsaId": "lahiri"
+  },
+  "ephemeris": {
+    "status": "precomputed_raw_ephemeris",
+    "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+    "dateCount": 65113,
+    "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+    "atlasHits": 387780,
+    "directEphemerisCalls": 0,
+    "rateFallbackCalls": 0,
+    "precessionHits": 153650,
+    "precessionFallbackCalls": 0
+  },
+  "coreSamplesBefore": 2,
+  "coreSamplesAfter": 2,
+  "sameCoreSummaryReference": true,
+  "sameMoonModelReference": true,
+  "sameNuclearModelReference": true,
+  "sameCrossContextModelReference": true,
+  "displayOnlyAddedRequests": 0,
+  "samples": [
+    {
+      "component": "planetary",
+      "durationMs": 554.9,
+      "workerDurationMs": 537,
+      "cacheHit": false,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 510850,
+        "directEphemerisCalls": 4,
+        "rateFallbackCalls": 2,
+        "precessionHits": 194674,
+        "precessionFallbackCalls": 0
+      },
+      "recordedAt": 1791428827340
+    },
+    {
+      "cacheHit": true,
+      "cacheLayer": "page",
+      "recordedAt": 1791428835914,
+      "durationMs": 4.4
+    },
+    {
+      "component": "planetary",
+      "durationMs": 378.4,
+      "workerDurationMs": 369,
+      "cacheHit": false,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 388548,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 153906,
+        "precessionFallbackCalls": 0
+      },
+      "recordedAt": 1791428844597
+    },
+    {
+      "component": "planetary",
+      "durationMs": 583.2,
+      "workerDurationMs": 576,
+      "cacheHit": false,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 388476,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 0,
+        "precessionFallbackCalls": 0
+      },
+      "recordedAt": 1791428845557
+    },
+    {
+      "cacheHit": true,
+      "cacheLayer": "page",
+      "recordedAt": 1791428888305,
+      "durationMs": 3.8
+    },
+    {
+      "cacheHit": true,
+      "cacheLayer": "page",
+      "recordedAt": 1791428900889,
+      "durationMs": 2.4
+    }
+  ],
+  "finalAspectCounts": [
+    {
+      "id": "conjunction",
+      "count": 9617,
+      "lowerCount": 8237,
+      "upperCount": 11281
+    },
+    {
+      "id": "sextile",
+      "count": 16795,
+      "lowerCount": 14075,
+      "upperCount": 19585
+    },
+    {
+      "id": "square",
+      "count": 10965,
+      "lowerCount": 8071,
+      "upperCount": 13990
+    },
+    {
+      "id": "trine",
+      "count": 8847,
+      "lowerCount": 6474,
+      "upperCount": 11246
+    },
+    {
+      "id": "opposition",
+      "count": 2153,
+      "lowerCount": 1206,
+      "upperCount": 3018
+    }
+  ],
+  "finalOutsideBands": 286020,
+  "timingScope": "App/worker model-update time; excludes initial asset transfer and painting. Page-cache restoration includes the synchronous comparison render.",
+  "status": "passed"
+}

@@ -1,0 +1,1111 @@
+{
+  "passed": true,
+  "elapsedSeconds": 7.5158841,
+  "catalogRowsVisited": 702893,
+  "nuclearAssetSha256": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65",
+  "coverage": {
+    "catalogRows": 2051,
+    "countries": {
+      "CHINA": 45,
+      "FRANCE": 210,
+      "INDIA": 3,
+      "PAKIST": 2,
+      "UK": 45,
+      "USA": 1032,
+      "USSR": 714
+    },
+    "excludedPost1998": "No North Korean or other post-1998 chronology is included.",
+    "facilityInventory": "Four reviewed existing nuclear-program institutions in US/UK; partial coverage, excludes power-reactor inventory.",
+    "firstDate": "1945-07-16",
+    "firstOrdinal": -8935,
+    "lastDate": "1998-05-30",
+    "lastOrdinal": 10376,
+    "locatedRows": 2027,
+    "primarySummarySovietTotal": 715,
+    "primarySummaryTotal": 2052,
+    "primaryTableUnverifiedRows": 87,
+    "primaryTableVerifiedRows": 1964,
+    "roles": {
+      "combat": 2,
+      "peaceful": 192,
+      "safety_or_mixed_safety": 133,
+      "unknown": 1,
+      "weapons": 1723
+    },
+    "summaryDiscrepancy": "One Soviet record in the report's stated total is absent from this transcription; no invented replacement.",
+    "transcribedSovietTotal": 714,
+    "selectedRoles": [
+      "weapons",
+      "peaceful",
+      "combat"
+    ],
+    "selectedTests": 1917,
+    "locatedTests": 1893,
+    "missingCoordsN": 24,
+    "excludedSafetyN": 133,
+    "sourcePeriod": {
+      "firstOrdinal": -8935,
+      "lastOrdinal": 10376
+    },
+    "selectedPeriod": {
+      "startOrdinal": null,
+      "endOrdinal": null
+    },
+    "boundaryOverlappingTests": 0
+  },
+  "domains": {
+    "ufo": {
+      "inputN": 702893,
+      "eligibleN": 548042,
+      "exclusions": {
+        "date_not_exact_day_or_interval": 30300,
+        "coordinates_missing_or_invalid": 106942,
+        "noncraft_or_nuclear_context_record": 17560
+      },
+      "linkedReportsN": 4613,
+      "testsWithReportsN": 878,
+      "phases": [
+        {
+          "id": "before",
+          "label": "Earlier source dates",
+          "pairCount": 8982,
+          "uniqueReports": 3703
+        },
+        {
+          "id": "same_day",
+          "label": "Same date (order unknown)",
+          "pairCount": 318,
+          "uniqueReports": 292
+        },
+        {
+          "id": "after",
+          "label": "Later source dates",
+          "pairCount": 9493,
+          "uniqueReports": 3818
+        }
+      ],
+      "byDateRole": [
+        {
+          "dateRole": "catalog_event_date_unverified_timezone",
+          "eligibleN": 548042,
+          "pairCount": 18793,
+          "uniqueReports": 4613
+        }
+      ],
+      "matchedControls": {
+        "status": "ready_descriptive",
+        "label": "Same site, same weekday, approximately same season in adjacent years",
+        "testWindows": 812,
+        "controlWindows": 1116,
+        "testWindowDays": 49532,
+        "controlWindowDays": 68076,
+        "unavailableControls": 1081,
+        "testPairCount": 3829,
+        "controlPairCount": 4302,
+        "uniqueTestReports": 1044,
+        "uniqueControlReports": 1051,
+        "testReportsPerWindowDay": 0.07730356133408706,
+        "controlReportsPerWindowDay": 0.06319407720782655,
+        "relativeReportDensity": 1.2232722550858461,
+        "testSources": [
+          {
+            "source": "ufocat",
+            "count": 2126
+          },
+          {
+            "source": "phenomenainon_updb",
+            "count": 670
+          },
+          {
+            "source": "nuforc",
+            "count": 385
+          },
+          {
+            "source": "majestic",
+            "count": 379
+          },
+          {
+            "source": "mufon",
+            "count": 269
+          }
+        ],
+        "controlSources": [
+          {
+            "source": "ufocat",
+            "count": 2460
+          },
+          {
+            "source": "phenomenainon_updb",
+            "count": 725
+          },
+          {
+            "source": "majestic",
+            "count": 607
+          },
+          {
+            "source": "nuforc",
+            "count": 264
+          },
+          {
+            "source": "mufon",
+            "count": 246
+          }
+        ],
+        "warnings": [
+          "Reference dates can lie outside selected dates; all other UFO cohort filters are shared.",
+          "Counts are report/test-window pairs; overlapping windows share reports and are not independent samples.",
+          "Known explosions, including safety tests, are excluded from calendar controls; absent or missing chronology is not proof of a test-free date.",
+          "Adjacent-year reporting effort and population are not measured; the ratio is descriptive, not an incidence or causal effect."
+        ]
+      }
+    },
+    "crops": {
+      "inputN": 7745,
+      "eligibleN": 3659,
+      "exclusions": {
+        "date_not_exact_day_or_interval": 1315,
+        "coordinates_missing_or_invalid": 2771
+      },
+      "linkedReportsN": 5,
+      "testsWithReportsN": 13,
+      "phases": [
+        {
+          "id": "before",
+          "label": "Earlier source dates",
+          "pairCount": 14,
+          "uniqueReports": 4
+        },
+        {
+          "id": "same_day",
+          "label": "Same date (order unknown)",
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "id": "after",
+          "label": "Later source dates",
+          "pairCount": 11,
+          "uniqueReports": 3
+        }
+      ],
+      "byDateRole": [
+        {
+          "dateRole": "catalog_unspecified",
+          "eligibleN": 3629,
+          "pairCount": 25,
+          "uniqueReports": 5
+        },
+        {
+          "dateRole": "discovery_date",
+          "eligibleN": 11,
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "dateRole": "photography_date",
+          "eligibleN": 3,
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "dateRole": "catalog_date",
+          "eligibleN": 13,
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "dateRole": "formation_date",
+          "eligibleN": 2,
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "dateRole": "publication_date",
+          "eligibleN": 1,
+          "pairCount": 0,
+          "uniqueReports": 0
+        }
+      ],
+      "matchedControls": {
+        "status": "ready_descriptive",
+        "label": "Same site, same weekday, approximately same season in adjacent years",
+        "testWindows": 812,
+        "controlWindows": 1116,
+        "testWindowDays": 49532,
+        "controlWindowDays": 68076,
+        "unavailableControls": 1081,
+        "testPairCount": 9,
+        "controlPairCount": 1,
+        "uniqueTestReports": 3,
+        "uniqueControlReports": 1,
+        "testReportsPerWindowDay": 0.0001817007187272874,
+        "controlReportsPerWindowDay": 0.000014689464715905752,
+        "relativeReportDensity": 12.369458128078817,
+        "testSources": [
+          {
+            "source": "unknown",
+            "count": 9
+          }
+        ],
+        "controlSources": [
+          {
+            "source": "unknown",
+            "count": 1
+          }
+        ],
+        "warnings": [
+          "Reference dates can lie outside selected dates; all other UFO cohort filters are shared.",
+          "Counts are report/test-window pairs; overlapping windows share reports and are not independent samples.",
+          "Known explosions, including safety tests, are excluded from calendar controls; absent or missing chronology is not proof of a test-free date.",
+          "Adjacent-year reporting effort and population are not measured; the ratio is descriptive, not an incidence or causal effect."
+        ]
+      }
+    },
+    "animals": {
+      "inputN": 1184,
+      "eligibleN": 340,
+      "exclusions": {
+        "coordinates_missing_or_invalid": 588,
+        "date_not_exact_day_or_interval": 256
+      },
+      "linkedReportsN": 2,
+      "testsWithReportsN": 5,
+      "phases": [
+        {
+          "id": "before",
+          "label": "Earlier source dates",
+          "pairCount": 3,
+          "uniqueReports": 2
+        },
+        {
+          "id": "same_day",
+          "label": "Same date (order unknown)",
+          "pairCount": 0,
+          "uniqueReports": 0
+        },
+        {
+          "id": "after",
+          "label": "Later source dates",
+          "pairCount": 2,
+          "uniqueReports": 2
+        }
+      ],
+      "byDateRole": [
+        {
+          "dateRole": "reported_unspecified",
+          "eligibleN": 337,
+          "pairCount": 5,
+          "uniqueReports": 2
+        },
+        {
+          "dateRole": "publication_date",
+          "eligibleN": 3,
+          "pairCount": 0,
+          "uniqueReports": 0
+        }
+      ],
+      "matchedControls": {
+        "status": "ready_descriptive",
+        "label": "Same site, same weekday, approximately same season in adjacent years",
+        "testWindows": 812,
+        "controlWindows": 1116,
+        "testWindowDays": 49532,
+        "controlWindowDays": 68076,
+        "unavailableControls": 1081,
+        "testPairCount": 0,
+        "controlPairCount": 0,
+        "uniqueTestReports": 0,
+        "uniqueControlReports": 0,
+        "testReportsPerWindowDay": 0,
+        "controlReportsPerWindowDay": 0,
+        "relativeReportDensity": null,
+        "testSources": [],
+        "controlSources": [],
+        "warnings": [
+          "Reference dates can lie outside selected dates; all other UFO cohort filters are shared.",
+          "Counts are report/test-window pairs; overlapping windows share reports and are not independent samples.",
+          "Known explosions, including safety tests, are excluded from calendar controls; absent or missing chronology is not proof of a test-free date.",
+          "Adjacent-year reporting effort and population are not measured; the ratio is descriptive, not an incidence or causal effect."
+        ]
+      }
+    }
+  },
+  "facilities": {
+    "status": "ready_descriptive_partial_inventory",
+    "nuclearSitesN": 4,
+    "broaderSitesN": 1783,
+    "sourceVerifiedN": 4,
+    "byDomain": {
+      "ufo": {
+        "eligibleN": 548042,
+        "unknownActivityN": 342519,
+        "groups": [
+          {
+            "id": "nuclear_only",
+            "label": "Near reviewed nuclear institutions only",
+            "reportsN": 0,
+            "share": 0,
+            "craftComposition": []
+          },
+          {
+            "id": "broader_only",
+            "label": "Near broader military/research markers only",
+            "reportsN": 404765,
+            "share": 0.7385656573766244,
+            "craftComposition": [
+              {
+                "category": "light",
+                "count": 118480
+              },
+              {
+                "category": "sphere_orb",
+                "count": 76037
+              },
+              {
+                "category": "unknown",
+                "count": 52144
+              },
+              {
+                "category": "disc_saucer",
+                "count": 36742
+              },
+              {
+                "category": "triangle",
+                "count": 34910
+              },
+              {
+                "category": "fireball_meteor_like",
+                "count": 18753
+              },
+              {
+                "category": "cigar_cylinder",
+                "count": 17644
+              },
+              {
+                "category": "oval_egg",
+                "count": 15383
+              },
+              {
+                "category": "formation",
+                "count": 11710
+              },
+              {
+                "category": "chevron_boomerang",
+                "count": 8076
+              },
+              {
+                "category": "rectangle_box",
+                "count": 7304
+              },
+              {
+                "category": "diamond",
+                "count": 3873
+              },
+              {
+                "category": "teardrop",
+                "count": 1983
+              },
+              {
+                "category": "cone",
+                "count": 1690
+              },
+              {
+                "category": "dumbbell_barbell",
+                "count": 36
+              }
+            ]
+          },
+          {
+            "id": "both",
+            "label": "Near both marker groups",
+            "reportsN": 128667,
+            "share": 0.2347758018546024,
+            "craftComposition": [
+              {
+                "category": "light",
+                "count": 36766
+              },
+              {
+                "category": "sphere_orb",
+                "count": 24119
+              },
+              {
+                "category": "unknown",
+                "count": 17787
+              },
+              {
+                "category": "disc_saucer",
+                "count": 11801
+              },
+              {
+                "category": "triangle",
+                "count": 11647
+              },
+              {
+                "category": "cigar_cylinder",
+                "count": 5892
+              },
+              {
+                "category": "fireball_meteor_like",
+                "count": 5149
+              },
+              {
+                "category": "oval_egg",
+                "count": 4655
+              },
+              {
+                "category": "formation",
+                "count": 3582
+              },
+              {
+                "category": "chevron_boomerang",
+                "count": 2424
+              },
+              {
+                "category": "rectangle_box",
+                "count": 2341
+              },
+              {
+                "category": "diamond",
+                "count": 1289
+              },
+              {
+                "category": "teardrop",
+                "count": 660
+              },
+              {
+                "category": "cone",
+                "count": 540
+              },
+              {
+                "category": "dumbbell_barbell",
+                "count": 15
+              }
+            ]
+          },
+          {
+            "id": "neither",
+            "label": "No confirmed active marker match",
+            "reportsN": 14610,
+            "share": 0.026658540768773196,
+            "craftComposition": [
+              {
+                "category": "unknown",
+                "count": 3868
+              },
+              {
+                "category": "light",
+                "count": 3705
+              },
+              {
+                "category": "disc_saucer",
+                "count": 2081
+              },
+              {
+                "category": "sphere_orb",
+                "count": 1938
+              },
+              {
+                "category": "cigar_cylinder",
+                "count": 589
+              },
+              {
+                "category": "fireball_meteor_like",
+                "count": 580
+              },
+              {
+                "category": "triangle",
+                "count": 541
+              },
+              {
+                "category": "oval_egg",
+                "count": 479
+              },
+              {
+                "category": "rectangle_box",
+                "count": 252
+              },
+              {
+                "category": "formation",
+                "count": 217
+              },
+              {
+                "category": "chevron_boomerang",
+                "count": 140
+              },
+              {
+                "category": "cone",
+                "count": 98
+              },
+              {
+                "category": "diamond",
+                "count": 88
+              },
+              {
+                "category": "teardrop",
+                "count": 33
+              },
+              {
+                "category": "dumbbell_barbell",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "nearestNuclearBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 970
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 19138
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 35168
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 73391
+          }
+        ],
+        "nearestBroaderBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 98833
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 206030
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 189002
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 39567
+          }
+        ]
+      },
+      "crops": {
+        "eligibleN": 3659,
+        "unknownActivityN": 3279,
+        "groups": [
+          {
+            "id": "nuclear_only",
+            "label": "Near reviewed nuclear institutions only",
+            "reportsN": 0,
+            "share": 0,
+            "craftComposition": []
+          },
+          {
+            "id": "broader_only",
+            "label": "Near broader military/research markers only",
+            "reportsN": 1545,
+            "share": 0.4222465154413774,
+            "craftComposition": [
+              {
+                "category": "unknown",
+                "count": 550
+              },
+              {
+                "category": "single_disc_or_circle",
+                "count": 160
+              },
+              {
+                "category": "ring_or_concentric_target",
+                "count": 145
+              },
+              {
+                "category": "angular_or_linear_geometric",
+                "count": 124
+              },
+              {
+                "category": "linear_circle_chain_or_axial_pair",
+                "count": 104
+              },
+              {
+                "category": "no_diagram",
+                "count": 93
+              },
+              {
+                "category": "multi_circle_cluster",
+                "count": 79
+              },
+              {
+                "category": "complex_composite_geometric",
+                "count": 70
+              },
+              {
+                "category": "enclosed_or_looped_composite",
+                "count": 52
+              },
+              {
+                "category": "radial_rosette_or_star",
+                "count": 46
+              },
+              {
+                "category": "other_or_ambiguous_geometric",
+                "count": 44
+              },
+              {
+                "category": "simple_non_circular_mark",
+                "count": 26
+              },
+              {
+                "category": "axial_angular_geometric",
+                "count": 17
+              },
+              {
+                "category": "irregular_or_figurative_complex",
+                "count": 17
+              },
+              {
+                "category": "radial_circle_cluster",
+                "count": 15
+              },
+              {
+                "category": "blank",
+                "count": 1
+              },
+              {
+                "category": "manmade_commissioned_reported",
+                "count": 1
+              },
+              {
+                "category": "manmade_controlled_experiment",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "id": "both",
+            "label": "Near both marker groups",
+            "reportsN": 2074,
+            "share": 0.566821535938781,
+            "craftComposition": [
+              {
+                "category": "unknown",
+                "count": 730
+              },
+              {
+                "category": "ring_or_concentric_target",
+                "count": 220
+              },
+              {
+                "category": "single_disc_or_circle",
+                "count": 209
+              },
+              {
+                "category": "linear_circle_chain_or_axial_pair",
+                "count": 170
+              },
+              {
+                "category": "angular_or_linear_geometric",
+                "count": 145
+              },
+              {
+                "category": "multi_circle_cluster",
+                "count": 105
+              },
+              {
+                "category": "complex_composite_geometric",
+                "count": 100
+              },
+              {
+                "category": "no_diagram",
+                "count": 94
+              },
+              {
+                "category": "radial_rosette_or_star",
+                "count": 84
+              },
+              {
+                "category": "other_or_ambiguous_geometric",
+                "count": 52
+              },
+              {
+                "category": "enclosed_or_looped_composite",
+                "count": 51
+              },
+              {
+                "category": "radial_circle_cluster",
+                "count": 48
+              },
+              {
+                "category": "axial_angular_geometric",
+                "count": 24
+              },
+              {
+                "category": "simple_non_circular_mark",
+                "count": 23
+              },
+              {
+                "category": "irregular_or_figurative_complex",
+                "count": 18
+              },
+              {
+                "category": "manmade_explained",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "id": "neither",
+            "label": "No confirmed active marker match",
+            "reportsN": 40,
+            "share": 0.010931948619841488,
+            "craftComposition": [
+              {
+                "category": "unknown",
+                "count": 16
+              },
+              {
+                "category": "no_diagram",
+                "count": 7
+              },
+              {
+                "category": "ring_or_concentric_target",
+                "count": 4
+              },
+              {
+                "category": "simple_non_circular_mark",
+                "count": 4
+              },
+              {
+                "category": "single_disc_or_circle",
+                "count": 4
+              },
+              {
+                "category": "linear_circle_chain_or_axial_pair",
+                "count": 2
+              },
+              {
+                "category": "angular_or_linear_geometric",
+                "count": 1
+              },
+              {
+                "category": "axial_angular_geometric",
+                "count": 1
+              },
+              {
+                "category": "radial_rosette_or_star",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "nearestNuclearBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 47
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 1097
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 410
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 520
+          }
+        ],
+        "nearestBroaderBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 1149
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 1713
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 634
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 123
+          }
+        ]
+      },
+      "animals": {
+        "eligibleN": 340,
+        "unknownActivityN": 37,
+        "groups": [
+          {
+            "id": "nuclear_only",
+            "label": "Near reviewed nuclear institutions only",
+            "reportsN": 0,
+            "share": 0,
+            "craftComposition": []
+          },
+          {
+            "id": "broader_only",
+            "label": "Near broader military/research markers only",
+            "reportsN": 173,
+            "share": 0.5088235294117647,
+            "craftComposition": [
+              {
+                "category": "bovine",
+                "count": 145
+              },
+              {
+                "category": "equine",
+                "count": 5
+              },
+              {
+                "category": "avian",
+                "count": 4
+              },
+              {
+                "category": "canid",
+                "count": 4
+              },
+              {
+                "category": "caprine",
+                "count": 4
+              },
+              {
+                "category": "porcine",
+                "count": 4
+              },
+              {
+                "category": "ovine",
+                "count": 3
+              },
+              {
+                "category": "unknown",
+                "count": 3
+              },
+              {
+                "category": "cervid",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "id": "both",
+            "label": "Near both marker groups",
+            "reportsN": 167,
+            "share": 0.49117647058823527,
+            "craftComposition": [
+              {
+                "category": "bovine",
+                "count": 148
+              },
+              {
+                "category": "equine",
+                "count": 11
+              },
+              {
+                "category": "canid",
+                "count": 4
+              },
+              {
+                "category": "porcine",
+                "count": 3
+              },
+              {
+                "category": "unknown",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "id": "neither",
+            "label": "No confirmed active marker match",
+            "reportsN": 0,
+            "share": 0,
+            "craftComposition": []
+          }
+        ],
+        "nearestNuclearBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 1
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 20
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 99
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 47
+          }
+        ],
+        "nearestBroaderBands": [
+          {
+            "id": "km_25",
+            "minKm": 0,
+            "maxKm": 25,
+            "label": "0–25 km",
+            "reportsN": 20
+          },
+          {
+            "id": "km_100",
+            "minKm": 25,
+            "maxKm": 100,
+            "label": "25–100 km",
+            "reportsN": 73
+          },
+          {
+            "id": "km_250",
+            "minKm": 100,
+            "maxKm": 250,
+            "label": "100–250 km",
+            "reportsN": 197
+          },
+          {
+            "id": "km_500",
+            "minKm": 250,
+            "maxKm": 500,
+            "label": "250–500 km",
+            "reportsN": 50
+          }
+        ]
+      }
+    },
+    "institutions": [
+      {
+        "id": "facility:dfd76fba1347f76f32b3",
+        "name": "Los Alamos National Laboratory — TA-3 main campus",
+        "nuclearRole": "nuclear_weapon_design",
+        "sources": [
+          {
+            "capturedFile": "nuclear_sources/nnsa_locations.html",
+            "sha256": "d03c387f3a9598fe7fd7de9dfb4c1a747d6a1ccc4e3eb320da60dfcb46ebae99",
+            "url": "https://www.energy.gov/nnsa/locations"
+          },
+          {
+            "capturedFile": "nuclear_sources/lanl_history.html",
+            "sha256": "858a7f4493a4ea347a3e919b51fe69d8cb7fc00fecfe33c5d4c82ab70b764377",
+            "url": "https://www.energy.gov/nnsa/articles/army-and-origins-nuclear-security-enterprise"
+          }
+        ]
+      },
+      {
+        "id": "facility:622bb756286c7167283e",
+        "name": "Lawrence Livermore National Laboratory — Livermore main site",
+        "nuclearRole": "nuclear_weapon_design",
+        "sources": [
+          {
+            "capturedFile": "nuclear_sources/nnsa_locations.html",
+            "sha256": "d03c387f3a9598fe7fd7de9dfb4c1a747d6a1ccc4e3eb320da60dfcb46ebae99",
+            "url": "https://www.energy.gov/nnsa/locations"
+          },
+          {
+            "capturedFile": "nuclear_sources/llnl_history.html",
+            "sha256": "fceeb84e21939b09b94ded49ed631ad8c505830caa4a7c9054a4054c2193e44d",
+            "url": "https://www.llnl.gov/purpose/history"
+          }
+        ]
+      },
+      {
+        "id": "facility:946b08af4403614992e5",
+        "name": "Oak Ridge National Laboratory — Oak Ridge main site",
+        "nuclearRole": "nuclear_research",
+        "sources": [
+          {
+            "capturedFile": "nuclear_sources/oak_ridge_history.html",
+            "sha256": "36705eeee27fc909860cd23ea66cae6ba6b3081682bfaaf126ecbee3ed7c7bf9",
+            "url": "https://www.energy.gov/orem/history"
+          }
+        ]
+      },
+      {
+        "id": "facility:247c2ae0e6957534205b",
+        "name": "AWE Aldermaston",
+        "nuclearRole": "nuclear_weapon_design_and_materials",
+        "sources": [
+          {
+            "capturedFile": "nuclear_sources/awe_history.html",
+            "sha256": "f028bf6d73be14f01f969e08451f56a62199a25e3ca3785eb7ed147fdda2e46b",
+            "url": "https://www.awe.co.uk/about-us/our-history/"
+          }
+        ]
+      }
+    ],
+    "warnings": [
+      "Nuclear institutions are a reviewed partial inventory, not all nuclear facilities or power reactors.",
+      "Broader military/research markers have unreviewed nuclear status; they are not a verified nonnuclear control.",
+      "Distances are to retained facility markers, not operating-unit or site boundaries.",
+      "Year-only opening/closing boundaries are excluded, and historical organization activity does not establish daily facility operation."
+    ]
+  },
+  "storage": {
+    "fullCorpusCopied": false,
+    "newFilesOver100MiB": [],
+    "canonicalArtifact": "data/analysis_comparisons/nuclear_context_v1.json",
+    "rollback": "Existing production release unchanged; protected shared source artifacts retained."
+  }
+}

@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -54,10 +55,13 @@ def main():
     parser.add_argument('--wrangler', type=Path, required=True)
     parser.add_argument('--receipt', type=Path, required=True)
     parser.add_argument('--workers', type=int, default=4, choices=range(1, 5))
+    parser.add_argument('--release-id', default='quality-20261007')
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_bytes())
     assert manifest['bucket'] == 'ufo-timeline-data'
-    assert manifest['key_prefix'] == 'releases/quality-20261007'
+    assert re.fullmatch(r'[a-z0-9][a-z0-9-]{1,80}', args.release_id)
+    assert manifest['release_id'] == args.release_id
+    assert manifest['key_prefix'] == 'releases/' + args.release_id
     rows = manifest['uploads']
     assert len({row['key'] for row in rows}) == len(rows)
     for row in rows:
@@ -100,7 +104,7 @@ def main():
                 failures.append({'key': futures[future], 'error': str(error)})
             if len(completed) % 10 == 0 or failures or len(completed) == len(rows):
                 print(f'Objects published: {len(completed)}/{len(rows)}; failures: {len(failures)}', flush=True)
-    receipt = {'release_id': 'quality-20261007', 'manifest_sha256': digest_file(args.manifest),
+    receipt = {'release_id': args.release_id, 'manifest_sha256': digest_file(args.manifest),
                'passed': not failures, 'objects': sorted(completed, key=lambda row: row['key']), 'failures': failures,
                'published_bytes': sum(row['bytes'] for row in completed), 'original_objects_replaced': False}
     args.receipt.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf8')

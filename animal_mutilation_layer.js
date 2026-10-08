@@ -749,25 +749,79 @@
   }
 
   function sourceReferenceHtml(ref) {
-    const sourceId = escapeHtml(ref && ref.sourceId ? ref.sourceId : "Source reference");
+    const sourceTitle = escapeHtml(ref && (ref.title || ref.sourceId) ? (ref.title || ref.sourceId) : "Source reference");
     const url = safePublicHttpUrl(ref && ref.url);
     const label = url
-      ? '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + sourceId + "</a>"
-      : sourceId;
+      ? '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + sourceTitle + "</a>"
+      : sourceTitle;
     const locator = ref && ref.locator ? " — " + escapeHtml(ref.locator) : "";
     const hash = ref && ref.sourceHash ? '<code class="animal-hash">' + escapeHtml(ref.sourceHash) + "</code>" : "";
-    return "<li>" + label + locator + (hash ? "<br>SHA-256: " + hash : "") + "</li>";
+    const hashLabel = ref && ref.hashRole === "frozen_source_capture" ? "Source capture SHA-256" : "Source SHA-256";
+    return "<li>" + label + locator + (hash ? "<br>" + hashLabel + ": " + hash : "") + "</li>";
+  }
+
+  function publicEvidenceValue(value) {
+    if (value == null || value === "") return "Not supplied";
+    if (Array.isArray(value)) return value.map(publicEvidenceValue).join("; ") || "None recorded";
+    if (typeof value === "object") return Object.keys(value).sort().map(function (key) {
+      return readableCode(key) + ": " + publicEvidenceValue(value[key]);
+    }).join("; ");
+    return String(value);
+  }
+
+  function acceptedFieldProvenanceHtml(detail) {
+    const provenance = detail.fieldProvenance;
+    if (!provenance || typeof provenance !== "object" || Array.isArray(provenance)) return "";
+    const fields = Object.keys(provenance).sort();
+    if (!fields.length) return "";
+    const references = new Map((detail.sourceRefs || []).map(function (ref) { return [ref.sourceId, ref]; }));
+    const rows = fields.map(function (name) {
+      const field = provenance[name] || {};
+      const locators = (Array.isArray(field.sourceLocators) ? field.sourceLocators : []).map(function (locator) {
+        const ref = references.get(locator.sourceId) || {};
+        const label = escapeHtml(ref.title || locator.sourceId || "Source reference");
+        const url = safePublicHttpUrl(ref.url);
+        const linked = url ? '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + label + "</a>" : label;
+        return "<li>" + linked + (locator.locator ? " — " + escapeHtml(locator.locator) : "") + "</li>";
+      }).join("");
+      const assertionIds = Array.isArray(field.assertionIds) ? field.assertionIds : [];
+      const hashes = Array.isArray(field.evidenceSha256) ? field.evidenceSha256 : [];
+      const auditIds = assertionIds.length || hashes.length
+        ? '<details><summary>Evidence identifiers</summary><div>' +
+          assertionIds.map(function (id) { return "<code>" + escapeHtml(id) + "</code>"; }).join(" · ") +
+          hashes.map(function (hash) { return '<div>Frozen evidence SHA-256: <code class="animal-hash">' + escapeHtml(hash) + "</code></div>"; }).join("") + "</div></details>"
+        : "";
+      return "<div><dt>" + escapeHtml(readableCode(name)) + "</dt><dd>" +
+        escapeHtml(publicEvidenceValue(field.value)) + '<div class="animal-detail-muted">' +
+        escapeHtml(readableCode(field.reviewState, "Review state not supplied")) + "</div>" +
+        (locators ? '<ul class="animal-detail-sources">' + locators + "</ul>" : "") + auditIds + "</dd></div>";
+    }).join("");
+    return '<details class="animal-field-provenance"><summary>Reviewed field evidence · ' + fields.length +
+      (fields.length === 1 ? ' field' : ' fields') + '</summary><p class="animal-detail-muted">Accepted source values and their cited locators. Review describes sourcing; it does not establish authenticity or cause.</p>' +
+      '<dl class="animal-detail-grid animal-provenance-grid">' + rows + "</dl></details>";
   }
 
   function renderDetail(detail, positionRows) {
     if (!detailPanel || !detailBody) return;
     const review = reviewPresentation(detail);
     const names = (detail.commonNames || []).map(function (value) { return String(value).replaceAll("_", " "); });
-    const excerpts = (detail.evidenceExcerpts || []).length
-      ? '<ul class="animal-detail-excerpts">' + detail.evidenceExcerpts.map(function (text) {
+    const isReviewedParaphrase = detail.evidenceExcerptKind === "reviewed_field_paraphrase";
+    const summary = String(detail.summary || "").trim();
+    const publicExcerpts = (detail.evidenceExcerpts || []).filter(function (text) {
+      if (!isReviewedParaphrase || !summary) return true;
+      const excerpt = String(text).trim();
+      return excerpt !== summary && excerpt !== "Reviewed field summary (paraphrase): " + summary;
+    });
+    const excerpts = publicExcerpts.length
+      ? '<ul class="animal-detail-excerpts">' + publicExcerpts.map(function (text) {
         return "<li>" + escapeHtml(text) + "</li>";
       }).join("") + "</ul>"
-      : '<p class="animal-detail-muted">No public evidence excerpt was supplied.</p>';
+      : (isReviewedParaphrase ? "" : '<p class="animal-detail-muted">No public evidence excerpt was supplied.</p>');
+    const summaryContent = (isReviewedParaphrase && summary ? "<h4>Reviewed source summary</h4>" : "") +
+      (summary ? "<p>" + escapeHtml(summary) + "</p>" : "");
+    const excerptContent = excerpts
+      ? "<h4>" + (isReviewedParaphrase ? (summary ? "Additional reviewed source summaries" : "Reviewed source summary") : "Public report excerpts") + "</h4>" + excerpts
+      : "";
     const refs = (detail.sourceRefs || []).length
       ? '<ul class="animal-detail-sources">' + detail.sourceRefs.map(sourceReferenceHtml).join("") + "</ul>"
       : '<p class="animal-detail-muted">No public source link was supplied; the lineage identifiers remain available below.</p>';
@@ -799,13 +853,14 @@
       "<div><dt>Analysis tier</dt><dd>" + escapeHtml(readableCode(detail.analysisTier, "Excluded")) + "</dd></div>",
       "<div><dt>Strict-lane exclusions</dt><dd>" + escapeHtml(listLabel(detail.exclusionReasonCodes, "None")) + "</dd></div>",
       "</dl>",
-      "<p>" + escapeHtml(detail.summary || "") + "</p>",
-      "<h4>Public report excerpts</h4>", excerpts,
+      summaryContent,
+      excerptContent,
       "<h4>Provenance</h4>", refs,
+      acceptedFieldProvenanceHtml(detail),
       '<dl class="animal-detail-grid animal-provenance-grid">',
       "<div><dt>Stable report ID</dt><dd><code>" + escapeHtml(detail.id) + "</code></dd></div>",
       "<div><dt>Source incident ID</dt><dd><code>" + escapeHtml(detail.sourceIncidentId) + "</code></dd></div>",
-      '<div><dt>Source incident SHA-256</dt><dd><code class="animal-hash">' + escapeHtml(detail.sourceIncidentSha256) + "</code></dd></div>",
+      '<div><dt>Source incident SHA-256</dt><dd><code class="animal-hash">' + escapeHtml(detail.sourceIncidentSha256 || "Not supplied") + "</code></dd></div>",
       "<div><dt>Source families</dt><dd>" + escapeHtml(identifierListLabel(detail.sourceFamilyIds, "None recorded")) + "</dd></div>",
       "<div><dt>Independence</dt><dd>" + escapeHtml(readableCode(detail.independenceStatus, "Unreviewed")) + "</dd></div>",
       "<div><dt>Deduplication</dt><dd>" + escapeHtml(readableCode(detail.dedupStatus, "Unresolved")) + "</dd></div>",

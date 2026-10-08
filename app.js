@@ -22,6 +22,7 @@
   const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
+  const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
   if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
     throw new Error("Direction summaries or famous case presets failed to load.");
   }
@@ -1031,10 +1032,25 @@
     catalogFacetWorkerLastError: "",
     catalogFacetWorkerStorage: null,
     analysisViewController: null,
+    analysisComparisonsRequested: false,
+    analysisComparisonsReady: false,
+    analysisComparisonsError: "",
+    analysisComparisonsPromise: null,
+    analysisComparisonsManifest: null,
+    analysisComparisonOptions: { windowDays: 30, planet: "Venus", aspectPartner: "Mars",
+      aspectOrbDegrees: 3, zodiacSystem: "sidereal", ayanamsaId: "lahiri" },
+    analysisComparisonRequestId: 0,
+    analysisComparisonPending: null,
+    analysisComparisonDirtyComponents: new Set(),
+    analysisComparisonDebounceTimerId: null,
+    analysisComparisonPerformanceSamples: [],
+    analysisLastCohortKey: "",
     analysisRequestId: 0,
     analysisDebounceTimerId: null,
     analysisFullInferenceTimerId: null,
     analysisPendingRequest: null,
+    analysisWorkerFlight: null,
+    analysisComputeScheduleGeneration: 0,
     analysisLastResult: null,
     analysisLastError: "",
     analysisCache: new Map(),
@@ -1238,6 +1254,7 @@
     packedStartupPreviewCount: 0,
     packedStartupPreviewSourceRowCount: 0,
     packedMapLayerCache: new Map(),
+    analysisRepairDetailOverlay: null,
     locationLabelOverlay: {
       enabled: false,
       status: PACKED_POINTS_STATUS.NOT_LOADED,
@@ -1316,6 +1333,7 @@
     filteredCatalog: [],
     filteredMappedCatalog: [],
     filteredPlaybackEventCount: 0,
+    filteredExactDateEventCount: 0,
     filteredPlaybackEvents: [],
     filteredMappedPlaybackEvents: [],
     filteredMappedEventIdSet: new Set(),
@@ -3609,6 +3627,9 @@
 
   function handleGuideJump(guideKey) {
     if (!guideKey) return;
+    if (state.activeView === "analysis" && runtime.analysisViewController) {
+      runtime.analysisViewController.setActiveView("map", { source: "quick-guide" });
+    }
     expandGuideContext(guideKey);
     refreshMapLayoutAfterPaneChange();
 
@@ -5064,7 +5085,7 @@
   }
 
   function eventHasExactDateEvidence(event) {
-    return Boolean(event && event.date_precision === "exact_day" && Number.isFinite(Number(event.sort_ordinal)));
+    return Boolean(event && event.date_precision === "exact_day" && nullableCatalogNumber(event.sort_ordinal) != null);
   }
 
   function sourceCoordinateEventIdsForWorker() {
@@ -8110,6 +8131,45 @@
     return runtime.detailQualityOverlay ? QUALITY_DETAILS.apply(runtime.detailQualityOverlay, event) : event;
   }
 
+  async function loadAnalysisRepairDetailOverlayRuntime() {
+    const config = runtime.appConfig && runtime.appConfig.analysisRepairDetailOverlay;
+    runtime.analysisRepairDetailOverlay = null;
+    if (!config || config.enabled !== true) return;
+    if (!ANALYSIS_REPAIR_DETAILS || !browserCanDecodeGzipJson() || !window.crypto || !window.crypto.subtle) {
+      throw createStartupError("Reviewed date repairs could not be loaded.", "./analysis_repair_detail_overlay.js",
+        "Use a current browser with compressed-data and integrity verification support.");
+    }
+    const url = resolveAssetPath(config.gzipUrl);
+    const index = await retryStaticAssetLoad("Reviewed date repairs", async function () {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw createStartupError("Reviewed date repairs returned HTTP " + response.status + ".", url);
+      const compressed = await response.arrayBuffer();
+      await ANALYSIS_REPAIR_DETAILS.verifyCompressedPayload(compressed, config, window.crypto.subtle);
+      const stream = new Response(compressed).body.pipeThrough(new DecompressionStream("gzip"));
+      const decoded = await new Response(stream).arrayBuffer();
+      if (decoded.byteLength !== config.bytes) {
+        throw createStartupError("Reviewed date repair decoded size differs from its release pin.", url);
+      }
+      const digest = await window.crypto.subtle.digest("SHA-256", decoded);
+      const digestHex = Array.from(new Uint8Array(digest), function (value) {
+        return value.toString(16).padStart(2, "0");
+      }).join("");
+      if (digestHex !== config.sha256) {
+        throw createStartupError("Reviewed date repair decoded integrity check failed.", url);
+      }
+      const payload = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(decoded));
+      return ANALYSIS_REPAIR_DETAILS.createIndex(payload, config);
+    });
+    runtime.analysisRepairDetailOverlay = index;
+    recordStartupDecision("analysisRepairDetailOverlay", { enabled: true, patchCount: index.patchCount,
+      sourcePins: config.sourcePins, sha256: config.sha256 });
+  }
+
+  function applyAnalysisRepairDetailOverlay(event) {
+    return runtime.analysisRepairDetailOverlay
+      ? ANALYSIS_REPAIR_DETAILS.apply(runtime.analysisRepairDetailOverlay, event) : event;
+  }
+
   async function fetchGzipArrayBuffer(relativePath, label) {
     const url = resolveAssetPath(relativePath);
     startup.lastUrl = url;
@@ -9298,7 +9358,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-12-context-evidence-v2");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-workspace-analysis-release-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9334,6 +9394,12 @@
     }
   }
 
+  function nullableCatalogNumber(value) {
+    if (value == null || typeof value === "boolean" || (typeof value === "string" && !value.trim())) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
   function serializeCatalogFacetWorkerRow(event) {
     if (!event) return null;
     const rawEventId = event.event_id == null ? "" : event.event_id;
@@ -9355,9 +9421,11 @@
       adminRegion: event.state_province || event.admin_region || "unknown",
       duplicateLineage: event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || "",
       mapped: Boolean(event.has_coordinates),
-      lat: Number.isFinite(Number(event.lat)) ? Number(event.lat) : null,
-      lon: Number.isFinite(Number(event.lon)) ? Number(event.lon) : null,
-      sortOrdinal: Number.isFinite(Number(event.sort_ordinal)) ? Number(event.sort_ordinal) : null,
+      lat: nullableCatalogNumber(event.lat),
+      lon: nullableCatalogNumber(event.lon),
+      sortOrdinal: nullableCatalogNumber(event.sort_ordinal),
+      dateStartOrdinal: event.date_recovery_contract && event.date_iso ? isoToOrdinal(event.date_iso) : null,
+      dateEndOrdinal: event.date_recovery_contract && event.end_date_iso ? isoToOrdinal(event.end_date_iso) : null,
     };
   }
 
@@ -9499,7 +9567,9 @@
         activeUnmapped: Math.max(0, state.filteredCatalog.length - state.filteredMappedCatalog.length),
         activeDated: state.filteredPlaybackEventCount,
         activeSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
-        activeExactDates: state.filteredExactDateEventIdSet.size,
+        activeExactDates: state.filteredExactDateEventCount,
+        activeMappedExactDates: state.filteredExactDateEventIdSet.size,
+        activeMappedSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
       },
     };
   }
@@ -9732,6 +9802,7 @@
         refreshActiveTimeFilteredOverlayLayers();
         runtime.analysisMapRenderPending = false;
       }
+      renderTimeline();
       runtime.map.invalidateSize({ animate: false, pan: false });
       scheduleMapProjectionRefresh();
       scheduleMapInvalidate();
@@ -9752,6 +9823,8 @@
       return;
     }
     runtime.analysisPendingRequest = null;
+    runtime.analysisComparisonPending = null;
+    window.clearTimeout(runtime.analysisComparisonDebounceTimerId);
     window.clearTimeout(runtime.analysisFullInferenceTimerId);
     runtime.analysisFullInferenceTimerId = null;
     setAnalysisMapOnlyControlsAvailable(true);
@@ -9931,6 +10004,9 @@
         return ensureAnalysisGeographyArtifact().catch(function () { return null; });
       },
       onSectionActivate: function (change) {
+        if (change && change.sectionKey === "comparisons") {
+          ensureAnalysisComparisonArtifacts().catch(function () { return null; });
+        }
         if (change && change.sectionKey === "time") {
           if (state.activeView === "analysis") {
             requestAnalysisTimeEvidence();
@@ -9970,6 +10046,30 @@
         if (runtime.analysisContextEvidenceRenderPending) {
           runtime.analysisContextEvidenceRenderPending = false;
           setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+        }
+      },
+      onComparisonSettingsChange: function (settings) {
+        if (settings && settings.heatmapOnly) {
+          requestPlanetaryHeatmaps(settings);
+          return;
+        }
+        runtime.analysisComparisonOptions = Object.assign({}, runtime.analysisComparisonOptions, settings || {});
+        const component = Object.keys(settings || {}).some(function (key) {
+          return ["planet", "aspectPartner", "aspectOrbDegrees", "zodiacSystem", "ayanamsaId", "samplingMode"].indexOf(key) !== -1;
+        }) ? "planetary" : "nuclear";
+        scheduleAnalysisComparisonUpdate(component);
+      },
+      onPlanetaryHeatmapRequest: requestPlanetaryHeatmaps,
+      getComparisonLoadingState: function () {
+        return runtime.analysisComparisonsError ? { status: "error", message: runtime.analysisComparisonsError } : { status: "loading" };
+      },
+      onComparisonRetry: function () {
+        if (runtime.analysisComparisonsReady && runtime.analysisComparisonDirtyComponents.size) {
+          scheduleAnalysisComparisonUpdate(runtime.analysisComparisonDirtyComponents.values().next().value);
+        } else {
+          ensureAnalysisComparisonArtifacts().then(function () {
+            scheduleAnalysisCompute("comparison retry", { immediate: true });
+          }).catch(function () { return null; });
         }
       },
       getFilterSnapshot: getAnalysisFilterSnapshot,
@@ -10156,6 +10256,13 @@
 
   function analysisV2ArtifactHashes(manifest) {
     const hashes = {};
+    const catalogManifest = runtime.canonicalWebArtifacts && runtime.canonicalWebArtifacts.manifest;
+    ["repairOverlay", "reviewedYearOverlay"].forEach(function (key) {
+      const overlay = catalogManifest && catalogManifest[key];
+      if (overlay && overlay.frozenPatches && overlay.frozenPatches.sha256) {
+        hashes["catalog_" + key] = String(overlay.frozenPatches.sha256);
+      }
+    });
     const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
       ? manifest.artifacts
       : {};
@@ -10684,7 +10791,7 @@
     if (runtime.analysisWitnessCountPromise) return runtime.analysisWitnessCountPromise;
     const manifestUrl = new URL(resolveAssetPath("./data/analysis_witness_count_v1/manifest.json"), document.baseURI).toString();
     const statusElement = document.getElementById("analysis-witness-count-status");
-    if (statusElement) statusElement.textContent = "Loading explicit NUFORC witness-count evidence...";
+    if (statusElement) statusElement.textContent = "Loading explicit reported witness-count evidence...";
     runtime.analysisWitnessCountPromise = fetch(manifestUrl, { cache: "force-cache" })
       .then(function (response) {
         if (!response.ok) throw new Error("Witness-count manifest request failed (" + response.status + ").");
@@ -10697,7 +10804,7 @@
       .then(function (manifest) {
         runtime.analysisWitnessCountError = "";
         runtime.analysisCache.clear();
-        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; single-source limits remain enforced.";
+        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; source-independence requirements remain enforced.";
         scheduleAnalysisCompute("typed witness-count evidence ready", { immediate: true });
         return manifest;
       })
@@ -11189,12 +11296,66 @@
     return runtime.analysisSpatialPromise;
   }
 
-  function analysisComputeCacheKey(snapshot) {
+  function ensureAnalysisComparisonArtifacts() {
+    runtime.analysisComparisonsRequested = true;
+    if (runtime.analysisComparisonsReady) return Promise.resolve(runtime.analysisComparisonsManifest);
+    if (runtime.analysisComparisonsPromise) return runtime.analysisComparisonsPromise;
+    runtime.analysisComparisonsError = "";
+    const manifestUrl = new URL(resolveAssetPath("./data/analysis_comparisons/manifest.json"), document.baseURI).toString();
+    runtime.analysisComparisonsPromise = fetch(manifestUrl, { cache: "no-cache" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Comparison evidence request failed (" + response.status + ").");
+        return response.json();
+      }).then(function (manifest) {
+        const worker = ensureCatalogFacetWorker();
+        if (!worker) throw new Error("The Analysis worker is unavailable.");
+        return new Promise(function (resolve, reject) {
+          const requestId = "analysis-comparisons-" + (++runtime.catalogFacetWorkerRequestId);
+          const loadTimeout = window.UfoAnalysisComparisonsView && window.UfoAnalysisComparisonsView.artifactLoadTimeoutMs
+            ? window.UfoAnalysisComparisonsView.artifactLoadTimeoutMs(manifest) : 180000;
+          const timeout = window.setTimeout(function () { finish(); reject(new Error("Comparison evidence loading timed out.")); }, loadTimeout);
+          function finish() { window.clearTimeout(timeout); worker.removeEventListener("message", onMessage); }
+          function onMessage(event) {
+            const message = event.data || {};
+            if (message.requestId !== requestId) return;
+            if (message.type === "analysisComparisonArtifactsSet") { finish(); resolve(manifest); }
+            if (message.type === "analysisWorkerError" || message.type === "catalogFacetWorkerError") {
+              finish(); reject(new Error(message.error || "Comparison evidence failed validation."));
+            }
+          }
+          worker.addEventListener("message", onMessage);
+          worker.postMessage({ type: "setAnalysisComparisonArtifacts", requestId, manifest, manifestUrl });
+        });
+      }).then(function (manifest) {
+        runtime.analysisComparisonsReady = true;
+        runtime.analysisComparisonsManifest = manifest;
+        runtime.analysisCache.clear();
+        scheduleAnalysisCompute("comparison evidence ready", { immediate: true });
+        return manifest;
+      }).catch(function (error) {
+        runtime.analysisComparisonsPromise = null;
+        runtime.analysisComparisonsError = error.message || String(error);
+        const target = document.getElementById("analysis-comparisons-chart");
+        if (target && window.UfoAnalysisComparisonsView) {
+          window.UfoAnalysisComparisonsView.render(target, { status: "error", message: error.message },
+            { retry: function () { ensureAnalysisComparisonArtifacts().catch(function () { return null; }); } });
+        }
+        throw error;
+      });
+    return runtime.analysisComparisonsPromise;
+  }
+
+  function analysisComputeCacheKey(snapshot, options) {
     const filters = snapshot && snapshot.filters ? snapshot.filters : {};
     const area = snapshot && snapshot.areaFilter ? snapshot.areaFilter : {};
     const context = snapshot && snapshot.contextLayers ? snapshot.contextLayers : {};
     return JSON.stringify({
       generation: snapshot ? snapshot.generation : 0,
+      comparisonsRequested: runtime.analysisComparisonsRequested,
+      comparisonsReady: runtime.analysisComparisonsReady,
+      comparisonOptions: options && options.excludeComparisonOptions ? null : runtime.analysisComparisonOptions,
+      comparisonRelease: runtime.analysisComparisonsManifest && runtime.analysisComparisonsManifest.releaseId,
+      planetaryEphemeris: runtime.analysisComparisonsManifest && runtime.analysisComparisonsManifest.ephemerisAtlas && runtime.analysisComparisonsManifest.ephemerisAtlas.sha256,
       baselineMode: snapshot ? snapshot.baselineMode : "other_dates_balanced",
       timeRange: snapshot ? snapshot.timeRange : null,
       filters: filters,
@@ -11265,6 +11426,214 @@
     }
   }
 
+  function analysisComparisonRequestIsCurrent(pending, message) {
+    return Boolean(state.activeView === "analysis" && pending &&
+      runtime.analysisComparisonPending === pending &&
+      pending.scheduleGeneration === runtime.analysisComputeScheduleGeneration &&
+      pending.cohortKey === analysisComputeCacheKey(getAnalysisFilterSnapshot(), { excludeComparisonOptions: true }) &&
+      analysisResponseEnvelopeMatchesCurrentState(pending, message));
+  }
+
+  function computeAnalysisComparisonViaWorker(snapshot, component) {
+    const worker = ensureCatalogFacetWorker();
+    if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) {
+      return Promise.reject(new Error("The analysis worker is still indexing the catalog."));
+    }
+    const generation = Number(snapshot.generation) || 0;
+    const workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, generation);
+    const requestId = "analysis-comparison-" + (++runtime.analysisComparisonRequestId) + "-" + Date.now();
+    const pending = {
+      requestId, generation, baselineMode: snapshot.baselineMode,
+      signature: analysisComputeCacheKey(snapshot),
+      cohortKey: analysisComputeCacheKey(snapshot, { excludeComparisonOptions: true }),
+      cancellationGeneration: ++runtime.analysisCancellationGeneration,
+      scheduleGeneration: runtime.analysisComputeScheduleGeneration,
+      timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+      timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+      component,
+    };
+    runtime.analysisComparisonPending = pending;
+    return new Promise(function (resolve, reject) {
+      let settled = false, resolveFlight;
+      const flight = { requestId, done: new Promise(function (done) { resolveFlight = done; }) };
+      runtime.analysisWorkerFlight = flight;
+      function finish() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", onMessage);
+        if (runtime.analysisWorkerFlight === flight) runtime.analysisWorkerFlight = null;
+        resolveFlight();
+      }
+      function isCurrent(message) { return analysisComparisonRequestIsCurrent(pending, message); }
+      const timeoutId = window.setTimeout(function () {
+        if (settled) return;
+        settled = true; finish();
+        const envelope = Object.assign({}, pending, { analysisSignature: pending.signature, filterGeneration: generation });
+        if (isCurrent(envelope)) reject(new Error("The selected comparison timed out."));
+        else resolve(null);
+      }, 30000);
+      function onMessage(event) {
+        const message = event.data || {};
+        if (settled || message.requestId !== requestId) return;
+        if (!["analysisComparisonComputed", "analysisWorkerError", "catalogFacetWorkerError"].includes(message.type)) return;
+        settled = true; finish();
+        if (!isCurrent(message)) {
+          runtime.discardedWorkerResults += 1;
+          resolve(null); return;
+        }
+        if (message.type === "analysisComparisonComputed" && message.component === component) resolve(message);
+        else reject(new Error(message.error || "The selected comparison could not be updated."));
+      }
+      worker.addEventListener("message", onMessage);
+      worker.postMessage({
+        type: "computeAnalysisComparison", component, requestId,
+        analysisSignature: pending.signature, generation, filterGeneration: generation,
+        cancellationGeneration: pending.cancellationGeneration,
+        baselineMode: snapshot.baselineMode, datasetHash: analysisCatalogDatasetHash(),
+        contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
+        comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
+        contextLayers: {
+          cropCirclesEnabled: Boolean(snapshot.contextLayers.crops && snapshot.contextLayers.crops.enabled),
+          animalMutilationsEnabled: Boolean(snapshot.contextLayers.animals && snapshot.contextLayers.animals.enabled),
+        },
+        filters: workerFilters, keywordEventIds: workerFilters.keywordEventIds,
+        areaFilterEventIds: null,
+        areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+        timeRangeMode: snapshot.timeRange.mode, fullTimeRange: snapshot.timeRange.mode === "full",
+        timeRangeStartOrdinal: snapshot.timeRange.startOrdinal,
+        timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+        lowPrecisionValues: workerFilters.lowPrecisionValues,
+      });
+    });
+  }
+
+  function renderAnalysisComparisonUpdate(evidence, snapshot, cacheKey, performanceSample) {
+    const prior = runtime.analysisLastResult;
+    if (!prior || !evidence || !runtime.analysisViewController) return false;
+    const result = Object.assign({}, prior, {
+      comparisonEvidence: evidence,
+      artifactHashes: Object.assign({}, prior.artifactHashes || {}, evidence.artifactHashes || {}),
+    });
+    runtime.analysisLastResult = result;
+    runtime.analysisLastError = "";
+    if (cacheKey) {
+      runtime.analysisCache.set(cacheKey, result);
+      trimAnalysisResultCache();
+    }
+    runtime.analysisViewController.renderAnalysisComparisonEvidence(evidence, {
+      filterSnapshot: snapshot, artifactHashes: result.artifactHashes,
+    });
+    if (performanceSample) {
+      const sample = Object.assign({}, performanceSample);
+      if (Number.isFinite(sample.startedAt)) {
+        sample.durationMs = Math.round((performance.now() - sample.startedAt) * 100) / 100;
+        delete sample.startedAt;
+      }
+      runtime.analysisComparisonPerformanceSamples.push(sample);
+      if (runtime.analysisComparisonPerformanceSamples.length > 50) runtime.analysisComparisonPerformanceSamples.shift();
+    }
+    return true;
+  }
+
+  function updateAnalysisComparisonsForCurrentSelection(scheduleGeneration) {
+    if (state.activeView !== "analysis" || scheduleGeneration !== runtime.analysisComputeScheduleGeneration) return Promise.resolve(null);
+    if (runtime.analysisWorkerFlight) {
+      return runtime.analysisWorkerFlight.done.then(function () {
+        return updateAnalysisComparisonsForCurrentSelection(scheduleGeneration);
+      });
+    }
+    const snapshot = getAnalysisFilterSnapshot();
+    const cacheKey = analysisComputeCacheKey(snapshot);
+    if (runtime.analysisLastCohortKey !== analysisComputeCacheKey(snapshot, { excludeComparisonOptions: true })) {
+      scheduleAnalysisCompute("comparison cohort changed", { immediate: true });
+      return Promise.resolve(null);
+    }
+    const cached = runtime.analysisCache.get(cacheKey);
+    if (cached && cached.comparisonEvidence && cached.comparisonEvidence.status === "ready" &&
+      Array.from(runtime.analysisComparisonDirtyComponents).every(function (key) {
+        return cached.comparisonEvidence[key] && cached.comparisonEvidence[key].status !== "error";
+      })) {
+      runtime.analysisComparisonDirtyComponents.clear();
+      runtime.analysisComparisonPending = null;
+      renderAnalysisComparisonUpdate(cached.comparisonEvidence, snapshot, null, {
+        startedAt: performance.now(), cacheHit: true, cacheLayer: "page", recordedAt: Date.now(),
+      });
+      return Promise.resolve(cached);
+    }
+    const component = runtime.analysisComparisonDirtyComponents.values().next().value;
+    if (!component) return Promise.resolve(null);
+    const startedAt = performance.now();
+    return computeAnalysisComparisonViaWorker(snapshot, component).then(function (message) {
+      if (!message) return null;
+      runtime.analysisComparisonPending = null;
+      runtime.analysisComparisonDirtyComponents.delete(component);
+      const evidence = Object.assign({}, runtime.analysisLastResult.comparisonEvidence, {
+        status: "ready", [component]: message.model,
+        artifactHashes: Object.assign({}, runtime.analysisLastResult.comparisonEvidence.artifactHashes || {}, message.artifactHashes || {}),
+      });
+      renderAnalysisComparisonUpdate(evidence, snapshot,
+        runtime.analysisComparisonDirtyComponents.size ? null : cacheKey, {
+          component, durationMs: Math.round((performance.now() - startedAt) * 100) / 100,
+          workerDurationMs: message.elapsedMilliseconds, cacheHit: Boolean(message.cacheHit),
+          precomputation: message.model && message.model.precomputation, recordedAt: Date.now(),
+        });
+      return runtime.analysisComparisonDirtyComponents.size
+        ? updateAnalysisComparisonsForCurrentSelection(scheduleGeneration)
+        : runtime.analysisLastResult;
+    }).catch(function (error) {
+      if (state.activeView !== "analysis" || scheduleGeneration !== runtime.analysisComputeScheduleGeneration || cacheKey !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) return null;
+      runtime.analysisComparisonPending = null;
+      runtime.analysisLastError = error && error.message ? error.message : String(error);
+      if (component === "planetaryHeatmaps") {
+        const errorEvidence = Object.assign({}, runtime.analysisLastResult.comparisonEvidence, {
+          planetaryHeatmaps: { status: "error", message: runtime.analysisLastError },
+        });
+        runtime.analysisLastResult = Object.assign({}, runtime.analysisLastResult, { comparisonEvidence: errorEvidence });
+        runtime.analysisViewController.renderAnalysisComparisonEvidence(errorEvidence);
+        return null;
+      }
+      runtime.analysisViewController.renderAnalysisComparisonEvidence({
+        status: "error", message: "The selected comparison could not be updated. " + runtime.analysisLastError,
+      });
+      return null;
+    });
+  }
+
+  function scheduleAnalysisComparisonUpdate(component) {
+    if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
+    const result = runtime.analysisLastResult;
+    if (!result || result.inferenceDeferred || !result.comparisonEvidence || result.comparisonEvidence.status !== "ready" ||
+      !runtime.analysisViewController || typeof runtime.analysisViewController.renderAnalysisComparisonEvidence !== "function") {
+      return scheduleAnalysisCompute("comparison settings changed", { immediate: true });
+    }
+    runtime.analysisComparisonDirtyComponents.add(component);
+    runtime.analysisComputeScheduleGeneration += 1;
+    runtime.analysisPendingRequest = null;
+    runtime.analysisComparisonPending = null;
+    window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    window.clearTimeout(runtime.analysisDebounceTimerId);
+    window.clearTimeout(runtime.analysisComparisonDebounceTimerId);
+    const scheduleGeneration = runtime.analysisComputeScheduleGeneration;
+    runtime.analysisComparisonDebounceTimerId = window.setTimeout(function () {
+      runtime.analysisComparisonDebounceTimerId = null;
+      updateAnalysisComparisonsForCurrentSelection(scheduleGeneration);
+    }, 0);
+    return true;
+  }
+
+  function requestPlanetaryHeatmaps(settingsValue) {
+    const settings = settingsValue || {};
+    const update = {};
+    ["zodiacSystem", "ayanamsaId", "aspectOrbDegrees"].forEach(function (key) {
+      if (settings[key] != null) update[key] = settings[key];
+    });
+    const changed = Object.keys(update).some(function (key) { return update[key] !== runtime.analysisComparisonOptions[key]; });
+    if (!changed && runtime.analysisComparisonDirtyComponents.has("planetaryHeatmaps") &&
+      (runtime.analysisComparisonPending || runtime.analysisWorkerFlight || runtime.analysisComparisonDebounceTimerId != null)) return true;
+    runtime.analysisComparisonOptions = Object.assign({}, runtime.analysisComparisonOptions, update);
+    if (changed) runtime.analysisComparisonDirtyComponents.add("planetary");
+    return scheduleAnalysisComparisonUpdate("planetaryHeatmaps");
+  }
+
   function computeAnalysisViaWorker(snapshot, optionsValue) {
     const options = optionsValue || {};
     const analysisPhase = options.quickMode ? "quick" : "full";
@@ -11289,6 +11658,9 @@
     };
     return new Promise(function (resolve, reject) {
       let settled = false;
+      let resolveFlight;
+      const flight = { requestId, done: new Promise(function (done) { resolveFlight = done; }) };
+      runtime.analysisWorkerFlight = flight;
       const timeoutId = window.setTimeout(function () {
         if (settled) return;
         settled = true;
@@ -11298,10 +11670,12 @@
         } else {
           reject(new Error("Analysis computation timed out."));
         }
-      }, options.quickMode ? 8000 : ((runtime.analysisSpatialRequested || runtime.analysisContextSpatialRequested) ? 30000 : 15000));
+      }, options.quickMode ? 8000 : ((runtime.analysisSpatialRequested || runtime.analysisContextSpatialRequested || runtime.analysisComparisonsRequested) ? 45000 : 15000));
       function finish() {
         window.clearTimeout(timeoutId);
         worker.removeEventListener("message", onMessage);
+        if (runtime.analysisWorkerFlight === flight) runtime.analysisWorkerFlight = null;
+        resolveFlight();
       }
       function onMessage(event) {
         const message = event.data || {};
@@ -11357,11 +11731,13 @@
         estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
         analysisPhase: analysisPhase,
         quickMode: Boolean(options.quickMode),
-        selectedDomains: Array.isArray(options.selectedDomains)
+        comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
+        selectedDomains: (Array.isArray(options.selectedDomains)
           ? options.selectedDomains.slice()
           : (runtime.analysisSpatialRequested
             ? ["overview", "time", "craft", "geography", "spatial", "sources_quality", "context"]
-            : ["overview", "time", "craft", "geography", "sources_quality", "context"]),
+            : ["overview", "time", "craft", "geography", "sources_quality", "context"]))
+          .concat(runtime.analysisComparisonsRequested ? ["comparisons"] : []),
         spatialPermutationCount: 499,
         spatialBootstrapCount: 199,
         spatialMinimumStratumSize: 20,
@@ -11397,6 +11773,8 @@
     }
     const result = attachAnalysisV2ContextPulseSummary(message.result);
     runtime.analysisLastResult = result;
+    runtime.analysisLastCohortKey = analysisComputeCacheKey(getAnalysisFilterSnapshot(), { excludeComparisonOptions: true });
+    runtime.analysisComparisonDirtyComponents.clear();
     runtime.analysisLastError = "";
     if (options.cacheResult !== false) {
       runtime.analysisCache.set(cacheKey, result);
@@ -11462,6 +11840,16 @@
     if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
       return Promise.resolve(null);
     }
+    // Artifact loaders may finish together while the worker is still running
+    // the prior cohort. Wait for that request, then run only the latest
+    // scheduled cohort instead of queueing obsolete computations behind it.
+    if (runtime.analysisWorkerFlight) {
+      const scheduledGeneration = runtime.analysisComputeScheduleGeneration;
+      return runtime.analysisWorkerFlight.done.then(function () {
+        if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration) return null;
+        return computeAnalysisForCurrentView(reason);
+      });
+    }
     if (
       !runtime.analysisSpatialManifest &&
       !runtime.analysisGeographyManifest &&
@@ -11487,6 +11875,7 @@
     if (cached) {
       runtime.analysisPendingRequest = null;
       runtime.analysisLastResult = cached;
+      runtime.analysisLastCohortKey = analysisComputeCacheKey(snapshot, { excludeComparisonOptions: true });
       runtime.analysisViewController.renderAnalysisResult(cached, {
         baselineMode: String(cached.baseline && cached.baseline.mode || snapshot.baselineMode),
         estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
@@ -11522,17 +11911,18 @@
       setAnalysisComputationPhase("updating", "Updating the cohort view for the active filters...");
     }
     const quickStartedAt = performance.now();
+    const scheduledGeneration = runtime.analysisComputeScheduleGeneration;
     return computeAnalysisViaWorker(snapshot, {
       quickMode: true,
       selectedDomains: ["overview", "time", "sources_quality", "context"],
     }).then(function (quickMessage) {
       if (!quickMessage) return null;
       renderAnalysisWorkerResult(quickMessage, cacheKey, quickStartedAt, { cacheResult: false });
-      if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
+      if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
       window.clearTimeout(runtime.analysisFullInferenceTimerId);
       runtime.analysisFullInferenceTimerId = window.setTimeout(function () {
         runtime.analysisFullInferenceTimerId = null;
-        if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
+        if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
         const fullStartedAt = performance.now();
         computeAnalysisViaWorker(snapshot).then(function (fullMessage) {
           if (!fullMessage) return;
@@ -11565,7 +11955,11 @@
 
   function scheduleAnalysisCompute(reason, options) {
     if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
+    runtime.analysisComputeScheduleGeneration += 1;
     runtime.analysisPendingRequest = null;
+    runtime.analysisComparisonPending = null;
+    window.clearTimeout(runtime.analysisComparisonDebounceTimerId);
+    runtime.analysisComparisonDirtyComponents.clear();
     window.clearTimeout(runtime.analysisFullInferenceTimerId);
     runtime.analysisFullInferenceTimerId = null;
     window.clearTimeout(runtime.analysisDebounceTimerId);
@@ -23384,11 +23778,13 @@
     if (event.sort_ordinal == null) {
       return state.timeRangeMode === "full";
     }
+    const intervalStart = event.date_recovery_contract && event.date_iso ? isoToOrdinal(event.date_iso) : event.sort_ordinal;
+    const intervalEnd = event.date_recovery_contract && event.end_date_iso ? isoToOrdinal(event.end_date_iso) : event.sort_ordinal;
     return (
       state.timeRangeStartOrdinal != null &&
       state.timeRangeEndOrdinal != null &&
-      event.sort_ordinal >= state.timeRangeStartOrdinal &&
-      event.sort_ordinal <= state.timeRangeEndOrdinal
+      intervalEnd >= state.timeRangeStartOrdinal &&
+      intervalStart <= state.timeRangeEndOrdinal
     );
   }
 
@@ -23397,7 +23793,8 @@
       state.timeRangeMode !== "full" &&
       state.timeRangeStartOrdinal != null &&
       state.timeRangeEndOrdinal != null &&
-      state.timelinePlaybackEvents.length > 0;
+      state.timelinePlaybackEvents.length > 0 &&
+      !state.timelineCatalog.some(function (event) { return Boolean(event.date_recovery_contract); });
     let orderedCatalog;
     let preserveDateAscending;
     if (useIndexedDateRange) {
@@ -23435,9 +23832,11 @@
     const nextFilteredSourceCoordinateEventIdSet = new Set();
     const nextFilteredExactDateEventIdSet = new Set();
     let nextFilteredPlaybackEventCount = 0;
+    let nextFilteredExactDateEventCount = 0;
     for (const event of orderedCatalog) {
       if (!useIndexedDateRange && !eventMatchesTimeRange(event)) continue;
       nextFilteredCatalog.push(event);
+      if (eventHasExactDateEvidence(event)) nextFilteredExactDateEventCount += 1;
       if (event.sort_ordinal != null) {
         nextFilteredPlaybackEventCount += 1;
         nextFilteredPlaybackEvents.push(event);
@@ -23462,6 +23861,7 @@
     state.filteredCatalog = nextFilteredCatalog;
     state.filteredMappedCatalog = nextFilteredMappedCatalog;
     state.filteredPlaybackEventCount = nextFilteredPlaybackEventCount;
+    state.filteredExactDateEventCount = nextFilteredExactDateEventCount;
     state.filteredPlaybackEvents = nextFilteredPlaybackEvents;
     state.filteredMappedPlaybackEvents = nextFilteredMappedPlaybackEvents;
     state.filteredMappedEventIdSet = nextFilteredMappedEventIdSet;
@@ -23829,6 +24229,9 @@
   }
 
   function renderTimelineCanvas() {
+    // Analysis hides the mounted timeline. Preserve its last valid
+    // geometry until it can be measured after returning to Map.
+    if (!els.timelineCanvasWrap || els.timelineCanvasWrap.clientWidth < 1) return;
     resizeTimelineCanvas();
     renderTimelineTicks();
     renderTimelineSelection();
@@ -24746,7 +25149,7 @@
         );
       }
       const overlaidEvents = events.map(function (event) {
-        return applyLocationLabelOverlay(applyDetailQualityOverlay(event), { detail: true });
+        return applyLocationLabelOverlay(applyAnalysisRepairDetailOverlay(applyDetailQualityOverlay(event)), { detail: true });
       });
       cacheChunkData(cacheKey, overlaidEvents);
       return overlaidEvents;
@@ -27405,7 +27808,7 @@
     // parsed object forces V8 into dictionary-mode storage, which costs more
     // memory than retaining the original fields across a catalog this large.
     const sortDateIso = internCanonicalSummaryString(event.sort_date_iso);
-    return {
+    const compactEvent = {
       event_id: event.event_id,
       chunk_id: internCanonicalSummaryString(event.chunk_id),
       detail_index: event.detail_index,
@@ -27437,6 +27840,13 @@
       duplicate_lineage_id: internCanonicalSummaryString(event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || ""),
       sort_ordinal: event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null,
     };
+    if (event.date_recovery_contract) {
+      compactEvent.date_iso = event.date_iso;
+      compactEvent.end_date_iso = event.end_date_iso;
+      compactEvent.date_recovery_contract = event.date_recovery_contract;
+      compactEvent.date_interval_semantics = event.date_interval_semantics;
+    }
+    return compactEvent;
   }
 
   function fitToResults(options) {
@@ -31234,6 +31644,7 @@
     renderStartupDiagnostics();
 
     await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
+    await measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime);
 
     await measureStartupStep("location label overlay load", function () {
       return loadLocationLabelOverlayRuntime();
@@ -32237,6 +32648,15 @@
             neighborhoodRequested: Boolean(runtime.analysisContextSpatialRequested),
             neighborhoodReady: Boolean(runtime.analysisContextSpatialWorkerReady || runtime.analysisSpatialWorkerReady),
             error: runtime.analysisContextEvidenceError || "",
+          },
+          comparisons: {
+            requested: runtime.analysisComparisonsRequested, ready: runtime.analysisComparisonsReady,
+            error: runtime.analysisComparisonsError, options: Object.assign({}, runtime.analysisComparisonOptions),
+            releaseId: runtime.analysisComparisonsManifest && runtime.analysisComparisonsManifest.releaseId,
+            pendingRequest: runtime.analysisComparisonPending,
+            performanceSamples: runtime.analysisComparisonPerformanceSamples.slice(),
+            ephemerisSha256: runtime.analysisComparisonsManifest && runtime.analysisComparisonsManifest.ephemerisAtlas
+              && runtime.analysisComparisonsManifest.ephemerisAtlas.sha256,
           },
           performanceSamples: runtime.analysisPerformanceSamples.slice(),
         },

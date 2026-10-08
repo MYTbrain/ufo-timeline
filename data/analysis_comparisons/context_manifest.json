@@ -1,0 +1,108 @@
+{
+  "artifacts": {
+    "contextRows": {
+      "bytes": 9765948,
+      "file": "context_rows.json",
+      "gzipBytes": 979960,
+      "gzipFile": "context_rows.json.gz",
+      "gzipSha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1",
+      "sha256": "e1449dba4767ad49ebed9a19faf85c7a20de15c1603ab105b9bc2a21df714abd"
+    }
+  },
+  "counts": {
+    "animals": 1184,
+    "crops": 7745,
+    "strictAnimals": 0,
+    "strictCrops": 1
+  },
+  "dateRoleCounts": {
+    "animals": {
+      "death_interval": 2,
+      "publication_date": 6,
+      "report_date": 3,
+      "reported_unspecified": 1173
+    },
+    "crops": {
+      "catalog_date": 19,
+      "catalog_unspecified": 7697,
+      "discovery_date": 18,
+      "formation_date": 7,
+      "photography_date": 3,
+      "publication_date": 1
+    }
+  },
+  "ordinalEpoch": "unix_day",
+  "policy": {
+    "animalCountryUnknownPreserved": true,
+    "dateRolesPreserved": true,
+    "privateCoordinatesAdded": false,
+    "sourceIndependenceInferred": false,
+    "strictEligibilityChanged": false,
+    "traceInputsIncluded": false,
+    "utcTimesInferred": false
+  },
+  "rebuild": "py -3 scripts/build_analysis_comparison_context.py --source-root <shared canonical root>",
+  "schemaId": "ufo-analysis-comparison-context-v1",
+  "sources": [
+    {
+      "bytes": 90140,
+      "path": "data/releases/quality-20261007/analysis_delta/analysis_v2/manifest.json",
+      "sha256": "a92c48317f3cd67f997714ae8b1dded5e58bb252c986a0fa4ee8d898bbe38dd3"
+    },
+    {
+      "bytes": 8748,
+      "path": "data/research/analysis-repairs-20261007/context/analysis_v1/manifest.json",
+      "sha256": "07c83ff6d18f3d905d8631d91a7ecae5c19f432ab84a8716c7ec11c6512179bb"
+    },
+    {
+      "bytes": 147057,
+      "path": "data/research/analysis-repairs-20261007/context/analysis_v1/crop_circles.json.gz",
+      "sha256": "a1102da64fb8e55f6e427ef6350e2621bb2b600d50a34f91f10fa21de2912f88"
+    },
+    {
+      "bytes": 6080,
+      "path": "data/research/analysis-repairs-20261007/context/animal_mutilations/manifest.json",
+      "sha256": "4760e8441cd84684ee85d4283edfa9e2af461f84c8d5c3936e6b8ac2c150b4da"
+    },
+    {
+      "bytes": 110282,
+      "path": "data/research/analysis-repairs-20261007/context/animal_mutilations/catalog.json.gz",
+      "sha256": "2b1b69e99d3027ad9d51697ca738acf316917503622f83f11c80e4c4959f7d3b"
+    },
+    {
+      "bytes": 70248,
+      "path": "data/research/analysis-repairs-20261007/context/animal_mutilations/details/chunk_000.json.gz",
+      "sha256": "ca9974eadf2f316994ea99c51a6c325570aff88135ea549abde1ddc323ac745d"
+    },
+    {
+      "bytes": 70508,
+      "path": "data/research/analysis-repairs-20261007/context/animal_mutilations/details/chunk_001.json.gz",
+      "sha256": "c8fcf22620d75b74a97fab67d349b6d8899d17836d60c9132be08ada89183b07"
+    },
+    {
+      "bytes": 69050,
+      "path": "data/research/analysis-repairs-20261007/context/animal_mutilations/details/chunk_002.json.gz",
+      "sha256": "f47eda55c6922d9734eed11cc786ef1e5af419f59dcadd87d9fe122879bddcf3"
+    },
+    {
+      "bytes": 66138,
+      "path": "webapp/static_public/data/animal_mutilations/details/chunk_003.json.gz",
+      "sha256": "1654fcf81c2e1598e96493ad1e0c7e69d656e2c4d8c8e90c6cfd323e6978d665"
+    },
+    {
+      "bytes": 49530,
+      "path": "webapp/static_public/data/animal_mutilations/details/chunk_004.json.gz",
+      "sha256": "c63ca86a1017f8e7698a4ae4b7e1147af24f72122cd47c0c69c2a419da1d3b97"
+    },
+    {
+      "bytes": 574378,
+      "path": "webapp/static_public/data/analysis_v2/crop_context_readiness.json.gz",
+      "sha256": "1b1badec514697832b4c7800f4b1dbdb2f9e38c387f8bd465c51ff2d7b44e1ea"
+    },
+    {
+      "bytes": 202289,
+      "path": "webapp/static_public/data/analysis_v2/animal_context_readiness.json.gz",
+      "sha256": "8d0a3f40cc0d6296fcbb37b30a478b0ee74b8ecdd073b506e4e092bdbbb89543"
+    }
+  ]
+}

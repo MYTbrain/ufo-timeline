@@ -1,0 +1,532 @@
+{
+  "release_id": "workspace-analysis-20261008",
+  "manifest_sha256": "dc41a5a3778d952a722e618ae11de7e19b929e406634291121c5519689e73f7f",
+  "passed": true,
+  "objects": [
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/context_rows.json.gz",
+      "status": "uploaded",
+      "sha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1",
+      "bytes": 979960
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/ephemeris_atlas_v1.bin.gz",
+      "status": "uploaded",
+      "sha256": "d5c38232e0702783a46df4e38e24c8dce947ce54ab9843d93191ddce5b447b8f",
+      "bytes": 41307851
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/nuclear_context_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "01b187494a5d194ea09c0f6cb94524eed147b18ef60ce16bd1a1d2d10498f7b6",
+      "bytes": 82892
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_duration_v1/duration_value_dictionary_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "9c1666282ba5e629b604e209a912ef2df517c16fdd731182758dfbde4d65941f",
+      "bytes": 908814
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_repair_detail/patches.json.gz",
+      "status": "uploaded",
+      "sha256": "fd4c1d09e53c548cac031cc999ea7094cc826f3e50d6ac112bff4d243557f1da",
+      "bytes": 648307
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_time_of_day_v1/time_of_day_value_dictionary_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "5586225b80be48348bf9650b5f854703f53e920ff54d4eb16416138c5223bdb0",
+      "bytes": 442557
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_v1/crop_circles.json.gz",
+      "status": "uploaded",
+      "sha256": "a1102da64fb8e55f6e427ef6350e2621bb2b600d50a34f91f10fa21de2912f88",
+      "bytes": 147057
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_projection_v1_000.json.gz",
+      "status": "uploaded",
+      "sha256": "cba96e70c2d5959815d19859917c5e1cff3681f8c9dd19eba25de8623444b359",
+      "bytes": 2708558
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_source_lineage_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "c0369acc9486081a18537af36d1b6961e0de65962a43988ca72b0e3abb4c35e5",
+      "bytes": 1473862
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_value_dictionary_v1.json.gz",
+      "status": "uploaded",
+      "sha256": "181e49fb7c3b4f78478145f784c4234020947ff3bcff283ead58550fc68e3d2c",
+      "bytes": 17320
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/animal_mutilations/catalog.json.gz",
+      "status": "uploaded",
+      "sha256": "2b1b69e99d3027ad9d51697ca738acf316917503622f83f11c80e4c4959f7d3b",
+      "bytes": 110282
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/animal_mutilations/details/chunk_000.json.gz",
+      "status": "uploaded",
+      "sha256": "ca9974eadf2f316994ea99c51a6c325570aff88135ea549abde1ddc323ac745d",
+      "bytes": 70248
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/animal_mutilations/details/chunk_001.json.gz",
+      "status": "uploaded",
+      "sha256": "c8fcf22620d75b74a97fab67d349b6d8899d17836d60c9132be08ada89183b07",
+      "bytes": 70508
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/animal_mutilations/details/chunk_002.json.gz",
+      "status": "uploaded",
+      "sha256": "f47eda55c6922d9734eed11cc786ef1e5af419f59dcadd87d9fe122879bddcf3",
+      "bytes": 69050
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/canonical_web_manifest.json",
+      "status": "uploaded",
+      "sha256": "7b1c97ab8601051880c7597ee73aa49c42627ea11ff33ae3af33b513877b20c6",
+      "bytes": 13016
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_manifest.json",
+      "status": "uploaded",
+      "sha256": "9c50d0e608fc89d1dc7523cde5f407a45e2d10a9e6adefaf83384d1a8a209bdc",
+      "bytes": 12829
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000000.json.gz",
+      "status": "uploaded",
+      "sha256": "c7160503493c0a4784b671ba5399ebf1578192be724d02135b1101b4da3b3b07",
+      "bytes": 770141
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000001.json.gz",
+      "status": "uploaded",
+      "sha256": "42ec938fad8cf691c5cccad4027fa0c5b48f3700f024c50916b215573567a2db",
+      "bytes": 767557
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000002.json.gz",
+      "status": "uploaded",
+      "sha256": "f94d9858537beebedbf2fc27b1935a49a6c7b08e5a169131e8cd25ce78232d8e",
+      "bytes": 766992
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000003.json.gz",
+      "status": "uploaded",
+      "sha256": "f469875009962a7c18e6fb8a6ececa5b18ee6d689f97572a684af3fe59995848",
+      "bytes": 763997
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000004.json.gz",
+      "status": "uploaded",
+      "sha256": "6c11bc6a1ed160540fa3db04a0ada8d373b78fae4b6663558ff0c46eced8a9d7",
+      "bytes": 763889
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000005.json.gz",
+      "status": "uploaded",
+      "sha256": "d5bfe33aec16465025fa88b0a8be77f5484fc78eb8ca7e715522f32be53c06f8",
+      "bytes": 759871
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000006.json.gz",
+      "status": "uploaded",
+      "sha256": "1fa9c649d6d017e67488b8185f1846762c760552f27ab1976acd89ffef468f3a",
+      "bytes": 768574
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000007.json.gz",
+      "status": "uploaded",
+      "sha256": "5f53068184ef6154f804bd2f608fbcdae2c50c9b9271a8d8f833fe0ef190a1d8",
+      "bytes": 764786
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000008.json.gz",
+      "status": "uploaded",
+      "sha256": "90553d2367442d4449bbcfee7f2a95faba17697cefa9102f676a6afe4f2570ad",
+      "bytes": 763611
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000009.json.gz",
+      "status": "uploaded",
+      "sha256": "cdf5aea9ffcb64778a1fa92701f9ffa9a300446f634b88f74c180809bde32c01",
+      "bytes": 762208
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000010.json.gz",
+      "status": "uploaded",
+      "sha256": "07e36761f0d7fd9de983c6f5b03074970a6791f7af8e94590df233a5b6515822",
+      "bytes": 758319
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000011.json.gz",
+      "status": "uploaded",
+      "sha256": "2f70f7293eb3f62dc13bc02eb2f3602c099bd0fb1787ccd242afbe14b93ba8c1",
+      "bytes": 759704
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000012.json.gz",
+      "status": "uploaded",
+      "sha256": "b23634cbcf133f3c3d26181255741322e8c39252fc96b2e5efc708e5827773bc",
+      "bytes": 762942
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000013.json.gz",
+      "status": "uploaded",
+      "sha256": "d995380313e48c05459a5d65f1b4f7d96f8af71fe66f4e972882ccd5b9e516ef",
+      "bytes": 760561
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000014.json.gz",
+      "status": "uploaded",
+      "sha256": "7f6bb9fa3a17c409093cdbf76892db1498abcba9de4ef52c9191b5a0010f7b3d",
+      "bytes": 761921
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000015.json.gz",
+      "status": "uploaded",
+      "sha256": "2ab8a4bb19a5b8214db95c33e3650ffb05ed91ae9356fedbd2ec401a23fbe9cc",
+      "bytes": 759279
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000016.json.gz",
+      "status": "uploaded",
+      "sha256": "c10691725cd42e5027f43ec5ed9c790082452b541279b9cdfa9f58000cb62a64",
+      "bytes": 756358
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000017.json.gz",
+      "status": "uploaded",
+      "sha256": "4a32c3de7a928ca06a7191ccd577a1ad9a8514b63d1f01e85e54cdc2e6426dc1",
+      "bytes": 756709
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000018.json.gz",
+      "status": "uploaded",
+      "sha256": "3b07d2c38ca81e9c2fc1f42525b2d938a06e995431ed477cd4c85f7d42452d30",
+      "bytes": 759344
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000019.json.gz",
+      "status": "uploaded",
+      "sha256": "43b03f04674871afe820d0f9e33bf52a60543727d664b1b869b28221f9c6aa29",
+      "bytes": 758489
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000020.json.gz",
+      "status": "uploaded",
+      "sha256": "2a9ebf39165ea2652280cceeb21bee7e3f537c34d32461d071da370531504b59",
+      "bytes": 755491
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000021.json.gz",
+      "status": "uploaded",
+      "sha256": "6e7840fddfd9114a7d741a59617ac16d9c4e6a62f09d22aba880d58ed326a098",
+      "bytes": 756121
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000022.json.gz",
+      "status": "uploaded",
+      "sha256": "6d237a16923d25cf07b387e0e4155c700eb48cb26e55dff39a95a6088e08a871",
+      "bytes": 754616
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000023.json.gz",
+      "status": "uploaded",
+      "sha256": "60b16e8158be61f49ff560c259ffe74be153abde2d3c96455dabbb94b0e4b08d",
+      "bytes": 756267
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000024.json.gz",
+      "status": "uploaded",
+      "sha256": "7c2cdb0b06f0bc4261ef1dadd0ef5f6b71dc94d3deb5e332e7e9d904a7365ed4",
+      "bytes": 754744
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000025.json.gz",
+      "status": "uploaded",
+      "sha256": "3cc5e41958da0377a00ed4ac14cec7bed51f6e44328ed054f6df1f6f13bf88c2",
+      "bytes": 754745
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000026.json.gz",
+      "status": "uploaded",
+      "sha256": "c193e46560320da4f0cf55e99e61f0106465c9fe6041980a107e0779ef4882c8",
+      "bytes": 754119
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000027.json.gz",
+      "status": "uploaded",
+      "sha256": "779638e29d94e202b675d9e6d8aa8de4ebc8e597917847ef14b3bbae206f0cf5",
+      "bytes": 756512
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000028.json.gz",
+      "status": "uploaded",
+      "sha256": "354b27618bdc0ca95e24247b2628fd9bf444e9fe39b2f900f2e6e1f544c1d01f",
+      "bytes": 753957
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000029.json.gz",
+      "status": "uploaded",
+      "sha256": "d2ea906e34e10e4d036443124a7133447532a612ef02e5dd047b332727db5275",
+      "bytes": 751401
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000030.json.gz",
+      "status": "uploaded",
+      "sha256": "caf9df99b239fc5e373a8051ed13a9cb43475cc7444019328a6dfda2b3f2a205",
+      "bytes": 752785
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000031.json.gz",
+      "status": "uploaded",
+      "sha256": "c7de311a294701c8976c43b05bf6f5af26bbc301b26bc21995c44083c637441c",
+      "bytes": 754213
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000032.json.gz",
+      "status": "uploaded",
+      "sha256": "2df6862f2fec51287e6a43b41e0d86eb0df1b1ce00535d148f959f26f429de8e",
+      "bytes": 750517
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000033.json.gz",
+      "status": "uploaded",
+      "sha256": "d1a8bf084efbb1a9f1053fe9d759b23658908662e983f810b2c3e17657ebeb74",
+      "bytes": 753570
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000034.json.gz",
+      "status": "uploaded",
+      "sha256": "ee0b1b74ec33b3b21823080ff858953e7446dd6db1bb848a116d0da71a07de80",
+      "bytes": 751961
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000035.json.gz",
+      "status": "uploaded",
+      "sha256": "a7d84571bd7a533bf4815267cd375090b410423bc83d4b09b5c0fbdecdf926aa",
+      "bytes": 749809
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000036.json.gz",
+      "status": "uploaded",
+      "sha256": "bd3e8968a3e9a001087f93a4abe3c6542813334f5d80f85c24ef7c43122fbcf8",
+      "bytes": 752677
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000037.json.gz",
+      "status": "uploaded",
+      "sha256": "24df0fcc47f69eae6f956345618cb88273a373d3db295ff4a3397f789ddfcb4c",
+      "bytes": 751879
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000038.json.gz",
+      "status": "uploaded",
+      "sha256": "b938f4c4ccdc80ecf2ae8740a66639ee87fa954c5960855778cd84ba78f80c56",
+      "bytes": 749440
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000039.json.gz",
+      "status": "uploaded",
+      "sha256": "b62311a04f5839ec49e1cba3d92b7b82f820ae7a4bba3d23a2ca1c246656b571",
+      "bytes": 749400
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000040.json.gz",
+      "status": "uploaded",
+      "sha256": "1c9b0e97a104c1b675cb74ce5401f9652fc321234766632fe3f3bdf971c0384a",
+      "bytes": 746108
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000041.json.gz",
+      "status": "uploaded",
+      "sha256": "20ff265c5b6d1688ebf63ad44b69a5980a53002bd4a9828b4339c4d7ce9b490a",
+      "bytes": 747944
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000042.json.gz",
+      "status": "uploaded",
+      "sha256": "c9c8fb55467062081847694659dce135b624660327d89a37c775682ed9ef72ec",
+      "bytes": 745263
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000043.json.gz",
+      "status": "uploaded",
+      "sha256": "1413913fceafa94d4c384caf8023899e06c8e906ede47824721b2fb468dd8704",
+      "bytes": 748188
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000044.json.gz",
+      "status": "uploaded",
+      "sha256": "dd4b719c87bb2930a5191794f845c4a3f8a57cc4f725b37bb1bfb13fa6933b08",
+      "bytes": 749826
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000045.json.gz",
+      "status": "uploaded",
+      "sha256": "29646fa11e06fc2fcb5943e4035f1bd131a35c35cf7896c48f261ae01f1b4641",
+      "bytes": 745381
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000046.json.gz",
+      "status": "uploaded",
+      "sha256": "dba9c35f95318fe502f5179cc2b2d21e5017c4e249b8443fc3d529a3e1595ba6",
+      "bytes": 745742
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000047.json.gz",
+      "status": "uploaded",
+      "sha256": "b977fc0cc1b901e2e38f272e200e8d645914c442cfcec3fc7f536d700513cb0d",
+      "bytes": 746951
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000048.json.gz",
+      "status": "uploaded",
+      "sha256": "8dd644ce7530ee8c4f042ba14634c1e9b680526639f65226e74754ebdca7e535",
+      "bytes": 747983
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000049.json.gz",
+      "status": "uploaded",
+      "sha256": "a04c6e5bcb54186d3b3a3d3faff4a1b015bc859c4e9935437d2394d3ae3996be",
+      "bytes": 748164
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000050.json.gz",
+      "status": "uploaded",
+      "sha256": "12bf6ed28604fc4cb11b237dec5df29aef728b42a32316efd5c13f35a49c406a",
+      "bytes": 746299
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000051.json.gz",
+      "status": "uploaded",
+      "sha256": "6e1148bd8bb4566a6599a2ca50f3f3a955027d943ce2c1de4195823ffaad84f4",
+      "bytes": 741179
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000052.json.gz",
+      "status": "uploaded",
+      "sha256": "7ab6ae23c36ea6c9fd7479048c7da79187ad5a1e0579324508c0bc701ca839ea",
+      "bytes": 747153
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000053.json.gz",
+      "status": "uploaded",
+      "sha256": "ab6e2c2c4706750bca106aca9d8d11062367e9c6728d324c2ffc2939131112cd",
+      "bytes": 743647
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000054.json.gz",
+      "status": "uploaded",
+      "sha256": "14fa0d9ffdf6d2ed47373a7455958cb5160eb13c379f345d3383f2d618cf249f",
+      "bytes": 742997
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000055.json.gz",
+      "status": "uploaded",
+      "sha256": "9e0578e35aec0428633098c5070dfa0ffc99977108891c4c3b6994af4973bb18",
+      "bytes": 744248
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000056.json.gz",
+      "status": "uploaded",
+      "sha256": "17c3811b6afe6e4470aa99bcadd9db42dc59756173211effeb2a0151f027d1f4",
+      "bytes": 741250
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000057.json.gz",
+      "status": "uploaded",
+      "sha256": "4dd87456ca7b0fcfd0378ab54437f917d96cf5fb7caabb8a7c28a71789fc896c",
+      "bytes": 740487
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000058.json.gz",
+      "status": "uploaded",
+      "sha256": "29dffaa52ac9051c9444e858b0e26c85dbf4161fe04864cf55133a2602397dca",
+      "bytes": 744433
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000059.json.gz",
+      "status": "uploaded",
+      "sha256": "07550917ba54c6c314edf07939f2f9814f9f07bd5e073bc338310f01c2f1589e",
+      "bytes": 742570
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000060.json.gz",
+      "status": "uploaded",
+      "sha256": "1bccdb6db8fe223058a78cb4e7471e2a994f4022a3aeb4bec9bf3f35891e8114",
+      "bytes": 740499
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000061.json.gz",
+      "status": "uploaded",
+      "sha256": "bc2f9386a000c827b41ff9802002301e28af96f9c933339cc98066f69d60a7b3",
+      "bytes": 739115
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000062.json.gz",
+      "status": "uploaded",
+      "sha256": "d8a0ef6c77853d9c16ffbd7b31abee12c489a61ee91b4e825c4234f74a0aec74",
+      "bytes": 736645
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000063.json.gz",
+      "status": "uploaded",
+      "sha256": "666bf2045575a4b6ec54ae7fbfe37019e4aa314e353eef5a907d7bb3f2bbb456",
+      "bytes": 737688
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000064.json.gz",
+      "status": "uploaded",
+      "sha256": "2e8c35cac8156fd1c647ebe187ec5bdd68e751b7cce0956848a9348d72800da2",
+      "bytes": 738672
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000065.json.gz",
+      "status": "uploaded",
+      "sha256": "71da33ad5df43e8e65a98d7924ce76609a09692e812b9dc695975be1f97eb9eb",
+      "bytes": 739159
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000066.json.gz",
+      "status": "uploaded",
+      "sha256": "02268a49dcec5276f361e1aac3552b35ab7d7c774798c0819104563efd329032",
+      "bytes": 737012
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000067.json.gz",
+      "status": "uploaded",
+      "sha256": "38c2d1e7c87c263223d4be510c08e26a06d25ea055605b365ad5f24d50e04b05",
+      "bytes": 736912
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000068.json.gz",
+      "status": "uploaded",
+      "sha256": "dac0c32c6e1f4148bb68efa0f34a92b9c67ac9eaed900c5afa735956551c6f7d",
+      "bytes": 735111
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000069.json.gz",
+      "status": "uploaded",
+      "sha256": "c0df80b501f4d371a2c8a8986a9f999c93634640de022fcb5828b51dc9be632b",
+      "bytes": 734363
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000070.json.gz",
+      "status": "uploaded",
+      "sha256": "799e5f9d28c999bc72197069130254bc63d1e1c1667f4485207541fea827ed3a",
+      "bytes": 222113
+    }
+  ],
+  "failures": [],
+  "published_bytes": 101875689,
+  "original_objects_replaced": false
+}

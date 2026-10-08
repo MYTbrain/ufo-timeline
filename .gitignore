@@ -36,6 +36,11 @@ live_probe/
 
 # Generated datasets, packaged transfers, and deployment bundles
 /data/*
+!/data/analysis_comparisons/
+!/data/analysis_repair_detail/
+/data/analysis_comparisons/ephemeris_atlas_v1.bin.gz
+# Compact comparison evidence, reproducibility records, and pinned source archive.
+# Full canonical UFO datasets remain excluded.
 !/data/trace_intersection_feasibility_v1/
 /data/trace_intersection_feasibility_v1/*
 !/data/trace_intersection_feasibility_v1/manifest.json
@@ -51,3 +56,4 @@ canonical_web_static_payload_manifest.json
 # Large source/reference corpora retained outside Git
 ufos *.txt
 *.pdf
+!/data/analysis_comparisons/nuclear_sources/sipri-report-original.pdf

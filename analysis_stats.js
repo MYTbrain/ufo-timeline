@@ -2149,12 +2149,13 @@
       const year = String(civil.year);
       const decade = String(Math.floor(civil.year / 10) * 10);
       analysisDecade = decade;
-      const month = String(civil.month).padStart(2, "0");
-      const monthYear = year.padStart(4, "0") + "-" + month;
+      const monthKnown = ["year", "decade", "century"].indexOf(datePrecision) === -1;
+      const month = monthKnown ? String(civil.month).padStart(2, "0") : "unknown";
+      const monthYear = monthKnown ? year.padStart(4, "0") + "-" + month : null;
       incrementRaw(accumulator.years, year, 1);
       incrementRaw(accumulator.decades, decade, 1);
       incrementRaw(accumulator.months, month, 1);
-      incrementRaw(accumulator.monthYears, monthYear, 1);
+      if (monthYear) incrementRaw(accumulator.monthYears, monthYear, 1);
       addMatrixCount(accumulator.craftDecades, craft, decade);
       addMatrixCount(accumulator.craftMonths, craft, month);
       addMatrixCount(accumulator.sourceDecades, source, decade);
@@ -2162,7 +2163,7 @@
       if (missingAny) {
         incrementRaw(accumulator.missingAnyBy.years, year, 1);
         incrementRaw(accumulator.missingAnyBy.decades, decade, 1);
-        incrementRaw(accumulator.missingAnyBy.monthYears, monthYear, 1);
+        if (monthYear) incrementRaw(accumulator.missingAnyBy.monthYears, monthYear, 1);
         addMatrixCount(accumulator.missingAnyBy.craftDecades, craft, decade);
         addMatrixCount(accumulator.missingAnyBy.craftMonths, craft, month);
         addMatrixCount(accumulator.missingAnyBy.sourceDecades, source, decade);
@@ -2247,7 +2248,7 @@
     );
     if (civil) {
       const month = String(civil.month).padStart(2, "0");
-      addStratifiedMatrixCount(
+      if (["year", "decade", "century"].indexOf(datePrecision) === -1) addStratifiedMatrixCount(
         accumulator.craftMonthStrataMatrix,
         source + "\u001f" + coarseRegion + "\u001f" + coordClass + "\u001f" + analysisDecade,
         craft,
@@ -2398,18 +2399,19 @@
     }
     const year = String(civil.year);
     const decade = String(Math.floor(civil.year / 10) * 10);
-    const month = String(civil.month).padStart(2, "0");
-    const monthYear = year.padStart(4, "0") + "-" + month;
+    const monthKnown = ["year", "decade", "century"].indexOf(datePrecision) === -1;
+    const month = monthKnown ? String(civil.month).padStart(2, "0") : "unknown";
+    const monthYear = monthKnown ? year.padStart(4, "0") + "-" + month : null;
     incrementRaw(accumulator.years, year, 1);
     incrementRaw(accumulator.decades, decade, 1);
     incrementRaw(accumulator.months, month, 1);
-    incrementRaw(accumulator.monthYears, monthYear, 1);
+    if (monthYear) incrementRaw(accumulator.monthYears, monthYear, 1);
     addMatrixCount(accumulator.sourceDecades, source, decade);
     addMatrixCount(accumulator.sourceYears, source, year);
     if (missingAny) {
       incrementRaw(accumulator.missingAnyBy.years, year, 1);
       incrementRaw(accumulator.missingAnyBy.decades, decade, 1);
-      incrementRaw(accumulator.missingAnyBy.monthYears, monthYear, 1);
+      if (monthYear) incrementRaw(accumulator.missingAnyBy.monthYears, monthYear, 1);
       addMatrixCount(accumulator.missingAnyBy.sourceDecades, source, decade);
     }
   }
@@ -2433,7 +2435,11 @@
   function rowInRange(row, range) {
     if (!range) return true;
     const ordinal = finiteInteger(row && row.sortOrdinal);
-    return ordinal != null && ordinal >= range.start && ordinal <= range.end;
+    const intervalStart = finiteInteger(row && row.dateStartOrdinal);
+    const intervalEnd = finiteInteger(row && row.dateEndOrdinal);
+    return intervalStart != null && intervalEnd != null
+      ? intervalEnd >= range.start && intervalStart <= range.end
+      : ordinal != null && ordinal >= range.start && ordinal <= range.end;
   }
 
   function previousRange(activeRange) {
@@ -2504,7 +2510,7 @@
     } else if (descriptor.mode === BASELINE_MODES.FULL_CATALOG) {
       reference = true;
     } else if (descriptor.mode === BASELINE_MODES.PREVIOUS_EQUAL_DURATION) {
-      reference = matchesNonDate && Boolean(descriptor.referenceRange) && rowInRange(row, descriptor.referenceRange);
+      reference = matchesNonDate && !active && Boolean(descriptor.referenceRange) && rowInRange(row, descriptor.referenceRange);
     } else if (descriptor.activeRange) {
       const ordinal = finiteInteger(row && row.sortOrdinal);
       reference = matchesNonDate && ordinal != null && !rowInRange(row, descriptor.activeRange);
@@ -4846,6 +4852,17 @@
 
   function normalizeCropRow(row, projection, manifest) {
     if (Array.isArray(row)) {
+      const declaration = manifest && manifest.artifacts && manifest.artifacts.cropCircles;
+      const schema = projection && projection.rowSchema || declaration && declaration.rowSchema || [];
+      const optionalCode = function (field, defaultIndex, codebook) {
+        const declaredIndex = schema.indexOf(field);
+        const index = declaredIndex >= 0 ? declaredIndex : (schema.length ? -1 : defaultIndex);
+        return index >= 0 && row[index] != null
+          ? lookupProjectionCode([projection, manifest], "cropCircles", [codebook], row[index])
+          : "unknown";
+      };
+      const coordinateEvidenceClass = optionalCode("coordinateEvidenceClassCode", 17, "coordinateEvidenceClass");
+      const originalCoordinateClass = lookupProjectionCode([projection, manifest], "cropCircles", ["coordinateClass", "coordinate_class"], row[8]);
       return {
         id: row[0],
         year: finiteInteger(row[1]),
@@ -4854,15 +4871,18 @@
         datePrecision: lookupProjectionCode([projection, manifest], "cropCircles", ["datePrecision", "date_precision"], row[3]),
         country: lookupProjectionCode([projection, manifest], "cropCircles", ["country"], row[4]),
         crop: lookupProjectionCode([projection, manifest], "cropCircles", ["cropType", "crop_type", "crop"], row[5]),
-        classification: "unknown",
-        originStatus: "unknown",
+        classification: optionalCode("classificationCode", 14, "classification"),
+        originStatus: optionalCode("originStatusCode", 15, "originStatus"),
+        reviewState: optionalCode("reviewStateCode", 16, "reviewState"),
         morphology: (Array.isArray(row[6]) ? row[6] : [row[6]]).filter(function (value) { return value != null; }).map(function (value) {
           return lookupProjectionCode([projection, manifest], "cropCircles", ["morphology", "morphologyFamily"], value);
         }),
         complexity: (Array.isArray(row[7]) ? row[7] : [row[7]]).filter(function (value) { return value != null; }).map(function (value) {
           return lookupProjectionCode([projection, manifest], "cropCircles", ["complexityTier", "complexity_tier"], value);
         }).join(", ") || "unknown",
-        coordinateClass: lookupProjectionCode([projection, manifest], "cropCircles", ["coordinateClass", "coordinate_class"], row[8]),
+        coordinateClass: isKnown(coordinateEvidenceClass) ? coordinateEvidenceClass : originalCoordinateClass,
+        coordinateEvidenceClass,
+        originalCoordinateClass,
         mapped: Boolean(row[9]),
         hasNarrative: Boolean(row[10]),
         hasSize: Boolean(row[11]),
@@ -4883,9 +4903,12 @@
       crop: category(source.crop || source.cropType, "unknown"),
       classification: category(source.classification, "unknown"),
       originStatus: category(source.originStatus || source.origin_status, "unknown"),
+      reviewState: category(source.reviewState || source.review_state, "unknown"),
       morphology: (Array.isArray(source.morphology) ? source.morphology : (source.morphologyFamilies || [])).map(function (value) { return category(value, "unknown"); }),
       complexity: category(source.complexity || source.complexityTier, "unknown"),
-      coordinateClass: category(source.coordinateClass || source.coordinate_class, "unknown"),
+      coordinateClass: category(source.coordinateEvidenceClass || source.coordinate_evidence_class || source.coordinateClass || source.coordinate_class, "unknown"),
+      coordinateEvidenceClass: category(source.coordinateEvidenceClass || source.coordinate_evidence_class, "unknown"),
+      originalCoordinateClass: category(source.coordinateClass || source.coordinate_class, "unknown"),
       mapped: typeof source.mapped === "boolean" ? source.mapped : validCoordinates(source),
       hasNarrative: Boolean(source.hasNarrative || source.has_narrative),
       hasSize: Boolean(source.hasSize || source.has_size),
@@ -5193,8 +5216,8 @@
           ["Known date", function (row) { return contextRowInterval(row) != null; }],
           ["Known morphology", function (row) { return row.morphology.some(isKnown); }],
           ["Known crop", function (row) { return isKnown(row.crop); }],
-          ["Known classification", function (row) { return isKnown(row.classification); }],
-          ["Known origin status", function (row) { return isKnown(row.originStatus); }],
+          ["Known classification", function (row) { return isKnown(row.classification) && row.classification !== "unreviewed"; }],
+          ["Known origin status", function (row) { return isKnown(row.originStatus) && row.originStatus !== "unreviewed_or_unknown"; }],
           ["Known complexity", function (row) { return isKnown(row.complexity); }],
           ["Known coordinate class", function (row) { return isKnown(row.coordinateClass); }],
           ["Narrative available", function (row) { return row.hasNarrative; }],
@@ -6098,7 +6121,8 @@
         referenceCount,
         activeShare: round(rate(activeCount, active.witnessCountExactRows), 8),
         referenceShare: round(rate(referenceCount, reference.witnessCountExactRows), 8),
-        measurementClass: "explicit_nuforc_integer_only",
+        measurementClass: artifact.policy && artifact.policy.sourceFieldNames && artifact.policy.sourceFieldNames.ufocat
+          ? "explicit_documented_source_count" : "explicit_nuforc_integer_only",
         inferenceEligible: false,
         patternFinderEligible: false,
       };
@@ -6106,8 +6130,11 @@
     const globalReady = String(readiness.status || "") === "ready_descriptive";
     const activeReady = active.witnessCountTypedRows > 0 && active.witnessCountExactRows > 0;
     const status = globalReady && activeReady ? "ready_descriptive" : "not_estimable";
+    const multipleCollections = Object.keys(artifact.counts && artifact.counts.bySourceTyped || {}).filter(function (key) {
+      return Number(artifact.counts.bySourceTyped[key]) > 0;
+    }).length > 1;
     const suppressionReasons = [
-      "single_source_comparison_suppressed",
+      multipleCollections ? "underlying_source_independence_unverified" : "single_source_comparison_suppressed",
       "active_reference_inference_suppressed",
       "pattern_finder_promotion_suppressed",
       "credibility_incidence_and_causal_claims_suppressed",
@@ -6132,7 +6159,7 @@
       },
       comparisons: [],
       comparisonMetadata: {
-        status: "suppressed_single_source",
+        status: multipleCollections ? "suppressed_source_independence" : "suppressed_single_source",
         activeReferenceInference: false,
         crossSourceComparison: false,
         minimumIndependentSources: 2,

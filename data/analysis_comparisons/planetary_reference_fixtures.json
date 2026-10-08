@@ -1,0 +1,464 @@
+{
+  "schemaId": "ufo-analysis-planetary-reference-fixtures-v1",
+  "retrievedUtc": "2026-10-08T02:06:47.217233+00:00",
+  "policy": "Numerical reference outputs only; no Swiss Ephemeris executable or source code copied or bundled. JPL values are apparent tropical ecliptic longitudes; Swiss ayanamsa values include explicitly identified mean versus true conventions. Sparse epoch fixtures are checks, not proof of a uniform error bound.",
+  "horizons": [
+    {
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27199%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&START_TIME=%272024-04-01+12%3A00%27&STOP_TIME=%272024-04-02+12%3A00%27&STEP_SIZE=%2712h%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2024-04-01T12:00:00Z",
+          "longitudeDeg": 27.2077962,
+          "latitudeDeg": 3.2651567
+        },
+        {
+          "utc": "2024-04-02T00:00:00Z",
+          "longitudeDeg": 27.2182895,
+          "latitudeDeg": 3.2796049
+        },
+        {
+          "utc": "2024-04-02T12:00:00Z",
+          "longitudeDeg": 27.1993159,
+          "latitudeDeg": 3.2878695
+        }
+      ],
+      "reference": "JPL Horizons quantity 31; Earth geocenter 500@399; apparent ecliptic-of-date; UT",
+      "id": "mercury_station",
+      "body": "Mercury"
+    },
+    {
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27199%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&START_TIME=%272024-04-14+12%3A00%27&STOP_TIME=%272024-04-16+12%3A00%27&STEP_SIZE=%2712h%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2024-04-14T12:00:00Z",
+          "longitudeDeg": 20.6326457,
+          "latitudeDeg": 1.600187
+        },
+        {
+          "utc": "2024-04-15T00:00:00Z",
+          "longitudeDeg": 20.2680126,
+          "latitudeDeg": 1.4680936
+        },
+        {
+          "utc": "2024-04-15T12:00:00Z",
+          "longitudeDeg": 19.9107627,
+          "latitudeDeg": 1.3337149
+        },
+        {
+          "utc": "2024-04-16T00:00:00Z",
+          "longitudeDeg": 19.5624003,
+          "latitudeDeg": 1.1974403
+        },
+        {
+          "utc": "2024-04-16T12:00:00Z",
+          "longitudeDeg": 19.2243497,
+          "latitudeDeg": 1.0596562
+        }
+      ],
+      "reference": "JPL Horizons quantity 31; Earth geocenter 500@399; apparent ecliptic-of-date; UT",
+      "id": "mercury_retrograde",
+      "body": "Mercury"
+    },
+    {
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&START_TIME=%272024-03-20+00%3A00%27&STOP_TIME=%272024-03-20+12%3A00%27&STEP_SIZE=%2712h%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2024-03-20T00:00:00Z",
+          "longitudeDeg": 359.8713785,
+          "latitudeDeg": 0.0001122
+        },
+        {
+          "utc": "2024-03-20T12:00:00Z",
+          "longitudeDeg": 0.3680844,
+          "latitudeDeg": 0.0001064
+        }
+      ],
+      "reference": "JPL Horizons quantity 31; Earth geocenter 500@399; apparent ecliptic-of-date; UT",
+      "id": "sun_tropical_ingress",
+      "body": "Sun"
+    },
+    {
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27299%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&START_TIME=%272023-07-22+12%3A00%27&STOP_TIME=%272023-07-24+12%3A00%27&STEP_SIZE=%2712h%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2023-07-22T12:00:00Z",
+          "longitudeDeg": 148.5971178,
+          "latitudeDeg": -3.3625753
+        },
+        {
+          "utc": "2023-07-23T00:00:00Z",
+          "longitudeDeg": 148.603179,
+          "latitudeDeg": -3.4731694
+        },
+        {
+          "utc": "2023-07-23T12:00:00Z",
+          "longitudeDeg": 148.5995826,
+          "latitudeDeg": -3.5843889
+        },
+        {
+          "utc": "2023-07-24T00:00:00Z",
+          "longitudeDeg": 148.5862528,
+          "latitudeDeg": -3.6961812
+        },
+        {
+          "utc": "2023-07-24T12:00:00Z",
+          "longitudeDeg": 148.563121,
+          "latitudeDeg": -3.8084903
+        }
+      ],
+      "reference": "JPL Horizons quantity 31; Earth geocenter 500@399; apparent ecliptic-of-date; UT",
+      "id": "venus_station",
+      "body": "Venus"
+    },
+    {
+      "id": "sun_lahiri_sidereal_ingress",
+      "body": "Sun",
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&START_TIME=%272024-04-13+12%3A00%27&STOP_TIME=%272024-04-15+12%3A00%27&STEP_SIZE=%2712h%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2024-04-13T12:00:00Z",
+          "longitudeDeg": 24.0489167,
+          "latitudeDeg": 9.1e-05
+        },
+        {
+          "utc": "2024-04-14T00:00:00Z",
+          "longitudeDeg": 24.5389381,
+          "latitudeDeg": 9.71e-05
+        },
+        {
+          "utc": "2024-04-14T12:00:00Z",
+          "longitudeDeg": 25.028802,
+          "latitudeDeg": 0.0001012
+        },
+        {
+          "utc": "2024-04-15T00:00:00Z",
+          "longitudeDeg": 25.5185078,
+          "latitudeDeg": 0.0001031
+        },
+        {
+          "utc": "2024-04-15T12:00:00Z",
+          "longitudeDeg": 26.008055,
+          "latitudeDeg": 0.0001029
+        }
+      ],
+      "reference": "JPL Horizons quantity 31; Earth geocenter 500@399; apparent ecliptic-of-date; UT"
+    },
+    {
+      "id": "pluto_two_epochs",
+      "body": "Pluto",
+      "sourceUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27999%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&TLIST=%272451545.0%2C2460416.0%27&QUANTITIES=%2731%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&TIME_DIGITS=%27SECONDS%27&ANG_FORMAT=%27DEG%27",
+      "rows": [
+        {
+          "utc": "2000-01-01T12:00:00Z",
+          "longitudeDeg": 251.4547644,
+          "latitudeDeg": 10.8552605
+        },
+        {
+          "utc": "2024-04-15T12:00:00Z",
+          "longitudeDeg": 302.0333926,
+          "latitudeDeg": -2.9832696
+        }
+      ],
+      "reference": "JPL Horizons quantity31; Pluto center999; Earth geocenter500@399; apparent ecliptic-of-date; UT",
+      "signature": {
+        "source": "NASA/JPL Horizons API",
+        "version": "1.2"
+      }
+    }
+  ],
+  "ayanamsa": [
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.10.1582+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "15.10.1582",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 18.03898430555556,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2299161.0,
+      "ttJulianDay": 2299161.001353008
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.10.1582+-ut12+-pb+-sid1+-fPl+-n1+-nonut",
+      "mode": "lahiri",
+      "date": "15.10.1582",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 18.034554111111113,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2299161.0,
+      "ttJulianDay": 2299161.001353008
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.10.1582+-ut12+-pb+-sid0+-fPl+-n1",
+      "mode": "fagan_bradley",
+      "date": "15.10.1582",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 18.922191805555556,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2299161.0,
+      "ttJulianDay": 2299161.001353008
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.10.1582+-ut12+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "15.10.1582",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 18.91776163888889,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2299161.0,
+      "ttJulianDay": 2299161.001353008
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.1900+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "1.1.1900",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 22.46541597222222,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2415021.0,
+      "ttJulianDay": 2415020.99997741
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.1900+-ut12+-pb+-sid1+-fPl+-n1+-nonut",
+      "mode": "lahiri",
+      "date": "1.1.1900",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 22.460549694444445,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2415021.0,
+      "ttJulianDay": 2415020.99997741
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.1900+-ut12+-pb+-sid0+-fPl+-n1",
+      "mode": "fagan_bradley",
+      "date": "1.1.1900",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 23.34862358333333,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2415021.0,
+      "ttJulianDay": 2415020.99997741
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.1900+-ut12+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "1.1.1900",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 23.343757333333333,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2415021.0,
+      "ttJulianDay": 2415020.99997741
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.2000+-t12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "1.1.2000",
+      "time": "12",
+      "timeScale": "TT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 23.853222444444445,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2451544.99926124,
+      "ttJulianDay": 2451545.0
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.2000+-t12+-pb+-sid1+-fPl+-n1+-nonut",
+      "mode": "lahiri",
+      "date": "1.1.2000",
+      "time": "12",
+      "timeScale": "TT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 23.857092333333334,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2451544.99926124,
+      "ttJulianDay": 2451545.0
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.2000+-t12+-pb+-sid0+-fPl+-n1",
+      "mode": "fagan_bradley",
+      "date": "1.1.2000",
+      "time": "12",
+      "timeScale": "TT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 24.736430083333335,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2451544.99926124,
+      "ttJulianDay": 2451545.0
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.2000+-t12+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "1.1.2000",
+      "time": "12",
+      "timeScale": "TT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 24.740299972222225,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2451544.99926124,
+      "ttJulianDay": 2451545.0
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.4.2024+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "15.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 24.194977138888888,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460416.0,
+      "ttJulianDay": 2460416.000799451
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.4.2024+-ut12+-pb+-sid1+-fPl+-n1+-nonut",
+      "mode": "lahiri",
+      "date": "15.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 24.19637927777778,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460416.0,
+      "ttJulianDay": 2460416.000799451
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.4.2024+-ut12+-pb+-sid0+-fPl+-n1",
+      "mode": "fagan_bradley",
+      "date": "15.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 25.078184805555555,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460416.0,
+      "ttJulianDay": 2460416.000799451
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b15.4.2024+-ut12+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "15.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 25.079586916666667,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460416.0,
+      "ttJulianDay": 2460416.000799451
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b31.12.2100+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "31.12.2100",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 25.270624555555553,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2488434.0,
+      "ttJulianDay": 2488434.001083861
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b31.12.2100+-ut12+-pb+-sid1+-fPl+-n1+-nonut",
+      "mode": "lahiri",
+      "date": "31.12.2100",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 25.26821463888889,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2488434.0,
+      "ttJulianDay": 2488434.001083861
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b31.12.2100+-ut12+-pb+-sid0+-fPl+-n1",
+      "mode": "fagan_bradley",
+      "date": "31.12.2100",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 26.153832194444444,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2488434.0,
+      "ttJulianDay": 2488434.001083861
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b31.12.2100+-ut12+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "31.12.2100",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 26.151422277777776,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2488434.0,
+      "ttJulianDay": 2488434.001083861
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b21.3.1956+-t0+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "21.3.1956",
+      "time": "0",
+      "timeScale": "TT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 23.250221194444446,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2435553.49963644,
+      "ttJulianDay": 2435553.5
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b1.1.1950+-t0+-pb+-sid0+-fPl+-n1+-nonut",
+      "mode": "fagan_bradley",
+      "date": "1.1.1950",
+      "time": "0",
+      "timeScale": "TT",
+      "ayanamsaType": "mean",
+      "ayanamsaDeg": 24.04193275,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2433282.499665148,
+      "ttJulianDay": 2433282.5
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b13.4.2024+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "13.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 24.194850416666668,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460414.0,
+      "ttJulianDay": 2460414.000799457
+    },
+    {
+      "sourceUrl": "https://www.astro.com/cgi/swetest.cgi?arg=-b14.4.2024+-ut12+-pb+-sid1+-fPl+-n1",
+      "mode": "lahiri",
+      "date": "14.4.2024",
+      "time": "12",
+      "timeScale": "UT",
+      "ayanamsaType": "true",
+      "ayanamsaDeg": 24.194917222222223,
+      "swissVersion": "2.10.03",
+      "utJulianDay": 2460415.0,
+      "ttJulianDay": 2460415.000799453
+    }
+  ],
+  "sourceDocumentation": [
+    "https://ssd.jpl.nasa.gov/horizons/manual.html",
+    "https://www.astro.com/swisseph/swisseph.htm",
+    "https://www.astro.com/cgi/swetest.cgi?arg=-h"
+  ]
+}

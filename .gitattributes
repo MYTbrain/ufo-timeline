@@ -172,3 +172,16 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /vendor/leaflet.markercluster.js -text
 /reproduction/quality_release.json -text
 /tests/test_quality_release_preparation.py -text
+
+# Accepted workspace and comparisons publication bytes.
+/ui/accepted-workspace/** -text
+/releases/workspace-analysis-20261008/** -text
+/analysis_astronomy_engine.js -text
+/analysis_comparisons.css -text
+/analysis_comparisons_view.js -text
+/analysis_cross_context.js -text
+/analysis_lunar.js -text
+/analysis_nuclear.js -text
+/analysis_planetary.js -text
+/analysis_repair_detail_overlay.js -text
+/scripts/prepare_workspace_analysis_release.py -text

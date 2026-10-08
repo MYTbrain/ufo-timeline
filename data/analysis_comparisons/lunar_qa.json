@@ -1,0 +1,465 @@
+{
+  "schemaId": "ufo-lunar-context-qa-v1",
+  "status": "passed",
+  "generatedAt": "2026-10-08T01:48:28.596Z",
+  "runtimeMilliseconds": 6440,
+  "streamedCatalogRows": 702893,
+  "inputs": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_manifest.json",
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb",
+      "role": "effective summary shard manifest"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\context_rows.json.gz",
+      "sha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1",
+      "role": "shared date-role-preserving cross-domain context"
+    },
+    {
+      "path": "analysis_lunar.js",
+      "sha256": "eda38a8d8ef444cef6458ccd91b8d3cd26338f91a046682c873730a65d856ec7",
+      "role": "comparison implementation"
+    },
+    {
+      "path": "analysis_astronomy_engine.js",
+      "sha256": "d1b3ab4b86aa409f78c0f0d95162a847496cba7e938eb6f4712cf9c1c45f4a2e",
+      "role": "pinned offline MIT ephemeris"
+    }
+  ],
+  "domains": [
+    {
+      "id": "ufo",
+      "consideredCatalogRows": 702893,
+      "reportCount": 690447,
+      "phaseEligible": 659616,
+      "stablePhaseCount": 287170,
+      "ambiguousPhaseCount": 372446,
+      "excluded": {
+        "date_not_exact_day": 26969,
+        "non_ufo_context": 12446,
+        "missing_date": 3417,
+        "historical_calendar_not_verified_before_1582": 445
+      },
+      "dateRoles": {
+        "occurrence": 690447
+      },
+      "skyEligible": 0,
+      "exposure": {
+        "method": "year_month_matched_calendar_days",
+        "representedMonths": 2128,
+        "calendarDays": 64813,
+        "weighting": "Each represented year-month is weighted by its eligible report count; only selected calendar days are used.",
+        "opportunity": "Calendar opportunity only; observer effort, weather, source selection and reporting biases are not measured."
+      },
+      "phaseBins": [
+        {
+          "id": "new",
+          "label": "New Moon",
+          "count": 82761,
+          "stableCount": 35022,
+          "possibleCount": 130267,
+          "share": 0.125468,
+          "stableShare": 0.121956,
+          "expectedCount": 80618.7748,
+          "expectedCalendarShare": 0.122221,
+          "calendarAdjustedRatio": 1.0266,
+          "lowerCount": 35022,
+          "upperCount": 130267
+        },
+        {
+          "id": "waxing_crescent",
+          "label": "Waxing crescent",
+          "count": 83578,
+          "stableCount": 36323,
+          "possibleCount": 130785,
+          "share": 0.126707,
+          "stableShare": 0.126486,
+          "expectedCount": 83157.712,
+          "expectedCalendarShare": 0.12607,
+          "calendarAdjustedRatio": 1.0051,
+          "lowerCount": 36323,
+          "upperCount": 130785
+        },
+        {
+          "id": "first_quarter",
+          "label": "First quarter",
+          "count": 84274,
+          "stableCount": 37815,
+          "possibleCount": 130087,
+          "share": 0.127762,
+          "stableShare": 0.131682,
+          "expectedCount": 84543.9914,
+          "expectedCalendarShare": 0.128172,
+          "calendarAdjustedRatio": 0.9968,
+          "lowerCount": 37815,
+          "upperCount": 130087
+        },
+        {
+          "id": "waxing_gibbous",
+          "label": "Waxing gibbous",
+          "count": 78297,
+          "stableCount": 33722,
+          "possibleCount": 124530,
+          "share": 0.118701,
+          "stableShare": 0.117429,
+          "expectedCount": 82123.3418,
+          "expectedCalendarShare": 0.124502,
+          "calendarAdjustedRatio": 0.9534,
+          "lowerCount": 33722,
+          "upperCount": 124530
+        },
+        {
+          "id": "full",
+          "label": "Full Moon",
+          "count": 77896,
+          "stableCount": 32395,
+          "possibleCount": 123893,
+          "share": 0.118093,
+          "stableShare": 0.112808,
+          "expectedCount": 80514.1175,
+          "expectedCalendarShare": 0.122062,
+          "calendarAdjustedRatio": 0.9675,
+          "lowerCount": 32395,
+          "upperCount": 123893
+        },
+        {
+          "id": "waning_gibbous",
+          "label": "Waning gibbous",
+          "count": 82626,
+          "stableCount": 35184,
+          "possibleCount": 128103,
+          "share": 0.125264,
+          "stableShare": 0.12252,
+          "expectedCount": 82430.1024,
+          "expectedCalendarShare": 0.124967,
+          "calendarAdjustedRatio": 1.0024,
+          "lowerCount": 35184,
+          "upperCount": 128103
+        },
+        {
+          "id": "last_quarter",
+          "label": "Last quarter",
+          "count": 85581,
+          "stableCount": 38906,
+          "possibleCount": 132337,
+          "share": 0.129744,
+          "stableShare": 0.135481,
+          "expectedCount": 83552.2729,
+          "expectedCalendarShare": 0.126668,
+          "calendarAdjustedRatio": 1.0243,
+          "lowerCount": 38906,
+          "upperCount": 132337
+        },
+        {
+          "id": "waning_crescent",
+          "label": "Waning crescent",
+          "count": 84603,
+          "stableCount": 37803,
+          "possibleCount": 132060,
+          "share": 0.128261,
+          "stableShare": 0.13164,
+          "expectedCount": 82675.6872,
+          "expectedCalendarShare": 0.125339,
+          "calendarAdjustedRatio": 1.0233,
+          "lowerCount": 37803,
+          "upperCount": 132060
+        }
+      ]
+    },
+    {
+      "id": "crops",
+      "consideredCatalogRows": 7745,
+      "reportCount": 7745,
+      "phaseEligible": 6430,
+      "stablePhaseCount": 2750,
+      "ambiguousPhaseCount": 3680,
+      "excluded": {
+        "date_not_exact_day": 1315
+      },
+      "dateRoles": {
+        "catalog_unspecified": 7697,
+        "discovery_date": 18,
+        "photography_date": 3,
+        "catalog_date": 19,
+        "formation_date": 7,
+        "publication_date": 1
+      },
+      "skyEligible": 0,
+      "exposure": {
+        "method": "year_month_matched_calendar_days",
+        "representedMonths": 515,
+        "calendarDays": 15715,
+        "weighting": "Each represented year-month is weighted by its eligible report count; only selected calendar days are used.",
+        "opportunity": "Calendar opportunity only; observer effort, weather, source selection and reporting biases are not measured."
+      },
+      "phaseBins": [
+        {
+          "id": "new",
+          "label": "New Moon",
+          "count": 724,
+          "stableCount": 283,
+          "possibleCount": 1195,
+          "share": 0.112597,
+          "stableShare": 0.102909,
+          "expectedCount": 784.2501,
+          "expectedCalendarShare": 0.121967,
+          "calendarAdjustedRatio": 0.9232,
+          "lowerCount": 283,
+          "upperCount": 1195
+        },
+        {
+          "id": "waxing_crescent",
+          "label": "Waxing crescent",
+          "count": 811,
+          "stableCount": 378,
+          "possibleCount": 1252,
+          "share": 0.126128,
+          "stableShare": 0.137455,
+          "expectedCount": 811.9133,
+          "expectedCalendarShare": 0.12627,
+          "calendarAdjustedRatio": 0.9989,
+          "lowerCount": 378,
+          "upperCount": 1252
+        },
+        {
+          "id": "first_quarter",
+          "label": "First quarter",
+          "count": 867,
+          "stableCount": 375,
+          "possibleCount": 1281,
+          "share": 0.134837,
+          "stableShare": 0.136364,
+          "expectedCount": 818.2938,
+          "expectedCalendarShare": 0.127262,
+          "calendarAdjustedRatio": 1.0595,
+          "lowerCount": 375,
+          "upperCount": 1281
+        },
+        {
+          "id": "waxing_gibbous",
+          "label": "Waxing gibbous",
+          "count": 819,
+          "stableCount": 365,
+          "possibleCount": 1312,
+          "share": 0.127372,
+          "stableShare": 0.132727,
+          "expectedCount": 797.9272,
+          "expectedCalendarShare": 0.124094,
+          "calendarAdjustedRatio": 1.0264,
+          "lowerCount": 365,
+          "upperCount": 1312
+        },
+        {
+          "id": "full",
+          "label": "Full Moon",
+          "count": 751,
+          "stableCount": 288,
+          "possibleCount": 1238,
+          "share": 0.116796,
+          "stableShare": 0.104727,
+          "expectedCount": 788.217,
+          "expectedCalendarShare": 0.122584,
+          "calendarAdjustedRatio": 0.9528,
+          "lowerCount": 288,
+          "upperCount": 1238
+        },
+        {
+          "id": "waning_gibbous",
+          "label": "Waning gibbous",
+          "count": 816,
+          "stableCount": 339,
+          "possibleCount": 1256,
+          "share": 0.126905,
+          "stableShare": 0.123273,
+          "expectedCount": 810.0969,
+          "expectedCalendarShare": 0.125987,
+          "calendarAdjustedRatio": 1.0073,
+          "lowerCount": 339,
+          "upperCount": 1256
+        },
+        {
+          "id": "last_quarter",
+          "label": "Last quarter",
+          "count": 814,
+          "stableCount": 382,
+          "possibleCount": 1294,
+          "share": 0.126594,
+          "stableShare": 0.138909,
+          "expectedCount": 815.0001,
+          "expectedCalendarShare": 0.12675,
+          "calendarAdjustedRatio": 0.9988,
+          "lowerCount": 382,
+          "upperCount": 1294
+        },
+        {
+          "id": "waning_crescent",
+          "label": "Waning crescent",
+          "count": 828,
+          "stableCount": 340,
+          "possibleCount": 1282,
+          "share": 0.128771,
+          "stableShare": 0.123636,
+          "expectedCount": 804.3015,
+          "expectedCalendarShare": 0.125086,
+          "calendarAdjustedRatio": 1.0295,
+          "lowerCount": 340,
+          "upperCount": 1282
+        }
+      ]
+    },
+    {
+      "id": "animals",
+      "consideredCatalogRows": 1184,
+      "reportCount": 1184,
+      "phaseEligible": 928,
+      "stablePhaseCount": 404,
+      "ambiguousPhaseCount": 524,
+      "excluded": {
+        "date_not_exact_day": 228,
+        "missing_date": 28
+      },
+      "dateRoles": {
+        "publication_date": 6,
+        "reported_unspecified": 1173,
+        "report_date": 3,
+        "death_interval": 2
+      },
+      "skyEligible": 0,
+      "exposure": {
+        "method": "year_month_matched_calendar_days",
+        "representedMonths": 291,
+        "calendarDays": 8878,
+        "weighting": "Each represented year-month is weighted by its eligible report count; only selected calendar days are used.",
+        "opportunity": "Calendar opportunity only; observer effort, weather, source selection and reporting biases are not measured."
+      },
+      "phaseBins": [
+        {
+          "id": "new",
+          "label": "New Moon",
+          "count": 129,
+          "stableCount": 66,
+          "possibleCount": 225,
+          "share": 0.139009,
+          "stableShare": 0.163366,
+          "expectedCount": 112.6953,
+          "expectedCalendarShare": 0.121439,
+          "calendarAdjustedRatio": 1.1447,
+          "lowerCount": 66,
+          "upperCount": 225
+        },
+        {
+          "id": "waxing_crescent",
+          "label": "Waxing crescent",
+          "count": 145,
+          "stableCount": 55,
+          "possibleCount": 221,
+          "share": 0.15625,
+          "stableShare": 0.136139,
+          "expectedCount": 115.6885,
+          "expectedCalendarShare": 0.124664,
+          "calendarAdjustedRatio": 1.2534,
+          "lowerCount": 55,
+          "upperCount": 221
+        },
+        {
+          "id": "first_quarter",
+          "label": "First quarter",
+          "count": 130,
+          "stableCount": 54,
+          "possibleCount": 205,
+          "share": 0.140086,
+          "stableShare": 0.133663,
+          "expectedCount": 115.938,
+          "expectedCalendarShare": 0.124933,
+          "calendarAdjustedRatio": 1.1213,
+          "lowerCount": 54,
+          "upperCount": 205
+        },
+        {
+          "id": "waxing_gibbous",
+          "label": "Waxing gibbous",
+          "count": 98,
+          "stableCount": 40,
+          "possibleCount": 158,
+          "share": 0.105603,
+          "stableShare": 0.09901,
+          "expectedCount": 113.7633,
+          "expectedCalendarShare": 0.12259,
+          "calendarAdjustedRatio": 0.8614,
+          "lowerCount": 40,
+          "upperCount": 158
+        },
+        {
+          "id": "full",
+          "label": "Full Moon",
+          "count": 109,
+          "stableCount": 46,
+          "possibleCount": 166,
+          "share": 0.117457,
+          "stableShare": 0.113861,
+          "expectedCount": 115.194,
+          "expectedCalendarShare": 0.124132,
+          "calendarAdjustedRatio": 0.9462,
+          "lowerCount": 46,
+          "upperCount": 166
+        },
+        {
+          "id": "waning_gibbous",
+          "label": "Waning gibbous",
+          "count": 108,
+          "stableCount": 47,
+          "possibleCount": 154,
+          "share": 0.116379,
+          "stableShare": 0.116337,
+          "expectedCount": 116.5453,
+          "expectedCalendarShare": 0.125588,
+          "calendarAdjustedRatio": 0.9267,
+          "lowerCount": 47,
+          "upperCount": 154
+        },
+        {
+          "id": "last_quarter",
+          "label": "Last quarter",
+          "count": 85,
+          "stableCount": 41,
+          "possibleCount": 135,
+          "share": 0.091595,
+          "stableShare": 0.101485,
+          "expectedCount": 119.4975,
+          "expectedCalendarShare": 0.128769,
+          "calendarAdjustedRatio": 0.7113,
+          "lowerCount": 41,
+          "upperCount": 135
+        },
+        {
+          "id": "waning_crescent",
+          "label": "Waning crescent",
+          "count": 124,
+          "stableCount": 55,
+          "possibleCount": 188,
+          "share": 0.133621,
+          "stableShare": 0.136139,
+          "expectedCount": 118.678,
+          "expectedCalendarShare": 0.127886,
+          "calendarAdjustedRatio": 1.0448,
+          "lowerCount": 55,
+          "upperCount": 188
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "702893 shared catalog rows streamed without copies",
+    "Explicit non-UFO context removed from UFO phase counts",
+    "Recorded crop/animal date roles retained",
+    "Phase and uncertainty-bound counts conserved",
+    "Calendar opportunity finite",
+    "No unverified source clock promoted to UTC",
+    "Independent JPL reference fixtures passed in unit suite"
+  ],
+  "storage": {
+    "fullCorpusCopied": false,
+    "newFilesAbove100MiB": [],
+    "artifactRole": "small local QA receipt; rebuild with this test"
+  }
+}

@@ -1,7 +1,8 @@
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+import re
+from urllib.parse import parse_qs, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,4 +77,10 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
         assert (ROOT / filename).is_file()
         assert script_paths.index(filename) < script_paths.index("app.js")
         assert f"./{filename}?v={token}" in parser.scripts
-    assert "./app.js?v=2026-10-06-all-case-coverage-v12" in parser.scripts
+    app_urls = [urlsplit(src) for src in parser.scripts
+                if urlsplit(src).path.removeprefix("./") == "app.js"]
+    assert len(app_urls) == 1
+    worker_source = (ROOT / "catalog_filter_worker.js").read_text(encoding="utf-8")
+    worker_version = re.search(r'ANALYSIS_RUNTIME_CACHE_KEY\s*=\s*"([^"]+)"', worker_source)
+    assert worker_version, "The worker declares its runtime cache version"
+    assert parse_qs(app_urls[0].query).get("v") == [worker_version.group(1)]

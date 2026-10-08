@@ -1,0 +1,48 @@
+/* Local review: the map starts immediately beneath a compact header. */
+.faithful-polish-preview .hero { border-radius:14px; box-shadow:none; }
+.faithful-polish-preview .controls-panel,
+.faithful-polish-preview .map-panel,
+.faithful-polish-preview .inspector-panel { border-radius:14px; box-shadow:none; }
+.faithful-polish-preview .result-card { border-radius:12px; box-shadow:none; }
+.faithful-polish-preview .map-control-cluster { box-shadow:0 3px 14px rgba(0,0,0,.16); }
+.faithful-polish-preview .map-control-action-row button { font-size:.8rem; padding:8px; }
+
+@media (min-width:1081px) {
+  .faithful-polish-preview .hero { padding:8px 12px; gap:6px 12px; align-items:center; }
+  .faithful-polish-preview .hero-copy {
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"title tabs" "hook attribution";
+    column-gap:12px; row-gap:6px; align-items:center;
+  }
+  .faithful-polish-preview .hero h1 { font-size:clamp(22px,2vw,28px); line-height:1.05; }
+  .faithful-polish-preview .hero-hook { margin:0; font-size:13px; line-height:1.2; }
+  .faithful-polish-preview .hero-subtext { display:none; }
+  .faithful-polish-preview .hero-attribution { margin:0; font-size:11px; line-height:1.2; }
+  .faithful-polish-preview .hero-view-switcher { margin:0; gap:8px; justify-content:flex-end; }
+  .faithful-polish-preview .hero-view-tab { min-height:34px; padding:6px 12px; font-size:13px; font-weight:650; }
+  .faithful-polish-preview .hero-view-status { font-size:11px; }
+  .faithful-polish-preview .hero-toolcard { min-width:0; padding:6px 10px; border-radius:10px; }
+  .faithful-polish-preview .user-guide.is-hero-guide { padding:6px 10px; border-radius:10px; }
+  .faithful-polish-preview main.layout { align-items:start; gap:10px; margin-top:10px; }
+  .faithful-polish-preview .map-panel { min-height:0; padding:10px; }
+  .faithful-polish-preview .map-surface { min-height:max(440px,calc(100dvh - 142px)); }
+  .faithful-polish-preview #filters-pane-shell .controls-panel,
+  .faithful-polish-preview #results-pane-shell .inspector-panel {
+    min-height:0; height:calc(100dvh - 118px); max-height:calc(100dvh - 118px); padding:14px;
+  }
+}
+
+@media (min-width:1081px) and (max-width:1420px) {
+  .faithful-polish-preview main.layout {
+    grid-template-columns:auto minmax(0,1fr) auto;
+    grid-template-areas:"filters map results";
+  }
+  .faithful-polish-preview .side-pane-left:not(.is-collapsed) { width:clamp(220px,17vw,230px); }
+  .faithful-polish-preview .side-pane-right:not(.is-collapsed) { width:clamp(230px,19vw,250px); }
+  .faithful-polish-preview .side-pane.is-collapsed { width:54px; }
+  .faithful-polish-preview .results-heading-row { grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+  .faithful-polish-preview .results-heading-inline { display:flex; align-items:center; gap:8px; }
+  .faithful-polish-preview .results-heading-controls { display:contents; }
+  .faithful-polish-preview .results-sort-field { grid-column:1/-1; grid-row:2; width:100%; min-width:0; }
+  .faithful-polish-preview .results-heading-controls .compact-toggle-button { grid-column:2; grid-row:1; }
+}

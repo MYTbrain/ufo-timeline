@@ -1,0 +1,508 @@
+{
+  "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+  "ordinalEpoch": "unix_day",
+  "dateCount": 65113,
+  "byteLength": 45579168,
+  "bodies": [
+    "Sun",
+    "Moon",
+    "Mercury",
+    "Venus",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune"
+  ],
+  "utcHours": [
+    0,
+    4,
+    10,
+    12,
+    16,
+    22
+  ],
+  "byteOrder": "little_endian",
+  "longitudeFormat": "float64",
+  "rateFormat": "float32",
+  "precessionFormat": "float64",
+  "quantityOrder": [
+    "longitudeDegrees",
+    "longitudeRateDegreesPerDay",
+    "sharedPrecessionDegrees"
+  ],
+  "timeScale": "UTC, Astronomy Engine internally converts to terrestrial time",
+  "frame": "apparent geocentric true ecliptic and equinox of date, light-time and annual aberration included",
+  "rateConvention": "Centered six-hour difference of apparent tropical longitude, degrees per day",
+  "algorithmVersion": "planetary-context-v1.0.0",
+  "ephemerisSha256": "d1b3ab4b86aa409f78c0f0d95162a847496cba7e938eb6f4712cf9c1c45f4a2e",
+  "minimumOrdinal": -141427,
+  "maximumOrdinal": 20665,
+  "file": "ephemeris_atlas_v1.bin.gz",
+  "sha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+  "gzipSha256": "d5c38232e0702783a46df4e38e24c8dce947ce54ab9843d93191ddce5b447b8f",
+  "gzipByteLength": 41307851,
+  "dayIndexSha256": "9bf64a257fc0a33a7fa7c4322c291c219e50786939ec567b5f9f0c8142abc8ca",
+  "reportDateCount": 30358,
+  "calendarDateCount": 64967,
+  "representedMonths": 2133,
+  "generatedAt": "2026-10-08T02:58:10.343Z",
+  "buildRuntimeMilliseconds": 216682,
+  "generator": {
+    "path": "scripts/build_planetary_ephemeris_atlas.mjs",
+    "sha256": "d33401ea2672d2da5ef3b0887fe0331e2fd6c956738197547ddef590852a29cd",
+    "enginePath": "analysis_planetary.js",
+    "engineSha256": "56da2038f9548cedc785bfe2df9b131df58706f259f340c5795b3afbdd230143"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_manifest.json",
+      "byteLength": 9773,
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb",
+      "role": "effective shared summary manifest"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\context_rows.json.gz",
+      "byteLength": 979960,
+      "sha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1",
+      "role": "date-role-preserving crop/animal context"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000000.json.gz",
+      "byteLength": 770141,
+      "sha256": "c7160503493c0a4784b671ba5399ebf1578192be724d02135b1101b4da3b3b07",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000001.json.gz",
+      "byteLength": 767557,
+      "sha256": "42ec938fad8cf691c5cccad4027fa0c5b48f3700f024c50916b215573567a2db",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000002.json.gz",
+      "byteLength": 766992,
+      "sha256": "f94d9858537beebedbf2fc27b1935a49a6c7b08e5a169131e8cd25ce78232d8e",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000003.json.gz",
+      "byteLength": 763997,
+      "sha256": "f469875009962a7c18e6fb8a6ececa5b18ee6d689f97572a684af3fe59995848",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000004.json.gz",
+      "byteLength": 763889,
+      "sha256": "6c11bc6a1ed160540fa3db04a0ada8d373b78fae4b6663558ff0c46eced8a9d7",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000005.json.gz",
+      "byteLength": 759871,
+      "sha256": "d5bfe33aec16465025fa88b0a8be77f5484fc78eb8ca7e715522f32be53c06f8",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000006.json.gz",
+      "byteLength": 768574,
+      "sha256": "1fa9c649d6d017e67488b8185f1846762c760552f27ab1976acd89ffef468f3a",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000007.json.gz",
+      "byteLength": 764786,
+      "sha256": "5f53068184ef6154f804bd2f608fbcdae2c50c9b9271a8d8f833fe0ef190a1d8",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000008.json.gz",
+      "byteLength": 763611,
+      "sha256": "90553d2367442d4449bbcfee7f2a95faba17697cefa9102f676a6afe4f2570ad",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000009.json.gz",
+      "byteLength": 762208,
+      "sha256": "cdf5aea9ffcb64778a1fa92701f9ffa9a300446f634b88f74c180809bde32c01",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000010.json.gz",
+      "byteLength": 758319,
+      "sha256": "07e36761f0d7fd9de983c6f5b03074970a6791f7af8e94590df233a5b6515822",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000011.json.gz",
+      "byteLength": 759704,
+      "sha256": "2f70f7293eb3f62dc13bc02eb2f3602c099bd0fb1787ccd242afbe14b93ba8c1",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000012.json.gz",
+      "byteLength": 762942,
+      "sha256": "b23634cbcf133f3c3d26181255741322e8c39252fc96b2e5efc708e5827773bc",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000013.json.gz",
+      "byteLength": 760561,
+      "sha256": "d995380313e48c05459a5d65f1b4f7d96f8af71fe66f4e972882ccd5b9e516ef",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000014.json.gz",
+      "byteLength": 761921,
+      "sha256": "7f6bb9fa3a17c409093cdbf76892db1498abcba9de4ef52c9191b5a0010f7b3d",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000015.json.gz",
+      "byteLength": 759279,
+      "sha256": "2ab8a4bb19a5b8214db95c33e3650ffb05ed91ae9356fedbd2ec401a23fbe9cc",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000016.json.gz",
+      "byteLength": 756358,
+      "sha256": "c10691725cd42e5027f43ec5ed9c790082452b541279b9cdfa9f58000cb62a64",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000017.json.gz",
+      "byteLength": 756709,
+      "sha256": "4a32c3de7a928ca06a7191ccd577a1ad9a8514b63d1f01e85e54cdc2e6426dc1",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000018.json.gz",
+      "byteLength": 759344,
+      "sha256": "3b07d2c38ca81e9c2fc1f42525b2d938a06e995431ed477cd4c85f7d42452d30",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000019.json.gz",
+      "byteLength": 758489,
+      "sha256": "43b03f04674871afe820d0f9e33bf52a60543727d664b1b869b28221f9c6aa29",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000020.json.gz",
+      "byteLength": 755491,
+      "sha256": "2a9ebf39165ea2652280cceeb21bee7e3f537c34d32461d071da370531504b59",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000021.json.gz",
+      "byteLength": 756121,
+      "sha256": "6e7840fddfd9114a7d741a59617ac16d9c4e6a62f09d22aba880d58ed326a098",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000022.json.gz",
+      "byteLength": 754616,
+      "sha256": "6d237a16923d25cf07b387e0e4155c700eb48cb26e55dff39a95a6088e08a871",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000023.json.gz",
+      "byteLength": 756267,
+      "sha256": "60b16e8158be61f49ff560c259ffe74be153abde2d3c96455dabbb94b0e4b08d",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000024.json.gz",
+      "byteLength": 754744,
+      "sha256": "7c2cdb0b06f0bc4261ef1dadd0ef5f6b71dc94d3deb5e332e7e9d904a7365ed4",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000025.json.gz",
+      "byteLength": 754745,
+      "sha256": "3cc5e41958da0377a00ed4ac14cec7bed51f6e44328ed054f6df1f6f13bf88c2",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000026.json.gz",
+      "byteLength": 754119,
+      "sha256": "c193e46560320da4f0cf55e99e61f0106465c9fe6041980a107e0779ef4882c8",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000027.json.gz",
+      "byteLength": 756512,
+      "sha256": "779638e29d94e202b675d9e6d8aa8de4ebc8e597917847ef14b3bbae206f0cf5",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000028.json.gz",
+      "byteLength": 753957,
+      "sha256": "354b27618bdc0ca95e24247b2628fd9bf444e9fe39b2f900f2e6e1f544c1d01f",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000029.json.gz",
+      "byteLength": 751401,
+      "sha256": "d2ea906e34e10e4d036443124a7133447532a612ef02e5dd047b332727db5275",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000030.json.gz",
+      "byteLength": 752785,
+      "sha256": "caf9df99b239fc5e373a8051ed13a9cb43475cc7444019328a6dfda2b3f2a205",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000031.json.gz",
+      "byteLength": 754213,
+      "sha256": "c7de311a294701c8976c43b05bf6f5af26bbc301b26bc21995c44083c637441c",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000032.json.gz",
+      "byteLength": 750517,
+      "sha256": "2df6862f2fec51287e6a43b41e0d86eb0df1b1ce00535d148f959f26f429de8e",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000033.json.gz",
+      "byteLength": 753570,
+      "sha256": "d1a8bf084efbb1a9f1053fe9d759b23658908662e983f810b2c3e17657ebeb74",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000034.json.gz",
+      "byteLength": 751961,
+      "sha256": "ee0b1b74ec33b3b21823080ff858953e7446dd6db1bb848a116d0da71a07de80",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000035.json.gz",
+      "byteLength": 749809,
+      "sha256": "a7d84571bd7a533bf4815267cd375090b410423bc83d4b09b5c0fbdecdf926aa",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000036.json.gz",
+      "byteLength": 752677,
+      "sha256": "bd3e8968a3e9a001087f93a4abe3c6542813334f5d80f85c24ef7c43122fbcf8",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000037.json.gz",
+      "byteLength": 751879,
+      "sha256": "24df0fcc47f69eae6f956345618cb88273a373d3db295ff4a3397f789ddfcb4c",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000038.json.gz",
+      "byteLength": 749440,
+      "sha256": "b938f4c4ccdc80ecf2ae8740a66639ee87fa954c5960855778cd84ba78f80c56",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000039.json.gz",
+      "byteLength": 749400,
+      "sha256": "b62311a04f5839ec49e1cba3d92b7b82f820ae7a4bba3d23a2ca1c246656b571",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000040.json.gz",
+      "byteLength": 746108,
+      "sha256": "1c9b0e97a104c1b675cb74ce5401f9652fc321234766632fe3f3bdf971c0384a",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000041.json.gz",
+      "byteLength": 747944,
+      "sha256": "20ff265c5b6d1688ebf63ad44b69a5980a53002bd4a9828b4339c4d7ce9b490a",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000042.json.gz",
+      "byteLength": 745073,
+      "sha256": "d4941a92bc19f7722c59235d548573386282cf9b33511eb131dfcdd1567cd903",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000043.json.gz",
+      "byteLength": 748188,
+      "sha256": "1413913fceafa94d4c384caf8023899e06c8e906ede47824721b2fb468dd8704",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000044.json.gz",
+      "byteLength": 749826,
+      "sha256": "dd4b719c87bb2930a5191794f845c4a3f8a57cc4f725b37bb1bfb13fa6933b08",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000045.json.gz",
+      "byteLength": 745381,
+      "sha256": "29646fa11e06fc2fcb5943e4035f1bd131a35c35cf7896c48f261ae01f1b4641",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000046.json.gz",
+      "byteLength": 745742,
+      "sha256": "dba9c35f95318fe502f5179cc2b2d21e5017c4e249b8443fc3d529a3e1595ba6",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000047.json.gz",
+      "byteLength": 746951,
+      "sha256": "b977fc0cc1b901e2e38f272e200e8d645914c442cfcec3fc7f536d700513cb0d",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000048.json.gz",
+      "byteLength": 747983,
+      "sha256": "8dd644ce7530ee8c4f042ba14634c1e9b680526639f65226e74754ebdca7e535",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000049.json.gz",
+      "byteLength": 748164,
+      "sha256": "a04c6e5bcb54186d3b3a3d3faff4a1b015bc859c4e9935437d2394d3ae3996be",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000050.json.gz",
+      "byteLength": 746299,
+      "sha256": "12bf6ed28604fc4cb11b237dec5df29aef728b42a32316efd5c13f35a49c406a",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000051.json.gz",
+      "byteLength": 741179,
+      "sha256": "6e1148bd8bb4566a6599a2ca50f3f3a955027d943ce2c1de4195823ffaad84f4",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000052.json.gz",
+      "byteLength": 747153,
+      "sha256": "7ab6ae23c36ea6c9fd7479048c7da79187ad5a1e0579324508c0bc701ca839ea",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000053.json.gz",
+      "byteLength": 743647,
+      "sha256": "ab6e2c2c4706750bca106aca9d8d11062367e9c6728d324c2ffc2939131112cd",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000054.json.gz",
+      "byteLength": 742997,
+      "sha256": "14fa0d9ffdf6d2ed47373a7455958cb5160eb13c379f345d3383f2d618cf249f",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000055.json.gz",
+      "byteLength": 744248,
+      "sha256": "9e0578e35aec0428633098c5070dfa0ffc99977108891c4c3b6994af4973bb18",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000056.json.gz",
+      "byteLength": 741250,
+      "sha256": "17c3811b6afe6e4470aa99bcadd9db42dc59756173211effeb2a0151f027d1f4",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000057.json.gz",
+      "byteLength": 740487,
+      "sha256": "4dd87456ca7b0fcfd0378ab54437f917d96cf5fb7caabb8a7c28a71789fc896c",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000058.json.gz",
+      "byteLength": 744433,
+      "sha256": "29dffaa52ac9051c9444e858b0e26c85dbf4161fe04864cf55133a2602397dca",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000059.json.gz",
+      "byteLength": 742570,
+      "sha256": "07550917ba54c6c314edf07939f2f9814f9f07bd5e073bc338310f01c2f1589e",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000060.json.gz",
+      "byteLength": 740499,
+      "sha256": "1bccdb6db8fe223058a78cb4e7471e2a994f4022a3aeb4bec9bf3f35891e8114",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000061.json.gz",
+      "byteLength": 739007,
+      "sha256": "7e6ba1acf5ff73b0e510a082077df29c36726ba855be2fc7f75ee02e23d4e0c1",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000062.json.gz",
+      "byteLength": 736645,
+      "sha256": "d8a0ef6c77853d9c16ffbd7b31abee12c489a61ee91b4e825c4234f74a0aec74",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000063.json.gz",
+      "byteLength": 737688,
+      "sha256": "666bf2045575a4b6ec54ae7fbfe37019e4aa314e353eef5a907d7bb3f2bbb456",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000064.json.gz",
+      "byteLength": 738672,
+      "sha256": "2e8c35cac8156fd1c647ebe187ec5bdd68e751b7cce0956848a9348d72800da2",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000065.json.gz",
+      "byteLength": 739159,
+      "sha256": "71da33ad5df43e8e65a98d7924ce76609a09692e812b9dc695975be1f97eb9eb",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000066.json.gz",
+      "byteLength": 737012,
+      "sha256": "02268a49dcec5276f361e1aac3552b35ab7d7c774798c0819104563efd329032",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000067.json.gz",
+      "byteLength": 736912,
+      "sha256": "38c2d1e7c87c263223d4be510c08e26a06d25ea055605b365ad5f24d50e04b05",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000068.json.gz",
+      "byteLength": 735111,
+      "sha256": "dac0c32c6e1f4148bb68efa0f34a92b9c67ac9eaed900c5afa735956551c6f7d",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000069.json.gz",
+      "byteLength": 734363,
+      "sha256": "c0df80b501f4d371a2c8a8986a9f999c93634640de022fcb5828b51dc9be632b",
+      "role": "shared effective summary shard"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000070.json.gz",
+      "byteLength": 222113,
+      "sha256": "799e5f9d28c999bc72197069130254bc63d1e1c1667f4485207541fea827ed3a",
+      "role": "shared effective summary shard"
+    }
+  ],
+  "coveragePolicy": "Eligible exact Gregorian report dates and all candidate days in their represented year-months; report dates have a ±1-day ephemeris halo for full civil-UTC uncertainty. Atlas stores physical quantities, not source clocks, filtered counts, zodiac bins, observed visibility or houses.",
+  "float32RatePolicy": "Rates within1e-7 degree/day of classification thresholds are resolved against the original double-precision ephemeris at query time.",
+  "storage": {
+    "canonical": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\ephemeris_atlas_v1.bin.gz",
+    "uncompressedFileRetained": false,
+    "fullCorpusCopied": false,
+    "newFilesAbove100MiB": [],
+    "purpose": "Precomputed shared raw positions/rates/precession for responsive planet, partner and zodiac controls.",
+    "rebuild": "node scripts/build_planetary_ephemeris_atlas.mjs --shared-root <protected canonical workspace>",
+    "retention": "Current canonical gzip plus manifest. Generated RAM buffer is discarded after build; no versioned raw atlas or corpus staging tree."
+  }
+}

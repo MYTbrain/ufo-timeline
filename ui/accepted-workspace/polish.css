@@ -1,0 +1,76 @@
+/* Local preview overrides only. The product stylesheet and legend stay intact. */
+.faithful-polish-preview main.layout { align-items: start; }
+.faithful-polish-preview .map-control-cluster .map-control-cluster-handle { background: var(--surface-soft); }
+.faithful-polish-preview .map-control-header-playback,
+.faithful-polish-preview .map-control-quick-controls,
+.faithful-polish-preview .map-control-context-controls,
+.faithful-polish-preview .map-control-proximity-control { background: transparent; box-shadow: none; }
+.faithful-polish-preview .map-control-cluster .map-control-cluster-handle {
+  flex-direction: column;
+  gap: 7px;
+}
+
+.faithful-polish-preview .map-control-cluster .map-control-cluster-heading,
+.faithful-polish-preview .map-control-cluster .map-control-cluster-title {
+  display: block !important;
+}
+
+.faithful-polish-preview .map-control-cluster .map-control-cluster-heading {
+  width: 100%;
+  min-width: 0;
+}
+
+.faithful-polish-preview .map-control-cluster .map-control-cluster-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.faithful-polish-preview .map-control-cluster.is-collapsed .map-control-cluster-heading {
+  text-align: center;
+}
+
+.faithful-polish-preview .map-control-cluster.is-collapsed .map-control-cluster-title {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.faithful-polish-preview .map-control-section {
+  border-radius: 10px;
+}
+
+.faithful-polish-preview .map-control-section > summary {
+  min-height: 44px;
+  padding: 10px 11px;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  background: var(--surface-soft);
+}
+
+.faithful-polish-preview .map-control-section > summary:hover,
+.faithful-polish-preview .map-control-section > summary:focus-visible {
+  color: var(--ink);
+  background: var(--surface-muted);
+}
+
+.faithful-polish-preview .map-control-section .map-control-summary-state {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.faithful-polish-preview .preview-map-reset-help {
+  margin: 0 2px 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}

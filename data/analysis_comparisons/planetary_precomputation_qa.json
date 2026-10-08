@@ -1,0 +1,219 @@
+{
+  "schemaId": "ufo-planetary-precomputation-qa-v1",
+  "status": "passed",
+  "generatedAt": "2026-10-08T03:01:47.902Z",
+  "streamedCatalogRows": 702893,
+  "preparedCohort": {
+    "inputRows": 711822,
+    "foldedGroupN": 155893,
+    "preparationMilliseconds": 4272,
+    "originalRowsRetained": false,
+    "snapshotScope": "Complete retained catalog plus compact crop/animal context; live filtered cohorts have separate denominators."
+  },
+  "defaultModel": {
+    "planet": "Venus",
+    "aspectPartner": "Mars",
+    "zodiacSystem": "sidereal",
+    "milliseconds": 1023,
+    "completePriorResultParity": true,
+    "precomputation": {
+      "status": "precomputed_raw_ephemeris",
+      "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+      "dateCount": 65113,
+      "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+      "atlasHits": 526713,
+      "directEphemerisCalls": 0,
+      "rateFallbackCalls": 0,
+      "precessionHits": 205929,
+      "precessionFallbackCalls": 0
+    }
+  },
+  "nineBodyTimings": [
+    {
+      "planet": "Sun",
+      "aspectPartner": "Mars",
+      "milliseconds": 1002,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 504561,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 198545,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Moon",
+      "aspectPartner": "Mars",
+      "milliseconds": 1120,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 922089,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 337721,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Mercury",
+      "aspectPartner": "Mars",
+      "milliseconds": 1117,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 572241,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 221105,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Venus",
+      "aspectPartner": "Mars",
+      "milliseconds": 973,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 526713,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 205929,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Mars",
+      "aspectPartner": "Moon",
+      "milliseconds": 1147,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 910185,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 333753,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Jupiter",
+      "aspectPartner": "Mars",
+      "milliseconds": 1077,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 572793,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 221289,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Saturn",
+      "aspectPartner": "Mars",
+      "milliseconds": 1023,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 678103,
+        "directEphemerisCalls": 4,
+        "rateFallbackCalls": 2,
+        "precessionHits": 256393,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Uranus",
+      "aspectPartner": "Mars",
+      "milliseconds": 1265,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 966602,
+        "directEphemerisCalls": 14,
+        "rateFallbackCalls": 7,
+        "precessionHits": 352561,
+        "precessionFallbackCalls": 0
+      }
+    },
+    {
+      "planet": "Neptune",
+      "aspectPartner": "Mars",
+      "milliseconds": 1251,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 1105636,
+        "directEphemerisCalls": 10,
+        "rateFallbackCalls": 5,
+        "precessionHits": 398905,
+        "precessionFallbackCalls": 0
+      }
+    }
+  ],
+  "atlas": {
+    "file": "ephemeris_atlas_v1.bin.gz",
+    "sha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+    "gzipSha256": "d5c38232e0702783a46df4e38e24c8dce947ce54ab9843d93191ddce5b447b8f",
+    "byteLength": 45579168,
+    "gzipByteLength": 41307851,
+    "dateCount": 65113,
+    "dayIndexSha256": "9bf64a257fc0a33a7fa7c4322c291c219e50786939ec567b5f9f0c8142abc8ca"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_manifest.json",
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\context_rows.json.gz",
+      "sha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1"
+    },
+    {
+      "path": "analysis_planetary.js",
+      "sha256": "6d7f379a26c0c1038c02e579066e95cf7b4ed156a1062649d9c44cf05f4ec24c"
+    },
+    {
+      "path": "analysis_astronomy_engine.js",
+      "sha256": "d1b3ab4b86aa409f78c0f0d95162a847496cba7e938eb6f4712cf9c1c45f4a2e"
+    }
+  ],
+  "checks": [
+    "Full retained cohort result parity, including all date-role/source coverage and sampled bounds",
+    "Nine offered bodies preserve denominators",
+    "No original corpus rows retained in prepared snapshot",
+    "Physical values reused across body/partner/zodiac/orb settings",
+    "Covered current dates require no ephemeris calculation except explicitly protected threshold cases",
+    "Checksums/dimensions validated before install"
+  ],
+  "storage": {
+    "canonical": "ephemeris_atlas_v1.bin.gz",
+    "rawBinaryRetained": false,
+    "fullCorpusCopied": false,
+    "newFilesAbove100MiB": [],
+    "purpose": "Small current precomputation validation receipt; rebuild with this test."
+  }
+}

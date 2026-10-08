@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-08-12-context-evidence-v2";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-08-workspace-analysis-release-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -19,9 +19,20 @@
   let analysisCoordinatePileKeys = createDictionary();
   let analysisCoordinatePileCounts = new Map();
   let analysisStatsApi = self.UfoAnalysisStats || null;
+  let analysisComparisonArtifacts = { loaded: false, manifest: {}, context: {}, nuclear: {}, hashes: {} };
   let analysisSpatialApi = self.UfoAnalysisSpatial || null;
   let analysisCache = new Map();
   let analysisMatchCache = new Map();
+  let analysisComparisonRevision = 0;
+  const analysisComparisonCache = new Map();
+  const analysisComparisonCohortCache = new Map();
+
+  function invalidateAnalysisCache() {
+    analysisCache.clear();
+    analysisComparisonCache.clear();
+    analysisComparisonCohortCache.clear();
+    analysisComparisonRevision += 1;
+  }
   let analysisContext = {
     manifest: {},
     cropCircles: null,
@@ -175,6 +186,195 @@
     return analysisSpatialApi;
   }
 
+  function ensureAnalysisComparisons() {
+    if ((!self.UfoAnalysisLunar || !self.UfoAnalysisNuclear || !self.UfoAnalysisCrossContext || !self.UfoAnalysisPlanetary) && typeof importScripts === "function") {
+      importScripts("./analysis_astronomy_engine.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY,
+        "./analysis_lunar.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY,
+        "./analysis_nuclear.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY,
+        "./analysis_cross_context.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY,
+        "./analysis_planetary.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
+    }
+    if (!self.UfoAnalysisLunar || !self.UfoAnalysisNuclear || !self.UfoAnalysisCrossContext || !self.UfoAnalysisPlanetary) {
+      throw new Error("The cross-context comparison modules are unavailable.");
+    }
+  }
+
+  async function loadAnalysisComparisonArtifacts(message) {
+    const manifest = message.manifest || {};
+    const base = message.manifestUrl;
+    const entries = manifest.artifacts || {};
+    if (!base || !entries.context || !entries.nuclear) throw new Error("Comparison evidence manifest is incomplete.");
+    const keys = entries.facilities ? ["context", "nuclear", "facilities"] : ["context", "nuclear"];
+    const values = await Promise.all(keys.map(function (key) {
+      const entry = entries[key];
+      if (!entry.sha256 || !entry.file) throw new Error("Comparison evidence has no integrity pin: " + key);
+      return fetchAnalysisJson(new URL(entry.file, base).toString(), entry);
+    }));
+    const atlasEntry = manifest.ephemerisAtlas;
+    if (atlasEntry && (!atlasEntry.file || !/^[a-f0-9]{64}$/i.test(String(atlasEntry.sha256 || "")))) {
+      throw new Error("Planetary precomputation has no valid integrity pin.");
+    }
+    const atlasBytes = atlasEntry ? await fetchAnalysisBinary(new URL(atlasEntry.file, base).toString(), atlasEntry) : null;
+    if (!values[0] || values[0].ordinalEpoch !== "unix_day" || !Array.isArray(values[0].crops) || !Array.isArray(values[0].animals)
+        || !values[1] || values[1].ordinalEpoch !== "unix_day" || !Array.isArray(values[1].tests)) {
+      throw new Error("Comparison evidence has an invalid row contract.");
+    }
+    ensureAnalysisComparisons();
+    const atlas = atlasBytes ? self.UfoAnalysisPlanetary.decodeEphemerisAtlas(atlasBytes, atlasEntry) : null;
+    // Commit only after every artifact and module has passed validation.
+    if (atlas) self.UfoAnalysisPlanetary.setEphemerisAtlas(atlas);
+    else if (typeof self.UfoAnalysisPlanetary.clearEphemerisAtlas === "function") self.UfoAnalysisPlanetary.clearEphemerisAtlas();
+    analysisComparisonArtifacts = { loaded: true, manifest, context: values[0], nuclear: values[1],
+      facilities: values[2] || null,
+      hashes: Object.assign({ comparisonContext: entries.context.sha256, nuclearContext: entries.nuclear.sha256 },
+        entries.facilities ? { comparisonFacilities: entries.facilities.sha256 } : {},
+        atlasEntry ? { planetaryEphemeris: atlasEntry.sha256 } : {}) };
+    invalidateAnalysisCache();
+    return { loaded: true, releaseId: manifest.releaseId, crops: values[0].crops.length,
+      animals: values[0].animals.length, artifactHashes: analysisComparisonArtifacts.hashes };
+  }
+
+  function comparisonCohortKey(message) {
+    return JSON.stringify({ revision: analysisComparisonRevision, matched: analysisMatchCacheKey(message),
+      start: message.timeRangeStartOrdinal, end: message.timeRangeEndOrdinal,
+      full: Boolean(message.fullTimeRange || message.timeRangeMode === "full"),
+      contextLayers: message.contextLayers || {}, datasetHash: message.datasetHash || "",
+      hashes: analysisComparisonArtifacts.hashes });
+  }
+
+  function buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
+    const range = message.fullTimeRange || message.timeRangeMode === "full" ? null : {
+      start: Number(message.timeRangeStartOrdinal), end: Number(message.timeRangeEndOrdinal) };
+    function inRange(row) {
+      if (!range) return true;
+      const start = row.startOrdinal == null ? row.sortOrdinal : row.startOrdinal;
+      const end = row.endOrdinal == null ? start : row.endOrdinal;
+      return Number.isFinite(start) && Number.isFinite(end) && end >= range.start && start <= range.end;
+    }
+    const input = {};
+    function visitRaw(values, callback) {
+      if (!matched && !analysisRowMatches(values, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues)) return;
+      input.id = input.eventId = values.eventId;
+      input.sortOrdinal = input.startOrdinal = values.dateStartOrdinal == null ? values.sortOrdinal : values.dateStartOrdinal;
+      input.endOrdinal = values.dateEndOrdinal == null ? input.startOrdinal : values.dateEndOrdinal;
+      input.datePrecision = values.datePrecision;
+      input.dateRole = "occurrence";
+      input.lat = values.lat; input.lon = values.lon; input.country = values.country;
+      input.source = values.source; input.craftType = values.craftType;
+      input.type = values.type; input.visualTypeGroup = values.visualTypeGroup;
+      input.coordinateSource = values.coordinateSource; input.precision = values.precision;
+      input.mapped = values.mapped; input.duplicateLineage = values.duplicateLineage;
+      // Retain non-date matched rows for independently shifted control windows;
+      // each estimator applies the active date range to its observed cohort.
+      callback(input);
+    }
+    function forEachRow(callback) {
+      const values = {};
+      chunks.forEach(function (chunk, chunkIndex) {
+        const indexes = matched ? matched.chunkIndexes[chunkIndex] || [] : null;
+        for (let cursor = 0; cursor < (indexes ? indexes.length : chunk.length); cursor += 1) {
+          readRowValuesInto(values, chunk, indexes ? indexes[cursor] : cursor);
+          visitRaw(values, callback);
+        }
+      });
+    }
+    function contextRows(key, enabled) {
+      if (enabled === false) return [];
+      return analysisComparisonArtifacts.context[key].filter(function (row) {
+        if (!areaShapes) return true;
+        return areaShapes.some(function (shape) {
+          if (String(shape.type || "").toLowerCase() === "country") {
+            const country = String(shape.country || shape.countryName || "").trim().toLowerCase();
+            return country && country === String(row.country || "").trim().toLowerCase();
+          }
+          return typeof row.lat === "number" && Number.isFinite(row.lat) && typeof row.lon === "number" && Number.isFinite(row.lon)
+            && pointInsideAnyAnalysisShape(row.lat, row.lon, [shape]);
+        });
+      });
+    }
+    const layers = message.contextLayers || {};
+    const crops = contextRows("crops", layers.cropCirclesEnabled);
+    const animals = contextRows("animals", layers.animalMutilationsEnabled);
+    const settings = message.comparisonOptions || {};
+    const nuclear = analysisComparisonArtifacts.nuclear;
+    const broader = analysisComparisonArtifacts.facilities || {};
+    const shared = { forEachRow, crops, animals, range, ordinalEpoch: "unix_day",
+      startOrdinal: range && range.start, endOrdinal: range && range.end,
+      artifactHashes: analysisComparisonArtifacts.hashes };
+    return { shared, settings, nuclear, broader, cohortKey: comparisonCohortKey(message) };
+  }
+
+  function comparisonComponentSettings(component, settings) {
+    if (component === "planetary") return {
+      planet: settings.planet || "Venus", aspectPartner: settings.aspectPartner || (settings.planet === "Mars" ? "Moon" : "Mars"),
+      aspectOrbDegrees: settings.aspectOrbDegrees == null ? 3 : settings.aspectOrbDegrees,
+      zodiacSystem: settings.zodiacSystem || "sidereal", ayanamsaId: settings.ayanamsaId || "lahiri",
+      samplingMode: settings.samplingMode || "adaptive",
+    };
+    if (component === "planetaryHeatmaps") return {
+      aspectOrbDegrees: settings.aspectOrbDegrees == null ? 3 : settings.aspectOrbDegrees,
+      zodiacSystem: settings.zodiacSystem || "sidereal", ayanamsaId: settings.ayanamsaId || "lahiri",
+    };
+    if (component === "nuclear") return { windowDays: settings.windowDays == null ? 30 : settings.windowDays,
+      testRoles: settings.testRoles, maxDistanceKm: settings.maxDistanceKm, distanceBandsKm: settings.distanceBandsKm };
+    return {};
+  }
+
+  function computeComparisonComponent(component, context) {
+    const settings = comparisonComponentSettings(component, context.settings);
+    const key = context.cohortKey + "|" + component + "|" + JSON.stringify(settings);
+    if (analysisComparisonCache.has(key)) {
+      const model = analysisComparisonCache.get(key);
+      analysisComparisonCache.delete(key); analysisComparisonCache.set(key, model);
+      return { model, cacheHit: true };
+    }
+    const shared = context.shared, nuclear = context.nuclear, broader = context.broader;
+    let model;
+    if (component === "planetary" || component === "planetaryHeatmaps") {
+      let preparedCohort = analysisComparisonCohortCache.get(context.cohortKey);
+      if (!preparedCohort && typeof self.UfoAnalysisPlanetary.preparePlanetaryCohort === "function") {
+        preparedCohort = self.UfoAnalysisPlanetary.preparePlanetaryCohort(shared);
+        analysisComparisonCohortCache.set(context.cohortKey, preparedCohort);
+        while (analysisComparisonCohortCache.size > 2) analysisComparisonCohortCache.delete(analysisComparisonCohortCache.keys().next().value);
+      }
+      model = self.UfoAnalysisPlanetary[component === "planetaryHeatmaps" ? "computePlanetaryHeatmaps" : "computePlanetaryContext"](
+        Object.assign({}, shared, settings, { preparedCohort }));
+    } else if (component === "lunar") model = self.UfoAnalysisLunar.computeLunarContext(shared);
+    else if (component === "nuclear") model = self.UfoAnalysisNuclear.computeNuclearContext(Object.assign({}, nuclear, shared, settings, {
+      tests: nuclear.tests || nuclear.events || [], nuclearFacilities: nuclear.nuclearFacilities || [],
+      broaderFacilities: Array.isArray(broader) ? broader : broader.rows || broader.facilities || [],
+      facilityCodebook: broader.codes || broader.codebook || analysisComparisonArtifacts.manifest.facilityCodebook || nuclear.facilityCodebook || {},
+      sourceMetadata: nuclear.metadata || nuclear.source || {}, sourceCoverage: nuclear.coverage || {} }));
+    else if (component === "crossContext") model = self.UfoAnalysisCrossContext.computeCrossContext({ crops: shared.crops, animals: shared.animals,
+      ordinalEpoch: "unix_day", filters: shared.range ? { startOrdinal: shared.range.start, endOrdinal: shared.range.end } : {},
+      artifactHashes: analysisComparisonArtifacts.hashes });
+    else throw new Error("Unknown comparison component: " + component);
+    analysisComparisonCache.set(key, model);
+    while (analysisComparisonCache.size > 32) analysisComparisonCache.delete(analysisComparisonCache.keys().next().value);
+    return { model, cacheHit: false };
+  }
+
+  function computeComparisonEvidence(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
+    if (!analysisComparisonArtifacts.loaded) return { status: "loading" };
+    if (message.quickMode) return { status: "calculating" };
+    ensureAnalysisComparisons();
+    const context = buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
+    return {
+      status: "ready", ordinalEpoch: "unix_day", artifactHashes: analysisComparisonArtifacts.hashes,
+      scope: "UFO reports follow active filters. Crop and animal catalogs follow dates, geographic selections and inclusion switches; UFO craft/source filters do not classify context records.",
+      lunar: computeComparisonComponent("lunar", context).model,
+      planetary: computeComparisonComponent("planetary", context).model,
+      planetaryHeatmaps: cachedPlanetaryHeatmaps(message),
+      nuclear: computeComparisonComponent("nuclear", context).model,
+      crossContext: computeComparisonComponent("crossContext", context).model,
+    };
+  }
+
+  function cachedPlanetaryHeatmaps(message) {
+    return analysisComparisonCache.get(comparisonCohortKey(message) + "|planetaryHeatmaps|" +
+      JSON.stringify(comparisonComponentSettings("planetaryHeatmaps", message.comparisonOptions || {})));
+  }
+
   function dictionaryCode(dictionary, value) {
     const key = String(value || "");
     if (dictionary.codes.has(key)) {
@@ -263,6 +463,7 @@
       adminRegionCodes: new Uint16Array(length),
       duplicateLineageCodes: new Uint16Array(length),
       sortOrdinals: new Int32Array(length),
+      dateIntervals: new Map(),
       latitudes: new Float64Array(length),
       longitudes: new Float64Array(length),
       mappedStates: new Uint8Array(length),
@@ -344,10 +545,17 @@
       chunk.countryCodes[index] = categoryCode(dictionaries.country, row.country || "unknown");
       chunk.adminRegionCodes[index] = categoryCode(dictionaries.adminRegion, row.adminRegion || "unknown");
       chunk.duplicateLineageCodes[index] = categoryCode(dictionaries.duplicateLineage, row.duplicateLineage || "");
-      const sortOrdinal = Number(row.sortOrdinal);
+      const sortOrdinal = row.sortOrdinal == null || typeof row.sortOrdinal === "boolean" ||
+        (typeof row.sortOrdinal === "string" && !row.sortOrdinal.trim()) ? NaN : Number(row.sortOrdinal);
       chunk.sortOrdinals[index] = Number.isFinite(sortOrdinal)
         ? Math.max(-2147483647, Math.min(2147483647, Math.round(sortOrdinal)))
         : MISSING_SORT_ORDINAL;
+      const intervalStart = row.dateStartOrdinal == null ? NaN : Number(row.dateStartOrdinal);
+      const intervalEnd = row.dateEndOrdinal == null ? NaN : Number(row.dateEndOrdinal);
+      if (Number.isFinite(intervalStart) && Number.isFinite(intervalEnd) && intervalStart <= intervalEnd &&
+          chunk.sortOrdinals[index] !== MISSING_SORT_ORDINAL && row.datePrecision !== "exact_day") {
+        chunk.dateIntervals.set(index, [intervalStart, intervalEnd]);
+      }
       const analysisCivil = analysisCivilFromTimelineOrdinal(chunk.sortOrdinals[index]);
       chunk.analysisYears[index] = analysisCivil ? analysisCivil.year : MISSING_SORT_ORDINAL;
       chunk.analysisMonths[index] = analysisCivil ? analysisCivil.month : 0;
@@ -723,6 +931,9 @@
       ["typed_country_consistent", "typed_country_unchecked"].indexOf(values.analysisCoordinateEvidenceStatus) !== -1;
     values.duplicateLineage = dictionaryValue(dictionaries.duplicateLineage, chunk.duplicateLineageCodes[index]);
     values.sortOrdinal = sortOrdinalAt(chunk, index);
+    const interval = chunk.dateIntervals.get(index);
+    values.dateStartOrdinal = interval ? interval[0] : null;
+    values.dateEndOrdinal = interval ? interval[1] : null;
     values.lat = Number.isFinite(chunk.latitudes[index]) ? chunk.latitudes[index] : null;
     values.lon = Number.isFinite(chunk.longitudes[index]) ? chunk.longitudes[index] : null;
     values.mapped = chunk.mappedStates[index] === 2;
@@ -756,6 +967,12 @@
     return values;
   }
 
+  function rowOverlapsDateRange(row, start, end) {
+    const intervalStart = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal;
+    const intervalEnd = row.dateEndOrdinal == null ? row.sortOrdinal : row.dateEndOrdinal;
+    return Number.isFinite(intervalStart) && Number.isFinite(intervalEnd) && intervalEnd >= start && intervalStart <= end;
+  }
+
   function computeFilteredCatalogIds(payload) {
     const filters = normalizedFilters(payload);
     const keywordIds = keywordIdSet(payload || {});
@@ -783,7 +1000,7 @@
           eventMatchesNonDateFilters(values, legendBaseFilters, keywordIds, lowPrecisionValues) &&
           (
             !hasTimeRange ||
-            (Number.isFinite(rowOrdinal) && rowOrdinal >= minOrdinal && rowOrdinal <= maxOrdinal)
+            rowOverlapsDateRange(values, minOrdinal, maxOrdinal)
           )
         ) {
           const legendKey = legendEventKey(
@@ -855,7 +1072,7 @@
       for (let index = 0; index < chunk.length; index += 1) {
         readRowValuesInto(values, chunk, index);
         const sortOrdinal = values.sortOrdinal;
-        if (hasTimeRange && (!Number.isFinite(sortOrdinal) || sortOrdinal < minOrdinal || sortOrdinal > maxOrdinal)) {
+        if (hasTimeRange && !rowOverlapsDateRange(values, minOrdinal, maxOrdinal)) {
           continue;
         }
         if (keywordIds && !keywordIds.has(String(values.eventId))) {
@@ -1027,9 +1244,28 @@
       areaEventCount: Array.isArray(message.areaFilterEventIds) ? message.areaFilterEventIds.length : null,
       areaFilterShapes: shapeSignature,
       selectedDomains: normalizedAnalysisDomains(message.selectedDomains),
+      comparisonOptions: message.comparisonOptions || {},
+      comparisonEvidence: { loaded: analysisComparisonArtifacts.loaded, hashes: analysisComparisonArtifacts.hashes },
       contextLayers: message.contextLayers || {},
       contextReleaseHashes: normalizedHashObject(message.contextReleaseHashes),
       artifactHashes: normalizedHashObject(message.artifactHashes),
+      // Manifest hashes can be known before asynchronous field projections
+      // commit. A late dedicated Spatial result must retain its earlier input
+      // identity instead of replacing a result with newly loaded evidence.
+      projectionReadiness: {
+        crops: Boolean(analysisContext.cropCircles),
+        animals: Boolean(analysisContext.animalReports),
+        spatial: Boolean(analysisSpatialArtifacts.loaded),
+        relationships: Boolean(analysisSpatialArtifacts.relationships),
+        contextNeighborhoods: Boolean(analysisSpatialArtifacts.contextNeighbors),
+        geography: Boolean(analysisGeographyArtifact.loaded),
+        duration: Boolean(analysisDurationArtifact.loaded),
+        reportingDelay: Boolean(analysisReportingDelayArtifact.loaded),
+        timeOfDay: Boolean(analysisTimeOfDayArtifact.loaded),
+        witnessCount: Boolean(analysisWitnessCountArtifact.loaded),
+        color: Boolean(analysisColorArtifact.loaded),
+        coordinateEvidence: Boolean(analysisCoordinateEvidenceArtifact.loaded),
+      },
       datasetHash: String(message.datasetHash || ""),
       estimatorVersion: String(message.estimatorVersion || "analysis-v2"),
       analysisPhase: String(message.analysisPhase || (message.quickMode ? "quick" : "full")),
@@ -1121,6 +1357,8 @@
       for (let index = 0; index < chunk.length; index += 1) {
         readRowValuesInto(values, chunk, index);
         values.sortOrdinal = analysisOrdinalFromTimelineOrdinal(values.sortOrdinal);
+        values.dateStartOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateStartOrdinal);
+        values.dateEndOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateEndOrdinal);
         callback(values);
       }
     }
@@ -1134,6 +1372,8 @@
       for (let cursor = 0; cursor < indexes.length; cursor += 1) {
         readRowValuesInto(values, chunk, indexes[cursor]);
         values.sortOrdinal = analysisOrdinalFromTimelineOrdinal(values.sortOrdinal);
+        values.dateStartOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateStartOrdinal);
+        values.dateEndOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateEndOrdinal);
         callback(values);
       }
     }
@@ -1199,7 +1439,7 @@
     const range = analysisActiveRange(message);
     const rows = [];
     const collect = function (row) {
-      if (range && (!Number.isFinite(row.sortOrdinal) || row.sortOrdinal < range[0] || row.sortOrdinal > range[1])) return;
+      if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
       if (!spatialDispatchEligible(row)) return;
       rows.push(copySpatialAnalysisRow(row));
     };
@@ -1218,7 +1458,7 @@
     const range = analysisActiveRange(message);
     const rows = [];
     const collect = function (row) {
-      if (range && (!Number.isFinite(row.sortOrdinal) || row.sortOrdinal < range[0] || row.sortOrdinal > range[1])) return;
+      if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
       rows.push({ eventId: String(row.eventId == null ? "" : row.eventId) });
     };
     if (matched) {
@@ -1302,7 +1542,28 @@
       manifest.sources.relationshipReconciliation.readiness &&
       manifest.sources.relationshipReconciliation.readiness.gates
     ) ? manifest.sources.relationshipReconciliation.readiness.gates : [];
+    const strictContextDomain = function (kind, label, sourceKey, countKey) {
+      const sourceReadiness = manifest && manifest.sources && manifest.sources[sourceKey] && manifest.sources[sourceKey].readiness || {};
+      const strictGates = sourceGates(sourceKey).filter(function (gate) {
+        return String(gate.applicability || "").indexOf("strict") !== -1;
+      }).concat(sourceGates("contextUfoNeighbors").filter(function (gate) {
+        return gate.gateId === kind + "_strict_context_clusters";
+      }));
+      const passed = Math.max(0, Number(sourceReadiness.eligibleRecordCount) || 0);
+      const ready = strictGates.length > 0 && strictGates.every(function (gate) { return gate.status === "ready_inferential"; });
+      return domain(kind + "_strict", label, ready ? "ready_inferential" : "blocked",
+        passed, Number(counts[countKey] || 0), strictGates, {
+          applicability: "strict_kilometer_inference",
+          laneKey: kind + "_strict",
+          evidenceHash: hashes[sourceKey === "cropContext" ? "cropContextReadiness" : "animalContextReadiness"] || "",
+          releaseHash: hashes[sourceKey === "cropContext" ? "cropContextReadiness" : "animalContextReadiness"] || "",
+          reasonCodes: Array.from(new Set(strictGates.reduce(function (all, gate) { return all.concat(gate.reasonCodes || []); }, []))),
+          reasons: Array.isArray(sourceReadiness.reasons) ? sourceReadiness.reasons.slice() : [],
+        });
+    };
     return {
+      crop_strict: strictContextDomain("crop", "Crop circles — strict site/date evidence", "cropContext", "cropContextRecords"),
+      animal_strict: strictContextDomain("animal", "Animal reports — strict site/date evidence", "animalContext", "animalContextRecords"),
       ufoCraftPoints: domain("ufoCraftPoints", "High-precision co-occurrence pool",
         spatialPointCount >= 25 ? "ready_inferential" : "blocked", spatialPointCount, mappedCount, [
           makeGate("source_coordinates", "Source-provided coordinates", "ready_inferential", mappedCount, sourceCoordinateCount, ["generalized_coordinates_excluded"], "ufo_point_neighbors_v2", "mapped report markers"),
@@ -1334,12 +1595,14 @@
         }),
       cropBounded: domain("cropBounded", "Crop circles — bounded markers", "ready_sensitivity",
         cropBoundedCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
+          laneKey: "crop_bounded",
           evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           reasonCodes: ["catalog_date_not_formation_date", "bounded_marker_uncertainty_applied"],
         }),
       cropLocality: domain("cropLocality", "Crop circles — locality markers", "ready_descriptive",
         cropLocalityCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
+          laneKey: "crop_locality",
           evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           reasonCodes: ["rough_marker_lane", "not_exact_site"],
@@ -1352,6 +1615,7 @@
         }),
       animalReports: domain("animalReports", "Animal reports — public markers", "ready_sensitivity",
         animalMarkerCount, Number(counts.animalContextRecords || 0), sourceGates("animalContext"), {
+          laneKey: "animal_public_marker",
           evidenceHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
           reasonCodes: ["public_marker_association", "origin_publisher_excluded", "not_exact_site"],
@@ -1472,6 +1736,13 @@
     result.baselineMode = baselineMode;
     result.inferenceEnabled = inferenceEnabled;
     const manifest = analysisSpatialArtifacts.manifest || {};
+    ["crop_strict", "animal_strict"].forEach(function (key) {
+      if (!readiness[key]) return;
+      if (!Array.isArray(result.readiness)) result.readiness = [];
+      const index = result.readiness.findIndex(function (row) { return row && row.key === key; });
+      if (index === -1) result.readiness.push(Object.assign({}, readiness[key]));
+      else result.readiness[index] = Object.assign({}, readiness[key]);
+    });
     if (manifest.contextPulseSummary && typeof manifest.contextPulseSummary === "object") {
       result.pulseSummary = manifest.contextPulseSummary;
     }
@@ -1602,6 +1873,7 @@
       return value;
     }
     if (!value || typeof value !== "object") return value;
+    if (value.ordinalEpoch === "unix_day") return value;
     if (Object.prototype.hasOwnProperty.call(value, "startOrdinal")) {
       value.startOrdinal = timelineOrdinalFromAnalysisOrdinal(value.startOrdinal);
     }
@@ -1773,8 +2045,22 @@
         lowPrecisionValues,
         { contextOnly: contextEvidenceRequested && !spatialEvidenceRequested }
       );
+      annotateActiveSpatialSupport(result);
+    }
+    if (selectedDomains.indexOf("comparisons") !== -1) {
+      result.comparisonEvidence = computeComparisonEvidence(message, matched, filters, keywordIds,
+        areaEventIds, areaShapes, lowPrecisionValues);
+      Object.assign(result.artifactHashes, analysisComparisonArtifacts.hashes);
     }
     return analysisResultForTimeline(result);
+  }
+
+  function annotateActiveSpatialSupport(result) {
+    const spatial = result && result.spatialEvidence;
+    if (!spatial || !spatial.eligibility) return;
+    spatial.eligibility.activeQueryReports = Math.max(0, Number(result.summary && result.summary.activeCount) || 0);
+    const qualified = spatial.activePinnedSpatialPointN;
+    spatial.eligibility.activeQualifiedEndpoints = qualified == null ? null : Math.max(0, Number(qualified) || 0);
   }
 
   function analysisContextSnapshot() {
@@ -1822,7 +2108,7 @@
     if (manifestValue && typeof manifestValue === "object") {
       analysisContext.manifest = Object.assign({}, analysisContext.manifest || {}, manifestValue);
     }
-    analysisCache.clear();
+    invalidateAnalysisCache();
     return analysisContextSnapshot();
   }
 
@@ -2358,6 +2644,7 @@
         baselineMode,
         wholeCorpusStructure || baselineMode !== ensureAnalysisStats().BASELINE_MODES.FULL_CATALOG
       );
+      annotateActiveSpatialSupport(pending.result);
       cacheAnalysisResult(pending.cacheKey, pending.result);
       self.postMessage(analysisComputedEnvelope(pending.message, pending.result, false));
       return;
@@ -2677,7 +2964,7 @@
         durationProjection: String(manifest.artifacts.durationProjection.sha256 || ""),
       },
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -2845,7 +3132,7 @@
       releaseId: String(manifest.releaseId || ""),
       artifactHashes,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -2893,6 +3180,13 @@
     const statusCodes = manifest.codes.status || [];
     const binCodes = manifest.codes.witnessCountBin || [];
     const macroregionCodes = manifest.codes.macroregion || [];
+    const policy = manifest.policy || {};
+    const sourceFields = policy.sourceFieldNames || { nuforc: policy.sourceFieldName || "No of observers" };
+    const ufocatContract = manifest.inputs && manifest.inputs.ufocatWitnessContract;
+    const ufocatAllowed = sourceFields.ufocat === "WITS" && ufocatContract &&
+      normalizedSha256(ufocatContract.sha256) &&
+      policy.crossSourceComparison === false && policy.activeReferenceInference === false &&
+      policy.patternFinderPromotion === false;
     const occurrences = new Uint32Array(dictionaryRows.length);
     let previousRowIndex = -1;
     let chunkIndex = 0;
@@ -2931,8 +3225,10 @@
         throw new Error("Witness-count dictionary code is out of range for value " + valueCode + ".");
       }
       const canonicalSource = dictionaryValue(dictionaries.source, location.chunk.sourceCodes[location.index]) || "unknown";
-      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource || canonicalSource !== "nuforc") {
-        throw new Error("Witness-count dictionary source is not the explicit NUFORC lane at row " + catalogRowIndex + ".");
+      const documentedSource = canonicalSource === "nuforc" && sourceFields.nuforc === "No of observers" ||
+        canonicalSource === "ufocat" && ufocatAllowed;
+      if (String(sourceCodes[sourceCode] || "unknown") !== canonicalSource || !documentedSource) {
+        throw new Error("Witness-count dictionary source lacks its explicit field contract at row " + catalogRowIndex + ".");
       }
       const status = String(statusCodes[statusCode] || "unresolved_text");
       const exactCount = value[5] == null ? null : Number(value[5]);
@@ -2944,14 +3240,6 @@
       } else if (exactCount != null || String(binCodes[descriptiveBinCode]) !== "unknown") {
         throw new Error("Excluded witness-count value silently retains an exact count for value " + valueCode + ".");
       }
-      location.chunk.analysisWitnessCountValueCodes[location.index] = valueCode + 1;
-      location.chunk.analysisWitnessCountStatusCodes[location.index] = statusCode + 1;
-      location.chunk.analysisWitnessCountBinCodes[location.index] = descriptiveBinCode + 1;
-      location.chunk.analysisWitnessCountMacroregionCodes[location.index] = categoryCode(
-        dictionaries.witnessCountMacroregion,
-        String(macroregionCodes[macroregionCode] || "unknown")
-      );
-      location.chunk.analysisWitnessCountExactCounts[location.index] = exactCount == null ? 0 : exactCount;
       occurrences[valueCode] += 1;
       if (typed) typedRows += 1;
     });
@@ -2963,6 +3251,35 @@
     if (typedRows !== Number(manifest.counts && manifest.counts.typedRows)) {
       throw new Error("Witness-count typed-row parity failed.");
     }
+    // Commit only after the entire source/identity/code/count contract passes.
+    // A rejected extension must not leave projected cells whose manifest is null.
+    chunks.forEach(function (chunk) {
+      chunk.analysisWitnessCountValueCodes.fill(0);
+      chunk.analysisWitnessCountStatusCodes.fill(0);
+      chunk.analysisWitnessCountBinCodes.fill(0);
+      chunk.analysisWitnessCountMacroregionCodes.fill(0);
+      chunk.analysisWitnessCountExactCounts.fill(0);
+    });
+    chunkIndex = 0;
+    chunkStart = 0;
+    projectionRows.forEach(function (projection) {
+      const catalogRowIndex = Number(projection[0]);
+      while (chunkIndex < chunks.length && catalogRowIndex >= chunkStart + chunks[chunkIndex].length) {
+        chunkStart += chunks[chunkIndex].length;
+        chunkIndex += 1;
+      }
+      const chunk = chunks[chunkIndex];
+      const index = catalogRowIndex - chunkStart;
+      const valueCode = Number(projection[2]);
+      const value = dictionaryRows[valueCode];
+      chunk.analysisWitnessCountValueCodes[index] = valueCode + 1;
+      chunk.analysisWitnessCountStatusCodes[index] = Number(value[3]) + 1;
+      chunk.analysisWitnessCountBinCodes[index] = Number(value[8]) + 1;
+      chunk.analysisWitnessCountMacroregionCodes[index] = categoryCode(
+        dictionaries.witnessCountMacroregion, String(macroregionCodes[Number(projection[3])] || "unknown")
+      );
+      chunk.analysisWitnessCountExactCounts[index] = value[5] == null ? 0 : Number(value[5]);
+    });
     return { appliedRows: projectionRows.length, typedRows };
   }
 
@@ -3007,7 +3324,7 @@
       releaseId: String(manifest.releaseId || ""),
       artifactHashes,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -3192,7 +3509,7 @@
       releaseId: String(manifest.releaseId || ""),
       artifactHashes,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -3349,7 +3666,7 @@
       releaseId: String(manifest.releaseId || ""),
       artifactHashes,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -3516,7 +3833,7 @@
       releaseId: String(manifest.releaseId || ""),
       artifactHashes,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -3736,7 +4053,7 @@
       artifactHash: String(manifest.artifacts.ufoGeography.sha256 || ""),
       encodingHash,
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
     return {
       loaded: true,
@@ -3849,7 +4166,7 @@
       loaded: true,
       artifactHashes: spatialArtifactHashes(manifest),
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     terminateDedicatedSpatialExecutor("Spatial evidence artifacts were replaced.", true);
     if (dedicatedSpatialWorkerSupported()) await initializeDedicatedSpatialExecutor();
     if (loadEpoch !== analysisSpatialArtifactLoadEpoch) {
@@ -3922,7 +4239,7 @@
         analysisSpatialArtifacts.artifactHashes || {},
         { relationshipReconciliation: String(manifest.artifacts.relationshipReconciliation.sha256 || "") }
       );
-      analysisCache.clear();
+      invalidateAnalysisCache();
     }
     return {
       loaded: true,
@@ -3987,7 +4304,7 @@
         analysisSpatialArtifacts.artifactHashes || {},
         { contextUfoNeighbors: String(manifest.artifacts.contextUfoNeighbors.sha256 || "") }
       );
-      analysisCache.clear();
+      invalidateAnalysisCache();
     }
     return {
       loaded: true,
@@ -4197,7 +4514,7 @@
     analysisCoordinateEvidenceArtifact = {
       manifest: null, loaded: false, appliedRows: 0, typedRows: 0, artifactHashes: {}, releaseId: "",
     };
-    analysisCache.clear();
+    invalidateAnalysisCache();
     analysisMatchCache.clear();
   }
 
@@ -4222,7 +4539,7 @@
           terminateDedicatedSpatialExecutor("Catalog rows changed during spatial analysis.", true);
           chunks.push(compactRows(nextRows));
           rowCount += nextRows.length;
-          analysisCache.clear();
+          invalidateAnalysisCache();
           analysisMatchCache.clear();
         }
         self.postMessage({
@@ -4255,6 +4572,15 @@
         } else {
           postAnalysisContextSet(message, directSnapshot || mergeAnalysisContextProjections({}, message.manifest));
         }
+        return;
+      }
+      if (message.type === "setAnalysisComparisonArtifacts") {
+        loadAnalysisComparisonArtifacts(message).then(function (snapshot) {
+          self.postMessage({ type: "analysisComparisonArtifactsSet", requestId: message.requestId || "", snapshot });
+        }).catch(function (error) {
+          self.postMessage({ type: "analysisWorkerError", requestId: message.requestId || "",
+            error: error && error.message ? error.message : String(error) });
+        });
         return;
       }
       if (message.type === "setAnalysisSpatialArtifacts") {
@@ -4459,12 +4785,37 @@
         });
         return;
       }
+      if (message.type === "computeAnalysisComparison") {
+        if (!analysisComparisonArtifacts.loaded) throw new Error("Comparison evidence is not ready.");
+        const component = String(message.component || "");
+        if (component !== "planetary" && component !== "nuclear" && component !== "planetaryHeatmaps") throw new Error("Unsupported comparison update: " + component);
+        ensureAnalysisComparisons();
+        const startedAt = Date.now();
+        const filters = normalizedFilters(message);
+        const keywordIds = keywordIdSet(message);
+        const areaEventIds = Array.isArray(message.areaFilterEventIds) ? new Set(message.areaFilterEventIds.map(String)) : null;
+        const areaShapes = Array.isArray(message.areaFilterShapes) && message.areaFilterShapes.length ? message.areaFilterShapes : null;
+        const lowPrecisionValues = new Set(Array.isArray(message.lowPrecisionValues) ? message.lowPrecisionValues : []);
+        const matched = matchedAnalysisRows(message, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
+        const context = buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
+        const computed = computeComparisonComponent(component, context);
+        self.postMessage(Object.assign(analysisComputedEnvelope(message, null, computed.cacheHit), {
+          type: "analysisComparisonComputed", component, model: computed.model,
+          artifactHashes: Object.assign({}, analysisComparisonArtifacts.hashes),
+          comparisonCohortKey: context.cohortKey, elapsedMilliseconds: Date.now() - startedAt,
+        }));
+        return;
+      }
       if (message.type === "computeAnalysis") {
         if (!advanceSpatialCancellationGeneration(message)) return;
         const cacheKey = analysisCacheKey(message);
         const cacheHit = analysisCache.has(cacheKey);
         if (cacheHit) {
-          self.postMessage(analysisComputedEnvelope(message, analysisCache.get(cacheKey), true));
+          const cached = analysisCache.get(cacheKey), overview = cachedPlanetaryHeatmaps(message);
+          const result = overview && cached.comparisonEvidence && cached.comparisonEvidence.status === "ready"
+            ? Object.assign({}, cached, { comparisonEvidence: Object.assign({}, cached.comparisonEvidence, { planetaryHeatmaps: overview }) })
+            : cached;
+          self.postMessage(analysisComputedEnvelope(message, result, true));
           return;
         }
         const selectedDomains = normalizedAnalysisDomains(message.selectedDomains);
@@ -4498,6 +4849,10 @@
         });
       }
     } catch (error) {
+      if (message.type === "computeAnalysisComparison") {
+        postAnalysisWorkerError(message, error, "comparison_update_failed", false);
+        return;
+      }
       self.postMessage({
         type: "catalogFacetWorkerError",
         requestId: message.requestId || "",

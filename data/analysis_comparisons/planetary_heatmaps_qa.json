@@ -1,0 +1,274 @@
+{
+  "schemaId": "ufo-planetary-heatmaps-qa-v1",
+  "status": "passed",
+  "generatedAt": "2026-10-08T07:42:14.436Z",
+  "estimatorVersion": "planetary-heatmaps-v1-common-grid",
+  "samplingMode": "common_grid",
+  "sharedCatalogRows": 702893,
+  "preparedCohort": {
+    "inputRows": 711822,
+    "foldedGroupN": 155893,
+    "preparationMilliseconds": 3509,
+    "rawCorpusRetained": false
+  },
+  "timings": {
+    "coldFullOverviewMilliseconds": 1920,
+    "warmFullOverviewMilliseconds": 231,
+    "scope": "All retained records; browser filtered-cohort timing is separate."
+  },
+  "dimensions": {
+    "bodies": 9,
+    "unorderedPairs": 36,
+    "domains": 3,
+    "cellsPerDomain": 351,
+    "checkedCells": 1053
+  },
+  "domains": [
+    {
+      "id": "ufo",
+      "positionEligible": 659616,
+      "distinctEligibleDates": 30311,
+      "verifiedTimeCount": 0,
+      "exclusions": {
+        "date_not_exact_day": 26969,
+        "non_ufo_context": 12446,
+        "missing_or_invalid_date": 3417,
+        "historical_calendar_not_verified_before_1582": 445
+      },
+      "dateRoles": {
+        "occurrence": 690447
+      },
+      "representedMonths": 2128
+    },
+    {
+      "id": "crops",
+      "positionEligible": 6430,
+      "distinctEligibleDates": 3272,
+      "verifiedTimeCount": 0,
+      "exclusions": {
+        "date_not_exact_day": 1315
+      },
+      "dateRoles": {
+        "catalog_unspecified": 7697,
+        "discovery_date": 18,
+        "photography_date": 3,
+        "catalog_date": 19,
+        "formation_date": 7,
+        "publication_date": 1
+      },
+      "representedMonths": 515
+    },
+    {
+      "id": "animals",
+      "positionEligible": 928,
+      "distinctEligibleDates": 562,
+      "verifiedTimeCount": 0,
+      "exclusions": {
+        "date_not_exact_day": 228,
+        "missing_or_invalid_date": 28
+      },
+      "dateRoles": {
+        "publication_date": 6,
+        "reported_unspecified": 1173,
+        "report_date": 3,
+        "death_interval": 2
+      },
+      "representedMonths": 291
+    }
+  ],
+  "fullCatalogDrilldownParity": [
+    {
+      "planet": "Venus",
+      "partner": "Mars",
+      "status": "exact_common_grid_parity",
+      "milliseconds": 613
+    },
+    {
+      "planet": "Sun",
+      "partner": "Moon",
+      "status": "exact_common_grid_parity",
+      "milliseconds": 723
+    }
+  ],
+  "retainedDefaultNoonParity": [
+    {
+      "id": "ufo",
+      "countDeltas": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "previousEstimator": "adaptive",
+      "boundsEstimator": "common_grid",
+      "boundDifferences": [
+        {
+          "id": "conjunction",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "sextile",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "square",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "trine",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "opposition",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "outside",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        }
+      ]
+    },
+    {
+      "id": "crops",
+      "countDeltas": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "previousEstimator": "adaptive",
+      "boundsEstimator": "common_grid",
+      "boundDifferences": [
+        {
+          "id": "conjunction",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "sextile",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "square",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "trine",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "opposition",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "outside",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        }
+      ]
+    },
+    {
+      "id": "animals",
+      "countDeltas": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "previousEstimator": "adaptive",
+      "boundsEstimator": "common_grid",
+      "boundDifferences": [
+        {
+          "id": "conjunction",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "sextile",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "square",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "trine",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "opposition",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        },
+        {
+          "id": "outside",
+          "lowerDelta": 0,
+          "upperDelta": 0
+        }
+      ]
+    }
+  ],
+  "precomputation": {
+    "status": "precomputed_raw_ephemeris",
+    "dateCount": 65113,
+    "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+    "atlasHits": 7180275,
+    "directEphemerisCalls": 30,
+    "rateFallbackCalls": 15,
+    "precessionHits": 398905,
+    "precessionFallbackCalls": 0
+  },
+  "checks": [
+    "All rows partition actual eligible cohorts and calendar expectation",
+    "All cells contain counts within sampled stable/possible limits",
+    "Two full-catalog drilldowns preserve every count, bound, ratio and source/date-role denominator",
+    "Focused test covers all36 pair drilldowns and reverse-pair symmetry",
+    "Cell-specific and row-union within-month opportunity retained",
+    "No frozen report counts, atlas copy or corpus copy created"
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_manifest.json",
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\context_rows.json.gz",
+      "sha256": "019db2d15203afb9d2cea50b90272306d558b3f45ce06a24de872cdedd0582c1"
+    },
+    {
+      "path": "analysis_planetary.js",
+      "sha256": "5e3aee0992e4e0af0b60ef68cf376578a5e4a03a2120dfd9055f38d9058f77eb"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\ephemeris_atlas_manifest.json",
+      "sha256": "3c1f74ac38a9c708910d464017e60cee658b0ce025ad36c781f3c2e29a7ec274"
+    }
+  ],
+  "storage": {
+    "canonicalEphemeris": "ephemeris_atlas_v1.bin.gz",
+    "newFilesAbove100MiB": [],
+    "growth": "Small engine, tests and receipt only",
+    "fullCorpusCopied": false,
+    "deploymentPerformed": false,
+    "purpose": "Current all-body heatmap QA receipt; rebuild with this test against shared protected catalog."
+  }
+}

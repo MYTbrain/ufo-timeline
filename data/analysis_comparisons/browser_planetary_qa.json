@@ -1,0 +1,643 @@
+{
+  "schemaId": "ufo-planetary-browser-qa-v1",
+  "previewUrl": "http://127.0.0.1:8168/whole-site.html#analysis-section-comparisons",
+  "checks": [
+    "All four planetary views and all three report domains inspected",
+    "Tropical selection recomputed zodiac counts while suppressing stale charts",
+    "Animal motion denominator 928; house inputs 0 with unavailable calculation",
+    "Exact six-row table preserves outside-band denominator and sampled bounds",
+    "Compact controls render in two rows at normal size",
+    "Narrow viewport has no page/section overflow; expanded tables scroll locally",
+    "Temporary viewport reset; default Venus–Mars/Lahiri/3° retained"
+  ],
+  "sidereal": {
+    "settings": {
+      "windowDays": 30,
+      "planet": "Venus",
+      "aspectPartner": "Mars",
+      "aspectOrbDegrees": 3,
+      "zodiacSystem": "sidereal",
+      "ayanamsaId": "lahiri"
+    },
+    "scope": "UFO reports follow active filters. Crop and animal catalogs follow dates, geographic selections and inclusion switches; UFO craft/source filters do not classify context records.",
+    "hashes": {
+      "comparisonContext": "e1449dba4767ad49ebed9a19faf85c7a20de15c1603ab105b9bc2a21df714abd",
+      "nuclearContext": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65",
+      "comparisonFacilities": "8c7703b602b06e8ad5d86b3bb826b20a3685ecd1100cfd6ea8369652ff1e28e4"
+    },
+    "domains": [
+      {
+        "id": "ufo",
+        "total": 334511,
+        "eligible": 334397,
+        "distinctDates": 24202,
+        "verified": 0,
+        "houses": {
+          "eligible": 0,
+          "eligibleInputs": 0,
+          "status": "unavailable_verified_time_and_location_required",
+          "calculated": false
+        },
+        "signBins": [
+          {
+            "id": "aries",
+            "count": 22181
+          },
+          {
+            "id": "taurus",
+            "count": 36730
+          },
+          {
+            "id": "gemini",
+            "count": 29865
+          },
+          {
+            "id": "cancer",
+            "count": 35488
+          },
+          {
+            "id": "leo",
+            "count": 34901
+          },
+          {
+            "id": "virgo",
+            "count": 26325
+          },
+          {
+            "id": "libra",
+            "count": 30752
+          },
+          {
+            "id": "scorpio",
+            "count": 22445
+          },
+          {
+            "id": "sagittarius",
+            "count": 24828
+          },
+          {
+            "id": "capricorn",
+            "count": 23577
+          },
+          {
+            "id": "aquarius",
+            "count": 19273
+          },
+          {
+            "id": "pisces",
+            "count": 28032
+          }
+        ],
+        "aspect": {
+          "partner": "Mars",
+          "label": "Venus ↔ Mars",
+          "eligible": 334397,
+          "anyAspectCount": 48377,
+          "bins": [
+            {
+              "id": "conjunction",
+              "label": "Conjunction",
+              "angleDegrees": 0,
+              "count": 9617,
+              "stableCount": 8237,
+              "possibleCount": 11281,
+              "share": 0.028759,
+              "expectedCount": 9724.6558,
+              "expectedCalendarShare": 0.029081,
+              "calendarAdjustedRatio": 0.9889,
+              "lowerCount": 8237,
+              "upperCount": 11281,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "sextile",
+              "label": "Sextile",
+              "angleDegrees": 60,
+              "count": 16795,
+              "stableCount": 14075,
+              "possibleCount": 19585,
+              "share": 0.050225,
+              "expectedCount": 16994.8085,
+              "expectedCalendarShare": 0.050822,
+              "calendarAdjustedRatio": 0.9882,
+              "lowerCount": 14075,
+              "upperCount": 19585,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "square",
+              "label": "Square",
+              "angleDegrees": 90,
+              "count": 10965,
+              "stableCount": 8071,
+              "possibleCount": 13990,
+              "share": 0.03279,
+              "expectedCount": 11160.6428,
+              "expectedCalendarShare": 0.033375,
+              "calendarAdjustedRatio": 0.9825,
+              "lowerCount": 8071,
+              "upperCount": 13990,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "trine",
+              "label": "Trine",
+              "angleDegrees": 120,
+              "count": 8847,
+              "stableCount": 6474,
+              "possibleCount": 11246,
+              "share": 0.026457,
+              "expectedCount": 8947.198,
+              "expectedCalendarShare": 0.026756,
+              "calendarAdjustedRatio": 0.9888,
+              "lowerCount": 6474,
+              "upperCount": 11246,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "opposition",
+              "label": "Opposition",
+              "angleDegrees": 180,
+              "count": 2153,
+              "stableCount": 1206,
+              "possibleCount": 3018,
+              "share": 0.006438,
+              "expectedCount": 2065.4441,
+              "expectedCalendarShare": 0.006177,
+              "calendarAdjustedRatio": 1.0424,
+              "lowerCount": 1206,
+              "upperCount": 3018,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            }
+          ],
+          "outsideBand": {
+            "id": "outside",
+            "label": "Outside these bands",
+            "count": 286020,
+            "share": 0.855331,
+            "expectedCount": 285504.2508,
+            "expectedCalendarShare": 0.853788,
+            "calendarAdjustedRatio": 1.0018,
+            "lowerCount": 275277,
+            "upperCount": 296334,
+            "boundStatus": "sampled_stability_not_formal_confidence_interval"
+          },
+          "variableAspectMonths": 693,
+          "variableAspectReports": 180374
+        }
+      },
+      {
+        "id": "crops",
+        "total": 7745,
+        "eligible": 6430,
+        "distinctDates": 3272,
+        "verified": 0,
+        "houses": {
+          "eligible": 0,
+          "eligibleInputs": 0,
+          "status": "unavailable_verified_time_and_location_required",
+          "calculated": false
+        },
+        "signBins": [
+          {
+            "id": "aries",
+            "count": 457
+          },
+          {
+            "id": "taurus",
+            "count": 1335
+          },
+          {
+            "id": "gemini",
+            "count": 1288
+          },
+          {
+            "id": "cancer",
+            "count": 1256
+          },
+          {
+            "id": "leo",
+            "count": 1170
+          },
+          {
+            "id": "virgo",
+            "count": 324
+          },
+          {
+            "id": "libra",
+            "count": 111
+          },
+          {
+            "id": "scorpio",
+            "count": 70
+          },
+          {
+            "id": "sagittarius",
+            "count": 70
+          },
+          {
+            "id": "capricorn",
+            "count": 61
+          },
+          {
+            "id": "aquarius",
+            "count": 47
+          },
+          {
+            "id": "pisces",
+            "count": 241
+          }
+        ],
+        "aspect": {
+          "partner": "Mars",
+          "label": "Venus ↔ Mars",
+          "eligible": 6430,
+          "anyAspectCount": 997,
+          "bins": [
+            {
+              "id": "conjunction",
+              "label": "Conjunction",
+              "angleDegrees": 0,
+              "count": 268,
+              "stableCount": 229,
+              "possibleCount": 311,
+              "share": 0.04168,
+              "expectedCount": 266.0598,
+              "expectedCalendarShare": 0.041378,
+              "calendarAdjustedRatio": 1.0073,
+              "lowerCount": 229,
+              "upperCount": 311,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "sextile",
+              "label": "Sextile",
+              "angleDegrees": 60,
+              "count": 390,
+              "stableCount": 334,
+              "possibleCount": 471,
+              "share": 0.060653,
+              "expectedCount": 379.2203,
+              "expectedCalendarShare": 0.058977,
+              "calendarAdjustedRatio": 1.0284,
+              "lowerCount": 334,
+              "upperCount": 471,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "square",
+              "label": "Square",
+              "angleDegrees": 90,
+              "count": 195,
+              "stableCount": 150,
+              "possibleCount": 248,
+              "share": 0.030327,
+              "expectedCount": 220.8456,
+              "expectedCalendarShare": 0.034346,
+              "calendarAdjustedRatio": 0.883,
+              "lowerCount": 150,
+              "upperCount": 248,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "trine",
+              "label": "Trine",
+              "angleDegrees": 120,
+              "count": 122,
+              "stableCount": 85,
+              "possibleCount": 171,
+              "share": 0.018974,
+              "expectedCount": 107.4833,
+              "expectedCalendarShare": 0.016716,
+              "calendarAdjustedRatio": 1.1351,
+              "lowerCount": 85,
+              "upperCount": 171,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "opposition",
+              "label": "Opposition",
+              "angleDegrees": 180,
+              "count": 22,
+              "stableCount": 13,
+              "possibleCount": 38,
+              "share": 0.003421,
+              "expectedCount": 28.3918,
+              "expectedCalendarShare": 0.004416,
+              "calendarAdjustedRatio": 0.7749,
+              "lowerCount": 13,
+              "upperCount": 38,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            }
+          ],
+          "outsideBand": {
+            "id": "outside",
+            "label": "Outside these bands",
+            "count": 5433,
+            "share": 0.844946,
+            "expectedCount": 5427.9992,
+            "expectedCalendarShare": 0.844168,
+            "calendarAdjustedRatio": 1.0009,
+            "lowerCount": 5191,
+            "upperCount": 5619,
+            "boundStatus": "sampled_stability_not_formal_confidence_interval"
+          },
+          "variableAspectMonths": 264,
+          "variableAspectReports": 3341
+        }
+      },
+      {
+        "id": "animals",
+        "total": 1184,
+        "eligible": 928,
+        "distinctDates": 562,
+        "verified": 0,
+        "houses": {
+          "eligible": 0,
+          "eligibleInputs": 0,
+          "status": "unavailable_verified_time_and_location_required",
+          "calculated": false
+        },
+        "signBins": [
+          {
+            "id": "aries",
+            "count": 61
+          },
+          {
+            "id": "taurus",
+            "count": 78
+          },
+          {
+            "id": "gemini",
+            "count": 74
+          },
+          {
+            "id": "cancer",
+            "count": 79
+          },
+          {
+            "id": "leo",
+            "count": 158
+          },
+          {
+            "id": "virgo",
+            "count": 62
+          },
+          {
+            "id": "libra",
+            "count": 115
+          },
+          {
+            "id": "scorpio",
+            "count": 67
+          },
+          {
+            "id": "sagittarius",
+            "count": 57
+          },
+          {
+            "id": "capricorn",
+            "count": 51
+          },
+          {
+            "id": "aquarius",
+            "count": 50
+          },
+          {
+            "id": "pisces",
+            "count": 76
+          }
+        ],
+        "aspect": {
+          "partner": "Mars",
+          "label": "Venus ↔ Mars",
+          "eligible": 928,
+          "anyAspectCount": 132,
+          "bins": [
+            {
+              "id": "conjunction",
+              "label": "Conjunction",
+              "angleDegrees": 0,
+              "count": 56,
+              "stableCount": 41,
+              "possibleCount": 58,
+              "share": 0.060345,
+              "expectedCount": 43.7452,
+              "expectedCalendarShare": 0.047139,
+              "calendarAdjustedRatio": 1.2801,
+              "lowerCount": 41,
+              "upperCount": 58,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "sextile",
+              "label": "Sextile",
+              "angleDegrees": 60,
+              "count": 39,
+              "stableCount": 27,
+              "possibleCount": 43,
+              "share": 0.042026,
+              "expectedCount": 41.2803,
+              "expectedCalendarShare": 0.044483,
+              "calendarAdjustedRatio": 0.9448,
+              "lowerCount": 27,
+              "upperCount": 43,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "square",
+              "label": "Square",
+              "angleDegrees": 90,
+              "count": 22,
+              "stableCount": 13,
+              "possibleCount": 34,
+              "share": 0.023707,
+              "expectedCount": 28.971,
+              "expectedCalendarShare": 0.031219,
+              "calendarAdjustedRatio": 0.7594,
+              "lowerCount": 13,
+              "upperCount": 34,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "trine",
+              "label": "Trine",
+              "angleDegrees": 120,
+              "count": 14,
+              "stableCount": 10,
+              "possibleCount": 16,
+              "share": 0.015086,
+              "expectedCount": 14.5866,
+              "expectedCalendarShare": 0.015718,
+              "calendarAdjustedRatio": 0.9598,
+              "lowerCount": 10,
+              "upperCount": 16,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            },
+            {
+              "id": "opposition",
+              "label": "Opposition",
+              "angleDegrees": 180,
+              "count": 1,
+              "stableCount": 1,
+              "possibleCount": 2,
+              "share": 0.001078,
+              "expectedCount": 2.1613,
+              "expectedCalendarShare": 0.002329,
+              "calendarAdjustedRatio": 0.4627,
+              "lowerCount": 1,
+              "upperCount": 2,
+              "boundStatus": "sampled_stability_not_formal_confidence_interval"
+            }
+          ],
+          "outsideBand": {
+            "id": "outside",
+            "label": "Outside these bands",
+            "count": 796,
+            "share": 0.857759,
+            "expectedCount": 797.2558,
+            "expectedCalendarShare": 0.859112,
+            "calendarAdjustedRatio": 0.9984,
+            "lowerCount": 775,
+            "upperCount": 836,
+            "boundStatus": "sampled_stability_not_formal_confidence_interval"
+          },
+          "variableAspectMonths": 153,
+          "variableAspectReports": 444
+        }
+      }
+    ]
+  },
+  "tropical": {
+    "system": "tropical",
+    "cropSigns": [
+      {
+        "id": "aries",
+        "count": 273
+      },
+      {
+        "id": "taurus",
+        "count": 533
+      },
+      {
+        "id": "gemini",
+        "count": 1506
+      },
+      {
+        "id": "cancer",
+        "count": 1192
+      },
+      {
+        "id": "leo",
+        "count": 1383
+      },
+      {
+        "id": "virgo",
+        "count": 919
+      },
+      {
+        "id": "libra",
+        "count": 257
+      },
+      {
+        "id": "scorpio",
+        "count": 101
+      },
+      {
+        "id": "sagittarius",
+        "count": 63
+      },
+      {
+        "id": "capricorn",
+        "count": 80
+      },
+      {
+        "id": "aquarius",
+        "count": 48
+      },
+      {
+        "id": "pisces",
+        "count": 75
+      }
+    ],
+    "heading": [
+      "Venus · Tropical zodiac positions",
+      "Crop / morphology category across zodiac signs"
+    ]
+  },
+  "mapPreserved": {
+    "map": true,
+    "legend": true,
+    "controls": true,
+    "legendRows": 3,
+    "sections": [
+      "map-control-section-view",
+      "map-control-section-sightings",
+      "map-control-section-overlays",
+      "crop-circle-chronology-controls",
+      "crop-circle-ufo-relation-disclosure",
+      "crop-circle-chronology-disclosure",
+      "crop-circle-radius-disclosure",
+      "map-control-section-traces",
+      "trace-status-details",
+      "map-control-section-intersections",
+      "map-control-section-facility",
+      "map-control-section-area",
+      "area-direction-summary",
+      "map-control-section-advanced"
+    ]
+  },
+  "phone": {
+    "requested": {
+      "width": 375,
+      "height": 812
+    },
+    "viewport": {
+      "width": 468,
+      "height": 1015
+    },
+    "document": {
+      "client": 450,
+      "scroll": 450
+    },
+    "section": {
+      "client": 377,
+      "scroll": 377
+    },
+    "tableScroll": [
+      {
+        "client": 347,
+        "scroll": 719
+      },
+      {
+        "client": 347,
+        "scroll": 703
+      }
+    ],
+    "selects": [
+      {
+        "label": "Planetary comparison",
+        "width": 377.03125
+      },
+      {
+        "label": "Compare with",
+        "width": 377.03125
+      },
+      {
+        "label": "Planet or luminary",
+        "width": 377.03125
+      },
+      {
+        "label": "Aspect partner",
+        "width": 377.03125
+      },
+      {
+        "label": "Aspect tolerance",
+        "width": 377.03125
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "status": "passed",
+  "generatedAt": "2026-10-08T02:23:41.813Z"
+}

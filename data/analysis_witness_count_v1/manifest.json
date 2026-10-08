@@ -1,1 +1,400 @@
-{"artifactGroups":{"witnessCountProjectionShards":["witnessCountProjectionShard000"]},"artifacts":{"witnessCountProjectionShard000":{"artifactId":"witness_count_projection_v1_000","bytes":4561476,"file":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/analysis_delta/analysis_witness_count_v1/witness_count_projection_v1_000.json","gzipBytes":1760539,"gzipFile":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/analysis_delta/analysis_witness_count_v1/witness_count_projection_v1_000.json.gz","gzipSha256":"e434ed61b3495173c73ed5e839dcce011c3d0e659ffad7e5b9f6a857b3f87ab2","releaseId":"quality-analysis-witness-count-v1-20261007.witness_count_projection_v1_000","rowCount":145289,"rowSchema":["catalogRowIndex","eventId","valueCode","macroregionCode"],"sha256":"e16797bc7811653a0fe9e3cb10de94379f47f4045d6bce66380df34b37df7c95"},"witnessCountValueDictionary":{"artifactId":"witness_count_value_dictionary_v1","bytes":24785,"file":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-witness-count-v1-20260804/witness_count_value_dictionary_v1.json","gzipBytes":11687,"gzipFile":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/analysis-witness-count-v1-20260804/witness_count_value_dictionary_v1.json.gz","gzipSha256":"a95a626353da9a563bd4c0b7c416eefd9b4fe35559d23667349f4b31133edd61","releaseId":"analysis-witness-count-v1-20260804.witness_count_value_dictionary_v1","rowCount":229,"rowSchema":["sourceCode","rawValueSha256","rawValue","statusCode","reasonCode","exactCount","lowerCount","upperCount","descriptiveBinCode","precisionCode","credentialProfileCode","extremeAuditFlag","occurrenceCount"],"sha256":"9408347c1c23214b68656ca8cdbb724b34e7e510835be5688f82c431f9dcaf5d"}},"assetBaseUrl":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/analysis_delta/analysis_witness_count_v1","codes":{"credentialProfile":["","aviation_expert","law_enforcement_officer","military","military+aviation_expert","military+law_enforcement_officer","pilot","pilot+aviation_expert","pilot+military","pilot+military+aviation_expert","pilot+military+law_enforcement_officer"],"macroregion":["unknown","africa","asia","europe","latin_america_caribbean","northern_america","oceania"],"precision":["unknown","integer","invalid"],"reason":["explicit_integer","explicit_integer_with_source_credentials","negative_source_sentinel","zero_source_sentinel"],"source":["unknown","nuforc"],"status":["missing","exact_count","approximate_count","bounded_range","lower_bound","qualitative_plural","invalid_count","unresolved_text"],"witnessCountBin":["unknown","one","two","three_to_four","five_to_nine","ten_to_nineteen","twenty_to_forty_nine","fifty_to_ninety_nine","hundred_to_999","thousand_plus"]},"counts":{"byCredentialProfile":{"aviation_expert":207,"law_enforcement_officer":7,"military":1031,"military+aviation_expert":61,"military+law_enforcement_officer":2,"pilot":258,"pilot+aviation_expert":61,"pilot+military":52,"pilot+military+aviation_expert":30,"pilot+military+law_enforcement_officer":1},"bySourceDescriptiveBin":{"nuforc":{"fifty_to_ninety_nine":210,"five_to_nine":7551,"hundred_to_999":362,"one":56001,"ten_to_nineteen":1521,"thousand_plus":84,"three_to_four":21982,"twenty_to_forty_nine":705,"two":47452,"unknown":9421}},"bySourceRaw":{"nuforc":145289},"bySourceStatus":{"nuforc":{"exact_count":135868,"invalid_count":9421}},"bySourceTyped":{"nuforc":135868},"catalogRows":702893,"credentialTaggedRows":1710,"descriptiveBinnedRows":135868,"exactCountRows":135868,"extremeCountRows1000Plus":84,"highCountRows100Plus":446,"maximumExactCount":20000,"negativeSentinelRows":89,"rawWitnessCountRows":145289,"supportedSources":["nuforc"],"typedCatalogPct":19.329827,"typedRows":135868,"uniqueSourceRawValues":229,"zeroSentinelRows":9332},"delivery":{"cacheControl":"public, max-age=31536000, immutable","gzipOnly":true,"immutablePrefix":"releases/quality-20261007/analysis_delta/analysis_witness_count_v1","inheritedImmutableArtifacts":true,"pagesFiles":["manifest.json"],"r2OnlyPaths":["witness_count_projection_v1_000.json.gz"]},"generatedAt":"2026-10-07T00:00:00Z","inputs":{"baseCanonicalManifest":{"path":"static_bundle/data/canonical_web/canonical_web_manifest.json","sha256":"242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"},"canonicalManifest":{"bytes":6655,"hashRole":"effective_guarded_quality_map_and_summary_manifest","path":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/canonical_web_manifest.json","sha256":"316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e"},"geography":{"bytes":7001105,"decodedBytes":22975045,"decodedSha256":"c0fa21bd75cc736c6b6775fc58610e92e62825d5debdb0ad478873d1610ca0da","path":"https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/analysis_delta/analysis_v2/ufo_geography_v1.json.gz","qualityViewSha256":"28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec","releaseId":"quality-analysis-v2-20261007.ufo_geography_v1","rowCount":582877,"sha256":"7ae340e0f567c9e656fb0c93a002a5b4027b173a0e98b1fa3b493d7df226d0c4"},"qualityView":{"bytes":67799,"path":"C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\quality_view_manifest.json","policy":"guarded_sparse_quality_view_v2","sha256":"28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"},"sourceFieldInventory":{"bytes":22965,"path":"data/canonical/source_field_inventories/nuforc.json","sha256":"8abb560d1a960eb05af6ee57b37ce9f3a5c0c2d21169b8de7ea239ae2c9572ef"}},"manifestVersion":"1.0.0","negativeControls":{"approximateRangeLowerBoundAndQualitativeHoldout":{"excludedRows":0,"interpretation":"typed_but_never_coerced_to_exact_count"},"duplicateLineageHoldout":{"duplicateLineageRows":6337,"interpretation":"descriptive_sensitivity_not_cross_source_independence","maximumAbsoluteShareShift":0.00128104,"retainedSingleRecordRows":129531},"extremeCountAudit":{"interpretation":"retained_with_explicit_extreme_lane_not_silently_trimmed","maximumExactCount":20000,"rows1000Plus":84,"rows100Plus":446},"missingValueExclusion":{"catalogRowsWithoutExplicitWitnessCount":557604,"interpretation":"never_coerced_to_zero_or_one"},"nonpositiveSentinelAudit":{"interpretation":"invalid_source_codes_excluded_from_descriptive_count_bins","negativeRows":89,"zeroRows":9332},"singleSourceComparisonSuppression":{"activeReferenceInference":false,"interpretation":"one_source_cannot_supply_an_independent_source_holdout","patternFinderPromotion":false,"supportedSources":["nuforc"]}},"payloads":{},"policy":{"activeReferenceInference":false,"approximateRangeOrLowerBoundIsExact":false,"canonicalEventsMutated":false,"credentialMetadataIsCredibilityEvidence":false,"credibilityIncidenceAuthenticityRiskOrCausalClaims":false,"crossSourceComparison":false,"explicitSourceFieldOnly":true,"extremeCountsDiscarded":false,"missingCountIsZeroOrOne":false,"narrativeDescriptionsRead":false,"patternFinderPromotion":false,"qualitativePartySizeIsExact":false,"sourceFieldName":"No of observers"},"qualityProjection":{"baseRecordsRetained":true,"delivery":"changed_gzip_only_inherited_immutable_artifacts","fullDetailCopyWritten":false,"originalSourceFieldsPreserved":true,"qualityManifestSha256":"28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"},"readiness":{"assessmentLane":"single_source_descriptive_only","materialCriterion":"previously_unavailable_assessment_becomes_estimable","materialGates":{"compressedArtifactBudget":true,"credentialMetadataSeparated":true,"dictionaryOccurrenceParity":true,"extremeCountsAudited":true,"minimumRowsPerSupportedSource":true,"minimumSupportedSources":true,"minimumTypedCatalogPct":true,"minimumTypedRows":true,"nonpositiveSentinelsFailClosed":true,"originalWitnessTextPreserved":true,"projectionParity":true,"singleSourceEnforced":true,"typedUncertaintyClassesDeclared":true},"status":"ready_descriptive","supportedSources":["nuforc"],"suppressionPolicy":"Publish explicit-field descriptive counts only. Suppress active/reference inference, cross-source holdouts, Pattern Finder, and credibility or incidence interpretations while evidence remains NUFORC-only.","warnings":["Witness-count evidence is available from NUFORC only and cannot support cross-source comparison.","Missing values are unknown, never zero or one witness.","Credential suffixes describe source metadata and are not credibility evidence.","Counts describe reports, not incidence, authenticity, risk, independent corroboration, or causal effects."]},"releaseId":"quality-analysis-witness-count-v1-20261007","rowOrdering":{"keyFields":["catalogRowIndex","eventId"],"policyId":"served_catalog_sparse_explicit_witness_count_subsequence_v1","sha256":"80f0c0381038b8aa92cd0e38295716dc5feaa2783a673837650cbfc49b44bdb8"},"schemaId":"ufo-timeline-analysis-witness-count-artifacts-v1.0.0","schemaVersion":1}
+{
+  "artifactGroups": {
+    "witnessCountProjectionShards": [
+      "witnessCountProjectionShard000"
+    ]
+  },
+  "artifacts": {
+    "witnessCountProjectionShard000": {
+      "artifactId": "witness_count_projection_v1_000",
+      "bytes": 6913059,
+      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_projection_v1_000.json",
+      "gzipBytes": 2708558,
+      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_projection_v1_000.json.gz",
+      "gzipSha256": "cba96e70c2d5959815d19859917c5e1cff3681f8c9dd19eba25de8623444b359",
+      "releaseId": "analysis-repairs-20261007.witness_count_projection_v1_000",
+      "rowCount": 219882,
+      "rowSchema": [
+        "catalogRowIndex",
+        "eventId",
+        "valueCode",
+        "macroregionCode"
+      ],
+      "sha256": "367840e79798a19ab870725bde42600a4246cf99a0a9dc6c09398d549f7ef3f0"
+    },
+    "witnessCountSourceLineage": {
+      "artifactId": "witness_count_source_lineage_v1",
+      "bytes": 4012467,
+      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_source_lineage_v1.json",
+      "gzipBytes": 1473862,
+      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_source_lineage_v1.json.gz",
+      "gzipSha256": "c0369acc9486081a18537af36d1b6961e0de65962a43988ca72b0e3abb4c35e5",
+      "releaseId": "analysis-repairs-20261007.witness_count_source_lineage_v1",
+      "rowCount": 74593,
+      "rowSchema": [
+        "catalogRowIndex",
+        "eventId",
+        "sourceRecordPRN",
+        "directSourceCode",
+        "indirectSourceCode"
+      ],
+      "sha256": "613007b020618499773885cd724d57de007b92b6f8d6b2b15850e4ccaafe6046"
+    },
+    "witnessCountValueDictionary": {
+      "artifactId": "witness_count_value_dictionary_v1",
+      "bytes": 41838,
+      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_value_dictionary_v1.json",
+      "gzipBytes": 17320,
+      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/witness_count_value_dictionary_v1.json.gz",
+      "gzipSha256": "181e49fb7c3b4f78478145f784c4234020947ff3bcff283ead58550fc68e3d2c",
+      "releaseId": "analysis-repairs-20261007.witness_count_value_dictionary_v1",
+      "rowCount": 395,
+      "rowSchema": [
+        "sourceCode",
+        "rawValueSha256",
+        "rawValue",
+        "statusCode",
+        "reasonCode",
+        "exactCount",
+        "lowerCount",
+        "upperCount",
+        "descriptiveBinCode",
+        "precisionCode",
+        "credentialProfileCode",
+        "extremeAuditFlag",
+        "occurrenceCount"
+      ],
+      "sha256": "66fa23378cb3903f716834f77a79810732582ae74685b19c23c4698275cc1dde"
+    }
+  },
+  "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_witness_count_v1/",
+  "attributeRecovery": {
+    "codebookOrderRetainedAndAppended": true,
+    "scope": "explicit_source_fields_only"
+  },
+  "codes": {
+    "credentialProfile": [
+      "",
+      "aviation_expert",
+      "law_enforcement_officer",
+      "military",
+      "military+aviation_expert",
+      "military+law_enforcement_officer",
+      "pilot",
+      "pilot+aviation_expert",
+      "pilot+military",
+      "pilot+military+aviation_expert",
+      "pilot+military+law_enforcement_officer"
+    ],
+    "macroregion": [
+      "unknown",
+      "africa",
+      "asia",
+      "europe",
+      "latin_america_caribbean",
+      "northern_america",
+      "oceania",
+      "antarctica"
+    ],
+    "precision": [
+      "unknown",
+      "integer",
+      "invalid",
+      "lower_bound",
+      "qualitative"
+    ],
+    "reason": [
+      "explicit_integer",
+      "explicit_integer_with_source_credentials",
+      "negative_source_sentinel",
+      "zero_source_sentinel",
+      "ufocat_at_least_witness_code",
+      "ufocat_explicit_integer",
+      "ufocat_qualitative_witness_code",
+      "ufocat_scaled_integer",
+      "ufocat_wits_code_not_recognized"
+    ],
+    "source": [
+      "unknown",
+      "nuforc",
+      "ufocat"
+    ],
+    "status": [
+      "missing",
+      "exact_count",
+      "approximate_count",
+      "bounded_range",
+      "lower_bound",
+      "qualitative_plural",
+      "invalid_count",
+      "unresolved_text"
+    ],
+    "witnessCountBin": [
+      "unknown",
+      "one",
+      "two",
+      "three_to_four",
+      "five_to_nine",
+      "ten_to_nineteen",
+      "twenty_to_forty_nine",
+      "fifty_to_ninety_nine",
+      "hundred_to_999",
+      "thousand_plus"
+    ]
+  },
+  "counts": {
+    "byCredentialProfile": {
+      "aviation_expert": 207,
+      "law_enforcement_officer": 7,
+      "military": 1031,
+      "military+aviation_expert": 61,
+      "military+law_enforcement_officer": 2,
+      "pilot": 258,
+      "pilot+aviation_expert": 61,
+      "pilot+military": 52,
+      "pilot+military+aviation_expert": 30,
+      "pilot+military+law_enforcement_officer": 1
+    },
+    "bySourceDescriptiveBin": {
+      "nuforc": {
+        "fifty_to_ninety_nine": 210,
+        "five_to_nine": 7551,
+        "hundred_to_999": 362,
+        "one": 56001,
+        "ten_to_nineteen": 1521,
+        "thousand_plus": 84,
+        "three_to_four": 21982,
+        "twenty_to_forty_nine": 705,
+        "two": 47452,
+        "unknown": 9421
+      },
+      "ufocat": {
+        "fifty_to_ninety_nine": 68,
+        "five_to_nine": 2644,
+        "hundred_to_999": 165,
+        "one": 34946,
+        "ten_to_nineteen": 522,
+        "thousand_plus": 56,
+        "three_to_four": 7393,
+        "twenty_to_forty_nine": 276,
+        "two": 16290,
+        "unknown": 12233
+      }
+    },
+    "bySourceRaw": {
+      "nuforc": 145289,
+      "ufocat": 74593
+    },
+    "bySourceStatus": {
+      "nuforc": {
+        "exact_count": 135868,
+        "invalid_count": 9421
+      },
+      "ufocat": {
+        "exact_count": 62360,
+        "invalid_count": 98,
+        "lower_bound": 3838,
+        "qualitative_plural": 7973,
+        "unresolved_text": 324
+      }
+    },
+    "bySourceTyped": {
+      "nuforc": 135868,
+      "ufocat": 74171
+    },
+    "catalogRows": 702893,
+    "credentialTaggedRows": 1710,
+    "descriptiveBinnedRows": 198228,
+    "exactCountRows": 198228,
+    "extremeCountRows1000Plus": 140,
+    "highCountRows100Plus": 667,
+    "maximumExactCount": 70000,
+    "negativeSentinelRows": 89,
+    "rawWitnessCountRows": 219882,
+    "supportedSources": [
+      "nuforc",
+      "ufocat"
+    ],
+    "typedCatalogPct": 29.882073,
+    "typedRows": 210039,
+    "uniqueSourceRawValues": 395,
+    "zeroSentinelRows": 9430
+  },
+  "delivery": {
+    "mode": "published_reviewed_overlay",
+    "productionPublished": true,
+    "sharedInheritedProjections": true,
+    "immutablePrefix": "releases/workspace-analysis-20261008/data/analysis_witness_count_v1/"
+  },
+  "generatedAt": "2026-10-07T00:00:00Z",
+  "inputs": {
+    "attributeRecoveryBaseManifest": {
+      "bytes": 8966,
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\releases\\quality-20261007\\analysis_delta\\analysis_witness_count_v1\\manifest.json",
+      "sha256": "27e29ca42ef872f1278f830a7ef9a21a499ed6abf850dc3411538adfe8e7e3f1"
+    },
+    "baseCanonicalManifest": {
+      "path": "static_bundle/data/canonical_web/canonical_web_manifest.json",
+      "sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"
+    },
+    "canonicalManifest": {
+      "bytes": 6655,
+      "hashRole": "effective_guarded_quality_map_and_summary_manifest",
+      "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/canonical_web_manifest.json",
+      "sha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e"
+    },
+    "geography": {
+      "bytes": 7001105,
+      "decodedBytes": 22975045,
+      "decodedSha256": "c0fa21bd75cc736c6b6775fc58610e92e62825d5debdb0ad478873d1610ca0da",
+      "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/analysis_delta/analysis_v2/ufo_geography_v1.json.gz",
+      "qualityViewSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec",
+      "releaseId": "quality-analysis-v2-20261007.ufo_geography_v1",
+      "rowCount": 582877,
+      "sha256": "7ae340e0f567c9e656fb0c93a002a5b4027b173a0e98b1fa3b493d7df226d0c4"
+    },
+    "qualityView": {
+      "bytes": 67799,
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\quality_view_manifest.json",
+      "policy": "guarded_sparse_quality_view_v2",
+      "sha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+    },
+    "sourceFieldInventory": {
+      "bytes": 22965,
+      "path": "data/canonical/source_field_inventories/nuforc.json",
+      "sha256": "8abb560d1a960eb05af6ee57b37ce9f3a5c0c2d21169b8de7ea239ae2c9572ef"
+    },
+    "ufocatFieldInventory": {
+      "bytes": 33027,
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical\\source_field_inventories\\ufocat2023.json",
+      "sha256": "d997c56178b77bae4c1e1acb5683093251275b940f536a283b6aa6f24371be53"
+    },
+    "ufocatWitnessContract": {
+      "aliasBridgeStatus": "documented_local_export_bridge",
+      "aliasEvidence": "2023 export field order WITS/AGE/SEX/MISC/NAMES aligns with guide WITNESSES/AGE/SEX/MIS/NAMES; scalar/count grammar is independently checked",
+      "bytes": 95022,
+      "independentSourceLineageEstablished": false,
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\ufocat_codebook_extract\\UFOCAT Codebook 2023.txt",
+      "section": "WITNESSES, printed page 25; text lines 1134–1147",
+      "sha256": "54336ad3ead39ed4c6755b1aab270fc93a33a701a1a6f68ee06f111f8b7a888f",
+      "sourceExportAlias": "WITS"
+    },
+    "ufocatWitnessPrimaryCodebook": {
+      "authority": "Donald A. Johnson / J. Allen Hynek Center for UFO Studies",
+      "bytes": 538020,
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\reports\\ufocat_codebook_extract\\UFOCAT Codebook 2023.pdf",
+      "printedPage": 25,
+      "sha256": "4e1cbbf129c5df125b5de890d226a47933337c5e0611cc7d119a98cb43f20663"
+    }
+  },
+  "manifestVersion": "1.0.0",
+  "negativeControls": {
+    "approximateRangeLowerBoundAndQualitativeHoldout": {
+      "excludedRows": 11811,
+      "interpretation": "typed_but_never_coerced_to_exact_count"
+    },
+    "duplicateLineageHoldout": {
+      "duplicateLineageRows": 6337,
+      "interpretation": "descriptive_sensitivity_not_cross_source_independence",
+      "maximumAbsoluteShareShift": 0.00128104,
+      "retainedSingleRecordRows": 129531,
+      "scope": "original_nuforc_lane_only; UFOCAT PRN/SOURCE/ISOURCE retained separately"
+    },
+    "extremeCountAudit": {
+      "interpretation": "retained_with_explicit_extreme_lane_not_silently_trimmed",
+      "maximumExactCount": 70000,
+      "rows1000Plus": 140,
+      "rows100Plus": 667
+    },
+    "missingValueExclusion": {
+      "catalogRowsWithoutExplicitWitnessCount": 483011,
+      "interpretation": "never_coerced_to_zero_or_one"
+    },
+    "nonpositiveSentinelAudit": {
+      "interpretation": "invalid_source_codes_excluded_from_descriptive_count_bins",
+      "negativeRows": 89,
+      "zeroRows": 9430
+    },
+    "underlyingLineageComparisonSuppression": {
+      "activeReferenceInference": false,
+      "collectionSourceLabels": [
+        "nuforc",
+        "ufocat"
+      ],
+      "crossSourceComparison": false,
+      "underlyingIndependenceEstablished": false
+    }
+  },
+  "payloads": {},
+  "policy": {
+    "activeReferenceInference": false,
+    "approximateRangeOrLowerBoundIsExact": false,
+    "canonicalEventsMutated": false,
+    "collectionLabelsProveIndependence": false,
+    "credentialMetadataIsCredibilityEvidence": false,
+    "credibilityIncidenceAuthenticityRiskOrCausalClaims": false,
+    "crossSourceComparison": false,
+    "explicitSourceFieldOnly": true,
+    "extremeCountsDiscarded": false,
+    "missingCountIsZeroOrOne": false,
+    "narrativeDescriptionsRead": false,
+    "patternFinderPromotion": false,
+    "qualitativePartySizeIsExact": false,
+    "sourceFieldName": "No of observers",
+    "sourceFieldNames": {
+      "nuforc": "No of observers",
+      "ufocat": "WITS"
+    },
+    "underlyingSourceCodesRetained": true
+  },
+  "qualityProjection": {
+    "baseRecordsRetained": true,
+    "delivery": "changed_gzip_only_inherited_immutable_artifacts",
+    "fullDetailCopyWritten": false,
+    "originalSourceFieldsPreserved": true,
+    "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+  },
+  "readiness": {
+    "assessmentLane": "source_contract_descriptive_only",
+    "materialCriterion": "previously_unavailable_assessment_becomes_estimable",
+    "materialGates": {
+      "compressedArtifactBudget": true,
+      "credentialMetadataSeparated": true,
+      "dictionaryOccurrenceParity": true,
+      "documentedFieldSourcesEnforced": true,
+      "extremeCountsAudited": true,
+      "minimumRowsPerSupportedSource": true,
+      "minimumSupportedSources": true,
+      "minimumTypedCatalogPct": true,
+      "minimumTypedRows": true,
+      "nonpositiveSentinelsFailClosed": true,
+      "originalWitnessTextPreserved": true,
+      "projectionParity": true,
+      "typedUncertaintyClassesDeclared": true
+    },
+    "status": "ready_descriptive",
+    "supportedSources": [
+      "nuforc",
+      "ufocat"
+    ],
+    "suppressionPolicy": "Publish descriptive reported counts only. Underlying-source independence has not been established; cross-source comparison, active/reference inference and Pattern Finder remain disabled.",
+    "warnings": [
+      "NUFORC and UFOCAT are collection labels. Retained SOURCE/ISOURCE codes do not establish source independence; comparisons remain disabled.",
+      "Missing values are unknown, never zero or one witness.",
+      "Credential suffixes describe source metadata and are not credibility evidence.",
+      "Counts describe reports, not incidence, authenticity, risk, independent corroboration, or causal effects.",
+      "UFOCAT WITS '-' is approximate and '+' is a lower bound; neither is an exact count. Qualitative codes remain nonnumeric."
+    ]
+  },
+  "releaseId": "analysis-repairs-20261007.analysis_witness_count_v1",
+  "rowOrdering": {
+    "keyFields": [
+      "catalogRowIndex",
+      "eventId"
+    ],
+    "policyId": "served_catalog_sparse_explicit_witness_count_subsequence_v1",
+    "sha256": "3b386a052c5ef231bdd13adbcb5ad247f2cbe78c9cc695e85d763f6c077b9736"
+  },
+  "schemaId": "ufo-timeline-analysis-witness-count-artifacts-v1.0.0",
+  "schemaVersion": 1
+}

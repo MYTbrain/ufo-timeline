@@ -1035,6 +1035,8 @@
     analysisDebounceTimerId: null,
     analysisFullInferenceTimerId: null,
     analysisPendingRequest: null,
+    analysisWorkerFlight: null,
+    analysisComputeScheduleGeneration: 0,
     analysisLastResult: null,
     analysisLastError: "",
     analysisCache: new Map(),
@@ -1316,6 +1318,7 @@
     filteredCatalog: [],
     filteredMappedCatalog: [],
     filteredPlaybackEventCount: 0,
+    filteredExactDateEventCount: 0,
     filteredPlaybackEvents: [],
     filteredMappedPlaybackEvents: [],
     filteredMappedEventIdSet: new Set(),
@@ -5064,7 +5067,7 @@
   }
 
   function eventHasExactDateEvidence(event) {
-    return Boolean(event && event.date_precision === "exact_day" && Number.isFinite(Number(event.sort_ordinal)));
+    return Boolean(event && event.date_precision === "exact_day" && nullableCatalogNumber(event.sort_ordinal) != null);
   }
 
   function sourceCoordinateEventIdsForWorker() {
@@ -9298,7 +9301,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-08-12-context-evidence-v2");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-07-analysis-data-repairs");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9334,6 +9337,12 @@
     }
   }
 
+  function nullableCatalogNumber(value) {
+    if (value == null || typeof value === "boolean" || (typeof value === "string" && !value.trim())) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
   function serializeCatalogFacetWorkerRow(event) {
     if (!event) return null;
     const rawEventId = event.event_id == null ? "" : event.event_id;
@@ -9355,9 +9364,11 @@
       adminRegion: event.state_province || event.admin_region || "unknown",
       duplicateLineage: event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || "",
       mapped: Boolean(event.has_coordinates),
-      lat: Number.isFinite(Number(event.lat)) ? Number(event.lat) : null,
-      lon: Number.isFinite(Number(event.lon)) ? Number(event.lon) : null,
-      sortOrdinal: Number.isFinite(Number(event.sort_ordinal)) ? Number(event.sort_ordinal) : null,
+      lat: nullableCatalogNumber(event.lat),
+      lon: nullableCatalogNumber(event.lon),
+      sortOrdinal: nullableCatalogNumber(event.sort_ordinal),
+      dateStartOrdinal: event.date_recovery_contract && event.date_iso ? isoToOrdinal(event.date_iso) : null,
+      dateEndOrdinal: event.date_recovery_contract && event.end_date_iso ? isoToOrdinal(event.end_date_iso) : null,
     };
   }
 
@@ -9499,7 +9510,9 @@
         activeUnmapped: Math.max(0, state.filteredCatalog.length - state.filteredMappedCatalog.length),
         activeDated: state.filteredPlaybackEventCount,
         activeSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
-        activeExactDates: state.filteredExactDateEventIdSet.size,
+        activeExactDates: state.filteredExactDateEventCount,
+        activeMappedExactDates: state.filteredExactDateEventIdSet.size,
+        activeMappedSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
       },
     };
   }
@@ -10156,6 +10169,13 @@
 
   function analysisV2ArtifactHashes(manifest) {
     const hashes = {};
+    const catalogManifest = runtime.canonicalWebArtifacts && runtime.canonicalWebArtifacts.manifest;
+    ["repairOverlay", "reviewedYearOverlay"].forEach(function (key) {
+      const overlay = catalogManifest && catalogManifest[key];
+      if (overlay && overlay.frozenPatches && overlay.frozenPatches.sha256) {
+        hashes["catalog_" + key] = String(overlay.frozenPatches.sha256);
+      }
+    });
     const artifacts = manifest && manifest.artifacts && typeof manifest.artifacts === "object"
       ? manifest.artifacts
       : {};
@@ -10684,7 +10704,7 @@
     if (runtime.analysisWitnessCountPromise) return runtime.analysisWitnessCountPromise;
     const manifestUrl = new URL(resolveAssetPath("./data/analysis_witness_count_v1/manifest.json"), document.baseURI).toString();
     const statusElement = document.getElementById("analysis-witness-count-status");
-    if (statusElement) statusElement.textContent = "Loading explicit NUFORC witness-count evidence...";
+    if (statusElement) statusElement.textContent = "Loading explicit reported witness-count evidence...";
     runtime.analysisWitnessCountPromise = fetch(manifestUrl, { cache: "force-cache" })
       .then(function (response) {
         if (!response.ok) throw new Error("Witness-count manifest request failed (" + response.status + ").");
@@ -10697,7 +10717,7 @@
       .then(function (manifest) {
         runtime.analysisWitnessCountError = "";
         runtime.analysisCache.clear();
-        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; single-source limits remain enforced.";
+        if (statusElement) statusElement.textContent = "Explicit witness-count evidence ready; source-independence requirements remain enforced.";
         scheduleAnalysisCompute("typed witness-count evidence ready", { immediate: true });
         return manifest;
       })
@@ -11289,6 +11309,9 @@
     };
     return new Promise(function (resolve, reject) {
       let settled = false;
+      let resolveFlight;
+      const flight = { requestId, done: new Promise(function (done) { resolveFlight = done; }) };
+      runtime.analysisWorkerFlight = flight;
       const timeoutId = window.setTimeout(function () {
         if (settled) return;
         settled = true;
@@ -11302,6 +11325,8 @@
       function finish() {
         window.clearTimeout(timeoutId);
         worker.removeEventListener("message", onMessage);
+        if (runtime.analysisWorkerFlight === flight) runtime.analysisWorkerFlight = null;
+        resolveFlight();
       }
       function onMessage(event) {
         const message = event.data || {};
@@ -11462,6 +11487,16 @@
     if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
       return Promise.resolve(null);
     }
+    // Artifact loaders may finish together while the worker is still running
+    // the prior cohort. Wait for that request, then run only the latest
+    // scheduled cohort instead of queueing obsolete computations behind it.
+    if (runtime.analysisWorkerFlight) {
+      const scheduledGeneration = runtime.analysisComputeScheduleGeneration;
+      return runtime.analysisWorkerFlight.done.then(function () {
+        if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration) return null;
+        return computeAnalysisForCurrentView(reason);
+      });
+    }
     if (
       !runtime.analysisSpatialManifest &&
       !runtime.analysisGeographyManifest &&
@@ -11522,17 +11557,18 @@
       setAnalysisComputationPhase("updating", "Updating the cohort view for the active filters...");
     }
     const quickStartedAt = performance.now();
+    const scheduledGeneration = runtime.analysisComputeScheduleGeneration;
     return computeAnalysisViaWorker(snapshot, {
       quickMode: true,
       selectedDomains: ["overview", "time", "sources_quality", "context"],
     }).then(function (quickMessage) {
       if (!quickMessage) return null;
       renderAnalysisWorkerResult(quickMessage, cacheKey, quickStartedAt, { cacheResult: false });
-      if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
+      if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return null;
       window.clearTimeout(runtime.analysisFullInferenceTimerId);
       runtime.analysisFullInferenceTimerId = window.setTimeout(function () {
         runtime.analysisFullInferenceTimerId = null;
-        if (state.activeView !== "analysis" || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
+        if (state.activeView !== "analysis" || scheduledGeneration !== runtime.analysisComputeScheduleGeneration || analysisComputeCacheKey(getAnalysisFilterSnapshot()) !== cacheKey) return;
         const fullStartedAt = performance.now();
         computeAnalysisViaWorker(snapshot).then(function (fullMessage) {
           if (!fullMessage) return;
@@ -11565,6 +11601,7 @@
 
   function scheduleAnalysisCompute(reason, options) {
     if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
+    runtime.analysisComputeScheduleGeneration += 1;
     runtime.analysisPendingRequest = null;
     window.clearTimeout(runtime.analysisFullInferenceTimerId);
     runtime.analysisFullInferenceTimerId = null;
@@ -23384,11 +23421,13 @@
     if (event.sort_ordinal == null) {
       return state.timeRangeMode === "full";
     }
+    const intervalStart = event.date_recovery_contract && event.date_iso ? isoToOrdinal(event.date_iso) : event.sort_ordinal;
+    const intervalEnd = event.date_recovery_contract && event.end_date_iso ? isoToOrdinal(event.end_date_iso) : event.sort_ordinal;
     return (
       state.timeRangeStartOrdinal != null &&
       state.timeRangeEndOrdinal != null &&
-      event.sort_ordinal >= state.timeRangeStartOrdinal &&
-      event.sort_ordinal <= state.timeRangeEndOrdinal
+      intervalEnd >= state.timeRangeStartOrdinal &&
+      intervalStart <= state.timeRangeEndOrdinal
     );
   }
 
@@ -23397,7 +23436,8 @@
       state.timeRangeMode !== "full" &&
       state.timeRangeStartOrdinal != null &&
       state.timeRangeEndOrdinal != null &&
-      state.timelinePlaybackEvents.length > 0;
+      state.timelinePlaybackEvents.length > 0 &&
+      !state.timelineCatalog.some(function (event) { return Boolean(event.date_recovery_contract); });
     let orderedCatalog;
     let preserveDateAscending;
     if (useIndexedDateRange) {
@@ -23435,9 +23475,11 @@
     const nextFilteredSourceCoordinateEventIdSet = new Set();
     const nextFilteredExactDateEventIdSet = new Set();
     let nextFilteredPlaybackEventCount = 0;
+    let nextFilteredExactDateEventCount = 0;
     for (const event of orderedCatalog) {
       if (!useIndexedDateRange && !eventMatchesTimeRange(event)) continue;
       nextFilteredCatalog.push(event);
+      if (eventHasExactDateEvidence(event)) nextFilteredExactDateEventCount += 1;
       if (event.sort_ordinal != null) {
         nextFilteredPlaybackEventCount += 1;
         nextFilteredPlaybackEvents.push(event);
@@ -23462,6 +23504,7 @@
     state.filteredCatalog = nextFilteredCatalog;
     state.filteredMappedCatalog = nextFilteredMappedCatalog;
     state.filteredPlaybackEventCount = nextFilteredPlaybackEventCount;
+    state.filteredExactDateEventCount = nextFilteredExactDateEventCount;
     state.filteredPlaybackEvents = nextFilteredPlaybackEvents;
     state.filteredMappedPlaybackEvents = nextFilteredMappedPlaybackEvents;
     state.filteredMappedEventIdSet = nextFilteredMappedEventIdSet;
@@ -27405,7 +27448,7 @@
     // parsed object forces V8 into dictionary-mode storage, which costs more
     // memory than retaining the original fields across a catalog this large.
     const sortDateIso = internCanonicalSummaryString(event.sort_date_iso);
-    return {
+    const compactEvent = {
       event_id: event.event_id,
       chunk_id: internCanonicalSummaryString(event.chunk_id),
       detail_index: event.detail_index,
@@ -27437,6 +27480,13 @@
       duplicate_lineage_id: internCanonicalSummaryString(event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || ""),
       sort_ordinal: event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null,
     };
+    if (event.date_recovery_contract) {
+      compactEvent.date_iso = event.date_iso;
+      compactEvent.end_date_iso = event.end_date_iso;
+      compactEvent.date_recovery_contract = event.date_recovery_contract;
+      compactEvent.date_interval_semantics = event.date_interval_semantics;
+    }
+    return compactEvent;
   }
 
   function fitToResults(options) {

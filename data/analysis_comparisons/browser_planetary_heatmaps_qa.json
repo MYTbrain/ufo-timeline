@@ -1,0 +1,122 @@
+{
+  "status": "passed",
+  "generatedAt": "2026-10-08T07:47:13.672Z",
+  "estimatorVersion": "planetary-heatmaps-v1-common-grid",
+  "cohort": [
+    {
+      "id": "ufo",
+      "positionEligible": 334397,
+      "distinctDates": 24202
+    },
+    {
+      "id": "crops",
+      "positionEligible": 6430,
+      "distinctDates": 3272
+    },
+    {
+      "id": "animals",
+      "positionEligible": 928,
+      "distinctDates": 562
+    }
+  ],
+  "dimensions": {
+    "bodies": 9,
+    "unorderedPairs": 36,
+    "zodiacCells": 108,
+    "aspectCells": 216,
+    "motionCells": 27
+  },
+  "localSelectionsIssuedNewWorkerRequests": false,
+  "coreAndUnrelatedModelsPreserved": true,
+  "drilldown": {
+    "planet": "Sun",
+    "partner": "Moon",
+    "domain": "crops",
+    "state": "trine",
+    "samplingMode": "common_grid",
+    "cell": {
+      "id": "trine",
+      "label": "Trine",
+      "angleDegrees": 120,
+      "count": 215,
+      "lowerCount": 0,
+      "upperCount": 1129,
+      "stableCount": 0,
+      "possibleCount": 1129,
+      "share": 0.033437,
+      "expectedCount": 222.908,
+      "expectedCalendarShare": 0.034667,
+      "calendarAdjustedRatio": 0.9645,
+      "variableOpportunityMonths": 373,
+      "variableOpportunityReports": 4802,
+      "status": "descriptive",
+      "boundStatus": "sampled_common_grid_not_formal_confidence_interval"
+    },
+    "exactCountsBoundsCalendarParity": true
+  },
+  "performanceSamples": [
+    {
+      "component": "planetaryHeatmaps",
+      "durationMs": 1299.9,
+      "workerDurationMs": 1296,
+      "cacheHit": false,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 5559579,
+        "directEphemerisCalls": 18,
+        "rateFallbackCalls": 9,
+        "precessionHits": 308866,
+        "precessionFallbackCalls": 0
+      },
+      "recordedAt": 1791445508027
+    },
+    {
+      "component": "planetary",
+      "durationMs": 413.8,
+      "workerDurationMs": 395,
+      "cacheHit": false,
+      "precomputation": {
+        "status": "precomputed_raw_ephemeris",
+        "schemaId": "ufo-planetary-ephemeris-atlas-v1",
+        "dateCount": 65113,
+        "artifactSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+        "atlasHits": 869614,
+        "directEphemerisCalls": 0,
+        "rateFallbackCalls": 0,
+        "precessionHits": 308866,
+        "precessionFallbackCalls": 0
+      },
+      "recordedAt": 1791445604815
+    }
+  ],
+  "geometry": {
+    "viewportWidth": 1600,
+    "documentWidth": 1581
+  },
+  "ephemerisSha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e",
+  "publication": {
+    "deploymentPerformed": false
+  },
+  "mobile": {
+    "requestedViewport": {
+      "width": 375,
+      "height": 812
+    },
+    "cssViewportWidth": 468,
+    "documentWidth": 450,
+    "localScrollWidth": 977,
+    "localGridWidth": 325,
+    "documentOverflow": false,
+    "keyboardSelectionPassed": true
+  },
+  "finalDisplay": {
+    "percentagePointDecimals": 2,
+    "signedZeroRemoved": true
+  },
+  "screenshots": [
+    "C:/Users/jarod/.codex/visualizations/2026/10/06/01a112de-10d8-7230-b5ab-c5950201bd54/faithful-polish-preview/comparisons-heatmaps-preview.jpg"
+  ],
+  "consoleErrors": []
+}

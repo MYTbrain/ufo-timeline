@@ -1,0 +1,19 @@
+{
+  "schema": "ufo-workspace-release-browser-qa-v1",
+  "candidate_url": "https://48969877.ufo-timeline.pages.dev",
+  "passed": true,
+  "catalog": {"events": 702893, "mapped": 582877, "summary_shards": 71, "detail_chunks": 282},
+  "accepted_ui": ["Map-first workspace", "Original legend and collapsible map controls", "Chronology playback and grouped controls", "Analysis topic and supporting-chart navigation"],
+  "case_navigation": {"case": "Kenneth Arnold", "date_window": ["1947-06-23", "1947-06-25"], "reports_in_area": 8, "connected_reports_outside": 4, "connections": 7},
+  "reviewed_details": [
+    {"event_id": 192457427678091, "date_precision": "year", "sort_date_iso": "1967-07-02", "end_date_iso": "1967-12-31", "exact_day_eligible": false},
+    {"event_id": 2629924530431414, "date_precision": "year", "sort_date_iso": "1975-07-02", "end_date_iso": "1975-12-31", "exact_day_eligible": false},
+    {"event_id": 1626096478881, "date_precision": "month", "sort_date_iso": "1977-12-16", "end_date_iso": "1977-12-31", "exact_day_eligible": false}
+  ],
+  "animal_browser": {"all_report_count": 1184, "mixed_inherited_and_new_assets": "validated", "analysis_projection_rows": 1184},
+  "lunar": {"selected_reports": 821, "estimated_phase_counts_rendered": true, "calendar_reference_rendered": true},
+  "planetary": {"atlas_status": "ready", "atlas_sha256": "7a4356ef67de7b697a13e2017cb1e2dee54e76b8f28b0ef0aa7df045f3a3501e", "heatmap_reports": 821, "bodies": 9, "pairs": 36, "crop_reports": 10, "bulk_worker_duration_ms": 14, "direct_ephemeris_calls": 0},
+  "time_evidence": {"source_clock_panel_expanded": true, "typed_records_in_case_cohort": 4, "loaded_without_error": true},
+  "site_console_errors": [],
+  "publication": "Candidate QA; production verification is recorded separately."
+}

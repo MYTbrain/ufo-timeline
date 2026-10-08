@@ -1,0 +1,82 @@
+/* Compact captions and navigation, confined to the local functional preview. */
+.site-workflow-preview .workflow-scope-caption {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 400;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.site-workflow-preview #workflow-legend-scope {
+  margin: 2px 0 8px;
+  font-size: .68rem;
+}
+
+.site-workflow-preview .map-legend.is-collapsed #workflow-legend-scope { display: none; }
+
+.site-workflow-preview #workflow-context-scope,
+.site-workflow-preview #workflow-convergence-scope {
+  margin: 7px 2px 2px;
+}
+
+.site-workflow-preview .workflow-scope-stamp {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-transform: none;
+}
+
+.site-workflow-preview .workflow-scope-stamp[hidden],
+.site-workflow-preview .workflow-scope-caption[hidden] { display: none; }
+
+.site-workflow-preview .map-control-cluster .workflow-map-tools-heading {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+}
+
+.site-workflow-preview .workflow-small-action {
+  min-height: 32px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  font-size: .72rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+
+.site-workflow-preview .workflow-small-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.site-workflow-preview .map-control-cluster.is-collapsed #workflow-focus-map {
+  display: none;
+}
+
+.site-workflow-preview .workflow-help-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  grid-column: 1 / -1;
+  padding-top: 4px;
+}
+
+.site-workflow-preview #detail-stage .panel-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (pointer: coarse) {
+  .site-workflow-preview .workflow-small-action { min-height: 40px; }
+}

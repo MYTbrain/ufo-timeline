@@ -1,0 +1,25 @@
+{
+  "purpose": "Independent nuclear-test chronology and source-confirmed facility-role comparison inputs; local candidate only.",
+  "canonicalArtifact": "data/analysis_comparisons/nuclear_context_v1.json",
+  "retention": "Protect sources, review receipt and runtime input until candidate accepted; no deployment altered.",
+  "rollback": "Existing deployed release remains rollback; no bundle/corpus copy.",
+  "rebuild": "Run scripts/build_nuclear_comparison_context.py with bundled pypdf Python and --shared-root pointing to existing canonical workspace.",
+  "sourceBytes": 2432535,
+  "runtimeBytes": 1576726,
+  "runtimeGzipBytes": 82892,
+  "sourceVisualChecks": [
+    {
+      "file": "primary-conventions-page19.png",
+      "role": "bounded_primary_source_convention_and_first_table_visual_review",
+      "sha256": "2f0adeb3d5af200dc918e2400b9c68848c833673aa3e562e56a94ba754e0aaa6"
+    },
+    {
+      "file": "primary-table-page23.png",
+      "role": "bounded_primary_source_convention_and_first_table_visual_review",
+      "sha256": "cb7dfd2d5e26dbbeee54334893827ba25cc6915207f517233dfc0a7784c16d74"
+    }
+  ],
+  "newFilesOver100MiB": [],
+  "fullCorpusReadOrCopied": false,
+  "runtimeSha256": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65"
+}

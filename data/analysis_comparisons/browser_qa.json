@@ -1,0 +1,480 @@
+{
+  "schemaId": "analysis-comparison-browser-qa-v1",
+  "capturedAt": "2026-10-08T01:55:35.887Z",
+  "result": {
+    "url": "http://127.0.0.1:8168/whole-site.html#analysis-section-comparisons",
+    "activeView": "analysis",
+    "status": "ready",
+    "artifacts": {
+      "comparisonContext": "e1449dba4767ad49ebed9a19faf85c7a20de15c1603ab105b9bc2a21df714abd",
+      "nuclearContext": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65",
+      "comparisonFacilities": "8c7703b602b06e8ad5d86b3bb826b20a3685ecd1100cfd6ea8369652ff1e28e4"
+    },
+    "scope": "UFO reports follow active filters. Crop and animal catalogs follow dates, geographic selections and inclusion switches; UFO craft/source filters do not classify context records.",
+    "filters": {
+      "generation": 0,
+      "requestedGeneration": 0,
+      "activeView": "analysis",
+      "baselineMode": "other_dates_balanced",
+      "timeRange": {
+        "mode": "full",
+        "startOrdinal": -719528,
+        "endOrdinal": 20554,
+        "startIso": "0000-01-01",
+        "endIso": "2026-04-11"
+      },
+      "filters": {
+        "keyword": "",
+        "sourceMode": "all",
+        "typeMode": "subset",
+        "precisionMode": "all",
+        "selectedSources": [],
+        "selectedTypes": [
+          "Beam",
+          "Changing / irregular",
+          "Chevron",
+          "Cigar",
+          "Circle",
+          "Cone",
+          "Crescent",
+          "Cross",
+          "Cylinder",
+          "Diamond",
+          "Disk",
+          "Fireball",
+          "Flash",
+          "Formation",
+          "Landing",
+          "Light",
+          "Linear",
+          "Oval / egg",
+          "Rectangle",
+          "Sphere / orb",
+          "Star-like",
+          "Teardrop",
+          "Triangle"
+        ],
+        "selectedPrecisions": [],
+        "legendEventMode": "all",
+        "legendColorMode": "craft_type",
+        "selectedLegendEventKeys": [],
+        "hideLowPrecision": false,
+        "hideNonExactDates": true
+      },
+      "areaFilter": {
+        "active": false,
+        "pointOnly": false,
+        "country": null,
+        "shapes": []
+      },
+      "contextLayers": {
+        "crops": {
+          "loaded": true,
+          "enabled": true,
+          "dateScope": "window",
+          "displayMode": "window",
+          "mappedCount": 4324,
+          "renderedCount": 3633,
+          "renderedPositionCount": 2186,
+          "cachedDetailChunks": 0,
+          "traceEligible": false,
+          "traceFocusActive": false,
+          "selectedRecordId": null,
+          "ufoFocus": {
+            "relationWindow": "off",
+            "positionQuality": "source",
+            "cropPositionQuality": "field",
+            "radiusKm": 25,
+            "traceAnalysisEnabled": false,
+            "hopDepth": 1,
+            "hopDirection": "both",
+            "showRadius": true,
+            "emphasizeIntersections": true,
+            "isolation": false,
+            "result": null
+          },
+          "chronology": {
+            "enabled": false,
+            "relation": "off",
+            "coordinateScope": "field",
+            "maxDistanceKm": 250,
+            "eligibleNodes": 0,
+            "candidateEdges": 0,
+            "renderedEdges": 0,
+            "capped": false,
+            "traceEligible": false,
+            "role": "catalog_date_adjacency_only"
+          }
+        },
+        "animals": {
+          "loaded": true,
+          "enabled": true,
+          "dateScope": "window",
+          "displayMode": "window",
+          "catalogLoaded": false,
+          "visibleRecords": 340,
+          "visiblePositions": 257,
+          "totalRecords": 1184,
+          "mappedRecords": 518,
+          "unmappedRecords": 666,
+          "detailChunksCached": 0,
+          "traceEligible": false,
+          "relationshipsEligible": false,
+          "chronologyEligible": false,
+          "playbackEligible": false,
+          "causality": "not_asserted"
+        }
+      },
+      "contextReleaseHashes": {
+        "cropCircles": "f0a60205b4eafe4dd7ad900ff80f9f0b4816fe80018d036ba22a9bdc3fe57792",
+        "animalReports": "9ee581a8a5a1375388f284c59d5ed114071c35e3adf263f9f348c72e37557db3",
+        "manifest": ""
+      },
+      "denominatorCounts": {
+        "catalogReports": 702893,
+        "catalogMapped": 582877,
+        "matchedNonDateReports": 334511,
+        "activeReports": 334511,
+        "activeMapped": 310575,
+        "activeUnmapped": 23936,
+        "activeDated": 334511,
+        "activeSourceCoordinates": 51902,
+        "activeExactDates": 334511,
+        "activeMappedExactDates": 310575,
+        "activeMappedSourceCoordinates": 51902
+      }
+    },
+    "lunar": [
+      {
+        "id": "ufo",
+        "total": 334511,
+        "eligible": 334397,
+        "stable": 145615,
+        "ambiguous": 188782,
+        "excludedContext": 26,
+        "verifiedSky": 0,
+        "excludedContextCategoriesPresent": false
+      },
+      {
+        "id": "crops",
+        "total": 7745,
+        "eligible": 6430,
+        "stable": 2750,
+        "ambiguous": 3680,
+        "excludedContext": 0,
+        "verifiedSky": 0,
+        "excludedContextCategoriesPresent": false
+      },
+      {
+        "id": "animals",
+        "total": 1184,
+        "eligible": 928,
+        "stable": 404,
+        "ambiguous": 524,
+        "excludedContext": 0,
+        "verifiedSky": 0,
+        "excludedContextCategoriesPresent": false
+      }
+    ],
+    "nuclear": {
+      "settings": {
+        "windowDays": 30,
+        "distanceBandsKm": [
+          25,
+          100,
+          250,
+          500
+        ],
+        "testRoles": [
+          "weapons",
+          "peaceful",
+          "combat"
+        ],
+        "maxDistanceKm": 500
+      },
+      "coverage": {
+        "catalogRows": 2051,
+        "countries": {
+          "CHINA": 45,
+          "FRANCE": 210,
+          "INDIA": 3,
+          "PAKIST": 2,
+          "UK": 45,
+          "USA": 1032,
+          "USSR": 714
+        },
+        "excludedPost1998": "No North Korean or other post-1998 chronology is included.",
+        "facilityInventory": "Four reviewed existing nuclear-program institutions in US/UK; partial coverage, excludes power-reactor inventory.",
+        "firstDate": "1945-07-16",
+        "firstOrdinal": -8935,
+        "lastDate": "1998-05-30",
+        "lastOrdinal": 10376,
+        "locatedRows": 2027,
+        "primarySummarySovietTotal": 715,
+        "primarySummaryTotal": 2052,
+        "primaryTableUnverifiedRows": 87,
+        "primaryTableVerifiedRows": 1964,
+        "roles": {
+          "combat": 2,
+          "peaceful": 192,
+          "safety_or_mixed_safety": 133,
+          "unknown": 1,
+          "weapons": 1723
+        },
+        "summaryDiscrepancy": "One Soviet record in the report's stated total is absent from this transcription; no invented replacement.",
+        "transcribedSovietTotal": 714,
+        "selectedRoles": [
+          "weapons",
+          "peaceful",
+          "combat"
+        ],
+        "selectedTests": 1917,
+        "locatedTests": 1893,
+        "missingCoordsN": 24,
+        "excludedSafetyN": 133,
+        "sourcePeriod": {
+          "firstOrdinal": -8935,
+          "lastOrdinal": 10376
+        },
+        "selectedPeriod": {
+          "startOrdinal": null,
+          "endOrdinal": null
+        },
+        "boundaryOverlappingTests": 0
+      },
+      "domains": {
+        "ufo": {
+          "inputN": 334511,
+          "eligibleN": 310478,
+          "linkedReportsN": 2081,
+          "phasePairs": [
+            {
+              "id": "before",
+              "count": 3720,
+              "unique": 1649
+            },
+            {
+              "id": "same_day",
+              "count": 127,
+              "unique": 119
+            },
+            {
+              "id": "after",
+              "count": 4073,
+              "unique": 1730
+            }
+          ],
+          "calendarControls": 1259
+        },
+        "crops": {
+          "inputN": 7745,
+          "eligibleN": 3659,
+          "linkedReportsN": 5,
+          "phasePairs": [
+            {
+              "id": "before",
+              "count": 14,
+              "unique": 4
+            },
+            {
+              "id": "same_day",
+              "count": 0,
+              "unique": 0
+            },
+            {
+              "id": "after",
+              "count": 11,
+              "unique": 3
+            }
+          ],
+          "calendarControls": 1
+        },
+        "animals": {
+          "inputN": 1184,
+          "eligibleN": 340,
+          "linkedReportsN": 2,
+          "phasePairs": [
+            {
+              "id": "before",
+              "count": 3,
+              "unique": 2
+            },
+            {
+              "id": "same_day",
+              "count": 0,
+              "unique": 0
+            },
+            {
+              "id": "after",
+              "count": 2,
+              "unique": 2
+            }
+          ],
+          "calendarControls": 0
+        }
+      },
+      "facilities": {
+        "nuclear": 4,
+        "broader": 1783
+      }
+    },
+    "cross": [
+      {
+        "id": "public_marker",
+        "cropClusters": 3579,
+        "animalClusters": 308,
+        "rows": [
+          {
+            "radiusKm": 50,
+            "dayWindow": 7,
+            "candidates": 5,
+            "matched": 5,
+            "controlAverage": 0.5,
+            "unknownUncertainty": 5
+          },
+          {
+            "radiusKm": 100,
+            "dayWindow": 30,
+            "candidates": 8,
+            "matched": 8,
+            "controlAverage": 2.25,
+            "unknownUncertainty": 8
+          },
+          {
+            "radiusKm": 250,
+            "dayWindow": 30,
+            "candidates": 19,
+            "matched": 19,
+            "controlAverage": 10.25,
+            "unknownUncertainty": 19
+          }
+        ]
+      },
+      {
+        "id": "strict_site",
+        "cropClusters": 1,
+        "animalClusters": 0,
+        "rows": [
+          {
+            "radiusKm": 50,
+            "dayWindow": 7,
+            "candidates": 0,
+            "matched": 0,
+            "controlAverage": null,
+            "unknownUncertainty": 0
+          },
+          {
+            "radiusKm": 100,
+            "dayWindow": 30,
+            "candidates": 0,
+            "matched": 0,
+            "controlAverage": null,
+            "unknownUncertainty": 0
+          },
+          {
+            "radiusKm": 250,
+            "dayWindow": 30,
+            "candidates": 0,
+            "matched": 0,
+            "controlAverage": null,
+            "unknownUncertainty": 0
+          }
+        ]
+      },
+      {
+        "id": "calendar_alignment",
+        "cropClusters": 6344,
+        "animalClusters": 896,
+        "rows": [
+          {
+            "radiusKm": null,
+            "dayWindow": 0,
+            "candidates": 316,
+            "matched": 316,
+            "controlAverage": 270.25,
+            "unknownUncertainty": 0
+          },
+          {
+            "radiusKm": null,
+            "dayWindow": 7,
+            "candidates": 4221,
+            "matched": 4204,
+            "controlAverage": 3933.75,
+            "unknownUncertainty": 0
+          },
+          {
+            "radiusKm": null,
+            "dayWindow": 30,
+            "candidates": 16098,
+            "matched": 16046,
+            "controlAverage": 15596,
+            "unknownUncertainty": 0
+          }
+        ]
+      }
+    ],
+    "geometry": {
+      "width": 872,
+      "height": 975,
+      "documentWidth": 860,
+      "sectionWidth": 789,
+      "sectionScroll": 789
+    },
+    "analysisError": "",
+    "comparisonLoad": {
+      "requested": true,
+      "ready": true,
+      "error": "",
+      "options": {
+        "windowDays": 30,
+        "testRoles": [
+          "weapons",
+          "peaceful",
+          "combat"
+        ],
+        "distanceBandsKm": [
+          25,
+          100,
+          250,
+          500
+        ]
+      },
+      "releaseId": "analysis-comparisons-local-v1-20261007"
+    }
+  },
+  "interactionChecks": {
+    "lunarDomains": [
+      "ufo",
+      "crops",
+      "animals"
+    ],
+    "nuclearSettingsVerified": {
+      "windowDays": 7,
+      "testRoles": [
+        "peaceful"
+      ],
+      "maxDistanceKm": 100
+    },
+    "defaultSettingsRestored": true,
+    "questionAndNuclearSubviewNavigation": true,
+    "crossSampleTableExpanded": true,
+    "recordDateRolesPreserved": true,
+    "mapReturnAndExistingLegendToolsPresent": true,
+    "requestedPhoneViewport": {
+      "width": 375,
+      "height": 812
+    },
+    "observedPhoneGeometry": {
+      "width": 468,
+      "documentWidth": 450,
+      "sectionWidth": 377,
+      "sectionScroll": 377
+    },
+    "viewportReset": true
+  },
+  "screenshots": [
+    "comparisons-moon-preview.jpg",
+    "comparisons-phone-qa.jpg"
+  ],
+  "publication": "local_only"
+}
