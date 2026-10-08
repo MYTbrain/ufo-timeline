@@ -3,21 +3,20 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "published_verified",
-    "production_url": "https://ufo-timeline.pages.dev",
-    "publication_receipt": "releases/trace-chronology-20261008/publication_receipt.json",
-    "browser_qa": "releases/trace-chronology-20261008/production-browser-verification.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
-    "runtime_source_commit": "4e51824",
-    "production_verification": "releases/trace-chronology-20261008/production-verification.json",
-    "production_deployment_id": "99d00ee0-0e89-42e2-9e00-5f196e9d31d2",
-    "production_source_commit": "94b47f5d81c1032f168ad57bd6771357cafeda8a"
+    "status": "prepared_for_publication",
+    "production_url": "https://ufo-timeline.pages.dev/",
+    "runtime_source_commit": "047c6df",
+    "publication_receipt": "releases/guided-tours-20261008/publication_receipt.json",
+    "browser_qa": "releases/guided-tours-20261008/production-browser-verification.json",
+    "production_verification": "releases/guided-tours-20261008/production-verification.json",
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true
   },
   "retained_rollback": {
-    "deployment_id": "a70bc14c-550c-4057-b461-bca4fd7aba27",
-    "source_commit": "7e6bf70ab238db4dbbd091f2f4fb7b390a696582",
-    "after_production_validation_only": false,
-    "protected_sources_deleted": false
+    "deployment_id": "0fb396aa-2876-4343-b8b8-87796880a177",
+    "source_commit": "1578ba4671bc87a6a13af12d631afe7aecab0244",
+    "after_production_validation_only": true,
+    "protected_sources_deleted": false,
+    "superseded_designation": "a70bc14c-550c-4057-b461-bca4fd7aba27"
   },
   "counts": {
     "events": 702893,
@@ -25,8 +24,8 @@
   },
   "frozen_delivery_plan": {
     "path": "releases/workspace-analysis-20261008/delivery_plan.json",
-    "bytes": 256840,
-    "sha256": "5c44cff52b0a503bf7d14d2bf60b99d7a2194b9e3c42c558ff2cda4a1155ffc3"
+    "bytes": 258704,
+    "sha256": "6ffb6327174f6d77ea81214b753f10657fbf250933bc3b971195cbdf80a46082"
   },
   "pages": [
     {
@@ -150,8 +149,8 @@
     },
     {
       "path": "app.js",
-      "bytes": 1361212,
-      "sha256": "9ac8bcd7011df3b630d8925ee819f97cafcdf50c8d9b4bd24376ffbafc4adcf0",
+      "bytes": 1361892,
+      "sha256": "4850046ae026fa788648c61e4d29eb4d8d985a71b6a5b2512d8d83895f447902",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1010,9 +1009,44 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "guided_tour.css",
+      "bytes": 8007,
+      "sha256": "cd201b83869ff38087726605b52231b96aa9861bc974313f7fe45dabf745c661",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "guided_tour.js",
+      "bytes": 18947,
+      "sha256": "20e0ab0579f0a780053d86c150d6e148bcc4dad8f9baf99b752bddbfed027e3c",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "guided_tour_content.js",
+      "bytes": 5608,
+      "sha256": "ea73bbadfa1c709a8d952c1b90edfc441d5317e53b5eac46945553cdab9341ed",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "guided_tour_state.js",
+      "bytes": 3203,
+      "sha256": "ac0c05442d8c8078658548f3e7d3940bc572827d38d908008fbb5e600762de03",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "help_panel.js",
+      "bytes": 4269,
+      "sha256": "0d80b6722a707f3d5e322607d87b62e6ba9ee2ef018480a56ff84f9af63227da",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "index.html",
-      "bytes": 150772,
-      "sha256": "d76eba9e02f081184f947807b9f327c8bbe96dfec112cdc3a5739eecde9cfec6",
+      "bytes": 151409,
+      "sha256": "c728dc99b69849825d54a5ef9bac06a00730e4cb46626050e09888eb294f06c6",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1285,7 +1319,7 @@
   ],
   "pages_count": 179,
   "pages_total_bytes": 32261041,
-  "pages_tree_sha256": "ee385bee01d98b1bbb0b7170ee3d4364cb004219331079eb45ae25577b2912f3",
+  "pages_tree_sha256": "33a7da86dafaa5ff8b50f46ff04a8827ac9ce732ed91e23e77e75a10b3fe5feb",
   "new_runtime_objects": [
     {
       "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/context_rows.json.gz",
@@ -4239,26 +4273,27 @@
   },
   "storage": {
     "current_pages_candidate": ".tmp/workspace-analysis-20261008-pages",
-    "pages_candidate_bytes": 32261041,
+    "pages_candidate_bytes": 32302392,
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "rollback_deployment_after_success": "a70bc14c-550c-4057-b461-bca4fd7aba27",
+    "rollback_deployment_after_success": "0fb396aa-2876-4343-b8b8-87796880a177",
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
     "approximate_net_project_growth_MiB": 35,
-    "this_deployment_stage_growth_bytes": 3513086,
+    "this_deployment_stage_growth_bytes": 41351,
     "full_corpus_or_bundle_copied": false,
-    "this_deployment_net_growth_MiB": 4
+    "this_deployment_net_growth_MiB": 1
   },
-  "runtime_revision": "trace-chronology-20261008",
+  "runtime_revision": "guided-tours-20261008",
   "previous_publication": {
     "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev",
-    "publication_receipt": "releases/map-polar-bounds-20261008/publication_receipt.json",
-    "browser_qa": "releases/map-polar-bounds-20261008/browser_qa.json",
+    "publication_receipt": "releases/trace-chronology-20261008/publication_receipt.json",
+    "browser_qa": "releases/trace-chronology-20261008/production-browser-verification.json",
     "runtime_inventory_authoritative_across_docs_only_redeployments": true,
-    "production_deployment_id": "1d4474fb-6a1b-4862-b826-ed938fdf77da",
-    "production_source_commit": "cb08a8d3cce8f073f14377e363da0f177dfa2107",
-    "production_verification": "releases/map-polar-bounds-20261008/production_verification.json"
+    "runtime_source_commit": "4e51824",
+    "production_verification": "releases/trace-chronology-20261008/production-verification.json",
+    "production_deployment_id": "0fb396aa-2876-4343-b8b8-87796880a177",
+    "production_source_commit": "1578ba4671bc87a6a13af12d631afe7aecab0244"
   },
   "trace_chronology_contract": {
     "traceChronologyEvidenceUrl": "./data/trace_chronology/evidence.json.gz",

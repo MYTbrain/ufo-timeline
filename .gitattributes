@@ -185,3 +185,10 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /analysis_planetary.js -text
 /analysis_repair_detail_overlay.js -text
 /scripts/prepare_workspace_analysis_release.py -text
+
+# Guided tour and Help publication bytes across operating systems.
+/guided_tour.css -text
+/guided_tour.js -text
+/guided_tour_content.js -text
+/guided_tour_state.js -text
+/help_panel.js -text

@@ -1,8 +1,9 @@
-# Guided tours — local review
+# Guided tours and floating Help
 
-Status: implemented in the frontend worktree, not published. Baseline: production
-source `1578ba4671bc87a6a13af12d631afe7aecab0244`. The live site and data release
-remain unchanged.
+Status: release prepared for publication at https://ufo-timeline.pages.dev/.
+Feature source: `047c6df`, including `8b4bcc5`. Baseline production source:
+`1578ba4671bc87a6a13af12d631afe7aecab0244`. Publication evidence is kept in
+`releases/guided-tours-20261008/`. This UI release preserves the data inventory.
 
 ## Entry points and experience
 
@@ -56,7 +57,8 @@ highlight follows clipping containers, scroll, resize and target-size changes.
   `guided_tour.css`, `help_panel.js`; references in `index.html`.
 - Small existing-help wording fixes in `app.js` and matching HTML fallback.
 - The bounded release builder includes these runtime files in its allowlist.
-  It has not been run and the validated deployment staging tree is untouched.
+  It verified the prior stage and refreshed that same small shell in place,
+  adding only the five reviewed tour/Help assets and retaining identical R2 pins.
 - `node --test tests/guided_tour_state.test.js`: 17 meaningful behavior tests,
   including user ownership/rebasing, restoration order, clipping and card placement.
 - Browser walkthrough: all Essentials and Analysis steps, unchanged inputs,
@@ -76,9 +78,10 @@ highlight follows clipping containers, scroll, resize and target-size changes.
 ## Storage and retention
 
 Canonical tour source: this frontend worktree. Shared canonical data is referenced
-in place. Current validated production remains deployment
-`0fb396aa-2876-4343-b8b8-87796880a177`; the sole designated production rollback
-remains `a70bc14c-550c-4057-b461-bca4fd7aba27`.
+in place. Until final verification, validated production remains deployment
+`0fb396aa-2876-4343-b8b8-87796880a177`. After validation, that exact deployment
+becomes the sole known-good rollback, superseding the prior `a70bc14c` designation.
+No protected source or prior unique provenance is deleted.
 
 `docs/qa/guided-tour-20261008/` contains small UI evidence from the local preview;
 purpose: demonstrate and verify this implementation, provenance: the checked
@@ -90,6 +93,16 @@ and QA evidence are below 1 MiB, plus a small Git delta if committed.
 The Help follow-up adds approximately 0.16 MiB of source/documentation/UI evidence,
 plus a small Git delta; it creates no staging tree or large artifact.
 
+The reused `.tmp/workspace-analysis-20261008-pages` contains 184 files totaling
+32,302,392 bytes; its tree SHA-256 is
+`33a7da86dafaa5ff8b50f46ff04a8827ac9ce732ed91e23e77e75a10b3fe5feb`.
+Its growth is only 41,351 bytes; immutable R2 uploads remain unchanged at 87
+objects / 101,875,689 bytes. C: was below 100 GiB free, so preparation charged
+only actual growth against the sub-100-MiB allowance in the storage policy.
+Deployment evidence and Git metadata are expected to keep total new local growth
+below 1 MiB. No file exceeds 100 MiB. The release evidence directory contains
+small source/verification receipts and a browser proof, rebuilt by rerunning the
+bounded release verifier and live Help/tour checks; retain with this UI release.
 No new staging/backup tree was created or superseded. No deletion was performed.
 Previously superseded shell stages and the explicit cleanup proposal remain
 documented in `WORKSPACE_ANALYSIS_RELEASE_20261008.md`; cleanup is independent of

@@ -22,8 +22,8 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "dc834bac-2108-4de3-baad-47044e2ec51c"
-RUNTIME_REVISION = "trace-chronology-20261008"
-RETAINED_ROLLBACK = "a70bc14c-550c-4057-b461-bca4fd7aba27"
+RUNTIME_REVISION = "guided-tours-20261008"
+RETAINED_ROLLBACK = "0fb396aa-2876-4343-b8b8-87796880a177"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
@@ -233,7 +233,16 @@ def assemble(check_only=False):
                         "allow_pages_analytics": logical.endswith(".html")})
     total = sum(r["bytes"] for r in records)
     require(total < 40 * 1024 * 1024, "Bounded Pages candidate exceeds40MiB")
-    require(shutil.disk_usage(ROOT).free - total > 100 * 1024**3, "C reserve would fall below100GiB")
+    # Refresh the single verified stage in place; budget its net growth rather
+    # than charging for a second full shell that is never created.
+    existing_bytes = sum(path.stat().st_size for path in PAGES.rglob("*") if path.is_file())
+    net_growth = max(0, total - existing_bytes)
+    free_bytes = shutil.disk_usage(ROOT).free
+    reserve = 100 * 1024**3
+    if free_bytes < reserve:
+        require(net_growth <= 100 * 1024**2, "Below the C reserve: growth above100MiB requires explicit approval")
+    else:
+        require(free_bytes - net_growth >= reserve, "C reserve would fall below100GiB")
     plan = {"schema": "ufo-workspace-analysis-release-v1", "release_id": RELEASE,
             "base_deployment": BASE_DEPLOYMENT, "runtime_revision": RUNTIME_REVISION,
             "retained_rollback": RETAINED_ROLLBACK,
@@ -244,7 +253,8 @@ def assemble(check_only=False):
             "upload_total_bytes": sum(r["bytes"] for r in uploads.values()),
             "inherited_runtime_objects": base["runtime_objects"], "input_pins": input_pins,
             "storage": {"corpus_copied": False, "new_files_above_100MiB": [],
-                        "approximate_net_local_growth_bytes": total,
+                        "approximate_net_local_growth_bytes": net_growth,
+                        "existing_stage_bytes": existing_bytes, "c_free_bytes_before_stage": free_bytes,
                         "canonical_candidate": str(PAGES), "shared_inputs": str(REPAIRS),
                         "rollback": RETAINED_ROLLBACK, "superseded_staging": [],
                         "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected."}}
@@ -301,8 +311,9 @@ def main():
                 old_paths = {r["path"] for r in previous["pages"]}
                 new_paths = {r["path"] for r in plan["pages"]}
                 require(old_paths <= new_paths and new_paths - old_paths <= {
-                    "trace_chronology.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json"
-                }, "Candidate file inventory changed beyond the reviewed timing sidecar")
+                    "trace_chronology.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
+                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
+                }, "Candidate file inventory changed beyond the reviewed timing and guided Help assets")
             else:
                 require(not PAGES.exists(), "Refusing extra/overwritten Pages candidate")
             for row in plan["pages"]:
