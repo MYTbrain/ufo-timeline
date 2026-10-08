@@ -1,0 +1,20 @@
+{
+  "schemaId": "ufocat-source-field-verification-receipt-v1",
+  "ledger": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\corpus-recovery\\ufocat-source-fields\\fields.json.gz",
+    "bytes": 1192410,
+    "sha256": "4ef20ba6bd8b3f622cd24315939c945355f1f6ebf2185aca5b3ec6425c177174"
+  },
+  "extractor": {
+    "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\audit_ufocat_timezone_source_fields.py",
+    "bytes": 19870,
+    "sha256": "4aefed49f256da5120555ad04245d2ef293d31f76d1f533b0b11580b7a55f2fb"
+  },
+  "verifiedSourceRows": 9861,
+  "verifiedSourceChunks": 282,
+  "sourceHashesIdentityDateClockAndSelectedFieldsVerified": true,
+  "purpose": "Retain source reopening receipt with sparse nonblank TZ-field ledger; rebuild using helper --verify-only.",
+  "storageLifecycleMetadataAddedAfterRowSourceReplay": true,
+  "verifiedRowContentAndSourceFieldsUnchanged": true,
+  "derivedFlagClassesRechecked": 9861
+}

@@ -1,0 +1,284 @@
+{
+  "schemaId": "trace-source-region-audit-v1",
+  "sourceRowsScanned": 702893,
+  "scope": "all702893 effective preserved summary rows; source-specific UFOCAT region parsing only",
+  "observationNotClockAcceptance": "Counts are jurisdiction-eligible interval candidates; source clock, date flags, sentinel, provenance and calendar-day gates still apply in the evidence build; no new order or exact-clock count is asserted.",
+  "inputs": {
+    "builderSha256AtRead": "c88fc7d4592a68986b013da6076c5c955f39a2fed75f9a39ebc65c327b273f8c",
+    "effectiveSummaryManifest": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\source-quality\\catalog\\summary_manifest.json",
+      "sha256": "d00cf77b7b37b0a580ea2cb36ed9301cc61178f02d97878f8ea888843d8207cb"
+    },
+    "countryInfoSha256": "34895dbc79f50a05758bbabe5b5545567e7dd6c7f6e45cb79087a54790c0d97a"
+  },
+  "byNativeRegion": {
+    "CN": {
+      "source_location_normalizations": 16461,
+      "mapped_exact_date_rows": 13725,
+      "guarded_exact_date_interval_candidates": 12380,
+      "new_guarded_exact_date_interval_candidates": 12380,
+      "after_country_iana_zone_candidate_envelope": 13058,
+      "after_historical_country_offset_uncertainty": 1764,
+      "after_unmapped": 1597,
+      "after_low_location_precision": 1,
+      "after_invalid_date_or_zone": 32,
+      "after_jurisdiction_coordinate_mismatch": 9
+    },
+    "AU": {
+      "source_location_normalizations": 1316,
+      "mapped_exact_date_rows": 972,
+      "guarded_exact_date_interval_candidates": 660,
+      "new_guarded_exact_date_interval_candidates": 660,
+      "after_country_iana_zone_candidate_envelope": 732,
+      "after_historical_country_offset_uncertainty": 376,
+      "after_unmapped": 204,
+      "after_jurisdiction_coordinate_mismatch": 4
+    },
+    "CA": {
+      "source_location_normalizations": 1937,
+      "after_country_iana_zone_candidate_envelope": 689,
+      "mapped_exact_date_rows": 1238,
+      "guarded_exact_date_interval_candidates": 986,
+      "new_guarded_exact_date_interval_candidates": 986,
+      "after_historical_country_offset_uncertainty": 170,
+      "after_structured_single_iana_country": 541,
+      "after_unmapped": 367,
+      "after_jurisdiction_coordinate_mismatch": 70,
+      "after_historical_locality_timezone_uncertainty": 96,
+      "after_invalid_date_or_zone": 4
+    },
+    "ME": {
+      "source_location_normalizations": 459,
+      "mapped_exact_date_rows": 328,
+      "guarded_exact_date_interval_candidates": 79,
+      "new_guarded_exact_date_interval_candidates": 79,
+      "after_structured_single_iana_country": 92,
+      "after_jurisdiction_coordinate_mismatch": 263,
+      "after_historical_locality_timezone_uncertainty": 21,
+      "after_unmapped": 80,
+      "after_invalid_date_or_zone": 3
+    }
+  },
+  "resolvedCountriesByNativeRegion": {
+    "CN": {
+      "CA": 16461
+    },
+    "AU": {
+      "NZ": 1189,
+      "PG": 127
+    },
+    "CA": {
+      "MX": 1057,
+      "PR": 654,
+      "DO": 83,
+      "PA": 51,
+      "CU": 53,
+      "JM": 27,
+      "BZ": 10,
+      "NI": 2
+    },
+    "ME": {
+      "IL": 141,
+      "IR": 110,
+      "TR": 143,
+      "JO": 18,
+      "IQ": 35,
+      "SY": 7,
+      "QA": 2,
+      "YE": 2,
+      "CY": 1
+    }
+  },
+  "examples": {
+    "CN": [
+      {
+        "event_id": 2145263009670120,
+        "source": "ufocat",
+        "location_raw": "OROMOCTO, NS, Sunbury, NB, CN",
+        "sort_date_iso": "2004-01-17",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 45.85,
+        "lon": -66.48,
+        "chunk_id": "chunk_000000",
+        "detail_index": 67
+      },
+      {
+        "event_id": 695607190707326,
+        "source": "ufocat",
+        "location_raw": "GIMLI, 12, MB, CN",
+        "sort_date_iso": "1997-04-22",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 50.65,
+        "lon": -97.0,
+        "chunk_id": "chunk_000000",
+        "detail_index": 106
+      },
+      {
+        "event_id": 365742948091146,
+        "source": "ufocat",
+        "location_raw": "VAUDREUIL-DORION, Vaudreuil, QUE, CN",
+        "sort_date_iso": "2018-10-02",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 45.4,
+        "lon": -74.0,
+        "chunk_id": "chunk_000000",
+        "detail_index": 135
+      }
+    ],
+    "AU": [
+      {
+        "event_id": 1131125632786918,
+        "source": "ufocat",
+        "location_raw": "QUEENSTOWN, Otago, NZL, AU",
+        "sort_date_iso": "2008-07-20",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": -45.05,
+        "lon": 168.68,
+        "chunk_id": "chunk_000000",
+        "detail_index": 380
+      },
+      {
+        "event_id": 1298595130363609,
+        "source": "ufocat",
+        "location_raw": "PORT MORESBY, Capital Dist, PNG, AU",
+        "sort_date_iso": "1953-08-23",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "city",
+        "lat": -9.47723,
+        "lon": 147.15089,
+        "chunk_id": "chunk_000000",
+        "detail_index": 470
+      },
+      {
+        "event_id": 1029695646977720,
+        "source": "ufocat",
+        "location_raw": "DARGAVILLE, Northland, NZL, AU",
+        "sort_date_iso": "1954-07-13",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": -35.95,
+        "lon": 173.87,
+        "chunk_id": "chunk_000000",
+        "detail_index": 579
+      }
+    ],
+    "CA": [
+      {
+        "event_id": 4073693762937689,
+        "source": "ufocat",
+        "location_raw": "VALLE DEL MEZQUITAL, Hidalgo, MEX, CA",
+        "sort_date_iso": "1993-10-16",
+        "date_precision": "month",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 20.02,
+        "lon": -99.35,
+        "chunk_id": "chunk_000000",
+        "detail_index": 545
+      },
+      {
+        "event_id": 1943453741020566,
+        "source": "ufocat",
+        "location_raw": "COZUMEL, Quintana Roo, MEX, CA",
+        "sort_date_iso": "2014-11-10",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 20.42,
+        "lon": -86.92,
+        "chunk_id": "chunk_000000",
+        "detail_index": 748
+      },
+      {
+        "event_id": 3526458951105088,
+        "source": "ufocat",
+        "location_raw": "MEXICO, Dist Federal, MEX, CA",
+        "sort_date_iso": "1968-03-25",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 19.42,
+        "lon": -99.16,
+        "chunk_id": "chunk_000000",
+        "detail_index": 1392
+      }
+    ],
+    "ME": [
+      {
+        "event_id": 2013136358466603,
+        "source": "ufocat",
+        "location_raw": "YAFO, Tel Aviv, ISR, ME",
+        "sort_date_iso": "1998-01-08",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 32.03,
+        "lon": 34.75,
+        "chunk_id": "chunk_000000",
+        "detail_index": 825
+      },
+      {
+        "event_id": 994119646117084,
+        "source": "ufocat",
+        "location_raw": "TEHRAN, Tehran, IRN, ME",
+        "sort_date_iso": "1976-09-19",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "city",
+        "lat": 35.71219607,
+        "lon": 51.36844735,
+        "chunk_id": "chunk_000000",
+        "detail_index": 1204
+      },
+      {
+        "event_id": 1745965632389857,
+        "source": "ufocat",
+        "location_raw": "SARI, CASPIAN SEA, Mazandaran, IRN, ME",
+        "sort_date_iso": "1989-09-03",
+        "date_precision": "exact_day",
+        "has_coordinates": true,
+        "location_precision": "exact_coords",
+        "lat": 36.58,
+        "lon": -52.75,
+        "chunk_id": "chunk_000000",
+        "detail_index": 1428
+      }
+    ]
+  },
+  "policy": {
+    "canonicalRecordsMutated": false,
+    "wholeCorpusOrDetailCopiesCreated": false,
+    "newTimezoneGuessesFromLongitude": false,
+    "otherSourceParsingChanged": false,
+    "missingSentinelClocksRecoveredByThisParser": false,
+    "sourceSpecificRegions": [
+      "CA",
+      "CN",
+      "AU",
+      "ME"
+    ],
+    "knownCanadianProvinceRequiredForCN": true,
+    "recognizedRegionCountryAllowlistRequiredForCA_AU_ME": true,
+    "unreviewedNativeCountryAliasesInferred": false,
+    "rawRegionStateContradictionsPreventSpecialNormalization": true,
+    "existingCoordinatePrecisionHistoricalTimezoneGatesRetained": true
+  },
+  "storageLifecycle": {
+    "purpose": "small unique corpus-wide source-format normalization audit",
+    "canonicalArtifact": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\docs\\qa\\corpus-timing-20261008\\source-region-audit.json",
+    "rollback": "previous production timing evidence retained unchanged by this audit",
+    "supersededArtifacts": [],
+    "retention": "retain alongside corresponding chronology code/release; reproducible by rescanning pinned effective summaries",
+    "newFilesLargerThan100MiB": []
+  }
+}

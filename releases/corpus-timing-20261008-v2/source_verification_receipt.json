@@ -1,0 +1,37 @@
+{
+  "schemaId": "occurrence-clock-source-verification-receipt-v1",
+  "verifiedLocalRows": 1568,
+  "verifiedSourceChunks": 280,
+  "ledger": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\corpus-recovery\\occurrence_clock_evidence.json.gz",
+    "bytes": 330508,
+    "sha256": "ab5297c6a8b61594172a4161dae92075b1c590e5e1d234c32ea13017dc112ae4"
+  },
+  "acceptedSourceHashesIdentityDatesFieldsQuotesAndRulesVerified": true,
+  "explicitTimezoneLiteralBoundaryCheck": {
+    "completeAcceptedTokens": 240,
+    "prefixOnlyTimezoneTokens": 0,
+    "guardFixture": "Zanesville must not supply a UTC Z label"
+  },
+  "currentExtractor": {
+    "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\recover_occurrence_clock_evidence.py",
+    "bytes": 26924,
+    "sha256": "cd1b7ec1e3f53bed67f29fba5230984b1b2e7dc986d86719647e9f98919c766b"
+  },
+  "templateFixtures": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\corpus-recovery\\extraction_review_fixtures.json",
+    "bytes": 4289,
+    "sha256": "acc7994721a7876e8d8a7f6735c558be9d36556a6a330eb1b62a02d5505ba809"
+  },
+  "fixtureCount": 40,
+  "focusedUnitTests": {
+    "passed": 3,
+    "command": "py -3 -m unittest discover -s tests -p test_recover_occurrence_clock_evidence.py"
+  },
+  "policy": {
+    "localEvidenceAcceptedAsUTC": false,
+    "sourceMidnightNoonSentinelFieldsPromoted": false,
+    "sourceMutated": false
+  },
+  "purpose": "Retain the unique source-reopening and bounded rule QA receipt for this sparse local-clock ledger. Rebuild using helper --verify-only and the pinned shared chunks; no complete corpus or deployment copy."
+}

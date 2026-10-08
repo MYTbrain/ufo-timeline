@@ -19061,13 +19061,23 @@
     };
   }
 
-  function traceChronologyClockLabel(event, interval) {
-    const sourceClock = event && (event.time_display || event.time_raw);
-    if (!interval) return sourceClock ? String(sourceClock) + " · no accepted UTC time" : "No accepted UTC time";
-    if (interval.evidence.kind === "date_only") return "Date only · complete civil-day UTC bounds";
+  function traceChronologyClockLabel(event, interval, exclusion) {
+    if (exclusion) return "Occurrence ordering withheld · " + exclusion.basis;
+    const fromDescription = interval && interval.evidence.sourceField === "description";
+    const sourceClock = !fromDescription && event && (event.time_display || event.time_raw);
+    if (!interval) return sourceClock ? String(sourceClock) + " · no accepted UTC timing bounds" : "No accepted UTC timing bounds";
+    if (interval.evidence.kind === "date_only" || interval.evidence.kind === "source_calendar_day_zone_bound") {
+      return "Reported date only · whole-day UTC range; no occurrence clock recovered";
+    }
+    if (interval.evidence.confidence === "bounded" || interval.endMs - interval.startMs >= 60000) {
+      const format = new Intl.DateTimeFormat("en", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+      return (sourceClock ? String(sourceClock) + " · " : fromDescription ? "Occurrence time from report text · " : "Reported occurrence time · ") +
+        "UTC range " + format.format(interval.startMs) + " – " + format.format(interval.endMs);
+    }
     const localClock = new Intl.DateTimeFormat("en", { timeZone: interval.zone, hour: "numeric", minute: "2-digit" }).format(interval.startMs);
     const utcClock = new Intl.DateTimeFormat("en", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(interval.startMs);
-    return (sourceClock || localClock) + " · " + interval.zone + " · " + utcClock + " UTC";
+    const frame = interval.evidence.timezoneEvidence === "explicit_ufocat_source_timebase" ? "source-declared timebase" : interval.zone;
+    return (sourceClock || localClock) + (fromDescription ? " from report text" : "") + " · " + frame + " · " + utcClock + " UTC";
   }
 
   function loadTraceChronologyEvidence() {
@@ -27296,11 +27306,13 @@
           ? "The earlier report's latest possible UTC time precedes the later report's earliest possible UTC time."
           : timing.reason === "overlapping_utc_intervals"
             ? "The accepted UTC time intervals overlap, so their order is unresolved."
+          : timing.reason === "source_occurrence_date_excluded"
+            ? "A source date/time flag prevents occurrence ordering. The endpoint explanation identifies the source warning."
             : runtime.traceChronologyStatus === "unavailable"
               ? "The source-backed timing artifact is unavailable; this connection remains unresolved."
-            : "One or both reports lack an accepted source-backed clock and timezone."],
-        [sameDayOrderUnknown ? "Source time A" : "Earlier source time", traceChronologyClockLabel(fromEvent, timing.from)],
-        [sameDayOrderUnknown ? "Source time B" : "Later source time", traceChronologyClockLabel(toEvent, timing.to)]);
+            : "One or both reports lack accepted source-backed UTC timing bounds."],
+        [sameDayOrderUnknown ? "Source time A" : "Earlier source time", traceChronologyClockLabel(fromEvent, timing.from, timing.exclusions && timing.exclusions.from)],
+        [sameDayOrderUnknown ? "Source time B" : "Later source time", traceChronologyClockLabel(toEvent, timing.to, timing.exclusions && timing.exclusions.to)]);
     }
     const description = TRACE_DIRECTIONS.describeSegment(segment, { direction: state.regionSelection.direction });
     const directions = description.directions;
@@ -27337,7 +27349,7 @@
         sharedLinksMarkup +
         '<p class="chronological-neighborhood-inspector-note">' +
         (sameDayOrderUnknown
-          ? 'Report order is unresolved because accepted UTC intervals overlap or source-backed timing is missing. The dashed, double-headed arrow is excluded from directional percentages; travel direction and origin are unestablished.'
+          ? 'Report order is unresolved because UTC intervals overlap, timing is missing, or the source flags an unreliable occurrence date. The dashed, double-headed arrow is excluded from directional percentages; travel direction and origin are unestablished.'
           : 'The arrow follows non-overlapping report-time intervals, from earlier to later. It does not establish travel, origin, or the same craft.') + '</p>' +
         TRACE_DIRECTIONS.summaryMarkup(directionSummary, {
           selectedSectors: directions.map(function (entry) { return entry.sector; }),
@@ -27348,9 +27360,9 @@
         }).join("") +
         "</dl>" + (timing && TRACE_CHRONOLOGY
           ? '<details><summary>Timing evidence</summary><dl class="chronological-neighborhood-inspector-grid"><dt>' +
-            (sameDayOrderUnknown ? 'Endpoint A' : 'Earlier report') + '</dt><dd>' + escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.from)) +
+            (sameDayOrderUnknown ? 'Endpoint A' : 'Earlier report') + '</dt><dd>' + escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.from, timing.exclusions && timing.exclusions.from)) +
             '</dd><dt>' + (sameDayOrderUnknown ? 'Endpoint B' : 'Later report') + '</dt><dd>' +
-            escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.to)) + '</dd><dt>Timing release</dt><dd>' +
+            escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.to, timing.exclusions && timing.exclusions.to)) + '</dd><dt>Timing release</dt><dd>' +
             escapeHtml(timing.releaseId || 'Bounded civil-date ordering') + '</dd>' +
             (hypotheticalSpeed ? '<dt>Hypothetical link speed</dt><dd>' +
               escapeHtml(hypotheticalSpeed.lowerKph.toFixed(1) + '–' + hypotheticalSpeed.upperKph.toFixed(1)) +

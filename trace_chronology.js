@@ -66,8 +66,14 @@
       if (entry.timezoneEvidence != null && (typeof entry.timezoneEvidence !== "string" || !entry.timezoneEvidence.trim())) {
         throw new Error("Trace chronology timezone evidence is incomplete.");
       }
+      for (const field of ["timePrecision", "sourceField", "clockEvidence", "conversion"]) {
+        if (entry[field] != null && (typeof entry[field] !== "string" || !entry[field].trim())) {
+          throw new Error("Trace chronology " + field + " evidence is incomplete.");
+        }
+      }
       return Object.freeze({ status: "accepted", kind: entry.kind, confidence: entry.confidence, basis: entry.basis,
-        timezoneEvidence: entry.timezoneEvidence || "" });
+        timezoneEvidence: entry.timezoneEvidence || "", timePrecision: entry.timePrecision || "",
+        sourceField: entry.sourceField || "", clockEvidence: entry.clockEvidence || "", conversion: entry.conversion || "" });
     });
     const zones = payload.codes.zone.map(function (zone) {
       if (typeof zone !== "string" || !zone.trim()) throw new Error("Trace chronology timezone is missing.");
@@ -91,15 +97,42 @@
     const ends = new Float64Array(rows.length);
     const evidenceCodes = new Uint32Array(rows.length);
     const zoneCodes = new Uint32Array(rows.length);
+    const evidenceKindCounts = {};
     rows.forEach(function (row, position) {
       if (position && row[0] === rows[position - 1][0]) throw new Error("Trace chronology evidence has a duplicate event ID.");
       ids[position] = row[0]; starts[position] = row[1]; ends[position] = row[2];
       evidenceCodes[position] = row[3]; zoneCodes[position] = row[4];
+      const kind = evidence[row[3]].kind;
+      evidenceKindCounts[kind] = (evidenceKindCounts[kind] || 0) + 1;
+    });
+    const exclusions = new Map();
+    if (payload.excludedDates != null && !Array.isArray(payload.excludedDates)) {
+      throw new Error("Trace chronology date exclusions are invalid.");
+    }
+    (payload.excludedDates || []).forEach(function (entry) {
+      const id = entry && identifier(entry.eventId);
+      if (!id || typeof entry.eventId !== "number" || exclusions.has(id) ||
+          typeof entry.reason !== "string" || !entry.reason.trim() ||
+          typeof entry.basis !== "string" || !entry.basis.trim()) {
+        throw new Error("Trace chronology date exclusion has an invalid or duplicate source basis.");
+      }
+      // An occurrence date cannot simultaneously be accepted and excluded.
+      let low = 0, high = ids.length;
+      while (low < high) {
+        const middle = Math.floor((low + high) / 2);
+        if (ids[middle] < entry.eventId) low = middle + 1;
+        else high = middle;
+      }
+      if (low < ids.length && ids[low] === entry.eventId) {
+        throw new Error("Trace chronology date exclusion conflicts with an accepted interval.");
+      }
+      exclusions.set(id, Object.freeze({ reason: entry.reason, basis: entry.basis }));
     });
     const releaseId = payload.releaseId;
     return Object.freeze({
       releaseId: releaseId,
       rowCount: ids.length,
+      exclusion: function (eventId) { return exclusions.get(identifier(eventId)) || null; },
       interval: function (eventId) {
         const id = identifier(eventId);
         if (!id) return null;
@@ -116,8 +149,8 @@
         } : null;
       },
       snapshot: function () {
-        return { status: "ready", releaseId: releaseId, acceptedEventCount: ids.length,
-          evidenceKinds: evidence.map(function (entry) { return entry.kind; }), zoneCount: zones.length,
+        return { status: "ready", releaseId: releaseId, acceptedEventCount: ids.length, excludedDateCount: exclusions.size,
+          evidenceKinds: Object.keys(evidenceKindCounts), evidenceKindCounts: Object.assign({}, evidenceKindCounts), zoneCount: zones.length,
           indexBytes: ids.byteLength + starts.byteLength + ends.byteLength + evidenceCodes.byteLength + zoneCodes.byteLength };
       },
     });
@@ -133,8 +166,20 @@
   }
 
   function resolvePair(index, fromEventId, toEventId, dates) {
+    if (!index || typeof index.interval !== "function") {
+      // The artifact also carries date warnings. Without it a publication or
+      // erroneous date could otherwise gain false order through date fallback.
+      return { status: "unknown", reason: "timing_evidence_unavailable", from: null, to: null, reversed: false };
+    }
     let from = index && typeof index.interval === "function" ? index.interval(fromEventId) : null;
     let to = index && typeof index.interval === "function" ? index.interval(toEventId) : null;
+    const exclusions = {
+      from: index && typeof index.exclusion === "function" ? index.exclusion(fromEventId) : null,
+      to: index && typeof index.exclusion === "function" ? index.exclusion(toEventId) : null,
+    };
+    if (exclusions.from || exclusions.to) {
+      return { status: "unknown", reason: "source_occurrence_date_excluded", from: from, to: to, reversed: false, exclusions: exclusions };
+    }
     if (dates && typeof dates.gapDays === "number" && dates.gapDays > 2) {
       from = from || dateInterval(fromEventId, dates.fromOrdinal);
       to = to || dateInterval(toEventId, dates.toOrdinal);
@@ -168,11 +213,16 @@
     return oriented;
   }
 
-  function intervalLabel(interval) {
-    if (!interval) return "No accepted source-backed clock and timezone.";
+  function intervalLabel(interval, exclusion) {
+    if (exclusion) return "Occurrence ordering withheld · " + exclusion.basis;
+    if (!interval) return "No accepted source-backed UTC timing bounds.";
     const start = new Date(interval.startMs).toISOString();
     const end = new Date(interval.endMs).toISOString();
-    return (start === end ? start : start + " to " + end) + " · " + interval.zone + " · " +
+    const precisionLabel = interval.evidence.kind === "date_only" || interval.evidence.kind === "source_calendar_day_zone_bound"
+      ? "Reported date only; no occurrence clock recovered · "
+      : interval.evidence.kind.endsWith("_zone_envelope")
+        ? "Reported clock with jurisdiction time bounds · " : "";
+    return precisionLabel + (start === end ? start : start + " to " + end) + " · " + interval.zone + " · " +
       interval.evidence.basis + " (" + interval.evidence.confidence + ")" +
       (interval.evidence.timezoneEvidence ? "; timezone evidence: " + interval.evidence.timezoneEvidence : "");
   }

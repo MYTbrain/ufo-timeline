@@ -1,0 +1,329 @@
+{
+  "schemaId": "corpus-timing-transition-check-v1",
+  "baseline": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\evidence.json.gz",
+    "bytes": 3488744,
+    "sha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375"
+  },
+  "candidate": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\corpus-recovery\\evidence-v3\\evidence.json.gz",
+    "bytes": 7592318,
+    "sha256": "b720163bf83c96bc0bcf0997dbc268063b07c25e0c6fc48d821544040b14e3f8"
+  },
+  "sourceFieldLedger": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\trace-chronology-20261008\\corpus-recovery\\ufocat-source-fields\\fields.json.gz",
+    "bytes": 1192410,
+    "sha256": "4ef20ba6bd8b3f622cd24315939c945355f1f6ebf2185aca5b3ec6425c177174"
+  },
+  "counts": {
+    "prior_numeric_intervals_unchanged": 213125,
+    "source_flag_corrected_interval": 116,
+    "source_flag_withheld_interval": 123,
+    "newly_supported_intervals": 211973,
+    "baseline_accepted_intervals": 213364,
+    "candidate_accepted_intervals": 425214,
+    "source_date_exclusions": 3624
+  },
+  "sourceFlagChangeCounts": {
+    ". / source_flag_corrected_interval": 88,
+    "- / source_flag_withheld_interval": 51,
+    "' / source_flag_withheld_interval": 57,
+    "= / source_flag_withheld_interval": 13,
+    "+ / source_flag_corrected_interval": 28,
+    "0 / source_flag_withheld_interval": 1,
+    "Z / source_flag_withheld_interval": 1
+  },
+  "examples": [
+    {
+      "eventId": 14305816391321,
+      "sourceFlag": ".",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        -336618900000,
+        -336618840001
+      ],
+      "newUTC": [
+        -336615300000,
+        -336615240001
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 78453552945300,
+      "sourceFlag": ".",
+      "sourceZoneCode": "6",
+      "oldUTC": [
+        -229136700000,
+        -229136640001
+      ],
+      "newUTC": [
+        -229133100000,
+        -229133040001
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 92673915174279,
+      "sourceFlag": "-",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        237238200000,
+        237238259999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 92673915174279,
+        "reason": "source_date_approximate",
+        "basis": "UFOCAT TZ marks the date as approximate by one or two days; exact occurrence ordering is withheld."
+      }
+    },
+    {
+      "eventId": 122480390279296,
+      "sourceFlag": ".",
+      "sourceZoneCode": "4",
+      "oldUTC": [
+        1555376400000,
+        1555376459999
+      ],
+      "newUTC": [
+        1555380000000,
+        1555380059999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 129600946822827,
+      "sourceFlag": "'",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        524181600000,
+        524181659999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 129600946822827,
+        "reason": "source_publication_date",
+        "basis": "UFOCAT TZ marks a publication date, not an occurrence date."
+      }
+    },
+    {
+      "eventId": 133014629163678,
+      "sourceFlag": "'",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        177379200000,
+        177379259999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 133014629163678,
+        "reason": "source_publication_date",
+        "basis": "UFOCAT TZ marks a publication date, not an occurrence date."
+      }
+    },
+    {
+      "eventId": 136877116253243,
+      "sourceFlag": ".",
+      "sourceZoneCode": "6",
+      "oldUTC": [
+        57640200000,
+        57640259999
+      ],
+      "newUTC": [
+        57643800000,
+        57643859999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 178807106201148,
+      "sourceFlag": ".",
+      "sourceZoneCode": "4",
+      "oldUTC": [
+        182244600000,
+        182244659999
+      ],
+      "newUTC": [
+        182248200000,
+        182248259999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 197468393328615,
+      "sourceFlag": ".",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        -385531200000,
+        -385531140001
+      ],
+      "newUTC": [
+        -385527600000,
+        -385527540001
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 214942498047538,
+      "sourceFlag": "-",
+      "sourceZoneCode": "4",
+      "oldUTC": [
+        960411600000,
+        960411659999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 214942498047538,
+        "reason": "source_date_approximate",
+        "basis": "UFOCAT TZ marks the date as approximate by one or two days; exact occurrence ordering is withheld."
+      }
+    },
+    {
+      "eventId": 233750599251950,
+      "sourceFlag": ".",
+      "sourceZoneCode": "12",
+      "oldUTC": [
+        246043200000,
+        246043259999
+      ],
+      "newUTC": [
+        246046800000,
+        246046859999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 247884555398484,
+      "sourceFlag": ".",
+      "sourceZoneCode": "14",
+      "oldUTC": [
+        239762580000,
+        239762639999
+      ],
+      "newUTC": [
+        239766180000,
+        239766239999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 264215015482177,
+      "sourceFlag": "'",
+      "sourceZoneCode": "6",
+      "oldUTC": [
+        736279200000,
+        736279259999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 264215015482177,
+        "reason": "source_publication_date",
+        "basis": "UFOCAT TZ marks a publication date, not an occurrence date."
+      }
+    },
+    {
+      "eventId": 268595406543171,
+      "sourceFlag": "'",
+      "sourceZoneCode": "12",
+      "oldUTC": [
+        253297200000,
+        253297259999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 268595406543171,
+        "reason": "source_publication_date",
+        "basis": "UFOCAT TZ marks a publication date, not an occurrence date."
+      }
+    },
+    {
+      "eventId": 325232265666808,
+      "sourceFlag": ".",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        -462810900000,
+        -462810840001
+      ],
+      "newUTC": [
+        -462807300000,
+        -462807240001
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 337160943779623,
+      "sourceFlag": "=",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        214002000000,
+        214002059999
+      ],
+      "newUTC": null,
+      "exclusion": {
+        "eventId": 337160943779623,
+        "reason": "source_date_flagged_erroneous",
+        "basis": "UFOCAT TZ marks the source date as believed or known erroneous."
+      }
+    },
+    {
+      "eventId": 356253731308249,
+      "sourceFlag": ".",
+      "sourceZoneCode": "12",
+      "oldUTC": [
+        52127100000,
+        52127159999
+      ],
+      "newUTC": [
+        52130700000,
+        52130759999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 356376096348353,
+      "sourceFlag": ".",
+      "sourceZoneCode": "4",
+      "oldUTC": [
+        55903920000,
+        55903979999
+      ],
+      "newUTC": [
+        55907520000,
+        55907579999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 356716765554175,
+      "sourceFlag": "+",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        184631400000,
+        184631459999
+      ],
+      "newUTC": [
+        184627800000,
+        184627859999
+      ],
+      "exclusion": null
+    },
+    {
+      "eventId": 366974076368416,
+      "sourceFlag": "+",
+      "sourceZoneCode": "7",
+      "oldUTC": [
+        194920200000,
+        194920259999
+      ],
+      "newUTC": [
+        194916600000,
+        194916659999
+      ],
+      "exclusion": null
+    }
+  ],
+  "unexplainedPriorChanges": 0,
+  "allOtherPriorNumericBoundsPreserved": true,
+  "sourceRecordsMutated": false,
+  "storagePurpose": "Retain small source-correction reconciliation receipt with final corpus timing audit; rebuild using pinned arguments, no corpus or backup copy."
+}

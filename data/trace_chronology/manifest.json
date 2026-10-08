@@ -1,13 +1,13 @@
 {
   "schemaId": "trace-chronology-runtime-v1",
-  "releaseId": "trace-chronology-20261008",
+  "releaseId": "corpus-timing-20261008-v3",
   "sourceContract": "source-backed-clock-and-historical-zone-v1",
   "file": "evidence.json.gz",
-  "rowCount": 213364,
-  "gzipBytes": 3488744,
-  "gzipSha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
-  "decodedBytes": 10773026,
-  "decodedSha256": "145148d5aaf01c92ecba71680603defe34f4759925ed154faadbe0f2e15075db",
+  "rowCount": 425214,
+  "gzipBytes": 7592318,
+  "gzipSha256": "b720163bf83c96bc0bcf0997dbc268063b07c25e0c6fc48d821544040b14e3f8",
+  "decodedBytes": 22596152,
+  "decodedSha256": "74b139c56fd7ece8ba0d3b006669ee70f8683e055321ac17f7f47774ca66cf24",
   "sourceRowsPreserved": 702893,
   "canonicalRecordsMutated": false,
   "timezoneDatabase": "2026c",
@@ -20,14 +20,55 @@
     "nonexistentLocalClocksAccepted": false,
     "longitudeTimezoneGuessesUsed": false,
     "qualitativeMidpointsUsed": false,
-    "automaticNarrativeMining": false,
+    "automaticNarrativeMining": true,
     "sourceField": "time_raw",
+    "narrativeRecoveryRequiresRerunSourcePinnedLeadingOwnOccurrenceRule": true,
+    "acceptedNarrativeOriginalChunksReopenedAndHashed": true,
+    "acceptedNarrativeSourceIdentityDateDescriptionAndExactQuoteRevalidated": true,
     "geographicTimezoneIsInference": true,
     "inferredZoneYearMinimum": 1900,
-    "pre1970InferredZonesRequireIanaRepresentativeLocality": true,
+    "pre1970NamedZonePrecisionRequiresIanaRepresentativeLocality": true,
+    "pre1970UnsupportedContinentalUsLocalitiesUseAllCivilOffsetsAfter": "1918-03-31",
+    "continentalUsCivilOffsetEnvelopeMinutes": [
+      -480,
+      -240
+    ],
+    "metropolitanFranceNationalOffsets": {
+      "1911-03-12_through_1945-12-31": [
+        0,
+        120
+      ],
+      "1946-01-01_through_1969-12-31": [
+        60,
+        60
+      ]
+    },
+    "ukHomeTerritoryOffsetsFrom1916October2Through1969Minutes": [
+      0,
+      120
+    ],
+    "multiZoneCountriesUseAllPost1970IanaCandidates": true,
+    "sourceClockStatusAndCalendarDayBoundsRemainDistinct": true,
+    "approximateClockUncertaintyInvented": false,
+    "sourceCalendarDayBoundsRecoverEventClock": false,
     "provenanceJoin": "eventId joins hashed effective summary row chunk_id/detail_index and hashed source-clock projection/value dictionary",
-    "acceptedNarrativeOriginalChunksReopenedAndHashed": true,
-    "acceptedNarrativeSourceIdentityDateDescriptionAndExactQuoteRevalidated": true
+    "documentedUfocatTimeDateFlagsUsed": true,
+    "publicationApproximateErroneousDatesExcluded": true,
+    "sourceDateExclusionsBlockRuntimeCalendarDateFallback": true,
+    "blankUfocatFlagDoesNotAssertStandardOrDaylightTime": true,
+    "ufocatTimebaseReference": "https://cufos.org/PDFs/UFOCAT%20Codebook%202023.pdf"
   },
-  "auditSha256": "2d66b09755416906cef8808af6b4b8c89467d1041b853a58b26ebc7a5f26a072"
+  "evidenceKindCounts": {
+    "reviewed_event_clock": 38,
+    "source_calendar_day_zone_bound": 77268,
+    "source_clock_zone_envelope": 129480,
+    "source_documented_timebase_clock": 5596,
+    "source_exact_clock": 212747,
+    "source_recovered_clock_field": 1,
+    "source_recovered_clock_field_zone_envelope": 10,
+    "source_recovered_occurrence_clock": 28,
+    "source_recovered_occurrence_clock_zone_envelope": 46
+  },
+  "excludedOccurrenceDateCount": 3624,
+  "auditSha256": "6d1eee0e853a9f68350caa9948248c0439cabf79e61be4b3c99bb78740e9b3fe"
 }

@@ -185,9 +185,13 @@
       const lon = sameDayFiniteNumber(event.lon);
       if (!day || !recognizedCrafts.has(craft) || lat == null || lon == null || lat < -90 || lat > 90 || lon < -180 || lon > 180) return;
       const interval = chronology && chronology.interval(id);
-      // With reviewed evidence, unknown clocks use only an ID tie-breaker.
+      // Whole-day bounds do not supply a clock for selecting neighbors. Keep
+      // them with unknown clocks, using only an ID tie-breaker, so an invented
+      // noon midpoint cannot replace a connection between two reported times.
       // UTC instants and unconverted local clocks are never mixed as timing.
-      const key = chronology ? (interval ? [1, (interval.startMs + interval.endMs) / 2, interval.endMs - interval.startMs] : [3])
+      const hasClock = interval && interval.evidence && interval.evidence.kind !== "date_only" &&
+        interval.evidence.kind !== "source_calendar_day_zone_bound";
+      const key = chronology ? (hasClock ? [1, (interval.startMs + interval.endMs) / 2, interval.endMs - interval.startMs] : [3])
         : sameDayChronologyKey(event);
       const record = { id, day, craft, lat, lon, key };
       const signature = JSON.stringify([day, craft, lat, lon, key]);

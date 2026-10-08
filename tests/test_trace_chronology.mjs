@@ -68,6 +68,24 @@ const touching = chronology.createEvidenceIndex(payload([[10, 100, 200, 0, 0], [
 assert.equal(chronology.resolvePair(touching, 10, 11).status, "unknown", "interval boundaries must be strictly separated");
 assert.match(chronology.intervalLabel(index.interval(2)), /1994-09-16T08:00:00.000Z.*Africa\/Harare.*occurrence clock/);
 
+const boundedInput = payload([[20, day + 4 * hour, day + 32 * hour - 1, 1, 0],
+  [21, day + 48 * hour, day + 48 * hour + 59999, 0, 0],
+  [22, day + 20 * hour, day + 24 * hour + 59999, 2, 0]]);
+boundedInput.codes.evidence.push(
+  { status: "accepted", kind: "source_calendar_day_zone_bound", confidence: "bounded", basis: "Whole reported civil day within source jurisdiction offsets" },
+  { status: "accepted", kind: "source_clock_zone_envelope", confidence: "bounded", basis: "Reported occurrence clock across possible jurisdiction offsets", sourceField: "description", timePrecision: "hour" });
+const boundedIndex = chronology.createEvidenceIndex(boundedInput);
+assert.equal(chronology.resolvePair(boundedIndex, 20, 21).status, "ordered", "a whole-day bound can establish order without inventing a clock");
+assert.equal(chronology.resolvePair(boundedIndex, 20, 22).status, "unknown", "clock and whole-day bounds overlap, even with different midpoint times");
+assert.match(chronology.intervalLabel(boundedIndex.interval(20)), /Reported date only; no occurrence clock recovered/);
+assert.match(chronology.intervalLabel(boundedIndex.interval(22)), /jurisdiction time bounds/);
+assert.deepEqual(boundedIndex.snapshot().evidenceKindCounts, {
+  source_calendar_day_zone_bound: 1, source_clock: 1, source_clock_zone_envelope: 1,
+});
+const kindCounts = boundedIndex.snapshot().evidenceKindCounts;
+kindCounts.source_calendar_day_zone_bound = 99;
+assert.equal(boundedIndex.snapshot().evidenceKindCounts.source_calendar_day_zone_bound, 1, "snapshot cannot mutate source precision accounting");
+
 for (const mutation of [
   p => { p.sourceContract = "unverified"; }, p => { p.codes.evidence[0].status = "candidate"; },
   p => { p.codes.zone[0] = "not-a-timezone"; }, p => { p.rows[0][1] = null; },
@@ -80,12 +98,30 @@ for (const mutation of [
 }
 
 const noClock = { ...westToEast, fromEventId: 91, toEventId: 92, gapDays: 3, fromSortOrdinal: 100, toSortOrdinal: 103 };
-const dateOrdered = chronology.orientSegment(null, noClock);
+const dateFallbackIndex = chronology.createEvidenceIndex(payload([]));
+const dateOrdered = chronology.orientSegment(dateFallbackIndex, noClock);
 assert.equal(dateOrdered.sameDayOrderKnown, true);
 assert.equal(dateOrdered.chronology.from.evidence.kind, "date_only");
 assert.equal(dateOrdered.chronology.from.endMs < dateOrdered.chronology.to.startMs, true);
-for (const gapDays of [0, 1, 2]) assert.equal(chronology.orientSegment(null, { ...noClock, gapDays }).sameDayOrderKnown, false);
-assert.equal(chronology.orientSegment(null, { ...noClock, fromSortOrdinal: null }).sameDayOrderKnown, false);
+for (const gapDays of [0, 1, 2]) assert.equal(chronology.orientSegment(dateFallbackIndex, { ...noClock, gapDays }).sameDayOrderKnown, false);
+assert.equal(chronology.orientSegment(dateFallbackIndex, { ...noClock, fromSortOrdinal: null }).sameDayOrderKnown, false);
+assert.equal(chronology.orientSegment(null, noClock).sameDayOrderKnown, false,
+  "a missing artifact cannot bypass its unknown source-date warnings through wide-gap date fallback");
+
+const excludedInput = payload([]);
+excludedInput.excludedDates = [{ eventId: 91, reason: "source_publication_date", basis: "Source explicitly marks a publication date." }];
+const excludedIndex = chronology.createEvidenceIndex(excludedInput);
+assert.equal(excludedIndex.snapshot().excludedDateCount, 1);
+assert.equal(chronology.orientSegment(excludedIndex, noClock).sameDayOrderKnown, false,
+  "even widely separated publication dates cannot be recovered through generic date fallback");
+const excludedDecision = chronology.resolvePair(excludedIndex, 91, 92, { gapDays: 30, fromOrdinal: 100, toOrdinal: 130 });
+assert.equal(excludedDecision.reason, "source_occurrence_date_excluded");
+assert.match(chronology.intervalLabel(null, excludedDecision.exclusions.from), /publication date/);
+for (const bad of [
+  { ...excludedInput, excludedDates: [{ eventId: 91, reason: "", basis: "missing reason" }] },
+  { ...excludedInput, excludedDates: [...excludedInput.excludedDates, ...excludedInput.excludedDates] },
+  { ...excludedInput, rows: [[91, 100, 200, 0, 0]] },
+]) assert.throws(() => chronology.createEvidenceIndex(bad), /Trace chronology/);
 
 const reports = [
   { event_id: 1, date_precision: "exact_day", sort_date_iso: "1994-09-16", sort_ordinal: Math.floor(day / 86400000), lat: 47, lon: -122,
@@ -98,6 +134,13 @@ assert.equal(caseLinks[0].traceId, "2->1", "famous-case chain uses evidence UTC 
 assert.equal(caseLinks[0].sameDayOrderKnown, true);
 const withoutEvidence = neighborhood.buildSameDayCraftTraceSegments(reports, { chronology: chronology.createEvidenceIndex(payload([])), timingSupport: chronology });
 assert.equal(withoutEvidence[0].sameDayOrderKnown, false, "old keys cannot establish source-backed order");
+const noClockNeighbor = { ...reports[0], event_id: 20, lat: 10, lon: 20 };
+const calendarNeighborIndexInput = clone(boundedInput);
+calendarNeighborIndexInput.rows.push(...input.rows);
+const calendarNeighborIndex = chronology.createEvidenceIndex(calendarNeighborIndexInput);
+const calendarNeighbors = neighborhood.buildSameDayCraftTraceSegments([...reports, noClockNeighbor], { chronology: calendarNeighborIndex, timingSupport: chronology });
+assert.equal(calendarNeighbors[0].traceId, "2->1", "whole-day bounds do not inject an artificial midpoint between clock-backed same-day neighbors");
+assert.equal(calendarNeighbors[1].sameDayOrderKnown, false, "the clock-to-whole-day neighbor retains its actual overlapping interval");
 const summary = directions.summarizeDirections([ordered, chronology.orientSegment(index, { ...westToEast, fromEventId: 3, toEventId: 4 })]);
 assert.equal(summary.denominator, 1);
 assert.equal(summary.unorderedSegments, 1);
@@ -112,6 +155,15 @@ function extract(name) {
   }
   assert.fail(name);
 }
+const labelContext = vm.createContext({ Intl });
+vm.runInContext(extract("traceChronologyClockLabel"), labelContext);
+assert.match(labelContext.traceChronologyClockLabel({ time_raw: "00:00" }, boundedIndex.interval(20)), /Reported date only.*no occurrence clock recovered/);
+const clockRangeLabel = labelContext.traceChronologyClockLabel({ time_raw: "21:00" }, boundedIndex.interval(22));
+assert.match(clockRangeLabel, /Occurrence time from report text.*UTC range.*Sep 16.*Sep 17/);
+assert.doesNotMatch(clockRangeLabel, /21:00/, "an independently recovered narrative must not display a withheld structured source clock");
+assert.equal(boundedIndex.interval(22).evidence.timePrecision, "hour");
+assert.match(labelContext.traceChronologyClockLabel(null, null), /No accepted UTC timing bounds/);
+assert.match(labelContext.traceChronologyClockLabel({ time_raw: "21:00" }, null, excludedDecision.exclusions.from), /withheld.*publication date/);
 const runtime = { traceChronologyEvidence: index, traceChronologyStatus: "ready", filteredMappedCatalogDateAsc: true };
 const bucket = { key: "gap_le_1", maxDays: 1 };
 const artifact = { rowCount: 2 };
