@@ -3,13 +3,15 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "prepared_for_deployment",
+    "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev",
     "publication_receipt": "releases/trace-chronology-20261008/publication_receipt.json",
     "browser_qa": "releases/trace-chronology-20261008/production-browser-verification.json",
     "runtime_inventory_authoritative_across_docs_only_redeployments": true,
     "runtime_source_commit": "4e51824",
-    "production_verification": "releases/trace-chronology-20261008/production-verification.json"
+    "production_verification": "releases/trace-chronology-20261008/production-verification.json",
+    "production_deployment_id": "99d00ee0-0e89-42e2-9e00-5f196e9d31d2",
+    "production_source_commit": "94b47f5d81c1032f168ad57bd6771357cafeda8a"
   },
   "retained_rollback": {
     "deployment_id": "a70bc14c-550c-4057-b461-bca4fd7aba27",
@@ -4244,7 +4246,8 @@
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
     "approximate_net_project_growth_MiB": 35,
     "this_deployment_stage_growth_bytes": 3513086,
-    "full_corpus_or_bundle_copied": false
+    "full_corpus_or_bundle_copied": false,
+    "this_deployment_net_growth_MiB": 4
   },
   "runtime_revision": "trace-chronology-20261008",
   "previous_publication": {

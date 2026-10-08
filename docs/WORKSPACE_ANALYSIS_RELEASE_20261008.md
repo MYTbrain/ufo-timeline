@@ -5,6 +5,12 @@ since the validated release source `9f60d3b`. It preserves all 702,893 source
 representations, their IDs and row ordering, and the 582,877 mapped records.
 The original interactive legend and collapsible map controls remain available.
 
+The later source-backed UTC timing repair is now included in production. Its
+current publication, verification, storage and rollback designations are in
+`TRACE_CHRONOLOGY_AUDIT_20261008.md` and
+`releases/trace-chronology-20261008/publication_receipt.json`. The initial release
+receipt below remains a historical record of that earlier publication.
+
 The hosted candidate is [48969877.ufo-timeline.pages.dev](https://48969877.ufo-timeline.pages.dev/).
 Its exact asset verification passed for 261 publicly retrievable objects: 174
 Pages objects and all 87 new R2 objects. The frozen Pages inventory also includes

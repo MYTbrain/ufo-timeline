@@ -1,6 +1,6 @@
 # Report-link timing audit and repair — October 8, 2026
 
-Status: implemented and verified in the local preview; not deployed. All 702,893
+Status: deployed and verified at https://ufo-timeline.pages.dev/. All 702,893
 preserved catalog records remain unchanged. This is a sparse timing-evidence
 overlay joined to existing event IDs, not a rewritten corpus.
 
@@ -167,16 +167,31 @@ browser evidence in Git; it is not a copied static bundle or source corpus.
 Its purpose is to reproduce and review this repair, and it is retained with this
 release's code. The bounded review queue is retained only in shared research.
 
-Current validated production deployment remains
-`a70bc14c-550c-4057-b461-bca4fd7aba27`; the retained known-good rollback remains
-`c3bee7a9-56cf-4124-b17d-68f8b8533fa0`. No deployment, push, full corpus copy,
-new staging tree, or rollback copy was performed for this investigation. The
-existing `.tmp/workspace-analysis-20261008-pages` validated stage is untouched.
+The verified chronology production deployment is
+`99d00ee0-0e89-42e2-9e00-5f196e9d31d2`, published from GitHub main commit
+`94b47f5d81c1032f168ad57bd6771357cafeda8a`. The retained known-good rollback is
+`a70bc14c-550c-4057-b461-bca4fd7aba27`, source `7e6bf70`; the older `c3bee7a9`
+rollback designation is superseded. Cloudflare's receipt-only Git rebuilds may
+assign another ID to the identical runtime; the frozen inventory and final local
+observation identify the verified artifact without a repeated receipt-push loop.
 
-Approximate net growth is 14 MiB, including the shared sparse evidence, its small
+The existing `.tmp/workspace-analysis-20261008-pages` shell was verified and
+refreshed in place to 179 files / 32,261,041 bytes, with tree SHA-256
+`ee385bee01d98b1bbb0b7170ee3d4364cb004219331079eb45ae25577b2912f3`.
+All 177 publicly retrievable Pages objects passed byte/hash and required cache
+checks. The live browser loaded 213,364 accepted UTC intervals, confirmed the
+Harare–Washington reversal, held Mexico's noon ambiguity, preserved both outside
+Results endpoints, and checked the directional denominator without console
+errors. Its temporary focus view was restored. Production evidence and the
+publication receipt are retained in `releases/trace-chronology-20261008/`.
+All 87 immutable R2 objects are unchanged; no data upload, full corpus copy,
+new staging tree, or rollback copy was required.
+
+Implementation added approximately 14 MiB, including the shared sparse evidence, its small
 runtime replica, receipts, code/tests, browser images, and the local Git snapshot.
-No new file exceeds
-100 MiB. No generated artifact from this repair is superseded. Previously
+Deployment added approximately 4 MiB, primarily the 3,513,086-byte increase in
+the reused stage plus proofs, metadata and Git objects. Combined growth is about
+18 MiB. No new file exceeds 100 MiB. Previously
 documented superseded stages `.tmp/interface-pages-candidate` (26,115,918 bytes)
 and `.tmp/quality-20261007-pages` (28,176,967 bytes) remain candidates for an
 explicit, separately authorized literal-path cleanup. Necessary data and the

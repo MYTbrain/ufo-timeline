@@ -1,0 +1,68 @@
+{
+  "schema": "ufo-trace-chronology-publication-v1",
+  "status": "published_verified",
+  "runtime_revision": "trace-chronology-20261008",
+  "observed_at_utc": "2026-10-08T10:27:49.989111+00:00",
+  "runtime_source_commit": "4e51824",
+  "deployed_git_source_commit": "94b47f5d81c1032f168ad57bd6771357cafeda8a",
+  "github_source_url": "https://github.com/MYTbrain/ufo-timeline/commit/94b47f5d81c1032f168ad57bd6771357cafeda8a",
+  "production_url": "https://ufo-timeline.pages.dev/",
+  "verified_publication": {
+    "deployment_id": "99d00ee0-0e89-42e2-9e00-5f196e9d31d2",
+    "cloudflare_git_deployment_status": "success"
+  },
+  "canonical_validated_artifact": {
+    "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "pages_tree_sha256": "ee385bee01d98b1bbb0b7170ee3d4364cb004219331079eb45ae25577b2912f3",
+    "pages_files": 179,
+    "pages_bytes": 32261041
+  },
+  "retained_rollback": {
+    "deployment_id": "a70bc14c-550c-4057-b461-bca4fd7aba27",
+    "source_commit": "7e6bf70ab238db4dbbd091f2f4fb7b390a696582",
+    "superseded_designation": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
+    "protected_sources_deleted": false
+  },
+  "verification": {
+    "pages_public_objects": 177,
+    "physical_bytes_and_required_cache_headers_verified": true,
+    "accepted_utc_rows_loaded": 213364,
+    "washington_harare_utc_reversal_verified": true,
+    "ambiguous_mexico_noon_withheld": true,
+    "one_ordered_one_unknown_direction_denominator": true,
+    "browser_qa": "production-browser-verification.json",
+    "public_objects_receipt": "production-verification.json",
+    "new_r2_uploads": 0,
+    "inherited_r2_objects_unchanged": 87,
+    "console_errors": [],
+    "normal_panels_restored": true
+  },
+  "proofs": [
+    {
+      "path": "production-timing.jpg",
+      "bytes": 106750,
+      "sha256": "4b157e55e1b72da69e13d07e588580c33b98d57b710402943a22a5edfcad2857"
+    }
+  ],
+  "storage": {
+    "existing_stage_reused_in_place": true,
+    "net_stage_growth_bytes": 3513086,
+    "approximate_net_deployment_growth_MiB": 4,
+    "approximate_net_implementation_and_deployment_growth_MiB": 18,
+    "new_files_above_100MiB": [],
+    "c_free_GiB": 122.2,
+    "full_corpus_or_bundle_copied": false,
+    "superseded_generated_artifacts": [
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\interface-pages-candidate",
+        "bytes": 26115918
+      },
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\quality-20261007-pages",
+        "bytes": 28176967
+      }
+    ],
+    "cleanup_proposal": "The same two older reproducible shell stages are eligible for separately authorized literal-path cleanup. Retain current stage, shared data, scientific provenance and the designated rollback. No deletion performed."
+  },
+  "git_integration": "Receipt-only pushes trigger equivalent runtime deployments. Verify the final live runtime against the unchanged frozen inventory and save the final observation locally without another metadata-only push."
+}
