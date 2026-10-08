@@ -1,0 +1,40 @@
+{
+  "schema": "ufo-map-fit-browser-qa-v1",
+  "runtime_revision": "map-chronology-fit-20261008",
+  "actual_browser_checks": {
+    "desktop_1366x768": {
+      "map_height_px": 341,
+      "chart_bottom_px": 755.49,
+      "visible_without_page_scroll": true
+    },
+    "laptop_1280x720": {
+      "map_height_px": 293,
+      "chart_document_bottom_px": 707.5,
+      "visible_without_page_scroll": true
+    },
+    "portrait_390x844": {
+      "map_height_px": 280,
+      "chart_bottom_px": 840.85,
+      "desktop_rail_hidden": true,
+      "horizontal_overflow": false
+    },
+    "landscape_844x390": {
+      "map_height_px": 280,
+      "desktop_rail_hidden": true,
+      "horizontal_overflow": false
+    },
+    "trusted_pointer_drag": {
+      "down_96_px": 437,
+      "keyboard_up_48_px": 389,
+      "up_96_px": 293,
+      "custom_293_px_survives_reload": true,
+      "capture_released": true
+    },
+    "home_reset": true,
+    "legend_scrolled_to_final_row": true,
+    "map_control_body_scrolled_to_bottom": true
+  },
+  "regressions": "../../docs/RELEASE_REGRESSION_QA_20261008.md",
+  "shared_data_changed": false,
+  "new_r2_uploads": 0
+}

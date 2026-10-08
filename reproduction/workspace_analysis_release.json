@@ -3,26 +3,17 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "published_verified",
-    "candidate_url": "https://48969877.ufo-timeline.pages.dev",
-    "candidate_verified_objects": 261,
+    "status": "prepared_pending_production_verification",
     "production_url": "https://ufo-timeline.pages.dev",
-    "production_deployment_id": "95fcc362-54bc-4b8f-8e4d-42df6e309af0",
-    "production_source_commit": "5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
-    "production_verification": "releases/workspace-analysis-20261008/production_verification.json",
-    "publication_receipt": "releases/workspace-analysis-20261008/publication_receipt.json",
+    "publication_receipt": "releases/map-chronology-fit-20261008/publication_receipt.json",
+    "browser_qa": "releases/map-chronology-fit-20261008/browser_qa.json",
     "runtime_inventory_authoritative_across_docs_only_redeployments": true
   },
   "retained_rollback": {
-    "deployment_id": "dc834bac-2108-4de3-baad-47044e2ec51c",
-    "source_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
-    "source_pages_verified": 153,
-    "base_delivery_contract": {
-      "path": "reproduction/quality_release.json",
-      "bytes": 167738,
-      "sha256": "f57fd50edd68c9b91f83739f721c1a9f3f296e7f699e15cda8a5a445b163d3b8"
-    },
-    "after_production_validation_only": false
+    "deployment_id": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
+    "source_commit": "5ecdcef10ea2223ce74d5509af550087ba603bdb",
+    "after_production_validation_only": true,
+    "protected_sources_deleted": false
   },
   "counts": {
     "events": 702893,
@@ -30,8 +21,8 @@
   },
   "frozen_delivery_plan": {
     "path": "releases/workspace-analysis-20261008/delivery_plan.json",
-    "bytes": 255298,
-    "sha256": "5d1a121722a3d5248598e945115eb9d3bed627b15c442f7843b2a4e845a6144d"
+    "bytes": 255351,
+    "sha256": "96d90258e252c853d6a363cfd59da21f125a5bda933a1da85a14ad2add340e5a"
   },
   "pages": [
     {
@@ -155,15 +146,15 @@
     },
     {
       "path": "app.js",
-      "bytes": 1351450,
-      "sha256": "91cdd8dd5a7f55efcb0003b4d429ead93659b48b0d566d789f7de69636d7f683",
+      "bytes": 1351145,
+      "sha256": "5c5a73337f2fa8e0a6675f42e3e0cf790b1a0addbe24b589f453ff0b2a3b6f21",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "catalog_filter_worker.js",
-      "bytes": 254608,
-      "sha256": "9794b86430afd0b126ca036ac19ff72ec79e42e6940ad569a28c7ed89a32f8c5",
+      "bytes": 254600,
+      "sha256": "667ae867b24673deea3661686ed7138f2e8e511f03c3e4c952b7b2c10db6eeac",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1002,8 +993,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 150726,
-      "sha256": "921f14ee373bc2ded23966d20abd3bd4c5c09ea99c23b0c585ee93f2284ec6d5",
+      "bytes": 150703,
+      "sha256": "47d91ed04c9bc7af7a2dc14541053ff781d4e9d63f8426f6fd524117a05b92ab",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1037,9 +1028,9 @@
     },
     {
       "path": "styles.css",
-      "bytes": 273878,
-      "sha256": "97500d9a89f9b5d642ae347f1d6cc97eb9061fb3e80fe468138d0be0af295514",
-      "requires_revalidation": false,
+      "bytes": 274546,
+      "sha256": "b2cd168331f75fe2466588350d1e3e39d33b9e5e93c2ba6cf644a8a6ad6f2b02",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
@@ -4217,5 +4208,17 @@
     "rollback_deployment_after_success": "dc834bac-2108-4de3-baad-47044e2ec51c",
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
     "approximate_net_project_growth_MiB": 35
+  },
+  "runtime_revision": "map-chronology-fit-20261008",
+  "previous_publication": {
+    "status": "published_verified",
+    "candidate_url": "https://48969877.ufo-timeline.pages.dev",
+    "candidate_verified_objects": 261,
+    "production_url": "https://ufo-timeline.pages.dev",
+    "production_deployment_id": "95fcc362-54bc-4b8f-8e4d-42df6e309af0",
+    "production_source_commit": "5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
+    "production_verification": "releases/workspace-analysis-20261008/production_verification.json",
+    "publication_receipt": "releases/workspace-analysis-20261008/publication_receipt.json",
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true
   }
 }

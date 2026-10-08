@@ -3841,6 +3841,31 @@ button:focus {
   min-height: 0;
 }
 
+/* Fit the map and its chronology plot together. Explicit user resizing is
+   applied to this surface by the resize rail; child content must not impose
+   the old viewport-sized minimum. Keep both scrollable map panels available. */
+html.faithful-polish-preview .map-panel {
+  min-height: 0;
+  grid-template-rows: auto auto auto;
+}
+
+html.faithful-polish-preview .map-surface {
+  min-height: 0;
+  height: clamp(280px, calc(100dvh - 420px), 760px);
+}
+
+html.faithful-polish-preview #map {
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 0;
+}
+
+@media (max-width: 1080px), (max-height: 700px) {
+  html.faithful-polish-preview .timeline-canvas-wrap {
+    height: 112px;
+  }
+}
+
 .map-height-resize-rail {
   display: flex;
   align-items: center;

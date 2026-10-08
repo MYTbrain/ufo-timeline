@@ -1683,9 +1683,13 @@ def test_map_legend_counts_and_desktop_map_height_resizer_are_wired_and_accessib
         assert 'tabindex="0"' in index_html
         assert 'aria-orientation="horizontal"' in index_html
         assert 'aria-controls="map map-control-cluster map-legend-panel"' in index_html
-        assert "The default map height is the minimum." in index_html
+        assert "Drag up or down to resize the map." in index_html
+        assert "Double-click or press Home to fit the map and chronology chart." in index_html
 
         assert "function mapSurfaceHeightBounds()" in app_js
+        assert "function fittedMapSurfaceHeight()" in app_js
+        assert "runtime.mapSurfaceDefaultHeight" in app_js
+        assert "const MAP_SURFACE_RESIZE_MIN_HEIGHT = 280;" in app_js
         assert "function startMapSurfaceResize(event)" in app_js
         assert "function finishMapSurfaceResize(event)" in app_js
         assert "function resetMapSurfaceHeight()" in app_js

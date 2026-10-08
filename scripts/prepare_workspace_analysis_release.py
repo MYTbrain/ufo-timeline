@@ -22,6 +22,8 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "dc834bac-2108-4de3-baad-47044e2ec51c"
+RUNTIME_REVISION = "map-chronology-fit-20261008"
+RETAINED_ROLLBACK = "e70b33ca-a8c6-47b3-a4ae-55927de7e2da"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
@@ -219,7 +221,8 @@ def assemble(check_only=False):
     require(total < 40 * 1024 * 1024, "Bounded Pages candidate exceeds40MiB")
     require(shutil.disk_usage(ROOT).free - total > 100 * 1024**3, "C reserve would fall below100GiB")
     plan = {"schema": "ufo-workspace-analysis-release-v1", "release_id": RELEASE,
-            "base_deployment": BASE_DEPLOYMENT, "retained_rollback": BASE_DEPLOYMENT,
+            "base_deployment": BASE_DEPLOYMENT, "runtime_revision": RUNTIME_REVISION,
+            "retained_rollback": RETAINED_ROLLBACK,
             "counts": {"events": 702893, "mapped": 582877}, "pages": records,
             "pages_tree_sha256": tree_hash(records), "pages_total_bytes": total,
             "bucket": "ufo-timeline-data", "key_prefix": PREFIX,
@@ -229,7 +232,7 @@ def assemble(check_only=False):
             "storage": {"corpus_copied": False, "new_files_above_100MiB": [],
                         "approximate_net_local_growth_bytes": total,
                         "canonical_candidate": str(PAGES), "shared_inputs": str(REPAIRS),
-                        "rollback": BASE_DEPLOYMENT, "superseded_staging": [],
+                        "rollback": RETAINED_ROLLBACK, "superseded_staging": [],
                         "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected."}}
     if not check_only:
         validate_browser_references(records)

@@ -99,7 +99,7 @@
   const PRIMARY_FILTERS_COLLAPSE_STORAGE_KEY = "ufoTimeline.primaryFiltersCollapsed";
   const MAP_CONTROL_CLUSTER_STORAGE_KEY = "ufoTimeline.mapControlCluster";
   const MAP_CONTROL_SECTION_SESSION_KEY = "ufoTimeline.mapControlSections.v1";
-  const MAP_SURFACE_HEIGHT_STORAGE_KEY = "ufoTimeline.mapSurfaceHeight.v1";
+  const MAP_SURFACE_HEIGHT_STORAGE_KEY = "ufoTimeline.mapSurfaceHeight.v2";
   const HEADER_STATS_COLLAPSE_STORAGE_KEY = "ufoTimeline.headerStatsCollapsed";
   const APPEARANCE_PANEL_COLLAPSE_STORAGE_KEY = "ufoTimeline.appearancePanelCollapsed";
   const MAP_LEGEND_COLLAPSE_STORAGE_KEY = "ufoTimeline.mapLegendCollapsed";
@@ -311,6 +311,7 @@
   const MAP_CONTROL_CLUSTER_EDGE_PADDING = 12;
   const MAP_CONTROL_CLUSTER_MIN_HEIGHT = 320;
   const MAP_CONTROL_CLUSTER_MIN_HEIGHT_SMALL = 220;
+  const MAP_SURFACE_RESIZE_MIN_HEIGHT = 280;
   const MAP_SURFACE_RESIZE_MAX_HEIGHT = 2400;
   const MAP_SURFACE_RESIZE_KEYBOARD_STEP = 48;
   const MAP_SURFACE_RESIZE_KEYBOARD_LARGE_STEP = 240;
@@ -1143,6 +1144,7 @@
     mapSurfaceResizeRefreshFrameId: null,
     mapSurfaceResizePendingHeight: null,
     mapSurfaceMinimumHeight: null,
+    mapSurfaceDefaultHeight: null,
     mapSurfaceMaximumHeight: MAP_SURFACE_RESIZE_MAX_HEIGHT,
     mapSurfaceUserHeight: null,
     sideColumnResize: null,
@@ -4044,16 +4046,23 @@
   }
 
   function mapSurfaceHeightBounds() {
-    const minimumHeight = Number.isFinite(runtime.mapSurfaceMinimumHeight)
-      ? runtime.mapSurfaceMinimumHeight
-      : currentMapSurfaceHeight();
     return {
-      minHeight: Math.max(1, Math.round(minimumHeight || 1)),
-      maxHeight: Math.max(
-        Math.max(1, Math.round(minimumHeight || 1)),
-        MAP_SURFACE_RESIZE_MAX_HEIGHT
-      ),
+      minHeight: MAP_SURFACE_RESIZE_MIN_HEIGHT,
+      maxHeight: MAP_SURFACE_RESIZE_MAX_HEIGHT,
     };
+  }
+
+  function fittedMapSurfaceHeight() {
+    const surfaceRect = els.mapSurface.getBoundingClientRect();
+    const chartRect = els.timelineCanvasWrap && els.timelineCanvasWrap.getBoundingClientRect();
+    // Reserve the rail, chronology heading and actual chart, even when its
+    // controls wrap. Document coordinates keep scrolling from changing the fit.
+    const chronologyHeight = chartRect && chartRect.height > 0
+      ? Math.max(0, chartRect.bottom - surfaceRect.bottom)
+      : 268;
+    const documentTop = surfaceRect.top + (window.scrollY || 0);
+    const bounds = mapSurfaceHeightBounds();
+    return clamp(Math.round(window.innerHeight - documentTop - chronologyHeight - 12), bounds.minHeight, bounds.maxHeight);
   }
 
   function updateMapSurfaceResizeHandleState() {
@@ -4064,7 +4073,8 @@
 
     const bounds = mapSurfaceHeightBounds();
     const currentHeight = clamp(currentMapSurfaceHeight(), bounds.minHeight, bounds.maxHeight);
-    const expanded = currentHeight > bounds.minHeight + 1;
+    const defaultHeight = runtime.mapSurfaceDefaultHeight || bounds.minHeight;
+    const expanded = Math.abs(currentHeight - defaultHeight) > 1;
     els.mapHeightResizeRail.classList.toggle("is-expanded", expanded);
     els.mapHeightResizeRail.setAttribute("aria-valuemin", String(bounds.minHeight));
     els.mapHeightResizeRail.setAttribute("aria-valuemax", String(bounds.maxHeight));
@@ -4072,14 +4082,13 @@
     els.mapHeightResizeRail.setAttribute(
       "aria-valuetext",
       expanded
-        ? "Map expanded to " + formatNumber(currentHeight) + " pixels. The default minimum is " +
-          formatNumber(bounds.minHeight) + " pixels."
-        : "Map at its default minimum height of " + formatNumber(bounds.minHeight) + " pixels."
+        ? "Custom map height of " + formatNumber(currentHeight) + " pixels. Double-click or press Home to fit the map and chronology chart."
+        : "Map fits the page at " + formatNumber(defaultHeight) + " pixels. Drag up or down to resize."
     );
     if (els.mapHeightResizeLabel) {
       els.mapHeightResizeLabel.textContent = expanded
-        ? "Map expanded \u00b7 drag up to default"
-        : "Drag down to expand map";
+        ? "Custom map height \u00b7 double-click to fit"
+        : "Drag up or down to resize map";
     }
   }
 
@@ -4096,13 +4105,9 @@
     const config = options || {};
     const bounds = mapSurfaceHeightBounds();
     const nextHeight = clamp(Math.round(Number(height) || bounds.minHeight), bounds.minHeight, bounds.maxHeight);
-    const expanded = nextHeight > bounds.minHeight + 1;
-
-    runtime.mapSurfaceUserHeight = expanded ? nextHeight : null;
-    // The resize rail is an additional grid row. Keep the measured pre-rail
-    // map height even at the reset position so this feature can only add
-    // usable map space, never take any away.
-    els.mapSurface.style.minHeight = nextHeight + "px";
+    runtime.mapSurfaceUserHeight = Math.abs(nextHeight - runtime.mapSurfaceDefaultHeight) > 1 ? nextHeight : null;
+    els.mapSurface.style.minHeight = "0px";
+    els.mapSurface.style.height = nextHeight + "px";
     updateMapSurfaceResizeHandleState();
     applyMapControlClusterState({ skipPersist: true });
     scheduleMapInvalidate();
@@ -4127,57 +4132,23 @@
         ? readMapSurfaceHeightPreference()
         : null;
 
-    if (!mapSurfaceResizeAvailable()) {
-      els.mapHeightResizeRail.hidden = true;
-      els.mapSurface.style.minHeight = "";
-      return;
-    }
-
-    const previousMinHeight = els.mapSurface.style.minHeight;
-    const previousGridTemplateRows = els.mapPanel ? els.mapPanel.style.gridTemplateRows : "";
-    const previousRailHidden = els.mapHeightResizeRail.hidden;
-
-    // Measure the exact two-row layout that existed before the resize rail.
-    // Hiding the rail alone is insufficient because an explicit empty third
-    // row would still contribute an additional grid gap.
-    els.mapHeightResizeRail.hidden = true;
-    if (els.mapPanel) {
-      els.mapPanel.style.gridTemplateRows = "minmax(0, 1fr) auto";
-    }
-    els.mapSurface.style.minHeight = "";
-    const naturalHeight = currentMapSurfaceHeight();
-    const measuredMinimumHeight = Math.max(1, naturalHeight);
-    runtime.mapSurfaceMinimumHeight = Number.isFinite(runtime.mapSurfaceMinimumHeight)
-      ? Math.max(runtime.mapSurfaceMinimumHeight, measuredMinimumHeight)
-      : measuredMinimumHeight;
-    runtime.mapSurfaceMaximumHeight = Math.max(runtime.mapSurfaceMinimumHeight, MAP_SURFACE_RESIZE_MAX_HEIGHT);
-    if (els.mapPanel) {
-      els.mapPanel.style.gridTemplateRows = previousGridTemplateRows;
-    }
-    els.mapHeightResizeRail.hidden = previousRailHidden;
-
+    // Analysis hides the map. Wait until it is visible before measuring it.
+    if (currentMapSurfaceHeight() < 1) return;
+    const available = mapSurfaceResizeAvailable();
+    els.mapHeightResizeRail.hidden = !available;
+    runtime.mapSurfaceMinimumHeight = MAP_SURFACE_RESIZE_MIN_HEIGHT;
+    runtime.mapSurfaceMaximumHeight = MAP_SURFACE_RESIZE_MAX_HEIGHT;
+    runtime.mapSurfaceDefaultHeight = fittedMapSurfaceHeight();
+    const bounds = mapSurfaceHeightBounds();
     const preferredHeight = Number.isFinite(intendedHeight)
-      ? clamp(Math.round(intendedHeight), runtime.mapSurfaceMinimumHeight, runtime.mapSurfaceMaximumHeight)
+      ? clamp(Math.round(intendedHeight), bounds.minHeight, bounds.maxHeight)
       : null;
-    if (Number.isFinite(preferredHeight) && preferredHeight > runtime.mapSurfaceMinimumHeight + 1) {
-      runtime.mapSurfaceUserHeight = preferredHeight;
-      els.mapSurface.style.minHeight = preferredHeight + "px";
-    } else {
-      runtime.mapSurfaceUserHeight = null;
-      els.mapSurface.style.minHeight = runtime.mapSurfaceMinimumHeight + "px";
-      if (
-        previousMinHeight &&
-        config.preserveCurrentExpansion &&
-        Number.parseFloat(previousMinHeight) > runtime.mapSurfaceMinimumHeight + 1
-      ) {
-        runtime.mapSurfaceUserHeight = clamp(
-          Math.round(Number.parseFloat(previousMinHeight)),
-          runtime.mapSurfaceMinimumHeight,
-          runtime.mapSurfaceMaximumHeight
-        );
-        els.mapSurface.style.minHeight = runtime.mapSurfaceUserHeight + "px";
-      }
-    }
+    // A compact viewport fits automatically without erasing the user's desktop
+    // preference. The default can shrink again after a viewport change.
+    runtime.mapSurfaceUserHeight = preferredHeight;
+    els.mapSurface.style.minHeight = "0px";
+    els.mapSurface.style.height = (available && preferredHeight != null
+      ? preferredHeight : runtime.mapSurfaceDefaultHeight) + "px";
 
     updateMapSurfaceResizeHandleState();
     applyMapControlClusterState({ skipPersist: true });
@@ -4294,7 +4265,7 @@
     } else if (event.key === "PageUp") {
       nextHeight = currentHeight - MAP_SURFACE_RESIZE_KEYBOARD_LARGE_STEP;
     } else if (event.key === "Home") {
-      nextHeight = bounds.minHeight;
+      nextHeight = runtime.mapSurfaceDefaultHeight || fittedMapSurfaceHeight();
     } else if (event.key === "End") {
       nextHeight = bounds.maxHeight;
     }
@@ -4306,7 +4277,7 @@
 
   function resetMapSurfaceHeight() {
     if (!mapSurfaceResizeAvailable()) return;
-    applyMapSurfaceHeight(mapSurfaceHeightBounds().minHeight, { persist: true, finalize: true });
+    applyMapSurfaceHeight(runtime.mapSurfaceDefaultHeight || fittedMapSurfaceHeight(), { persist: true, finalize: true });
   }
 
   function initializeMapSurfaceHeightResize() {
@@ -4317,13 +4288,21 @@
       if (runtime.mapSurfaceResizeObserver) {
         runtime.mapSurfaceResizeObserver.disconnect();
       }
-      runtime.mapSurfaceResizeObserver = new ResizeObserver(function () {
+      runtime.mapSurfaceResizeObserver = new ResizeObserver(function (entries) {
         // ResizeObserver callbacks run during layout delivery. Defer any UI
         // writes so revealing/updating the sibling resize rail cannot create
         // an undelivered notification loop during startup.
         scheduleMapSurfaceResizeHandleStateUpdate();
+        if (!runtime.mapSurfaceResize && entries.some(function (entry) {
+          return entry.target !== els.mapSurface;
+        })) {
+          scheduleMapSurfaceResizeBoundsRefresh();
+        }
       });
       runtime.mapSurfaceResizeObserver.observe(els.mapSurface);
+      if (els.timelinePanel) runtime.mapSurfaceResizeObserver.observe(els.timelinePanel);
+      const hero = document.querySelector(".hero");
+      if (hero) runtime.mapSurfaceResizeObserver.observe(hero);
     }
 
     window.requestAnimationFrame(function () {
@@ -9358,7 +9337,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-workspace-analysis-release-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-map-chronology-fit-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -32556,6 +32535,7 @@
           available: mapSurfaceResizeAvailable(),
           currentHeight: currentMapSurfaceHeight(),
           minimumHeight: runtime.mapSurfaceMinimumHeight,
+          defaultHeight: runtime.mapSurfaceDefaultHeight,
           maximumHeight: runtime.mapSurfaceMaximumHeight,
           userHeight: runtime.mapSurfaceUserHeight,
           active: Boolean(runtime.mapSurfaceResize),
