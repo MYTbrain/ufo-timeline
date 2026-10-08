@@ -147,7 +147,7 @@
   const MAP_WHEEL_DEBOUNCE_MS = 18;
   const MAP_ZOOM_TRACE_REFRESH_GRACE_MS = 260;
   const MAP_STARTUP_OVERLAY_MIN_VISIBLE_MS = 900;
-  const MAP_VERTICAL_LIMIT = 82;
+  const MAP_VERTICAL_LIMIT = 85.0511287798066;
   const WRAPPED_WORLD_COPY_RADIUS = 1;
   const RESULTS_SCROLL_SYNC_PLAYBACK_MIN_INTERVAL_MS = 90;
   const RESULTS_SCROLL_TARGET_OFFSET_PX = 18;
@@ -9337,7 +9337,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-map-chronology-fit-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-map-polar-bounds-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -16123,22 +16123,32 @@
     return now - runtime.lastMapZoomEndAt < MAP_ZOOM_TRACE_REFRESH_GRACE_MS;
   }
 
+  function refreshMapWorldConstraints() {
+    if (!runtime.map || runtime.mapVerticalClampInProgress) return;
+    const height = runtime.map.getSize().y;
+    if (!Number.isFinite(height) || height <= 0) return;
+    const worldHeight = runtime.map.getPixelWorldBounds(0).getSize().y;
+    if (!Number.isFinite(worldHeight) || worldHeight <= 0) return;
+    // The entire viewport must fit vertically inside the projected world.
+    // Round up to the zoom step, while allowing exact step boundaries.
+    const minimumZoom = Math.max(
+      MAP_DEFAULT_MIN_ZOOM,
+      Math.ceil(Math.log2(height / worldHeight) / MAP_ZOOM_SNAP - 1e-10) * MAP_ZOOM_SNAP
+    );
+    runtime.mapVerticalClampInProgress = true;
+    try {
+      if (runtime.map.getMinZoom() !== minimumZoom) runtime.map.setMinZoom(minimumZoom);
+      if (Number.isFinite(runtime.map.getZoom())) {
+        runtime.map.panInsideBounds(runtime.map.options.maxBounds, { animate: false });
+      }
+    } finally {
+      runtime.mapVerticalClampInProgress = false;
+    }
+  }
+
   function handleMapMoveEnd() {
     if (!runtime.map || runtime.mapVerticalClampInProgress) return;
-    const center = runtime.map.getCenter();
-    const clampedLat = clamp(center.lat, -MAP_VERTICAL_LIMIT, MAP_VERTICAL_LIMIT);
-    if (Math.abs(clampedLat - center.lat) > 0.001) {
-      runtime.mapVerticalClampInProgress = true;
-      try {
-        runtime.map.setView(
-          [clampedLat, center.lng],
-          runtime.map.getZoom(),
-          { animate: false, reset: true }
-        );
-      } finally {
-        runtime.mapVerticalClampInProgress = false;
-      }
-    }
+    refreshMapWorldConstraints();
     const rebuiltWrappedWorld = refreshWrappedWorldRendering();
     if (!rebuiltWrappedWorld) {
       refreshMapEventLayerForViewportChange();
@@ -31445,6 +31455,10 @@
     runtime.map = L.map("map", {
       zoomControl: false,
       worldCopyJump: true,
+      // Keep longitude wrapping unrestricted; constrain only the polar edges.
+      maxBounds: [[-MAP_VERTICAL_LIMIT, -Infinity], [MAP_VERTICAL_LIMIT, Infinity]],
+      maxBoundsViscosity: 1,
+      bounceAtZoomLimits: false,
       minZoom: MAP_DEFAULT_MIN_ZOOM,
       maxZoom: 18,
       zoomSnap: MAP_ZOOM_SNAP,
@@ -31458,6 +31472,7 @@
       tapTolerance: useMobileTapTargets() ? MOBILE_MAP_TOUCH_TAP_TOLERANCE : MAP_TOUCH_TAP_TOLERANCE,
       crs: L.CRS.EPSG3857,
     });
+    refreshMapWorldConstraints();
 
     runtime.clusterLayer = L.markerClusterGroup({
       chunkedLoading: true,
@@ -31573,6 +31588,7 @@
     });
     runtime.map.on("moveend", handleMapMoveEnd);
     runtime.map.on("resize", function () {
+      refreshMapWorldConstraints();
       refreshMapEventLayerForViewportChange();
       scheduleMapViewportLegendRefresh();
     });
@@ -32418,6 +32434,21 @@
   }
 
   window.__UFO_TIMELINE_DEBUG__ = {
+    getMapWorldConstraintSnapshot: function () {
+      if (!runtime.map) return null;
+      const viewport = runtime.map.getPixelBounds();
+      const world = runtime.map.getPixelWorldBounds();
+      const center = runtime.map.getCenter();
+      return {
+        center: { lat: center.lat, lng: center.lng },
+        zoom: runtime.map.getZoom(),
+        minimumZoom: runtime.map.getMinZoom(),
+        viewportHeight: runtime.map.getSize().y,
+        worldHeight: world.getSize().y,
+        northGapPixels: Math.max(0, world.min.y - viewport.min.y),
+        southGapPixels: Math.max(0, viewport.max.y - world.max.y),
+      };
+    },
     getMapViewSnapshot: function () {
       if (!runtime.map) return null;
       const center = runtime.map.getCenter();

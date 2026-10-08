@@ -410,25 +410,28 @@ def test_map_wraps_across_dateline_without_finite_horizontal_bounds():
     app_js = Path("webapp/static_public/app.js").read_text(encoding="utf-8")
     initialize_map = _extract_js_function_body(app_js, "initializeMap")
     set_basemap = _extract_js_function_body(app_js, "setBasemap")
+    hosted_tile_options = _extract_js_function_body(app_js, "hostedTileOptions")
     moveend = _extract_js_function_body(app_js, "handleMapMoveEnd")
+    world_constraints = _extract_js_function_body(app_js, "refreshMapWorldConstraints")
 
     assert "worldCopyJump: true" in initialize_map
-    assert "maxBounds:" not in initialize_map
-    assert "maxBoundsViscosity:" not in initialize_map
-    assert "noWrap: false" in set_basemap
+    assert "maxBounds: [[-MAP_VERTICAL_LIMIT, -Infinity], [MAP_VERTICAL_LIMIT, Infinity]]" in initialize_map
+    assert "maxBoundsViscosity: 1" in initialize_map
+    assert "bounceAtZoomLimits: false" in initialize_map
+    assert "hostedTileOptions(provider, baseUrl)" in set_basemap
+    assert "noWrap: false" in hosted_tile_options
     assert "bounds: MAP_CANONICAL_BOUNDS" not in set_basemap
     assert "MAP_HORIZONTAL_PAN_LIMIT" not in app_js
     assert "MAP_CANONICAL_BOUNDS" not in app_js
 
-    # Horizontal wrapping is unbounded, while the existing polar guard
-    # continues to constrain only latitude after a move completes.
-    assert "const clampedLat = clamp(center.lat, -MAP_VERTICAL_LIMIT, MAP_VERTICAL_LIMIT);" in moveend
-    assert "runtime.mapVerticalClampInProgress" in moveend
-    assert "runtime.map.setView(" in moveend
-    assert "[clampedLat, center.lng]" in moveend
-    assert "runtime.map.getZoom()" in moveend
-    assert "{ animate: false, reset: true }" in moveend
-    assert "finally" in moveend
+    # The whole viewport fits within the projected poles, while longitude
+    # remains unbounded. Native math and wrap preservation have behavior tests.
+    assert "refreshMapWorldConstraints();" in moveend
+    assert "runtime.mapVerticalClampInProgress" in world_constraints
+    assert "runtime.map.getPixelWorldBounds(0)" in world_constraints
+    assert "runtime.map.setMinZoom(minimumZoom)" in world_constraints
+    assert "runtime.map.panInsideBounds(runtime.map.options.maxBounds, { animate: false })" in world_constraints
+    assert "finally" in world_constraints
     assert "runtime.map.panTo(" not in moveend
     assert "normalizeLongitude(center.lng)" not in moveend
 
@@ -808,7 +811,8 @@ def test_current_ui_interaction_regression_contracts():
     for candidate in (app_js, bundle_app_js):
         assert "worldCopyJump: true" in candidate
         assert "maxBounds: MAP_CANONICAL_BOUNDS" not in candidate
-        assert "maxBoundsViscosity:" not in candidate
+        assert "maxBounds: [[-MAP_VERTICAL_LIMIT, -Infinity], [MAP_VERTICAL_LIMIT, Infinity]]" in candidate
+        assert "maxBoundsViscosity: 1" in candidate
         assert "bounds: MAP_CANONICAL_BOUNDS" not in candidate
         assert "MAP_HORIZONTAL_PAN_LIMIT" not in candidate
         assert "MAP_CANONICAL_BOUNDS" not in candidate

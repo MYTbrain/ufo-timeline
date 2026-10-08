@@ -1,0 +1,46 @@
+{
+  "schema": "ufo-map-polar-bounds-browser-qa-v1",
+  "runtime_revision": "map-polar-bounds-20261008",
+  "preview_ready": true,
+  "console_errors": [],
+  "projection_rounding_tolerance_px": 1,
+  "programmatic_polar_centers": {
+    "viewport_height_px": 723,
+    "zoom": 2,
+    "requested_latitudes": [
+      85,
+      -85
+    ],
+    "requested_longitude": 540.25,
+    "longitude_preserved": true,
+    "largest_vertical_gap_px": 1
+  },
+  "trusted_pointer_during_drag": {
+    "viewport_height_px": 435,
+    "zoom": 2,
+    "north_drag_delta_px": 420,
+    "south_drag_delta_px": -670,
+    "north_gap_px": 0,
+    "south_gap_px": 0,
+    "horizontal_world_wrapping_preserved": true
+  },
+  "maximum_map_height": {
+    "viewport_height_px": 2400,
+    "minimum_zoom": 3.25,
+    "projected_world_height_px": 2435.4961715255727,
+    "attempted_zoom": 1,
+    "actual_zoom": 3.25,
+    "requested_longitude": -540.25,
+    "longitude_preserved_within_1e-9": true,
+    "largest_vertical_gap_px": 0.5038284744273369
+  },
+  "shrink_to_fitted_height": {
+    "viewport_height_px": 293,
+    "minimum_zoom": 1,
+    "current_zoom_retained": 3.25,
+    "vertical_gap_px": 0
+  },
+  "test_state_restored": true,
+  "data_changed": false,
+  "new_r2_uploads": 0
+}

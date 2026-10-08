@@ -3,19 +3,16 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "published_verified",
+    "status": "prepared_pending_production_verification",
     "production_url": "https://ufo-timeline.pages.dev",
-    "publication_receipt": "releases/map-chronology-fit-20261008/publication_receipt.json",
-    "browser_qa": "releases/map-chronology-fit-20261008/browser_qa.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
-    "production_source_commit": "a834f14e305e4559b1d6745ad41986ba5e245dc6",
-    "production_deployment_id": "5483977b-fd45-432b-b370-d0fa091a3771",
-    "production_verification": "releases/map-chronology-fit-20261008/production_verification.json"
+    "publication_receipt": "releases/map-polar-bounds-20261008/publication_receipt.json",
+    "browser_qa": "releases/map-polar-bounds-20261008/browser_qa.json",
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true
   },
   "retained_rollback": {
-    "deployment_id": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
-    "source_commit": "5ecdcef10ea2223ce74d5509af550087ba603bdb",
-    "after_production_validation_only": false,
+    "deployment_id": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
+    "source_commit": "258c4dd",
+    "after_production_validation_only": true,
     "protected_sources_deleted": false
   },
   "counts": {
@@ -24,8 +21,8 @@
   },
   "frozen_delivery_plan": {
     "path": "releases/workspace-analysis-20261008/delivery_plan.json",
-    "bytes": 255351,
-    "sha256": "96d90258e252c853d6a363cfd59da21f125a5bda933a1da85a14ad2add340e5a"
+    "bytes": 255349,
+    "sha256": "c1bbd1f8393c27850ee32341806649847c9a03a6b66b1cf45429360b5d33e66c"
   },
   "pages": [
     {
@@ -149,15 +146,15 @@
     },
     {
       "path": "app.js",
-      "bytes": 1351145,
-      "sha256": "5c5a73337f2fa8e0a6675f42e3e0cf790b1a0addbe24b589f453ff0b2a3b6f21",
+      "bytes": 1352669,
+      "sha256": "ca5774eb6f19dc448a0d6639470c4a79bca0e70326a77acb08022f22158a5478",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "catalog_filter_worker.js",
-      "bytes": 254600,
-      "sha256": "667ae867b24673deea3661686ed7138f2e8e511f03c3e4c952b7b2c10db6eeac",
+      "bytes": 254598,
+      "sha256": "352f53bbb6b8dd118ed08450470ac6bb6e05c737ef8ac4b71b28877b920c9fa8",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -996,8 +993,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 150703,
-      "sha256": "47d91ed04c9bc7af7a2dc14541053ff781d4e9d63f8426f6fd524117a05b92ab",
+      "bytes": 150693,
+      "sha256": "7b5776bd8d491b8ad0dfa061f85b6c03986df9a830c8eeb90b2ecbf397a94fc5",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -4208,20 +4205,19 @@
     "pages_candidate_bytes": 28746111,
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "rollback_deployment_after_success": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
+    "rollback_deployment_after_success": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
     "approximate_net_project_growth_MiB": 35
   },
-  "runtime_revision": "map-chronology-fit-20261008",
+  "runtime_revision": "map-polar-bounds-20261008",
   "previous_publication": {
     "status": "published_verified",
-    "candidate_url": "https://48969877.ufo-timeline.pages.dev",
-    "candidate_verified_objects": 261,
     "production_url": "https://ufo-timeline.pages.dev",
-    "production_deployment_id": "95fcc362-54bc-4b8f-8e4d-42df6e309af0",
-    "production_source_commit": "5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
-    "production_verification": "releases/workspace-analysis-20261008/production_verification.json",
-    "publication_receipt": "releases/workspace-analysis-20261008/publication_receipt.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true
+    "publication_receipt": "releases/map-chronology-fit-20261008/publication_receipt.json",
+    "browser_qa": "releases/map-chronology-fit-20261008/browser_qa.json",
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
+    "production_source_commit": "a834f14e305e4559b1d6745ad41986ba5e245dc6",
+    "production_deployment_id": "5483977b-fd45-432b-b370-d0fa091a3771",
+    "production_verification": "releases/map-chronology-fit-20261008/production_verification.json"
   }
 }
