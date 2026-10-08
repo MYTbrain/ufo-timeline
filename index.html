@@ -44,6 +44,7 @@
   <link rel="stylesheet" href="./ui/accepted-workspace/site-workflow-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/chronology-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/analysis-navigation.css?v=2026-10-08-accepted-workspace-v1">
+  <link rel="stylesheet" href="./guided_tour.css?v=2026-10-08-guided-tour-v1">
   <script>
     document.documentElement.classList.add("faithful-polish-preview");
     if (!sessionStorage.getItem("ufoTimeline.acceptedWorkspaceSizing.v1")) {
@@ -124,6 +125,7 @@
         </div>
       </div>
       <div class="hero-stats">
+        <button id="start-guided-tour" class="secondary-button guided-tour-start" type="button" title="New here? Explore the map and Analysis with a guided tour">Take a tour</button>
         <div id="appearance-panel" class="hero-toolcard compact-collapsible-panel">
           <div class="compact-panel-head">
             <div>
@@ -167,7 +169,7 @@
     <section id="user-guide" class="user-guide" aria-live="polite">
       <div class="user-guide-head">
         <div>
-          <p class="eyebrow">Quick Guide</p>
+          <p class="eyebrow">Help</p>
           <p class="user-guide-title">Use the map and timeline together</p>
         </div>
         <button
@@ -175,8 +177,8 @@
           class="secondary-button panel-toggle-button compact-toggle-button"
           type="button"
           aria-expanded="true"
-          aria-label="Collapse quick guide"
-          title="Collapse quick guide"
+          aria-label="Collapse help"
+          title="Collapse help"
         >-</button>
       </div>
         <div id="user-guide-body" class="user-guide-body">
@@ -185,8 +187,8 @@
           <div class="guide-chip"><strong>Military / Overlays</strong><span>Toggle airports and military bases to compare sightings with infrastructure.</span></div>
           <div class="guide-chip"><strong>Timeline</strong><span>Select a date range and press Play to watch events unfold.</span></div>
           <div class="guide-chip"><strong>Famous Flaps</strong><span>Jump to the famous-flap presets to compare major UFO waves quickly.</span></div>
-          <div class="guide-chip"><strong>Interaction</strong><span>Click any dot to inspect the event. Use "Show Description" for details.</span></div>
-          <div class="guide-chip"><strong>Trace Analysis</strong><span>Use trace controls to reveal patterns between nearby sightings.</span></div>
+          <div class="guide-chip"><strong>Interaction</strong><span>Select a marker or result. Description opens its account; Full Details shows the preserved record.</span></div>
+          <div class="guide-chip"><strong>Trace Analysis</strong><span>Choose Static for report connections or Playback for the playback trail. Click a static arrow for timing evidence.</span></div>
           <div class="guide-chip"><strong>Disclaimer</strong><span>Playback Trace is a neutral chronological cursor between mapped events during playback, not a claimed craft route.</span></div>
         </div>
     </section>
@@ -1926,7 +1928,7 @@
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
   <script src="./quality_detail_overlay.js?v=2026-10-07-reviewed-quality-v1"></script>
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
-  <script src="./app.js?v=2026-10-08-trace-chronology-v1"></script>
+  <script src="./app.js?v=2026-10-08-guided-tour-v1"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
@@ -1934,5 +1936,8 @@
   <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/polish.js?v=2026-10-08-accepted-workspace-v1"></script>
+  <script defer src="./guided_tour_state.js?v=2026-10-08-guided-tour-v1"></script>
+  <script defer src="./guided_tour_content.js?v=2026-10-08-guided-tour-v1"></script>
+  <script defer src="./guided_tour.js?v=2026-10-08-guided-tour-v1"></script>
 </body>
 </html>

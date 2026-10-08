@@ -3246,7 +3246,7 @@
     if (!els.userGuide || !els.userGuideBody || !els.toggleUserGuideButton) return;
     els.userGuide.classList.toggle("is-collapsed", state.userGuideCollapsed);
     els.userGuideBody.hidden = state.userGuideCollapsed;
-    setCompactToggleButtonState(els.toggleUserGuideButton, state.userGuideCollapsed, "quick guide");
+    setCompactToggleButtonState(els.toggleUserGuideButton, state.userGuideCollapsed, "help");
     if (runtime.map) {
       scheduleMapInvalidate();
     }
@@ -3700,12 +3700,12 @@
       {
         key: "interaction",
         title: "Interaction",
-        body: 'Click any dot to inspect the event. Use "Show Description" for details.',
+        body: 'Select a marker or result. Description opens its account; Full Details shows the preserved record.',
       },
       {
         key: "trace-analysis",
         title: "Trace Analysis",
-        body: "Use trace controls to reveal patterns between nearby sightings.",
+        body: "Choose Static for report connections or Playback for the playback trail. Click a static arrow for timing evidence.",
       },
       {
         key: "disclaimer",

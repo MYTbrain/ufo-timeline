@@ -1,0 +1,275 @@
+{
+  "purpose": "Local guided-tour UI verification; no deployment or data changes",
+  "baselineSource": "1578ba4671bc87a6a13af12d631afe7aecab0244",
+  "checkedAt": "2026-10-08T11:20:24.876Z",
+  "localUrl": "http://127.0.0.1:8168/whole-site.html",
+  "essentials": [
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Find a familiar case",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Choose the reports",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Read the evidence",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Use the interactive legend",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Choose your map view",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Understand the connections",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Explore through time",
+      "view": "map"
+    },
+    {
+      "cardFits": true,
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Explore Analysis",
+      "view": "analysis"
+    }
+  ],
+  "inputRestoration": {
+    "changes": [],
+    "hash": "",
+    "tourHidden": true,
+    "view": "map"
+  },
+  "userTopicAndViewRetention": {
+    "hash": "#analysis-section-time",
+    "overviewView": "signals",
+    "topic": "analysis-section-tab-time",
+    "view": "analysis"
+  },
+  "shortViewport": {
+    "card": {
+      "bottom": 348.0078125,
+      "height": 172.79296875,
+      "left": 11.9921875,
+      "right": 569.2578125,
+      "top": 175.21484375,
+      "width": 557.265625,
+      "x": 11.9921875,
+      "y": 175.21484375
+    },
+    "dialogModal": "false",
+    "height": 360,
+    "highlight": {
+      "bottom": 122.67578125,
+      "height": 58.4765625,
+      "left": 31.71875,
+      "right": 549.51171875,
+      "top": 64.19921875,
+      "width": 517.79296875,
+      "x": 31.71875,
+      "y": 64.19921875
+    },
+    "next": {
+      "bottom": 329.765625,
+      "height": 43.984375,
+      "left": 470.6640625,
+      "right": 532.265625,
+      "top": 285.78125,
+      "width": 61.6015625,
+      "x": 470.6640625,
+      "y": 285.78125
+    },
+    "overflow": false,
+    "width": 600
+  },
+  "caseRetention": {
+    "caseKept": true,
+    "datesKept": true,
+    "mobileFiltersRestored": true
+  },
+  "panelRetention": {
+    "legendUserChoiceKept": true,
+    "view": "map"
+  },
+  "scrollCorrection": [
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Find a familiar case"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Choose the reports"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Read the evidence"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Use the interactive legend"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Choose your map view"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Understand the connections"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Explore through time"
+    },
+    {
+      "cardFits": true,
+      "hiddenMapScroll": [
+        {
+          "id": "map-explorer-panel",
+          "left": 0,
+          "top": 0
+        },
+        {
+          "id": "map",
+          "left": 0,
+          "top": 0
+        }
+      ],
+      "highlightHidden": false,
+      "notice": null,
+      "title": "Explore Analysis"
+    }
+  ],
+  "finalGeometry": {
+    "availableHeight": 900,
+    "availableWidth": 1581,
+    "cardBottom": 485.390625,
+    "cardRight": 968.02734375,
+    "highlightVisible": true,
+    "mapSurfaceScroll": 0
+  }
+}
