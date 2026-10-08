@@ -3,16 +3,19 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "prepared_pending_production_verification",
+    "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev",
     "publication_receipt": "releases/map-chronology-fit-20261008/publication_receipt.json",
     "browser_qa": "releases/map-chronology-fit-20261008/browser_qa.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
+    "production_source_commit": "a834f14e305e4559b1d6745ad41986ba5e245dc6",
+    "production_deployment_id": "5483977b-fd45-432b-b370-d0fa091a3771",
+    "production_verification": "releases/map-chronology-fit-20261008/production_verification.json"
   },
   "retained_rollback": {
     "deployment_id": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
     "source_commit": "5ecdcef10ea2223ce74d5509af550087ba603bdb",
-    "after_production_validation_only": true,
+    "after_production_validation_only": false,
     "protected_sources_deleted": false
   },
   "counts": {
@@ -4205,7 +4208,7 @@
     "pages_candidate_bytes": 28746111,
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "rollback_deployment_after_success": "dc834bac-2108-4de3-baad-47044e2ec51c",
+    "rollback_deployment_after_success": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
     "superseded_stage_cleanup": "Proposal only after final validation and explicit approval; literal paths, sizes, hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md.",
     "approximate_net_project_growth_MiB": 35
   },

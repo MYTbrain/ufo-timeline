@@ -25,7 +25,12 @@ Actual pointer drags changed the map in both directions; a 293 px custom height
 survived reload, and Home restored automatic fitting. The original legend and
 control body remained scrollable to their final rows. Portrait 390 × 844 uses a
 112 px chart, ending at 840.85 px, with no horizontal overflow. The desktop rail
-is hidden on compact screens. Production identifiers remain pending verification.
+is hidden on compact screens. Production deployment `5483977b-fd45-432b-b370-d0fa091a3771` passed 174
+public-object byte/hash checks. The loaded 1280 × 720 production page uses a
+292 px map and the full plot ends at 707.59 px with document scroll zero.
+A trusted 48 px drag grew the map to 340 px; double-click restored 292 px.
+Analysis was ready and the console reported no errors. Publication and storage
+receipt: `releases/map-chronology-fit-20261008/publication_receipt.json`.
 Browser evidence: `releases/map-chronology-fit-20261008/browser_qa.json`.
 
 The single existing Pages stage is refreshed in place. There are no R2 uploads,
