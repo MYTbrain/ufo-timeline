@@ -1,10 +1,12 @@
 # Corpus-wide chronology recovery
 
-This local candidate improves report-time ordering throughout the preserved
+This release improves report-time ordering throughout the preserved
 702,893-record corpus. Famous flaps are acceptance checks, not the processing
 scope. Canonical reports, coordinates, dates, event IDs and the packed trace
 inventory remain unchanged. The preceding legend radar and independent arrow
-visibility feature are retained. This work has not been deployed or pushed.
+visibility feature are retained. It is published at https://ufo-timeline.pages.dev/
+and on GitHub main. Publication and browser receipts are retained in
+`releases/corpus-timing-20261008-v3/`.
 
 ## Evidence model
 
@@ -195,9 +197,14 @@ only sparse recovery/provenance receipts; `releases/corpus-timing-20261008-v3/`
 retains the current build and source-flag ledger/verification receipts. Neither
 contains a full site release or a second corpus.
 
-Validated production remains deployment
-`192e21f6-9c44-4b89-8d88-361e1c3d10d6`; its sole deployment rollback remains
-`0fb396aa-2876-4343-b8b8-87796880a177`. The deployment stage is unchanged.
+Verified runtime publication is deployment
+`d7836d81-11e7-412b-98a0-4920ca0612a2`, from GitHub main `c549990`.
+The previous production `192e21f6-9c44-4b89-8d88-361e1c3d10d6` is now the sole
+known-good rollback, superseding the prior `0fb396aa` designation. Its frozen
+delivery inventory is retained in `rollback_delivery_plan.json`.
+The existing stage `.tmp/workspace-analysis-20261008-pages` was refreshed in
+place to 184 files / 36,431,848 bytes; tree SHA-256 is
+`09503b6c5e47b389884a831e0b434417587c07e05a0013c86eb1a9846b959dbc`.
 No full corpus, static bundle or database copy is created. No file above
 100 MiB is created. Existing superseded stages remain documented in
 `WORKSPACE_ANALYSIS_RELEASE_20261008.md`; cleanup requires its literal allowlist
@@ -210,8 +217,27 @@ documentation changes are negligible at this scale. The shared recovery area
 has 13 files totaling 18,466,263 bytes; none is over 100 MiB. The small shared
 `git-storage-before.json` is retained solely as the pre-commit accounting
 receipt. Browser state, unrelated activity and existing caches are outside
-this bounded estimate. No new site staging or deployment was created.
+this bounded development estimate. No extra staging tree was created.
 
 No cleanup of the new unique evidence is proposed. Existing superseded
 generated stages remain the cleanup candidates already listed with literal
 paths and retained counterparts in the release note; none was deleted here.
+
+## Production verification
+
+All 182 public Pages objects passed exact byte/hash and required cache-header
+checks. The other two source entries are `_headers` and `.nojekyll`. Only the
+previously declared exact 214-byte Cloudflare Analytics envelope is accepted
+before HTML source hash comparison. All 184 staged objects match their Git
+source bytes. The live browser loaded all 702,893 catalog rows, accepted the
+425,214-report timing index with 3,624 exclusions, and reproduced Washington's
+116 ordered / 367 unknown links with arrows hidden. No browser console errors
+were observed. Production proof and browser checks are in the v3 release folder.
+
+This deployment adds about 6 MiB, primarily 4,129,456 bytes of net stage growth
+plus small inventory, publication, screenshot and Git receipts. No R2 upload,
+corpus regeneration, new file above 100 MiB, or deletion was required. The sparse
+v3 evidence remains canonical and previous source/evidence provenance is
+protected. Receipt-only pushes trigger equivalent runtime deployments; the
+final provider observation is saved locally in shared
+`corpus-recovery/publication-final-observation.json` without a receipt-push loop.

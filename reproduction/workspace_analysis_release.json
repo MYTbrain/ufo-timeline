@@ -3,18 +3,21 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "prepared_for_publication",
+    "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev/",
     "feature_source_commit": "64ebf37",
     "publication_receipt": "releases/corpus-timing-20261008-v3/publication_receipt.json",
     "browser_qa": "releases/corpus-timing-20261008-v3/production-browser-verification.json",
     "production_verification": "releases/corpus-timing-20261008-v3/production-verification.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
+    "runtime_source_commit": "c54999014d857da8f2ae1524dddb3b6dcdffec49",
+    "production_source_commit": "c54999014d857da8f2ae1524dddb3b6dcdffec49",
+    "production_deployment_id": "d7836d81-11e7-412b-98a0-4920ca0612a2"
   },
   "retained_rollback": {
     "deployment_id": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",
     "source_commit": "275a769",
-    "after_production_validation_only": true,
+    "after_production_validation_only": false,
     "protected_sources_deleted": false,
     "superseded_designation": "0fb396aa-2876-4343-b8b8-87796880a177"
   },

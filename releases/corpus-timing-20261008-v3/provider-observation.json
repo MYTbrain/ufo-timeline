@@ -1,0 +1,20 @@
+{
+  "id": "d7836d81-11e7-412b-98a0-4920ca0612a2",
+  "environment": "production",
+  "url": "https://d7836d81.ufo-timeline.pages.dev",
+  "latest_stage": {
+    "name": "deploy",
+    "started_on": "2026-10-08T14:52:01.402389Z",
+    "ended_on": "2026-10-08T14:52:10.68044Z",
+    "status": "success"
+  },
+  "deployment_trigger": {
+    "type": "github:push",
+    "metadata": {
+      "branch": "main",
+      "commit_hash": "c54999014d857da8f2ae1524dddb3b6dcdffec49",
+      "commit_message": "Freeze corpus timing and legend radar deployment",
+      "commit_dirty": false
+    }
+  }
+}

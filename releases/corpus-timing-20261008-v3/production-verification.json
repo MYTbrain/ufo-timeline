@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "url": "https://ufo-timeline.pages.dev",
+  "verified_objects": 182,
+  "pages_only": true,
+  "provider_transformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "404.html"
+    },
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    },
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "trace_intersection_feasibility.html"
+    }
+  ],
+  "runtime_revision": "corpus-timing-20261008-v3",
+  "pages_tree_sha256": "09503b6c5e47b389884a831e0b434417587c07e05a0013c86eb1a9846b959dbc",
+  "source_commit": "c54999014d857da8f2ae1524dddb3b6dcdffec49",
+  "deployment_id": "d7836d81-11e7-412b-98a0-4920ca0612a2",
+  "observed_at_utc": "2026-10-08T14:56:45.728396+00:00"
+}

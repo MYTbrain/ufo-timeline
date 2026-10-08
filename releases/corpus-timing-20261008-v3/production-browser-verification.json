@@ -1,0 +1,56 @@
+{
+  "url": "https://ufo-timeline.pages.dev/",
+  "initial": {
+    "timing": {
+      "status": "ready",
+      "releaseId": "corpus-timing-20261008-v3",
+      "acceptedEventCount": 425214,
+      "excludedDateCount": 3624,
+      "evidenceKinds": [
+        "source_exact_clock",
+        "source_calendar_day_zone_bound",
+        "source_clock_zone_envelope",
+        "source_documented_timebase_clock",
+        "source_recovered_clock_field_zone_envelope",
+        "reviewed_event_clock",
+        "source_recovered_occurrence_clock_zone_envelope",
+        "source_recovered_occurrence_clock",
+        "source_recovered_clock_field"
+      ],
+      "evidenceKindCounts": {
+        "source_exact_clock": 212747,
+        "source_calendar_day_zone_bound": 77268,
+        "source_clock_zone_envelope": 129480,
+        "source_documented_timebase_clock": 5596,
+        "source_recovered_clock_field_zone_envelope": 10,
+        "reviewed_event_clock": 38,
+        "source_recovered_occurrence_clock_zone_envelope": 46,
+        "source_recovered_occurrence_clock": 28,
+        "source_recovered_clock_field": 1
+      },
+      "zoneCount": 124,
+      "indexBytes": 13606848
+    },
+    "catalogRows": 702893,
+    "traceMode": "static",
+    "gapKeys": [
+      "gap_le_1",
+      "gap_le_2"
+    ],
+    "errors": {
+      "catalog": "",
+      "analysis": ""
+    }
+  },
+  "washington": {
+    "arrows": false,
+    "flap": "flap_1952",
+    "headerHeight": 83.59375,
+    "mapHeight": 532,
+    "radar": "Report-link directions\nShow direction arrows\n\n1952-06-15 – 1952-08-31\n\nVisible traces · current time window\n\n116 ordered links\n367 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0–30.2%\nDirection counts & shares",
+    "scrollY": 0
+  },
+  "consoleErrors": [],
+  "productionProof": "production-radar.jpg",
+  "status": "passed"
+}

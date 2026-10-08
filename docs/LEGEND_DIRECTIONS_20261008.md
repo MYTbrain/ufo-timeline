@@ -1,7 +1,8 @@
 # Legend direction radar
 
-Status: implemented and checked locally; not deployed or pushed. Preview:
-http://127.0.0.1:8168/whole-site.html. Baseline: `275a769`.
+Status: published and verified at https://ufo-timeline.pages.dev/ with the
+corpus-wide timing recovery. Publication receipts are in
+`releases/corpus-timing-20261008-v3/`. Feature baseline: `275a769`.
 
 ## Behavior
 
@@ -74,12 +75,13 @@ an empty/loading/off chart has reference spokes but no invented distribution.
 
 ## Storage and retention
 
-Canonical feature source is this frontend worktree and its local feature commit.
-Shared canonical data is used in place; no dataset, analysis or deployment build
-was performed. The validated production remains
-`192e21f6-9c44-4b89-8d88-361e1c3d10d6`; the sole designated known-good rollback
-remains `0fb396aa-2876-4343-b8b8-87796880a177`. The frozen current deployment
-stage `.tmp/workspace-analysis-20261008-pages` remains unchanged.
+Canonical feature source is this frontend worktree and published GitHub main.
+Shared canonical data is used in place. Verified runtime publication is
+`d7836d81-11e7-412b-98a0-4920ca0612a2`; the sole designated known-good rollback
+is prior production `192e21f6-9c44-4b89-8d88-361e1c3d10d6`. The existing stage
+`.tmp/workspace-analysis-20261008-pages` was refreshed in place. Combined
+chronology/radar publication and storage receipts are in the corpus timing
+handoff; no extra corpus or staging-tree copy was created.
 
 `docs/qa/legend-directions-20261008/` has small browser-check metadata and a
 representative screenshot. Purpose: verification of this UI; provenance: checked
