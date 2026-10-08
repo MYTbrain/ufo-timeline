@@ -79,7 +79,9 @@ not replace the validated root shell silently.
 Frozen delivery/upload plans and hosted verification are retained in
 `releases/workspace-analysis-20261008/`. The builder is
 `scripts/prepare_workspace_analysis_release.py`; it freezes a bounded shell,
-references existing shared data and refuses to overwrite a staged candidate.
+references existing shared data and refuses an unguarded staged overwrite.
+The explicit refresh mode verifies the old stage and requires unchanged immutable
+uploads and file inventory before replacing the single bounded shell in place.
 It never regenerates or copies the complete catalog, bundle or analysis database.
 The protected repair component receipts and earlier QA handoffs document parser,
 source, statistical and runtime checks. Final production and browser checks are
@@ -96,12 +98,11 @@ earlier creation is not new release-stage growth. No newly created file exceeds
 100 MiB and no source corpus, database or complete data bundle was copied. C:
 had approximately 124.37 GiB free during receipt preparation.
 
-Until final production validation, production remains
-`dc834bac-2108-4de3-baad-47044e2ec51c` and its previously retained rollback remains
-`78cc3660-5750-4685-a095-fee6dce37fbf`. Upon successful production promotion,
-designate the newly verified deployment current and
-`dc834bac-2108-4de3-baad-47044e2ec51c` as the single known-good rollback. The older
-rollback designation is then superseded; protected shared inputs remain retained.
+Before this publication, production was
+`dc834bac-2108-4de3-baad-47044e2ec51c` and the previously designated rollback was
+`78cc3660-5750-4685-a095-fee6dce37fbf`. The verified workspace-analysis-20261008 artifact is now current;
+`dc834bac-2108-4de3-baad-47044e2ec51c` is the single known-good rollback. The older
+rollback designation is superseded; protected shared inputs remain retained.
 
 Two older shell staging copies are proposed for cleanup only after production
 verification and explicit approval. Nothing is deleted by this release:
@@ -118,6 +119,24 @@ generated-dataset deletion or source-archive cleanup is authorized here.
 
 ## Production publication receipt
 
-Pending the release owner's final production deployment, verification, GitHub
-revision and browser receipt. Append those actual identifiers here; do not infer
-them from the hosted candidate URL.
+Published and verified at https://ufo-timeline.pages.dev/. Runtime source is
+`5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57`, pushed to GitHub main. The manual
+production deployment is `95fcc362-54bc-4b8f-8e4d-42df6e309af0`. Cloudflare's
+successful Git integration also published equivalent runtime deployment
+`c1f07e0f-ccc5-4f09-b6e2-5bc32135c30b`. The live URL passed all 174 public Pages
+byte/cache checks; all 87 immutable data objects were previously streamed and
+verified. All 176 Pages source objects match the release Git index exactly.
+
+The browser loaded all 702,893 catalog rows and the 14 accepted UI assets without
+site console errors. It verified lunar and planetary models/heatmaps, repaired
+full detail dates, all 1,184 animal browser records, source-clock panels and
+Kenneth Arnold results including eight in-area and four connected outside-area
+reports. See `browser_qa.json`, `production_verification.json` and
+`publication_receipt.json` in this release directory and `production-map.jpg`.
+
+Documentation-only main pushes also trigger Cloudflare. Those rebuilds may
+receive another provider deployment ID while serving this exact frozen runtime.
+The final post-receipt live check must match this inventory; immutable R2 checks
+are retained. Approximate local release growth including the bounded Pages
+stage, sparse packet, proofs/metadata and Git objects is about 35 MiB. No new
+file exceeds 100 MiB, no corpus is copied, and nothing is deleted.

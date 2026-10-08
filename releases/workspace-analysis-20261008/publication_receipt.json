@@ -1,0 +1,59 @@
+{
+  "schema": "ufo-workspace-publication-v1",
+  "release_id": "workspace-analysis-20261008",
+  "status": "published_verified",
+  "observed_at_utc": "2026-10-08T08:27:26.609139+00:00",
+  "runtime_source_commit": "5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
+  "github_source_url": "https://github.com/MYTbrain/ufo-timeline/commit/5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
+  "production_url": "https://ufo-timeline.pages.dev",
+  "verified_manual_publication": {
+    "deployment_id": "95fcc362-54bc-4b8f-8e4d-42df6e309af0",
+    "environment": "Production",
+    "branch": "main",
+    "source": "5a8d6637bc81392379a1e0bbc1dc0f0515ff2c57",
+    "url": "https://95fcc362.ufo-timeline.pages.dev"
+  },
+  "equivalent_git_publication": {
+    "deployment_id": "c1f07e0f-ccc5-4f09-b6e2-5bc32135c30b",
+    "github_check": "cloudflare-workers-and-pages: completed/success",
+    "runtime_sample_matches": 8
+  },
+  "canonical_validated_artifact": {
+    "release_id": "workspace-analysis-20261008",
+    "pages_tree_sha256": "cd70b5415ef1b2c828e1cb31d8a4df0b2902851c785b371150934e9b65baf6ac",
+    "pages_files": 176,
+    "pages_bytes": 28746111,
+    "local_stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages"
+  },
+  "retained_rollback": {
+    "deployment_id": "dc834bac-2108-4de3-baad-47044e2ec51c",
+    "runtime_source_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
+    "old_designation_superseded": "78cc3660-5750-4685-a095-fee6dce37fbf",
+    "protected_sources_deleted": false
+  },
+  "verification": {
+    "new_immutable_r2_objects": 87,
+    "pages_public_objects": 174,
+    "pages_and_r2_frozen_bytes_verified": true,
+    "browser_qa": "browser_qa.json",
+    "regression_note": "../../docs/RELEASE_REGRESSION_QA_20261008.md",
+    "source_index_assets_matching_hosted_candidate": 176,
+    "production_console_errors": []
+  },
+  "proof": {
+    "path": "production-map.jpg",
+    "bytes": 153688,
+    "sha256": "9f3e47cfd162b27e97b599158e7089d19df1f1d83c911ba745ffe08a5eada00d"
+  },
+  "storage": {
+    "new_files_above_100MiB": [],
+    "approximate_net_project_growth_MiB": 35,
+    "c_free_GiB": 124.37,
+    "full_corpus_or_bundle_copied": false,
+    "new_pages_stage_bytes": 28746111,
+    "new_sparse_packet_directory_bytes": 718175,
+    "superseded_stage_cleanup_proposal": "../../docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md",
+    "deletions_performed": false
+  },
+  "git_integration": "Main-branch pushes trigger Cloudflare. Documentation-only rebuilds may have a new deployment ID; the frozen runtime inventory defines this release. Verify the live URL after the receipt push; immutable R2 verification is retained from the preview."
+}
