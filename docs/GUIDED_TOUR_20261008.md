@@ -1,7 +1,8 @@
 # Guided tours and floating Help
 
-Status: release prepared for publication at https://ufo-timeline.pages.dev/.
-Feature source: `047c6df`, including `8b4bcc5`. Baseline production source:
+Status: published and verified at https://ufo-timeline.pages.dev/.
+Deployed GitHub main source: `af13d62`. Feature source: `047c6df`, including
+`8b4bcc5`. Baseline production source:
 `1578ba4671bc87a6a13af12d631afe7aecab0244`. Publication evidence is kept in
 `releases/guided-tours-20261008/`. This UI release preserves the data inventory.
 
@@ -77,10 +78,11 @@ highlight follows clipping containers, scroll, resize and target-size changes.
 
 ## Storage and retention
 
-Canonical tour source: this frontend worktree. Shared canonical data is referenced
-in place. Until final verification, validated production remains deployment
-`0fb396aa-2876-4343-b8b8-87796880a177`. After validation, that exact deployment
-becomes the sole known-good rollback, superseding the prior `a70bc14c` designation.
+Canonical tour source: this frontend worktree and the published GitHub main.
+Shared canonical data is referenced in place. Verified guided-tour production is
+`e8cf1fb8-2bdb-437e-97af-f856e022f3dc`. The previous production deployment
+`0fb396aa-2876-4343-b8b8-87796880a177` is now the sole known-good rollback,
+superseding the prior `a70bc14c` designation.
 No protected source or prior unique provenance is deleted.
 
 `docs/qa/guided-tour-20261008/` contains small UI evidence from the local preview;
@@ -99,11 +101,26 @@ The reused `.tmp/workspace-analysis-20261008-pages` contains 184 files totaling
 Its growth is only 41,351 bytes; immutable R2 uploads remain unchanged at 87
 objects / 101,875,689 bytes. C: was below 100 GiB free, so preparation charged
 only actual growth against the sub-100-MiB allowance in the storage policy.
-Deployment evidence and Git metadata are expected to keep total new local growth
-below 1 MiB. No file exceeds 100 MiB. The release evidence directory contains
+Deployment evidence and Git metadata keep estimated new local growth below
+1 MiB. No file exceeds 100 MiB. The release evidence directory contains
 small source/verification receipts and a browser proof, rebuilt by rerunning the
 bounded release verifier and live Help/tour checks; retain with this UI release.
 No new staging/backup tree was created or superseded. No deletion was performed.
 Previously superseded shell stages and the explicit cleanup proposal remain
 documented in `WORKSPACE_ANALYSIS_RELEASE_20261008.md`; cleanup is independent of
 this feature. No new cleanup action is needed.
+
+## Production verification
+
+All 182 publicly retrievable Pages assets passed exact byte/hash and required
+cache-header checks; the other two entries are `_headers` and `.nojekyll`.
+Only the previously declared exact Cloudflare Analytics HTML envelope was
+accepted. All 184 staged source assets also matched their committed Git bytes.
+The live browser loaded all 702,893 records, opened both tours, restored Map and
+keyboard focus on exit, preserved dates, and kept the header/map position stable
+when Help opened. No console errors were observed. The receipt, detailed browser
+checks and `production-help.jpg` are retained in the release evidence directory.
+
+Receipt-only pushes trigger an equivalent Cloudflare Git deployment with the same
+runtime inventory. The final provider ID is observed locally after that push,
+without creating another receipt-push loop. The inventory is authoritative.

@@ -1,0 +1,56 @@
+{
+  "production_url": "https://ufo-timeline.pages.dev/",
+  "runtime_source_commit": "af13d62",
+  "verified_production_deployment": "e8cf1fb8-2bdb-437e-97af-f856e022f3dc",
+  "core_catalog_rows": 702893,
+  "header_height_unchanged": true,
+  "map_top_unchanged": true,
+  "document_height_unchanged": true,
+  "help_internal_scroll": true,
+  "map_tour_launched_and_dismissed_help": true,
+  "analysis_tour_launched_and_dismissed_help": true,
+  "map_view_restored_after_tours": true,
+  "focus_returned_to_header_help": true,
+  "dates_preserved": true,
+  "console_errors": [],
+  "proof": "production-help.jpg",
+  "geometry": {
+    "dates": [
+      "1954-09-01",
+      "1954-11-30"
+    ],
+    "docHeight": 1881,
+    "focus": "user-guide-body",
+    "header": {
+      "bottom": 97.59375,
+      "height": 83.59375,
+      "left": 16,
+      "top": 14,
+      "width": 1233
+    },
+    "hidden": false,
+    "map": {
+      "bottom": 410.59375,
+      "height": 292,
+      "left": 257,
+      "top": 118.59375,
+      "width": 727.8125
+    },
+    "panel": {
+      "bottom": 658.796875,
+      "height": 580,
+      "left": 816,
+      "top": 78.796875,
+      "width": 420
+    },
+    "panelClient": 578,
+    "panelOverflow": "auto",
+    "panelParent": "BODY",
+    "panelScroll": 917,
+    "scrollY": 0,
+    "viewport": [
+      1265,
+      720
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "ufo-guided-tour-publication-v1",
+  "status": "published_verified",
+  "runtime_revision": "guided-tours-20261008",
+  "observed_at_utc": "2026-10-08T12:08:58.115442+00:00",
+  "feature_source_commit": "047c6df",
+  "deployed_git_source_commit": "af13d62",
+  "github_source_url": "https://github.com/MYTbrain/ufo-timeline/commit/af13d62",
+  "production_url": "https://ufo-timeline.pages.dev/",
+  "verified_publication": {
+    "deployment_id": "e8cf1fb8-2bdb-437e-97af-f856e022f3dc",
+    "cloudflare_git_deployment_status": "success"
+  },
+  "canonical_validated_artifact": {
+    "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "pages_tree_sha256": "33a7da86dafaa5ff8b50f46ff04a8827ac9ce732ed91e23e77e75a10b3fe5feb",
+    "pages_files": 184,
+    "pages_bytes": 32302392
+  },
+  "retained_rollback": {
+    "deployment_id": "0fb396aa-2876-4343-b8b8-87796880a177",
+    "source_commit": "1578ba4671bc87a6a13af12d631afe7aecab0244",
+    "superseded_designation": "a70bc14c-550c-4057-b461-bca4fd7aba27",
+    "protected_sources_deleted": false
+  },
+  "verification": {
+    "pages_public_objects": 182,
+    "git_source_objects_exact": 184,
+    "physical_bytes_and_required_cache_headers_verified": true,
+    "browser_qa": "production-browser-verification.json",
+    "public_objects_receipt": "production-verification.json",
+    "guided_state_tests_passed": 17,
+    "new_r2_uploads": 0,
+    "inherited_r2_objects_unchanged": 87,
+    "core_catalog_rows": 702893,
+    "console_errors": []
+  },
+  "proofs": [
+    {
+      "path": "production-help.jpg",
+      "bytes": 127600,
+      "sha256": "a1f7cc02f17a917af8ada40196a274bd17e976c3604ad60adf500ea34a0aa78a"
+    }
+  ],
+  "storage": {
+    "existing_stage_reused_in_place": true,
+    "net_stage_growth_bytes": 41351,
+    "approximate_net_deployment_growth_MiB": 1,
+    "new_files_above_100MiB": [],
+    "c_free_GiB": 93.94,
+    "full_corpus_or_bundle_copied": false,
+    "superseded_generated_artifacts": [
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\interface-pages-candidate",
+        "bytes": 26115918
+      },
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\quality-20261007-pages",
+        "bytes": 28176967
+      }
+    ],
+    "cleanup_proposal": "The same two older reproducible stages remain eligible for separately authorized literal-path cleanup; their hashes and retained counterparts are documented in docs/WORKSPACE_ANALYSIS_RELEASE_20261008.md. No deletion performed."
+  },
+  "git_integration": "Receipt-only pushes trigger an equivalent runtime deployment. Verify final live inventory and save final provider observation locally without another metadata-only push."
+}
