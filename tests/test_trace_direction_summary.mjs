@@ -233,4 +233,92 @@ const longNorth = { ...link("north-route", center, [1, 0], "direct"), gapDays: 0
 const tinyShared = { ...link("tiny-shared", center, [0.005, 0.005], "direct"), gapDays: 0 };
 assert.equal(directions.groupUnorderedConnections([unorderedEast, longNorth, tinyShared], { project: linearProject, pixelTolerance: 1 }).length, 2, "a tiny shared-origin connector cannot collapse two long divergent routes");
 
+const legendMarkup = directions.legendSummaryMarkup(mixedSummary, { scopeLabel: "Visible traces · September 1994" });
+assert.ok(legendMarkup.includes("Visible traces · September 1994"), "legend explicitly identifies its time-window scope");
+assert.ok(legendMarkup.includes("1 ordered link"));
+assert.ok(legendMarkup.includes("2 unknown-order links excluded"), "unknown-order links remain visible alongside the directional denominator");
+assert.ok(legendMarkup.includes("Radial scale: 0–100%"));
+assert.equal((legendMarkup.match(/<th scope="row">/g) || []).length, 8, "all eight sectors remain available as exact data");
+assert.ok(legendMarkup.includes('title="East">E</abbr></th><td>1</td><td>100%</td>'), "legend shares use only ordered links, not all valid links");
+assert.ok(legendMarkup.includes('<details class="trace-direction-legend-details"><summary>Direction counts &amp; shares</summary>'), "narrow legend keeps exact sector data behind a native accessible expander");
+assert.ok(legendMarkup.includes("chronological report links; these do not measure craft travel"), "directional associations are distinguished from measured travel");
+assert.ok(!legendMarkup.includes("<h4>"), "legend does not duplicate the surrounding panel heading");
+assert.ok(!legendMarkup.includes('class="trace-direction-data"'), "legend does not reuse the wide two-column popup layout");
+
+const emptyLegendMarkup = directions.legendSummaryMarkup(directions.summarizeDirections([]));
+const unknownLegendMarkup = directions.legendSummaryMarkup(allUnordered);
+for (const emptyMarkup of [emptyLegendMarkup, unknownLegendMarkup]) {
+  assert.ok(emptyMarkup.includes('<figure class="trace-direction-chart is-empty"><svg'), "empty legend retains its compass radar reference");
+  assert.equal((emptyMarkup.match(/<line x1="110"/g) || []).length, 8, "empty radar retains eight labeled spokes");
+  assert.ok(!emptyMarkup.includes('fill-opacity="0.16"'), "empty radar draws no invented data polygon");
+  assert.ok(!emptyMarkup.includes("<circle"), "empty radar draws no invented data points");
+  assert.ok(!emptyMarkup.includes("NaN") && !emptyMarkup.includes("Infinity"), "zero-denominator radar has no invalid geometry");
+  assert.equal((emptyMarkup.match(/<td>—<\/td>/g) || []).length, 8, "zero-denominator shares are undefined rather than fabricated zero percentages");
+}
+assert.ok(unknownLegendMarkup.includes("2 unknown-order links excluded"));
+assert.ok(unknownLegendMarkup.includes("no directions can be counted"), "unknown-only traces explain why the reference radar contains no values");
+assert.equal(directions.radialChartMarkup(allUnordered), "", "legacy popup chart still suppresses unknown-only distributions");
+
+for (const status of ["off", "disabled", "loading"]) {
+  const statusMarkup = directions.legendSummaryMarkup(summary, { status });
+  assert.ok(statusMarkup.includes("0 ordered links"), `${status} must suppress stale known counts`);
+  assert.ok(statusMarkup.includes('class="trace-direction-chart is-empty"'), `${status} must suppress stale distribution geometry`);
+  assert.ok(statusMarkup.includes(status === "loading" ? "Updating trace directions" : "Enable traces"), `${status} has a useful status explanation`);
+}
+const escapedLegendMarkup = directions.legendSummaryMarkup(null, { scopeLabel: '<img src=x onerror="bad()">', emptyMessage: "<script>bad()</script>" });
+assert.ok(!escapedLegendMarkup.includes("<img") && !escapedLegendMarkup.includes("<script>"), "caller-provided scope and status text cannot become HTML");
+assert.ok(escapedLegendMarkup.includes("&lt;img") && escapedLegendMarkup.includes("&lt;script&gt;"));
+const bothLegendMarkup = directions.legendSummaryMarkup(summary);
+assert.ok(bothLegendMarkup.includes("3 ordered links · 4 directions"), "legend distinguishes bidirectional traversal contributions from unique ordered links");
+assert.ok(bothLegendMarkup.includes("contributes once in each direction"));
+assert.ok(bothLegendMarkup.includes("3 other links excluded: 1 invalid coordinates, 1 coincident endpoints, 1 undefined bearings."), "coordinate exclusions are distinct from unknown chronology");
+
+const streamedRows = [...cohort, unorderedEast, unorderedWest, confirmedSameDay, { ...unorderedEast }];
+const accumulator = directions.createDirectionAccumulator();
+const emptySnapshot = accumulator.finish();
+for (const segment of streamedRows.slice(0, 3)) assert.equal(accumulator.add(segment), accumulator, "streaming additions are chainable");
+const firstSnapshot = accumulator.finish();
+for (const segment of streamedRows.slice(3)) accumulator.add(segment);
+const streamedSummary = accumulator.finish();
+assert.deepEqual(streamedSummary, directions.summarizeDirections(streamedRows), "streamed and array summaries agree across forward, backward, both, unknown, exclusions and duplicate links");
+assert.equal(streamedSummary.inputSegments, streamedRows.length);
+assert.equal(streamedSummary.duplicatesIgnored, 2);
+assert.equal(streamedSummary.unorderedSegments, 2);
+assert.equal(streamedSummary.orderedSegments, 4);
+assert.equal(streamedSummary.denominator, 5);
+assert.deepEqual(streamedSummary.excludedCounts, { invalidCoordinates: 1, zeroDistance: 1, undefinedBearing: 1 });
+assert.equal(emptySnapshot.denominator, 0, "continuing a scan cannot change an earlier empty snapshot");
+assert.equal(firstSnapshot.inputSegments, 3);
+assert.equal(firstSnapshot.denominator, 4);
+assert.equal(firstSnapshot.unorderedSegments, 0, "later unknown links cannot alter prior snapshot counts");
+assert.equal(firstSnapshot.excludedCounts.invalidCoordinates, 0, "later exclusions cannot alter prior nested snapshot counts");
+assert.ok(Object.isFrozen(streamedSummary) && Object.isFrozen(streamedSummary.sectors) && Object.isFrozen(streamedSummary.sectors[0]) && Object.isFrozen(streamedSummary.excludedCounts), "all summary snapshot state is immutable");
+assert.throws(() => { streamedSummary.sectors[0].count = 999; }, TypeError);
+assert.throws(() => { streamedSummary.excludedCounts.invalidCoordinates = 999; }, TypeError);
+assert.deepEqual(accumulator.finish(), streamedSummary, "taking a snapshot neither resets nor consumes the accumulator");
+
+const streamOptions = { direction: "backward", bearingMode: "greatCircle" };
+const configuredAccumulator = directions.createDirectionAccumulator(streamOptions);
+streamOptions.direction = "forward";
+streamOptions.bearingMode = "map";
+const configuredRows = [{ from: [60, 0], to: [60, 80] }, link("both-geodesic", [60, 0], [60, 80], "both")];
+configuredRows.forEach(row => configuredAccumulator.add(row));
+assert.deepEqual(configuredAccumulator.finish(), directions.summarizeDirections(configuredRows, { direction: "backward", bearingMode: "greatCircle" }), "streaming freezes configuration and retains great-circle and fallback-direction semantics");
+assert.deepEqual(directions.createDirectionAccumulator().finish(), directions.summarizeDirections(null), "empty streaming and non-array summaries use the same contract");
+
+const repeatedLink = link("unique-canonical-source", center, [0, 1], "forward");
+const deduplicatedStream = directions.createDirectionAccumulator().add(repeatedLink).add(repeatedLink).finish();
+assert.equal(deduplicatedStream.uniqueSegments, 1, "ordinary streaming suppresses duplicate identities by default");
+assert.equal(deduplicatedStream.duplicatesIgnored, 1);
+const trustedUniqueStream = directions.createDirectionAccumulator({ deduplicate: false }).add(repeatedLink).add(repeatedLink).finish();
+assert.equal(trustedUniqueStream.inputSegments, 2);
+assert.equal(trustedUniqueStream.uniqueSegments, 2, "explicit no-dedup mode counts every supplied canonical-source row");
+assert.equal(trustedUniqueStream.orderedSegments, 2);
+assert.equal(trustedUniqueStream.denominator, 2);
+assert.equal(trustedUniqueStream.duplicatesIgnored, 0);
+assert.equal(trustedUniqueStream.sectors.find(row => row.key === "E").count, 2);
+assert.deepEqual(trustedUniqueStream, directions.summarizeDirections([repeatedLink, repeatedLink], { deduplicate: false }), "array and streamed no-dedup modes retain the same contract");
+const identityUnreadable = { from: center, to: [1, 0], get traceId() { throw new Error("identity key must not be read"); } };
+assert.equal(directions.createDirectionAccumulator({ deduplicate: false }).add(identityUnreadable).finish().denominator, 1, "no-dedup mode skips identity extraction entirely");
+
 console.log("Trace direction summaries passed: wrapped bearings, chronology uncertainty, honest counts, accessible charts and arrow-only badges.");

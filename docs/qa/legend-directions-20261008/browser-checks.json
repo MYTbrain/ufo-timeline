@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-08T12:54:18.960Z",
+  "preview": "http://127.0.0.1:8168/whole-site.html",
+  "baseline": "275a769",
+  "appSha256": "2808E65C0D775576D50E1C2560437440C3BEAFDD20CE243F2B50CBF0158F3D68",
+  "publication": "local only",
+  "final": {
+    "arrowChecked": false,
+    "arrows": 0,
+    "height": 975,
+    "legendOpen": true,
+    "results": "431",
+    "summary": "1994-09-01 – 1994-11-30\n\nVisible traces · current time window\n\n54 ordered links\n360 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0–57.4%\nDirection counts & shares",
+    "tableRows": [
+      "N35.6%",
+      "NE47.4%",
+      "E916.7%",
+      "SE23.7%",
+      "S00%",
+      "SW59.3%",
+      "W3157.4%",
+      "NW00%"
+    ],
+    "width": 925,
+    "windowEnd": "1994-11-30",
+    "windowStart": "1994-09-01"
+  },
+  "arrowToggle": {
+    "case": "Ariel School",
+    "orderedLinks": 1,
+    "unknownOrderLinks": 1,
+    "onBadges": 6,
+    "linePixelsUnchanged": true,
+    "radarMarkupUnchanged": true,
+    "datesUnchanged": true,
+    "resultsUnchanged": true,
+    "offBadges": 0
+  },
+  "mobile": {
+    "documentWidth": 381,
+    "height": 840,
+    "legend": {
+      "bottom": 453.1640625,
+      "height": 230.99609375,
+      "left": 132.01171875,
+      "right": 352.01171875,
+      "top": 222.16796875,
+      "width": 220,
+      "x": 132.01171875,
+      "y": 222.16796875
+    },
+    "legendScrollable": true,
+    "panelScrollWidth": 181,
+    "panelWidth": 181,
+    "radarWidth": 93.06640625,
+    "width": 400
+  },
+  "viewportOverrideReset": true,
+  "browserErrors": []
+}

@@ -405,12 +405,13 @@
     return null;
   }
 
-  function summarizeDirections(segments, options) {
-    const config = options || {};
-    const rows = Array.isArray(segments) ? segments : [];
-    const sectors = SECTORS.map(function (sector) { return Object.assign({}, sector, { count: 0, percentage: 0 }); });
-    const seen = new Set();
+  function createDirectionAccumulator(options) {
+    const config = Object.assign({}, options || {});
+    const deduplicate = config.deduplicate !== false;
+    const counts = SECTORS.map(function () { return 0; });
+    const seen = deduplicate ? new Set() : null;
     const excludedCounts = { invalidCoordinates: 0, zeroDistance: 0, undefinedBearing: 0 };
+    let inputSegments = 0;
     let uniqueSegments = 0;
     let validSegments = 0;
     let orderedSegments = 0;
@@ -418,39 +419,64 @@
     let bothDirectionSegments = 0;
     let duplicatesIgnored = 0;
     let denominator = 0;
-    rows.forEach(function (segment) {
-      const identity = segmentIdentity(segment);
-      if (identity != null && seen.has(identity)) { duplicatesIgnored += 1; return; }
-      if (identity != null) seen.add(identity);
+    function add(segment) {
+      inputSegments += 1;
+      // Packed canonical adjacency scans already guarantee identity uniqueness.
+      // They can avoid both per-link key allocations and an unbounded seen set.
+      if (deduplicate) {
+        const identity = segmentIdentity(segment);
+        if (identity != null && seen.has(identity)) { duplicatesIgnored += 1; return api; }
+        if (identity != null) seen.add(identity);
+      }
       uniqueSegments += 1;
       const description = describeSegment(segment, config);
-      if (!description.valid) { excludedCounts[description.reason] += 1; return; }
+      if (!description.valid) { excludedCounts[description.reason] += 1; return api; }
       validSegments += 1;
-      if (description.orderUncertain) { unorderedSegments += 1; return; }
+      if (description.orderUncertain) { unorderedSegments += 1; return api; }
       orderedSegments += 1;
       if (description.direction === "both") bothDirectionSegments += 1;
       description.directions.forEach(function (entry) {
-        sectors[sectorForBearing(entry.bearing).index].count += 1;
+        counts[sectorForBearing(entry.bearing).index] += 1;
         denominator += 1;
       });
-    });
-    sectors.forEach(function (sector) { sector.percentage = denominator ? sector.count * 100 / denominator : 0; });
-    return {
-      title: "Report-link directions",
-      bearingMode: config.bearingMode === "greatCircle" ? "greatCircle" : "map",
-      sectors,
-      denominator,
-      directionCount: denominator,
-      inputSegments: rows.length,
-      uniqueSegments,
-      validSegments,
-      orderedSegments,
-      unorderedSegments,
-      bothDirectionSegments,
-      excludedSegments: uniqueSegments - validSegments,
-      excludedCounts,
-      duplicatesIgnored,
-    };
+      return api;
+    }
+
+    function finish() {
+      // Only optional identity keys and eight running counts are retained. Snapshots
+      // have no shared mutable state, even while progressive scans continue.
+      const sectors = SECTORS.map(function (sector, index) {
+        return Object.freeze(Object.assign({}, sector, {
+          count: counts[index],
+          percentage: denominator ? counts[index] * 100 / denominator : 0,
+        }));
+      });
+      return Object.freeze({
+        title: "Report-link directions",
+        bearingMode: config.bearingMode === "greatCircle" ? "greatCircle" : "map",
+        sectors: Object.freeze(sectors),
+        denominator,
+        directionCount: denominator,
+        inputSegments,
+        uniqueSegments,
+        validSegments,
+        orderedSegments,
+        unorderedSegments,
+        bothDirectionSegments,
+        excludedSegments: uniqueSegments - validSegments,
+        excludedCounts: Object.freeze(Object.assign({}, excludedCounts)),
+        duplicatesIgnored,
+      });
+    }
+
+    const api = Object.freeze({ add, finish });
+    return api;
+  }
+
+  function summarizeDirections(segments, options) {
+    const accumulator = createDirectionAccumulator(options);
+    if (Array.isArray(segments)) segments.forEach(function (segment) { accumulator.add(segment); });
+    return accumulator.finish();
   }
 
   function formatPercentage(value) {
@@ -484,14 +510,16 @@
     return point[0].toFixed(2) + "," + point[1].toFixed(2);
   }
 
-  function radialChartMarkup(summary) {
+  function radialChartMarkup(summary, options) {
+    const config = options || {};
     const maximum = Math.max.apply(null, summary.sectors.map(function (sector) { return sector.percentage; }));
-    if (!maximum) return "";
+    if (!maximum && !config.showEmpty) return "";
+    const scaleMaximum = maximum || 100;
     const radius = 72;
-    const scaleLabel = "Each outer spoke marks " + formatPercentage(maximum) + ".";
-    const description = summary.sectors.map(function (sector) {
+    const scaleLabel = "Each outer spoke marks " + formatPercentage(scaleMaximum) + ".";
+    const description = maximum ? summary.sectors.map(function (sector) {
       return sector.label + ": " + sector.count + " (" + formatPercentage(sector.percentage) + ")";
-    }).join("; ");
+    }).join("; ") : "No report-link directions with known chronological order are plotted";
     const rings = [0.25, 0.5, 0.75, 1].map(function (fraction) {
       return '<polygon points="' + SECTORS.map(function (sector) { return pointText(pointAt(sector.bearing, radius * fraction)); }).join(" ") +
         '" fill="none" stroke="currentColor" stroke-opacity="0.22" stroke-width="1"/>';
@@ -503,16 +531,64 @@
         '" stroke="currentColor" stroke-opacity="0.22"/><text x="' + label[0].toFixed(2) + '" y="' + label[1].toFixed(2) +
         '" text-anchor="middle" dominant-baseline="middle" fill="currentColor" font-size="11">' + sector.key + "</text>";
     }).join("");
-    const values = summary.sectors.map(function (sector) { return pointAt(sector.bearing, radius * sector.percentage / maximum); });
+    const values = maximum ? summary.sectors.map(function (sector) { return pointAt(sector.bearing, radius * sector.percentage / maximum); }) : [];
     const dots = values.map(function (point, index) {
       return '<circle cx="' + point[0].toFixed(2) + '" cy="' + point[1].toFixed(2) + '" r="3" fill="currentColor"><title>' +
         escapeHtml(summary.sectors[index].key + ": " + formatPercentage(summary.sectors[index].percentage)) + "</title></circle>";
     }).join("");
-    return '<figure class="trace-direction-chart"><svg viewBox="0 0 220 220" role="img" aria-label="' + escapeHtml("Report-link direction distribution. " + description + ". " + scaleLabel) +
+    const dataPolygon = values.length ? '<polygon points="' + values.map(pointText).join(" ") +
+      '" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="2"/>' + dots : "";
+    return '<figure class="trace-direction-chart' + (maximum ? "" : " is-empty") + '"><svg viewBox="0 0 220 220" role="img" aria-label="' + escapeHtml("Report-link direction distribution. " + description + ". " + scaleLabel) +
       '"><title>Report-link direction distribution</title><desc>' + escapeHtml(description + ". " + scaleLabel) +
-      "</desc>" + rings + axes + '<polygon points="' + values.map(pointText).join(" ") +
-      '" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="2"/>' + dots +
-      '</svg><figcaption>Radial scale: 0–' + formatPercentage(maximum) + "</figcaption></figure>";
+      "</desc>" + rings + axes + dataPolygon +
+      '</svg><figcaption>Radial scale: 0–' + formatPercentage(scaleMaximum) + (maximum ? "" : " · no known directions") + "</figcaption></figure>";
+  }
+
+  function legendSummaryMarkup(summary, options) {
+    const config = options || {};
+    const status = config.status === "off" || config.status === "disabled" ? "off" : config.status === "loading" ? "loading" : "ready";
+    // Disabled or rebuilding traces must not retain a plausible-looking stale
+    // distribution from the previous time window or overlay configuration.
+    const data = status === "ready" && summary ? summary : summarizeDirections([]);
+    const ordered = data.orderedSegments == null ? data.validSegments : data.orderedSegments;
+    const unordered = data.unorderedSegments || 0;
+    const countText = ordered + " ordered link" + (ordered === 1 ? "" : "s");
+    const directionText = data.denominator !== ordered
+      ? " · " + data.denominator + " direction" + (data.denominator === 1 ? "" : "s") : "";
+    const unknownText = unordered + " unknown-order link" + (unordered === 1 ? "" : "s") + " excluded";
+    const defaultEmpty = status === "off" ? "Enable traces to see directions for this time window."
+      : status === "loading" ? "Updating trace directions for this time window."
+        : unordered ? "These links have unknown chronological order; no directions can be counted."
+          : "No ordered report links are visible in this time window.";
+    const emptyText = !data.denominator
+      ? '<p class="trace-direction-empty">' + escapeHtml(config.emptyMessage || defaultEmpty) + "</p>" : "";
+    const rows = data.sectors.map(function (sector) {
+      return '<tr><th scope="row"><span class="trace-direction-swatch" aria-hidden="true" style="background:' +
+        sector.tone + '"></span><abbr title="' + escapeHtml(sector.label) + '">' + escapeHtml(sector.key) +
+        "</abbr></th><td>" + sector.count + "</td><td>" + (data.denominator ? formatPercentage(sector.percentage) : "—") + "</td></tr>";
+    }).join("");
+    const countNote = data.bothDirectionSegments
+      ? " Each link shown in both chronology directions contributes once in each direction."
+      : " Each ordered link contributes once in its displayed direction.";
+    const geometryNote = data.bearingMode === "greatCircle"
+      ? "Initial great-circle bearings of chronological report links; these do not measure craft travel."
+      : "Map bearings of chronological report links; these do not measure craft travel.";
+    const excludedNote = data.excludedSegments
+      ? '<p class="trace-direction-exclusions">' + data.excludedSegments + " other link" + (data.excludedSegments === 1 ? "" : "s") +
+        " excluded: " + data.excludedCounts.invalidCoordinates + " invalid coordinates, " + data.excludedCounts.zeroDistance +
+        " coincident endpoints, " + data.excludedCounts.undefinedBearing + " undefined bearings.</p>" : "";
+    return '<section class="trace-direction-summary trace-direction-legend-summary" data-direction-status="' + status +
+      '" aria-label="Report-link direction distribution"><p class="trace-direction-legend-scope">' +
+      escapeHtml(config.scopeLabel || "Visible traces · current time window") +
+      '</p><p class="trace-direction-legend-counts"><strong>' + countText + directionText +
+      '</strong><span class="trace-direction-uncertainty">' + unknownText + "</span></p>" +
+      radialChartMarkup(data, { showEmpty: true }) + emptyText +
+      '<details class="trace-direction-legend-details"><summary>Direction counts &amp; shares</summary>' +
+      '<table class="trace-direction-table"><caption class="sr-only">Eight compass sectors; shares of ' + data.denominator +
+      ' ordered link directions. Unknown-order links are excluded.</caption><thead><tr><th scope="col">Direction</th>' +
+      '<th scope="col">Count</th><th scope="col">Share</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      '<p class="trace-direction-note">' + geometryNote + countNote + " Unknown-order links are excluded from percentages.</p>" +
+      excludedNote + "</details></section>";
   }
 
   function summaryMarkup(summary, options) {
@@ -565,10 +641,12 @@
     describeSegment,
     segmentDirections,
     groupUnorderedConnections,
+    createDirectionAccumulator,
     summarizeDirections,
     formatPercentage,
     directionBadgeMarkup,
     radialChartMarkup,
+    legendSummaryMarkup,
     summaryMarkup,
   });
 });

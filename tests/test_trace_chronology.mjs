@@ -116,7 +116,8 @@ const runtime = { traceChronologyEvidence: index, traceChronologyStatus: "ready"
 const bucket = { key: "gap_le_1", maxDays: 1 };
 const artifact = { rowCount: 2 };
 const state = { filteredMappedPlaybackEvents: reports, filteredMappedCatalog: reports, timelineDataVersion: 1, filterGeneration: 1 };
-const context = vm.createContext({ TRACE_CHRONOLOGY: chronology, runtime, state,
+const context = vm.createContext({ TRACE_CHRONOLOGY: chronology, TRACE_DIRECTIONS: directions, runtime, state,
+  staticTraceDirectionPopulations: new WeakMap(),
   getCatalogEventById: id => reports.find(event => String(event.event_id) === String(id)),
   activeTraceBuckets: () => [bucket], filteredMappedEventIdSet: () => new Set(["1", "2"]),
   canonicalTraceSegmentsCacheKey: () => "legacy:" + runtime.traceChronologyEvidence.releaseId,
@@ -136,6 +137,7 @@ const context = vm.createContext({ TRACE_CHRONOLOGY: chronology, runtime, state,
   PLAYBACK_TRAIL_BUCKET_BY_KEY: new Map([["gap_le_1", bucket]]),
 });
 vm.runInContext(["applyTraceChronology", "traceChronologyIdentity", "canonicalTraceId", "finiteChronologyNumber",
+  "staticTraceDirectionScopeLabel", "registerStaticTraceDirectionPopulation",
   "buildCanonicalTraceSegmentsFromPackedEventIndex", "buildLegacyCanonicalTraceSegments", "buildCanonicalPackedTraceRenderSegments",
   "buildPackedTraceFacilityWorkerCandidateSegments", "normalizeStartupProfileTraceSegment"].map(extract).join("\n"), context);
 for (const [name, wrapped] of [["buildCanonicalTraceSegmentsFromPackedEventIndex", false], ["buildLegacyCanonicalTraceSegments", false],

@@ -4450,6 +4450,53 @@ html.faithful-polish-preview #map {
   margin: 0 auto;
 }
 
+/* A compact direction overview lives with the original interactive legend. */
+.map-legend-direction-panel {
+  margin: 3px 0 10px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--panel-border);
+}
+.map-legend-direction-panel > summary {
+  cursor: pointer;
+  font-size: .76rem;
+  font-weight: 700;
+  padding: 5px 0;
+}
+.map-legend-arrow-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px 0;
+  min-height: 26px;
+  font-size: .72rem;
+}
+.map-legend-arrow-toggle input { margin: 0; accent-color: var(--accent); }
+.map-legend-arrow-toggle:has(input:disabled) { color: var(--muted); }
+.map-legend-direction-period { margin: 4px 0 0; font-size: .67rem; color: var(--muted); }
+.trace-direction-legend-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 4px 7px;
+  margin-top: 3px;
+}
+.trace-direction-legend-summary p { margin: 2px 0; font-size: .68rem; }
+.trace-direction-legend-scope { grid-column: 1 / -1; color: var(--muted); }
+.trace-direction-legend-counts { grid-column: 2; grid-row: 2; align-self: center; }
+.trace-direction-legend-counts strong,
+.trace-direction-legend-counts .trace-direction-uncertainty { display: block; margin-bottom: 7px; }
+.trace-direction-legend-summary .trace-direction-chart { grid-column: 1; grid-row: 2; width: 100%; }
+.trace-direction-legend-summary .trace-direction-chart figcaption { font-size: .6rem; line-height: 1.3; }
+.trace-direction-legend-summary > .trace-direction-empty,
+.trace-direction-legend-details { grid-column: 1 / -1; }
+.trace-direction-legend-details summary { cursor: pointer; font-size: .68rem; padding: 6px 0; }
+.trace-direction-legend-details .trace-direction-table { font-size: .7rem; }
+.map-legend-direction-panel summary:focus-visible,
+.map-legend-arrow-toggle input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (pointer: coarse) {
+  .map-legend-arrow-toggle { min-height: 44px; }
+  .map-legend-direction-panel summary { min-height: 32px; }
+}
+
 .famous-case-picker {
   display: grid;
   gap: 7px;
