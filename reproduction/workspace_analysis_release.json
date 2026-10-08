@@ -3,16 +3,19 @@
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",
   "publication": {
-    "status": "prepared_pending_production_verification",
+    "status": "published_verified",
     "production_url": "https://ufo-timeline.pages.dev",
     "publication_receipt": "releases/map-polar-bounds-20261008/publication_receipt.json",
     "browser_qa": "releases/map-polar-bounds-20261008/browser_qa.json",
-    "runtime_inventory_authoritative_across_docs_only_redeployments": true
+    "runtime_inventory_authoritative_across_docs_only_redeployments": true,
+    "production_deployment_id": "1d4474fb-6a1b-4862-b826-ed938fdf77da",
+    "production_source_commit": "cb08a8d3cce8f073f14377e363da0f177dfa2107",
+    "production_verification": "releases/map-polar-bounds-20261008/production_verification.json"
   },
   "retained_rollback": {
     "deployment_id": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
     "source_commit": "258c4dd",
-    "after_production_validation_only": true,
+    "after_production_validation_only": false,
     "protected_sources_deleted": false
   },
   "counts": {

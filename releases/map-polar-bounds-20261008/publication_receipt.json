@@ -1,0 +1,70 @@
+{
+  "schema": "ufo-map-polar-publication-v1",
+  "status": "published_verified",
+  "runtime_revision": "map-polar-bounds-20261008",
+  "observed_at_utc": "2026-10-08T09:14:44.753177+00:00",
+  "runtime_source_commit": "cb08a8d3cce8f073f14377e363da0f177dfa2107",
+  "github_source_url": "https://github.com/MYTbrain/ufo-timeline/commit/cb08a8d3cce8f073f14377e363da0f177dfa2107",
+  "production_url": "https://ufo-timeline.pages.dev/",
+  "verified_publication": {
+    "deployment_id": "1d4474fb-6a1b-4862-b826-ed938fdf77da",
+    "github_check": "Cloudflare Pages: completed/success"
+  },
+  "canonical_validated_artifact": {
+    "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "pages_tree_sha256": "421690f2973185ac117319f76399138f4095a86b047edc5b562e383872616b7d",
+    "pages_files": 176,
+    "pages_bytes": 28747955
+  },
+  "retained_rollback": {
+    "deployment_id": "c3bee7a9-56cf-4124-b17d-68f8b8533fa0",
+    "source_commit": "258c4dd",
+    "superseded_designation": "e70b33ca-a8c6-47b3-a4ae-55927de7e2da",
+    "protected_sources_deleted": false
+  },
+  "verification": {
+    "pages_public_objects": 174,
+    "physical_bytes_verified": true,
+    "new_r2_uploads": 0,
+    "inherited_r2_objects_unchanged": 87,
+    "browser_qa": "browser_qa.json",
+    "actual_live_held_pointer_north_gap_px": 0,
+    "actual_live_held_pointer_south_gap_px": 0,
+    "production_ready": true,
+    "console_errors": [],
+    "projection_rounding_tolerance_px": 1,
+    "test_view_restored": true
+  },
+  "proofs": [
+    {
+      "path": "production-north.jpg",
+      "bytes": 143537,
+      "sha256": "18afefae5e1268c5ff732f57a1dde05fbb5c3eace2137e014546375a0cafe288"
+    },
+    {
+      "path": "production-south.jpg",
+      "bytes": 141971,
+      "sha256": "759b1b1e40cceefc9b1d26853cc587024a2453798d7e27ab976733f6b258adf9"
+    }
+  ],
+  "storage": {
+    "existing_stage_reused_in_place": true,
+    "net_stage_growth_bytes": 1512,
+    "approximate_net_project_growth_MiB": 0.4,
+    "new_files_above_100MiB": [],
+    "c_free_GiB": 124.08,
+    "full_corpus_or_bundle_copied": false,
+    "superseded_generated_artifacts": [
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\interface-pages-candidate",
+        "bytes": 26115918
+      },
+      {
+        "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\quality-20261007-pages",
+        "bytes": 28176967
+      }
+    ],
+    "cleanup_proposal": "The same two older reproducible shell stages are eligible for explicit literal-path allowlist cleanup; retain current stage, shared data, provenance and the single designated rollback. No deletion performed."
+  },
+  "git_integration": "Documentation-only pushes trigger equivalent runtime deployments. Verify eight live runtime objects after this receipt push and record the observed deployment locally without another metadata-only push."
+}

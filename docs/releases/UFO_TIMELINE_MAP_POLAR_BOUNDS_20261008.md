@@ -23,7 +23,11 @@ polar edges with zero gap. A 2400 px map required zoom 3.25 (world height
 was preserved. Leaflet permits up to one pixel of projection-rounding tolerance.
 Shrinking the map lowered its zoom floor while retaining its current zoom.
 Browser evidence: `releases/map-polar-bounds-20261008/browser_qa.json`.
-Production publication remains pending verification.
+Production deployment `1d4474fb-6a1b-4862-b826-ed938fdf77da` passed 174
+public-object byte/hash checks. Actual held-pointer checks at both poles on the
+loaded production page reported zero blank gap, with Analysis ready and no console
+errors. Both screenshots and the storage/publication receipt are retained in
+`releases/map-polar-bounds-20261008/`. The test views were restored.
 
 Shared source data, scientific methods, evidence, coordinates and inherited R2
 objects remain unchanged. The existing 27.4 MiB Pages stage is refreshed in place:
