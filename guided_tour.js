@@ -229,8 +229,10 @@
     function start(name, launcher) {
       if (!content[name]) return;
       if (session) finish(false);
+      if (window.UfoHelpPanel) window.UfoHelpPanel.close({returnFocus:false});
       session = new utilities.PresentationSession();
       route = name; index = 0; origin = launcher || document.activeElement;
+      if (origin && origin.closest("#user-guide-body")) origin = byId("toggle-user-guide");
       pageScroll = {top:scrollY, left:scrollX};
       scrolls.clear();
       show();

@@ -1,4 +1,84 @@
 /* An opt-in guide over the live workspace. Controls remain usable throughout. */
+/* The header's Help action has the same footprint whether its panel is open. */
+.floating-help-enabled #hero-guide-slot {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+}
+.floating-help-enabled #user-guide.is-hero-guide,
+.floating-help-enabled #user-guide.is-hero-guide.is-collapsed {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.floating-help-enabled #user-guide .user-guide-head > div { display: none; }
+.floating-help-enabled #toggle-user-guide {
+  width: auto;
+  min-width: 56px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-size: .75rem;
+  line-height: 1.25;
+}
+#user-guide-body.floating-help-panel {
+  position: fixed;
+  z-index: 2300;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 24px));
+  max-height: min(580px, calc(100dvh - 24px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 16px;
+  gap: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg-top) 97%, var(--accent) 3%);
+  color: var(--ink);
+  box-shadow: 0 14px 44px rgba(0,0,0,.25);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: .85rem;
+  line-height: 1.45;
+}
+#user-guide-body.floating-help-panel[hidden] { display: none !important; }
+.floating-help-heading {
+  position: sticky;
+  top: -16px;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: -16px -16px 0;
+  padding: 10px 12px 10px 16px;
+  background: color-mix(in srgb, var(--bg-top) 97%, var(--accent) 3%);
+  border-bottom: 1px solid var(--panel-border);
+}
+.floating-help-heading h2 { margin: 0; font-family: inherit; font-size: 1rem; }
+.floating-help-heading button { min-width: 44px; min-height: 44px; padding: 0; font-size: 1.3rem; }
+.floating-help-panel #help-panel-intro { margin: 0; color: var(--muted); }
+.floating-help-panel .guided-tour-launchers { margin: 0; }
+.floating-help-panel .guide-chip {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  font-size: .8rem;
+}
+.floating-help-panel .workflow-help-shortcuts { margin: 0; }
+.floating-help-panel:focus { outline: none; }
+.floating-help-panel button:focus-visible,
+.floating-help-panel .guide-chip:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
 .guided-tour-card {
   position: fixed;
   z-index: 2401;

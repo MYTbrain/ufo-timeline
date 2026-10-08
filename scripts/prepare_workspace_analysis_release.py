@@ -89,7 +89,7 @@ def assemble(check_only=False):
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js",
-                   "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js"]
+                   "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
     for path in (ROOT / "ui/accepted-workspace").iterdir():

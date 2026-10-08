@@ -1,0 +1,83 @@
+{
+  "preview": "http://127.0.0.1:8168/whole-site.html",
+  "checks": {
+    "desktopHeaderHeightUnchanged": true,
+    "desktopMapTopUnchanged": true,
+    "desktopDocumentHeightUnchanged": true,
+    "panelOutsideHeader": true,
+    "datesUnchanged": true,
+    "keyboardMapShortcutFocused": "map-mode",
+    "workflowCaseShortcutFocused": "filter-famous-cases",
+    "escapeAndCloseFocus": "toggle-user-guide",
+    "tourLaunchDismissedHelp": true,
+    "tourExitFocus": "toggle-user-guide",
+    "outsidePointerDismissedHelp": true,
+    "phoneHeaderHeightUnchanged": true,
+    "phoneMapTopUnchanged": true,
+    "phoneViewport": [
+      404,
+      700
+    ],
+    "shortViewport": [
+      612,
+      350
+    ],
+    "shortPanel": {
+      "bottom": 337.98175048828125,
+      "height": 325.98956298828125,
+      "left": 155.4036407470703,
+      "top": 11.9921875,
+      "width": 420
+    },
+    "internalScrollTop": 590,
+    "stickyCloseBounds": {
+      "bottom": 66.82291412353516,
+      "height": 43.99739456176758,
+      "left": 506.0807189941406,
+      "right": 550.0781135559082,
+      "top": 22.825519561767575,
+      "width": 43.99739456176758,
+      "x": 506.0807189941406,
+      "y": 22.825519561767575
+    },
+    "desktop": {
+      "dates": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "docHeight": 1642,
+      "focus": "user-guide-body",
+      "header": {
+        "bottom": 96.8880205154419,
+        "height": 82.890625,
+        "left": 15.989583015441896,
+        "top": 13.997395515441896,
+        "width": 1319.6875
+      },
+      "hidden": false,
+      "map": {
+        "bottom": 665.7161026000977,
+        "height": 547.9947509765625,
+        "left": 90.8203125,
+        "top": 117.72135162353516,
+        "width": 1170.0260009765625
+      },
+      "panel": {
+        "bottom": 658.6067657470703,
+        "height": 580,
+        "left": 902.8515625,
+        "top": 78.60676574707031,
+        "width": 420
+      },
+      "panelClient": 578,
+      "panelOverflow": "auto",
+      "panelParent": "BODY",
+      "panelScroll": 915,
+      "scrollY": 0,
+      "viewport": [
+        1352,
+        975
+      ]
+    }
+  }
+}

@@ -10,6 +10,11 @@ remain unchanged.
   map, famous cases, report filters, Results, interactive legend, map display,
   traces, Chronology Explorer and Analysis.
 - **Help** retains the reference shortcuts and adds both tour launchers.
+- Help opens a bounded floating panel with its own scroll, keeping the header and
+  map in place. Its Close button stays visible during scrolling; Escape and an
+  outside pointer action also dismiss it. Short screens use the available viewport
+  height. Choosing a shortcut or starting a tour dismisses Help, and keyboard
+  shortcuts focus the destination control. Tour exit returns focus to header Help.
 - **Analysis tour**, also available inside Analysis, covers topics, report dates
   and baseline, coverage, focused chart Views, and wider comparisons in five steps.
 - Tours are opt-in. No welcome modal or new content above the map appears on load.
@@ -48,7 +53,7 @@ highlight follows clipping containers, scroll, resize and target-size changes.
 ## Implementation and checks
 
 - Runtime: `guided_tour.js`, `guided_tour_state.js`, `guided_tour_content.js`,
-  `guided_tour.css`; references in `index.html`.
+  `guided_tour.css`, `help_panel.js`; references in `index.html`.
 - Small existing-help wording fixes in `app.js` and matching HTML fallback.
 - The bounded release builder includes these runtime files in its allowlist.
   It has not been run and the validated deployment staging tree is untouched.
@@ -61,6 +66,12 @@ highlight follows clipping containers, scroll, resize and target-size changes.
   `docs/qa/guided-tour-20261008/`.
 - JavaScript syntax and Git whitespace checks pass. No dataset rebuild or full
   bundle build was performed.
+- Help follow-up: desktop header height, map position and document height were
+  unchanged when opening Help. Dates stayed unchanged through shortcut/tour QA.
+  Close/Escape, outside dismissal, destination focus and tour exit focus passed.
+  A 404 x 700 CSS-pixel phone viewport and 612 x 350 short viewport kept Help
+  within the screen; internal scrolling retained its visible Close button.
+  Evidence: `help-panel-checks.json` and `help-panel.jpg` in the same QA folder.
 
 ## Storage and retention
 
@@ -76,6 +87,8 @@ run the existing shared-data preview and replay the tour, retention: retain with
 this implementation until superseded by a reviewed tour update. It contains no
 dataset or deployment-tree copy. No new file exceeds 100 MiB. New managed files
 and QA evidence are below 1 MiB, plus a small Git delta if committed.
+The Help follow-up adds approximately 0.16 MiB of source/documentation/UI evidence,
+plus a small Git delta; it creates no staging tree or large artifact.
 
 No new staging/backup tree was created or superseded. No deletion was performed.
 Previously superseded shell stages and the explicit cleanup proposal remain

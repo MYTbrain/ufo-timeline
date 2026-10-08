@@ -3635,6 +3635,8 @@
 
   function handleGuideJump(guideKey) {
     if (!guideKey) return;
+    const fromFloatingHelp = window.UfoHelpPanel && window.UfoHelpPanel.isOpen();
+    if (window.UfoHelpPanel) window.UfoHelpPanel.close({ returnFocus: false });
     if (state.activeView === "analysis" && runtime.analysisViewController) {
       runtime.analysisViewController.setActiveView("map", { source: "quick-guide" });
     }
@@ -3644,6 +3646,16 @@
     window.requestAnimationFrame(function () {
       const target = guideTargetElement(guideKey);
       if (!target) return;
+      if (fromFloatingHelp) {
+        if (!target.hasAttribute("tabindex") &&
+            !target.matches("button, input, select, textarea, a[href]")) {
+          target.setAttribute("tabindex", "-1");
+          target.addEventListener("blur", function () {
+            if (target.getAttribute("tabindex") === "-1") target.removeAttribute("tabindex");
+          }, { once: true });
+        }
+        target.focus({ preventScroll: true });
+      }
 
       if (els.mapControlCluster && els.mapControlCluster.contains(target)) {
         if (els.mapSurface) {
