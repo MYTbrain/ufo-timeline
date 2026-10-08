@@ -22,7 +22,7 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "dc834bac-2108-4de3-baad-47044e2ec51c"
-RUNTIME_REVISION = "map-polar-bounds-20261008"
+RUNTIME_REVISION = "trace-chronology-20261008"
 RETAINED_ROLLBACK = "c3bee7a9-56cf-4124-b17d-68f8b8533fa0"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -88,7 +88,7 @@ def assemble(check_only=False):
     # never become Pages assets merely because they live alongside runtime data.
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
-                   "analysis_repair_detail_overlay.js"]
+                   "analysis_repair_detail_overlay.js", "trace_chronology.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
     for path in (ROOT / "ui/accepted-workspace").iterdir():
@@ -99,6 +99,19 @@ def assemble(check_only=False):
     config["staticAssetVersion"] = RELEASE
     config["analysisWorkspaceRelease"] = {"id": RELEASE, "baseDeployment": BASE_DEPLOYMENT,
                                          "sourceRowsPreserved": 702893, "mappedRowsPreserved": 582877}
+
+    # Small, precomputed source-clock sidecar; no canonical corpus copies or R2
+    # replacement. Its hash contract is checked by the main thread and worker.
+    timing = load(ROOT / "data/trace_chronology/manifest.json")
+    timing_file = ROOT / "data/trace_chronology/evidence.json.gz"
+    require(timing_file.is_file() and sha(timing_file) == timing["gzipSha256"], "Timing sidecar hash drift")
+    pages["data/trace_chronology/evidence.json.gz"] = timing_file
+    pages["data/trace_chronology/manifest.json"] = ROOT / "data/trace_chronology/manifest.json"
+    config["traceChronologyEvidenceUrl"] = "./data/trace_chronology/evidence.json.gz"
+    config["traceChronologyEvidenceGzipSha256"] = timing["gzipSha256"]
+    config["traceChronologyEvidenceSha256"] = timing["decodedSha256"]
+    config["traceChronologyEvidenceRowCount"] = timing["rowCount"]
+    pin(timing_file, "precomputed guarded source-clock UTC evidence")
 
     # All 71 changed summary gzip shards; the two reviewed year corrections win.
     catalog = REPAIRS / "catalog"
@@ -284,7 +297,11 @@ def main():
             require(not args.check_only, "Cannot stage a check-only plan")
             if args.refresh_stage:
                 require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
-                require({r["path"] for r in previous["pages"]} == {r["path"] for r in plan["pages"]}, "Candidate file inventory changed")
+                old_paths = {r["path"] for r in previous["pages"]}
+                new_paths = {r["path"] for r in plan["pages"]}
+                require(old_paths <= new_paths and new_paths - old_paths <= {
+                    "trace_chronology.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json"
+                }, "Candidate file inventory changed beyond the reviewed timing sidecar")
             else:
                 require(not PAGES.exists(), "Refusing extra/overwritten Pages candidate")
             for row in plan["pages"]:

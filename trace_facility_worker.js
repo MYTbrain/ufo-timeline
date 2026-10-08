@@ -1,6 +1,12 @@
 (function () {
   "use strict";
 
+  if (typeof importScripts === "function" && !self.UfoTraceChronology) {
+    const version = self.location && new URL(self.location.href).search;
+    importScripts("./trace_chronology.js" + (version || ""));
+  }
+  const TRACE_CHRONOLOGY = self.UfoTraceChronology || globalThis.UfoTraceChronology;
+
   const EARTH_RADIUS_METERS = 6371008.8;
   const CELL_SIZE_DEGREES = 1;
   const WORLD_LON_CELL_COUNT = Math.ceil(360 / CELL_SIZE_DEGREES);
@@ -15,6 +21,27 @@
   let facilityIndexCache = null;
   let traceEventIndexCacheKey = "";
   let traceEventIndexCache = null;
+  let traceChronologyEvidence = null;
+  let traceChronologyEvidenceKey = "";
+
+  async function configureTraceChronologyEvidence(message) {
+    const url = String(message.traceChronologyEvidenceUrl || "");
+    const releaseId = String(message.traceChronologyReleaseId || "");
+    if (!url) {
+      traceChronologyEvidence = null;
+      traceChronologyEvidenceKey = "";
+      return;
+    }
+    const key = url + "|" + releaseId;
+    if (key === traceChronologyEvidenceKey && traceChronologyEvidence) return;
+    if (!TRACE_CHRONOLOGY) throw new Error("Source-backed trace chronology support is unavailable in the worker.");
+    const response = await fetch(url, { credentials: "same-origin" });
+    if (!response.ok) throw new Error("Trace chronology evidence request failed (" + response.status + ").");
+    const evidence = TRACE_CHRONOLOGY.createEvidenceIndex(await TRACE_CHRONOLOGY.decodeEvidenceResponse(response, message.traceChronologyExpected));
+    if (evidence.releaseId !== releaseId) throw new Error("Trace chronology release identity changed in the worker.");
+    traceChronologyEvidence = evidence;
+    traceChronologyEvidenceKey = key;
+  }
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -991,6 +1018,7 @@
   }
 
   async function configureTraceEventIndex(message) {
+    await configureTraceChronologyEvidence(message);
     const metadata = message.metadata || {};
     const loadMode = message.buffer ? "message_buffer" : "worker_fetch";
     const buffer = message.buffer || await fetchArrayBufferPreferGzipFromWorker(message.binaryUrl || "", message.gzipBinaryUrl || "");
@@ -1067,7 +1095,7 @@
         const bucketKey = bucketKeyForGapDays(gapDays);
         if (activeBucketKeys.has(bucketKey)) {
           const shortestSegment = shortestWrappedSegment(previousEvent, currentEvent);
-          const segment = {
+          const rawSegment = {
             traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
             fromEventId: previousEvent.event_id,
             toEventId: currentEvent.event_id,
@@ -1081,6 +1109,13 @@
             source: "canonical_trace_event_index",
             sequenceIndex: totalSegments,
           };
+          const exactDates = index.exactDateEventIds;
+          if (exactDates && (!exactDates.has(String(rawSegment.fromEventId)) || !exactDates.has(String(rawSegment.toEventId)))) {
+            rawSegment.fromSortOrdinal = null;
+            rawSegment.toSortOrdinal = null;
+          }
+          const segment = TRACE_CHRONOLOGY ? TRACE_CHRONOLOGY.orientSegment(traceChronologyEvidence, rawSegment)
+            : Object.assign(rawSegment, { sameDayOrderKnown: false });
           totalSegments += 1;
           if (!bounds || traceSegmentMayIntersectSerializedBounds(segment, bounds)) {
             viewportSourceSegments += 1;

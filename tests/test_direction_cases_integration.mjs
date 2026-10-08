@@ -6,6 +6,7 @@ import { isoToOrdinal, ordinalToIso } from "../webapp/static/app-utils.mjs";
 
 const require = createRequire(import.meta.url);
 const directions = require("../trace_direction_summary.js");
+const chronology = require("../trace_chronology.js");
 const cases = require("../famous_case_presets.js");
 const neighborhood = require("../trace_neighborhood.js");
 const legend = require("../legend_controls.js");
@@ -613,7 +614,7 @@ function caseConnectionsHarness() {
     "buildFamousCaseTraceSegments", "currentSelectableTraceSegments", "currentChronologicalNeighborhoodIndex",
     "computeRegionSelectionResult", "traceLinkedVisibilityAffectsRendering",
   ], {
-    state, runtime, TRACE_NEIGHBORHOOD: neighborhood, performance,
+    state, runtime, TRACE_NEIGHBORHOOD: neighborhood, TRACE_CHRONOLOGY: chronology, performance,
     PLAYBACK_TRAIL_BUCKET_BY_KEY: new Map([["gap_le_1", { key: "gap_le_1", maxDays: 1 }]]),
     CHRONOLOGICAL_NEIGHBORHOOD_SPATIAL_CELL_DEGREES: 5,
     REGION_SELECTION_EARTH_RADIUS_METERS: 6371008.8,
@@ -770,9 +771,9 @@ function directionHarness(inputSegments, projectionScale = 1) {
   const L = { point: (x, y) => ({ x, y }), polyline: (points, options) => layer("line", points, options), marker: (point, options) => layer("badge", point, options), divIcon: options => options };
   const context = loadFunctions([
     "currentAreaDirectionSummary", "renderAreaDirectionSummary", "neighborhoodArrowAngle", "neighborhoodPointAlongCopy", "neighborhoodBadgePosition", "renderChronologicalNeighborhoodBadge", "renderChronologicalNeighborhoodOverlay",
-    "closeChronologicalNeighborhoodInspector", "currentUnorderedConnectionGroups", "renderChronologicalNeighborhoodInspector", "selectNeighborhoodReportLink", "chronologicalNeighborhoodEndpointLabel", "chronologicalNeighborhoodDateLabel",
+    "closeChronologicalNeighborhoodInspector", "currentUnorderedConnectionGroups", "renderChronologicalNeighborhoodInspector", "selectNeighborhoodReportLink", "chronologicalNeighborhoodEndpointLabel", "chronologicalNeighborhoodDateLabel", "traceChronologyClockLabel",
   ], {
-    runtime, state, els, L, TRACE_DIRECTIONS: directions, TRACE_NEIGHBORHOOD: neighborhood,
+    runtime, state, els, L, TRACE_DIRECTIONS: directions, TRACE_NEIGHBORHOOD: neighborhood, TRACE_CHRONOLOGY: chronology,
     CRAFT_TYPE_COLORS: {}, CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR: "#111", CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR: "#eee", clamp, escapeHtml, formatNumber: String,
     currentRegionSelectionResult: () => result, regionSelectionAffectsRendering: () => controls.active,
     setChronologicalNeighborhoodPaneInteractive(active) { controls.paneInteractive = active; },

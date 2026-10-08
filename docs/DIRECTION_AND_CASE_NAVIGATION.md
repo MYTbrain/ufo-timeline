@@ -11,8 +11,10 @@ staggered along their connections to reduce overlap. Clicking or activating a
 badge with the keyboard opens the existing chronology inspector.
 
 Report connections with unknown chronological order use one neutral,
-double-headed arrow with a dashed border. This includes explicit uncertain-order
-records and zero-day gaps without an explicit known-order flag. The badge's
+double-headed arrow with a dashed border. Since the October 8 timing repair,
+same-date links are resolved when accepted source-clock UTC intervals establish
+an order. Missing clocks, overlapping intervals, ambiguous noon/midnight defaults,
+and unsupported timezones retain the unknown-order flag. The badge's
 rotation describes only the undirected axis between locations. Both heads mean
 the connection has no assigned travel direction, not that bidirectional travel
 was reported. Ordinary ordered links retain their single-headed grayscale arrows.
@@ -84,10 +86,15 @@ refreshes preserve disclosure state; choosing another case or Clear resets it.
 The summary remains available when the owned vicinity is removed, with its
 inactive status. The generic area/hop banner is hidden during case focus to avoid
 duplicating the case summary and inside/outside counts.
-Fit connections includes their remote endpoints. The inspector labels Endpoint
-A/B and uncertain same-day ordering; it shows an undirected map axis for these
-links without assigning a cardinal direction percentage, and does not treat
-estimated time metadata as an observed flight direction or compute a same-day speed.
+Fit connections includes their remote endpoints. The inspector labels ordered
+reports Earlier/Later, shows their source clocks and UTC bounds, and includes
+only resolved links in directional percentages. Unresolved links retain Endpoint
+A/B and an undirected map axis. Any optional speed range uses bounded UTC elapsed
+time and an explicit hypothetical same-craft assumption; it is not observed travel.
+The timing repair applies to static, case, progressive, worker, and playback
+report links. See `TRACE_CHRONOLOGY_AUDIT_20261008.md` for coverage, provenance,
+remaining adjacency limits, and the current deployment/storage status. Historical
+verification and deployment records below describe their original release dates.
 Facility proximity and existing source/type/precision/keyword filters still
 apply. Clear restores the original trace mode and same-day bucket unless the
 user changed those controls after selecting the case.

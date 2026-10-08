@@ -1,0 +1,1002 @@
+{
+  "audit_id": "trace-chronology-coverage-20261008-v1",
+  "policy": {
+    "raw_and_canonical_data_mutated": false,
+    "full_corpus_copied": false,
+    "typed_clock_status_is_source_clock_evidence_not_a_timezone": true,
+    "typed_exact_counts_are_not_proven_utc_order_counts": true,
+    "narrative_candidates_accepted_automatically": false,
+    "noon_and_midnight_sentinels_excluded_from_exact_evidence": true,
+    "summary_year_overrides_do_not_change_time_fields": true
+  },
+  "inputs": {
+    "typed_manifest": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\attributes\\analysis_time_of_day_v1\\manifest.json",
+      "bytes": 15084,
+      "sha256": "8fee606c453d5d2c43f9accf583ace3447bf55bd0e5014b46f193dc8d7bd70fd"
+    },
+    "typed_dictionary": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\attributes\\analysis_time_of_day_v1\\time_of_day_value_dictionary_v1.json.gz",
+      "bytes": 442557,
+      "sha256": "5586225b80be48348bf9650b5f854703f53e920ff54d4eb16416138c5223bdb0"
+    },
+    "summary_collection": [
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000000.json.gz",
+        "bytes": 770141,
+        "sha256": "c7160503493c0a4784b671ba5399ebf1578192be724d02135b1101b4da3b3b07"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000001.json.gz",
+        "bytes": 767557,
+        "sha256": "42ec938fad8cf691c5cccad4027fa0c5b48f3700f024c50916b215573567a2db"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000002.json.gz",
+        "bytes": 766992,
+        "sha256": "f94d9858537beebedbf2fc27b1935a49a6c7b08e5a169131e8cd25ce78232d8e"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000003.json.gz",
+        "bytes": 763997,
+        "sha256": "f469875009962a7c18e6fb8a6ececa5b18ee6d689f97572a684af3fe59995848"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000004.json.gz",
+        "bytes": 763889,
+        "sha256": "6c11bc6a1ed160540fa3db04a0ada8d373b78fae4b6663558ff0c46eced8a9d7"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000005.json.gz",
+        "bytes": 759871,
+        "sha256": "d5bfe33aec16465025fa88b0a8be77f5484fc78eb8ca7e715522f32be53c06f8"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000006.json.gz",
+        "bytes": 768574,
+        "sha256": "1fa9c649d6d017e67488b8185f1846762c760552f27ab1976acd89ffef468f3a"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000007.json.gz",
+        "bytes": 764786,
+        "sha256": "5f53068184ef6154f804bd2f608fbcdae2c50c9b9271a8d8f833fe0ef190a1d8"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000008.json.gz",
+        "bytes": 763611,
+        "sha256": "90553d2367442d4449bbcfee7f2a95faba17697cefa9102f676a6afe4f2570ad"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000009.json.gz",
+        "bytes": 762208,
+        "sha256": "cdf5aea9ffcb64778a1fa92701f9ffa9a300446f634b88f74c180809bde32c01"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000010.json.gz",
+        "bytes": 758319,
+        "sha256": "07e36761f0d7fd9de983c6f5b03074970a6791f7af8e94590df233a5b6515822"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000011.json.gz",
+        "bytes": 759704,
+        "sha256": "2f70f7293eb3f62dc13bc02eb2f3602c099bd0fb1787ccd242afbe14b93ba8c1"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000012.json.gz",
+        "bytes": 762942,
+        "sha256": "b23634cbcf133f3c3d26181255741322e8c39252fc96b2e5efc708e5827773bc"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000013.json.gz",
+        "bytes": 760561,
+        "sha256": "d995380313e48c05459a5d65f1b4f7d96f8af71fe66f4e972882ccd5b9e516ef"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000014.json.gz",
+        "bytes": 761921,
+        "sha256": "7f6bb9fa3a17c409093cdbf76892db1498abcba9de4ef52c9191b5a0010f7b3d"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000015.json.gz",
+        "bytes": 759279,
+        "sha256": "2ab8a4bb19a5b8214db95c33e3650ffb05ed91ae9356fedbd2ec401a23fbe9cc"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000016.json.gz",
+        "bytes": 756358,
+        "sha256": "c10691725cd42e5027f43ec5ed9c790082452b541279b9cdfa9f58000cb62a64"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000017.json.gz",
+        "bytes": 756709,
+        "sha256": "4a32c3de7a928ca06a7191ccd577a1ad9a8514b63d1f01e85e54cdc2e6426dc1"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000018.json.gz",
+        "bytes": 759344,
+        "sha256": "3b07d2c38ca81e9c2fc1f42525b2d938a06e995431ed477cd4c85f7d42452d30"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000019.json.gz",
+        "bytes": 758489,
+        "sha256": "43b03f04674871afe820d0f9e33bf52a60543727d664b1b869b28221f9c6aa29"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000020.json.gz",
+        "bytes": 755491,
+        "sha256": "2a9ebf39165ea2652280cceeb21bee7e3f537c34d32461d071da370531504b59"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000021.json.gz",
+        "bytes": 756121,
+        "sha256": "6e7840fddfd9114a7d741a59617ac16d9c4e6a62f09d22aba880d58ed326a098"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000022.json.gz",
+        "bytes": 754616,
+        "sha256": "6d237a16923d25cf07b387e0e4155c700eb48cb26e55dff39a95a6088e08a871"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000023.json.gz",
+        "bytes": 756267,
+        "sha256": "60b16e8158be61f49ff560c259ffe74be153abde2d3c96455dabbb94b0e4b08d"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000024.json.gz",
+        "bytes": 754744,
+        "sha256": "7c2cdb0b06f0bc4261ef1dadd0ef5f6b71dc94d3deb5e332e7e9d904a7365ed4"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000025.json.gz",
+        "bytes": 754745,
+        "sha256": "3cc5e41958da0377a00ed4ac14cec7bed51f6e44328ed054f6df1f6f13bf88c2"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000026.json.gz",
+        "bytes": 754119,
+        "sha256": "c193e46560320da4f0cf55e99e61f0106465c9fe6041980a107e0779ef4882c8"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000027.json.gz",
+        "bytes": 756512,
+        "sha256": "779638e29d94e202b675d9e6d8aa8de4ebc8e597917847ef14b3bbae206f0cf5"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000028.json.gz",
+        "bytes": 753957,
+        "sha256": "354b27618bdc0ca95e24247b2628fd9bf444e9fe39b2f900f2e6e1f544c1d01f"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000029.json.gz",
+        "bytes": 751401,
+        "sha256": "d2ea906e34e10e4d036443124a7133447532a612ef02e5dd047b332727db5275"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000030.json.gz",
+        "bytes": 752785,
+        "sha256": "caf9df99b239fc5e373a8051ed13a9cb43475cc7444019328a6dfda2b3f2a205"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000031.json.gz",
+        "bytes": 754213,
+        "sha256": "c7de311a294701c8976c43b05bf6f5af26bbc301b26bc21995c44083c637441c"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000032.json.gz",
+        "bytes": 750517,
+        "sha256": "2df6862f2fec51287e6a43b41e0d86eb0df1b1ce00535d148f959f26f429de8e"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000033.json.gz",
+        "bytes": 753570,
+        "sha256": "d1a8bf084efbb1a9f1053fe9d759b23658908662e983f810b2c3e17657ebeb74"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000034.json.gz",
+        "bytes": 751961,
+        "sha256": "ee0b1b74ec33b3b21823080ff858953e7446dd6db1bb848a116d0da71a07de80"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000035.json.gz",
+        "bytes": 749809,
+        "sha256": "a7d84571bd7a533bf4815267cd375090b410423bc83d4b09b5c0fbdecdf926aa"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000036.json.gz",
+        "bytes": 752677,
+        "sha256": "bd3e8968a3e9a001087f93a4abe3c6542813334f5d80f85c24ef7c43122fbcf8"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000037.json.gz",
+        "bytes": 751879,
+        "sha256": "24df0fcc47f69eae6f956345618cb88273a373d3db295ff4a3397f789ddfcb4c"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000038.json.gz",
+        "bytes": 749440,
+        "sha256": "b938f4c4ccdc80ecf2ae8740a66639ee87fa954c5960855778cd84ba78f80c56"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000039.json.gz",
+        "bytes": 749400,
+        "sha256": "b62311a04f5839ec49e1cba3d92b7b82f820ae7a4bba3d23a2ca1c246656b571"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000040.json.gz",
+        "bytes": 746108,
+        "sha256": "1c9b0e97a104c1b675cb74ce5401f9652fc321234766632fe3f3bdf971c0384a"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000041.json.gz",
+        "bytes": 747944,
+        "sha256": "20ff265c5b6d1688ebf63ad44b69a5980a53002bd4a9828b4339c4d7ce9b490a"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000042.json.gz",
+        "bytes": 745073,
+        "sha256": "d4941a92bc19f7722c59235d548573386282cf9b33511eb131dfcdd1567cd903"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000043.json.gz",
+        "bytes": 748188,
+        "sha256": "1413913fceafa94d4c384caf8023899e06c8e906ede47824721b2fb468dd8704"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000044.json.gz",
+        "bytes": 749826,
+        "sha256": "dd4b719c87bb2930a5191794f845c4a3f8a57cc4f725b37bb1bfb13fa6933b08"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000045.json.gz",
+        "bytes": 745381,
+        "sha256": "29646fa11e06fc2fcb5943e4035f1bd131a35c35cf7896c48f261ae01f1b4641"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000046.json.gz",
+        "bytes": 745742,
+        "sha256": "dba9c35f95318fe502f5179cc2b2d21e5017c4e249b8443fc3d529a3e1595ba6"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000047.json.gz",
+        "bytes": 746951,
+        "sha256": "b977fc0cc1b901e2e38f272e200e8d645914c442cfcec3fc7f536d700513cb0d"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000048.json.gz",
+        "bytes": 747983,
+        "sha256": "8dd644ce7530ee8c4f042ba14634c1e9b680526639f65226e74754ebdca7e535"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000049.json.gz",
+        "bytes": 748164,
+        "sha256": "a04c6e5bcb54186d3b3a3d3faff4a1b015bc859c4e9935437d2394d3ae3996be"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000050.json.gz",
+        "bytes": 746299,
+        "sha256": "12bf6ed28604fc4cb11b237dec5df29aef728b42a32316efd5c13f35a49c406a"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000051.json.gz",
+        "bytes": 741179,
+        "sha256": "6e1148bd8bb4566a6599a2ca50f3f3a955027d943ce2c1de4195823ffaad84f4"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000052.json.gz",
+        "bytes": 747153,
+        "sha256": "7ab6ae23c36ea6c9fd7479048c7da79187ad5a1e0579324508c0bc701ca839ea"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000053.json.gz",
+        "bytes": 743647,
+        "sha256": "ab6e2c2c4706750bca106aca9d8d11062367e9c6728d324c2ffc2939131112cd"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000054.json.gz",
+        "bytes": 742997,
+        "sha256": "14fa0d9ffdf6d2ed47373a7455958cb5160eb13c379f345d3383f2d618cf249f"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000055.json.gz",
+        "bytes": 744248,
+        "sha256": "9e0578e35aec0428633098c5070dfa0ffc99977108891c4c3b6994af4973bb18"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000056.json.gz",
+        "bytes": 741250,
+        "sha256": "17c3811b6afe6e4470aa99bcadd9db42dc59756173211effeb2a0151f027d1f4"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000057.json.gz",
+        "bytes": 740487,
+        "sha256": "4dd87456ca7b0fcfd0378ab54437f917d96cf5fb7caabb8a7c28a71789fc896c"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000058.json.gz",
+        "bytes": 744433,
+        "sha256": "29dffaa52ac9051c9444e858b0e26c85dbf4161fe04864cf55133a2602397dca"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000059.json.gz",
+        "bytes": 742570,
+        "sha256": "07550917ba54c6c314edf07939f2f9814f9f07bd5e073bc338310f01c2f1589e"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000060.json.gz",
+        "bytes": 740499,
+        "sha256": "1bccdb6db8fe223058a78cb4e7471e2a994f4022a3aeb4bec9bf3f35891e8114"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000061.json.gz",
+        "bytes": 739007,
+        "sha256": "7e6ba1acf5ff73b0e510a082077df29c36726ba855be2fc7f75ee02e23d4e0c1"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000062.json.gz",
+        "bytes": 736645,
+        "sha256": "d8a0ef6c77853d9c16ffbd7b31abee12c489a61ee91b4e825c4234f74a0aec74"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000063.json.gz",
+        "bytes": 737688,
+        "sha256": "666bf2045575a4b6ec54ae7fbfe37019e4aa314e353eef5a907d7bb3f2bbb456"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000064.json.gz",
+        "bytes": 738672,
+        "sha256": "2e8c35cac8156fd1c647ebe187ec5bdd68e751b7cce0956848a9348d72800da2"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000065.json.gz",
+        "bytes": 739159,
+        "sha256": "71da33ad5df43e8e65a98d7924ce76609a09692e812b9dc695975be1f97eb9eb"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000066.json.gz",
+        "bytes": 737012,
+        "sha256": "02268a49dcec5276f361e1aac3552b35ab7d7c774798c0819104563efd329032"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000067.json.gz",
+        "bytes": 736912,
+        "sha256": "38c2d1e7c87c263223d4be510c08e26a06d25ea055605b365ad5f24d50e04b05"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000068.json.gz",
+        "bytes": 735111,
+        "sha256": "dac0c32c6e1f4148bb68efa0f34a92b9c67ac9eaed900c5afa735956551c6f7d"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000069.json.gz",
+        "bytes": 734363,
+        "sha256": "c0df80b501f4d371a2c8a8986a9f999c93634640de022fcb5828b51dc9be632b"
+      },
+      {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000070.json.gz",
+        "bytes": 222113,
+        "sha256": "799e5f9d28c999bc72197069130254bc63d1e1c1667f4485207541fea827ed3a"
+      }
+    ],
+    "full_details": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks",
+      "files": 282,
+      "bytes_read_if_full_scan": 6343241739,
+      "canonical_manifest": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\canonical_web_manifest.json",
+        "bytes": 8012,
+        "sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"
+      },
+      "scope": "one shared protected chunk at a time; no rewritten or copied corpus"
+    }
+  },
+  "clock_coverage": {
+    "totals": {
+      "catalog_rows": 702893,
+      "typed_exact_rows": 511394,
+      "typed_exact_legacy_unknown_rows": 407207,
+      "typed_exact_legacy_unknown_exact_day_rows": 400236,
+      "typed_exact_legacy_unknown_mapped_rows": 358433,
+      "typed_exact_legacy_unknown_exact_day_mapped_rows": 352193,
+      "sentinel_rows_with_legacy_exact_or_approximate_status": 19737
+    },
+    "legacy_time_sort_kind_counts": {
+      "unknown": 570207,
+      "exact": 127159,
+      "bucketed": 4676,
+      "approximate": 851
+    },
+    "ignored_exact_clock_forms": {
+      "local_label": 123468,
+      "bare_HHMM": 158357,
+      "seconds_colon": 122912,
+      "other": 2470
+    },
+    "by_source": {
+      "nuforc": {
+        "exact_clock": 123468,
+        "typed_exact_legacy_unknown_rows": 123468,
+        "sentinel_ambiguous": 6275,
+        "approximate_clock": 21778,
+        "empty_or_not_in_dictionary": 291,
+        "invalid_clock": 4
+      },
+      "ufocat": {
+        "exact_clock": 157878,
+        "typed_exact_legacy_unknown_rows": 157878,
+        "empty_or_not_in_dictionary": 40739,
+        "invalid_clock": 8066,
+        "qualitative_period": 10581,
+        "sentinel_ambiguous": 4016
+      },
+      "phenomenainon_updb": {
+        "exact_clock": 121405,
+        "typed_exact_legacy_unknown_rows": 121405,
+        "sentinel_ambiguous": 39624
+      },
+      "majestic": {
+        "empty_or_not_in_dictionary": 33856,
+        "exact_clock": 12996,
+        "approximate_clock": 960,
+        "typed_exact_legacy_unknown_rows": 2996,
+        "invalid_clock": 1277,
+        "qualitative_period": 142,
+        "sentinel_ambiguous": 187,
+        "sentinel_rows_with_legacy_exact_or_approximate_status": 122
+      },
+      "mufon": {
+        "exact_clock": 95647,
+        "sentinel_ambiguous": 22134,
+        "sentinel_rows_with_legacy_exact_or_approximate_status": 19615,
+        "typed_exact_legacy_unknown_rows": 1460,
+        "empty_or_not_in_dictionary": 1569
+      }
+    },
+    "examples": {
+      "local_label": {
+        "event_id": 52735086719694,
+        "source": "nuforc",
+        "time_raw": "21:40 Local",
+        "sort_date_iso": "2008-04-02",
+        "date_precision": "exact_day",
+        "location_raw": "Evansville, IN, USA",
+        "chunk_id": "chunk_000000",
+        "detail_index": 0
+      },
+      "bare_HHMM": {
+        "event_id": 1788086251258075,
+        "source": "ufocat",
+        "time_raw": "1730",
+        "sort_date_iso": "1978-09-24",
+        "date_precision": "exact_day",
+        "location_raw": "SANTIAGO SW, Santiago, CHI, SA",
+        "chunk_id": "chunk_000000",
+        "detail_index": 1
+      },
+      "seconds_colon": {
+        "event_id": 610028544392776,
+        "source": "phenomenainon_updb",
+        "time_raw": "05:30:00",
+        "sort_date_iso": "2016-01-16",
+        "date_precision": "exact_day",
+        "location_raw": "MUSKOGEE, US",
+        "chunk_id": "chunk_000000",
+        "detail_index": 7
+      },
+      "other": {
+        "event_id": 253846561460722,
+        "source": "mufon",
+        "time_raw": "7:30PM",
+        "sort_date_iso": "1986-05-16",
+        "date_iso": "1986-05-01",
+        "date_precision": "month",
+        "location_raw": "Williamsport, PA, US",
+        "chunk_id": "chunk_000000",
+        "detail_index": 211
+      }
+    }
+  },
+  "narrative_review_leads": {
+    "skipped": false,
+    "counts": {
+      "detail_rows_read": 702893,
+      "missing_structured_clock_rows": 76455,
+      "missing_structured_clock_with_ampm_mention_anywhere": 11826,
+      "missing_structured_clock_with_leading_ampm": 6623,
+      "leading_ampm_exclusion_no_occurrence_verb_near_clock": 2011,
+      "leading_ampm_exclusion_approximation_qualifier": 106,
+      "strong_leading_occurrence_clock_review_candidate": 3985,
+      "strong_leading_occurrence_clock_review_candidate_exact_day": 3807,
+      "leading_ampm_exclusion_multiple_clock_mentions": 580,
+      "leading_ampm_exclusion_report_or_submission_context_near_clock": 199,
+      "strong_leading_occurrence_clock_review_candidate_mapped_original_detail": 199,
+      "leading_ampm_exclusion_multiple_event_or_relative_day_context": 133
+    },
+    "by_source": {
+      "majestic": {
+        "requires_context_review": 2629,
+        "strong_leading_occurrence_clock_review_candidate": 3983
+      },
+      "ufocat": {
+        "requires_context_review": 4
+      },
+      "mufon": {
+        "requires_context_review": 5,
+        "strong_leading_occurrence_clock_review_candidate": 2
+      }
+    },
+    "examples": {
+      "requires_context_review": [
+        {
+          "event_id": 4095557320928376,
+          "canonical_event_id": "evt_a07fb86d94579ec8dea8d20e",
+          "source": "majestic",
+          "source_id": "Johnson_6630",
+          "source_row_number": 24493,
+          "sort_date_iso": "1964-10-07",
+          "date_iso": "1964-10-07",
+          "date_precision": "exact_day",
+          "chunk_id": "chunk_000000",
+          "detail_index": 187,
+          "narrative_leading_clock": "At 3:30 p.m.",
+          "description_excerpt": "At 3:30 p.m. a grayish black wingless object w two stubby fins in the rear portion followed a C-119 \"flying boxcar\" transport plane over Waltham, Massachusetts.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 584363971316180,
+          "canonical_event_id": "evt_19caa7ff713e6431a545dd1b",
+          "source": "majestic",
+          "source_id": "Johnson_8587",
+          "source_row_number": 23941,
+          "sort_date_iso": "1963-12-24",
+          "date_iso": "1963-12-24",
+          "date_precision": "exact_day",
+          "chunk_id": "chunk_000000",
+          "detail_index": 231,
+          "narrative_leading_clock": "At 7:25 p.m.",
+          "description_excerpt": "At 7:25 p.m. in Rowarth, Cheshire, England a farmer named Chandler had his car battery die while a UFO flew by. His cows also became ill.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 2234603068328686,
+          "canonical_event_id": "evt_8c1221c93f575b1cede097fe",
+          "source": "majestic",
+          "source_id": "Eberhart_5903",
+          "source_row_number": 41932,
+          "sort_date_iso": "1979-01-05",
+          "date_iso": "1979-01-01",
+          "date_precision": "approximate",
+          "location_raw": "Ellsworth AFB Delta-3 missile site southwest of Cottonwood, South Dakota",
+          "chunk_id": "chunk_000000",
+          "detail_index": 334,
+          "narrative_leading_clock": "About 6:00 p.m.",
+          "description_excerpt": "About 6:00 p.m. A1C John W. Mills III is with a second lieutenant conducting a below-ground azimuth alignment procedure at the Ellsworth AFB Delta-3 missile site southwest of Cottonwood, South Dakota, when the security guard bangs on the ladder and tells them to come up. Going topside, they hear a loud, low-frequency hum permeating the launch facility. The guard leads them out of the gate where they see a dark object with straight edges in the sky. It seems to be shaped like a parallelogram, but they can\u2019t tell how high it is. The guard is upset, but the other two men are oddly calm, even though they are not supposed to be outside the gate, and they return to the missile and descend the ladd",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "approximation_qualifier",
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 4177250244354576,
+          "canonical_event_id": "evt_6e9554527ae30fa6427a146d",
+          "source": "majestic",
+          "source_id": "Eberhart_3768",
+          "source_row_number": 24065,
+          "sort_date_iso": "1964-04-24",
+          "date_iso": "1964-04-24",
+          "date_precision": "exact_day",
+          "location_raw": "Socorro, New Mexico",
+          "chunk_id": "chunk_000000",
+          "detail_index": 382,
+          "narrative_leading_clock": "Around 5:50 p.m.",
+          "description_excerpt": "Around 5:50 p.m. Socorro, New Mexico, police officer [Lonnie Zamora](https://web.archive.org/web/100/https://www.abqjournal.com/obits/profiles/0722057profiles11-07-09.htm)[,](https://web.archive.org/web/100/https://www.abqjournal.com/obits/profiles/0722057profiles11-07-09.htm) while chasing a speeder, hears a continuous roaring sound and sees a brilliant blue \u201ccone of flame\u201d in the sky to the south-southwest. The bottom of the flame is out of sight behind a hill. Thinking there has been an explosion, he tries to pursue it, turning off to the right on a rough gravel road, but loses sight of it while trying to get the car up a steep hill. By the time he reaches the top, the sound stops and the",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "approximation_qualifier",
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 4333098598898147,
+          "canonical_event_id": "evt_50e34f5d3bd23ba6989f3624",
+          "source": "majestic",
+          "source_id": "Eberhart_736",
+          "source_row_number": 4372,
+          "sort_date_iso": "1945-08-09",
+          "date_iso": "1945-08-09",
+          "date_precision": "exact_day",
+          "location_raw": "Nagasaki, Japan",
+          "chunk_id": "chunk_000000",
+          "detail_index": 824,
+          "narrative_leading_clock": "11:01 a.m.",
+          "description_excerpt": "11:01 a.m. Another atomic bomb \\(an implosion-type plutonium weapon, Fat Man\\) is dropped on Nagasaki, Japan, by [Bockscar](https://en.wikipedia.org/wiki/Bockscar)[.](https://en.wikipedia.org/wiki/Bockscar) Although the bomb is more powerful than the one used on Hiroshima, its effects are confined by hillsides to the narrow Urakami Valley. At least 35,000\u201340,000 people are killed, and 60,000 others are injured.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 63352573942442,
+          "canonical_event_id": "evt_6f5c3d4f48f1fe77dfc950b1",
+          "source": "majestic",
+          "source_id": "Johnson_3002",
+          "source_row_number": 54206,
+          "sort_date_iso": "2011-05-19",
+          "date_iso": "2011-05-19",
+          "date_precision": "exact_day",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1015,
+          "narrative_leading_clock": "At 10:00 p.m.",
+          "description_excerpt": "At 10:00 p.m. Restoule, Parry Sound, Ontario a red light moved from southwest to northwest, stopped, flew down and then away. At 11:10 p.m. dark objects on a \"crooked triangle\" of red lights passed near witnesses in Dryden, Ontario.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "multiple_clock_mentions",
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 4392873735462475,
+          "canonical_event_id": "evt_c3440414140a00f6107ad6e1",
+          "source": "majestic",
+          "source_id": "NICAP_DB_3810",
+          "source_row_number": 29711,
+          "sort_date_iso": "1967-10-20",
+          "date_iso": "1967-10-20",
+          "date_precision": "exact_day",
+          "location_raw": "Milledgeville, GA",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1073,
+          "narrative_leading_clock": "4:36 a.m.",
+          "description_excerpt": "4:36 a.m. EDT. Two police officers reported that a bright red ellipse followed and illuminated the interior of their patrol car. Later police sightings that morning very possibly or probably were astronomical. (Hitt, 1999.) (NICAP: 02 - Close Encounters)",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "report_or_submission_context_near_clock",
+            "no_occurrence_verb_near_clock"
+          ]
+        },
+        {
+          "event_id": 2920339526597704,
+          "canonical_event_id": "evt_9b2665a3d87315888f32d0fb",
+          "source": "majestic",
+          "source_id": "Eberhart_6010",
+          "source_row_number": 42541,
+          "sort_date_iso": "1979-09-09",
+          "date_iso": "1979-09-09",
+          "date_precision": "exact_day",
+          "location_raw": "Richfield, Minnesota",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1372,
+          "narrative_leading_clock": "7:30 p.m.",
+          "description_excerpt": "7:30 p.m. A salesman and some customers are outside in Richfield, Minnesota, when they notice a silver form shaped like a truck tire with a flat underside moving to the south. It hovers for 4\u20135 seconds before moving off only 80\u201390 feet away from them.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": [
+            "no_occurrence_verb_near_clock"
+          ]
+        }
+      ],
+      "strong_leading_occurrence_clock_review_candidate": [
+        {
+          "event_id": 3919254927153406,
+          "canonical_event_id": "evt_bd9719e852535a3a668c8e17",
+          "source": "majestic",
+          "source_id": "Johnson_6405",
+          "source_row_number": 48101,
+          "sort_date_iso": "1990-09-28",
+          "date_iso": "1990-09-28",
+          "date_precision": "exact_day",
+          "chunk_id": "chunk_000000",
+          "detail_index": 335,
+          "narrative_leading_clock": "At 12:30 a.m.",
+          "description_excerpt": "At 12:30 a.m. a 200 foot wide disc-shaped object was seen clearly by two witnesses in Clacton-on-Sea, Essex county, England. It made a very sharp angled turn, and flew away over some woods.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 942733498366583,
+          "canonical_event_id": "evt_dbac09fd7759d6b291ce22a8",
+          "source": "majestic",
+          "source_id": "Eberhart_5544",
+          "source_row_number": 39869,
+          "sort_date_iso": "1977-08-09",
+          "date_iso": "1977-08-09",
+          "date_precision": "exact_day",
+          "location_raw": "Wheaton, Illinois",
+          "chunk_id": "chunk_000000",
+          "detail_index": 387,
+          "narrative_leading_clock": "2:00 p.m.",
+          "description_excerpt": "2:00 p.m. A witness in Wheaton, Illinois, sees 8\u201316 pinpoints of light \u201clike magnesium burning\u201d silently maneuvering in and out of the overcast clouds. They appear to be approaching very fast from 60\u00b0 in the north. Looping and swooping, they move apart after about 15 seconds.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 3279733326989827,
+          "canonical_event_id": "evt_2b9f0a894291bef26a9d53be",
+          "source": "majestic",
+          "source_id": "Eberhart_3874",
+          "source_row_number": 24811,
+          "sort_date_iso": "1965-03-08",
+          "date_iso": "1965-03-08",
+          "date_precision": "exact_day",
+          "location_raw": "Mount Airy, Maryland",
+          "chunk_id": "chunk_000000",
+          "detail_index": 705,
+          "narrative_leading_clock": "7:40 p.m.",
+          "description_excerpt": "7:40 p.m. J. H. Martin, an instrument maker for the National Bureau of Standards, and his two sons observe in Mount Airy, Maryland, six lights he estimates to be 1,000 feet away and moving at a speed of 20 mph with no sound. They appear as three pair of lights, all with the same intensity. They are comparable to a traffic signal. The lights pass between the barn and the house at an estimated altitude of 100\u2013500 feet, flying in a straight line toward the hills two miles away. They are in view for approximately 3 minutes.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 3433626080978770,
+          "canonical_event_id": "evt_413b8447cbd1d116d09eb460",
+          "source": "majestic",
+          "source_id": "Eberhart_4039",
+          "source_row_number": 26575,
+          "sort_date_iso": "1966-05-04",
+          "date_iso": "1966-05-04",
+          "date_precision": "exact_day",
+          "location_raw": "Charleston, West Virginia",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1309,
+          "narrative_leading_clock": "4:30 a.m.",
+          "description_excerpt": "4:30 a.m. An FAA air traffic controller tracks an unidentified non-transponding target for about 5 miles at Charleston, West Virginia. The crew of Braniff Airline Flight 42, headed east at 33,000 feet, sees a white-blue object giving off brilliant, flaming light of alternating white-green-red colors. The radar shows the object veering 8\u201310 miles away at the 10 o\u2019clock position, then approaching the Braniff airliner to a distance of 3 miles. It then makes a 180\u00b0 left turn to the northwest within a diameter of 5 miles at 1,000 mph, which the Braniff crew confirms as the object descends from 20\u00b0 above the horizon.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 1488056810016461,
+          "canonical_event_id": "evt_c9a72c8bbf0afca1ccb674da",
+          "source": "majestic",
+          "source_id": "NICAP_DB_5671",
+          "source_row_number": 45110,
+          "sort_date_iso": "1984-01-27",
+          "date_iso": "1984-01-27",
+          "date_precision": "exact_day",
+          "location_raw": "King Of Prussia, PA",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1347,
+          "narrative_leading_clock": "6:15 AM.",
+          "description_excerpt": "6:15 AM. Two young boys delivering papers observed a big circular object with lights around the edge hovering over houses about two blocks distant. They watched the object for several seconds, then it ascended into the sky at about a 45 degree angle (NICAP: 02 - Close Encounters)",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 4027781056717174,
+          "canonical_event_id": "evt_320fdb80430b2e648bf12c7d",
+          "source": "majestic",
+          "source_id": "Eberhart_2544",
+          "source_row_number": 15578,
+          "sort_date_iso": "1954-10-05",
+          "date_iso": "1954-10-05",
+          "date_precision": "exact_day",
+          "location_raw": "Beaumont, Puy-de-D\u00f4me, France",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1394,
+          "narrative_leading_clock": "3:45 p.m.",
+          "description_excerpt": "3:45 p.m. In Beaumont, Puy-de-D\u00f4me, France, witnesses Brun, Marfaron, Douti, and Marplat see a luminous ball moving west to east 1,500 feet away from them. It approaches to within 450 feet, and they feel paralyzed with faintness as a nitrobenzene odor spreads around them.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 187700950641065,
+          "canonical_event_id": "evt_e862f0087a6703ec6aa34158",
+          "source": "majestic",
+          "source_id": "Johnson_4704",
+          "source_row_number": 48025,
+          "sort_date_iso": "1990-08-05",
+          "date_iso": "1990-08-05",
+          "date_precision": "exact_day",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1409,
+          "narrative_leading_clock": "At 3:45 a.m.",
+          "description_excerpt": "At 3:45 a.m. the Martens family of Owens Sound, Ontario awoke to see \"dancing lights\" that were apparently disturbing their cattle. The lights were yellowish-orange in color and looked like their were connected to something very large. The lights gradually changed to a deep \"crimson red\", and began revolving around each other. Some kind of green haze or fog formed, and the object suddenly vanished. That same night one son had a nightmare about a \"shining angel\", in the house, and the eldest daughter saw a brightly lit being in the house, who almost blinded her with light.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        },
+        {
+          "event_id": 2446407009483959,
+          "canonical_event_id": "evt_210a86e1982be2383a116158",
+          "source": "majestic",
+          "source_id": "Eberhart_4970",
+          "source_row_number": 35216,
+          "sort_date_iso": "1973-10-22",
+          "date_iso": "1973-10-22",
+          "date_precision": "exact_day",
+          "location_raw": "Upton, Indiana",
+          "chunk_id": "chunk_000000",
+          "detail_index": 1445,
+          "narrative_leading_clock": "6:50 p.m.",
+          "description_excerpt": "6:50 p.m. A man is farming in Upton, Indiana, when he notices an object that looks like it is going to land. He and his daughter walk toward the other side of the field to investigate. They can see an object with red, white, and green lights near the railroad tracks. As a train passes through, the object dims and hovers near it for one minute, then takes off to the southeast. An object is seen flying above a train at Maunie, Illinois, the same evening.",
+          "evidence_status": "review_lead_only_not_an_accepted_clock",
+          "exclusion_flags": []
+        }
+      ]
+    },
+    "criteria": "Missing structured clock, leading AM/PM time, one clock mention, occurrence verb nearby, no approximate prefix, nearby report/submission verb, or explicit cross-event/relative-day context. These remain manual-review leads; they are not certified event times."
+  },
+  "ariel_and_washington_source_evidence": [
+    {
+      "event_id": 1548188833291382,
+      "canonical_event_id": "evt_bfb84c5dc786ff31d04bbae9",
+      "source": "ufocat",
+      "source_id": "130252",
+      "source_row_number": 277083,
+      "time_raw": "1015",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "RUWA, ARIEL SCHOOL, Mashona East, ZIM, AF",
+      "chunk_id": "chunk_000006",
+      "detail_index": 526,
+      "description": "Type C. (Sketch). 62 children saw 3 silvery balls in sky, 1 landed, little man in tight-fitting shiny black suit. Older students said it communiated: we humans are destroying our planet. UFOs 2 days.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "unknown",
+        "time_sort_confidence": "none",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": null,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 3972295816637808,
+      "canonical_event_id": "evt_a6a33aea50eb97ac08e3ab52",
+      "source": "mufon",
+      "source_id": "27728",
+      "source_row_number": 26225,
+      "time_raw": "10:00PM",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "Carbonado, WA, US",
+      "chunk_id": "chunk_000029",
+      "detail_index": 1026,
+      "description": "Heading south on I-165 after 9pm a star on the hill on my left following us, my girl friend and I were in the car and she asked if I see that bright star, it's following us, I say what is it, she says a ufo, I say I don't believe it, then it came down the hill from my left, I could tell it was flying because it didn't bounce like a bike or jeep coming down the hill, when it reached the gutters edge it expanded into a yellow-orange oval shape, and hovered over the road right in front of us for over 20 mins, so I dropped from normal headlights to parking lights only, then to no lights , then back up to parking lights only, then up to normal headlights again, hoping to communicate somehow I waited, soon it flashed a bright light from it's top and was gone. note, that the illumination the whole time as it was hovering there was brighter on the top and shined upward almost like a beam, and the skin was glowing yellow-orange. My Dad was a pilot, I've flown with him alot and I'm well aware that this object was not man made. It had no stobe lights and no wings, no windows, and what kind of plane or helicopter glows!? I could through google earth give the exact latitude and logitude of this event. I've looked for my report in then past to make corrections. so here it is again only corrected this time. I have no doubts, this was not man-made.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "exact",
+        "time_sort_confidence": "high",
+        "timezone_source": "mapped_coordinates",
+        "parsed_time_local_minutes": 1320.0,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 3225459898478069,
+      "canonical_event_id": "evt_5cc84e46039d15c5445022b5",
+      "source": "mufon",
+      "source_id": "2132",
+      "source_row_number": 1767,
+      "time_raw": "10:15PM",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "carbonadofairfax, WA, US",
+      "chunk_id": "chunk_000054",
+      "detail_index": 1559,
+      "description": "ellen and i were driving south from wilkenson past carbonado returning from thestore going back to camp where our friend dave yasutake was waiting at camp. Inoticed a light off to my right up on the hill following up it seemed to keeppace with us. I thought it was strange because a car or motor bike would bebouncing and the light looked different like as big as a house. i then changfeddirection as we came to a turn and tree over hage ahgaed in the road. theobject stated down the hill at us and went dark and lights beamed down below it.I said do you see what i see, because i don't believe it ellen said yes.i just held on tight to the steering wheel the whole time. the object came don'the hill and into the road and as it reached the road the edge of it split openand the light beams below it went out and the edge open up to mak the objectglow all over it was in the road now and i could hit it with a rock it was soclose. then the object raised up slightly and the top dome area glowed morewhite than the under side which was glowing a orange-yellow with a red tingelikie a toy laser does on your hand. the way it stopped was starteling becuse itdidn't wiggle or wobble it just stopped perfectly and precisely.i tried communication by switching my headlight to parking lights and then downto off and then parking. and back to headlights. it didn't do any thing for sometime and we just kept staring at it.a sudden flash starteled me with no sound and the light source dimmed like afloadlight when turned off then my eyes slowly cleared and looked to seedarkness. the craft has gone.we looked at eachother and discussed breifly to eachother what did you seeabout a minuite later a dark orange light appeared on the ridge across theriver, it was slightly trasparent.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "exact",
+        "time_sort_confidence": "high",
+        "timezone_source": "city_match",
+        "parsed_time_local_minutes": 1335.0,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 1365098095637797,
+      "canonical_event_id": "evt_ee7943f09ad6aaa9a4660249",
+      "source": "majestic",
+      "source_id": "Hatch_UDB_16849",
+      "source_row_number": 50311,
+      "time_raw": "10:20",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "Residential, RUWA, ZIMBABWE, HRR, Zimbabwe & Zambia",
+      "chunk_id": "chunk_000087",
+      "detail_index": 344,
+      "description": "Several kids / school. Silver saucers land. Reappear 3X. Small humanoid (or Grey) / grounds. / MJ#320.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "exact",
+        "time_sort_confidence": "high",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": 620.0,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 1527598470028955,
+      "canonical_event_id": "evt_3ec957b39e7f2eaa9c986f8d",
+      "source": "majestic",
+      "source_id": "Johnson_6023",
+      "source_row_number": 50314,
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "chunk_id": "chunk_000103",
+      "detail_index": 1697,
+      "description": "At 10:15 a.m. several children in school in Ruwa, Mashona East, Zimbabwe watched three silver discs or spheres disappear with a flash of light, then reappear three times. One of the objects landed and a small man emerged. He was one meter tall and pale with a scrawny neck, big eyes and long black hair. He wore a shiny tight black suit. There were a total of 62 witnesses, and the incident lasted eight minutes. In another account of the same or a parallel incident, at 10:18 in nearby Harare, Mashona East, Zimbabwe school children at a school in a rural area spotted an unknown craft that landed in the valley below, with black humanoids patroling outside.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "unknown",
+        "time_sort_confidence": "none",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": null,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 1880247488343365,
+      "canonical_event_id": "evt_a8f9bfa49ac9e6712370305a",
+      "source": "ufocat",
+      "source_id": "319375",
+      "source_row_number": 305706,
+      "time_raw": "1018",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "HARARE RURAL AREA, Mashona East, ZIM, AF",
+      "chunk_id": "chunk_000156",
+      "detail_index": 2303,
+      "description": "School in rural area spots unknown craft landed in valley below with black humanoids patroling outside.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "unknown",
+        "time_sort_confidence": "none",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": null,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 3478209486003715,
+      "canonical_event_id": "evt_2c4f17844b80c483efcff101",
+      "source": "majestic",
+      "source_id": "Eberhart_7105",
+      "source_row_number": 50313,
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "Ariel School in Ruwa, Zimbabwe",
+      "chunk_id": "chunk_000161",
+      "detail_index": 185,
+      "description": "10:00 a.m. Some 60 children in a grassy playground outside Ariel School in Ruwa, Zimbabwe, see three or four objects landing in the \u201crough bush area\u201d about 330 feet away. An entity of some kind emerges from the largest object and stands on top. It has long, straight, black hair tied back with a headband around its larger than normal head, stands about 3 feet tall, and is dressed in black. Some of the younger African children are afraid it is a Tokoloshe, a folkloric entity. After 15 minutes, the craft and entity fade from view. The headmaster asks each child to draw what they saw. Researcher [Cynthia Hind](http://www.noufors.com/Cynthia%5FHind.htm) interviews them on September 17 and psychologist [John E.](https://en.wikipedia.org/wiki/John%5FE.%5FMack) [Mack](https://en.wikipedia.org/wiki/John%5FE.%5FMack) several months later.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "unknown",
+        "time_sort_confidence": "none",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": null,
+        "parsed_time_utc_epoch_ms": null
+      }
+    },
+    {
+      "event_id": 3448855352240391,
+      "canonical_event_id": "evt_d05f6eb6b1440df2167981df",
+      "source": "ufocat",
+      "source_id": "161085",
+      "source_row_number": 140820,
+      "time_raw": "1200",
+      "sort_date_iso": "1994-09-16",
+      "date_iso": "1994-09-16",
+      "date_precision": "exact_day",
+      "location_raw": "MEXICO CITY N, Mexico, MEX, CA",
+      "chunk_id": "chunk_000252",
+      "detail_index": 1447,
+      "description": "Witnesses saw strange craft hover over area. Woman filmed disc hovering, noticed luminous being, 90' away in cane field. Filmed 4' being as it slowly moved away. Traces: footprints, flattened areas.",
+      "legacy_time_evidence": {
+        "time_sort_kind": "unknown",
+        "time_sort_confidence": "none",
+        "timezone_source": "unknown",
+        "parsed_time_local_minutes": null,
+        "parsed_time_utc_epoch_ms": null
+      }
+    }
+  ],
+  "elapsed_seconds": 45.388,
+  "storage": {
+    "new_corpus_bytes": 0,
+    "retained_inputs": "Existing canonical datasets and corrected clock dictionary; this small audit report is the canonical coverage evidence for this task."
+  }
+}

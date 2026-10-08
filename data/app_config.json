@@ -133,5 +133,9 @@
     },
     "enabled": true,
     "gzipUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_repair_detail/patches.json.gz"
-  }
+  },
+  "traceChronologyEvidenceUrl": "./data/trace_chronology/evidence.json.gz",
+  "traceChronologyEvidenceGzipSha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
+  "traceChronologyEvidenceSha256": "145148d5aaf01c92ecba71680603defe34f4759925ed154faadbe0f2e15075db",
+  "traceChronologyEvidenceRowCount": 213364
 }

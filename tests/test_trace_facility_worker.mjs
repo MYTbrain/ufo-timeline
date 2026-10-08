@@ -1,8 +1,13 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
+import { createRequire } from "node:module";
+import { gzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
+const require = createRequire(import.meta.url);
+const chronology = require("../trace_chronology.js");
 
-function loadWorker(workerPath) {
+function loadWorker(workerPath, overrides = {}) {
   const messages = [];
   const self = {
     postMessage(message) {
@@ -19,7 +24,9 @@ function loadWorker(workerPath) {
     Object,
     String,
     console,
+    UfoTraceChronology: chronology,
     self,
+    ...overrides,
   };
   vm.runInNewContext(fs.readFileSync(workerPath, "utf8"), context, {
     filename: workerPath,
@@ -83,7 +90,7 @@ function normalize(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-const worker = loadWorker("webapp/static_public/trace_facility_worker.js");
+const worker = loadWorker("trace_facility_worker.js");
 
 const configureResponse = worker.send({
   type: "configureTraceFacilityIndex",
@@ -288,7 +295,7 @@ for (const facilityKey of smallRadiusFacilityKeys) {
 }
 assert.ok(largeRadiusFacilityKeys.size > smallRadiusFacilityKeys.size);
 
-const reliabilityWorker = loadWorker("webapp/static_public/trace_facility_worker.js");
+const reliabilityWorker = loadWorker("trace_facility_worker.js");
 const reliabilityConfigure = reliabilityWorker.send({
   type: "configureTraceFacilityIndex",
   requestId: "configure-reliability",
@@ -648,7 +655,7 @@ function buildPackedTraceFixture() {
   };
 }
 
-const packedWorker = loadWorker("webapp/static_public/trace_facility_worker.js");
+const packedWorker = loadWorker("trace_facility_worker.js");
 assert.equal(packedWorker.send({
   type: "configureTraceFacilityIndex",
   requestId: "packed-facilities",
@@ -704,3 +711,47 @@ assert.deepEqual(normalize(packedExploratory.segments[0].supportedFacilityKeys),
 assert.deepEqual(normalize(packedExploratory.segments[0].possibleFacilityKeys), ["verified:packed-end"]);
 
 console.log("trace facility worker classification assertions passed");
+
+const timingPayload = {
+  schemaId: chronology.SCHEMA_ID, sourceContract: chronology.SOURCE_CONTRACT, releaseId: "worker-timing-test",
+  rowSchema: [...chronology.ROW_SCHEMA], codes: {
+    evidence: [{ status: "accepted", kind: "source_clock", confidence: "high", basis: "Preserved occurrence time and historical zone" }],
+    zone: ["UTC"],
+  }, rows: [[101, 28000000, 28059999, 0, 0], [102, 8000000, 8059999, 0, 0]],
+};
+const timingJson = Buffer.from(JSON.stringify(timingPayload));
+const timingGzip = gzipSync(timingJson);
+let timingRequests = 0;
+const timedWorker = loadWorker("trace_facility_worker.js", {
+  fetch: async () => { timingRequests++; return new Response(timingGzip); },
+});
+timedWorker.send({
+  type: "configureTraceFacilityIndex", requestId: "timed-facility", facilityIndexKey: "timed-facility",
+  sourceCoordinateEventIds: ["101", "102"], exactDateEventIds: ["101", "102"],
+  facilities: [{ id: "located-at-later-report", facilityKey: "verified:later", source: "military", lat: 0, lon: 0,
+    temporalKnown: true, startOrdinal: 0, endOrdinal: 100 }],
+});
+const timedConfiguration = {
+  type: "configureTraceEventIndex", requestId: "timed-index", traceIndexKey: "timed-index", metadata: packedFixture.metadata,
+  buffer: packedFixture.buffer, traceChronologyEvidenceUrl: "https://example.invalid/timing.json.gz",
+  traceChronologyReleaseId: timingPayload.releaseId, traceChronologyExpected: {
+    rowCount: timingPayload.rows.length, sha256: createHash("sha256").update(timingJson).digest("hex"),
+    gzipSha256: createHash("sha256").update(timingGzip).digest("hex"),
+  },
+};
+assert.equal((await timedWorker.sendAsync(timedConfiguration)).type, "traceEventIndexConfigured");
+assert.equal((await timedWorker.sendAsync({ ...timedConfiguration, requestId: "timed-repeat" })).type, "traceEventIndexConfigured");
+assert.equal(timingRequests, 1, "worker validates and loads precomputed evidence once for repeated selections");
+const timedResult = timedWorker.send({
+  type: "buildAndClassifyPackedTraceFacilitySegments", requestId: "timed-links", traceIndexKey: "timed-index", facilityIndexKey: "timed-facility",
+  filter: { radiusMeters: 20000, evidenceMode: "source_coordinates", classes: { start: false, end: true, between: false, passes: false } },
+  filteredEventIds: ["101", "102"], activeBucketKeys: ["gap_le_30"], startOrdinal: 0, endOrdinal: 100,
+});
+assert.equal(timedResult.type, "packedTraceFacilitySegmentsBuilt");
+assert.equal(timedResult.result.segments.length, 1);
+assert.equal(timedResult.result.segments[0].traceId, "102->101");
+assert.equal(timedResult.result.segments[0].sameDayOrderKnown, true);
+assert.equal(timedResult.result.segments[0].facilityTraceClass, "end", "facility classification follows resolved endpoints, not old presentation direction");
+assert.equal(timedResult.result.segments[0].fromSortOrdinal, 20);
+assert.equal(timedResult.result.segments[0].toSortOrdinal, 10);
+console.log("Trace worker timing passed: gzip integrity, one-time loading, reversed endpoints and classification after chronology resolution.");

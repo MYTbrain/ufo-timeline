@@ -20,6 +20,7 @@
     throw new Error("Famous flap preset labels failed to load.");
   }
   const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
+  const TRACE_CHRONOLOGY = window.UfoTraceChronology;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
@@ -1133,6 +1134,11 @@
       uniqueStringValues: 0,
       stringPoolReleased: false,
     },
+    traceChronologyEvidence: null,
+    traceChronologyEvidencePromise: null,
+    traceChronologyEvidenceUrl: "",
+    traceChronologyStatus: "not_loaded",
+    traceChronologyError: "",
     claimedUfoBaseSitesLayer: null,
     claimedUfoBaseTraceLayer: null,
     filterPaneResizeObserver: null,
@@ -9337,7 +9343,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-map-polar-bounds-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-trace-chronology-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -12267,6 +12273,7 @@
     if (!artifact || !artifact.metadata || !artifact.view) return "";
     return [
       "trace_event_index",
+      traceChronologyIdentity(),
       artifact.rowCount || 0,
       artifact.bytesPerRow || 0,
       artifact.view.byteLength || 0,
@@ -12447,6 +12454,13 @@
         generation: state.filterGeneration,
         traceIndexKey: signature,
         metadata: artifact.metadata,
+        traceChronologyEvidenceUrl: runtime.traceChronologyStatus === "ready" ? runtime.traceChronologyEvidenceUrl : "",
+        traceChronologyReleaseId: runtime.traceChronologyEvidence ? runtime.traceChronologyEvidence.releaseId : "",
+        traceChronologyExpected: {
+          gzipSha256: runtime.appConfig.traceChronologyEvidenceGzipSha256,
+          sha256: runtime.appConfig.traceChronologyEvidenceSha256,
+          rowCount: runtime.appConfig.traceChronologyEvidenceRowCount,
+        },
         binaryUrl: useWorkerFetch ? artifact.urls.binaryRaw : "",
         gzipBinaryUrl: useWorkerFetch ? artifact.urls.binaryGzip : "",
         buffer,
@@ -12714,18 +12728,20 @@
     const toLon = Number(row.to[1]);
     if (![fromLat, fromLon, toLat, toLon].every(Number.isFinite)) return null;
     const bucket = PLAYBACK_TRAIL_BUCKET_BY_KEY.get(row.bucket_key || row.bucketKey) || PLAYBACK_TRAIL_BUCKET_BY_KEY.get("gap_gt_30");
-    return {
+    return applyTraceChronology({
       traceId: "startup-profile:" + (row.from_event_id || "") + ":" + (row.to_event_id || ""),
       from: [fromLat, fromLon],
       to: [toLat, toLon],
       fromEventId: row.from_event_id,
       toEventId: row.to_event_id,
+      eventIds: [row.from_event_id, row.to_event_id],
       gapDays: Number(row.gap_days) || 0,
       bucket,
       color: bucket.color,
       opacity: Math.min(0.68, Number(bucket.opacity) || 0.5),
       weight: Math.max(1.4, (Number(bucket.weight) || 2) * 0.72),
-    };
+      source: "startup_profile_trace",
+    });
   }
 
   function renderStartupProfilePreviewMap(profile) {
@@ -18931,9 +18947,78 @@
     return String(previousEventId) + "->" + String(currentEventId);
   }
 
+  function traceChronologyIdentity() {
+    return runtime.traceChronologyEvidence ? runtime.traceChronologyEvidence.releaseId : runtime.traceChronologyStatus;
+  }
+
+  function getTraceChronologySnapshot() {
+    return runtime.traceChronologyEvidence ? runtime.traceChronologyEvidence.snapshot() : {
+      status: runtime.traceChronologyStatus, acceptedEventCount: 0, reason: runtime.traceChronologyError,
+    };
+  }
+
+  function traceChronologyClockLabel(event, interval) {
+    const sourceClock = event && (event.time_display || event.time_raw);
+    if (!interval) return sourceClock ? String(sourceClock) + " · no accepted UTC time" : "No accepted UTC time";
+    if (interval.evidence.kind === "date_only") return "Date only · complete civil-day UTC bounds";
+    const localClock = new Intl.DateTimeFormat("en", { timeZone: interval.zone, hour: "numeric", minute: "2-digit" }).format(interval.startMs);
+    const utcClock = new Intl.DateTimeFormat("en", { timeZone: "UTC", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(interval.startMs);
+    return (sourceClock || localClock) + " · " + interval.zone + " · " + utcClock + " UTC";
+  }
+
+  function loadTraceChronologyEvidence() {
+    if (runtime.traceChronologyEvidencePromise) return runtime.traceChronologyEvidencePromise;
+    const relativeUrl = runtime.appConfig && runtime.appConfig.traceChronologyEvidenceUrl;
+    if (!TRACE_CHRONOLOGY || !relativeUrl) {
+      runtime.traceChronologyStatus = "unavailable";
+      runtime.traceChronologyError = "Source-backed timing evidence is not configured.";
+      return Promise.resolve(null);
+    }
+    const url = new URL(resolveAssetPath(relativeUrl), document.baseURI);
+    if (APP_SHELL_RELEASE_TOKEN) url.searchParams.set("v", APP_SHELL_RELEASE_TOKEN);
+    runtime.traceChronologyEvidenceUrl = url.toString();
+    runtime.traceChronologyStatus = "loading";
+    runtime.traceChronologyEvidencePromise = fetch(url.toString(), { credentials: "same-origin" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Source-backed trace timing request failed (" + response.status + ").");
+        return TRACE_CHRONOLOGY.decodeEvidenceResponse(response, {
+          gzipSha256: runtime.appConfig.traceChronologyEvidenceGzipSha256,
+          sha256: runtime.appConfig.traceChronologyEvidenceSha256,
+          rowCount: runtime.appConfig.traceChronologyEvidenceRowCount,
+        });
+      }).then(function (payload) {
+        const acceptedIndex = TRACE_CHRONOLOGY.createEvidenceIndex(payload);
+        runtime.traceChronologyEvidence = acceptedIndex;
+        runtime.traceChronologyStatus = "ready";
+        runtime.traceChronologyError = "";
+        runtime.traceSequenceCacheKey = "";
+        runtime.packedTraceRenderCacheKey = "";
+        runtime.regionSelectionResultCacheKey = "";
+        return acceptedIndex;
+      }).catch(function (error) {
+        runtime.traceChronologyEvidence = null;
+        runtime.traceChronologyStatus = "unavailable";
+        runtime.traceChronologyError = error && error.message ? error.message : String(error);
+        console.warn("[trace chronology] Timing evidence unavailable; unresolved links remain undirected.", runtime.traceChronologyError);
+        return null;
+      });
+    return runtime.traceChronologyEvidencePromise;
+  }
+
+  function applyTraceChronology(segment, fromEvent, toEvent) {
+    const from = getCatalogEventById(segment.fromEventId) || fromEvent;
+    const to = getCatalogEventById(segment.toEventId) || toEvent;
+    const datedSegment = Object.assign({}, segment);
+    if (from && from.date_precision === "exact_day" && Number.isFinite(from.sort_ordinal)) datedSegment.fromSortOrdinal = from.sort_ordinal;
+    if (to && to.date_precision === "exact_day" && Number.isFinite(to.sort_ordinal)) datedSegment.toSortOrdinal = to.sort_ordinal;
+    if (TRACE_CHRONOLOGY) return TRACE_CHRONOLOGY.orientSegment(runtime.traceChronologyEvidence, datedSegment);
+    return Object.assign(datedSegment, { sameDayOrderKnown: false, chronology: { status: "unknown", reason: "timing_support_unavailable" } });
+  }
+
   function canonicalTraceSegmentsCacheKey() {
     return [
       "legacy",
+      traceChronologyIdentity(),
       state.timelineDataVersion,
       state.filterGeneration,
       state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
@@ -19015,6 +19100,7 @@
   function canonicalTraceSegmentsPackedCacheKey(artifact) {
     return [
       "packed_event_index",
+      traceChronologyIdentity(),
       artifact ? artifact.rowCount : 0,
       artifact ? artifact.bytesPerRow : 0,
       state.timelineDataVersion,
@@ -19151,7 +19237,7 @@
         const bucket = playbackTrailBucketForGapDays(gapDays);
         if (activeBucketKeys.has(bucket.key)) {
           const segment = shortestWrappedSegment(previousEvent, currentEvent);
-          const traceSegment = applyTraceFacilityFilterToSegmentWithContext({
+          const traceSegment = applyTraceFacilityFilterToSegmentWithContext(applyTraceChronology({
             traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
             fromEventId: previousEvent.event_id,
             toEventId: currentEvent.event_id,
@@ -19161,7 +19247,7 @@
             from: segment.from,
             to: segment.to,
             source: "canonical_trace_event_index",
-          }, facilityContext);
+          }, previousEvent, currentEvent), facilityContext);
           if (traceSegment) {
             segments.push(traceSegment);
           }
@@ -19205,7 +19291,7 @@
       const bucket = playbackTrailBucketForGapDays(gapDays);
       if (!activeBucketKeys.has(bucket.key)) continue;
       const segment = shortestWrappedSegment(previousEvent, currentEvent);
-      const traceSegment = applyTraceFacilityFilterToSegmentWithContext({
+      const traceSegment = applyTraceFacilityFilterToSegmentWithContext(applyTraceChronology({
         traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
         fromEventId: previousEvent.event_id,
         toEventId: currentEvent.event_id,
@@ -19214,7 +19300,7 @@
         gapDays: gapDays,
         from: segment.from,
         to: segment.to,
-      }, facilityContext);
+      }, previousEvent, currentEvent), facilityContext);
       if (traceSegment) {
         segments.push(traceSegment);
       }
@@ -19410,7 +19496,7 @@
         const bucket = playbackTrailBucketForGapDays(gapDays);
         if (activeBucketKeys.has(bucket.key)) {
           const shortestSegment = shortestWrappedSegment(previousEvent, currentEvent);
-          const segment = {
+          const segment = applyTraceChronology({
             traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
             fromEventId: previousEvent.event_id,
             toEventId: currentEvent.event_id,
@@ -19421,7 +19507,7 @@
             to: shortestSegment.to,
             source: "canonical_trace_event_index",
             sequenceIndex: totalSegments,
-          };
+          }, previousEvent, currentEvent);
           const filteredSegment = applyTraceFacilityFilterToSegment(segment);
           if (!filteredSegment) {
             previousEvent = currentEvent;
@@ -19549,7 +19635,7 @@
         const bucket = playbackTrailBucketForGapDays(gapDays);
         if (activeBucketKeys.has(bucket.key)) {
           const shortestSegment = shortestWrappedSegment(previousEvent, currentEvent);
-          const segment = {
+          const segment = applyTraceChronology({
             traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
             fromEventId: previousEvent.event_id,
             toEventId: currentEvent.event_id,
@@ -19560,7 +19646,7 @@
             to: shortestSegment.to,
             source: "canonical_trace_event_index",
             sequenceIndex: totalSegments,
-          };
+          }, previousEvent, currentEvent);
           totalSegments += 1;
           if (!bounds || traceSegmentMayIntersectBounds(segment, bounds)) {
             viewportSourceSegments += 1;
@@ -20339,7 +20425,8 @@
     if (runtime.traceSequenceCacheKey === cacheKey && runtime.traceSequenceCacheValue) return runtime.traceSequenceCacheValue;
     const facilityContext = createTraceFacilityClassificationContext();
     const rawSegments = TRACE_NEIGHBORHOOD.buildSameDayCraftTraceSegments(
-      state.filteredMappedCatalog.filter(eventMatchesTimeRange)
+      state.filteredMappedCatalog.filter(eventMatchesTimeRange),
+      { chronology: runtime.traceChronologyEvidence, timingSupport: TRACE_CHRONOLOGY }
     );
     const segments = rawSegments.map(function (segment) {
       const wrapped = shortestWrappedSegment({ lat: segment.from[0], lon: segment.from[1] },
@@ -22885,9 +22972,8 @@
   function addPlaybackTrail(previousEvent, currentEvent, trailBucket, sessionId) {
     if (!traceModeIncludesPlayback() || !runtime.playbackLayer) return;
     const segment = shortestWrappedSegment(previousEvent, currentEvent);
-    const traceId = canonicalTraceId(previousEvent.event_id, currentEvent.event_id);
-    const facilitySegment = applyTraceFacilityFilterToSegment({
-      traceId: traceId,
+    const chronologySegment = applyTraceChronology({
+      traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
       fromEventId: previousEvent.event_id,
       toEventId: currentEvent.event_id,
       eventIds: [previousEvent.event_id, currentEvent.event_id],
@@ -22896,8 +22982,12 @@
       from: segment.from,
       to: segment.to,
       source: "playback_trace",
-    });
+    }, previousEvent, currentEvent);
+    const facilitySegment = applyTraceFacilityFilterToSegment(chronologySegment);
     if (!facilitySegment) return;
+    const traceId = facilitySegment.traceId;
+    const fromEvent = String(facilitySegment.fromEventId) === String(previousEvent.event_id) ? previousEvent : currentEvent;
+    const toEvent = String(facilitySegment.toEventId) === String(currentEvent.event_id) ? currentEvent : previousEvent;
     const trailColor = facilitySegment.color || trailBucket.color;
     const trailWeight = facilitySegment.weight || trailBucket.weight;
     const trailOpacity = facilitySegment.opacity || trailBucket.opacity;
@@ -22906,11 +22996,17 @@
     const accentOpacity = Number(facilitySegment.facilityAccentOpacity) || 0;
     const accentWeight = Number(facilitySegment.facilityAccentWeight) || trailWeight;
     const possibleEvidence = facilitySegment.facilityTraceEvidenceClass === "possible";
-    const craftStyle = TRACE_NEIGHBORHOOD.resolveCraftEndpointStyle(previousEvent, currentEvent, CRAFT_TYPE_COLORS);
+    const craftStyle = TRACE_NEIGHBORHOOD.resolveCraftEndpointStyle(fromEvent, toEvent, CRAFT_TYPE_COLORS);
     const canvasSegment = {
       traceId: traceId,
-      from: segment.from.slice(),
-      to: segment.to.slice(),
+      fromEventId: facilitySegment.fromEventId,
+      toEventId: facilitySegment.toEventId,
+      eventIds: facilitySegment.eventIds.slice(),
+      gapDays: facilitySegment.gapDays,
+      sameDayOrderKnown: facilitySegment.sameDayOrderKnown,
+      chronology: facilitySegment.chronology,
+      from: facilitySegment.from.slice(),
+      to: facilitySegment.to.slice(),
       bucket: trailBucket,
       color: trailColor,
       weight: trailWeight,
@@ -22939,9 +23035,11 @@
       facilityTraceClass: facilitySegment.facilityTraceClass || null,
       facilityTraceEvidenceClass: facilitySegment.facilityTraceEvidenceClass || null,
       facilityKeys: Array.isArray(facilitySegment.facilityKeys) ? facilitySegment.facilityKeys.slice() : [],
-      fromEventId: previousEvent.event_id,
-      toEventId: currentEvent.event_id,
-      geometry: { from: segment.from.slice(), to: segment.to.slice() },
+      fromEventId: facilitySegment.fromEventId,
+      toEventId: facilitySegment.toEventId,
+      sameDayOrderKnown: facilitySegment.sameDayOrderKnown,
+      chronology: facilitySegment.chronology,
+      geometry: { from: facilitySegment.from.slice(), to: facilitySegment.to.slice() },
       bucket: trailBucket,
       facilitySegment: facilitySegment,
       craftStyle: craftStyle,
@@ -23166,6 +23264,8 @@
   }
 
   function finiteChronologyNumber(value) {
+    if (typeof value !== "number" && typeof value !== "string") return null;
+    if (typeof value === "string" && !value.trim()) return null;
     const number = Number(value);
     return Number.isFinite(number) ? number : null;
   }
@@ -26958,9 +27058,12 @@
     const distanceKm = TRACE_NEIGHBORHOOD.haversineKm(segment.from, segment.to);
     const elapsedDays = Number.isFinite(Number(segment.gapDays)) ? Math.abs(Number(segment.gapDays)) : null;
     const sameDayOrderUnknown = TRACE_DIRECTIONS.segmentOrderUncertain(segment);
-    const impliedSpeedKph = !sameDayOrderUnknown && distanceKm != null && elapsedDays != null && elapsedDays > 0
-      ? distanceKm / (elapsedDays * 24)
+    const timing = segment.chronology;
+    const elapsedUtcLabel = timing && timing.status === "ordered" && timing.from && timing.to
+      ? ((timing.to.startMs - timing.from.endMs) / 3600000).toFixed(2) + "–" +
+        ((timing.to.endMs - timing.from.startMs) / 3600000).toFixed(2) + " hours between report-time intervals"
       : null;
+    const hypotheticalSpeed = TRACE_CHRONOLOGY && timing ? TRACE_CHRONOLOGY.hypotheticalSpeedRange(timing, distanceKm) : null;
     const neighborhood = segment.neighborhood || {};
     const regionIds = Array.isArray(neighborhood.regionIds) && neighborhood.regionIds.length
       ? neighborhood.regionIds.join(", ")
@@ -26968,7 +27071,7 @@
     const values = [
       ["Connection", sameDayOrderUnknown
         ? (segment.source === "famous_case_same_day_craft" ? "Same calendar date and craft category; report order uncertain" : "Report connection; chronological order uncertain")
-        : "Chronological adjacency only"],
+        : "Chronologically ordered reports; craft identity and travel are unestablished"],
       [sameDayOrderUnknown ? "Endpoint A" : "Earlier endpoint", chronologicalNeighborhoodEndpointLabel(fromEvent) + " (" + String(segment.fromEventId || "Missing") + ")"],
       [sameDayOrderUnknown ? "Date A" : "Earlier date", chronologicalNeighborhoodDateLabel(fromEvent)],
       [sameDayOrderUnknown ? "Craft type A" : "Earlier craft type", craftStyle.fromLabel],
@@ -26977,9 +27080,8 @@
       [sameDayOrderUnknown ? "Craft type B" : "Later craft type", craftStyle.toLabel],
       ["Elapsed time", sameDayOrderUnknown
         ? (elapsedDays === 0 ? "Same calendar date; elapsed hours and order uncertain" : "Elapsed hours and report order uncertain")
-        : elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days"],
+        : elapsedUtcLabel || (elapsedDays == null ? "Missing" : formatNumber(elapsedDays) + " days")],
       ["Derived distance", distanceKm == null ? "Missing" : distanceKm.toFixed(1) + " km (great-circle estimate)"],
-      ["Derived implied speed", impliedSpeedKph == null ? "Missing or undefined" : impliedSpeedKph.toFixed(1) + " km/h"],
       [
         sameDayOrderUnknown ? "Hop / ordering" : "Hop / direction",
         String(neighborhood.hop == null ? 1 : neighborhood.hop) + " / " +
@@ -26987,6 +27089,18 @@
       ],
       ["Region attribution", regionIds],
     ];
+    if (timing) {
+      values.splice(1, 0,
+        ["Ordering evidence", timing.status === "ordered"
+          ? "The earlier report's latest possible UTC time precedes the later report's earliest possible UTC time."
+          : timing.reason === "overlapping_utc_intervals"
+            ? "The accepted UTC time intervals overlap, so their order is unresolved."
+            : runtime.traceChronologyStatus === "unavailable"
+              ? "The source-backed timing artifact is unavailable; this connection remains unresolved."
+            : "One or both reports lack an accepted source-backed clock and timezone."],
+        [sameDayOrderUnknown ? "Source time A" : "Earlier source time", traceChronologyClockLabel(fromEvent, timing.from)],
+        [sameDayOrderUnknown ? "Source time B" : "Later source time", traceChronologyClockLabel(toEvent, timing.to)]);
+    }
     const description = TRACE_DIRECTIONS.describeSegment(segment, { direction: state.regionSelection.direction });
     const directions = description.directions;
     const directionSummary = currentAreaDirectionSummary(result);
@@ -27022,8 +27136,8 @@
         sharedLinksMarkup +
         '<p class="chronological-neighborhood-inspector-note">' +
         (sameDayOrderUnknown
-          ? 'Report order is uncertain and may use estimates or record identifiers. The dashed, double-headed arrow shows an undirected connection between locations. It is excluded from directional percentages; travel direction and origin are unestablished.'
-          : 'This connection is adjacency in the filtered chronology. It is exploratory and is not evidence of travel or the same craft.') + '</p>' +
+          ? 'Report order is unresolved because accepted UTC intervals overlap or source-backed timing is missing. The dashed, double-headed arrow is excluded from directional percentages; travel direction and origin are unestablished.'
+          : 'The arrow follows non-overlapping report-time intervals, from earlier to later. It does not establish travel, origin, or the same craft.') + '</p>' +
         TRACE_DIRECTIONS.summaryMarkup(directionSummary, {
           selectedSectors: directions.map(function (entry) { return entry.sector; }),
         }) +
@@ -27031,7 +27145,16 @@
         values.map(function (entry) {
           return "<dt>" + escapeHtml(entry[0]) + "</dt><dd>" + escapeHtml(entry[1]) + "</dd>";
         }).join("") +
-        "</dl>";
+        "</dl>" + (timing && TRACE_CHRONOLOGY
+          ? '<details><summary>Timing evidence</summary><dl class="chronological-neighborhood-inspector-grid"><dt>' +
+            (sameDayOrderUnknown ? 'Endpoint A' : 'Earlier report') + '</dt><dd>' + escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.from)) +
+            '</dd><dt>' + (sameDayOrderUnknown ? 'Endpoint B' : 'Later report') + '</dt><dd>' +
+            escapeHtml(TRACE_CHRONOLOGY.intervalLabel(timing.to)) + '</dd><dt>Timing release</dt><dd>' +
+            escapeHtml(timing.releaseId || 'Bounded civil-date ordering') + '</dd>' +
+            (hypotheticalSpeed ? '<dt>Hypothetical link speed</dt><dd>' +
+              escapeHtml(hypotheticalSpeed.lowerKph.toFixed(1) + '–' + hypotheticalSpeed.upperKph.toFixed(1)) +
+              ' km/h, assuming straight-line travel between these reports. No same-craft identity or travel is established.</dd>' : '') +
+            '</dl></details>' : '');
     }
     if (els.chronologicalNeighborhoodInspector) {
       els.chronologicalNeighborhoodInspector.hidden = false;
@@ -28359,7 +28482,7 @@
             const bucket = playbackTrailBucketForGapDays(gapDays);
             if (activeBucketKeys.has(bucket.key)) {
               const shortestSegment = shortestWrappedSegment(previousEvent, currentEvent);
-              const segment = {
+              const segment = applyTraceChronology({
                 traceId: canonicalTraceId(previousEvent.event_id, currentEvent.event_id),
                 fromEventId: previousEvent.event_id,
                 toEventId: currentEvent.event_id,
@@ -28370,7 +28493,7 @@
                 to: shortestSegment.to,
                 source: "canonical_trace_event_index",
                 sequenceIndex: totalSegments,
-              };
+              }, previousEvent, currentEvent);
               totalSegments += 1;
               if (!bounds || traceSegmentMayIntersectBounds(segment, bounds)) {
                 segment.sequenceRatio = totalSegments <= 1
@@ -31640,6 +31763,7 @@
 
     await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
     await measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime);
+    await measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence);
 
     await measureStartupStep("location label overlay load", function () {
       return loadLocationLabelOverlayRuntime();
@@ -32434,6 +32558,7 @@
   }
 
   window.__UFO_TIMELINE_DEBUG__ = {
+    getTraceChronologySnapshot: getTraceChronologySnapshot,
     getMapWorldConstraintSnapshot: function () {
       if (!runtime.map) return null;
       const viewport = runtime.map.getPixelBounds();

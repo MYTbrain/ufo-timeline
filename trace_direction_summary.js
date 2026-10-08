@@ -118,6 +118,7 @@
 
   function segmentOrderUncertain(segment) {
     if (!segment || typeof segment !== "object") return false;
+    if (segment.chronology && segment.chronology.status) return segment.chronology.status !== "ordered";
     if (segment.sameDayOrderKnown === false) return true;
     if (segment.sameDayOrderKnown === true) return false;
     // An exact shared catalog day establishes no within-day ordering. Null,

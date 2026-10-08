@@ -1,0 +1,33 @@
+{
+  "schemaId": "trace-chronology-runtime-v1",
+  "releaseId": "trace-chronology-20261008",
+  "sourceContract": "source-backed-clock-and-historical-zone-v1",
+  "file": "evidence.json.gz",
+  "rowCount": 213364,
+  "gzipBytes": 3488744,
+  "gzipSha256": "121f17e63dff84125e4da413979102b0ef754a220177f70576e7acbb15401375",
+  "decodedBytes": 10773026,
+  "decodedSha256": "145148d5aaf01c92ecba71680603defe34f4759925ed154faadbe0f2e15075db",
+  "sourceRowsPreserved": 702893,
+  "canonicalRecordsMutated": false,
+  "timezoneDatabase": "2026c",
+  "policy": {
+    "sentinelsWithheld": true,
+    "missingClocksAreMidnight": false,
+    "sourceClockResolutionPreserved": true,
+    "uncertainDateMidpointsUsed": false,
+    "dstFoldCandidatesBounded": true,
+    "nonexistentLocalClocksAccepted": false,
+    "longitudeTimezoneGuessesUsed": false,
+    "qualitativeMidpointsUsed": false,
+    "automaticNarrativeMining": false,
+    "sourceField": "time_raw",
+    "geographicTimezoneIsInference": true,
+    "inferredZoneYearMinimum": 1900,
+    "pre1970InferredZonesRequireIanaRepresentativeLocality": true,
+    "provenanceJoin": "eventId joins hashed effective summary row chunk_id/detail_index and hashed source-clock projection/value dictionary",
+    "acceptedNarrativeOriginalChunksReopenedAndHashed": true,
+    "acceptedNarrativeSourceIdentityDateDescriptionAndExactQuoteRevalidated": true
+  },
+  "auditSha256": "2d66b09755416906cef8808af6b4b8c89467d1041b853a58b26ebc7a5f26a072"
+}

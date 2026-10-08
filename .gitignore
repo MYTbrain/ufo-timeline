@@ -38,6 +38,10 @@ live_probe/
 /data/*
 !/data/analysis_comparisons/
 !/data/analysis_repair_detail/
+!/data/trace_chronology/
+/data/trace_chronology/*
+!/data/trace_chronology/evidence.json.gz
+!/data/trace_chronology/manifest.json
 /data/analysis_comparisons/ephemeris_atlas_v1.bin.gz
 # Compact comparison evidence, reproducibility records, and pinned source archive.
 # Full canonical UFO datasets remain excluded.

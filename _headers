@@ -37,6 +37,18 @@
 /trace_facility_worker.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/trace_chronology.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/trace_neighborhood.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/trace_direction_summary.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/trace_chronology/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 /styles.css
   Cache-Control: public, max-age=0, must-revalidate
 

@@ -167,7 +167,9 @@
     return String(left) < String(right) ? -1 : String(left) > String(right) ? 1 : 0;
   }
 
-  function buildSameDayCraftTraceSegments(events) {
+  function buildSameDayCraftTraceSegments(events, options) {
+    const chronology = options && options.chronology;
+    const timingSupport = options && options.timingSupport;
     const recognizedCrafts = new Set(CRAFT_TYPE_ORDER.filter(function (key) {
       return key !== "unknown" && key !== "conventional_or_explained" && key !== "non_ufo_context";
     }));
@@ -182,7 +184,11 @@
       const lat = sameDayFiniteNumber(event.lat);
       const lon = sameDayFiniteNumber(event.lon);
       if (!day || !recognizedCrafts.has(craft) || lat == null || lon == null || lat < -90 || lat > 90 || lon < -180 || lon > 180) return;
-      const key = sameDayChronologyKey(event);
+      const interval = chronology && chronology.interval(id);
+      // With reviewed evidence, unknown clocks use only an ID tie-breaker.
+      // UTC instants and unconverted local clocks are never mixed as timing.
+      const key = chronology ? (interval ? [1, (interval.startMs + interval.endMs) / 2, interval.endMs - interval.startMs] : [3])
+        : sameDayChronologyKey(event);
       const record = { id, day, craft, lat, lon, key };
       const signature = JSON.stringify([day, craft, lat, lon, key]);
       const existing = recordsById.get(id);
@@ -220,7 +226,7 @@
       // A repeated place therefore remains the endpoint of the next remote
       // neighbor without adding a zero-length, undrawable connection.
       if (sameLatitude && (Math.abs(longitudeDifference) < 1e-12 || samePole)) continue;
-      segments.push({
+      const segment = {
         traceId: from.id + "->" + to.id,
         fromEventId: from.id,
         toEventId: to.id,
@@ -233,7 +239,8 @@
         craftType: from.craft,
         sortDateIso: from.day,
         sequenceIndex: segments.length,
-      });
+      };
+      segments.push(timingSupport ? timingSupport.orientSegment(chronology, segment) : segment);
     }
     return segments;
   }

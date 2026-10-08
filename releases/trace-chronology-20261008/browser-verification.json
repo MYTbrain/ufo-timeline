@@ -1,0 +1,322 @@
+{
+  "localUrl": "http://127.0.0.1:8168/whole-site.html#analysis-section-comparisons",
+  "viewport": {
+    "height": 1350,
+    "width": 2400
+  },
+  "evidence": {
+    "status": "ready",
+    "releaseId": "trace-chronology-20261008",
+    "acceptedEventCount": 213364,
+    "evidenceKinds": [
+      "source_exact_clock",
+      "source_exact_clock",
+      "source_exact_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "reviewed_event_clock",
+      "source_exact_clock"
+    ],
+    "zoneCount": 119,
+    "indexBytes": 6827648
+  },
+  "neighborhood": {
+    "build": {
+      "generation": 1,
+      "segmentCount": 14,
+      "eventCount": 22,
+      "durationMs": 1.1
+    },
+    "traversal": {
+      "generation": 1,
+      "depth": 0,
+      "direction": "direct",
+      "reachedTraceCount": 2,
+      "reachedEventCount": 4,
+      "durationMs": 1.9
+    },
+    "selectedEventIds": [
+      "1548188833291382",
+      "1880247488343365"
+    ],
+    "selectedTraceIds": [],
+    "renderedTraceStyles": [
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-outline hop-0",
+        "weight": 7.6,
+        "opacity": 0.28,
+        "rawWeight": 7.6,
+        "rawOpacity": 0.56
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      },
+      {
+        "className": "chronological-neighborhood-segment hop-0 direction-direct",
+        "weight": 5.6,
+        "opacity": 0.48,
+        "rawWeight": 5.6,
+        "rawOpacity": 0.96
+      }
+    ],
+    "visibleEvents": [
+      {
+        "eventId": "1548188833291382",
+        "lat": -17.87,
+        "lon": 31.36,
+        "craftType": {
+          "key": "disc_saucer",
+          "label": "Disc / saucer",
+          "color": "#38bdf8",
+          "unknown": false
+        }
+      },
+      {
+        "eventId": "1880247488343365",
+        "lat": -17.83,
+        "lon": 31.05,
+        "craftType": {
+          "key": "oval_egg",
+          "label": "Oval / egg",
+          "color": "#facc15",
+          "unknown": false
+        }
+      }
+    ],
+    "segments": [
+      {
+        "traceId": "1548188833291382->3448855352240391",
+        "fromEventId": "1548188833291382",
+        "toEventId": "3448855352240391",
+        "from": [
+          -17.87,
+          31.36
+        ],
+        "to": [
+          19.25,
+          -99.59999999999998
+        ],
+        "gapDays": 0,
+        "craftStyle": {
+          "fromKey": "disc_saucer",
+          "fromLabel": "Disc / saucer",
+          "fromColor": "#38bdf8",
+          "toKey": "disc_saucer",
+          "toLabel": "Disc / saucer",
+          "toColor": "#38bdf8",
+          "continuous": true
+        },
+        "neighborhood": {
+          "hop": 0,
+          "hops": [
+            0
+          ],
+          "direction": "direct",
+          "directions": [
+            "direct"
+          ],
+          "roles": [
+            "incident_from_event"
+          ],
+          "seedEventIds": [
+            "1548188833291382"
+          ],
+          "seedTraceIds": [],
+          "regionIds": [
+            "region-1"
+          ],
+          "attributions": [
+            {
+              "hop": 0,
+              "direction": "direct",
+              "role": "incident_from_event",
+              "relation": "outgoing",
+              "seedType": "event",
+              "seedId": "1548188833291382",
+              "regionIds": [
+                "region-1"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "traceId": "1880247488343365->3972295816637808",
+        "fromEventId": "1880247488343365",
+        "toEventId": "3972295816637808",
+        "from": [
+          -17.83,
+          31.05
+        ],
+        "to": [
+          47.07982,
+          -122.05150000000002
+        ],
+        "gapDays": 0,
+        "craftStyle": {
+          "fromKey": "oval_egg",
+          "fromLabel": "Oval / egg",
+          "fromColor": "#facc15",
+          "toKey": "oval_egg",
+          "toLabel": "Oval / egg",
+          "toColor": "#facc15",
+          "continuous": true
+        },
+        "neighborhood": {
+          "hop": 0,
+          "hops": [
+            0
+          ],
+          "direction": "direct",
+          "directions": [
+            "direct"
+          ],
+          "roles": [
+            "incident_from_event"
+          ],
+          "seedEventIds": [
+            "1880247488343365"
+          ],
+          "seedTraceIds": [],
+          "regionIds": [
+            "region-1"
+          ],
+          "attributions": [
+            {
+              "hop": 0,
+              "direction": "direct",
+              "role": "incident_from_event",
+              "relation": "outgoing",
+              "seedType": "event",
+              "seedId": "1880247488343365",
+              "regionIds": [
+                "region-1"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "unresolvedInspector": {
+    "hidden": false,
+    "text": "\n            \n              Report-link timing\n              Close\n            \n            Report order is unresolved because accepted UTC intervals overlap or source-backed timing is missing. The dashed, double-headed arrow is excluded from directional percentages; travel direction and origin are unestablished.Report-link directions1 direction across 1 ordered report linkCompass bearings of straight map connections between report locations. Directions describe chronological report ordering, not reported flight paths. Each ordered link counts once in its displayed chronology direction.1 valid map link has unknown chronological order and is excluded from directional counts and percentages. Double-headed arrows show map connection axes only.Report-link direction distributionNorth: 0 (0%); Northeast: 0 (0%); East: 0 (0%); Southeast: 0 (0%); South: 0 (0%); Southwest: 0 (0%); West: 0 (0%); Northwest: 1 (100%). Each outer spoke marks 100%.NNEESESSWWNWN: 0%NE: 0%E: 0%SE: 0%S: 0%SW: 0%W: 0%NW: 100%Radial scale: 0–100%Direction counts and shares of all 1 ordered link directionsDirectionCountShareN00%NE00%E00%SE00%S00%SW00%W00%NW1100%ConnectionSame calendar date and craft category; report order uncertainMap connection axisEast–West; no travel direction assigned. Excluded from directional percentages.Ordering evidenceOne or both reports lack an accepted source-backed clock and timezone.Source time A1015 · Africa/Harare · Sep 16, 08:15 UTCSource time B1200 · no accepted UTC timeEndpoint ARUWA, ARIEL SCHOOL, Mashona East, ZIM, AF (1548188833291382)Date A9/16/1994Craft type ADisc / saucerEndpoint BMEXICO CITY N, Mexico, MEX, CA (3448855352240391)Date B9/16/1994Craft type BDisc / saucerElapsed timeSame calendar date; elapsed hours and order uncertainDerived distance14860.7 km (great-circle estimate)Hop / ordering0 / Unordered report connectionRegion attributionregion-1Timing evidenceEndpoint A1994-09-16T08:15:00.000Z to 1994-09-16T08:15:59.999Z · Africa/Harare · Explicit source event clock time_raw; structured_single_iana_country; historical IANA rules (high); timezone evidence: structured_jurisdiction_inference_with_historical_iana_rulesEndpoint BNo accepted source-backed clock and timezone.Timing releasetrace-chronology-20261008\n          "
+  },
+  "orderedInspector": {
+    "hidden": false,
+    "text": "\n            \n              Report-link timing\n              Close\n            \n            The arrow follows non-overlapping report-time intervals, from earlier to later. It does not establish travel, origin, or the same craft.Report-link directions1 direction across 1 ordered report linkCompass bearings of straight map connections between report locations. Directions describe chronological report ordering, not reported flight paths. Each ordered link counts once in its displayed chronology direction.1 valid map link has unknown chronological order and is excluded from directional counts and percentages. Double-headed arrows show map connection axes only.Report-link direction distributionNorth: 0 (0%); Northeast: 0 (0%); East: 0 (0%); Southeast: 0 (0%); South: 0 (0%); Southwest: 0 (0%); West: 0 (0%); Northwest: 1 (100%). Each outer spoke marks 100%.NNEESESSWWNWN: 0%NE: 0%E: 0%SE: 0%S: 0%SW: 0%W: 0%NW: 100%Radial scale: 0–100%Direction counts and shares of all 1 ordered link directionsDirectionCountShareN00%NE00%E00%SE00%S00%SW00%W00%NW1100%ConnectionChronologically ordered reports; craft identity and travel are unestablishedMap direction (forward)Northwest (NW), 295° · 1 / 1 directions (100%) in the current selectionOrdering evidenceThe earlier report's latest possible UTC time precedes the later report's earliest possible UTC time.Earlier source time1018 · Africa/Harare · Sep 16, 08:18 UTCLater source time10:00PM · America/Los_Angeles · Sep 17, 05:00 UTCEarlier endpointHARARE RURAL AREA, Mashona East, ZIM, AF (1880247488343365)Earlier date9/16/1994Earlier craft typeOval / eggLater endpointCarbonado, WA, US (3972295816637808)Later date1994-09-16Later craft typeOval / eggElapsed time20.68–20.72 hours between report-time intervalsDerived distance15940.5 km (great-circle estimate)Hop / direction0 / directRegion attributionregion-1Timing evidenceEarlier report1994-09-16T08:18:00.000Z to 1994-09-16T08:18:59.999Z · Africa/Harare · Explicit source event clock time_raw; structured_single_iana_country; historical IANA rules (high); timezone evidence: structured_jurisdiction_inference_with_historical_iana_rulesLater report1994-09-17T05:00:00.000Z to 1994-09-17T05:00:59.999Z · America/Los_Angeles · Explicit source event clock time_raw; structured_uniform_us_state; historical IANA rules (high); timezone evidence: structured_jurisdiction_inference_with_historical_iana_rulesTiming releasetrace-chronology-20261008Hypothetical link speed769.5–770.7 km/h, assuming straight-line travel between these reports. No same-craft identity or travel is established.\n          "
+  }
+}
