@@ -1153,6 +1153,7 @@
     };
     const appendRow = function (section, item, index, inherited) {
       const interval = intervalBounds(item);
+      const encounterCount = /^encounters(?:\.|\[|$)/.test(section);
       const context = exportContext(section, item, inherited);
       const rawRow = firstDefined(item, ["rawRowLabel", "raw_row_label", "row", "rowLabel", "row_label", "focalCraft", "focal_craft"], "");
       const rawColumn = firstDefined(item, ["rawColumnLabel", "raw_column_label", "column", "columnLabel", "column_label", "neighborCraft", "neighbor_craft"], "");
@@ -1181,16 +1182,16 @@
         supported_active_n: firstDefined(item, ["supportedActiveN", "supported_active_n", "supportedCount", "supported_count", "supportedN", "supported_n"], ""),
         supported_reference_n: firstDefined(item, ["supportedReferenceN", "supported_reference_n"], ""),
         common_support_rate: firstDefined(item, ["commonSupportRate", "common_support_rate"], ""),
-        active_share: firstDefined(item, ["activeShare", "active_share", "observedShare", "observed_share"], ""),
+        active_share: firstDefined(item, encounterCount ? ["share", "activeShare", "active_share", "observedShare", "observed_share"] : ["activeShare", "active_share", "observedShare", "observed_share"], ""),
         reference_share: firstDefined(item, ["referenceShare", "reference_share"], ""),
-        adjusted_effect: comparativeEffect(item),
+        adjusted_effect: encounterCount ? "" : comparativeEffect(item),
         interval_lower: interval ? interval.lower : "",
         interval_upper: interval ? interval.upper : "",
         p_value: firstDefined(item, ["pValue", "p_value", "p"], ""),
         q_value: firstDefined(item, ["qValue", "q_value", "q"], ""),
         estimate_available: estimateAvailable(item),
         inference_eligible: inferenceEligible(item),
-        low_support: estimateAvailable(item) && !inferenceEligible(item),
+        low_support: !encounterCount && estimateAvailable(item) && !inferenceEligible(item),
         covariates: firstDefined(item, ["covariates", "adjustmentCovariates", "adjustment_covariates"], []),
         source_stability: firstDefined(item, ["sourceStability", "source_stability"], ""),
         region_stability: firstDefined(item, ["regionStability", "region_stability"], ""),
@@ -4402,7 +4403,7 @@
 
     _renderSeries(chartId, items, summary, options) {
       const config = options || {};
-      const singleSeries = config.singleSeries === true || this.currentAnalysisMode === "whole_corpus_structure";
+      const singleSeries = config.singleSeries === true || (this.currentAnalysisMode === "whole_corpus_structure" && config.multipleMetrics !== true);
       let normalizedSeries = collapseDuplicateReferenceSeries(this._normalizeSeries(items));
       if (singleSeries) {
         normalizedSeries = normalizedSeries.filter(function (item) {
@@ -4682,7 +4683,7 @@
         });
       const container = this._prepareChart(chartId, fullData, summary, config.emptyMessage || "No supported cells are available for this comparison.");
       if (!container) return;
-      const formatValue = config.valueFormat === "percent" ? formatPercent : function (number) { return formatDecimal(number, 2); };
+      const formatValue = config.descriptiveCounts === true ? formatCount : (config.valueFormat === "percent" ? formatPercent : function (number) { return formatDecimal(number, 2); });
       const rows = display.rows;
       const columns = display.columns;
       const axisMetadata = isObject(value) ? firstDefined(value, ["axisMetadata", "axis_metadata", "axes"], {}) : {};
@@ -4751,11 +4752,15 @@
       const descriptiveCount = fullData.filter(function (item) {
         return estimateAvailable(item, config.valueKeys) && !inferenceEligible(item);
       }).length;
-      container.appendChild(this._element("p", "analysis-heatmap-legend", "Blue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support"));
+      container.appendChild(this._element("p", "analysis-heatmap-legend", config.descriptiveCounts
+        ? "Darker teal = more co-reporting records. Counts describe source reports; they do not establish a physical association."
+        : "Blue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support"));
       container.appendChild(this._element(
         "p",
         "analysis-qualification-summary" + (qualifiedCount ? "" : " is-descriptive-only"),
-        qualifiedCount
+        config.descriptiveCounts
+          ? formatCount(fullData.length) + " reported being–craft combinations · each report counts once per combination."
+          : qualifiedCount
           ? formatCount(qualifiedCount) + " inferentially qualified " + (qualifiedCount === 1 ? "cell" : "cells") + " · " + formatCount(descriptiveCount) + " additional descriptive " + (descriptiveCount === 1 ? "estimate" : "estimates")
           : "No cells qualify for inference in this view. " + formatCount(descriptiveCount) + " descriptive " + (descriptiveCount === 1 ? "estimate remains" : "estimates remain") + " visible."
       ));
@@ -4790,6 +4795,14 @@
           if (craftDisplayLabel(row) === "Formation" || craftDisplayLabel(column) === "Formation") cell.classList.add("has-formation-lane");
           const item = lookup.get(row + "\u0000" + column);
           if (!item) {
+            if (config.descriptiveCounts) {
+              const zero = this._element("span", "analysis-heat-cell", "0");
+              zero.style.setProperty("--analysis-heat-percent", "0%");
+              zero.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": zero indexed co-reporting records.");
+              cell.appendChild(zero);
+              tableRow.appendChild(cell);
+              return;
+            }
             const empty = this._element("span", "analysis-heat-cell is-structural-empty" + (diagonal ? " is-diagonal" : ""), diagonal ? "—" : "");
             empty.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + (diagonal ? "same-category diagonal; no estimate available." : "structurally empty or outside the selected display cells."));
             empty.setAttribute("title", diagonal ? "Same-category diagonal · no estimate available" : "Structurally empty");
@@ -4805,26 +4818,26 @@
             if (selectable) mark.type = "button";
             mark.style.setProperty("--analysis-heat-percent", (12 + (Math.min(1, Math.abs(valueNumber) / maximum) * 74)).toFixed(2) + "%");
             if (valueNumber < 0) mark.classList.add("is-negative");
-            if (!qualified) mark.classList.add("is-low-support");
+            if (!qualified && !config.descriptiveCounts) mark.classList.add("is-low-support");
             if (!available) mark.classList.add("is-not-estimable");
             mark.appendChild(this._element("span", "analysis-heat-cell-value", formattedValue));
             const observed = firstDefined(item, ["activeCount", "active_count", "observedCount", "observed_count", "observed", "count"], null);
-            const expected = firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "reference", "expected"], null);
+            const expected = config.descriptiveCounts ? null : firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "reference", "expected"], null);
             const countText = observed == null && expected == null
               ? ""
-              : "O " + formatCount(observed) + (expected == null ? "" : " · E " + formatCount(expected));
+              : (config.descriptiveCounts ? "reports" : "O " + formatCount(observed) + (expected == null ? "" : " · E " + formatCount(expected)));
             if (countText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-counts", countText));
-            const interval = intervalBounds(item);
-            const pValue = firstDefined(item, ["pValue", "p_value", "p"], null);
-            const qValue = firstDefined(item, ["qValue", "q_value", "q"], null);
-            const support = firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate", "supportedN", "supported_n", "contextClusterN", "context_cluster_n"], null);
+            const interval = config.descriptiveCounts ? null : intervalBounds(item);
+            const pValue = config.descriptiveCounts ? null : firstDefined(item, ["pValue", "p_value", "p"], null);
+            const qValue = config.descriptiveCounts ? null : firstDefined(item, ["qValue", "q_value", "q"], null);
+            const support = config.descriptiveCounts ? null : firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate", "supportedN", "supported_n", "contextClusterN", "context_cluster_n"], null);
             const evidenceText = [
               interval ? "95% CI " + formatInterval(interval) : "",
               pValue == null ? "" : "p " + formatDecimal(pValue, 3),
               qValue == null ? "" : "q " + formatDecimal(qValue, 3),
             ].filter(Boolean).join(" · ");
             if (evidenceText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-evidence", evidenceText));
-            const statusText = qualified ? "inferentially qualified" : (reason ? "descriptive estimate; " + reason : "descriptive estimate");
+            const statusText = config.descriptiveCounts ? "source co-report count" : (qualified ? "inferentially qualified" : (reason ? "descriptive estimate; " + reason : "descriptive estimate"));
             const supportText = support == null ? "" : (String(firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate"], "")) !== "" ? "support " + formatPercent(support) : "supported n=" + formatCount(support));
             mark.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + formattedValue + (countText ? "; " + countText : "") + (evidenceText ? "; " + evidenceText : "") + (supportText ? "; " + supportText : "") + ". " + statusText + "." + (selectable ? " Inspect evidence details." : ""));
             mark.setAttribute("title", [rowLabel + " / " + columnLabel + ": " + formattedValue, countText, statusText, evidenceText, supportText].filter(Boolean).join(" · "));
@@ -4848,11 +4861,17 @@
       }
       this._appendLazyDataTable(
         container,
-        (config.caption || "Heatmap") + " complete qualified data",
-        [config.rowHeading || "Group", "Column", "Effect", "Observed n", "Expected/reference n", "95% interval", "p-value", "q-value", "Support", "Status"],
+        (config.caption || "Heatmap") + (config.descriptiveCounts ? " complete report counts" : " complete qualified data"),
+        config.descriptiveCounts
+          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", "Share of eligible co-reports"]
+          : [config.rowHeading || "Group", "Column", "Effect", "Observed n", "Expected/reference n", "95% interval", "p-value", "q-value", "Support", "Status"],
         completeData.map(function (item) {
           const rawRow = cleanText(firstDefined(item, ["row", "rowLabel", "group", "category"], "All"), "All");
           const rawColumn = cleanText(firstDefined(item, ["column", "columnLabel", "period", "month", "year", "label"], "Value"), "Value");
+          if (config.descriptiveCounts) return [
+            formatRowLabel(rawRow), formatColumnLabel(rawColumn), formatCount(firstDefined(item, ["observedCount", "count", "value"], 0)),
+            item.share == null ? "—" : formatPercent(item.share),
+          ];
           return [
             config.preserveRawCompleteLabels ? rawRow : formatRowLabel(rawRow),
             config.preserveRawCompleteLabels ? rawColumn : formatColumnLabel(rawColumn),
@@ -4875,7 +4894,7 @@
       if (peak) {
         const peakRow = formatRowLabel(cleanText(firstDefined(peak, ["row", "rowLabel", "group", "category"], "All")));
         const peakColumn = formatColumnLabel(cleanText(firstDefined(peak, ["column", "columnLabel", "period", "month", "year", "label"], "Value")));
-        container.appendChild(this._element("p", "analysis-chart-summary", "Largest displayed magnitude: " + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + "."));
+        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? "Most co-reported: " : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? " reports)." : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
       }
     }
 
@@ -6286,6 +6305,65 @@
       );
     }
 
+    _renderEncounterEvidence(value, summary) {
+      const data = isObject(value) ? value : {};
+      const ready = data.evidenceReady === true;
+      const statusElement = this.document.getElementById("analysis-encounter-status");
+      const targets = ["analysis-abduction-profile-chart", "analysis-being-profile-chart", "analysis-being-craft-chart",
+        "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-source-chart", "analysis-encounter-coverage-chart"];
+      if (!ready) {
+        const message = "Encounter evidence is loading. Unclassified reports remain unknown until the source index is ready.";
+        if (statusElement) { statusElement.textContent = message; statusElement.setAttribute("data-analysis-state", "loading"); }
+        targets.forEach((target) => this._prepareChart(target, [], summary, message));
+        return;
+      }
+      if (statusElement) {
+        statusElement.textContent = formatCount(data.abductionRows) + " reported abductions · " + formatCount(data.beingRows)
+          + " reports describing beings · " + formatCount(data.catalogRows) + " reports in the current cohort.";
+        statusElement.setAttribute("data-analysis-state", "ready");
+      }
+      this._renderBars("analysis-abduction-profile-chart", firstArray(data, ["abductionProfile"]), summary, {
+        caption: "Abduction evidence classifications", valueLabel: "Reports", hideReference: true,
+      });
+      this._appendChartPolicy("analysis-abduction-profile-chart", "Not classified does not mean an abduction was absent. Ambiguous categories or mentions are separate from source-classified and narrative reports; these are report counts, not unique incidents.");
+      this._renderBars("analysis-being-profile-chart", firstArray(data, ["beingProfile"]).filter(function (row) { return Number(row.count) > 0; }), summary, {
+        caption: "Reported being descriptions", valueLabel: "Reports", hideReference: true,
+        emptyMessage: "No explicit being descriptions are indexed for this cohort. This does not establish that no beings were reported.",
+      });
+      this._appendChartPolicy("analysis-being-profile-chart", "Descriptions retain the source vocabulary. A report may have several descriptions, so category totals can exceed the number of reports describing beings.");
+      const taxonomy = firstArray(this.latestResult || {}, ["encounterTaxonomy"]);
+      const labels = new Map(taxonomy.map(function (item) { return [item.key, item.label]; }));
+      this._renderHeatmap("analysis-being-craft-chart", firstArray(data, ["craftMatrix"]), summary, {
+        caption: "Reported beings and craft co-reports", rowHeading: "Being description", columnHeading: "Craft category",
+        descriptiveCounts: true, inspectable: false, craftColumns: true, valueKeys: ["count", "value"],
+        rowLabelFormatter: function (key) { return labels.get(key) || plainLanguageLabel(key); },
+        emptyMessage: "No indexed being reports have explicit or co-reported craft context in this cohort.",
+      });
+      this._appendChartPolicy("analysis-being-craft-chart", formatCount(data.explicitCraftRows) + " reports explicitly describe beings with craft; "
+        + formatCount(data.coReportedCraftRows) + " co-report beings and craft. Counts do not infer a physical relationship. Each report counts once per being–craft combination; multi-label totals may exceed "
+        + formatCount(data.craftAssociatedRows) + " eligible co-reporting records.");
+      this._renderBars("analysis-abduction-craft-chart", firstArray(data, ["abductionCraft"]), summary, {
+        caption: "Craft categories in reported abductions", valueLabel: "Reports", labelKind: "craft", hideReference: true,
+        emptyMessage: "No source-classified or narrative abduction reports are indexed for this cohort.",
+      });
+      this._renderSeries("analysis-encounter-time-chart", firstArray(data, ["annualActivity"]), summary, {
+        caption: "Reported abductions and being descriptions by year", axisKind: "year", multipleMetrics: true,
+        ariaLabel: "Annual report counts for abduction reports and reports describing beings",
+        emptyMessage: "No encounter reports have a supported reporting year in this cohort.",
+      });
+      this._appendChartPolicy("analysis-encounter-time-chart", "The two lines overlap when a report contains both kinds of evidence. "
+        + formatCount(data.undatedAbductionRows) + " abduction reports and " + formatCount(data.undatedBeingRows)
+        + " being reports lack a supported single year and remain in profile totals. Volume reflects collection coverage, not incidence.");
+      this._renderFieldCoverage("analysis-encounter-coverage-chart", firstArray(data, ["coverage"]), summary, { caption: "Encounter classification coverage" });
+      this._renderFieldCoverage("analysis-encounter-source-chart", firstArray(data, ["sourceCoverage"]), summary, { caption: "Encounter evidence by source collection" });
+      const sourceChart = this.document.getElementById("analysis-encounter-source-chart");
+      if (sourceChart) this._appendDataTable(sourceChart, "Source collection encounter counts", ["Collection", "All reports", "Indexed encounters", "Abduction reports", "Ambiguous abduction categories/mentions", "Being reports"],
+        firstArray(data, ["sourceCoverage"]).map(function (row) {
+          return [row.source, formatCount(row.total), formatCount(row.evidence), formatCount(row.abduction), formatCount(row.ambiguous), formatCount(row.beings)];
+        }));
+      this._appendChartPolicy("analysis-encounter-source-chart", "Source collections can overlap; underlying source independence and incident deduplication are not established by these counts.");
+    }
+
     _renderDurationEvidence(value, summary) {
       const duration = isObject(value) ? value : {};
       const status = cleanText(firstDefined(duration, ["status", "readinessStatus", "readiness_status"], "data_unavailable"));
@@ -6611,6 +6689,7 @@
       const overview = isObject(result.overview) ? result.overview : {};
       const time = isObject(result.time) ? result.time : {};
       const craft = isObject(result.craft) ? result.craft : {};
+      const encounters = isObject(result.encounters) ? result.encounters : {};
       const geography = isObject(result.geography) ? result.geography : {};
       const sourcesQuality = isObject(result.sourcesQuality) ? result.sourcesQuality : {};
       const sources = isObject(result.sources) ? result.sources : {};
@@ -6651,6 +6730,7 @@
         monthYear: firstDefined(time, ["monthByCraft", "month_by_craft", "monthYear", "monthly", "monthByYear"], []),
         craftDistribution: firstArray(craft, ["mosaic", "distribution", "ranked", "categories", "adjustedEffects", "adjusted_effects"]),
         color: firstDefined(craft, ["color", "colorAssessment", "color_assessment"], {}),
+        encounters,
         reportTypes: firstArray(craft, ["reportTypes", "reportedTypes", "types"]),
         craftConfidence: firstArray(craft, ["confidence", "classificationConfidence", "craftConfidence"]),
         craftEra: firstDefined(craft, ["byEra", "by_era", "eraHeatmap", "era_heatmap"], firstDefined(craft, ["trends", "byTime"], [])),
@@ -6813,6 +6893,7 @@
       const overviewJobs = [];
       const timeJobs = [];
       const craftJobs = [];
+      const encounterJobs = [];
       const geographyJobs = [];
       const spatialJobs = [];
       const sourcesQualityJobs = [];
@@ -6820,6 +6901,7 @@
       const cropContextJobs = [];
       const animalContextJobs = [];
       const relationshipContextJobs = [];
+      encounterJobs.push(() => this._renderEncounterEvidence(data.encounters, summary));
       overviewJobs.push(() => this._renderEligibilityFunnel("analysis-coverage-chart", data.overviewCoverage, summary, { caption: "Analysis eligibility funnel", limit: 8 }));
       overviewJobs.push(() => this._renderCoverageOrbit("analysis-overview-coverage-visual", data.overviewCoverage, summary));
       overviewJobs.push(() => this._renderCraftMosaic("analysis-overview-craft-mosaic", data.craftDistribution, summary, { caption: "Overview craft composition", defaultKind: "filter", limit: 9 }));
@@ -6971,6 +7053,7 @@
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-color-chart", "analysis-color-comparison-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
+        ["analysis-section-encounters", { jobs: encounterJobs, targets: ["analysis-abduction-profile-chart", "analysis-being-profile-chart", "analysis-being-craft-chart", "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-source-chart", "analysis-encounter-coverage-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
         ["analysis-section-crops", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-craft-context-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],

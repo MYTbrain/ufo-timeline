@@ -137,5 +137,9 @@
   "traceChronologyEvidenceUrl": "./data/trace_chronology/evidence.json.gz",
   "traceChronologyEvidenceGzipSha256": "b720163bf83c96bc0bcf0997dbc268063b07c25e0c6fc48d821544040b14e3f8",
   "traceChronologyEvidenceSha256": "74b139c56fd7ece8ba0d3b006669ee70f8683e055321ac17f7f47774ca66cf24",
-  "traceChronologyEvidenceRowCount": 425214
+  "traceChronologyEvidenceRowCount": 425214,
+  "encounterEvidence": {
+    "enabled": true,
+    "manifestUrl": "./data/encounters/manifest.json"
+  }
 }

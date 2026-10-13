@@ -5,13 +5,33 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-08-trace-chronology-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounters-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
 
   let chunks = [];
   let rowCount = 0;
+  let encounterEvidenceReady = false;
+  let encounterApi = self.UFOEncounterEvidence || null;
+
+  function ensureEncounterApi() {
+    if (!encounterApi && typeof importScripts === "function") {
+      importScripts("./encounter_evidence.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
+      encounterApi = self.UFOEncounterEvidence || null;
+    }
+    return encounterApi;
+  }
+
+  function encounterMatches(values, filters) {
+    const selection = filters && filters.encounters || {};
+    const active = (selection.abduction && selection.abduction !== "any") ||
+      (selection.being && selection.being !== "any") ||
+      (Array.isArray(selection.beingTypes) && selection.beingTypes.length);
+    if (!active) return true;
+    const api = ensureEncounterApi();
+    return Boolean(api && api.matches(values, selection));
+  }
   let typedStorageBytes = 0;
   let dictionaries = createDictionaries();
   let eventIdStrings = createDictionary();
@@ -444,8 +464,15 @@
 
   function compactRows(nextRows) {
     const length = nextRows.length;
+    const batchEncounterReady = nextRows.every(function (row) { return row && row.encounterEvidenceReady === true; });
+    encounterEvidenceReady = rowCount ? encounterEvidenceReady && batchEncounterReady : batchEncounterReady;
+    if (batchEncounterReady) ensureEncounterApi();
     const chunk = {
       length,
+      encounterReadyStates: new Uint8Array(length),
+      encounterAbductionCodes: new Uint8Array(length),
+      encounterBeingMasks: new Uint32Array(length),
+      encounterCraftAssociationCodes: new Uint8Array(length),
       eventIds: new Float64Array(length),
       eventIdStringCodes: new Uint32Array(length),
       sourceCodes: new Uint16Array(length),
@@ -524,6 +551,10 @@
 
     for (let index = 0; index < length; index += 1) {
       const row = nextRows[index] || {};
+      chunk.encounterReadyStates[index] = row.encounterEvidenceReady === true ? 1 : 0;
+      chunk.encounterAbductionCodes[index] = Number(row.encounterAbductionCode) || 0;
+      chunk.encounterBeingMasks[index] = Number(row.encounterBeingMask) || 0;
+      chunk.encounterCraftAssociationCodes[index] = Number(row.encounterCraftAssociationCode) || 0;
       const rawEventId = row.eventId;
       if (typeof rawEventId === "number" && Number.isSafeInteger(rawEventId)) {
         chunk.eventIds[index] = rawEventId;
@@ -591,6 +622,8 @@
     }
 
     typedStorageBytes +=
+      chunk.encounterReadyStates.byteLength + chunk.encounterAbductionCodes.byteLength +
+      chunk.encounterBeingMasks.byteLength + chunk.encounterCraftAssociationCodes.byteLength +
       chunk.eventIds.byteLength +
       chunk.eventIdStringCodes.byteLength +
       chunk.sourceCodes.byteLength +
@@ -724,6 +757,7 @@
       selectedLegendEventKeys: Array.isArray(source.selectedLegendEventKeys) ? source.selectedLegendEventKeys : [],
       hideLowPrecision: Boolean(source.hideLowPrecision),
       hideNonExactDates: Boolean(source.hideNonExactDates),
+      encounters: source.encounters || { abduction: "any", being: "any", beingTypes: [] },
     };
   }
 
@@ -739,6 +773,7 @@
   }
 
   function eventMatchesNonDateFilters(values, filters, keywordIds, lowPrecisionValues) {
+    if (!encounterMatches(values, filters)) return false;
     const keywordActive = Boolean(filters.keyword) || Boolean(keywordIds);
     if (keywordActive && keywordIds && !keywordIds.has(String(values.eventId))) {
       return false;
@@ -783,6 +818,10 @@
   }
 
   function readRowValuesInto(values, chunk, index) {
+    values.encounterEvidenceReady = chunk.encounterReadyStates[index] === 1;
+    values.encounterAbductionCode = chunk.encounterAbductionCodes[index];
+    values.encounterBeingMask = chunk.encounterBeingMasks[index];
+    values.encounterCraftAssociationCode = chunk.encounterCraftAssociationCodes[index];
     values.eventId = eventIdAt(chunk, index);
     values.source = dictionaryValue(dictionaries.source, chunk.sourceCodes[index]);
     values.type = dictionaryValue(dictionaries.type, chunk.typeCodes[index]);
@@ -1253,6 +1292,7 @@
       // commit. A late dedicated Spatial result must retain its earlier input
       // identity instead of replacing a result with newly loaded evidence.
       projectionReadiness: {
+        encounters: encounterEvidenceReady,
         crops: Boolean(analysisContext.cropCircles),
         animals: Boolean(analysisContext.animalReports),
         spatial: Boolean(analysisSpatialArtifacts.loaded),
@@ -1939,6 +1979,7 @@
       fullTimeRange: Boolean(message.fullTimeRange),
       datasetHash: message.datasetHash,
       selectedDomains,
+      encounterEvidenceReady,
       contextLayers: message.contextLayers || {},
       contextReleaseHashes: normalizedHashObject(message.contextReleaseHashes),
       artifactHashes: Object.assign(
@@ -4487,6 +4528,7 @@
   function resetRows() {
     chunks = [];
     rowCount = 0;
+    encounterEvidenceReady = false;
     typedStorageBytes = 0;
     dictionaries = createDictionaries();
     eventIdStrings = createDictionary();

@@ -3,7 +3,7 @@
   "use strict";
   const byId = (id) => document.getElementById(id);
   const topicGroups = [
-    ["Reporting patterns", ["overview", "time", "craft", "geography", "spatial"]],
+    ["Reporting patterns", ["overview", "time", "craft", "encounters", "geography", "spatial"]],
     ["Context catalogs", ["crops", "animals", "facilities", "comparisons"]],
     ["Evidence & quality", ["context", "sources-quality"]],
   ];

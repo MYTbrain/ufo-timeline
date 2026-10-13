@@ -21,6 +21,7 @@
   }
   const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
   const TRACE_CHRONOLOGY = window.UfoTraceChronology;
+  const ENCOUNTERS = window.UFOEncounterEvidence;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
@@ -1139,6 +1140,11 @@
     traceChronologyEvidencePromise: null,
     traceChronologyEvidenceUrl: "",
     traceChronologyStatus: "not_loaded",
+    encounterEvidence: null,
+    encounterEvidencePromise: null,
+    encounterManifest: null,
+    encounterStatus: "not_loaded",
+    encounterError: "",
     traceChronologyError: "",
     claimedUfoBaseSitesLayer: null,
     claimedUfoBaseTraceLayer: null,
@@ -9359,7 +9365,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-08-trace-chronology-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounters-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9421,6 +9427,10 @@
       country: event.country || "unknown",
       adminRegion: event.state_province || event.admin_region || "unknown",
       duplicateLineage: event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || "",
+      encounterEvidenceReady: Boolean(event.encounterEvidenceReady),
+      encounterAbductionCode: Number(event.encounterAbductionCode) || 0,
+      encounterBeingMask: Number(event.encounterBeingMask) || 0,
+      encounterCraftAssociationCode: Number(event.encounterCraftAssociationCode) || 0,
       mapped: Boolean(event.has_coordinates),
       lat: nullableCatalogNumber(event.lat),
       lon: nullableCatalogNumber(event.lon),
@@ -9547,6 +9557,7 @@
         selectedLegendEventKeys: Array.from(filters.selectedLegendEventKeys).sort(),
         hideLowPrecision: filters.hideLowPrecision,
         hideNonExactDates: filters.hideNonExactDates,
+        encounters: filters.encounters,
       },
       areaFilter: {
         active: regionSelectionHasActiveShapes() || Boolean(state.analysisCountryAreaFilter),
@@ -11387,6 +11398,8 @@
       colorReady: Boolean(runtime.analysisColorWorkerReady),
       colorHashes: analysisColorArtifactHashes(runtime.analysisColorManifest),
       coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
+      encounterEvidenceReady: runtime.encounterStatus === "ready",
+      encounterEvidenceHash: runtime.encounterManifest && runtime.encounterManifest.sha256,
       coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
       coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
       relationshipRequested: Boolean(runtime.analysisRelationshipRequested),
@@ -11736,8 +11749,8 @@
         selectedDomains: (Array.isArray(options.selectedDomains)
           ? options.selectedDomains.slice()
           : (runtime.analysisSpatialRequested
-            ? ["overview", "time", "craft", "geography", "spatial", "sources_quality", "context"]
-            : ["overview", "time", "craft", "geography", "sources_quality", "context"]))
+            ? ["overview", "time", "craft", "encounters", "geography", "spatial", "sources_quality", "context"]
+            : ["overview", "time", "craft", "encounters", "geography", "sources_quality", "context"]))
           .concat(runtime.analysisComparisonsRequested ? ["comparisons"] : []),
         spatialPermutationCount: 499,
         spatialBootstrapCount: 199,
@@ -11915,7 +11928,7 @@
     const scheduledGeneration = runtime.analysisComputeScheduleGeneration;
     return computeAnalysisViaWorker(snapshot, {
       quickMode: true,
-      selectedDomains: ["overview", "time", "sources_quality", "context"],
+      selectedDomains: ["overview", "time", "sources_quality", "context", "encounters"],
     }).then(function (quickMessage) {
       if (!quickMessage) return null;
       renderAnalysisWorkerResult(quickMessage, cacheKey, quickStartedAt, { cacheResult: false });
@@ -12009,6 +12022,7 @@
       selectedLegendEventKeys: Array.from(filters.selectedLegendEventKeys),
       hideLowPrecision: Boolean(filters.hideLowPrecision),
       hideNonExactDates: Boolean(filters.hideNonExactDates),
+      encounters: filters.encounters,
       keywordActive: Boolean(filters.keyword),
       keywordEventIds: keywordMatches ? Array.from(keywordMatches).map(String) : null,
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
@@ -19119,6 +19133,85 @@
     return runtime.traceChronologyEvidencePromise;
   }
 
+  function encounterFilterSelections() {
+    const abduction = document.getElementById("encounter-abduction-filter");
+    const being = document.getElementById("encounter-being-filter");
+    const types = Array.from(document.querySelectorAll("[data-encounter-being]:checked"))
+      .map(function (input) { return input.value; });
+    return { abduction: abduction ? abduction.value : "any", being: being ? being.value : "any", beingTypes: types };
+  }
+
+  function getEncounterSnapshot() {
+    return runtime.encounterEvidence ? runtime.encounterEvidence.snapshot() : {
+      status: runtime.encounterStatus, reason: runtime.encounterError,
+    };
+  }
+
+  function renderEncounterControls() {
+    const panel = document.getElementById("encounter-filter-panel");
+    if (!panel) return;
+    const ready = runtime.encounterStatus === "ready";
+    panel.querySelectorAll("select, input, button").forEach(function (control) { control.disabled = !ready; });
+    const types = document.getElementById("encounter-being-types");
+    if (ready && types && !types.children.length) {
+      let priorGroup = "";
+      types.innerHTML = runtime.encounterEvidence.taxonomy.map(function (type) {
+        const heading = type.group !== priorGroup ? '<strong class="encounter-type-group">' + escapeHtml(type.group) + '</strong>' : "";
+        priorGroup = type.group;
+        return heading + '<label class="encounter-being-option"><input type="checkbox" data-encounter-being value="' +
+          escapeHtml(type.key) + '"><span>' + escapeHtml(type.label) + '</span></label>';
+      }).join("");
+    }
+    const status = document.getElementById("encounter-filter-status");
+    if (status) status.textContent = ready
+      ? "Source classifications and guarded report text. Unindexed does not mean no encounter. Other filters still apply."
+      : runtime.encounterStatus === "loading" ? "Loading encounter evidence…"
+        : "Encounter evidence unavailable. Ordinary map exploration remains available.";
+  }
+
+  function loadEncounterEvidence() {
+    if (runtime.encounterEvidencePromise) return runtime.encounterEvidencePromise;
+    const config = runtime.appConfig && runtime.appConfig.encounterEvidence;
+    if (!ENCOUNTERS || !config || !config.enabled) {
+      runtime.encounterStatus = "unavailable";
+      renderEncounterControls();
+      return Promise.resolve(null);
+    }
+    runtime.encounterStatus = "loading";
+    runtime.encounterEvidencePromise = fetchJson(config.manifestUrl, "Encounter evidence manifest")
+      .then(function (manifest) {
+        if (manifest.schemaId !== ENCOUNTERS.SCHEMA_ID || manifest.catalogCount !== 702893) {
+          throw new Error("Encounter manifest does not match this catalog.");
+        }
+        const artifact = manifest.artifact || manifest;
+        if (artifact.rowCount !== manifest.rowCount || !artifact.gzipSha256 || !artifact.sha256) {
+          throw new Error("Encounter delivery pins are incomplete.");
+        }
+        runtime.encounterManifest = Object.assign({}, manifest, { sha256: artifact.sha256 });
+        const url = new URL(artifact.file || "evidence.json.gz", new URL(config.manifestUrl, document.baseURI));
+        if (APP_SHELL_RELEASE_TOKEN) url.searchParams.set("v", APP_SHELL_RELEASE_TOKEN);
+        return fetch(url.toString(), { credentials: "same-origin" }).then(function (response) {
+          if (!response.ok) throw new Error("Encounter evidence request failed (" + response.status + ").");
+          return ENCOUNTERS.decodeEvidenceResponse(response, artifact);
+        });
+      }).then(function (payload) {
+        const index = ENCOUNTERS.createIndex(payload);
+        runtime.encounterEvidence = index;
+        runtime.encounterStatus = "ready";
+        runtime.encounterError = "";
+        renderEncounterControls();
+        return index;
+      }).catch(function (error) {
+        runtime.encounterEvidence = null;
+        runtime.encounterStatus = "unavailable";
+        runtime.encounterError = error.message || String(error);
+        renderEncounterControls();
+        console.warn("[encounters] Source evidence unavailable.", runtime.encounterError);
+        return null;
+      });
+    return runtime.encounterEvidencePromise;
+  }
+
   function applyTraceChronology(segment, fromEvent, toEvent) {
     const from = getCatalogEventById(segment.fromEventId) || fromEvent;
     const to = getCatalogEventById(segment.toEventId) || toEvent;
@@ -23982,6 +24075,7 @@
   }
 
   function eventMatchesNonDateFilters(event, filters, keywordMatches) {
+    if (ENCOUNTERS && !ENCOUNTERS.matches(event, filters.encounters)) return false;
     if (filters.keyword && keywordMatches && !keywordMatches.has(event.event_id)) {
       return false;
     }
@@ -24148,6 +24242,7 @@
       selectedLegendEventKeys: new Set(legendEventSelection.selectedKeys),
       hideLowPrecision: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
       hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
+      encounters: encounterFilterSelections(),
     };
   }
 
@@ -24155,6 +24250,7 @@
     const filters = currentFilterSelections();
     return {
       keywordMatches: keywordMatches || null,
+      encounters: filters.encounters,
       keywordActive: Boolean(filters.keyword),
       sourceMode: filters.sourceMode,
       typeMode: filters.typeMode,
@@ -24176,6 +24272,7 @@
   }
 
   function accumulateFacetCountsForEvent(context, event) {
+    if (ENCOUNTERS && !ENCOUNTERS.matches(event, context.encounters)) return;
     if (!eventMatchesTimeRange(event)) return;
     if (context.keywordActive && context.keywordMatches && !context.keywordMatches.has(event.event_id)) {
       return;
@@ -24945,7 +25042,8 @@
         '<button class="result-card-button" type="button" data-event-id="' + escapeHtml(event.event_id) + '">' +
         '<div class="result-card-head"><span class="result-date">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</span></div>" +
         (caseLabel ? '<span class="result-case-membership">' + caseLabel + '</span>' : '') +
-        '<div class="result-badges">' + mappedBadge + precisionBadge + "</div>" +
+        '<div class="result-badges">' + mappedBadge + precisionBadge +
+        (ENCOUNTERS ? ENCOUNTERS.renderBadges(event, runtime.encounterEvidence) : "") + "</div>" +
         '<div class="result-location">' + summary + "</div>" +
         '<div class="result-meta">' + escapeHtml(event.source || "Unknown source") + " | " + escapeHtml(event.type || "Unknown type") + "</div>" +
         "</button>" +
@@ -25289,6 +25387,7 @@
         return '<div class="detail-row"><span class="detail-label">' + escapeHtml(row[0]) + '</span><span class="detail-value">' + escapeHtml(row[1] == null ? "" : row[1]) + "</span></div>";
       }).join("") +
       "</div>" +
+      (ENCOUNTERS ? ENCOUNTERS.renderEvidence(event, runtime.encounterEvidence) : "") +
       '<section class="detail-block"><h4>Description</h4><pre class="detail-pre">' + escapeHtml(event.description || "") + "</pre></section>" +
       '<section class="detail-block"><h4>References</h4>' + formatList(event.references || []) + "</section>" +
       '<section class="detail-block"><h4>Links</h4>' + renderLinkList(event) + "</section>" +
@@ -28198,6 +28297,7 @@
   function hydrateCatalogEvent(event) {
     event = applyLocationLabelOverlay(event);
     event = compactCanonicalSummaryEventForRuntime(event);
+    if (ENCOUNTERS) event = ENCOUNTERS.decorate(event, runtime.encounterEvidence);
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
     event.location_precision = event.location_precision || "unknown";
     event.visual_type_group = event.visual_type_group || getVisualTypeGroup(event.type);
@@ -29844,6 +29944,11 @@
     applyMultiSelectAction("source", "all");
     applyMultiSelectAction("precision", "all");
     applyMultiSelectAction("type", "craft_only");
+    const encounterAbduction = document.getElementById("encounter-abduction-filter");
+    const encounterBeing = document.getElementById("encounter-being-filter");
+    if (encounterAbduction) encounterAbduction.value = "any";
+    if (encounterBeing) encounterBeing.value = "any";
+    document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
     renderAllMultiSelectStates();
   }
 
@@ -30368,7 +30473,23 @@
   function attachEventHandlers() {
     if (runtime.eventHandlersAttached) return;
     runtime.eventHandlersAttached = true;
-
+    const encounterPanel = document.getElementById("encounter-filter-panel");
+    if (encounterPanel) encounterPanel.addEventListener("change", function () {
+      resetPlayback({ preserveSelection: true });
+      scheduleRefresh({ immediate: true });
+    });
+    const clearEncounterFilters = document.getElementById("clear-encounter-filters");
+    if (clearEncounterFilters) clearEncounterFilters.addEventListener("click", function () {
+      document.getElementById("encounter-abduction-filter").value = "any";
+      document.getElementById("encounter-being-filter").value = "any";
+      document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
+      scheduleRefresh({ immediate: true });
+    });
+    const includeEncounterReportTypes = document.getElementById("encounter-include-all-types");
+    if (includeEncounterReportTypes) includeEncounterReportTypes.addEventListener("click", function () {
+      applyMultiSelectAction("type", "all");
+      scheduleRefresh({ immediate: true });
+    });
     window.addEventListener("ufo:crop-circle-statechange", function (event) {
       const detail = event && event.detail ? event.detail : {};
       const priorEnabled = runtime.analysisContextEnabledState.crops;
@@ -32002,6 +32123,7 @@
     await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
     await measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime);
     await measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence);
+    await measureStartupStep("reported encounter evidence load", loadEncounterEvidence);
 
     await measureStartupStep("location label overlay load", function () {
       return loadLocationLabelOverlayRuntime();
@@ -32798,6 +32920,7 @@
 
   window.__UFO_TIMELINE_DEBUG__ = {
     getTraceChronologySnapshot: getTraceChronologySnapshot,
+    getEncounterSnapshot: getEncounterSnapshot,
     getMapWorldConstraintSnapshot: function () {
       if (!runtime.map) return null;
       const viewport = runtime.map.getPixelBounds();

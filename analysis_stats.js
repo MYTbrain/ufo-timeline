@@ -13,6 +13,18 @@
 
   const SCHEMA_VERSION = 2;
   const ESTIMATOR_VERSION = "analysis_v2_8_color_assessment_1";
+  const ENCOUNTER_TAXONOMY = Object.freeze([
+    ["grey", "Grey"], ["nordic", "Nordic"], ["reptilian", "Reptilian"],
+    ["mantis_like", "Mantis-like"], ["insectoid", "Insectoid"], ["human_like", "Human-like"],
+    ["humanoid", "Humanoid"], ["small_humanoid", "Small humanoid"], ["tall_humanoid", "Tall humanoid"],
+    ["giant", "Giant"], ["hairy", "Hairy"], ["robotic", "Robotic"],
+    ["luminous", "Luminous"], ["animal_like", "Animal-like"], ["men_in_black", "Men in black"],
+    ["apparition", "Apparition"], ["mixed", "Mixed types"], ["other_described", "Other described being"],
+    ["unspecified", "Unspecified being"],
+  ].map(function (entry) { return Object.freeze({ key: entry[0], label: entry[1] }); }));
+  const ENCOUNTER_ABDUCTION_LABELS = Object.freeze([
+    "No indexed abduction evidence", "Abduction reported · source classification", "Abduction reported · narrative", "Abduction category or mention · unclear",
+  ]);
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -2024,6 +2036,12 @@
       coordinateEvidenceHighLatitudeRows: 0,
       coordinateEvidenceDatelineRows: 0,
       coordinateEvidenceDuplicateLineageRows: 0,
+      encounters: {
+        abduction: [0, 0, 0, 0], beingCounts: new Uint32Array(ENCOUNTER_TAXONOMY.length),
+        evidenceRows: 0, beingRows: 0, craftAssociatedRows: 0, explicitCraftRows: 0,
+        coReportedCraftRows: 0, undatedAbductionRows: 0, undatedBeingRows: 0,
+        craftMatrix: new Map(), abductionCrafts: new Map(), annual: new Map(), sources: new Map(),
+      },
     };
     accumulator.familyCounts = {
       craft: accumulator.crafts,
@@ -2041,6 +2059,114 @@
   function addMatrixCount(map, rowKey, columnKey) {
     const key = rowKey + "\u0000" + columnKey;
     incrementRaw(map, key, 1);
+  }
+
+  function addEncounterRow(accumulator, row, source, civil) {
+    const evidence = accumulator.encounters;
+    const rawAbduction = Number(row.encounterAbductionCode);
+    const abduction = Number.isInteger(rawAbduction) && rawAbduction >= 0 && rawAbduction <= 3 ? rawAbduction : 0;
+    const rawMask = Number(row.encounterBeingMask);
+    const mask = Number.isInteger(rawMask) && rawMask >= 0 && rawMask < Math.pow(2, ENCOUNTER_TAXONOMY.length) ? rawMask : 0;
+    const association = Number(row.encounterCraftAssociationCode);
+    const reportedAbduction = abduction === 1 || abduction === 2;
+    const hasBeing = mask !== 0;
+    const hasEvidence = abduction !== 0 || hasBeing;
+    evidence.abduction[abduction] += 1;
+    if (hasEvidence) evidence.evidenceRows += 1;
+    if (hasBeing) evidence.beingRows += 1;
+    let sourceCoverage = evidence.sources.get(source);
+    if (!sourceCoverage) {
+      sourceCoverage = { total: 0, evidence: 0, abduction: 0, ambiguous: 0, beings: 0 };
+      evidence.sources.set(source, sourceCoverage);
+    }
+    sourceCoverage.total += 1;
+    if (hasEvidence) sourceCoverage.evidence += 1;
+    if (reportedAbduction) sourceCoverage.abduction += 1;
+    if (abduction === 3) sourceCoverage.ambiguous += 1;
+    if (hasBeing) sourceCoverage.beings += 1;
+    const craft = category(row.craftType, "unknown");
+    if (reportedAbduction) incrementRaw(evidence.abductionCrafts, craft, 1);
+    if (!hasEvidence) return;
+    const craftAssociation = hasBeing && (association === 1 || association === 2);
+    if (craftAssociation) {
+      evidence.craftAssociatedRows += 1;
+      if (association === 1) evidence.explicitCraftRows += 1;
+      else evidence.coReportedCraftRows += 1;
+    }
+    if (hasBeing) ENCOUNTER_TAXONOMY.forEach(function (type, index) {
+      if (!(mask & Math.pow(2, index))) return;
+      evidence.beingCounts[index] += 1;
+      if (craftAssociation) addMatrixCount(evidence.craftMatrix, type.key, craft);
+    });
+    const intervalStart = civilFromOrdinal(finiteInteger(row.dateStartOrdinal));
+    const intervalEnd = civilFromOrdinal(finiteInteger(row.dateEndOrdinal));
+    const spansYears = intervalStart && intervalEnd && intervalStart.year !== intervalEnd.year;
+    const unsupportedYearPrecision = ["decade", "century", "unknown"].indexOf(category(row.datePrecision, "unknown")) !== -1;
+    if (!civil || !Number.isInteger(civil.year) || spansYears || unsupportedYearPrecision) {
+      if (reportedAbduction) evidence.undatedAbductionRows += 1;
+      if (hasBeing) evidence.undatedBeingRows += 1;
+      return;
+    }
+    const year = String(civil.year);
+    let activity = evidence.annual.get(year);
+    if (!activity) {
+      activity = { abduction: 0, beings: 0, ambiguous: 0 };
+      evidence.annual.set(year, activity);
+    }
+    if (reportedAbduction) activity.abduction += 1;
+    if (hasBeing) activity.beings += 1;
+    if (abduction === 3) activity.ambiguous += 1;
+  }
+
+  function buildEncounterAssessment(active, ready) {
+    const evidence = active.encounters;
+    const countRow = function (label, count, total) {
+      return { label, value: count, count, observedCount: count, share: total ? count / total : null,
+        total, estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
+    };
+    if (!ready) return { status: "loading", evidenceReady: false, abductionProfile: [], beingProfile: [],
+      craftMatrix: [], abductionCraft: [], annualActivity: [], sourceCoverage: [], coverage: [] };
+    const annual = Array.from(evidence.annual.entries()).sort(function (left, right) { return Number(left[0]) - Number(right[0]); });
+    const series = [
+      { label: "Abduction reports", field: "abduction" },
+      { label: "Reports describing beings", field: "beings" },
+    ].map(function (metric) {
+      return { label: metric.label, points: annual.map(function (entry) {
+        return { label: entry[0], year: Number(entry[0]), value: entry[1][metric.field], count: entry[1][metric.field] };
+      }) };
+    });
+    const sourceCoverage = Array.from(evidence.sources.entries()).sort(function (left, right) {
+      return right[1].evidence - left[1].evidence || left[0].localeCompare(right[0]);
+    }).map(function (entry) {
+      return Object.assign({ source: entry[0], label: entry[0], count: entry[1].evidence, total: entry[1].total }, entry[1]);
+    });
+    return {
+      status: "ready", evidenceReady: true, catalogRows: active.total, evidenceRows: evidence.evidenceRows,
+      abductionRows: evidence.abduction[1] + evidence.abduction[2], ambiguousAbductionRows: evidence.abduction[3],
+      beingRows: evidence.beingRows, craftAssociatedRows: evidence.craftAssociatedRows,
+      explicitCraftRows: evidence.explicitCraftRows, coReportedCraftRows: evidence.coReportedCraftRows,
+      undatedAbductionRows: evidence.undatedAbductionRows, undatedBeingRows: evidence.undatedBeingRows,
+      abductionProfile: ENCOUNTER_ABDUCTION_LABELS.map(function (label, code) { return countRow(label, evidence.abduction[code], active.total); }),
+      beingProfile: ENCOUNTER_TAXONOMY.map(function (type, index) {
+        return Object.assign(countRow(type.label, evidence.beingCounts[index], evidence.beingRows), { key: type.key });
+      }),
+      abductionCraft: Array.from(evidence.abductionCrafts.entries()).sort(function (left, right) { return right[1] - left[1]; })
+        .map(function (entry) { return countRow(entry[0], entry[1], evidence.abduction[1] + evidence.abduction[2]); }),
+      craftMatrix: Array.from(evidence.craftMatrix.entries()).map(function (entry) {
+        const keys = entry[0].split("\u0000");
+        return Object.assign(countRow(keys[0], entry[1], evidence.craftAssociatedRows), {
+          row: keys[0], column: keys[1], value: entry[1], relation: "source_co_report", reportDenominator: evidence.craftAssociatedRows,
+        });
+      }),
+      annualActivity: annual.length ? series : [], sourceCoverage,
+      coverage: [
+        { label: "Indexed encounter evidence", count: evidence.evidenceRows, total: active.total },
+        { label: "Reported abductions", count: evidence.abduction[1] + evidence.abduction[2], total: active.total },
+        { label: "Reports describing beings", count: evidence.beingRows, total: active.total },
+        { label: "Being and craft co-reports", count: evidence.craftAssociatedRows, total: evidence.beingRows },
+      ],
+      policy: "Source-reported descriptions, not verified events or physical associations. Unclassified records are not negative reports; multi-label being counts can exceed the report denominator.",
+    };
   }
 
   function addRow(accumulator, row) {
@@ -2311,6 +2437,7 @@
     addWitnessCountRow(accumulator, row, source);
     addColorRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
+    addEncounterRow(accumulator, row, source, civil);
   }
 
   // The staged first render needs coverage, time, source, and quality summaries only.
@@ -2393,6 +2520,7 @@
     addWitnessCountRow(accumulator, row, source);
     addColorRow(accumulator, row, source, civil);
     addCoordinateEvidenceRow(accumulator, row, source, civil);
+    addEncounterRow(accumulator, row, source, civil);
     if (!civil) {
       incrementRaw(accumulator.months, "unknown", 1);
       return;
@@ -6871,6 +6999,9 @@
       },
       time,
       craft,
+      encounterEvidenceReady: options.encounterEvidenceReady === true,
+      encounterTaxonomy: ENCOUNTER_TAXONOMY,
+      encounters: buildEncounterAssessment(active, options.encounterEvidenceReady === true),
       geography,
       sourcesQuality,
       context: inferenceDeferred && !domainRequested(requestedDomains, "context")

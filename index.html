@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="./styles.css?v=2026-10-08-legend-directions-v1">
+    <link rel="stylesheet" href="./styles.css?v=2026-10-13-encounters-v1">
   <link rel="stylesheet" href="./analysis_comparisons.css?v=2026-10-08-trace-chronology-v1">
   <script>
     // Retire the temporary recovery proxy only for browsers that still have it.
@@ -911,6 +911,33 @@
                 <div id="type-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Type filter options"></div>
               </div>
             </div>
+            <details id="encounter-filter-panel" class="field filter-field encounter-filter-panel">
+              <summary>Encounters</summary>
+              <label class="field"><span>Abduction reports</span>
+                <select id="encounter-abduction-filter" disabled>
+                  <option value="any">Any report</option>
+                  <option value="reported">Reported abduction</option>
+                  <option value="source_reported">Source-classified abduction</option>
+                  <option value="ambiguous">Ambiguous encounter category</option>
+                  <option value="not_indexed">No indexed abduction evidence</option>
+                </select>
+              </label>
+              <label class="field"><span>Reported beings</span>
+                <select id="encounter-being-filter" disabled>
+                  <option value="any">Any report</option>
+                  <option value="reported">Being reported</option>
+                  <option value="not_indexed">No indexed being evidence</option>
+                </select>
+              </label>
+              <fieldset class="encounter-being-fieldset"><legend>Being types · any selected type</legend>
+                <div id="encounter-being-types" class="encounter-being-types"></div>
+              </fieldset>
+              <div class="encounter-filter-actions">
+                <button id="clear-encounter-filters" class="secondary-button" type="button" disabled>Clear encounters</button>
+                <button id="encounter-include-all-types" class="secondary-button" type="button" disabled>Include all report types</button>
+              </div>
+              <p id="encounter-filter-status" class="note-copy" role="status">Loading encounter evidence…</p>
+            </details>
             <div class="field filter-field filter-subsection" data-collapsible-section="precision">
               <div class="filter-subsection-header">
                 <span class="filter-subsection-title">Location Precision</span>
@@ -1567,6 +1594,7 @@
               <button id="analysis-section-tab-overview" class="is-active" type="button" role="tab" aria-selected="true" aria-controls="analysis-section-overview" tabindex="0">Overview</button>
               <button id="analysis-section-tab-time" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-time" tabindex="-1">Time</button>
               <button id="analysis-section-tab-craft" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-craft" tabindex="-1">Craft</button>
+              <button id="analysis-section-tab-encounters" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-encounters" tabindex="-1">Encounters</button>
               <button id="analysis-section-tab-geography" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-geography" tabindex="-1">Geography</button>
               <button id="analysis-section-tab-spatial" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-spatial" tabindex="-1">Spatial Evidence</button>
               <button id="analysis-section-tab-crops" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-crops" tabindex="-1">Crop Circles</button>
@@ -1665,6 +1693,17 @@
                 <article class="analysis-card analysis-craft-mosaic-card"><h4>Craft composition mosaic</h4><p class="analysis-card-question">Tile area shows report share; color shows whole-corpus intensity or the adjusted difference for a selected date range.</p><div id="analysis-craft-distribution-chart" class="analysis-chart" data-analysis-chart="craft-distribution"></div></article>
                 <details class="analysis-card analysis-craft-era-card analysis-supporting-details analysis-dashboard-support"><summary>Craft by era</summary><p class="analysis-card-question">Which craft categories are over- or under-represented within each chronological era?</p><div id="analysis-craft-era-chart" class="analysis-chart" data-analysis-chart="craft-era"></div></details>
                 <details class="analysis-card analysis-card-wide analysis-confidence-strip-card analysis-supporting-details analysis-dashboard-support"><summary>Classification confidence</summary><div id="analysis-craft-confidence-chart" class="analysis-chart analysis-confidence-strip" data-analysis-chart="craft-confidence"></div><details class="analysis-supporting-details"><summary>Source-reported color evidence</summary><p id="analysis-color-status" class="analysis-readiness-summary" role="status">Typed color evidence loads only when Craft is requested.</p><p class="analysis-card-question">Which explicit source-reported colors remain after object-surface, emitted-light, changing, compound, descriptor-only, and unknown-role evidence stay distinct?</p><div id="analysis-color-chart" class="analysis-chart" data-analysis-chart="color"></div><details class="analysis-supporting-details"><summary>Role-preserving adjusted comparison</summary><p class="analysis-card-note">Comparisons use source, era, macroregion, and the same explicit color role. An unspecified role never becomes object surface or emitted light, and color is never promoted into Pattern Finder.</p><div id="analysis-color-comparison-chart" class="analysis-chart" data-analysis-chart="color-comparison"></div></details></details></details>
+              </div>
+            </section>
+
+            <section id="analysis-section-encounters" class="analysis-section" role="tabpanel" aria-labelledby="analysis-section-tab-encounters" aria-hidden="true" tabindex="0" hidden inert>
+              <div class="analysis-section-heading"><div><p class="eyebrow">Encounters</p><h3>Reported abductions and beings</h3></div><p class="analysis-section-note">Source descriptions and classifications remain separate from verified events.</p></div>
+              <p id="analysis-encounter-status" class="analysis-readiness-summary" role="status" aria-live="polite">Source-pinned encounter evidence; charts follow your shared filters.</p>
+              <div class="analysis-card-grid">
+                <article class="analysis-card analysis-card-wide analysis-encounter-profile-card"><h4>Encounter profile</h4><p class="analysis-card-question">Which reports are classified as abductions, and which descriptions of beings appear in this cohort?</p><div id="analysis-abduction-profile-chart" class="analysis-chart" data-analysis-chart="abduction-profile"></div><h4>Reported being descriptions</h4><div id="analysis-being-profile-chart" class="analysis-chart" data-analysis-chart="being-profile"></div></article>
+                <article class="analysis-card analysis-card-wide analysis-encounter-craft-card"><h4>Being and craft co-reports</h4><p class="analysis-card-question">Which reported being descriptions appear with each craft category in the same source record?</p><div id="analysis-being-craft-chart" class="analysis-chart" data-analysis-chart="being-craft"></div><details class="analysis-supporting-details"><summary>Craft categories in reported abductions</summary><div id="analysis-abduction-craft-chart" class="analysis-chart" data-analysis-chart="abduction-craft"></div></details></article>
+                <article class="analysis-card analysis-card-wide analysis-encounter-activity-card"><h4>Encounter reports over time</h4><p class="analysis-card-question">How do reports of abductions and beings vary through the catalog years?</p><div id="analysis-encounter-time-chart" class="analysis-chart" data-analysis-chart="encounter-time"></div></article>
+                <article class="analysis-card analysis-card-wide analysis-encounter-coverage-card"><h4>Classification and source coverage</h4><p class="analysis-card-question">How much of the current cohort has indexed encounter evidence, and which source collections provide it?</p><div id="analysis-encounter-coverage-chart" class="analysis-chart" data-analysis-chart="encounter-coverage"></div><div id="analysis-encounter-source-chart" class="analysis-chart" data-analysis-chart="encounter-source"></div></article>
               </div>
             </section>
 
@@ -1914,6 +1953,7 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
+  <script src="./encounter_evidence.js?v=2026-10-13-encounters-v1"></script>
   <script src="./trace_chronology.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_neighborhood.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_direction_summary.js?v=2026-10-08-legend-directions-v1"></script>
@@ -1924,17 +1964,17 @@
   <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
   <script src="./analysis_comparisons_view.js?v=2026-10-08-trace-chronology-v1"></script>
-  <script src="./analysis_view.js?v=2026-10-08-trace-chronology-v1"></script>
+  <script src="./analysis_view.js?v=2026-10-13-encounters-v1"></script>
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
   <script src="./quality_detail_overlay.js?v=2026-10-07-reviewed-quality-v1"></script>
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
-  <script src="./app.js?v=2026-10-08-corpus-timing-v3"></script>
+  <script src="./app.js?v=2026-10-13-encounters-v1"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/chronology-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-08-accepted-workspace-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-08-accepted-workspace-v1"></script>
+  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounters-v1"></script>
+  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounters-v1"></script>
   <script defer src="./ui/accepted-workspace/polish.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./guided_tour_state.js?v=2026-10-08-guided-tour-v1"></script>
   <script defer src="./guided_tour_content.js?v=2026-10-08-guided-tour-v1"></script>

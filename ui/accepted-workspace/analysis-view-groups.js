@@ -39,6 +39,12 @@
       { key: "eras", label: "Craft by era", anchorIds: ["analysis-craft-era-chart"] },
       { key: "classification", label: "Classification & color", anchorIds: ["analysis-craft-confidence-chart"] },
     ],
+    encounters: [
+      { key: "profile", label: "Encounter profile", anchorIds: ["analysis-abduction-profile-chart"] },
+      { key: "craft", label: "Beings & craft", anchorIds: ["analysis-being-craft-chart"] },
+      { key: "activity", label: "Reports over time", anchorIds: ["analysis-encounter-time-chart"] },
+      { key: "coverage", label: "Classification & sources", anchorIds: ["analysis-encounter-coverage-chart"] },
+    ],
     geography: [
       { key: "countries", label: "Country evidence", anchorIds: ["analysis-geography-grid-chart"] },
       { key: "eras", label: "Geography by era", anchorIds: ["analysis-geography-time-chart"] },
