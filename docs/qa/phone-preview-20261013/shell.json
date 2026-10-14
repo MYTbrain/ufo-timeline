@@ -2,7 +2,7 @@
   "schemaId": "ufo-phone-preview-shell-v1",
   "branch": "encounter-preview-20261013",
   "productionBranch": "main",
-  "runtimeCommit": "d643085066b64e5dcc6ec6d2fb4041ad7216d789",
+  "runtimeCommit": "169c0b2c0b9a9f7673526a585f96fdc69dbf6bad",
   "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013",
   "files": [
     {
@@ -152,8 +152,8 @@
     {
       "path": "app.js",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\app.js",
-      "bytes": 1425161,
-      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
+      "bytes": 1425496,
+      "sha256": "8157cedd3677a68357cdfc4ce32522a93b0da107155006aacaaf0d80962028e1",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -161,7 +161,7 @@
       "path": "catalog_filter_worker.js",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\catalog_filter_worker.js",
       "bytes": 269093,
-      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
+      "sha256": "36824f00adaacfd6c0af7f917444c61961b62c2756bad0ef25d101dfa065cbb1",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -1249,7 +1249,7 @@
       "path": "index.html",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\index.html",
       "bytes": 162238,
-      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
+      "sha256": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -1569,12 +1569,12 @@
       "path": "whole-site.html",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\whole-site.html",
       "bytes": 162238,
-      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
+      "sha256": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "rebuild": "python scripts/prepare_phone_preview.py"
     }
   ],
-  "totalBytes": 39680633,
+  "totalBytes": 39680968,
   "sourcePins": [
     {
       "path": ".nojekyll",
@@ -1687,14 +1687,14 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1425161,
-      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142"
+      "bytes": 1425496,
+      "sha256": "8157cedd3677a68357cdfc4ce32522a93b0da107155006aacaaf0d80962028e1"
     },
     {
       "path": "catalog_filter_worker.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
       "bytes": 269093,
-      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22"
+      "sha256": "36824f00adaacfd6c0af7f917444c61961b62c2756bad0ef25d101dfa065cbb1"
     },
     {
       "path": "crop_circle_bootstrap.js",
@@ -2510,7 +2510,7 @@
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "bytes": 162238,
-      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08"
+      "sha256": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d"
     },
     {
       "path": "legend_controls.js",

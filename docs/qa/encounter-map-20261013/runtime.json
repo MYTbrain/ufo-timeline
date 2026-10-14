@@ -91,5 +91,12 @@
   "interactiveVisualAcceptance": "pending",
   "rebuild": "Run the listed focused Node checks; delivery check requires the bounded public shell on localhost:8168. See docs/ENCOUNTER_MAP_20261013.md.",
   "retention": "Small unique runtime QA; preserve with candidate, no corpus/database copy.",
-  "pendingPublicationHighlightGuard": "Actual published pending/off states clear retained highlights immediately."
+  "pendingPublicationHighlightGuard": "Actual published pending/off states clear retained highlights immediately.",
+  "localDeliveryReleaseToken": "2026-10-13-encounter-map-v4",
+  "finalDelivery": {
+    "releaseToken": "2026-10-13-encounter-map-v5",
+    "verifiedPublicAssets": 194,
+    "receipt": "docs/qa/phone-preview-20261013/public-verification.json",
+    "samePinnedEncounterArtifacts": true
+  }
 }

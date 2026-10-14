@@ -2,8 +2,8 @@
   "schemaId": "ufo-phone-preview-public-verification-v1",
   "status": "passed",
   "url": "https://encounter-preview-20261013.ufo-timeline.pages.dev/whole-site",
-  "uniqueDeploymentUrl": "https://80b27fd4.ufo-timeline.pages.dev",
-  "runtimeCommit": "d643085066b64e5dcc6ec6d2fb4041ad7216d789",
+  "uniqueDeploymentUrl": "https://fbc9e7d7.ufo-timeline.pages.dev",
+  "runtimeCommit": "169c0b2c0b9a9f7673526a585f96fdc69dbf6bad",
   "verifiedFiles": [
     {
       "path": "404.html",
@@ -110,14 +110,14 @@
     },
     {
       "path": "app.js",
-      "bytes": 1425161,
-      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
+      "bytes": 1425496,
+      "sha256": "8157cedd3677a68357cdfc4ce32522a93b0da107155006aacaaf0d80962028e1",
       "providerTransformation": null
     },
     {
       "path": "catalog_filter_worker.js",
       "bytes": 269093,
-      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
+      "sha256": "36824f00adaacfd6c0af7f917444c61961b62c2756bad0ef25d101dfa065cbb1",
       "providerTransformation": null
     },
     {
@@ -933,7 +933,7 @@
     {
       "path": "index.html",
       "bytes": 162238,
-      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
+      "sha256": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d",
       "providerTransformation": {
         "provider": "Cloudflare Pages Analytics",
         "inserted_bytes": 214,
@@ -1187,7 +1187,7 @@
     {
       "path": "whole-site.html",
       "bytes": 162238,
-      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
+      "sha256": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d",
       "providerTransformation": {
         "provider": "Cloudflare Pages Analytics",
         "inserted_bytes": 214,
