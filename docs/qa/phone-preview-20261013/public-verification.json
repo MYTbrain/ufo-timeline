@@ -1,0 +1,1205 @@
+{
+  "schemaId": "ufo-phone-preview-public-verification-v1",
+  "status": "passed",
+  "url": "https://encounter-preview-20261013.ufo-timeline.pages.dev/whole-site#analysis-section-encounters",
+  "uniqueDeploymentUrl": "https://c9d37928.ufo-timeline.pages.dev",
+  "runtimeCommit": "8a5a99c069c98d97c9e2dd2bf26cb961330a5e39",
+  "verifiedFiles": [
+    {
+      "path": "404.html",
+      "bytes": 427,
+      "sha256": "57ba8c7e0cc7df03de08e44b96c22d1cc1c6a578930761bb2e92a0423272ceb5",
+      "providerTransformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "404.html"
+      }
+    },
+    {
+      "path": "analysis_astronomy_engine.js",
+      "bytes": 116485,
+      "sha256": "d1b3ab4b86aa409f78c0f0d95162a847496cba7e938eb6f4712cf9c1c45f4a2e",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_comparisons.css",
+      "bytes": 8884,
+      "sha256": "a02d7046681c94855f1dd306f754132435bf0c371b92dae262a5c3efe8c54225",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_comparisons_view.js",
+      "bytes": 87336,
+      "sha256": "004521aa81c69cd75b888ea050d069ff751735bd1864d3033a446b0318863b01",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_cross_context.js",
+      "bytes": 19661,
+      "sha256": "cc3bda500833213444837acb371e012d8d75122b30a11ee7e02e5084900325dc",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_encounter_context.js",
+      "bytes": 21683,
+      "sha256": "d6cff55b4fcaeae61500063aceb95a32d877587ee46ae50f48618112feb1c9e8",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_lunar.js",
+      "bytes": 20465,
+      "sha256": "94c0a260c8255a64b8ec9d9c767459cc63a061786ff9e98e969643215943f9c9",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_nuclear.js",
+      "bytes": 27542,
+      "sha256": "40124c627e7d5c5d93fbff549ef370290e1bec65f04bc4c3ed9fe8137cea0467",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_planetary.js",
+      "bytes": 76928,
+      "sha256": "4269b831abd19d4c7805c4200504f906817afcbc08d7c7757db1c1e64a5a3baf",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_repair_detail_overlay.js",
+      "bytes": 10630,
+      "sha256": "d5170a52564f6233de1bf7e474a68448a9825e31ee732b19f4945feb32c851cb",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_spatial.js",
+      "bytes": 124518,
+      "sha256": "95ce0855f315bbda76e04df2c8d225f13b067e1c74cf59a92e0f480b01aa8f87",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_spatial_worker.js",
+      "bytes": 5873,
+      "sha256": "95167f131a1b9fca15b3a650042ae5dd7d25a4b126cf2bcfcef9abd2a1604e69",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_stats.js",
+      "bytes": 386214,
+      "sha256": "e43785fcfcd31d1ad5df0ab80beee7cf9def7daa5d51d4a3d8222542f68c3f3c",
+      "providerTransformation": null
+    },
+    {
+      "path": "analysis_view.js",
+      "bytes": 497691,
+      "sha256": "724b9c2a585506b56c8c59558b0f829e8437aee53cc62fac971520d99452a804",
+      "providerTransformation": null
+    },
+    {
+      "path": "animal_mutilation_bootstrap.js",
+      "bytes": 5885,
+      "sha256": "75bcddf7ebeb8a5c1e923818ffff4bb1f62eaa85536772e2c3ab663852e680b4",
+      "providerTransformation": null
+    },
+    {
+      "path": "animal_mutilation_layer.js",
+      "bytes": 57824,
+      "sha256": "57e2a23c8524d49e88adbd0efee1a2244d54bfde85cc6b514595492efa994d64",
+      "providerTransformation": null
+    },
+    {
+      "path": "app.js",
+      "bytes": 1395138,
+      "sha256": "c3a7f01316e0fa033c574a6abfed4433b16509b9d8b87f7bb17e82a91fee2ae1",
+      "providerTransformation": null
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 268776,
+      "sha256": "ff69499811082e6959a8a4f573dea57e87a6fa45e7462075ca9bd02d576d6d03",
+      "providerTransformation": null
+    },
+    {
+      "path": "crop_circle_bootstrap.js",
+      "bytes": 8367,
+      "sha256": "72b547876feb69a848fc9765a45fa780b177a01a91d3bcbf97f1bb767ecc0260",
+      "providerTransformation": null
+    },
+    {
+      "path": "crop_circle_layer.js",
+      "bytes": 84347,
+      "sha256": "7673ae40344a7995a63c7adc6f0e610b50bb3d2072b6985bef8967df4937e897",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_color_v1/manifest.json",
+      "bytes": 10922,
+      "sha256": "d0b0f6945bb13fe9fd5efa086da62bcd2fa62734f4f0ecfe6faa7a79ba427b8a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_comparisons/manifest.json",
+      "bytes": 35513,
+      "sha256": "2ccbccd11e39c33a791c936d9ef82e4a9ff9494d14de60349c7ae04199fb5a99",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_comparisons/nuclear_extension_v1.json.gz",
+      "bytes": 3091,
+      "sha256": "4db2dc7e0300a10e837f0588014379ffd088e594ae4e12568e7e7bd20192e6d9",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_coordinate_evidence_v1/manifest.json",
+      "bytes": 17613,
+      "sha256": "ba243205d94e2b6460f3f6c476d93b303746b94bcdf6ee197f0006d4232db197",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_duration_v1/manifest.json",
+      "bytes": 14737,
+      "sha256": "97c00ffd133501343fbe9c2d8c57d4b4b7a0c66e45b769bffeac645685966371",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_reporting_delay_v1/manifest.json",
+      "bytes": 14972,
+      "sha256": "5cca32af7dbef99d42daef64cf1246562ecf8464c19cc438c72e9ae780bc517c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_time_of_day_v1/manifest.json",
+      "bytes": 20668,
+      "sha256": "e12bfdef3b1ec717422c03037e46991df086e04933108edf54feb59da53ba251",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v1/animal_reports.json",
+      "bytes": 105047,
+      "sha256": "896193468f3a59ae18fd3df8cddf864fdbaa1606c81f75fe1ae7401357c49fb7",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v1/animal_reports.json.gz",
+      "bytes": 28118,
+      "sha256": "63d99e95aacd106f80d44aa04c08fc6278ecf0c9f392963055a00b86aea1f2e0",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v1/crop_circles.json",
+      "bytes": 626048,
+      "sha256": "d92d9758745bc74e34f2b2066b2f805a2c73da4af3cdd0391074bce35ec94230",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v1/crop_circles.json.gz",
+      "bytes": 141897,
+      "sha256": "d9721052bac542d1aebe709a0958dba80f8c6e270e0ff6a5f3b4e41e64688543",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v1/manifest.json",
+      "bytes": 12143,
+      "sha256": "0c68aafa310ee0d41224df349f8a00daca1228bac6d0c87ab711c3aef1a08c5c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_v2/manifest.json",
+      "bytes": 90140,
+      "sha256": "a92c48317f3cd67f997714ae8b1dded5e58bb252c986a0fa4ee8d898bbe38dd3",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/analysis_witness_count_v1/manifest.json",
+      "bytes": 15359,
+      "sha256": "8da6675ffd544f82ea33df323b5d551eb203a4809e670cea3bc0e7c8fe58c193",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/animal_mutilations/manifest.json",
+      "bytes": 8862,
+      "sha256": "9e562355aae8eacfcce398b24fef0b6ecb5f2e5a9a9ad1e3933a6903a705cf70",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/app_config.json",
+      "bytes": 6771,
+      "sha256": "9d5f8d7e7164711971c1b61bea1ff7a3d617e3c5720e47be36b8229b228d3780",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/artifact_size_report.json",
+      "bytes": 40482,
+      "sha256": "49064e8a7cd77cf0b9227fcdfe30a1c8ed765521070e692320dd091dc08e35ef",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/canonical_web_manifest.json",
+      "bytes": 13016,
+      "sha256": "7b1c97ab8601051880c7597ee73aa49c42627ea11ff33ae3af33b513877b20c6",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/compression_report.json",
+      "bytes": 74604,
+      "sha256": "110d7b3661ed7b01fa1a1ac4022cab9ff4c09ea11292e22e9951e3ed2d091c38",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/event_chunk_manifest.json",
+      "bytes": 37642,
+      "sha256": "fc63811513069fc0a092b96e82ed4884b1c4aa88e37ba890081304389031099c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/points_meta.json",
+      "bytes": 8820,
+      "sha256": "71ac60919b2badac7badaa25cd4049d98084a6d0c34f84b8e15e36914362d8dd",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/summary_manifest.json",
+      "bytes": 12829,
+      "sha256": "9c50d0e608fc89d1dc7523cde5f407a45e2d10a9e6adefaf83384d1a8a209bdc",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/trace_aggregate_bins_meta.json",
+      "bytes": 2530,
+      "sha256": "cdc84bda7025733ee56402d21acf6b0b95ca7282b1a15047cb84f9f73fbc3bf9",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/trace_event_index_meta.json",
+      "bytes": 5676,
+      "sha256": "1a0de8601203533b46dd99c512fef3474887267002cd02d42f5453f24b277c52",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/canonical_web/trace_segments_meta.json",
+      "bytes": 3360,
+      "sha256": "4a252a1c8d6f862dd4f0e42d82a8510b9f07739e9f629b2f919ef36069c4b0a0",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/claimed_ufo_bases.json",
+      "bytes": 4957,
+      "sha256": "adc7abe96aec6ef8711ea7b2590c1345df9919d8a5477cc90f7fe689f406e770",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/crop_circles/manifest.json",
+      "bytes": 8867,
+      "sha256": "39d8738aea4134319c6c2107e05d07e793e1f7a487ae4742029c20583263aceb",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/encounters/enrichment.json.gz",
+      "bytes": 14338,
+      "sha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/encounters/evidence.json.gz",
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/encounters/label_origins.json.gz",
+      "bytes": 879454,
+      "sha256": "81fee2c14f22417e560bd6c0dcc61def5d51d15d2981dddcc3cb2f142b1af687",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/encounters/manifest.json",
+      "bytes": 9231,
+      "sha256": "23f743356773869b1cf7c630c73894742807157ad85aa13206b4c4d414ea17ae",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/event_catalog_manifest.json",
+      "bytes": 1533,
+      "sha256": "4e5933ecd886ab2c11c0d3b061c636369a74458af96f399327587b2820b162c1",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/event_chunk_manifest.json",
+      "bytes": 2322,
+      "sha256": "5cf98b0654a61bcbd4b13c920873d7e5d980c4bc30d4c67e663401ac2ea5b588",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/location_label_overlay.json.gz",
+      "bytes": 1219795,
+      "sha256": "689d1b2a3e956f7de7a2997659eb10f4f459b4387645d5e15cc88c3b513e280a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/airports.geojson",
+      "bytes": 148742,
+      "sha256": "49e7c80dba8f94eb740532520590091236f840f1c9934d6b9d22f32ed8374209",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/highways.geojson",
+      "bytes": 4298367,
+      "sha256": "766ee9ba151415ac2379373546c9753eff1e27b46446e353af90e5dda368ed9b",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/military_base_overlay_membership_overrides.json",
+      "bytes": 272786,
+      "sha256": "fd13dab6d879639107eae09507d6a1e00d75b84a92b509271f01acd94248249d",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/military_base_temporal_overrides.json",
+      "bytes": 978968,
+      "sha256": "36c71a41d28066705188efcc879cc1359b4bfa1e715e5f461d44c614836b0236",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/military_bases.geojson",
+      "bytes": 445384,
+      "sha256": "355bd0815e6e653f1537bfaa30b4dd122d2311bf94d1d647ce6ac840747cce93",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/new_zealand_military_facilities.geojson",
+      "bytes": 10514,
+      "sha256": "c1eb03313a0c1d14ceaf2200e1a3af23dfd976e3393390c7a62ef8c4cae01936",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/new_zealand_research_facilities.geojson",
+      "bytes": 7130,
+      "sha256": "88414221ac9e30cf45fee4b9235864a473d9afb366b41256ed8ea450ea755e70",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/northern_europe_research_test_sites_pass3_marker_sized_conservative.geojson",
+      "bytes": 377139,
+      "sha256": "9fceb277adefac8421e39327a14f5c6d81618890327850bb43837e836137bb3f",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/overlay_sources.json",
+      "bytes": 2402,
+      "sha256": "06ca1a802d299cd79204e6debea5921955d88989126b9b8ad43de393f4bf3935",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/research_test_sites.geojson",
+      "bytes": 139165,
+      "sha256": "29d068224a67b437b1afc2223a1c2fd1ced5e685974fd15b34d0df4181fdf0f6",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/map_overlays/research_test_sites_config.json",
+      "bytes": 1571,
+      "sha256": "ea8e921433caec1ebb26a9cd96c753c00a35ec6654c5915588c82047c554a8c6",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/points.bin",
+      "bytes": 3011976,
+      "sha256": "26c234d5d0838bf6d42ae7c36c22c012e645fec4ac5f6a5f7f49d547d00deb3a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/points_meta.json",
+      "bytes": 10453,
+      "sha256": "4058f4c6a9009b7fef347fac925ce11e3d00bac8078689f60274c44056b05e62",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/quality_detail_patches.json.gz",
+      "bytes": 636288,
+      "sha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/events.json",
+      "bytes": 775271,
+      "sha256": "01d6e12e22e336347fc0fd228100003b4090eba69af78e81a4ef02d53446a407",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/events.json.gz",
+      "bytes": 67452,
+      "sha256": "4ef472ef284a06d02e7c7885cab7f3170c1d59410f3c7a61ef254af6c5cc7bec",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/manifest.json",
+      "bytes": 1204,
+      "sha256": "a78e1e6f546b2842fde47fbeaf7fd8b4602e130d3c28cc01336374363ede74cc",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/manifest.json.gz",
+      "bytes": 519,
+      "sha256": "bd133fdc967a6a88bb3c160dfea9e213f8e03a1ecb143a14eece692a15fb1de3",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/points.bin",
+      "bytes": 86152,
+      "sha256": "8b727c2d7355fa299094f3fb178ea6036cb816b6260faae7c87903deba5c84b6",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/points.bin.gz",
+      "bytes": 26733,
+      "sha256": "4b2c8f3b494a9623290af5f461310dcedbbe00e92dc4269fdc765e859394b82c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/points_meta.json",
+      "bytes": 12180,
+      "sha256": "2a570b3a3a2311b5f037f5470c439e544c90efb8e6056989034623a8614d42e0",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/points_meta.json.gz",
+      "bytes": 2071,
+      "sha256": "47ba82c08a4f07f3d77265e7d6a150cdf91ab6e4c66d8be4c64b33c0e3d967d1",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_aggregate_bins.bin",
+      "bytes": 108888,
+      "sha256": "b3098df9baf144298ec6643d89c8425a71b4a0134a660c3b8da8b6aa09ce6a1a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_aggregate_bins.bin.gz",
+      "bytes": 41776,
+      "sha256": "fcbadff85d9b2951a26d7593a37194e5e7f34e9dc5a29b2576000224739bb734",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_aggregate_bins_meta.json",
+      "bytes": 3551,
+      "sha256": "edc5860210b49ce118ac98f1fffcb814931d52b6eb3aebffa998bb3082cdbc93",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_aggregate_bins_meta.json.gz",
+      "bytes": 955,
+      "sha256": "9f1b7b9d62fa158ee674b0439af0e1351b1654d973ddcd2d811c5dc05b83bc33",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_event_index.bin",
+      "bytes": 46992,
+      "sha256": "83ee35db8c87e9b0ae203fb72761b8c8db4098e9438025b0c30abdf5d9729194",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_event_index.bin.gz",
+      "bytes": 26109,
+      "sha256": "785befaad365431ef6fc7566c8e023ffda30785b110aa7073decd9fc95da3adb",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_event_index_meta.json",
+      "bytes": 8165,
+      "sha256": "8203cf671f0593ad0ba0a162e22f966f4ecfa07a0d5db6b58a6bc5cdf8b0895b",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_event_index_meta.json.gz",
+      "bytes": 1319,
+      "sha256": "f3131867504e62b6ceea68b7d241a5e95f286ec013b4adda3fc9610515f6a439",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_preview_segments.json",
+      "bytes": 209126,
+      "sha256": "3256e9327c45d651a2e2b9f121db4c5cd16e4b163801ccbcb19d29ead3cc5fbf",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_preview_segments.json.gz",
+      "bytes": 28489,
+      "sha256": "e823c3da9e9e52501dabe3fddfdf33940280cd03fc9d8cb72a4b0da9eb5f03f7",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_segments.bin",
+      "bytes": 70416,
+      "sha256": "2939bda307717855aed853b41a44ed5a79c842b05be2f42a1476ea1a27834b2c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_segments.bin.gz",
+      "bytes": 27826,
+      "sha256": "7188e92e0c6e1e1fb6723b840a09c3eaa7b9bfebd2a505745bf0af34d91940ee",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_segments_meta.json",
+      "bytes": 4577,
+      "sha256": "d5076efd79f59823bb4e40bc7e2d70992361593bb3baab923de35f1b7ff55791",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/belgium_1989_1990_wave/trace_segments_meta.json.gz",
+      "bytes": 1012,
+      "sha256": "bb8c1b90ddc7b7b794dedc7929624fe943e2d95590e46a154537c616e2d2c9be",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/events.json",
+      "bytes": 2007996,
+      "sha256": "c5fa33b6f60e233f219b27bbae30bcea7f977034cd609cec029ba83e22e8921a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/events.json.gz",
+      "bytes": 161978,
+      "sha256": "1cb7ee2c2154179cf547d2a7708d03e79f063a86af8aa90b60bb23fdc83de551",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/manifest.json",
+      "bytes": 1201,
+      "sha256": "9b8b21362e41f1823dbd74503293c60ed94753c698a5f069601007419e8e0a7f",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/manifest.json.gz",
+      "bytes": 522,
+      "sha256": "9466a09ff6b48134ca368fd7758a17e5efbea6ecfabcccacf860c002e813b0b5",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/points.bin",
+      "bytes": 227304,
+      "sha256": "451e40a5d129c7bfdccaf30fd60c8099796aa5f27438c1f45cd496fb73082671",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/points.bin.gz",
+      "bytes": 64506,
+      "sha256": "2ae0a930b19a77d8302263091493297b14e9520d44cf2ab12f55a1fb89670d4e",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/points_meta.json",
+      "bytes": 12314,
+      "sha256": "6bfcb2928731c7232c2852ad23b1639ef1e8871bfb58d7f23c7bdbf8196954c7",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/points_meta.json.gz",
+      "bytes": 2052,
+      "sha256": "0e7171e4fe3122f8ce830cc54b97076d1fbb8ea5ff7c61ba9a55012c109d33b8",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_aggregate_bins.bin",
+      "bytes": 177632,
+      "sha256": "addc406f9e231cd76ed62f37dc802d1ca9a7a2c28132d063789bcd480920f5eb",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_aggregate_bins.bin.gz",
+      "bytes": 79889,
+      "sha256": "9f2144688c5a3ea60c1a0abb3bc5934b527113368fecbf0a963b5c7d467093e5",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_aggregate_bins_meta.json",
+      "bytes": 3554,
+      "sha256": "f2e2bf52334b80c05aa7878298e8f5c268cfe8020b2ca2d0080629ea67cf8906",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_aggregate_bins_meta.json.gz",
+      "bytes": 959,
+      "sha256": "cbc46cf31c9730564b8ba71df3a089fb2fe0fc7036622f12eed0099a520e34db",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_event_index.bin",
+      "bytes": 123984,
+      "sha256": "b73f0f120dec09ff06a76248e3e22d93f2eb71122f5db4d469a1402b15c00324",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_event_index.bin.gz",
+      "bytes": 63567,
+      "sha256": "2ee98c8d166578e48ab81c6a9460403cf80ebf4583b9951df1ef904a44b69fe5",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_event_index_meta.json",
+      "bytes": 8396,
+      "sha256": "49519d09a008f32676327722c5b9817e633b12df3263fafeee2e8c8544325aae",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_event_index_meta.json.gz",
+      "bytes": 1335,
+      "sha256": "807a54b8ce3b36be820e08a702cc174d74b4807ea06a73d1795ab5fe8a16edbb",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_preview_segments.json",
+      "bytes": 539640,
+      "sha256": "d25974894b3a57776cdb47415ad8ab78bbd3b539ebb5ac717f1f505addbc4746",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_preview_segments.json.gz",
+      "bytes": 70603,
+      "sha256": "d029d8531127ce9f719e5e36f612eb8165b4fe3ef25fb2d55aea34efdc626a2d",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_segments.bin",
+      "bytes": 185904,
+      "sha256": "3b51739751baf6304abdf9ed4cb40b1e7127b1fa048258a992f969f22f07ace5",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_segments.bin.gz",
+      "bytes": 68054,
+      "sha256": "981df5b3504c978ae2f84c3aa57ee1960c2fd4887fdb4b2ccf5f8c22b7536874",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_segments_meta.json",
+      "bytes": 4143,
+      "sha256": "a9b2f1b7fc45818d806ea1ce2b7743e5e92a505429b57e28c5918dc6929d850f",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/france_1954_flap/trace_segments_meta.json.gz",
+      "bytes": 946,
+      "sha256": "8078012c287358f90f26a7bf16cb8287c52a5504ea02ab19b863a6e0e4bc7c1b",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/manifest.json",
+      "bytes": 1317,
+      "sha256": "3475d159f49e92dc5bad2c577e9812341f6c6fbcc31ec0bb03326d76ceab44b9",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/manifest.json.gz",
+      "bytes": 507,
+      "sha256": "63fb07ab8cd0c67276d6a4b7b5e60307dc778743711afd80aaf79bf32ea08edf",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/events.json",
+      "bytes": 750600,
+      "sha256": "65bc78a66be43a71c394ac0af2f434a9d158f557ff2a8ba7b5051fdd3a37d854",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/events.json.gz",
+      "bytes": 54691,
+      "sha256": "e0c52232f3db4ee5ae41b1cdeedb4925d4481ce475541535baa9fbf847ef8474",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/manifest.json",
+      "bytes": 1231,
+      "sha256": "fce4e6a1b03acaee4c4be2e7899350f74acaaf861231829eb59ebebc877246ea",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/manifest.json.gz",
+      "bytes": 557,
+      "sha256": "00630605a3968710987fc6c2802c971a7df0bed57b3b5e8ce73d556a4ccb4e5f",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/points.bin",
+      "bytes": 87296,
+      "sha256": "908be0203ad0bc7a70079a31d648a7d3ef7a8bb47035b01f7614dad8d7aac209",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/points.bin.gz",
+      "bytes": 23262,
+      "sha256": "91d2c20aaa8d691c989d3d553b2022bdf7fbaf667e61da8ee2646a6922a93d08",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/points_meta.json",
+      "bytes": 11368,
+      "sha256": "6d9ba4896b1fcdae73cd1fc4cbce6fed8a23e3d58be5aafc94fd9955f817446d",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/points_meta.json.gz",
+      "bytes": 1850,
+      "sha256": "e021bce9027b79a74a90fd1c291a595e89b6192a74d89a7fb13c3b7c136e3e24",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_aggregate_bins.bin",
+      "bytes": 50024,
+      "sha256": "164a7275893039df700458ea2a7339f5bf27c88779fdd08c51dc87d82b3c1d35",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_aggregate_bins.bin.gz",
+      "bytes": 18825,
+      "sha256": "4f1b4d20419c1ca5355c7bdb135805f83b077f10e7f7e991380a88e377ae584b",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_aggregate_bins_meta.json",
+      "bytes": 3549,
+      "sha256": "51311f3d5612fc43d2a86ca387ed448113ca215960f455168242f9232b74a129",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_aggregate_bins_meta.json.gz",
+      "bytes": 954,
+      "sha256": "def1907303874009c0e6c7c52d9e3c1f627d577049f2050d5231eaf3f732341a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_event_index.bin",
+      "bytes": 47616,
+      "sha256": "345a4b88b1faeb50bc50f3f52a7f1ca7b5fd518afce2c91bd1dc63d6e784a29c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_event_index.bin.gz",
+      "bytes": 23709,
+      "sha256": "ecda64ca1a38385b53141bfaff7625ece9f8dd5c4d0d3d47cc8f84ea7d2f5e4c",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_event_index_meta.json",
+      "bytes": 8195,
+      "sha256": "35b1dc467635a6a42aebf7a1830f51656eb43112886f76787cbff858858aa546",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_event_index_meta.json.gz",
+      "bytes": 1316,
+      "sha256": "5bdf469ef75e6078325bb2a1e7b941dd389495b2bf2db507ade2a917cd1f7d63",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_preview_segments.json",
+      "bytes": 207439,
+      "sha256": "9dd0ae948fb25c081c4ffb72e626678ebda5efd35a5c1fc014d94c9f835eae8e",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_preview_segments.json.gz",
+      "bytes": 26892,
+      "sha256": "b7cedc99a86845784e19f6c2a2d89e848d02b52ed78417e29bb5c25d5783762a",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_segments.bin",
+      "bytes": 71352,
+      "sha256": "a95dbbaa93601c7a6bbdead3d839c2276f6a49ef87698c383a61e2759260052d",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_segments.bin.gz",
+      "bytes": 24166,
+      "sha256": "3d06abf2d1830735adc9523c05d3a925053a901ab09397f7789337009892b4e1",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_segments_meta.json",
+      "bytes": 3671,
+      "sha256": "21e1a8d9202054ba282a4f017d419a181ebadfae18bd665b3c136df3cd736733",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/startup_profiles/mystery_airship_wave_1896_1897/trace_segments_meta.json.gz",
+      "bytes": 890,
+      "sha256": "22178be73702f9fadcc39e9a3622b5aeadfb6d46471cb6147518dbdabc540a9b",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/trace_chronology/evidence.json.gz",
+      "bytes": 7592318,
+      "sha256": "b720163bf83c96bc0bcf0997dbc268063b07c25e0c6fc48d821544040b14e3f8",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/trace_chronology/manifest.json",
+      "bytes": 3088,
+      "sha256": "3e81dd78adc7dc7fc8da5aa1231450a1745661753f4bf0101f2d63481a6a1197",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/trace_intersection_feasibility_v1/manifest.json",
+      "bytes": 3878,
+      "sha256": "444ebc22663c537eda32acbc63c79a0e3d3f80791ba1dcbc506cfd2af94e0a03",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/trace_intersection_feasibility_v1/strict_25km_7d_buffer1.json",
+      "bytes": 2807018,
+      "sha256": "415975b4d61de009f68cecfb5ff60da1d4edb5a72e181d03736646aeb851d983",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json",
+      "bytes": 1584487,
+      "sha256": "70756f2a2f21a954cc2d7ba017e61062a0115b48fbf36d9ba54774c76eaafc71",
+      "providerTransformation": null
+    },
+    {
+      "path": "data/world_countries.geojson",
+      "bytes": 257132,
+      "sha256": "71b23465a46e9d4309a10db5f165c846086b570ca755efc31e8c385bcb95f7b2",
+      "providerTransformation": null
+    },
+    {
+      "path": "encounter_analysis.css",
+      "bytes": 3265,
+      "sha256": "8a14c668b62b85bbe3e532f840e8d36b7702535976a860f5c706769855f2db83",
+      "providerTransformation": null
+    },
+    {
+      "path": "encounter_atlas_query.js",
+      "bytes": 5219,
+      "sha256": "d9992303dc943940f9c2b2be0487bc85d30f15b773b171864e87d8259329f567",
+      "providerTransformation": null
+    },
+    {
+      "path": "encounter_evidence.js",
+      "bytes": 25163,
+      "sha256": "5bb7e350244a4c90e305b316ee516e2f37f36a273ec8ef0ce2a1d17a7ed34651",
+      "providerTransformation": null
+    },
+    {
+      "path": "famous_case_presets.js",
+      "bytes": 406063,
+      "sha256": "17b06e8f2cdf327c00800a43f447696828835b0f9f3fab5e02d7cbc76e1c4e2b",
+      "providerTransformation": null
+    },
+    {
+      "path": "flap_preset_labels.js",
+      "bytes": 2909,
+      "sha256": "866e74b216db51dd4b3fb74ab99bc9ed6c70d27a583eef71d6b929a137f7d99c",
+      "providerTransformation": null
+    },
+    {
+      "path": "guided_tour.css",
+      "bytes": 8007,
+      "sha256": "cd201b83869ff38087726605b52231b96aa9861bc974313f7fe45dabf745c661",
+      "providerTransformation": null
+    },
+    {
+      "path": "guided_tour.js",
+      "bytes": 18947,
+      "sha256": "20e0ab0579f0a780053d86c150d6e148bcc4dad8f9baf99b752bddbfed027e3c",
+      "providerTransformation": null
+    },
+    {
+      "path": "guided_tour_content.js",
+      "bytes": 5608,
+      "sha256": "ea73bbadfa1c709a8d952c1b90edfc441d5317e53b5eac46945553cdab9341ed",
+      "providerTransformation": null
+    },
+    {
+      "path": "guided_tour_state.js",
+      "bytes": 3203,
+      "sha256": "ac0c05442d8c8078658548f3e7d3940bc572827d38d908008fbb5e600762de03",
+      "providerTransformation": null
+    },
+    {
+      "path": "help_panel.js",
+      "bytes": 4269,
+      "sha256": "0d80b6722a707f3d5e322607d87b62e6ba9ee2ef018480a56ff84f9af63227da",
+      "providerTransformation": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 157806,
+      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "providerTransformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    },
+    {
+      "path": "legend_controls.js",
+      "bytes": 18867,
+      "sha256": "8f91f93b8ece69f325c9e8f699249d43c97bf60aad3a6b12394364642cf2cae1",
+      "providerTransformation": null
+    },
+    {
+      "path": "playback_performance.js",
+      "bytes": 4824,
+      "sha256": "ae75e45a903a53e4a08ef4632f53adcf57f20acdfeaec7785e30d6870b3e28c6",
+      "providerTransformation": null
+    },
+    {
+      "path": "quality_detail_overlay.js",
+      "bytes": 6194,
+      "sha256": "551037551db9425112744387495e5f3af9d66bdd498df1f316109c28ed7ac0a6",
+      "providerTransformation": null
+    },
+    {
+      "path": "robots.txt",
+      "bytes": 28,
+      "sha256": "a8f31103361fca68bef71fc69cff844b7c23bd3d64d2b872d74690cbda656bfc",
+      "providerTransformation": null
+    },
+    {
+      "path": "startup_profile_worker.js",
+      "bytes": 4393,
+      "sha256": "f88029a0c04910aae107c500849247c267d935bff306f7fdd8d044ce4ddcdad4",
+      "providerTransformation": null
+    },
+    {
+      "path": "styles.css",
+      "bytes": 277976,
+      "sha256": "8c58b637cf913f02ce5ffd372a74f54874a9d33aee249be90e72688d1d62e29d",
+      "providerTransformation": null
+    },
+    {
+      "path": "sw.js",
+      "bytes": 959,
+      "sha256": "7e15ae975415612f4f176789d13fd1d57321ed643d8241b487eff0b50ef91ba9",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_chronology.js",
+      "bytes": 14075,
+      "sha256": "c6631cfa3c9e10b6668428ad2ea97a2403ae183882d41e43d210e6bab66ff847",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_direction_summary.js",
+      "bytes": 33191,
+      "sha256": "3e36a2f9496231448d8cc8e809ee720cfb74ec7709f82cec2424cef140418c76",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_facility_worker.js",
+      "bytes": 52516,
+      "sha256": "f0ca492f9815b9713856c72a0eb02ef1429466577396359d22c085c8ef61e295",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_intersection_feasibility.css",
+      "bytes": 7802,
+      "sha256": "44f339e27398da20b5b17b08d4beaa3a4b0e3b3aef301fc984a7d66fe6a7f642",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_intersection_feasibility.html",
+      "bytes": 5022,
+      "sha256": "73b418f442c145b4727afa9456c8d030a86f4db909282059b4c80fa31446c503",
+      "providerTransformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "trace_intersection_feasibility.html"
+      }
+    },
+    {
+      "path": "trace_intersection_feasibility.js",
+      "bytes": 22085,
+      "sha256": "e41ed709c1d75f8762c2a4c8b19f58a9af94c74c98b93c667ac6547c20d35c5c",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_intersection_layer.js",
+      "bytes": 47569,
+      "sha256": "2ca390f732e4b9df1d49fbf049bae2770a8d35d39a82087a74da5b569b8852ab",
+      "providerTransformation": null
+    },
+    {
+      "path": "trace_neighborhood.js",
+      "bytes": 61411,
+      "sha256": "64a99519a6ed9cdf2d2a871bcb8ebd5c215c5abd338b116006326e92b0600439",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.css",
+      "bytes": 7836,
+      "sha256": "f7c7ccd87d3e061a9e1efdbfd0d51f2ba5172f8daec053767a9ffb76369360b9",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 14362,
+      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-preview.css",
+      "bytes": 7023,
+      "sha256": "202cbbf5db97ce81e84bfc63320e7df895bdfe713ba13cd015e507bd33c92c4c",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-preview.js",
+      "bytes": 11755,
+      "sha256": "12cc430981f53c54c3810ce43cb8ae40bd1fc645df2a217c5d8c5e5eb1dea264",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-view-groups.js",
+      "bytes": 5159,
+      "sha256": "84a3083010f81a4bd5cfaf62bf23d5818aea3c40ab48a0193cbb3c9cf8e3728b",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/chronology-preview.css",
+      "bytes": 5616,
+      "sha256": "d7fffee5866db4ea7b0c18ebef664b47d697aa28a4c937cf765b9803258375ac",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/chronology-preview.js",
+      "bytes": 2819,
+      "sha256": "7fb0a645ce36559d8cf469ce0114c6c056e7178aecef191a050914efd548a429",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/laptop.css",
+      "bytes": 3102,
+      "sha256": "222e4b31e31de037fe0a4740cb7a5ccb2320e26fdabdba3a4297230fbab21ffc",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/polish.css",
+      "bytes": 2243,
+      "sha256": "1f7c77a465df33f3c446a8d005bdfd464ac7e0f6740df6b11cbc953d366add50",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/polish.js",
+      "bytes": 2226,
+      "sha256": "5e6bde1d450512524cbbaf60436c59f4a18dbfaee27c3679066cd522e410fcdd",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/site-workflow-preview.css",
+      "bytes": 1937,
+      "sha256": "16bcae0b3c3b353a1bca611c1ed530b34c85425749ec5ca92d6c12030fe1af0e",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/site-workflow-preview.js",
+      "bytes": 13519,
+      "sha256": "b78e55c494c57b52d62c3e206c9c2da5fd63538683660251e397526026f67744",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/workspace-preview.css",
+      "bytes": 2850,
+      "sha256": "63dbbe48efaa0915605a4e2d0b84d46c9f05d60454abc77d3585e29d03593e14",
+      "providerTransformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/workspace-preview.js",
+      "bytes": 2001,
+      "sha256": "2548612a0817a54d38102cb7ede116d6cd78e54222153d0f61219e6856d4891f",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/images/layers-2x.png",
+      "bytes": 1259,
+      "sha256": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/images/layers.png",
+      "bytes": 696,
+      "sha256": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/images/marker-icon-2x.png",
+      "bytes": 2464,
+      "sha256": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/images/marker-icon.png",
+      "bytes": 1466,
+      "sha256": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/images/marker-shadow.png",
+      "bytes": 618,
+      "sha256": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/leaflet.css",
+      "bytes": 14806,
+      "sha256": "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/leaflet.js",
+      "bytes": 147557,
+      "sha256": "3104b526504d0d61fd3099a4521e87f732ccc3174dec54e08de6ba8bde3e15ff",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/leaflet.markercluster.js",
+      "bytes": 34137,
+      "sha256": "c18182c517c083f438f62e13e2c685ef4109b835ecb580f25fd8f60cf0102e6d",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/MarkerCluster.css",
+      "bytes": 886,
+      "sha256": "f9b756b96397305917d2ff42bebdce58294f89879f0d0cfd18664fffbc59c5d7",
+      "providerTransformation": null
+    },
+    {
+      "path": "vendor/MarkerCluster.Default.css",
+      "bytes": 1346,
+      "sha256": "2d687359a406651b1616bac9c60fba667f134fce24d3fb6bb621c173aa9c1a96",
+      "providerTransformation": null
+    },
+    {
+      "path": "whole-site.html",
+      "bytes": 157806,
+      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "providerTransformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "whole-site.html"
+      }
+    }
+  ],
+  "staticReferencesValid": true,
+  "mobileHttpStatus": 200,
+  "indexingDisabled": true,
+  "browserVisualVerification": "not_available",
+  "productionUnchanged": true,
+  "productionDeployment": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+  "r2ObjectsUploaded": 0,
+  "corpusCopiesCreated": 0,
+  "newFilesAbove100MiB": [],
+  "validatedStageUnchanged": true
+}

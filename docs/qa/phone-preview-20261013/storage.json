@@ -1,0 +1,14 @@
+{
+  "canonical": "Current runtime sources and remote phone preview",
+  "retainedRollback": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",
+  "retainedProduction": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+  "temporaryShellRemoved": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013",
+  "exactRemovalAllowlist": "shell.json files[]",
+  "removedBytes": 39605986,
+  "newFilesAbove100MiB": [],
+  "approximateNetDiskGrowth": "Under200KiB of builder and verification receipts plus small local Git/Wrangler cache metadata;37.77MiB temporary shell removed.",
+  "remotePreviewRetention": "User-requested review preview; keep while reviewing. Production and sole rollback unchanged.",
+  "supersededGeneratedArtifacts": [],
+  "rebuild": "python scripts/prepare_phone_preview.py",
+  "protectedSourceDeleted": false
+}
