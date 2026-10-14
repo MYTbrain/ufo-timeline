@@ -84,5 +84,11 @@
   "browserInteractiveAcceptance": "pending_no_enabled_surface",
   "localDeliveryReleaseToken": "2026-10-13-encounter-map-v6",
   "rebuild": "Run listed checks. Delivery test supports UFO_ENCOUNTER_DELIVERY_BASE_URL with loopback-only guard; avoid occupied local preview port. See docs/ENCOUNTER_MAP_20261013.md.",
-  "retention": "Small unique runtime QA; retained with candidate. No corpus/database copy."
+  "retention": "Small unique runtime QA; retained with candidate. No corpus/database copy.",
+  "finalDelivery": {
+    "releaseToken": "2026-10-13-encounter-map-v6",
+    "verifiedPublicAssets": 194,
+    "receipt": "docs/qa/phone-preview-20261013/public-verification.json",
+    "samePinnedEncounterArtifacts": true
+  }
 }
