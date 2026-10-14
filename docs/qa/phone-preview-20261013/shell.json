@@ -2,7 +2,7 @@
   "schemaId": "ufo-phone-preview-shell-v1",
   "branch": "encounter-preview-20261013",
   "productionBranch": "main",
-  "runtimeCommit": "8a5a99c069c98d97c9e2dd2bf26cb961330a5e39",
+  "runtimeCommit": "d643085066b64e5dcc6ec6d2fb4041ad7216d789",
   "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013",
   "files": [
     {
@@ -152,16 +152,16 @@
     {
       "path": "app.js",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\app.js",
-      "bytes": 1395138,
-      "sha256": "c3a7f01316e0fa033c574a6abfed4433b16509b9d8b87f7bb17e82a91fee2ae1",
+      "bytes": 1425161,
+      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
     {
       "path": "catalog_filter_worker.js",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\catalog_filter_worker.js",
-      "bytes": 268776,
-      "sha256": "ff69499811082e6959a8a4f573dea57e87a6fa45e7462075ca9bd02d576d6d03",
+      "bytes": 269093,
+      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -1160,8 +1160,8 @@
     {
       "path": "encounter_analysis.css",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\encounter_analysis.css",
-      "bytes": 3265,
-      "sha256": "8a14c668b62b85bbe3e532f840e8d36b7702535976a860f5c706769855f2db83",
+      "bytes": 17995,
+      "sha256": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_analysis.css",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -1179,6 +1179,14 @@
       "bytes": 25163,
       "sha256": "5bb7e350244a4c90e305b316ee516e2f37f36a273ec8ef0ce2a1d17a7ed34651",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_evidence.js",
+      "rebuild": "python scripts/prepare_phone_preview.py"
+    },
+    {
+      "path": "encounter_map.js",
+      "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\encounter_map.js",
+      "bytes": 20713,
+      "sha256": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1",
+      "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_map.js",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
     {
@@ -1240,8 +1248,8 @@
     {
       "path": "index.html",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\index.html",
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "rebuild": "python scripts/prepare_phone_preview.py"
     },
@@ -1560,13 +1568,13 @@
     {
       "path": "whole-site.html",
       "stagedPath": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\phone-preview-20261013\\whole-site.html",
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
       "retainedSource": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "rebuild": "python scripts/prepare_phone_preview.py"
     }
   ],
-  "totalBytes": 39605986,
+  "totalBytes": 39680633,
   "sourcePins": [
     {
       "path": ".nojekyll",
@@ -1679,14 +1687,14 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1395138,
-      "sha256": "c3a7f01316e0fa033c574a6abfed4433b16509b9d8b87f7bb17e82a91fee2ae1"
+      "bytes": 1425161,
+      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142"
     },
     {
       "path": "catalog_filter_worker.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
-      "bytes": 268776,
-      "sha256": "ff69499811082e6959a8a4f573dea57e87a6fa45e7462075ca9bd02d576d6d03"
+      "bytes": 269093,
+      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22"
     },
     {
       "path": "crop_circle_bootstrap.js",
@@ -2435,8 +2443,8 @@
     {
       "path": "encounter_analysis.css",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_analysis.css",
-      "bytes": 3265,
-      "sha256": "8a14c668b62b85bbe3e532f840e8d36b7702535976a860f5c706769855f2db83"
+      "bytes": 17995,
+      "sha256": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa"
     },
     {
       "path": "encounter_atlas_query.js",
@@ -2449,6 +2457,12 @@
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_evidence.js",
       "bytes": 25163,
       "sha256": "5bb7e350244a4c90e305b316ee516e2f37f36a273ec8ef0ce2a1d17a7ed34651"
+    },
+    {
+      "path": "encounter_map.js",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_map.js",
+      "bytes": 20713,
+      "sha256": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1"
     },
     {
       "path": "famous_case_presets.js",
@@ -2495,8 +2509,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c"
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08"
     },
     {
       "path": "legend_controls.js",

@@ -31,7 +31,7 @@ def main():
         assert "noindex" in response.headers.get("X-Robots-Tag", "")
         canonical = response.url
         body = response.read(256 * 1024)
-        assert b"encounter-map-v4" in body and b"analysis-section-encounters" in body
+        assert b"encounter-map-v5" in body and b"analysis-section-encounters" in body
         assert b"encounter_map.js" in body and b"encounter-filter-target" in body
     before = json.loads((QA / "production-before.json").read_text(encoding="utf-8-sig"))
     after = json.loads((QA / "production-after.json").read_text(encoding="utf-8-sig"))

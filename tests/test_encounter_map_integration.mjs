@@ -391,6 +391,18 @@ staticTraceDirectionPopulations.set(runtime.staticTraceLayer._segments, { status
 assert.equal(context.encounterTraceSegmentsForReport("1").length, 0, "Unresolved render populations cannot be highlighted as current lines");
 staticTraceDirectionPopulations.set(runtime.staticTraceLayer._segments, { status: "ready" });
 assert.deepEqual(plain(context.encounterTraceSegmentsForReport("1")), [traceA, traceB]);
+context.scheduleLegendTraceDirectionRefresh = () => {};
+vm.runInContext(appFunction("setLegendTraceDirectionPopulation"), context);
+context.highlightEncounterReportTraces(1);
+assert.equal(highlightLayer.members.length, 2);
+context.setLegendTraceDirectionPopulation(null, { status: "loading" });
+assert.equal(highlightLayer.members.length, 0, "Publishing pending counts clears an old retained line highlight immediately");
+context.setLegendTraceDirectionPopulation(null, { status: "ready" });
+assert.equal(highlightLayer.members.length, 2);
+runtime.traceLinkedVisibilityCacheValue = { pending: true };
+context.highlightEncounterReportTraces(1);
+assert.equal(highlightLayer.members.length, 0, "Pending exact trace visibility cannot preserve an old halo");
+runtime.traceLinkedVisibilityCacheValue = null;
 state.traceMode = "playback";
 assert.deepEqual(plain(context.encounterTraceSegmentsForReport(1)), [traceA, traceB], "Only the active playback population is used; repeated static segment IDs do not fabricate relations");
 const traceBytes = JSON.stringify([runtime.staticTraceLayer._segments, runtime.playbackTrailCanvasLayer._segments, runtime.neighborhoodTraceLayer._segments]);

@@ -1,9 +1,9 @@
 {
   "schemaId": "ufo-phone-preview-public-verification-v1",
   "status": "passed",
-  "url": "https://encounter-preview-20261013.ufo-timeline.pages.dev/whole-site#analysis-section-encounters",
-  "uniqueDeploymentUrl": "https://c9d37928.ufo-timeline.pages.dev",
-  "runtimeCommit": "8a5a99c069c98d97c9e2dd2bf26cb961330a5e39",
+  "url": "https://encounter-preview-20261013.ufo-timeline.pages.dev/whole-site",
+  "uniqueDeploymentUrl": "https://80b27fd4.ufo-timeline.pages.dev",
+  "runtimeCommit": "d643085066b64e5dcc6ec6d2fb4041ad7216d789",
   "verifiedFiles": [
     {
       "path": "404.html",
@@ -110,14 +110,14 @@
     },
     {
       "path": "app.js",
-      "bytes": 1395138,
-      "sha256": "c3a7f01316e0fa033c574a6abfed4433b16509b9d8b87f7bb17e82a91fee2ae1",
+      "bytes": 1425161,
+      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
       "providerTransformation": null
     },
     {
       "path": "catalog_filter_worker.js",
-      "bytes": 268776,
-      "sha256": "ff69499811082e6959a8a4f573dea57e87a6fa45e7462075ca9bd02d576d6d03",
+      "bytes": 269093,
+      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
       "providerTransformation": null
     },
     {
@@ -866,8 +866,8 @@
     },
     {
       "path": "encounter_analysis.css",
-      "bytes": 3265,
-      "sha256": "8a14c668b62b85bbe3e532f840e8d36b7702535976a860f5c706769855f2db83",
+      "bytes": 17995,
+      "sha256": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
       "providerTransformation": null
     },
     {
@@ -880,6 +880,12 @@
       "path": "encounter_evidence.js",
       "bytes": 25163,
       "sha256": "5bb7e350244a4c90e305b316ee516e2f37f36a273ec8ef0ce2a1d17a7ed34651",
+      "providerTransformation": null
+    },
+    {
+      "path": "encounter_map.js",
+      "bytes": 20713,
+      "sha256": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1",
       "providerTransformation": null
     },
     {
@@ -926,8 +932,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
       "providerTransformation": {
         "provider": "Cloudflare Pages Analytics",
         "inserted_bytes": 214,
@@ -1180,8 +1186,8 @@
     },
     {
       "path": "whole-site.html",
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
       "providerTransformation": {
         "provider": "Cloudflare Pages Analytics",
         "inserted_bytes": 214,

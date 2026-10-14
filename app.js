@@ -9376,7 +9376,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-map-v4");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-map-v5");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -15368,6 +15368,7 @@
 
   function setLegendTraceDirectionPopulation(summary, options) {
     runtime.legendTraceDirectionPopulation = Object.assign({ summary: summary }, options || {});
+    if (runtime.encounterTraceHighlightLayer) highlightEncounterReportTraces(runtime.encounterTraceHighlightEventId);
     scheduleLegendTraceDirectionRefresh();
   }
 
@@ -19432,6 +19433,8 @@
       if (!runtime.map || !layer || !runtime.map.hasLayer(layer) || layer._encounterScopeKey !== encounterTraceScopeKey()) return;
       if (state.traceMode === "off" && layer !== runtime.neighborhoodTraceLayer) return;
       if (layer === runtime.staticTraceLayer && (!traceModeIncludesStatic() || runtime.traceFacilityWorkerPendingKey ||
+        (runtime.legendTraceDirectionPopulation && runtime.legendTraceDirectionPopulation.status !== "ready") ||
+        (runtime.traceLinkedVisibilityCacheValue && runtime.traceLinkedVisibilityCacheValue.pending) ||
         !staticTraceDirectionPopulations.get(layer._segments) || staticTraceDirectionPopulations.get(layer._segments).status !== "ready")) return;
       if (layer === runtime.playbackTrailCanvasLayer && !traceModeIncludesPlayback()) return;
       if (layer === runtime.neighborhoodTraceLayer && !regionSelectionAffectsRendering()) return;

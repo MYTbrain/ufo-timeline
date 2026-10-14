@@ -74,11 +74,11 @@
     }
   ],
   "sourcePins": {
-    "app.js": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
+    "app.js": "8157cedd3677a68357cdfc4ce32522a93b0da107155006aacaaf0d80962028e1",
     "encounter_map.js": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1",
-    "catalog_filter_worker.js": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
+    "catalog_filter_worker.js": "36824f00adaacfd6c0af7f917444c61961b62c2756bad0ef25d101dfa065cbb1",
     "encounter_analysis.css": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
-    "index.html": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08"
+    "index.html": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d"
   },
   "localDeliveryResources": 19,
   "unmodifiedEncounterRowsValidated": 16319,
@@ -90,5 +90,6 @@
   },
   "interactiveVisualAcceptance": "pending",
   "rebuild": "Run the listed focused Node checks; delivery check requires the bounded public shell on localhost:8168. See docs/ENCOUNTER_MAP_20261013.md.",
-  "retention": "Small unique runtime QA; preserve with candidate, no corpus/database copy."
+  "retention": "Small unique runtime QA; preserve with candidate, no corpus/database copy.",
+  "pendingPublicationHighlightGuard": "Actual published pending/off states clear retained highlights immediately."
 }

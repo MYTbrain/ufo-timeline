@@ -181,5 +181,5 @@ for (const id of ["analysis-encounter-atlas-disclosure", "analysis-encounter-atl
 }
 assert.match(html, /id="analysis-encounter-atlas-disclosure"[^>]*>/);
 assert.doesNotMatch(html, /id="analysis-encounter-(?:atlas|context)-disclosure"[^>]*\bopen\b/);
-assert.ok(html.includes('encounter_analysis.css?v=2026-10-13-encounter-map-v4'));
+assert.ok(html.includes('encounter_analysis.css?v=2026-10-13-encounter-map-v5'));
 console.log("Encounter atlas lazy navigation, coverage, exact tables/exports, stale handlers, and active-context refresh tests passed.");
