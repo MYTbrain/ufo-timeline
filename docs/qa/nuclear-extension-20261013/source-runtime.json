@@ -1,0 +1,180 @@
+{
+  "schemaId": "ufo-nuclear-extension-source-audit-v1",
+  "status": "passed",
+  "tests": [
+    {
+      "date": "2006-10-09",
+      "queriedEvents": 1,
+      "nuclearCandidates": 1,
+      "selectedId": "usp000eurb",
+      "originTimeUtc": "2006-10-09T01:35:28.020Z",
+      "lat": 41.294,
+      "lon": 129.094
+    },
+    {
+      "date": "2009-05-25",
+      "queriedEvents": 1,
+      "nuclearCandidates": 1,
+      "selectedId": "usp000gxgc",
+      "originTimeUtc": "2009-05-25T00:54:43.120Z",
+      "lat": 41.303,
+      "lon": 129.037
+    },
+    {
+      "date": "2013-02-12",
+      "queriedEvents": 1,
+      "nuclearCandidates": 1,
+      "selectedId": "usc000f5t0",
+      "originTimeUtc": "2013-02-12T02:57:51.490Z",
+      "lat": 41.299,
+      "lon": 129.004
+    },
+    {
+      "date": "2016-01-06",
+      "queriedEvents": 1,
+      "nuclearCandidates": 1,
+      "selectedId": "us10004bnm",
+      "originTimeUtc": "2016-01-06T01:30:01.480Z",
+      "lat": 41.2996,
+      "lon": 129.0467
+    },
+    {
+      "date": "2016-09-09",
+      "queriedEvents": 1,
+      "nuclearCandidates": 1,
+      "selectedId": "us10006n8a",
+      "originTimeUtc": "2016-09-09T00:30:01.440Z",
+      "lat": 41.2869,
+      "lon": 129.0783
+    },
+    {
+      "date": "2017-09-03",
+      "queriedEvents": 2,
+      "nuclearCandidates": 1,
+      "selectedId": "us2000aert",
+      "originTimeUtc": "2017-09-03T03:30:01.760Z",
+      "lat": 41.3324,
+      "lon": 129.0297
+    }
+  ],
+  "facility": {
+    "id": "facility:1a022b4a6b36149071a0",
+    "name": "Sandia National Laboratories \u2014 Albuquerque / Sandia Base lineage",
+    "lat": 35.05,
+    "lon": -106.536,
+    "primaryRoleAndHistoryUrl": "https://www.sandia.gov/about/history/",
+    "markerCatalogSha256": "8c7703b602b06e8ad5d86b3bb826b20a3685ecd1100cfd6ea8369652ff1e28e4",
+    "yearBoundariesUncertain": true,
+    "strictSpatialEligible": false
+  },
+  "artifact": {
+    "schemaId": "ufo-nuclear-context-extension-v1",
+    "releaseId": "nuclear-extension-20261013-v1",
+    "file": "./nuclear_extension_v1.json.gz",
+    "url": "./data/analysis_comparisons/nuclear_extension_v1.json.gz",
+    "sha256": "a7743a6be070d5b058c08ed7b67bccc5ce71c2c3d177e8a441ad29df627c6ee3",
+    "bytes": 17998,
+    "gzipSha256": "4db2dc7e0300a10e837f0588014379ffd088e594ae4e12568e7e7bd20192e6d9",
+    "gzipBytes": 3091,
+    "additiveOnly": true,
+    "testRows": 6,
+    "nuclearInstitutions": 1,
+    "post1998Coverage": "six_declared_DPRK_tests_only_not_comprehensive_global_chronology"
+  },
+  "baseHashesBefore": {
+    "nuclear_context_v1.json": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65",
+    "nuclear_context_v1.json.gz": "01b187494a5d194ea09c0f6cb94524eed147b18ef60ce16bd1a1d2d10498f7b6"
+  },
+  "baseHashesAfter": {
+    "nuclear_context_v1.json": "5f3da478cb2d1891edacb398686f0627f27ad82fd7fe954833f72107f123ec65",
+    "nuclear_context_v1.json.gz": "01b187494a5d194ea09c0f6cb94524eed147b18ef60ce16bd1a1d2d10498f7b6"
+  },
+  "sourceHashes": [
+    {
+      "id": "ctbto_detecting_nuclear_tests.html",
+      "url": "https://www.ctbto.org/our-work/detecting-nuclear-tests",
+      "capturedFile": "nuclear_extension_sources/ctbto_detecting_nuclear_tests.html",
+      "sha256": "0a07b190ef5576646244678e772ca54b3e50abd773c8d8b8e24f0737fd9fc098",
+      "bytes": 119667,
+      "role": "primary_nuclear_test_identity_and_date"
+    },
+    {
+      "id": "sandia_history.html",
+      "url": "https://www.sandia.gov/about/history/",
+      "capturedFile": "nuclear_extension_sources/sandia_history.html",
+      "sha256": "7d5e8c68b8b538838bb2e83d6ce4e3bf919d2018804ce43d417da9db560f190e",
+      "bytes": 178468,
+      "role": "primary_institution_role_and_history"
+    },
+    {
+      "id": "usgs_geojson_format.html",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php",
+      "capturedFile": "nuclear_extension_sources/usgs_geojson_format.html",
+      "sha256": "0192039a022130b78a60f6e985c1923b5a2f7b55d02e94a1c39fe73c6a1d111c",
+      "bytes": 13086,
+      "role": "primary_API_field_definition"
+    },
+    {
+      "id": "usgs_20061009.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2006-10-09&endtime=2006-10-10&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20061009.json",
+      "sha256": "1e8b5d536d9d61a88c73bc44f98b0f051da34c5e28898398dfde1de8685b4754",
+      "bytes": 1122,
+      "role": "primary_seismic_event_location_and_origin_time"
+    },
+    {
+      "id": "usgs_20090525.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2009-05-25&endtime=2009-05-26&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20090525.json",
+      "sha256": "9cfa18eebcf86e8613238907271a346d9688152f1095fe6993e7e50242497411",
+      "bytes": 1136,
+      "role": "primary_seismic_event_location_and_origin_time"
+    },
+    {
+      "id": "usgs_20130212.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2013-02-12&endtime=2013-02-13&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20130212.json",
+      "sha256": "0bad35c678690563a1d639e3bb1dc224f2a0a88c4843e175199d5825008282d5",
+      "bytes": 1164,
+      "role": "primary_seismic_event_location_and_origin_time"
+    },
+    {
+      "id": "usgs_20160106.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-06&endtime=2016-01-07&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20160106.json",
+      "sha256": "adc6c697c8e17106525d57ca91e8029ed11e3fe25e461c0db0cb8d1c2ee99c8d",
+      "bytes": 1143,
+      "role": "primary_seismic_event_location_and_origin_time"
+    },
+    {
+      "id": "usgs_20160909.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-09-09&endtime=2016-09-10&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20160909.json",
+      "sha256": "c18ca260a68dbfc112377cb2d2ac9a45712938c38ec417ca4200beb4aeecd569",
+      "bytes": 1167,
+      "role": "primary_seismic_event_location_and_origin_time"
+    },
+    {
+      "id": "usgs_20170903.json",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2017-09-03&endtime=2017-09-04&minlatitude=40&maxlatitude=42&minlongitude=128&maxlongitude=130&minmagnitude=4&limit=10&orderby=magnitude",
+      "capturedFile": "nuclear_extension_sources/usgs_20170903.json",
+      "sha256": "3dd2c48ff09acac4a060d49f04ad0d8902c91067bdd4552e5d4ff1c1561e5cec",
+      "bytes": 1908,
+      "role": "primary_seismic_event_location_and_origin_time"
+    }
+  ],
+  "storage": {
+    "canonicalArtifact": "data/analysis_comparisons/nuclear_extension_v1.json.gz",
+    "decodedCompanion": "data/analysis_comparisons/nuclear_extension_v1.json",
+    "purpose": "Source-pinned additive DPRK test chronology and Sandia institution review; local candidate inputs only.",
+    "retention": "Retain unique source captures, extension inputs and QA; base chronology and deployed/current rollback remain unchanged.",
+    "rebuild": "py -3 scripts/build_nuclear_extension.py --shared-root <protected canonical root>; --fetch-missing-sources only for absent captures.",
+    "rollback": "Existing base nuclear_context_v1 artifacts and deployed rollback remain protected; no bundle or dataset copies created.",
+    "sourceBytes": 318861,
+    "runtimeBytes": 17998,
+    "runtimeGzipBytes": 3091,
+    "newFilesOver100MiB": [],
+    "corpusReadOrCopied": false,
+    "supersededGeneratedArtifacts": []
+  }
+}

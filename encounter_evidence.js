@@ -152,14 +152,33 @@
     });
   }
 
-  function decorate(event, index) {
+  function createLabelOriginsIndex(payload, evidenceIndex, expectedHash) {
+    requireValue(payload && payload.schemaId === "ufo-encounter-being-label-origins-v1" && payload.catalogCount === CATALOG_COUNT, "label-origin schema mismatch");
+    requireValue(expectedHash && payload.baseEvidenceDecodedSha256 === expectedHash, "label-origin base hash mismatch");
+    requireValue(JSON.stringify(payload.taxonomyKeys) === JSON.stringify(TAXONOMY.map(function (value) { return value.key; })), "label-origin taxonomy mismatch");
+    requireValue(evidenceIndex && evidenceIndex.ready && Array.isArray(payload.rows) && payload.rows.length === evidenceIndex.rowCount, "label-origin coverage mismatch");
+    const records = new Map();
+    payload.rows.forEach(function (row) {
+      const base = evidenceIndex.get(row.eventId), ref = row.sourceRef || {};
+      requireValue(base && !records.has(row.eventId) && row.source === base.source && ref.chunk === base.sourceRef.chunk && ref.detailIndex === base.sourceRef.detailIndex && ref.chunkSha256 === base.sourceRef.chunkSha256, "label-origin identity mismatch");
+      requireValue([row.beingMask, row.sourceBeingMask, row.narrativeBeingMask, row.bothBeingMask, row.unknownBeingMask].every(validMask), "invalid label-origin mask");
+      requireValue(row.beingMask === base.encounterBeingMask && (row.sourceBeingMask | row.narrativeBeingMask | row.unknownBeingMask) === row.beingMask && (row.sourceBeingMask & row.narrativeBeingMask) === row.bothBeingMask && !(row.unknownBeingMask & (row.sourceBeingMask | row.narrativeBeingMask)), "label-origin mask partition mismatch");
+      records.set(row.eventId, Object.freeze(Object.assign({}, row)));
+    });
+    return Object.freeze({ ready: true, releaseId: payload.releaseId, rowCount: records.size, get: function (id) { return records.get(identifier(id)) || null; } });
+  }
+  function decorate(event, index, originsIndex) {
     if (!event || typeof event !== "object") return event;
     const ready = Boolean(index && index.ready === true && typeof index.get === "function");
     const record = ready ? index.get(event.event_id == null ? event.eventId : event.event_id) : null;
     const mismatch = Boolean(record && sourceIdentityMismatch(event, record));
+    const origins = record && originsIndex && originsIndex.ready && originsIndex.get(record.eventId);
     return Object.assign({}, event, {
       encounterAbductionCode: record && !mismatch ? record.encounterAbductionCode : 0,
       encounterBeingMask: record && !mismatch ? record.encounterBeingMask : 0,
+      encounterSourceBeingMask: origins && !mismatch ? origins.sourceBeingMask : 0,
+      encounterNarrativeBeingMask: origins && !mismatch ? origins.narrativeBeingMask : 0,
+      encounterEvidenceProvenanceReady: Boolean(originsIndex && originsIndex.ready && !mismatch && (!record || origins)),
       encounterCraftAssociationCode: record && !mismatch ? record.encounterCraftAssociationCode : 0,
       encounterHeightFeet: record && !mismatch && record.heightFeet != null ? record.heightFeet : null,
       encounterUniform: record && !mismatch && record.uniform != null
@@ -167,6 +186,28 @@
       encounterEvidenceReady: ready && !mismatch,
       encounterIdentityMismatch: mismatch,
     });
+  }
+  function createEnrichmentIndex(payload, evidenceIndex, expectedHash) {
+    requireValue(payload && payload.schemaId === "ufo-encounter-enrichment-v1" && payload.catalogCount === CATALOG_COUNT && payload.baseEvidenceDecodedSha256 === expectedHash, "enrichment catalog/base mismatch");
+    const arrays = ["sources", "sourceEntries", "cases", "episodes", "entityObservations", "reportLinks"];
+    requireValue(arrays.every(function (key) { return Array.isArray(payload[key]); }), "enrichment tables incomplete");
+    function table(key, idKey) { const map = new Map(); payload[key].forEach(function (row) { requireValue(nonempty(row[idKey]) && !map.has(row[idKey]), "enrichment identity collision"); map.set(row[idKey], row); }); return map; }
+    const sources = table("sources", "sourceId"), entries = table("sourceEntries", "entryId"), cases = table("cases", "caseId"), episodes = table("episodes", "episodeId"), entities = table("entityObservations", "entityObservationId"), links = new Map();
+    payload.reportLinks.forEach(function (link) {
+      requireValue(identifier(link.eventId) && nonempty(link.source) && ["linked", "candidate", "contradicted"].includes(link.status), "invalid enrichment report link");
+      const base = evidenceIndex.get(link.eventId), ref = link.sourceRef || {};
+      requireValue(nonempty(ref.chunk) && Number.isInteger(ref.detailIndex) && ref.detailIndex >= 0 && validHash(ref.chunkSha256), "enrichment source pin missing");
+      if (base) requireValue(link.source === base.source && ref.chunk === base.sourceRef.chunk && ref.detailIndex === base.sourceRef.detailIndex && ref.chunkSha256 === base.sourceRef.chunkSha256, "enrichment source identity mismatch");
+      requireValue(cases.has(link.caseId) && Array.isArray(link.episodeIds) && link.episodeIds.every(function (id) { return episodes.has(id) && episodes.get(id).caseId === link.caseId; }) && Array.isArray(link.sourceEntryIds) && link.sourceEntryIds.every(function (id) { return entries.has(id); }) && Array.isArray(link.entityObservationIds) && link.entityObservationIds.every(function (id) { return entities.has(id) && link.episodeIds.includes(entities.get(id).episodeId); }), "enrichment reference mismatch");
+      requireValue(link.acceptedForRuntime !== true || link.status === "linked", "unreviewed link promoted to runtime");
+      const item = { status: link.status, acceptedForRuntime: link.acceptedForRuntime === true, case: cases.get(link.caseId),
+        episodes: link.episodeIds.map(function (id) { return episodes.get(id); }), entityObservations: link.entityObservationIds.map(function (id) { return entities.get(id); }),
+        sourceEntries: link.sourceEntryIds.map(function (id) { const entry = entries.get(id); requireValue(sources.has(entry.sourceId), "enrichment source missing"); return Object.assign({}, entry, { source: sources.get(entry.sourceId) }); }),
+        matchBasis: link.matchBasis, reviewFlags: link.reviewFlags, sourceRef: ref };
+      if (!links.has(link.eventId)) links.set(link.eventId, []); links.get(link.eventId).push(Object.freeze(item));
+    });
+    return Object.freeze({ ready: true, releaseId: payload.releaseId, rowCount: links.size,
+      get: function (id) { const records = links.get(identifier(id)); return records ? Object.freeze({ links: Object.freeze(records.slice()), policy: payload.policy }) : null; } });
   }
   function parsedFilters(filters) {
     const value = filters || {};
@@ -280,6 +321,6 @@
   }
 
   return Object.freeze({ SCHEMA_ID, RELEASE_ID, CATALOG_COUNT, TAXONOMY, ALL_BEING_MASK, ABDUCTION_CODES, ASSOCIATION_CODES,
-    createIndex, decorate, normalizeFilters, matches, beingMask, beingTypes, beingLabel, abductionLabel, craftAssociationLabel,
+    createIndex, createLabelOriginsIndex, createEnrichmentIndex, decorate, normalizeFilters, matches, beingMask, beingTypes, beingLabel, abductionLabel, craftAssociationLabel,
     renderBadges, renderEvidence, decodeEvidenceResponse, escapeHtml });
 });

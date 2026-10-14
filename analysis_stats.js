@@ -2084,7 +2084,8 @@
         evidenceRows: 0, beingRows: 0, craftAssociatedRows: 0, explicitCraftRows: 0,
         coReportedCraftRows: 0, undatedAbductionRows: 0, undatedBeingRows: 0,
         craftMatrix: new Map(), abductionCrafts: new Map(), annual: new Map(), sources: new Map(),
-        atlas: new Map(), projectionReady: {},
+        atlas: new Map(), abductionAtlas: new Map(), projectionReady: {}, evidenceMode: "all",
+        provenanceUnavailableReports: 0, provenanceReadyBeingReports: 0, abductionWithoutBeingRows: 0,
       },
     };
     accumulator.familyCounts = {
@@ -2120,13 +2121,33 @@
     return typeof value === "string" && value.trim() && !["unknown", "unavailable", "unresolved", "unparsed", "none", "null", "n/a", "not_provided"].includes(value.trim().toLowerCase());
   }
 
-  function addEncounterAtlasField(evidence, key, types, field) {
-    let axis = evidence.atlas.get(key);
-    if (!axis) {
-      axis = { cells: new Map(), columns: new Map(), columnCounts: new Map(), rowCounts: new Map(),
-        eligibleReports: 0, supportedReports: 0, unknownReports: 0, notLoadedReports: 0, excludedReports: 0 };
-      evidence.atlas.set(key, axis);
-    }
+  function encounterAtlasProvenanceReady(row, mask) {
+    const source = row.encounterSourceBeingMask, narrative = row.encounterNarrativeBeingMask;
+    return row.encounterEvidenceProvenanceReady === true && [source, narrative].every(function (value) {
+      return typeof value === "number" && Number.isInteger(value) && value >= 0 && value < Math.pow(2, ENCOUNTER_TAXONOMY.length);
+    }) && (source | narrative) === mask;
+  }
+
+  function encounterAtlasEvidenceModes(evidence, population, ready) {
+    const provenanceReady = population === "abduction" || evidence.provenanceReadyBeingReports === evidence.beingRows;
+    return [{ key: "all", label: "All indexed evidence", available: ready, unavailableReason: ready ? "" : "Encounter evidence is still loading." },
+      { key: "source_fields", label: "Direct source fields", available: ready && provenanceReady,
+        unavailableReason: !ready ? "Encounter evidence is still loading." : provenanceReady ? "" : "Complete per-label source/narrative provenance is unavailable for this cohort." },
+      { key: "narrative", label: "Narrative reports", available: ready && provenanceReady,
+        unavailableReason: !ready ? "Encounter evidence is still loading." : provenanceReady ? "" : "Complete per-label source/narrative provenance is unavailable for this cohort." }];
+  }
+
+  function encounterAtlasCounts() {
+    return { cells: new Map(), columns: new Map(), columnCounts: new Map(), rowCounts: new Map(), rowCoverage: new Map(),
+      eligibleReports: 0, supportedReports: 0, unknownReports: 0, notLoadedReports: 0, excludedReports: 0 };
+  }
+
+  function updateEncounterAtlasCounts(axis, types, field) {
+    types.forEach(function (type) {
+      let coverage = axis.rowCoverage.get(type.key);
+      if (!coverage) { coverage = { supported: 0, unknown: 0, not_loaded: 0, excluded: 0 }; axis.rowCoverage.set(type.key, coverage); }
+      coverage[field.state] += 1;
+    });
     if (field.state === "excluded") { axis.excludedReports += 1; return; }
     axis.eligibleReports += 1;
     axis[field.state === "supported" ? "supportedReports" : (field.state === "not_loaded" ? "notLoadedReports" : "unknownReports")] += 1;
@@ -2141,13 +2162,32 @@
     });
   }
 
-  function addEncounterAtlasRow(evidence, row, source, civil, types, abduction, association) {
-    const ready = evidence.projectionReady || {};
+  function addEncounterAtlasField(evidence, key, types, field, context) {
+    let axis = evidence.atlas.get(key);
+    if (!axis) {
+      axis = Object.assign(encounterAtlasCounts(), { sources: new Map(), strata: new Map(), conditionalUnknownReports: 0 });
+      evidence.atlas.set(key, axis);
+    }
+    updateEncounterAtlasCounts(axis, types, field);
+    if (!context) return;
+    let source = axis.sources.get(context.source);
+    if (!source) { source = encounterAtlasCounts(); axis.sources.set(context.source, source); }
+    updateEncounterAtlasCounts(source, types, field);
+    if (field.state !== "supported") return;
+    if (!context.conditionalEligible) { axis.conditionalUnknownReports += 1; return; }
+    const stratumKey = JSON.stringify([context.source, context.decade, context.macroregion, field.state]);
+    let stratum = axis.strata.get(stratumKey);
+    if (!stratum) { stratum = Object.assign(encounterAtlasCounts(), { source: context.source }); axis.strata.set(stratumKey, stratum); }
+    updateEncounterAtlasCounts(stratum, types, field);
+  }
+
+  function encounterAtlasFields(row, source, civil, types, abduction, association, readyValue, population) {
+    const ready = readyValue || {}, fields = {};
     const known = function (value, label) {
       return encounterAtlasKnown(value) ? [{ key: value.trim(), label: label || value.trim().replace(/_/g, " ") }] : [];
     };
     const field = function (key, categories, loaded, label) {
-      addEncounterAtlasField(evidence, key, types, encounterAtlasField(categories, loaded !== false, label));
+      fields[key] = encounterAtlasField(categories, loaded !== false, label);
     };
     const available = function (name, rowAvailable) { return ready[name] === true || rowAvailable === true; };
     const typedStatus = function (value, present) {
@@ -2166,11 +2206,12 @@
       (!start || !end || Math.floor(start.year / 10) === Math.floor(end.year / 10));
     const exactDay = !occurrenceDateExcluded && precision === "exact_day" && dayOrdinal != null && dayOrdinal >= 1 && (!start || !end || startOrdinal === endOrdinal);
     const abductionKeys = ["not_indexed", "source_reported", "narrative_reported", "ambiguous"];
-    addEncounterAtlasField(evidence, "abduction", types, { state: abduction === 0 ? "unknown" : "supported",
-      categories: [{ key: abductionKeys[abduction], label: ENCOUNTER_ABDUCTION_LABELS[abduction] }] });
-    field("co_descriptions", types.map(function (type) { return { key: type.key, label: type.label }; }), true);
-    if (association === 1 || association === 2) field("craft", known(category(row.craftType, "unknown")), true, "Craft category unspecified");
-    else addEncounterAtlasField(evidence, "craft", types, { state: "excluded", categories: [] });
+    fields.abduction = { state: abduction === 0 ? "unknown" : "supported",
+      categories: [{ key: abductionKeys[abduction], label: ENCOUNTER_ABDUCTION_LABELS[abduction] }] };
+    field("co_descriptions", types.map(function (type) { return { key: type.key, label: type.label }; }), true,
+      "Being descriptions not indexed");
+    if (population === "abduction" || association === 1 || association === 2) field("craft", known(category(row.craftType, "unknown")), true, "Craft category unspecified");
+    else fields.craft = { state: "excluded", categories: [], exclusionReason: association === 3 ? "no_craft_reported_in_source" : "craft_relation_not_established" };
     field("source", known(source), true);
     const country = encounterAtlasKnown(row.analysisCountry) ? row.analysisCountry : row.country;
     field("country", known(country), ready.geography === true || Boolean(known(country).length));
@@ -2248,11 +2289,162 @@
     const coordinateAvailable = row.analysisCoordinateEvidenceAvailable === true;
     field("coordinate_quality", coordinateAvailable && COORDINATE_QUALITY_BIN_ORDER.includes(row.analysisCoordinateQualityBin)
       ? [{ key: row.analysisCoordinateQualityBin, label: COORDINATE_QUALITY_BIN_LABELS[row.analysisCoordinateQualityBin] }] : [], available("coordinateEvidence", coordinateAvailable));
+    return fields;
   }
 
-  function buildEncounterAtlas(active, ready) {
+  function encounterAtlasRowMembership(rowValue, optionsValue) {
+    const row = rowValue || {}, options = optionsValue || {};
+    const mode = ["source_fields", "narrative"].includes(options.evidenceMode) ? options.evidenceMode : "all";
+    const population = options.population === "abduction" ? "abduction" : "being";
+    const allMask = Number(row.encounterBeingMask);
+    let mask = Number.isInteger(allMask) && allMask >= 0 && allMask < Math.pow(2, ENCOUNTER_TAXONOMY.length) ? allMask >>> 0 : 0;
+    if (!mask && population === "being") return { status: "ready", eligible: false, population, evidenceMode: mode, rowKeys: [], fields: {} };
+    let provenanceUnavailable = false;
+    if (mode !== "all" && mask) {
+      const raw = mode === "source_fields" ? row.encounterSourceBeingMask : row.encounterNarrativeBeingMask;
+      provenanceUnavailable = !encounterAtlasProvenanceReady(row, mask);
+      if (provenanceUnavailable && population === "being") return { status: "evidence_provenance_unavailable", population, rowKeys: [], fields: {}, eligible: false };
+      mask = provenanceUnavailable ? 0 : raw >>> 0;
+    }
+    const types = ENCOUNTER_TAXONOMY.filter(function (_type, bit) { return Boolean(mask & (1 << bit)); });
+    const abduction = Number(row.encounterAbductionCode);
+    const reported = abduction === 1 || abduction === 2;
+    const eligible = population === "being" ? mask > 0 : reported && (mode === "all" || mode === "source_fields" && abduction === 1 || mode === "narrative" && abduction === 2);
+    const source = category(row.source, "unknown");
+    const year = finiteInteger(row.analysisYear), month = finiteInteger(row.analysisMonth);
+    const civil = year != null && year >= 1 && month != null && month >= 1 && month <= 12 ? { year, month } : civilFromOrdinal(finiteInteger(row.sortOrdinal));
+    const fields = encounterAtlasFields(row, source, civil, types, reported || abduction === 3 ? abduction : 0,
+      Number(row.encounterCraftAssociationCode), options.projectionReadiness || {}, population);
+    if (provenanceUnavailable) fields.co_descriptions = encounterAtlasField([], false, "Being-label provenance not loaded");
+    return { status: "ready", population, evidenceMode: mode, eligible, source,
+      rowKeys: population === "being" ? types.map(function (type) { return type.key; }) : (reported ? [abduction === 1 ? "source_reported" : "narrative_reported"] : []),
+      fields };
+  }
+
+  function addEncounterAtlasRow(evidence, row, source, civil, types, abduction, association, population) {
+    const abductionPopulation = population === "abduction";
+    const target = abductionPopulation ? { atlas: evidence.abductionAtlas } : evidence;
+    const fields = encounterAtlasFields(row, source, civil, types, abduction, association, evidence.projectionReady, population);
+    if (abductionPopulation && evidence.evidenceMode !== "all" && Number(row.encounterBeingMask) > 0 && !encounterAtlasProvenanceReady(row, Number(row.encounterBeingMask) >>> 0))
+      fields.co_descriptions = encounterAtlasField([], false, "Being-label provenance not loaded");
+    const rowTypes = abductionPopulation ? [{ key: abduction === 1 ? "source_reported" : "narrative_reported",
+      label: abduction === 1 ? "Source-classified abduction" : "Narrative-reported abduction" }] : types;
+    const decade = fields.decade.state === "supported" ? fields.decade.categories[0].key : null;
+    const macroregion = fields.region.state === "supported" ? fields.region.categories[0].key : null;
+    const context = { source, decade, macroregion, conditionalEligible: encounterAtlasKnown(source) && decade != null && macroregion != null };
+    Object.keys(fields).forEach(function (key) { addEncounterAtlasField(target, key, rowTypes, fields[key], context); });
+  }
+
+  function encounterAtlasRatio(numerator, denominator) { return denominator > 0 ? numerator / denominator : null; }
+
+  function encounterAtlasRange(values) {
+    const valid = values.filter(function (value) { return typeof value === "number" && Number.isFinite(value); });
+    return valid.length ? { lower: Math.min.apply(null, valid), upper: Math.max.apply(null, valid), estimates: valid.length,
+      kind: "leave_one_source_out_sensitivity_range", confidenceLevel: null } : null;
+  }
+
+  function encounterAtlasConditional(state, axisKey, rowKey, columnKey) {
+    const policy = { covariates: ["source", "decade", "macroregion", "field_availability"], minimumCommonSupport: 0.8,
+      minimumStratumGroupReports: 3, minimumComparisonGroupReports: 20 };
+    const base = Object.assign({ inferenceEligible: false, statisticalInterval: null, pValue: null, qValue: null,
+      uncertaintyStatus: "statistical_uncertainty_blocked_unresolved_incident_and_source_dependence", estimateAvailable: false }, policy);
+    if (["source", "decade", "region"].includes(axisKey)) return Object.assign(base, { status: "not_applicable_conditioned_axis", difference: null,
+      suppressionReasons: ["axis_is_a_conditioning_variable"] });
+    if (axisKey === "co_descriptions" && rowKey === columnKey || axisKey === "abduction" && ["source_reported", "narrative_reported"].includes(rowKey))
+      return Object.assign(base, { status: "not_applicable_row_definition", difference: null, suppressionReasons: ["category_defines_the_row_label"] });
+    if (["unknown", "not_loaded", "not_indexed"].includes(columnKey)) return Object.assign(base, { status: "field_not_supported", difference: null,
+      suppressionReasons: ["unknown_is_not_a_negative_observation"] });
+    const rowCoverage = state.rowCoverage.get(rowKey) || { supported: 0 };
+    const totalRow = rowCoverage.supported;
+    const totalOther = state.supportedReports - totalRow;
+    const common = [];
+    state.strata.forEach(function (stratum) {
+      const rowN = stratum.rowCounts.get(rowKey) || 0, otherN = stratum.eligibleReports - rowN;
+      if (rowN < policy.minimumStratumGroupReports || otherN < policy.minimumStratumGroupReports) return;
+      const rowCount = stratum.cells.get(rowKey + "\u0000" + columnKey) || 0;
+      const otherCount = (stratum.columnCounts.get(columnKey) || 0) - rowCount;
+      common.push({ source: stratum.source, rowN, otherN, rowCount, otherCount });
+    });
+    function estimate(strata, denominatorRow, denominatorOther) {
+      const commonRowN = strata.reduce(function (sum, entry) { return sum + entry.rowN; }, 0);
+      const commonOtherN = strata.reduce(function (sum, entry) { return sum + entry.otherN; }, 0);
+      const weightN = commonRowN + commonOtherN;
+      let rowShare = 0, otherShare = 0;
+      strata.forEach(function (entry) { const weight = (entry.rowN + entry.otherN) / weightN;
+        rowShare += weight * entry.rowCount / entry.rowN; otherShare += weight * entry.otherCount / entry.otherN; });
+      const commonSupportRate = Math.min(encounterAtlasRatio(commonRowN, denominatorRow) || 0, encounterAtlasRatio(commonOtherN, denominatorOther) || 0);
+      const available = commonSupportRate >= policy.minimumCommonSupport && commonRowN >= policy.minimumComparisonGroupReports && commonOtherN >= policy.minimumComparisonGroupReports;
+      return { commonRowN, commonOtherN, commonSupportRate, commonStrata: strata.length,
+        estimateAvailable: available, difference: available ? rowShare - otherShare : null,
+        rowCategoryShare: available ? rowShare : null, otherCategoryShare: available ? otherShare : null };
+    }
+    const value = estimate(common, totalRow, totalOther);
+    const omitted = [];
+    state.sources.forEach(function (sourceState, source) {
+      if (!encounterAtlasKnown(source)) return;
+      const sourceRow = (sourceState.rowCoverage.get(rowKey) || { supported: 0 }).supported;
+      const sourceOther = sourceState.supportedReports - sourceRow;
+      const next = estimate(common.filter(function (entry) { return entry.source !== source; }), totalRow - sourceRow, totalOther - sourceOther);
+      if (next.estimateAvailable) omitted.push(next.difference);
+    });
+    return Object.assign(base, value, { status: value.estimateAvailable ? "ready_descriptive_conditional" : "insufficient_common_support",
+      rowGroupSupportedReports: totalRow, otherGroupSupportedReports: totalOther,
+      conditioningUnknownReports: state.conditionalUnknownReports,
+      sourceSensitivity: encounterAtlasRange(omitted),
+      sourceSensitivitySupportedOmissions: omitted.length, sourceSensitivityRequestedOmissions: state.sources.size,
+      comparisonMeaning: "Recorded category share among reports with this indexed row label versus other reports in this indexed population, standardized to their common source/decade/macroregion/field-support strata. Other labels are not physical negative observations.",
+      suppressionReasons: value.estimateAvailable ? ["incident_independence_unproven", "source_independence_unproven", "observation_effort_unmeasured"]
+        : ["insufficient_shared_strata_or_group_counts", "incident_independence_unproven", "source_independence_unproven"] });
+  }
+
+  function encounterAtlasCell(state, axisKey, rowKey, columnKey, count) {
+    const rowN = state.rowCounts.get(rowKey) || 0, columnN = state.columnCounts.get(columnKey) || 0;
+    const support = state.rowCoverage.get(rowKey) || { supported: 0, unknown: 0, not_loaded: 0, excluded: 0 };
+    const sources = Array.from(state.sources.entries()).filter(function (entry) { return encounterAtlasKnown(entry[0]) && entry[1].eligibleReports > 0; });
+    let joint = 0, rowMargin = 0, columnMargin = 0;
+    sources.forEach(function (entry) {
+      const part = entry[1]; joint += (part.cells.get(rowKey + "\u0000" + columnKey) || 0) / part.eligibleReports;
+      rowMargin += (part.rowCounts.get(rowKey) || 0) / part.eligibleReports;
+      columnMargin += (part.columnCounts.get(columnKey) || 0) / part.eligibleReports;
+    });
+    const omitted = Array.from(state.sources.entries()).map(function (entry) {
+      const part = entry[1], n = state.eligibleReports - part.eligibleReports;
+      const observed = count - (part.cells.get(rowKey + "\u0000" + columnKey) || 0);
+      const remainingRow = rowN - (part.rowCounts.get(rowKey) || 0), remainingColumn = columnN - (part.columnCounts.get(columnKey) || 0);
+      return { excludedSource: entry[0], count: observed, reportDenominator: n, rowReportDenominator: remainingRow, columnReportDenominator: remainingColumn,
+        share: encounterAtlasRatio(observed, n), rowShare: encounterAtlasRatio(observed, remainingRow), columnShare: encounterAtlasRatio(observed, remainingColumn) };
+    });
+    const supportedCategory = !["unknown", "not_loaded", "not_indexed"].includes(columnKey);
+    return { row: rowKey, column: columnKey, count, value: count, observedCount: count,
+      share: encounterAtlasRatio(count, state.eligibleReports), reportDenominator: state.eligibleReports,
+      rowShare: encounterAtlasRatio(count, rowN), rowReportDenominator: rowN,
+      columnShare: encounterAtlasRatio(count, columnN), columnReportDenominator: columnN,
+      supportedRowShare: supportedCategory ? encounterAtlasRatio(count, support.supported) : null,
+      supportedRowReportDenominator: support.supported, rowCoverage: Object.assign({}, support),
+      missingFieldBounds: supportedCategory && rowN ? { lower: count / rowN, upper: (count + support.unknown + support.not_loaded) / rowN,
+        kind: "worst_case_missing_field_completion", confidenceLevel: null } : null,
+      sourceStandardizedShare: sources.length ? joint / sources.length : null,
+      sourceStandardizedRowShare: encounterAtlasRatio(joint, rowMargin), sourceStandardizedColumnShare: encounterAtlasRatio(joint, columnMargin),
+      sourceCoverage: { eligibleSources: sources.length, excludedUnknownSourceReports: state.eligibleReports - sources.reduce(function (sum, entry) { return sum + entry[1].eligibleReports; }, 0) },
+      leaveOneSourceOut: omitted, sourceSensitivity: { share: encounterAtlasRange(omitted.map(function (item) { return item.share; })),
+        rowShare: encounterAtlasRange(omitted.map(function (item) { return item.rowShare; })), columnShare: encounterAtlasRange(omitted.map(function (item) { return item.columnShare; })) },
+      conditionalComparison: encounterAtlasConditional(state, axisKey, rowKey, columnKey),
+      estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
+  }
+
+  function buildEncounterAtlas(active, ready, populationValue) {
     const evidence = active.encounters;
-    if (!ready) return { status: "loading", unit: "reports", axes: ENCOUNTER_ATLAS_AXES.map(function (definition) {
+    const population = populationValue === "abduction" ? "abduction" : "being";
+    const abductionPopulation = population === "abduction";
+    const atlas = abductionPopulation ? evidence.abductionAtlas : evidence.atlas;
+    const sourceState = atlas.get("source");
+    const populationN = sourceState ? sourceState.eligibleReports : 0;
+    const provenanceUnavailable = !abductionPopulation && evidence.evidenceMode !== "all" && evidence.provenanceUnavailableReports > 0;
+    const populationLabel = abductionPopulation ? "reported abduction reports" : "being-labelled reports";
+    const rowDefinitions = abductionPopulation ? [{ key: "source_reported", label: "Source-classified abduction" },
+      { key: "narrative_reported", label: "Narrative-reported abduction" }] : ENCOUNTER_TAXONOMY;
+    if (!ready) return { status: "loading", key: population, label: abductionPopulation ? "Reported abductions" : "Reported beings",
+      reportCount: null, evidenceMode: evidence.evidenceMode, evidenceModes: encounterAtlasEvidenceModes(evidence, population, false), unit: "reports", axes: ENCOUNTER_ATLAS_AXES.map(function (definition) {
       return Object.assign({}, definition, { status: "loading", unit: "reports", rows: [], columns: [], cells: [],
         shareLabel: "Share of eligible being reports", coverage: { cohortReports: active.total, beingReports: 0, eligibleReports: 0,
           supportedReports: 0, unknownReports: 0, notLoadedReports: 0, excludedReports: 0, membershipCount: 0 }, inferenceEligible: false });
@@ -2262,7 +2454,7 @@
       time_period: TIME_OF_DAY_BIN_ORDER, duration: DURATION_BIN_ORDER, witnesses: WITNESS_COUNT_BIN_ORDER,
       height: ["under_3_ft", "3_to_under_5_ft", "5_to_under_7_ft", "7_to_under_10_ft", "10_ft_plus"] };
     const axes = ENCOUNTER_ATLAS_AXES.map(function (definition) {
-      const state = evidence.atlas.get(definition.key);
+      const state = atlas.get(definition.key);
       const external = definition.group === "External context";
       const eligibleReports = state ? state.eligibleReports : 0;
       const columns = state ? Array.from(state.columns.entries()).sort(function (left, right) {
@@ -2279,33 +2471,48 @@
         }
         return (state.columnCounts.get(right[0]) || 0) - (state.columnCounts.get(left[0]) || 0) || left[0].localeCompare(right[0]);
       }).map(function (entry) { return { key: entry[0], label: entry[1], reports: state.columnCounts.get(entry[0]) || 0 }; }) : [];
-      const rows = ENCOUNTER_TAXONOMY.filter(function (type) { return state && state.rowCounts.has(type.key); })
-        .map(function (type) { return { key: type.key, label: type.label, reports: state.rowCounts.get(type.key) }; });
+      const rows = rowDefinitions.filter(function (type) { return state && state.rowCounts.has(type.key); })
+        .map(function (type) { return Object.assign({ key: type.key, label: type.label, reports: state.rowCounts.get(type.key) }, state.rowCoverage.get(type.key)); });
       const cells = state ? Array.from(state.cells.entries()).map(function (entry) {
         const keys = entry[0].split("\u0000");
-        return { row: keys[0], column: keys[1], count: entry[1], value: entry[1], observedCount: entry[1],
-          share: eligibleReports ? entry[1] / eligibleReports : null, reportDenominator: eligibleReports,
-          estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
+        return encounterAtlasCell(state, definition.key, keys[0], keys[1], entry[1]);
       }) : [];
-      const coverage = { cohortReports: active.total, beingReports: evidence.beingRows, eligibleReports,
+      const coverage = { cohortReports: active.total, beingReports: evidence.beingRows, populationReports: provenanceUnavailable ? null : populationN, eligibleReports,
         supportedReports: state ? state.supportedReports : 0, unknownReports: state ? state.unknownReports : 0,
         notLoadedReports: state ? state.notLoadedReports : 0, excludedReports: state ? state.excludedReports : 0,
         membershipCount: cells.reduce(function (sum, cell) { return sum + cell.count; }, 0) };
-      let status = "no_being_reports";
+      let status = abductionPopulation ? "no_abduction_reports" : "no_being_reports";
       if (!ready) status = "loading";
       else if (external) status = "external_comparison";
       else if (state && state.supportedReports) status = state.unknownReports || state.notLoadedReports || state.excludedReports ? "ready_descriptive_partial" : "ready_descriptive";
       else if (state && state.notLoadedReports === eligibleReports && eligibleReports) status = "data_unavailable";
       else if (state && state.excludedReports && !eligibleReports) status = "no_eligible_reports";
-      else if (evidence.beingRows) status = "no_supported_categories";
-      return Object.assign({}, definition, { status, unit: "reports", rows, columns, cells: ready && !external ? cells : [],
-        shareLabel: "Share of eligible being reports", coverage, inferenceEligible: false,
+      else if (populationN) status = "no_supported_categories";
+      if (provenanceUnavailable) status = "evidence_provenance_unavailable";
+      const fieldPolicy = abductionPopulation && definition.key === "craft" ? "Craft classifications on reported-abduction records, including reports without indexed being descriptions. A source co-report does not establish a physical association." : definition.fieldPolicy;
+      return Object.assign({}, definition, { fieldPolicy, status, unit: "reports", population, rows, columns,
+        cells: ready && !external && status !== "evidence_provenance_unavailable" ? cells : [],
+        shareLabel: "Share of eligible " + populationLabel, coverage, inferenceEligible: false,
+        sourceStandardization: { method: "equal_source_mixture_of_indexed_report_composition", weights: state ? Array.from(state.sources.entries())
+          .filter(function (entry) { return encounterAtlasKnown(entry[0]) && entry[1].eligibleReports > 0; }).map(function (entry, _index, all) { return { source: entry[0], reports: entry[1].eligibleReports, weight: 1 / all.length }; }) : [],
+          policy: "Equal weights apply to source collections represented in this eligible indexed population. This adjusts source composition only, not coding sensitivity, observer effort, incident duplication or physical occurrence rates." },
+        multipleTesting: { familyId: "encounter_" + population + "_" + definition.key + "_conditional_v1", declaredComparisons:
+          ["source", "decade", "region"].includes(definition.key) || abductionPopulation && definition.key === "abduction" ? 0 : rows.reduce(function (sum, row) {
+            return sum + columns.filter(function (column) { return !["unknown", "not_loaded", "not_indexed"].includes(column.key) && !(definition.key === "co_descriptions" && row.key === column.key); }).length;
+          }, 0),
+          testsRun: 0, correctionStatus: "not_run_inference_blocked", plannedCorrection: "Benjamini-Hochberg within the declared axis/population family",
+          gateReasons: ["incident_independence_unproven", "source_independence_unproven", "observing_effort_unmeasured"], minimumCommonSupport: 0.8 },
         unavailableReason: external ? "Computed by the separate qualified context engine; per-report categories are not inferred in the core atlas."
           : (status === "data_unavailable" ? "The required source-field projection has not loaded." : ""),
       });
     });
-    return { status: ready ? "ready_descriptive" : "loading", unit: "reports", axes,
-      policy: "Each original report counts once per being-description/category cell. Types and compound attributes are multi-label, so memberships can exceed distinct report counts. These are descriptive co-occurrences, not causal effects or verified incidents.",
+    return { status: provenanceUnavailable ? "evidence_provenance_unavailable" : "ready_descriptive",
+      key: population, label: abductionPopulation ? "Reported abductions" : "Reported beings", reportCount: provenanceUnavailable ? null : populationN,
+      reportCountEvidenceBounds: provenanceUnavailable ? { lower: populationN, upper: populationN + evidence.provenanceUnavailableReports,
+        kind: "unresolved_label_provenance_population_bounds" } : null,
+      evidenceMode: evidence.evidenceMode, evidenceModes: encounterAtlasEvidenceModes(evidence, population, true),
+      provenanceUnavailableReports: evidence.provenanceUnavailableReports, unit: "reports", axes,
+      policy: "Each original report counts once per indexed label/category cell. Types and compound attributes are multi-label, so memberships and percentages across overlapping labels can exceed the report denominator. Row and column denominators count distinct reports. Source standardization and conditional contrasts are descriptive catalog composition, not causal effects or verified incidents. Statistical uncertainty and p-values remain unavailable until incident/source independence is established.",
       inferentialTestsRun: 0, patternFinderEligible: false };
   }
 
@@ -2322,6 +2529,7 @@
     evidence.abduction[abduction] += 1;
     if (hasEvidence) evidence.evidenceRows += 1;
     if (hasBeing) evidence.beingRows += 1;
+    if (hasBeing && encounterAtlasProvenanceReady(row, mask)) evidence.provenanceReadyBeingReports += 1;
     let sourceCoverage = evidence.sources.get(source);
     if (!sourceCoverage) {
       sourceCoverage = { total: 0, evidence: 0, abduction: 0, ambiguous: 0, beings: 0 };
@@ -2346,7 +2554,19 @@
       evidence.beingCounts[index] += 1;
       if (craftAssociation) addMatrixCount(evidence.craftMatrix, type.key, craft);
     });
-    if (hasBeing) addEncounterAtlasRow(evidence, row, source, civil, ENCOUNTER_TAXONOMY.filter(function (_type, index) { return Boolean(mask & (1 << index)); }), abduction, association);
+    let atlasMask = mask;
+    if (evidence.evidenceMode !== "all") {
+      const modeMask = evidence.evidenceMode === "source_fields" ? row.encounterSourceBeingMask : row.encounterNarrativeBeingMask;
+      if (encounterAtlasProvenanceReady(row, mask)) atlasMask = modeMask;
+      else { atlasMask = 0; if (hasBeing) evidence.provenanceUnavailableReports += 1; }
+    }
+    const atlasTypes = ENCOUNTER_TAXONOMY.filter(function (_type, index) { return Boolean(atlasMask & (1 << index)); });
+    if (atlasMask) addEncounterAtlasRow(evidence, row, source, civil, atlasTypes, abduction, association, "being");
+    if (reportedAbduction) {
+      if (!hasBeing) evidence.abductionWithoutBeingRows += 1;
+      if (evidence.evidenceMode === "all" || evidence.evidenceMode === "source_fields" && abduction === 1 || evidence.evidenceMode === "narrative" && abduction === 2)
+        addEncounterAtlasRow(evidence, row, source, civil, atlasTypes, abduction, association, "abduction");
+    }
     const intervalStart = civilFromOrdinal(finiteInteger(row.dateStartOrdinal));
     const intervalEnd = civilFromOrdinal(finiteInteger(row.dateEndOrdinal));
     const spansYears = intervalStart && intervalEnd && intervalStart.year !== intervalEnd.year;
@@ -2369,12 +2589,16 @@
 
   function buildEncounterAssessment(active, ready) {
     const evidence = active.encounters;
+    const beingAtlas = buildEncounterAtlas(active, ready, "being"), abductionAtlas = buildEncounterAtlas(active, ready, "abduction");
+    const comparisonAtlas = Object.assign({}, beingAtlas, { populations: { being: beingAtlas, abduction: abductionAtlas },
+      defaultPopulation: "being", metricOptions: ["count", "row_share", "column_share", "source_standardized_row_share", "source_standardized_column_share", "conditional_difference"],
+      abductionWithoutBeingRows: evidence.abductionWithoutBeingRows });
     const countRow = function (label, count, total) {
       return { label, value: count, count, observedCount: count, share: total ? count / total : null,
         total, estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
     };
     if (!ready) return { status: "loading", evidenceReady: false, abductionProfile: [], beingProfile: [],
-      craftMatrix: [], abductionCraft: [], annualActivity: [], sourceCoverage: [], coverage: [], comparisonAtlas: buildEncounterAtlas(active, false) };
+      craftMatrix: [], abductionCraft: [], annualActivity: [], sourceCoverage: [], coverage: [], comparisonAtlas };
     const annual = Array.from(evidence.annual.entries()).sort(function (left, right) { return Number(left[0]) - Number(right[0]); });
     const series = [
       { label: "Abduction reports", field: "abduction" },
@@ -2392,6 +2616,7 @@
     return {
       status: "ready", evidenceReady: true, catalogRows: active.total, evidenceRows: evidence.evidenceRows,
       abductionRows: evidence.abduction[1] + evidence.abduction[2], ambiguousAbductionRows: evidence.abduction[3],
+      abductionWithoutBeingRows: evidence.abductionWithoutBeingRows,
       beingRows: evidence.beingRows, craftAssociatedRows: evidence.craftAssociatedRows,
       explicitCraftRows: evidence.explicitCraftRows, coReportedCraftRows: evidence.coReportedCraftRows,
       undatedAbductionRows: evidence.undatedAbductionRows, undatedBeingRows: evidence.undatedBeingRows,
@@ -2408,7 +2633,7 @@
         });
       }),
       annualActivity: annual.length ? series : [], sourceCoverage,
-      comparisonAtlas: buildEncounterAtlas(active, true),
+      comparisonAtlas,
       coverage: [
         { label: "Indexed encounter evidence", count: evidence.evidenceRows, total: active.total },
         { label: "Reported abductions", count: evidence.abduction[1] + evidence.abduction[2], total: active.total },
@@ -6920,6 +7145,9 @@
     };
     active.encounters.projectionReady = encounterProjectionReadiness;
     reference.encounters.projectionReady = encounterProjectionReadiness;
+    const encounterEvidenceMode = ["source_fields", "narrative"].includes(options.encounterEvidenceMode) ? options.encounterEvidenceMode : "all";
+    active.encounters.evidenceMode = encounterEvidenceMode;
+    reference.encounters.evidenceMode = encounterEvidenceMode;
     const quickCoreAccumulator = inferenceDeferred &&
       !domainRequested(requestedDomains, "craft") &&
       !domainRequested(requestedDomains, "geography");
@@ -7323,6 +7551,7 @@
     buildDurationAssessment,
     buildTimeOfDayAssessment,
     buildColorAssessment,
+    encounterAtlasRowMembership,
     computeAnalysis,
   });
 });

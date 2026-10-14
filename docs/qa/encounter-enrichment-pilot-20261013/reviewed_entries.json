@@ -1,0 +1,2774 @@
+{
+  "schemaId": "ufo-encounter-enrichment-reviewed-input-v1",
+  "sources": {
+    "humcat1954": {
+      "title": "HUMCAT 1954 original case cards",
+      "url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1954.pdf",
+      "kind": "custodian_case_cards"
+    },
+    "humcat1961": {
+      "title": "HUMCAT 1961 original case cards",
+      "url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1961.pdf",
+      "kind": "custodian_case_cards"
+    },
+    "humcat1965": {
+      "title": "HUMCAT 1965 original case cards",
+      "url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1965.pdf",
+      "kind": "custodian_case_cards"
+    },
+    "humcat1975": {
+      "title": "HUMCAT 1975 original case cards",
+      "url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1975.pdf",
+      "kind": "custodian_case_cards"
+    },
+    "rosales1993": {
+      "title": "Albert Rosales humanoid catalog: 1993",
+      "url": "https://www.iraap.org/rosales/1993.htm",
+      "kind": "author_case_compilation"
+    },
+    "urecat_megrit": {
+      "title": "URECAT 000304: Megrit",
+      "url": "https://ufologie.patrickgross.org/ce3/1954-10-04-france-megritf.htm",
+      "kind": "attributed_source_comparison"
+    },
+    "gross_quarouble_sep": {
+      "title": "France 1954: Quarouble September",
+      "url": "https://ufologie.patrickgross.org/1954/10sep1954quaroublef.htm",
+      "kind": "attributed_source_comparison"
+    },
+    "gross_mourieras": {
+      "title": "France 1954: Mourieras",
+      "url": "https://ufologie.patrickgross.org/1954/10sep1954mourierasf.htm",
+      "kind": "attributed_source_comparison"
+    },
+    "gross_quarouble_oct": {
+      "title": "France 1954: Quarouble October",
+      "url": "https://ufologie.patrickgross.org/1954/10oct1954quaroublef.htm",
+      "kind": "attributed_source_comparison"
+    }
+  },
+  "entries": [
+    {
+      "key": "hellwig-first",
+      "sourceId": "humcat1954",
+      "nativeEntryId": "54-04",
+      "caseKey": "hellwig",
+      "title": "Santa Maria: first encounter",
+      "locator": {
+        "pageIndex": 4,
+        "section": "54-04"
+      },
+      "shortExcerpt": "March, 1954",
+      "upstreamCitation": "FSR XII/6, pp.27f.; Diario de Noticias, 1965-08-25",
+      "episodes": [
+        {
+          "key": "hellwig-first",
+          "date": {
+            "raw": "March 1954",
+            "precision": "month",
+            "startIso": "1954-03-01",
+            "endIso": "1954-03-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1700",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Santa Maria, Brazil",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "voluntary",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Seated man",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 5.166666666666667,
+                  "unit": "ft",
+                  "raw": "about 5 ft 2 in",
+                  "attribution": null
+                },
+                {
+                  "field": "build",
+                  "value": "slim",
+                  "unit": null,
+                  "raw": "slim",
+                  "attribution": null
+                },
+                {
+                  "field": "complexion",
+                  "value": "brownish",
+                  "unit": null,
+                  "raw": "brownish",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": []
+            },
+            {
+              "label": "Outside man",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 1,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "1983799744152284",
+          "episodeKeys": [
+            "hellwig-first"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "reported_origin_not_verified"
+      ]
+    },
+    {
+      "key": "hellwig-second",
+      "sourceId": "humcat1954",
+      "nativeEntryId": "54-05",
+      "caseKey": "hellwig",
+      "title": "Santa Maria: following day",
+      "locator": {
+        "pageIndex": 5,
+        "section": "54-05"
+      },
+      "shortExcerpt": "The next day",
+      "upstreamCitation": "Same source as HUMCAT 54-04",
+      "episodes": [
+        {
+          "key": "hellwig-second",
+          "date": {
+            "raw": "Following day after 54-04",
+            "precision": "relative_day",
+            "startIso": null,
+            "endIso": null,
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": null,
+            "precision": "unknown",
+            "status": "unknown",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Santa Maria, Brazil",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "voluntary",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "relative_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Fair man",
+              "reportedTypes": [
+                "human_like",
+                "tall_humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "stature",
+                  "value": "tall",
+                  "unit": null,
+                  "raw": "tall",
+                  "attribution": null
+                },
+                {
+                  "field": "complexion",
+                  "value": "fair",
+                  "unit": null,
+                  "raw": "fair",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": []
+            },
+            {
+              "label": "Two women",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "hair",
+                  "value": "long black",
+                  "unit": null,
+                  "raw": "long black",
+                  "attribution": null
+                },
+                {
+                  "field": "eyes",
+                  "value": "slanting",
+                  "unit": null,
+                  "raw": "slanting",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            },
+            {
+              "label": "Shared crew clothing",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 3,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "brown one-piece suede-like garments",
+                  "unit": null,
+                  "raw": "brown one-piece suede-like garments",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "overlapping_attribute_group_not_additional_beings"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "no_absolute_calendar_day",
+            "invitation_is_not_forced_abduction"
+          ],
+          "relationship": {
+            "otherEpisodeKey": "hellwig-first",
+            "kind": "following_day",
+            "dayDelta": 1
+          }
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3650629875285173",
+          "episodeKeys": [
+            "hellwig-second"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "reported_origin_not_verified"
+      ]
+    },
+    {
+      "key": "penrose",
+      "sourceId": "humcat1954",
+      "nativeEntryId": "1954-05-13 Penrose",
+      "caseKey": "penrose",
+      "title": "Derby–Burton roadside report",
+      "locator": {
+        "pageIndex": 9,
+        "section": "1954-05-13 Penrose"
+      },
+      "shortExcerpt": "May 13, 1954",
+      "upstreamCitation": "FSR XXIII/4 (1977), pp.23f.",
+      "episodes": [
+        {
+          "key": "penrose",
+          "date": {
+            "raw": "May 13 1954",
+            "precision": "exact_day",
+            "startIso": "1954-05-13",
+            "endIso": "1954-05-13",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "2330",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": [
+              {
+                "ianaCandidate": "Europe/London",
+                "status": "locality_inference_only",
+                "historicalOffsetVerified": false
+              }
+            ]
+          },
+          "site": {
+            "raw": "Between Derby and Burton, England",
+            "precision": "corridor",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "conscious",
+          "recallStages": [
+            {
+              "method": "conscious",
+              "content": "initial encounter and recalled transport"
+            },
+            {
+              "method": "hypnotic",
+              "status": "planned_only",
+              "content": "not accepted as completed recall"
+            }
+          ],
+          "scope": "dated_episode",
+          "onboardStatus": "reported",
+          "entities": [
+            {
+              "label": "Room crew",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": null,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "one-piece suits",
+                  "unit": null,
+                  "raw": "one-piece suits",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "hypnosis_planned_not_completed",
+            "native_clock_00_not_used_as_midnight"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2789588903441086",
+          "episodeKeys": [
+            "penrose"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "first_publication_decades_after_claimed_date"
+      ]
+    },
+    {
+      "key": "stalnaker",
+      "sourceId": "humcat1954",
+      "nativeEntryId": "1954 Addendum Mulberry",
+      "caseKey": "stalnaker",
+      "title": "Mulberry: first episode",
+      "locator": {
+        "pageIndex": 18,
+        "section": "1954 Addendum Mulberry"
+      },
+      "shortExcerpt": "August (undated)",
+      "upstreamCitation": "First-hand interview, 1977-03-14; E-T Conference account, 1977-03-13",
+      "episodes": [
+        {
+          "key": "stalnaker",
+          "date": {
+            "raw": "Undated August 1954",
+            "precision": "month",
+            "startIso": "1954-08-01",
+            "endIso": "1954-08-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "about 1600",
+            "precision": "approximate_minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Mulberry, Florida",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "mixed",
+          "recallStages": [
+            {
+              "method": "conscious",
+              "content": "initial roadside figure and memory gap"
+            },
+            {
+              "method": "hypnotic",
+              "recalledAt": "spring 1975",
+              "content": "grasp and room account"
+            }
+          ],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Initial road figure",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "black cape and jumpsuit",
+                  "unit": null,
+                  "raw": "black cape and jumpsuit",
+                  "attribution": null
+                },
+                {
+                  "field": "complexion",
+                  "value": "pale",
+                  "unit": null,
+                  "raw": "pale",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "not_established",
+              "scope": "individual",
+              "reviewFlags": []
+            },
+            {
+              "label": "Recalled room man",
+              "reportedTypes": [
+                "human_like",
+                "small_humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 5.416666666666667,
+                  "unit": "ft",
+                  "raw": "5 ft 5 in",
+                  "attribution": null
+                },
+                {
+                  "field": "hair",
+                  "value": "bald",
+                  "unit": null,
+                  "raw": "bald",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "not_established",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "hypnotic_content_separate_from_initial_observation",
+            "later_episodes_not_counted_here",
+            "native_height_rounding_disagrees"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2881065199895387",
+          "episodeKeys": [
+            "stalnaker"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "historical_child_report_public_identity_minimized",
+        "continued_on_pdf_page_19"
+      ]
+    },
+    {
+      "key": "simonton",
+      "sourceId": "humcat1961",
+      "nativeEntryId": "61-05",
+      "caseKey": "simonton",
+      "title": "Eagle River exchange",
+      "locator": {
+        "pageIndex": 6,
+        "section": "61-05"
+      },
+      "shortExcerpt": "April 18, 1961",
+      "upstreamCitation": "HUMCAT card investigator/source footer",
+      "episodes": [
+        {
+          "key": "simonton",
+          "date": {
+            "raw": "April 18 1961",
+            "precision": "exact_day",
+            "startIso": "1961-04-18",
+            "endIso": "1961-04-18",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1100",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Eagle River, Wisconsin",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "voluntary",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Three occupants",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 3,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 5,
+                  "unit": "ft",
+                  "raw": "about 5 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "complexion",
+                  "value": "dark",
+                  "unit": null,
+                  "raw": "dark",
+                  "attribution": null
+                },
+                {
+                  "field": "clothing",
+                  "value": "black hooded jersey costumes",
+                  "unit": null,
+                  "raw": "black hooded jersey costumes",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "exchange_not_abduction",
+            "pancake_count_variants"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3749588122531676",
+          "episodeKeys": [
+            "simonton"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "lake-huron",
+      "sourceId": "humcat1961",
+      "nativeEntryId": "61-06",
+      "caseKey": "lake-huron",
+      "title": "Lake Huron contact history",
+      "locator": {
+        "pageIndex": 7,
+        "section": "61-06"
+      },
+      "shortExcerpt": "Spring, 1961",
+      "upstreamCitation": "APRO Bulletin 9/1961, p.4",
+      "episodes": [
+        {
+          "key": "lake-huron",
+          "date": {
+            "raw": "Spring 1961",
+            "precision": "season",
+            "startIso": null,
+            "endIso": null,
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": null,
+            "precision": "unknown",
+            "status": "unknown",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Near Lake Huron, Michigan; unnamed island",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "voluntary",
+          "recallMethod": "unknown",
+          "recallStages": [],
+          "scope": "repeated_history",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Claimed recurring crew",
+              "reportedTypes": [
+                "unspecified"
+              ],
+              "count": null,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "shining",
+                  "unit": null,
+                  "raw": "shining",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "number_of_episodes_unknown",
+            "claimed_venusian_origin_not_verified",
+            "year_only_native_date"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2046787576036212",
+          "episodeKeys": [
+            "lake-huron"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "hill",
+      "sourceId": "humcat1961",
+      "nativeEntryId": "61-12",
+      "caseKey": "hill",
+      "title": "Hill: conscious and later recalled stages",
+      "locator": {
+        "pageIndex": 15,
+        "section": "61-12"
+      },
+      "shortExcerpt": "Sept. 19-20, 1961",
+      "upstreamCitation": "Walter Webb report 1965-08-30; Fuller, The Interrupted Journey (1966)",
+      "episodes": [
+        {
+          "key": "hill",
+          "date": {
+            "raw": "September 19–20 1961",
+            "precision": "date_range",
+            "startIso": "1961-09-19",
+            "endIso": "1961-09-20",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "2200 (initial sighting)",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": [
+              {
+                "ianaCandidate": "America/New_York",
+                "status": "locality_inference_only",
+                "historicalOffsetVerified": false
+              }
+            ]
+          },
+          "site": {
+            "raw": "Near Woodstock / Indian Head, New Hampshire",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "mixed",
+          "recallStages": [
+            {
+              "method": "conscious",
+              "content": "initial light and window figures"
+            },
+            {
+              "method": "dream",
+              "content": "subsequent abduction dreams"
+            },
+            {
+              "method": "hypnotic",
+              "recalledAt": "two years later",
+              "content": "transport and examination account"
+            }
+          ],
+          "scope": "dated_episode",
+          "onboardStatus": "reported",
+          "entities": [
+            {
+              "label": "Window figures",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 12,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "black uniforms",
+                  "unit": null,
+                  "raw": "black uniforms",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "approximate_reported_count",
+                "not_automatically_grey"
+              ]
+            },
+            {
+              "label": "Later recalled crew",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": null,
+              "attributes": [
+                {
+                  "field": "eyes",
+                  "value": "slanting",
+                  "unit": null,
+                  "raw": "slanting",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "dream_and_hypnotic_recall_content"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "native_count_and_route_variants",
+            "initial_clock_not_transport_clock"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2951042600193666",
+          "episodeKeys": [
+            "hill"
+          ],
+          "status": "linked",
+          "reviewFlags": [
+            "route_marker_disagreement"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "historical_public_case"
+      ]
+    },
+    {
+      "key": "pinhal",
+      "sourceId": "humcat1961",
+      "nativeEntryId": "61-13",
+      "caseKey": "pinhal",
+      "title": "Pinhal paralysis and memory gap",
+      "locator": {
+        "pageIndex": 16,
+        "section": "61-13"
+      },
+      "shortExcerpt": "Late November",
+      "upstreamCitation": "Lorenzen, Flying Saucer Occupants pp.199f.; Encounters with UFO Occupants (1976) pp.374f.",
+      "episodes": [
+        {
+          "key": "pinhal",
+          "date": {
+            "raw": "Late November 1961",
+            "precision": "month",
+            "startIso": "1961-11-01",
+            "endIso": "1961-11-30",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "2130",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Pinhal, Brazil",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "conscious",
+          "recallStages": [
+            {
+              "method": "conscious",
+              "content": "figures, paralysis, then memory gap"
+            },
+            {
+              "method": "hypnotic",
+              "status": "refused",
+              "content": "not accepted as performed"
+            }
+          ],
+          "scope": "undated_episode",
+          "onboardStatus": "disputed",
+          "entities": [
+            {
+              "label": "Two helmeted figures",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "headgear",
+                  "value": "football-type helmets",
+                  "unit": null,
+                  "raw": "football-type helmets",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "co_reported",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "hypno_analysis_refused",
+            "ocr_2150_rejected_by_visual_card",
+            "native_onboard_exam_not_in_card"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2907575468814818",
+          "episodeKeys": [
+            "pinhal"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "transport_account_conflicts_between_sources"
+      ]
+    },
+    {
+      "key": "poole-first",
+      "sourceId": "humcat1965",
+      "nativeEntryId": "65-02",
+      "caseKey": "poole",
+      "title": "Poole: first figure",
+      "locator": {
+        "pageIndex": 1,
+        "section": "65-02"
+      },
+      "shortExcerpt": "About 1965",
+      "upstreamCitation": "Leslie Harris, FSR Case Histories 9 (February 1972), pp.14–15",
+      "episodes": [
+        {
+          "key": "poole-first",
+          "date": {
+            "raw": "About 1965",
+            "precision": "approximate_year",
+            "startIso": null,
+            "endIso": null,
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "year",
+                "native": "1964",
+                "source": "about 1965"
+              }
+            ]
+          },
+          "time": {
+            "raw": "Night",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Poole, Dorset, England",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Triangular bedside figure",
+              "reportedTypes": [
+                "other_described"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 4,
+                  "unit": "ft",
+                  "raw": "about 4 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "body",
+                  "value": "multicolored triangles",
+                  "unit": null,
+                  "raw": "multicolored triangles",
+                  "attribution": null
+                },
+                {
+                  "field": "hands",
+                  "value": "pincers",
+                  "unit": null,
+                  "raw": "pincers",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "approximate_year_not_exact",
+            "historical_child_report"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3356684600748588",
+          "episodeKeys": [
+            "poole-first"
+          ],
+          "status": "candidate",
+          "reviewFlags": [
+            "native_year_conflict",
+            "source_identity_not_fully_resolved"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "not_promoted_to_runtime_without_identity_review"
+      ]
+    },
+    {
+      "key": "poole-second",
+      "sourceId": "humcat1965",
+      "nativeEntryId": "65-03",
+      "caseKey": "poole",
+      "title": "Poole: following-day figure",
+      "locator": {
+        "pageIndex": 2,
+        "section": "65-03"
+      },
+      "shortExcerpt": "The day following",
+      "upstreamCitation": "Same source as HUMCAT 65-02",
+      "episodes": [
+        {
+          "key": "poole-second",
+          "date": {
+            "raw": "Day following 65-02",
+            "precision": "relative_day",
+            "startIso": null,
+            "endIso": null,
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "Day",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Poole, Dorset, England",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "relative_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Triangular parking-lot figure",
+              "reportedTypes": [
+                "other_described"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 4,
+                  "unit": "ft",
+                  "raw": "approx. 4 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "body",
+                  "value": "black triangular",
+                  "unit": null,
+                  "raw": "black triangular",
+                  "attribution": null
+                },
+                {
+                  "field": "face",
+                  "value": "beak-like projection",
+                  "unit": null,
+                  "raw": "beak-like projection",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "catalog_cross_reference_68_02_is_typo",
+            "absolute_day_unknown"
+          ],
+          "relationship": {
+            "otherEpisodeKey": "poole-first",
+            "kind": "following_day",
+            "dayDelta": 1
+          }
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3551126511207109",
+          "episodeKeys": [
+            "poole-second"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "paired_episode_not_duplicate"
+      ]
+    },
+    {
+      "key": "brasilia",
+      "sourceId": "humcat1965",
+      "nativeEntryId": "65-06",
+      "caseKey": "brasilia",
+      "title": "Brasilia transport claim",
+      "locator": {
+        "pageIndex": 5,
+        "section": "65-06"
+      },
+      "shortExcerpt": "Early 1965",
+      "upstreamCitation": "Coral Lorenzen, Flying Saucers: The Startling Evidence of the Invasion from Outer Space",
+      "episodes": [
+        {
+          "key": "brasilia",
+          "date": {
+            "raw": "Early 1965",
+            "precision": "part_of_year",
+            "startIso": null,
+            "endIso": null,
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "date_precision",
+                "native": "January 1965",
+                "source": "Early 1965"
+              }
+            ]
+          },
+          "time": {
+            "raw": null,
+            "precision": "unknown",
+            "status": "unknown",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Brasilia, Brazil",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "unknown",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "reported",
+          "entities": [
+            {
+              "label": "Undescribed crew",
+              "reportedTypes": [
+                "unspecified"
+              ],
+              "count": null,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "absence_not_verification_of_destination",
+            "native_january_precision_not_in_card"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3986856912424645",
+          "episodeKeys": [
+            "brasilia"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "brands-flats",
+      "sourceId": "humcat1965",
+      "nativeEntryId": "65-07",
+      "caseKey": "brands-flats",
+      "title": "Brands Flats occupants",
+      "locator": {
+        "pageIndex": 6,
+        "section": "65-07"
+      },
+      "shortExcerpt": "January 19, 1965",
+      "upstreamCitation": "Hall NICAP report; The News-Virginian 1965-01-21; Lorenzen / NICAP sources on card",
+      "episodes": [
+        {
+          "key": "brands-flats",
+          "date": {
+            "raw": "January 19 1965",
+            "precision": "exact_day",
+            "startIso": "1965-01-19",
+            "endIso": "1965-01-19",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1815",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Brands Flats, Virginia",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Three small occupants",
+              "reportedTypes": [
+                "small_humanoid"
+              ],
+              "count": 3,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 3,
+                  "unit": "ft",
+                  "raw": "3 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "skin_color",
+                  "value": "orange-red",
+                  "unit": null,
+                  "raw": "orange-red",
+                  "attribution": null
+                },
+                {
+                  "field": "clothing",
+                  "value": "polished close-fitting uniforms",
+                  "unit": null,
+                  "raw": "polished close-fitting uniforms",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            },
+            {
+              "label": "One crew member",
+              "reportedTypes": [
+                "small_humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "hand",
+                  "value": "long left-hand finger",
+                  "unit": null,
+                  "raw": "long left-hand finger",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": [
+                "subset_of_three_not_additional_being"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "not_an_abduction",
+            "ocr_forehead_mark_rejected_by_visual_card"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "4320314793739478",
+          "episodeKeys": [
+            "brands-flats"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "walton",
+      "sourceId": "humcat1975",
+      "nativeEntryId": "75-37",
+      "caseKey": "walton",
+      "title": "Walton: distinct reported crews",
+      "locator": {
+        "pageIndex": 98,
+        "section": "75-37"
+      },
+      "shortExcerpt": "November 5, 1975",
+      "upstreamCitation": "APRO Bulletin 12/1975; contrasting investigator assessments on card and continuation",
+      "episodes": [
+        {
+          "key": "walton",
+          "date": {
+            "raw": "November 5 1975",
+            "precision": "exact_day",
+            "startIso": "1975-11-05",
+            "endIso": "1975-11-05",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1830",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [
+              {
+                "native": "1810",
+                "source": "1830"
+              }
+            ],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Near Snowflake, Arizona; about 12 miles from Heber",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "unknown",
+          "recallStages": [
+            {
+              "method": "conscious",
+              "content": "initial approach and light"
+            },
+            {
+              "method": "unknown",
+              "content": "recalled onboard episodes after loss of consciousness"
+            }
+          ],
+          "scope": "dated_episode",
+          "onboardStatus": "reported",
+          "entities": [
+            {
+              "label": "Fetus-like room creatures",
+              "reportedTypes": [
+                "other_described"
+              ],
+              "count": null,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 5,
+                  "unit": "ft",
+                  "raw": "5 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "complexion",
+                  "value": "white",
+                  "unit": null,
+                  "raw": "white",
+                  "attribution": null
+                },
+                {
+                  "field": "eyes",
+                  "value": "very large",
+                  "unit": null,
+                  "raw": "very large",
+                  "attribution": null
+                },
+                {
+                  "field": "fingers",
+                  "value": "no nails",
+                  "unit": null,
+                  "raw": "no nails",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            },
+            {
+              "label": "Helmeted guide",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "blue",
+                  "unit": null,
+                  "raw": "blue",
+                  "attribution": null
+                },
+                {
+                  "field": "headgear",
+                  "value": "transparent helmet",
+                  "unit": null,
+                  "raw": "transparent helmet",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": []
+            },
+            {
+              "label": "Other human-appearing crew",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 3,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "blue",
+                  "unit": null,
+                  "raw": "blue",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "ocr_1030_rejected_by_visual_card",
+            "conflicting_polygraph_assessments",
+            "hypnosis_not_inferred_from_investigators"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "1352462868482456",
+          "episodeKeys": [
+            "walton"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "continued_on_pdf_page_99",
+        "source_clock_conflict"
+      ]
+    },
+    {
+      "key": "wauwatosa",
+      "sourceId": "humcat1975",
+      "nativeEntryId": "75-38",
+      "caseKey": "wauwatosa",
+      "title": "Wauwatosa doorway figures",
+      "locator": {
+        "pageIndex": 100,
+        "section": "75-38"
+      },
+      "shortExcerpt": "Nov. 10, 1975",
+      "upstreamCitation": "Richard Heiden witness interview; West Allis Star and Post 1976-03-08; UFO Report III/3",
+      "episodes": [
+        {
+          "key": "wauwatosa",
+          "date": {
+            "raw": "November 10 1975",
+            "precision": "exact_day",
+            "startIso": "1975-11-10",
+            "endIso": "1975-11-10",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1950",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Wauwatosa, Wisconsin",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Doorway figure",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "complexion",
+                  "value": "brown with grey lines",
+                  "unit": null,
+                  "raw": "brown with grey lines",
+                  "attribution": null
+                },
+                {
+                  "field": "headgear",
+                  "value": "narrow-brimmed hat",
+                  "unit": null,
+                  "raw": "narrow-brimmed hat",
+                  "attribution": null
+                },
+                {
+                  "field": "carried_object_length",
+                  "value": 5,
+                  "unit": "ft",
+                  "raw": "staff 5 ft long",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "individual",
+              "reviewFlags": []
+            },
+            {
+              "label": "Four other similar figures",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 4,
+              "attributes": [
+                {
+                  "field": "hands",
+                  "value": "claw-like",
+                  "unit": null,
+                  "raw": "claw-like",
+                  "attribution": null
+                },
+                {
+                  "field": "legs",
+                  "value": "bowed",
+                  "unit": null,
+                  "raw": "bowed",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "staff_length_not_being_height",
+            "no_craft_described"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2955319274706613",
+          "episodeKeys": [
+            "wauwatosa"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "native_narrative_blank"
+      ]
+    },
+    {
+      "key": "mount-vernon",
+      "sourceId": "humcat1975",
+      "nativeEntryId": "75-39",
+      "caseKey": "mount-vernon",
+      "title": "Mount Vernon window figures",
+      "locator": {
+        "pageIndex": 101,
+        "section": "75-39"
+      },
+      "shortExcerpt": "Nov. 16, 1975",
+      "upstreamCitation": "Kevin Randle personal communication to Ted Bloecher",
+      "episodes": [
+        {
+          "key": "mount-vernon",
+          "date": {
+            "raw": "November 16 1975",
+            "precision": "exact_day",
+            "startIso": "1975-11-16",
+            "endIso": "1975-11-16",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": null,
+            "precision": "unknown",
+            "status": "unknown",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Mount Vernon, Iowa",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Two window figures",
+              "reportedTypes": [
+                "unspecified"
+              ],
+              "count": 2,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "seen_only_by_one_of_two_witnesses"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "native_explanation_aircraft_landing_lights"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2897172346169878",
+          "episodeKeys": [
+            "mount-vernon"
+          ],
+          "status": "linked",
+          "reviewFlags": [
+            "alternative_explanation_preserved"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "not_promoted_as_unexplained_fact"
+      ]
+    },
+    {
+      "key": "happy-camp",
+      "sourceId": "humcat1975",
+      "nativeEntryId": "1975 Addendum Happy Camp",
+      "caseKey": "happy-camp",
+      "title": "Happy Camp: eyes and later figures",
+      "locator": {
+        "pageIndex": 102,
+        "section": "1975 Addendum Happy Camp"
+      },
+      "shortExcerpt": "November 20, 1975",
+      "upstreamCitation": "Alan Berry, Official UFO II/3 (May 1977), pp.14–16,48–49; date supplied by Paul Cerny 1977-03-28",
+      "episodes": [
+        {
+          "key": "happy-eyes",
+          "date": {
+            "raw": "About November 20 1975",
+            "precision": "approximate_day",
+            "startIso": null,
+            "endIso": null,
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "date",
+                "native": "1975-10-25",
+                "source": "about 1975-11-20"
+              }
+            ]
+          },
+          "time": {
+            "raw": "Evening",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Cade Mountain near Happy Camp, California",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Apparent luminous eyes",
+              "reportedTypes": [
+                "other_described"
+              ],
+              "count": null,
+              "attributes": [
+                {
+                  "field": "color",
+                  "value": "blue",
+                  "unit": null,
+                  "raw": "blue",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "not_established",
+              "scope": "group",
+              "reviewFlags": [
+                "body_not_seen"
+              ]
+            }
+          ],
+          "reviewFlags": [],
+          "relationship": null
+        },
+        {
+          "key": "happy-figures",
+          "date": {
+            "raw": "Later on same reported outing",
+            "precision": "relative_day",
+            "startIso": null,
+            "endIso": null,
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "date",
+                "native": "1975-10-26",
+                "source": "about 1975-11-20"
+              }
+            ]
+          },
+          "time": {
+            "raw": "Evening",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Cade Mountain near Happy Camp, California",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "relative_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Two luminous human-shaped figures",
+              "reportedTypes": [
+                "humanoid",
+                "luminous"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "height",
+                  "value": 5,
+                  "unit": "ft",
+                  "raw": "about 5 ft",
+                  "attribution": null
+                },
+                {
+                  "field": "glow",
+                  "value": "blue aura",
+                  "unit": null,
+                  "raw": "blue aura",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "co_reported",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "one_participant_saw_nothing_unusual",
+            "dated_other_sources_conflict"
+          ],
+          "relationship": {
+            "otherEpisodeKey": "happy-eyes",
+            "kind": "same_outing_later",
+            "dayDelta": 0
+          }
+        }
+      ],
+      "links": [
+        {
+          "eventId": "1555818683808798",
+          "episodeKeys": [
+            "happy-eyes"
+          ],
+          "status": "candidate",
+          "reviewFlags": [
+            "source_month_conflict"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        },
+        {
+          "eventId": "1958215277055445",
+          "episodeKeys": [
+            "happy-figures"
+          ],
+          "status": "candidate",
+          "reviewFlags": [
+            "source_month_conflict"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "continued_on_pdf_page_103",
+        "no_unreviewed_november2_abduction_merge"
+      ]
+    },
+    {
+      "key": "torphins-first",
+      "sourceId": "rosales1993",
+      "nativeEntryId": "HC3943",
+      "caseKey": "torphins",
+      "title": "Torphins: first forestry episode",
+      "locator": {
+        "section": "entry 2 / HC3943"
+      },
+      "shortExcerpt": "HC addition # 3943",
+      "upstreamCitation": "World of The Strange",
+      "episodes": [
+        {
+          "key": "torphins-first",
+          "date": {
+            "raw": "1993",
+            "precision": "year",
+            "startIso": "1993-01-01",
+            "endIso": "1993-12-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "Afternoon",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Torphins, Scotland",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Figure and face",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "body",
+                  "value": "dark human-shaped",
+                  "unit": null,
+                  "raw": "dark human-shaped",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "no_confirmed_canonical_episode_link"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [],
+      "reviewFlags": [
+        "coverage_gap_not_new_canonical_report"
+      ]
+    },
+    {
+      "key": "torphins-second",
+      "sourceId": "rosales1993",
+      "nativeEntryId": "HC3944",
+      "caseKey": "torphins",
+      "title": "Torphins: roadside episode",
+      "locator": {
+        "section": "entry 3 / HC3944"
+      },
+      "shortExcerpt": "HC addition # 3944",
+      "upstreamCitation": "World of The Strange",
+      "episodes": [
+        {
+          "key": "torphins-second",
+          "date": {
+            "raw": "1993",
+            "precision": "year",
+            "startIso": "1993-01-01",
+            "endIso": "1993-12-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "Morning",
+            "precision": "part_of_day",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Near Torphins, Scotland",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Running figure",
+              "reportedTypes": [
+                "hairy",
+                "humanoid"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "body",
+                  "value": "large dark hairy",
+                  "unit": null,
+                  "raw": "large dark hairy",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "other_womans_recurring_history_not_this_episode"
+          ],
+          "relationship": {
+            "otherEpisodeKey": "torphins-first",
+            "kind": "later_encounter_date_unknown",
+            "dayDelta": null
+          }
+        }
+      ],
+      "links": [
+        {
+          "eventId": "1527282571005331",
+          "episodeKeys": [
+            "torphins-second"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "Torphins + morning + hairy entity + native no-craft category"
+        }
+      ],
+      "reviewFlags": [
+        "native_narrative_blank"
+      ]
+    },
+    {
+      "key": "pinaya",
+      "sourceId": "rosales1993",
+      "nativeEntryId": "HC1697",
+      "caseKey": "pinaya",
+      "title": "Pinaya plaza figures",
+      "locator": {
+        "section": "entry 6 / HC1697"
+      },
+      "shortExcerpt": "HC addition # 1697",
+      "upstreamCitation": "Carlos Paz Garcia Corrochano, International UFO Library Magazine",
+      "episodes": [
+        {
+          "key": "pinaya",
+          "date": {
+            "raw": "1993",
+            "precision": "year",
+            "startIso": "1993-01-01",
+            "endIso": "1993-12-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1900",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Pinaya, Peru",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Two tall man-like beings",
+              "reportedTypes": [
+                "human_like",
+                "tall_humanoid",
+                "luminous"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "stature",
+                  "value": "very tall",
+                  "unit": null,
+                  "raw": "very tall",
+                  "attribution": null
+                },
+                {
+                  "field": "skin_color",
+                  "value": "glowing yellow",
+                  "unit": null,
+                  "raw": "glowing yellow",
+                  "attribution": null
+                },
+                {
+                  "field": "clothing",
+                  "value": "gold metallic suits",
+                  "unit": null,
+                  "raw": "gold metallic suits",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "none_reported",
+              "scope": "group",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "no_numeric_height_in_source",
+            "no_craft_described"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3439487946887385",
+          "episodeKeys": [
+            "pinaya"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "panama",
+      "sourceId": "rosales1993",
+      "nativeEntryId": "HC3552",
+      "caseKey": "panama",
+      "title": "Panama City transport account",
+      "locator": {
+        "section": "entry 8 / HC3552"
+      },
+      "shortExcerpt": "HC addition # 3552",
+      "upstreamCitation": "Juan Valdez Ibanez",
+      "episodes": [
+        {
+          "key": "panama",
+          "date": {
+            "raw": "1993",
+            "precision": "year",
+            "startIso": "1993-01-01",
+            "endIso": "1993-12-31",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "2300",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Panama City, Panama",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "unclear",
+          "recallMethod": "unknown",
+          "recallStages": [],
+          "scope": "undated_episode",
+          "onboardStatus": "reported",
+          "entities": [
+            {
+              "label": "Two escorts",
+              "reportedTypes": [
+                "human_like",
+                "tall_humanoid"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "stature",
+                  "value": "tall",
+                  "unit": null,
+                  "raw": "tall",
+                  "attribution": null
+                },
+                {
+                  "field": "clothing",
+                  "value": "silver suits and boots",
+                  "unit": null,
+                  "raw": "silver suits and boots",
+                  "attribution": null
+                },
+                {
+                  "field": "equipment",
+                  "value": "belt apparatus",
+                  "unit": null,
+                  "raw": "belt apparatus",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            },
+            {
+              "label": "Other crew",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": null,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": []
+            },
+            {
+              "label": "Station beings",
+              "reportedTypes": [
+                "mixed"
+              ],
+              "count": null,
+              "attributes": [],
+              "craftAssociation": "not_established",
+              "scope": "group",
+              "reviewFlags": [
+                "specific_other_types_not_described"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "type_G_does_not_establish_force_or_consent",
+            "native_report_level_height_not_attributed"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "1554093889853441",
+          "episodeKeys": [
+            "panama"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        },
+        {
+          "eventId": "140747894653055",
+          "episodeKeys": [
+            "panama"
+          ],
+          "status": "linked",
+          "reviewFlags": [
+            "parallel_native_report_same_compiled_episode"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": []
+    },
+    {
+      "key": "megrit",
+      "sourceId": "urecat_megrit",
+      "nativeEntryId": "URECAT000304",
+      "caseKey": "megrit",
+      "title": "Megrit: conflicting occupant accounts",
+      "locator": {
+        "section": "URECAT 000304 / source variants"
+      },
+      "shortExcerpt": "4 octobre 1954",
+      "upstreamCitation": "Attributions and newspaper extracts on URECAT page",
+      "episodes": [
+        {
+          "key": "megrit",
+          "date": {
+            "raw": "October 4 1954 (variants)",
+            "precision": "exact_day",
+            "startIso": "1954-10-04",
+            "endIso": "1954-10-04",
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "publication_chronology",
+                "source": "dated October 3 clipping versus October 4 event"
+              }
+            ]
+          },
+          "time": {
+            "raw": "2200",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": []
+          },
+          "site": {
+            "raw": "Megrit, France",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "none_described",
+          "recallMethod": "unknown",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Disputed occupants",
+              "reportedTypes": [
+                "unspecified"
+              ],
+              "count": null,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "none_vs_shadows_vs_two_small_figures",
+                "appearance_withheld_pending_variant_review"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "occupant_presence_and_count_disputed"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "566905853538437",
+          "episodeKeys": [
+            "megrit"
+          ],
+          "status": "linked",
+          "reviewFlags": [
+            "source_variants_preserved"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "source_is_comparison_not_independent_case_confirmation"
+      ]
+    },
+    {
+      "key": "quarouble-sep",
+      "sourceId": "gross_quarouble_sep",
+      "nativeEntryId": "Quarouble 1954-09-10",
+      "caseKey": "quarouble",
+      "title": "Quarouble: September report",
+      "locator": {
+        "section": "1954-09-10 / source comparisons"
+      },
+      "shortExcerpt": "10 septembre 1954",
+      "upstreamCitation": "Attributed newspaper, police and later-source comparisons on page",
+      "episodes": [
+        {
+          "key": "quarouble-sep",
+          "date": {
+            "raw": "September 10 1954",
+            "precision": "exact_day",
+            "startIso": "1954-09-10",
+            "endIso": "1954-09-10",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "2230",
+            "precision": "minute",
+            "status": "reported",
+            "conflicts": [],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": [
+              {
+                "ianaCandidate": "Europe/Paris",
+                "status": "locality_inference_only",
+                "historicalOffsetVerified": false
+              }
+            ]
+          },
+          "site": {
+            "raw": "Quarouble, France; crossing 79",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "forced",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Small suited figures",
+              "reportedTypes": [
+                "small_humanoid"
+              ],
+              "count": 2,
+              "attributes": [
+                {
+                  "field": "clothing",
+                  "value": "diving-suit appearance",
+                  "unit": null,
+                  "raw": "diving-suit appearance",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "count_variants"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "paralysis_not_onboard_abduction",
+            "later_accounts_and_retractions_disputed"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2084130104027808",
+          "episodeKeys": [
+            "quarouble-sep"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "identity_does_not_verify_occurrence"
+      ]
+    },
+    {
+      "key": "mourieras",
+      "sourceId": "gross_mourieras",
+      "nativeEntryId": "Mourieras 1954-09-10",
+      "caseKey": "mourieras",
+      "title": "Mourieras: greeting report",
+      "locator": {
+        "section": "1954-09-10 / source comparisons"
+      },
+      "shortExcerpt": "10 septembre 1954",
+      "upstreamCitation": "Attributed newspaper and later-source comparisons on page",
+      "episodes": [
+        {
+          "key": "mourieras",
+          "date": {
+            "raw": "September 10 1954 (variants)",
+            "precision": "exact_day",
+            "startIso": "1954-09-10",
+            "endIso": "1954-09-10",
+            "status": "conflicted",
+            "conflicts": [
+              {
+                "field": "date",
+                "source": "September 10 versus September 19 variants"
+              }
+            ]
+          },
+          "time": {
+            "raw": "2030 / 2035 / 2050",
+            "precision": "conflicted_minute",
+            "status": "reported",
+            "conflicts": [
+              {
+                "source": "2030 / 2035 / 2050"
+              }
+            ],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": [
+              {
+                "ianaCandidate": "Europe/Paris",
+                "status": "locality_inference_only",
+                "historicalOffsetVerified": false
+              }
+            ]
+          },
+          "site": {
+            "raw": "Mourieras, France; route near home",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "voluntary",
+          "recallMethod": "conscious",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Helmeted man",
+              "reportedTypes": [
+                "human_like"
+              ],
+              "count": 1,
+              "attributes": [
+                {
+                  "field": "headgear",
+                  "value": "helmet",
+                  "unit": null,
+                  "raw": "helmet",
+                  "attribution": null
+                },
+                {
+                  "field": "stature",
+                  "value": "ordinary",
+                  "unit": null,
+                  "raw": "ordinary",
+                  "attribution": null
+                }
+              ],
+              "craftAssociation": "explicit",
+              "scope": "individual",
+              "reviewFlags": []
+            }
+          ],
+          "reviewFlags": [
+            "greeting_not_abduction",
+            "native_height_not_primary_measurement"
+          ],
+          "relationship": null
+        }
+      ],
+      "links": [
+        {
+          "eventId": "2395409865211786",
+          "episodeKeys": [
+            "mourieras"
+          ],
+          "status": "linked",
+          "reviewFlags": [],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "conflicts_not_resolved_by_majority_vote"
+      ]
+    },
+    {
+      "key": "quarouble-oct",
+      "sourceId": "gross_quarouble_oct",
+      "nativeEntryId": "Quarouble 1954-10-10",
+      "caseKey": "quarouble",
+      "title": "Quarouble: October account",
+      "locator": {
+        "section": "1954-10-10 / clock and occupant variants"
+      },
+      "shortExcerpt": "10 octobre 1954",
+      "upstreamCitation": "France Soir 1954-10-30; Thirouin interview and later-source variants attributed on page",
+      "episodes": [
+        {
+          "key": "quarouble-oct",
+          "date": {
+            "raw": "October 10 1954 (later account)",
+            "precision": "exact_day",
+            "startIso": "1954-10-10",
+            "endIso": "1954-10-10",
+            "status": "reported",
+            "conflicts": []
+          },
+          "time": {
+            "raw": "1130 / noon / 2230 / 2330",
+            "precision": "conflicted_part_of_day",
+            "status": "reported",
+            "conflicts": [
+              {
+                "native": "2330",
+                "source": "1130 / noon / 2230 / 2330"
+              }
+            ],
+            "utcStartMs": null,
+            "utcEndMs": null,
+            "utcVerified": false,
+            "timezoneProvenance": [
+              {
+                "ianaCandidate": "Europe/Paris",
+                "status": "locality_inference_only",
+                "historicalOffsetVerified": false
+              }
+            ]
+          },
+          "site": {
+            "raw": "Quarouble, France; railway near home",
+            "precision": "locality",
+            "status": "reported_locality",
+            "lat": null,
+            "lon": null,
+            "sourceVerified": false
+          },
+          "contactKind": "unclear",
+          "recallMethod": "retrospective",
+          "recallStages": [],
+          "scope": "dated_episode",
+          "onboardStatus": "not_described",
+          "entities": [
+            {
+              "label": "Reported crew variants",
+              "reportedTypes": [
+                "humanoid"
+              ],
+              "count": null,
+              "attributes": [],
+              "craftAssociation": "explicit",
+              "scope": "group",
+              "reviewFlags": [
+                "seven_small_vs_human_stature_variants",
+                "count_and_height_not_combined"
+              ]
+            }
+          ],
+          "reviewFlags": [
+            "later_retelling",
+            "not_same_episode_as_september_report",
+            "incompatible_civil_clocks"
+          ],
+          "relationship": {
+            "otherEpisodeKey": "quarouble-sep",
+            "kind": "separate_reported_month",
+            "dayDelta": null
+          }
+        }
+      ],
+      "links": [
+        {
+          "eventId": "3487141157415973",
+          "episodeKeys": [
+            "quarouble-oct"
+          ],
+          "status": "linked",
+          "reviewFlags": [
+            "clock_and_entity_variants"
+          ],
+          "basis": "native witness/locality/date and source-specific details"
+        }
+      ],
+      "reviewFlags": [
+        "source_comparison_retains_competing_accounts"
+      ]
+    }
+  ]
+}

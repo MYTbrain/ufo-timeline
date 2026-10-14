@@ -1,0 +1,20 @@
+{
+  "schemaId": "ufo-encounter-enrichment-focused-tests-v1",
+  "status": "passed",
+  "tests": 11,
+  "command": "python -m unittest discover -s tests -p test_encounter_enrichment.py",
+  "pythonVersion": "3.14.6",
+  "pypdfVersion": "6.14.2",
+  "tzdataVersion": "2026.3",
+  "testScriptSha256": "89f60394ed2afa99334e3b45bbc97e055458e9d04f6132d86c313cee46a9cbe5",
+  "artifactGzipSha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc",
+  "artifactDecodedSha256": "e00b934e1a2152ad4bdeac00db38a2d56184c0631fa0aa05ecaa1dafc29db34f",
+  "existingChronologyExclusionOverlap": [
+    {
+      "eventId": 2881065199895387,
+      "reason": "source_date_flagged_erroneous",
+      "basis": "UFOCAT TZ marks the source date as believed or known erroneous."
+    }
+  ],
+  "policy": "Existing source-date exclusions remain effective; pilot reported clocks/site names do not promote source occurrence date, UTC or exact coordinates."
+}

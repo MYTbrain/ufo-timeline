@@ -24,7 +24,7 @@ const self = { location: { href: "https://fixture.invalid/catalog_filter_worker.
   postMessage(message) { const resolve = pending.get(message.requestId); assert.ok(resolve); pending.delete(message.requestId); resolve(message); } };
 const sandbox = vm.createContext({ self, URL, Response, TextDecoder, Uint8Array, ArrayBuffer, console,
   fetch: async (url) => { const bytes = payloads.get(new URL(url).pathname.split("/").at(-1)); return bytes ? new Response(bytes) : new Response("missing", { status: 404 }); } });
-for (const file of ["analysis_stats.js", "catalog_filter_worker.js"]) vm.runInContext(fs.readFileSync(file, "utf8"), sandbox, { filename: file });
+for (const file of ["analysis_stats.js", "encounter_atlas_query.js", "catalog_filter_worker.js"]) vm.runInContext(fs.readFileSync(file, "utf8"), sandbox, { filename: file });
 function send(message) { return new Promise((resolve) => { const requestId = "encounter-context-" + (++requestN); pending.set(requestId, resolve); self.onmessage({ data: { ...message, requestId } }); }); }
 let response = await send({ type: "addCatalogFacetRows", rows }); assert.equal(response.type, "catalogFacetRowsAdded");
 response = await send({ type: "setAnalysisComparisonArtifacts", manifest, manifestUrl: "https://fixture.invalid/manifest.json" }); assert.equal(response.type, "analysisComparisonArtifactsSet", response.error);
@@ -53,4 +53,14 @@ assert.equal(changed.cacheHit, false); assert.equal(changed.model.settings.zodia
 const noCrops = await send({ ...query, type: "computeAnalysisComparison", component: "encounters", contextLayers: { cropCirclesEnabled: false, animalMutilationsEnabled: true } });
 assert.equal(noCrops.cacheHit, false);
 assert.equal(noCrops.model.crops.calendar.rows.find((row) => row.id === "grey").cells[0].count, null);
-console.log("Actual worker encounter-context source/date guards, metadata transport, 33-axis atlas, native astronomy, layer scopes, and cache identity passed.");
+const inspection = await send({ ...query, type: "inspectEncounterReports", inspection: { domain: "core", population: "abduction", axisKey: "height", rowKey: "source_reported", bucket: "supported", offset: 0, limit: 1, requestKey: "cell", scopeKey: "scope" } });
+assert.equal(inspection.type, "encounterReportsInspected", inspection.error);
+assert.equal(inspection.result.total, 2); assert.equal(inspection.result.eventIds.length, 1); assert.equal(inspection.requestKey, "cell");
+const lunarCell = response.result.comparisonEvidence.encounters.lunar.matrix.rows.find((row) => row.id === "grey").cells.find((cell) => cell.count);
+const lunarInspection = await send({ ...query, type: "inspectEncounterReports", inspection: { domain: "context", contextTopic: "lunar", contextAxis: "phase", rowKey: "grey", columnKey: lunarCell.id, limit: 25 } });
+assert.equal(lunarInspection.result.total, lunarCell.count); assert.deepEqual(lunarInspection.result.eventIds, ["1"]);
+const excludedInspection = await send({ ...query, type: "inspectEncounterReports", inspection: { domain: "context", contextTopic: "lunar", contextAxis: "phase", rowKey: "grey", bucket: "excluded" } });
+assert.deepEqual(excludedInspection.result.eventIds, ["2"]);
+const selected = await send({ ...query, type: "computeAnalysis", filters: { ...query.filters, encounterSelectionIds: ["2"] } });
+assert.equal(selected.result.summary.activeCount, 1);
+console.log("Worker metadata, atlas, native contexts, exact cell/coverage drilldowns, bounded pages and explicit selection scopes passed.");

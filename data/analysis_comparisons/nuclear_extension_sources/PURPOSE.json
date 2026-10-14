@@ -1,0 +1,14 @@
+{
+  "canonicalArtifact": "data/analysis_comparisons/nuclear_extension_v1.json.gz",
+  "decodedCompanion": "data/analysis_comparisons/nuclear_extension_v1.json",
+  "purpose": "Source-pinned additive DPRK test chronology and Sandia institution review; local candidate inputs only.",
+  "retention": "Retain unique source captures, extension inputs and QA; base chronology and deployed/current rollback remain unchanged.",
+  "rebuild": "py -3 scripts/build_nuclear_extension.py --shared-root <protected canonical root>; --fetch-missing-sources only for absent captures.",
+  "rollback": "Existing base nuclear_context_v1 artifacts and deployed rollback remain protected; no bundle or dataset copies created.",
+  "sourceBytes": 318861,
+  "runtimeBytes": 17998,
+  "runtimeGzipBytes": 3091,
+  "newFilesOver100MiB": [],
+  "corpusReadOrCopied": false,
+  "supersededGeneratedArtifacts": []
+}

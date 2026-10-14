@@ -25,6 +25,20 @@
       "bytes": 220680,
       "gzipBytes": 75247,
       "reused": true
+    },
+    "nuclearExtension": {
+      "schemaId": "ufo-nuclear-context-extension-v1",
+      "releaseId": "nuclear-extension-20261013-v1",
+      "file": "./nuclear_extension_v1.json.gz",
+      "url": "./data/analysis_comparisons/nuclear_extension_v1.json.gz",
+      "sha256": "a7743a6be070d5b058c08ed7b67bccc5ce71c2c3d177e8a441ad29df627c6ee3",
+      "bytes": 17998,
+      "gzipSha256": "4db2dc7e0300a10e837f0588014379ffd088e594ae4e12568e7e7bd20192e6d9",
+      "gzipBytes": 3091,
+      "additiveOnly": true,
+      "testRows": 6,
+      "nuclearInstitutions": 1,
+      "post1998Coverage": "six_declared_DPRK_tests_only_not_comprehensive_global_chronology"
     }
   },
   "facilityCodebook": {
@@ -246,7 +260,8 @@
     "clockTimezoneInferred": false,
     "formationDateInferred": false,
     "privateCoordinatesAdded": false,
-    "nuclearCatalogPost1998Coverage": false
+    "nuclearCatalogPost1998Coverage": false,
+    "nuclearExtensionPost1998Coverage": "six_declared_DPRK_tests_only_not_comprehensive_global_chronology"
   },
   "rebuild": "py -3 scripts/build_analysis_comparisons_manifest.py --shared-root <canonical root>",
   "ephemerisAtlas": {
@@ -745,7 +760,7 @@
         "role": "shared effective summary shard"
       }
     ],
-    "coveragePolicy": "Eligible exact Gregorian report dates and all candidate days in their represented year-months; report dates have a ±1-day ephemeris halo for full civil-UTC uncertainty. Atlas stores physical quantities, not source clocks, filtered counts, zodiac bins, observed visibility or houses.",
+    "coveragePolicy": "Eligible exact Gregorian report dates and all candidate days in their represented year-months; report dates have a \u00b11-day ephemeris halo for full civil-UTC uncertainty. Atlas stores physical quantities, not source clocks, filtered counts, zodiac bins, observed visibility or houses.",
     "float32RatePolicy": "Rates within1e-7 degree/day of classification thresholds are resolved against the original double-precision ephemeris at query time.",
     "storage": {
       "canonical": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\ephemeris_atlas_v1.bin.gz",

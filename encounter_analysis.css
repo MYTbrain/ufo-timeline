@@ -12,4 +12,18 @@
 .encounter-atlas-policy { max-width: 78ch; font-size: .83rem; line-height: 1.5; }
 .encounter-atlas-matrix { min-width: 0; }
 .encounter-atlas-matrix .analysis-heatmap-scroll { max-height: 42rem; overflow: auto; }
+.encounter-coverage-button { border: 0; padding: .15rem 0; color: inherit; background: transparent; font: inherit; text-decoration: underline; text-underline-offset: .2em; cursor: pointer; }
+.encounter-report-inspector { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border, #334650); border-radius: .8rem; background: var(--panel-soft, rgba(91,141,157,.1)); }
+.encounter-report-inspector[hidden] { display: none; }
+.encounter-inspector-heading, .encounter-report-actions { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.encounter-report-actions { justify-content: flex-start; margin-top: .7rem; }
+.encounter-report-list { display: grid; gap: .8rem; max-height: 34rem; overflow: auto; margin-top: .8rem; }
+.encounter-report-row { padding: .8rem; border: 1px solid var(--border, #334650); border-radius: .6rem; }
+.encounter-report-row h5 { margin: 0 0 .45rem; font-size: .95rem; }
+.encounter-report-meta, .encounter-evidence-field, .encounter-source-hash { font-size: .8rem; overflow-wrap: anywhere; }
+.encounter-report-provenance blockquote { margin: .5rem 0; padding-left: .7rem; border-left: 2px solid var(--accent, #65c6df); white-space: pre-wrap; }
+.encounter-diagnostic-value { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 20rem; overflow: auto; font-size: .78rem; }
+.encounter-source-sensitivity { margin: .7rem 0; }
+.encounter-reviewed-link { border-top: 1px solid var(--border, #334650); margin-top: .7rem; padding-top: .6rem; }
+.encounter-atlas-picker select:focus-visible, .encounter-report-inspector button:focus-visible, .encounter-coverage-button:focus-visible { outline: 2px solid var(--accent, #65c6df); outline-offset: 3px; }
 @media (max-width: 620px) { .encounter-atlas-toolbar { align-items: stretch; } .encounter-atlas-picker { max-width: none; } .encounter-atlas-exports button { flex: 1; } }

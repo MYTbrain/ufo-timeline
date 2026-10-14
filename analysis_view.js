@@ -584,6 +584,10 @@
     return (numeric > 0 ? "+" : "") + formatPercent(numeric);
   }
 
+  function formatEncounterShare(value) {
+    return typeof value === "number" && Number.isFinite(value) ? formatPercent(value) : "—";
+  }
+
   function formatPercentInterval(value) {
     if (Array.isArray(value) && value.length >= 2) {
       return "[" + formatSignedPercent(value[0]) + ", " + formatSignedPercent(value[1]) + "]";
@@ -2542,6 +2546,10 @@
         onSectionActivate: typeof config.onSectionActivate === "function" ? config.onSectionActivate : null,
         onComparisonSettingsChange: typeof config.onComparisonSettingsChange === "function" ? config.onComparisonSettingsChange : null,
         onEncounterAxisRequested: typeof config.onEncounterAxisRequested === "function" ? config.onEncounterAxisRequested : null,
+        onEncounterReportsRequested: typeof config.onEncounterReportsRequested === "function" ? config.onEncounterReportsRequested : null,
+        onEncounterReportOpen: typeof config.onEncounterReportOpen === "function" ? config.onEncounterReportOpen : null,
+        onEncounterSelectionApply: typeof config.onEncounterSelectionApply === "function" ? config.onEncounterSelectionApply : null,
+        onEncounterSettingsChange: typeof config.onEncounterSettingsChange === "function" ? config.onEncounterSettingsChange : null,
         onPlanetaryHeatmapRequest: typeof config.onPlanetaryHeatmapRequest === "function" ? config.onPlanetaryHeatmapRequest : null,
         getComparisonLoadingState: typeof config.getComparisonLoadingState === "function" ? config.getComparisonLoadingState : null,
         onComparisonRetry: typeof config.onComparisonRetry === "function" ? config.onComparisonRetry : null,
@@ -4685,10 +4693,11 @@
         : matrixItems(config.completeData).filter(function (item) {
           return cleanText(firstDefined(item, ["displayStatus", "display_status"], "")).toLowerCase() !== "structurally_empty";
         });
-      const container = this._prepareChart(chartId, fullData, summary, config.emptyMessage || "No supported cells are available for this comparison.");
+      const container = this._prepareChart(chartId, config.preserveUnavailableCells ? completeData : fullData, summary, config.emptyMessage || "No supported cells are available for this comparison.");
       if (!container) return;
-      const formatValue = config.descriptiveCounts === true ? formatCount : (config.valueFormat === "percent" ? formatPercent : function (number) { return formatDecimal(number, 2); });
-      const rows = display.rows;
+      if (config.preserveUnavailableCells && !fullData.length && config.emptyMessage) container.appendChild(this._element("p", "analysis-chart-empty", config.emptyMessage));
+      const formatValue = typeof config.valueFormatter === "function" ? config.valueFormatter : (config.valueFormat === "percent" ? formatPercent : (config.descriptiveCounts === true ? formatCount : function (number) { return formatDecimal(number, 2); }));
+      const rows = asArray(config.axisRows).length ? asArray(config.axisRows).map(cleanText) : display.rows;
       const columns = display.columns;
       const axisMetadata = isObject(value) ? firstDefined(value, ["axisMetadata", "axis_metadata", "axes"], {}) : {};
       const rowMetadata = isObject(axisMetadata) ? firstDefined(axisMetadata, ["rows", "row"], {}) : {};
@@ -4746,6 +4755,9 @@
         return displayedRowSet.has(row) && displayedColumnSet.has(column);
       });
       const lookup = new Map();
+      if (config.preserveUnavailableCells) completeData.forEach(function (item) {
+        lookup.set(cleanText(item.row) + "\u0000" + cleanText(item.column), item);
+      });
       data.forEach(function (item) {
         const row = cleanText(firstDefined(item, ["row", "rowLabel", "group", "category"], "All"), "All");
         const column = cleanText(firstDefined(item, ["column", "columnLabel", "period", "month", "year", "label"], "Value"), "Value");
@@ -4763,7 +4775,7 @@
         "p",
         "analysis-qualification-summary" + (qualifiedCount ? "" : " is-descriptive-only"),
         config.descriptiveCounts
-          ? formatCount(fullData.length) + " " + (config.combinationLabel || "reported being–craft combinations") + " · each report counts once per combination."
+          ? formatCount(config.preserveUnavailableCells ? completeData.length : fullData.length) + " " + (config.combinationLabel || "reported being–craft combinations") + " · each report counts once per combination."
           : qualifiedCount
           ? formatCount(qualifiedCount) + " inferentially qualified " + (qualifiedCount === 1 ? "cell" : "cells") + " · " + formatCount(descriptiveCount) + " additional descriptive " + (descriptiveCount === 1 ? "estimate" : "estimates")
           : "No cells qualify for inference in this view. " + formatCount(descriptiveCount) + " descriptive " + (descriptiveCount === 1 ? "estimate remains" : "estimates remain") + " visible."
@@ -4785,12 +4797,27 @@
       head.appendChild(headRow);
       table.appendChild(head);
       const body = this._element("tbody");
-      displayedRows.forEach((row) => {
+      const wireEncounterCell = (mark, item, r, c, title) => {
+        if (typeof config.onCellInspect !== "function") return;
+        mark.type = "button"; mark.id = chartId + "-cell-" + r + "-" + c; mark.tabIndex = r === 0 && c === 0 ? 0 : -1;
+        mark.addEventListener("click", () => config.onCellInspect(item, title));
+        mark.addEventListener("focus", () => {
+          displayedRows.forEach((_row, rr) => displayedColumns.forEach((_column, cc) => { const other = this.document.getElementById(chartId + "-cell-" + rr + "-" + cc); if (other) other.tabIndex = -1; })); mark.tabIndex = 0;
+        });
+        mark.addEventListener("keydown", (event) => {
+          let rr = r, cc = c;
+          if (event.key === "ArrowLeft") cc = Math.max(0, c - 1); else if (event.key === "ArrowRight") cc = Math.min(displayedColumns.length - 1, c + 1);
+          else if (event.key === "ArrowUp") rr = Math.max(0, r - 1); else if (event.key === "ArrowDown") rr = Math.min(displayedRows.length - 1, r + 1);
+          else if (event.key === "Home") cc = 0; else if (event.key === "End") cc = displayedColumns.length - 1; else return;
+          const next = this.document.getElementById(chartId + "-cell-" + rr + "-" + cc); if (next && typeof next.focus === "function") { event.preventDefault(); next.focus(); }
+        });
+      };
+      displayedRows.forEach((row, rowIndex) => {
         const tableRow = this._element("tr");
         const rowHeadingElement = this._element("th", craftDisplayLabel(row) === "Formation" ? "is-formation-lane" : "", formatRowLabel(row));
         rowHeadingElement.setAttribute("data-axis-key", row);
         tableRow.appendChild(rowHeadingElement);
-        displayedColumns.forEach((column) => {
+        displayedColumns.forEach((column, columnIndex) => {
           const cell = this._element("td");
           const rowLabel = formatRowLabel(row);
           const columnLabel = formatColumnLabel(column);
@@ -4800,9 +4827,10 @@
           const item = lookup.get(row + "\u0000" + column);
           if (!item) {
             if (config.descriptiveCounts) {
-              const zero = this._element("span", "analysis-heat-cell", "0");
+              const zero = this._element(typeof config.onCellInspect === "function" ? "button" : "span", "analysis-heat-cell", config.valueFormat === "percent" ? "—" : "0");
               zero.style.setProperty("--analysis-heat-percent", "0%");
-              zero.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + (config.zeroCountLabel || "zero indexed co-reporting records.") );
+              zero.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + (config.valueFormat === "percent" ? "No report denominator is available for this cell." : (config.zeroCountLabel || "zero indexed co-reporting records.")) );
+              wireEncounterCell(zero, { row, column, count: 0 }, rowIndex, columnIndex, rowLabel + " / " + columnLabel);
               cell.appendChild(zero);
               tableRow.appendChild(cell);
               return;
@@ -4816,7 +4844,7 @@
             const reason = suppressionReason(item);
             const qualified = inferenceEligible(item);
             const available = estimateAvailable(item, config.valueKeys);
-            const selectable = available && (datumHasPreview(item) || config.inspectable !== false);
+            const selectable = typeof config.onCellInspect === "function" || (available && (datumHasPreview(item) || config.inspectable !== false));
             const formattedValue = available ? formatValue(valueNumber) : "Not estimable";
             const mark = this._element(selectable ? "button" : "span", "analysis-heat-cell" + (diagonal ? " is-diagonal" : ""));
             if (selectable) mark.type = "button";
@@ -4829,7 +4857,7 @@
             const expected = config.descriptiveCounts ? null : firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "reference", "expected"], null);
             const countText = observed == null && expected == null
               ? ""
-              : (config.descriptiveCounts ? "reports" : "O " + formatCount(observed) + (expected == null ? "" : " · E " + formatCount(expected)));
+              : (config.descriptiveCounts ? (config.valueFormat === "percent" ? formatCount(observed) + " reports" : "reports") : "O " + formatCount(observed) + (expected == null ? "" : " · E " + formatCount(expected)));
             if (countText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-counts", countText));
             const interval = config.descriptiveCounts ? null : intervalBounds(item);
             const pValue = config.descriptiveCounts ? null : firstDefined(item, ["pValue", "p_value", "p"], null);
@@ -4845,7 +4873,8 @@
             const supportText = support == null ? "" : (String(firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate"], "")) !== "" ? "support " + formatPercent(support) : "supported n=" + formatCount(support));
             mark.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + formattedValue + (countText ? "; " + countText : "") + (evidenceText ? "; " + evidenceText : "") + (supportText ? "; " + supportText : "") + ". " + statusText + "." + (selectable ? " Inspect evidence details." : ""));
             mark.setAttribute("title", [rowLabel + " / " + columnLabel + ": " + formattedValue, countText, statusText, evidenceText, supportText].filter(Boolean).join(" · "));
-            if (selectable) this._activateEvidenceInspection(mark, item, rowLabel + " / " + columnLabel, summary, config);
+            if (selectable && typeof config.onCellInspect === "function") wireEncounterCell(mark, item, rowIndex, columnIndex, rowLabel + " / " + columnLabel);
+            else if (selectable) this._activateEvidenceInspection(mark, item, rowLabel + " / " + columnLabel, summary, config);
             cell.appendChild(mark);
           }
           tableRow.appendChild(cell);
@@ -4867,7 +4896,7 @@
         container,
         (config.caption || "Heatmap") + (config.descriptiveCounts ? " complete report counts" : " complete qualified data"),
         config.descriptiveCounts
-          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", config.countShareLabel || "Share of eligible co-reports"]
+          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", config.countShareLabel || "Share of eligible co-reports"].concat(config.encounterDenominators ? ["Within-row share", "Row eligible N", "Within-column share", "Column eligible N", "Supported-row share", "Supported-row N", "Source-balanced row share", "Source-balanced column share", "Conditional difference (percentage points)", "Common support", "Shared strata"] : [])
           : [config.rowHeading || "Group", "Column", "Effect", "Observed n", "Expected/reference n", "95% interval", "p-value", "q-value", "Support", "Status"],
         completeData.map(function (item) {
           const rawRow = cleanText(firstDefined(item, ["row", "rowLabel", "group", "category"], "All"), "All");
@@ -4875,7 +4904,7 @@
           if (config.descriptiveCounts) return [
             formatRowLabel(rawRow), formatColumnLabel(rawColumn), formatCount(firstDefined(item, ["observedCount", "count", "value"], 0)),
             item.share == null ? "—" : formatPercent(item.share),
-          ];
+          ].concat(config.encounterDenominators ? [formatEncounterShare(item.rowShare), formatCount(item.rowReportDenominator), formatEncounterShare(item.columnShare), formatCount(item.columnReportDenominator), formatEncounterShare(item.supportedRowShare), formatCount(item.supportedRowReportDenominator), formatEncounterShare(item.sourceStandardizedRowShare), formatEncounterShare(item.sourceStandardizedColumnShare), item.conditionalComparison && typeof item.conditionalComparison.difference === "number" ? formatDecimal(item.conditionalComparison.difference * 100, 1) : "—", formatEncounterShare(item.conditionalComparison && item.conditionalComparison.commonSupportRate), formatCount(item.conditionalComparison && item.conditionalComparison.commonStrata)] : []);
           return [
             config.preserveRawCompleteLabels ? rawRow : formatRowLabel(rawRow),
             config.preserveRawCompleteLabels ? rawColumn : formatColumnLabel(rawColumn),
@@ -4898,7 +4927,7 @@
       if (peak) {
         const peakRow = formatRowLabel(cleanText(firstDefined(peak, ["row", "rowLabel", "group", "category"], "All")));
         const peakColumn = formatColumnLabel(cleanText(firstDefined(peak, ["column", "columnLabel", "period", "month", "year", "label"], "Value")));
-        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? (config.countPeakLabel || "Most co-reported: ") : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? " reports)." : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
+        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? (config.countPeakLabel || "Most co-reported: ") : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? (config.valueFormat === "percent" ? ")." : " reports).") : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
       }
     }
 
@@ -6309,6 +6338,193 @@
       );
     }
 
+    _appendEncounterSensitivity(target, axis, cell) {
+      const details = this._element("details", "encounter-source-sensitivity analysis-supporting-details");
+      details.appendChild(this._element("summary", "", "Source sensitivity & conditional comparisons"));
+      details.addEventListener("toggle", () => { if (details.open && this.callbacks.onEncounterAxisRequested) Promise.resolve(this.callbacks.onEncounterAxisRequested("country")).catch(function () { return null; }); });
+      details.appendChild(this._element("p", "analysis-chart-policy", "Source-balanced shares weight source collections equally where support exists. Omission ranges show how results change when one collection is removed; they are not confidence intervals. Conditional comparisons adjust supported source, decade, region and field-state strata; they do not establish causation."));
+      if (!cell) details.appendChild(this._element("p", "", "Inspect a heatmap cell to see its exact denominators, collection omissions, common support and missing-field bounds."));
+      else {
+        const fields = ["sourceCoverage", "sourceSensitivity", "conditionalComparison", "missingFieldBounds"];
+        const coverage = cell.sourceCoverage || {};
+        details.appendChild(this._element("p", "", formatCount(coverage.eligibleSources) + " eligible source collections · " + formatCount(coverage.excludedUnknownSourceReports) + " reports with unavailable collection identity excluded from source balancing."));
+        const sensitivity = cell.sourceSensitivity || {};
+        const range = (value) => isObject(value) ? formatEncounterShare(firstDefined(value, ["minimum", "min", "lower"], null)) + "–" + formatEncounterShare(firstDefined(value, ["maximum", "max", "upper"], null)) : "Unavailable";
+        details.appendChild(this._element("p", "", "Leave-one-source-out row share: " + range(sensitivity.rowShare) + "; column share: " + range(sensitivity.columnShare) + ". These are observed sensitivity ranges."));
+        const conditional = cell.conditionalComparison;
+        if (conditional) {
+          details.appendChild(this._element("h5", "", "Conditional comparison with other indexed reports"));
+          details.appendChild(this._element("p", "", "Standardized share difference: " + (typeof conditional.difference === "number" ? formatDecimal(conditional.difference * 100, 1) + " percentage points" : "Unavailable")
+            + " · common support " + formatEncounterShare(conditional.commonSupportRate) + " · " + formatCount(conditional.commonStrata) + " shared strata."));
+          details.appendChild(this._element("p", "", formatCount(conditional.commonRowN) + " supported reports with this classification; " + formatCount(conditional.commonOtherN) + " in the other indexed classifications."));
+          if (conditional.comparisonMeaning) details.appendChild(this._element("p", "analysis-chart-policy", String(conditional.comparisonMeaning)));
+          if (firstArray(conditional, ["suppressionReasons"]).length) details.appendChild(this._element("p", "analysis-chart-policy", "Limits: " + conditional.suppressionReasons.map(plainLanguageLabel).join("; ") + "."));
+        }
+        if (cell.missingFieldBounds) details.appendChild(this._element("p", "", "Worst-case field-completion share: " + formatEncounterShare(cell.missingFieldBounds.lower) + "–" + formatEncounterShare(cell.missingFieldBounds.upper) + ". This varies missing field values and is not a statistical interval."));
+        const omissions = firstArray(cell, ["leaveOneSourceOut"]);
+        if (omissions.length) this._appendLazyDataTable(details, "Leave one source collection out", ["Omitted collection", "Reports", "Eligible N", "Within-row share", "Row N", "Within-column share", "Column N"], omissions.map((row) => [row.excludedSource, formatCount(row.count), formatCount(row.reportDenominator), formatEncounterShare(row.rowShare), formatCount(row.rowReportDenominator), formatEncounterShare(row.columnShare), formatCount(row.columnReportDenominator)]));
+        if (!fields.some((key) => cell[key] != null) && !omissions.length) details.appendChild(this._element("p", "", "Source sensitivity is not available for this cell. No adjusted comparison is inferred from raw counts."));
+      }
+      if (axis && axis.sourcePolicy) details.appendChild(this._element("p", "analysis-chart-policy", String(axis.sourcePolicy)));
+      target.appendChild(details);
+    }
+
+    _appendEncounterEnrichment(target, enrichment) {
+      const links = firstArray(enrichment, ["links"]);
+      if (!links.length) return;
+      const reviewed = links.filter((link) => link.acceptedForRuntime === true).length;
+      const details = this._element("details", "encounter-report-provenance encounter-reviewed-context");
+      details.appendChild(this._element("summary", "", "Reviewed case context · " + reviewed + " accepted links · " + (links.length - reviewed) + " candidate or held links"));
+      details.appendChild(this._element("p", "analysis-chart-policy", "Case associations enrich preserved source reports. A linked case, remembered episode, and original report remain separate records; these links do not add independent incidents to the heatmap."));
+      if (enrichment.policy) details.appendChild(this._element("p", "analysis-chart-policy", typeof enrichment.policy === "string" ? enrichment.policy : JSON.stringify(enrichment.policy)));
+      links.forEach((link) => {
+        const article = this._element("article", "encounter-reviewed-link");
+        article.appendChild(this._element("h5", "", cleanText(link.case && link.case.title, "Case title unavailable")));
+        article.appendChild(this._element("p", "encounter-report-meta", (link.acceptedForRuntime === true ? "Reviewed case association" : "Candidate or held association · not used as an accepted case link") + " · " + plainLanguageLabel(link.status || "review status unavailable")));
+        if (firstArray(link, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Review flags: " + link.reviewFlags.map(plainLanguageLabel).join("; ")));
+        firstArray(link, ["episodes"]).forEach((episode) => {
+          article.appendChild(this._element("p", "", [plainLanguageLabel(episode.scope || "episode scope unavailable"), plainLanguageLabel(episode.contactKind || "contact classification unavailable"), "Onboard: " + plainLanguageLabel(episode.onboardStatus || "not established"), plainLanguageLabel(episode.recallMethod || "recall method unavailable")].join(" · ")));
+          [["Date", episode.date], ["Time", episode.time], ["Site", episode.site]].forEach((entry) => {
+            const value = entry[1]; if (!isObject(value)) return;
+            article.appendChild(this._element("p", "encounter-report-meta", entry[0] + ": " + cleanText(value.raw, "Not recorded") + " · " + plainLanguageLabel(value.precision || "precision unavailable") + " · " + plainLanguageLabel(value.status || "status unavailable")
+              + (entry[0] === "Time" ? value.utcVerified === true ? " · UTC verified" : " · UTC not verified" : entry[0] === "Site" ? value.sourceVerified === true ? " · source verified" : " · source not verified" : "")));
+            if (Array.isArray(value.conflicts) && value.conflicts.length) article.appendChild(this._element("p", "analysis-chart-policy", "Conflicting evidence: " + value.conflicts.map((item) => typeof item === "string" ? item : JSON.stringify(item)).join("; ")));
+          });
+          if (firstArray(episode, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Episode review flags: " + episode.reviewFlags.map(plainLanguageLabel).join("; ")));
+        });
+        firstArray(link, ["entityObservations"]).forEach((entity) => {
+          article.appendChild(this._element("p", "", cleanText(entity.label, "Entity description") + " · " + plainLanguageLabel(entity.scope || "scope unavailable") + " · reported count " + (entity.count == null ? "Not recorded" : formatCount(entity.count))
+            + (firstArray(entity, ["reportedTypes"]).length ? " · " + entity.reportedTypes.map(plainLanguageLabel).join(", ") : "") + " · " + plainLanguageLabel(entity.craftAssociation || "craft association not established")));
+          firstArray(entity, ["attributes"]).forEach((attribute) => article.appendChild(this._element("p", "encounter-report-meta", plainLanguageLabel(attribute.field || "Attribute") + ": " + (attribute.value == null ? "Not recorded" : String(attribute.value)) + (attribute.unit ? " " + attribute.unit : "") + " · attribution " + cleanText(attribute.attribution, "Not established"))));
+          if (firstArray(entity, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Description review flags: " + entity.reviewFlags.map(plainLanguageLabel).join("; ")));
+        });
+        firstArray(link, ["sourceEntries"]).forEach((entry) => {
+          const source = entry.source || {}, paragraph = this._element("p", "encounter-report-meta");
+          const sourceTitle = cleanText(entry.title || source.title, "Source title unavailable");
+          if (typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
+            const anchor = this._element("a", "", sourceTitle); anchor.href = source.url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; paragraph.appendChild(anchor);
+          } else paragraph.appendChild(this._element("span", "", sourceTitle));
+          paragraph.appendChild(this._element("span", "", " · " + cleanText(entry.locator, "Locator unavailable") + " · " + plainLanguageLabel(entry.reviewStatus || "review status unavailable"))); article.appendChild(paragraph);
+          if (entry.shortExcerpt) article.appendChild(this._element("blockquote", "", String(entry.shortExcerpt)));
+          if (firstArray(entry, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Source review flags: " + entry.reviewFlags.map(plainLanguageLabel).join("; ")));
+        });
+        if (link.matchBasis) article.appendChild(this._element("p", "encounter-report-meta", "Association basis: " + (typeof link.matchBasis === "string" ? link.matchBasis : JSON.stringify(link.matchBasis))));
+        if (link.sourceRef) {
+          const provenance = this._element("details", "encounter-association-provenance"); provenance.appendChild(this._element("summary", "", "Exact association provenance"));
+          provenance.appendChild(this._element("pre", "encounter-diagnostic-value", JSON.stringify(link.sourceRef, null, 2))); article.appendChild(provenance);
+        }
+        details.appendChild(article);
+      }); target.appendChild(details);
+    }
+
+    _closeEncounterReports() {
+      if (this.encounterReportsAbort) this.encounterReportsAbort.abort();
+      this.encounterReportsAbort = null;
+      this.encounterReportsGeneration = (this.encounterReportsGeneration || 0) + 1;
+      const target = this.document.getElementById("analysis-encounter-report-inspector");
+      if (target) { target.hidden = true; this._clear(target); }
+    }
+
+    _openEncounterReports(queryValue, detailValue) {
+      const target = this.document.getElementById("analysis-encounter-report-inspector");
+      const callback = this.callbacks && this.callbacks.onEncounterReportsRequested;
+      if (!target || !callback) return Promise.resolve(null);
+      this._closeEncounterReports();
+      const generation = this.encounterReportsGeneration;
+      const version = this.resultRenderVersion;
+      const abort = typeof AbortController === "function" ? new AbortController() : null;
+      this.encounterReportsAbort = abort;
+      const detail = detailValue || {};
+      const previousFocus = this.document.activeElement;
+      const query = Object.assign({}, queryValue, { offset: Math.max(0, Number(queryValue.offset) || 0), limit: 25 });
+      query.scopeKey = query.scopeKey || JSON.stringify(this.latestMeta && this.latestMeta.filterSnapshot || {});
+      query.requestKey = "encounter-reports-" + version + "-" + generation;
+      this.encounterReportsQuery = query;
+      target.hidden = false;
+      target.setAttribute("aria-busy", "true");
+      const header = this._element("div", "encounter-inspector-heading");
+      const title = this._element("h4", "", detail.title || "Reports behind this comparison");
+      title.id = "analysis-encounter-report-inspector-title"; header.appendChild(title);
+      const close = this._element("button", "secondary-button", "Close reports"); close.type = "button";
+      const closeAndRestore = () => { this._closeEncounterReports(); if (previousFocus && previousFocus.isConnected !== false && typeof previousFocus.focus === "function") previousFocus.focus(); };
+      close.addEventListener("click", closeAndRestore); header.appendChild(close); target.appendChild(header);
+      target.onkeydown = (event) => { if (event.key === "Escape" && this.encounterReportsGeneration === generation) { event.preventDefault(); closeAndRestore(); } };
+      title.tabIndex = -1; if (typeof title.focus === "function") title.focus();
+      target.appendChild(this._element("p", "analysis-chart-policy", "Inspecting these reports keeps your map and filters unchanged. Source records may include unmapped locations, incomplete dates, or several descriptions of beings."));
+      if (detail.cell) {
+        const cell = detail.cell;
+        target.appendChild(this._element("p", "encounter-cell-denominators", formatCount(cell.count) + " reports · within row " + formatEncounterShare(cell.rowShare) + " / " + formatCount(cell.rowReportDenominator) + " eligible · within column " + formatEncounterShare(cell.columnShare) + " / " + formatCount(cell.columnReportDenominator) + " eligible"));
+        this._appendEncounterSensitivity(target, detail.axis, cell);
+      }
+      const status = this._element("p", "encounter-inspector-status", "Loading original report references…"); status.setAttribute("role", "status"); target.appendChild(status);
+      const body = this._element("div", "encounter-report-list"); target.appendChild(body);
+      const current = () => this.resultRenderVersion === version && this.encounterReportsGeneration === generation && !(abort && abort.signal.aborted);
+      const invokeAction = (callback, request, button, parent) => {
+        if (!current() || button.disabled) return;
+        button.disabled = true;
+        const feedback = this._element("p", "encounter-action-status"); feedback.setAttribute("role", "status"); parent.appendChild(feedback);
+        Promise.resolve().then(() => callback(request)).then(() => { if (current()) button.disabled = false; }).catch((error) => {
+          if (!current()) return; button.disabled = false; feedback.textContent = cleanText(error && error.message, "The requested action is unavailable. Please retry.");
+        });
+      };
+      const fetchPromise = Promise.resolve().then(() => callback(query, { signal: abort && abort.signal }));
+      return fetchPromise.then((result) => {
+        if (!current()) return null;
+        if (!result || result.status !== "ready" || result.requestKey !== query.requestKey || result.scopeKey !== query.scopeKey) throw new Error("The report response no longer matches this comparison.");
+        const reports = firstArray(result, ["reports"]), total = Number(result.total);
+        if (!Number.isSafeInteger(total) || total < 0 || Number(result.offset) !== query.offset) throw new Error("The report list could not be verified.");
+        target.setAttribute("aria-busy", "false");
+        status.textContent = total ? "Showing " + formatCount(query.offset + 1) + "–" + formatCount(Math.min(total, query.offset + reports.length)) + " of " + formatCount(total) + " source reports." : "No source reports match this combination in the current cohort.";
+        reports.forEach((report) => {
+          const eventId = firstDefined(report, ["eventId", "event_id", "id"], null);
+          if (eventId == null) return;
+          const row = this._element("article", "encounter-report-row");
+          row.appendChild(this._element("h5", "", cleanText(firstDefined(report, ["dateRaw", "date_raw", "dateIso", "date", "date_display"], "Date unavailable")) + " · " + cleanText(firstDefined(report, ["locationDisplay", "location_display", "location_raw", "location", "city"], "Location unavailable"))));
+          const mapped = report.mapped === true || report.has_coordinates === true || (typeof report.lat === "number" && typeof report.lon === "number");
+          row.appendChild(this._element("p", "encounter-report-meta", cleanText(report.source, "Source unavailable") + " · " + cleanText(firstDefined(report, ["craftType", "craft_type", "craft_type_inferred", "shape_normalized", "type"], "Craft description unavailable")) + (mapped ? " · mapped" : " · unmapped")));
+          const sourceMismatch = report.encounterRecord && report.source && report.encounterRecord.source !== report.source;
+          const record = sourceMismatch ? null : report.encounterRecord;
+          if (sourceMismatch) row.appendChild(this._element("p", "analysis-chart-policy", "Encounter evidence is withheld because its source identity does not match this original report."));
+          if (record) {
+            const beingDescriptions = firstArray(record, ["beingTypes"]).map(plainLanguageLabel);
+            const abductionLabel = { source_reported: "Source-classified abduction", narrative_reported: "Narrative-reported abduction", ambiguous: "Ambiguous abduction description" }[record.abductionStatus];
+            const associationLabel = { explicit: "Explicit craft association in source", co_reported: "Craft and beings co-reported", none_reported: "No craft reported in this source record", not_established: "Craft association not established" }[record.craftAssociation];
+            if (beingDescriptions.length || abductionLabel || associationLabel) row.appendChild(this._element("p", "encounter-report-meta", [abductionLabel, beingDescriptions.join(", "), associationLabel].filter(Boolean).join(" · ")));
+            const sourceDetails = this._element("details", "encounter-report-provenance"); sourceDetails.appendChild(this._element("summary", "", "Encounter evidence & source reference"));
+            const ref = record.sourceRef || {};
+            sourceDetails.appendChild(this._element("p", "", "Original source: " + cleanText(record.source, report.source || "unknown") + " · source record " + cleanText(record.sourceEventId, "unknown") + " · " + cleanText(ref.chunk, "chunk unavailable") + " · detail " + (ref.detailIndex == null ? "unknown" : ref.detailIndex)));
+            if (ref.chunkSha256) sourceDetails.appendChild(this._element("p", "encounter-source-hash", "SHA-256 " + ref.chunkSha256));
+            firstArray(record, ["evidence"]).forEach((evidence) => {
+              sourceDetails.appendChild(this._element("p", "encounter-evidence-field", cleanText(evidence.field, "Source excerpt") + " · " + cleanText(evidence.ruleId, "rule unavailable")));
+              sourceDetails.appendChild(this._element("blockquote", "", cleanText(evidence.excerpt, "Excerpt unavailable")));
+            }); row.appendChild(sourceDetails);
+          }
+          if (report.enrichment) this._appendEncounterEnrichment(row, report.enrichment);
+          const actions = this._element("div", "encounter-report-actions");
+          if (this.callbacks.onEncounterReportOpen) [["details", "Open original report"], ["map", "Locate on map"]].forEach((entry) => {
+            if (entry[0] === "map" && !mapped) return;
+            const button = this._element("button", "secondary-button", entry[1]); button.type = "button";
+            button.addEventListener("click", () => invokeAction(this.callbacks.onEncounterReportOpen, { eventId: String(eventId), mode: entry[0] }, button, actions)); actions.appendChild(button);
+          }); row.appendChild(actions); body.appendChild(row);
+        });
+        const actions = this._element("div", "encounter-report-actions");
+        [[Math.max(0, query.offset - query.limit), "Previous reports", query.offset === 0], [query.offset + query.limit, "Next reports", query.offset + query.limit >= total]].forEach((entry) => {
+          const button = this._element("button", "secondary-button", entry[1]); button.type = "button"; button.disabled = entry[2];
+          button.addEventListener("click", () => { if (current() && !button.disabled) this._openEncounterReports(Object.assign({}, query, { offset: entry[0] }), detail); }); actions.appendChild(button);
+        });
+        if (this.callbacks.onEncounterSelectionApply) {
+          const apply = this._element("button", "secondary-button", "Use these reports as filters"); apply.type = "button"; apply.disabled = total === 0;
+          apply.addEventListener("click", () => invokeAction(this.callbacks.onEncounterSelectionApply, Object.assign({}, query, { offset: 0, total }), apply, actions)); actions.appendChild(apply);
+        }
+        target.appendChild(actions);
+        return result;
+      }).catch((error) => {
+        if (!current()) return null;
+        target.setAttribute("aria-busy", "false"); status.textContent = cleanText(error && error.message, "Original report references are unavailable.");
+        const retry = this._element("button", "secondary-button", "Retry reports"); retry.type = "button"; retry.addEventListener("click", () => this._openEncounterReports(query, detail)); body.appendChild(retry); return null;
+      });
+    }
+
     _exportEncounterAxis(axis, format) {
       if (!axis || !this.latestResult) return null;
       const rowLabels = new Map(firstArray(axis, ["rows"]).map(function (item) { return [item.key, item.label]; }));
@@ -6320,12 +6536,16 @@
         policy: "Source-report descriptions and conditions; counts do not verify beings, abductions, causation, or common craft identity.",
       };
       const normalizedFormat = format === "csv" ? "csv" : "json";
-      const headings = ["being_key", "being_label", "comparison_key", "comparison_label", "reports", "share", "report_denominator", "axis", "field_policy", "coverage", "filter_snapshot", "artifact_hashes"];
+      packageValue.population = this.encounterPopulationSelection || "being";
+      packageValue.evidenceMode = this.latestResult.encounters && this.latestResult.encounters.comparisonAtlas && this.latestResult.encounters.comparisonAtlas.evidenceMode || "all";
+      const headings = ["being_key", "being_label", "comparison_key", "comparison_label", "reports", "share", "report_denominator", "axis", "field_policy", "coverage", "filter_snapshot", "artifact_hashes", "population", "evidence_mode", "row_share", "row_report_denominator", "column_share", "column_report_denominator", "supported_row_share", "supported_row_report_denominator", "source_balanced_row_share", "source_balanced_column_share", "source_sensitivity", "conditional_comparison", "missing_field_bounds"];
       const text = normalizedFormat === "json" ? JSON.stringify(packageValue, null, 2) :
         [headings.join(",")].concat(firstArray(axis, ["cells"]).map(function (item) {
           return [item.row, rowLabels.get(item.row) || item.row, item.column, columnLabels.get(item.column) || item.column,
             firstDefined(item, ["count", "observedCount", "value"], 0), item.share, item.reportDenominator, axis.key,
-            axis.fieldPolicy || "", axis.coverage || {}, packageValue.filterSnapshot, packageValue.artifactHashes].map(csvCell).join(",");
+            axis.fieldPolicy || "", axis.coverage || {}, packageValue.filterSnapshot, packageValue.artifactHashes, packageValue.population, packageValue.evidenceMode,
+            item.rowShare, item.rowReportDenominator, item.columnShare, item.columnReportDenominator, item.supportedRowShare, item.supportedRowReportDenominator,
+            item.sourceStandardizedRowShare, item.sourceStandardizedColumnShare, item.sourceSensitivity, item.conditionalComparison, item.missingFieldBounds].map(csvCell).join(",");
         })).join("\r\n");
       const exportValue = { format: normalizedFormat, filename: "ufo-timeline-being-comparison-" + cleanText(axis.key, "axis").replace(/[^a-z0-9_-]/gi, "_") + "." + normalizedFormat,
         mimeType: normalizedFormat === "csv" ? "text/csv;charset=utf-8" : "application/json;charset=utf-8", package: packageValue, text };
@@ -6345,7 +6565,10 @@
 
     _renderEncounterAtlas(value, summary) {
       const atlas = isObject(value) ? value : {};
-      const axes = firstArray(atlas, ["axes"]).filter(function (axis) { return isObject(axis) && axis.status !== "external_comparison"; });
+      const populations = isObject(atlas.populations) ? atlas.populations : {};
+      const populationKey = populations[this.encounterPopulationSelection] ? this.encounterPopulationSelection : "being";
+      const population = populations[populationKey] || atlas;
+      const axes = firstArray(population, ["axes"]).filter(function (axis) { return isObject(axis) && axis.status !== "external_comparison"; });
       const container = this.document.getElementById("analysis-encounter-atlas-chart");
       if (!container) return false;
       this._clear(container);
@@ -6355,10 +6578,36 @@
       }
       const version = this.resultRenderVersion;
       const toolbar = this._element("div", "encounter-atlas-toolbar");
-      const label = this._element("label", "encounter-atlas-picker", "Compare being descriptions against");
+      const addPicker = (id, title, entries, selected, onChange) => {
+        const field = this._element("label", "encounter-atlas-picker", title), picker = this._element("select");
+        picker.id = id; picker.setAttribute("aria-label", title);
+        entries.forEach((entry) => { const option = this._element("option", "", entry.label); option.value = entry.key;
+          option.disabled = entry.available === false; if (entry.reason || entry.unavailableReason) option.title = entry.reason || entry.unavailableReason; picker.appendChild(option); });
+        picker.value = selected; field.appendChild(picker); toolbar.appendChild(field);
+        picker.addEventListener("change", () => { if (this.resultRenderVersion !== version) return;
+          const option = entries.find((entry) => entry.key === picker.value);
+          if (!option || option.available === false) { picker.value = selected; return; }
+          onChange(picker.value);
+        });
+        return picker;
+      };
+      if (Object.keys(populations).length) addPicker("analysis-encounter-population-select", "Encounter population", Object.keys(populations).map((key) => ({ key, label: populations[key].label || (key === "abduction" ? "Reported abductions" : "Reports describing beings") })), populationKey, (key) => {
+        this._closeEncounterReports(); this.encounterPopulationSelection = key; this._renderEncounterAtlas(atlas, summary);
+      });
+      const modeEntries = firstArray(population, ["evidenceModes"]).length ? population.evidenceModes : firstArray(atlas, ["evidenceModes"]);
+      const evidenceModes = modeEntries.length ? modeEntries : [{ key: "all", label: "All indexed evidence", available: true },
+        { key: "source_fields", label: "Source fields only", available: false, reason: "Verified per-description source-field provenance is not available in this model." },
+        { key: "narrative", label: "Narrative evidence only", available: false, reason: "Verified per-description narrative provenance is not available in this model." }];
+      const evidenceMode = population.evidenceMode || atlas.evidenceMode || "all";
+      const evidencePicker = addPicker("analysis-encounter-evidence-mode-select", "Encounter evidence", evidenceModes, evidenceMode, (key) => {
+        this._closeEncounterReports();
+        evidencePicker.value = evidenceMode;
+        if (this.callbacks.onEncounterSettingsChange) this.callbacks.onEncounterSettingsChange({ population: populationKey, evidenceMode: key });
+      });
+      const label = this._element("label", "encounter-atlas-picker", populationKey === "abduction" ? "Compare abduction classifications against" : "Compare being descriptions against");
       const select = this._element("select");
       select.id = "analysis-encounter-axis-select";
-      select.setAttribute("aria-label", "Compare being descriptions against");
+      select.setAttribute("aria-label", populationKey === "abduction" ? "Compare abduction classifications against" : "Compare being descriptions against");
       const groups = new Map();
       axes.forEach((axis) => {
         const groupLabel = cleanText(axis.group, "Report characteristics");
@@ -6373,6 +6622,14 @@
       select.value = initial.key;
       this.encounterAxisSelection = initial.key;
       label.appendChild(select); toolbar.appendChild(label);
+      const metricEntries = [{ key: "count", label: "Report count" }, { key: "rowShare", label: "Within-row share" }, { key: "columnShare", label: "Within-column share" },
+        { key: "supportedRowShare", label: "Within supported row" }, { key: "sourceStandardizedRowShare", label: "Source-balanced row share" }, { key: "sourceStandardizedColumnShare", label: "Source-balanced column share" }, { key: "conditionalDifference", label: "Conditional share difference · where supported" }];
+      metricEntries.forEach((entry) => { entry.available = entry.key === "count" || entry.key === "conditionalDifference" || axes.some((axis) => firstArray(axis, ["cells"]).some((cell) => typeof cell[entry.key] === "number")); });
+      const metricKey = metricEntries.some((entry) => entry.key === this.encounterMetricSelection && entry.available) ? this.encounterMetricSelection : "count";
+      const metricSelect = addPicker("analysis-encounter-metric-select", "Heatmap value", metricEntries, metricKey, (key) => {
+        renderAxis();
+        if ((/^sourceStandardized/.test(key) || key === "conditionalDifference") && this.callbacks.onEncounterAxisRequested) Promise.resolve(this.callbacks.onEncounterAxisRequested("country")).catch(function () { return null; });
+      });
       const exports = this._element("div", "encounter-atlas-exports");
       const buttons = [];
       ["csv", "json"].forEach((format) => {
@@ -6409,40 +6666,59 @@
             }).catch(() => { if (this.resultRenderVersion === version) { load.disabled = false; load.textContent = "Retry loading field evidence"; } });
           }); coverage.appendChild(load);
         }
-        const measures = [["Eligible being reports", counts.eligibleReports], ["Supported field", counts.supportedReports],
-          ["Unknown field", counts.unknownReports], ["Field not loaded", counts.notLoadedReports]];
-        if (Number(counts.excludedReports)) measures.push(["Excluded from this comparison", counts.excludedReports]);
+        const query = (extra) => Object.assign({ domain: "core", axisKey: axis.key, population: populationKey, evidenceMode }, extra);
+        const measures = [[populationKey === "abduction" ? "Eligible abduction reports" : "Eligible being reports", counts.eligibleReports, "eligible"], ["Supported field", counts.supportedReports, "supported"],
+          ["Unknown field", counts.unknownReports, "unknown"], ["Field not loaded", counts.notLoadedReports, "not_loaded"]];
+        if (Number(counts.excludedReports)) measures.push(["Excluded from this comparison", counts.excludedReports, "excluded"]);
         const list = this._element("dl", "encounter-atlas-coverage");
         measures.forEach((measure) => {
           const group = this._element("div"); group.appendChild(this._element("dt", "", measure[0]));
-          group.appendChild(this._element("dd", "", measure[1] == null ? "Not available" : formatCount(measure[1]))); list.appendChild(group);
+          const dd = this._element("dd", "");
+          if (measure[1] != null && this.callbacks.onEncounterReportsRequested) {
+            const button = this._element("button", "encounter-coverage-button", formatCount(measure[1])); button.type = "button";
+            button.setAttribute("aria-label", "Inspect " + measure[0].toLowerCase());
+            button.addEventListener("click", () => this._openEncounterReports(query({ bucket: measure[2] }), { title: measure[0] + " · " + axis.label })); dd.appendChild(button);
+          } else dd.textContent = measure[1] == null ? "Not available" : formatCount(measure[1]);
+          group.appendChild(dd); list.appendChild(group);
         });
         coverage.appendChild(list);
         coverage.appendChild(this._element("p", "analysis-chart-policy encounter-atlas-policy", cleanText(axis.fieldPolicy, "The comparison uses retained source fields; unknown values remain separate.")));
         const cells = firstArray(axis, ["cells"]);
+        const selectedMetric = metricSelect.value || "count";
+        this.encounterMetricSelection = selectedMetric;
+        const shareMetric = selectedMetric !== "count";
+        const metricLabel = (metricEntries.find((entry) => entry.key === selectedMetric) || metricEntries[0]).label;
+        const metricCells = cells.map((cell) => { const metricValue = selectedMetric === "count" ? firstDefined(cell, ["count", "observedCount"], null) : selectedMetric === "conditionalDifference" ? cell.conditionalComparison && cell.conditionalComparison.difference : cell[selectedMetric];
+          return Object.assign({}, cell, { displayMetric: metricValue, estimateAvailable: typeof metricValue === "number" && Number.isFinite(metricValue) }); });
         const rowLabels = new Map(firstArray(axis, ["rows"]).map(function (item) { return [item.key, item.label]; }));
         const columnLabels = new Map(firstArray(axis, ["columns"]).map(function (item) { return [item.key, item.label]; }));
         const columnKeys = firstArray(axis, ["columns"]).map(function (item) { return item.key; });
         const unknownKeys = columnKeys.filter(function (key) { return /unknown|not_loaded|unavailable|unclassified|unspecified/.test(key); });
         const orderedColumns = unknownKeys.concat(columnKeys.filter(function (key) { return !unknownKeys.includes(key); }));
-        this._renderHeatmap(chart.id, cells, summary, {
-          caption: "Being descriptions × " + cleanText(axis.label, axis.key), rowHeading: "Reported being description", columnHeading: cleanText(axis.label, axis.key),
-          descriptiveCounts: true, inspectable: false, axisLimit: 32, valueKeys: ["count", "observedCount", "value"], completeData: cells,
+        this._renderHeatmap(chart.id, metricCells, summary, {
+          caption: (populationKey === "abduction" ? "Abduction classifications" : "Being descriptions") + " × " + cleanText(axis.label, axis.key), rowHeading: populationKey === "abduction" ? "Abduction classification" : "Reported being description", columnHeading: cleanText(axis.label, axis.key),
+          descriptiveCounts: true, inspectable: false, axisLimit: 32, valueKeys: ["displayMetric"], valueFormat: shareMetric ? "percent" : undefined, completeData: metricCells,
+          valueFormatter: selectedMetric === "conditionalDifference" ? (value) => formatDecimal(value * 100, 1) + " pp" : undefined,
+          axisRows: firstArray(axis, ["rows"]).map((row) => row.key), preserveUnavailableCells: true, encounterDenominators: cells.some((cell) => cell.rowReportDenominator != null),
+          onCellInspect: this.callbacks.onEncounterReportsRequested ? (cell, title) => this._openEncounterReports(query({ bucket: "cell", rowKey: cell.row, columnKey: cell.column }), { title, cell, axis }) : null,
           rowAxisOrder: firstArray(axis, ["rows"]).map(function (item) { return item.key; }), columnAxisOrder: orderedColumns, axisColumns: orderedColumns,
           rowLabelFormatter: function (key) { return rowLabels.get(key) || plainLanguageLabel(key); },
           columnLabelFormatter: function (key) { return columnLabels.get(key) || plainLanguageLabel(key); },
-          descriptiveLegend: "Darker teal = more source reports in a combination. Unknown and unloaded fields remain visible; counts do not establish an underlying physical relationship.",
+          descriptiveLegend: (selectedMetric === "conditionalDifference" ? "Teal = positive conditional share difference; amber = negative. Only comparisons with supported common strata are estimated. " : "Darker teal = higher " + metricLabel.toLowerCase() + ". ") + "Counts describe source reports. Unknown and unloaded fields remain visible; descriptions do not establish an underlying physical relationship.",
           combinationLabel: "indexed combinations", countStatusText: "descriptive source-report count", zeroCountLabel: "zero indexed source reports in this combination.",
-          countShareLabel: cleanText(axis.shareLabel, "Share of eligible being reports"), countPeakLabel: "Largest displayed report count: ",
-          emptyMessage: cleanText(axis.unavailableReason, "No indexed combinations are available for this field in the current cohort."),
+          countShareLabel: cleanText(axis.shareLabel, "Share of eligible being reports"), countPeakLabel: "Largest displayed " + metricLabel.toLowerCase() + ": ",
+          emptyMessage: selectedMetric === "conditionalDifference" ? "No cell has sufficient shared source, decade, region and field support for a conditional comparison in this cohort. Raw report counts and original reports remain available in the other views." : cleanText(axis.unavailableReason, "No indexed combinations are available for this field in the current cohort."),
         });
         this._appendChartPolicy(chart.id, "Each report counts once per being–field combination. Multi-label descriptions and fields can make cell totals exceed "
           + formatCount(counts.eligibleReports) + " eligible being reports. The complete table and selected comparison exports retain every cell.");
         if (atlas.policy) this._appendChartPolicy(chart.id, atlas.policy);
+        this._appendChartPolicy(chart.id, "Within-row shares divide by distinct eligible reports carrying that row classification; within-column shares divide by distinct eligible reports in that field category. Supported-row shares omit unknown/unloaded field reports from their denominator. A zero numerator remains zero; a missing denominator remains unavailable.");
+        this._appendEncounterSensitivity(coverage, axis, null);
         if (["height", "uniform", "color", "color_role"].includes(axis.key)) this._appendChartPolicy(chart.id, "These are co-fields within the original report. A height, clothing description or object color may refer to a different being or object; attribution to a particular being label is not established by this cell.");
         buttons.forEach(function (button) { button.disabled = !cells.length; });
       };
       select.addEventListener("change", () => {
+        this._closeEncounterReports();
         renderAxis();
         const axis = axes.find(function (item) { return item.key === select.value; });
         if (this.resultRenderVersion === version && axis && Number(axis.coverage && axis.coverage.notLoadedReports) > 0 && this.callbacks.onEncounterAxisRequested) {
@@ -6461,6 +6737,9 @@
       if (api && typeof api.renderEncounterContext === "function") {
         api.renderEncounterContext(target, evidence || { status: "loading" }, {
           onSettingsChange: callbacks.onComparisonSettingsChange, retry: callbacks.onComparisonRetry,
+          onInspectReports: callbacks.onEncounterReportsRequested ? (query, detail) => this._openEncounterReports(query, detail) : null,
+          onInspectReset: () => this._closeEncounterReports(),
+          onEncounterSettingsChange: callbacks.onEncounterSettingsChange,
         });
         return true;
       }
@@ -7215,6 +7494,7 @@
       this._clearRenderTargets(Array.from(this.renderPlans.values()).reduce(function (ids, plan) {
         return ids.concat(asArray(plan && plan.targets));
       }, []));
+      this._closeEncounterReports();
       this.resultRenderVersion += 1;
       this.renderedPlanVersions.clear();
       this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob], { sectionId: "analysis-section-spatial", targets: ["analysis-cooccurrence-chart"] });

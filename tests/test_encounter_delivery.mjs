@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const evidence = require("../encounter_evidence.js");
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const BASE_URL = "http://127.0.0.1:8168/";
-const VERSION = "2026-10-13-encounter-atlas-v2";
+const VERSION = "2026-10-13-encounter-complete-v3";
 const MAX_RESPONSE_BYTES = 24 * 1024 * 1024;
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const statuses = [];
@@ -86,6 +86,13 @@ assert.equal(index.catalogCount, 702893);
 assert.equal(index.taxonomy.length, 19);
 assert.deepEqual(index.taxonomy.map((entry) => entry.key), manifest.taxonomy.map((entry) => entry.key));
 const snapshot = index.snapshot();
+for (const key of ["labelOrigins", "enrichment"]) {
+  const pin = manifest[key]; if (!pin) continue;
+  const response = await getLocal(new URL(pin.file, manifestUrl));
+  const value = await evidence.decodeEvidenceResponse(new Response(response.bytes), pin);
+  const extension = key === "labelOrigins" ? evidence.createLabelOriginsIndex(value, index, artifact.decodedSha256) : evidence.createEnrichmentIndex(value, index, artifact.decodedSha256);
+  assert.equal(extension.ready, true);
+}
 assert.equal(snapshot.beingReportCount, manifest.counts.beingReportCount);
 for (const [status, code] of [["source_reported", 1], ["narrative_reported", 2], ["ambiguous", 3]]) {
   assert.equal(payload.rows.filter((row) => row.abductionStatus === status).length, manifest.counts.abductionStatusCounts[status] || 0);
@@ -112,7 +119,7 @@ const changedHtmlAssets = ["app.js", "analysis_view.js", "analysis_comparisons_v
 for (const path of changedHtmlAssets) assert.ok(html.includes(path + "?v=" + VERSION), "Changed runtime has a stale served cache token: " + path);
 assert.ok(html.indexOf("encounter_evidence.js?") < html.indexOf("app.js?"), "Encounter module must load before the app");
 const resourcePaths = [...changedHtmlAssets, "catalog_filter_worker.js", "analysis_stats.js", "analysis_encounter_context.js", "trace_neighborhood.js", "styles.css",
-  "ui/accepted-workspace/analysis-navigation.js", "ui/accepted-workspace/analysis-view-groups.js"];
+  "ui/accepted-workspace/analysis-navigation.js", "ui/accepted-workspace/analysis-view-groups.js", "encounter_atlas_query.js"];
 const resources = await Promise.all(resourcePaths.map((path) => getLocal(path + "?v=" + VERSION)));
 const workerText = resources[resourcePaths.indexOf("catalog_filter_worker.js")].bytes.toString("utf8");
 assert.ok(workerText.includes('ANALYSIS_RUNTIME_CACHE_KEY = "' + VERSION + '"'), "Worker import cache token must match this encounter release");
@@ -138,7 +145,7 @@ const receipt = {
   limitation: "HTTP delivery and source-contract checks do not confirm interactive browser behavior or visual layout.",
   newFilesOver100MiB: [], canonicalCorpusCopied: false,
 };
-const output = new URL("../docs/qa/encounter-atlas-20261013/delivery.json", import.meta.url);
+const output = new URL("../docs/qa/encounter-complete-20261013/delivery.json", import.meta.url);
 await fs.mkdir(new URL(".", output), { recursive: true });
 await fs.writeFile(output, JSON.stringify(receipt, null, 2) + "\n", "utf8");
 console.log(JSON.stringify({ status: "passed", rowCount: index.rowCount, catalogCount: index.catalogCount,

@@ -107,7 +107,7 @@ assert.deepEqual(axisRequests, ["hour", "hour"]);
 assert.equal(loadField.disabled, false);
 const appSource = fs.readFileSync("app.js", "utf8");
 const routeStart = appSource.indexOf("onEncounterAxisRequested: function (axis) {");
-const routeEnd = appSource.indexOf("\n      onSectionActivate:", routeStart);
+const routeEnd = Math.min(...["\n      onEncounterReportsRequested:", "\n      onSectionActivate:"].map((marker) => appSource.indexOf(marker, routeStart)).filter((index) => index >= 0));
 const routeSource = appSource.slice(routeStart + "onEncounterAxisRequested: ".length, routeEnd).trim().replace(/,$/, "");
 const routeNames = ["ensureAnalysisGeographyArtifact", "ensureAnalysisDurationArtifact", "ensureAnalysisReportingDelayArtifact", "ensureAnalysisTimeOfDayArtifact", "ensureAnalysisWitnessCountArtifact", "ensureAnalysisColorArtifact", "ensureAnalysisCoordinateEvidenceArtifact"];
 const route = vm.runInNewContext("(" + routeSource + ")", Object.fromEntries(routeNames.map((name) => [name, () => name])));
@@ -181,5 +181,5 @@ for (const id of ["analysis-encounter-atlas-disclosure", "analysis-encounter-atl
 }
 assert.match(html, /id="analysis-encounter-atlas-disclosure"[^>]*>/);
 assert.doesNotMatch(html, /id="analysis-encounter-(?:atlas|context)-disclosure"[^>]*\bopen\b/);
-assert.ok(html.includes('encounter_analysis.css?v=2026-10-13-encounter-atlas-v2'));
+assert.ok(html.includes('encounter_analysis.css?v=2026-10-13-encounter-complete-v3'));
 console.log("Encounter atlas lazy navigation, coverage, exact tables/exports, stale handlers, and active-context refresh tests passed.");

@@ -505,6 +505,7 @@
       if (!domain.groups.has(key)) domain.groups.set(key, { _preparedGroup: true, startOrdinal: start, endOrdinal: start, datePrecision: "exact_day", category,
         _preparedUtc: utc, _houseInputEligible: house, _aggregateN: 0 });
       domain.groups.get(key)._aggregateN += 1;
+      if (typeof options.onPreparedReport === "function") options.onPreparedReport(row, domain.groups.get(key));
     }
     if (typeof options.forEachRow === "function") options.forEachRow(function (row) { accept(domains[0], row, epoch); });
     else (Array.isArray(options.rows) ? options.rows : []).forEach(function (row) { accept(domains[0], row, epoch); });
@@ -861,7 +862,19 @@
       inferenceEligible: false, patternFinderEligible: false };
   }
   function clearCaches() { dayCache.clear(); noonCache.clear(); monthCache.clear(); heatmapDayCache.clear(); heatmapMonthCache.clear(); }
+  function inspectHeatmapReports(optionsValue) {
+    const options = optionsValue || {}, config = configuration(Object.assign({}, options, { planet: "Venus", aspectPartner: "Mars", samplingMode: "common_grid" }));
+    const axis = HEATMAP_ROWS.find(function (row) { return row.kind === options.kind && row.id === options.axisId; });
+    if (!axis) throw new Error("Unknown planetary comparison axis.");
+    const axisIndex = HEATMAP_ROWS.indexOf(axis);
+    preparePlanetaryCohort(Object.assign({}, options, { onPreparedReport: function (row, prepared) {
+      const state = heatmapState(prepared.startOrdinal, config, prepared._preparedUtc, false);
+      if (typeof options.onReportMembership === "function") options.onReportMembership(row, {
+        eligible: true, column: axis.columns[state.mid[axisIndex]].id,
+        stable: !!(state.lower[axisIndex] & (1 << state.mid[axisIndex])) });
+    } }));
+  }
   return { VERSION, PLANETS, SIGNS, ASPECTS, MOTIONS, computePlanetaryContext, positionForDay, positionAtUtc, longitudeRateAtUtc,
     ayanamsaDegreesAtUtc, angularDistance, clearCaches, preparePlanetaryCohort, computePlanetaryHeatmaps, decodeEphemerisAtlas, setEphemerisAtlas, clearEphemerisAtlas, buildEphemerisAtlasBuffer,
-    ATLAS_SCHEMA, ATLAS_HOURS };
+    ATLAS_SCHEMA, ATLAS_HOURS, inspectHeatmapReports };
 });

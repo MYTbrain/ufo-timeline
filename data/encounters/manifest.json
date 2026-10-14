@@ -1,1 +1,325 @@
-{"artifact":{"decodedBytes":11158461,"decodedSha256":"0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8","file":"evidence.json.gz","gzipBytes":1875418,"gzipSha256":"64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef","rowCount":16319,"sha256":"0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8","url":"./data/encounters/evidence.json.gz"},"catalogCount":702893,"counts":{"abductionStatusBySource":{"majestic":{"ambiguous":8,"narrative_reported":27,"source_reported":8},"mufon":{"ambiguous":18,"narrative_reported":59},"nuforc":{"ambiguous":2040,"narrative_reported":32},"phenomenainon_updb":{"ambiguous":15,"narrative_reported":106},"ufocat":{"ambiguous":58,"narrative_reported":9,"source_reported":2976}},"abductionStatusCounts":{"ambiguous":2139,"narrative_reported":233,"source_reported":2984},"beingReportCount":12595,"beingTypeCounts":{"animal_like":282,"apparition":180,"giant":129,"grey":996,"hairy":1222,"human_like":1216,"humanoid":2170,"insectoid":32,"luminous":97,"mantis_like":23,"men_in_black":200,"mixed":118,"nordic":251,"other_described":837,"reptilian":130,"robotic":131,"small_humanoid":1395,"tall_humanoid":740,"unspecified":4076},"beingTypesBySource":{"majestic":{"animal_like":1,"apparition":17,"giant":5,"grey":43,"hairy":15,"human_like":18,"humanoid":470,"insectoid":2,"luminous":5,"men_in_black":1,"mixed":2,"nordic":4,"reptilian":3,"robotic":24,"small_humanoid":101,"tall_humanoid":67,"unspecified":160},"mufon":{"animal_like":1,"apparition":13,"giant":1,"grey":72,"hairy":8,"human_like":4,"humanoid":59,"insectoid":2,"luminous":1,"mantis_like":4,"men_in_black":4,"nordic":3,"reptilian":14,"small_humanoid":12,"tall_humanoid":8,"unspecified":372},"nuforc":{"animal_like":1,"apparition":2,"grey":19,"hairy":5,"human_like":1,"humanoid":27,"luminous":1,"mantis_like":2,"men_in_black":1,"reptilian":1,"small_humanoid":4,"tall_humanoid":3,"unspecified":212},"phenomenainon_updb":{"apparition":17,"giant":1,"grey":67,"hairy":45,"human_like":8,"humanoid":209,"insectoid":4,"luminous":6,"mantis_like":1,"men_in_black":4,"nordic":2,"reptilian":15,"robotic":3,"small_humanoid":38,"tall_humanoid":20,"unspecified":508},"ufocat":{"animal_like":279,"apparition":131,"giant":122,"grey":795,"hairy":1149,"human_like":1185,"humanoid":1405,"insectoid":24,"luminous":84,"mantis_like":16,"men_in_black":190,"mixed":116,"nordic":242,"other_described":837,"reptilian":97,"robotic":104,"small_humanoid":1240,"tall_humanoid":642,"unspecified":2824}},"catalogCount":702893,"craftAssociationCounts":{"co_reported":2841,"explicit":4015,"none_reported":4114,"not_established":1625},"indexedSourceCounts":{"majestic":765,"mufon":603,"nuforc":2307,"phenomenainon_updb":937,"ufocat":11707},"rowCount":16319,"sourceCounts":{"majestic":49418,"mufon":119350,"nuforc":151816,"phenomenainon_updb":161029,"ufocat":221280}},"generatedAtUtc":"2026-10-13T21:37:21.107465+00:00","policy":{"absenceMeans":"not_indexed_not_negative","ambiguousClasses":"UFOCAT TYPE9A/9B cover disappearance/teleportation too; possible-abduction attributes stay ambiguous","associationMeans":"same_record_reported_relation_not_verified_common_origin","beingLabelsAre":"source_reported_appearance_or_named_labels_not_biological_species","catalogRecordsMutated":false,"claimsVerified":false,"codedAbductionRule":"UFOCAT HYNEK CE4 or explicit source abduction type; Vallee CE4 is not equivalent","coordinatesMutated":false,"craftClassificationsMutated":false,"heightUnit":"feet_from_ufocat_source_only","narrativeRules":"Own-episode affirmative narrow templates; negation/speculation held. Whole-record publication/comparison/prior/recurring/desire/theory frames withhold all narrative additions; source-coded classifications and direct Ufonaut/Height/Uniform fields remain independent. Alien craft/UFO/plural vessel adjectives are not being nouns. Numeric height followed by tall is not a Tall type.","reviewedWholeRecordHolds":"Two exact source-verified narrative-only records withdrawn from this positive index; no canonical records or direct source-coded evidence removed.","sourceCodebook":{"printedPages":[10,28,29,31,32,33,34,35],"url":"https://cufos.org/PDFs/UFOCAT%20Codebook%202023.pdf"},"taxonomyGrouping":"Stature descriptors come only from direct Ufonaut labels or own narrative words, never numeric height. Unrecognized source labels remain other_described."},"releaseId":"encounters-20261013-v1","rowCount":16319,"schemaId":"ufo-encounter-evidence-v1","taxonomy":[{"group":"Named source labels","key":"grey","label":"Grey / gray"},{"group":"Named source labels","key":"nordic","label":"Nordic"},{"group":"Named source labels","key":"reptilian","label":"Reptilian"},{"group":"Named source labels","key":"mantis_like","label":"Mantis-like"},{"group":"Named source labels","key":"insectoid","label":"Insectoid"},{"group":"Reported appearance","key":"human_like","label":"Human-like"},{"group":"Reported appearance","key":"humanoid","label":"Humanoid"},{"group":"Reported appearance","key":"small_humanoid","label":"Small / short humanoid"},{"group":"Reported appearance","key":"tall_humanoid","label":"Tall humanoid"},{"group":"Reported appearance","key":"giant","label":"Giant"},{"group":"Reported appearance","key":"hairy","label":"Hairy / Bigfoot-like"},{"group":"Reported appearance","key":"robotic","label":"Robotic"},{"group":"Reported appearance","key":"luminous","label":"Luminous"},{"group":"Reported appearance","key":"animal_like","label":"Animal-like / winged"},{"group":"Other reported categories","key":"men_in_black","label":"Men in Black"},{"group":"Other reported categories","key":"apparition","label":"Apparition / ghost-like"},{"group":"Other reported categories","key":"mixed","label":"Mixed beings"},{"group":"Other reported categories","key":"other_described","label":"Other described being"},{"group":"Other reported categories","key":"unspecified","label":"Type unspecified"}]}
+{
+  "artifact": {
+    "decodedBytes": 11158461,
+    "decodedSha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8",
+    "file": "evidence.json.gz",
+    "gzipBytes": 1875418,
+    "gzipSha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+    "rowCount": 16319,
+    "sha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8",
+    "url": "./data/encounters/evidence.json.gz"
+  },
+  "catalogCount": 702893,
+  "counts": {
+    "abductionStatusBySource": {
+      "majestic": {
+        "ambiguous": 8,
+        "narrative_reported": 27,
+        "source_reported": 8
+      },
+      "mufon": {
+        "ambiguous": 18,
+        "narrative_reported": 59
+      },
+      "nuforc": {
+        "ambiguous": 2040,
+        "narrative_reported": 32
+      },
+      "phenomenainon_updb": {
+        "ambiguous": 15,
+        "narrative_reported": 106
+      },
+      "ufocat": {
+        "ambiguous": 58,
+        "narrative_reported": 9,
+        "source_reported": 2976
+      }
+    },
+    "abductionStatusCounts": {
+      "ambiguous": 2139,
+      "narrative_reported": 233,
+      "source_reported": 2984
+    },
+    "beingReportCount": 12595,
+    "beingTypeCounts": {
+      "animal_like": 282,
+      "apparition": 180,
+      "giant": 129,
+      "grey": 996,
+      "hairy": 1222,
+      "human_like": 1216,
+      "humanoid": 2170,
+      "insectoid": 32,
+      "luminous": 97,
+      "mantis_like": 23,
+      "men_in_black": 200,
+      "mixed": 118,
+      "nordic": 251,
+      "other_described": 837,
+      "reptilian": 130,
+      "robotic": 131,
+      "small_humanoid": 1395,
+      "tall_humanoid": 740,
+      "unspecified": 4076
+    },
+    "beingTypesBySource": {
+      "majestic": {
+        "animal_like": 1,
+        "apparition": 17,
+        "giant": 5,
+        "grey": 43,
+        "hairy": 15,
+        "human_like": 18,
+        "humanoid": 470,
+        "insectoid": 2,
+        "luminous": 5,
+        "men_in_black": 1,
+        "mixed": 2,
+        "nordic": 4,
+        "reptilian": 3,
+        "robotic": 24,
+        "small_humanoid": 101,
+        "tall_humanoid": 67,
+        "unspecified": 160
+      },
+      "mufon": {
+        "animal_like": 1,
+        "apparition": 13,
+        "giant": 1,
+        "grey": 72,
+        "hairy": 8,
+        "human_like": 4,
+        "humanoid": 59,
+        "insectoid": 2,
+        "luminous": 1,
+        "mantis_like": 4,
+        "men_in_black": 4,
+        "nordic": 3,
+        "reptilian": 14,
+        "small_humanoid": 12,
+        "tall_humanoid": 8,
+        "unspecified": 372
+      },
+      "nuforc": {
+        "animal_like": 1,
+        "apparition": 2,
+        "grey": 19,
+        "hairy": 5,
+        "human_like": 1,
+        "humanoid": 27,
+        "luminous": 1,
+        "mantis_like": 2,
+        "men_in_black": 1,
+        "reptilian": 1,
+        "small_humanoid": 4,
+        "tall_humanoid": 3,
+        "unspecified": 212
+      },
+      "phenomenainon_updb": {
+        "apparition": 17,
+        "giant": 1,
+        "grey": 67,
+        "hairy": 45,
+        "human_like": 8,
+        "humanoid": 209,
+        "insectoid": 4,
+        "luminous": 6,
+        "mantis_like": 1,
+        "men_in_black": 4,
+        "nordic": 2,
+        "reptilian": 15,
+        "robotic": 3,
+        "small_humanoid": 38,
+        "tall_humanoid": 20,
+        "unspecified": 508
+      },
+      "ufocat": {
+        "animal_like": 279,
+        "apparition": 131,
+        "giant": 122,
+        "grey": 795,
+        "hairy": 1149,
+        "human_like": 1185,
+        "humanoid": 1405,
+        "insectoid": 24,
+        "luminous": 84,
+        "mantis_like": 16,
+        "men_in_black": 190,
+        "mixed": 116,
+        "nordic": 242,
+        "other_described": 837,
+        "reptilian": 97,
+        "robotic": 104,
+        "small_humanoid": 1240,
+        "tall_humanoid": 642,
+        "unspecified": 2824
+      }
+    },
+    "catalogCount": 702893,
+    "craftAssociationCounts": {
+      "co_reported": 2841,
+      "explicit": 4015,
+      "none_reported": 4114,
+      "not_established": 1625
+    },
+    "indexedSourceCounts": {
+      "majestic": 765,
+      "mufon": 603,
+      "nuforc": 2307,
+      "phenomenainon_updb": 937,
+      "ufocat": 11707
+    },
+    "rowCount": 16319,
+    "sourceCounts": {
+      "majestic": 49418,
+      "mufon": 119350,
+      "nuforc": 151816,
+      "phenomenainon_updb": 161029,
+      "ufocat": 221280
+    }
+  },
+  "generatedAtUtc": "2026-10-13T21:37:21.107465+00:00",
+  "policy": {
+    "absenceMeans": "not_indexed_not_negative",
+    "ambiguousClasses": "UFOCAT TYPE9A/9B cover disappearance/teleportation too; possible-abduction attributes stay ambiguous",
+    "associationMeans": "same_record_reported_relation_not_verified_common_origin",
+    "beingLabelsAre": "source_reported_appearance_or_named_labels_not_biological_species",
+    "catalogRecordsMutated": false,
+    "claimsVerified": false,
+    "codedAbductionRule": "UFOCAT HYNEK CE4 or explicit source abduction type; Vallee CE4 is not equivalent",
+    "coordinatesMutated": false,
+    "craftClassificationsMutated": false,
+    "heightUnit": "feet_from_ufocat_source_only",
+    "narrativeRules": "Own-episode affirmative narrow templates; negation/speculation held. Whole-record publication/comparison/prior/recurring/desire/theory frames withhold all narrative additions; source-coded classifications and direct Ufonaut/Height/Uniform fields remain independent. Alien craft/UFO/plural vessel adjectives are not being nouns. Numeric height followed by tall is not a Tall type.",
+    "reviewedWholeRecordHolds": "Two exact source-verified narrative-only records withdrawn from this positive index; no canonical records or direct source-coded evidence removed.",
+    "sourceCodebook": {
+      "printedPages": [
+        10,
+        28,
+        29,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "url": "https://cufos.org/PDFs/UFOCAT%20Codebook%202023.pdf"
+    },
+    "taxonomyGrouping": "Stature descriptors come only from direct Ufonaut labels or own narrative words, never numeric height. Unrecognized source labels remain other_described."
+  },
+  "releaseId": "encounters-20261013-v1",
+  "rowCount": 16319,
+  "schemaId": "ufo-encounter-evidence-v1",
+  "taxonomy": [
+    {
+      "group": "Named source labels",
+      "key": "grey",
+      "label": "Grey / gray"
+    },
+    {
+      "group": "Named source labels",
+      "key": "nordic",
+      "label": "Nordic"
+    },
+    {
+      "group": "Named source labels",
+      "key": "reptilian",
+      "label": "Reptilian"
+    },
+    {
+      "group": "Named source labels",
+      "key": "mantis_like",
+      "label": "Mantis-like"
+    },
+    {
+      "group": "Named source labels",
+      "key": "insectoid",
+      "label": "Insectoid"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "human_like",
+      "label": "Human-like"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "humanoid",
+      "label": "Humanoid"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "small_humanoid",
+      "label": "Small / short humanoid"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "tall_humanoid",
+      "label": "Tall humanoid"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "giant",
+      "label": "Giant"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "hairy",
+      "label": "Hairy / Bigfoot-like"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "robotic",
+      "label": "Robotic"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "luminous",
+      "label": "Luminous"
+    },
+    {
+      "group": "Reported appearance",
+      "key": "animal_like",
+      "label": "Animal-like / winged"
+    },
+    {
+      "group": "Other reported categories",
+      "key": "men_in_black",
+      "label": "Men in Black"
+    },
+    {
+      "group": "Other reported categories",
+      "key": "apparition",
+      "label": "Apparition / ghost-like"
+    },
+    {
+      "group": "Other reported categories",
+      "key": "mixed",
+      "label": "Mixed beings"
+    },
+    {
+      "group": "Other reported categories",
+      "key": "other_described",
+      "label": "Other described being"
+    },
+    {
+      "group": "Other reported categories",
+      "key": "unspecified",
+      "label": "Type unspecified"
+    }
+  ],
+  "labelOrigins": {
+    "file": "label_origins.json.gz",
+    "decodedBytes": 5857464,
+    "decodedSha256": "b6302f29b698728c8ba38acb733aec832754b9a6589a50f3e5ffa175ae08105f",
+    "gzipBytes": 879454,
+    "gzipSha256": "81fee2c14f22417e560bd6c0dcc61def5d51d15d2981dddcc3cb2f142b1af687",
+    "rowCount": 16319
+  },
+  "enrichment": {
+    "gzipBytes": 14338,
+    "gzipSha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc",
+    "decodedBytes": 80172,
+    "decodedSha256": "e00b934e1a2152ad4bdeac00db38a2d56184c0631fa0aa05ecaa1dafc29db34f",
+    "file": "enrichment.json.gz"
+  }
+}

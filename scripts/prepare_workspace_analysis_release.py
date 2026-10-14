@@ -89,7 +89,7 @@ def assemble(check_only=False):
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js",
-                   "analysis_encounter_context.js", "encounter_analysis.css",
+                   "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
@@ -125,6 +125,13 @@ def assemble(check_only=False):
         pages["data/encounters/manifest.json"] = ROOT / "data/encounters/manifest.json"
         pages["data/encounters/evidence.json.gz"] = encounter_file
         pin(encounter_file, "precomputed original-source abduction and reported-being evidence")
+        for key in ("labelOrigins", "enrichment"):
+            artifact = encounter_manifest.get(key)
+            if artifact:
+                source = ROOT / "data/encounters" / artifact["file"]
+                require(sha(source) == artifact["gzipSha256"], "Encounter extension hash drift: " + key)
+                pages["data/encounters/" + artifact["file"]] = source
+                pin(source, "reviewed encounter metadata extension: " + key)
 
     # All 71 changed summary gzip shards; the two reviewed year corrections win.
     catalog = REPAIRS / "catalog"
@@ -212,6 +219,11 @@ def assemble(check_only=False):
     facility = comparisons["artifacts"]["facilities"]
     facility["file"] = facility["sourceFile"]
     comparisons["ephemerisAtlas"]["file"] = release_url("data/analysis_comparisons/ephemeris_atlas_v1.bin.gz")
+    if comparisons["artifacts"].get("nuclearExtension"):
+        extension = comparisons["artifacts"]["nuclearExtension"]
+        source = ROOT / "data/analysis_comparisons" / Path(extension["file"]).name
+        require(sha(source) == extension["gzipSha256"], "Nuclear extension hash drift")
+        extension["file"] = upload(source, "data/analysis_comparisons/" + source.name)
     page_json("data/analysis_comparisons/manifest.json", comparisons)
 
     # Sparse original-detail corrections apply after the retained quality overlay.
@@ -324,7 +336,7 @@ def main():
                 new_paths = {r["path"] for r in plan["pages"]}
                 require(old_paths <= new_paths and new_paths - old_paths <= {
                     "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
-                    "encounter_evidence.js", "analysis_encounter_context.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz",
+                    "encounter_evidence.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
                     "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
                 }, "Candidate file inventory changed beyond the reviewed timing, radar and guided Help assets")
             else:

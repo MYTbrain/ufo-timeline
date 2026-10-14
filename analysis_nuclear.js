@@ -227,7 +227,7 @@
     return { distance: nearest, unknown };
   }
   function facilityReport(state, row, nuclear, broad, nuclearGrid, broadGrid, bands) {
-    if (!nuclear.length && !broad.length) return;
+    if (!nuclear.length && !broad.length) return null;
     state.facilityInputN += 1;
     const radius = bands[bands.length - 1].maxKm;
     const n = nearestFacility(row, nuclear, nuclearGrid, radius), b = nearestFacility(row, broad, broadGrid, radius);
@@ -236,6 +236,7 @@
     group.reportsN += 1; increment(group.crafts, row.craft);
     if (n.distance != null) state.nuclearBands[bandAt(n.distance, bands)].reportsN += 1;
     if (b.distance != null) state.broaderBands[bandAt(b.distance, bands)].reportsN += 1;
+    return group.id;
   }
 
   function computeNuclearContext(optionsValue) {
@@ -261,6 +262,9 @@
       for (const shift of [-364, 364]) {
         const anchor = test.ordinal + shift;
         if (anchor + minLag < catalogFirst || anchor + maxLag > catalogLast) continue;
+        if (Array.isArray(options.controlCoverageIntervals) && !options.controlCoverageIntervals.some(function (interval) {
+          return Number.isFinite(interval.startOrdinal) && Number.isFinite(interval.endOrdinal) && anchor + minLag >= interval.startOrdinal && anchor + maxLag <= interval.endOrdinal;
+        })) continue;
         // The comparison date must not overlap a known explosion at the same
         // region or within the displayed radius, including excluded safety tests.
         const contaminated = allTests.some(other => {
@@ -295,14 +299,19 @@
       state.seen.add(row.id);
       if (inRange) {
         state.eligibleN += 1;
+        const membership = { eligible: true, phases: [], distances: [], facility: null };
         let role = state.dateRoles.get(row.dateRole);
         if (!role) { role = { dateRole: row.dateRole, eligibleN: 0, pairCount: 0, reports: new Set() }; state.dateRoles.set(row.dateRole, role); }
         role.eligibleN += 1;
         for (const test of mainIndex.get(row.ordinal) || []) {
           const distance = haversineKm(row.point, test.point), index = bandAt(distance, bands);
-          if (index >= 0) addMainPair(state, row, test, row.ordinal - test.ordinal, distance, index);
+          if (index >= 0) {
+            addMainPair(state, row, test, row.ordinal - test.ordinal, distance, index);
+            membership.phases.push(phase(row.ordinal - test.ordinal)); membership.distances.push(bands[index].id);
+          }
         }
-        facilityReport(state, row, nuclear, broad, nuclearGrid, broadGrid, bands);
+        membership.facility = facilityReport(state, row, nuclear, broad, nuclearGrid, broadGrid, bands);
+        if (typeof options.onReportMembership === "function") options.onReportMembership(value, membership);
       }
       for (const test of matchedIndex.get(row.ordinal) || []) if (haversineKm(row.point, test.point) <= radius) {
         state.controls.testPairCount += 1; state.controls.testReports.add(row.id); increment(state.controls.testSources, row.source);
@@ -377,7 +386,7 @@
         "Published nuclear locations are often approximate. Bands are descriptive marker comparisons, not verified proximity or radiation exposure.",
         "Crop formation, discovery, publication and animal incident/discovery dates retain their separate date roles.",
         "Unique reports and report/test pairs are both shown; one report may overlap several tests or phase groups.",
-        "The FOA/SIPRI source ends in 1998. Its transcription has a stated-total discrepancy and some unverified primary-table lines."],
+        "The FOA/SIPRI base ends in 1998 and has a stated-total discrepancy and some unverified primary-table lines. Any separately reviewed later tests are a partial extension; missing dates do not establish an explosion-free period."],
       sources: options.sources || [],
     };
   }

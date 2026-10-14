@@ -39,6 +39,13 @@ assert.equal(sha256(decoded), manifest.artifact.decodedSha256);
 const payload = JSON.parse(decoded.toString("utf8"));
 const api = require(path.join(root, "encounter_evidence.js"));
 const index = api.createIndex(payload);
+const originsManifest = readJson(path.join(root, "data/encounters/manifest.json")).labelOrigins;
+let originsIndex = null;
+if (originsManifest) {
+  const bytes = fs.readFileSync(path.join(root, "data/encounters", originsManifest.file)), raw = zlib.gunzipSync(bytes);
+  assert.equal(sha256(bytes), originsManifest.gzipSha256); assert.equal(sha256(raw), originsManifest.decodedSha256);
+  originsIndex = api.createLabelOriginsIndex(JSON.parse(raw), index, manifest.artifact.decodedSha256);
+}
 assert.equal(index.catalogCount, 702893);
 let chronologyIndex = null;
 let chronologyPins = null;
@@ -115,7 +122,7 @@ for (let position = 0; position < shards.length; position += 1) {
         chunk: sourceRow.sourceRef.chunk === summary.chunk_id, detailIndex: sourceRow.sourceRef.detailIndex === summary.detail_index };
       Object.keys(checks).forEach((field) => { if (checks[field]) joins[field] += 1; else joins.mismatches += 1; });
     }
-    const event = api.decorate({ ...summary, sort_ordinal: serializerContext.isoToOrdinal(summary.sort_date_iso) }, index);
+    const event = api.decorate({ ...summary, sort_ordinal: serializerContext.isoToOrdinal(summary.sort_date_iso) }, index, originsIndex);
     event.encounterOccurrenceDateExcluded = chronologyIndex ? Boolean(chronologyIndex.exclusion(summary.event_id)) : null;
     if (event.encounterOccurrenceDateExcluded) dateExcludedReports += 1;
     assert.equal(event.encounterIdentityMismatch, false, "Encounter source identity mismatch must not enter runtime counts");
@@ -257,13 +264,24 @@ assert.ok(noCraft.encounterBeingMask & api.beingMask(["grey"]));
 assert.equal(noCraft.encounterCraftAssociationCode, 3);
 assert.equal(matrixFor([noCraft]).size, 0, "Explicit no-craft evidence never contributes to the craft co-report matrix");
 runtimePins.forEach((pin) => assert.equal(filePin(pin.path).sha256, pin.sha256, "Runtime changed during the corpus audit"));
+const evidenceModes = [];
+if (originsIndex) for (const mode of ["all", "source_fields", "narrative"]) {
+  const response = send({ type: "computeAnalysis", requestId: "mode-" + mode, fullTimeRange: true, timeRangeMode: "full", baselineMode: "full_catalog", quickMode: true,
+    selectedDomains: ["encounters"], encounterEvidenceMode: mode, filters });
+  const populations = response.result.encounters.comparisonAtlas.populations;
+  const expectedBeing = sparseInputs.filter(row => mode === "all" ? row.encounterBeingMask : mode === "source_fields" ? row.encounterSourceBeingMask : row.encounterNarrativeBeingMask).length;
+  const expectedAbduction = sparseInputs.filter(row => mode === "all" ? [1,2].includes(row.encounterAbductionCode) : row.encounterAbductionCode === (mode === "source_fields" ? 1 : 2)).length;
+  assert.equal(populations.being.reportCount, expectedBeing); assert.equal(populations.abduction.reportCount, expectedAbduction);
+  assert.ok(populations.being.evidenceModes.every(value => value.available));
+  evidenceModes.push({ mode, beingReports: expectedBeing, abductionReports: expectedAbduction, baseProfileAbductionReports: response.result.encounters.abductionRows });
+}
 const receipt = { schemaId: "ufo-encounter-corpus-runtime-audit-v1", generatedAtUtc: new Date().toISOString(), status: "passed",
   elapsedSeconds: Math.round((performance.now() - started) / 1000), method: "Each of 71 frozen gzip summary shards was verified and loaded in place through the actual app serializer and current catalog filter worker. Only sparse encounter reference rows were retained for independent exact-count and matrix comparisons.",
   ordinalPolicy: "App inputs are Unix-day ordinals (1970-01-01=0); the worker alone converts to the statistics Gregorian-day epoch.",
   catalogReports: rowsRead, summaryShards: shards.length, datedOrdinalReports: dateOrdinalRows, sourceCounts, sourceJoins: joins,
   optionalMetadata: { heightIndexedReports: sparseInputs.filter((row) => row.encounterHeightFeet != null).length,
     uniformIndexedReports: sparseInputs.filter((row) => row.encounterUniform != null).length, unindexedMetadataNullRows, sourceDateExcludedReports: dateExcludedReports },
-  chronology: chronologyPins, comparisonAtlas: atlasReceipts,
+  chronology: chronologyPins, comparisonAtlas: atlasReceipts, evidenceModes,
   evidence: { releaseId: manifest.releaseId, rows: index.rowCount, manifest: filePin(manifestPath), gzip: filePin(evidencePath), decodedSha256: sha256(decoded) },
   runtimePins, deliveryPlan: filePin(planPath), summaryPins: inputPins, cases: receiptCases,
   noCraftRegression: { eventId: noCraftId, source: noCraft.source, beingTypes: api.beingTypes(noCraft.encounterBeingMask), craftAssociation: "none_reported", matrixContribution: 0 },

@@ -9365,7 +9365,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-atlas-v2");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-complete-v3");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9430,6 +9430,9 @@
       encounterEvidenceReady: Boolean(event.encounterEvidenceReady),
       encounterAbductionCode: Number(event.encounterAbductionCode) || 0,
       encounterBeingMask: Number(event.encounterBeingMask) || 0,
+      encounterSourceBeingMask: Number(event.encounterSourceBeingMask) || 0,
+      encounterNarrativeBeingMask: Number(event.encounterNarrativeBeingMask) || 0,
+      encounterEvidenceProvenanceReady: event.encounterEvidenceProvenanceReady === true,
       encounterCraftAssociationCode: Number(event.encounterCraftAssociationCode) || 0,
       encounterHeightFeet: event.encounterHeightFeet == null ? null : Number(event.encounterHeightFeet),
       encounterUniform: event.encounterUniform == null ? null : String(event.encounterUniform),
@@ -9561,6 +9564,7 @@
         hideLowPrecision: filters.hideLowPrecision,
         hideNonExactDates: filters.hideNonExactDates,
         encounters: filters.encounters,
+        encounterSelectionIds: filters.encounterSelectionIds ? Array.from(filters.encounterSelectionIds).sort() : null,
       },
       areaFilter: {
         active: regionSelectionHasActiveShapes() || Boolean(state.analysisCountryAreaFilter),
@@ -10027,6 +10031,13 @@
         if (["color", "color_role"].includes(axis)) return ensureAnalysisColorArtifact();
         if (["coordinate_evidence", "coordinate_quality", "coordinate_source"].includes(axis)) return ensureAnalysisCoordinateEvidenceArtifact();
         return false;
+      },
+      onEncounterReportsRequested: requestEncounterReports,
+      onEncounterReportOpen: openEncounterInspectedReport,
+      onEncounterSelectionApply: applyEncounterInspectedSelection,
+      onEncounterSettingsChange: function (settings) {
+        runtime.analysisEncounterEvidenceMode = settings && settings.evidenceMode || "all";
+        scheduleAnalysisCompute("encounter evidence mode", { immediate: true });
       },
       onSectionActivate: function (change) {
         if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {
@@ -11428,6 +11439,7 @@
       colorHashes: analysisColorArtifactHashes(runtime.analysisColorManifest),
       coordinateEvidenceRequested: Boolean(runtime.analysisCoordinateEvidenceRequested),
       encounterEvidenceReady: runtime.encounterStatus === "ready",
+      encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all",
       encounterEvidenceHash: runtime.encounterManifest && runtime.encounterManifest.sha256,
       coordinateEvidenceReady: Boolean(runtime.analysisCoordinateEvidenceWorkerReady),
       coordinateEvidenceHashes: analysisCoordinateEvidenceArtifactHashes(runtime.analysisCoordinateEvidenceManifest),
@@ -11534,6 +11546,7 @@
         baselineMode: snapshot.baselineMode, datasetHash: analysisCatalogDatasetHash(),
         contextReleaseHashes: analysisContextReleaseHashes(runtime.analysisContextManifest),
         comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
+        encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all",
         contextLayers: {
           cropCirclesEnabled: Boolean(snapshot.contextLayers.crops && snapshot.contextLayers.crops.enabled),
           animalMutilationsEnabled: Boolean(snapshot.contextLayers.animals && snapshot.contextLayers.animals.enabled),
@@ -11547,6 +11560,73 @@
         lowPrecisionValues: workerFilters.lowPrecisionValues,
       });
     });
+  }
+
+  function requestEncounterReports(requestValue, optionsValue) {
+    const request = requestValue || {}, options = optionsValue || {}, snapshot = getAnalysisFilterSnapshot();
+    const worker = ensureCatalogFacetWorker(), workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot.generation);
+    if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) return Promise.reject(new Error("The catalog is still indexing."));
+    const requestId = "encounter-inspection-" + (++runtime.catalogFacetWorkerRequestId), signature = analysisComputeCacheKey(snapshot);
+    return new Promise(function (resolve, reject) {
+      let done = false;
+      function finish(error, result) {
+        if (done) return; done = true; clearTimeout(timer); worker.removeEventListener("message", listener);
+        if (options.signal) options.signal.removeEventListener("abort", abort);
+        if (error) reject(error); else resolve(result);
+      }
+      function abort() { const error = new Error("Inspection cancelled."); error.name = "AbortError"; finish(error); }
+      function listener(event) {
+        const message = event.data || {}; if (message.requestId !== requestId) return;
+        if (message.type !== "encounterReportsInspected") { finish(new Error(message.error || "Report inspection failed.")); return; }
+        if (signature !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) { finish(new Error("The selection changed. Inspect the cell again.")); return; }
+        const value = message.result || {}, reports = (request.allIds ? [] : value.eventIds || []).map(function (id) {
+          const summary = getCatalogEventById(id), record = runtime.encounterEvidence && runtime.encounterEvidence.get(id);
+          return Object.assign({}, summary || {}, { eventId: String(id), encounterRecord: record, provenance: record && record.sourceRef,
+            enrichment: runtime.encounterEnrichment && runtime.encounterEnrichment.get(id) || null });
+        });
+        finish(null, Object.assign({}, value, { requestKey: request.requestKey, scopeKey: request.scopeKey, reports }));
+      }
+      const timer = setTimeout(function () { finish(new Error("Report inspection timed out.")); }, 30000);
+      if (options.signal) { if (options.signal.aborted) { abort(); return; } options.signal.addEventListener("abort", abort, { once: true }); }
+      worker.addEventListener("message", listener);
+      worker.postMessage({ type: "inspectEncounterReports", requestId, inspection: request, generation: snapshot.generation,
+        filters: workerFilters, keywordEventIds: workerFilters.keywordEventIds, lowPrecisionValues: workerFilters.lowPrecisionValues,
+        comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
+        encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all",
+        contextLayers: { cropCirclesEnabled: Boolean(snapshot.contextLayers.crops && snapshot.contextLayers.crops.enabled),
+          animalMutilationsEnabled: Boolean(snapshot.contextLayers.animals && snapshot.contextLayers.animals.enabled) },
+        areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+        timeRangeMode: snapshot.timeRange.mode, fullTimeRange: snapshot.timeRange.mode === "full",
+        timeRangeStartOrdinal: snapshot.timeRange.startOrdinal, timeRangeEndOrdinal: snapshot.timeRange.endOrdinal });
+    });
+  }
+  async function openEncounterInspectedReport(request) {
+    const summary = getCatalogEventById(request.eventId); if (!summary) return;
+    if (request.mode === "map") {
+      runtime.analysisViewController.setActiveView("map", { source: "encounter-inspector" });
+      return openFullEventView(summary.event_id, { centerMap: true, openPopup: true, scrollIntoView: false });
+    }
+    const event = await ensureFullEventLoaded(summary.event_id) || summary;
+    let dialog = document.getElementById("encounter-source-dialog");
+    if (!dialog) { dialog = document.createElement("dialog"); dialog.id = "encounter-source-dialog";
+      dialog.style.cssText = "max-width:780px;width:90vw;max-height:85vh;overflow:auto;background:#15212a;color:#e8f0f2;border:1px solid #46616e;border-radius:14px;padding:24px";
+      document.body.appendChild(dialog); }
+    dialog.replaceChildren();
+    const close = document.createElement("button"); close.textContent = "Close source report"; close.onclick = function () { dialog.close(); }; dialog.appendChild(close);
+    const heading = document.createElement("h2"); heading.textContent = event.location || event.title || "Preserved source report"; dialog.appendChild(heading);
+    const summaryText = document.createElement("p"); summaryText.textContent = [event.date_iso, event.source, "Catalog ID " + summary.event_id].filter(Boolean).join(" · "); dialog.appendChild(summaryText);
+    const body = document.createElement("pre"); body.style.cssText = "white-space:pre-wrap;overflow-wrap:anywhere;font:inherit";
+    body.textContent = JSON.stringify(event.raw_source_row || event.raw_fields || event, null, 2); dialog.appendChild(body);
+    if (!dialog.open) dialog.showModal();
+  }
+  async function applyEncounterInspectedSelection(request) {
+    const page = await requestEncounterReports(Object.assign({}, request, { offset: 0, limit: 100, allIds: true }));
+    const ids = page.eventIds || [];
+    // The inspector uses a bounded sparse encounter cohort. Collect only IDs for
+    // the explicitly requested scope; never alter filters on a chart click.
+    state.encounterAnalysisSelectionIds = new Set(ids);
+    await refreshFilters(); runtime.analysisViewController.setActiveView("map", { source: "encounter-inspector-apply" });
+    return { total: ids.length };
   }
 
   function renderAnalysisComparisonUpdate(evidence, snapshot, cacheKey, performanceSample) {
@@ -11774,6 +11854,7 @@
         ),
         estimatorVersion: "ufo-analysis-evidence-lab-v2.8.0",
         analysisPhase: analysisPhase,
+        encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all",
         quickMode: Boolean(options.quickMode),
         comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
         selectedDomains: (Array.isArray(options.selectedDomains)
@@ -12053,6 +12134,7 @@
       hideLowPrecision: Boolean(filters.hideLowPrecision),
       hideNonExactDates: Boolean(filters.hideNonExactDates),
       encounters: filters.encounters,
+      encounterSelectionIds: filters.encounterSelectionIds ? Array.from(filters.encounterSelectionIds) : null,
       keywordActive: Boolean(filters.keyword),
       keywordEventIds: keywordMatches ? Array.from(keywordMatches).map(String) : null,
       timeRangeStartOrdinal: state.timeRangeStartOrdinal,
@@ -19224,9 +19306,25 @@
           if (!response.ok) throw new Error("Encounter evidence request failed (" + response.status + ").");
           return ENCOUNTERS.decodeEvidenceResponse(response, artifact);
         });
-      }).then(function (payload) {
+      }).then(async function (payload) {
         const index = ENCOUNTERS.createIndex(payload);
         runtime.encounterEvidence = index;
+        const origins = runtime.encounterManifest.labelOrigins;
+        if (origins) {
+          try {
+            const originUrl = new URL(origins.file, new URL(config.manifestUrl, document.baseURI));
+            const originPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(originUrl.toString(), { credentials: "same-origin" }), origins);
+            runtime.encounterLabelOrigins = ENCOUNTERS.createLabelOriginsIndex(originPayload, index, runtime.encounterManifest.sha256);
+          } catch (error) { runtime.encounterLabelOrigins = null; console.warn("[encounters] Label origin comparisons unavailable.", error.message); }
+        }
+        const enrichment = runtime.encounterManifest.enrichment;
+        if (enrichment) {
+          try {
+            const enrichmentUrl = new URL(enrichment.file, new URL(config.manifestUrl, document.baseURI));
+            const enrichedPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(enrichmentUrl.toString(), { credentials: "same-origin" }), enrichment);
+            runtime.encounterEnrichment = ENCOUNTERS.createEnrichmentIndex(enrichedPayload, index, runtime.encounterManifest.sha256);
+          } catch (error) { runtime.encounterEnrichment = null; console.warn("[encounters] Reviewed case enrichment unavailable.", error.message); }
+        }
         runtime.encounterStatus = "ready";
         runtime.encounterError = "";
         renderEncounterControls();
@@ -24105,6 +24203,7 @@
   }
 
   function eventMatchesNonDateFilters(event, filters, keywordMatches) {
+    if (filters.encounterSelectionIds && !filters.encounterSelectionIds.has(String(event.event_id))) return false;
     if (ENCOUNTERS && !ENCOUNTERS.matches(event, filters.encounters)) return false;
     if (filters.keyword && keywordMatches && !keywordMatches.has(event.event_id)) {
       return false;
@@ -24273,6 +24372,7 @@
       hideLowPrecision: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
       hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
       encounters: encounterFilterSelections(),
+      encounterSelectionIds: state.encounterAnalysisSelectionIds || null,
     };
   }
 
@@ -24280,6 +24380,7 @@
     const filters = currentFilterSelections();
     return {
       keywordMatches: keywordMatches || null,
+      encounterSelectionIds: filters.encounterSelectionIds,
       encounters: filters.encounters,
       keywordActive: Boolean(filters.keyword),
       sourceMode: filters.sourceMode,
@@ -24302,6 +24403,7 @@
   }
 
   function accumulateFacetCountsForEvent(context, event) {
+    if (context.encounterSelectionIds && !context.encounterSelectionIds.has(String(event.event_id))) return;
     if (ENCOUNTERS && !ENCOUNTERS.matches(event, context.encounters)) return;
     if (!eventMatchesTimeRange(event)) return;
     if (context.keywordActive && context.keywordMatches && !context.keywordMatches.has(event.event_id)) {
@@ -24973,6 +25075,19 @@
   }
 
   function renderResults(options) {
+    let inspectionBanner = document.getElementById("encounter-selection-banner");
+    if (state.encounterAnalysisSelectionIds && !inspectionBanner && els.resultList) {
+      inspectionBanner = document.createElement("div"); inspectionBanner.id = "encounter-selection-banner";
+      inspectionBanner.className = "empty-note"; els.resultList.parentNode.insertBefore(inspectionBanner, els.resultList);
+    }
+    if (inspectionBanner) {
+      inspectionBanner.hidden = !state.encounterAnalysisSelectionIds; inspectionBanner.replaceChildren();
+      if (state.encounterAnalysisSelectionIds) {
+        inspectionBanner.append(document.createTextNode("Analysis selection · " + state.encounterAnalysisSelectionIds.size + " reports "));
+        const clear = document.createElement("button"); clear.textContent = "Clear selection";
+        clear.onclick = function () { state.encounterAnalysisSelectionIds = null; refreshFilters(); }; inspectionBanner.appendChild(clear);
+      }
+    }
     runtime.resultsRenderCount += 1;
     if (options && options.reason === "playback") {
       runtime.resultsPlaybackRenderCount += 1;
@@ -28327,7 +28442,7 @@
   function hydrateCatalogEvent(event) {
     event = applyLocationLabelOverlay(event);
     event = compactCanonicalSummaryEventForRuntime(event);
-    if (ENCOUNTERS) event = ENCOUNTERS.decorate(event, runtime.encounterEvidence);
+    if (ENCOUNTERS) event = ENCOUNTERS.decorate(event, runtime.encounterEvidence, runtime.encounterLabelOrigins);
     event.encounterOccurrenceDateExcluded = runtime.traceChronologyEvidence && typeof runtime.traceChronologyEvidence.exclusion === "function"
       ? Boolean(runtime.traceChronologyEvidence.exclusion(event.event_id)) : null;
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
@@ -29980,6 +30095,7 @@
     const encounterBeing = document.getElementById("encounter-being-filter");
     if (encounterAbduction) encounterAbduction.value = "any";
     if (encounterBeing) encounterBeing.value = "any";
+    state.encounterAnalysisSelectionIds = null;
     document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
     renderAllMultiSelectStates();
   }

@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-atlas-v2";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-complete-v3";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -24,6 +24,7 @@
   }
 
   function encounterMatches(values, filters) {
+    if (filters && filters.encounterSelectionIds && !filters.encounterSelectionIds.has(String(values.eventId))) return false;
     const selection = filters && filters.encounters || {};
     const active = (selection.abduction && selection.abduction !== "any") ||
       (selection.being && selection.being !== "any") ||
@@ -224,7 +225,7 @@
     const base = message.manifestUrl;
     const entries = manifest.artifacts || {};
     if (!base || !entries.context || !entries.nuclear) throw new Error("Comparison evidence manifest is incomplete.");
-    const keys = entries.facilities ? ["context", "nuclear", "facilities"] : ["context", "nuclear"];
+    const keys = ["context", "nuclear"].concat(entries.facilities ? ["facilities"] : [], entries.nuclearExtension ? ["nuclearExtension"] : []);
     const values = await Promise.all(keys.map(function (key) {
       const entry = entries[key];
       if (!entry.sha256 || !entry.file) throw new Error("Comparison evidence has no integrity pin: " + key);
@@ -239,15 +240,29 @@
         || !values[1] || values[1].ordinalEpoch !== "unix_day" || !Array.isArray(values[1].tests)) {
       throw new Error("Comparison evidence has an invalid row contract.");
     }
+    const extension = values[keys.indexOf("nuclearExtension")];
+    let nuclear = values[1];
+    if (extension) {
+      if (extension.schemaId !== "ufo-nuclear-context-extension-v1" || extension.ordinalEpoch !== "unix_day" || !Array.isArray(extension.tests) || !Array.isArray(extension.nuclearFacilities)) throw new Error("Nuclear extension schema mismatch.");
+      if (!extension.baseArtifact || extension.baseArtifact.sha256 !== entries.nuclear.sha256 || extension.baseArtifact.gzipSha256 !== entries.nuclear.gzipSha256) throw new Error("Nuclear extension base identity mismatch.");
+      const tests = nuclear.tests.slice(), institutions = (nuclear.nuclearFacilities || []).slice();
+      const testIds = new Set(tests.map(function (row) { return row.id; })), siteIds = new Set(institutions.map(function (row) { return row.id; }));
+      extension.tests.forEach(function (row) { if (!row.id || testIds.has(row.id) || !Number.isInteger(row.ordinal)) throw new Error("Nuclear extension test identity mismatch."); testIds.add(row.id); tests.push(row); });
+      extension.nuclearFacilities.forEach(function (row) { if (!row.id || siteIds.has(row.id) || row.nuclearRoleSourceVerified !== true) throw new Error("Nuclear extension institution identity mismatch."); siteIds.add(row.id); institutions.push(row); });
+      nuclear = Object.assign({}, nuclear, { tests, nuclearFacilities: institutions, sources: (nuclear.sources || []).concat(extension.sources || []),
+        controlCoverageIntervals: [{ startOrdinal: Math.min.apply(null, values[1].tests.map(function (row) { return row.ordinal; })), endOrdinal: Math.max.apply(null, values[1].tests.map(function (row) { return row.ordinal; })) }],
+        coverage: Object.assign({}, nuclear.coverage || {}, { extension: extension.coverage, coverageStatus: "partial_inventory_with_reviewed_extension" }) });
+    }
     ensureAnalysisComparisons();
     const atlas = atlasBytes ? self.UfoAnalysisPlanetary.decodeEphemerisAtlas(atlasBytes, atlasEntry) : null;
     // Commit only after every artifact and module has passed validation.
     if (atlas) self.UfoAnalysisPlanetary.setEphemerisAtlas(atlas);
     else if (typeof self.UfoAnalysisPlanetary.clearEphemerisAtlas === "function") self.UfoAnalysisPlanetary.clearEphemerisAtlas();
-    analysisComparisonArtifacts = { loaded: true, manifest, context: values[0], nuclear: values[1],
-      facilities: values[2] || null,
+    analysisComparisonArtifacts = { loaded: true, manifest, context: values[0], nuclear,
+      facilities: entries.facilities ? values[keys.indexOf("facilities")] : null,
       hashes: Object.assign({ comparisonContext: entries.context.sha256, nuclearContext: entries.nuclear.sha256 },
         entries.facilities ? { comparisonFacilities: entries.facilities.sha256 } : {},
+        entries.nuclearExtension ? { nuclearExtension: entries.nuclearExtension.sha256 } : {},
         atlasEntry ? { planetaryEphemeris: atlasEntry.sha256 } : {}) };
     invalidateAnalysisCache();
     return { loaded: true, releaseId: manifest.releaseId, crops: values[0].crops.length,
@@ -256,6 +271,7 @@
 
   function comparisonCohortKey(message) {
     return JSON.stringify({ revision: analysisComparisonRevision, matched: analysisMatchCacheKey(message),
+      evidenceMode: message.encounterEvidenceMode || "all",
       start: message.timeRangeStartOrdinal, end: message.timeRangeEndOrdinal,
       full: Boolean(message.fullTimeRange || message.timeRangeMode === "full"),
       contextLayers: message.contextLayers || {}, datasetHash: message.datasetHash || "",
@@ -295,6 +311,9 @@
       input.encounterEvidenceReady = values.encounterEvidenceReady;
       input.encounterAbductionCode = values.encounterAbductionCode;
       input.encounterBeingMask = values.encounterBeingMask;
+      input.encounterSourceBeingMask = values.encounterSourceBeingMask;
+      input.encounterNarrativeBeingMask = values.encounterNarrativeBeingMask;
+      input.encounterEvidenceProvenanceReady = values.encounterEvidenceProvenanceReady;
       input.encounterCraftAssociationCode = values.encounterCraftAssociationCode;
       input.encounterHeightFeet = values.encounterHeightFeet;
       input.encounterUniform = values.encounterUniform;
@@ -339,6 +358,7 @@
     const nuclear = analysisComparisonArtifacts.nuclear;
     const broader = analysisComparisonArtifacts.facilities || {};
     const shared = { forEachRow, crops, animals, range, ordinalEpoch: "unix_day", encounterEvidenceReady,
+      evidenceMode: message.encounterEvidenceMode || "all",
       cropCirclesEnabled: layers.cropCirclesEnabled, animalMutilationsEnabled: layers.animalMutilationsEnabled,
       startOrdinal: range && range.start, endOrdinal: range && range.end,
       artifactHashes: analysisComparisonArtifacts.hashes };
@@ -505,6 +525,9 @@
       encounterReadyStates: new Uint8Array(length),
       encounterAbductionCodes: new Uint8Array(length),
       encounterBeingMasks: new Uint32Array(length),
+      encounterSourceBeingMasks: new Uint32Array(length),
+      encounterNarrativeBeingMasks: new Uint32Array(length),
+      encounterProvenanceReadyStates: new Uint8Array(length),
       encounterCraftAssociationCodes: new Uint8Array(length),
       encounterHeightsFeet: new Float64Array(length),
       encounterUniforms: new Map(),
@@ -589,6 +612,9 @@
       const row = nextRows[index] || {};
       chunk.encounterReadyStates[index] = row.encounterEvidenceReady === true ? 1 : 0;
       chunk.encounterAbductionCodes[index] = Number(row.encounterAbductionCode) || 0;
+      chunk.encounterSourceBeingMasks[index] = Number(row.encounterSourceBeingMask) || 0;
+      chunk.encounterNarrativeBeingMasks[index] = Number(row.encounterNarrativeBeingMask) || 0;
+      chunk.encounterProvenanceReadyStates[index] = row.encounterEvidenceProvenanceReady === true ? 1 : 0;
       chunk.encounterBeingMasks[index] = Number(row.encounterBeingMask) || 0;
       chunk.encounterCraftAssociationCodes[index] = Number(row.encounterCraftAssociationCode) || 0;
       chunk.encounterHeightsFeet[index] = typeof row.encounterHeightFeet === "number" && Number.isFinite(row.encounterHeightFeet) && row.encounterHeightFeet > 0 ? row.encounterHeightFeet : Number.NaN;
@@ -663,6 +689,7 @@
     typedStorageBytes +=
       chunk.encounterReadyStates.byteLength + chunk.encounterAbductionCodes.byteLength +
       chunk.encounterBeingMasks.byteLength + chunk.encounterCraftAssociationCodes.byteLength +
+      chunk.encounterSourceBeingMasks.byteLength + chunk.encounterNarrativeBeingMasks.byteLength + chunk.encounterProvenanceReadyStates.byteLength +
       chunk.encounterHeightsFeet.byteLength +
       chunk.encounterDateExclusionStates.byteLength +
       chunk.eventIds.byteLength +
@@ -799,6 +826,7 @@
       hideLowPrecision: Boolean(source.hideLowPrecision),
       hideNonExactDates: Boolean(source.hideNonExactDates),
       encounters: source.encounters || { abduction: "any", being: "any", beingTypes: [] },
+      encounterSelectionIds: Array.isArray(source.encounterSelectionIds) ? new Set(source.encounterSelectionIds.map(String)) : null,
     };
   }
 
@@ -862,6 +890,9 @@
     values.encounterEvidenceReady = chunk.encounterReadyStates[index] === 1;
     values.encounterAbductionCode = chunk.encounterAbductionCodes[index];
     values.encounterBeingMask = chunk.encounterBeingMasks[index];
+    values.encounterSourceBeingMask = chunk.encounterSourceBeingMasks[index];
+    values.encounterNarrativeBeingMask = chunk.encounterNarrativeBeingMasks[index];
+    values.encounterEvidenceProvenanceReady = chunk.encounterProvenanceReadyStates[index] === 1;
     values.encounterCraftAssociationCode = chunk.encounterCraftAssociationCodes[index];
     values.encounterHeightFeet = Number.isFinite(chunk.encounterHeightsFeet[index]) ? chunk.encounterHeightsFeet[index] : null;
     values.encounterUniform = chunk.encounterUniforms.get(index) || null;
@@ -1324,6 +1355,8 @@
       fullTimeRange: Boolean(message.fullTimeRange),
       filters,
       keywordCount: Array.isArray(message.keywordEventIds) ? message.keywordEventIds.length : null,
+      encounterSelectionIds: message.filters && message.filters.encounterSelectionIds || null,
+      encounterEvidenceMode: message.encounterEvidenceMode || "all",
       areaEventCount: Array.isArray(message.areaFilterEventIds) ? message.areaFilterEventIds.length : null,
       areaFilterShapes: shapeSignature,
       selectedDomains: normalizedAnalysisDomains(message.selectedDomains),
@@ -1377,6 +1410,7 @@
       rowCount,
       filters,
       keywordEventIds: sortedAnalysisValues(message.keywordEventIds),
+      encounterSelectionIds: message.filters && message.filters.encounterSelectionIds || null,
       areaFilterEventIds: Array.isArray(message.areaFilterEventIds)
         ? sortedAnalysisValues(message.areaFilterEventIds)
         : null,
@@ -2024,6 +2058,7 @@
       datasetHash: message.datasetHash,
       selectedDomains,
       encounterEvidenceReady,
+      encounterEvidenceMode: message.encounterEvidenceMode || "all",
       contextLayers: message.contextLayers || {},
       contextReleaseHashes: normalizedHashObject(message.contextReleaseHashes),
       artifactHashes: Object.assign(
@@ -4869,6 +4904,53 @@
             error: error && error.message ? error.message : String(error),
           });
         });
+        return;
+      }
+      if (message.type === "inspectEncounterReports") {
+        const stats = ensureAnalysisStats();
+        if (!self.UfoEncounterAtlasQuery) importScripts("./encounter_atlas_query.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
+        const filters = normalizedFilters(message), keywordIds = keywordIdSet(message);
+        const areaEventIds = null, areaShapes = message.areaFilterShapes && message.areaFilterShapes.length ? message.areaFilterShapes : null;
+        const lowPrecisionValues = new Set(message.lowPrecisionValues || []);
+        const matched = matchedAnalysisRows(message, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
+        const request = message.inspection || {}, range = analysisActiveRange(message);
+        let result;
+        if (request.domain === "context") {
+          if (!analysisComparisonArtifacts.loaded) throw new Error("Comparison evidence is not ready.");
+          ensureAnalysisComparisons(); ensureEncounterComparisons();
+          const context = buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
+          const broader = context.broader || {};
+          result = self.UfoAnalysisEncounterContext.inspectReports(Object.assign({}, context.shared, { nuclear: context.nuclear,
+            nuclearSettings: comparisonComponentSettings("encounters", context.settings), planetarySettings: comparisonComponentSettings("encounterPlanetary", context.settings),
+            broaderFacilities: Array.isArray(broader) ? broader : broader.rows || broader.facilities || [],
+            facilityCodebook: broader.codes || broader.codebook || analysisComparisonArtifacts.manifest.facilityCodebook || {} }), request);
+        } else {
+          const bucket = request.bucket || "cell", query = Object.assign({}, request);
+          if (bucket !== "cell") delete query.columnKey;
+          if (["supported", "unknown", "not_loaded", "excluded"].includes(bucket)) query.fieldState = bucket;
+          const page = self.UfoEncounterAtlasQuery.collectPage(function (callback) {
+            forEachMatchedAnalysisRow(matched, function (row) {
+              const start = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal;
+              const end = row.dateEndOrdinal == null ? start : row.dateEndOrdinal;
+              if (!range || start != null && end >= range.start && start <= range.end) callback(row);
+            });
+          }, query, { offset: Math.max(0, Number(request.offset) || 0), limit: Math.min(100, Number(request.limit) || 25),
+            ordinalEpoch: "statistics_day", projectionReadiness: { geography: analysisGeographyArtifact.loaded, duration: analysisDurationArtifact.loaded,
+              reportingDelay: analysisReportingDelayArtifact.loaded, timeOfDay: analysisTimeOfDayArtifact.loaded, witnessCount: analysisWitnessCountArtifact.loaded,
+              color: analysisColorArtifact.loaded, coordinateEvidence: analysisCoordinateEvidenceArtifact.loaded } });
+          result = Object.assign({}, page, { total: page.totalMatched, eventIds: page.rows.map(function (row) { return row.eventId; }) });
+          if (request.allIds) {
+            result.eventIds = [];
+            forEachMatchedAnalysisRow(matched, function (row) {
+              const start = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal, end = row.dateEndOrdinal == null ? start : row.dateEndOrdinal;
+              if ((!range || start != null && end >= range.start && start <= range.end) && self.UfoEncounterAtlasQuery.matches(row, query,
+                { ordinalEpoch: "statistics_day", projectionReadiness: { geography: analysisGeographyArtifact.loaded, duration: analysisDurationArtifact.loaded,
+                  reportingDelay: analysisReportingDelayArtifact.loaded, timeOfDay: analysisTimeOfDayArtifact.loaded, witnessCount: analysisWitnessCountArtifact.loaded,
+                  color: analysisColorArtifact.loaded, coordinateEvidence: analysisCoordinateEvidenceArtifact.loaded } })) result.eventIds.push(String(row.eventId));
+            });
+          }
+        }
+        self.postMessage({ type: "encounterReportsInspected", requestId: message.requestId, requestKey: request.requestKey, scopeKey: request.scopeKey, result });
         return;
       }
       if (message.type === "computeAnalysisComparison") {

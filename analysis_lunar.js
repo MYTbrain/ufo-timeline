@@ -137,7 +137,7 @@
       sky: { eligible: 0, aboveHorizon: 0, belowHorizon: 0, nearHorizon: 0, excluded: {}, azimuthBins: PHASES.map(function (_phase, index) { return { label: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][index], count: 0 }; }), sample: [] },
       _months: new Map(), _categories: new Map(), _illuminationSum: 0 };
   }
-  function addRecord(domain, rowValue, range, epoch) {
+  function addRecord(domain, rowValue, range, epoch, onMembership) {
     const row = rowValue || {};
     const interval = dateInterval(row, epoch);
     if (range && interval && (interval.end < range.start || interval.start > range.end)) { domain.outsideRange += 1; return; }
@@ -177,6 +177,7 @@
       midpoint = exact.index; illumination = exact.illumination; possible = [exact.index]; stable = true;
     }
     domain.phaseEligible += 1;
+    if (typeof onMembership === "function") onMembership(row, { eligible: true, phase: PHASES[midpoint].id, stable, possible: possible.map(function (index) { return PHASES[index].id; }) });
     domain[stable ? "stablePhaseCount" : "ambiguousPhaseCount"] += 1;
     domain.phaseBins[midpoint].count += 1;
     if (stable) domain.phaseBins[midpoint].stableCount += 1;
@@ -247,7 +248,7 @@
     const domains = [blankDomain("ufo", "UFO / craft reports", "occurrence", "Craft category"),
       blankDomain("crops", "Crop-circle reports", "catalog_or_discovery_date_not_verified_formation", "Crop / morphology category"),
       blankDomain("animals", "Animal reports", "reported_or_discovery_date_not_verified_occurrence", "Species category")];
-    const acceptUfo = function (row) { addRecord(domains[0], row, range, epoch); };
+    const acceptUfo = function (row) { addRecord(domains[0], row, range, epoch, options.onReportMembership); };
     if (typeof options.forEachRow === "function") options.forEachRow(acceptUfo);
     else (Array.isArray(options.rows) ? options.rows : []).forEach(acceptUfo);
     const contextRange = range; // Internally all intervals have been normalized to Unix days.

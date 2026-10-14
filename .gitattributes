@@ -192,3 +192,17 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /guided_tour_content.js -text
 /guided_tour_state.js -text
 /help_panel.js -text
+
+# Encounter runtime, source decisions and executed QA carry exact byte pins.
+/analysis_encounter_context.js -text
+/encounter_evidence.js -text
+/encounter_atlas_query.js -text
+/encounter_analysis.css -text
+/scripts/encounter_enrichment*.py -text
+/scripts/build_nuclear_extension.py -text
+/scripts/audit_encounter_corpus_runtime.mjs -text
+/docs/qa/encounter-complete-20261013/** -text
+/docs/qa/encounter-enrichment-pilot-20261013/** -text
+/docs/qa/nuclear-extension-20261013/** -text
+/tests/test_encounter* -text
+/tests/test_nuclear_extension_worker_atomic.mjs -text
