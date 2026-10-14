@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-complete-v3";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-map-v4";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -909,14 +909,16 @@
     values.precision = dictionaryValue(dictionaries.precision, chunk.precisionCodes[index]);
     values.datePrecision = dictionaryValue(dictionaries.datePrecision, chunk.datePrecisionCodes[index]);
     values.coordinateSource = dictionaryValue(dictionaries.coordinateSource, chunk.coordinateSourceCodes[index]);
-    values.country = dictionaryValue(
-      dictionaries.analysisCountry,
-      chunk.analysisCountryCodes && chunk.analysisCountryCodes[index]
-        ? chunk.analysisCountryCodes[index]
-        : chunk.countryCodes[index]
-    ) || dictionaryValue(dictionaries.country, chunk.countryCodes[index]) || "unknown";
+    // Retain source country separately from the reviewed geography projection.
+    // Dictionary IDs are local to each dictionary, not interchangeable. An
+    // explicitly unknown projection must not erase the source-country fallback.
+    values.sourceCountry = dictionaryValue(dictionaries.country, chunk.countryCodes[index]) || "unknown";
     values.adminRegion = dictionaryValue(dictionaries.adminRegion, chunk.adminRegionCodes[index]) || "unknown";
-    values.analysisCountry = values.country;
+    values.analysisCountry = dictionaryValue(
+      dictionaries.analysisCountry, chunk.analysisCountryCodes && chunk.analysisCountryCodes[index]
+    ) || values.sourceCountry;
+    values.country = values.analysisCountry !== "unknown" && values.analysisCountry !== "unavailable"
+      ? values.analysisCountry : values.sourceCountry;
     values.analysisMacroregion = dictionaryValue(
       dictionaries.analysisMacroregion,
       chunk.analysisMacroregionCodes && chunk.analysisMacroregionCodes[index]

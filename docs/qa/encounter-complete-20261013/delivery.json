@@ -1,6 +1,6 @@
 {
   "schemaId": "ufo-encounter-local-delivery-check-v1",
-  "checkedAtUtc": "2026-10-14T02:23:16.525Z",
+  "checkedAtUtc": "2026-10-14T03:43:10.257Z",
   "previewUrl": "http://127.0.0.1:8168/whole-site.html",
   "releaseId": "encounters-20261013-v1",
   "catalogCount": 702893,
@@ -61,7 +61,7 @@
     ],
     "preservedNativeLegend": true,
     "preservedMapControls": true,
-    "changedRuntimeCacheTokens": "2026-10-13-encounter-complete-v3",
+    "changedRuntimeCacheTokens": "2026-10-13-encounter-map-v4",
     "moduleBeforeApp": true
   },
   "resources": [
@@ -76,8 +76,8 @@
     {
       "path": "/whole-site.html",
       "status": 200,
-      "bytes": 157806,
-      "sha256": "a1fa6c591b2ef44390be2061504b874c7be076dd969ab89ad698360cd603081c",
+      "bytes": 162238,
+      "sha256": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08",
       "contentType": "text/html; charset=utf-8",
       "contentEncoding": ""
     },
@@ -114,55 +114,7 @@
       "contentEncoding": ""
     },
     {
-      "path": "/encounter_analysis.css?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 3265,
-      "sha256": "8a14c668b62b85bbe3e532f840e8d36b7702535976a860f5c706769855f2db83",
-      "contentType": "text/css",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 5159,
-      "sha256": "84a3083010f81a4bd5cfaf62bf23d5818aea3c40ab48a0193cbb3c9cf8e3728b",
-      "contentType": "text/javascript",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/encounter_atlas_query.js?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 5219,
-      "sha256": "d9992303dc943940f9c2b2be0487bc85d30f15b773b171864e87d8259329f567",
-      "contentType": "text/javascript",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 14362,
-      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
-      "contentType": "text/javascript",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/analysis_encounter_context.js?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 21683,
-      "sha256": "d6cff55b4fcaeae61500063aceb95a32d877587ee46ae50f48618112feb1c9e8",
-      "contentType": "text/javascript",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/trace_neighborhood.js?v=2026-10-13-encounter-complete-v3",
-      "status": 200,
-      "bytes": 61411,
-      "sha256": "64a99519a6ed9cdf2d2a871bcb8ebd5c215c5abd338b116006326e92b0600439",
-      "contentType": "text/javascript",
-      "contentEncoding": ""
-    },
-    {
-      "path": "/encounter_evidence.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/encounter_evidence.js?v=2026-10-13-encounter-map-v4",
       "status": 200,
       "bytes": 25163,
       "sha256": "5bb7e350244a4c90e305b316ee516e2f37f36a273ec8ef0ce2a1d17a7ed34651",
@@ -170,7 +122,15 @@
       "contentEncoding": ""
     },
     {
-      "path": "/analysis_comparisons_view.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 5159,
+      "sha256": "84a3083010f81a4bd5cfaf62bf23d5818aea3c40ab48a0193cbb3c9cf8e3728b",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_comparisons_view.js?v=2026-10-13-encounter-map-v4",
       "status": 200,
       "bytes": 87336,
       "sha256": "004521aa81c69cd75b888ea050d069ff751735bd1864d3033a446b0318863b01",
@@ -178,31 +138,47 @@
       "contentEncoding": ""
     },
     {
-      "path": "/catalog_filter_worker.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/encounter_atlas_query.js?v=2026-10-13-encounter-map-v4",
       "status": 200,
-      "bytes": 268776,
-      "sha256": "ff69499811082e6959a8a4f573dea57e87a6fa45e7462075ca9bd02d576d6d03",
+      "bytes": 5219,
+      "sha256": "d9992303dc943940f9c2b2be0487bc85d30f15b773b171864e87d8259329f567",
       "contentType": "text/javascript",
       "contentEncoding": ""
     },
     {
-      "path": "/analysis_view.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/analysis_encounter_context.js?v=2026-10-13-encounter-map-v4",
       "status": 200,
-      "bytes": 497691,
-      "sha256": "724b9c2a585506b56c8c59558b0f829e8437aee53cc62fac971520d99452a804",
+      "bytes": 21683,
+      "sha256": "d6cff55b4fcaeae61500063aceb95a32d877587ee46ae50f48618112feb1c9e8",
       "contentType": "text/javascript",
       "contentEncoding": ""
     },
     {
-      "path": "/app.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/encounter_analysis.css?v=2026-10-13-encounter-map-v4",
       "status": 200,
-      "bytes": 1395138,
-      "sha256": "c3a7f01316e0fa033c574a6abfed4433b16509b9d8b87f7bb17e82a91fee2ae1",
+      "bytes": 17995,
+      "sha256": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
+      "contentType": "text/css",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 14362,
+      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
       "contentType": "text/javascript",
       "contentEncoding": ""
     },
     {
-      "path": "/styles.css?v=2026-10-13-encounter-complete-v3",
+      "path": "/trace_neighborhood.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 61411,
+      "sha256": "64a99519a6ed9cdf2d2a871bcb8ebd5c215c5abd338b116006326e92b0600439",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/styles.css?v=2026-10-13-encounter-map-v4",
       "status": 200,
       "bytes": 277976,
       "sha256": "8c58b637cf913f02ce5ffd372a74f54874a9d33aee249be90e72688d1d62e29d",
@@ -210,10 +186,34 @@
       "contentEncoding": ""
     },
     {
-      "path": "/analysis_stats.js?v=2026-10-13-encounter-complete-v3",
+      "path": "/catalog_filter_worker.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 269093,
+      "sha256": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_view.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 497691,
+      "sha256": "724b9c2a585506b56c8c59558b0f829e8437aee53cc62fac971520d99452a804",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_stats.js?v=2026-10-13-encounter-map-v4",
       "status": 200,
       "bytes": 386214,
       "sha256": "e43785fcfcd31d1ad5df0ab80beee7cf9def7daa5d51d4a3d8222542f68c3f3c",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/app.js?v=2026-10-13-encounter-map-v4",
+      "status": 200,
+      "bytes": 1425161,
+      "sha256": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
       "contentType": "text/javascript",
       "contentEncoding": ""
     }

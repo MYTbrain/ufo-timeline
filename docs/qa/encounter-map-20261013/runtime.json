@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-14T03:43:52.954682+00:00",
+  "tests": [
+    {
+      "path": "tests/test_encounter_map.mjs",
+      "command": "node tests/test_encounter_map.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_map_integration.mjs",
+      "command": "node tests/test_encounter_map_integration.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_evidence.mjs",
+      "command": "node tests/test_encounter_evidence.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_worker.mjs",
+      "command": "node tests/test_encounter_worker.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_context_worker.mjs",
+      "command": "node tests/test_encounter_context_worker.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_atlas_view.mjs",
+      "command": "node tests/test_encounter_atlas_view.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_inspection_view.mjs",
+      "command": "node tests/test_encounter_inspection_view.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_atlas_populations.mjs",
+      "command": "node tests/test_encounter_atlas_populations.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_atlas_source_sensitivity.mjs",
+      "command": "node tests/test_encounter_atlas_source_sensitivity.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_trace_direction_summary.mjs",
+      "command": "node tests/test_trace_direction_summary.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_trace_direction_population.mjs",
+      "command": "node tests/test_trace_direction_population.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_direction_cases_integration.mjs",
+      "command": "node tests/test_direction_cases_integration.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/run_existing_analysis_regressions.mjs",
+      "command": "node tests/run_existing_analysis_regressions.mjs",
+      "result": "passed"
+    },
+    {
+      "path": "tests/test_encounter_delivery.mjs",
+      "command": "node tests/test_encounter_delivery.mjs",
+      "result": "passed"
+    }
+  ],
+  "sourcePins": {
+    "app.js": "c8e7e81ef5c34f923ef35c08c2a55d3c8809c47d0483039e3a47a1e248b7e142",
+    "encounter_map.js": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1",
+    "catalog_filter_worker.js": "111a6424c370c8a19b8263d4855d2f9543443a71da94b7f8040239f341eccb22",
+    "encounter_analysis.css": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
+    "index.html": "9728888e946e45083c501be68c06a6f319ed2171ef248a6d8ef17b6d32b8fb08"
+  },
+  "localDeliveryResources": 19,
+  "unmodifiedEncounterRowsValidated": 16319,
+  "newTraceEdgesCreated": 0,
+  "newCoordinatesCreated": 0,
+  "browserInventory": {
+    "apps": [],
+    "browsers": []
+  },
+  "interactiveVisualAcceptance": "pending",
+  "rebuild": "Run the listed focused Node checks; delivery check requires the bounded public shell on localhost:8168. See docs/ENCOUNTER_MAP_20261013.md.",
+  "retention": "Small unique runtime QA; preserve with candidate, no corpus/database copy."
+}

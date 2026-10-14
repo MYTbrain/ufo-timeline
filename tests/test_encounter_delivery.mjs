@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const evidence = require("../encounter_evidence.js");
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const BASE_URL = "http://127.0.0.1:8168/";
-const VERSION = "2026-10-13-encounter-complete-v3";
+const VERSION = "2026-10-13-encounter-map-v4";
 const MAX_RESPONSE_BYTES = 24 * 1024 * 1024;
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const statuses = [];

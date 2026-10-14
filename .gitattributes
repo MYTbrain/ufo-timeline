@@ -196,6 +196,7 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 # Encounter runtime, source decisions and executed QA carry exact byte pins.
 /analysis_encounter_context.js -text
 /encounter_evidence.js -text
+/encounter_map.js -text
 /encounter_atlas_query.js -text
 /encounter_analysis.css -text
 /scripts/encounter_enrichment*.py -text

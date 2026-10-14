@@ -11,6 +11,7 @@ const cases = require("../famous_case_presets.js");
 const neighborhood = require("../trace_neighborhood.js");
 const legend = require("../legend_controls.js");
 const playbackPerformance = require("../playback_performance.js");
+const encounters = require("../encounter_evidence.js");
 const source = readFileSync(new URL("../app.js", import.meta.url), "utf8");
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -42,7 +43,7 @@ function extractControlBlock(signature, occurrence = "first") {
 }
 
 function loadFunctions(names, overrides) {
-  const context = vm.createContext({ Array, Boolean, JSON, Map, Math, Number, Object, Set, String, ...overrides });
+  const context = vm.createContext({ Array, Boolean, JSON, Map, Math, Number, Object, Set, String, ENCOUNTERS: encounters, ...overrides });
   vm.runInContext(names.map(extractFunction).join("\n"), context);
   return context;
 }
@@ -678,6 +679,7 @@ const resultsEls = {
 };
 Object.assign(resultsContext, {
   els: resultsEls, PLAYBACK_PERFORMANCE: playbackPerformance, RESULTS_RENDER_BATCH: 60, escapeHtml, formatNumber: String,
+  document: { getElementById: () => null },
   currentRegionSelectionResult: () => resultsContext.computeRegionSelectionResult(),
   regionSelectionAffectsRendering: () => true,
   currentVisibleDisplayCatalog(events) { resultsControl.displayCatalogCalls += 1; return events; },
@@ -764,18 +766,19 @@ function directionHarness(inputSegments, projectionScale = 1) {
     layerPointToLatLng(point) { return { lat: (2 * Math.atan(Math.exp(-point.y * Math.PI / (1800 * projectionScale))) - Math.PI / 2) * 180 / Math.PI, lng: point.x / (10 * projectionScale) }; },
     latLngToContainerPoint(value) { return this.latLngToLayerPoint(value); },
   } };
-  const state = { regionSelection: { direction: "forward" }, resolvedTheme: "dark" };
+  const state = { regionSelection: { direction: "forward" }, resolvedTheme: "dark", showTraceDirectionArrows: true };
   const els = { areaDirectionSummary: { hidden: true }, areaDirectionSummaryBody: { innerHTML: "" }, chronologicalNeighborhoodInspector: { hidden: true }, chronologicalNeighborhoodInspectorBody: { innerHTML: "", handlers: {}, addEventListener(name, handler) { this.handlers[name] = handler; } } };
   const controls = { active: true, paneInteractive: false };
   function layer(kind, geometry, options) { return { kind, geometry, options, handlers: {}, on(name, handler) { this.handlers[name] = handler; return this; }, addTo() { layers.push(this); return this; } }; }
   const L = { point: (x, y) => ({ x, y }), polyline: (points, options) => layer("line", points, options), marker: (point, options) => layer("badge", point, options), divIcon: options => options };
   const context = loadFunctions([
-    "currentAreaDirectionSummary", "renderAreaDirectionSummary", "neighborhoodArrowAngle", "neighborhoodPointAlongCopy", "neighborhoodBadgePosition", "renderChronologicalNeighborhoodBadge", "renderChronologicalNeighborhoodOverlay",
+    "currentAreaDirectionSummary", "renderAreaDirectionSummary", "neighborhoodArrowAngle", "neighborhoodPointAlongCopy", "neighborhoodBadgePosition", "renderChronologicalNeighborhoodBadge", "renderChronologicalNeighborhoodOverlay", "encounterTraceScopeKey",
     "closeChronologicalNeighborhoodInspector", "currentUnorderedConnectionGroups", "renderChronologicalNeighborhoodInspector", "selectNeighborhoodReportLink", "chronologicalNeighborhoodEndpointLabel", "chronologicalNeighborhoodDateLabel", "traceChronologyClockLabel",
   ], {
     runtime, state, els, L, TRACE_DIRECTIONS: directions, TRACE_NEIGHBORHOOD: neighborhood, TRACE_CHRONOLOGY: chronology,
     CRAFT_TYPE_COLORS: {}, CHRONOLOGICAL_NEIGHBORHOOD_OUTLINE_COLOR: "#111", CHRONOLOGICAL_NEIGHBORHOOD_LIGHT_OUTLINE_COLOR: "#eee", clamp, escapeHtml, formatNumber: String,
     currentRegionSelectionResult: () => result, regionSelectionAffectsRendering: () => controls.active,
+    regionSelectionShapesSignature: () => "direction-fixture-area",
     setChronologicalNeighborhoodPaneInteractive(active) { controls.paneInteractive = active; },
     normalTraceDensityProfile: () => ({}), styleTraceSegmentForDensity: row => row,
     scaledTraceOpacity: value => value, scaledTraceStrokeWeight: value => value,

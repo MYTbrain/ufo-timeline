@@ -22,6 +22,7 @@
   const TRACE_DIRECTIONS = window.UfoTraceDirectionSummary;
   const TRACE_CHRONOLOGY = window.UfoTraceChronology;
   const ENCOUNTERS = window.UFOEncounterEvidence;
+  const ENCOUNTER_MAP = window.UfoEncounterMap;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
@@ -1145,6 +1146,16 @@
     encounterManifest: null,
     encounterStatus: "not_loaded",
     encounterError: "",
+    encounterIndexedIds: [],
+    encounterMapEnabled: true,
+    encounterMapHiddenKinds: new Set(),
+    encounterMapModel: null,
+    encounterMapModelKey: "",
+    encounterMapEvents: [],
+    encounterMapBaseEvents: [],
+    encounterMapLayer: null,
+    encounterTraceHighlightLayer: null,
+    encounterTraceHighlightEventId: null,
     traceChronologyError: "",
     claimedUfoBaseSitesLayer: null,
     claimedUfoBaseTraceLayer: null,
@@ -9365,7 +9376,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-complete-v3");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-map-v4");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -14974,6 +14985,7 @@
     const researchCategories = researchLegendCategories();
     return (
       eventSelection.mode !== "all" ||
+      !runtime.encounterMapEnabled || runtime.encounterMapHiddenKinds.size > 0 || runtime.encounterMapIncludeAmbiguous || runtime.encounterTraceHighlightEventId != null ||
       state.showTraceDirectionArrows ||
       craftTypeColorsAreCustomized() ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
@@ -15274,6 +15286,9 @@
   }
 
   function resetMapLegendControls() {
+    runtime.encounterMapEnabled = true;
+    runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapIncludeAmbiguous = false;
+    runtime.encounterMapModelKey = ""; highlightEncounterReportTraces(null);
     state.showTraceDirectionArrows = false;
     safeStorageSet(TRACE_DIRECTION_ARROWS_STORAGE_KEY, "0");
     const eventSelectionWasFiltered = normalizedMapLegendEventSelection().mode !== "all";
@@ -15333,6 +15348,7 @@
     const directionTable = els.mapLegendBody.querySelector(".trace-direction-legend-details");
     if (directionTable) runtime.legendDirectionTableExpanded = directionTable.open;
     els.mapLegendBody.innerHTML = [
+      buildEncounterMapLegend(),
       '<details id="legend-trace-directions" class="map-legend-direction-panel"' +
         (state.legendDirectionExpanded ? ' open' : '') + '><summary>Report-link directions</summary>' +
         '<label class="map-legend-arrow-toggle"><input id="legend-trace-arrows" type="checkbox"' +
@@ -15347,6 +15363,7 @@
       buildMapLegendSection(mapLegendTrailSectionTitle(), trailRows),
     ].join("");
     renderLegendTraceDirectionPanel();
+    if (runtime.encounterTraceHighlightLayer) highlightEncounterReportTraces(runtime.encounterTraceHighlightEventId);
   }
 
   function setLegendTraceDirectionPopulation(summary, options) {
@@ -19246,6 +19263,12 @@
   }
 
   function encounterFilterSelections() {
+    const target = document.getElementById("encounter-filter-target");
+    if (target && target.value !== "reports") return { abduction: "any", being: "any", beingTypes: [] };
+    return encounterOverlaySelections();
+  }
+
+  function encounterOverlaySelections() {
     const abduction = document.getElementById("encounter-abduction-filter");
     const being = document.getElementById("encounter-being-filter");
     const types = Array.from(document.querySelectorAll("[data-encounter-being]:checked"))
@@ -19259,6 +19282,266 @@
     };
   }
 
+  function encounterOverlayBaseEvents() {
+    if (!ENCOUNTERS || runtime.encounterStatus !== "ready") return [];
+    const filters = Object.assign({}, currentFilterSelections(), {
+      encounters: { abduction: "any", being: "any", beingTypes: [] },
+      typeMode: "all", selectedTypes: new Set(), legendEventMode: "all", selectedLegendEventKeys: new Set(),
+    });
+    const shapes = regionSelectionAffectsRendering() ? state.regionSelection.shapes : [];
+    const countryIds = state.analysisCountryAreaFilter ? ensureEncounterCountryMembership() : null;
+    return runtime.encounterIndexedIds.map(getCatalogEventById).filter(Boolean).map(function (event) {
+      return ENCOUNTERS.decorate(event, runtime.encounterEvidence, runtime.encounterLabelOrigins);
+    }).filter(function (event) {
+      if (!eventMatchesTimeRange(event) || !eventMatchesNonDateFilters(event, filters, state.lastKeywordMatches)) return false;
+      if (state.analysisCountryAreaFilter && (!countryIds || !countryIds.has(String(event.event_id)))) return false;
+      if (!shapes.length) return true;
+      const point = ENCOUNTER_MAP.pointForEvent(event);
+      return point && pointInsideAnyRegionShape(point.lat, point.lon, shapes);
+    });
+  }
+
+  function ensureEncounterCountryMembership() {
+    const key = JSON.stringify([state.analysisCountryAreaFilter, catalog.length, runtime.analysisGeographyWorkerReady, runtime.catalogFacetWorkerRowsQueued]);
+    if (runtime.encounterCountryKey === key) return runtime.encounterCountryIds || null;
+    runtime.encounterCountryKey = key; runtime.encounterCountryIds = null; runtime.encounterCountryStatus = "loading";
+    const worker = ensureCatalogFacetWorker();
+    if (!worker || !runtime.analysisGeographyWorkerReady || runtime.catalogFacetWorkerRowsQueued < catalog.length) return null;
+    const requestId = "encounter-country-" + (++runtime.catalogFacetWorkerRequestId);
+    const timer = window.setTimeout(function () { finish(null, "unavailable"); }, 12000);
+    function finish(ids, status) {
+      window.clearTimeout(timer); worker.removeEventListener("message", receive);
+      if (runtime.encounterCountryKey !== key) return;
+      runtime.encounterCountryIds = ids; runtime.encounterCountryStatus = status;
+      runtime.encounterMapModelKey = ""; renderMapLegend();
+    }
+    function receive(event) {
+      const message = event.data || {}; if (message.requestId !== requestId) return;
+      if (message.type === "filteredCatalogIdsComputed" && message.result && Array.isArray(message.result.eventIds)) finish(new Set(message.result.eventIds.map(String)), "ready");
+      else finish(null, "unavailable");
+    }
+    worker.addEventListener("message", receive);
+    worker.postMessage({type:"computeFilteredCatalogIds",requestId:requestId,generation:state.filterGeneration,
+      sourceMode:"all",typeMode:"all",precisionMode:"all",selectedSources:[],selectedTypes:[],selectedPrecisions:[],
+      legendEventMode:"all",selectedLegendEventKeys:[],hideLowPrecision:false,hideNonExactDates:false,keywordActive:false,
+      encounters:{abduction:"any",being:"any",beingTypes:[]},encounterSelectionIds:runtime.encounterIndexedIds,
+      selectedAreaCountry:state.analysisCountryAreaFilter,lowPrecisionValues:[]});
+    return null;
+  }
+
+  function updateEncounterControlSummary() {
+    const selected = encounterOverlaySelections();
+    const target = document.getElementById("encounter-filter-target");
+    const reportMode = target && target.value === "reports";
+    const active = selected.abduction !== "any" || selected.being !== "any" || selected.beingTypes.length > 0;
+    const preset = !selected.beingTypes.length && selected.abduction === "reported" && selected.being === "reported" ? "both"
+      : !selected.beingTypes.length && selected.abduction === "reported" && selected.being === "any" ? "abductions"
+        : !selected.beingTypes.length && selected.abduction === "any" && selected.being === "reported" ? "beings"
+          : !active ? "all" : "custom";
+    document.querySelectorAll("[data-encounter-preset]").forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.getAttribute("data-encounter-preset") === preset));
+    });
+    const countFilters = Object.assign({}, currentFilterSelections(), {encounters:{abduction:"any",being:"any",beingTypes:[]}});
+    const base = reportMode ? runtime.encounterMapBaseEvents.filter(function (event) {
+      return eventMatchesNonDateFilters(event, countFilters, state.lastKeywordMatches);
+    }) : runtime.encounterMapBaseEvents;
+    const counts = { all: 0, abductions: 0, beings: 0, both: 0 }, labels = {};
+    base.forEach(function (event) {
+      const classification = ENCOUNTER_MAP.classify(event);
+      if (classification.reportedAbduction || classification.reportedBeings) counts.all += 1;
+      if (classification.reportedAbduction) counts.abductions += 1;
+      if (classification.reportedBeings) counts.beings += 1;
+      if (classification.reportedAbduction && classification.reportedBeings) counts.both += 1;
+      ENCOUNTERS.beingTypes(event.encounterBeingMask).forEach(function (key) { labels[key] = (labels[key] || 0) + 1; });
+    });
+    Object.keys(counts).forEach(function (key) {
+      const span = document.getElementById("encounter-preset-" + key + "-count");
+      if (span) span.textContent = runtime.encounterStatus === "ready" && catalog.length ? formatNumber(counts[key]) : "…";
+    });
+    const allButtonLabel = document.querySelector('[data-encounter-preset="all"] > span:first-child');
+    if (allButtonLabel) allButtonLabel.textContent = reportMode ? "No encounter filter" : "All encounters";
+    if (reportMode) document.getElementById("encounter-preset-all-count").textContent = "";
+    const scope = document.getElementById("encounter-filter-scope");
+    if (scope) scope.textContent = reportMode ? "All report filters apply, including craft types. Include all report types to retain unclassified craft." : "Overlay follows dates, sources, search, precision and selected areas, independently of craft-type filters.";
+    document.querySelectorAll("[data-encounter-type-count]").forEach(function (span) {
+      span.textContent = formatNumber(labels[span.getAttribute("data-encounter-type-count")] || 0);
+    });
+    const stateLabel = document.getElementById("encounter-filter-state");
+    if (stateLabel) stateLabel.textContent = reportMode ? "Report filter" : runtime.encounterMapEnabled ? "Map overlay" : "Overlay off";
+    const summary = document.getElementById("encounter-filter-summary");
+    if (summary) summary.textContent = (reportMode ? "Filters map reports, Results and Analysis. " : "Encounter overlay; craft sightings and traces stay available. ") +
+      (preset === "custom" ? "Custom selection" : {all:reportMode ? "No encounter filter" : "All encounters", abductions:"Reported abductions", beings:"Reported beings", both:"Abduction and beings in the same report"}[preset]) +
+      (selected.beingTypes.length ? " · any of " + selected.beingTypes.length + " selected descriptions" : "") + ".";
+    const count = document.getElementById("encounter-being-selected-count");
+    if (count) count.textContent = selected.beingTypes.length ? selected.beingTypes.length + " selected" : "Any description";
+    const toggle = document.getElementById("encounter-map-layer-toggle");
+    if (toggle) { toggle.setAttribute("aria-pressed", String(runtime.encounterMapEnabled)); toggle.textContent = runtime.encounterMapEnabled ? "Hide encounter markers" : "Show encounter markers"; }
+    filterEncounterDescriptionChoices();
+  }
+
+  function filterEncounterDescriptionChoices() {
+    const search = document.getElementById("encounter-being-search");
+    const query = search ? search.value.trim().toLowerCase() : "";
+    let shown = 0;
+    document.querySelectorAll(".encounter-being-option").forEach(function (label) {
+      const input = label.querySelector("input");
+      label.hidden = query && !label.getAttribute("data-encounter-label").includes(query) && !input.checked;
+      if (!label.hidden) shown += 1;
+    });
+    document.querySelectorAll("#encounter-being-types .encounter-type-group").forEach(function (heading) {
+      let sibling = heading.nextElementSibling, visible = false;
+      while (sibling && !sibling.classList.contains("encounter-type-group")) { if (!sibling.hidden) visible = true; sibling = sibling.nextElementSibling; }
+      heading.hidden = !visible;
+    });
+    const status = document.getElementById("encounter-being-search-status");
+    if (status) status.textContent = query ? shown + " descriptions shown; selected descriptions stay visible." : "Choose any matching description. Counts follow the current encounter scope.";
+  }
+
+  function ensureEncounterMapModel() {
+    if (!ENCOUNTER_MAP || !runtime.map || runtime.encounterStatus !== "ready") return null;
+    const bounds = runtime.map.getBounds(), selections = encounterOverlaySelections();
+    const key = JSON.stringify([catalog.length, state.filterGeneration, state.timeRangeMode, state.timeRangeStartOrdinal, state.timeRangeEndOrdinal,
+      regionSelectionShapesSignature(), state.analysisCountryAreaFilter, runtime.encounterCountryStatus, runtime.analysisGeographyWorkerReady, runtime.catalogFacetWorkerRowsQueued,
+      selections, Array.from(runtime.encounterMapHiddenKinds), runtime.encounterMapIncludeAmbiguous === true,
+      bounds.getNorth(), bounds.getSouth(), bounds.getWest(), bounds.getEast(), runtime.map.getZoom(), runtime.encounterMapEnabled]);
+    if (key === runtime.encounterMapModelKey) return runtime.encounterMapModel;
+    runtime.encounterMapModelKey = key;
+    runtime.encounterMapBaseEvents = encounterOverlayBaseEvents();
+    runtime.encounterMapEvents = runtime.encounterMapBaseEvents.filter(function (event) {
+      return ENCOUNTERS.matches(event, selections);
+    });
+    const options = {
+      includeAmbiguous: runtime.encounterMapIncludeAmbiguous === true || selections.abduction === "ambiguous",
+      viewport: {north:bounds.getNorth(),south:bounds.getSouth(),west:bounds.getWest(),east:bounds.getEast()},
+      zoom: runtime.map.getZoom(), maxMarkers: 320, cellSize: useMobileTapTargets() ? 44 : 36,
+    };
+    runtime.encounterMapModel = ENCOUNTER_MAP.buildModel(runtime.encounterMapEvents, options);
+    if (runtime.encounterMapHiddenKinds.size) {
+      const display = ENCOUNTER_MAP.buildModel(runtime.encounterMapEvents.filter(function (event) { return !runtime.encounterMapHiddenKinds.has(ENCOUNTER_MAP.classify(event).kind); }), options);
+      runtime.encounterMapModel.markers = display.markers; runtime.encounterMapModel.rendering = display.rendering;
+    }
+    updateEncounterControlSummary();
+    renderEncounterMapLayer();
+    return runtime.encounterMapModel;
+  }
+
+  function encounterTraceSegmentsForReport(eventId) {
+    const id = String(eventId), segments = [];
+    const seen = new Set();
+    [runtime.staticTraceLayer, runtime.playbackTrailCanvasLayer, runtime.neighborhoodTraceLayer].forEach(function (layer) {
+      if (!runtime.map || !layer || !runtime.map.hasLayer(layer) || layer._encounterScopeKey !== encounterTraceScopeKey()) return;
+      if (state.traceMode === "off" && layer !== runtime.neighborhoodTraceLayer) return;
+      if (layer === runtime.staticTraceLayer && (!traceModeIncludesStatic() || runtime.traceFacilityWorkerPendingKey ||
+        !staticTraceDirectionPopulations.get(layer._segments) || staticTraceDirectionPopulations.get(layer._segments).status !== "ready")) return;
+      if (layer === runtime.playbackTrailCanvasLayer && !traceModeIncludesPlayback()) return;
+      if (layer === runtime.neighborhoodTraceLayer && !regionSelectionAffectsRendering()) return;
+      (layer && layer._segments || []).forEach(function (segment) {
+        if (String(segment.fromEventId) !== id && String(segment.toEventId) !== id) return;
+        if (!Array.isArray(segment.from) || !Array.isArray(segment.to)) return;
+        const key = String(segment.traceId || "") + ":" + segment.fromEventId + ":" + segment.toEventId;
+        if (!seen.has(key)) { seen.add(key); segments.push(segment); }
+      });
+    });
+    return segments;
+  }
+
+  function encounterTraceScopeKey() {
+    return JSON.stringify([state.filterGeneration,state.timeRangeMode,state.timeRangeStartOrdinal,state.timeRangeEndOrdinal,regionSelectionShapesSignature(),state.analysisCountryAreaFilter]);
+  }
+
+  function getEncounterMapEventById(id) {
+    const event = getCatalogEventById(id);
+    return event && ENCOUNTERS ? ENCOUNTERS.decorate(event, runtime.encounterEvidence, runtime.encounterLabelOrigins) : event;
+  }
+
+  function highlightEncounterReportTraces(eventId) {
+    if (!runtime.encounterTraceHighlightLayer) return;
+    runtime.encounterTraceHighlightLayer.clearLayers();
+    runtime.encounterTraceHighlightEventId = eventId == null ? null : String(eventId);
+    if (eventId == null) return;
+    encounterTraceSegmentsForReport(eventId).forEach(function (segment) {
+      const from = segment.from.slice(), to = segment.to.slice();
+      const center = runtime.map.getCenter().lng;
+      const shift = 360 * Math.round((center - (from[1] + to[1]) / 2) / 360);
+      from[1] += shift; to[1] += shift;
+      L.polyline([from, to], {pane:"encounterContextPane", color:"#f0f3f4", weight:12, opacity:0.6, interactive:false}).addTo(runtime.encounterTraceHighlightLayer);
+    });
+  }
+
+  function encounterReportInspectionHtml(event) {
+    const relationship = ENCOUNTER_MAP.describeRelationship(event);
+    const craft = relationship.sameReport ? resolvedCraftTypeForEvent(event) : null;
+    const point = ENCOUNTER_MAP.pointForEvent(event), traces = encounterTraceSegmentsForReport(event.event_id);
+    return '<article class="encounter-map-item"><strong>' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + '</strong> · ' +
+      escapeHtml(displayLocationForEvent(event) || "Location unresolved") + '<div>' + ENCOUNTERS.renderBadges(event, runtime.encounterEvidence) + '</div><p>' +
+      escapeHtml(relationship.label) + (craft ? ' · <span class="encounter-craft-sample" style="--encounter-craft-color:' + escapeHtml(craft.color) + '"></span> ' + escapeHtml(craft.label) : '') + '</p><small>' + escapeHtml(event.source || "Unknown source") + ' · ' + escapeHtml(point ? "Mapped: " + point.locationPrecision.replaceAll("_", " ") : "Unmapped: no location invented") +
+      (event.encounterOccurrenceDateExcluded ? ' · Source date held from chronology' : '') + '</small><p>' +
+      (traces.length ? formatNumber(traces.length) + ' current chronological report links share this report ID.' : 'No current detailed trace has this report as an endpoint.') +
+      '</p><div class="encounter-map-actions"><button type="button" data-encounter-open-report="' + escapeHtml(event.event_id) + '">Full details &amp; evidence</button>' +
+      (point ? '<button type="button" data-encounter-locate-report="' + escapeHtml(event.event_id) + '">Locate</button>' : '') +
+      (traces.length ? '<button type="button" data-encounter-highlight-report="' + escapeHtml(event.event_id) + '">Highlight existing links</button>' : '') + '</div></article>';
+  }
+
+  function renderEncounterMapLayer() {
+    if (!runtime.encounterMapLayer) return;
+    runtime.encounterMapLayer.clearLayers();
+    if (!runtime.encounterMapEnabled || !runtime.encounterMapModel || !runtime.encounterMapModel.reports.some(function (entry) { return entry.eventId === runtime.encounterTraceHighlightEventId; })) highlightEncounterReportTraces(null);
+    else if (runtime.encounterTraceHighlightLayer) highlightEncounterReportTraces(runtime.encounterTraceHighlightEventId);
+    if (!runtime.encounterMapEnabled || !runtime.encounterMapModel) return;
+    const center = runtime.map.getCenter().lng;
+    runtime.encounterMapModel.markers.forEach(function (entry) {
+      const lon = entry.lon + 360 * Math.round((center - entry.lon) / 360);
+      const marker = L.marker([entry.lat, lon], {pane:"encounterMarkerPane", icon:L.divIcon({className:"encounter-map-marker",
+        html:ENCOUNTER_MAP.markerSvg(entry.kind, {count:entry.reportCount,ambiguousAbduction:entry.ambiguousAbduction}), iconSize:[44,44],iconAnchor:[18,20]}),
+        title:entry.reportCount + " encounter report" + (entry.reportCount === 1 ? "" : "s"), keyboard:true});
+      const reports = entry.eventIds.slice(0, 8).map(getEncounterMapEventById).filter(Boolean);
+      const group = entry.reportCount > 1 ? '<p>' + formatNumber(entry.reportCount) + ' separate reports grouped for display. Anchor: one original report coordinate; not a shared incident/site.</p>' : '';
+      marker.bindPopup('<div class="encounter-map-popup"><strong>Encounter reports</strong>' + group + '<div class="encounter-map-list">' + reports.map(encounterReportInspectionHtml).join('') + '</div>' +
+        (entry.reportCount > 8 ? '<button type="button" data-encounter-inspect-group="' + escapeHtml(entry.eventId) + '">Inspect all ' + formatNumber(entry.reportCount) + ' reports</button>' : '') + '</div>', {maxWidth:360,maxHeight:360,autoPan:false});
+      marker.addTo(runtime.encounterMapLayer);
+    });
+  }
+
+  function buildEncounterMapLegend() {
+    const model = ensureEncounterMapModel();
+    if (!ENCOUNTER_MAP) return '';
+    const ready = Boolean(model) && (!state.analysisCountryAreaFilter || runtime.encounterCountryStatus === "ready"), counts = model && model.viewport.kinds || {};
+    const rows = ENCOUNTER_MAP.KINDS.filter(function (kind) { return kind.key !== "ambiguous" || runtime.encounterMapIncludeAmbiguous || encounterOverlaySelections().abduction === "ambiguous"; }).map(function (kind) {
+      const label = {abduction:"Abduction · beings undescribed",being:"Beings · abduction unclassified",both:"Abduction + beings",ambiguous:"Unclear abduction mention"}[kind.key];
+      return '<button type="button" class="encounter-legend-key" data-encounter-legend-kind="' + kind.key + '" aria-pressed="' + (runtime.encounterMapEnabled && !runtime.encounterMapHiddenKinds.has(kind.key)) + '"' + (!ready ? ' disabled' : '') + ' title="' + escapeHtml(kind.description) + '"><span class="encounter-legend-symbol">' + ENCOUNTER_MAP.markerSvg(kind.key) + '</span><span>' + escapeHtml(label) + '</span><strong>' + (ready ? formatNumber(counts[kind.key] || 0) : '…') + '</strong></button>';
+    });
+    return '<section class="encounter-legend-section"><strong>Encounters</strong><label class="map-legend-arrow-toggle"><input id="legend-encounter-layer" type="checkbox"' +
+      (runtime.encounterMapEnabled ? ' checked' : '') + (!ready ? ' disabled' : '') + '> Show encounter markers</label><small>Encounter reports in view · independent of craft-type visibility</small>' + rows.join('') +
+      '<label class="map-legend-arrow-toggle"><input id="legend-encounter-unclear" type="checkbox"' + (runtime.encounterMapIncludeAmbiguous ? ' checked' : '') + (!ready ? ' disabled' : '') + '> Include unclear abduction mentions</label>' +
+      (ready ? '<small>' + formatNumber(model.cohort.reports) + ' in selected encounter scope · ' + formatNumber(model.cohort.unmapped) + ' unmapped</small><button type="button" data-encounter-inspect-scope>Inspect encounter reports</button>' : '<small>' + (state.analysisCountryAreaFilter ? 'Country scope ' + (runtime.encounterCountryStatus === "unavailable" ? 'unavailable; clear the area or retry.' : 'loading…') : runtime.encounterStatus === "unavailable" ? 'Encounter evidence unavailable.' : 'Loading encounter catalog…') + '</small>') +
+      '<details><summary>How encounters relate to traces</summary><small>Symbols describe source-reported content. Details distinguish explicit craft association, co-reporting, no craft reported and unknown. Highlighting uses existing links with the same report ID; it does not establish a shared craft, route or flight path. Overlay follows dates, sources, search, precision and selected areas. Unmapped reports cannot be placed inside a drawn area.</small><button type="button" data-encounter-clear-highlight>Clear link highlight</button></details></section>';
+  }
+
+  function openEncounterMapInspection(events) {
+    let dialog = document.getElementById("encounter-map-inspection");
+    if (!dialog) { dialog = document.createElement("dialog"); dialog.id = "encounter-map-inspection"; dialog.className = "encounter-source-dialog"; document.body.appendChild(dialog); }
+    runtime.encounterMapInspectionEvents = events.slice();
+    runtime.encounterMapInspectionPage = 0;
+    renderEncounterMapInspectionPage();
+    if (!dialog.open) dialog.showModal();
+  }
+
+  function renderEncounterMapInspectionPage() {
+    const dialog = document.getElementById("encounter-map-inspection"), events = runtime.encounterMapInspectionEvents || [], page = runtime.encounterMapInspectionPage || 0;
+    const start = page * 30;
+    dialog.innerHTML = '<header><h2>Encounter reports</h2><button type="button" data-encounter-close-inspection>Close</button></header><p>' +
+      formatNumber(events.length) + ' catalog reports. Source associations stay separate from chronological report links.</p>' +
+      '<div class="encounter-map-list">' + events.slice(start, start + 30).map(encounterReportInspectionHtml).join('') + '</div><footer><button type="button" data-encounter-inspection-page="-1"' + (page === 0 ? ' disabled' : '') + '>Previous</button><span>' + (events.length ? start + 1 : 0) + '–' + Math.min(start + 30, events.length) + ' of ' + formatNumber(events.length) + '</span><button type="button" data-encounter-inspection-page="1"' + (start + 30 >= events.length ? ' disabled' : '') + '>Next</button></footer>';
+  }
+
+  function applyEncounterControlsChange() {
+    runtime.encounterMapModelKey = "";
+    ensureEncounterMapModel();
+    renderMapLegend();
+    const target = document.getElementById("encounter-filter-target");
+    if (target && target.value === "reports") { resetPlayback({preserveSelection:true}); scheduleRefresh({immediate:true}); }
+  }
+
   function renderEncounterControls() {
     const panel = document.getElementById("encounter-filter-panel");
     if (!panel) return;
@@ -19270,13 +19553,13 @@
       types.innerHTML = runtime.encounterEvidence.taxonomy.map(function (type) {
         const heading = type.group !== priorGroup ? '<strong class="encounter-type-group">' + escapeHtml(type.group) + '</strong>' : "";
         priorGroup = type.group;
-        return heading + '<label class="encounter-being-option"><input type="checkbox" data-encounter-being value="' +
-          escapeHtml(type.key) + '"><span>' + escapeHtml(type.label) + '</span></label>';
+        return heading + '<label class="encounter-being-option" data-encounter-label="' + escapeHtml(type.label.toLowerCase()) + '"><input type="checkbox" data-encounter-being value="' +
+          escapeHtml(type.key) + '"><span>' + escapeHtml(type.label) + '</span><small class="encounter-being-count" data-encounter-type-count="' + escapeHtml(type.key) + '"></small></label>';
       }).join("");
     }
     const status = document.getElementById("encounter-filter-status");
     if (status) status.textContent = ready
-      ? "Source classifications and guarded report text. Unindexed does not mean no encounter. Other filters still apply."
+      ? "Source classifications and guarded report text. Counts describe catalog reports; unindexed does not mean no encounter."
       : runtime.encounterStatus === "loading" ? "Loading encounter evidence…"
         : "Encounter evidence unavailable. Ordinary map exploration remains available.";
   }
@@ -19309,6 +19592,7 @@
       }).then(async function (payload) {
         const index = ENCOUNTERS.createIndex(payload);
         runtime.encounterEvidence = index;
+        runtime.encounterIndexedIds = payload.rows.map(function (row) { return row.eventId; });
         const origins = runtime.encounterManifest.labelOrigins;
         if (origins) {
           try {
@@ -26888,6 +27172,7 @@
       },
       setSegments: function (segments) {
         this._segments = segments || [];
+        this._encounterScopeKey = encounterTraceScopeKey();
         if (this === runtime.staticTraceLayer) publishStaticTraceDirectionPopulation(this._segments);
         this._redraw();
       },
@@ -27697,6 +27982,8 @@
   function renderChronologicalNeighborhoodOverlay() {
     if (!runtime.neighborhoodTraceLayer) return;
     runtime.neighborhoodTraceLayer.clearLayers();
+    runtime.neighborhoodTraceLayer._segments = [];
+    runtime.neighborhoodTraceLayer._encounterScopeKey = encounterTraceScopeKey();
     if (!regionSelectionAffectsRendering()) {
       setChronologicalNeighborhoodPaneInteractive(false);
       closeChronologicalNeighborhoodInspector();
@@ -27709,6 +27996,7 @@
       return;
     }
     const segments = result.visibleTraceSegments || [];
+    runtime.neighborhoodTraceLayer._segments = segments;
     renderAreaDirectionSummary(result, true);
     const directionSummary = currentAreaDirectionSummary(result);
     const occupiedBadgeCells = new Set();
@@ -30096,6 +30384,10 @@
     if (encounterAbduction) encounterAbduction.value = "any";
     if (encounterBeing) encounterBeing.value = "any";
     state.encounterAnalysisSelectionIds = null;
+    const encounterTarget = document.getElementById("encounter-filter-target");
+    if (encounterTarget) encounterTarget.value = "overlay";
+    runtime.encounterMapEnabled = true; runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapIncludeAmbiguous = false;
+    runtime.encounterMapModelKey = ""; highlightEncounterReportTraces(null);
     document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
     renderAllMultiSelectStates();
   }
@@ -30622,15 +30914,78 @@
     if (runtime.eventHandlersAttached) return;
     runtime.eventHandlersAttached = true;
     const encounterPanel = document.getElementById("encounter-filter-panel");
-    if (encounterPanel) encounterPanel.addEventListener("change", function () {
-      resetPlayback({ preserveSelection: true });
-      scheduleRefresh({ immediate: true });
+    if (encounterPanel) encounterPanel.addEventListener("change", function (event) {
+      if (event.target.id === "encounter-being-search") return;
+      const being = document.getElementById("encounter-being-filter");
+      if (event.target.id === "encounter-being-filter" && being.value === "not_indexed") {
+        document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
+      } else if (event.target.hasAttribute("data-encounter-being") && event.target.checked && being.value === "not_indexed") being.value = "reported";
+      applyEncounterControlsChange();
+      if (event.target.id === "encounter-filter-target") scheduleRefresh({immediate:true});
+    });
+    const encounterSearch = document.getElementById("encounter-being-search");
+    if (encounterSearch) encounterSearch.addEventListener("input", filterEncounterDescriptionChoices);
+    document.querySelectorAll("[data-encounter-preset]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const preset = button.getAttribute("data-encounter-preset");
+        document.getElementById("encounter-abduction-filter").value = preset === "abductions" || preset === "both" ? "reported" : "any";
+        document.getElementById("encounter-being-filter").value = preset === "beings" || preset === "both" ? "reported" : "any";
+        document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
+        runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapEnabled = true;
+        applyEncounterControlsChange();
+      });
+    });
+    const clearBeingTypes = document.getElementById("clear-encounter-being-types");
+    if (clearBeingTypes) clearBeingTypes.addEventListener("click", function () {
+      document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
+      applyEncounterControlsChange();
+    });
+    const encounterMapToggle = document.getElementById("encounter-map-layer-toggle");
+    if (encounterMapToggle) encounterMapToggle.addEventListener("click", function () {
+      runtime.encounterMapEnabled = !runtime.encounterMapEnabled; runtime.encounterMapModelKey = ""; renderMapLegend();
+    });
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-encounter-legend-kind],[data-encounter-inspect-scope],[data-encounter-inspect-group],[data-encounter-open-report],[data-encounter-locate-report],[data-encounter-highlight-report],[data-encounter-clear-highlight],[data-encounter-close-inspection],[data-encounter-inspection-page]");
+      if (!button) return;
+      event.preventDefault();
+      const dialog = document.getElementById("encounter-map-inspection");
+      const kind = button.getAttribute("data-encounter-legend-kind");
+      if (kind) {
+        if (runtime.encounterMapHiddenKinds.has(kind)) runtime.encounterMapHiddenKinds.delete(kind); else runtime.encounterMapHiddenKinds.add(kind);
+        runtime.encounterMapModelKey = ""; renderMapLegend(); return;
+      }
+      if (button.hasAttribute("data-encounter-close-inspection")) { if (dialog) dialog.close(); return; }
+      if (button.hasAttribute("data-encounter-clear-highlight")) { highlightEncounterReportTraces(null); return; }
+      if (button.hasAttribute("data-encounter-inspection-page")) {
+        runtime.encounterMapInspectionPage += Number(button.getAttribute("data-encounter-inspection-page")); renderEncounterMapInspectionPage(); return;
+      }
+      if (button.hasAttribute("data-encounter-inspect-scope")) {
+        const model = ensureEncounterMapModel();
+        if (model) openEncounterMapInspection(model.reports.map(function (entry) { return getEncounterMapEventById(entry.eventId); }).filter(Boolean)); return;
+      }
+      if (button.hasAttribute("data-encounter-inspect-group")) {
+        const marker = (runtime.encounterMapModel && runtime.encounterMapModel.markers || []).find(function (entry) { return entry.eventId === button.getAttribute("data-encounter-inspect-group"); });
+        if (marker) openEncounterMapInspection(marker.eventIds.map(getEncounterMapEventById).filter(Boolean)); return;
+      }
+      const reportId = button.getAttribute("data-encounter-open-report") || button.getAttribute("data-encounter-locate-report") || button.getAttribute("data-encounter-highlight-report");
+      const report = getCatalogEventById(reportId); if (!report) return;
+      if (dialog && dialog.open) dialog.close();
+      if (button.hasAttribute("data-encounter-open-report")) openFullEventView(report.event_id, {scrollIntoView:true,centerMap:false});
+      if (button.hasAttribute("data-encounter-locate-report")) {
+        if (runtime.analysisViewController) runtime.analysisViewController.setActiveView("map");
+        const point = ENCOUNTER_MAP.pointForEvent(report);
+        if (point) runtime.map.panTo([point.lat, point.lon + 360 * Math.round((runtime.map.getCenter().lng - point.lon) / 360)]);
+      }
+      if (button.hasAttribute("data-encounter-highlight-report")) highlightEncounterReportTraces(report.event_id);
     });
     const clearEncounterFilters = document.getElementById("clear-encounter-filters");
     if (clearEncounterFilters) clearEncounterFilters.addEventListener("click", function () {
       document.getElementById("encounter-abduction-filter").value = "any";
       document.getElementById("encounter-being-filter").value = "any";
       document.querySelectorAll("[data-encounter-being]").forEach(function (input) { input.checked = false; });
+      state.encounterAnalysisSelectionIds = null;
+      runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapIncludeAmbiguous = false;
+      highlightEncounterReportTraces(null); applyEncounterControlsChange();
       scheduleRefresh({ immediate: true });
     });
     const includeEncounterReportTypes = document.getElementById("encounter-include-all-types");
@@ -30979,6 +31334,11 @@
 
     if (els.mapLegendBody) {
       els.mapLegendBody.addEventListener("change", function (event) {
+        if (event.target.id === "legend-encounter-layer" || event.target.id === "legend-encounter-unclear") {
+          if (event.target.id === "legend-encounter-layer") runtime.encounterMapEnabled = event.target.checked;
+          else runtime.encounterMapIncludeAmbiguous = event.target.checked;
+          runtime.encounterMapModelKey = ""; renderMapLegend(); return;
+        }
         if (event.target.id === "legend-trace-arrows") {
           setTraceDirectionArrowsVisible(event.target.checked);
           return;
@@ -32160,6 +32520,13 @@
     runtime.neighborhoodTraceLayer = L.layerGroup().addTo(runtime.map);
     runtime.selectionLayer = L.layerGroup().addTo(runtime.map);
     runtime.playbackLayer = L.layerGroup().addTo(runtime.map);
+    runtime.map.createPane("encounterMarkerPane");
+    runtime.map.getPane("encounterMarkerPane").style.zIndex = "610";
+    runtime.map.createPane("encounterContextPane");
+    runtime.map.getPane("encounterContextPane").style.zIndex = "425";
+    runtime.map.getPane("encounterContextPane").style.pointerEvents = "none";
+    runtime.encounterMapLayer = L.layerGroup().addTo(runtime.map);
+    runtime.encounterTraceHighlightLayer = L.layerGroup().addTo(runtime.map);
     const traceIntersectionController = TRACE_INTERSECTION_LAYER.createController({
       map: runtime.map,
       L: L,

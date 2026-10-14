@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="./styles.css?v=2026-10-13-encounters-v1">
-  <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-13-encounter-complete-v3">
+    <link rel="stylesheet" href="./styles.css?v=2026-10-13-encounter-map-v4">
+  <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-13-encounter-map-v4">
   <link rel="stylesheet" href="./analysis_comparisons.css?v=2026-10-08-trace-chronology-v1">
   <script>
     // Retire the temporary recovery proxy only for browsers that still have it.
@@ -912,32 +912,61 @@
                 <div id="type-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Type filter options"></div>
               </div>
             </div>
-            <details id="encounter-filter-panel" class="field filter-field encounter-filter-panel">
-              <summary>Encounters</summary>
-              <label class="field"><span>Abduction reports</span>
-                <select id="encounter-abduction-filter" disabled>
-                  <option value="any">Any report</option>
-                  <option value="reported">Reported abduction</option>
-                  <option value="source_reported">Source-classified abduction</option>
-                  <option value="ambiguous">Ambiguous encounter category</option>
-                  <option value="not_indexed">No indexed abduction evidence</option>
+            <details id="encounter-filter-panel" class="field filter-field encounter-filter-panel" open>
+              <summary><span>Encounters</span><span id="encounter-filter-state" class="filter-state-pill">Map overlay</span></summary>
+              <p class="encounter-filter-intro">Explore reported abductions and descriptions of beings.</p>
+              <label class="field encounter-filter-target-field" for="encounter-filter-target"><span>Apply selection to</span>
+                <select id="encounter-filter-target" aria-describedby="encounter-filter-scope" disabled>
+                  <option value="overlay" selected>Encounter map overlay</option>
+                  <option value="reports">Reports and Analysis</option>
                 </select>
               </label>
-              <label class="field"><span>Reported beings</span>
-                <select id="encounter-being-filter" disabled>
-                  <option value="any">Any report</option>
-                  <option value="reported">Being reported</option>
-                  <option value="not_indexed">No indexed being evidence</option>
-                </select>
-              </label>
-              <fieldset class="encounter-being-fieldset"><legend>Being types · any selected type</legend>
-                <div id="encounter-being-types" class="encounter-being-types"></div>
-              </fieldset>
+              <p id="encounter-filter-scope" class="encounter-filter-hint">Overlay follows dates, sources, search, precision and area. Craft-type filters stay separate.</p>
+              <div class="encounter-preset-grid" role="group" aria-label="Encounter selection" aria-describedby="encounter-filter-match-hint encounter-filter-scope">
+                <button id="encounter-preset-all" class="secondary-button encounter-preset" type="button" data-encounter-preset="all" aria-pressed="true" disabled><span>All encounters</span><span id="encounter-preset-all-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
+                <button id="encounter-preset-abductions" class="secondary-button encounter-preset" type="button" data-encounter-preset="abductions" aria-pressed="false" disabled><span>Abductions</span><span id="encounter-preset-abductions-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
+                <button id="encounter-preset-beings" class="secondary-button encounter-preset" type="button" data-encounter-preset="beings" aria-pressed="false" disabled><span>Being encounters</span><span id="encounter-preset-beings-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
+                <button id="encounter-preset-both" class="secondary-button encounter-preset" type="button" data-encounter-preset="both" aria-pressed="false" disabled><span>Both</span><span id="encounter-preset-both-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
+              </div>
+              <p id="encounter-filter-summary" class="encounter-filter-summary" role="status" aria-live="polite">Loading encounter overlay…</p>
+              <p id="encounter-filter-match-hint" class="encounter-filter-hint">Both requires an abduction and a being description in the same report.</p>
+              <button id="encounter-map-layer-toggle" class="secondary-button encounter-map-layer-toggle" type="button" aria-pressed="true" aria-controls="map" disabled>Hide encounter markers</button>
+              <details id="encounter-being-type-disclosure" class="encounter-filter-disclosure">
+                <summary><span>Being descriptions</span><span id="encounter-being-selected-count" class="encounter-selection-count">Any</span></summary>
+                <label class="field encounter-being-search-field" for="encounter-being-search"><span>Find a description</span><input id="encounter-being-search" type="search" placeholder="Grey, humanoid, luminous…" autocomplete="off" disabled></label>
+                <div class="encounter-being-selection-heading"><span>Match any selected description</span><button id="clear-encounter-being-types" class="secondary-button" type="button" disabled>Clear labels</button></div>
+                <fieldset class="encounter-being-fieldset"><legend class="sr-only">Reported being descriptions; selected descriptions combine with any match</legend>
+                  <div id="encounter-being-types" class="encounter-being-types"></div>
+                </fieldset>
+                <p id="encounter-being-search-status" class="encounter-filter-hint" role="status" aria-live="polite"></p>
+                <p class="encounter-filter-hint">Source names and appearance descriptions can overlap. These are report labels, not verified species.</p>
+              </details>
+              <details id="encounter-advanced-disclosure" class="encounter-filter-disclosure">
+                <summary>More encounter choices</summary>
+                <label class="field"><span>Abduction evidence</span>
+                  <select id="encounter-abduction-filter" disabled>
+                    <option value="any">Any report</option>
+                    <option value="reported">Reported abduction</option>
+                    <option value="source_reported">Source-classified abduction</option>
+                    <option value="ambiguous">Ambiguous encounter category</option>
+                    <option value="not_indexed">No indexed abduction evidence</option>
+                  </select>
+                </label>
+                <label class="field"><span>Being evidence</span>
+                  <select id="encounter-being-filter" disabled>
+                    <option value="any">Any report</option>
+                    <option value="reported">Being reported</option>
+                    <option value="not_indexed">No indexed being evidence</option>
+                  </select>
+                </label>
+                <p class="encounter-filter-hint">Abduction and being evidence must both match. No indexed evidence means unclassified, not an observed absence.</p>
+              </details>
               <div class="encounter-filter-actions">
-                <button id="clear-encounter-filters" class="secondary-button" type="button" disabled>Clear encounters</button>
+                <button id="clear-encounter-filters" class="secondary-button" type="button" disabled>Reset encounter selection</button>
                 <button id="encounter-include-all-types" class="secondary-button" type="button" disabled>Include all report types</button>
               </div>
-              <p id="encounter-filter-status" class="note-copy" role="status">Loading encounter evidence…</p>
+              <p class="encounter-filter-hint">For report filtering, include all report types to retain encounters without a craft classification.</p>
+              <p id="encounter-filter-status" class="encounter-filter-hint" role="status" aria-live="polite">Loading encounter evidence…</p>
             </details>
             <div class="field filter-field filter-subsection" data-collapsible-section="precision">
               <div class="filter-subsection-header">
@@ -1970,7 +1999,8 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
-  <script src="./encounter_evidence.js?v=2026-10-13-encounter-complete-v3"></script>
+  <script src="./encounter_evidence.js?v=2026-10-13-encounter-map-v4"></script>
+  <script src="./encounter_map.js?v=2026-10-13-encounter-map-v4"></script>
   <script src="./trace_chronology.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_neighborhood.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_direction_summary.js?v=2026-10-08-legend-directions-v1"></script>
@@ -1980,18 +2010,18 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
-  <script src="./analysis_comparisons_view.js?v=2026-10-13-encounter-complete-v3"></script>
-  <script src="./analysis_view.js?v=2026-10-13-encounter-complete-v3"></script>
+  <script src="./analysis_comparisons_view.js?v=2026-10-13-encounter-map-v4"></script>
+  <script src="./analysis_view.js?v=2026-10-13-encounter-map-v4"></script>
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
   <script src="./quality_detail_overlay.js?v=2026-10-07-reviewed-quality-v1"></script>
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
-  <script src="./app.js?v=2026-10-13-encounter-complete-v3"></script>
+  <script src="./app.js?v=2026-10-13-encounter-map-v4"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/chronology-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounters-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounters-v1"></script>
+  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-map-v4"></script>
+  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-map-v4"></script>
   <script defer src="./ui/accepted-workspace/polish.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./guided_tour_state.js?v=2026-10-08-guided-tour-v1"></script>
   <script defer src="./guided_tour_content.js?v=2026-10-08-guided-tour-v1"></script>

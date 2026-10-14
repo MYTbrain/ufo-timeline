@@ -31,12 +31,15 @@ def main():
         assert "noindex" in response.headers.get("X-Robots-Tag", "")
         canonical = response.url
         body = response.read(256 * 1024)
-        assert b"encounter-complete-v3" in body and b"analysis-section-encounters" in body
+        assert b"encounter-map-v4" in body and b"analysis-section-encounters" in body
+        assert b"encounter_map.js" in body and b"encounter-filter-target" in body
     before = json.loads((QA / "production-before.json").read_text(encoding="utf-8-sig"))
     after = json.loads((QA / "production-after.json").read_text(encoding="utf-8-sig"))
     assert before["Id"] == after["Id"] and after["Branch"] == "main"
+    deployment = json.loads((QA / "deployment.json").read_text(encoding="utf-8-sig"))
+    assert deployment["Environment"] == "Preview" and deployment["Branch"] == plan["branch"]
     receipt = {"schemaId": "ufo-phone-preview-public-verification-v1", "status": "passed",
-               "url": canonical + "#analysis-section-encounters", "uniqueDeploymentUrl": "https://c9d37928.ufo-timeline.pages.dev",
+               "url": canonical, "uniqueDeploymentUrl": deployment["Deployment"],
                "runtimeCommit": plan["runtimeCommit"], "verifiedFiles": checked, "staticReferencesValid": True,
                "mobileHttpStatus": 200, "indexingDisabled": True, "browserVisualVerification": "not_available",
                "productionUnchanged": True, "productionDeployment": after["Id"], "r2ObjectsUploaded": 0,
@@ -61,7 +64,7 @@ def main():
     stage.rmdir()
     storage = {"canonical": "Current runtime sources and remote phone preview", "retainedRollback": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",
                "retainedProduction": after["Id"], "temporaryShellRemoved": str(stage), "exactRemovalAllowlist": "shell.json files[]",
-               "removedBytes": plan["totalBytes"], "newFilesAbove100MiB": [], "approximateNetDiskGrowth": "Under200KiB of builder and verification receipts plus small local Git/Wrangler cache metadata;37.77MiB temporary shell removed.",
+               "removedBytes": plan["totalBytes"], "newFilesAbove100MiB": [], "approximateNetDiskGrowth": "Under500KiB of runtime, tests and verification receipts plus small local Git/Wrangler cache metadata; bounded temporary shell removed.",
                "remotePreviewRetention": "User-requested review preview; keep while reviewing. Production and sole rollback unchanged.", "supersededGeneratedArtifacts": [],
                "rebuild": "python scripts/prepare_phone_preview.py", "protectedSourceDeleted": False}
     (QA / "storage.json").write_text(json.dumps(storage, indent=2) + "\n", encoding="utf-8")
