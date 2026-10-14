@@ -2541,6 +2541,7 @@
           : (typeof config.onEvidenceExport === "function" ? config.onEvidenceExport : null),
         onSectionActivate: typeof config.onSectionActivate === "function" ? config.onSectionActivate : null,
         onComparisonSettingsChange: typeof config.onComparisonSettingsChange === "function" ? config.onComparisonSettingsChange : null,
+        onEncounterAxisRequested: typeof config.onEncounterAxisRequested === "function" ? config.onEncounterAxisRequested : null,
         onPlanetaryHeatmapRequest: typeof config.onPlanetaryHeatmapRequest === "function" ? config.onPlanetaryHeatmapRequest : null,
         getComparisonLoadingState: typeof config.getComparisonLoadingState === "function" ? config.getComparisonLoadingState : null,
         onComparisonRetry: typeof config.onComparisonRetry === "function" ? config.onComparisonRetry : null,
@@ -2747,6 +2748,8 @@
         "analysis-spatial-matrix-disclosure",
         "analysis-spatial-context-disclosure",
         "analysis-spatial-facility-disclosure",
+        "analysis-encounter-atlas-disclosure",
+        "analysis-encounter-context-disclosure",
       ].forEach((disclosureId) => {
         this._listen(this.document.getElementById(disclosureId), "toggle", () => this._renderDeferredDisclosure(disclosureId));
       });
@@ -4673,7 +4676,8 @@
 
     _renderHeatmap(chartId, value, summary, options) {
       const config = options || {};
-      const axisLimit = Math.max(1, Math.min(HEATMAP_AXIS_LIMIT, Number(config.axisLimit) || HEATMAP_AXIS_LIMIT));
+      const axisMaximum = config.descriptiveCounts === true ? 32 : HEATMAP_AXIS_LIMIT;
+      const axisLimit = Math.max(1, Math.min(axisMaximum, Number(config.axisLimit) || HEATMAP_AXIS_LIMIT));
       const display = heatmapDisplayItems(value, config.valueKeys);
       const fullData = display.data;
       const completeData = config.completeData == null
@@ -4753,13 +4757,13 @@
         return estimateAvailable(item, config.valueKeys) && !inferenceEligible(item);
       }).length;
       container.appendChild(this._element("p", "analysis-heatmap-legend", config.descriptiveCounts
-        ? "Darker teal = more co-reporting records. Counts describe source reports; they do not establish a physical association."
+        ? (config.descriptiveLegend || "Darker teal = more co-reporting records. Counts describe source reports; they do not establish a physical association.")
         : "Blue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support"));
       container.appendChild(this._element(
         "p",
         "analysis-qualification-summary" + (qualifiedCount ? "" : " is-descriptive-only"),
         config.descriptiveCounts
-          ? formatCount(fullData.length) + " reported being–craft combinations · each report counts once per combination."
+          ? formatCount(fullData.length) + " " + (config.combinationLabel || "reported being–craft combinations") + " · each report counts once per combination."
           : qualifiedCount
           ? formatCount(qualifiedCount) + " inferentially qualified " + (qualifiedCount === 1 ? "cell" : "cells") + " · " + formatCount(descriptiveCount) + " additional descriptive " + (descriptiveCount === 1 ? "estimate" : "estimates")
           : "No cells qualify for inference in this view. " + formatCount(descriptiveCount) + " descriptive " + (descriptiveCount === 1 ? "estimate remains" : "estimates remain") + " visible."
@@ -4798,7 +4802,7 @@
             if (config.descriptiveCounts) {
               const zero = this._element("span", "analysis-heat-cell", "0");
               zero.style.setProperty("--analysis-heat-percent", "0%");
-              zero.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": zero indexed co-reporting records.");
+              zero.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + (config.zeroCountLabel || "zero indexed co-reporting records.") );
               cell.appendChild(zero);
               tableRow.appendChild(cell);
               return;
@@ -4837,7 +4841,7 @@
               qValue == null ? "" : "q " + formatDecimal(qValue, 3),
             ].filter(Boolean).join(" · ");
             if (evidenceText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-evidence", evidenceText));
-            const statusText = config.descriptiveCounts ? "source co-report count" : (qualified ? "inferentially qualified" : (reason ? "descriptive estimate; " + reason : "descriptive estimate"));
+            const statusText = config.descriptiveCounts ? (config.countStatusText || "source co-report count") : (qualified ? "inferentially qualified" : (reason ? "descriptive estimate; " + reason : "descriptive estimate"));
             const supportText = support == null ? "" : (String(firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate"], "")) !== "" ? "support " + formatPercent(support) : "supported n=" + formatCount(support));
             mark.setAttribute("aria-label", rowLabel + ", " + columnLabel + ": " + formattedValue + (countText ? "; " + countText : "") + (evidenceText ? "; " + evidenceText : "") + (supportText ? "; " + supportText : "") + ". " + statusText + "." + (selectable ? " Inspect evidence details." : ""));
             mark.setAttribute("title", [rowLabel + " / " + columnLabel + ": " + formattedValue, countText, statusText, evidenceText, supportText].filter(Boolean).join(" · "));
@@ -4856,14 +4860,14 @@
           chartId,
           "Display shows " + displayedRows.length + " of " + rows.length + " highest-information rows and "
             + displayedColumns.length + " of " + columns.length + " highest-information columns (at most "
-            + (axisLimit * axisLimit) + " cells); calculations and evidence gates use every cell."
+            + (axisLimit * axisLimit) + " cells); " + (config.descriptiveCounts ? "complete report counts remain in the table and exports." : "calculations and evidence gates use every cell.")
         );
       }
       this._appendLazyDataTable(
         container,
         (config.caption || "Heatmap") + (config.descriptiveCounts ? " complete report counts" : " complete qualified data"),
         config.descriptiveCounts
-          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", "Share of eligible co-reports"]
+          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", config.countShareLabel || "Share of eligible co-reports"]
           : [config.rowHeading || "Group", "Column", "Effect", "Observed n", "Expected/reference n", "95% interval", "p-value", "q-value", "Support", "Status"],
         completeData.map(function (item) {
           const rawRow = cleanText(firstDefined(item, ["row", "rowLabel", "group", "category"], "All"), "All");
@@ -4894,7 +4898,7 @@
       if (peak) {
         const peakRow = formatRowLabel(cleanText(firstDefined(peak, ["row", "rowLabel", "group", "category"], "All")));
         const peakColumn = formatColumnLabel(cleanText(firstDefined(peak, ["column", "columnLabel", "period", "month", "year", "label"], "Value")));
-        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? "Most co-reported: " : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? " reports)." : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
+        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? (config.countPeakLabel || "Most co-reported: ") : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? " reports)." : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
       }
     }
 
@@ -6305,6 +6309,166 @@
       );
     }
 
+    _exportEncounterAxis(axis, format) {
+      if (!axis || !this.latestResult) return null;
+      const rowLabels = new Map(firstArray(axis, ["rows"]).map(function (item) { return [item.key, item.label]; }));
+      const columnLabels = new Map(firstArray(axis, ["columns"]).map(function (item) { return [item.key, item.label]; }));
+      const packageValue = {
+        schemaId: "ufo-encounter-comparison-export-v1", generatedAt: new Date().toISOString(),
+        unit: "reports", comparison: axis, filterSnapshot: this.latestMeta && this.latestMeta.filterSnapshot || {},
+        artifactHashes: Object.assign({}, this.latestResult.artifactHashes || {}, this.latestMeta && this.latestMeta.artifactHashes || {}),
+        policy: "Source-report descriptions and conditions; counts do not verify beings, abductions, causation, or common craft identity.",
+      };
+      const normalizedFormat = format === "csv" ? "csv" : "json";
+      const headings = ["being_key", "being_label", "comparison_key", "comparison_label", "reports", "share", "report_denominator", "axis", "field_policy", "coverage", "filter_snapshot", "artifact_hashes"];
+      const text = normalizedFormat === "json" ? JSON.stringify(packageValue, null, 2) :
+        [headings.join(",")].concat(firstArray(axis, ["cells"]).map(function (item) {
+          return [item.row, rowLabels.get(item.row) || item.row, item.column, columnLabels.get(item.column) || item.column,
+            firstDefined(item, ["count", "observedCount", "value"], 0), item.share, item.reportDenominator, axis.key,
+            axis.fieldPolicy || "", axis.coverage || {}, packageValue.filterSnapshot, packageValue.artifactHashes].map(csvCell).join(",");
+        })).join("\r\n");
+      const exportValue = { format: normalizedFormat, filename: "ufo-timeline-being-comparison-" + cleanText(axis.key, "axis").replace(/[^a-z0-9_-]/gi, "_") + "." + normalizedFormat,
+        mimeType: normalizedFormat === "csv" ? "text/csv;charset=utf-8" : "application/json;charset=utf-8", package: packageValue, text };
+      if (this.callbacks && this.callbacks.onExportEvidence) {
+        this.callbacks.onExportEvidence(Object.assign({ result: this.latestResult }, exportValue));
+        return exportValue;
+      }
+      const view = this.documentView;
+      if (!view || typeof view.Blob !== "function" || !view.URL || typeof view.URL.createObjectURL !== "function" || !this.document.body) return exportValue;
+      const url = view.URL.createObjectURL(new view.Blob([text], { type: exportValue.mimeType }));
+      const anchor = this.document.createElement("a");
+      anchor.href = url; anchor.download = exportValue.filename;
+      this.document.body.appendChild(anchor); anchor.click(); anchor.remove();
+      view.setTimeout(function () { view.URL.revokeObjectURL(url); }, 0);
+      return exportValue;
+    }
+
+    _renderEncounterAtlas(value, summary) {
+      const atlas = isObject(value) ? value : {};
+      const axes = firstArray(atlas, ["axes"]).filter(function (axis) { return isObject(axis) && axis.status !== "external_comparison"; });
+      const container = this.document.getElementById("analysis-encounter-atlas-chart");
+      if (!container) return false;
+      this._clear(container);
+      if (!axes.length) {
+        container.appendChild(this._element("p", "analysis-chart-empty", cleanText(atlas.unavailableReason, "Report comparisons are not available for this cohort yet. Unknown evidence is not a negative observation.")));
+        return false;
+      }
+      const version = this.resultRenderVersion;
+      const toolbar = this._element("div", "encounter-atlas-toolbar");
+      const label = this._element("label", "encounter-atlas-picker", "Compare being descriptions against");
+      const select = this._element("select");
+      select.id = "analysis-encounter-axis-select";
+      select.setAttribute("aria-label", "Compare being descriptions against");
+      const groups = new Map();
+      axes.forEach((axis) => {
+        const groupLabel = cleanText(axis.group, "Report characteristics");
+        if (!groups.has(groupLabel)) {
+          const group = this._element("optgroup"); group.label = groupLabel;
+          groups.set(groupLabel, group); select.appendChild(group);
+        }
+        const option = this._element("option", "", cleanText(axis.label, axis.key)); option.value = axis.key;
+        groups.get(groupLabel).appendChild(option);
+      });
+      const initial = axes.find((axis) => axis.key === this.encounterAxisSelection) || axes.find((axis) => axis.key === "abduction") || axes[0];
+      select.value = initial.key;
+      this.encounterAxisSelection = initial.key;
+      label.appendChild(select); toolbar.appendChild(label);
+      const exports = this._element("div", "encounter-atlas-exports");
+      const buttons = [];
+      ["csv", "json"].forEach((format) => {
+        const button = this._element("button", "secondary-button", "Export " + format.toUpperCase());
+        button.type = "button";
+        button.setAttribute("aria-label", "Export selected being comparison as " + format.toUpperCase());
+        button.addEventListener("click", () => {
+          if (this.resultRenderVersion !== version) return;
+          const axis = axes.find(function (item) { return item.key === select.value; });
+          this._exportEncounterAxis(axis, format);
+        });
+        buttons.push(button); exports.appendChild(button);
+      });
+      toolbar.appendChild(exports); container.appendChild(toolbar);
+      const coverage = this._element("div", "encounter-atlas-coverage-container");
+      coverage.id = "analysis-encounter-axis-coverage"; coverage.setAttribute("aria-live", "polite");
+      const chart = this._element("div", "analysis-chart encounter-atlas-matrix");
+      chart.id = "analysis-encounter-axis-chart";
+      container.appendChild(coverage); container.appendChild(chart);
+      const renderAxis = () => {
+        if (this.resultRenderVersion !== version) return;
+        const axis = axes.find(function (item) { return item.key === select.value; }) || initial;
+        this.encounterAxisSelection = axis.key;
+        this._clear(coverage);
+        const counts = isObject(axis.coverage) ? axis.coverage : {};
+        if (Number(counts.notLoadedReports) > 0 && this.callbacks.onEncounterAxisRequested) {
+          const load = this._element("button", "secondary-button", "Load field evidence"); load.type = "button";
+          load.addEventListener("click", () => {
+            if (this.resultRenderVersion !== version) return;
+            load.disabled = true; load.textContent = "Loading field evidence…";
+            Promise.resolve(this.callbacks.onEncounterAxisRequested(axis.key)).then((available) => {
+              if (this.resultRenderVersion !== version) return;
+              load.disabled = available === false; load.textContent = available === false ? "Evidence unavailable" : "Retry loading field evidence";
+            }).catch(() => { if (this.resultRenderVersion === version) { load.disabled = false; load.textContent = "Retry loading field evidence"; } });
+          }); coverage.appendChild(load);
+        }
+        const measures = [["Eligible being reports", counts.eligibleReports], ["Supported field", counts.supportedReports],
+          ["Unknown field", counts.unknownReports], ["Field not loaded", counts.notLoadedReports]];
+        if (Number(counts.excludedReports)) measures.push(["Excluded from this comparison", counts.excludedReports]);
+        const list = this._element("dl", "encounter-atlas-coverage");
+        measures.forEach((measure) => {
+          const group = this._element("div"); group.appendChild(this._element("dt", "", measure[0]));
+          group.appendChild(this._element("dd", "", measure[1] == null ? "Not available" : formatCount(measure[1]))); list.appendChild(group);
+        });
+        coverage.appendChild(list);
+        coverage.appendChild(this._element("p", "analysis-chart-policy encounter-atlas-policy", cleanText(axis.fieldPolicy, "The comparison uses retained source fields; unknown values remain separate.")));
+        const cells = firstArray(axis, ["cells"]);
+        const rowLabels = new Map(firstArray(axis, ["rows"]).map(function (item) { return [item.key, item.label]; }));
+        const columnLabels = new Map(firstArray(axis, ["columns"]).map(function (item) { return [item.key, item.label]; }));
+        const columnKeys = firstArray(axis, ["columns"]).map(function (item) { return item.key; });
+        const unknownKeys = columnKeys.filter(function (key) { return /unknown|not_loaded|unavailable|unclassified|unspecified/.test(key); });
+        const orderedColumns = unknownKeys.concat(columnKeys.filter(function (key) { return !unknownKeys.includes(key); }));
+        this._renderHeatmap(chart.id, cells, summary, {
+          caption: "Being descriptions × " + cleanText(axis.label, axis.key), rowHeading: "Reported being description", columnHeading: cleanText(axis.label, axis.key),
+          descriptiveCounts: true, inspectable: false, axisLimit: 32, valueKeys: ["count", "observedCount", "value"], completeData: cells,
+          rowAxisOrder: firstArray(axis, ["rows"]).map(function (item) { return item.key; }), columnAxisOrder: orderedColumns, axisColumns: orderedColumns,
+          rowLabelFormatter: function (key) { return rowLabels.get(key) || plainLanguageLabel(key); },
+          columnLabelFormatter: function (key) { return columnLabels.get(key) || plainLanguageLabel(key); },
+          descriptiveLegend: "Darker teal = more source reports in a combination. Unknown and unloaded fields remain visible; counts do not establish an underlying physical relationship.",
+          combinationLabel: "indexed combinations", countStatusText: "descriptive source-report count", zeroCountLabel: "zero indexed source reports in this combination.",
+          countShareLabel: cleanText(axis.shareLabel, "Share of eligible being reports"), countPeakLabel: "Largest displayed report count: ",
+          emptyMessage: cleanText(axis.unavailableReason, "No indexed combinations are available for this field in the current cohort."),
+        });
+        this._appendChartPolicy(chart.id, "Each report counts once per being–field combination. Multi-label descriptions and fields can make cell totals exceed "
+          + formatCount(counts.eligibleReports) + " eligible being reports. The complete table and selected comparison exports retain every cell.");
+        if (atlas.policy) this._appendChartPolicy(chart.id, atlas.policy);
+        if (["height", "uniform", "color", "color_role"].includes(axis.key)) this._appendChartPolicy(chart.id, "These are co-fields within the original report. A height, clothing description or object color may refer to a different being or object; attribution to a particular being label is not established by this cell.");
+        buttons.forEach(function (button) { button.disabled = !cells.length; });
+      };
+      select.addEventListener("change", () => {
+        renderAxis();
+        const axis = axes.find(function (item) { return item.key === select.value; });
+        if (this.resultRenderVersion === version && axis && Number(axis.coverage && axis.coverage.notLoadedReports) > 0 && this.callbacks.onEncounterAxisRequested) {
+          Promise.resolve(this.callbacks.onEncounterAxisRequested(axis.key)).catch(function () { return null; });
+        }
+      });
+      renderAxis();
+      return true;
+    }
+
+    _renderEncounterContextEvidence(evidence) {
+      const target = this.document.getElementById("analysis-encounter-context-chart");
+      if (!target) return false;
+      const api = typeof globalThis !== "undefined" ? globalThis.UfoAnalysisComparisonsView : null;
+      const callbacks = this.callbacks || {};
+      if (api && typeof api.renderEncounterContext === "function") {
+        api.renderEncounterContext(target, evidence || { status: "loading" }, {
+          onSettingsChange: callbacks.onComparisonSettingsChange, retry: callbacks.onComparisonRetry,
+        });
+        return true;
+      }
+      this._clear(target);
+      target.appendChild(this._element("p", "analysis-chart-empty", "Context comparisons are loading. Dates, positions, and source coverage determine which report combinations can be shown."));
+      return false;
+    }
+
     _renderEncounterEvidence(value, summary) {
       const data = isObject(value) ? value : {};
       const ready = data.evidenceReady === true;
@@ -6862,6 +7026,13 @@
         plan.jobs[0]();
         this.renderedPlanVersions.set(key, this.resultRenderVersion);
       }
+      const contextTarget = this.document.getElementById("analysis-encounter-context-chart");
+      if (contextTarget) {
+        this._clear(contextTarget);
+        this._setDeferredDisclosureJobs("analysis-encounter-context-disclosure", [() => this._renderEncounterContextEvidence(this.latestResult.comparisonEvidence)],
+          { sectionId: "analysis-section-encounters", targets: ["analysis-encounter-context-chart"] });
+        if (this._activeRenderKeys().includes("analysis-section-encounters")) this._renderDeferredDisclosure("analysis-encounter-context-disclosure");
+      }
       return true;
     }
 
@@ -7048,12 +7219,16 @@
       this.renderedPlanVersions.clear();
       this._setDeferredDisclosureJobs("analysis-spatial-matrix-disclosure", [spatialCooccurrenceJob], { sectionId: "analysis-section-spatial", targets: ["analysis-cooccurrence-chart"] });
       this._setDeferredDisclosureJobs("analysis-spatial-context-disclosure", spatialContextJobs, { sectionId: "analysis-section-spatial", targets: ["analysis-context-neighborhood-chart", "analysis-context-category-chart"] });
+      this._setDeferredDisclosureJobs("analysis-encounter-atlas-disclosure", [() => this._renderEncounterAtlas(data.encounters.comparisonAtlas, summary)],
+        { sectionId: "analysis-section-encounters", targets: ["analysis-encounter-atlas-chart"] });
+      this._setDeferredDisclosureJobs("analysis-encounter-context-disclosure", [() => this._renderEncounterContextEvidence(this.latestResult.comparisonEvidence)],
+        { sectionId: "analysis-section-encounters", targets: ["analysis-encounter-context-chart"] });
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
         ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-color-chart", "analysis-color-comparison-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
-        ["analysis-section-encounters", { jobs: encounterJobs, targets: ["analysis-abduction-profile-chart", "analysis-being-profile-chart", "analysis-being-craft-chart", "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-source-chart", "analysis-encounter-coverage-chart"] }],
+        ["analysis-section-encounters", { jobs: encounterJobs, targets: ["analysis-abduction-profile-chart", "analysis-being-profile-chart", "analysis-being-craft-chart", "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-source-chart", "analysis-encounter-coverage-chart", "analysis-encounter-atlas-chart", "analysis-encounter-context-chart"] }],
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
         ["analysis-section-crops", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-craft-context-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],

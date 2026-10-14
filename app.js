@@ -9365,7 +9365,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounters-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-atlas-v2");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9431,6 +9431,9 @@
       encounterAbductionCode: Number(event.encounterAbductionCode) || 0,
       encounterBeingMask: Number(event.encounterBeingMask) || 0,
       encounterCraftAssociationCode: Number(event.encounterCraftAssociationCode) || 0,
+      encounterHeightFeet: event.encounterHeightFeet == null ? null : Number(event.encounterHeightFeet),
+      encounterUniform: event.encounterUniform == null ? null : String(event.encounterUniform),
+      encounterOccurrenceDateExcluded: typeof event.encounterOccurrenceDateExcluded === "boolean" ? event.encounterOccurrenceDateExcluded : null,
       mapped: Boolean(event.has_coordinates),
       lat: nullableCatalogNumber(event.lat),
       lon: nullableCatalogNumber(event.lon),
@@ -10015,8 +10018,18 @@
       onGeographyRequested: function () {
         return ensureAnalysisGeographyArtifact().catch(function () { return null; });
       },
+      onEncounterAxisRequested: function (axis) {
+        if (["country", "region", "admin_region"].includes(axis)) return ensureAnalysisGeographyArtifact();
+        if (["duration", "duration_status"].includes(axis)) return ensureAnalysisDurationArtifact();
+        if (["reporting_delay", "reporting_delay_role"].includes(axis)) return ensureAnalysisReportingDelayArtifact();
+        if (["source_hour", "time_period", "time_status"].includes(axis)) return ensureAnalysisTimeOfDayArtifact();
+        if (["witnesses", "witness_status"].includes(axis)) return ensureAnalysisWitnessCountArtifact();
+        if (["color", "color_role"].includes(axis)) return ensureAnalysisColorArtifact();
+        if (["coordinate_evidence", "coordinate_source"].includes(axis)) return ensureAnalysisCoordinateEvidenceArtifact();
+        return false;
+      },
       onSectionActivate: function (change) {
-        if (change && change.sectionKey === "comparisons") {
+        if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {
           ensureAnalysisComparisonArtifacts().catch(function () { return null; });
         }
         if (change && change.sectionKey === "time") {
@@ -10061,6 +10074,19 @@
         }
       },
       onComparisonSettingsChange: function (settings) {
+        if (settings && settings.encounterContext) {
+          const changes = Object.assign({}, settings);
+          delete changes.encounterContext;
+          delete changes.encounterPlanetaryOnly;
+          const changed = Object.keys(changes).some(function (key) { return changes[key] !== runtime.analysisComparisonOptions[key]; });
+          runtime.analysisComparisonOptions = Object.assign({}, runtime.analysisComparisonOptions, changes);
+          if (changed) {
+            runtime.analysisComparisonDirtyComponents.add(settings.encounterPlanetaryOnly ? "planetary" : "nuclear");
+            if (settings.encounterPlanetaryOnly && runtime.analysisLastResult && runtime.analysisLastResult.comparisonEvidence && runtime.analysisLastResult.comparisonEvidence.planetaryHeatmaps) runtime.analysisComparisonDirtyComponents.add("planetaryHeatmaps");
+          }
+          scheduleAnalysisComparisonUpdate(settings.encounterPlanetaryOnly ? "encounterPlanetary" : "encounters");
+          return;
+        }
         if (settings && settings.heatmapOnly) {
           requestPlanetaryHeatmaps(settings);
           return;
@@ -10069,6 +10095,9 @@
         const component = Object.keys(settings || {}).some(function (key) {
           return ["planet", "aspectPartner", "aspectOrbDegrees", "zodiacSystem", "ayanamsaId", "samplingMode"].indexOf(key) !== -1;
         }) ? "planetary" : "nuclear";
+        const evidence = runtime.analysisLastResult && runtime.analysisLastResult.comparisonEvidence;
+        if (evidence && evidence.encounters && component === "nuclear") runtime.analysisComparisonDirtyComponents.add("encounters");
+        if (evidence && evidence.encounterPlanetary && component === "planetary") runtime.analysisComparisonDirtyComponents.add("encounterPlanetary");
         scheduleAnalysisComparisonUpdate(component);
       },
       onPlanetaryHeatmapRequest: requestPlanetaryHeatmaps,
@@ -11645,6 +11674,7 @@
       (runtime.analysisComparisonPending || runtime.analysisWorkerFlight || runtime.analysisComparisonDebounceTimerId != null)) return true;
     runtime.analysisComparisonOptions = Object.assign({}, runtime.analysisComparisonOptions, update);
     if (changed) runtime.analysisComparisonDirtyComponents.add("planetary");
+    if (changed && runtime.analysisLastResult && runtime.analysisLastResult.comparisonEvidence && runtime.analysisLastResult.comparisonEvidence.encounterPlanetary) runtime.analysisComparisonDirtyComponents.add("encounterPlanetary");
     return scheduleAnalysisComparisonUpdate("planetaryHeatmaps");
   }
 
@@ -28298,6 +28328,8 @@
     event = applyLocationLabelOverlay(event);
     event = compactCanonicalSummaryEventForRuntime(event);
     if (ENCOUNTERS) event = ENCOUNTERS.decorate(event, runtime.encounterEvidence);
+    event.encounterOccurrenceDateExcluded = runtime.traceChronologyEvidence && typeof runtime.traceChronologyEvidence.exclusion === "function"
+      ? Boolean(runtime.traceChronologyEvidence.exclusion(event.event_id)) : null;
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
     event.location_precision = event.location_precision || "unknown";
     event.visual_type_group = event.visual_type_group || getVisualTypeGroup(event.type);

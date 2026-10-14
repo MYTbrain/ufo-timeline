@@ -1,0 +1,1424 @@
+{
+  "schemaId": "ufo-encounter-corpus-runtime-audit-v1",
+  "generatedAtUtc": "2026-10-14T01:19:15.163Z",
+  "status": "passed",
+  "elapsedSeconds": 31,
+  "method": "Each of 71 frozen gzip summary shards was verified and loaded in place through the actual app serializer and current catalog filter worker. Only sparse encounter reference rows were retained for independent exact-count and matrix comparisons.",
+  "ordinalPolicy": "App inputs are Unix-day ordinals (1970-01-01=0); the worker alone converts to the statistics Gregorian-day epoch.",
+  "catalogReports": 702893,
+  "summaryShards": 71,
+  "datedOrdinalReports": 699427,
+  "sourceCounts": {
+    "nuforc": 151816,
+    "ufocat": 221280,
+    "phenomenainon_updb": 161029,
+    "majestic": 49418,
+    "mufon": 119350
+  },
+  "sourceJoins": {
+    "eventId": 16319,
+    "source": 16319,
+    "chunk": 16319,
+    "detailIndex": 16319,
+    "mismatches": 0,
+    "missing": 0
+  },
+  "optionalMetadata": {
+    "heightIndexedReports": 2441,
+    "uniformIndexedReports": 2197,
+    "unindexedMetadataNullRows": 686574,
+    "sourceDateExcludedReports": 3624
+  },
+  "chronology": {
+    "manifest": {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\trace_chronology\\manifest.json",
+      "bytes": 3088,
+      "sha256": "3e81dd78adc7dc7fc8da5aa1231450a1745661753f4bf0101f2d63481a6a1197"
+    },
+    "gzip": {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\trace_chronology\\evidence.json.gz",
+      "bytes": 7592318,
+      "sha256": "b720163bf83c96bc0bcf0997dbc268063b07c25e0c6fc48d821544040b14e3f8"
+    },
+    "decodedSha256": "74b139c56fd7ece8ba0d3b006669ee70f8683e055321ac17f7f47774ca66cf24",
+    "snapshot": {
+      "status": "ready",
+      "releaseId": "corpus-timing-20261008-v3",
+      "acceptedEventCount": 425214,
+      "excludedDateCount": 3624,
+      "evidenceKinds": [
+        "source_exact_clock",
+        "source_calendar_day_zone_bound",
+        "source_clock_zone_envelope",
+        "source_documented_timebase_clock",
+        "source_recovered_clock_field_zone_envelope",
+        "reviewed_event_clock",
+        "source_recovered_occurrence_clock_zone_envelope",
+        "source_recovered_occurrence_clock",
+        "source_recovered_clock_field"
+      ],
+      "evidenceKindCounts": {
+        "source_exact_clock": 212747,
+        "source_calendar_day_zone_bound": 77268,
+        "source_clock_zone_envelope": 129480,
+        "source_documented_timebase_clock": 5596,
+        "source_recovered_clock_field_zone_envelope": 10,
+        "reviewed_event_clock": 38,
+        "source_recovered_occurrence_clock_zone_envelope": 46,
+        "source_recovered_occurrence_clock": 28,
+        "source_recovered_clock_field": 1
+      },
+      "zoneCount": 124,
+      "indexBytes": 13606848
+    }
+  },
+  "comparisonAtlas": [
+    {
+      "key": "all",
+      "coreAxes": 33,
+      "heightBeingReports": 2441,
+      "uniformBeingReports": 2161,
+      "sourceDateHeldIndexedReports": 369,
+      "sourceDateHeldBeingReports": 312,
+      "undatedAbductionReports": 138,
+      "undatedBeingReports": 435,
+      "coveragePartitionsPassed": true,
+      "axes": [
+        {
+          "key": "abduction",
+          "label": "Abduction classifications",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 4,
+          "cellCount": 60,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 1632,
+            "unknownReports": 10963,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "co_descriptions",
+          "label": "Being descriptions co-reported",
+          "status": "ready_descriptive",
+          "rowCount": 19,
+          "columnCount": 19,
+          "cellCount": 199,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12595,
+            "unknownReports": 0,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 17697
+          }
+        },
+        {
+          "key": "craft",
+          "label": "Craft co-reports",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 17,
+          "cellCount": 211,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 6856,
+            "supportedReports": 4687,
+            "unknownReports": 2169,
+            "notLoadedReports": 0,
+            "excludedReports": 5739,
+            "membershipCount": 7750
+          }
+        },
+        {
+          "key": "source",
+          "label": "Source collections",
+          "status": "ready_descriptive",
+          "rowCount": 19,
+          "columnCount": 5,
+          "cellCount": 81,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12595,
+            "unknownReports": 0,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "country",
+          "label": "Reported countries",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "region",
+          "label": "Macroregions",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "admin_region",
+          "label": "Reported administrative regions",
+          "status": "no_supported_categories",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 12595,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "decade",
+          "label": "Reporting decades",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 69,
+          "cellCount": 329,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12163,
+            "unknownReports": 432,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "month",
+          "label": "Calendar months",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 13,
+          "cellCount": 239,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 10268,
+            "unknownReports": 2327,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "weekday",
+          "label": "Calendar weekdays",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 8,
+          "cellCount": 152,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 7766,
+            "unknownReports": 4829,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "source_hour",
+          "label": "Source-clock hours",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "time_period",
+          "label": "Source-clock periods",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "time_status",
+          "label": "Clock evidence status",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "duration",
+          "label": "Observation duration",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "duration_status",
+          "label": "Duration evidence status",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "witnesses",
+          "label": "Witness counts",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "witness_status",
+          "label": "Witness evidence status",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "color",
+          "label": "Reported colors",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "color_role",
+          "label": "Color evidence roles",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "height",
+          "label": "Reported being height",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 6,
+          "cellCount": 101,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 2441,
+            "unknownReports": 10154,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "uniform",
+          "label": "Reported uniform fields",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 1196,
+          "cellCount": 1963,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 2161,
+            "unknownReports": 10434,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "reporting_delay",
+          "label": "Reporting delays",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "reporting_delay_role",
+          "label": "Reporting date roles",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "report_type",
+          "label": "Original report types",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 28,
+          "cellCount": 285,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 3719,
+            "unknownReports": 8876,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "craft_confidence",
+          "label": "Craft classification confidence",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 4,
+          "cellCount": 76,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 8735,
+            "unknownReports": 3860,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "reported_shape",
+          "label": "Source shape labels",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 28,
+          "cellCount": 283,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 3719,
+            "unknownReports": 8876,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "mapped",
+          "label": "Mapping availability",
+          "status": "ready_descriptive",
+          "rowCount": 19,
+          "columnCount": 2,
+          "cellCount": 38,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12595,
+            "unknownReports": 0,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "location_precision",
+          "label": "Location precision",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 6,
+          "cellCount": 91,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12073,
+            "unknownReports": 522,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "date_precision",
+          "label": "Date precision",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 7,
+          "cellCount": 82,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12476,
+            "unknownReports": 119,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "occurrence_date_status",
+          "label": "Occurrence-date exclusion status",
+          "status": "ready_descriptive",
+          "rowCount": 19,
+          "columnCount": 2,
+          "cellCount": 36,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12595,
+            "unknownReports": 0,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "coordinate_quality",
+          "label": "Coordinate evidence quality",
+          "status": "data_unavailable",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 0,
+            "unknownReports": 0,
+            "notLoadedReports": 12595,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "coordinate_source",
+          "label": "Coordinate source methods",
+          "status": "ready_descriptive_partial",
+          "rowCount": 19,
+          "columnCount": 5,
+          "cellCount": 59,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 10175,
+            "unknownReports": 2420,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        },
+        {
+          "key": "duplicate_lineage",
+          "label": "Duplicate lineage flags",
+          "status": "ready_descriptive",
+          "rowCount": 19,
+          "columnCount": 1,
+          "cellCount": 19,
+          "coverage": {
+            "cohortReports": 702893,
+            "beingReports": 12595,
+            "eligibleReports": 12595,
+            "supportedReports": 12595,
+            "unknownReports": 0,
+            "notLoadedReports": 0,
+            "excludedReports": 0,
+            "membershipCount": 14225
+          }
+        }
+      ]
+    },
+    {
+      "key": "reported_abductions",
+      "coreAxes": 33,
+      "heightBeingReports": 417,
+      "uniformBeingReports": 421,
+      "sourceDateHeldIndexedReports": 75,
+      "sourceDateHeldBeingReports": 18,
+      "undatedAbductionReports": 138,
+      "undatedBeingReports": 42,
+      "coveragePartitionsPassed": true,
+      "axes": []
+    },
+    {
+      "key": "reported_beings",
+      "coreAxes": 33,
+      "heightBeingReports": 2441,
+      "uniformBeingReports": 2161,
+      "sourceDateHeldIndexedReports": 312,
+      "sourceDateHeldBeingReports": 312,
+      "undatedAbductionReports": 42,
+      "undatedBeingReports": 435,
+      "coveragePartitionsPassed": true,
+      "axes": []
+    },
+    {
+      "key": "grey",
+      "coreAxes": 33,
+      "heightBeingReports": 321,
+      "uniformBeingReports": 181,
+      "sourceDateHeldIndexedReports": 6,
+      "sourceDateHeldBeingReports": 6,
+      "undatedAbductionReports": 12,
+      "undatedBeingReports": 22,
+      "coveragePartitionsPassed": true,
+      "axes": []
+    },
+    {
+      "key": "reported_abductions_and_grey",
+      "coreAxes": 33,
+      "heightBeingReports": 156,
+      "uniformBeingReports": 87,
+      "sourceDateHeldIndexedReports": 2,
+      "sourceDateHeldBeingReports": 2,
+      "undatedAbductionReports": 12,
+      "undatedBeingReports": 12,
+      "coveragePartitionsPassed": true,
+      "axes": []
+    }
+  ],
+  "evidence": {
+    "releaseId": "encounters-20261013-v1",
+    "rows": 16319,
+    "manifest": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounters-20261013\\validated\\reviewed\\manifest.json",
+      "bytes": 5921,
+      "sha256": "68e136745a23bc38db5376f5a2113d5dc9787c35302cf80bcd26a137c0470729"
+    },
+    "gzip": {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounters-20261013\\validated\\reviewed\\evidence.json.gz",
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef"
+    },
+    "decodedSha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8"
+  },
+  "runtimePins": [
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
+      "bytes": 1384650,
+      "sha256": "f8c9313624e1c40b1a6547f754825136e992cb43645e2b6dbfa9842b4faf2775"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_evidence.js",
+      "bytes": 19474,
+      "sha256": "68d011639d7c1b731451a1bafa1ab15a8bebedcb51371a202bab2366b7663f6f"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\trace_neighborhood.js",
+      "bytes": 61411,
+      "sha256": "64a99519a6ed9cdf2d2a871bcb8ebd5c215c5abd338b116006326e92b0600439"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\trace_chronology.js",
+      "bytes": 14075,
+      "sha256": "c6631cfa3c9e10b6668428ad2ea97a2403ae183882d41e43d210e6bab66ff847"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
+      "bytes": 260543,
+      "sha256": "3ce17245fe622808069b49235cc02d5565c0648848c47abfc3f92cc453921660"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_stats.js",
+      "bytes": 365367,
+      "sha256": "fe320a72659861868866d351c87f18eb8c21b6cb67daeb916202823e8d2c2fd4"
+    }
+  ],
+  "deliveryPlan": {
+    "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\releases\\workspace-analysis-20261008\\delivery_plan.json",
+    "bytes": 258710,
+    "sha256": "edc4a923b990a423be5d8075be330c01570190dcbdc2ed989a891980165931df"
+  },
+  "summaryPins": [
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000000.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000000.json.gz",
+      "bytes": 770141,
+      "sha256": "c7160503493c0a4784b671ba5399ebf1578192be724d02135b1101b4da3b3b07"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000001.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000001.json.gz",
+      "bytes": 767557,
+      "sha256": "42ec938fad8cf691c5cccad4027fa0c5b48f3700f024c50916b215573567a2db"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000002.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000002.json.gz",
+      "bytes": 766992,
+      "sha256": "f94d9858537beebedbf2fc27b1935a49a6c7b08e5a169131e8cd25ce78232d8e"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000003.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000003.json.gz",
+      "bytes": 763997,
+      "sha256": "f469875009962a7c18e6fb8a6ececa5b18ee6d689f97572a684af3fe59995848"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000004.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000004.json.gz",
+      "bytes": 763889,
+      "sha256": "6c11bc6a1ed160540fa3db04a0ada8d373b78fae4b6663558ff0c46eced8a9d7"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000005.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000005.json.gz",
+      "bytes": 759871,
+      "sha256": "d5bfe33aec16465025fa88b0a8be77f5484fc78eb8ca7e715522f32be53c06f8"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000006.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000006.json.gz",
+      "bytes": 768574,
+      "sha256": "1fa9c649d6d017e67488b8185f1846762c760552f27ab1976acd89ffef468f3a"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000007.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000007.json.gz",
+      "bytes": 764786,
+      "sha256": "5f53068184ef6154f804bd2f608fbcdae2c50c9b9271a8d8f833fe0ef190a1d8"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000008.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000008.json.gz",
+      "bytes": 763611,
+      "sha256": "90553d2367442d4449bbcfee7f2a95faba17697cefa9102f676a6afe4f2570ad"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000009.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000009.json.gz",
+      "bytes": 762208,
+      "sha256": "cdf5aea9ffcb64778a1fa92701f9ffa9a300446f634b88f74c180809bde32c01"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000010.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000010.json.gz",
+      "bytes": 758319,
+      "sha256": "07e36761f0d7fd9de983c6f5b03074970a6791f7af8e94590df233a5b6515822"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000011.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000011.json.gz",
+      "bytes": 759704,
+      "sha256": "2f70f7293eb3f62dc13bc02eb2f3602c099bd0fb1787ccd242afbe14b93ba8c1"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000012.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000012.json.gz",
+      "bytes": 762942,
+      "sha256": "b23634cbcf133f3c3d26181255741322e8c39252fc96b2e5efc708e5827773bc"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000013.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000013.json.gz",
+      "bytes": 760561,
+      "sha256": "d995380313e48c05459a5d65f1b4f7d96f8af71fe66f4e972882ccd5b9e516ef"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000014.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000014.json.gz",
+      "bytes": 761921,
+      "sha256": "7f6bb9fa3a17c409093cdbf76892db1498abcba9de4ef52c9191b5a0010f7b3d"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000015.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000015.json.gz",
+      "bytes": 759279,
+      "sha256": "2ab8a4bb19a5b8214db95c33e3650ffb05ed91ae9356fedbd2ec401a23fbe9cc"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000016.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000016.json.gz",
+      "bytes": 756358,
+      "sha256": "c10691725cd42e5027f43ec5ed9c790082452b541279b9cdfa9f58000cb62a64"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000017.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000017.json.gz",
+      "bytes": 756709,
+      "sha256": "4a32c3de7a928ca06a7191ccd577a1ad9a8514b63d1f01e85e54cdc2e6426dc1"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000018.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000018.json.gz",
+      "bytes": 759344,
+      "sha256": "3b07d2c38ca81e9c2fc1f42525b2d938a06e995431ed477cd4c85f7d42452d30"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000019.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000019.json.gz",
+      "bytes": 758489,
+      "sha256": "43b03f04674871afe820d0f9e33bf52a60543727d664b1b869b28221f9c6aa29"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000020.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000020.json.gz",
+      "bytes": 755491,
+      "sha256": "2a9ebf39165ea2652280cceeb21bee7e3f537c34d32461d071da370531504b59"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000021.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000021.json.gz",
+      "bytes": 756121,
+      "sha256": "6e7840fddfd9114a7d741a59617ac16d9c4e6a62f09d22aba880d58ed326a098"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000022.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000022.json.gz",
+      "bytes": 754616,
+      "sha256": "6d237a16923d25cf07b387e0e4155c700eb48cb26e55dff39a95a6088e08a871"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000023.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000023.json.gz",
+      "bytes": 756267,
+      "sha256": "60b16e8158be61f49ff560c259ffe74be153abde2d3c96455dabbb94b0e4b08d"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000024.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000024.json.gz",
+      "bytes": 754744,
+      "sha256": "7c2cdb0b06f0bc4261ef1dadd0ef5f6b71dc94d3deb5e332e7e9d904a7365ed4"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000025.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000025.json.gz",
+      "bytes": 754745,
+      "sha256": "3cc5e41958da0377a00ed4ac14cec7bed51f6e44328ed054f6df1f6f13bf88c2"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000026.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000026.json.gz",
+      "bytes": 754119,
+      "sha256": "c193e46560320da4f0cf55e99e61f0106465c9fe6041980a107e0779ef4882c8"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000027.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000027.json.gz",
+      "bytes": 756512,
+      "sha256": "779638e29d94e202b675d9e6d8aa8de4ebc8e597917847ef14b3bbae206f0cf5"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000028.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000028.json.gz",
+      "bytes": 753957,
+      "sha256": "354b27618bdc0ca95e24247b2628fd9bf444e9fe39b2f900f2e6e1f544c1d01f"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000029.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000029.json.gz",
+      "bytes": 751401,
+      "sha256": "d2ea906e34e10e4d036443124a7133447532a612ef02e5dd047b332727db5275"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000030.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000030.json.gz",
+      "bytes": 752785,
+      "sha256": "caf9df99b239fc5e373a8051ed13a9cb43475cc7444019328a6dfda2b3f2a205"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000031.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000031.json.gz",
+      "bytes": 754213,
+      "sha256": "c7de311a294701c8976c43b05bf6f5af26bbc301b26bc21995c44083c637441c"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000032.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000032.json.gz",
+      "bytes": 750517,
+      "sha256": "2df6862f2fec51287e6a43b41e0d86eb0df1b1ce00535d148f959f26f429de8e"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000033.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000033.json.gz",
+      "bytes": 753570,
+      "sha256": "d1a8bf084efbb1a9f1053fe9d759b23658908662e983f810b2c3e17657ebeb74"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000034.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000034.json.gz",
+      "bytes": 751961,
+      "sha256": "ee0b1b74ec33b3b21823080ff858953e7446dd6db1bb848a116d0da71a07de80"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000035.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000035.json.gz",
+      "bytes": 749809,
+      "sha256": "a7d84571bd7a533bf4815267cd375090b410423bc83d4b09b5c0fbdecdf926aa"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000036.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000036.json.gz",
+      "bytes": 752677,
+      "sha256": "bd3e8968a3e9a001087f93a4abe3c6542813334f5d80f85c24ef7c43122fbcf8"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000037.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000037.json.gz",
+      "bytes": 751879,
+      "sha256": "24df0fcc47f69eae6f956345618cb88273a373d3db295ff4a3397f789ddfcb4c"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000038.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000038.json.gz",
+      "bytes": 749440,
+      "sha256": "b938f4c4ccdc80ecf2ae8740a66639ee87fa954c5960855778cd84ba78f80c56"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000039.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000039.json.gz",
+      "bytes": 749400,
+      "sha256": "b62311a04f5839ec49e1cba3d92b7b82f820ae7a4bba3d23a2ca1c246656b571"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000040.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000040.json.gz",
+      "bytes": 746108,
+      "sha256": "1c9b0e97a104c1b675cb74ce5401f9652fc321234766632fe3f3bdf971c0384a"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000041.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000041.json.gz",
+      "bytes": 747944,
+      "sha256": "20ff265c5b6d1688ebf63ad44b69a5980a53002bd4a9828b4339c4d7ce9b490a"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000042.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\source-quality\\catalog\\summary_shards\\summary_000042.json.gz",
+      "bytes": 745263,
+      "sha256": "c9c8fb55467062081847694659dce135b624660327d89a37c775682ed9ef72ec"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000043.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000043.json.gz",
+      "bytes": 748188,
+      "sha256": "1413913fceafa94d4c384caf8023899e06c8e906ede47824721b2fb468dd8704"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000044.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000044.json.gz",
+      "bytes": 749826,
+      "sha256": "dd4b719c87bb2930a5191794f845c4a3f8a57cc4f725b37bb1bfb13fa6933b08"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000045.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000045.json.gz",
+      "bytes": 745381,
+      "sha256": "29646fa11e06fc2fcb5943e4035f1bd131a35c35cf7896c48f261ae01f1b4641"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000046.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000046.json.gz",
+      "bytes": 745742,
+      "sha256": "dba9c35f95318fe502f5179cc2b2d21e5017c4e249b8443fc3d529a3e1595ba6"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000047.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000047.json.gz",
+      "bytes": 746951,
+      "sha256": "b977fc0cc1b901e2e38f272e200e8d645914c442cfcec3fc7f536d700513cb0d"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000048.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000048.json.gz",
+      "bytes": 747983,
+      "sha256": "8dd644ce7530ee8c4f042ba14634c1e9b680526639f65226e74754ebdca7e535"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000049.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000049.json.gz",
+      "bytes": 748164,
+      "sha256": "a04c6e5bcb54186d3b3a3d3faff4a1b015bc859c4e9935437d2394d3ae3996be"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000050.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000050.json.gz",
+      "bytes": 746299,
+      "sha256": "12bf6ed28604fc4cb11b237dec5df29aef728b42a32316efd5c13f35a49c406a"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000051.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000051.json.gz",
+      "bytes": 741179,
+      "sha256": "6e1148bd8bb4566a6599a2ca50f3f3a955027d943ce2c1de4195823ffaad84f4"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000052.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000052.json.gz",
+      "bytes": 747153,
+      "sha256": "7ab6ae23c36ea6c9fd7479048c7da79187ad5a1e0579324508c0bc701ca839ea"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000053.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000053.json.gz",
+      "bytes": 743647,
+      "sha256": "ab6e2c2c4706750bca106aca9d8d11062367e9c6728d324c2ffc2939131112cd"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000054.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000054.json.gz",
+      "bytes": 742997,
+      "sha256": "14fa0d9ffdf6d2ed47373a7455958cb5160eb13c379f345d3383f2d618cf249f"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000055.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000055.json.gz",
+      "bytes": 744248,
+      "sha256": "9e0578e35aec0428633098c5070dfa0ffc99977108891c4c3b6994af4973bb18"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000056.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000056.json.gz",
+      "bytes": 741250,
+      "sha256": "17c3811b6afe6e4470aa99bcadd9db42dc59756173211effeb2a0151f027d1f4"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000057.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000057.json.gz",
+      "bytes": 740487,
+      "sha256": "4dd87456ca7b0fcfd0378ab54437f917d96cf5fb7caabb8a7c28a71789fc896c"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000058.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000058.json.gz",
+      "bytes": 744433,
+      "sha256": "29dffaa52ac9051c9444e858b0e26c85dbf4161fe04864cf55133a2602397dca"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000059.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000059.json.gz",
+      "bytes": 742570,
+      "sha256": "07550917ba54c6c314edf07939f2f9814f9f07bd5e073bc338310f01c2f1589e"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000060.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000060.json.gz",
+      "bytes": 740499,
+      "sha256": "1bccdb6db8fe223058a78cb4e7471e2a994f4022a3aeb4bec9bf3f35891e8114"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000061.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\source-quality\\catalog\\summary_shards\\summary_000061.json.gz",
+      "bytes": 739115,
+      "sha256": "bc2f9386a000c827b41ff9802002301e28af96f9c933339cc98066f69d60a7b3"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000062.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000062.json.gz",
+      "bytes": 736645,
+      "sha256": "d8a0ef6c77853d9c16ffbd7b31abee12c489a61ee91b4e825c4234f74a0aec74"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000063.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000063.json.gz",
+      "bytes": 737688,
+      "sha256": "666bf2045575a4b6ec54ae7fbfe37019e4aa314e353eef5a907d7bb3f2bbb456"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000064.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000064.json.gz",
+      "bytes": 738672,
+      "sha256": "2e8c35cac8156fd1c647ebe187ec5bdd68e751b7cce0956848a9348d72800da2"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000065.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000065.json.gz",
+      "bytes": 739159,
+      "sha256": "71da33ad5df43e8e65a98d7924ce76609a09692e812b9dc695975be1f97eb9eb"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000066.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000066.json.gz",
+      "bytes": 737012,
+      "sha256": "02268a49dcec5276f361e1aac3552b35ab7d7c774798c0819104563efd329032"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000067.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000067.json.gz",
+      "bytes": 736912,
+      "sha256": "38c2d1e7c87c263223d4be510c08e26a06d25ea055605b365ad5f24d50e04b05"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000068.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000068.json.gz",
+      "bytes": 735111,
+      "sha256": "dac0c32c6e1f4148bb68efa0f34a92b9c67ac9eaed900c5afa735956551c6f7d"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000069.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000069.json.gz",
+      "bytes": 734363,
+      "sha256": "c0df80b501f4d371a2c8a8986a9f999c93634640de022fcb5828b51dc9be632b"
+    },
+    {
+      "key": "releases/workspace-analysis-20261008/data/canonical_web/summary_shards/summary_000070.json.gz",
+      "source": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\summary_shards\\summary_000070.json.gz",
+      "bytes": 222113,
+      "sha256": "799e5f9d28c999bc72197069130254bc63d1e1c1667f4485207541fea827ed3a"
+    }
+  ],
+  "cases": [
+    {
+      "key": "all",
+      "selection": {
+        "abduction": "any",
+        "being": "any",
+        "beingTypes": []
+      },
+      "matchedReports": 702893,
+      "indexedReports": 16319,
+      "reportedAbductions": 3217,
+      "ambiguousAbductionMentions": 2139,
+      "beingReports": 12595,
+      "craftAssociatedReports": 6856,
+      "craftMatrixCellCount": 211,
+      "craftMatrixMembershipCount": 7750,
+      "beingTypeCounts": {
+        "grey": 996,
+        "nordic": 251,
+        "reptilian": 130,
+        "mantis_like": 23,
+        "insectoid": 32,
+        "human_like": 1216,
+        "humanoid": 2170,
+        "small_humanoid": 1395,
+        "tall_humanoid": 740,
+        "giant": 129,
+        "hairy": 1222,
+        "robotic": 131,
+        "luminous": 97,
+        "animal_like": 282,
+        "men_in_black": 200,
+        "apparition": 180,
+        "mixed": 118,
+        "other_described": 837,
+        "unspecified": 4076
+      }
+    },
+    {
+      "key": "reported_abductions",
+      "selection": {
+        "abduction": "reported",
+        "being": "any",
+        "beingTypes": []
+      },
+      "matchedReports": 3217,
+      "indexedReports": 3217,
+      "reportedAbductions": 3217,
+      "ambiguousAbductionMentions": 0,
+      "beingReports": 1573,
+      "craftAssociatedReports": 1243,
+      "craftMatrixCellCount": 138,
+      "craftMatrixMembershipCount": 1494,
+      "beingTypeCounts": {
+        "grey": 443,
+        "nordic": 72,
+        "reptilian": 18,
+        "mantis_like": 10,
+        "insectoid": 12,
+        "human_like": 206,
+        "humanoid": 259,
+        "small_humanoid": 169,
+        "tall_humanoid": 155,
+        "giant": 20,
+        "hairy": 11,
+        "robotic": 24,
+        "luminous": 9,
+        "animal_like": 4,
+        "men_in_black": 8,
+        "apparition": 6,
+        "mixed": 63,
+        "other_described": 98,
+        "unspecified": 282
+      }
+    },
+    {
+      "key": "reported_beings",
+      "selection": {
+        "abduction": "any",
+        "being": "reported",
+        "beingTypes": []
+      },
+      "matchedReports": 12595,
+      "indexedReports": 12595,
+      "reportedAbductions": 1573,
+      "ambiguousAbductionMentions": 59,
+      "beingReports": 12595,
+      "craftAssociatedReports": 6856,
+      "craftMatrixCellCount": 211,
+      "craftMatrixMembershipCount": 7750,
+      "beingTypeCounts": {
+        "grey": 996,
+        "nordic": 251,
+        "reptilian": 130,
+        "mantis_like": 23,
+        "insectoid": 32,
+        "human_like": 1216,
+        "humanoid": 2170,
+        "small_humanoid": 1395,
+        "tall_humanoid": 740,
+        "giant": 129,
+        "hairy": 1222,
+        "robotic": 131,
+        "luminous": 97,
+        "animal_like": 282,
+        "men_in_black": 200,
+        "apparition": 180,
+        "mixed": 118,
+        "other_described": 837,
+        "unspecified": 4076
+      }
+    },
+    {
+      "key": "grey",
+      "selection": {
+        "abduction": "any",
+        "being": "any",
+        "beingTypes": [
+          "grey"
+        ]
+      },
+      "matchedReports": 996,
+      "indexedReports": 996,
+      "reportedAbductions": 443,
+      "ambiguousAbductionMentions": 10,
+      "beingReports": 996,
+      "craftAssociatedReports": 599,
+      "craftMatrixCellCount": 50,
+      "craftMatrixMembershipCount": 752,
+      "beingTypeCounts": {
+        "grey": 996,
+        "nordic": 2,
+        "reptilian": 0,
+        "mantis_like": 1,
+        "insectoid": 1,
+        "human_like": 7,
+        "humanoid": 149,
+        "small_humanoid": 50,
+        "tall_humanoid": 23,
+        "giant": 0,
+        "hairy": 5,
+        "robotic": 1,
+        "luminous": 4,
+        "animal_like": 2,
+        "men_in_black": 2,
+        "apparition": 1,
+        "mixed": 2,
+        "other_described": 1,
+        "unspecified": 0
+      }
+    },
+    {
+      "key": "reported_abductions_and_grey",
+      "selection": {
+        "abduction": "reported",
+        "being": "any",
+        "beingTypes": [
+          "grey"
+        ]
+      },
+      "matchedReports": 443,
+      "indexedReports": 443,
+      "reportedAbductions": 443,
+      "ambiguousAbductionMentions": 0,
+      "beingReports": 443,
+      "craftAssociatedReports": 345,
+      "craftMatrixCellCount": 43,
+      "craftMatrixMembershipCount": 433,
+      "beingTypeCounts": {
+        "grey": 443,
+        "nordic": 2,
+        "reptilian": 0,
+        "mantis_like": 0,
+        "insectoid": 1,
+        "human_like": 5,
+        "humanoid": 60,
+        "small_humanoid": 20,
+        "tall_humanoid": 13,
+        "giant": 0,
+        "hairy": 1,
+        "robotic": 1,
+        "luminous": 2,
+        "animal_like": 0,
+        "men_in_black": 1,
+        "apparition": 0,
+        "mixed": 2,
+        "other_described": 1,
+        "unspecified": 0
+      }
+    }
+  ],
+  "noCraftRegression": {
+    "eventId": "3125527168511206",
+    "source": "ufocat",
+    "beingTypes": [
+      "grey"
+    ],
+    "craftAssociation": "none_reported",
+    "matrixContribution": 0
+  },
+  "limitations": [
+    "This validates counts and integration, not the truth of reported encounters or biological types.",
+    "Source-event identity and narrative classification are pinned and reviewed by the source builder; summary joins verify event ID, collection, chunk and detail index.",
+    "Reports remain the counting unit; source collection overlap does not establish independent incidents."
+  ],
+  "storage": {
+    "corpusCopiesCreated": 0,
+    "databasesCreated": 0,
+    "staticBuildsCreated": 0,
+    "artifactOver100MiBCreated": 0,
+    "receiptRetention": "Retain as the bounded current encounter runtime QA receipt; summary shards and sparse source evidence remain canonical in their original locations."
+  }
+}

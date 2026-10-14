@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const evidence = require("../encounter_evidence.js");
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const BASE_URL = "http://127.0.0.1:8168/";
-const VERSION = "2026-10-13-encounters-v1";
+const VERSION = "2026-10-13-encounter-atlas-v2";
 const MAX_RESPONSE_BYTES = 24 * 1024 * 1024;
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const statuses = [];
@@ -108,11 +108,11 @@ const controlIds = ["encounter-filter-panel", "encounter-abduction-filter", "enc
   "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-coverage-chart", "analysis-encounter-source-chart"];
 idsInHtml(html, controlIds);
 idsInHtml(html, ["map-legend-panel", "map-control-cluster", "map-control-section-sightings", "map-control-section-traces"]);
-const changedHtmlAssets = ["app.js", "analysis_view.js", "encounter_evidence.js", "styles.css",
-  "ui/accepted-workspace/analysis-navigation.js", "ui/accepted-workspace/analysis-view-groups.js"];
+const changedHtmlAssets = ["app.js", "analysis_view.js", "analysis_comparisons_view.js", "encounter_evidence.js", "encounter_analysis.css"];
 for (const path of changedHtmlAssets) assert.ok(html.includes(path + "?v=" + VERSION), "Changed runtime has a stale served cache token: " + path);
 assert.ok(html.indexOf("encounter_evidence.js?") < html.indexOf("app.js?"), "Encounter module must load before the app");
-const resourcePaths = [...changedHtmlAssets, "catalog_filter_worker.js", "analysis_stats.js", "trace_neighborhood.js"];
+const resourcePaths = [...changedHtmlAssets, "catalog_filter_worker.js", "analysis_stats.js", "analysis_encounter_context.js", "trace_neighborhood.js", "styles.css",
+  "ui/accepted-workspace/analysis-navigation.js", "ui/accepted-workspace/analysis-view-groups.js"];
 const resources = await Promise.all(resourcePaths.map((path) => getLocal(path + "?v=" + VERSION)));
 const workerText = resources[resourcePaths.indexOf("catalog_filter_worker.js")].bytes.toString("utf8");
 assert.ok(workerText.includes('ANALYSIS_RUNTIME_CACHE_KEY = "' + VERSION + '"'), "Worker import cache token must match this encounter release");
@@ -138,7 +138,7 @@ const receipt = {
   limitation: "HTTP delivery and source-contract checks do not confirm interactive browser behavior or visual layout.",
   newFilesOver100MiB: [], canonicalCorpusCopied: false,
 };
-const output = new URL("../docs/qa/encounters-20261013/delivery.json", import.meta.url);
+const output = new URL("../docs/qa/encounter-atlas-20261013/delivery.json", import.meta.url);
 await fs.mkdir(new URL(".", output), { recursive: true });
 await fs.writeFile(output, JSON.stringify(receipt, null, 2) + "\n", "utf8");
 console.log(JSON.stringify({ status: "passed", rowCount: index.rowCount, catalogCount: index.catalogCount,

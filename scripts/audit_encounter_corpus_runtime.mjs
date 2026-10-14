@@ -17,6 +17,7 @@ const argument = (flag, fallback) => args.includes(flag) ? args[args.indexOf(fla
 const evidenceRoot = path.resolve(argument("--evidence-root", "C:/Users/jarod/Desktop/UFO Timeline map tool/data/research/encounters-20261013/validated/reviewed"));
 const planPath = path.resolve(argument("--delivery-plan", path.join(root, "releases/workspace-analysis-20261008/delivery_plan.json")));
 const outputPath = path.resolve(argument("--output", path.join(root, "docs/qa/encounters-20261013/corpus-runtime.json")));
+const chronologyRoot = args.includes("--chronology-root") ? path.resolve(argument("--chronology-root", "")) : null;
 const sha256 = (bytes) => crypto.createHash("sha256").update(bytes).digest("hex");
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const filePin = (file) => { const bytes = fs.readFileSync(file); return { path: file, bytes: bytes.length, sha256: sha256(bytes) }; };
@@ -39,6 +40,20 @@ const payload = JSON.parse(decoded.toString("utf8"));
 const api = require(path.join(root, "encounter_evidence.js"));
 const index = api.createIndex(payload);
 assert.equal(index.catalogCount, 702893);
+let chronologyIndex = null;
+let chronologyPins = null;
+if (chronologyRoot) {
+  const chronologyManifestPath = path.join(chronologyRoot, "manifest.json");
+  const chronologyManifest = readJson(chronologyManifestPath);
+  const chronologyPath = path.join(chronologyRoot, chronologyManifest.file);
+  const chronologyGzip = fs.readFileSync(chronologyPath), chronologyDecoded = zlib.gunzipSync(chronologyGzip);
+  assert.equal(sha256(chronologyGzip), chronologyManifest.gzipSha256);
+  assert.equal(sha256(chronologyDecoded), chronologyManifest.decodedSha256);
+  const chronologyApi = require(path.join(root, "trace_chronology.js"));
+  chronologyIndex = chronologyApi.createEvidenceIndex(JSON.parse(chronologyDecoded.toString("utf8")));
+  assert.equal(chronologyIndex.snapshot().status, "ready");
+  chronologyPins = { manifest: filePin(chronologyManifestPath), gzip: filePin(chronologyPath), decodedSha256: sha256(chronologyDecoded), snapshot: chronologyIndex.snapshot() };
+}
 const records = new Map(payload.rows.map((row) => [row.eventId, row]));
 const sparseInputs = [];
 const sourceCounts = Object.create(null);
@@ -46,6 +61,8 @@ const matchedSparseIds = new Set();
 const joins = { eventId: 0, source: 0, chunk: 0, detailIndex: 0, mismatches: 0, missing: 0 };
 let rowsRead = 0;
 let dateOrdinalRows = 0;
+let dateExcludedReports = 0;
+let unindexedMetadataNullRows = 0;
 
 const appCode = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const functionCode = (name) => {
@@ -80,7 +97,7 @@ const send = (message) => {
   return messages[0];
 };
 const inputPins = shards.map((shard) => ({ key: shard.key, source: shard.source, bytes: shard.bytes, sha256: shard.sha256 }));
-const runtimePins = ["app.js", "encounter_evidence.js", "trace_neighborhood.js", "catalog_filter_worker.js", "analysis_stats.js"].map((name) => filePin(path.join(root, name)));
+const runtimePins = ["app.js", "encounter_evidence.js", "trace_neighborhood.js", "trace_chronology.js", "catalog_filter_worker.js", "analysis_stats.js"].map((name) => filePin(path.join(root, name)));
 for (let position = 0; position < shards.length; position += 1) {
   const shard = shards[position];
   const bytes = fs.readFileSync(shard.source);
@@ -99,8 +116,23 @@ for (let position = 0; position < shards.length; position += 1) {
       Object.keys(checks).forEach((field) => { if (checks[field]) joins[field] += 1; else joins.mismatches += 1; });
     }
     const event = api.decorate({ ...summary, sort_ordinal: serializerContext.isoToOrdinal(summary.sort_date_iso) }, index);
+    event.encounterOccurrenceDateExcluded = chronologyIndex ? Boolean(chronologyIndex.exclusion(summary.event_id)) : null;
+    if (event.encounterOccurrenceDateExcluded) dateExcludedReports += 1;
     assert.equal(event.encounterIdentityMismatch, false, "Encounter source identity mismatch must not enter runtime counts");
     const value = serializerContext.serializeCatalogFacetWorkerRow(event);
+    assert.equal(value.encounterOccurrenceDateExcluded, event.encounterOccurrenceDateExcluded);
+    assert.ok(value.encounterHeightFeet == null || typeof value.encounterHeightFeet === "number" && Number.isFinite(value.encounterHeightFeet) && value.encounterHeightFeet > 0);
+    assert.ok(value.encounterUniform == null || typeof value.encounterUniform === "string");
+    if (sourceRow) {
+      const record = index.get(sourceRow.eventId);
+      assert.equal(value.encounterHeightFeet, record.heightFeet ?? null);
+      const uniform = record.uniform == null ? null : typeof record.uniform === "boolean" ? (record.uniform ? "Reported" : "Not reported in source field") : record.uniform;
+      assert.equal(value.encounterUniform, uniform);
+    } else {
+      assert.equal(value.encounterHeightFeet, null);
+      assert.equal(value.encounterUniform, null);
+      unindexedMetadataNullRows += 1;
+    }
     if (value.sortOrdinal != null) dateOrdinalRows += 1;
     if (sourceRow) sparseInputs.push(plain(value));
     return value;
@@ -135,6 +167,7 @@ const matrixFor = (rows) => {
   return values;
 };
 const receiptCases = [];
+const atlasReceipts = [];
 for (const setting of caseSettings) {
   const expected = setting.key === "all" ? sparseInputs : sparseInputs.filter((row) => api.matches(row, setting.encounters));
   const response = send({ type: "computeAnalysis", requestId: setting.key, fullTimeRange: true, timeRangeMode: "full", baselineMode: "full_catalog",
@@ -157,6 +190,46 @@ for (const setting of caseSettings) {
   const actualMatrix = new Map(counts.craftMatrix.map((cell) => [cell.row + "\u0000" + cell.column, cell.count]));
   assert.deepEqual([...actualMatrix].sort(), [...expectedMatrix].sort());
   assert.ok(counts.craftMatrix.every((cell) => cell.inferenceEligible === false));
+  const atlas = counts.comparisonAtlas;
+  assert.equal(atlas.status, "ready_descriptive");
+  assert.equal(atlas.inferentialTestsRun, 0);
+  const coreAxes = atlas.axes.filter((axis) => axis.status !== "external_comparison");
+  assert.equal(coreAxes.length, 33);
+  const sourceAtlas = coreAxes.find((axis) => axis.key === "source");
+  const expectedSourceMatrix = new Map();
+  expected.forEach((row) => api.beingTypes(row.encounterBeingMask).forEach((key) => {
+    const cellKey = key + "\u0000" + row.source;
+    expectedSourceMatrix.set(cellKey, (expectedSourceMatrix.get(cellKey) || 0) + 1);
+  }));
+  assert.deepEqual(plain(sourceAtlas.cells.map((cell) => [cell.row + "\u0000" + cell.column, cell.count]).sort()), [...expectedSourceMatrix].sort());
+  coreAxes.forEach((axis) => {
+    const coverage = axis.coverage;
+    assert.equal(coverage.beingReports, beings);
+    assert.equal(coverage.cohortReports, result.summary.activeCount);
+    assert.equal(coverage.supportedReports + coverage.unknownReports + coverage.notLoadedReports, coverage.eligibleReports);
+    assert.equal(coverage.eligibleReports + coverage.excludedReports, beings);
+    assert.ok(axis.rows.every((row) => typeof row.key === "string" && typeof row.label === "string"));
+    assert.ok(axis.columns.every((column) => typeof column.key === "string" && typeof column.label === "string"));
+    assert.ok(axis.cells.every((cell) => cell.reportDenominator === coverage.eligibleReports && cell.share === cell.count / coverage.eligibleReports && cell.inferenceEligible === false));
+  });
+  const heightBeing = expected.filter((row) => row.encounterBeingMask && typeof row.encounterHeightFeet === "number" && row.encounterHeightFeet > 0).length;
+  const uniformBeing = expected.filter((row) => row.encounterBeingMask && typeof row.encounterUniform === "string"
+    && row.encounterUniform.trim() && !["unknown", "unavailable", "unresolved", "unparsed", "none", "null", "n/a", "not_provided"].includes(row.encounterUniform.trim().toLowerCase())).length;
+  assert.equal(coreAxes.find((axis) => axis.key === "height").coverage.supportedReports, heightBeing);
+  assert.equal(coreAxes.find((axis) => axis.key === "uniform").coverage.supportedReports, uniformBeing);
+  if (chronologyIndex) {
+    const holdMap = new Map();
+    expected.filter((row) => row.encounterOccurrenceDateExcluded === true).forEach((row) => api.beingTypes(row.encounterBeingMask).forEach((key) => {
+      holdMap.set(key, (holdMap.get(key) || 0) + 1);
+    }));
+    const dateAxis = coreAxes.find((axis) => axis.key === "occurrence_date_status");
+    assert.deepEqual(plain(dateAxis.cells.filter((cell) => cell.column === "source_date_withheld").map((cell) => [cell.row, cell.count]).sort()), [...holdMap].sort());
+    const sourceHeldBodyRows = expected.filter((row) => row.encounterBeingMask && row.encounterOccurrenceDateExcluded === true);
+    for (const key of ["decade", "month", "weekday"]) {
+      const axis = coreAxes.find((entry) => entry.key === key);
+      assert.ok(axis.coverage.unknownReports >= sourceHeldBodyRows.length, "Source date holds must remain unknown in " + key);
+    }
+  }
   const beingCounts = Object.fromEntries(api.TAXONOMY.map((type) => [type.key, expected.filter((row) => Boolean(row.encounterBeingMask & (1 << type.bit))).length]));
   assert.deepEqual(Object.fromEntries(counts.beingProfile.map((item) => [item.key, item.count])), beingCounts);
   if (setting.key === "all") {
@@ -169,6 +242,13 @@ for (const setting of caseSettings) {
   receiptCases.push({ key: setting.key, selection: setting.encounters, matchedReports: result.summary.activeCount, indexedReports: counts.evidenceRows,
     reportedAbductions: reported, ambiguousAbductionMentions: ambiguous, beingReports: beings, craftAssociatedReports: counts.craftAssociatedRows,
     craftMatrixCellCount: actualMatrix.size, craftMatrixMembershipCount: [...actualMatrix.values()].reduce((sum, count) => sum + count, 0), beingTypeCounts: beingCounts });
+  atlasReceipts.push({ key: setting.key, coreAxes: coreAxes.length, heightBeingReports: heightBeing, uniformBeingReports: uniformBeing,
+    sourceDateHeldIndexedReports: expected.filter((row) => row.encounterOccurrenceDateExcluded === true).length,
+    sourceDateHeldBeingReports: expected.filter((row) => row.encounterBeingMask && row.encounterOccurrenceDateExcluded === true).length,
+    undatedAbductionReports: counts.undatedAbductionRows, undatedBeingReports: counts.undatedBeingRows,
+    coveragePartitionsPassed: true,
+    axes: setting.key === "all" ? coreAxes.map((axis) => ({ key: axis.key, label: axis.label, status: axis.status, rowCount: axis.rows.length, columnCount: axis.columns.length,
+      cellCount: axis.cells.length, coverage: plain(axis.coverage) })) : [] });
 }
 const noCraftId = "3125527168511206";
 const noCraft = sparseInputs.find((row) => String(row.eventId) === noCraftId);
@@ -181,6 +261,9 @@ const receipt = { schemaId: "ufo-encounter-corpus-runtime-audit-v1", generatedAt
   elapsedSeconds: Math.round((performance.now() - started) / 1000), method: "Each of 71 frozen gzip summary shards was verified and loaded in place through the actual app serializer and current catalog filter worker. Only sparse encounter reference rows were retained for independent exact-count and matrix comparisons.",
   ordinalPolicy: "App inputs are Unix-day ordinals (1970-01-01=0); the worker alone converts to the statistics Gregorian-day epoch.",
   catalogReports: rowsRead, summaryShards: shards.length, datedOrdinalReports: dateOrdinalRows, sourceCounts, sourceJoins: joins,
+  optionalMetadata: { heightIndexedReports: sparseInputs.filter((row) => row.encounterHeightFeet != null).length,
+    uniformIndexedReports: sparseInputs.filter((row) => row.encounterUniform != null).length, unindexedMetadataNullRows, sourceDateExcludedReports: dateExcludedReports },
+  chronology: chronologyPins, comparisonAtlas: atlasReceipts,
   evidence: { releaseId: manifest.releaseId, rows: index.rowCount, manifest: filePin(manifestPath), gzip: filePin(evidencePath), decodedSha256: sha256(decoded) },
   runtimePins, deliveryPlan: filePin(planPath), summaryPins: inputPins, cases: receiptCases,
   noCraftRegression: { eventId: noCraftId, source: noCraft.source, beingTypes: api.beingTypes(noCraft.encounterBeingMask), craftAssociation: "none_reported", matrixContribution: 0 },

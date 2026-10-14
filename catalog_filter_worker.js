@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounters-v1";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-atlas-v2";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -262,6 +262,14 @@
       hashes: analysisComparisonArtifacts.hashes });
   }
 
+  function ensureEncounterComparisons() {
+    ensureEncounterApi();
+    if (!self.UfoAnalysisEncounterContext && typeof importScripts === "function") {
+      importScripts("./analysis_encounter_context.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
+    }
+    if (!self.UfoAnalysisEncounterContext) throw new Error("Encounter context comparisons are unavailable.");
+  }
+
   function buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues) {
     const range = message.fullTimeRange || message.timeRangeMode === "full" ? null : {
       start: Number(message.timeRangeStartOrdinal), end: Number(message.timeRangeEndOrdinal) };
@@ -284,6 +292,18 @@
       input.type = values.type; input.visualTypeGroup = values.visualTypeGroup;
       input.coordinateSource = values.coordinateSource; input.precision = values.precision;
       input.mapped = values.mapped; input.duplicateLineage = values.duplicateLineage;
+      input.encounterEvidenceReady = values.encounterEvidenceReady;
+      input.encounterAbductionCode = values.encounterAbductionCode;
+      input.encounterBeingMask = values.encounterBeingMask;
+      input.encounterCraftAssociationCode = values.encounterCraftAssociationCode;
+      input.encounterHeightFeet = values.encounterHeightFeet;
+      input.encounterUniform = values.encounterUniform;
+      input.encounterOccurrenceDateExcluded = values.encounterOccurrenceDateExcluded;
+      input.sourceDatePrecision = values.datePrecision;
+      if (values.encounterOccurrenceDateExcluded === true) {
+        input.datePrecision = "excluded_source_occurrence_date";
+        input.dateRole = "source_date_withheld";
+      }
       // Retain non-date matched rows for independently shifted control windows;
       // each estimator applies the active date range to its observed cohort.
       callback(input);
@@ -318,7 +338,8 @@
     const settings = message.comparisonOptions || {};
     const nuclear = analysisComparisonArtifacts.nuclear;
     const broader = analysisComparisonArtifacts.facilities || {};
-    const shared = { forEachRow, crops, animals, range, ordinalEpoch: "unix_day",
+    const shared = { forEachRow, crops, animals, range, ordinalEpoch: "unix_day", encounterEvidenceReady,
+      cropCirclesEnabled: layers.cropCirclesEnabled, animalMutilationsEnabled: layers.animalMutilationsEnabled,
       startOrdinal: range && range.start, endOrdinal: range && range.end,
       artifactHashes: analysisComparisonArtifacts.hashes };
     return { shared, settings, nuclear, broader, cohortKey: comparisonCohortKey(message) };
@@ -331,11 +352,11 @@
       zodiacSystem: settings.zodiacSystem || "sidereal", ayanamsaId: settings.ayanamsaId || "lahiri",
       samplingMode: settings.samplingMode || "adaptive",
     };
-    if (component === "planetaryHeatmaps") return {
+    if (component === "planetaryHeatmaps" || component === "encounterPlanetary") return {
       aspectOrbDegrees: settings.aspectOrbDegrees == null ? 3 : settings.aspectOrbDegrees,
       zodiacSystem: settings.zodiacSystem || "sidereal", ayanamsaId: settings.ayanamsaId || "lahiri",
     };
-    if (component === "nuclear") return { windowDays: settings.windowDays == null ? 30 : settings.windowDays,
+    if (component === "nuclear" || component === "encounters") return { windowDays: settings.windowDays == null ? 30 : settings.windowDays,
       testRoles: settings.testRoles, maxDistanceKm: settings.maxDistanceKm, distanceBandsKm: settings.distanceBandsKm };
     return {};
   }
@@ -350,7 +371,16 @@
     }
     const shared = context.shared, nuclear = context.nuclear, broader = context.broader;
     let model;
-    if (component === "planetary" || component === "planetaryHeatmaps") {
+    if (component === "encounters" || component === "encounterPlanetary") {
+      if (!encounterEvidenceReady) model = { status: "unavailable_encounter_evidence" };
+      else {
+        ensureEncounterComparisons();
+        const options = Object.assign({}, shared, { nuclear, nuclearSettings: settings, planetarySettings: settings,
+          broaderFacilities: Array.isArray(broader) ? broader : broader.rows || broader.facilities || [],
+          facilityCodebook: broader.codes || broader.codebook || analysisComparisonArtifacts.manifest.facilityCodebook || nuclear.facilityCodebook || {} });
+        model = self.UfoAnalysisEncounterContext[component === "encounters" ? "computeEncounterContext" : "computeEncounterPlanetary"](options);
+      }
+    } else if (component === "planetary" || component === "planetaryHeatmaps") {
       let preparedCohort = analysisComparisonCohortCache.get(context.cohortKey);
       if (!preparedCohort && typeof self.UfoAnalysisPlanetary.preparePlanetaryCohort === "function") {
         preparedCohort = self.UfoAnalysisPlanetary.preparePlanetaryCohort(shared);
@@ -387,6 +417,9 @@
       planetaryHeatmaps: cachedPlanetaryHeatmaps(message),
       nuclear: computeComparisonComponent("nuclear", context).model,
       crossContext: computeComparisonComponent("crossContext", context).model,
+      encounters: computeComparisonComponent("encounters", context).model,
+      encounterPlanetary: analysisComparisonCache.get(context.cohortKey + "|encounterPlanetary|" +
+        JSON.stringify(comparisonComponentSettings("encounterPlanetary", message.comparisonOptions || {}))),
     };
   }
 
@@ -473,6 +506,9 @@
       encounterAbductionCodes: new Uint8Array(length),
       encounterBeingMasks: new Uint32Array(length),
       encounterCraftAssociationCodes: new Uint8Array(length),
+      encounterHeightsFeet: new Float64Array(length),
+      encounterUniforms: new Map(),
+      encounterDateExclusionStates: new Uint8Array(length),
       eventIds: new Float64Array(length),
       eventIdStringCodes: new Uint32Array(length),
       sourceCodes: new Uint16Array(length),
@@ -555,6 +591,9 @@
       chunk.encounterAbductionCodes[index] = Number(row.encounterAbductionCode) || 0;
       chunk.encounterBeingMasks[index] = Number(row.encounterBeingMask) || 0;
       chunk.encounterCraftAssociationCodes[index] = Number(row.encounterCraftAssociationCode) || 0;
+      chunk.encounterHeightsFeet[index] = typeof row.encounterHeightFeet === "number" && Number.isFinite(row.encounterHeightFeet) && row.encounterHeightFeet > 0 ? row.encounterHeightFeet : Number.NaN;
+      if (row.encounterUniform != null && String(row.encounterUniform).trim()) chunk.encounterUniforms.set(index, String(row.encounterUniform));
+      chunk.encounterDateExclusionStates[index] = typeof row.encounterOccurrenceDateExcluded === "boolean" ? (row.encounterOccurrenceDateExcluded ? 2 : 1) : 0;
       const rawEventId = row.eventId;
       if (typeof rawEventId === "number" && Number.isSafeInteger(rawEventId)) {
         chunk.eventIds[index] = rawEventId;
@@ -624,6 +663,8 @@
     typedStorageBytes +=
       chunk.encounterReadyStates.byteLength + chunk.encounterAbductionCodes.byteLength +
       chunk.encounterBeingMasks.byteLength + chunk.encounterCraftAssociationCodes.byteLength +
+      chunk.encounterHeightsFeet.byteLength +
+      chunk.encounterDateExclusionStates.byteLength +
       chunk.eventIds.byteLength +
       chunk.eventIdStringCodes.byteLength +
       chunk.sourceCodes.byteLength +
@@ -822,6 +863,9 @@
     values.encounterAbductionCode = chunk.encounterAbductionCodes[index];
     values.encounterBeingMask = chunk.encounterBeingMasks[index];
     values.encounterCraftAssociationCode = chunk.encounterCraftAssociationCodes[index];
+    values.encounterHeightFeet = Number.isFinite(chunk.encounterHeightsFeet[index]) ? chunk.encounterHeightsFeet[index] : null;
+    values.encounterUniform = chunk.encounterUniforms.get(index) || null;
+    values.encounterOccurrenceDateExcluded = chunk.encounterDateExclusionStates[index] === 0 ? null : chunk.encounterDateExclusionStates[index] === 2;
     values.eventId = eventIdAt(chunk, index);
     values.source = dictionaryValue(dictionaries.source, chunk.sourceCodes[index]);
     values.type = dictionaryValue(dictionaries.type, chunk.typeCodes[index]);
@@ -4830,7 +4874,7 @@
       if (message.type === "computeAnalysisComparison") {
         if (!analysisComparisonArtifacts.loaded) throw new Error("Comparison evidence is not ready.");
         const component = String(message.component || "");
-        if (component !== "planetary" && component !== "nuclear" && component !== "planetaryHeatmaps") throw new Error("Unsupported comparison update: " + component);
+        if (!["planetary", "nuclear", "planetaryHeatmaps", "encounters", "encounterPlanetary"].includes(component)) throw new Error("Unsupported comparison update: " + component);
         ensureAnalysisComparisons();
         const startedAt = Date.now();
         const filters = normalizedFilters(message);

@@ -1,0 +1,15 @@
+.encounter-comparison-disclosure { margin-top: 1rem; padding: .8rem; border: 1px solid var(--border, #334650); border-radius: .75rem; }
+.encounter-comparison-disclosure > summary { cursor: pointer; font-weight: 650; }
+.encounter-comparison-disclosure > .analysis-card-question { margin: .7rem 0; }
+.encounter-atlas-toolbar { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: .75rem; margin: .7rem 0 1rem; }
+.encounter-atlas-picker { display: flex; flex-direction: column; gap: .4rem; flex: 1 1 16rem; max-width: 32rem; }
+.encounter-atlas-picker select { width: 100%; min-height: 42px; }
+.encounter-atlas-exports { display: flex; gap: .5rem; flex-wrap: wrap; }
+.encounter-atlas-coverage { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .6rem; margin: .8rem 0; }
+.encounter-atlas-coverage > div { padding: .7rem; border-radius: .6rem; background: var(--panel-soft, rgba(91, 141, 157, .1)); border: 1px solid var(--border, #334650); }
+.encounter-atlas-coverage dt { font-size: .78rem; opacity: .84; }
+.encounter-atlas-coverage dd { margin: .25rem 0 0; font-size: 1.08rem; font-weight: 650; }
+.encounter-atlas-policy { max-width: 78ch; font-size: .83rem; line-height: 1.5; }
+.encounter-atlas-matrix { min-width: 0; }
+.encounter-atlas-matrix .analysis-heatmap-scroll { max-height: 42rem; overflow: auto; }
+@media (max-width: 620px) { .encounter-atlas-toolbar { align-items: stretch; } .encounter-atlas-picker { max-width: none; } .encounter-atlas-exports button { flex: 1; } }

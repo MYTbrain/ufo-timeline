@@ -1,0 +1,202 @@
+{
+  "schemaId": "ufo-encounter-local-delivery-check-v1",
+  "checkedAtUtc": "2026-10-14T01:23:22.298Z",
+  "previewUrl": "http://127.0.0.1:8168/whole-site.html",
+  "releaseId": "encounters-20261013-v1",
+  "catalogCount": 702893,
+  "rowCount": 16319,
+  "manifestHttpSha256": "505b7752a872ce7e1f8390fc8f52b293d3d83b32701bb056f9d85a44107a4c5d",
+  "gzipSha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+  "observedGzipSha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+  "decodedSha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8",
+  "gzipBytes": 1875418,
+  "decodedBytes": 11158461,
+  "artifactHashPinsValidated": true,
+  "runtimeDecoderValidated": true,
+  "fullSparseIndexValidated": true,
+  "knownNoCraftRowsChecked": 4080,
+  "knownNoCraftSampleEventId": "1894617852306",
+  "beingReportCount": 12595,
+  "abductionReportedCount": 3217,
+  "ambiguousAbductionCount": 2139,
+  "taxonomyKeys": [
+    "grey",
+    "nordic",
+    "reptilian",
+    "mantis_like",
+    "insectoid",
+    "human_like",
+    "humanoid",
+    "small_humanoid",
+    "tall_humanoid",
+    "giant",
+    "hairy",
+    "robotic",
+    "luminous",
+    "animal_like",
+    "men_in_black",
+    "apparition",
+    "mixed",
+    "other_described",
+    "unspecified"
+  ],
+  "staticChecks": {
+    "uniqueControlAndChartIds": [
+      "encounter-filter-panel",
+      "encounter-abduction-filter",
+      "encounter-being-filter",
+      "encounter-being-types",
+      "clear-encounter-filters",
+      "encounter-include-all-types",
+      "encounter-filter-status",
+      "analysis-section-tab-encounters",
+      "analysis-section-encounters",
+      "analysis-abduction-profile-chart",
+      "analysis-being-profile-chart",
+      "analysis-being-craft-chart",
+      "analysis-abduction-craft-chart",
+      "analysis-encounter-time-chart",
+      "analysis-encounter-coverage-chart",
+      "analysis-encounter-source-chart"
+    ],
+    "preservedNativeLegend": true,
+    "preservedMapControls": true,
+    "changedRuntimeCacheTokens": "2026-10-13-encounter-atlas-v2",
+    "moduleBeforeApp": true
+  },
+  "resources": [
+    {
+      "path": "/data/app_config.json",
+      "status": 200,
+      "bytes": 5479,
+      "sha256": "cd6ed819b827d5dcb5bd2ebb5c2cca3b88accc14222091061fe9fb56dd9be4fb",
+      "contentType": "application/json; charset=utf-8",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/whole-site.html",
+      "status": 200,
+      "bytes": 157579,
+      "sha256": "7beca87c623b3572fa57e8af8f044a6999d30b1196d8b9c733321e610c62dfd1",
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/data/encounters/manifest.json",
+      "status": 200,
+      "bytes": 6382,
+      "sha256": "505b7752a872ce7e1f8390fc8f52b293d3d83b32701bb056f9d85a44107a4c5d",
+      "contentType": "application/json; charset=utf-8",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/data/encounters/evidence.json.gz",
+      "status": 200,
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+      "contentType": "application/json",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/encounter_evidence.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 19474,
+      "sha256": "68d011639d7c1b731451a1bafa1ab15a8bebedcb51371a202bab2366b7663f6f",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/encounter_analysis.css?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 1544,
+      "sha256": "c7e075c33f2f367769bb027f93267c58274a77b75f0c6d4755f3c59deb82b129",
+      "contentType": "text/css",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_encounter_context.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 16617,
+      "sha256": "ed25837c83c98021013cd1f108ef5f197546ea711691f283cd9d57044fe45467",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 14362,
+      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 5159,
+      "sha256": "84a3083010f81a4bd5cfaf62bf23d5818aea3c40ab48a0193cbb3c9cf8e3728b",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_comparisons_view.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 80250,
+      "sha256": "930538f9fac9035cd4bd29164ef53285564a344b27c60981ebc9560a533f1fcf",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/trace_neighborhood.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 61411,
+      "sha256": "64a99519a6ed9cdf2d2a871bcb8ebd5c215c5abd338b116006326e92b0600439",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_view.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 462869,
+      "sha256": "e8eb0cb19bd0d8806f9c655b02d1aa0ef1abefea5dd12bbc2ea3a08ed983b182",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/app.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 1385494,
+      "sha256": "ad0025ef0144e5322eaeb6a4eb6e6f9b777e10f5f572f38016b43cc03171c379",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/styles.css?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 277976,
+      "sha256": "8c58b637cf913f02ce5ffd372a74f54874a9d33aee249be90e72688d1d62e29d",
+      "contentType": "text/css",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/analysis_stats.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 365367,
+      "sha256": "fe320a72659861868866d351c87f18eb8c21b6cb67daeb916202823e8d2c2fd4",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    },
+    {
+      "path": "/catalog_filter_worker.js?v=2026-10-13-encounter-atlas-v2",
+      "status": 200,
+      "bytes": 260543,
+      "sha256": "3ce17245fe622808069b49235cc02d5565c0648848c47abfc3f92cc453921660",
+      "contentType": "text/javascript",
+      "contentEncoding": ""
+    }
+  ],
+  "browserValidation": "not_performed_by_this_check",
+  "visualValidation": "pending_browser_review",
+  "limitation": "HTTP delivery and source-contract checks do not confirm interactive browser behavior or visual layout.",
+  "newFilesOver100MiB": [],
+  "canonicalCorpusCopied": false
+}

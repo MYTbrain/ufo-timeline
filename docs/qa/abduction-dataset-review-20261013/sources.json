@@ -1,0 +1,185 @@
+{
+  "schemaId": "ufo-abduction-source-review-v1",
+  "reviewedDate": "2026-10-13",
+  "baselineCommit": "f52e0cd",
+  "reviewDocument": "docs/ABDUCTION_DATASET_REVIEW_20261013.md",
+  "sourceSnapshotMode": "primary_pages_read_online_no_binary_or_bulk_download",
+  "evidenceBoundary": "Public descriptions and selected examples; no private data, import, payment or contact; no global best-dataset claim.",
+  "sources": [
+    {
+      "id": "ufocat_2023",
+      "custodian": "CUFOS",
+      "url": "https://cufos.org/cufos-publications-databases/ufocat/",
+      "unit": "catalog_report_or_reference",
+      "rowAccess": "purchase_download",
+      "reuseState": "bulk_public_redistribution_not_established",
+      "role": "existing_bibliographic_backbone",
+      "supportingUrls": [
+        "https://cufos.org/PDFs/UFOCAT%20Codebook%202023.pdf"
+      ]
+    },
+    {
+      "id": "humcat",
+      "custodian": "CUFOS; historical compilers Bloecher and Webb",
+      "url": "https://cufos.org/resources/ufo-catalogues/",
+      "unit": "entity_case_card",
+      "rowAccess": "public_scanned_cards",
+      "reuseState": "MUFON_describes_uncopyrighted_exact_file_scope_to_confirm",
+      "role": "priority_case_enrichment",
+      "supportingUrls": [
+        "https://projectaquarius.mufon.com/private-research-collections-humcat-files/",
+        "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1961.pdf",
+        "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1973.pdf"
+      ]
+    },
+    {
+      "id": "rosales",
+      "custodian": "Albert Rosales author-hosted at IRAAP",
+      "url": "https://www.iraap.org/rosales/",
+      "unit": "compiled_encounter_narrative",
+      "rowAccess": "public_year_pages",
+      "reuseState": "host_all_rights_reserved_no_bulk_license_found",
+      "role": "priority_case_enrichment",
+      "supportingUrls": [
+        "https://www.iraap.org/rosales/1993.htm"
+      ]
+    },
+    {
+      "id": "urecat",
+      "custodian": "Patrick Gross",
+      "url": "https://ufologie.patrickgross.org/ce3/index.htm",
+      "unit": "compiled_case_with_source_comparison",
+      "rowAccess": "public_case_pages",
+      "reuseState": "bulk_reuse_not_established",
+      "role": "source_conflict_review",
+      "supportingUrls": [
+        "https://ufologie.patrickgross.org/ce3/1954-10-04-france-megritf.htm"
+      ]
+    },
+    {
+      "id": "nicap_entity",
+      "custodian": "NICAP",
+      "url": "https://www.nicap.org/cat7.htm",
+      "unit": "entity_case_reference",
+      "rowAccess": "index_discovered_full_fetch_failed",
+      "reuseState": "not_verified",
+      "role": "follow_up_bibliography",
+      "supportingUrls": [
+        "https://www.nicap.org/CATEGORIES/07-Entity_Cases/Cat7_ENTICAT.pdf"
+      ]
+    },
+    {
+      "id": "cufos_abduction_casefiles",
+      "custodian": "CUFOS/NICAP",
+      "url": "https://cufos.org/types-of-ufos/abductions/",
+      "unit": "selected_investigation_case",
+      "rowAccess": "public_selected_file_links",
+      "reuseState": "bulk_reuse_not_established",
+      "role": "investigation_and_recall_context"
+    },
+    {
+      "id": "mufon_ert",
+      "custodian": "MUFON",
+      "url": "https://mufon.com/experiencer-resource-team-ert/",
+      "unit": "confidential_intake_or_follow_up",
+      "rowAccess": "no_public_bulk_export_found",
+      "reuseState": "agreement_and_participant_privacy_required",
+      "role": "potential_specialist_partnership"
+    },
+    {
+      "id": "jacobs_icar",
+      "custodian": "David M. Jacobs",
+      "url": "https://www.davidmichaeljacobs.com/",
+      "unit": "interview_or_regression_session",
+      "rowAccess": "public_essays_no_case_export_found",
+      "reuseState": "reproduction_reserved",
+      "role": "specialist_source_leads"
+    },
+    {
+      "id": "hopkins_smithsonian",
+      "custodian": "Smithsonian Archives of American Art",
+      "url": "https://www.aaa.si.edu/collections/april-kingsley-and-budd-hopkins-papers-7799/subseries-2-4",
+      "unit": "archival_manuscript",
+      "rowAccess": "finding_aid_and_reproduction_requests",
+      "reuseState": "research_access_not_publication_permission",
+      "role": "targeted_documentary_research",
+      "supportingUrls": [
+        "https://www.si.edu/object/archives/components/sova-aaa-kingapri-ref363?destination=object%2Farchives%2Fcomponents%2Fsova-aaa-kingapri-ref150%3Fwidth%3D700%26height%3D425%26inline%3Dtrue"
+      ]
+    },
+    {
+      "id": "mack_peer",
+      "custodian": "John E. Mack Institute",
+      "url": "https://johnemackinstitute.org/category/projects/",
+      "unit": "participant_and_repeated_experiences",
+      "rowAccess": "selected_materials_no_event_export_found",
+      "reuseState": "private_interviews_not_licensed_by_public_webpage",
+      "role": "specialist_context"
+    },
+    {
+      "id": "nuforc",
+      "custodian": "National UFO Reporting Center",
+      "url": "https://nuforc.org/databank/",
+      "unit": "general_sighting_report",
+      "rowAccess": "public_browsing",
+      "reuseState": "written_license_needed_for_bulk_extraction_redistribution",
+      "role": "existing_corpus_general_report_source",
+      "supportingUrls": [
+        "https://nuforc.org/terms/"
+      ],
+      "termsUpdated": "2026-08-19",
+      "historicalProjectAgreementsReviewed": false
+    },
+    {
+      "id": "narcap",
+      "custodian": "NARCAP",
+      "url": "https://www.narcap.org/technical-reports",
+      "unit": "aviation_technical_report",
+      "rowAccess": "public_selected_reports",
+      "reuseState": "not_reviewed_for_bulk_import",
+      "role": "craft_context_comparator"
+    },
+    {
+      "id": "arda_bader_1990",
+      "custodian": "ARDA; Christopher D. Bader",
+      "url": "https://www.thearda.com/data-archive?fid=UFO1990",
+      "unit": "survey_respondent",
+      "rowAccess": "documented_multiformat_download",
+      "reuseState": "acknowledgement_responsible_use_terms_public_redistribution_not_established",
+      "role": "separate_survey_analysis",
+      "supportingUrls": [
+        "https://www.thearda.com/data-archive?fid=UFO1990&tab=2",
+        "https://www.thearda.com/data-archive?fid=UFO1990&tab=3"
+      ],
+      "doi": "10.17605/OSF.IO/JBZVX"
+    },
+    {
+      "id": "free_2018",
+      "custodian": "Study authors; Journal of Scientific Exploration",
+      "url": "https://journalofscientificexploration.org/index.php/jse/article/view/1282/801",
+      "unit": "survey_participant_item_phase",
+      "rowAccess": "public_aggregate_paper_no_event_microdata_found",
+      "reuseState": "row_level_access_not_established",
+      "role": "separate_experience_survey_comparison",
+      "doi": "10.31275/2018.1282"
+    },
+    {
+      "id": "marden_ert_2015",
+      "custodian": "Kathleen Marden",
+      "url": "https://kathleen-marden.com/mufon-s-ert-study-on-experiencers/",
+      "unit": "selected_survey_respondent",
+      "rowAccess": "public_results_no_event_microdata_found",
+      "reuseState": "author_copyright_and_private_data_boundary",
+      "role": "separate_experience_survey_comparison"
+    },
+    {
+      "id": "bullard_1987",
+      "custodian": "Original publisher Fund for UFO Research; bibliographic pointer at CUFOS",
+      "url": "https://cufos.org/PDFs/pdfs/UFOsandIntelligence.pdf",
+      "unit": "case_catalog_bibliographic_lead",
+      "rowAccess": "original_row_level_access_not_established",
+      "reuseState": "not_verified",
+      "role": "dedicated_abduction_follow_up_bibliography"
+    }
+  ]
+}

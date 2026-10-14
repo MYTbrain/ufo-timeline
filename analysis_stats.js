@@ -25,6 +25,49 @@
   const ENCOUNTER_ABDUCTION_LABELS = Object.freeze([
     "No indexed abduction evidence", "Abduction reported · source classification", "Abduction reported · narrative", "Abduction category or mention · unclear",
   ]);
+  const ENCOUNTER_ATLAS_AXES = Object.freeze([
+    ["abduction", "Abduction classifications", "Encounter profile", "Source categories and narrative reports remain separate; not indexed is not a negative observation."],
+    ["co_descriptions", "Being descriptions co-reported", "Encounter profile", "Labels may describe the same reported being. Co-description does not establish separate beings or biological types."],
+    ["craft", "Craft co-reports", "Encounter profile", "Only explicit or same-record craft co-reports enter this axis. A co-report does not establish a physical association."],
+    ["source", "Source collections", "Source & geography", "Counts describe collection coverage; collections may overlap and are not independent incidents."],
+    ["country", "Reported countries", "Source & geography", "Uses retained country assignments or explicit country fields, including unmapped reports; no site is inferred here."],
+    ["region", "Macroregions", "Source & geography", "Uses the existing geography projection. Unknown geography remains explicit."],
+    ["admin_region", "Reported administrative regions", "Source & geography", "Administrative labels retain their country context. A source region label is not a precise site."],
+    ["decade", "Reporting decades", "Time", "A date interval must stay within one decade; century-only dates cannot enter an invented decade."],
+    ["month", "Calendar months", "Time", "Only source-supported months enter seasonal bins; year-only and intervals spanning months remain unknown."],
+    ["weekday", "Calendar weekdays", "Time", "Requires an exact source calendar day. This is not a timezone-harmonized weekday."],
+    ["source_hour", "Source-clock hours", "Time", "Requires a typed non-sentinel clock interval wholly inside one hour. Unknown timezone is not converted to UTC or solar time."],
+    ["time_period", "Source-clock periods", "Time", "Uses the existing descriptive time-of-day projection; approximate and qualitative periods retain their source status."],
+    ["time_status", "Clock evidence status", "Time", "Clock precision, sentinels and unresolved values remain visible rather than becoming exact clocks."],
+    ["duration", "Observation duration", "Reported attributes", "Uses existing descriptive source-duration bins; censored and unresolved values are not assigned invented durations."],
+    ["duration_status", "Duration evidence status", "Reported attributes", "Exact, approximate, censored and unresolved duration evidence remain separate."],
+    ["witnesses", "Witness counts", "Reported attributes", "Count bins require typed exact witness counts; lower bounds and qualitative plurals remain unknown here."],
+    ["witness_status", "Witness evidence status", "Reported attributes", "Exact counts, estimates, lower bounds and qualitative source descriptions retain their status."],
+    ["color", "Reported colors", "Reported attributes", "Explicit color categories are multi-label. Object-surface, emitted-light and unknown roles are not interchangeable."],
+    ["color_role", "Color evidence roles", "Reported attributes", "Preserves the existing source-reported color role; an unspecified role remains unknown."],
+    ["height", "Reported being height", "Reported attributes", "Positive source height values are grouped in feet. Source estimates are not promoted to measured heights or biological types."],
+    ["uniform", "Reported uniform fields", "Reported attributes", "Retains source field values. A missing or false source field does not prove absence of clothing or a uniform."],
+    ["reporting_delay", "Reporting delays", "Reported attributes", "Uses existing valid reporting-delay bins. Occurrence, report and posting dates retain their original roles."],
+    ["reporting_delay_role", "Reporting date roles", "Reported attributes", "A posting-date fallback remains explicitly separate from a reported date; neither becomes occurrence time."],
+    ["report_type", "Original report types", "Classification & coverage", "Original report labels are descriptive source classifications, not verified event identities."],
+    ["craft_confidence", "Craft classification confidence", "Classification & coverage", "Confidence belongs to the craft classifier, not the existence or identity of a reported being."],
+    ["reported_shape", "Source shape labels", "Classification & coverage", "Retains original shape labels separately from inferred craft categories."],
+    ["mapped", "Mapping availability", "Classification & coverage", "Unmapped records remain reports in the cohort; mapping availability is not encounter absence."],
+    ["location_precision", "Location precision", "Classification & coverage", "Generalized locations stay distinct from exact sites."],
+    ["date_precision", "Date precision", "Classification & coverage", "Partial and unresolved source dates remain visible."],
+    ["occurrence_date_status", "Occurrence-date exclusion status", "Classification & coverage", "Existing source date exclusions identify unreliable occurrence dates. No indexed exclusion is not a complete date-validation certificate."],
+    ["coordinate_quality", "Coordinate evidence quality", "Classification & coverage", "Uses existing coordinate evidence checks; a country-bound check is not verified site accuracy."],
+    ["coordinate_source", "Coordinate source methods", "Classification & coverage", "Original source coordinates, geocoding and unresolved locations retain their methods."],
+    ["duplicate_lineage", "Duplicate lineage flags", "Classification & coverage", "A lineage flag is a review indicator. No flag does not prove a unique incident or an independent source."],
+    ["lunar", "Moon phase & sky position", "External context", "Uses the separate guarded lunar comparison engine and its date/time/location eligibility."],
+    ["planetary", "Planetary positions & aspects", "External context", "Uses the precomputed physical ephemeris and explicitly labelled zodiac convention; houses require supported time and location."],
+    ["nuclear", "Nuclear chronology", "External context", "Uses the independent nuclear chronology with retained time-role and coverage gates."],
+    ["facilities", "Facility context", "External context", "Uses qualified, temporally active facility markers; raw proximity is not inferred in this atlas."],
+    ["crops", "Crop-circle context", "External context", "Requires qualified crop/report joins and original date roles; no connection is inferred from report text."],
+    ["animals", "Animal-report context", "External context", "Requires qualified animal/report joins and original date roles; no connection is inferred from report text."],
+  ].map(function (entry) { return Object.freeze({ key: entry[0], label: entry[1], group: entry[2], fieldPolicy: entry[3] }); }));
+  const ENCOUNTER_WEEKDAYS = Object.freeze(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]);
+  const ENCOUNTER_MONTH_LABELS = Object.freeze(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
   const MINIMUM_COMMON_SUPPORT = 0.80;
   const DEFAULT_BOOTSTRAP_REPLICATES = 999;
   const DEFAULT_ASSOCIATION_PERMUTATIONS = 499;
@@ -2041,6 +2084,7 @@
         evidenceRows: 0, beingRows: 0, craftAssociatedRows: 0, explicitCraftRows: 0,
         coReportedCraftRows: 0, undatedAbductionRows: 0, undatedBeingRows: 0,
         craftMatrix: new Map(), abductionCrafts: new Map(), annual: new Map(), sources: new Map(),
+        atlas: new Map(), projectionReady: {},
       },
     };
     accumulator.familyCounts = {
@@ -2059,6 +2103,210 @@
   function addMatrixCount(map, rowKey, columnKey) {
     const key = rowKey + "\u0000" + columnKey;
     incrementRaw(map, key, 1);
+  }
+
+  function encounterAtlasField(values, loaded, label) {
+    const categories = asArrayForEncounter(values).filter(function (item) {
+      return item && typeof item.key === "string" && item.key.trim();
+    });
+    return categories.length
+      ? { state: "supported", categories }
+      : { state: loaded ? "unknown" : "not_loaded", categories: [{ key: loaded ? "unknown" : "not_loaded", label: label || (loaded ? "Not indexed / unknown" : "Evidence not loaded") }] };
+  }
+
+  function asArrayForEncounter(value) { return Array.isArray(value) ? value : []; }
+
+  function encounterAtlasKnown(value) {
+    return typeof value === "string" && value.trim() && !["unknown", "unavailable", "unresolved", "unparsed", "none", "null", "n/a", "not_provided"].includes(value.trim().toLowerCase());
+  }
+
+  function addEncounterAtlasField(evidence, key, types, field) {
+    let axis = evidence.atlas.get(key);
+    if (!axis) {
+      axis = { cells: new Map(), columns: new Map(), columnCounts: new Map(), rowCounts: new Map(),
+        eligibleReports: 0, supportedReports: 0, unknownReports: 0, notLoadedReports: 0, excludedReports: 0 };
+      evidence.atlas.set(key, axis);
+    }
+    if (field.state === "excluded") { axis.excludedReports += 1; return; }
+    axis.eligibleReports += 1;
+    axis[field.state === "supported" ? "supportedReports" : (field.state === "not_loaded" ? "notLoadedReports" : "unknownReports")] += 1;
+    const uniqueCategories = new Map(field.categories.map(function (item) { return [item.key, item]; }));
+    uniqueCategories.forEach(function (item) {
+      axis.columns.set(item.key, item.label || item.key);
+      incrementRaw(axis.columnCounts, item.key, 1);
+    });
+    types.forEach(function (type) {
+      incrementRaw(axis.rowCounts, type.key, 1);
+      uniqueCategories.forEach(function (item) { addMatrixCount(axis.cells, type.key, item.key); });
+    });
+  }
+
+  function addEncounterAtlasRow(evidence, row, source, civil, types, abduction, association) {
+    const ready = evidence.projectionReady || {};
+    const known = function (value, label) {
+      return encounterAtlasKnown(value) ? [{ key: value.trim(), label: label || value.trim().replace(/_/g, " ") }] : [];
+    };
+    const field = function (key, categories, loaded, label) {
+      addEncounterAtlasField(evidence, key, types, encounterAtlasField(categories, loaded !== false, label));
+    };
+    const available = function (name, rowAvailable) { return ready[name] === true || rowAvailable === true; };
+    const typedStatus = function (value, present) {
+      return present && typeof value === "string" && value.trim() ? [{ key: value.trim(), label: value.trim().replace(/_/g, " ") }] : [];
+    };
+    const precision = category(row.datePrecision, "unknown");
+    const startOrdinal = finiteInteger(row.dateStartOrdinal);
+    const endOrdinal = finiteInteger(row.dateEndOrdinal);
+    const start = civilFromOrdinal(startOrdinal);
+    const end = civilFromOrdinal(endOrdinal);
+    const dayOrdinal = finiteInteger(row.sortOrdinal);
+    const occurrenceDateExcluded = row.encounterOccurrenceDateExcluded === true;
+    const singleYear = !occurrenceDateExcluded && civil && !["unknown", "decade", "century"].includes(precision) && (!start || !end || start.year === end.year);
+    const singleMonth = singleYear && !["year", "unknown"].includes(precision) && (!start || !end || start.year === end.year && start.month === end.month);
+    const decadeKnown = !occurrenceDateExcluded && civil && precision !== "unknown" && precision !== "century" &&
+      (!start || !end || Math.floor(start.year / 10) === Math.floor(end.year / 10));
+    const exactDay = !occurrenceDateExcluded && precision === "exact_day" && dayOrdinal != null && dayOrdinal >= 1 && (!start || !end || startOrdinal === endOrdinal);
+    const abductionKeys = ["not_indexed", "source_reported", "narrative_reported", "ambiguous"];
+    addEncounterAtlasField(evidence, "abduction", types, { state: abduction === 0 ? "unknown" : "supported",
+      categories: [{ key: abductionKeys[abduction], label: ENCOUNTER_ABDUCTION_LABELS[abduction] }] });
+    field("co_descriptions", types.map(function (type) { return { key: type.key, label: type.label }; }), true);
+    if (association === 1 || association === 2) field("craft", known(category(row.craftType, "unknown")), true, "Craft category unspecified");
+    else addEncounterAtlasField(evidence, "craft", types, { state: "excluded", categories: [] });
+    field("source", known(source), true);
+    const country = encounterAtlasKnown(row.analysisCountry) ? row.analysisCountry : row.country;
+    field("country", known(country), ready.geography === true || Boolean(known(country).length));
+    field("region", known(row.analysisMacroregion), ready.geography === true || Boolean(known(row.analysisMacroregion).length));
+    field("admin_region", known(row.adminRegion).map(function (item) {
+      return { key: (encounterAtlasKnown(country) ? country : "country_unspecified") + ":" + item.key,
+        label: item.label + " · " + (encounterAtlasKnown(country) ? country : "country unspecified") };
+    }), true);
+    field("decade", decadeKnown ? [{ key: String(Math.floor((start ? start.year : civil.year) / 10) * 10), label: String(Math.floor((start ? start.year : civil.year) / 10) * 10) + "s" }] : [], true, "Decade not supported");
+    field("month", singleMonth ? [{ key: String(start ? start.month : civil.month).padStart(2, "0"), label: ENCOUNTER_MONTH_LABELS[(start ? start.month : civil.month) - 1] }] : [], true, "Month not supported");
+    const weekday = exactDay ? ((dayOrdinal - 1) % 7 + 7) % 7 : null;
+    field("weekday", weekday == null ? [] : [{ key: String(weekday), label: ENCOUNTER_WEEKDAYS[weekday] }], true, "Weekday not supported");
+    const clockAvailable = row.analysisTimeOfDayAvailable === true;
+    const clockLoaded = available("timeOfDay", clockAvailable);
+    const lowerMinute = typeof row.analysisTimeOfDayLowerMinute === "number" ? finiteNumber(row.analysisTimeOfDayLowerMinute) : null;
+    const upperMinute = typeof row.analysisTimeOfDayUpperMinute === "number" ? finiteNumber(row.analysisTimeOfDayUpperMinute) : null;
+    const hourKnown = clockAvailable && ["exact_clock", "approximate_clock", "clock_range"].includes(row.analysisTimeOfDayStatus)
+      && lowerMinute != null && upperMinute != null && lowerMinute >= 0 && upperMinute < 1440 && upperMinute >= lowerMinute
+      && Math.floor(lowerMinute / 60) === Math.floor(upperMinute / 60);
+    const hour = hourKnown ? String(Math.floor(lowerMinute / 60)).padStart(2, "0") : null;
+    field("source_hour", hour ? [{ key: hour, label: hour + ":00–" + hour + ":59 source clock" }] : [], clockLoaded, clockLoaded ? "Hour not supported" : "Clock evidence not loaded");
+    field("time_period", clockAvailable && TIME_OF_DAY_BIN_ORDER.includes(row.analysisTimeOfDayDescriptiveBin)
+      ? [{ key: row.analysisTimeOfDayDescriptiveBin, label: TIME_OF_DAY_BIN_LABELS[row.analysisTimeOfDayDescriptiveBin] }] : [], clockLoaded);
+    field("time_status", typedStatus(row.analysisTimeOfDayStatus, clockAvailable), clockLoaded);
+    const durationAvailable = row.analysisDurationAvailable === true;
+    const durationLoaded = available("duration", durationAvailable);
+    field("duration", durationAvailable && DURATION_BIN_ORDER.includes(row.analysisDurationDescriptiveBin)
+      ? [{ key: row.analysisDurationDescriptiveBin, label: DURATION_BIN_LABELS[row.analysisDurationDescriptiveBin] }] : [], durationLoaded);
+    field("duration_status", typedStatus(row.analysisDurationStatus, durationAvailable), durationLoaded);
+    const witnessesAvailable = row.analysisWitnessCountAvailable === true;
+    const witnessesLoaded = available("witnessCount", witnessesAvailable);
+    field("witnesses", witnessesAvailable && row.analysisWitnessCountStatus === "exact_count" && typeof row.analysisWitnessCountExactCount === "number" && finiteInteger(row.analysisWitnessCountExactCount) > 0
+      && WITNESS_COUNT_BIN_ORDER.includes(row.analysisWitnessCountBin)
+      ? [{ key: row.analysisWitnessCountBin, label: WITNESS_COUNT_BIN_LABELS[row.analysisWitnessCountBin] }] : [], witnessesLoaded);
+    field("witness_status", typedStatus(row.analysisWitnessCountStatus, witnessesAvailable), witnessesLoaded);
+    const colorAvailable = row.analysisColorAvailable === true;
+    const colorLoaded = available("color", colorAvailable);
+    const colorMask = typeof row.analysisColorCategoryMask === "number" && Number.isInteger(row.analysisColorCategoryMask) ? row.analysisColorCategoryMask : null;
+    const colorTyped = colorAvailable && ["exact_single", "explicit_compound", "changing_known"].includes(row.analysisColorStatus)
+      && colorMask != null && colorMask > 0 && colorMask < Math.pow(2, COLOR_CATEGORY_ORDER.length);
+    const role = category(row.analysisColorRole, "role_unspecified");
+    const colors = colorTyped ? COLOR_CATEGORY_ORDER.flatMap(function (key, bit) {
+      return colorMask & (1 << bit) ? [{ key: role + ":" + key, label: COLOR_CATEGORY_LABELS[key] + " · " + role.replace(/_/g, " ") }] : [];
+    }) : [];
+    field("color", colors, colorLoaded);
+    field("color_role", colorAvailable && role !== "role_unspecified" ? known(role) : [], colorLoaded, colorLoaded ? "Color role unspecified" : "Color evidence not loaded");
+    const height = typeof row.encounterHeightFeet === "number" ? finiteNumber(row.encounterHeightFeet) : null;
+    let heightCategory = null;
+    if (height != null && height > 0) {
+      const groups = [[3, "under_3_ft", "Under 3 ft"], [5, "3_to_under_5_ft", "3 to under 5 ft"], [7, "5_to_under_7_ft", "5 to under 7 ft"],
+        [10, "7_to_under_10_ft", "7 to under 10 ft"], [Infinity, "10_ft_plus", "10 ft or taller"]];
+      const group = groups.find(function (entry) { return height < entry[0]; });
+      heightCategory = { key: group[1], label: group[2] };
+    }
+    field("height", heightCategory ? [heightCategory] : [], true, "Height not indexed");
+    field("uniform", known(row.encounterUniform), true, "Uniform field not indexed");
+    const delayAvailable = row.analysisReportingDelayAvailable === true;
+    const delayLoaded = available("reportingDelay", delayAvailable);
+    field("reporting_delay", delayAvailable && ["reported_valid", "posted_fallback_valid"].includes(row.analysisReportingDelayStatus)
+      && REPORTING_DELAY_BIN_ORDER.includes(row.analysisReportingDelayBin)
+      ? [{ key: row.analysisReportingDelayBin, label: REPORTING_DELAY_BIN_LABELS[row.analysisReportingDelayBin] }] : [], delayLoaded);
+    field("reporting_delay_role", delayAvailable && row.analysisReportingDelaySelectedRole !== "none" ? known(row.analysisReportingDelaySelectedRole) : [], delayLoaded);
+    field("report_type", known(row.type), true);
+    field("craft_confidence", known(row.craftConfidence), true);
+    field("reported_shape", known(row.shape), true);
+    field("mapped", [{ key: rowMapped(row) ? "mapped" : "unmapped", label: rowMapped(row) ? "Mapped" : "Unmapped" }], true);
+    field("location_precision", known(row.precision), true);
+    field("date_precision", known(precision), true);
+    field("occurrence_date_status", typeof row.encounterOccurrenceDateExcluded === "boolean"
+      ? [{ key: occurrenceDateExcluded ? "source_date_withheld" : "no_indexed_exclusion", label: occurrenceDateExcluded
+        ? "Source occurrence date withheld" : "No indexed source-date exclusion" }] : [], typeof row.encounterOccurrenceDateExcluded === "boolean");
+    field("coordinate_source", known(row.coordinateSource), true);
+    field("duplicate_lineage", [{ key: row.duplicateLineage ? "lineage_flag_present" : "no_lineage_flag",
+      label: row.duplicateLineage ? "Lineage flag present" : "No lineage flag in this projection" }], true);
+    const coordinateAvailable = row.analysisCoordinateEvidenceAvailable === true;
+    field("coordinate_quality", coordinateAvailable && COORDINATE_QUALITY_BIN_ORDER.includes(row.analysisCoordinateQualityBin)
+      ? [{ key: row.analysisCoordinateQualityBin, label: COORDINATE_QUALITY_BIN_LABELS[row.analysisCoordinateQualityBin] }] : [], available("coordinateEvidence", coordinateAvailable));
+  }
+
+  function buildEncounterAtlas(active, ready) {
+    const evidence = active.encounters;
+    if (!ready) return { status: "loading", unit: "reports", axes: ENCOUNTER_ATLAS_AXES.map(function (definition) {
+      return Object.assign({}, definition, { status: "loading", unit: "reports", rows: [], columns: [], cells: [],
+        shareLabel: "Share of eligible being reports", coverage: { cohortReports: active.total, beingReports: 0, eligibleReports: 0,
+          supportedReports: 0, unknownReports: 0, notLoadedReports: 0, excludedReports: 0, membershipCount: 0 }, inferenceEligible: false });
+    }), policy: "Encounter evidence must finish loading before any comparison counts are displayed.", inferentialTestsRun: 0, patternFinderEligible: false };
+    const axisOrders = { month: MONTH_AXIS_ORDER, weekday: ["0", "1", "2", "3", "4", "5", "6"],
+      source_hour: Array.from({ length: 24 }, function (_value, hour) { return String(hour).padStart(2, "0"); }),
+      time_period: TIME_OF_DAY_BIN_ORDER, duration: DURATION_BIN_ORDER, witnesses: WITNESS_COUNT_BIN_ORDER,
+      height: ["under_3_ft", "3_to_under_5_ft", "5_to_under_7_ft", "7_to_under_10_ft", "10_ft_plus"] };
+    const axes = ENCOUNTER_ATLAS_AXES.map(function (definition) {
+      const state = evidence.atlas.get(definition.key);
+      const external = definition.group === "External context";
+      const eligibleReports = state ? state.eligibleReports : 0;
+      const columns = state ? Array.from(state.columns.entries()).sort(function (left, right) {
+        if (definition.key === "decade") {
+          const a = Number(left[0]), b = Number(right[0]);
+          if (Number.isFinite(a) && Number.isFinite(b)) return a - b;
+          if (Number.isFinite(a)) return -1;
+          if (Number.isFinite(b)) return 1;
+        }
+        const order = axisOrders[definition.key];
+        if (order) {
+          const a = order.indexOf(left[0]), b = order.indexOf(right[0]);
+          if (a !== -1 || b !== -1) return (a === -1 ? Infinity : a) - (b === -1 ? Infinity : b);
+        }
+        return (state.columnCounts.get(right[0]) || 0) - (state.columnCounts.get(left[0]) || 0) || left[0].localeCompare(right[0]);
+      }).map(function (entry) { return { key: entry[0], label: entry[1], reports: state.columnCounts.get(entry[0]) || 0 }; }) : [];
+      const rows = ENCOUNTER_TAXONOMY.filter(function (type) { return state && state.rowCounts.has(type.key); })
+        .map(function (type) { return { key: type.key, label: type.label, reports: state.rowCounts.get(type.key) }; });
+      const cells = state ? Array.from(state.cells.entries()).map(function (entry) {
+        const keys = entry[0].split("\u0000");
+        return { row: keys[0], column: keys[1], count: entry[1], value: entry[1], observedCount: entry[1],
+          share: eligibleReports ? entry[1] / eligibleReports : null, reportDenominator: eligibleReports,
+          estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
+      }) : [];
+      const coverage = { cohortReports: active.total, beingReports: evidence.beingRows, eligibleReports,
+        supportedReports: state ? state.supportedReports : 0, unknownReports: state ? state.unknownReports : 0,
+        notLoadedReports: state ? state.notLoadedReports : 0, excludedReports: state ? state.excludedReports : 0,
+        membershipCount: cells.reduce(function (sum, cell) { return sum + cell.count; }, 0) };
+      let status = "no_being_reports";
+      if (!ready) status = "loading";
+      else if (external) status = "external_comparison";
+      else if (state && state.supportedReports) status = state.unknownReports || state.notLoadedReports || state.excludedReports ? "ready_descriptive_partial" : "ready_descriptive";
+      else if (state && state.notLoadedReports === eligibleReports && eligibleReports) status = "data_unavailable";
+      else if (state && state.excludedReports && !eligibleReports) status = "no_eligible_reports";
+      else if (evidence.beingRows) status = "no_supported_categories";
+      return Object.assign({}, definition, { status, unit: "reports", rows, columns, cells: ready && !external ? cells : [],
+        shareLabel: "Share of eligible being reports", coverage, inferenceEligible: false,
+        unavailableReason: external ? "Computed by the separate qualified context engine; per-report categories are not inferred in the core atlas."
+          : (status === "data_unavailable" ? "The required source-field projection has not loaded." : ""),
+      });
+    });
+    return { status: ready ? "ready_descriptive" : "loading", unit: "reports", axes,
+      policy: "Each original report counts once per being-description/category cell. Types and compound attributes are multi-label, so memberships can exceed distinct report counts. These are descriptive co-occurrences, not causal effects or verified incidents.",
+      inferentialTestsRun: 0, patternFinderEligible: false };
   }
 
   function addEncounterRow(accumulator, row, source, civil) {
@@ -2098,11 +2346,12 @@
       evidence.beingCounts[index] += 1;
       if (craftAssociation) addMatrixCount(evidence.craftMatrix, type.key, craft);
     });
+    if (hasBeing) addEncounterAtlasRow(evidence, row, source, civil, ENCOUNTER_TAXONOMY.filter(function (_type, index) { return Boolean(mask & (1 << index)); }), abduction, association);
     const intervalStart = civilFromOrdinal(finiteInteger(row.dateStartOrdinal));
     const intervalEnd = civilFromOrdinal(finiteInteger(row.dateEndOrdinal));
     const spansYears = intervalStart && intervalEnd && intervalStart.year !== intervalEnd.year;
     const unsupportedYearPrecision = ["decade", "century", "unknown"].indexOf(category(row.datePrecision, "unknown")) !== -1;
-    if (!civil || !Number.isInteger(civil.year) || spansYears || unsupportedYearPrecision) {
+    if (!civil || !Number.isInteger(civil.year) || spansYears || unsupportedYearPrecision || row.encounterOccurrenceDateExcluded === true) {
       if (reportedAbduction) evidence.undatedAbductionRows += 1;
       if (hasBeing) evidence.undatedBeingRows += 1;
       return;
@@ -2125,7 +2374,7 @@
         total, estimateAvailable: true, inferenceEligible: false, status: "descriptive_only" };
     };
     if (!ready) return { status: "loading", evidenceReady: false, abductionProfile: [], beingProfile: [],
-      craftMatrix: [], abductionCraft: [], annualActivity: [], sourceCoverage: [], coverage: [] };
+      craftMatrix: [], abductionCraft: [], annualActivity: [], sourceCoverage: [], coverage: [], comparisonAtlas: buildEncounterAtlas(active, false) };
     const annual = Array.from(evidence.annual.entries()).sort(function (left, right) { return Number(left[0]) - Number(right[0]); });
     const series = [
       { label: "Abduction reports", field: "abduction" },
@@ -2159,6 +2408,7 @@
         });
       }),
       annualActivity: annual.length ? series : [], sourceCoverage,
+      comparisonAtlas: buildEncounterAtlas(active, true),
       coverage: [
         { label: "Indexed encounter evidence", count: evidence.evidenceRows, total: active.total },
         { label: "Reported abductions", count: evidence.abduction[1] + evidence.abduction[2], total: active.total },
@@ -6662,6 +6912,14 @@
     const descriptor = baselineDescriptor(mode, activeRange, wholeCorpusStructure);
     const active = createAccumulator("active");
     const reference = createAccumulator("reference");
+    const encounterProjectionReadiness = {
+      geography: options.geographyProjectionLoaded === true, duration: options.durationProjectionLoaded === true,
+      timeOfDay: options.timeOfDayProjectionLoaded === true, witnessCount: options.witnessCountProjectionLoaded === true,
+      color: options.colorProjectionLoaded === true, reportingDelay: options.reportingDelayProjectionLoaded === true,
+      coordinateEvidence: options.coordinateEvidenceProjectionLoaded === true,
+    };
+    active.encounters.projectionReady = encounterProjectionReadiness;
+    reference.encounters.projectionReady = encounterProjectionReadiness;
     const quickCoreAccumulator = inferenceDeferred &&
       !domainRequested(requestedDomains, "craft") &&
       !domainRequested(requestedDomains, "geography");

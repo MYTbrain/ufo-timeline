@@ -89,6 +89,7 @@ def assemble(check_only=False):
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js",
+                   "analysis_encounter_context.js", "encounter_analysis.css",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
@@ -323,7 +324,7 @@ def main():
                 new_paths = {r["path"] for r in plan["pages"]}
                 require(old_paths <= new_paths and new_paths - old_paths <= {
                     "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
-                    "encounter_evidence.js", "data/encounters/manifest.json", "data/encounters/evidence.json.gz",
+                    "encounter_evidence.js", "analysis_encounter_context.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz",
                     "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
                 }, "Candidate file inventory changed beyond the reviewed timing, radar and guided Help assets")
             else:

@@ -161,6 +161,9 @@
       encounterAbductionCode: record && !mismatch ? record.encounterAbductionCode : 0,
       encounterBeingMask: record && !mismatch ? record.encounterBeingMask : 0,
       encounterCraftAssociationCode: record && !mismatch ? record.encounterCraftAssociationCode : 0,
+      encounterHeightFeet: record && !mismatch && record.heightFeet != null ? record.heightFeet : null,
+      encounterUniform: record && !mismatch && record.uniform != null
+        ? (typeof record.uniform === "boolean" ? (record.uniform ? "Reported" : "Not reported in source field") : record.uniform) : null,
       encounterEvidenceReady: ready && !mismatch,
       encounterIdentityMismatch: mismatch,
     });

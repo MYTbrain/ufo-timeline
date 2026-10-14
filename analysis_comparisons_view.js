@@ -659,5 +659,124 @@
       const link = doc.createElement("a"); link.href = url; link.download = "ufo-context-comparison-evidence.json"; link.click(); view.setTimeout(function () { view.URL.revokeObjectURL(url); }, 1000);
     }); target.appendChild(download);
   }
-  return { render, artifactLoadTimeoutMs };
+  function renderEncounterContext(target, evidenceValue, callbacksValue) {
+    const evidence = evidenceValue || {}, model = evidence.encounters || {}, callbacks = callbacksValue || {}, doc = target.ownerDocument;
+    let state = states.get(target);
+    if (!state) { state = { topic: "lunar", population: "being", metric: "share", planetKind: "zodiac" }; states.set(target, state); }
+    function update() { renderEncounterContext(target, evidence, callbacks); }
+    function request(settings) { const callback = callbacks.onSettingsChange || callbacks.onComparisonSettingsChange; if (callback) callback(Object.assign({ encounterContext: true }, settings)); }
+    target.replaceChildren();
+    if (model.status !== "ready") {
+      target.appendChild(paragraph(doc, model.status === "unavailable_encounter_evidence" ? "Encounter evidence is unavailable; these comparisons cannot be classified."
+        : evidence.status === "error" ? evidence.message || "Comparison evidence could not load." : "Loading shared calendar and context evidence for the encounter comparisons…"));
+      if (evidence.status === "error" && (callbacks.retry || callbacks.onComparisonRetry)) { const retry = element(doc, "button", "secondary-button", "Retry loading"); retry.type = "button"; retry.addEventListener("click", callbacks.retry || callbacks.onComparisonRetry); target.appendChild(retry); }
+      return;
+    }
+    const controls = element(doc, "div", "comparison-controls encounter-atlas-controls");
+    controls.appendChild(selector(doc, "Encounter context comparison", [["lunar", "Moon phase"], ["planetary", "Planetary signs, motion & aspects"],
+      ["nuclear", "Nuclear tests & institutions"], ["crops", "Crop-circle recorded dates & markers"], ["animals", "Animal-report recorded dates & markers"]], state.topic,
+      function (value) { state.topic = value; state.cell = null; state.focus = null; update(); }));
+    controls.appendChild(selector(doc, "Encounter population", [["being", "All being categories"], ["abduction", "Abduction classifications"]], state.population,
+      function (value) { state.population = value; state.cell = null; state.focus = null; update(); }));
+    controls.appendChild(selector(doc, "Encounter heatmap value", [["share", "Share of eligible reports"], ["count", "Report count"], ["calendarAdjustedRatio", "Calendar-opportunity ratio (where available)"]], state.metric,
+      function (value) { state.metric = value; update(); }));
+    target.appendChild(controls);
+    let matrix, title, notes = [], detail = {};
+    if (state.topic === "lunar") {
+      matrix = model.lunar.matrix; title = "Encounter category × Moon phase"; notes = model.lunar.warnings || [];
+      detail = model.lunar.method || {};
+    } else if (state.topic === "planetary") {
+      const planetary = evidence.encounterPlanetary;
+      if (!planetary || planetary.status !== "ready") {
+        target.appendChild(paragraph(doc, "The complete being/abduction atlas covers all nine bodies, their motion states and all 36 unique aspect pairs. It reuses the existing saved ephemeris and caches this cohort."));
+        if (planetary && planetary.status === "calculating") target.appendChild(paragraph(doc, "Preparing the encounter planetary atlas…"));
+        else { const load = element(doc, "button", "secondary-button", "Load encounter planetary heatmaps"); load.type = "button";
+          load.addEventListener("click", function () { request({ encounterPlanetaryOnly: true }); }); target.appendChild(load); }
+        return;
+      }
+      const config = planetary.settings || {}, kinds = [["zodiac", "Zodiac signs"], ["motion", "Direct / retrograde motion"], ["aspects", "Planet-pair aspects"]];
+      const planetControls = element(doc, "div", "comparison-controls");
+      planetControls.appendChild(selector(doc, "Encounter planetary axis", kinds, state.planetKind, function (value) { state.planetKind = value; state.planetAxis = null; update(); }));
+      const axes = Object.values(planetary.matrices[state.planetKind] || {});
+      if (!axes.length) { target.appendChild(paragraph(doc, "No planetary axes are available for this cohort.")); return; }
+      if (!axes.some(function (axis) { return axis.axisId === state.planetAxis; })) state.planetAxis = axes[0].axisId;
+      planetControls.appendChild(selector(doc, "Encounter body or pair", axes.map(function (axis) { return [axis.axisId, axis.label]; }), state.planetAxis,
+        function (value) { state.planetAxis = value; state.cell = null; update(); }));
+      planetControls.appendChild(selector(doc, "Encounter zodiac convention", [["sidereal", "Sidereal · Lahiri"], ["tropical", "Tropical"]], config.zodiacSystem || "sidereal",
+        function (value) { request({ encounterPlanetaryOnly: true, zodiacSystem: value, ayanamsaId: "lahiri" }); }));
+      planetControls.appendChild(selector(doc, "Encounter aspect orb", [["1", "±1°"], ["3", "±3°"], ["5", "±5°"]], String(config.aspectOrbDegrees || 3),
+        function (value) { request({ encounterPlanetaryOnly: true, aspectOrbDegrees: Number(value) }); }));
+      target.appendChild(planetControls);
+      matrix = axes.find(function (axis) { return axis.axisId === state.planetAxis; });
+      title = "Encounter category × " + matrix.label; notes = planetary.warnings || []; detail = planetary.method || {};
+      target.appendChild(paragraph(doc, "Convention: " + (config.zodiacSystem === "tropical" ? "Tropical" : "Sidereal · " + (config.ayanamsaId || "Lahiri")) +
+        ". Houses remain unavailable without verified UTC/timezone, observation coordinates and a house-system convention."));
+    } else if (state.topic === "nuclear") {
+      const nuclear = model.nuclear, axes = [["phases", "Recorded dates around nuclear tests"], ["distances", "Distances to nuclear-test markers"], ["facilities", "Reviewed nuclear & broader facility markers"]];
+      state.nuclearAxis = state.nuclearAxis || "phases";
+      const fields = element(doc, "div", "comparison-controls");
+      fields.appendChild(selector(doc, "Encounter nuclear axis", axes, state.nuclearAxis, function (value) { state.nuclearAxis = value; state.cell = null; update(); }));
+      fields.appendChild(selector(doc, "Encounter nuclear date window", [["1", "±1 day"], ["7", "±7 days"], ["30", "±30 days"], ["90", "±90 days"]], String(nuclear.settings.windowDays || 30), function (value) { request({ windowDays: Number(value) }); }));
+      target.appendChild(fields); matrix = nuclear[state.nuclearAxis]; title = "Encounter category × " + axes.find(function (axis) { return axis[0] === state.nuclearAxis; })[1];
+      notes = nuclear.warnings || [];
+      target.appendChild(paragraph(doc, "Exact recorded dates and usable coordinates are required. Nuclear-test counts concern unique reports per displayed bin; bins can overlap. Facility roles describe a reviewed partial inventory."));
+    } else {
+      const context = model[state.topic]; state.contextLane = state.contextLane || "calendar";
+      target.appendChild(selector(doc, "Encounter context lane", [["calendar", "Recorded-date alignment · worldwide"], ["marker", "Public-marker distance ≤100 km"]], state.contextLane,
+        function (value) { state.contextLane = value; state.cell = null; update(); }));
+      matrix = context[state.contextLane]; title = "Encounter category × " + (state.topic === "crops" ? "crop-circle reports" : "animal reports"); notes = context.warnings || [];
+      target.appendChild(paragraph(doc, count(context.coverage.eligibleContextClusters) + " eligible context clusters · " + count(context.coverage.markerContextClusters) + " with usable public markers." +
+        (context.coverage.layerEnabled ? "" : " This context layer is disabled; enable it in the Analysis context controls.")));
+    }
+    const rows = (matrix && matrix.rows || []).filter(function (row) { return row.kind === state.population; });
+    const columns = matrix && matrix.columns || [];
+    const focusMatch = /^encounter-context-cell-(\d+)-(\d+)$/.exec(state.focus || "");
+    if (!focusMatch || Number(focusMatch[1]) >= rows.length || Number(focusMatch[2]) >= columns.length) state.focus = null;
+    const cardNode = card(doc, title); cardNode.className += " comparison-heatmap-card";
+    cardNode.appendChild(paragraph(doc, "Each row uses its own eligible-report denominator. A report with several being labels can appear in several rows; rows are not independent incident totals."));
+    const wrap = element(doc, "div", "comparison-heatmap-scroll"); wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", title); wrap.tabIndex = 0;
+    const grid = element(doc, "table", "comparison-heatmap-grid encounter-context-grid"); grid.appendChild(element(doc, "caption", "", title));
+    const head = doc.createElement("thead"), header = doc.createElement("tr"); header.appendChild(element(doc, "th", "", "Encounter category · eligible N"));
+    columns.forEach(function (column) { const th = element(doc, "th", "", column.label); th.scope = "col"; header.appendChild(th); }); head.appendChild(header); grid.appendChild(head);
+    const body = doc.createElement("tbody"), maxCount = Math.max(1, ...rows.flatMap(function (row) { return row.cells.map(function (cell) { return number(cell.count) || 0; }); }));
+    rows.forEach(function (row, r) {
+      const line = doc.createElement("tr"), heading = element(doc, "th", "", row.label + " · " + count(row.eligible)); heading.scope = "row"; line.appendChild(heading);
+      columns.forEach(function (column, c) {
+        const cell = row.cells[c] || {}, raw = state.metric === "count" ? cell.count : state.metric === "calendarAdjustedRatio" ? cell.calendarAdjustedRatio : cell.share;
+        const unavailable = number(raw) == null || !row.eligible;
+        const value = unavailable ? "—" : state.metric === "share" ? percent(raw) : state.metric === "calendarAdjustedRatio" ? ratio(raw) : count(raw);
+        const holder = doc.createElement("td"), button = element(doc, "button", "comparison-heatmap-cell" + (unavailable ? " comparison-heatmap-unavailable" : ""), value);
+        button.type = "button"; button.id = "encounter-context-cell-" + r + "-" + c; button.tabIndex = state.focus === button.id || (!state.focus && r === 0 && c === 0) ? 0 : -1;
+        button.setAttribute("aria-label", row.label + ", " + column.label + ": " + value + "; eligible " + count(row.eligible)); button.setAttribute("aria-pressed", state.cell === row.id + "|" + column.id ? "true" : "false");
+        if (!unavailable) { const shade = state.metric === "count" ? raw / maxCount : state.metric === "share" ? raw : Math.min(1, raw / 3); button.style.background = "rgba(76, 196, 215, " + (0.08 + Math.sqrt(Math.max(0, Math.min(1, shade))) * 0.76).toFixed(3) + ")"; }
+        button.addEventListener("focus", function () { const previous = state.focus && doc.getElementById(state.focus); if (previous) previous.tabIndex = -1; state.focus = button.id; button.tabIndex = 0; });
+        button.addEventListener("click", function () { state.cell = row.id + "|" + column.id; state.focus = button.id; update(); const next = doc.getElementById(button.id); if (next) next.focus(); });
+        button.addEventListener("keydown", function (event) {
+          let nr = r, nc = c;
+          if (event.key === "ArrowLeft") nc = Math.max(0, c - 1); else if (event.key === "ArrowRight") nc = Math.min(columns.length - 1, c + 1);
+          else if (event.key === "ArrowUp") nr = Math.max(0, r - 1); else if (event.key === "ArrowDown") nr = Math.min(rows.length - 1, r + 1); else return;
+          event.preventDefault(); const next = doc.getElementById("encounter-context-cell-" + nr + "-" + nc); if (next) next.focus();
+        }); holder.appendChild(button); line.appendChild(holder);
+      }); body.appendChild(line);
+    }); grid.appendChild(body); wrap.appendChild(grid); cardNode.appendChild(wrap);
+    const selection = element(doc, "div", "comparison-heatmap-cell-details"); selection.setAttribute("aria-live", "polite");
+    rows.forEach(function (row) { columns.forEach(function (column, c) { if (state.cell !== row.id + "|" + column.id) return;
+      const cell = row.cells[c] || {}; selection.appendChild(paragraph(doc, row.label + " · " + column.label + ": " + count(cell.count) + " reports / " + count(row.eligible) + " eligible · " + percent(cell.share) +
+        (number(cell.lowerCount) == null ? "" : " · sampled stable–possible " + count(cell.lowerCount) + "–" + count(cell.upperCount)) +
+        (number(cell.expectedCalendarShare) == null ? "" : " · year-month calendar opportunity " + percent(cell.expectedCalendarShare) + " · " + ratio(cell.calendarAdjustedRatio)) +
+        (number(cell.pairCount) == null ? "" : " · " + count(cell.pairCount) + " report/context pairs") + (cell.status ? " · " + cell.status.replaceAll("_", " ") : ""))); }); });
+    cardNode.appendChild(selection);
+    cardNode.appendChild(table(doc, ["Category", "Context", "Count", "Eligible N", "Share", "Stable–possible", "Calendar share", "Calendar ratio", "Pair count"], rows.flatMap(function (row) {
+      return columns.map(function (column, c) { const cell = row.cells[c] || {}; return [row.label, column.label, count(cell.count), count(row.eligible), percent(cell.share),
+        number(cell.lowerCount) == null ? "—" : count(cell.lowerCount) + "–" + count(cell.upperCount), percent(cell.expectedCalendarShare), ratio(cell.calendarAdjustedRatio), count(cell.pairCount)]; });
+    }), title + " exact values")); target.appendChild(cardNode);
+    target.appendChild(policies(doc, "Coverage, dates & comparison limits", [detail.dateOnly, detail.calendar, detail.bounds, detail.sky].concat(notes, model.warnings || [])));
+    target.appendChild(table(doc, ["Category", "Selected N", "Moon eligible", "Nuclear-test eligible", "Facility eligible", "Verified Moon sky position"], (model.groups || []).filter(function (group) { return group.kind === state.population; }).map(function (group) {
+      const row = model.coverage.find(function (value) { return value.id === group.id; }) || {}; return [group.label, count(group.activeN), count(row.lunarEligible), count(row.nuclearEligible), count(row.facilityEligible), count(row.verifiedMoonSkyEligible)];
+    }), "Encounter context coverage"));
+    const download = element(doc, "button", "secondary-button comparison-download", "Download encounter context evidence"); download.type = "button";
+    download.addEventListener("click", function () { const view = doc.defaultView; const url = view.URL.createObjectURL(new view.Blob([JSON.stringify({ encounters: model, encounterPlanetary: evidence.encounterPlanetary || null }, null, 2)], { type: "application/json" }));
+      const link = doc.createElement("a"); link.href = url; link.download = "encounter-context-evidence.json"; link.click(); view.setTimeout(function () { view.URL.revokeObjectURL(url); }, 1000); }); target.appendChild(download);
+  }
+  return { render, renderEncounterContext, artifactLoadTimeoutMs };
 });
