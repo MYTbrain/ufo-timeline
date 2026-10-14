@@ -111,7 +111,7 @@ const routeEnd = appSource.indexOf("\n      onSectionActivate:", routeStart);
 const routeSource = appSource.slice(routeStart + "onEncounterAxisRequested: ".length, routeEnd).trim().replace(/,$/, "");
 const routeNames = ["ensureAnalysisGeographyArtifact", "ensureAnalysisDurationArtifact", "ensureAnalysisReportingDelayArtifact", "ensureAnalysisTimeOfDayArtifact", "ensureAnalysisWitnessCountArtifact", "ensureAnalysisColorArtifact", "ensureAnalysisCoordinateEvidenceArtifact"];
 const route = vm.runInNewContext("(" + routeSource + ")", Object.fromEntries(routeNames.map((name) => [name, () => name])));
-for (const [key, loader] of [["country", routeNames[0]], ["region", routeNames[0]], ["source_hour", routeNames[3]], ["duration", routeNames[1]], ["reporting_delay_role", routeNames[2]], ["witnesses", routeNames[4]], ["color_role", routeNames[5]], ["coordinate_evidence", routeNames[6]]]) assert.equal(route(key), loader);
+for (const [key, loader] of [["country", routeNames[0]], ["region", routeNames[0]], ["source_hour", routeNames[3]], ["duration", routeNames[1]], ["reporting_delay_role", routeNames[2]], ["witnesses", routeNames[4]], ["color_role", routeNames[5]], ["coordinate_quality", routeNames[6]], ["coordinate_evidence", routeNames[6]]]) assert.equal(route(key), loader);
 assert.equal(route("height"), false, "Source-sidecar height is not invented from a separate projection");
 assert.match(document.getElementById("analysis-encounter-axis-coverage").textContent, /Field not loaded 8/);
 assert.match(document.getElementById("analysis-encounter-axis-chart").textContent, /no noon midpoint is invented|Field not loaded/);

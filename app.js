@@ -10025,7 +10025,7 @@
         if (["source_hour", "time_period", "time_status"].includes(axis)) return ensureAnalysisTimeOfDayArtifact();
         if (["witnesses", "witness_status"].includes(axis)) return ensureAnalysisWitnessCountArtifact();
         if (["color", "color_role"].includes(axis)) return ensureAnalysisColorArtifact();
-        if (["coordinate_evidence", "coordinate_source"].includes(axis)) return ensureAnalysisCoordinateEvidenceArtifact();
+        if (["coordinate_evidence", "coordinate_quality", "coordinate_source"].includes(axis)) return ensureAnalysisCoordinateEvidenceArtifact();
         return false;
       },
       onSectionActivate: function (change) {
