@@ -1,6 +1,7 @@
 {
   "status": "passed",
-  "recordedAt": "2026-10-14T03:43:52.954682+00:00",
+  "recordedAt": "2026-10-14T05:48:07.962023+00:00",
+  "releaseToken": "2026-10-13-encounter-map-v6",
   "tests": [
     {
       "path": "tests/test_encounter_map.mjs",
@@ -10,11 +11,6 @@
     {
       "path": "tests/test_encounter_map_integration.mjs",
       "command": "node tests/test_encounter_map_integration.mjs",
-      "result": "passed"
-    },
-    {
-      "path": "tests/test_encounter_evidence.mjs",
-      "command": "node tests/test_encounter_evidence.mjs",
       "result": "passed"
     },
     {
@@ -35,16 +31,6 @@
     {
       "path": "tests/test_encounter_inspection_view.mjs",
       "command": "node tests/test_encounter_inspection_view.mjs",
-      "result": "passed"
-    },
-    {
-      "path": "tests/test_encounter_atlas_populations.mjs",
-      "command": "node tests/test_encounter_atlas_populations.mjs",
-      "result": "passed"
-    },
-    {
-      "path": "tests/test_encounter_atlas_source_sensitivity.mjs",
-      "command": "node tests/test_encounter_atlas_source_sensitivity.mjs",
       "result": "passed"
     },
     {
@@ -74,29 +60,29 @@
     }
   ],
   "sourcePins": {
-    "app.js": "8157cedd3677a68357cdfc4ce32522a93b0da107155006aacaaf0d80962028e1",
-    "encounter_map.js": "e03b8f49ac374751b8831f45e911aeb540f242f0f4b791e5ad51834286c6f8b1",
-    "catalog_filter_worker.js": "36824f00adaacfd6c0af7f917444c61961b62c2756bad0ef25d101dfa065cbb1",
-    "encounter_analysis.css": "6dfc3a5cdd156c76d54f2f3637e10c8b3870f36aca9115e0d0425380dc3e97fa",
-    "index.html": "d403eec97888513a339f8478c8017682b15bb3242c766a13139ef3b5669f595d"
+    "app.js": "7da8256a74f3eced964bacb9cd922a057cdc843f14dffd0580c30ee7653552f0",
+    "encounter_map.js": "68f169a6e6ea51772235f7bba2a3c4efbd510e2bc54a85800b2c1ea444059627",
+    "catalog_filter_worker.js": "b0dc566d6cf5a4e9a15a23621032d7b125cc5efc012f6db964f26676300be9d9",
+    "encounter_analysis.css": "0882532047e338b880d754f72b400108f21bbe23cbe4d0125391cacfb8cdefa9",
+    "index.html": "8910112bcd3e5be8dca870ce61f51e6210b9d6bc54039e8c99cac2f2d662abcc"
   },
   "localDeliveryResources": 19,
   "unmodifiedEncounterRowsValidated": 16319,
-  "newTraceEdgesCreated": 0,
-  "newCoordinatesCreated": 0,
-  "browserInventory": {
-    "apps": [],
-    "browsers": []
+  "defaultEncounterLayerEnabled": false,
+  "defaultConnectionsEnabled": false,
+  "geometryCreatedWhileOff": false,
+  "craftGraphEdgesAdded": 0,
+  "optionalDisplayConnections": {
+    "maxSegments": 600,
+    "defaultRadiusKm": 250,
+    "basis": "same recorded day and reported encounter description; bounded display adjacency",
+    "notAnIncidentIdentityOrFlightClaim": true
   },
-  "interactiveVisualAcceptance": "pending",
-  "rebuild": "Run the listed focused Node checks; delivery check requires the bounded public shell on localhost:8168. See docs/ENCOUNTER_MAP_20261013.md.",
-  "retention": "Small unique runtime QA; preserve with candidate, no corpus/database copy.",
-  "pendingPublicationHighlightGuard": "Actual published pending/off states clear retained highlights immediately.",
-  "localDeliveryReleaseToken": "2026-10-13-encounter-map-v4",
-  "finalDelivery": {
-    "releaseToken": "2026-10-13-encounter-map-v5",
-    "verifiedPublicAssets": 194,
-    "receipt": "docs/qa/phone-preview-20261013/public-verification.json",
-    "samePinnedEncounterArtifacts": true
-  }
+  "sourceDataChanged": false,
+  "newCoordinatesCreated": 0,
+  "legendOrder": "Crop circles, Animal Mutilation Reports, Encounters, Airports",
+  "browserInteractiveAcceptance": "pending_no_enabled_surface",
+  "localDeliveryReleaseToken": "2026-10-13-encounter-map-v6",
+  "rebuild": "Run listed checks. Delivery test supports UFO_ENCOUNTER_DELIVERY_BASE_URL with loopback-only guard; avoid occupied local preview port. See docs/ENCOUNTER_MAP_20261013.md.",
+  "retention": "Small unique runtime QA; retained with candidate. No corpus/database copy."
 }

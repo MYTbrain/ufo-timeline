@@ -141,6 +141,36 @@ assert.equal(brokenProjection.cohort.reports, 2);
 assert.equal(brokenProjection.viewport.reports, 2);
 assert.equal(brokenProjection.markers.length, 0);
 assert.equal(brokenProjection.exclusions.projectionUnavailable, 2);
+let projectionCalls = 0;
+const countsOnly = map.buildModel(events, { renderMarkers: false, project() { projectionCalls += 1; throw new Error("must stay off"); } });
+assert.equal(projectionCalls, 0, "An off layer must not build map geometry just to retain accurate coverage");
+assert.deepEqual(countsOnly.cohort, model.cohort);
+assert.deepEqual(countsOnly.viewport, model.viewport);
+assert.deepEqual(countsOnly.reports, model.reports);
+assert.equal(countsOnly.markers.length, 0);
+assert.equal(countsOnly.rendering.markerRenderingEnabled, false);
+
+// Heat rendering aggregates report weights, rather than sampling records or
+// manufacturing an average encounter location. Coverage stays independently
+// inspectable when a report has no canonical mapped point.
+const density = map.buildDensity(crowded, { zoom: 11, maxPoints: 75 });
+assert.ok(density.points.length <= 75);
+assert.equal(density.points.reduce((sum, point) => sum + point.weight, 0), 6000);
+assert.equal(density.rendering.displayedReports, 6000);
+assert.equal(new Set(density.points.flatMap((point) => point.eventIds)).size, 6000);
+assert.equal(density.rendering.centroidUsed, false);
+for (const point of density.points) {
+  const anchor = crowdedById.get(point.eventId);
+  assert.equal(point.lat, anchor.lat);
+  assert.equal(point.lon, anchor.lon);
+  assert.equal(point.weight, point.reportCount);
+  assert.equal(point.anchorPolicy, "existing_report_coordinate");
+}
+assert.deepEqual(map.buildDensity(crowded.slice().reverse(), { zoom: 11, maxPoints: 75 }), density);
+assert.ok(map.buildDensity(crowded, { zoom: 16, maxPoints: 5000 }).points.length <= 1200);
+assert.equal(map.buildDensity(events).cohort.unmapped, 1);
+assert.equal(map.buildDensity([being, being, noCraft]).cohort.reports, 2);
+assert.equal(map.buildDensity(events, { evidenceReady: false }).points.length, 0);
 
 // Shared report membership does not create a new relationship line. A nearby
 // same-day report with a different ID never joins; chronology remains untouched.
@@ -169,9 +199,132 @@ for (const kind of ["abduction", "being", "both", "ambiguous", "mixed"]) {
   assert.match(svg, /<svg/);
   assert.match(svg, /24 reports in this display group/);
   assert.doesNotMatch(svg, /#38bdf8|#22c55e|#f97316|confirmed|flight|alien/);
+  assert.match(svg, new RegExp('stroke="' + map.KIND_COLORS[kind] + '"'));
+  assert.match(svg, /fill="#18232b"/);
 }
+assert.equal(new Set(map.KINDS.map((entry) => entry.outlineColor)).size, 4, "Categories retain distinct colored outlines and shape cues");
+assert.match(map.markerSvg("mixed", { kinds: ["being", "abduction"] }), /fill="#55d4c7"/);
+assert.match(map.markerSvg("mixed", { kinds: ["being", "abduction"] }), /fill="#f4b860"/);
 assert.match(map.markerSvg("being", { ambiguousAbduction: true }), /includes an unclear abduction mention/);
 assert.match(map.markerSvg("ambiguous"), /stroke-dasharray/);
 assert.match(map.markerSvg("<script>"), /Unclear abduction mention/);
 assert.doesNotMatch(map.markerSvg("<script>"), /<script>/);
-console.log("Encounter map evidence, canonical coordinates, bounded rendering, report identity and relationship guards passed.");
+
+const dated = (id, changes = {}) => report(id, {
+  lat: 10, lon: 105 + id / 1000, sort_date_iso: "1994-09-16", date_precision: "exact_day",
+  encounterOccurrenceDateExcluded: false, ...changes,
+});
+const datedEvents = [dated(41), dated(42), dated(43)];
+const connections = map.buildConnections(datedEvents);
+assert.equal(connections.counts.eligibleReports, 3);
+assert.equal(connections.counts.adjacentPairs, 2, "Report adjacency must not expand to every possible pair");
+assert.equal(connections.segments.length, 2);
+assert.deepEqual(connections.segments.map((edge) => edge.eventIds), [["41", "42"], ["42", "43"]]);
+for (const edge of connections.segments) {
+  assert.equal(edge.sameDayOrderKnown, false, "Identifiers cannot resolve report direction");
+  assert.equal(edge.adjacencyBasis, "stable_display_order");
+  assert.equal(edge.relationshipBasis, "same_day_same_reported_encounter_category");
+  assert.equal(edge.canInferFlight, false);
+  assert.equal(edge.canInferSameCraft, false);
+  assert.equal(edge.canInferSameBeing, false);
+  assert.equal(edge.fromLocationPrecision, "city");
+  assert.equal(edge.toLocationPrecision, "city");
+  assert.equal(edge.gapDays, 0);
+  assert.ok(edge.distanceKm > 0);
+}
+assert.deepEqual(map.buildConnections(datedEvents.slice().reverse()), connections);
+assert.equal(connections.settings.viewportScope, "selected_report_scope");
+assert.equal(connections.settings.maxDistanceKm, 250);
+
+// Multiple matching being labels add evidence to one pair, not parallel lines.
+// Abduction-only reports form a separate category and require no being label.
+const multiLabels = map.buildConnections([dated(51, { encounterBeingMask: 3 }), dated(52, { encounterBeingMask: 3 })]);
+assert.equal(multiLabels.segments.length, 1);
+assert.deepEqual(multiLabels.segments[0].categoryKeys, ["being:0", "being:1"]);
+const unspecifiedMask = 1 << 18;
+const unspecifiedConnections = map.buildConnections([
+  dated(53, { encounterBeingMask: unspecifiedMask }), dated(54, { encounterBeingMask: unspecifiedMask }),
+]);
+assert.equal(unspecifiedConnections.segments.length, 0, "Two unspecified descriptions do not identify a shared reported being category");
+assert.equal(unspecifiedConnections.omissions.untypedBeingReports, 2);
+assert.equal(unspecifiedConnections.counts.eligibleReports, 0);
+assert.equal(map.buildConnections([
+  dated(53, { encounterBeingMask: unspecifiedMask, encounterAbductionCode: 1 }),
+  dated(54, { encounterBeingMask: unspecifiedMask, encounterAbductionCode: 2 }),
+]).segments.length, 0, "Being metadata must not be collapsed into the abduction-only connection category");
+const greyAndUnspecified = map.buildConnections([
+  dated(53, { encounterBeingMask: 1 | unspecifiedMask }), dated(54, { encounterBeingMask: 1 | unspecifiedMask }),
+]);
+assert.equal(greyAndUnspecified.segments.length, 1);
+assert.deepEqual(greyAndUnspecified.segments[0].categoryKeys, ["being:0"]);
+assert.equal(map.buildConnections([dated(51), dated(52, { encounterBeingMask: 2 })]).segments.length, 0);
+const abductionConnections = map.buildConnections([
+  dated(61, { encounterAbductionCode: 1, encounterBeingMask: 0 }),
+  dated(62, { encounterAbductionCode: 2, encounterBeingMask: 0 }),
+  dated(63, { encounterBeingMask: 1 }),
+]);
+assert.equal(abductionConnections.segments.length, 1);
+assert.deepEqual(abductionConnections.segments[0].categoryKeys, ["abduction_only"]);
+assert.equal(map.buildConnections([dated(71), dated(72, { encounterAbductionCode: 2 })], { population: "abduction" }).segments.length, 0);
+assert.equal(map.buildConnections([dated(71), dated(72, { encounterAbductionCode: 2 })], { population: "both" }).segments.length, 0);
+const noCraftDated = { ...noCraft, sort_date_iso: "1994-09-16", date_precision: "exact_day", encounterOccurrenceDateExcluded: false };
+assert.equal(map.buildConnections([dated(71), noCraftDated]).segments.length, 1, "No-craft encounters remain valid reports");
+
+// Calendar comparisons fail closed for unknown, approximate, invalid and held
+// dates; ambiguous abduction mentions do not become reported abductions.
+const exclusionFixtures = [
+  dated(81), dated(82, { date_precision: "month" }), dated(83, { sort_date_iso: "2021-02-29" }),
+  dated(84, { encounterOccurrenceDateExcluded: true }), dated(85, { encounterOccurrenceDateExcluded: null }),
+  dated(86, { sort_date_iso: null }), dated(87, { has_coordinates: false }),
+  dated(88, { encounterAbductionCode: 3, encounterBeingMask: 0 }), dated(89, { encounterIdentityMismatch: true }),
+];
+const exclusionOriginal = JSON.stringify(exclusionFixtures);
+const excludedConnections = map.buildConnections(exclusionFixtures, { includeAmbiguous: true });
+assert.equal(excludedConnections.segments.length, 0);
+assert.equal(excludedConnections.counts.eligibleReports, 1);
+assert.equal(excludedConnections.omissions.nonExactDates, 3);
+assert.equal(excludedConnections.omissions.heldDates, 1);
+assert.equal(excludedConnections.omissions.dateExclusionsUnavailable, 1);
+assert.equal(excludedConnections.omissions.unmapped, 1);
+assert.equal(excludedConnections.omissions.ambiguousOnly, 1);
+assert.equal(excludedConnections.omissions.evidenceUnavailable, 1);
+assert.equal(JSON.stringify(exclusionFixtures), exclusionOriginal);
+assert.equal(map.buildConnections([dated(91), dated(92, { sort_date_iso: "1994-09-17" })]).segments.length, 0);
+assert.equal(map.buildConnections([dated(91), dated(92, { lat: 70 })]).omissions.beyondDistance, 1);
+assert.equal(map.buildConnections([dated(91), dated(92, { lon: dated(91).lon })]).omissions.zeroLengthPairs, 1);
+for (const field of ["duplicate_lineage_id", "reviewed_duplicate_cluster_id"]) {
+  const sameDuplicate = map.buildConnections([dated(91, { [field]: "reviewed-pair" }), dated(92, { [field]: "reviewed-pair" })]);
+  assert.equal(sameDuplicate.segments.length, 0);
+  assert.equal(sameDuplicate.omissions.reviewedDuplicatePairs, 1);
+  assert.equal(map.buildConnections([dated(91, { [field]: "" }), dated(92, { [field]: "" })]).segments.length, 1);
+}
+assert.equal(map.buildConnections([dated(91), dated(91), dated(92)]).omissions.duplicateEventIds, 1);
+
+// At least one real report endpoint must be in view. A line merely crossing the
+// viewport is not counted as a visible encounter; canonical points are kept.
+const narrowViewport = { north: 11, south: 9, west: 105.0905, east: 105.0915 };
+const visibleConnections = map.buildConnections([dated(91), dated(92)], { viewport: narrowViewport });
+assert.equal(visibleConnections.segments.length, 1);
+assert.equal(visibleConnections.settings.viewportScope, "at_least_one_endpoint_visible");
+const outsideConnections = map.buildConnections([dated(92), dated(93)], { viewport: narrowViewport });
+assert.equal(outsideConnections.segments.length, 0);
+assert.equal(outsideConnections.omissions.outsideViewport, 1);
+assert.equal(map.buildConnections([dated(101, { lon: 179.9 }), dated(102, { lon: -179.9 })]).segments.length, 1, "Distance wraps the dateline");
+
+// Accepted clocks can improve display adjacency. Even this evidence does not
+// orient an edge here: only the native timing resolver can prove direction.
+const clocked = map.buildConnections([dated(111), dated(112), dated(113)], {
+  getUtcInterval(event) { const startMs = (114 - event.event_id) * 1000; return { startMs, endMs: startMs + 50 }; },
+});
+assert.deepEqual(clocked.segments.map((edge) => edge.eventIds), [["112", "111"], ["113", "112"]]);
+assert.ok(clocked.segments.every((edge) => edge.sourceIntervalsAvailable && edge.adjacencyBasis === "source_interval_display_order" && !edge.sameDayOrderKnown));
+assert.equal(map.buildConnections([dated(111), dated(112)], { getUtcInterval() { throw new Error("clock unavailable"); } }).segments[0].adjacencyBasis, "stable_display_order");
+
+const connectionCrowd = Array.from({ length: 3000 }, (_, index) => dated(20000 + index));
+const cappedConnections = map.buildConnections(connectionCrowd, { maxSegments: 800 });
+assert.equal(cappedConnections.segments.length, 600);
+assert.equal(cappedConnections.counts.totalEligible, 2999);
+assert.equal(cappedConnections.omissions.segmentCap, 2399);
+assert.deepEqual(map.buildConnections(connectionCrowd.slice().reverse(), { maxSegments: 800 }), cappedConnections);
+assert.equal(map.buildConnections(connectionCrowd, { evidenceReady: false }).segments.length, 0);
+console.log("Encounter map evidence, off-layer geometry, density weights, bounded same-day connections and relationship guards passed.");

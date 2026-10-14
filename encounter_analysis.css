@@ -47,8 +47,8 @@
 .encounter-preset-count { font-size: .7rem; color: var(--muted, #9fb1b9); font-variant-numeric: tabular-nums; }
 .encounter-filter-summary { margin: .55rem 0 .25rem; font-size: .8rem; font-weight: 650; line-height: 1.45; overflow-wrap: anywhere; }
 .encounter-filter-hint { margin: .35rem 0 .6rem; font-size: .72rem; color: var(--muted, #9fb1b9); line-height: 1.5; }
-.encounter-filter-panel .encounter-map-layer-toggle { width: 100%; min-height: 44px; padding: .6rem .75rem; margin: .35rem 0 .55rem; font-size: .8rem; }
-.encounter-filter-panel .encounter-map-layer-toggle[aria-pressed="true"] { border-color: var(--accent, #65c6df); background: color-mix(in srgb, var(--accent, #65c6df) 14%, transparent); }
+.encounter-map-layer-toggle { width: 100%; min-height: 44px; padding: .6rem .75rem; font-size: .8rem; }
+.encounter-map-layer-toggle[aria-pressed="true"] { border-color: var(--accent, #65c6df); background: color-mix(in srgb, var(--accent, #65c6df) 14%, transparent); }
 .encounter-filter-disclosure { border-top: 1px solid var(--border, #334650); margin: .35rem 0; padding-top: .15rem; }
 .encounter-filter-disclosure > summary { display: flex; align-items: center; gap: .4rem; min-height: 44px; padding: .35rem 0; font-size: .81rem; font-weight: 650; cursor: pointer; }
 .encounter-filter-disclosure > summary::before { content: "▸"; color: var(--muted, #9fb1b9); }
@@ -73,16 +73,34 @@
 .encounter-filter-panel button:focus-visible, .encounter-filter-panel input:focus-visible, .encounter-filter-panel select:focus-visible, .encounter-filter-panel summary:focus-visible { outline: 2px solid var(--accent, #65c6df); outline-offset: 3px; }
 @media (max-width: 620px) { .encounter-filter-panel .encounter-being-types { max-height: 18rem; } .encounter-filter-panel .encounter-preset { min-height: 58px; font-size: .85rem; } .encounter-filter-panel .encounter-filter-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } .encounter-filter-panel .encounter-filter-actions button { white-space: normal; } }
 
-/* Neutral encounter symbols supplement, rather than replace, craft colors. */
+/* Optional encounter displays stay in the native map tools pane. */
+.encounter-map-controls { gap: .55rem; }
+.encounter-map-controls .field { margin: 0; min-width: 0; }
+.encounter-map-controls .field > span { font-size: .75rem; font-weight: 650; }
+.encounter-map-controls select { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: .5rem .6rem; font-size: .78rem; }
+.encounter-map-controls .encounter-filter-hint { margin: 0; }
+.encounter-map-checkbox { display: flex; align-items: center; gap: .6rem; min-height: 44px; font-size: .78rem; line-height: 1.4; cursor: pointer; }
+.encounter-map-checkbox input { width: 18px; height: 18px; flex: 0 0 auto; margin: 0; accent-color: var(--accent, #65c6df); }
+.encounter-map-connection-status { margin: 0; font-size: .73rem; line-height: 1.45; color: var(--muted, #9fb1b9); overflow-wrap: anywhere; }
+.encounter-map-policy { margin: 0; border-top: 1px solid var(--panel-border, #334650); }
+.map-control-section .encounter-map-policy > summary { min-height: 44px; padding: .4rem 0; gap: .4rem; border: 0; font-size: .74rem; line-height: 1.35; font-weight: 600; letter-spacing: 0; text-transform: none; background: transparent; }
+.map-control-section .encounter-map-policy > summary::after { width: .4rem; height: .4rem; margin-right: .2rem; }
+.map-control-section .encounter-map-policy[open] > summary::after { transform: rotate(225deg); }
+.encounter-map-policy > p { padding-bottom: .4rem; }
+.encounter-map-control-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem; }
+.encounter-map-control-actions button { min-width: 0; min-height: 44px; padding: .45rem .5rem; font-size: .73rem; line-height: 1.35; white-space: normal; }
+.encounter-map-controls button:focus-visible, .encounter-map-controls input:focus-visible, .encounter-map-controls select:focus-visible { outline: 2px solid var(--focus-ring, #65c6df); outline-offset: 3px; }
+
+/* Colored outlines and distinct symbols supplement the existing craft palette. */
 .encounter-craft-sample { display: inline-block; width: .65rem; height: .65rem; border-radius: 50%; background: var(--encounter-craft-color); border: 1px solid var(--ink); vertical-align: baseline; }
 .encounter-map-marker, .encounter-map-icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; background: transparent; }
 .encounter-map-marker > svg { display: block; width: 36px; height: 32px; flex: 0 0 auto; filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
 .encounter-map-glyph { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: 28px; height: 28px; flex: 0 0 auto; border: 2px solid #26343b; border-radius: 50%; background: #f3f5f4; color: #26343b; box-shadow: 0 0 0 2px rgba(255,255,255,.92), 0 2px 5px rgba(0,0,0,.42); }
 .encounter-map-glyph svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.encounter-map-glyph-abduction { border-radius: 6px; }
-.encounter-map-glyph-being { border-radius: 50%; }
-.encounter-map-glyph-both { border-radius: 8px; border-style: double; border-width: 4px; }
-.encounter-map-glyph-ambiguous { border-style: dashed; }
+.encounter-map-glyph-abduction { --encounter-outline: #f4b860; border-radius: 6px; border-color: var(--encounter-outline); }
+.encounter-map-glyph-being { --encounter-outline: #55d4c7; border-radius: 50%; border-color: var(--encounter-outline); }
+.encounter-map-glyph-both { --encounter-outline: #bca2ff; border-radius: 8px; border-color: var(--encounter-outline); border-style: double; border-width: 4px; }
+.encounter-map-glyph-ambiguous { --encounter-outline: #b5bdc6; border-color: var(--encounter-outline); border-style: dashed; }
 .encounter-map-cluster { display: inline-flex; align-items: center; justify-content: center; gap: .15rem; box-sizing: border-box; min-width: 36px; min-height: 36px; padding: .35rem; border: 2px solid #f3f5f4; border-radius: 50%; background: #26343b; color: #fff; font-size: .8rem; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 1px #26343b, 0 2px 5px rgba(0,0,0,.4); }
 .encounter-map-cluster svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .encounter-map-cluster-count { padding: 0 .15rem; }
@@ -98,7 +116,7 @@ button.encounter-legend-key[aria-pressed="false"] { opacity: .5; }
 .encounter-legend-key > strong { margin-left: auto; font-size: .75rem; font-variant-numeric: tabular-nums; }
 label.encounter-legend-key { cursor: pointer; }
 .encounter-legend-key input { width: 18px; height: 18px; margin: 0; flex: 0 0 auto; accent-color: var(--accent, #65c6df); }
-.encounter-legend-symbol, .encounter-legend-key .encounter-map-glyph { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 20px; height: 20px; color: inherit; background: transparent; border-color: currentColor; border-width: 1px; box-shadow: none; }
+.encounter-legend-symbol, .encounter-legend-key .encounter-map-glyph { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 20px; height: 20px; color: inherit; background: transparent; border-color: var(--encounter-outline, currentColor); border-width: 1px; box-shadow: none; }
 .encounter-legend-symbol svg, .encounter-legend-key .encounter-map-glyph svg { width: 14px; height: 14px; }
 .encounter-legend-symbol { width: 30px; height: 28px; border: 0; }
 .encounter-legend-symbol > svg { display: block; width: 30px; height: 27px; }

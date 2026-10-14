@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="./styles.css?v=2026-10-13-encounter-map-v5">
-  <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-13-encounter-map-v5">
+    <link rel="stylesheet" href="./styles.css?v=2026-10-13-encounter-map-v6">
+  <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-13-encounter-map-v6">
   <link rel="stylesheet" href="./analysis_comparisons.css?v=2026-10-08-trace-chronology-v1">
   <script>
     // Retire the temporary recovery proxy only for browsers that still have it.
@@ -912,8 +912,8 @@
                 <div id="type-filter-pane" class="filter-option-pane resizable-filter-pane" role="group" aria-label="Type filter options"></div>
               </div>
             </div>
-            <details id="encounter-filter-panel" class="field filter-field encounter-filter-panel" open>
-              <summary><span>Encounters</span><span id="encounter-filter-state" class="filter-state-pill">Map overlay</span></summary>
+            <details id="encounter-filter-panel" class="field filter-field encounter-filter-panel">
+              <summary><span>Encounters</span><span id="encounter-filter-state" class="filter-state-pill">Overlay off</span></summary>
               <p class="encounter-filter-intro">Explore reported abductions and descriptions of beings.</p>
               <label class="field encounter-filter-target-field" for="encounter-filter-target"><span>Apply selection to</span>
                 <select id="encounter-filter-target" aria-describedby="encounter-filter-scope" disabled>
@@ -928,9 +928,9 @@
                 <button id="encounter-preset-beings" class="secondary-button encounter-preset" type="button" data-encounter-preset="beings" aria-pressed="false" disabled><span>Being encounters</span><span id="encounter-preset-beings-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
                 <button id="encounter-preset-both" class="secondary-button encounter-preset" type="button" data-encounter-preset="both" aria-pressed="false" disabled><span>Both</span><span id="encounter-preset-both-count" class="encounter-preset-count" aria-hidden="true">—</span></button>
               </div>
-              <p id="encounter-filter-summary" class="encounter-filter-summary" role="status" aria-live="polite">Loading encounter overlay…</p>
+              <p id="encounter-filter-summary" class="encounter-filter-summary" role="status" aria-live="polite">Encounter overlay is off.</p>
               <p id="encounter-filter-match-hint" class="encounter-filter-hint">Both requires an abduction and a being description in the same report.</p>
-              <button id="encounter-map-layer-toggle" class="secondary-button encounter-map-layer-toggle" type="button" aria-pressed="true" aria-controls="map" disabled>Hide encounter markers</button>
+              <p class="encounter-filter-hint">Choose the map display in Map tools → Encounters.</p>
               <details id="encounter-being-type-disclosure" class="encounter-filter-disclosure">
                 <summary><span>Being descriptions</span><span id="encounter-being-selected-count" class="encounter-selection-count">Any</span></summary>
                 <label class="field encounter-being-search-field" for="encounter-being-search"><span>Find a description</span><input id="encounter-being-search" type="search" placeholder="Grey, humanoid, luminous…" autocomplete="off" disabled></label>
@@ -966,7 +966,7 @@
                 <button id="encounter-include-all-types" class="secondary-button" type="button" disabled>Include all report types</button>
               </div>
               <p class="encounter-filter-hint">For report filtering, include all report types to retain encounters without a craft classification.</p>
-              <p id="encounter-filter-status" class="encounter-filter-hint" role="status" aria-live="polite">Loading encounter evidence…</p>
+              <p id="encounter-filter-status" class="encounter-filter-hint" role="status" aria-live="polite">Encounter controls are optional.</p>
             </details>
             <div class="field filter-field filter-subsection" data-collapsible-section="precision">
               <div class="filter-subsection-header">
@@ -1199,6 +1199,44 @@
                   <span id="map-control-overlays-summary-state" class="map-control-summary-state">2 on</span>
                 </summary>
                 <div id="map-control-overlays-slot" class="map-control-slot"></div>
+              </details>
+              <details id="map-control-section-encounters" class="map-control-section" data-map-control-section="encounters">
+                <summary>
+                  <span class="map-control-summary-label">Encounters</span>
+                  <span id="map-control-encounters-summary-state" class="map-control-summary-state">Off</span>
+                </summary>
+                <div id="map-control-encounters-slot" class="map-control-slot encounter-map-controls">
+                  <button id="encounter-map-layer-toggle" class="secondary-button encounter-map-layer-toggle" type="button" aria-pressed="false" aria-controls="map encounter-map-display encounter-map-connections" disabled>Show encounters</button>
+                  <label class="field encounter-map-display-field" for="encounter-map-display"><span>Map display</span>
+                    <select id="encounter-map-display" aria-describedby="encounter-map-display-hint" disabled>
+                      <option value="markers" selected>Report markers</option>
+                      <option value="heatmap">Report density heatmap</option>
+                      <option value="combined">Heatmap + markers</option>
+                    </select>
+                  </label>
+                  <p id="encounter-map-display-hint" class="encounter-filter-hint">Density counts mapped reports; repeated accounts may describe the same incident.</p>
+                  <label class="encounter-map-checkbox" for="encounter-map-connections">
+                    <input id="encounter-map-connections" type="checkbox" aria-describedby="encounter-map-connection-status encounter-map-connection-policy" disabled>
+                    <span>Same-day encounter report links</span>
+                  </label>
+                  <label class="field encounter-map-radius-field" for="encounter-map-connection-radius"><span>Maximum link distance</span>
+                    <select id="encounter-map-connection-radius" disabled>
+                      <option value="25">25 km</option>
+                      <option value="100">100 km</option>
+                      <option value="250" selected>250 km</option>
+                      <option value="1000">1,000 km</option>
+                    </select>
+                  </label>
+                  <p id="encounter-map-connection-status" class="encounter-map-connection-status" role="status" aria-live="polite">Report links are off.</p>
+                  <details class="encounter-map-policy">
+                    <summary>How to read these layers</summary>
+                    <p id="encounter-map-connection-policy" class="encounter-filter-hint">Links compare nearby reports on the same recorded day with a shared being description, or two abduction reports without being descriptions. They do not establish a common being, craft or journey. Recorded days may use different local time zones. Dashed links have unknown report order.</p>
+                  </details>
+                  <div class="encounter-map-control-actions">
+                    <button class="secondary-button" type="button" data-encounter-edit-selection>Choose encounters</button>
+                    <button class="secondary-button" type="button" data-encounter-inspect-scope="scope" disabled>Inspect reports</button>
+                  </div>
+                </div>
               </details>
               <details id="map-control-section-traces" class="map-control-section" data-map-control-section="traces">
                 <summary>
@@ -1999,8 +2037,8 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./vendor/leaflet.markercluster.js"></script>
-  <script src="./encounter_evidence.js?v=2026-10-13-encounter-map-v5"></script>
-  <script src="./encounter_map.js?v=2026-10-13-encounter-map-v5"></script>
+  <script src="./encounter_evidence.js?v=2026-10-13-encounter-map-v6"></script>
+  <script src="./encounter_map.js?v=2026-10-13-encounter-map-v6"></script>
   <script src="./trace_chronology.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_neighborhood.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_direction_summary.js?v=2026-10-08-legend-directions-v1"></script>
@@ -2010,18 +2048,18 @@
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
-  <script src="./analysis_comparisons_view.js?v=2026-10-13-encounter-map-v5"></script>
-  <script src="./analysis_view.js?v=2026-10-13-encounter-map-v5"></script>
+  <script src="./analysis_comparisons_view.js?v=2026-10-13-encounter-map-v6"></script>
+  <script src="./analysis_view.js?v=2026-10-13-encounter-map-v6"></script>
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
   <script src="./quality_detail_overlay.js?v=2026-10-07-reviewed-quality-v1"></script>
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
-  <script src="./app.js?v=2026-10-13-encounter-map-v5"></script>
+  <script src="./app.js?v=2026-10-13-encounter-map-v6"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/chronology-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-map-v5"></script>
-  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-map-v5"></script>
+  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-13-encounter-map-v6"></script>
+  <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-13-encounter-map-v6"></script>
   <script defer src="./ui/accepted-workspace/polish.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./guided_tour_state.js?v=2026-10-08-guided-tour-v1"></script>
   <script defer src="./guided_tour_content.js?v=2026-10-08-guided-tour-v1"></script>

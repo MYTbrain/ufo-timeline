@@ -29,7 +29,7 @@ for (const name of ["test_analysis_stats.mjs", "test_analysis_view.mjs", "test_a
       'assert.equal(controller.callbacks.getFilterSnapshot().generation, 13, "the shared controls already describe the pending cohort");\nassert.equal(evidenceExports.at(-1).package.filterSnapshot.generation, 12, "the export retains the rendered cohort");\ncontroller.callbacks.getFilterSnapshot = renderedSnapshotCallback;');
   }
   if (name === "test_analysis_spatial_worker_concurrency.mjs") {
-    source = source.replaceAll("2026-08-12-context-evidence-v2", "2026-10-13-encounter-map-v5");
+    source = source.replaceAll("2026-08-12-context-evidence-v2", "2026-10-13-encounter-map-v6");
   }
   console.log(`Retained regression: ${name}`);
   try {

@@ -7,14 +7,20 @@ report-direction radar remain in place.
 
 ## Interaction and scope
 
-Encounters now has a visible legend section and an independent map layer. Neutral
-symbols distinguish abduction without an indexed being description, beings
+Encounters has an opt-in map layer and legend entries directly after crop circles
+and animal mutilations, before airports. Startup, legend reset and full reset leave
+markers, density and encounter connections off. No encounter display geometry is
+generated while off; source classifications remain indexed for report filters,
+Analysis, provenance and coverage counts. Colored outlines and neutral interiors
+retain shape cues: amber for abduction, teal for beings, violet for both, and gray
+for unclear mentions. Mixed display groups retain colored category ticks. Symbols
+distinguish abduction without an indexed being description, beings
 without an abduction classification, both in one report, and optional unclear
 abduction mentions. These are disjoint display categories, not verified species
 or independently verified incidents. Legend category visibility does not erase
 its eligible counts or its reports from the inspector.
 
-The open Encounters controls provide All encounters, Abductions, Being encounters
+The initially collapsed Encounters selection controls provide All encounters, Abductions, Being encounters
 and Both presets, searchable multi-select descriptions, counts, and a deliberate
 selection target. **Encounter overlay** is the default: source/date/search/
 precision/area constraints apply while craft Type and craft-legend visibility do
@@ -59,10 +65,33 @@ as current. Off/hidden/reset changes clear highlights. An empty result says no
 current detailed trace uses that report as an endpoint; it does not claim that
 the report has no related sightings.
 
-No proximity connectors are added. A future explicit proximity exploration
-would need labelled day/distance/precision evidence, undirected display and
-exclusion from report-direction statistics. The present pilot has no verified
-exact sites/UTC with which to establish measured encounter travel.
+The native map-control pane has a collapsed Encounters section. Its master toggle
+enables the layer; display choices are markers, report-density heatmap, or both.
+Density retains unique report weights and original-coordinate bin anchors. Its
+separate noninteractive canvas cannot erase the craft heatmap or change Results,
+Analysis or playback. Density bins cache by cohort/zoom instead of viewport pan,
+and canvas data is restored after removing/re-enabling the layer.
+
+An optional same-day encounter comparison layer uses mapped, exact recorded-day
+reports sharing a being label, or reported abductions with no being descriptions.
+Unspecified-only being labels never become a matching category or abduction-only
+fallback. Held occurrence dates, unavailable date checks, unmapped reports,
+zero-length pairs and pairs in the same known duplicate lineage are excluded.
+Connections use accepted source-clock display ordering where available and
+deterministic display adjacency otherwise; IDs never establish temporal order.
+The existing chronology resolver supplies conservative order. Unknown order stays
+undirected/dashed. The maximum marker separation is 25, 100, 250 (default), or
+1,000 km; at least one endpoint must be visible, and at most 600 connections render.
+Coverage reports eligible/displayed links and omissions. Pairs are not expanded
+into an all-to-all network.
+
+Connection popups name the matching descriptions, recorded date, marker separation,
+report order status and each endpoint's source location precision. These compare
+catalog reports and do not establish a common being, craft or journey. Distinct
+source local calendar dates/time zones remain a limitation. The separate layer
+does not enter the craft radar, craft adjacency traversal or crop relationships.
+The source-enrichment pilot still has no verified exact sites/UTC that establish
+measured encounter travel.
 
 Country Area membership uses the same geography-aware catalog worker as other
 report filters, and fails closed while loading or unavailable. A discovered
@@ -72,7 +101,9 @@ projection preserves the original fallback.
 
 ## Verification and retention
 
-Focused actual-app tests exercise overlay/report targeting, source/date/search/
+Focused actual-app tests exercise off/reset defaults, actual legend ordering and
+control listeners, independent heatmap lifecycle, all three display modes,
+connection eligibility and isolation, overlay/report targeting, source/date/search/
 precision/drawn-area/country/exact-ID scope, hidden category counts, unmapped
 inspection, viewport caching, search without report refresh, contradictory
 selection guards, original report identity, bounded deterministic aggregation,

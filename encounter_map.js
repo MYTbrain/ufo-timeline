@@ -6,16 +6,17 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  // The shapes identify reported content, never a biological type or an event
-  // verification level. Existing craft colors and report-adjacency lines belong
-  // to their own layers. This module neither creates nor reorders trace edges.
+  // Shape and outline identify reported content, never a biological type or an
+  // event verification level. Craft traces remain a separate native layer. The
+  // optional encounter connectors are bounded report adjacency, not travel.
   const ALL_BEING_MASK = (1 << 19) - 1;
   const MAX_MERCATOR_LATITUDE = 85.0511287798066;
+  const KIND_COLORS = Object.freeze({ abduction: "#f4b860", being: "#55d4c7", both: "#bca2ff", ambiguous: "#b5bdc6", mixed: "#dce3ea" });
   const KINDS = Object.freeze([
-    Object.freeze({ key: "abduction", label: "Reported abduction", description: "Abduction reported; no indexed being description" }),
-    Object.freeze({ key: "being", label: "Reported beings", description: "Being description; no reported-abduction classification" }),
-    Object.freeze({ key: "both", label: "Abduction and beings", description: "Both in the same catalog report" }),
-    Object.freeze({ key: "ambiguous", label: "Unclear abduction mention", description: "An ambiguous category or mention; not counted as a reported abduction" }),
+    Object.freeze({ key: "abduction", label: "Reported abduction", description: "Abduction reported; no indexed being description", outlineColor: KIND_COLORS.abduction }),
+    Object.freeze({ key: "being", label: "Reported beings", description: "Being description; no reported-abduction classification", outlineColor: KIND_COLORS.being }),
+    Object.freeze({ key: "both", label: "Abduction and beings", description: "Both in the same catalog report", outlineColor: KIND_COLORS.both }),
+    Object.freeze({ key: "ambiguous", label: "Unclear abduction mention", description: "An ambiguous category or mention; not counted as a reported abduction", outlineColor: KIND_COLORS.ambiguous }),
   ]);
   const KIND_KEYS = new Set(KINDS.map(function (entry) { return entry.key; }));
   const ASSOCIATIONS = Object.freeze([
@@ -181,6 +182,7 @@
     const zoom = zoomValue == null ? 3 : Math.max(0, Math.min(24, zoomValue));
     const maxValue = number(config.maxMarkers);
     const maxMarkers = maxValue == null ? 400 : Math.max(1, Math.min(1500, Math.floor(maxValue)));
+    const renderMarkers = config.renderMarkers !== false;
     const sizeValue = number(config.cellSize);
     let cellSize = sizeValue == null ? 40 : Math.max(16, Math.min(256, sizeValue));
     events.forEach(function (event) {
@@ -203,6 +205,7 @@
       if (!point) { unmappedEventIds.push(id); return; }
       if (!inViewport(point, config.viewport)) { exclusions.outsideViewport += 1; return; }
       addCounts(visible, entry);
+      if (!renderMarkers) return;
       let projected;
       try { projected = typeof config.project === "function" ? config.project([point.lat, point.lon]) : projection(point, zoom); } catch (_) { projected = null; }
       if (!Array.isArray(projected) || projected.length < 2 || number(projected[0]) == null || number(projected[1]) == null || Math.abs(Number(projected[0])) > 1e12 || Math.abs(Number(projected[1])) > 1e12) {
@@ -212,7 +215,7 @@
       entry.projected = [Number(projected[0]), Number(projected[1])];
       entries.push(entry);
     });
-    let groups = groupPoints(entries, cellSize);
+    let groups = renderMarkers ? groupPoints(entries, cellSize) : [];
     // World-pixel bins are independent of input order and viewport panning.
     // Increase spatial aggregation before considering an arbitrary point cap.
     for (let iteration = 0; groups.length > maxMarkers && iteration < 40; iteration += 1) {
@@ -230,8 +233,158 @@
       countsAvailable: config.evidenceReady !== false,
       scopeLabel: "Selected dates, sources and geography; independent of craft-type visibility", population: config.population || "all",
       includeAmbiguous: config.includeAmbiguous === true || config.population === "ambiguous", cohort, viewport: visible, exclusions, markers, reports, unmappedEventIds,
-      rendering: { maxMarkers, markerCount: markers.length, displayedReports: markers.reduce(function (sum, entry) { return sum + entry.reportCount; }, 0), cellSize, zoom,
+      rendering: { maxMarkers, markerCount: markers.length, displayedReports: markers.reduce(function (sum, entry) { return sum + entry.reportCount; }, 0), cellSize, zoom, markerRenderingEnabled: renderMarkers,
         clustering: "display_group_only", centroidUsed: false }, policy: POLICY,
+    };
+  }
+  function buildDensity(events, options) {
+    const config = options || {};
+    const maxValue = number(config.maxPoints);
+    const maxPoints = maxValue == null ? 1200 : Math.max(1, Math.min(1200, Math.floor(maxValue)));
+    const model = buildModel(events, Object.assign({}, config, { renderMarkers: true, maxMarkers: maxPoints, cellSize: config.cellSize == null ? 24 : config.cellSize }));
+    return {
+      schemaId: "ufo-encounter-density-v1", status: model.status, countsAvailable: model.countsAvailable,
+      cohort: model.cohort, viewport: model.viewport, exclusions: model.exclusions,
+      points: model.markers.map(function (marker) {
+        return { lat: marker.lat, lon: marker.lon, weight: marker.reportCount, reportCount: marker.reportCount,
+          eventId: marker.eventId, eventIds: marker.eventIds, anchorPolicy: marker.anchorPolicy };
+      }),
+      rendering: { maxPoints, pointCount: model.markers.length, displayedReports: model.rendering.displayedReports,
+        cellSize: model.rendering.cellSize, zoom: model.rendering.zoom, centroidUsed: false, aggregation: "display_bins_with_report_count_weights" },
+      policy: "Heat intensity counts distinct catalog reports at their canonical locations. Display bins use an existing report coordinate, not a new site or incident; repeated accounts may concern the same event. No incident deduplication or location inference is performed.",
+    };
+  }
+  function exactCalendarDay(event) {
+    if (!event || event.date_precision !== "exact_day" || typeof event.sort_date_iso !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(event.sort_date_iso)) return null;
+    const date = new Date(event.sort_date_iso + "T00:00:00.000Z");
+    if (!Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== event.sort_date_iso) return null;
+    return { day: event.sort_date_iso, ordinal: date.getTime() / 86400000 };
+  }
+  function categoryKeys(classification) {
+    const keys = [];
+    if (classification.reportedBeings) {
+      // Bit 18 is an unspecified being description. Its presence is useful
+      // report metadata, but two missing descriptions cannot identify a common
+      // reported category. It also must not turn into abduction-only evidence.
+      for (let bit = 0; bit < 18; bit += 1) if (classification.beingMask & (1 << bit)) keys.push("being:" + bit);
+    } else if (classification.reportedAbduction) keys.push("abduction_only");
+    return keys;
+  }
+  function distanceKm(from, to) {
+    const radians = Math.PI / 180;
+    const dLat = (to.lat - from.lat) * radians;
+    const dLon = normalizedLongitude(to.lon - from.lon) * radians;
+    const value = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(from.lat * radians) * Math.cos(to.lat * radians) * Math.pow(Math.sin(dLon / 2), 2);
+    return 6371.0088 * 2 * Math.asin(Math.sqrt(Math.max(0, Math.min(1, value))));
+  }
+  function duplicateGroup(value) {
+    if (typeof value !== "number" && typeof value !== "string") return "";
+    if (typeof value === "number" && !Number.isFinite(value)) return "";
+    return String(value).trim();
+  }
+  function sameReviewedDuplicate(from, to) {
+    return ["duplicate_lineage_id", "reviewed_duplicate_cluster_id"].some(function (field) {
+      const left = duplicateGroup(from[field]), right = duplicateGroup(to[field]);
+      return left !== "" && right !== "" && left === right;
+    });
+  }
+  function sourceInterval(event, callback) {
+    if (typeof callback !== "function") return null;
+    let interval;
+    try { interval = callback(event); } catch (_) { return null; }
+    return interval && typeof interval.startMs === "number" && Number.isFinite(interval.startMs) &&
+      typeof interval.endMs === "number" && Number.isFinite(interval.endMs) && interval.endMs >= interval.startMs
+      ? { startMs: interval.startMs, endMs: interval.endMs } : null;
+  }
+  function compareConnectionEntries(left, right) {
+    if (left.interval && right.interval) {
+      const difference = left.interval.startMs - right.interval.startMs || left.interval.endMs - right.interval.endMs;
+      if (difference) return difference;
+    } else if (left.interval || right.interval) return left.interval ? -1 : 1;
+    // Stable identifiers only break a display tie. They never prove order and
+    // never set sameDayOrderKnown; the native timing evidence must do that.
+    return compareIds(left.eventId, right.eventId);
+  }
+  function buildConnections(events, options) {
+    if (!Array.isArray(events)) throw new TypeError("Encounter connections expect a catalog report array");
+    const config = options || {};
+    const maxValue = number(config.maxSegments), distanceValue = number(config.maxDistanceKm);
+    const maxSegments = maxValue == null ? 600 : Math.max(1, Math.min(600, Math.floor(maxValue)));
+    const maxDistanceKm = distanceValue == null ? 250 : Math.max(0, Math.min(20050, distanceValue));
+    const omissions = { evidenceUnavailable: 0, invalidIdentity: 0, duplicateEventIds: 0, notIndexed: 0, population: 0,
+      ambiguousOnly: 0, untypedBeingReports: 0, unmapped: 0, nonExactDates: 0, heldDates: 0, dateExclusionsUnavailable: 0,
+      reviewedDuplicatePairs: 0, zeroLengthPairs: 0, beyondDistance: 0, outsideViewport: 0, segmentCap: 0 };
+    const seen = new Set(), groups = new Map();
+    let inputReports = 0, eligibleReports = 0;
+    events.forEach(function (event) {
+      inputReports += 1;
+      if (config.evidenceReady === false) { omissions.evidenceUnavailable += 1; return; }
+      const id = eventId(event);
+      if (!id) { omissions.invalidIdentity += 1; return; }
+      if (seen.has(id)) { omissions.duplicateEventIds += 1; return; }
+      seen.add(id);
+      const classification = classify(event);
+      if (!classification.ready) { omissions.evidenceUnavailable += 1; return; }
+      if (!classification.kind) { omissions.notIndexed += 1; return; }
+      if (classification.kind === "ambiguous") { omissions.ambiguousOnly += 1; return; }
+      if (!accepts(classification, config)) { omissions.population += 1; return; }
+      const categories = categoryKeys(classification);
+      if (!categories.length) { omissions.untypedBeingReports += 1; return; }
+      const point = pointForEvent(event);
+      if (!point) { omissions.unmapped += 1; return; }
+      const date = exactCalendarDay(event);
+      if (!date) { omissions.nonExactDates += 1; return; }
+      if (event.encounterOccurrenceDateExcluded === true) { omissions.heldDates += 1; return; }
+      if (event.encounterOccurrenceDateExcluded !== false) { omissions.dateExclusionsUnavailable += 1; return; }
+      const entry = { eventId: id, event, point, day: date.day, ordinal: date.ordinal, interval: sourceInterval(event, config.getUtcInterval) };
+      eligibleReports += 1;
+      categories.forEach(function (category) {
+        const key = date.day + "|" + category;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(entry);
+      });
+    });
+    const pairs = new Map();
+    Array.from(groups.keys()).sort().forEach(function (key) {
+      const entries = groups.get(key).slice().sort(compareConnectionEntries);
+      const category = key.slice(key.indexOf("|") + 1);
+      for (let position = 1; position < entries.length; position += 1) {
+        const from = entries[position - 1], to = entries[position];
+        const low = compareIds(from.eventId, to.eventId) < 0 ? from.eventId : to.eventId;
+        const high = low === from.eventId ? to.eventId : from.eventId;
+        const pairKey = low + ":" + high;
+        const previous = pairs.get(pairKey);
+        if (previous) previous.categoryKeys.push(category);
+        else pairs.set(pairKey, { from, to, categoryKeys: [category] });
+      }
+    });
+    const eligibleSegments = [];
+    Array.from(pairs.values()).sort(function (left, right) {
+      return left.from.day.localeCompare(right.from.day) || compareIds(left.from.eventId, right.from.eventId) || compareIds(left.to.eventId, right.to.eventId);
+    }).forEach(function (pair) {
+      const from = pair.from, to = pair.to;
+      if (sameReviewedDuplicate(from.event, to.event)) { omissions.reviewedDuplicatePairs += 1; return; }
+      const distance = distanceKm(from.point, to.point);
+      if (distance <= 0.000001) { omissions.zeroLengthPairs += 1; return; }
+      if (distance > maxDistanceKm) { omissions.beyondDistance += 1; return; }
+      if (config.viewport && !inViewport(from.point, config.viewport) && !inViewport(to.point, config.viewport)) { omissions.outsideViewport += 1; return; }
+      eligibleSegments.push({ from: [from.point.lat, from.point.lon], to: [to.point.lat, to.point.lon],
+        fromEventId: from.eventId, toEventId: to.eventId, eventIds: [from.eventId, to.eventId], day: from.day,
+        fromSortDateKey: from.day, toSortDateKey: to.day, fromSortOrdinal: from.ordinal, toSortOrdinal: to.ordinal, gapDays: 0,
+        categoryKeys: pair.categoryKeys.slice().sort(), distanceKm: distance, sameDayOrderKnown: false,
+        relationshipBasis: "same_day_same_reported_encounter_category", adjacencyBasis: from.interval && to.interval ? "source_interval_display_order" : "stable_display_order",
+        sourceIntervalsAvailable: Boolean(from.interval && to.interval), canInferFlight: false, canInferSameCraft: false, canInferSameBeing: false,
+        fromLocationPrecision: from.point.locationPrecision, toLocationPrecision: to.point.locationPrecision });
+    });
+    omissions.segmentCap = Math.max(0, eligibleSegments.length - maxSegments);
+    const segments = eligibleSegments.slice(0, maxSegments);
+    return {
+      schemaId: "ufo-encounter-connections-v1", status: config.evidenceReady === false ? "unavailable" : "ready",
+      segments, counts: { inputReports, uniqueReports: seen.size, eligibleReports, dayCategoryGroups: groups.size,
+        adjacentPairs: pairs.size, totalEligible: eligibleSegments.length, displayedSegments: segments.length }, omissions,
+      settings: { maxDistanceKm, maxSegments, calendarScope: "same_exact_source_calendar_day", categoryScope: "shared_reported_being_label_or_abduction_without_being_description",
+        viewportScope: config.viewport ? "at_least_one_endpoint_visible" : "selected_report_scope", ordered: false },
+      policy: "Optional connections join display-adjacent reports on the same exact source calendar day with a shared reported being label, or abduction reports without a being description, within the selected distance. An unspecified being description is not a matching label. Dates may be local to different time zones. Identifiers only break display ties. Direction requires separate source-backed timing; a connection does not establish a common being, craft, event, journey or flight path. Held or unavailable occurrence dates, unmapped reports, reviewed duplicate pairs and zero-length links are excluded.",
     };
   }
   function escapeHtml(value) {
@@ -244,7 +397,17 @@
     const count = Number.isSafeInteger(config.count) && config.count > 1 ? config.count : 0;
     const title = (label ? label.label : "Mixed encounter reports") + (count ? " · " + count + " reports in this display group" : "") + (config.ambiguousAbduction && knownKind !== "ambiguous" ? " · includes an unclear abduction mention" : "");
     const dashed = knownKind === "ambiguous" || config.ambiguousAbduction === true;
-    const frame = '<rect x="2" y="2" width="24" height="24" rx="6" fill="#18232b" fill-opacity=".94" stroke="#f0f3f4" stroke-width="1.7"' + (dashed ? ' stroke-dasharray="3 2"' : '') + '/>';
+    const outline = KIND_COLORS[knownKind];
+    // A neutral outside keyline and dark interior separate the colored outline
+    // from both pale and dark basemaps. The original shapes remain independent
+    // of color, so category recognition does not require color discrimination.
+    const frame = '<rect x="1" y="1" width="26" height="26" rx="7" fill="#18232b" fill-opacity=".97" stroke="#111b22" stroke-width="2"/>' +
+      '<rect x="2.5" y="2.5" width="23" height="23" rx="5.5" fill="#18232b" stroke="' + outline + '" stroke-width="2.4"' + (dashed ? ' stroke-dasharray="3 2"' : '') + '/>';
+    const presentKinds = knownKind === "mixed" && Array.isArray(config.kinds)
+      ? KINDS.map(function (entry) { return entry.key; }).filter(function (key) { return config.kinds.includes(key); }) : [];
+    const categoryMarks = presentKinds.map(function (key, index) {
+      return '<rect x="' + (5 + index * 5) + '" y="23" width="4" height="2.4" rx="1" fill="' + KIND_COLORS[key] + '" stroke="none"/>';
+    }).join("");
     // A generic person pictogram denotes a source-described being category. It
     // deliberately has no alien anatomy, species, craft, beam, or travel arrow.
     const person = '<circle cx="14" cy="9" r="2.4"/><path d="M9.5 19v-2.3a4.5 4.5 0 0 1 9 0V19M14 13.2V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
@@ -254,7 +417,7 @@
     const mixed = '<circle cx="10" cy="11" r="2"/><path d="M6.8 17a3.2 3.2 0 0 1 6.4 0M18 8l4 6-4 6-4-6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>';
     const glyph = knownKind === "being" ? person : knownKind === "abduction" ? diamond : knownKind === "both" ? both : knownKind === "mixed" ? mixed : unclear;
     const counter = count ? '<rect x="17" y="19" width="18" height="12" rx="5" fill="#f0f3f4" stroke="#18232b" stroke-width="1"/><text x="26" y="27.5" fill="#18232b" stroke="none" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="700" font-size="8">' + (count > 999 ? "999+" : count) + '</text>' : "";
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 32" width="36" height="32" role="img" aria-label="' + escapeHtml(title) + '" style="color:#f0f3f4"><title>' + escapeHtml(title) + '</title>' + frame + '<g fill="currentColor">' + glyph + '</g>' + counter + '</svg>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 32" width="36" height="32" role="img" aria-label="' + escapeHtml(title) + '" style="color:#f0f3f4"><title>' + escapeHtml(title) + '</title>' + frame + '<g fill="currentColor">' + glyph + '</g>' + categoryMarks + counter + '</svg>';
   }
   function traceEndpointSummary(segments, events) {
     const byId = new Map();
@@ -290,5 +453,5 @@
     return result;
   }
 
-  return Object.freeze({ KINDS, ASSOCIATIONS, POLICY, classify, pointForEvent, describeRelationship, inViewport, buildModel, markerSvg, traceEndpointSummary });
+  return Object.freeze({ KINDS, KIND_COLORS, ASSOCIATIONS, POLICY, classify, pointForEvent, describeRelationship, inViewport, buildModel, buildDensity, buildConnections, markerSvg, traceEndpointSummary });
 });

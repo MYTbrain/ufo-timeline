@@ -37,6 +37,11 @@ node("encounter-filter-target", { value: "overlay" });
 node("encounter-abduction-filter", { value: "any" });
 node("encounter-being-filter", { value: "any" });
 node("encounter-being-search");
+node("encounter-map-display", { value: "markers" });
+node("encounter-map-connections", { checked: false });
+node("encounter-map-connection-radius", { value: "250" });
+node("encounter-map-connection-status");
+node("map-control-encounters-summary-state");
 for (const id of ["encounter-filter-state", "encounter-filter-summary", "encounter-being-selected-count", "encounter-being-search-status", "encounter-map-layer-toggle", "encounter-filter-status"]) node(id);
 const presets = ["all", "abductions", "beings", "both"].map((key) => {
   node("encounter-preset-" + key + "-count");
@@ -66,7 +71,7 @@ const typeCounts = descriptionTypes.map((key) => {
 });
 const document = {
   getElementById: (id) => nodes.get(id) || null,
-  querySelector: () => null,
+  querySelector: (selector) => selector.startsWith("#") ? nodes.get(selector.slice(1)) || null : null,
   querySelectorAll: (selector) => {
     if (selector === "[data-encounter-being]:checked") return inputs.filter((input) => input.checked);
     if (selector === "[data-encounter-being]") return inputs;
@@ -95,15 +100,16 @@ const payload = { schemaId: evidence.SCHEMA_ID, releaseId: evidence.RELEASE_ID, 
 const evidenceIndex = evidence.createIndex(payload);
 const report = (id, changes = {}) => ({ event_id: id, source: sources[id] || "ufocat", type: "Unknown",
   craft_type_inferred: "unknown", visual_type_group: "Other / unknown", date_precision: "exact_day", sort_ordinal: 101,
+  sort_date_iso: "1970-04-12", encounterOccurrenceDateExcluded: false,
   has_coordinates: true, lat: 40, lon: -75, location_precision: "city", coordinate_source: "source_provided",
   date_raw: "fixture-day", location_display: "Fixture locality", country: "USA", ...changes });
 const originals = [
-  report(1, { type: "Disk", craft_type_inferred: "disc_saucer", sort_ordinal: 100 }),
+  report(1, { type: "Disk", craft_type_inferred: "disc_saucer", sort_ordinal: 100, sort_date_iso: "1970-04-11" }),
   report(2, { craft_type_inferred: "non_ufo_context", lat: 41, lon: -73 }),
   report(3, { type: "Triangle", craft_type_inferred: "triangle", has_coordinates: false, lat: null, lon: null, location_precision: "unknown", coordinate_source: "unresolved" }),
-  report(4, { type: "Light", craft_type_inferred: "light", sort_ordinal: 104 }),
+  report(4, { type: "Light", craft_type_inferred: "light", sort_ordinal: 104, sort_date_iso: "1970-04-15" }),
   report(5),
-  report(6, { sort_ordinal: 102, has_coordinates: false, lat: null, lon: null, location_precision: "unknown", coordinate_source: "unresolved" }),
+  report(6, { sort_ordinal: 102, sort_date_iso: "1970-04-13", has_coordinates: false, lat: null, lon: null, location_precision: "unknown", coordinate_source: "unresolved" }),
   report(7, { type: "Sphere", craft_type_inferred: "sphere_orb", lat: 48, lon: 2, location_precision: "country", country: "FRA" }),
   report(8, { type: "Triangle", craft_type_inferred: "triangle", lon: -73 }),
   report(9, { type: "Disk", craft_type_inferred: "disc_saucer" }),
@@ -120,18 +126,28 @@ const state = { filterGeneration: 1, filterToken: 1, timeRangeMode: "window", ti
   lastKeywordMatches: null, encounterAnalysisSelectionIds: null, analysisCountryAreaFilter: "",
   regionSelection: { shapes: [] }, filteredCatalog: [catalog[0], catalog[8]], filteredMappedCatalog: [catalog[0], catalog[8]],
   mapLegendEventSelection: legendSelection, colorMode: "craft_type", traceMode: "off", filteredMappedEventIdSet: new Set(["1", "9"]) };
+state.overlayVisibility = {}; state.militaryBranchVisibility = {}; state.researchCategoryVisibility = {}; state.claimedUfoBaseVisibility = {};
 const originalCraftCohort = state.filteredCatalog, originalMappedCraftCohort = state.filteredMappedCatalog;
 let boundsValue = { north: 90, south: -90, west: -180, east: 180 };
 let zoomValue = 4, refreshCalls = 0, resetPlaybackCalls = 0, legendRenderCalls = 0, markerBuilds = 0;
 const createdPolylines = [];
+const displayedLayers = new Set();
 const map = { getBounds: () => ({ getNorth: () => boundsValue.north, getSouth: () => boundsValue.south, getWest: () => boundsValue.west, getEast: () => boundsValue.east }),
-  getZoom: () => zoomValue, getCenter: () => ({ lng: 0 }), hasLayer: () => true };
-const layer = { members: [], clearLayers() { this.members = []; } };
-const highlightLayer = { members: [], clearLayers() { this.members = []; } };
+  getZoom: () => zoomValue, getCenter: () => ({ lng: 0 }), hasLayer: (value) => displayedLayers.has(value),
+  removeLayer(value) { displayedLayers.delete(value); if (value.onRemove) value.onRemove(); return this; } };
+const groupLayer = () => ({ members: [], clearLayers() { this.members = []; },
+  addTo() { displayedLayers.add(this); return this; } });
+const layer = groupLayer(), highlightLayer = groupLayer(), connectionsLayer = groupLayer();
+const heatLayer = { data: [], updates: 0, setData(events) { this.data = events.slice(); this.updates += 1; return this; },
+  addTo() { displayedLayers.add(this); return this; }, onRemove() { this.data = []; } };
+displayedLayers.add(layer); displayedLayers.add(highlightLayer); displayedLayers.add(connectionsLayer);
 const runtime = { map, encounterStatus: "ready", encounterEvidence: evidenceIndex, encounterIndexedIds: payload.rows.map((row) => row.eventId),
-  encounterLabelOrigins: null, encounterMapEnabled: true, encounterMapHiddenKinds: new Set(), encounterMapIncludeAmbiguous: false,
+  encounterLabelOrigins: null, encounterMapEnabled: false, encounterDisplayMode: "markers", encounterConnectionsEnabled: false, encounterConnectionRadiusKm: 250,
+  encounterMapHiddenKinds: new Set(), encounterMapIncludeAmbiguous: false,
   encounterMapModel: null, encounterMapModelKey: "", encounterMapEvents: [], encounterMapBaseEvents: [], encounterMapLayer: layer,
   encounterTraceHighlightLayer: highlightLayer, encounterTraceHighlightEventId: null, staticTraceLayer: { _segments: [] }, playbackTrailCanvasLayer: { _segments: [] },
+  encounterDensityLayer: heatLayer, encounterConnectionLayer: connectionsLayer,
+  traceChronologyStatus: "ready", traceChronologyEvidence: { releaseId: "fixture-timing", interval: () => null, exclusion: () => null },
 };
 const els = { keywordInput: element("keyword"), hideLowPrecisionToggle: element("hide-low"), hideNonExactDatesToggle: element("hide-partial", { checked: true }), famousCaseSearch: element("case-search") };
 let countryWorker = null;
@@ -139,7 +155,7 @@ const pendingTimers = new Map();
 let nextTimerId = 0;
 const staticTraceDirectionPopulations = new WeakMap();
 const context = vm.createContext({
-  ENCOUNTERS: evidence, ENCOUNTER_MAP: encounterMap, LOW_PRECISION_VALUES: new Set(["unknown", "country", "approximate"]),
+  ENCOUNTERS: evidence, ENCOUNTER_MAP: encounterMap, TRACE_CHRONOLOGY: require("../trace_chronology.js"), LOW_PRECISION_VALUES: new Set(["unknown", "country", "approximate"]),
   state, runtime, document, catalog, els, Set, Map, staticTraceDirectionPopulations,
   effectiveMultiSelectState: (key) => filterControls[key], normalizedMapLegendEventSelection: () => legendSelection,
   eventLegendKeyForMode: (event) => event.craft_type_inferred,
@@ -156,14 +172,29 @@ const context = vm.createContext({
   clearFamousCaseCirclePulse: () => {}, renderFamousCasePicker: () => {}, renderAllMultiSelectStates: () => {},
   ensureCatalogFacetWorker: () => countryWorker,
   window: { setTimeout: (callback) => { const id = ++nextTimerId; pendingTimers.set(id, callback); return id; }, clearTimeout: (id) => pendingTimers.delete(id) },
+  currentOverlayCountModel: () => ({ cropCircles: 2, animalMutilations: 3, researchByCategory: new Map() }),
+  cropCircleOverlayActive: () => true, animalMutilationOverlayActive: () => true,
+  currentQuickCropCircleState: () => ({ key: "window", currentLabel: "Time window" }),
+  currentQuickAnimalMutilationState: () => ({ key: "window", currentLabel: "Time window" }),
+  buildMapLegendMarkerRow: (label) => '<div data-native-overlay="' + label + '">' + label + '</div>',
+  buildMapLegendLineRow: (label) => '<div data-native-line="' + label + '">' + label + '</div>',
+  mapLegendOverlayToggleOptions: () => ({}), MILITARY_BRANCH_LABELS: {},
+  OVERLAY_VISUALS: { airports: {chipColor:"#fff"}, highways: {lineColor:"#fff"}, claimedUfoBases: {chipColor:"#fff",lineColor:"#fff"} },
+  OVERLAY_MARKER_SHAPES: { airports: "plane" }, researchLegendCategories: () => [],
+  claimedUfoBaseSitesVisible: () => false, claimedUfoBaseTracesVisible: () => false,
+  craftTypeColorsAreCustomized: () => false, cropCircleDateScope: () => "window", animalMutilationDateScope: () => "window",
+  defaultOverlayVisibilityState: () => ({}), defaultClaimedUfoBaseVisibilityState: () => ({}), defaultMilitaryBranchVisibilityState: () => ({}), defaultResearchCategoryVisibilityState: () => ({}),
   applyMultiSelectAction: (key, action) => { filterControls[key].mode = action === "all" ? "all" : "subset"; filterControls[key].selectedValues = action === "all" ? [] : ["Disk"]; },
   L: {
     divIcon: (options) => options,
     marker: (latLng, options) => { markerBuilds += 1; return { latLng, options, bindPopup(markup, popupOptions) { this.markup = markup; this.popupOptions = popupOptions; return this; }, addTo(target) { target.members.push(this); return this; } }; },
-    polyline: (latLngs, options) => { const value = { latLngs, options, addTo(target) { target.members.push(this); return this; } }; createdPolylines.push(value); return value; },
+    polyline: (latLngs, options) => { const value = { latLngs, options,
+      bindPopup(markup, popupOptions) { this.markup = markup; this.popupOptions = popupOptions; return this; },
+      bindTooltip(markup, tooltipOptions) { this.tooltip = markup; this.tooltipOptions = tooltipOptions; return this; },
+      addTo(target) { target.members.push(this); return this; } }; createdPolylines.push(value); return value; },
   },
 });
-for (const name of ["encounterFilterSelections", "encounterOverlaySelections", "getCurrentKeyword", "currentFilterSelections", "eventMatchesMapLegendEventSelection", "eventMatchesNonDateFilters", "eventMatchesTimeRange", "encounterOverlayBaseEvents", "ensureEncounterCountryMembership", "filterEncounterDescriptionChoices", "updateEncounterControlSummary", "ensureEncounterMapModel", "normalizeTraceMode", "traceModeIncludesStatic", "traceModeIncludesPlayback", "encounterTraceScopeKey", "getEncounterMapEventById", "encounterTraceSegmentsForReport", "highlightEncounterReportTraces", "displayLocationForEvent", "encounterReportInspectionHtml", "renderEncounterMapLayer", "buildEncounterMapLegend", "applyEncounterControlsChange", "resetFilterControlsToDefaultState"]) {
+for (const name of ["encounterFilterSelections", "encounterOverlaySelections", "getCurrentKeyword", "currentFilterSelections", "eventMatchesMapLegendEventSelection", "eventMatchesNonDateFilters", "eventMatchesTimeRange", "encounterOverlayBaseEvents", "ensureEncounterCountryMembership", "filterEncounterDescriptionChoices", "updateEncounterControlSummary", "setMapControlSummaryState", "ensureEncounterMapModel", "normalizeTraceMode", "traceModeIncludesStatic", "traceModeIncludesPlayback", "encounterTraceScopeKey", "getEncounterMapEventById", "encounterTraceSegmentsForReport", "highlightEncounterReportTraces", "displayLocationForEvent", "encounterReportInspectionHtml", "encounterConnectionStatusText", "encounterConnectionPopupHtml", "renderEncounterAuxiliaryLayers", "applyTraceChronology", "renderEncounterMapLayer", "buildEncounterMapLegend", "applyEncounterControlsChange", "changeEncounterMapDisplay", "resetFilterControlsToDefaultState"]) {
   vm.runInContext(appFunction(name), context, { filename: "app.js:" + name });
 }
 const baseIds = () => plain(context.encounterOverlayBaseEvents().map((value) => value.event_id));
@@ -176,6 +207,19 @@ const select = (abduction = "any", being = "any", types = []) => {
 // Default encounter choices scope only the overlay. Normal craft/results/
 // Analysis selections remain neutral until the explicit target is changed.
 assert.match(indexCode, /id="encounter-filter-target"[\s\S]*?<option value="overlay" selected>/);
+const encounterControlsStart = indexCode.indexOf('id="map-control-section-encounters"');
+assert.ok(encounterControlsStart >= 0, "Encounter display controls belong in the map controls pane");
+const encounterControlsEnd = indexCode.indexOf('id="map-control-section-traces"', encounterControlsStart);
+assert.ok(encounterControlsEnd > encounterControlsStart);
+const encounterControlsHtml = indexCode.slice(encounterControlsStart, encounterControlsEnd);
+for (const id of ["encounter-map-layer-toggle", "encounter-map-display", "encounter-map-connections", "encounter-map-connection-radius", "encounter-map-connection-status"]) {
+  assert.ok(encounterControlsHtml.includes('id="' + id + '"'), id + " must be available with the map");
+  assert.equal(indexCode.split('id="' + id + '"').length - 1, 1, id + " must not be duplicated across panes");
+}
+assert.match(encounterControlsHtml, /value="markers" selected/);
+assert.match(encounterControlsHtml, /value="heatmap"/);
+assert.match(encounterControlsHtml, /value="combined"/);
+assert.match(encounterControlsHtml, /do not establish a common being, craft or journey/);
 select("reported", "reported", ["grey"]);
 assert.deepEqual(plain(context.encounterFilterSelections()), { abduction: "any", being: "any", beingTypes: [] });
 assert.deepEqual(plain(context.encounterOverlaySelections()), { abduction: "reported", being: "reported", beingTypes: ["grey"] });
@@ -222,8 +266,17 @@ assert.equal(model.cohort.mapped, 4);
 assert.equal(model.cohort.unmapped, 2);
 assert.deepEqual(plain(model.viewport.kinds), { abduction: 0, being: 2, both: 2, ambiguous: 0 });
 assert.deepEqual(plain(model.unmappedEventIds), ["3", "6"]);
-assert.equal(model.rendering.displayedReports, 4);
-assert.equal(layer.members.length, model.markers.length);
+assert.equal(runtime.encounterMapEnabled, false);
+assert.equal(layer.members.length, 0, "Encounter reports do not render until the user opts in");
+assert.equal(displayedLayers.has(heatLayer), false, "The initial encounter density layer is off");
+assert.equal(connectionsLayer.members.length, 0, "The initial encounter connections are off");
+assert.match(appCode, /encounterMapEnabled:\s*false/, "Actual runtime must start with encounters disabled");
+runtime.encounterMapEnabled = true;
+invalidate();
+const enabledModel = context.ensureEncounterMapModel();
+assert.equal(enabledModel.rendering.displayedReports, 4);
+assert.ok(layer.members.length > 0, "Explicit encounter enabling renders markers");
+assert.equal(layer.members.length, enabledModel.markers.length);
 assert.equal(createdPolylines.length, 0, "Mapping encounters creates no relationship edges");
 assert.equal(state.filteredCatalog, originalCraftCohort);
 assert.equal(state.filteredMappedCatalog, originalMappedCraftCohort);
@@ -233,11 +286,11 @@ assert.equal(JSON.stringify(catalog), catalogBytes);
 assert.equal(filterControls.type.mode, "none");
 assert.equal(legendSelection.mode, "none");
 const builds = markerBuilds;
-assert.equal(context.ensureEncounterMapModel(), model, "Identical overlay scope and viewport reuse the current model");
+assert.equal(context.ensureEncounterMapModel(), enabledModel, "Identical overlay scope and viewport reuse the current model");
 assert.equal(markerBuilds, builds);
 boundsValue = { north: 42, south: 39, west: -76, east: -74 };
 const narrow = context.ensureEncounterMapModel();
-assert.notEqual(narrow, model);
+assert.notEqual(narrow, enabledModel);
 assert.equal(narrow.viewport.reports, 1);
 assert.equal(narrow.cohort.reports, 6);
 zoomValue += 1;
@@ -251,6 +304,20 @@ assert.match(legend, /data-encounter-legend-kind="both"[\s\S]*?<strong>2<\/stron
 assert.match(legend, /6 in selected encounter scope · 2 unmapped/);
 assert.match(legend, /independent of craft-type visibility/);
 assert.doesNotMatch(legend, /verified encounter|abduction route|same spacecraft/);
+vm.runInContext(appFunction("buildMapLegendOverlayRows"), context);
+const orderedOverlays = context.buildMapLegendOverlayRows().join("");
+assert.ok(orderedOverlays.indexOf('data-native-overlay="Crop circles"') < orderedOverlays.indexOf('data-native-overlay="Animal Mutilation Reports"'));
+assert.ok(orderedOverlays.indexOf('data-native-overlay="Animal Mutilation Reports"') < orderedOverlays.indexOf('class="encounter-legend-section"'), "Encounter legend belongs below animal reports");
+assert.ok(orderedOverlays.indexOf('class="encounter-legend-section"') < orderedOverlays.indexOf('data-native-overlay="Airports"'), "Encounter legend stays adjacent to crop and animal overlays");
+vm.runInContext(appFunction("booleanStateMatchesDefaults"), context);
+vm.runInContext(appFunction("mapLegendControlsAreDirty"), context);
+const savedLegendSelection = legendSelection;
+legendSelection = { mode: "all", colorMode: "craft_type", selectedKeys: [] };
+runtime.encounterMapEnabled = false;
+assert.equal(context.mapLegendControlsAreDirty(), false, "Off-by-default encounters do not make the legend look modified");
+runtime.encounterMapEnabled = true;
+assert.equal(context.mapLegendControlsAreDirty(), true, "Explicit encounter enabling is a resettable legend change");
+legendSelection = savedLegendSelection;
 runtime.encounterMapHiddenKinds.add("being");
 invalidate();
 const hidden = context.ensureEncounterMapModel();
@@ -262,6 +329,152 @@ assert.equal(hidden.rendering.displayedReports, 2);
 assert.match(context.buildEncounterMapLegend(), /data-encounter-legend-kind="being" aria-pressed="false"[\s\S]*?<strong>2<\/strong>/);
 runtime.encounterMapHiddenKinds.clear();
 invalidate();
+
+// The independent density view counts reports, preserves all inspector records,
+// and reuses its cohort bins across viewport pans. Returning from an off layer
+// must rebuild its cleared canvas data rather than showing an empty heatmap.
+runtime.encounterDisplayMode = "heatmap";
+invalidate();
+const densityView = context.ensureEncounterMapModel();
+assert.equal(densityView.cohort.reports, 6);
+assert.equal(densityView.markers.length, 0);
+assert.equal(layer.members.length, 0, "Density-only view does not leave report markers behind");
+assert.equal(displayedLayers.has(heatLayer), true);
+assert.equal(heatLayer.data.reduce((sum, point) => sum + point.heatCount, 0), 4, "Density weights count only eligible mapped reports");
+const densityModel = runtime.encounterDensityModel, densityUpdates = heatLayer.updates;
+boundsValue = { north: 42, south: 39, west: -76, east: -74 };
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterDensityModel, densityModel, "Panning reuses the full selected-cohort density bins");
+assert.equal(heatLayer.updates, densityUpdates, "Panning avoids expensive canvas data rebuilds");
+assert.equal(runtime.encounterMapModel.viewport.reports, 1);
+assert.equal(runtime.encounterDensityModel.cohort.reports, 6);
+boundsValue = { north: 90, south: -90, west: -180, east: 180 };
+runtime.encounterDisplayMode = "combined";
+context.ensureEncounterMapModel();
+assert.ok(layer.members.length > 0, "Combined view retains inspectable report markers");
+assert.equal(displayedLayers.has(heatLayer), true);
+runtime.encounterMapHiddenKinds.add("being");
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterMapModel.cohort.reports, 6, "Hiding a category keeps report inspection scope intact");
+assert.equal(heatLayer.data.reduce((sum, point) => sum + point.heatCount, 0), 2, "Density and markers honor the same visible categories");
+assert.ok(layer.members.every((marker) => !marker.options.icon.html.includes("Reported beings</title>")));
+runtime.encounterMapHiddenKinds.clear();
+context.ensureEncounterMapModel();
+runtime.encounterMapEnabled = false;
+context.ensureEncounterMapModel();
+assert.equal(layer.members.length, 0);
+assert.equal(displayedLayers.has(heatLayer), false);
+assert.equal(heatLayer.data.length, 0, "The test canvas matches native onRemove clearing indexed data");
+assert.equal(runtime.encounterDensityModel, null);
+assert.equal(runtime.encounterConnectionModel, null);
+runtime.encounterMapEnabled = true;
+context.ensureEncounterMapModel();
+assert.equal(displayedLayers.has(heatLayer), true);
+assert.equal(heatLayer.data.reduce((sum, point) => sum + point.heatCount, 0), 4, "Re-enabling a retained density selection restores canvas data");
+runtime.encounterDisplayMode = "markers";
+context.ensureEncounterMapModel();
+assert.equal(displayedLayers.has(heatLayer), false);
+assert.equal(runtime.encounterDensityModel, null);
+
+// Optional encounter links use separate layers and native chronology decisions.
+// A shared being description and source date are report context, never a common
+// craft, measured trajectory, independently identified being, or radar input.
+state.regionSelection.shapes = [{ south: 39, north: 42, west: -76, east: -72 }];
+runtime.encounterConnectionsEnabled = true;
+invalidate();
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterConnectionModel.counts.displayedSegments, 1);
+assert.deepEqual(plain(runtime.encounterConnectionModel.segments[0].eventIds), ["2", "8"]);
+assert.equal(connectionsLayer.members.length, 2, "One connection has an outline and one interactive line");
+const interactiveConnection = connectionsLayer.members.find((member) => member.options.interactive);
+assert.equal(interactiveConnection.options.pane, "encounterConnectionPane");
+assert.equal(interactiveConnection.options.dashArray, "6 6", "Missing accepted timing remains undirected and dashed");
+assert.match(interactiveConnection.markup, /Grey/);
+assert.doesNotMatch(interactiveConnection.markup, /being:\d|abduction_only|abduction_without_being_description/);
+assert.match(interactiveConnection.markup, /do not establish a common being, craft or journey/);
+assert.match(nodes.get("encounter-map-connection-status").textContent, /1 displayed links have unresolved report order/);
+assert.equal(state.traceMode, "off", "Encounter links do not turn ordinary craft traces on");
+assert.equal(runtime.staticTraceLayer._segments.length, 0, "Encounter links never become craft-radar segments");
+assert.equal(runtime.playbackTrailCanvasLayer._segments.length, 0);
+assert.equal(context.encounterTraceSegmentsForReport("2").length, 0, "New encounter links cannot masquerade as existing craft links");
+const acceptedTimingIndex = runtime.traceChronologyEvidence;
+runtime.traceChronologyEvidence = null; runtime.traceChronologyStatus = "loading";
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterConnectionModel.counts.displayedSegments, 0, "Pending date-exclusion evidence cannot fabricate encounter connections");
+assert.ok(runtime.encounterConnectionModel.omissions.dateExclusionsUnavailable > 0);
+assert.equal(connectionsLayer.members.length, 0);
+runtime.traceChronologyEvidence = acceptedTimingIndex; runtime.traceChronologyStatus = "ready";
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterConnectionModel.counts.displayedSegments, 1, "Timing-index readiness restores eligible source dates without rehydrating the catalog");
+runtime.traceChronologyEvidence = { ...acceptedTimingIndex, exclusion: (id) => String(id) === "8" ? { reason: "fixture_held_date", basis: "Fixture occurrence date conflict" } : null };
+invalidate();
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterConnectionModel.omissions.heldDates, 1);
+assert.equal(runtime.encounterConnectionModel.counts.displayedSegments, 0, "A held source date cannot participate in a new connection");
+assert.equal(runtime.encounterMapModel.cohort.reports, 3, "A chronology hold does not erase source encounter reports from inspection");
+runtime.traceChronologyEvidence = acceptedTimingIndex;
+invalidate();
+context.ensureEncounterMapModel();
+runtime.encounterMapHiddenKinds.add("both");
+context.ensureEncounterMapModel();
+assert.equal(runtime.encounterConnectionModel.counts.displayedSegments, 0, "Connection endpoints honor hidden encounter categories");
+assert.equal(connectionsLayer.members.length, 0);
+runtime.encounterMapHiddenKinds.clear();
+runtime.encounterConnectionsEnabled = false;
+state.regionSelection.shapes = [];
+invalidate();
+context.ensureEncounterMapModel();
+assert.equal(connectionsLayer.members.length, 0, "Turning encounter links off clears the separate geometry");
+assert.equal(runtime.encounterConnectionModel, null);
+assert.equal(state.filteredCatalog, originalCraftCohort);
+assert.equal(state.filteredMappedCatalog, originalMappedCraftCohort);
+assert.equal(refreshCalls, 0, "Layer display changes leave report and Analysis filtering alone");
+assert.equal(resetPlaybackCalls, 0, "Layer display changes leave ordinary playback alone");
+assert.equal(JSON.stringify(originals), originalBytes);
+assert.equal(JSON.stringify(catalog), catalogBytes);
+
+// Run the actual display-control listeners. Even while selection targets shared
+// report/Analysis filtering, changing presentation remains a map-only operation.
+const displayBindingStart = appCode.indexOf('    const encounterMapToggle = document.getElementById("encounter-map-layer-toggle");');
+assert.ok(displayBindingStart >= 0);
+const displayBindingEnd = appCode.indexOf('\n    document.addEventListener("click"', displayBindingStart);
+assert.ok(displayBindingEnd > displayBindingStart);
+vm.runInContext(appCode.slice(displayBindingStart, displayBindingEnd), context, { filename: "app.js:encounter map display bindings" });
+nodes.get("encounter-filter-target").value = "reports";
+const refreshBeforeDisplay = refreshCalls, playbackBeforeDisplay = resetPlaybackCalls;
+const chooseDisplay = (id, value) => {
+  const control = nodes.get(id);
+  if (typeof value === "boolean") control.checked = value; else control.value = value;
+  const listener = control.listeners.get("change");
+  assert.equal(typeof listener, "function", id + " must have a live presentation handler");
+  listener();
+};
+chooseDisplay("encounter-map-display", "heatmap");
+assert.equal(runtime.encounterDisplayMode, "heatmap");
+chooseDisplay("encounter-map-connections", true);
+assert.equal(runtime.encounterConnectionsEnabled, true);
+chooseDisplay("encounter-map-connection-radius", "1000");
+assert.equal(runtime.encounterConnectionRadiusKm, 1000);
+chooseDisplay("encounter-map-display", "invalid");
+assert.equal(runtime.encounterDisplayMode, "markers", "An invalid persisted display choice uses the marker fallback");
+chooseDisplay("encounter-map-connection-radius", "-5");
+assert.equal(runtime.encounterConnectionRadiusKm, 250, "An invalid distance cannot widen or invert the connection scope");
+chooseDisplay("encounter-map-connections", false);
+nodes.get("encounter-map-layer-toggle").listeners.get("click")();
+assert.equal(runtime.encounterMapEnabled, false);
+context.ensureEncounterMapModel();
+assert.equal(nodes.get("encounter-map-display").disabled, true);
+assert.equal(nodes.get("encounter-map-connections").disabled, true);
+assert.equal(nodes.get("encounter-map-connection-radius").disabled, true);
+nodes.get("encounter-map-layer-toggle").listeners.get("click")();
+assert.equal(runtime.encounterMapEnabled, true);
+context.ensureEncounterMapModel();
+assert.equal(nodes.get("encounter-map-display").disabled, false);
+assert.equal(nodes.get("encounter-map-connections").disabled, false);
+assert.equal(nodes.get("encounter-map-connection-radius").disabled, true, "Link distance is inactive while report links are off");
+assert.equal(refreshCalls, refreshBeforeDisplay, "Display, link radius and master overlay controls never refresh shared report filters");
+assert.equal(resetPlaybackCalls, playbackBeforeDisplay, "Presentation controls never reset ordinary playback");
+nodes.get("encounter-filter-target").value = "overlay";
 
 // Selection changes update only the overlay in its default target. Reports and
 // Analysis filtering is a separate action, not a side effect of a preset.
@@ -367,6 +580,8 @@ state.encounterAnalysisSelectionIds = new Set(["3"]);
 select("reported", "reported", ["grey", "nordic"]);
 context.resetFilterControlsToDefaultState();
 assert.equal(state.encounterAnalysisSelectionIds, null);
+assert.equal(runtime.encounterMapEnabled, false, "Reset returns encounters to the off-by-default state");
+assert.equal(runtime.encounterConnectionsEnabled, false, "Reset clears the optional encounter connections");
 assert.deepEqual(plain(context.encounterOverlaySelections()), { abduction: "any", being: "any", beingTypes: [] });
 assert.equal(els.keywordInput.value, "");
 assert.equal(JSON.stringify(originals), originalBytes);
@@ -462,4 +677,49 @@ assert.match(unmappedPopup, /Unmapped: no location invented/);
 assert.doesNotMatch(unmappedPopup, /data-encounter-locate-report/);
 assert.equal(JSON.stringify(originals), originalBytes);
 assert.equal(JSON.stringify(catalog), catalogBytes);
-console.log("Actual encounter overlay, scope/geo/legend/cache/target/search/reset, and exact existing-trace highlight lifecycle integration passed.");
+
+// Exercise the reused native canvas factory separately: the original craft
+// canvas retains its default pane, while encounter density owns a distinct,
+// noninteractive pane. Removal and re-addition must retain no stale indexes.
+const pane = () => ({ children: [], appendChild(child) { this.children.push(child); child.parentNode = this; },
+  removeChild(child) { this.children = this.children.filter((entry) => entry !== child); child.parentNode = null; } });
+const baseHeatPane = pane(), encounterHeatPane = pane();
+const canvasMap = { getPanes: () => ({ overlayPane: baseHeatPane }), getPane: (name) => {
+  assert.equal(name, "encounterHeatPane"); return encounterHeatPane;
+}, on: () => {}, off: () => {} };
+const canvasContext = vm.createContext({ runtime: {}, Map, WeakMap,
+  window: { clearTimeout: () => {} }, MAP_HEAT_AGGREGATE_THRESHOLD: 10000, MAP_HEAT_LATITUDE_BAND_DEGREES: 10,
+  getCanvas2dContext: () => ({}), canvasContextOptions: () => ({}),
+  L: { Layer: { extend(methods) { function FakeLayer() { this.initialize(); } Object.assign(FakeLayer.prototype, methods); return FakeLayer; } },
+    DomUtil: { create(tagName, className) { return { tagName, className, style: {} }; } } },
+});
+vm.runInContext(appFunction("createHeatmapLayer"), canvasContext, { filename: "app.js:native heat factory" });
+const nativeHeat = canvasContext.createHeatmapLayer();
+nativeHeat._reset = () => {};
+nativeHeat.onAdd(canvasMap);
+assert.equal(baseHeatPane.children.length, 1);
+assert.equal(encounterHeatPane.children.length, 0);
+assert.equal(nativeHeat._canvas.className, "heatmap-canvas-layer");
+nativeHeat.onRemove(canvasMap);
+const encounterHeat = canvasContext.createHeatmapLayer({ paneName: "encounterHeatPane", className: "encounter-density-canvas-layer" });
+const densityPoint = { lat: 40, lon: -75, heatColor: "#8eadeb", heatCount: 3 };
+const densityPointBytes = JSON.stringify(densityPoint);
+encounterHeat.setData([densityPoint]);
+assert.equal(encounterHeat._latitudeBands.size, 1);
+assert.equal(encounterHeat._dataBuildMetrics.ready, true);
+encounterHeat._reset = () => {};
+encounterHeat.onAdd(canvasMap);
+assert.equal(baseHeatPane.children.length, 0, "Encounter density cannot replace or occupy the craft canvas");
+assert.equal(encounterHeatPane.children.length, 1);
+assert.equal(encounterHeat._canvas.style.pointerEvents, "none");
+assert.equal(encounterHeat._canvas.className, "encounter-density-canvas-layer");
+encounterHeat.onRemove(canvasMap);
+assert.equal(encounterHeatPane.children.length, 0);
+assert.equal(encounterHeat._latitudeBands.size, 0);
+encounterHeat.setData([densityPoint]);
+encounterHeat.onAdd(canvasMap);
+assert.equal(encounterHeat._latitudeBands.size, 1);
+assert.equal(encounterHeatPane.children.length, 1);
+assert.equal(JSON.stringify(densityPoint), densityPointBytes, "Canvas reuse preserves original weighted input");
+encounterHeat.onRemove(canvasMap);
+console.log("Actual encounter off/default/reset, native legend/control placement, overlay/density/connection lifecycle, scope/cache/target/search, canvas reuse and exact existing-trace highlighting integration passed.");
