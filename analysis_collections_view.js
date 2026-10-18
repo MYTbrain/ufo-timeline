@@ -19,7 +19,7 @@
 
   function create(target, configuration) {
     const config = configuration || {}, api = config.evidenceApi, doc = target.ownerDocument;
-    const state = { allRecords: false, scope: "soilplants", disposition: "direct", includeMemberVariants: false, axis: "being", metric: "count", material: "", action: "", being: "", country: "", decade: "", source: "", query: "", page: 0, mode: "reports", cell: null };
+    const state = { allRecords: false, scope: "soilplants", disposition: "direct", includeMemberVariants: false, axis: "being", metric: "count", material: "", action: "", being: "", country: "", decade: "", source: "", craft: "", abduction: "", query: "", page: 0, mode: "reports", cell: null };
     let evidence, model, context, generation = 0, loading;
     const controls = {}, PAGE = 15;
     function node(tag, className, text) { const element = doc.createElement(tag); if (className) element.className = className; if (text != null) element.textContent = String(text); return element; }
@@ -40,7 +40,7 @@
     const refine = node("details", "analysis-supporting-details collection-refine"); refine.appendChild(node("summary", "", "Refine materials, actions, beings & places"));
     const refinements = node("div", "collection-toolbar"); refine.appendChild(refinements);
     picker(refinements, "scope", "Collection subject", [{ key: "soilplants", label: "Soil & plants" }, { key: "allmaterials", label: "All reviewed materials" }], "soilplants", value => { state.scope = value; resetAndCompute(); });
-    const filters = [["material", "Material"], ["action", "Action"], ["being", "Being description"], ["country", "Country"], ["decade", "Decade"], ["source", "Source collection"]];
+    const filters = [["material", "Material"], ["action", "Action"], ["being", "Being description"], ["country", "Country"], ["decade", "Decade"], ["source", "Source collection"], ["craft", "Craft category"], ["abduction", "Abduction classification"]];
     filters.forEach(([key, title]) => picker(refinements, key, title, [{ key: "", label: "All" }], "", value => { state[key] = value; resetAndCompute(); }));
     const variantLabel = node("label", "collection-variant-toggle");
     const variants = node("input"); variants.type = "checkbox"; variants.id = "collection-study-member-variants";
@@ -79,13 +79,14 @@
       if (!evidence) return;
       model = api.compute({ evidence, allowedEventIds: state.allRecords ? undefined : context && context.allowedEventIds,
         scope: state.scope, disposition: state.disposition, includeMemberVariants: state.includeMemberVariants, material: state.material || undefined, action: state.action || undefined,
-        being: state.being || undefined, country: state.country || undefined, decade: state.decade || undefined, source: state.source || undefined });
+        being: state.being || undefined, country: state.country || undefined, decade: state.decade || undefined, source: state.source || undefined,
+        craft: state.craft || undefined, abduction: state.abduction || undefined });
       render();
     }
     function refreshOptions() {
       const all = api.compute({ evidence, scope: "allmaterials", disposition: "allcontexts", includeMemberVariants: true });
       filters.forEach(([key]) => {
-        const plural = { material: "materials", action: "actions", being: "beings", country: "countries", decade: "decades", source: "sources" }[key];
+        const plural = { material: "materials", action: "actions", being: "beings", country: "countries", decade: "decades", source: "sources", craft: "crafts", abduction: "abductions" }[key];
         let values = all.options && (all.options[key] || all.options[plural]);
         if (!values && all.taxonomy) values = all.taxonomy[key] || all.taxonomy[key + "s"];
         const select = controls[key], selected = state[key]; select.replaceChildren();
@@ -98,6 +99,9 @@
       const stats = model.stats || {}, snapshot = context && context.snapshot, time = snapshot && snapshot.timeRange;
       status.textContent = state.allRecords ? "Full collection study · shared map filters are not applied."
         : "Following shared filters" + (time ? " · " + (time.mode === "full" ? "All time" : [time.startIso, time.endIso].filter(Boolean).join(" to ")) : "") + ".";
+      if (!state.allRecords && Number.isFinite(context && context.totalMatchedAnalysisReports)) {
+        status.textContent += " From " + number(context.totalMatchedAnalysisReports) + " Analysis reports, including eligible unmapped records.";
+      }
       summary.replaceChildren();
       [["Reports in comparison", (model.reports || []).length], ["Beings not indexed", stats.unknownBeingN], ["Geography unknown", stats.unknownGeographyN], ["Source dossiers · full inventory", (evidence.cases || []).length]].forEach(([title, value]) => {
         const item = node("div", "collection-stat"); item.append(node("strong", "", number(value)), node("span", "", title)); summary.appendChild(item);
@@ -157,7 +161,7 @@
         if (event.key === "End") next = gridButtons[gridButtons.length - 1];
         if (next) { event.preventDefault(); gridButtons.forEach(item => { item.button.tabIndex = item === next ? 0 : -1; }); next.button.focus(); }
       }));
-      matrixNote.textContent = "Each material row uses its own unique-report denominator. Unknown values are retained; multi-label categories overlap. Click a populated cell to inspect its reports."
+      matrixNote.textContent = "Descriptive counts; the reference-baseline setting does not adjust this study. Each material row uses its own unique-report denominator. Unknown values are retained; multi-label categories overlap. Click a populated cell to inspect its reports."
         + (columns.length < allColumns.length ? " Showing " + columns.length + " of " + allColumns.length + " columns by report count; JSON export includes the full matrix." : "");
     }
     function filteredReports() {

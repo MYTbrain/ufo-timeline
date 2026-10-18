@@ -1316,6 +1316,10 @@
   function pointInsideAnyAnalysisShape(latitudeValue, longitudeValue, shapes) {
     if (!Array.isArray(shapes)) return true;
     if (!shapes.length) return false;
+    if (latitudeValue == null || longitudeValue == null ||
+        typeof latitudeValue === "boolean" || typeof longitudeValue === "boolean" ||
+        typeof latitudeValue === "string" && !latitudeValue.trim() ||
+        typeof longitudeValue === "string" && !longitudeValue.trim()) return false;
     const latitude = Number(latitudeValue);
     const longitude = normalizeLongitude(longitudeValue);
     if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 || !Number.isFinite(longitude)) return false;
@@ -1590,6 +1594,41 @@
       collect(row);
     });
     return rows;
+  }
+
+  function inspectCollectionReportIds(message) {
+    if (!Array.isArray(message.requestedEventIds) || message.requestedEventIds.length > 10000) throw new Error("The collection report inventory is invalid.");
+    const wanted = new Set(message.requestedEventIds.map(String));
+    const filters = normalizedFilters(message), keywordIds = keywordIdSet(message);
+    const areaEventIds = Array.isArray(message.areaFilterEventIds) ? new Set(message.areaFilterEventIds.map(String)) : null;
+    const areaShapes = Array.isArray(message.areaFilterShapes) && message.areaFilterShapes.length ? message.areaFilterShapes : null;
+    const lowPrecisionValues = new Set(Array.isArray(message.lowPrecisionValues) ? message.lowPrecisionValues : []);
+    const range = analysisActiveRange(message), eventIds = [];
+    const matched = analysisMatchCache.get(analysisMatchCacheKey(message));
+    let totalMatchedAnalysisReports = matched ? 0 : null;
+    if (matched) {
+      forEachMatchedAnalysisRow(matched, function (row) {
+        if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
+        totalMatchedAnalysisReports += 1;
+        if (wanted.has(String(row.eventId))) eventIds.push(String(row.eventId));
+      });
+    } else if (wanted.size) {
+      // Inspect the sparse inventory without constructing an all-catalog ID or
+      // object array. Map visibility never gates the Analysis report cohort.
+      const values = {};
+      for (const chunk of chunks) {
+        for (let index = 0; index < chunk.length; index += 1) {
+          readRowValuesInto(values, chunk, index);
+          if (!wanted.has(String(values.eventId)) || !analysisRowMatches(values, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues)) continue;
+          values.sortOrdinal = analysisOrdinalFromTimelineOrdinal(values.sortOrdinal);
+          values.dateStartOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateStartOrdinal);
+          values.dateEndOrdinal = analysisOrdinalFromTimelineOrdinal(values.dateEndOrdinal);
+          if (!range || rowOverlapsDateRange(values, range[0], range[1])) eventIds.push(String(values.eventId));
+        }
+      }
+    }
+    return { eventIds: eventIds, requestedReportCount: wanted.size, totalMatchedAnalysisReports: totalMatchedAnalysisReports,
+      unit: "catalog_report_representations", cohortScope: "analysis_shared_filters" };
   }
 
   function spatialReadinessFromManifest(manifest) {
@@ -4906,6 +4945,12 @@
             error: error && error.message ? error.message : String(error),
           });
         });
+        return;
+      }
+      if (message.type === "inspectCollectionReportIds") {
+        self.postMessage({ type: "collectionReportIdsInspected", requestId: message.requestId || "",
+          generation: analysisFilterGeneration(message), analysisSignature: String(message.analysisSignature || ""),
+          result: inspectCollectionReportIds(message) });
         return;
       }
       if (message.type === "inspectEncounterReports") {

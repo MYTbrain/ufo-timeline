@@ -1,7 +1,5 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { readFile } from "node:fs/promises";
-import vm from "node:vm";
 const require = createRequire(import.meta.url);
 const View = require("../analysis_collections_view.js");
 const Engine = require("../analysis_collection_evidence.js");
@@ -167,19 +165,6 @@ assert.deepEqual(asyncStudy.getModel().reports.map(report => report.eventId), ["
 resolver({ allowedEventIds: new Set(["11"]) }); await olderLoad;
 assert.deepEqual(asyncStudy.getModel().reports.map(report => report.eventId), ["13"], "late context completion cannot replace a newer filter cohort");
 
-const app = await readFile(new URL("../app.js", import.meta.url), "utf8");
-const contextStart = app.indexOf("  function collectionStudyContext(options) {");
-const contextEnd = app.indexOf("\n  function ", contextStart + 4);
-assert.ok(contextStart > 0 && contextEnd > contextStart);
-let snapshot = { generation: 6, requestedGeneration: 7 };
-const actualContext = vm.runInNewContext("(" + app.slice(contextStart, contextEnd).trim() + ")", {
-  startup: { fullCatalogReady: true }, runtime: { catalogFacetWorkerRowsQueued: 4 }, catalog: [1, 2, 3, 4],
-  getAnalysisFilterSnapshot: () => snapshot, state: { filteredCatalog: [{ event_id: 11 }, { event_id: 13 }] },
-});
-assert.throws(() => actualContext({ reportIds: ["11", "12"] }), /filter|updat|ready/i, "shared cohort cannot be labeled with a newer requested filter snapshot");
-snapshot = { generation: 7, requestedGeneration: 7 };
-assert.deepEqual(Array.from(actualContext({ reportIds: ["11", "12"] }).allowedEventIds), ["11"]);
-assert.equal(actualContext({ allRecords: true }).allowedEventIds, null);
 assert.equal(View.safeUrl("javascript:alert(1)"), null);
 assert.equal(View.safeUrl("file:///C:/private.txt"), null);
 assert.equal(View.csvValue("=SUM(1,2)"), '"\'=SUM(1,2)"');

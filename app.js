@@ -9466,7 +9466,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-encounter-quality-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-collections-v3");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -10051,7 +10051,7 @@
     if (!runtime.collectionStudyScriptPromises) runtime.collectionStudyScriptPromises = new Map();
     const scripts = [
       ["collection-study-evidence", "./analysis_collection_evidence.js?v=2026-10-18-collections-v1"],
-      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v2"],
+      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v3"],
     ];
     runtime.collectionStudyRuntimePromise = Promise.all(scripts.map(function (entry) {
       if (runtime.collectionStudyScriptPromises.has(entry[0])) return runtime.collectionStudyScriptPromises.get(entry[0]);
@@ -10073,19 +10073,58 @@
     return runtime.collectionStudyRuntimePromise;
   }
 
-  function collectionStudyContext(options) {
+  async function collectionStudyContext(options) {
     const snapshot = getAnalysisFilterSnapshot();
     if (!startup.fullCatalogReady || runtime.catalogFacetWorkerRowsQueued < catalog.length) throw new Error("The complete catalog is still preparing. Try again when Analysis is ready.");
     if (snapshot.generation !== snapshot.requestedGeneration) throw new Error("Shared filters are still updating. Retry when the selection is ready.");
-    let allowedEventIds = null;
-    if (!options || !options.allRecords) {
-      const wanted = new Set((options && options.reportIds || []).map(String));
-      allowedEventIds = new Set();
-      state.filteredCatalog.forEach(function (event) {
-        const id = String(event.event_id); if (wanted.has(id)) allowedEventIds.add(id);
-      });
-    }
-    return { allowedEventIds: allowedEventIds, snapshot: snapshot, generation: snapshot.generation };
+    if (options && options.allRecords) return { allowedEventIds: null, snapshot: snapshot, generation: snapshot.generation };
+    const ids = options && options.reportIds || [];
+    if (!Array.isArray(ids) || ids.length > 10000) throw new Error("The collection report inventory is invalid.");
+    const wanted = new Set(ids.map(String));
+    if (!wanted.size) return { allowedEventIds: new Set(), snapshot: snapshot, generation: snapshot.generation };
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) throw new Error("The Analysis catalog worker is unavailable. Retry the collection view.");
+    const filters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot.generation);
+    const signature = analysisComputeCacheKey(snapshot, { excludeComparisonOptions: true });
+    const requestId = "collection-inspection-" + (++runtime.catalogFacetWorkerRequestId);
+    return new Promise(function (resolve, reject) {
+      let done = false;
+      function finish(error, result) {
+        if (done) return;
+        done = true; window.clearTimeout(timer);
+        worker.removeEventListener("message", listener); worker.removeEventListener("error", workerError);
+        if (error) reject(error); else resolve(result);
+      }
+      function workerError() { finish(new Error("The collection report inspection failed. Retry the collection view.")); }
+      function listener(event) {
+        const message = event.data || {}; if (message.requestId !== requestId) return;
+        const current = getAnalysisFilterSnapshot();
+        if (current.generation !== current.requestedGeneration || current.generation !== snapshot.generation ||
+            signature !== analysisComputeCacheKey(current, { excludeComparisonOptions: true })) {
+          finish(new Error("Shared filters changed while collection reports were inspected. Refresh the collection view.")); return;
+        }
+        if (message.type !== "collectionReportIdsInspected") { finish(new Error(message.error || "Collection report inspection failed.")); return; }
+        if (Number(message.generation) !== snapshot.generation || message.analysisSignature !== signature) {
+          finish(new Error("Collection report inspection returned a stale selection. Refresh the collection view.")); return;
+        }
+        const result = message.result || {}, returned = result.eventIds;
+        if (!Array.isArray(returned) || returned.length > wanted.size || returned.some(function (id) { return !wanted.has(String(id)); })) {
+          finish(new Error("Collection report inspection returned an invalid report inventory.")); return;
+        }
+        finish(null, { allowedEventIds: new Set(returned.map(String)), snapshot: snapshot, generation: snapshot.generation,
+          totalMatchedAnalysisReports: result.totalMatchedAnalysisReports == null ? null : Number(result.totalMatchedAnalysisReports) });
+      }
+      const timer = window.setTimeout(function () { finish(new Error("Collection report inspection timed out. Retry the collection view.")); }, 30000);
+      worker.addEventListener("message", listener); worker.addEventListener("error", workerError);
+      try {
+        worker.postMessage({ type: "inspectCollectionReportIds", requestId: requestId, generation: snapshot.generation,
+          analysisSignature: signature, requestedEventIds: Array.from(wanted), filters: filters,
+          keywordEventIds: filters.keywordEventIds, lowPrecisionValues: filters.lowPrecisionValues,
+          areaFilterShapes: snapshot.areaFilter && snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+          timeRangeMode: snapshot.timeRange.mode, fullTimeRange: snapshot.timeRange.mode === "full",
+          timeRangeStartOrdinal: snapshot.timeRange.startOrdinal, timeRangeEndOrdinal: snapshot.timeRange.endOrdinal });
+      } catch (error) { finish(error); }
+    });
   }
 
   function initializeAnalysisView() {
