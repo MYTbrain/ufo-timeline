@@ -33122,6 +33122,8 @@
       startup.backgroundError = "";
       updateProgressiveCatalogUi();
       setStartupPhase("Ready", "The complete catalog, search, and Analysis are ready.", STARTUP_PROGRESS.ready);
+      renderStats();
+      renderResults({ preserveScroll: true });
       if (runtime.analysisViewController) runtime.analysisViewController.setAnalysisEnabled(true, "");
       window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", { detail: { phase: "Ready" } }));
       recordStartupMilestone("time to Ready");
