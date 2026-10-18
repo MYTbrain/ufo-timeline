@@ -1,0 +1,44 @@
+{
+  "schemaId": "encounter-reviewed-local-promotion-v1",
+  "canonicalResearch": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-reviewed-20261017\\validated",
+  "localRuntime": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\enrichment.json.gz",
+  "priorRuntime": {
+    "gzipBytes": 14338,
+    "gzipSha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc",
+    "decodedBytes": 80172,
+    "decodedSha256": "e00b934e1a2152ad4bdeac00db38a2d56184c0631fa0aa05ecaa1dafc29db34f",
+    "file": "enrichment.json.gz"
+  },
+  "retainedPriorCanonical": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-enrichment-pilot-20261013\\validated\\reviewed\\evidence.json.gz",
+    "bytes": 14338,
+    "sha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc"
+  },
+  "artifact": {
+    "file": "evidence.json.gz",
+    "gzipBytes": 127674,
+    "gzipSha256": "a86a6bd082a43932576465c59348bf3060969015731fc882c6157dce84f19664",
+    "decodedBytes": 923556,
+    "decodedSha256": "a9a96d9e419ea134be5d8ef7685b95aa6e18cf774c8117bd7d5b5bf045b04839"
+  },
+  "counts": {
+    "sources": 21,
+    "sourceEntries": 201,
+    "cases": 197,
+    "episodes": 202,
+    "entityObservations": 214,
+    "reportLinks": 202,
+    "acceptedReportLinks": 127,
+    "heldReportLinks": 75
+  },
+  "reviewBatch": {
+    "linked": 105,
+    "candidate": 69,
+    "contradicted": 3
+  },
+  "baseEncounterEvidenceChanged": false,
+  "labelOriginsChanged": false,
+  "classifierCountsChanged": false,
+  "deploymentChanged": false,
+  "rebuild": "Call encounter_rosales_build_reviewed.build(review_path, new_empty_output, prior_path=Path(retainedPriorCanonical.path)); source/native/base evidence inputs remain shared and pinned. The historical build manifest records the then-current runtime prior path; retainedPriorCanonical supplies its identical bytes after promotion."
+}

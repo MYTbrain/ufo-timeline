@@ -1,0 +1,112 @@
+{
+  "schemaId": "encounter-reviewed-batch-completion-v1",
+  "date": "2026-10-17",
+  "canonicalResearch": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-reviewed-20261017\\validated",
+  "sourceCandidatesReviewed": 177,
+  "decisions": {
+    "linked": 105,
+    "candidate": 69,
+    "contradicted": 3
+  },
+  "newAcceptedSourceContextLinks": 105,
+  "newAcceptedEntityGroups": 123,
+  "newAcceptedEntityAttributes": 328,
+  "allReviewedSourceEntries": 201,
+  "allAcceptedLinks": 127,
+  "allHeldLinks": 75,
+  "reconciliations": [
+    {
+      "sourceEntryId": "rosales-original:1996:120:faa666c99a65",
+      "correction": "Removed small_humanoid; original reports short luminous beings without resolved humanoid form. Luminous appearance and count two retained.",
+      "crossReviewer": "review_rosales_a"
+    },
+    {
+      "sourceEntryId": "rosales-original:1994:139:3c7d3ac26f92",
+      "correction": "Removed unobserved fourteen-member group from entity observations; retained the reported claim as an attribute of the single observed figure.",
+      "crossReviewer": "review_rosales_b"
+    },
+    {
+      "sourceEntryId": "rosales-original:1994:233:cf6949d17f9b",
+      "correction": "Source reports undescribed possible bedroom aliens without establishing visual perception; retain uncertain status and remove visible-entity placeholder.",
+      "removedGroupCount": 1,
+      "reviewer": "root_final_semantic_review"
+    },
+    {
+      "sourceEntryId": "rosales-original:1996:175:cb0bfa56bc2d",
+      "correction": "Possible face exists only in a later photograph; retain photo-only and held identity flags without creating a visible-entity observation.",
+      "removedGroupCount": 1,
+      "reviewer": "root_final_semantic_review"
+    }
+  ],
+  "contradictedAccounts": [
+    {
+      "sourceEntryId": "rosales-original:1993:111:85835d202c21",
+      "eventId": "1122827729662531",
+      "reason": "Shared HC and date do not establish the same episode. Source chiefly describes a woman's 0100 bedside group, while native describes Christopher O'Brien's separate 0330 phantom episode. The source also appends a separate presence/shadow report with incompatible relative timing. Do not link these as one dated event."
+    },
+    {
+      "sourceEntryId": "rosales-original:1996:77:b6d4b1a1cf98",
+      "eventId": "1502183997716408",
+      "reason": "Hold the join because the province-level identity is contradicted and the sparse native record cannot adjudicate which Ciudad Juarez locality was intended."
+    },
+    {
+      "sourceEntryId": "rosales-original:2000:62:585c63f77029",
+      "eventId": "4258007715704332",
+      "reason": "Native notes describe an individual attacked by a winged simian creature; the cited source account instead alleges capture of three creatures and later aircraft transfers. Same citation/date/place do not establish the same event."
+    }
+  ],
+  "implementation": "Existing reviewed-case context in the analysis report inspector; source context is separate from global classifier labels and independent-incident counts.",
+  "originalReportsChanged": false,
+  "globalClassifierChanged": false,
+  "deploymentChanged": false,
+  "verification": {
+    "focusedPythonTests": 16,
+    "nodeChecksPassed": [
+      "test_encounter_enrichment_runtime.mjs",
+      "test_encounter_inspection_view.mjs",
+      "test_encounter_evidence.mjs"
+    ],
+    "oldPilotPrefixHashesPreserved": true,
+    "heldNotAccepted": true,
+    "unseenClaimNotEntityCount": true,
+    "uncertainAndPhotoOnlyNotVisibleEntities": true,
+    "unsplitAccountDatesNull": true,
+    "individualAttributesNotSpreadAcrossGroup": true,
+    "baseEvidenceSha256Unchanged": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8"
+  },
+  "sourcePins": [
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_review_prepare.py",
+      "bytes": 5845,
+      "sha256": "497c6d0bab04eb109bbc2f9db44cb7f8dae56b914b1fa9b1ae4e26c5d94ad269"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_rosales_build_reviewed.py",
+      "bytes": 24219,
+      "sha256": "f5c920cf2b492e9832a43b9a34bc742a45b8d7a8ac745b2e269e6638533d9a08"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_rosales_reviewed.py",
+      "bytes": 10477,
+      "sha256": "8a139aec4d73fbccc481d703ee97c0fd12c30bde559270bb0928ae00c6ab2161"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_enrichment_runtime.mjs",
+      "bytes": 5348,
+      "sha256": "a4d6a0adbf535def4f750b489d048af201af6d1afa2db4100943417b6614550b"
+    }
+  ],
+  "artifact": {
+    "file": "evidence.json.gz",
+    "gzipBytes": 127674,
+    "gzipSha256": "a86a6bd082a43932576465c59348bf3060969015731fc882c6157dce84f19664",
+    "decodedBytes": 923556,
+    "decodedSha256": "a9a96d9e419ea134be5d8ef7685b95aa6e18cf774c8117bd7d5b5bf045b04839"
+  },
+  "retainedPriorCanonical": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-enrichment-pilot-20261013\\validated\\reviewed\\evidence.json.gz",
+    "bytes": 14338,
+    "sha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc"
+  },
+  "nextCoverageScope": "Remaining 204 native-context, 466 native-conflict, 2586 date/locality-discovery and 7420 no-candidate source accounts remain unreviewed; these categories are not new independent incidents."
+}

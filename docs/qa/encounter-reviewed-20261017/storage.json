@@ -1,0 +1,18 @@
+{
+  "schemaId": "encounter-reviewed-storage-v1",
+  "canonical": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-reviewed-20261017\\validated",
+  "retainedPriorAndRollback": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-enrichment-pilot-20261013\\validated\\reviewed\\evidence.json.gz",
+    "bytes": 14338,
+    "sha256": "eb263f4f9f520438e524263698900f5220c907f464dc34474a3ddeffc40fccfc"
+  },
+  "deploymentAndExistingRollbackUnchanged": true,
+  "researchBytesBeforeReceipt": 1440607,
+  "newAndChangedCodeBytes": 45889,
+  "qaBytesBeforeReceipt": 7737,
+  "runtimeBytesGrowth": 113336,
+  "approximateNetGrowthMiB": 1.53,
+  "newFilesOver100MiB": [],
+  "supersededStagingOrBackupArtifacts": [],
+  "cleanupProposed": "None. Unique private review evidence and provenance retained; no full corpus/archive/analysis-database copies."
+}

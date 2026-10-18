@@ -207,3 +207,12 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /docs/qa/nuclear-extension-20261013/** -text
 /tests/test_encounter* -text
 /tests/test_nuclear_extension_worker_atomic.mjs -text
+
+# Source intake and reviewed annotations pin exact producer and evidence bytes.
+/scripts/encounter_expansion*.py -text
+/scripts/encounter_external_overlap.py -text
+/scripts/encounter_rosales*.py -text
+/scripts/encounter_urecat_index.py -text
+/scripts/encounter_review_prepare.py -text
+/docs/qa/encounter-source-expansion-20261017/** -text
+/docs/qa/encounter-reviewed-20261017/** -text
