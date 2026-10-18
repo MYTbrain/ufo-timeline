@@ -18,6 +18,7 @@ class Element {
   removeChild(child) { this.children = this.children.filter((item) => item !== child); }
   replaceChildren(...children) { this.children = []; this.ownText = ''; children.forEach((child) => this.appendChild(child)); }
   setAttribute(key, value) { this.attributes.set(key, String(value)); }
+  removeAttribute(key) { this.attributes.delete(key); }
   getAttribute(key) { return this.attributes.get(key) ?? null; }
   set textContent(value) { this.ownText = String(value); this.children = []; }
   get textContent() { return this.ownText + this.children.map((child) => child.textContent).join(' '); }
@@ -195,6 +196,40 @@ assert.match(target.textContent, /Missing denominators remain unavailable/);
 const html = fs.readFileSync('index.html', 'utf8');
 assert.equal(html.split('id="analysis-encounter-report-inspector"').length - 1, 1);
 assert.match(html, /id="analysis-encounter-report-inspector"[^>]*hidden/);
+// The preview moves encounter comparison cards between Analysis sections. The
+// shared inspector must stay outside every independently hidden section panel.
+const stack = [], voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+let inspectorAncestors;
+const shell = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|textarea)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '');
+for (const match of shell.matchAll(/<\/?([a-z][\w:-]*)\b[^>]*>/gi)) {
+  const tag = match[1].toLowerCase(), token = match[0];
+  if (token.startsWith('</')) {
+    const found = stack.map(value => value.tag).lastIndexOf(tag);
+    if (found >= 0) stack.length = found;
+  } else {
+    const id = token.match(/\bid="([^"]+)"/)?.[1] || '';
+    if (id === 'analysis-encounter-report-inspector') inspectorAncestors = stack.map(value => value.id).filter(Boolean);
+    if (!voidTags.has(tag) && !token.endsWith('/>')) stack.push({ tag, id });
+  }
+}
+assert.ok(inspectorAncestors?.includes('analysis-panel'), 'The inspector belongs to the shared Analysis panel');
+assert.ok(!inspectorAncestors.some(id => id.startsWith('analysis-section-')), 'Neither Encounters nor Comparisons may hide the shared report inspector');
+
+const navigation = fixture(), nav = navigation.controller;
+nav.activeSectionId = 'analysis-section-encounters';
+nav.sectionEntries = ['encounters', 'comparisons'].map(key => ({ id: 'analysis-section-' + key,
+  section: navigation.add('analysis-section-' + key), link: navigation.add('analysis-section-tab-' + key) }));
+nav.sectionEntries.forEach(entry => { entry.link.classList.toggle = () => {}; });
+nav._renderActiveSectionIfNeeded = () => {};
+const pendingNavigation = nav._openEncounterReports({ domain: 'reviewed_context', reviewStatus: 'all' }); await tick();
+const navigationInspector = navigation.document.getElementById('analysis-encounter-report-inspector');
+assert.equal(navigationInspector.hidden, false);
+assert.equal(nav.setActiveSection('analysis-section-comparisons', { scrollLink: false }), true);
+assert.equal(navigationInspector.hidden, true, 'Changing Analysis topics closes the shared report inspector');
+assert.equal(navigation.calls[0].options.signal.aborted, true, 'Topic navigation cancels the pending report request');
+resolve(navigation.calls[0], 1, [original(99, false)]); await pendingNavigation;
+assert.equal(navigationInspector.hidden, true);
+assert.equal(navigationInspector.textContent, '', 'A reply from the previous topic cannot repopulate the shared inspector');
 const mismatched = fixture(); mismatched.controller.latestResult = result;
 mismatched.controller._openEncounterReports({ domain: 'core', axisKey: 'source', population: 'being', bucket: 'cell' }); await tick();
 const wrongSource = original(7, false); wrongSource.encounterRecord.source = 'Other collection';

@@ -132,8 +132,8 @@
     {
       "path": "analysis_view.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_view.js",
-      "bytes": 507580,
-      "sha256": "6fe646f981d2fb08116b44b93d1dbb6e2a64e78ba9be8147ccac839420795930",
+      "bytes": 507655,
+      "sha256": "1b119ff3e06ae247afa76798cfcf331fb706c83d42100722addc7ef80df5e63c",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1252,8 +1252,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 165519,
-      "sha256": "11582a4bb0fe9af7a2ea0983e577588506243611b1d8abe0b6eb8085a73a1dc3",
+      "bytes": 165512,
+      "sha256": "3f80afaf1e39851de7174d4c04495a1233df9a5b98ff39a0fa668cb2289c33c2",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1562,8 +1562,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "b541127680123cce05ec0174d2ccdeb6f7fff344ed9db5d29b2b2aed620ed036",
-  "pages_total_bytes": 39699974,
+  "pages_tree_sha256": "20359b4fe23ade419e47d82f6f3ae3252f992e4084d9135b1eb543a052f3b8e1",
+  "pages_total_bytes": 39700042,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -4557,9 +4557,9 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 3268126,
-    "existing_stage_bytes": 36431848,
-    "c_free_bytes_before_stage": 94504521728,
+    "approximate_net_local_growth_bytes": 68,
+    "existing_stage_bytes": 39699974,
+    "c_free_bytes_before_stage": 94367432704,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",

@@ -2941,6 +2941,7 @@
     setActiveSection(sectionId, options) {
       if (!this.sectionEntries.some(function (entry) { return entry.id === sectionId; })) return false;
       const previousSectionId = this.activeSectionId;
+      if (previousSectionId !== sectionId) this._closeEncounterReports();
       this.activeSectionId = sectionId;
       this.sectionEntries.forEach(function (entry) {
         const active = entry.id === sectionId;

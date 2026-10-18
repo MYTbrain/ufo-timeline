@@ -1,0 +1,93 @@
+{
+  "schemaId": "ufo-encounter-provider-preflight-v1",
+  "observedUtc": "2026-10-18T05:46:57.538024+00:00",
+  "readOnlyProviderAudit": true,
+  "providerMutationsPerformed": false,
+  "checkedSourceCommit": "8e2711021988847b737ade9327cdb6c3fabedac8",
+  "originMain": "8721330997f1851c620fdb6a34512b16a3cda1b0",
+  "mainFastForwardIsPossible": true,
+  "provider": {
+    "project": "ufo-timeline",
+    "productionBranch": "main",
+    "buildConfig": {
+      "build_command": "",
+      "destination_dir": "",
+      "root_dir": ""
+    },
+    "git": {
+      "owner": "MYTbrain",
+      "repo_name": "ufo-timeline",
+      "production_branch": "main",
+      "production_deployments_enabled": true,
+      "preview_deployment_setting": "all"
+    },
+    "canonical": {
+      "id": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+      "environment": "production",
+      "url": "https://626b22b4.ufo-timeline.pages.dev",
+      "latest_stage": {
+        "name": "deploy",
+        "started_on": "2026-10-08T14:58:07.577193Z",
+        "ended_on": "2026-10-08T14:58:19.470316Z",
+        "status": "success"
+      },
+      "deployment_trigger": {
+        "type": "github:push",
+        "metadata": {
+          "branch": "main",
+          "commit_hash": "8721330997f1851c620fdb6a34512b16a3cda1b0",
+          "commit_message": "Record verified corpus timing and radar publication",
+          "commit_dirty": false
+        }
+      }
+    },
+    "latest": {
+      "id": "aeb1930c-aefb-4c72-adcd-91adb9812756",
+      "environment": "preview",
+      "url": "https://aeb1930c.ufo-timeline.pages.dev",
+      "latest_stage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-18T05:40:16.952897Z",
+        "status": "success"
+      },
+      "deployment_trigger": {
+        "type": "ad_hoc",
+        "metadata": {
+          "branch": "encounter-quality-20261018",
+          "commit_hash": "8e2711021988847b737ade9327cdb6c3fabedac8",
+          "commit_message": "Complete encounter access across map reports and Analysis",
+          "commit_dirty": false
+        }
+      }
+    }
+  },
+  "publication": {
+    "preferred": "After final source fixes, stage refresh, and Git-object byte verification, fast-forward origin/main with git push origin HEAD:main and verify its automatically generated production deployment.",
+    "buildBehavior": "Production Git deployments are enabled. Build command, destination directory and root directory are empty; no full static-data generation command is configured. Cloud build dependency setup, if any, is remote and does not add a local corpus copy.",
+    "directStageAlternative": "node --use-system-ca <shared wrangler/bin/wrangler.js> pages deploy .tmp/workspace-analysis-20261008-pages --project-name ufo-timeline --branch main --commit-hash <verified final HEAD> --commit-dirty false",
+    "pending": "Analysis inspector placement fix may supersede the checked source and candidate hashes. Recheck exact final source and frozen inventory before publishing.",
+    "noFullLegacyDeployWrapper": true,
+    "noNewR2ObjectsRequired": true
+  },
+  "candidateAtObservation": {
+    "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "files": 194,
+    "bytes": 39699974,
+    "treeSha256": "b541127680123cce05ec0174d2ccdeb6f7fff344ed9db5d29b2b2aed620ed036",
+    "retainedR2Objects": 87,
+    "retainedR2Bytes": 101875689
+  },
+  "storage": {
+    "cFreeBytes": 94366916608,
+    "preflightBytesExpectedUnder": 10000,
+    "newFilesAbove100MiB": [],
+    "fullCopiesCreated": false,
+    "netNewLocalPublishGrowthExpected": "Under100MiB: reuse the existing bounded stage; Git updates are a small source/runtime delta. No corpus, analysis database or static-data build is required.",
+    "canonical": "Existing frozen Pages stage plus its current delivery plan; production remains provider.canonical until successful final publication.",
+    "rollbackBeforePublication": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",
+    "rollbackAfterSuccessfulPublication": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+    "retention": "This compact preflight is unique provenance. Keep the current validated production and one rollback; the prior rollback designation becomes superseded after final verification. No deletion or additional backup copy performed.",
+    "cleanup": "No new staging or backup directory created by this audit."
+  }
+}
