@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "origin": "https://ufo-timeline.pages.dev/",
+  "catalogReports": 702893,
+  "indexedEncounters": 16319,
+  "reportsDescribingBeings": 12595,
+  "reportedAbductions": 3217,
+  "reviewedInspectorTotalWithSharedFiltersCleared": 202,
+  "unlinkedSourceAccountAccessible": true,
+  "productionConsoleErrors": [],
+  "screenshot": "production-encounter-analysis.png",
+  "sourceCommit": "576e09b904341bc7184180fcfbe74a4efecf364d",
+  "filterPolicy": "All Time, all32 report types, non-exact dates included; default craft-only and exact-date filters reduce visible counts without changing inventory."
+}
