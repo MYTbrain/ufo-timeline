@@ -34019,6 +34019,10 @@
     startup.mapViewReady = true;
     startup.fullCatalogReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
+    // The provisional profile is no longer authoritative after Ready. Refresh
+    // the final count/list together so the complete catalog is visible now.
+    renderStats();
+    renderResults({ preserveScroll: true });
     if (runtime.analysisViewController) {
       runtime.analysisViewController.setAnalysisEnabled(true, "");
     }
