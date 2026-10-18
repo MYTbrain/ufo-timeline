@@ -29013,7 +29013,23 @@
   async function ingestCatalogShardProgressively(entries) {
     const rows = Array.isArray(entries) ? entries : [];
     if (startup.progressiveEnabled && startup.mapViewReady && !startup.fullCatalogReady) {
-      await window.UfoProgressiveCatalogRuntime.ingestRows(rows, ingestCatalogShard, { maxBatchRows: 512, budgetMs: 8 });
+      let lastPaintYield = performance.now();
+      const yieldWork = function () {
+        const nativeYield = window.scheduler && typeof window.scheduler.yield === "function";
+        if (nativeYield || performance.now() - lastPaintYield >= 32) {
+          lastPaintYield = performance.now();
+          return window.UfoProgressiveCatalogRuntime.yieldToMain();
+        }
+        return yieldDeferredStartupWork();
+      };
+      const metrics = await window.UfoProgressiveCatalogRuntime.ingestRows(rows, ingestCatalogShard, {
+        maxBatchRows: 512, budgetMs: 8, yieldToMain: yieldWork,
+      });
+      const totals = runtime.progressiveIngestMetrics || { processedRows: 0, activeDurationMs: 0, wallDurationMs: 0, yieldCount: 0, maxBatchDurationMs: 0 };
+      ["processedRows", "activeDurationMs", "wallDurationMs", "yieldCount"].forEach(function (key) { totals[key] += metrics[key]; });
+      totals.maxBatchDurationMs = Math.max(totals.maxBatchDurationMs, metrics.maxBatchDurationMs);
+      runtime.progressiveIngestMetrics = totals;
+      recordStartupDecision("progressiveIngestion", Object.assign({ workBudgetMs: 8, maxBatchRows: 512, paintIntervalMs: 32 }, totals));
       return;
     }
     for (let start = 0; start < rows.length; start += STARTUP_CATALOG_INGEST_BATCH_SIZE) {
