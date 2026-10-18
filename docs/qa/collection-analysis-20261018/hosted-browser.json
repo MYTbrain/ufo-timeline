@@ -1,0 +1,308 @@
+{
+  "catalogReady": "true",
+  "comparison": "Reported material × Being descriptions",
+  "comparisonAxes": [
+    "Being descriptions",
+    "Collection actions",
+    "Decades",
+    "Countries",
+    "Source collections",
+    "Craft categories",
+    "Abduction classifications"
+  ],
+  "cover": "hidden",
+  "listStatus": "156 matching report representations.",
+  "mapReady": "true",
+  "observedUtc": "2026-10-18T18:45:47.157Z",
+  "phase": "Ready",
+  "scope": "all",
+  "stats": "156Reports in comparison95Beings not indexed45Geography unknown71Source dossiers · full inventory",
+  "studyAssets": [
+    "https://collection-analysis-20261018.ufo-timeline.pages.dev/analysis_collection_evidence.js?v=2026-10-18-collections-v1",
+    "https://collection-analysis-20261018.ufo-timeline.pages.dev/analysis_collections_view.js?v=2026-10-18-collections-v3"
+  ],
+  "timing": {
+    "decisions": {
+      "analysisRepairDetailOverlay": {
+        "enabled": true,
+        "patchCount": 3900,
+        "sha256": "cfad59c6d0879ebb8c40b464fe05c3a65f9dea915be741110a428c3b5cc16655",
+        "sourcePins": {
+          "baseQualityManifestSha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e",
+          "existingQualityOverlayGzipSha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+          "mufonPatchSha256": "235522990854e3b88d8f4f6d1b30214dd8d32a1e59aece39b581c79552b006ce",
+          "mufonRepairManifestSha256": "59a68bfbf27ebfd2ec029413086bcb37223e0cbb5be7e4c78452805628c90b4a",
+          "reviewedYearManifestSha256": "703747d37f091eb8d4b849d7b3e313687f3224946ff6deb5bc17195b5adaff41",
+          "reviewedYearPatchSha256": "182f5083ab3c24fb354e0b82960415ced3c5c20f9f43d5c6104e09e20ac9c472",
+          "sourceReviewSha256": "e870a2ae49e91c490fa45cb2362ce0e93dda0a477650a5d573627a6ae96924b3"
+        }
+      },
+      "canonicalTraceArtifact:trace_event_index": {
+        "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index.bin.gz",
+        "bytesPerRow": 48,
+        "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index_meta.json",
+        "rowCount": 577004
+      },
+      "canonicalWebArtifacts": {
+        "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/event_chunk_manifest.json",
+        "enabled": true,
+        "eventChunks": 282,
+        "eventChunksBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/",
+        "events": 702893,
+        "fullDetails": true,
+        "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/canonical_web_manifest.json?v=workspace-analysis-20261008",
+        "mappedEvents": 582877,
+        "reason": "",
+        "status": "ready",
+        "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_manifest.json?v=workspace-analysis-20261008",
+        "summaryShardCachesReleased": 0,
+        "summaryShards": 71,
+        "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_shards/",
+        "summaryShardsCached": 0,
+        "traceArtifactsCached": 0
+      },
+      "catalogFacetWorker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "catalogShardPipeline": {
+        "concurrency": 4,
+        "mode": "bounded_canonical_summary_ordered_fetch_ingest",
+        "prefetchWindow": 4,
+        "totalShards": 71
+      },
+      "catalogSourcePipelineTiming": {
+        "consumerWallMs": 6920.100000038743,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1560.3999999910593,
+        "totalWallMs": 10901
+      },
+      "deferredMapMode": "heatmap",
+      "deferredMapReason": "deferred refinement: preserving configured heatmap mode",
+      "deferredMappedCount": 770,
+      "detailQualityOverlay": {
+        "enabled": true,
+        "patchCount": 4451,
+        "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+      },
+      "initialVisualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "locationLabelOverlay": {
+        "enabled": true,
+        "entryCount": 68654,
+        "genericDisplayCount": 68650,
+        "reason": "",
+        "reviewedCount": 4,
+        "sourceInventorySha256": "055302012436a2549549a9712da750aca64bf54b4adb7c7ac475aa56ee56593a",
+        "status": "ready",
+        "url": "https://collection-analysis-20261018.ufo-timeline.pages.dev/data/location_label_overlay.json.gz"
+      },
+      "packedPoints": {
+        "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points.bin.gz",
+        "bytesPerRow": 88,
+        "catalogParity": null,
+        "enabled": true,
+        "eventIdIndex": {
+          "byteLength": 12582912,
+          "capacity": 1048576,
+          "collisions": 161903,
+          "fallbackSize": 0,
+          "maxProbe": 54,
+          "size": 582877,
+          "storageMode": "typed_open_addressing"
+        },
+        "mapLayerEligibility": {
+          "clusters": false,
+          "events": false,
+          "heatmap": false
+        },
+        "mapLayerMode": "all",
+        "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points_meta.json",
+        "reason": "Packed points loaded and validated.",
+        "rowCount": 582877,
+        "schemaVersion": 3,
+        "startupPreviewCount": 0,
+        "startupPreviewRendered": false,
+        "status": "ready"
+      },
+      "packedPointsCatalogParity": {
+        "catalogSize": 702893,
+        "catalogSource": "canonical_web",
+        "checkedAgainstCanonicalPrimaryCatalog": true,
+        "mappedCatalogSize": 582877,
+        "mismatchCount": 0,
+        "mismatches": [],
+        "missingCatalog": 0,
+        "ok": true,
+        "rowCount": 582877,
+        "sampleSize": 256
+      },
+      "packedStartupPreview": {
+        "enabled": true,
+        "reason": "interactive startup profile already owns the provisional map",
+        "rendered": false
+      },
+      "primaryCatalogSource": {
+        "detailChunks": 282,
+        "source": "canonical_web_summary_shards",
+        "summaryShards": 71
+      },
+      "progressiveIngestion": {
+        "activeDurationMs": 6456.39999999851,
+        "maxBatchDurationMs": 139.90000000596046,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 6833.0000000447035,
+        "workBudgetMs": 8,
+        "yieldCount": 558
+      },
+      "progressiveInitialMap": {
+        "fullCatalogReady": false,
+        "reports": 770,
+        "scope": "mapped_reports_in_initial_time_window"
+      },
+      "startupClock": {
+        "navigationToApplicationMs": 604.2999999970198
+      }
+    },
+    "dominantStep": {
+      "duration": 10932.10000000149,
+      "name": "browser catalog build phase"
+    },
+    "milestones": {
+      "time to Ready": 18497,
+      "time to background downloads started": 1070.60000000149,
+      "time to initial map usable": 4460
+    },
+    "steps": [
+      {
+        "duration": 127,
+        "name": "config load"
+      },
+      {
+        "duration": 169.60000000149012,
+        "name": "verified initial mapped view"
+      },
+      {
+        "duration": 5.800000004470348,
+        "name": "renderHeatmapLayer()"
+      },
+      {
+        "duration": 13.399999998509884,
+        "name": "reviewed report corrections load"
+      },
+      {
+        "duration": 13.5,
+        "name": "reviewed date repairs load"
+      },
+      {
+        "duration": 405.1000000014901,
+        "name": "location label overlay load"
+      },
+      {
+        "duration": 723.6000000014901,
+        "name": "packed points preload"
+      },
+      {
+        "duration": 1417.0999999940395,
+        "name": "source-backed trace timing load"
+      },
+      {
+        "duration": 3109.10000000149,
+        "name": "reported encounter evidence load"
+      },
+      {
+        "duration": 3110.10000000149,
+        "name": "complete report evidence barrier"
+      },
+      {
+        "duration": 0.10000000149011612,
+        "name": "canonical web artifact manifest preload"
+      },
+      {
+        "duration": 163.5,
+        "name": "background canonical trace preload"
+      },
+      {
+        "duration": 10902.60000000149,
+        "name": "canonical summary shard ordered fetch+ingest phase"
+      },
+      {
+        "duration": 10932.10000000149,
+        "name": "browser catalog build phase"
+      },
+      {
+        "duration": 299.69999999552965,
+        "name": "computeFacetCounts()"
+      },
+      {
+        "duration": 0.19999999552965164,
+        "name": "reconcilePlaybackState()"
+      },
+      {
+        "duration": 0,
+        "name": "pruneTransientSelectionState()"
+      },
+      {
+        "duration": 301.29999999701977,
+        "name": "startup deferred refinement: finalizeFilteredCatalogState"
+      },
+      {
+        "duration": 7.800000004470348,
+        "name": "renderHeatmapLayer()"
+      },
+      {
+        "duration": 191.79999999701977,
+        "name": "renderMap(): deferred refinement"
+      },
+      {
+        "duration": 4.200000002980232,
+        "name": "renderStats()"
+      },
+      {
+        "duration": 6,
+        "name": "renderAllMultiSelectStates()"
+      },
+      {
+        "duration": 5.799999997019768,
+        "name": "renderLegend()"
+      },
+      {
+        "duration": 39.70000000298023,
+        "name": "startup deferred refinement: renderFilteredState"
+      },
+      {
+        "duration": 3.899999998509884,
+        "name": "renderHeatmapLayer()"
+      }
+    ]
+  },
+  "url": "https://collection-analysis-20261018.ufo-timeline.pages.dev/#analysis-section-encounters",
+  "sourceCommit": "ad2a8ce7fcdf381f928e2213d0b0c574e5a61ba7",
+  "deploymentId": "74626353-c936-4883-b35c-a03850aba891",
+  "collectionAssetsBeforeOpen": 0,
+  "loadingCoverObservedBeforeReady": true,
+  "sharedAnalysisStatus": "Following shared filters · 1954-09-01 to 1954-11-30. From 821 Analysis reports, including eligible unmapped records.",
+  "drilldownStatus": "3 matching report representations · Soil / earth / sand × Human-like.\nClear cell selection",
+  "sourcePrecision": "Close source report\nSAO MARTINHO DE BILENE, MOZ, AF\n\n1955 · Date precision: year · ufocat · Catalog ID 1337075160172969\n\n{\n  \"PRN\": \"330462\",\n  \"X2\": \"0\",\n  \"IRN\": \"\",\n  \"X1\": \"\",\n",
+  "externalDossier": "Cape Town: suited figures and apparent soil extraction\n1988-06-08 · Cape Town, Western Cape, South Africa · direct report\n\nAn adult recalling childhood describes several helmeted figures with handheld devices and lights that appeared to draw soil upward.\n\nDate precision: approximate day\n\nSource report filed: 2026-06-26 · Published: 2026-07-13\n\nPublic submission is retrospective by about 38 years; the narrator says they were approximately five years old.\n\nThe original page explicitly marks both date and time approximate.\n\nTwo observers are claimed, but the second observer has no independently recovered statement here.\n\nFaces and features were obscured. Protective clothing does not identify a biological being type.\n\nNo collection vessel, retained specimen, independent investigation or custody record is supplied.\n\nNUFORC lists Light, and the narrative does not establish a visible craft body. Do not infer a disc or another craft shape.\n\nPublished after the pinned corpus cutoff; retain as an unmatched web extension rather than invent a canonical event join.\n\nNo accepted catalog association · excluded from report comparisons.\n\nHeader and narrative paragraphs on suited figures and ground-directed devices",
+  "decadeCaption": "Reported material × Decades",
+  "initialRapidOpenStaleResponse": {
+    "staleDataRejected": true,
+    "recoveredByVisibleRetry": true
+  },
+  "consoleErrors": [],
+  "measurementBoundary": "Functional hosted smoke check; not a controlled speed benchmark."
+}

@@ -1,0 +1,60 @@
+{
+  "schemaId": "ufo-collection-study-preview-receipt-v1",
+  "status": "hosted_preview_verified",
+  "observedUtc": "2026-10-18T18:47:01.046240+00:00",
+  "url": "https://collection-analysis-20261018.ufo-timeline.pages.dev",
+  "deploymentId": "74626353-c936-4883-b35c-a03850aba891",
+  "runtimeSourceCommit": "ad2a8ce7fcdf381f928e2213d0b0c574e5a61ba7",
+  "githubMainUnchanged": "15ab1607390d636f1571fa10bb4c8b137cf391f2",
+  "productionDeploymentUnchanged": "16443086-c630-41d8-a793-92a0243a76f6",
+  "retainedRollback": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+  "canonicalCandidate": {
+    "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "files": 204,
+    "bytes": 40529677,
+    "treeSha256": "a872afaf642e3b1c34f396f64b9b3626270c26ba4f0c7243503c69cdb42c1e51"
+  },
+  "evidence": {
+    "caseCount": 71,
+    "decodedBytes": 2048449,
+    "decodedSha256": "8175aca8aaa08e21685ee388724d161dcb1bbbd4f1452855e106d075d2257cf3",
+    "file": "evidence.json.gz",
+    "gzipBytes": 398307,
+    "gzipSha256": "e3e8d70aa4d16c16b5e81d1249f18012f92674b3f9acfa43c56b5dab32602281",
+    "reportCount": 752,
+    "url": "./data/collections/evidence.json.gz"
+  },
+  "proof": [
+    {
+      "path": "hosted-public.json",
+      "bytes": 1628,
+      "sha256": "50cd8ef949acc604ca4c6152196ee83c5b5eef94977c5099144d29774065432d"
+    },
+    {
+      "path": "hosted-browser.json",
+      "bytes": 12616,
+      "sha256": "a4b9a8204876ce71bf1e0feaee33926a572ef71209b492321a86654bbd21ded4"
+    },
+    {
+      "path": "collection-preview-final.png",
+      "bytes": 65168,
+      "sha256": "20385c60b1a7aa68b57302edc9662c52de3bcb6b4e2b8217a08d2864193023e4"
+    }
+  ],
+  "storage": {
+    "newFilesAbove100MiB": [],
+    "stageNetGrowthBytes": 496618,
+    "approximateTaskGrowthMiBUpperBound": 20,
+    "newCorpusCopies": 0,
+    "newStagingTrees": 0,
+    "newR2Objects": 0,
+    "cFreeBytesObserved": 103906578432,
+    "supersededProviderCandidates": [
+      "3d7299d1-6080-4963-b1e3-7d588e312866",
+      "6a5204e4-07f0-439c-87d6-f62e2462fd16"
+    ],
+    "cleanupProposal": "Review and remove superseded provider candidate history after acceptance; preserve unique audit queues, original inputs and QA. No dataset deletion proposed.",
+    "deletionPerformed": false
+  },
+  "publication": "Only the sanitized bounded preview was published. Feature branch and QA have not been pushed to GitHub main."
+}

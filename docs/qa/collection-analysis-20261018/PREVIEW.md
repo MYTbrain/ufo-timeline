@@ -1,5 +1,9 @@
 # Collection reports in Analysis
 
+Hosted preview: <https://collection-analysis-20261018.ufo-timeline.pages.dev/>.
+Validated candidate `74626353-c936-4883-b35c-a03850aba891`, runtime source
+`ad2a8ce7fcdf381f928e2213d0b0c574e5a61ba7`. Production is unchanged.
+
 This preview adds **Analysis → Encounters → Soil & plant collections**. Open
 the study to load its small, integrity-checked evidence file. No collection data
 or renderer is downloaded during ordinary map startup. The production map,
@@ -70,3 +74,43 @@ the audit note. Original inputs remain protected. No new file exceeds 100 MiB;
 expected source, Git, sidecar, stage and QA growth is below 20 MiB. No staging
 backup tree or superseded local data copy was created. No dataset or analysis
 deletion is proposed; no cleanup was performed.
+
+## Hosted acceptance
+
+All 204 staged runtime files match their committed Git bytes. All 202 public
+runtime objects match their declared hashes and lengths after removing only
+the known Pages Analytics insertion from three HTML files. Existing 87 R2
+objects remain unchanged. The final tree is
+`a872afaf642e3b1c34f396f64b9b3626270c26ba4f0c7243503c69cdb42c1e51`,
+40,529,677 bytes: 496,618 bytes of net stage growth from production.
+
+The hosted browser retained the cover and reached Map Ready and complete Ready.
+There were zero collection scripts before opening the study. The settled shared
+mode correctly used 821 Analysis reports, including eligible unmapped rows,
+rather than the map's 770 visible Results. A sparse worker query applies the
+same date intervals, keyword, source/type/precision, encounter, country and area
+rules as Analysis. Missing coordinates no longer become `(0,0)` in point-area
+tests; text-based country membership can still include unmapped reports.
+
+The full-study default displayed 156 reports, 95 without an indexed being type,
+45 with unresolved country, and 71 dossiers. A soil × Human-like cell opened
+exactly three report representations. Source inspection showed the raw `1955`
+date with `year` precision, rather than presenting normalized January 1 as an
+exact occurrence. The Cape Town dossier preserved its approximate date,
+reported/published dates and unjoined status. Decade comparison and keyboard
+matrix navigation also passed. Browser console errors: none.
+
+A deliberately rapid initial open overlapped ongoing Analysis evidence updates;
+the stale request was rejected, and the visible retry recovered after the
+selection settled. No stale cohort was displayed under new filter labels.
+This is functional acceptance, not a controlled speed benchmark. Scoped lazy
+loading, seven-axis drilldowns, partial-date bounds, guarded metadata repairs,
+semantic facets, source safety, exports, stale/error/timeout cleanup and existing
+encounter/startup regressions have focused passing tests.
+
+`hosted-public.json`, `hosted-browser.json` and `collection-preview-final.png`
+are the final provenance. Initial preview `3d7299d1` and interim `6a5204e4`
+are superseded provider candidates, proposed for cleanup after review; no extra
+local stage or runtime backup was created. Their source commits and unique QA
+remain recoverable. The compact final QA receipt is retained locally without
+triggering a production or GitHub publication.
