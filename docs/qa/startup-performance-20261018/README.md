@@ -1,0 +1,9 @@
+# Startup performance pass
+
+Baseline production source: 576e09b904341bc7184180fcfbe74a4efecf364d (Cloudflare deployment b4e04dc8). Baseline browser receipt is retained in baseline-browser.json. One normal desktop reload measured 12.206 seconds to Ready, including 6.104 seconds for canonical summary fetch/ingestion and 1.583 seconds across the previously serial support loaders. Browser cache/network/device conditions are not controlled laboratory conditions.
+
+Candidate changes overlap independent pinned requests, cache release/version-addressed compressed binaries normally, correct the startup worker gzip URL, and avoid replacement copies of newly owned compact catalog rows. All source/data identity, hash and validation checks remain in place. No corpus, Analysis dataset, feature or initial visual readiness requirement is removed. The loading overlay remains until Ready, initialViewReady and no error, retaining its minimum display duration and failure feedback.
+
+Storage: reuse the single .tmp/workspace-analysis-20261008-pages stage in place; candidate194files39,702,320bytes, only2,278bytes larger than validated production stage. Shared corpus and87immutableR2 objects are reused with no upload/rebuild. Keep production b4e04dc8 canonical and626b22b4 as its sole designated rollback until a new production publication is explicitly made. This pass creates only small source/test/QA changes; no project artifact above100MiB, new full data copy, superseded local stage or deletion. Browser-managed caching of existing immutable binaries remains bounded by their existing compressed sizes.
+
+Purpose/retention: retain this unique before/after performance evidence and tests. Hosted candidate is for review, reproducible from its Git commit and the one bounded stage, and is not an extra rollback release. No cleanup proposed.

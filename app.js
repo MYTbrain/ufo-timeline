@@ -8200,6 +8200,17 @@
       ? ANALYSIS_REPAIR_DETAILS.apply(runtime.analysisRepairDetailOverlay, event) : event;
   }
 
+  function binaryAssetCacheMode(url) {
+    try {
+      const assetUrl = new URL(url, document.baseURI);
+      const frozenRelease = /\/releases\/[^/]+\//.test(assetUrl.pathname);
+      const version = String(assetUrl.searchParams.get("v") || "").trim();
+      return frozenRelease || version ? "default" : "no-store";
+    } catch (error) {
+      return "no-store";
+    }
+  }
+
   async function fetchGzipArrayBuffer(relativePath, label) {
     const url = resolveAssetPath(relativePath);
     startup.lastUrl = url;
@@ -8207,7 +8218,7 @@
 
     let response;
     try {
-      response = await fetch(url, { cache: "no-store" });
+      response = await fetch(url, { cache: binaryAssetCacheMode(url) });
     } catch (error) {
       throw createStartupError(
         label + " gzip variant could not be fetched.",
@@ -13204,7 +13215,11 @@
     recordStartupDecision("canonicalWebArtifacts", canonicalWebArtifactsStatusSnapshot());
 
     try {
-      const manifestFetch = await fetchOptionalJson(urls.manifest, "Canonical web artifact manifest");
+      const [manifestFetch, chunkManifestFetch, summaryManifestFetch] = await Promise.all([
+        fetchOptionalJson(urls.manifest, "Canonical web artifact manifest"),
+        fetchOptionalJson(urls.chunkManifest, "Canonical web event chunk manifest"),
+        fetchOptionalJson(urls.summaryManifest, "Canonical web summary manifest"),
+      ]);
       if (!manifestFetch.ok) {
         return setCanonicalWebArtifactsRuntimeDisabled(
           manifestFetch.status === "missing" ? PACKED_POINTS_STATUS.MISSING : PACKED_POINTS_STATUS.INVALID,
@@ -13223,7 +13238,6 @@
         );
       }
 
-      const chunkManifestFetch = await fetchOptionalJson(urls.chunkManifest, "Canonical web event chunk manifest");
       if (!chunkManifestFetch.ok) {
         return setCanonicalWebArtifactsRuntimeDisabled(
           chunkManifestFetch.status === "missing" ? PACKED_POINTS_STATUS.MISSING : PACKED_POINTS_STATUS.INVALID,
@@ -13235,7 +13249,6 @@
         );
       }
 
-      const summaryManifestFetch = await fetchOptionalJson(urls.summaryManifest, "Canonical web summary manifest");
       if (!summaryManifestFetch.ok) {
         return setCanonicalWebArtifactsRuntimeDisabled(
           summaryManifestFetch.status === "missing" ? PACKED_POINTS_STATUS.MISSING : PACKED_POINTS_STATUS.INVALID,
@@ -19731,52 +19744,58 @@
         const index = ENCOUNTERS.createIndex(payload, runtime.encounterManifest.attributeReviews, runtime.encounterManifest.sha256);
         runtime.encounterEvidence = index;
         runtime.encounterIndexedIds = payload.rows.map(function (row) { return row.eventId; });
+        const sidecarLoads = [];
         const origins = runtime.encounterManifest.labelOrigins;
         if (origins) {
-          try {
-            const originUrl = new URL(origins.file, new URL(config.manifestUrl, document.baseURI));
-            const originPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(originUrl.toString(), { credentials: "same-origin" }), origins);
-            runtime.encounterLabelOrigins = ENCOUNTERS.createLabelOriginsIndex(originPayload, index, runtime.encounterManifest.sha256);
-          } catch (error) { runtime.encounterLabelOrigins = null; console.warn("[encounters] Label origin comparisons unavailable.", error.message); }
+          sidecarLoads.push((async function () {
+            try {
+              const originUrl = new URL(origins.file, new URL(config.manifestUrl, document.baseURI));
+              const originPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(originUrl.toString(), { credentials: "same-origin" }), origins);
+              runtime.encounterLabelOrigins = ENCOUNTERS.createLabelOriginsIndex(originPayload, index, runtime.encounterManifest.sha256);
+            } catch (error) { runtime.encounterLabelOrigins = null; console.warn("[encounters] Label origin comparisons unavailable.", error.message); }
+          })());
         }
         const enrichment = runtime.encounterManifest.enrichment;
         if (enrichment) {
-          try {
-            const enrichmentUrl = new URL(enrichment.file, new URL(config.manifestUrl, document.baseURI));
-            const enrichedPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(enrichmentUrl.toString(), { credentials: "same-origin" }), enrichment);
-            runtime.encounterEnrichment = ENCOUNTERS.createEnrichmentIndex(enrichedPayload, index, runtime.encounterManifest.sha256);
-            const allIds = Array.from(new Set(enrichedPayload.reportLinks.map(function (link) { return String(link.eventId); })));
-            const acceptedIds = [], heldIds = [];
-            let acceptedLinks = 0, heldLinks = 0;
-            allIds.forEach(function (id) {
-              const links = runtime.encounterEnrichment.get(id).links;
-              if (links.some(function (link) { return link.acceptedForRuntime; })) acceptedIds.push(id);
-              if (links.some(function (link) { return !link.acceptedForRuntime; })) heldIds.push(id);
-              links.forEach(function (link) { if (link.acceptedForRuntime) acceptedLinks += 1; else heldLinks += 1; });
-            });
-            runtime.encounterReviewIds = { all: allIds, accepted: acceptedIds, held: heldIds };
-            const reachable = new Set(enrichedPayload.reportLinks.flatMap(function (link) { return link.sourceEntryIds; }));
-            (enrichedPayload.qualityReviews || []).forEach(function (review) { review.sourceEntryIds.forEach(function (id) { reachable.add(id); }); });
-            const sources = new Map(enrichedPayload.sources.map(function (source) { return [source.sourceId, source]; }));
-            const unlinked = enrichedPayload.sourceEntries.filter(function (entry) { return !reachable.has(entry.entryId); });
-            runtime.encounterReviewSummary = {
-              status: "ready", reportCount: allIds.length, acceptedLinks, heldLinks, sourceEntries: enrichedPayload.sourceEntries.length,
-              entityGroups: enrichedPayload.entityObservations.length,
-              attributedFields: enrichedPayload.entityObservations.reduce(function (sum, entity) { return sum + (entity.attributes || []).length; }, 0),
-              sourceReviews: (enrichedPayload.qualityReviews || []).length,
-              sourceFindings: (enrichedPayload.qualityReviews || []).reduce(function (sum, review) { return sum + review.findings.length; }, 0),
-              unclassifiedReports: allIds.filter(function (id) { return !index.has(id); }).length,
-              unlinkedSourceEntries: unlinked.length,
-              unlinkedSourceAccounts: unlinked.map(function (entry) {
-                const episodeIds = entry.episodeIds || [entry.episodeId];
-                return { sourceEntry: Object.assign({}, entry, { source: sources.get(entry.sourceId) }),
-                  case: enrichedPayload.cases.find(function (item) { return item.caseId === entry.caseId; }),
-                  episodes: enrichedPayload.episodes.filter(function (item) { return episodeIds.includes(item.episodeId); }),
-                  entityObservations: enrichedPayload.entityObservations.filter(function (item) { return episodeIds.includes(item.episodeId); }) };
-              }),
-            };
-          } catch (error) { runtime.encounterEnrichment = null; runtime.encounterReviewIds = null; runtime.encounterReviewSummary = null; console.warn("[encounters] Reviewed case enrichment unavailable.", error.message); }
+          sidecarLoads.push((async function () {
+            try {
+              const enrichmentUrl = new URL(enrichment.file, new URL(config.manifestUrl, document.baseURI));
+              const enrichedPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(enrichmentUrl.toString(), { credentials: "same-origin" }), enrichment);
+              runtime.encounterEnrichment = ENCOUNTERS.createEnrichmentIndex(enrichedPayload, index, runtime.encounterManifest.sha256);
+              const allIds = Array.from(new Set(enrichedPayload.reportLinks.map(function (link) { return String(link.eventId); })));
+              const acceptedIds = [], heldIds = [];
+              let acceptedLinks = 0, heldLinks = 0;
+              allIds.forEach(function (id) {
+                const links = runtime.encounterEnrichment.get(id).links;
+                if (links.some(function (link) { return link.acceptedForRuntime; })) acceptedIds.push(id);
+                if (links.some(function (link) { return !link.acceptedForRuntime; })) heldIds.push(id);
+                links.forEach(function (link) { if (link.acceptedForRuntime) acceptedLinks += 1; else heldLinks += 1; });
+              });
+              runtime.encounterReviewIds = { all: allIds, accepted: acceptedIds, held: heldIds };
+              const reachable = new Set(enrichedPayload.reportLinks.flatMap(function (link) { return link.sourceEntryIds; }));
+              (enrichedPayload.qualityReviews || []).forEach(function (review) { review.sourceEntryIds.forEach(function (id) { reachable.add(id); }); });
+              const sources = new Map(enrichedPayload.sources.map(function (source) { return [source.sourceId, source]; }));
+              const unlinked = enrichedPayload.sourceEntries.filter(function (entry) { return !reachable.has(entry.entryId); });
+              runtime.encounterReviewSummary = {
+                status: "ready", reportCount: allIds.length, acceptedLinks, heldLinks, sourceEntries: enrichedPayload.sourceEntries.length,
+                entityGroups: enrichedPayload.entityObservations.length,
+                attributedFields: enrichedPayload.entityObservations.reduce(function (sum, entity) { return sum + (entity.attributes || []).length; }, 0),
+                sourceReviews: (enrichedPayload.qualityReviews || []).length,
+                sourceFindings: (enrichedPayload.qualityReviews || []).reduce(function (sum, review) { return sum + review.findings.length; }, 0),
+                unclassifiedReports: allIds.filter(function (id) { return !index.has(id); }).length,
+                unlinkedSourceEntries: unlinked.length,
+                unlinkedSourceAccounts: unlinked.map(function (entry) {
+                  const episodeIds = entry.episodeIds || [entry.episodeId];
+                  return { sourceEntry: Object.assign({}, entry, { source: sources.get(entry.sourceId) }),
+                    case: enrichedPayload.cases.find(function (item) { return item.caseId === entry.caseId; }),
+                    episodes: enrichedPayload.episodes.filter(function (item) { return episodeIds.includes(item.episodeId); }),
+                    entityObservations: enrichedPayload.entityObservations.filter(function (item) { return episodeIds.includes(item.episodeId); }) };
+                }),
+              };
+            } catch (error) { runtime.encounterEnrichment = null; runtime.encounterReviewIds = null; runtime.encounterReviewSummary = null; console.warn("[encounters] Reviewed case enrichment unavailable.", error.message); }
+          })());
         }
+        await Promise.all(sidecarLoads);
         runtime.encounterStatus = "ready";
         runtime.encounterError = "";
         renderEncounterControls();
@@ -28898,8 +28917,16 @@
 
   function hydrateCatalogEvent(event) {
     event = applyLocationLabelOverlay(event);
-    event = compactCanonicalSummaryEventForRuntime(event);
-    if (ENCOUNTERS) event = ENCOUNTERS.decorate(event, runtime.encounterEvidence, runtime.encounterLabelOrigins);
+    const compactEvent = compactCanonicalSummaryEventForRuntime(event);
+    const ownsCompactEvent = compactEvent !== event;
+    event = compactEvent;
+    if (ENCOUNTERS) {
+      // Canonical compaction just created this record, so another full clone
+      // per report is unnecessary. Keep the pure API for borrowed records.
+      event = ownsCompactEvent && typeof ENCOUNTERS.decorateInPlace === "function"
+        ? ENCOUNTERS.decorateInPlace(event, runtime.encounterEvidence, runtime.encounterLabelOrigins)
+        : ENCOUNTERS.decorate(event, runtime.encounterEvidence, runtime.encounterLabelOrigins);
+    }
     event.encounterOccurrenceDateExcluded = runtime.traceChronologyEvidence && typeof runtime.traceChronologyEvidence.exclusion === "function"
       ? Boolean(runtime.traceChronologyEvidence.exclusion(event.event_id)) : null;
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
@@ -32831,14 +32858,17 @@
     state.currentTileProviderId = preferredTileProviderId(runtime.appConfig);
     renderStartupDiagnostics();
 
-    await measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime);
-    await measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime);
-    await measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence);
-    await measureStartupStep("reported encounter evidence load", loadEncounterEvidence);
-
-    await measureStartupStep("location label overlay load", function () {
-      return loadLocationLabelOverlayRuntime();
-    });
+    await setStartupPhaseAndPaint("Loading report evidence",
+      "Checking report corrections, source timing, encounters, and location labels.", STARTUP_PROGRESS.config + 1);
+    // Each index uses its own pinned artifact. Fetch them together, but keep
+    // hydration behind this barrier so no report gets partial annotations.
+    await Promise.all([
+      measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime),
+      measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime),
+      measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence),
+      measureStartupStep("reported encounter evidence load", loadEncounterEvidence),
+      measureStartupStep("location label overlay load", loadLocationLabelOverlayRuntime),
+    ]);
 
     await setStartupPhaseAndPaint("Preparing map", "Loading the world reference layer and checking map libraries.", STARTUP_PROGRESS.preparingMap);
     await measureStartupStep("prepare map", async function () {
@@ -32872,15 +32902,20 @@
 
     await setStartupPhaseAndPaint("Loading manifests", "Fetching catalog and chunk manifests.", STARTUP_PROGRESS.manifests);
     await measureStartupStep("manifest load", async function () {
-      runtime.catalogManifest = await fetchJson("./data/event_catalog_manifest.json", "Catalog manifest");
-      startup.catalogManifestLoaded = true;
-      startup.totalCatalogShards = runtime.catalogManifest.length;
-      renderStartupDiagnostics();
-
-      runtime.chunkManifest = await fetchJson("./data/event_chunk_manifest.json", "Event chunk manifest");
-      startup.chunkManifestLoaded = true;
-      startup.totalEventChunks = runtime.chunkManifest.length;
-      renderStartupDiagnostics();
+      await Promise.all([
+        fetchJson("./data/event_catalog_manifest.json", "Catalog manifest").then(function (manifest) {
+          runtime.catalogManifest = manifest;
+          startup.catalogManifestLoaded = true;
+          startup.totalCatalogShards = manifest.length;
+          renderStartupDiagnostics();
+        }),
+        fetchJson("./data/event_chunk_manifest.json", "Event chunk manifest").then(function (manifest) {
+          runtime.chunkManifest = manifest;
+          startup.chunkManifestLoaded = true;
+          startup.totalEventChunks = manifest.length;
+          renderStartupDiagnostics();
+        }),
+      ]);
     });
 
     runtime.packedPointsPromise = measureStartupStep("packed points preload", function () {

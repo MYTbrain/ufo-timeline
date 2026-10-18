@@ -14,6 +14,14 @@
     return versionedUrl(new URL(fileName, new URL(normalizedBase, self.location.href)).toString(), versionToken);
   }
 
+  function gzipSiblingUrl(rawUrl) {
+    const url = new URL(rawUrl, self.location.href);
+    // Keep the cache version and any other query fields on the compressed
+    // sibling, rather than making ".gz" part of a query parameter value.
+    url.pathname += ".gz";
+    return url.toString();
+  }
+
   function canDecodeGzip() {
     return typeof self.DecompressionStream === "function";
   }
@@ -51,7 +59,7 @@
     const versionToken = String(payload.versionToken || "");
     const baseUrl = config.baseUrl || "./data/startup_profiles/france_1954_flap/";
     const manifestRawUrl = versionedUrl(config.manifestUrl || profileAssetUrl(baseUrl, "manifest.json", ""), versionToken);
-    const manifestFetch = await fetchJsonPreferGzip(manifestRawUrl, manifestRawUrl + ".gz");
+    const manifestFetch = await fetchJsonPreferGzip(manifestRawUrl, gzipSiblingUrl(manifestRawUrl));
     const manifest = manifestFetch.value || {};
     const files = manifest.files && typeof manifest.files === "object" ? manifest.files : {};
     const eventsRawUrl = profileAssetUrl(baseUrl, files.events || "events.json", versionToken);

@@ -185,25 +185,30 @@
     });
     return Object.freeze({ ready: true, releaseId: payload.releaseId, rowCount: records.size, get: function (id) { return records.get(identifier(id)) || null; } });
   }
-  function decorate(event, index, originsIndex) {
+  // Catalog hydration owns its newly constructed compact record. Mutate only
+  // that owned record to avoid allocating a second full catalog of copies.
+  function decorateInPlace(event, index, originsIndex) {
     if (!event || typeof event !== "object") return event;
     const ready = Boolean(index && index.ready === true && typeof index.get === "function");
     const record = ready ? index.get(event.event_id == null ? event.eventId : event.event_id) : null;
     const mismatch = Boolean(record && sourceIdentityMismatch(event, record));
     const origins = record && originsIndex && originsIndex.ready && originsIndex.get(record.eventId);
-    return Object.assign({}, event, {
-      encounterAbductionCode: record && !mismatch ? record.encounterAbductionCode : 0,
-      encounterBeingMask: record && !mismatch ? record.encounterBeingMask : 0,
-      encounterSourceBeingMask: origins && !mismatch ? origins.sourceBeingMask : 0,
-      encounterNarrativeBeingMask: origins && !mismatch ? origins.narrativeBeingMask : 0,
-      encounterEvidenceProvenanceReady: Boolean(originsIndex && originsIndex.ready && !mismatch && (!record || origins)),
-      encounterCraftAssociationCode: record && !mismatch ? record.encounterCraftAssociationCode : 0,
-      encounterHeightFeet: record && !mismatch && record.heightFeet != null ? record.heightFeet : null,
-      encounterUniform: record && !mismatch && record.uniform != null
-        ? (typeof record.uniform === "boolean" ? (record.uniform ? "Reported" : "Not reported in source field") : record.uniform) : null,
-      encounterEvidenceReady: ready && !mismatch,
-      encounterIdentityMismatch: mismatch,
-    });
+    event.encounterAbductionCode = record && !mismatch ? record.encounterAbductionCode : 0;
+    event.encounterBeingMask = record && !mismatch ? record.encounterBeingMask : 0;
+    event.encounterSourceBeingMask = origins && !mismatch ? origins.sourceBeingMask : 0;
+    event.encounterNarrativeBeingMask = origins && !mismatch ? origins.narrativeBeingMask : 0;
+    event.encounterEvidenceProvenanceReady = Boolean(originsIndex && originsIndex.ready && !mismatch && (!record || origins));
+    event.encounterCraftAssociationCode = record && !mismatch ? record.encounterCraftAssociationCode : 0;
+    event.encounterHeightFeet = record && !mismatch && record.heightFeet != null ? record.heightFeet : null;
+    event.encounterUniform = record && !mismatch && record.uniform != null
+      ? (typeof record.uniform === "boolean" ? (record.uniform ? "Reported" : "Not reported in source field") : record.uniform) : null;
+    event.encounterEvidenceReady = ready && !mismatch;
+    event.encounterIdentityMismatch = mismatch;
+    return event;
+  }
+  function decorate(event, index, originsIndex) {
+    if (!event || typeof event !== "object") return event;
+    return decorateInPlace(Object.assign({}, event), index, originsIndex);
   }
   function createEnrichmentIndex(payload, evidenceIndex, expectedHash) {
     requireValue(payload && payload.schemaId === "ufo-encounter-enrichment-v1" && payload.catalogCount === CATALOG_COUNT && payload.baseEvidenceDecodedSha256 === expectedHash, "enrichment catalog/base mismatch");
@@ -440,6 +445,6 @@
   }
 
   return Object.freeze({ SCHEMA_ID, RELEASE_ID, CATALOG_COUNT, TAXONOMY, ALL_BEING_MASK, ABDUCTION_CODES, ASSOCIATION_CODES,
-    createIndex, createLabelOriginsIndex, createEnrichmentIndex, decorate, normalizeFilters, matches, beingMask, beingTypes, beingLabel, abductionLabel, craftAssociationLabel,
+    createIndex, createLabelOriginsIndex, createEnrichmentIndex, decorate, decorateInPlace, normalizeFilters, matches, beingMask, beingTypes, beingLabel, abductionLabel, craftAssociationLabel,
     renderBadges, renderEvidence, renderReviewedContext, decodeEvidenceResponse, escapeHtml });
 });
