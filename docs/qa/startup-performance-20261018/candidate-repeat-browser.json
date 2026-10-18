@@ -1,0 +1,317 @@
+{
+  "steps": [
+    {
+      "name": "config load",
+      "duration": 58.60000000055879
+    },
+    {
+      "name": "location label overlay load",
+      "duration": 42
+    },
+    {
+      "name": "source-backed trace timing load",
+      "duration": 441.09999999962747
+    },
+    {
+      "name": "reviewed report corrections load",
+      "duration": 500.8999999994412
+    },
+    {
+      "name": "reviewed date repairs load",
+      "duration": 584.5
+    },
+    {
+      "name": "reported encounter evidence load",
+      "duration": 774.4000000003725
+    },
+    {
+      "name": "prepare map",
+      "duration": 57
+    },
+    {
+      "name": "startup profile preview interaction yield",
+      "duration": 5.2000000001862645
+    },
+    {
+      "name": "startup profile preview",
+      "duration": 269.29999999981374
+    },
+    {
+      "name": "manifest load",
+      "duration": 55.200000000186265
+    },
+    {
+      "name": "canonical web artifact manifest preload",
+      "duration": 4.099999999627471
+    },
+    {
+      "name": "packed points preload",
+      "duration": 171.09999999962747
+    },
+    {
+      "name": "canonical summary shard ordered fetch+ingest phase",
+      "duration": 5584
+    },
+    {
+      "name": "browser catalog build phase",
+      "duration": 5594.399999999441
+    },
+    {
+      "name": "initializeFilters()",
+      "duration": 187.20000000018626
+    },
+    {
+      "name": "buildFilteredCatalogState(null)",
+      "duration": 40.30000000074506
+    },
+    {
+      "name": "defer full display sort for startup",
+      "duration": 0
+    },
+    {
+      "name": "timelinePlaybackEvents construction/sort",
+      "duration": 395.90000000037253
+    },
+    {
+      "name": "applyFilteredCatalogState(...)",
+      "duration": 396.1000000005588
+    },
+    {
+      "name": "rebuildTimeFilteredCatalog()",
+      "duration": 7.8999999994412065
+    },
+    {
+      "name": "finalizeFilteredCatalogState(null) criticalOnly",
+      "duration": 8.099999999627471
+    },
+    {
+      "name": "renderTimeline()",
+      "duration": 50.59999999962747
+    },
+    {
+      "name": "renderResults()",
+      "duration": 4.7000000001862645
+    },
+    {
+      "name": "renderRegionSelectionUi()",
+      "duration": 0.20000000018626451
+    },
+    {
+      "name": "renderPlaybackStatus()",
+      "duration": 5
+    },
+    {
+      "name": "renderFilteredState(): shell first pass",
+      "duration": 60.799999999813735
+    },
+    {
+      "name": "renderHeatmapLayer()",
+      "duration": 5.2000000001862645
+    },
+    {
+      "name": "renderMap(): startup cheap",
+      "duration": 8
+    },
+    {
+      "name": "computeFacetCounts()",
+      "duration": 144.80000000074506
+    },
+    {
+      "name": "reconcilePlaybackState()",
+      "duration": 0.10000000055879354
+    },
+    {
+      "name": "pruneTransientSelectionState()",
+      "duration": 0
+    },
+    {
+      "name": "startup deferred refinement: finalizeFilteredCatalogState",
+      "duration": 145.6000000005588
+    },
+    {
+      "name": "renderHeatmapLayer()",
+      "duration": 3.6000000005587935
+    },
+    {
+      "name": "renderMap(): deferred refinement",
+      "duration": 29.09999999962747
+    },
+    {
+      "name": "renderStats()",
+      "duration": 4.2000000001862645
+    },
+    {
+      "name": "renderAllMultiSelectStates()",
+      "duration": 3.400000000372529
+    },
+    {
+      "name": "renderLegend()",
+      "duration": 8
+    },
+    {
+      "name": "startup deferred refinement: renderFilteredState",
+      "duration": 30.90000000037253
+    }
+  ],
+  "milestones": {
+    "time to startup profile preview render": 1194.2000000001863,
+    "time to first usable render": 7994.399999999441,
+    "time to Ready": 8780.700000000186
+  },
+  "decisions": {
+    "locationLabelOverlay": {
+      "enabled": true,
+      "status": "ready",
+      "reason": "",
+      "entryCount": 68654,
+      "genericDisplayCount": 68650,
+      "reviewedCount": 4,
+      "sourceInventorySha256": "055302012436a2549549a9712da750aca64bf54b4adb7c7ac475aa56ee56593a",
+      "url": "https://startup-performance-20261018.ufo-timeline.pages.dev/data/location_label_overlay.json.gz"
+    },
+    "detailQualityOverlay": {
+      "enabled": true,
+      "patchCount": 4451,
+      "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+    },
+    "analysisRepairDetailOverlay": {
+      "enabled": true,
+      "patchCount": 3900,
+      "sourcePins": {
+        "baseQualityManifestSha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e",
+        "existingQualityOverlayGzipSha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+        "mufonPatchSha256": "235522990854e3b88d8f4f6d1b30214dd8d32a1e59aece39b581c79552b006ce",
+        "mufonRepairManifestSha256": "59a68bfbf27ebfd2ec029413086bcb37223e0cbb5be7e4c78452805628c90b4a",
+        "reviewedYearManifestSha256": "703747d37f091eb8d4b849d7b3e313687f3224946ff6deb5bc17195b5adaff41",
+        "reviewedYearPatchSha256": "182f5083ab3c24fb354e0b82960415ced3c5c20f9f43d5c6104e09e20ac9c472",
+        "sourceReviewSha256": "e870a2ae49e91c490fa45cb2362ce0e93dda0a477650a5d573627a6ae96924b3"
+      },
+      "sha256": "cfad59c6d0879ebb8c40b464fe05c3a65f9dea915be741110a428c3b5cc16655"
+    },
+    "startupProfileWorker": {
+      "used": true,
+      "events": 2583,
+      "tracePreviewSegments": 2582,
+      "usedGzip": {
+        "manifest": true,
+        "events": true,
+        "tracePreview": true
+      }
+    },
+    "startupProfile": {
+      "enabled": true,
+      "rendered": true,
+      "profileId": "france_1954_flap",
+      "label": "1954 France Sept-Nov",
+      "eventCount": 2583,
+      "tracePreviewCount": 2582,
+      "reason": "startup profile heatmap rendered before global catalog hydration"
+    },
+    "packedPoints": {
+      "enabled": true,
+      "status": "ready",
+      "reason": "Packed points loaded and validated.",
+      "rowCount": 582877,
+      "bytesPerRow": 88,
+      "schemaVersion": 3,
+      "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points_meta.json",
+      "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points.bin.gz",
+      "mapLayerMode": "all",
+      "catalogParity": null,
+      "mapLayerEligibility": {
+        "events": false,
+        "clusters": false,
+        "heatmap": false
+      },
+      "eventIdIndex": {
+        "storageMode": "typed_open_addressing",
+        "size": 582877,
+        "capacity": 1048576,
+        "byteLength": 12582912,
+        "collisions": 161903,
+        "maxProbe": 54,
+        "fallbackSize": 0
+      },
+      "startupPreviewRendered": false,
+      "startupPreviewCount": 0
+    },
+    "canonicalWebArtifacts": {
+      "enabled": true,
+      "status": "ready",
+      "reason": "",
+      "events": 702893,
+      "mappedEvents": 582877,
+      "eventChunks": 282,
+      "summaryShards": 71,
+      "summaryShardsCached": 0,
+      "summaryShardCachesReleased": 0,
+      "traceArtifactsCached": 0,
+      "fullDetails": true,
+      "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/canonical_web_manifest.json?v=workspace-analysis-20261008",
+      "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/event_chunk_manifest.json",
+      "eventChunksBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/",
+      "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_manifest.json?v=workspace-analysis-20261008",
+      "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_shards/"
+    },
+    "packedStartupPreview": {
+      "enabled": true,
+      "rendered": false,
+      "reason": "interactive startup profile already owns the provisional map"
+    },
+    "primaryCatalogSource": {
+      "source": "canonical_web_summary_shards",
+      "summaryShards": 71,
+      "detailChunks": 282
+    },
+    "catalogShardPipeline": {
+      "mode": "bounded_canonical_summary_ordered_fetch_ingest",
+      "concurrency": 4,
+      "prefetchWindow": 4,
+      "totalShards": 71
+    },
+    "packedPointsCatalogParity": {
+      "ok": true,
+      "catalogSource": "canonical_web",
+      "checkedAgainstCanonicalPrimaryCatalog": true,
+      "sampleSize": 256,
+      "rowCount": 582877,
+      "catalogSize": 702893,
+      "mappedCatalogSize": 582877,
+      "missingCatalog": 0,
+      "mismatchCount": 0,
+      "mismatches": []
+    },
+    "startupMapMode": "heatmap",
+    "startupMapReason": "startup policy: preserving configured heatmap default",
+    "startupMappedCount": 770,
+    "catalogFacetWorker": {
+      "used": true,
+      "rows": 702893,
+      "reason": "deferred startup facet counts computed off the main thread"
+    },
+    "deferredMapMode": "heatmap",
+    "deferredMapReason": "deferred refinement: preserving configured heatmap mode",
+    "deferredMappedCount": 770,
+    "canonicalTraceArtifact:trace_event_index": {
+      "rowCount": 577004,
+      "bytesPerRow": 48,
+      "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index_meta.json",
+      "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index.bin.gz"
+    },
+    "initialVisualGate": {
+      "fitApplied": false,
+      "traceArtifactReady": true,
+      "facilitySourcesReady": true,
+      "traceWorkerSettled": true,
+      "facilityDisplaySettled": true,
+      "traceCanvasSettled": true,
+      "tilesSettled": true,
+      "sightingCount": 770,
+      "renderedTraceCount": 721
+    }
+  },
+  "dominantStep": {
+    "name": "browser catalog build phase",
+    "duration": 5594.399999999441
+  }
+}

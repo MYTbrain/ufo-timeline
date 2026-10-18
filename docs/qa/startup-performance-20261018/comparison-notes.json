@@ -1,0 +1,7 @@
+{
+  "baselineWarmReadyMs": 12206.200000000186,
+  "firstCandidateReadyMs": 16767.39999999944,
+  "comparisonLimit": "First candidate URL downloaded uncached shell-versioned timing/encounter assets and first cache-eligible binaries; not a like-for-like cold comparison. Retain this sample and measure repeat loads before claiming an improvement.",
+  "catalogCountsPreserved": true,
+  "startupProfileGzipManifestFixed": true
+}

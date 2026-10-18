@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "checkedAtUtc": "2026-10-18T06:24:09.872387+00:00",
+  "candidateUrl": "https://startup-performance-20261018.ufo-timeline.pages.dev/",
+  "candidateDeployment": "4ee785d3",
+  "runtimeSourceCommit": "abfc36f5877b3158797f86c9ebc0d6798ad23b45",
+  "productionChanged": false,
+  "baselineReadyMs": [
+    12206.200000000186,
+    19391.39999999944
+  ],
+  "candidateRepeatReadyMs": [
+    8780.700000000186,
+    9126.100000000559,
+    9249.099999999627
+  ],
+  "candidateRepeatMedianMs": 9126.100000000559,
+  "firstCandidateReadyMs": 16767.39999999944,
+  "conditions": "Normal desktop IAB navigations/reloads on the same tab, same default1954window andsame770sightings/721traces. Not a cache-cleared cold-start laboratory comparison; retain all complete samples.",
+  "firstCandidateNote": "First preview visit loaded uncached shell-versioned support data and first cache-eligible binaries; do not compare16.8s as a controlled cold-start result.",
+  "allCatalogRows": 702893,
+  "allMappedRows": 582877,
+  "initialVisualGateUnchangedAndPassed": true,
+  "loadingScreenVisibleBeforeReady": true,
+  "minimumLoadingCoverMs": 900,
+  "consoleErrors": [],
+  "focusedTestsPassed": [
+    "test_startup_parallel_loading.mjs",
+    "test_startup_profile_worker.mjs",
+    "test_encounter_owned_decoration.mjs",
+    "test_startup_cache_and_cover.mjs",
+    "test_encounter_worker.mjs",
+    "test_encounter_evidence.mjs"
+  ],
+  "incrementalCacheEligibleBinaryBytes": 31027306,
+  "storage": {
+    "stageNetGrowthBytes": 2278,
+    "qaBytesBeforeSummary": 131764,
+    "newFilesAbove100MiB": [],
+    "canonicalCandidate": "Single existing in-place stage .tmp/workspace-analysis-20261008-pages; 194files39702320bytes",
+    "productionCanonical": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+    "retainedProductionRollback": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+    "dataCopiedOrRebuilt": false,
+    "supersededStaging": [],
+    "cleanupProposed": false
+  }
+}
