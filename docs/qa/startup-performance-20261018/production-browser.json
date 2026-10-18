@@ -1,0 +1,288 @@
+{
+  "analysisDisabled": false,
+  "catalogReady": "true",
+  "cover": "hidden",
+  "dates": [
+    "1954-09-01",
+    "1954-11-30"
+  ],
+  "mapReady": "true",
+  "observedUtc": "2026-10-18T08:35:43.650Z",
+  "phase": "Ready",
+  "radar": "1954-09-01 – 1954-11-30Visible traces · current time window263 ordered links504 unknown-order links excludedReport-link direction distributionNorth: 27 (10.3%); Northeast: 25 (9.5%); East: 47 (17.9%); Southeast: 24 (9.1%); South: 29 (11%); Southwest: 29 (11%); West: 61 (23.2%); Northwest: 21 (8%). Each outer spoke marks 23.2%.NNEESESSWWNWN: 10.3%NE: 9.5%E: 17.9%SE: 9.1%S: 11%SW: 11%W: 23.2%NW: 8%Radial scale: 0–23.2%Direction counts & sharesEight compass sectors; shares of 263 ordered link directions. Unknown-order links are excluded.DirectionCountShareN2710.3%NE259.5%E4717.9%SE249.1%S2911%SW2911%W6123.2%NW218%Map bearings of chronological report links; these do not measure craft travel. Each ordered link contributes once in its displayed direction. Unknown-order links are excluded from percentages.2 other links excluded: 0 invalid coordinates, 2 coincident endpoints, 0 undefined bearings.",
+  "results": "770",
+  "searchDisabled": false,
+  "timing": {
+    "decisions": {
+      "analysisRepairDetailOverlay": {
+        "enabled": true,
+        "patchCount": 3900,
+        "sha256": "cfad59c6d0879ebb8c40b464fe05c3a65f9dea915be741110a428c3b5cc16655",
+        "sourcePins": {
+          "baseQualityManifestSha256": "316bfbfb3c20fa57324b28d840d84e8f79581f54d228876b4ad947408e028c2e",
+          "existingQualityOverlayGzipSha256": "fdf7f8ecebe01bd9645927e90acc8f12ee5d7caba9ca2bb8699816165480f1c8",
+          "mufonPatchSha256": "235522990854e3b88d8f4f6d1b30214dd8d32a1e59aece39b581c79552b006ce",
+          "mufonRepairManifestSha256": "59a68bfbf27ebfd2ec029413086bcb37223e0cbb5be7e4c78452805628c90b4a",
+          "reviewedYearManifestSha256": "703747d37f091eb8d4b849d7b3e313687f3224946ff6deb5bc17195b5adaff41",
+          "reviewedYearPatchSha256": "182f5083ab3c24fb354e0b82960415ced3c5c20f9f43d5c6104e09e20ac9c472",
+          "sourceReviewSha256": "e870a2ae49e91c490fa45cb2362ce0e93dda0a477650a5d573627a6ae96924b3"
+        }
+      },
+      "canonicalTraceArtifact:trace_event_index": {
+        "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index.bin.gz",
+        "bytesPerRow": 48,
+        "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/trace_event_index_meta.json",
+        "rowCount": 577004
+      },
+      "canonicalWebArtifacts": {
+        "chunkManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/event_chunk_manifest.json",
+        "enabled": true,
+        "eventChunks": 282,
+        "eventChunksBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/",
+        "events": 702893,
+        "fullDetails": true,
+        "manifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/canonical_web_manifest.json?v=workspace-analysis-20261008",
+        "mappedEvents": 582877,
+        "reason": "",
+        "status": "ready",
+        "summaryManifestUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_manifest.json?v=workspace-analysis-20261008",
+        "summaryShardCachesReleased": 0,
+        "summaryShards": 71,
+        "summaryShardsBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/canonical_web/summary_shards/",
+        "summaryShardsCached": 0,
+        "traceArtifactsCached": 0
+      },
+      "catalogFacetWorker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "catalogShardPipeline": {
+        "concurrency": 4,
+        "mode": "bounded_canonical_summary_ordered_fetch_ingest",
+        "prefetchWindow": 4,
+        "totalShards": 71
+      },
+      "catalogSourcePipelineTiming": {
+        "consumerWallMs": 3140.7000000122935,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1410.500000011176,
+        "totalWallMs": 5305.699999999255
+      },
+      "deferredMapMode": "heatmap",
+      "deferredMapReason": "deferred refinement: preserving configured heatmap mode",
+      "deferredMappedCount": 770,
+      "detailQualityOverlay": {
+        "enabled": true,
+        "patchCount": 4451,
+        "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+      },
+      "initialVisualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 769,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "locationLabelOverlay": {
+        "enabled": true,
+        "entryCount": 68654,
+        "genericDisplayCount": 68650,
+        "reason": "",
+        "reviewedCount": 4,
+        "sourceInventorySha256": "055302012436a2549549a9712da750aca64bf54b4adb7c7ac475aa56ee56593a",
+        "status": "ready",
+        "url": "https://ufo-timeline.pages.dev/data/location_label_overlay.json.gz"
+      },
+      "packedPoints": {
+        "binaryUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points.bin.gz",
+        "bytesPerRow": 88,
+        "catalogParity": null,
+        "enabled": true,
+        "eventIdIndex": {
+          "byteLength": 12582912,
+          "capacity": 1048576,
+          "collisions": 161903,
+          "fallbackSize": 0,
+          "maxProbe": 54,
+          "size": 582877,
+          "storageMode": "typed_open_addressing"
+        },
+        "mapLayerEligibility": {
+          "clusters": false,
+          "events": false,
+          "heatmap": false
+        },
+        "mapLayerMode": "all",
+        "metadataUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/quality-20261007/map_delta/points_meta.json",
+        "reason": "Packed points loaded and validated.",
+        "rowCount": 582877,
+        "schemaVersion": 3,
+        "startupPreviewCount": 0,
+        "startupPreviewRendered": false,
+        "status": "ready"
+      },
+      "packedPointsCatalogParity": {
+        "catalogSize": 702893,
+        "catalogSource": "canonical_web",
+        "checkedAgainstCanonicalPrimaryCatalog": true,
+        "mappedCatalogSize": 582877,
+        "mismatchCount": 0,
+        "mismatches": [],
+        "missingCatalog": 0,
+        "ok": true,
+        "rowCount": 582877,
+        "sampleSize": 256
+      },
+      "packedStartupPreview": {
+        "enabled": true,
+        "reason": "interactive startup profile already owns the provisional map",
+        "rendered": false
+      },
+      "primaryCatalogSource": {
+        "detailChunks": 282,
+        "source": "canonical_web_summary_shards",
+        "summaryShards": 71
+      },
+      "progressiveIngestion": {
+        "activeDurationMs": 2986.2999999988824,
+        "maxBatchDurationMs": 33.5,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 3098.199999999255,
+        "workBudgetMs": 8,
+        "yieldCount": 290
+      },
+      "progressiveInitialMap": {
+        "fullCatalogReady": false,
+        "reports": 770,
+        "scope": "mapped_reports_in_initial_time_window"
+      },
+      "startupClock": {
+        "navigationToApplicationMs": 397.69999999925494
+      }
+    },
+    "dominantStep": {
+      "duration": 5320.89999999851,
+      "name": "browser catalog build phase"
+    },
+    "milestones": {
+      "time to Ready": 9036,
+      "time to background downloads started": 622,
+      "time to initial map usable": 2296.0999999996275
+    },
+    "steps": [
+      {
+        "duration": 65.09999999962747,
+        "name": "config load"
+      },
+      {
+        "duration": 261.7999999988824,
+        "name": "verified initial mapped view"
+      },
+      {
+        "duration": 2.599999999627471,
+        "name": "renderHeatmapLayer()"
+      },
+      {
+        "duration": 6.100000001490116,
+        "name": "reviewed report corrections load"
+      },
+      {
+        "duration": 6.200000001117587,
+        "name": "reviewed date repairs load"
+      },
+      {
+        "duration": 88.5,
+        "name": "location label overlay load"
+      },
+      {
+        "duration": 1000,
+        "name": "packed points preload"
+      },
+      {
+        "duration": 1405.2000000011176,
+        "name": "source-backed trace timing load"
+      },
+      {
+        "duration": 1563.2999999988824,
+        "name": "reported encounter evidence load"
+      },
+      {
+        "duration": 1563.9000000003723,
+        "name": "complete report evidence barrier"
+      },
+      {
+        "duration": 0,
+        "name": "canonical web artifact manifest preload"
+      },
+      {
+        "duration": 701.5,
+        "name": "background canonical trace preload"
+      },
+      {
+        "duration": 5306.199999999255,
+        "name": "canonical summary shard ordered fetch+ingest phase"
+      },
+      {
+        "duration": 5320.89999999851,
+        "name": "browser catalog build phase"
+      },
+      {
+        "duration": 142.5,
+        "name": "computeFacetCounts()"
+      },
+      {
+        "duration": 0.1999999992549419,
+        "name": "reconcilePlaybackState()"
+      },
+      {
+        "duration": 0,
+        "name": "pruneTransientSelectionState()"
+      },
+      {
+        "duration": 143.5,
+        "name": "startup deferred refinement: finalizeFilteredCatalogState"
+      },
+      {
+        "duration": 4.099999999627471,
+        "name": "renderHeatmapLayer()"
+      },
+      {
+        "duration": 75.29999999888241,
+        "name": "renderMap(): deferred refinement"
+      },
+      {
+        "duration": 2.599999999627471,
+        "name": "renderStats()"
+      },
+      {
+        "duration": 1.300000000745058,
+        "name": "renderAllMultiSelectStates()"
+      },
+      {
+        "duration": 5.5,
+        "name": "renderLegend()"
+      },
+      {
+        "duration": 14.300000000745058,
+        "name": "startup deferred refinement: renderFilteredState"
+      },
+      {
+        "duration": 1.900000000372529,
+        "name": "renderHeatmapLayer()"
+      }
+    ]
+  },
+  "url": "https://ufo-timeline.pages.dev/",
+  "viewport": {
+    "height": 780,
+    "width": 973
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schemaId": "ufo-startup-production-provider-v1",
+  "observedUtc": "2026-10-18T08:35:02.962696+00:00",
+  "status": "provider_deployment_success",
+  "providerReadOnlyVerification": true,
+  "providerMutationsPerformed": false,
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deployment": {
+    "id": "16443086-c630-41d8-a793-92a0243a76f6",
+    "environment": "production",
+    "url": "https://16443086.ufo-timeline.pages.dev",
+    "latest_stage": {
+      "name": "deploy",
+      "started_on": "2026-10-18T08:34:05.616573Z",
+      "ended_on": "2026-10-18T08:34:11.551377Z",
+      "status": "success"
+    },
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "main",
+        "commit_hash": "15ab1607390d636f1571fa10bb4c8b137cf391f2",
+        "commit_message": "Enable verified progressive map startup for ordinary visits",
+        "commit_dirty": false
+      }
+    }
+  },
+  "sourceCommit": "15ab1607390d636f1571fa10bb4c8b137cf391f2",
+  "canonicalDeploymentMatchesLatest": true,
+  "buildConfig": {
+    "build_command": "",
+    "destination_dir": "",
+    "root_dir": ""
+  },
+  "frozenRuntime": {
+    "files": 199,
+    "bytes": 40033059,
+    "treeSha256": "a819766ead6f89c78d30f0ca705bedd95033327731d5e2753e7a9cd83b14bfc9",
+    "unchangedR2Objects": 87,
+    "newR2Objects": 0
+  },
+  "verificationBoundary": "Provider canonical publication, successful deploy stage and source identity are verified here. Live public asset bytes and browser acceptance are separate owner checks.",
+  "retainedRollback": {
+    "deploymentId": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+    "sourceCommit": "576e09b904341bc7184180fcfbe74a4efecf364d",
+    "url": "https://b4e04dc8.ufo-timeline.pages.dev",
+    "available": true,
+    "latestStageStatus": "success",
+    "deletionPerformed": false
+  },
+  "storage": {
+    "newFilesAbove100MiB": [],
+    "fullCopiesCreated": false,
+    "netReceiptGrowthExpectedUnderBytes": 5000,
+    "retention": "Retain this compact provider observation as publication provenance. Existing bounded Pages stage is the canonical candidate; prior production is the sole rollback. No dataset or deployment deletion performed."
+  },
+  "receiptNotPushed": true
+}

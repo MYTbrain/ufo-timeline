@@ -1,5 +1,12 @@
 # Progressive startup production release — 18 October 2026
 
+Published and verified: <https://ufo-timeline.pages.dev/>. Production deployment
+`16443086-c630-41d8-a793-92a0243a76f6` serves GitHub main commit
+`15ab1607390d636f1571fa10bb4c8b137cf391f2`. Cloudflare's Git push publication
+completed successfully. All 199 staged runtime files match their committed Git
+objects; all 197 public runtime objects match the delivery plan, accounting only
+for Cloudflare's exact known Analytics insertion in three HTML files.
+
 The user approved the matched, hosted startup preview for production. Ordinary
 visits now use the verified early default map, retain the loading screen until
 the map's visual readiness checks pass, and finish loading the complete catalog
@@ -37,3 +44,31 @@ above 100 MiB: none. Expected source, Git and QA growth is below 5 MiB, with
 effectively unchanged stage size. No dataset or analysis deletion is proposed.
 The production provider identity, public byte checks and browser proof are
 recorded in the accompanying production receipt after publication.
+
+## Production acceptance
+
+An ordinary URL without the preview flag showed the loading cover, followed by
+an interactive default map while the catalog was still loading, then Ready with
+Analysis enabled. Final checks passed: 702,893 catalog and worker rows, 582,877
+mapped rows, zero packed-point parity mismatches, 770 default Results, unchanged
+1954-09-01 through 1954-11-30 dates, and completed facility, trace, canvas and
+tile gates. Browser errors: none. The legend, map tools, radar and chronology
+chart are visible in `production-ready.png`; `production-loading-screen.png`
+records the retained cover.
+
+This production smoke check used the current 973×780 browser viewport. Its
+769 rendered links and radar's 263 ordered / 504 unknown-order links reflect
+that view, with two coincident endpoints excluded from bearings. It is not the
+1265×720 controlled benchmark viewport, so its trace counts and warm-cache
+timings are not substituted into the earlier comparison. Initial map and full
+Ready milestones were both recorded. An initial public hash check ran while
+publication was still pending and saw the previous bootstrap; the complete
+post-success check passed without changing any runtime file.
+
+Final canonical runtime tree: `a819766ead6f89c78d30f0ca705bedd95033327731d5e2753e7a9cd83b14bfc9`,
+199 files / 40,033,059 bytes. Stage growth from the accepted preview: 104 bytes.
+Source, Git and compact QA growth remains below 5 MiB. No newly created file
+exceeds 100 MiB; C: remains approximately 87.5 GiB free. There is one local
+stage, no new backup tree, no R2 upload and no deletion. Receipts are retained
+locally as unique release provenance without a documentation-only production
+rebuild; GitHub main already contains the exact deployed runtime and comparison.
