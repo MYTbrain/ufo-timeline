@@ -28,7 +28,9 @@
     const stage = document.createElement("div");
     stage.className = "preview-analysis-stage";
     workspace.append(rail, stage);
-    toolbar.insertAdjacentElement("afterend", workspace);
+    // Keep temporary research controls beside the shared date/filter tools.
+    const sessionPanel = byId("analysis-session-panel");
+    (sessionPanel || toolbar).insertAdjacentElement("afterend", workspace);
     ["analysis-computation-status", "analysis-state-region", "analysis-content"].forEach((id) => {
       const element = byId(id);
       if (element) stage.appendChild(element);

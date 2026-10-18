@@ -1332,8 +1332,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 166917,
-      "sha256": "c73bc1b396b827b83e2ca67cbf530e9fa1194214cc2bf4820ed71cd0a8496214",
+      "bytes": 166916,
+      "sha256": "63bcf7644e1a506b7d549a901d2536207588eba2a52ce762302e525a56977dc0",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1484,8 +1484,8 @@
     {
       "path": "ui/accepted-workspace/analysis-navigation.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\ui\\accepted-workspace\\analysis-navigation.js",
-      "bytes": 14362,
-      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
+      "bytes": 14514,
+      "sha256": "f5e48104decd7fa844487b9ae350d4d6f83d7ac6cc32f2d3af820caecd3a4aab",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1666,8 +1666,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "587950137c53eaf1f7eef3089b3a1cdd1662380bec30875721b4e4c23bc1f68f",
-  "pages_total_bytes": 40583919,
+  "pages_tree_sha256": "c58e909139498cc1204664e18600cfd182891c3a06faba8bea41923d19a10d24",
+  "pages_total_bytes": 40584070,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -4685,9 +4685,9 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 550,
-    "existing_stage_bytes": 40583369,
-    "c_free_bytes_before_stage": 102517342208,
+    "approximate_net_local_growth_bytes": 151,
+    "existing_stage_bytes": 40583919,
+    "c_free_bytes_before_stage": 102514262016,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
