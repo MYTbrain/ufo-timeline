@@ -38,6 +38,11 @@ live_probe/
 /data/*
 !/data/analysis_comparisons/
 !/data/analysis_repair_detail/
+!/data/collections/
+/data/collections/*
+!/data/collections/manifest.json
+!/data/collections/evidence.json.gz
+!/data/collections/README.md
 !/data/trace_chronology/
 /data/trace_chronology/*
 !/data/trace_chronology/evidence.json.gz
@@ -61,3 +66,11 @@ canonical_web_static_payload_manifest.json
 ufos *.txt
 *.pdf
 !/data/analysis_comparisons/nuclear_sources/sipri-report-original.pdf
+
+# Local collection recall queues retain source extracts and workstation locators.
+# They are preserved in place for review, not published with the runtime/source.
+/docs/qa/collection-analysis-20261018/collection_recall_audit_candidates.json
+/docs/qa/collection-analysis-20261018/collection_recall_audit_metadata.json
+/docs/qa/collection-analysis-20261018/collection_recall_audit_priority_review.json
+/docs/qa/collection-analysis-20261018/collection_recall_audit_material_review.json
+/docs/qa/collection-analysis-20261018/collection_recall_audit_reviewed_dispositions.json

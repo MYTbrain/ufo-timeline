@@ -28,6 +28,18 @@
 /analysis_view.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/analysis_collection_evidence.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analysis_collections_view.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analysis_collections.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/collections/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 /analysis_spatial.js
   Cache-Control: public, max-age=0, must-revalidate
 

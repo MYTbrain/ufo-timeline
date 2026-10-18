@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-18",
+  "scope": "Bounded external source and source-genealogy pass accompanying the collection Analysis preview. This is not an exhaustive web search or event authentication.",
+  "input_dossier": "C:/Users/jarod/Documents/Codex/2026-10-17/i-x20/outputs/Soil and plant encounters/soil_plant_encounter_dossier.html",
+  "counting_unit": "Research dossiers and report representations; source copies and merged records are not independent events or corroboration.",
+  "new_web_extensions": [
+    {
+      "case_id": "WEB_NUFORC_198990",
+      "title": "Cape Town: suited figures and apparent soil extraction",
+      "source": "nuforc",
+      "source_id": "198990",
+      "event_ids": [],
+      "date_iso": "1988-06-08",
+      "date_precision": "approximate_day",
+      "time_local": "02:00",
+      "time_precision": "approximate",
+      "reported_date": "2026-06-26",
+      "posted_date": "2026-07-13",
+      "country": "South Africa",
+      "location": "Cape Town, Western Cape, South Africa",
+      "coordinates": null,
+      "disposition": "direct_report",
+      "scope": "occupant_soil_plant",
+      "material_tags": [
+        "soil"
+      ],
+      "action_tags": [
+        "apparent_extraction_with_device"
+      ],
+      "actor": "suited_figures_using_handheld_devices",
+      "being_type_observation": "short_suited_figures",
+      "biological_identity": null,
+      "source_family": "nuforc_198990_single_submission",
+      "observed_behavior": "An adult recalling childhood describes several helmeted figures with handheld devices and lights that appeared to draw soil upward.",
+      "limitations": [
+        "Public submission is retrospective by about 38 years; the narrator says they were approximately five years old.",
+        "The original page explicitly marks both date and time approximate.",
+        "Two observers are claimed, but the second observer has no independently recovered statement here.",
+        "Faces and features were obscured. Protective clothing does not identify a biological being type.",
+        "No collection vessel, retained specimen, independent investigation or custody record is supplied.",
+        "NUFORC lists Light, and the narrative does not establish a visible craft body. Do not infer a disc or another craft shape.",
+        "Published after the pinned corpus cutoff; retain as an unmatched web extension rather than invent a canonical event join."
+      ],
+      "sources": [
+        {
+          "url": "https://nuforc.org/sighting/?id=198990",
+          "primary_status": "original public witness submission hosted by receiving archive",
+          "access": "Full original report read through web tool on 2026-10-18",
+          "locator": "Header and narrative paragraphs on suited figures and ground-directed devices"
+        }
+      ]
+    }
+  ],
+  "additional_report_candidates": [
+    {
+      "case_id": "WEB_NUFORC_69295",
+      "title": "Ignacio: apparent matter removal below triangular lights",
+      "source": "nuforc",
+      "source_id": "69295",
+      "event_ids": [
+        "2756305389958932",
+        "862964494104738"
+      ],
+      "join_status": "Exact source-ID matches recovered by complementary corpus pass: NUFORC 69295 and UPDB 5280290 with native S69295; one underlying submission",
+      "date_iso": "1997-10-17",
+      "date_precision": "reported_day",
+      "time_local": null,
+      "time_precision": "conflicting_header_and_narrative",
+      "time_conflict": "Header 20:00; narrative approximately 20:17",
+      "reported_date": "2009-03-20",
+      "posted_date": "2009-04-14",
+      "country": "United States",
+      "location": "Ignacio, Colorado; observed objects southwest toward mountains",
+      "coordinates": null,
+      "disposition": "ambiguous",
+      "scope": "craft_collection",
+      "material_tags": [
+        "soil",
+        "plants",
+        "unspecified_matter"
+      ],
+      "action_tags": [
+        "inferred_removal"
+      ],
+      "actor": "craft_or_light_structure",
+      "being_type_observation": null,
+      "source_family": "nuforc_69295_single_submission",
+      "observed_behavior": "The submitter interpreted luminous structures beneath a triangular object as drawing material from hills and mesas. No occupants were described.",
+      "limitations": [
+        "Sampling or removal is an analogy in the account, not identified material in a retained sample.",
+        "Single public submission, approximately eleven years after the reported observation; three witnesses are claimed.",
+        "The NUFORC and UPDB representations reproduce the same account and are not independent corroboration.",
+        "Craft-mediated inference must remain distinct from a being directly handling soil or plants.",
+        "Do not reuse the observer's location as a precise collection-site coordinate."
+      ],
+      "sources": [
+        {
+          "url": "https://nuforc.org/sighting/?id=69295",
+          "primary_status": "original public witness submission hosted by receiving archive",
+          "access": "Full original report read through web tool on 2026-10-18",
+          "locator": "Header; narrative on pole-like luminous structures and subsequent changed viewing position"
+        }
+      ]
+    }
+  ],
+  "source_precision_annotations": [
+    {
+      "event_id": "2287575937141802",
+      "source_id": "177288",
+      "title": "Meadville / Geneva, Pennsylvania",
+      "source_url": "https://nuforc.org/sighting/?id=177288",
+      "source_access": "Original public report read",
+      "field": "date_precision",
+      "imported_value": "exact_day",
+      "source_value": "approximate_day",
+      "recommendation": "Retain displayed nominal date 2001-07-21 with an approximate flag; do not treat as secure exact-day evidence.",
+      "semantic_note": "Ground objects and box are described, but material is unidentified; natural sampling is the submitter's stated belief. Keep ambiguous/unknown material."
+    },
+    {
+      "event_id": "4327917205472281",
+      "source_id": "12256",
+      "title": "Edgemoor, South Carolina",
+      "source_url": "https://nuforc.org/sighting/?id=12256",
+      "source_access": "Original public report read",
+      "field": "date_precision",
+      "imported_value": "exact_day",
+      "source_value": "approximate_day",
+      "recommendation": "Retain nominal date 1967-06-01 with an approximate flag; narrative only specifies spring 1967.",
+      "semantic_note": "A descending light cylinder is interpreted as sampling; no identified material transfer or beings are reported. Keep ambiguous/inferred purpose."
+    }
+  ],
+  "actor_annotations": [
+    {
+      "case_id": "ROOT_NUFORC_50927",
+      "event_ids": [
+        "1089424400309389",
+        "2846722445245583"
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=50927",
+      "source_access": "Full original public report read",
+      "actor": "craft_mechanical_arm",
+      "being_type_observation": null,
+      "note": "Collection attributed to a mechanical appendage, not a seen biological being. Claimed 1976 event reported in 2006; anonymous without contact information."
+    },
+    {
+      "case_id": "ROOT_NUFORC_19806",
+      "event_ids": [
+        "2434909282493027"
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=19806",
+      "source_access": "Full original public report read",
+      "actor": "two_unspecified_figures",
+      "being_type_observation": "unspecified",
+      "date_precision": "approximate_day",
+      "note": "Figures reportedly took apparent cotton samples; no morphology supplied. NUFORC says source anonymous and it knows nothing more about the account."
+    }
+  ],
+  "retained_source_limits": [
+    {
+      "case_id": "bot22",
+      "subject": "Pocinhos Maria Inocencio date and independent-source join",
+      "status": "no new promotion",
+      "note": "Search recovered the same derivative Johnson/Pratt chronology date lead already present in dossier. Three figures in chronology versus two in named-witness summary remains unresolved. Do not silently promote 1964-04-07 or treat a copied 2026 Portuguese retelling as corroboration."
+    },
+    {
+      "case_id": "bot23",
+      "subject": "Valensole official testimony chronology",
+      "source_url": "https://geipan.fr/fr/node/46692",
+      "status": "official case page re-read; primary PDFs still inaccessible",
+      "note": "Official page distinguishes the early July statements from the 18 August supplement. Both linked document requests and testimony request returned HTTP429. No primary-document access upgrade or new collection finding is claimed."
+    }
+  ],
+  "screening_controls": [
+    {
+      "source_url": "https://nuforc.org/sighting/?id=198151",
+      "disposition": "excluded",
+      "reason": "The person submitting the report was collecting rocks; no other collector is described."
+    },
+    {
+      "source_url": "https://nuforc.org/sighting/?id=9742",
+      "disposition": "excluded",
+      "reason": "Soil and plant samples were collected by people investigating depressions after a reported light; not witnessed occupant collection."
+    },
+    {
+      "source_url": "https://nuforc.org/sighting/?id=79041",
+      "disposition": "excluded",
+      "reason": "Plant refers to an electric generating station; sampling is an observer impression without an identified natural specimen."
+    },
+    {
+      "case_id": "CONTROL_STEEP_ROCK_1950",
+      "event_ids": [
+        "3067520710485625"
+      ],
+      "source_url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1950-1951.pdf",
+      "source_access": "CUFOS-hosted working catalogue PDF read directly, page17 (zero-based16), case50-11",
+      "disposition": "excluded",
+      "scope": "hoax_or_retraction",
+      "reason": "The archive entry records a company representative denying the account in a 1963 letter to investigator Gordon Evans. Retain as a documented negative control rather than a positive collection account.",
+      "limitation": "The catalogue cites the letter; the original letter facsimile was not independently recovered. No automatic merge or hoax label is applied to the separate year-only Atikokan1960 representation.",
+      "title": "Steep Rock Lake water-hose story: archived fiction denial",
+      "date": "1950-07-02",
+      "date_iso": "1950-07-02",
+      "date_precision": "claimed_day",
+      "place": "Steep Rock Lake / Sawbill Bay near Atikokan, Ontario",
+      "country": "Canada",
+      "observed_behavior": "The story described small figures using a bright green hose to draw water. The working catalogue includes a company representative's denial that the story was factual.",
+      "limitations": [
+        "The catalogue cites the letter; the original letter facsimile was not independently recovered. No automatic merge or hoax label is applied to the separate year-only Atikokan1960 representation."
+      ],
+      "sources": [
+        {
+          "url": "https://cufos.org/PDFs/HUMCAT/HUMCAT_Index_1950-1951.pdf",
+          "locator": "HUMCAT case50-11, PDFpage17 (zero-based16), source notes on letter dated6/4/63 toGordonEvans",
+          "primary_status": "archival investigator working catalogue quoting company correspondence; original letter facsimile not recovered"
+        }
+      ]
+    }
+  ],
+  "integration_rules": [
+    "Keep collection claims, examinations, traces, inferred purpose, human activity and excluded controls filterable separately.",
+    "A direct_report label describes what testimony explicitly claims, not verification of the event or a mission.",
+    "Do not infer biological categories from protective suits, a craft arm, backlit silhouettes, case fame or an associated crop trace.",
+    "Preserve report date separately from alleged event date, approximate flags and source-version conflicts.",
+    "Source-family grouping can prevent obvious copied representations being counted repeatedly, but unresolved groups must not be advertised as unique authenticated incidents.",
+    "Unmatched web dossiers may support exploratory country/year comparisons where stated; they must not receive fabricated coordinates, canonical IDs or exact timestamp joins."
+  ]
+}

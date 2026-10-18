@@ -2551,6 +2551,7 @@
         onEncounterReportOpen: typeof config.onEncounterReportOpen === "function" ? config.onEncounterReportOpen : null,
         onEncounterSelectionApply: typeof config.onEncounterSelectionApply === "function" ? config.onEncounterSelectionApply : null,
         onEncounterSettingsChange: typeof config.onEncounterSettingsChange === "function" ? config.onEncounterSettingsChange : null,
+        onCollectionStudyRequested: typeof config.onCollectionStudyRequested === "function" ? config.onCollectionStudyRequested : null,
         onPlanetaryHeatmapRequest: typeof config.onPlanetaryHeatmapRequest === "function" ? config.onPlanetaryHeatmapRequest : null,
         getComparisonLoadingState: typeof config.getComparisonLoadingState === "function" ? config.getComparisonLoadingState : null,
         onComparisonRetry: typeof config.onComparisonRetry === "function" ? config.onComparisonRetry : null,
@@ -2753,6 +2754,7 @@
       this._listen(this.els.animalView, "click", (event) => this._handleContextView(event, "animals", "analysis-animal-context"));
       this._listen(this.els.exportJson, "click", () => this._exportEvidence("json"));
       this._listen(this.els.exportCsv, "click", () => this._exportEvidence("csv"));
+      this._listen(this.document.getElementById("analysis-collections-open"), "click", () => this._requestCollectionStudy());
       [
         "analysis-spatial-matrix-disclosure",
         "analysis-spatial-context-disclosure",
@@ -6850,6 +6852,27 @@
       target.appendChild(details);
     }
 
+    async _requestCollectionStudy() {
+      const target = this.document.getElementById("analysis-collections-chart");
+      const button = this.document.getElementById("analysis-collections-open");
+      if (!target || !this.callbacks.onCollectionStudyRequested || this.collectionStudyPending) return;
+      if (this.collectionStudy) { this.collectionStudy.refresh(); return; }
+      this.collectionStudyPending = true;
+      if (button) button.disabled = true;
+      target.textContent = "Loading the source-pinned collection study…";
+      target.setAttribute("aria-busy", "true");
+      try {
+        this.collectionStudy = await this.callbacks.onCollectionStudyRequested(target);
+        if (button) button.hidden = true;
+      } catch (error) {
+        target.textContent = "The collection study could not be loaded. " + cleanText(error && error.message, "Please retry.");
+        if (button) { button.disabled = false; button.textContent = "Retry collection study"; }
+      } finally {
+        target.setAttribute("aria-busy", "false");
+        this.collectionStudyPending = false;
+      }
+    }
+
     _renderEncounterEvidence(value, summary) {
       const data = isObject(value) ? value : {};
       const ready = data.evidenceReady === true;
@@ -7455,6 +7478,7 @@
       const animalContextJobs = [];
       const relationshipContextJobs = [];
       encounterJobs.push(() => this._renderEncounterEvidence(data.encounters, summary));
+      encounterJobs.push(() => { if (this.collectionStudy) this.collectionStudy.refresh(); });
       overviewJobs.push(() => this._renderEligibilityFunnel("analysis-coverage-chart", data.overviewCoverage, summary, { caption: "Analysis eligibility funnel", limit: 8 }));
       overviewJobs.push(() => this._renderCoverageOrbit("analysis-overview-coverage-visual", data.overviewCoverage, summary));
       overviewJobs.push(() => this._renderCraftMosaic("analysis-overview-craft-mosaic", data.craftDistribution, summary, { caption: "Overview craft composition", defaultKind: "filter", limit: 9 }));

@@ -10046,6 +10046,48 @@
     return operation;
   }
 
+  function loadCollectionStudyRuntime() {
+    if (runtime.collectionStudyRuntimePromise) return runtime.collectionStudyRuntimePromise;
+    if (!runtime.collectionStudyScriptPromises) runtime.collectionStudyScriptPromises = new Map();
+    const scripts = [
+      ["collection-study-evidence", "./analysis_collection_evidence.js?v=2026-10-18-collections-v1"],
+      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v1"],
+    ];
+    runtime.collectionStudyRuntimePromise = Promise.all(scripts.map(function (entry) {
+      if (runtime.collectionStudyScriptPromises.has(entry[0])) return runtime.collectionStudyScriptPromises.get(entry[0]);
+      const pending = new Promise(function (resolve, reject) {
+        const script = document.createElement("script"); script.id = entry[0]; script.src = entry[1];
+        script.onload = resolve;
+        script.onerror = function () { script.remove(); runtime.collectionStudyScriptPromises.delete(entry[0]); reject(new Error("A collection study component could not be downloaded.")); };
+        document.head.appendChild(script);
+      });
+      runtime.collectionStudyScriptPromises.set(entry[0], pending);
+      return pending;
+    })).then(function () {
+      if (!window.UfoAnalysisCollectionEvidence || !window.UfoAnalysisCollectionsView) throw new Error("The collection study components are unavailable.");
+      if (!document.getElementById("collection-study-styles")) {
+        const link = document.createElement("link"); link.id = "collection-study-styles"; link.rel = "stylesheet";
+        link.href = "./analysis_collections.css?v=2026-10-18-collections-v1"; document.head.appendChild(link);
+      }
+    }).catch(function (error) { runtime.collectionStudyRuntimePromise = null; throw error; });
+    return runtime.collectionStudyRuntimePromise;
+  }
+
+  function collectionStudyContext(options) {
+    const snapshot = getAnalysisFilterSnapshot();
+    if (!startup.fullCatalogReady || runtime.catalogFacetWorkerRowsQueued < catalog.length) throw new Error("The complete catalog is still preparing. Try again when Analysis is ready.");
+    if (snapshot.generation !== snapshot.requestedGeneration) throw new Error("Shared filters are still updating. Retry when the selection is ready.");
+    let allowedEventIds = null;
+    if (!options || !options.allRecords) {
+      const wanted = new Set((options && options.reportIds || []).map(String));
+      allowedEventIds = new Set();
+      state.filteredCatalog.forEach(function (event) {
+        const id = String(event.event_id); if (wanted.has(id)) allowedEventIds.add(id);
+      });
+    }
+    return { allowedEventIds: allowedEventIds, snapshot: snapshot, generation: snapshot.generation };
+  }
+
   function initializeAnalysisView() {
     if (!window.UfoAnalysisView || typeof window.UfoAnalysisView.AnalysisViewController !== "function") {
       console.warn("Analysis view controls are unavailable.");
@@ -10142,6 +10184,17 @@
       onEncounterSettingsChange: function (settings) {
         runtime.analysisEncounterEvidenceMode = settings && settings.evidenceMode || "all";
         scheduleAnalysisCompute("encounter evidence mode", { immediate: true });
+      },
+      onCollectionStudyRequested: async function (target) {
+        await loadCollectionStudyRuntime();
+        const study = window.UfoAnalysisCollectionsView.create(target, {
+          evidenceApi: window.UfoAnalysisCollectionEvidence,
+          manifestUrl: "./data/collections/manifest.json?v=2026-10-18-collections-v1",
+          getContext: collectionStudyContext,
+          onOpenReport: function (eventId) { return openEncounterInspectedReport({ eventId: eventId, mode: "source" }); },
+        });
+        await study.load();
+        return study;
       },
       onSectionActivate: function (change) {
         if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {

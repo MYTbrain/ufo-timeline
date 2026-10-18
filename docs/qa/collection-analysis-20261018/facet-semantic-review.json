@@ -1,0 +1,223 @@
+{
+  "reviewed_at": "2026-10-18",
+  "scope": "Focused semantic pass over current direct soil/plant report facets; report count is evolving during parallel corpus integration. This records pre-fix evidence, not final runtime findings.",
+  "artifact_sha256_at_review": "17fab87be2661af60c750e560bc8ad93b9c157970b95e74fabb84c148de045b1",
+  "pre_fix_examples": [
+    {
+      "eventId": "1035069868080613",
+      "title": "Avenida da Saudade in Lins, São Paulo, Brazil — 10/2/1968",
+      "target": "earth",
+      "action": "one being collects while another inspects tractor",
+      "materials": [
+        "soil"
+      ],
+      "actions": [
+        "taking",
+        "examining"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "one being collects while another inspects tractor",
+        "materialBasis": "reviewed_target"
+      }
+    },
+    {
+      "eventId": "1089424400309389",
+      "title": "tarlac_nuforc50927_1976",
+      "target": "",
+      "action": "Full matched context explicitly says mechanical arm uprooted sugar canes and brought them inside an opening; occupant not separately observed doing this. | Mechanical arm explicitly uproots sugar canes and brings them aboard. Actor is craft mechanism, not an occupant observed using hands.",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "taking",
+        "carrying"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Full matched context explicitly says mechanical arm uprooted sugar canes and brought them inside an opening; occupant not separately observed doing this. | Mechanical arm explicitly uproots sugar canes and brings them aboard. Actor is craft mechanism, not an occupant observed using hands.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "1664955986717625",
+      "title": "Residential, STOCKPORT, ENGL, England, Great Britain and Ireland · 8/25/1976 (approximate)",
+      "target": "",
+      "action": "Stockport catalog explicitly describes silver-suited figure bagging dirt and rocks; approximate date and source require recovery.",
+      "materials": [
+        "soil",
+        "minerals"
+      ],
+      "actions": [
+        "unspecified"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Stockport catalog explicitly describes silver-suited figure bagging dirt and rocks; approximate date and source require recovery.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "1704625531874210",
+      "title": "Waynesville contact narrative: later tree harvesting, date unknown",
+      "target": "unspecified material from trees",
+      "action": "vessel_arms_harvesting_from_trees",
+      "materials": [
+        "leaves_wood"
+      ],
+      "actions": [
+        "unspecified"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "vessel_arms_harvesting_from_trees",
+        "materialBasis": "reviewed_target"
+      }
+    },
+    {
+      "eventId": "1900021573754340",
+      "title": "Waynesville contact narrative: later tree harvesting, date unknown",
+      "target": "something from trees; substance unidentified",
+      "action": "A vessel with arms harvests something from trees; narrator describes an egg/ether or light-hydrocarbon-like odor.",
+      "materials": [
+        "leaves_wood"
+      ],
+      "actions": [
+        "taking"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "A vessel with arms harvests something from trees; narrator describes an egg/ether or light-hydrocarbon-like odor.",
+        "materialBasis": "reviewed_target"
+      }
+    },
+    {
+      "eventId": "247186163721236",
+      "title": "fidel_potatoes_1976",
+      "target": "",
+      "action": "Fidel account describes figures briefly looking at a pile of potatoes; passing visual attention is a weaker motif than collection. | Briefly looking at stacked potatoes, not removal or instrumented study; modest attention claim.",
+      "materials": [
+        "crops_fruit"
+      ],
+      "actions": [
+        "taking",
+        "examining"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Fidel account describes figures briefly looking at a pile of potatoes; passing visual attention is a weaker motif than collection. | Briefly looking at stacked potatoes, not removal or instrumented study; modest attention claim.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "2846722445245583",
+      "title": "tarlac_nuforc50927_1976",
+      "target": "",
+      "action": "Full matched context explicitly says mechanical arm uprooted sugar canes and brought them inside an opening; occupant not separately observed doing this. | Mechanical arm explicitly uproots sugar canes and brings them aboard. Actor is craft mechanism, not an occupant observed using hands.",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "taking",
+        "carrying"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Full matched context explicitly says mechanical arm uprooted sugar canes and brought them inside an opening; occupant not separately observed doing this. | Mechanical arm explicitly uproots sugar canes and brings them aboard. Actor is craft mechanism, not an occupant observed using hands.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "3138927050218029",
+      "title": "Petare / Gonzales and Ponce",
+      "target": "",
+      "action": "Ponce reportedly saw two figures emerge from bushes carrying apparent clumps of earth and leap into the object; excavation itself was not seen.",
+      "materials": [
+        "soil",
+        "plants_unspecified"
+      ],
+      "actions": [
+        "carrying"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Ponce reportedly saw two figures emerge from bushes carrying apparent clumps of earth and leap into the object; excavation itself was not seen.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "3481471828700006",
+      "title": "wilcox_newark_1964",
+      "target": "",
+      "action": "Wilcox family includes carried trays of soil/plants and fertilizer request; carried material is not necessarily removal observed in field. | Wilcox describes trays already containing plants/soil and a fertilizer request. Keep possession distinct from witnessing removal.",
+      "materials": [
+        "soil",
+        "plants_unspecified",
+        "other"
+      ],
+      "actions": [
+        "taking",
+        "carrying",
+        "interest"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Wilcox family includes carried trays of soil/plants and fertilizer request; carried material is not necessarily removal observed in field. | Wilcox describes trays already containing plants/soil and a fertilizer request. Keep possession distinct from witnessing removal.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "535171906226215",
+      "title": "silver_plume_georgetown_2018",
+      "target": "",
+      "action": "Riders reportedly took staff-like tools from hoverbikes and stabbed/dug ground; target soil/rocks and removal not fully established; source unverified. | Riders dig/stab ground with staff-like tools; digging is explicit, removal or specimen selection is not.",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "taking",
+        "digging"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Riders reportedly took staff-like tools from hoverbikes and stabbed/dug ground; target soil/rocks and removal not fully established; source unverified. | Riders dig/stab ground with staff-like tools; digging is explicit, removal or specimen selection is not.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    },
+    {
+      "eventId": "555570487637819",
+      "title": "wilcox_newark_1964",
+      "target": "",
+      "action": "Wilcox family includes carried trays of soil/plants and fertilizer request; carried material is not necessarily removal observed in field. | Wilcox describes trays already containing plants/soil and a fertilizer request. Keep possession distinct from witnessing removal.",
+      "materials": [
+        "soil",
+        "plants_unspecified",
+        "other"
+      ],
+      "actions": [
+        "taking",
+        "carrying",
+        "interest"
+      ],
+      "coding": {
+        "actionBasis": "affirmative_reviewed_act_clauses",
+        "codedText": "Wilcox family includes carried trays of soil/plants and fertilizer request; carried material is not necessarily removal observed in field. | Wilcox describes trays already containing plants/soil and a fertilizer request. Keep possession distinct from witnessing removal.",
+        "materialBasis": "reviewed_act_summary"
+      }
+    }
+  ],
+  "requested_corrections": {
+    "247186163721236": "Remove taking generated from negated removal; retain examination/attention only.",
+    "3481471828700006": "Remove taking where trays are carried and field removal is explicitly unsecured.",
+    "555570487637819": "Same Wilcox carried-tray qualification.",
+    "535171906226215": "Taking tools from a vehicle is not specimen taking; retain digging.",
+    "3138927050218029": "Bushes are background; only carried earth is identified material.",
+    "1035069868080613": "Tractor inspection is not examination of collected soil.",
+    "1704625531874210": "Material harvested from trees is explicitly unspecified; do not infer leaves or wood.",
+    "1900021573754340": "Same unidentified tree-derived material limitation.",
+    "1089424400309389": "Explicit sugar canes should receive crop facet despite plural form.",
+    "2846722445245583": "Same sugar-cane plural correction.",
+    "1664955986717625": "Explicit bagging should receive container action rather than unspecified."
+  },
+  "disposition": "Sent to artifact builder owner for reviewed manual overrides or narrowly scoped rules. Final implementation/tests are recorded in owner build receipt."
+}

@@ -1,0 +1,810 @@
+{
+  "counting_note": "Report rows and source variants, not unique independently authenticated incidents. No keyword hit was accepted automatically.",
+  "records": [
+    {
+      "source": "phenomenainon_updb",
+      "source_id": "5280290",
+      "date_raw": "1997-10-17",
+      "date_iso": "1997-10-17",
+      "date_precision": "exact_day",
+      "event_id": "862964494104738",
+      "location": "IGNACIO, US",
+      "disposition": "ambiguous",
+      "scope": "craft_collection",
+      "source_scope": "inferred_purpose",
+      "case_title": "Ignacio triangular craft / apparent material intake",
+      "target": "plants; soil; unspecified matter",
+      "action": "Witness interpreted luminous pole-like structures as sucking up matter/plants/dirt; material intake is an explicit analogy, not established observation.",
+      "reason": "Body says \"as if\"; apparent intake is inferred from lights and swirling motion. No beings described, no retrieved sample or verified material removal. One delayed NUFORC submission is reproduced by UPDB; the two corpus rows are not independent incidents.",
+      "notes": [
+        "Source-family NUFORC-69295; two derivative corpus rows.",
+        "Event1997-10-17, NUFORC report2009-03-20.",
+        "Header20:00 versus narrative about20:17; preserve conflict."
+      ],
+      "source_family": "nuforc-69295",
+      "source_url": "https://nuforc.org/sighting/?id=69295",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=69295"
+      ],
+      "chunk_id": "chunk_000148",
+      "detail_index": 526,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000148.json.gz",
+      "detail_chunk_sha256": "11d7463d31af410d0256cecefb99cf4b23d6f2fa306f652f79d8c18cdd6be53e",
+      "context_status": "Full canonical description read; source reviewer also read original NUFORC submission.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_source_followup",
+      "review_method": "Manual semantic read of full canonical narratives, with explicit cross-source duplicate-family identification.",
+      "review_scope": "Reported account and source genealogy only; not validation of the event or sampling interpretation.",
+      "dataset_excerpt": "A very ,very large triangular shaped \" ship\" with extremely long \" pole/legs\" was moving to the southwest....and within these pole/legs were a pink and very red swirling energy of light and motion...as if the poles were \"sucking up the matter/plants/dirt of the hills and mesas near the mountains.",
+      "materials": [
+        "plants",
+        "soil",
+        "unknown_material"
+      ],
+      "actions": [
+        "inferred_removal"
+      ]
+    },
+    {
+      "source": "nuforc",
+      "source_id": "69295",
+      "date_raw": "1997-10-17",
+      "date_iso": "1997-10-17",
+      "date_precision": "exact_day",
+      "event_id": "2756305389958932",
+      "location": "Ignacio, CO, USA",
+      "disposition": "ambiguous",
+      "scope": "craft_collection",
+      "source_scope": "inferred_purpose",
+      "case_title": "Ignacio triangular craft / apparent material intake",
+      "target": "plants; soil; unspecified matter",
+      "action": "Witness interpreted luminous pole-like structures as sucking up matter/plants/dirt; material intake is an explicit analogy, not established observation.",
+      "reason": "Body says \"as if\"; apparent intake is inferred from lights and swirling motion. No beings described, no retrieved sample or verified material removal. One delayed NUFORC submission is reproduced by UPDB; the two corpus rows are not independent incidents.",
+      "notes": [
+        "Source-family NUFORC-69295; two derivative corpus rows.",
+        "Event1997-10-17, NUFORC report2009-03-20.",
+        "Header20:00 versus narrative about20:17; preserve conflict."
+      ],
+      "source_family": "nuforc-69295",
+      "source_url": "https://nuforc.org/sighting/?id=69295",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=69295"
+      ],
+      "chunk_id": "chunk_000263",
+      "detail_index": 181,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000263.json.gz",
+      "detail_chunk_sha256": "84b519366cc1dc97192945318787b6616daef5bb35b6f0faa52bd3747984d5a0",
+      "context_status": "Full canonical description read; source reviewer also read original NUFORC submission.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_source_followup",
+      "review_method": "Manual semantic read of full canonical narratives, with explicit cross-source duplicate-family identification.",
+      "review_scope": "Reported account and source genealogy only; not validation of the event or sampling interpretation.",
+      "dataset_excerpt": "A very ,very large triangular shaped ' ship' with extremely long ' pole/legs' was moving to the southwest....and within these pole/legs were a pink and very red swirling energy of light and motion...as if the poles were 'sucking up the matter/plants/dirt of the hills and mesas near the mountains.",
+      "materials": [
+        "plants",
+        "soil",
+        "unknown_material"
+      ],
+      "actions": [
+        "inferred_removal"
+      ]
+    },
+    {
+      "source": "ufocat",
+      "source_id": "69333",
+      "date_raw": "12/20/1954",
+      "date_iso": "1954-12-20",
+      "date_precision": "exact_day",
+      "event_id": "126254286843782",
+      "location": "VALENCIA=CARACAS, Carabobo, VEN, SA",
+      "disposition": "direct_report",
+      "scope": "minerals_only",
+      "source_family": "PARRA_VALENCIA_1954",
+      "case_title": "Valencia / Parra: boulder loading",
+      "target": "boulders; minerals",
+      "action": "Pulling boulders from roadside and loading them into a hovering disc.",
+      "reason": "Full stored account explicitly attributes boulder loading to six little men; no botanical material stated. Existing Parra dossier already contains later vegetation variants, so this is an additional source-family row, not a new independent incident.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "AUTHOR": "Creighton Gordon",
+        "SOURCE": "FSR1",
+        "PAGEVOL": " 035",
+        "ISOURCE": "APRO",
+        "IPAGEVOL": "",
+        "NAMES": "PARRA"
+      },
+      "chunk_id": "chunk_000032",
+      "detail_index": 2216,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000032.json.gz",
+      "detail_chunk_sha256": "0a975c9a1dda8044fbeb8f5aab13d4ee3c2f4553da5f38529fd1493478f270b4",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "Jockey doing training run along highway saw 6 little men pulling boulders from side of road, loading them into disc hovering < 3m from ground. Tried to run, paralyzed by violet beam from small device.",
+      "materials": [
+        "boulders",
+        "minerals"
+      ],
+      "actions": [
+        "Pulling boulders from roadside and loading them into a hovering disc."
+      ]
+    },
+    {
+      "source": "mufon",
+      "source_id": "52775",
+      "date_raw": "2013-04-26",
+      "date_iso": "2013-04-26",
+      "date_precision": "exact_day",
+      "event_id": "2489652191927830",
+      "location": "anaconda, MT, US",
+      "disposition": "ambiguous",
+      "scope": "inferred_purpose",
+      "source_family": "MUFON_52775",
+      "case_title": "Anaconda: interpreted extraction in photographs",
+      "target": "gold; plutonium; unknown_material",
+      "action": "Witness interpreted shapes in photographs as gold or plutonium extraction.",
+      "reason": "Extraction and material identity are interpretations of images, with question marks and alternatives in the account. Neither actual sampled material nor observed collection is established.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {},
+      "chunk_id": "chunk_000171",
+      "detail_index": 2486,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000171.json.gz",
+      "detail_chunk_sha256": "4e00b52cf77ec717850fc6163ad00998782310cb1bd7c314896c8f510f001cc7",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": " Upon pic review I noticed many new images: ant like creatures that would be about 80 feet tall if they stood up or: are they many small creatures in formations? gold or plutonium extraction pink point grid to lower light/ not light cast onto stack large wings seem possible mas movement in one shutter click on ground only where extraction occurred. Some pics in this group show a large swelling of the base of the stack. one daytime pic has a 50 foot ghost attached to the high-up outside of the stack with a buddy ghost whirl on the ground. Gold orbs move about. They have a ",
+      "materials": [
+        "gold",
+        "plutonium",
+        "unknown_material"
+      ],
+      "actions": [
+        "Witness interpreted shapes in photographs as gold or plutonium extraction."
+      ]
+    },
+    {
+      "source": "phenomenainon_updb",
+      "source_id": "5506045",
+      "date_raw": "2013-04-26",
+      "date_iso": "2013-04-26",
+      "date_precision": "exact_day",
+      "event_id": "758921242215577",
+      "location": "ANACONDA, US",
+      "disposition": "ambiguous",
+      "scope": "inferred_purpose",
+      "source_family": "MUFON_52775",
+      "case_title": "Anaconda: interpreted extraction in photographs",
+      "target": "gold; plutonium; unknown_material",
+      "action": "Witness interpreted shapes in photographs as gold or plutonium extraction.",
+      "reason": "Extraction and material identity are interpretations of images, with question marks and alternatives in the account. Neither actual sampled material nor observed collection is established.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "source": "1"
+      },
+      "chunk_id": "chunk_000032",
+      "detail_index": 2001,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000032.json.gz",
+      "detail_chunk_sha256": "0a975c9a1dda8044fbeb8f5aab13d4ee3c2f4553da5f38529fd1493478f270b4",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": " Upon pic review I noticed many new images: ant like creatures that would be about 80 feet tall if they stood up or: are they many small creatures in formations? gold or plutonium extraction pink point grid to lower light/ not light cast onto stack large wings seem possible mas movement in one shutter click on ground only where extraction occurred. Some pics in this group show a large swelling of the base of the stack. one daytime pic has a 50 foot ghost attached to the high-up outside of the stack with a buddy ghost whirl on the ground. Gold orbs move about. They have a ",
+      "materials": [
+        "gold",
+        "plutonium",
+        "unknown_material"
+      ],
+      "actions": [
+        "Witness interpreted shapes in photographs as gold or plutonium extraction."
+      ]
+    },
+    {
+      "source": "phenomenainon_updb",
+      "source_id": "5249009",
+      "date_raw": "2003-08-15",
+      "date_iso": "2003-08-15",
+      "date_precision": "exact_day",
+      "event_id": "2451900362326357",
+      "location": "KALAMAZOO, US",
+      "disposition": "adjacent",
+      "scope": "traces_only",
+      "source_family": "NUFORC_46971",
+      "case_title": "Kalamazoo gravel-pit depression",
+      "target": "gravel; soil",
+      "action": "Witness found a depression the following day and inferred subsurface material extraction.",
+      "reason": "Witness heard a noise; craft sighting is relayed through a farmhand and children. Depression is later ground evidence, not witnessed collection. NUFORC marks the date approximate despite exact-day catalogue encoding.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=46971",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=46971"
+      ],
+      "native_reference_fields": {
+        "source": "2"
+      },
+      "chunk_id": "chunk_000269",
+      "detail_index": 1417,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000269.json.gz",
+      "detail_chunk_sha256": "5fffa43fb3fb7dcfdf32cafe523e994ffbc79a3f8045874421a7e42fe60ad3bc",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "vel pit to see if there were any marks on he ground. I found an odd looking depression in the gravel. It was conical like you would expect as if someone had removed some ground in gravel and the sides caved in to form a cone shape but, there was no sign of the removed dirt nearby! It was as if something was extracted from underneath and the gravel settled back down into to the space below. There are some strange goings ons at this gravel pit during years of near Earth/Mars approaches as during my report of 1977. I would like to note that this year 2003 was a near pass yea",
+      "materials": [
+        "gravel",
+        "soil"
+      ],
+      "actions": [
+        "Witness found a depression the following day and inferred subsurface material extraction."
+      ]
+    },
+    {
+      "source": "nuforc",
+      "source_id": "46971",
+      "date_raw": "2003-08-15",
+      "date_iso": "2003-08-15",
+      "date_precision": "exact_day",
+      "event_id": "3086958009918270",
+      "location": "Kalamazoo, MI, USA",
+      "disposition": "adjacent",
+      "scope": "traces_only",
+      "source_family": "NUFORC_46971",
+      "case_title": "Kalamazoo gravel-pit depression",
+      "target": "gravel; soil",
+      "action": "Witness found a depression the following day and inferred subsurface material extraction.",
+      "reason": "Witness heard a noise; craft sighting is relayed through a farmhand and children. Depression is later ground evidence, not witnessed collection. NUFORC marks the date approximate despite exact-day catalogue encoding.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=46971",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=46971"
+      ],
+      "native_reference_fields": {},
+      "chunk_id": "chunk_000024",
+      "detail_index": 1443,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000024.json.gz",
+      "detail_chunk_sha256": "f9f8b0546172ec1c10d307b5177f940d95866624bc91284112e16083a68ab9e7",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "vel pit to see if there were any marks on he ground. I found an odd looking depression in the gravel. It was conical like you would expect as if someone had removed some ground in gravel and the sides caved in to form a cone shape but, there was no sign of the removed dirt nearby! It was as if something was extracted from underneath and the gravel settled back down into to the space below.There are some strange goings ons at this gravel pit during years of near Earth/Mars approaches as during my report of 1977.I would like to note that this year 2003 was a near pass year ",
+      "materials": [
+        "gravel",
+        "soil"
+      ],
+      "actions": [
+        "Witness found a depression the following day and inferred subsurface material extraction."
+      ]
+    },
+    {
+      "source": "phenomenainon_updb",
+      "source_id": "5238352",
+      "date_raw": "1959-08-01",
+      "date_iso": "1959-08-01",
+      "date_precision": "exact_day",
+      "event_id": "1419666244133578",
+      "location": "SKIATOOK, US",
+      "disposition": "direct_report",
+      "scope": "water_only",
+      "source_family": "SKIATOOK_1959_WATER",
+      "case_title": "Skiatook: reported creek-water extraction",
+      "target": "water",
+      "action": "Circular craft reportedly extracted water through a hose above creek.",
+      "reason": "The stored brief explicitly describes craft-mediated water extraction; no beings or soil/plant sampling described. UFocat and UPDB are derivative catalogue versions.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "source": "4"
+      },
+      "chunk_id": "chunk_000082",
+      "detail_index": 602,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000082.json.gz",
+      "detail_chunk_sha256": "8583f2178252bbe1224bd4a80ec6b7e77e46d183b9c2363711288d3da839556b",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "Shiny circular UFO extracts water from creek through hose 6-8\" in diameter. Water was mounded up under object. Electromagnetic effect: two cars stall near bridge over creek.",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Circular craft reportedly extracted water through a hose above creek."
+      ]
+    },
+    {
+      "source": "ufocat",
+      "source_id": "127054",
+      "date_raw": "8/1959",
+      "date_iso": "1959-08-01",
+      "date_precision": "month",
+      "event_id": "2357622612489883",
+      "location": "SKIATOOK, Washington, OK, US",
+      "disposition": "direct_report",
+      "scope": "water_only",
+      "source_family": "SKIATOOK_1959_WATER",
+      "case_title": "Skiatook: reported creek-water extraction",
+      "target": "water",
+      "action": "Circular craft reportedly extracted water through a hose above creek.",
+      "reason": "The stored brief explicitly describes craft-mediated water extraction; no beings or soil/plant sampling described. UFocat and UPDB are derivative catalogue versions.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "AUTHOR": "Hatch Larry",
+        "SOURCE": "U",
+        "PAGEVOL": " 05785",
+        "ISOURCE": "LGross195903",
+        "IPAGEVOL": " 059",
+        "NAMES": ""
+      },
+      "chunk_id": "chunk_000057",
+      "detail_index": 1239,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000057.json.gz",
+      "detail_chunk_sha256": "a40530bca5d0ca6401aee06b36454de77ab64973b7af98339eb6910d339ce3d2",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "Shiny circular UFO extracts water from creek thru hose 6-8\" in diameter. Water was mounded up under object. EM effect: 2 cars stall near bridge over creek.",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Circular craft reportedly extracted water through a hose above creek."
+      ]
+    },
+    {
+      "source": "ufocat",
+      "source_id": "110673",
+      "date_raw": "10/11/1966",
+      "date_iso": "1966-10-11",
+      "date_precision": "exact_day",
+      "event_id": "3796912834544758",
+      "location": "WANAQUE RESERVOIR, Passaic, NJ, US",
+      "disposition": "adjacent",
+      "scope": "water_only",
+      "source_family": "WANAQUE_19661011_THOMPSON",
+      "case_title": "Wanaque Reservoir: suction effect",
+      "target": "water",
+      "action": "Suction effect upon water and mist during craft departure.",
+      "reason": "The account describes a water disturbance; it does not establish that material entered the craft or that water was collected.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "AUTHOR": "Keel John A",
+        "SOURCE": "JKeel1",
+        "PAGEVOL": " 139",
+        "ISOURCE": "",
+        "IPAGEVOL": "",
+        "NAMES": "THOMPSON=PASTOR"
+      },
+      "chunk_id": "chunk_000017",
+      "detail_index": 406,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000017.json.gz",
+      "detail_chunk_sha256": "c84945115717dff53ed310a9e32a54baba82328b79264cef0503f3e24044199b",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "Glowing round object with dome, lit up lake, hovered 250' over water, min dist 250'. Blinding white light, made square turn. Sgt. Thompson sighting 3 min. Suction effect on water, heavy mist as left.",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Suction effect upon water and mist during craft departure."
+      ]
+    },
+    {
+      "source": "majestic",
+      "source_id": "Johnson_6763",
+      "date_raw": "10/11/1966",
+      "date_iso": "1966-10-11",
+      "date_precision": "exact_day",
+      "event_id": "491056431669951",
+      "location": null,
+      "disposition": "adjacent",
+      "scope": "water_only",
+      "source_family": "WANAQUE_19661011_THOMPSON",
+      "case_title": "Wanaque Reservoir: suction effect",
+      "target": "water",
+      "action": "Suction effect upon water and mist during craft departure.",
+      "reason": "The account describes a water disturbance; it does not establish that material entered the craft or that water was collected.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html",
+      "source_urls": [
+        "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html"
+      ],
+      "native_reference_fields": {
+        "ref/0": "[Johnson](https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html)",
+        "source": "Johnson",
+        "ref/1": "Dwight Connelly, Skylook, May 1976, p. 14; John A. Keel, Operation Trojan Horse, p. 177; UNICAT, case 698, citing Berthold E. Schwarz",
+        "ref/2": "",
+        "ref/3": "",
+        "ref/4": "",
+        "ref/5": "",
+        "ref/6": "",
+        "ref/7": ""
+      },
+      "chunk_id": "chunk_000215",
+      "detail_index": 2042,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000215.json.gz",
+      "detail_chunk_sha256": "48d83b9a8f3c09b0fe66edacb9b6ffd522e0c388a21c7cca6816d1fb584bf7ef",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": " at a distance of 250 feet, giving off a blinding white light. It made a square turn maneuver. The sighting by Police Sgt. Thompson lasted for three minutes. The witnesses noted a suction effect upon the water, and heavy mist as the object departed.",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Suction effect upon water and mist during craft departure."
+      ]
+    },
+    {
+      "source": "phenomenainon_updb",
+      "source_id": "5423227",
+      "date_raw": "2004-06-05",
+      "date_iso": "2004-06-05",
+      "date_precision": "exact_day",
+      "event_id": "1791072873220676",
+      "location": "ARLINGTON, US",
+      "disposition": "ambiguous",
+      "scope": "water_only",
+      "source_family": "NUFORC_147254",
+      "case_title": "Arlington: missing pool water",
+      "target": "water",
+      "action": "Witness inferred an unseen entity was siphoning a wading pool overnight.",
+      "reason": "The actual siphoning was not seen. Water loss and a shadow-like figure were associated by the witness; agency and relationship remain inferred.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=147254",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=147254"
+      ],
+      "native_reference_fields": {
+        "source": "2"
+      },
+      "chunk_id": "chunk_000266",
+      "detail_index": 1483,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000266.json.gz",
+      "detail_chunk_sha256": "5d4912cd38dfd49014aba8651016db56627015e5e11861a2c4a9ca312bad6088",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "dn't see it looking straight at it. Another caveat to this story is we had a child's wading pool full of water in our front yard. It had no leaks. I say this because it would hold water all day long. But all this same week leading up to this anomaly (shadow thing), at night the kid wading pool would get completely drained. As if something or someone was siphoning out all the water. I kept filling it back up and testing it for leaks. It would hold all day everyday, but be empty in the morning. A few days after all this happened someone from Snohomish water conservation came to offer us \"free rain barrels making class\".",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Witness inferred an unseen entity was siphoning a wading pool overnight."
+      ]
+    },
+    {
+      "source": "nuforc",
+      "source_id": "147254",
+      "date_raw": "2004-06-05",
+      "date_iso": "2004-06-05",
+      "date_precision": "exact_day",
+      "event_id": "919966857862319",
+      "location": "Arlington, WA, USA",
+      "disposition": "ambiguous",
+      "scope": "water_only",
+      "source_family": "NUFORC_147254",
+      "case_title": "Arlington: missing pool water",
+      "target": "water",
+      "action": "Witness inferred an unseen entity was siphoning a wading pool overnight.",
+      "reason": "The actual siphoning was not seen. Water loss and a shadow-like figure were associated by the witness; agency and relationship remain inferred.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://nuforc.org/sighting/?id=147254",
+      "source_urls": [
+        "https://nuforc.org/sighting/?id=147254"
+      ],
+      "native_reference_fields": {},
+      "chunk_id": "chunk_000059",
+      "detail_index": 2017,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000059.json.gz",
+      "detail_chunk_sha256": "e3a1b09464f76e9029e217ede31207eaa82a50ad02a4834cf4114a9a3789abfa",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "ldn't see it looking straight at it.Another caveat to this story is we had a child's wading pool full of water in our front yard. It had no leaks. I say this because it would hold water all day long. But all this same week leading up to this anomaly (shadow thing), at night the kid wading pool would get completely drained. As if something or someone was siphoning out all the water. I kept filling it back up and testing it for leaks. It would hold all day everyday, but be empty in the morning.A few days after all this happened someone from Snohomish water conservation came to offer us 'free rain barrels making class'. ",
+      "materials": [
+        "water"
+      ],
+      "actions": [
+        "Witness inferred an unseen entity was siphoning a wading pool overnight."
+      ]
+    },
+    {
+      "source": "mufon",
+      "source_id": "128343",
+      "date_raw": "2022-03-03",
+      "date_iso": "2022-03-03",
+      "date_precision": "exact_day",
+      "event_id": "2907739238954934",
+      "location": "Palm Springs, CA, US",
+      "disposition": "ambiguous",
+      "scope": "craft_collection",
+      "source_family": "MUFON_128343",
+      "case_title": "Palm Springs: inferred ground extraction",
+      "target": "unknown_material",
+      "action": "Moving beam was interpreted as surveying and perhaps extracting ground substances.",
+      "reason": "The account explicitly qualifies extraction as \"perhaps\" and gives no identified collected material. No beings reported; do not count this as direct soil sampling.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {},
+      "chunk_id": "chunk_000181",
+      "detail_index": 1717,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000181.json.gz",
+      "detail_chunk_sha256": "7e7544f949058199253585fb67fc0e84f4793e175054f30121f93c22a795f0ff",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "eam with a dark line down the center { solid in form against the pulsateing light of the obect itself.} This beam moved back and forth and sideways much like an insect testing the ground. Just by description they appeared to be surveying and perhaps extracting substances from the grounds of the tip of the mountian range.",
+      "materials": [
+        "unknown_material"
+      ],
+      "actions": [
+        "Moving beam was interpreted as surveying and perhaps extracting ground substances."
+      ]
+    },
+    {
+      "source": "mufon",
+      "source_id": "136319",
+      "date_raw": "2024-01-20",
+      "date_iso": "2024-01-20",
+      "date_precision": "exact_day",
+      "event_id": "9669472239212",
+      "location": "Acorn, AR, US",
+      "disposition": "ambiguous",
+      "scope": "auditory_inference",
+      "source_family": "MUFON_136319",
+      "case_title": "Acorn: extraction speculation from aircraft-like sound",
+      "target": "unknown_material",
+      "action": "Witness speculated an unseen noisy source might be extracting something from earth.",
+      "reason": "No collection act or material was seen; the report says \"mayb\" and \"I have no clue\". Preserve as an uncertain auditory interpretation.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {},
+      "chunk_id": "chunk_000205",
+      "detail_index": 430,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000205.json.gz",
+      "detail_chunk_sha256": "3dde24f86e36ab878b72f31f2829745078d2c0b8ed127a879f48c2b543acff29",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "t above my head blue sky it sound like a helicopter with a jet engine that pulsates every couple seconds its scary as hell but it acts like it's looking for something or mayb it's extracting some thing from the earth I have no clue but one damn things for sure it's still here and hasn't needed to go refuel what's that tell ya it's probably nuclear powered you can laugh at this or take it seriously I know what I would do I would be sending something this way like an f22 an",
+      "materials": [
+        "unknown_material"
+      ],
+      "actions": [
+        "Witness speculated an unseen noisy source might be extracting something from earth."
+      ]
+    },
+    {
+      "source": "majestic",
+      "source_id": "Johnson_2860",
+      "date_raw": "5/15/1973",
+      "date_iso": "1973-05-15",
+      "date_precision": "exact_day",
+      "event_id": "2858706108825345",
+      "location": null,
+      "disposition": "adjacent",
+      "scope": "reported_other",
+      "source_family": "SANDOWN_SAM_19730515",
+      "case_title": "Sandown / Sam: reported berry consumption",
+      "target": "berries; plants; water",
+      "action": "Being reportedly ate a berry and said it fed on berries and cleaned river water.",
+      "reason": "Botanical consumption and verbal information are reported, but gathering/removing Earth plants was not witnessed. Do not recode feeding as collection.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html",
+      "source_urls": [
+        "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html"
+      ],
+      "native_reference_fields": {
+        "ref/0": "[Johnson](https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html)",
+        "source": "Johnson",
+        "ref/1": "David F. Webb & Ted Bloecher, HUMCAT: Catalogue of Humanoid Reports, case 1973-092 (A1201), citing BUFORA Journal, Vol. 6, No. 5",
+        "ref/2": "",
+        "ref/3": "",
+        "ref/4": "",
+        "ref/5": "",
+        "ref/6": "",
+        "ref/7": ""
+      },
+      "chunk_id": "chunk_000167",
+      "detail_index": 1810,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000167.json.gz",
+      "detail_chunk_sha256": "3f4091943c6e728ac7f8934bc4c2250f0fc68e890d0b8a9c12eb1532c9f2822f",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "d covered with a pattern of dials; there was an electric heater and simple wooden furniture. The upper level, less spacious, had a metal floor. He told the children that he fed on berries, and drank the river water after cleaning it. He said he had a camp on the mainland. Inside the hut he removed his hat to reveal round, white ears and sparse brown hair. Before eating a berry, he performed an \"odd trick\" with it; he placed the berry in his ear, where it disappeared and reappeared at one of his triangular eyes.\"repeating the process, the berry traveled",
+      "materials": [
+        "berries",
+        "plants",
+        "water"
+      ],
+      "actions": [
+        "Being reportedly ate a berry and said it fed on berries and cleaned river water."
+      ]
+    },
+    {
+      "source": "ufocat",
+      "source_id": "329982",
+      "date_raw": "3/5/1978",
+      "date_iso": "1978-03-05",
+      "date_precision": "exact_day",
+      "event_id": "2671267449112804",
+      "location": "SPRINGBROOK, Gold Coast, QLD, AU",
+      "disposition": "adjacent",
+      "scope": "occupant_soil_plant",
+      "source_family": "SPRINGBROOK_19780305",
+      "case_title": "Springbrook: humanoid grasping a sapling",
+      "target": "sapling; plants",
+      "action": "Hairy humanoid reportedly had large hands wrapped around a sapling.",
+      "reason": "Physical contact with a sapling is explicit. Cutting timber was the human witness activity; no collection, uprooting, or sampling by the being is stated.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "",
+      "source_urls": [],
+      "native_reference_fields": {
+        "AUTHOR": "Rosales Albert S",
+        "SOURCE": "ARosales16",
+        "PAGEVOL": " 274A",
+        "ISOURCE": "JeClark",
+        "IPAGEVOL": "",
+        "NAMES": ""
+      },
+      "chunk_id": "chunk_000250",
+      "detail_index": 90,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000250.json.gz",
+      "detail_chunk_sha256": "5f12cf724e437446ad51a62a9e78132766d7f891b07be66e5ff1dbcf54ca027a",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "Type E. Man cutting timber heard pig grunting, saw black hairy humanoid <4m away. Had huge hands wrapped around sapling. Shiny face, 2 large yellow eyes, hole for mouth.",
+      "materials": [
+        "sapling",
+        "plants"
+      ],
+      "actions": [
+        "Hairy humanoid reportedly had large hands wrapped around a sapling."
+      ]
+    },
+    {
+      "source": "majestic",
+      "source_id": "Johnson_3562",
+      "date_raw": "6/20/1986",
+      "date_iso": "1986-06-20",
+      "date_precision": "exact_day",
+      "event_id": "322091858963191",
+      "location": null,
+      "disposition": "adjacent",
+      "scope": "traces_only",
+      "source_family": "MENTRUX_LOCATELLI_19860620",
+      "case_title": "Mentrux-en-Joux: boulder absent months later",
+      "target": "boulder; minerals",
+      "action": "Witness returned months after craft encounter and found the boulder absent.",
+      "reason": "No removal was witnessed, and months elapsed. The absent boulder is a reported subsequent condition; causal removal by occupants is unestablished.",
+      "notes": [
+        "Additional report row; source-family membership does not establish independent evidence."
+      ],
+      "source_url": "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html",
+      "source_urls": [
+        "https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html"
+      ],
+      "native_reference_fields": {
+        "ref/0": "[Johnson](https://web.archive.org/web/http://www.ufoinfo.com/onthisday/calendar.html)",
+        "source": "Johnson",
+        "ref/1": "Joel Mesnard & Michael Morel Seythoux, Lumieres dans la Nuit, issue # 305; FSR, Vol. 37, No. 1",
+        "ref/2": "",
+        "ref/3": "",
+        "ref/4": "",
+        "ref/5": "",
+        "ref/6": "",
+        "ref/7": ""
+      },
+      "chunk_id": "chunk_000034",
+      "detail_index": 579,
+      "field": "description",
+      "detail_chunk_url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/coordinated-reliability-v152-20260731/data/canonical_web/event_chunks/chunk_000034.json.gz",
+      "detail_chunk_sha256": "91990ab43f32455b7714dca440c16f2db26afd3754d6da3c4b4853fb6f57bf17",
+      "context_status": "Full canonical primary narrative read; derivative paired versions compared where listed.",
+      "canonical_primary_differs": false,
+      "discovery_pass": "complementary_recall_20261018",
+      "review_method": "Manual semantic read of the complete canonical primary narrative, preserving actor/action/target distinctions and explicit uncertainty.",
+      "review_scope": "Classification of reported contents only; no authenticity or causal confirmation.",
+      "dataset_excerpt": "e away but his car engine stalled. At the same time he could hear a high-pitched humming sound. He was finally able to restart the car and drove away. When he returned to the site several months later he was surprised to see that the large boulder was gone.",
+      "materials": [
+        "boulder",
+        "minerals"
+      ],
+      "actions": [
+        "Witness returned months after craft encounter and found the boulder absent."
+      ]
+    }
+  ]
+}

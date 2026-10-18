@@ -82,6 +82,50 @@ class WorkspaceAnalysisReleaseTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, message):
                     release.validate_refresh(self.previous, changed)
 
+    def test_collection_study_pins_population_policy_and_reviewed_joins(self):
+        payload = {"schemaId": "ufo-collection-evidence-v1", "schemaVersion": 1,
+                   "reports": [{"eventId": "11", "canonicalJoinStatus": "validated_id_source_chunk_index"}],
+                   "cases": [{"caseId": "unjoined-control"}],
+                   "policy": {"canonicalDataMutated": False, "keywordCandidatesPromoted": False,
+                              "casesExcludedFromReportMatrices": True}}
+
+        def prepare(value, manifest_change=None):
+            decoded = json.dumps(value).encode()
+            compressed = gzip.compress(decoded, mtime=0)
+            source = self.root / release.COLLECTION_EVIDENCE
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_bytes(compressed)
+            manifest = {"schemaId": payload["schemaId"], "schemaVersion": 1, "artifact": {
+                "file": "evidence.json.gz", "url": "./" + release.COLLECTION_EVIDENCE,
+                "gzipBytes": len(compressed), "gzipSha256": hashlib.sha256(compressed).hexdigest(),
+                "decodedBytes": len(decoded), "decodedSha256": hashlib.sha256(decoded).hexdigest(),
+                "reportCount": len(value["reports"]), "caseCount": len(value["cases"])}}
+            if manifest_change:
+                manifest_change(manifest)
+            (self.root / release.COLLECTION_MANIFEST).write_text(json.dumps(manifest))
+            pages, pins = {}, []
+            with patch.object(release, "ROOT", self.root):
+                release.add_collection_study_pages(pages, lambda path, role: pins.append(path))
+            return pages, pins
+
+        pages, pins = prepare(payload)
+        self.assertEqual(set(pages), {release.COLLECTION_MANIFEST, release.COLLECTION_EVIDENCE})
+        self.assertEqual(len(pins), 2)
+        for change, message in [
+            (lambda p: p["policy"].update(keywordCandidatesPromoted=True), "source policy"),
+            (lambda p: p["policy"].update(casesExcludedFromReportMatrices=False), "source policy"),
+            (lambda p: p["reports"].append(copy.deepcopy(p["reports"][0])), "report join"),
+            (lambda p: p["reports"][0].update(canonicalJoinStatus="candidate"), "report join"),
+        ]:
+            value = copy.deepcopy(payload)
+            change(value)
+            with self.assertRaisesRegex(ValueError, message):
+                prepare(value)
+        with self.assertRaisesRegex(ValueError, "population identity"):
+            prepare(payload, lambda m: m["artifact"].update(reportCount=2))
+        with self.assertRaisesRegex(ValueError, "gzip pin"):
+            prepare(payload, lambda m: m["artifact"].update(gzipSha256="0" * 64))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -42,6 +42,7 @@
     encounters: [
       { key: "profile", label: "Encounter profile", anchorIds: ["analysis-abduction-profile-chart"] },
       { key: "craft", label: "Beings & craft", anchorIds: ["analysis-being-craft-chart"] },
+      { key: "collections", label: "Soil & plant collections", anchorIds: ["analysis-collections-chart"], rootSelectors: ["#analysis-collections-card"] },
       { key: "activity", label: "Reports over time", anchorIds: ["analysis-encounter-time-chart"] },
       { key: "coverage", label: "Classification & sources", anchorIds: ["analysis-encounter-coverage-chart"] },
     ],

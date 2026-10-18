@@ -1,0 +1,78 @@
+{
+  "schema": "collection-complementary-recall-audit-v1",
+  "created_utc": "2026-10-18T18:17:34.322940+00:00",
+  "purpose": "New whole-current-corpus recall queue supplementing, not replacing, 6,690 prior decisions. No keyword hit is accepted automatically.",
+  "prior_dossier": "C:\\Users\\jarod\\Documents\\Codex\\2026-10-17\\i-x20\\outputs\\Soil and plant encounters",
+  "prior_dispositions_sha256": "54fa344309365cd0ab54c787783e5b6ef86a5042ddd2ccf40168079910ccef99",
+  "input_pins_sha256": "6a33a952d02b29ce43ecad043c2bdd68fbe50f8c3edec780666bb51eabb8b229",
+  "prior_reviewed_ids": 6690,
+  "counts": {
+    "current_rows_scanned": 702893,
+    "rows_with_narrative": 647216,
+    "rows_without_narrative": 55677,
+    "all_matching_rows": 10382,
+    "novel_candidate_rows": 9618,
+    "previously_reviewed_matches_preserved": 764
+  },
+  "source_counts": {
+    "nuforc": {
+      "scanned": 151816,
+      "novel_candidates": 2716
+    },
+    "ufocat": {
+      "scanned": 221280,
+      "novel_candidates": 601
+    },
+    "phenomenainon_updb": {
+      "scanned": 161029,
+      "novel_candidates": 2861
+    },
+    "majestic": {
+      "scanned": 49418,
+      "novel_candidates": 821
+    },
+    "mufon": {
+      "scanned": 119350,
+      "novel_candidates": 2619
+    }
+  },
+  "search_definition": {
+    "new_material": "\\b(?:turf|sod|clods?|pebbles?|gravel|loam|clay|mud|sediments?|silt|chalk|boulders?|ore|ores|crystals?|quartz|lichen|bark|twigs?|petals?|blossoms?|foliage|sprouts?|shoots|saplings?|pollen|pinecones?|cones|berries|tubers?|mottes?|cailloux|pousses|feuillage|fango|terriccio|sassi|erba|fiori|hojas|hierbas?|arbustos?|piedras|guijarros|barro|grama|folhas|pedras|amostras?|campioni|preliev\\w*)\\b",
+    "material": "\\b(?:soil\\w*|dirt|earth|ground|sand|rocks?|stones?|minerals?|vegetation|plants?|flowers?|leaves|leaf|grass|roots?|seeds?|crops?|wheat|corn|maize|potatoes|beans?|cabbages?|lavender|alfalfa|mushrooms?|ferns?|trees?|branches?|shrubs?|bushes|water|agu[ae]|eau|muestras?|plantas?|flores|tierra|rocas?|vegetaci[oó]n|fleurs?|herbe|arbres?|terre|sol|boden|pflanzen|blumen|proben|turf|sod|clods?|pebbles?|gravel|loam|clay|mud|sediments?|silt|chalk|boulders?|ore|ores|crystals?|quartz|lichen|bark|twigs?|petals?|blossoms?|foliage|sprouts?|shoots|saplings?|pollen|pinecones?|berries|tubers?|mottes?|cailloux|pousses|feuillage|fango|terriccio|sassi|erba|fiori|hojas|hierbas?|arbustos?|piedras|guijarros|barro|grama|folhas|pedras|amostras?|campioni)\\b",
+    "new_action": "\\b(?:extract\\w*|excavat\\w*|siphon\\w*|aspirat\\w*|levitat\\w*|hoist\\w*|elevat\\w*|suction|bor(?:e|es|ed|ing)|core\\s+sampl\\w*|sever\\w*|detach\\w*|clip(?:s|ped|ping)?|snip\\w*|pinch\\w*|trim(?:s|med|ming)?|stow\\w*|load(?:s|ed|ing)?|deposit\\w*|gouge\\w*|nibbl\\w*|forag\\w*|prelev\\w*|pr[eé]lev\\w*|r[eé]colt\\w*|arrach\\w*|raccog\\w*|cogli\\w*|campion\\w*|scav\\w*|apanh\\w*|colh\\w*|amostr\\w*|cog(?:er|iendo|i[oó]|i[ae]n)|tom(?:ar|ando|[aó])|arranc\\w*|recogi\\w*|extrai\\w*|extra[eé]\\w*|succion\\w*|suck\\w*\\s+up|draw\\w*\\s+(?:up|into)|lift\\w*\\s+(?:up|into))\\b",
+    "action": "\\b(?:collect\\w*|gather\\w*|sampl\\w*|examin\\w*|inspect\\w*|pick\\w*|pluck\\w*|tak(?:e|en|es|ing)|took|carri\\w*|carry\\w*|dig\\w*|dug|scoop\\w*|scrap\\w*|sift\\w*|cut(?:s|ting)?|pull\\w*|uproot\\w*|harvest\\w*|remov\\w*|touch\\w*|extract\\w*|excavat\\w*|siphon\\w*|aspirat\\w*|levitat\\w*|hoist\\w*|elevat\\w*|suction|bor(?:e|es|ed|ing)|sever\\w*|detach\\w*|clip(?:s|ped|ping)?|snip\\w*|pinch\\w*|trim(?:s|med|ming)?|stow\\w*|load(?:s|ed|ing)?|deposit\\w*|gouge\\w*|nibbl\\w*|forag\\w*|pr[eé]lev\\w*|prelev\\w*|r[eé]colt\\w*|arrach\\w*|raccog\\w*|cogli\\w*|campion\\w*|scav\\w*|apanh\\w*|colh\\w*|amostr\\w*|cog(?:er|iendo|i[oó]|i[ae]n)|tom(?:ar|ando|[aó])|arranc\\w*|recogi\\w*|extrai\\w*|extra[eé]\\w*|succion\\w*)\\b",
+    "actor": "\\b(?:occupant\\w*|beings?|entities|entity|humanoid\\w*|alien\\w*|creature\\w*|figures?|dwar\\w*|little\\s+(?:men|man|people)|robots?|ufonaut\\w*|hombres|seres|hommes|personnages|omino|omini|criaturas)\\b",
+    "mechanical": "\\b(?:suction|siphon\\w*|aspirat\\w*|vacuum\\w*|hoist\\w*|levitat\\w*|extract\\w*|excavat\\w*)\\b",
+    "action_material_radius_chars": 180,
+    "not_positive_classifier": true
+  },
+  "elapsed_seconds": 336.85,
+  "manual_review": {
+    "manual_context_reviews": 89,
+    "full_primary_narrative_reviews_for_retained_rows": 18,
+    "retained_additional_report_rows": 18,
+    "new_direct_soil_or_plant_collection_rows": 0,
+    "excluded_contexts": 71
+  },
+  "candidate_queue": {
+    "enriched_contexts": 1868,
+    "compact_locators": 7750,
+    "unreviewed_in_this_agent": 9529
+  },
+  "limitations": [
+    "55,677 records have no narrative; screening cannot resolve their substantive content.",
+    "All current pinned full-detail records were screened, but only selected discovery contexts were manually reviewed. Remaining lexical candidates are a queue, never validated negatives.",
+    "No new direct soil/plant collection row was established by this bounded review. Botanical additions are explicitly adjacent consumption/contact reports.",
+    "Three retained direct report rows concern one mineral source variant and two derivative water reports; they are not new independent authenticated incidents.",
+    "Original6690 reviewer decisions were not changed or overwritten. New discovery patterns are complementary, not an exhaustive vocabulary or multilingual ontology.",
+    "Full canonical descriptions are still derivative or truncated catalogue text in some sources; reading those is not recovery of witness originals."
+  ],
+  "storage": {
+    "canonical_recall_queue": "collection_recall_audit_candidates.json",
+    "reviewed_additions": "collection_recall_audit_additions.json",
+    "retained_previous_dossier": "C:\\Users\\jarod\\Documents\\Codex\\2026-10-17\\i-x20\\outputs\\Soil and plant encounters",
+    "corpus_copies_created": 0,
+    "new_files_over_100_mib": [],
+    "superseded_staging": "None; a single generated queue was compacted in place to retain exact locators with bounded priority excerpts."
+  }
+}

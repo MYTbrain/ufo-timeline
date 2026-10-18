@@ -8,6 +8,12 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 
 # Published artifact and scientific evidence hashes name exact bytes on Windows too.
 /data/** -text
+/analysis_collection_evidence.js -text
+/analysis_collections_view.js -text
+/analysis_collections.css -text
+/scripts/build_collection_evidence.py -text
+/scripts/collection_effective_metadata.cjs -text
+/docs/qa/collection-analysis-20261018/*.json -text
 /releases/quality-20261007/** -text
 /scripts/build_quality_map_release.py -text
 /scripts/build_quality_analysis_release.py -text

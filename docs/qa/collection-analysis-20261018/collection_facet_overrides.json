@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-18",
+  "method": "Manual semantic overrides guarded by exact report source identity and SHA-256 of affirmative reviewer-coded text. Do not reuse after source text changes without review.",
+  "records": [
+    {
+      "event_id": "247186163721236",
+      "source": "majestic",
+      "source_id": "Johnson_2259",
+      "expected_coded_text_sha256": "b85202b00e8256e9022a945e4ac455300025058f08ce50353c2f1f0ab9042004",
+      "materials": [
+        "crops_fruit"
+      ],
+      "actions": [
+        "examining"
+      ],
+      "reason": "The reviewed account describes a brief look at stacked potatoes, not removal. A negated removal term must not create a taking facet."
+    },
+    {
+      "event_id": "3481471828700006",
+      "source": "majestic",
+      "source_id": "Eberhart_3767",
+      "expected_coded_text_sha256": "f5d623c1042ae380e9d0680fc78a7e157078a43f5ac51507abb1c343f7327f2b",
+      "materials": [
+        "soil",
+        "plants_unspecified",
+        "other"
+      ],
+      "actions": [
+        "carrying",
+        "interest"
+      ],
+      "reason": "Already filled trays are carried and fertilizer is discussed. The review explicitly leaves field removal unsecured; do not code taking from that negation."
+    },
+    {
+      "event_id": "555570487637819",
+      "source": "majestic",
+      "source_id": "Hatch_UDB_6929",
+      "expected_coded_text_sha256": "f5d623c1042ae380e9d0680fc78a7e157078a43f5ac51507abb1c343f7327f2b",
+      "materials": [
+        "soil",
+        "plants_unspecified",
+        "other"
+      ],
+      "actions": [
+        "carrying",
+        "interest"
+      ],
+      "reason": "Same Wilcox carried-tray account: possession and fertilizer interest are described, but removal from the field is not established."
+    },
+    {
+      "event_id": "535171906226215",
+      "source": "phenomenainon_updb",
+      "source_id": "5281997",
+      "expected_coded_text_sha256": "a6a6685bc8312330a74c2d863f956f705cf80f0a01df222d10a0d5a08ffca350",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "digging"
+      ],
+      "reason": "Taking staff-like tools from hoverbikes concerns equipment, not taking a natural specimen. Ground digging is explicit; material selection or removal is not."
+    },
+    {
+      "event_id": "3138927050218029",
+      "source": "majestic",
+      "source_id": "Eberhart_2641",
+      "expected_coded_text_sha256": "78b143d88a0aab28743879e87a391c4b8ccf3555818a2bccdb1009acb7c93147",
+      "materials": [
+        "soil"
+      ],
+      "actions": [
+        "carrying"
+      ],
+      "reason": "Figures emerge from bushes while carrying apparent clumps of earth. Bushes are the background setting and are not reported collected."
+    },
+    {
+      "event_id": "1035069868080613",
+      "source": "majestic",
+      "source_id": "Eberhart_4628",
+      "expected_coded_text_sha256": "868fc6411a02d0aae7a62eb4b3924716d23f56e346f04377d2de38a0df4ffed4",
+      "materials": [
+        "soil"
+      ],
+      "actions": [
+        "taking"
+      ],
+      "reason": "One figure collects earth while another inspects the tractor. Tractor inspection must not create an examination facet for the collected material."
+    },
+    {
+      "event_id": "1704625531874210",
+      "source": "phenomenainon_updb",
+      "source_id": "5486257",
+      "expected_coded_text_sha256": "184427a1215473f4e5bb97eb84a046e34a6da14b370e7dc391013fd3a5a65807",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "taking"
+      ],
+      "reason": "Vessel arms reportedly harvest an unidentified substance from trees. Tree association alone does not identify leaves, twigs or wood as the collected material."
+    },
+    {
+      "event_id": "1900021573754340",
+      "source": "mufon",
+      "source_id": "73457",
+      "expected_coded_text_sha256": "12a6213aef74e7a617a039e441c989ba4ff7c37979d0fcad8ae2ef31f0d35ca4",
+      "materials": [
+        "unspecified"
+      ],
+      "actions": [
+        "taking"
+      ],
+      "reason": "The harvested tree-derived substance is explicitly unidentified; its described odor does not establish a botanical specimen category."
+    },
+    {
+      "event_id": "1089424400309389",
+      "source": "nuforc",
+      "source_id": "50927",
+      "expected_coded_text_sha256": "9def9d1cb2ce6482f40b15cc9a3f0f2bbcf8a0eb39a885d68023b72efc4d76be",
+      "materials": [
+        "crops_fruit"
+      ],
+      "actions": [
+        "taking",
+        "carrying"
+      ],
+      "reason": "The reviewed act explicitly describes a mechanical arm uprooting sugar canes and bringing them aboard. Plural canes are identifiable crop material; no being is inferred."
+    },
+    {
+      "event_id": "2846722445245583",
+      "source": "phenomenainon_updb",
+      "source_id": "5254973",
+      "expected_coded_text_sha256": "9def9d1cb2ce6482f40b15cc9a3f0f2bbcf8a0eb39a885d68023b72efc4d76be",
+      "materials": [
+        "crops_fruit"
+      ],
+      "actions": [
+        "taking",
+        "carrying"
+      ],
+      "reason": "Same Tarlac mechanical-arm sugar-cane account; preserve crop taking and carrying without inferring an observed occupant."
+    },
+    {
+      "event_id": "1664955986717625",
+      "source": "majestic",
+      "source_id": "Hatch_UDB_12296",
+      "expected_coded_text_sha256": "da4758ee381361b2312dec70d60132e91afef9723521155879acebdebab655e3",
+      "materials": [
+        "soil",
+        "minerals"
+      ],
+      "actions": [
+        "taking",
+        "container"
+      ],
+      "reason": "The reviewed act explicitly states bagging dirt and rocks. This supports taking and putting material in a container, rather than an unspecified act."
+    }
+  ]
+}
