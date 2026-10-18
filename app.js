@@ -7289,6 +7289,7 @@
     runtime.startupTiming.steps = [];
     runtime.startupTiming.milestones = {};
     runtime.startupTiming.decisions = {};
+    runtime.startupTiming.decisions.startupClock = { navigationToApplicationMs: runtime.startupTiming.startedAt };
     runtime.startupTiming.summary = null;
     runtime.startupTiming.summaryPrinted = false;
     if (typeof performance.clearMarks === "function") {
@@ -8167,6 +8168,57 @@
     runtime.detailQualityOverlay = QUALITY_DETAILS.createIndex(payload, config);
     recordStartupDecision("detailQualityOverlay", { enabled: true, patchCount: runtime.detailQualityOverlay.patchCount,
       qualityManifestSha256: config.qualityManifestSha256 });
+  }
+
+  function ensureDetailQualityOverlayLoaded() {
+    if (runtime.detailQualityOverlay) return Promise.resolve(runtime.detailQualityOverlay);
+    if (!runtime.detailQualityOverlayLoadPromise) {
+      runtime.detailQualityOverlayLoadPromise = Promise.resolve().then(loadDetailQualityOverlayRuntime).catch(function (error) {
+        runtime.detailQualityOverlayLoadPromise = null;
+        throw error;
+      });
+    }
+    return runtime.detailQualityOverlayLoadPromise;
+  }
+
+  function ensureAnalysisRepairDetailOverlayLoaded() {
+    if (runtime.analysisRepairDetailOverlay) return Promise.resolve(runtime.analysisRepairDetailOverlay);
+    if (!runtime.analysisRepairDetailOverlayLoadPromise) {
+      runtime.analysisRepairDetailOverlayLoadPromise = Promise.resolve().then(loadAnalysisRepairDetailOverlayRuntime).catch(function (error) {
+        runtime.analysisRepairDetailOverlayLoadPromise = null;
+        throw error;
+      });
+    }
+    return runtime.analysisRepairDetailOverlayLoadPromise;
+  }
+
+  function loadStartupSupportEvidence() {
+    if (runtime.startupSupportEvidencePromise) return runtime.startupSupportEvidencePromise;
+    runtime.startupSupportEvidencePromise = Promise.all([
+      measureStartupStep("reviewed report corrections load", ensureDetailQualityOverlayLoaded),
+      measureStartupStep("reviewed date repairs load", ensureAnalysisRepairDetailOverlayLoaded),
+      measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence),
+      measureStartupStep("reported encounter evidence load", loadEncounterEvidence),
+      measureStartupStep("location label overlay load", loadLocationLabelOverlayRuntime),
+    ]).then(function (values) {
+      if (startup.progressiveEnabled && (!values[2] || runtime.encounterStatus !== "ready")) {
+        if (!values[2]) runtime.traceChronologyEvidencePromise = null;
+        if (runtime.encounterStatus !== "ready") runtime.encounterEvidencePromise = null;
+        throw new Error("Report evidence did not finish loading. The verified default map is still available.");
+      }
+      return { traceEvidence: values[2] };
+    }).finally(function () {
+      // Prefetch may finish before the initial map opens. Keep its scoped
+      // chronology authoritative until full-catalog hydration starts.
+      if (startup.progressiveEnabled && runtime.progressiveTiming && !runtime.progressiveHydrating) {
+        runtime.traceChronologyEvidence = runtime.progressiveTiming;
+        runtime.traceChronologyStatus = "ready";
+      }
+    }).catch(function (error) {
+      runtime.startupSupportEvidencePromise = null;
+      throw error;
+    });
+    return runtime.startupSupportEvidencePromise;
   }
 
   function applyDetailQualityOverlay(event) {
@@ -26331,6 +26383,9 @@
 
     const completedPayloads = new Array(manifest.length);
     const payloadWaiters = new Map();
+    let sourceWaitMs = 0;
+    let consumerWallMs = 0;
+    const pipelineStartedAt = performance.now();
 
     function storeCompletedPayload(index, result) {
       completedPayloads[index] = result;
@@ -26371,14 +26426,19 @@
     }
 
     for (let index = 0; index < manifest.length; index += 1) {
+      const waitStartedAt = performance.now();
       const result = await waitForCompletedPayload(index);
+      sourceWaitMs += performance.now() - waitStartedAt;
       completedPayloads[index] = null;
       if (!result.ok) {
         throw result.error;
       }
-      await ingestCatalogShardProgressively(result.entries || []);
-      releaseCanonicalSummaryShardCacheEntry(index);
+      // Refill the four pending slots while this one active shard hydrates.
       queueNextFetch();
+      const consumerStartedAt = performance.now();
+      await ingestCatalogShardProgressively(result.entries || []);
+      consumerWallMs += performance.now() - consumerStartedAt;
+      releaseCanonicalSummaryShardCacheEntry(index);
       startup.ingestedCatalogShards = index + 1;
       setStartupPhase(
         "Building browser catalog",
@@ -26395,6 +26455,13 @@
         await waitForNextFrame();
       }
     }
+    recordStartupDecision("catalogSourcePipelineTiming", {
+      totalWallMs: performance.now() - pipelineStartedAt,
+      sourceWaitMs: sourceWaitMs,
+      consumerWallMs: consumerWallMs,
+      maximumPendingShards: concurrency,
+      maximumActiveShards: 1,
+    });
     releaseCanonicalSummaryStringPool();
   }
 
@@ -28956,7 +29023,11 @@
     event.has_coordinates = Boolean(event.has_coordinates || (event.lat != null && event.lon != null));
     event.location_precision = event.location_precision || "unknown";
     event.visual_type_group = event.visual_type_group || getVisualTypeGroup(event.type);
-    event.sort_ordinal = event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null;
+    // Canonical compaction already calculated this value on its owned record.
+    // Recompute borrowed legacy records, including an explicit null for no date.
+    if (!ownsCompactEvent) {
+      event.sort_ordinal = event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null;
+    }
     if (Object.prototype.hasOwnProperty.call(event, "parsed_time_local_minutes")) {
       event.parsed_time_local_minutes = finiteChronologyNumber(event.parsed_time_local_minutes);
     }
@@ -32947,6 +33018,24 @@
     return payload;
   }
 
+  function prepareProgressiveCatalogInputs() {
+    if (runtime.progressiveCatalogInputsPromise) return runtime.progressiveCatalogInputsPromise;
+    recordStartupMilestoneIfUnset("time to background downloads started");
+    const support = measureStartupStep("complete report evidence barrier", loadStartupSupportEvidence);
+    runtime.packedPointsPromise = measureStartupStep("packed points preload", loadPackedPointsRuntime);
+    const firstShards = (runtime.canonicalWebArtifacts.summaryManifest || []).slice(0, STARTUP_CATALOG_SHARD_CONCURRENCY);
+    const prefetched = firstShards.map(function (_shard, index) { return ensureCanonicalSummaryShardLoaded(index); });
+    runtime.progressiveCatalogInputsPromise = Promise.all([support, runtime.packedPointsPromise, Promise.all(prefetched)])
+      .then(function (values) { return values[0]; })
+      .catch(function (error) {
+        runtime.progressiveCatalogInputsPromise = null;
+        throw error;
+      });
+    // The scoped visual gate remains independent from background failures.
+    runtime.progressiveCatalogInputsPromise.catch(function () {});
+    return runtime.progressiveCatalogInputsPromise;
+  }
+
   async function initializeProgressiveStartup() {
     startup.progressiveEnabled = true;
     runtime.progressiveCatalogUi = window.UFOStartupCatalogUI.create({ document: document, onRetry: startProgressiveCatalogBackground });
@@ -32958,8 +33047,8 @@
       measureStartupStep("verified initial mapped view", loadProgressiveStartupProfile),
       ensureWorldReferenceData(),
       loadCanonicalWebArtifactsRuntime(),
-      loadDetailQualityOverlayRuntime(),
-      loadAnalysisRepairDetailOverlayRuntime(),
+      ensureDetailQualityOverlayLoaded(),
+      ensureAnalysisRepairDetailOverlayLoaded(),
     ]);
     const payload = results[0];
     if (!canonicalWebArtifactsCanServePrimaryCatalog()) throw new Error("The full report manifests could not be prepared.");
@@ -32993,6 +33082,7 @@
       throw new Error("The initial map filter parity check failed.");
     }
     renderFilteredState();
+    prepareProgressiveCatalogInputs();
     await Promise.all(Object.keys(OVERLAY_DEFINITIONS).filter(function (id) { return state.overlayVisibility[id]; }).map(ensureOverlayLayer));
     syncOverlayVisibility();
     await Promise.all([window.UfoCropCircleBootstrap, window.UfoAnimalMutilationBootstrap].map(function (bootstrap) {
@@ -33014,6 +33104,7 @@
   async function promoteProgressiveCatalog() {
     // Population and filter state change together. No map recreation, fit, or
     // default-filter reset is allowed after the visitor starts exploring.
+    if (runtime.canonicalTraceRuntimePreloadPromise) await runtime.canonicalTraceRuntimePreloadPromise;
     runtime.progressivePromotion = true;
     try {
       runtime.traceSequenceCacheKey = "";
@@ -33040,6 +33131,7 @@
       runtime.progressiveById = null;
       runtime.progressiveTraceOrder = null;
       runtime.progressiveTiming = null;
+      runtime.progressiveCatalogInputsPromise = null;
     } finally {
       runtime.progressivePromotion = false;
     }
@@ -33049,6 +33141,11 @@
     if (runtime.progressiveBackgroundPromise || startup.fullCatalogReady) return runtime.progressiveBackgroundPromise;
     startup.backgroundError = "";
     updateProgressiveCatalogUi();
+    if (!runtime.canonicalTraceRuntimePreloadPromise) {
+      runtime.canonicalTraceRuntimePreloadPromise = measureStartupStep("background canonical trace preload", function () {
+        return ensureCanonicalTraceArtifactLoaded(PACKED_TRACE_ARTIFACT_KINDS.eventIndex);
+      }).catch(function () { return null; }).finally(function () { runtime.canonicalTraceRuntimePreloadPromise = null; });
+    }
     runtime.progressiveBackgroundPromise = (async function () {
       try {
         await loadCatalog();
@@ -33057,6 +33154,7 @@
       } catch (error) {
         startup.fullCatalogReady = false;
         runtime.progressivePromotion = false;
+        runtime.progressiveHydrating = false;
         startup.backgroundError = (error && error.message ? error.message : String(error)) + (error && error.url ? "\n" + error.url : "");
         runtime.traceChronologyEvidence = runtime.progressiveTiming;
         runtime.traceChronologyStatus = "ready";
@@ -33105,17 +33203,19 @@
     renderStartupDiagnostics();
     }
 
+    let preparedInputs = null;
+    if (preserveProgressiveMap) {
+      preparedInputs = await prepareProgressiveCatalogInputs();
+      runtime.progressiveHydrating = true;
+      runtime.traceChronologyEvidence = preparedInputs.traceEvidence;
+      runtime.traceChronologyStatus = "ready";
+    } else {
     await setStartupPhaseAndPaint("Loading report evidence",
       "Checking report corrections, source timing, encounters, and location labels.", STARTUP_PROGRESS.config + 1);
     // Each index uses its own pinned artifact. Fetch them together, but keep
     // hydration behind this barrier so no report gets partial annotations.
-    await Promise.all([
-      measureStartupStep("reviewed report corrections load", loadDetailQualityOverlayRuntime),
-      measureStartupStep("reviewed date repairs load", loadAnalysisRepairDetailOverlayRuntime),
-      measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence),
-      measureStartupStep("reported encounter evidence load", loadEncounterEvidence),
-      measureStartupStep("location label overlay load", loadLocationLabelOverlayRuntime),
-    ]);
+    await loadStartupSupportEvidence();
+    }
     if (preserveProgressiveMap && (runtime.traceChronologyStatus !== "ready" || runtime.encounterStatus !== "ready")) {
       if (runtime.traceChronologyStatus !== "ready") runtime.traceChronologyEvidencePromise = null;
       if (runtime.encounterStatus !== "ready") runtime.encounterEvidencePromise = null;
@@ -33172,9 +33272,11 @@
     });
     }
 
+    if (!preserveProgressiveMap) {
     runtime.packedPointsPromise = measureStartupStep("packed points preload", function () {
       return loadPackedPointsRuntime();
     });
+    }
     runtime.canonicalWebArtifactsPromise = measureStartupStep("canonical web artifact manifest preload", function () {
       return preserveProgressiveMap && canonicalWebArtifactsCanServePrimaryCatalog()
         ? Promise.resolve(runtime.canonicalWebArtifacts) : loadCanonicalWebArtifactsRuntime();

@@ -30,8 +30,11 @@ assert.equal(deriveView({ mapReady: true, catalogReady: true }).locked, false);
 assert.ok(!CONTROL_SELECTOR.includes("#results-sort"), "Result inspection and sorting remain usable");
 assert.ok(!CONTROL_SELECTOR.includes("#map-surface"), "Map gestures remain usable");
 
+let textWrites = 0;
 class Node {
-  constructor(tag = "div") { this.tagName = tag; this.attrs = new Map(); this.children = []; this.listeners = new Map(); this.disabled = false; this.hidden = false; }
+  constructor(tag = "div") { this.tagName = tag; this.nodeType = 1; this.attrs = new Map(); this.children = []; this.listeners = new Map(); this.disabled = false; this.hidden = false; this._textContent = ""; }
+  set textContent(value) { this._textContent = value; textWrites += 1; }
+  get textContent() { return this._textContent; }
   setAttribute(k, v) { this.attrs.set(k, String(v)); }
   getAttribute(k) { return this.attrs.has(k) ? this.attrs.get(k) : null; }
   removeAttribute(k) { this.attrs.delete(k); }
@@ -41,17 +44,21 @@ class Node {
   remove() { if (this.parentNode) this.parentNode.children.splice(this.parentNode.children.indexOf(this), 1); }
   addEventListener(k, fn) { this.listeners.set(k, fn); }
   removeEventListener(k, fn) { if (this.listeners.get(k) === fn) this.listeners.delete(k); }
+  matches() { return Boolean(this.catalogControl); }
+  querySelectorAll() { return this.children.flatMap((child) => [child, ...child.querySelectorAll()]).filter((child) => /^(INPUT|SELECT|BUTTON)$/i.test(child.tagName)); }
 }
 const body = new Node("body"), host = new Node("aside"), before = new Node("div");
 host.appendChild(before);
 const enabled = new Node("input"), disabled = new Node("button");
+enabled.catalogControl = true; disabled.catalogControl = true;
 enabled.setAttribute("title", "Original title");
 disabled.disabled = true; disabled.setAttribute("aria-disabled", "true");
 const controls = [enabled, disabled];
 const doc = new Node("document");
 doc.body = body;
 doc.createElement = (tag) => new Node(tag);
-doc.querySelectorAll = () => controls;
+let fullDocumentScans = 0;
+doc.querySelectorAll = () => { fullDocumentScans += 1; return controls; };
 doc.getElementById = (id) => id === "map-control-cluster" ? host : before;
 let observer = null;
 doc.defaultView = { MutationObserver: class {
@@ -66,8 +73,23 @@ assert.equal(enabled.disabled, true);
 assert.equal(enabled.getAttribute("data-catalog-pending"), "true");
 ui.update({ mapReady: true, loaded: 2, total: 5 });
 assert.equal(ui.element.hidden, false);
-const dynamic = new Node("select"); controls.push(dynamic); observer.fn();
+for (let part = 1; part <= 71; part += 1) ui.update({ mapReady: true, loaded: part, total: 71 });
+assert.equal(fullDocumentScans, 1, "All 71 shard progress updates reuse the initial control discovery");
+const beforeIdenticalUpdates = textWrites;
+for (let index = 0; index < 100; index += 1) ui.update({ mapReady: true, loaded: 71, total: 71 });
+assert.equal(textWrites, beforeIdenticalUpdates, "Repeated identical diagnostics do not rewrite status DOM");
+observer.fn([{ type: "childList", addedNodes: [{ nodeType: 3 }] }]);
+assert.equal(fullDocumentScans, 1, "Unrelated diagnostic text mutations never scan the page");
+const dynamic = new Node("select"); dynamic.catalogControl = true; controls.push(dynamic);
+observer.fn([{ type: "childList", addedNodes: [dynamic] }]);
 assert.equal(dynamic.disabled, true, "Controls created by deferred renders are also locked");
+enabled.disabled = false;
+observer.fn([{ type: "attributes", attributeName: "disabled", target: enabled }]);
+assert.equal(enabled.disabled, true, "Renderer reenables are corrected locally, retaining native disabled behavior");
+const wrapper = new Node(), nested = new Node("input"); nested.catalogControl = true; wrapper.appendChild(nested);
+observer.fn([{ type: "childList", addedNodes: [wrapper] }]);
+assert.equal(nested.disabled, true, "New nested control subtrees remain locked");
+assert.equal(fullDocumentScans, 1);
 let prevented = false, stopped = false;
 doc.listeners.get("pointerdown")({ target: { closest: () => true }, preventDefault() { prevented = true; }, stopImmediatePropagation() { stopped = true; } });
 assert.equal(prevented && stopped, true, "Capture guards prevent timeline/filter actions before application handlers");
@@ -90,6 +112,7 @@ assert.equal(enabled.getAttribute("aria-disabled"), null);
 assert.equal(disabled.disabled, true, "Pre-existing unavailable controls remain unavailable");
 assert.equal(disabled.getAttribute("aria-disabled"), "true");
 assert.equal(dynamic.disabled, false);
+assert.equal(nested.disabled, false);
 ui.dispose();
 assert.equal(observer.active, false);
 assert.equal(doc.listeners.size, 0);

@@ -10,6 +10,13 @@ function source(name, next) {
   return app.slice(start, end);
 }
 const catalogSource = source("loadCatalog", "function prepareFileProtocolMode(");
+function supportSource(name) {
+  const start = app.indexOf("  function " + name + "(");
+  const end = app.indexOf("\n  function ", start + 3);
+  assert.ok(start >= 0 && end > start, "Expected actual startup support function: " + name);
+  return app.slice(start, end);
+}
+const supportSourceText = ["ensureDetailQualityOverlayLoaded", "ensureAnalysisRepairDetailOverlayLoaded", "loadStartupSupportEvidence"].map(supportSource).join("\n");
 const initializeSource = source("initialize", "window.__UFO_TIMELINE_DEBUG__ =");
 const terminalStart = app.lastIndexOf("  initialize().catch(");
 const terminalSource = app.slice(terminalStart, app.lastIndexOf("})();"));
@@ -46,7 +53,7 @@ function fixture() {
   // These functions cannot run while any required support loader is pending.
   for (const name of ["initializeMap", "loadStartupProfileRuntime", "ingestCatalogShard", "loadAndIngestCanonicalSummaryShards",
     "initializeFilters", "renderFilteredState", "finalizeInitialStartupVisuals"]) context[name] = () => { calls.push(name); throw new Error("Premature catalog use: " + name); };
-  vm.runInContext(catalogSource + initializeSource, context);
+  vm.runInContext(supportSourceText + catalogSource + initializeSource, context);
   return { context, calls, support, boundary, startup };
 }
 
@@ -54,7 +61,7 @@ const success = fixture();
 const loading = success.context.loadCatalog();
 const checked = loading.catch(error => error);
 await flush();
-assert.deepEqual(success.calls.filter(value => supportNames.includes(value)), supportNames,
+assert.deepEqual(success.calls.filter(value => supportNames.includes(value)).sort(), supportNames.slice().sort(),
   "All five independent loaders start before any of them resolves");
 for (const position of [4, 2, 0, 3]) { success.support[position].resolve(); await flush(); }
 assert.equal(success.calls.includes("Preparing map"), false, "One unresolved loader keeps map/profile/catalog hydration behind the barrier");

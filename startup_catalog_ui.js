@@ -142,6 +142,30 @@
       doc.querySelectorAll(CONTROL_SELECTOR).forEach(lockControl);
     }
 
+    function lockAddedControls(node) {
+      if (!node || node.nodeType !== 1) return;
+      // Status, tile and diagnostic text mutations do not change the available
+      // controls. Inspect only actual controls in newly inserted subtrees.
+      if (/^(INPUT|SELECT|BUTTON)$/i.test(node.tagName) && node.matches(CONTROL_SELECTOR)) lockControl(node);
+      if (typeof node.querySelectorAll !== "function") return;
+      node.querySelectorAll("input, select, button").forEach(function (control) {
+        if (control.matches(CONTROL_SELECTOR)) lockControl(control);
+      });
+    }
+
+    function handleMutations(records) {
+      if (disposed || !locked) return;
+      records.forEach(function (record) {
+        if (record.type === "attributes") {
+          // A render may try to enable a known control during hydration. Keep
+          // the native disabled state without rescanning the rest of the page.
+          if (locks.has(record.target) && !record.target.disabled) lockControl(record.target);
+          return;
+        }
+        record.addedNodes.forEach(lockAddedControls);
+      });
+    }
+
     function releaseLocks() {
       locks.forEach(function (prior, control) {
         control.disabled = prior.disabled;
@@ -166,8 +190,9 @@
     }
 
     GUARDED_EVENTS.forEach(function (name) { doc.addEventListener(name, guard, { capture: true, passive: false }); });
-    const observer = win && typeof win.MutationObserver === "function" ? new win.MutationObserver(refreshLocks) : null;
-    if (observer) observer.observe(doc.body, { childList: true, subtree: true });
+    const observerOptions = { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled"] };
+    const observer = win && typeof win.MutationObserver === "function" ? new win.MutationObserver(handleMutations) : null;
+    if (observer) observer.observe(doc.body, observerOptions);
     let observing = Boolean(observer);
     retry.addEventListener("click", function () {
       if (!currentView.retryAvailable || retry.disabled || typeof config.onRetry !== "function") return;
@@ -177,13 +202,16 @@
 
     function update(state) {
       currentView = deriveView(state);
+      const wasLocked = locked;
       locked = currentView.locked;
       if (locked) {
         if (observer && !observing) {
-          observer.observe(doc.body, { childList: true, subtree: true });
+          observer.observe(doc.body, observerOptions);
           observing = true;
         }
-        refreshLocks();
+        // The observer discovers new controls and guards native reenables.
+        // Catalog progress alone never requires another global selector pass.
+        if (!wasLocked || !observer) refreshLocks();
       } else {
         if (observer && observing) {
           observer.disconnect();
@@ -191,21 +219,25 @@
         }
         releaseLocks();
       }
-      card.hidden = !currentView.visible;
-      card.setAttribute("data-state", currentView.failed ? "error" : "loading");
-      heading.textContent = currentView.title;
-      summary.textContent = currentView.progressShortLabel;
-      summary.setAttribute("aria-label", currentView.progressLabel);
-      summary.hidden = currentView.retryAvailable;
-      scope.textContent = currentView.scope;
-      scope.setAttribute("title", currentView.scope + ". " + currentView.help);
-      help.textContent = currentView.help;
-      if (currentView.progress == null) progress.removeAttribute("value");
-      else progress.value = currentView.progress;
-      retry.hidden = !currentView.retryAvailable;
-      retry.disabled = !currentView.retryAvailable;
-      details.hidden = !currentView.failed;
-      error.textContent = currentView.error;
+      function setText(node, value) { if (node.textContent !== value) node.textContent = value; }
+      function setAttribute(node, name, value) { if (node.getAttribute(name) !== value) node.setAttribute(name, value); }
+      function setProperty(node, name, value) { if (node[name] !== value) node[name] = value; }
+      setProperty(card, "hidden", !currentView.visible);
+      setAttribute(card, "data-state", currentView.failed ? "error" : "loading");
+      setText(heading, currentView.title);
+      setText(summary, currentView.progressShortLabel);
+      setAttribute(summary, "aria-label", currentView.progressLabel);
+      setProperty(summary, "hidden", currentView.retryAvailable);
+      setText(scope, currentView.scope);
+      setAttribute(scope, "title", currentView.scope + ". " + currentView.help);
+      setText(help, currentView.help);
+      if (currentView.progress == null) {
+        if (progress.getAttribute("value") !== null) progress.removeAttribute("value");
+      } else setProperty(progress, "value", currentView.progress);
+      setProperty(retry, "hidden", !currentView.retryAvailable);
+      setProperty(retry, "disabled", !currentView.retryAvailable);
+      setProperty(details, "hidden", !currentView.failed);
+      setText(error, currentView.error);
       const nextAnnouncement = currentView.visible ? [currentView.title, currentView.scope, currentView.help].join(". ") : "";
       if (nextAnnouncement !== lastAnnouncement) {
         announcement.textContent = nextAnnouncement;

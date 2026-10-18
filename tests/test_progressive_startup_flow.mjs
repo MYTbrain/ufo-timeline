@@ -36,6 +36,7 @@ function fixture() {
     dateRange: { start: "1954-09-01", end: "1954-11-30" }, filterValues: {} };
   const context = vm.createContext({ startup, runtime, state, catalog, console, Promise, Map, Object, Error,
     OVERLAY_DEFINITIONS: { air: {} }, STARTUP_PROGRESS: { ready: 100 }, MAP_DEFAULT_INITIAL_ZOOM: 4,
+    PACKED_TRACE_ARTIFACT_KINDS: { eventIndex: "event_index" },
     document: {}, window: { location: { search: "?progressiveStartup=1" },
       UFOStartupCatalogUI: { create() { return { update(value) { uiStates.push({ ...value }); }, dispose() {} }; } },
       UfoProgressiveCatalogRuntime: {},
@@ -48,6 +49,8 @@ function fixture() {
     measureStartupStep: (_name, callback) => callback(),
     fetchJson: async () => ({ normalizedCount: 3 }),
     loadProgressiveStartupProfile: async () => payload,
+    prepareProgressiveCatalogInputs: async () => { calls.push("prepareCatalogInputs"); return { traceEvidence: { scope: "full catalog" } }; },
+    ensureCanonicalTraceArtifactLoaded: async () => { calls.push("tracePrefetch"); return { ready: true }; },
     loadCatalog: async () => { loadCalls += 1; await background.promise; },
     canonicalWebArtifactsCanServePrimaryCatalog: () => true,
     computeOrdinalExtent: rows => ({ minOrdinal: rows.length ? 1 : 0, maxOrdinal: 9 }),
@@ -74,6 +77,8 @@ function fixture() {
   for (const name of ["ensureWorldReferenceData", "loadCanonicalWebArtifactsRuntime", "loadDetailQualityOverlayRuntime",
     "loadAnalysisRepairDetailOverlayRuntime", "populateBasemapOptions", "attachEventHandlers", "setBasemap",
     "syncOverlayVisibility", "ensureOverlayLayer"]) context[name] = async () => {};
+  context.ensureDetailQualityOverlayLoaded = context.loadDetailQualityOverlayRuntime;
+  context.ensureAnalysisRepairDetailOverlayLoaded = context.loadAnalysisRepairDetailOverlayRuntime;
   for (const name of ["progressiveStartupRequested", "progressiveInitialMapActive", "updateProgressiveCatalogUi",
     "initializeProgressiveStartup", "promoteProgressiveCatalog", "startProgressiveCatalogBackground", "applyStartupFitBeforeReady"])
     vm.runInContext(actualFunction(name), context);
@@ -89,6 +94,7 @@ await flush();
 assert.equal(ready.startup.mapViewReady, false, "Initial visual gate keeps the cover closed");
 assert.equal(ready.startup.fullCatalogReady, false);
 assert.equal(ready.loadCalls, 0, "Heavy background catalog does not compete with initial map preparation");
+assert.equal(ready.calls.includes("prepareCatalogInputs"), true, "Network preparation overlaps initial visual settling without hydrating the catalog");
 ready.initialVisuals.resolve(); await initialLoad; await flush();
 assert.equal(ready.startup.mapViewReady, true);
 assert.equal(ready.startup.initialViewReady, true);
@@ -97,6 +103,7 @@ assert.equal(ready.analysisEnabled, false);
 assert.equal(ready.events.filter(event => event.type === "ufo:timeline-map-ready").length, 1);
 assert.equal(ready.events.some(event => event.type === "ufo:timeline-ready"), false);
 assert.equal(ready.loadCalls, 1);
+assert.equal(ready.calls.includes("tracePrefetch"), true, "Full trace downloading overlaps catalog preparation rather than waiting for final promotion");
 assert.equal(ready.calls.includes("exportTimingSnapshot"), true, "Early map readiness exports a timing snapshot");
 assert.equal(ready.calls.includes("finalizeTimingSession"), false, "Early map readiness must not freeze the full startup timing session");
 const sameLoading = ready.context.startProgressiveCatalogBackground();
@@ -161,6 +168,16 @@ assert.equal(promotionFailure.startup.errorText, "");
 await promotionFailure.context.startProgressiveCatalogBackground();
 assert.equal(promotionFailure.startup.fullCatalogReady, true, "Promotion failure remains recoverable by retry");
 
+const tracePending = fixture(), traceGate = deferred();
+tracePending.context.ensureCanonicalTraceArtifactLoaded = () => traceGate.promise;
+tracePending.initialVisuals.resolve(); await tracePending.context.initializeProgressiveStartup();
+tracePending.background.resolve(); await flush();
+assert.equal(tracePending.startup.mapViewReady, true);
+assert.equal(tracePending.startup.fullCatalogReady, false, "Complete catalog rows alone cannot bypass the pending full trace gate");
+assert.equal(tracePending.analysisEnabled, false);
+traceGate.resolve({ ready: true }); await tracePending.runtime.progressiveBackgroundPromise;
+assert.equal(tracePending.startup.fullCatalogReady, true);
+
 const optIn = fixture();
 assert.equal(optIn.context.progressiveStartupRequested(), true);
 for (const search of ["", "?progressiveStartup=0", "?progressiveStartup=1&autosearch=ariel", "?progressiveStartup=1&autoselect=first"]) {
@@ -187,6 +204,9 @@ for (const name of ["renderStartupDiagnostics", "updateCatalogLoadingMessage", "
 realBackground.context.resolveInitialTimeRangePreference = () => assert.fail("Background completion cannot restore initial dates");
 vm.runInContext(actualFunction("loadCatalog"), realBackground.context);
 await realBackground.context.loadCatalog();
+assert.equal(realBackground.runtime.traceChronologyEvidence.scope, "full catalog",
+  "Actual hydration explicitly restores the full index from cached preparation after scoped timing had ownership");
+assert.equal(realBackground.runtime.progressiveHydrating, true);
 assert.equal(realBackground.state.timeRangeStartOrdinal, 115);
 assert.equal(realBackground.state.timeRangeEndOrdinal, 185);
 assert.equal(realBackground.calls.includes("initializeMap"), false, "Actual background loader does not recreate the map");
