@@ -1,0 +1,40 @@
+{
+  "schemaId": "encounter-expansion-storage-receipt-v1",
+  "canonicalResearch": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017",
+  "canonicalRuntimeUnchanged": "C:/Users/jarod/Desktop/UFO Timeline map tool/data/canonical_web",
+  "retainedRollback": "Existing validated deployment and last-known-good rollback unchanged by this task",
+  "researchBytesBeforeReceipt": 60146428,
+  "newCodeBytes": 110972,
+  "qaBytesBeforeReceipt": 12481,
+  "approximateNetGrowthMiB": 57.48,
+  "newFilesOver100MiB": [],
+  "largestNewFiles": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\transcription_candidates.json",
+      "bytes": 9529910
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\captures\\ufolio_rosales.csv",
+      "bytes": 8419734
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-pdfs\\catalog\\captures\\rosales1984.pdf",
+      "bytes": 3884764
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-pdfs\\catalog\\captures\\rosales1995.pdf",
+      "bytes": 2688967
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-pdfs\\completed\\captures\\rosales1985.pdf",
+      "bytes": 2422552
+    }
+  ],
+  "cleanupCompleted": {
+    "literalAllowlist": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\owned_duplicate_capture_cleanup.json",
+    "removedDuplicateBytes": 10760559,
+    "uniqueOriginalsDeleted": 0
+  },
+  "cleanupProposed": "None; remaining captures, manifests, checkpoints and audit outputs are unique research/provenance. No full corpus, deployment or worktree copies created.",
+  "documentedDirectoryPurposes": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\lifecycle.json"
+}

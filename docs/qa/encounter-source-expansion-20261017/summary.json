@@ -1,0 +1,204 @@
+{
+  "schemaId": "encounter-source-expansion-audit-v1",
+  "date": "2026-10-17",
+  "result": "Recovered 10853 original-source candidate accounts and completed corpus-wide overlap discovery; no runtime ingestion or deployment.",
+  "units": "Source accounts and catalog report rows, not independently verified or deduplicated incidents, abductions, persons, or beings.",
+  "canonicalResearch": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017",
+  "canonicalCandidateMetadata": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-originals\\combined-originals.json.gz",
+  "sources": {
+    "nativeRosalesCaptures": 73,
+    "nativeFormats": {
+      "html": 8304,
+      "pdf": 2549
+    },
+    "transcriptionRows": 8666,
+    "nativeCandidateAccounts": 10853,
+    "urecatIndexCandidates": 1384,
+    "urecatNotAdditiveToRosales": true
+  },
+  "sourceRecovery": {
+    "transcriberMissingGroupsRecovered": 18,
+    "additionalFailedHtmlYearsRecoveredAsPdf": [
+      1994,
+      1995
+    ],
+    "method": "Public archived original-host HTML and native PDF filenames; direct live 403s were not bypassed.",
+    "fullHeraExportFound": false,
+    "hera18000FigureDate": "2020-09-30",
+    "outreachSent": false
+  },
+  "rosalesOverlap": {
+    "externalSourceEntries": 10853,
+    "catalogReportsScanned": 702893,
+    "entriesWithSummaryCandidates": 3040,
+    "entriesWithExistingEncounterCandidates": 2001,
+    "entriesWithOutsideEncounterIndexCandidates": 1655,
+    "entriesWithoutSummaryCandidate": 7813,
+    "entriesWithoutUsableDate": 1547,
+    "ambiguousEntries": 1131,
+    "candidateReportLinks": 5542,
+    "uniqueCandidateReports": 5237,
+    "entriesWithNativeCitationCandidates": 847,
+    "nativeCitationReportLinks": 876,
+    "uniqueNativeCitationReports": 816,
+    "nativeCatalogReportsScanned": 702893,
+    "retainedNativeDateConflicts": 58,
+    "truncatedEntries": 10,
+    "acceptedIdentityLinks": 0
+  },
+  "rosalesAlreadyCitedInCorpus": {
+    "reportsWithRosalesCitation": 4509,
+    "reportsWithNativeWebsiteHc": 839,
+    "primarySourceCodes": {
+      "ARosales14": 299,
+      "ARosales16": 407,
+      "ARosales01": 1146,
+      "ARosales05": 339,
+      "ARosales06": 286,
+      "ARosales02": 365,
+      "ARosales12": 275,
+      "ARosales04": 262,
+      "ARosales15": 329,
+      "ARosales11": 61,
+      "ARosales03": 195,
+      "ARosales13": 223,
+      "ARosales07": 300
+    },
+    "intermediateSourceCodes": {
+      "ARosales1": 21,
+      "ARosales2": 1
+    }
+  },
+  "urecatOverlap": {
+    "externalSourceEntries": 1384,
+    "catalogReportsScanned": 702893,
+    "entriesWithSummaryCandidates": 515,
+    "entriesWithExistingEncounterCandidates": 411,
+    "entriesWithOutsideEncounterIndexCandidates": 307,
+    "entriesWithoutSummaryCandidate": 869,
+    "entriesWithoutUsableDate": 486,
+    "ambiguousEntries": 266,
+    "candidateReportLinks": 1147,
+    "uniqueCandidateReports": 1116,
+    "entriesWithNativeCitationCandidates": 0,
+    "nativeCitationReportLinks": 0,
+    "uniqueNativeCitationReports": 0,
+    "nativeCatalogReportsScanned": 0,
+    "retainedNativeDateConflicts": 0,
+    "truncatedEntries": 3,
+    "acceptedIdentityLinks": 0
+  },
+  "reviewPriorities": {
+    "precise_unambiguous_native_review": 177,
+    "native_context_review": 204,
+    "native_conflict_or_insufficient_context": 466,
+    "date_locality_discovery_review": 2586,
+    "no_candidate_found_not_proof_of_novelty": 7420
+  },
+  "hcKeyCollisions": {
+    "groups": 87,
+    "extraAccounts": 90
+  },
+  "datePrecision": {
+    "historical_or_range": 49,
+    "year": 1424,
+    "day": 5334,
+    "approximate": 1267,
+    "month": 2533,
+    "unparsed": 245,
+    "invalid": 1
+  },
+  "uncertainSourceClassifications": 2103,
+  "classificationLimits": [
+    "Type G includes voluntary interaction and cannot establish abduction.",
+    "Nonvisual/voice/psychic contact is separate from reported visible beings.",
+    "Source codes D and F use the author's original definitions, not the incorrect third-party README descriptions.",
+    "Date, location, clock, citation, and hypothesis remain separate; no coordinates or UTC were invented."
+  ],
+  "manualChecks": [
+    {
+      "case": "Teterboro 1998 HC3930",
+      "finding": "Perceived message alongside a craft account; no explicit visible being in reviewed account."
+    },
+    {
+      "case": "Northford 1995 HC2803",
+      "finding": "Perceived voice and landed object; not automatically a visible-being or abduction record."
+    },
+    {
+      "case": "Seattle 1997 HC3365",
+      "finding": "Prior-night light and a human-looking airport encounter; witness-inferred relationship and uncertain classification retained."
+    }
+  ],
+  "publication": {
+    "runtimeAdditions": 0,
+    "acceptedIdentityLinks": 0,
+    "deploymentChanged": false,
+    "fullNarrativesIncluded": false,
+    "eligibility": "Acquisition does not confer public redistribution rights; original pages and PDFs remain private research inputs."
+  },
+  "sourceLinks": [
+    "https://6degreesofjohnkeel.com/blog/announcing-the-humanoid-encounters-project",
+    "https://6degreesofjohnkeel.com/episodes/e055-introducin-project-hera-with-taylor-bell",
+    "https://github.com/ebrinz/ufolio/tree/de7df473ddbd7849f7905522158dd3b43e65ab75/rosales",
+    "https://www.iraap.org/rosales/",
+    "https://ufologie.patrickgross.org/ce3/_full.htm",
+    "https://www.nicap.org/cat7.htm"
+  ],
+  "pins": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\capture_manifest.json",
+      "bytes": 8703,
+      "sha256": "414d6a1cb5f916ebbdea10ea9208fd6ef08573652e6f6fc51ad0421b2f95aafa"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\transcription_candidates.json",
+      "bytes": 9529910,
+      "sha256": "7c1a069d4ca931e836680f2f5c204d9cbf142d01ec7537e797b43f690fb0a848"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\urecat_candidates.json",
+      "bytes": 1612821,
+      "sha256": "5b96ae661b7fd80537fb7356ecbf64afa2b4e290670dc98bbaf027de8aa33653"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\urecat_overlap.json.gz",
+      "bytes": 100826,
+      "sha256": "f2bb8bf12e9332fd80063516d88bda8529a11118c7b36a94a5f7fcd0aeaf865d"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-originals\\combined-originals.json.gz",
+      "bytes": 1862807,
+      "sha256": "b798347be402a60e251c1d1a2bae92909b0e461583731364ae5445998e362ee5"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-originals\\combined-originals-audit.json",
+      "bytes": 56256,
+      "sha256": "af80d1fe7ee9b343270ab3de6e2ea007713cd552f0cbf7ae647730ab941b894d"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales-originals\\combined-originals-receipt.json",
+      "bytes": 2569,
+      "sha256": "61e2c5f4f51a9ae838d372c89480ec234acd85fb0694efd53b350cae48478fcc"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\rosales_overlap.json.gz",
+      "bytes": 792143,
+      "sha256": "afb9e79bca7890e346418c3e5eee79d2cbc17ef3d56bc5496a96cc1c27b396c7"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\review_queue.json.gz",
+      "bytes": 634782,
+      "sha256": "bb9b0a7655f5b4aa2cb08397c2697143f5bd860c413a3bed817eca3e5575afe1"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-expansion-20261017\\owned_duplicate_capture_cleanup.json",
+      "bytes": 9509,
+      "sha256": "a227408100965f593184a8c729f89d54bd020b0348c5f4af7548c34f4bd629cd"
+    }
+  ],
+  "replay": [
+    "Run original parser against the three pinned manifests to a new empty destination.",
+    "Run encounter_external_overlap.py --native-citations-all against pinned candidates and shared corpus in place.",
+    "Run this script with the protected captures and pinned overlap outputs; choose new empty output destinations."
+  ]
+}

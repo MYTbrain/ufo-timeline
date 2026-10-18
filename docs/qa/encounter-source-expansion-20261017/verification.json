@@ -1,0 +1,72 @@
+{
+  "schemaId": "encounter-expansion-focused-qa-v1",
+  "testsRun": 33,
+  "failures": 0,
+  "errors": 0,
+  "sourcePins": [
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_expansion_audit.py",
+      "bytes": 9175,
+      "sha256": "480e83abea176699c90e1bcb7d58b046ac5c0bb78968a3c46a283f3e61b4749e"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_expansion_capture.py",
+      "bytes": 11488,
+      "sha256": "b7371e856ce42015e64e85de68a76356e1b45bac271a0b10aab208c1d9336ac6"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_external_overlap.py",
+      "bytes": 23295,
+      "sha256": "8a38b3dd01dd8ab475b06a78762e4524bfdbd0ac01a1084b8db8e8fa02ce2707"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_rosales_candidates.py",
+      "bytes": 8462,
+      "sha256": "1dec0584b13c8d266b04c38f67174372de5c05c5df8ae9676647eeec3f87fcd8"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_rosales_originals.py",
+      "bytes": 19647,
+      "sha256": "ce06d51a30fb8f55da12ef61c8caeea2d593248a8015c3c068a004c53eccae2e"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_urecat_index.py",
+      "bytes": 13561,
+      "sha256": "42a66c3cbb0572236901049116286211e00e4caba88c3f57339c3ff5947baf56"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_expansion_capture.py",
+      "bytes": 1810,
+      "sha256": "c5a7dac6157c4e069262c9fb9274066d99c7f0b2efa963e962ee744136a3011a"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_external_overlap.py",
+      "bytes": 6650,
+      "sha256": "11c1f5fe22f86eedc7bcf94f688a516abc5061b02ff04a7b364b4acb2b358b3c"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_rosales_candidates.py",
+      "bytes": 2426,
+      "sha256": "ab697e3d7a9e6bb47810a1dfbd747b70da587bd7f6797804d48a219f7806ddfe"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_rosales_originals.py",
+      "bytes": 8277,
+      "sha256": "06338c321cdd68703b452af3c323a62f806faec8a5a493d7644818347fa40c64"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\tests\\test_encounter_urecat_index.py",
+      "bytes": 6181,
+      "sha256": "884a5ef9824b4c213e065f97478b45a377011f7860d7dd235fdb481eceb836a0"
+    }
+  ],
+  "checks": [
+    "73 original capture hashes verified by parser",
+    "10853 unique source account identifiers",
+    "partial dates preserve precision; source codes remain allegations",
+    "no full narratives, coordinates, or UTC in candidate metadata",
+    "all overlap links held; runtime ingestion and deployment unchanged",
+    "capture reuse regression prevents redownloading previously reused files"
+  ],
+  "testOutput": "{\"sourceId\": \"test\", \"status\": \"reused\", \"bytes\": 17}\n{\"manifest\": \"C:\\\\Users\\\\jarod\\\\AppData\\\\Local\\\\Temp\\\\tmpsu387o12\\\\new\\\\capture_manifest.json\", \"totalBytes\": 0}\n.................................\n----------------------------------------------------------------------\nRan 33 tests in 0.121s\n\nOK\n"
+}
