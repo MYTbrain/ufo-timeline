@@ -1,0 +1,3045 @@
+{
+  "runtimeCommit": "2ebbc3a",
+  "deployment": "cb8556e1",
+  "protocol": "STARTUP_COMPARISON_PROTOCOL.md",
+  "warmups": [],
+  "runs": [
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 17103.299999998882,
+      "fullNavigationMs": 17549.599999999627,
+      "mapAppMs": 17103.299999998882,
+      "mapNavigationMs": 17549.599999999627,
+      "navigationToAppMs": 446.30000000074506,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 10290.000000003723,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 202.7000000011176,
+        "totalWallMs": 10589.5
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 44.80000000074506,
+          "name": "config load"
+        },
+        {
+          "duration": 69.59999999962747,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 749.8000000007451,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 792.7000000011176,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 979.9000000003724,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 1235.0999999996277,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 130.19999999925494,
+          "name": "prepare map"
+        },
+        {
+          "duration": 85.30000000074506,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 1104.0999999996277,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 48.40000000037253,
+          "name": "manifest load"
+        },
+        {
+          "duration": 5.699999999254942,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 331.90000000037253,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 10589.900000000373,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 10618.099999999627,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 245.2999999988824,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 73.19999999925494,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 716.1999999992549,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 717,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 15.299999998882411,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 15.599999999627473,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 63.59999999962747,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 9,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.2999999988824129,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 9.400000000372527,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 82.69999999925494,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 18.5,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 22.90000000037253,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 245,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 246.59999999962747,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.600000001490116,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 57.60000000149011,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 8.199999999254942,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.099999999627471,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 14.099999999627473,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 61.09999999962747,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 17018,
+      "fullNavigationMs": 17419.900000000373,
+      "ingestion": {
+        "activeDurationMs": 5832.499999996275,
+        "maxBatchDurationMs": 132.10000000149012,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 6226.999999998137,
+        "workBudgetMs": 8,
+        "yieldCount": 516
+      },
+      "mapAppMs": 4210.5,
+      "mapNavigationMs": 4612.4000000003725,
+      "navigationToAppMs": 401.9000000003726,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 6310.099999992177,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1563.7000000067055,
+        "totalWallMs": 10228
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 55.60000000149011,
+          "name": "config load"
+        },
+        {
+          "duration": 227.09999999962747,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 3.900000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 13.399999998509884,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 13.5,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 404.0999999996274,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 795.4000000003725,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1351.39999999851,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 3151,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 3151.89999999851,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 128.5,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 10229,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 10252.800000000743,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 247.59999999962747,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 249.90000000037253,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.300000000745058,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 135.80000000074506,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 4,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 5.900000000372529,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 6.599999999627471,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 36.79999999888241,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 3.099999999627471,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 18336.39999999851,
+      "fullNavigationMs": 18738.79999999888,
+      "ingestion": {
+        "activeDurationMs": 7159.5999999996275,
+        "maxBatchDurationMs": 742.4000000003725,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 7644.0999999996275,
+        "workBudgetMs": 8,
+        "yieldCount": 575
+      },
+      "mapAppMs": 3945.7999999988824,
+      "mapNavigationMs": 4348.199999999255,
+      "navigationToAppMs": 402.4000000003726,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 7725.69999999553,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1524.3999999966472,
+        "totalWallMs": 11518.900000000373
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 63.80000000074506,
+          "name": "config load"
+        },
+        {
+          "duration": 391.0999999996274,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 4.900000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 11.900000000372527,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 12,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 393.2999999988824,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 773.8000000007451,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1410.800000000745,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 2953.699999999255,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 2954.5999999996275,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0.10000000149011612,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 136.59999999962747,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 11519.5,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 11545.299999998882,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 252.10000000149012,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.1999999992549419,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 254.10000000149012,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 6.200000001117587,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 133,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 4.699999999254942,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.199999999254942,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 5.599999999627471,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 38.09999999962747,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 3,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 17214.300000000745,
+      "fullNavigationMs": 17652.400000000373,
+      "mapAppMs": 17214.300000000745,
+      "mapNavigationMs": 17652.400000000373,
+      "navigationToAppMs": 438.0999999996274,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 9721.70000001043,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 198.99999999813735,
+        "totalWallMs": 10022.700000001118
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 49.70000000111759,
+          "name": "config load"
+        },
+        {
+          "duration": 70.09999999962747,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 776.1999999992549,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 2155,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 2238.199999999255,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 2595.5999999996275,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 57.19999999925494,
+          "name": "prepare map"
+        },
+        {
+          "duration": 76.80000000074506,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 381.9000000003726,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 63.59999999962747,
+          "name": "manifest load"
+        },
+        {
+          "duration": 4.900000000372529,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 268.09999999962747,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 10023.199999999257,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 10045.299999998882,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 257.8999999985099,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 75.79999999888241,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 931.0999999996276,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 931.5999999996276,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 16,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 16.40000000037253,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 87.70000000111759,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 24.699999999254945,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.2999999988824129,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 9.199999999254942,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 122.5,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 10.099999999627473,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 14.599999999627473,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 251.7999999988824,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 253.2000000011176,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.400000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 62.09999999962747,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 10,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 5.5,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 14.800000000745058,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 60.5,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 17987.10000000149,
+      "fullNavigationMs": 18420.20000000112,
+      "mapAppMs": 17987.10000000149,
+      "mapNavigationMs": 18420.20000000112,
+      "navigationToAppMs": 433.0999999996274,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 11851.49999998696,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 203.20000000670552,
+        "totalWallMs": 12307.099999999627
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 114.5,
+          "name": "config load"
+        },
+        {
+          "duration": 64.10000000149012,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 731.4000000003725,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 895.4000000003725,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 980.8000000007452,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 1252.7000000011176,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 59.69999999925494,
+          "name": "prepare map"
+        },
+        {
+          "duration": 82.40000000037253,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 354.90000000037253,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 47,
+          "name": "manifest load"
+        },
+        {
+          "duration": 6.199999999254942,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 266.30000000074506,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 12307.699999999257,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 12333.299999998882,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 239.10000000149012,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 69.90000000037253,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 644.2000000011176,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 644.6999999992549,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 15.599999999627473,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 15.899999998509884,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 107,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 9,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 9.199999999254942,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 126,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 9.399999998509884,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 14.199999999254942,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 247.40000000037253,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.10000000149011612,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 248.80000000074503,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.699999999254942,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 52.89999999850989,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 9.5,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.400000000372529,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 15.400000000372527,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 60.19999999925494,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 18207.29999999888,
+      "fullNavigationMs": 18671.599999999627,
+      "ingestion": {
+        "activeDurationMs": 6215.000000005588,
+        "maxBatchDurationMs": 181.69999999925497,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 6538.199999999255,
+        "workBudgetMs": 8,
+        "yieldCount": 515
+      },
+      "mapAppMs": 4316.0999999996275,
+      "mapNavigationMs": 4780.4000000003725,
+      "navigationToAppMs": 464.30000000074506,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 6621.199999991804,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1226.8000000100585,
+        "totalWallMs": 9894.199999999257
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 96.2000000011176,
+          "name": "config load"
+        },
+        {
+          "duration": 153.7999999988824,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 5.700000001117587,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 11.200000001117589,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 11.300000000745058,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 368.0999999996274,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 769.6999999992549,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1313.10000000149,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 3140.5999999996275,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 3141.5,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 130.2999999988824,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 9895,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 9921.200000001118,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 625.7000000011176,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 627.2000000011176,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 5.5,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 126.90000000037251,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 4.099999999627471,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 5.300000000745058,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 5.699999999254942,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 33.70000000111759,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 5.099999999627471,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "warmup": false,
+      "runtimeCommit": "2ebbc3a"
+    }
+  ],
+  "pilotWarmups": [
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 9443.89999999851,
+      "fullNavigationMs": 10293.89999999851,
+      "mapAppMs": 9443.89999999851,
+      "mapNavigationMs": 10293.89999999851,
+      "navigationToAppMs": 850,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 5452.60000000149,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 133.80000000447035,
+        "totalWallMs": 5664.4000000003725
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "steps": [
+        {
+          "duration": 69.90000000037253,
+          "name": "config load"
+        },
+        {
+          "duration": 43.69999999925494,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 386,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 577.2999999988824,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 911.6999999992548,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 1319.9000000003723,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 55,
+          "name": "prepare map"
+        },
+        {
+          "duration": 4.200000001117587,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 330.30000000074506,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 50.90000000037253,
+          "name": "manifest load"
+        },
+        {
+          "duration": 5.799999998882413,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 234.59999999962747,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 5665,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 5678.9000000003725,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 141.10000000149012,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 38.79999999888241,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 382.19999999925494,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 382.5999999996274,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 9,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 9.299999998882411,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 50.90000000037253,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 4.699999999254942,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 5.399999998509884,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 61.60000000149011,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 5.800000000745058,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 8.900000000372529,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 259.7000000011176,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.1999999992549419,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 273.90000000037253,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.900000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 40.90000000037253,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 4.699999999254942,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 3.300000000745058,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 8.299999998882413,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 30.699999999254945,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "warmup": true
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 9140.5,
+      "fullNavigationMs": 9411.60000000149,
+      "ingestion": {
+        "activeDurationMs": 3105.900000004098,
+        "maxBatchDurationMs": 19.90000000037253,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 3250.70000000298,
+        "workBudgetMs": 8,
+        "yieldCount": 303
+      },
+      "mapAppMs": 2217.199999999255,
+      "mapNavigationMs": 2488.300000000745,
+      "navigationToAppMs": 271.1000000014901,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 3296.3999999947846,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 787.1999999973923,
+        "totalWallMs": 5310.5
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "821",
+      "steps": [
+        {
+          "duration": 48.70000000111759,
+          "name": "config load"
+        },
+        {
+          "duration": 171.5,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 1.5,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 5.800000000745058,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 5.800000000745058,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 213.7999999988824,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 751.0999999996275,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 815.4000000003725,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1518.7000000011176,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 1519.4000000003723,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 73.40000000037253,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 5311,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 5327.0999999996275,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 134.2000000011176,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 135.2000000011176,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 3.199999999254942,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 73.30000000074506,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 2.900000000372529,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 3.400000000372529,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 3.399999998509884,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 20.300000000745055,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 1.400000000372529,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "warmup": true
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 9637.599999999627,
+      "fullNavigationMs": 10193.299999998882,
+      "mapAppMs": 9637.599999999627,
+      "mapNavigationMs": 10193.299999998882,
+      "navigationToAppMs": 555.6999999992549,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 5802.900000007823,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 128.699999993667,
+        "totalWallMs": 6043.4000000003725
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v3",
+      "steps": [
+        {
+          "duration": 56.79999999888241,
+          "name": "config load"
+        },
+        {
+          "duration": 42.90000000037253,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 147.59999999962747,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 314,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 1011.5999999996276,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 1069.300000000745,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 54.19999999925494,
+          "name": "prepare map"
+        },
+        {
+          "duration": 3,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 229.40000000037253,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 49.59999999962747,
+          "name": "manifest load"
+        },
+        {
+          "duration": 3.600000001490116,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 168.60000000149012,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 6043.9000000003725,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 6059.39999999851,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 140.2000000011176,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 38.70000000111759,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 380,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 380.5999999996274,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 8.699999999254942,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 9,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 53.19999999925494,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 4.800000000745058,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.30000000074505806,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 5.599999999627471,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 64.19999999925494,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 21.59999999962747,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 24.40000000037253,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 149.5,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 150.40000000037253,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 3.599999999627471,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 31.899999998509884,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 5,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 3.900000000372529,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 8.699999999254942,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 34,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "warmup": true,
+      "runtimeCommit": "c6b35c7"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 9275.099999999627,
+      "fullNavigationMs": 9590.39999999851,
+      "ingestion": {
+        "activeDurationMs": 3200.3999999687076,
+        "maxBatchDurationMs": 10.900000000372527,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 3348.399999987334,
+        "workBudgetMs": 8,
+        "yieldCount": 310
+      },
+      "mapAppMs": 2205.0999999996275,
+      "mapNavigationMs": 2520.39999999851,
+      "navigationToAppMs": 315.2999999988824,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 3392.79999999702,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1512.3999999966472,
+        "totalWallMs": 5449.89999999851
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "821",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v3",
+      "steps": [
+        {
+          "duration": 66.80000000074506,
+          "name": "config load"
+        },
+        {
+          "duration": 214,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 1.899999998509884,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 5.800000000745058,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 5.900000000372529,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 213.19999999925497,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 723.5999999996275,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 795.0999999996275,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1464.5,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 1465.199999999255,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 73.90000000037253,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 5450.60000000149,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 5463.9000000003725,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 136.7999999988824,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 137.69999999925494,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 3.400000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 77.69999999925494,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 2.5,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 3,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 3.800000000745058,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 20.200000001117587,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 2,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "warmup": true,
+      "runtimeCommit": "c6b35c7"
+    }
+  ],
+  "freshTabDiagnosticRuns": [
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 16951.800000000745,
+      "fullNavigationMs": 17305.800000000745,
+      "mapAppMs": 16951.800000000745,
+      "mapNavigationMs": 17305.800000000745,
+      "navigationToAppMs": 354,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 10656.699999982491,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 959.4000000078232,
+        "totalWallMs": 11722.400000000373
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 127.5,
+          "name": "config load"
+        },
+        {
+          "duration": 66.90000000037253,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 710,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 947.1999999992548,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 990.7999999988824,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 1168.800000000745,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 58,
+          "name": "prepare map"
+        },
+        {
+          "duration": 120.7000000011176,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 383.5,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 37.19999999925494,
+          "name": "manifest load"
+        },
+        {
+          "duration": 10.099999999627473,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 413.5999999996274,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 11722.900000000373,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 11746.299999998882,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 260.5,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 72.79999999888241,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 541,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 541.6999999992549,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 18.299999998882413,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 19,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 71.40000000037253,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 6.099999999627471,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.5,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 6.5,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 84.89999999850988,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 8.199999999254942,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 11,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 273.6000000014901,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.30000000074505806,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 275.6000000014901,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 4.599999999627471,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 54,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 3.700000001117587,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 7.199999999254942,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 9.699999999254942,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 92.40000000037251,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 15503.199999999257,
+      "fullNavigationMs": 15850,
+      "ingestion": {
+        "activeDurationMs": 5598.299999995157,
+        "maxBatchDurationMs": 118.19999999925494,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 5913.700000001118,
+        "workBudgetMs": 8,
+        "yieldCount": 484
+      },
+      "mapAppMs": 3421.699999999255,
+      "mapNavigationMs": 3768.5,
+      "navigationToAppMs": 346.80000000074506,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 5994.200000004843,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1312.000000011176,
+        "totalWallMs": 9303.60000000149
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 143.7999999988824,
+          "name": "config load"
+        },
+        {
+          "duration": 155.59999999962747,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 5.400000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 12.800000000745058,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 13.199999999254942,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 394.69999999925494,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 757.5,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1282.0999999996277,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 2273.2999999988824,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 2274.199999999255,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 123,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 9304.599999999627,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 9332.800000000743,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 270.90000000037253,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 272.69999999925494,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.400000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 132.40000000037253,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 3,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.800000000745058,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 7,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 40.29999999888241,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 3.900000000372529,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 16030.300000000743,
+      "fullNavigationMs": 16358.60000000149,
+      "mapAppMs": 16030.300000000743,
+      "mapNavigationMs": 16358.60000000149,
+      "navigationToAppMs": 328.30000000074506,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 9295.599999999627,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 198.90000000037253,
+        "totalWallMs": 9606
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 131.2999999988824,
+          "name": "config load"
+        },
+        {
+          "duration": 72,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 667.7000000011176,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 939.5999999996276,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 1810.5,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 1961.7000000011176,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 49.60000000149011,
+          "name": "prepare map"
+        },
+        {
+          "duration": 78.80000000074506,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 558.7000000011176,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 40.29999999888241,
+          "name": "manifest load"
+        },
+        {
+          "duration": 9.199999999254942,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 282.7999999988824,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 9606.300000000743,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 9625.200000001118,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 257.69999999925494,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 68.59999999962747,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 652.9000000003725,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 653.4000000003725,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 15.899999998509884,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 16.199999999254942,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 71.70000000111759,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 8.599999999627471,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.40000000037252903,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 9.200000001117589,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 90.40000000037251,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 10.200000001117589,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 15.5,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 243.7999999988824,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 245.2999999988824,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 9,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 66.89999999850988,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 7.100000001490116,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.300000000745058,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 25,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 92.5,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 15549.400000000373,
+      "fullNavigationMs": 15880.199999999257,
+      "ingestion": {
+        "activeDurationMs": 5418.000000001863,
+        "maxBatchDurationMs": 145.5,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 5718.000000003725,
+        "workBudgetMs": 8,
+        "yieldCount": 471
+      },
+      "mapAppMs": 3843.400000000373,
+      "mapNavigationMs": 4174.199999999255,
+      "navigationToAppMs": 330.7999999988824,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 5797.39999999851,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1287.999999994412,
+        "totalWallMs": 9343.900000000373
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 137.69999999925494,
+          "name": "config load"
+        },
+        {
+          "duration": 107.30000000074506,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 5.199999999254942,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 13.5,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 13.599999999627473,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 643.5999999996275,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 1028.0999999996277,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1514.199999999255,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 2731.5,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 2732.60000000149,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 125.5,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 9344.900000000373,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 9367.900000000373,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 257,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0.1999999992549419,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 258.8999999985099,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.300000000745058,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 119.30000000074506,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 3.600000001490116,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 5.5,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 5.699999999254942,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 37.20000000111759,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 2.900000000372529,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 14836.199999999257,
+      "fullNavigationMs": 15151.199999999257,
+      "mapAppMs": 14836.199999999257,
+      "mapNavigationMs": 15151.199999999257,
+      "navigationToAppMs": 315,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 8883.800000006333,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 218.5000000037253,
+        "totalWallMs": 9211.599999999627
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 135.19999999925494,
+          "name": "config load"
+        },
+        {
+          "duration": 66.5,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 649,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 798,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 933.10000000149,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 1120.7000000011176,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 53.19999999925494,
+          "name": "prepare map"
+        },
+        {
+          "duration": 127.40000000037251,
+          "name": "startup profile preview interaction yield"
+        },
+        {
+          "duration": 384.0999999996274,
+          "name": "startup profile preview"
+        },
+        {
+          "duration": 32.40000000037253,
+          "name": "manifest load"
+        },
+        {
+          "duration": 7.300000000745058,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 457,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 9212,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 9232.700000001118,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 341.59999999962747,
+          "name": "initializeFilters()"
+        },
+        {
+          "duration": 66.69999999925494,
+          "name": "buildFilteredCatalogState(null)"
+        },
+        {
+          "duration": 0.09999999962747096,
+          "name": "defer full display sort for startup"
+        },
+        {
+          "duration": 575.5999999996275,
+          "name": "timelinePlaybackEvents construction/sort"
+        },
+        {
+          "duration": 576.0999999996275,
+          "name": "applyFilteredCatalogState(...)"
+        },
+        {
+          "duration": 18.5,
+          "name": "rebuildTimeFilteredCatalog()"
+        },
+        {
+          "duration": 18.800000000745055,
+          "name": "finalizeFilteredCatalogState(null) criticalOnly"
+        },
+        {
+          "duration": 69.80000000074506,
+          "name": "renderTimeline()"
+        },
+        {
+          "duration": 6.900000000372529,
+          "name": "renderResults()"
+        },
+        {
+          "duration": 0.40000000037252903,
+          "name": "renderRegionSelectionUi()"
+        },
+        {
+          "duration": 6.699999999254942,
+          "name": "renderPlaybackStatus()"
+        },
+        {
+          "duration": 84.40000000037253,
+          "name": "renderFilteredState(): shell first pass"
+        },
+        {
+          "duration": 33.5,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 35.90000000037253,
+          "name": "renderMap(): startup cheap"
+        },
+        {
+          "duration": 237.59999999962747,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 239,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 5.299999998882413,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 50.29999999888241,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 1.800000000745058,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 6.400000000372529,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 9.199999999254942,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 45.09999999962747,
+          "name": "startup deferred refinement: renderFilteredState"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "A",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    },
+    {
+      "catalogReady": "true",
+      "cover": "hidden",
+      "error": "",
+      "fullAppMs": 18312.300000000745,
+      "fullNavigationMs": 18662.400000000373,
+      "ingestion": {
+        "activeDurationMs": 7065.200000010431,
+        "maxBatchDurationMs": 796.7999999988824,
+        "maxBatchRows": 512,
+        "paintIntervalMs": 32,
+        "processedRows": 702893,
+        "wallDurationMs": 7388.9000000003725,
+        "workBudgetMs": 8,
+        "yieldCount": 475
+      },
+      "mapAppMs": 3763.5,
+      "mapNavigationMs": 4113.5999999996275,
+      "navigationToAppMs": 350.09999999962747,
+      "phase": "Ready",
+      "pipeline": {
+        "consumerWallMs": 7468.399999989197,
+        "maximumActiveShards": 1,
+        "maximumPendingShards": 4,
+        "sourceWaitMs": 1634.3000000044703,
+        "totalWallMs": 11080.900000000373
+      },
+      "radar": "1954-09-01 \u00e2\u20ac\u201c 1954-11-30\n\nVisible traces \u00c2\u00b7 current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0\u00e2\u20ac\u201c22.8%\nDirection counts & shares",
+      "results": "770",
+      "runtimeScript": "./app.js?v=2026-10-18-progressive-startup-v4",
+      "steps": [
+        {
+          "duration": 135.5,
+          "name": "config load"
+        },
+        {
+          "duration": 110.19999999925494,
+          "name": "verified initial mapped view"
+        },
+        {
+          "duration": 5.900000000372529,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 16.199999999254942,
+          "name": "reviewed report corrections load"
+        },
+        {
+          "duration": 16.399999998509884,
+          "name": "reviewed date repairs load"
+        },
+        {
+          "duration": 446.4000000003726,
+          "name": "location label overlay load"
+        },
+        {
+          "duration": 824.9000000003725,
+          "name": "packed points preload"
+        },
+        {
+          "duration": 1341.89999999851,
+          "name": "source-backed trace timing load"
+        },
+        {
+          "duration": 2679.39999999851,
+          "name": "reported encounter evidence load"
+        },
+        {
+          "duration": 2681,
+          "name": "complete report evidence barrier"
+        },
+        {
+          "duration": 0,
+          "name": "canonical web artifact manifest preload"
+        },
+        {
+          "duration": 127.09999999962749,
+          "name": "background canonical trace preload"
+        },
+        {
+          "duration": 11081.800000000743,
+          "name": "canonical summary shard ordered fetch+ingest phase"
+        },
+        {
+          "duration": 11107.700000001118,
+          "name": "browser catalog build phase"
+        },
+        {
+          "duration": 364.7999999988824,
+          "name": "computeFacetCounts()"
+        },
+        {
+          "duration": 0.2000000011175871,
+          "name": "reconcilePlaybackState()"
+        },
+        {
+          "duration": 0,
+          "name": "pruneTransientSelectionState()"
+        },
+        {
+          "duration": 366.5999999996274,
+          "name": "startup deferred refinement: finalizeFilteredCatalogState"
+        },
+        {
+          "duration": 7.599999999627471,
+          "name": "renderHeatmapLayer()"
+        },
+        {
+          "duration": 136.09999999962747,
+          "name": "renderMap(): deferred refinement"
+        },
+        {
+          "duration": 4.099999999627471,
+          "name": "renderStats()"
+        },
+        {
+          "duration": 5.800000000745058,
+          "name": "renderAllMultiSelectStates()"
+        },
+        {
+          "duration": 6.599999999627471,
+          "name": "renderLegend()"
+        },
+        {
+          "duration": 37.69999999925494,
+          "name": "startup deferred refinement: renderFilteredState"
+        },
+        {
+          "duration": 3.599999999627471,
+          "name": "renderHeatmapLayer()"
+        }
+      ],
+      "viewport": [
+        1265,
+        720
+      ],
+      "visualGate": {
+        "facilityDisplaySettled": true,
+        "facilitySourcesReady": true,
+        "fitApplied": false,
+        "renderedTraceCount": 721,
+        "sightingCount": 770,
+        "tilesSettled": true,
+        "traceArtifactReady": true,
+        "traceCanvasSettled": true,
+        "traceWorkerSettled": true
+      },
+      "window": [
+        "1954-09-01",
+        "1954-11-30"
+      ],
+      "worker": {
+        "reason": "deferred startup facet counts computed off the main thread",
+        "rows": 702893,
+        "used": true
+      },
+      "mode": "B",
+      "runtimeCommit": "2ebbc3a",
+      "condition": "fresh_tab_warm_http_cache"
+    }
+  ],
+  "freshTabDiagnosticStatus": "Completed all six planned fresh-tab runs in ABABAB order; no runtime changes or samples excluded.",
+  "summary": {
+    "existingTab": {
+      "A": {
+        "samples": 3,
+        "mapNavigationMs": {
+          "median": 17652.400000000373,
+          "minimum": 17549.599999999627,
+          "maximum": 18420.20000000112
+        },
+        "fullNavigationMs": {
+          "median": 17652.400000000373,
+          "minimum": 17549.599999999627,
+          "maximum": 18420.20000000112
+        },
+        "mapAppMs": {
+          "median": 17214.300000000745,
+          "minimum": 17103.299999998882,
+          "maximum": 17987.10000000149
+        },
+        "fullAppMs": {
+          "median": 17214.300000000745,
+          "minimum": 17103.299999998882,
+          "maximum": 17987.10000000149
+        }
+      },
+      "B": {
+        "samples": 3,
+        "mapNavigationMs": {
+          "median": 4612.4000000003725,
+          "minimum": 4348.199999999255,
+          "maximum": 4780.4000000003725
+        },
+        "fullNavigationMs": {
+          "median": 18671.599999999627,
+          "minimum": 17419.900000000373,
+          "maximum": 18738.79999999888
+        },
+        "mapAppMs": {
+          "median": 4210.5,
+          "minimum": 3945.7999999988824,
+          "maximum": 4316.0999999996275
+        },
+        "fullAppMs": {
+          "median": 18207.29999999888,
+          "minimum": 17018,
+          "maximum": 18336.39999999851
+        }
+      }
+    },
+    "freshTab": {
+      "A": {
+        "samples": 3,
+        "mapNavigationMs": {
+          "median": 16358.60000000149,
+          "minimum": 15151.199999999257,
+          "maximum": 17305.800000000745
+        },
+        "fullNavigationMs": {
+          "median": 16358.60000000149,
+          "minimum": 15151.199999999257,
+          "maximum": 17305.800000000745
+        },
+        "mapAppMs": {
+          "median": 16030.300000000743,
+          "minimum": 14836.199999999257,
+          "maximum": 16951.800000000745
+        },
+        "fullAppMs": {
+          "median": 16030.300000000743,
+          "minimum": 14836.199999999257,
+          "maximum": 16951.800000000745
+        }
+      },
+      "B": {
+        "samples": 3,
+        "mapNavigationMs": {
+          "median": 4113.5999999996275,
+          "minimum": 3768.5,
+          "maximum": 4174.199999999255
+        },
+        "fullNavigationMs": {
+          "median": 15880.199999999257,
+          "minimum": 15850,
+          "maximum": 18662.400000000373
+        },
+        "mapAppMs": {
+          "median": 3763.5,
+          "minimum": 3421.699999999255,
+          "maximum": 3843.400000000373
+        },
+        "fullAppMs": {
+          "median": 15549.400000000373,
+          "minimum": 15503.199999999257,
+          "maximum": 18312.300000000745
+        }
+      }
+    }
+  },
+  "parityVerifiedRuns": 12,
+  "claims": {
+    "coldCacheTested": false,
+    "mobileTested": false,
+    "allSamplesRetained": true,
+    "repeatedReloadPenaltyRemains": true,
+    "productionChanged": false
+  },
+  "storage": {
+    "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
+    "production": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+    "rollback": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+    "newFilesAbove100MiB": [],
+    "netLocalGrowthMiBUpperBound": 5,
+    "corpusCopies": 0
+  },
+  "publicVerification": {
+    "passed": true,
+    "files": [
+      "app.js",
+      "data/app_config.json",
+      "data/startup_profiles/france_1954_flap/progressive_view.json.gz",
+      "index.html",
+      "startup_catalog_ui.js"
+    ],
+    "pagesTreeSha256": "8c8b14bc55b0423b412099c4bed7f1edd69d296d8e823c4245da0ce7db3eecf6",
+    "providerTransformations": [
+      {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    ],
+    "deploymentId": "cb8556e1-d941-4ff7-8e6d-b10cdea21aad",
+    "source": "2ebbc3a",
+    "productionUnchanged": true,
+    "immutableObjectCount": 87,
+    "immutableObjectBytes": 101875689
+  }
+}

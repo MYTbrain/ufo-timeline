@@ -63,6 +63,10 @@ function fixture() {
     applyFilteredCatalogState(rows) { state.timelineCatalog = rows; state.filteredMappedCatalog = rows; state.timelineDataVersion += 1; calls.push(["apply", rows.length]); },
     finalizeFilteredCatalogState() { calls.push("finalizeFilters"); },
     renderFilteredState() { calls.push("render"); if (renderFailure) { const error = renderFailure; renderFailure = null; throw error; } },
+    renderStats() { calls.push({ render: "stats", phase: startup.phase, traceLinked: context.traceLinkedVisibilityAffectsRendering() }); },
+    renderResults() { calls.push({ render: "results", phase: startup.phase, traceLinked: context.traceLinkedVisibilityAffectsRendering() }); },
+    famousCaseTraceSelectionActive: () => false, areaFilterHasActiveSelection: () => false,
+    traceModeIncludesStatic: () => true, traceFacilityFilterEnabled: () => false, traceFacilitySourcesLoaded: () => true,
     finalizeInitialStartupVisuals: async () => { visualCalls += 1; await context.applyStartupFitBeforeReady(); if (visualCalls === 1) await initialVisuals.promise; },
     runDeferredStartupRefinement: async () => { calls.push("refine"); },
     fitToResults() { calls.push("fitToResults"); viewport.center = [30, 40]; },
@@ -80,7 +84,8 @@ function fixture() {
   context.ensureDetailQualityOverlayLoaded = context.loadDetailQualityOverlayRuntime;
   context.ensureAnalysisRepairDetailOverlayLoaded = context.loadAnalysisRepairDetailOverlayRuntime;
   for (const name of ["progressiveStartupRequested", "progressiveInitialMapActive", "updateProgressiveCatalogUi",
-    "initializeProgressiveStartup", "promoteProgressiveCatalog", "startProgressiveCatalogBackground", "applyStartupFitBeforeReady"])
+    "initializeProgressiveStartup", "promoteProgressiveCatalog", "startProgressiveCatalogBackground", "applyStartupFitBeforeReady",
+    "traceLinkedVisibilityAffectsRendering"])
     vm.runInContext(actualFunction(name), context);
   return { context, calls, events, uiStates, background, initialVisuals, startup, runtime, state, viewport,
     get loadCalls() { return loadCalls; }, get analysisEnabled() { return analysisEnabled; },
@@ -99,6 +104,8 @@ ready.initialVisuals.resolve(); await initialLoad; await flush();
 assert.equal(ready.startup.mapViewReady, true);
 assert.equal(ready.startup.initialViewReady, true);
 assert.equal(ready.startup.fullCatalogReady, false, "Usable map does not claim full-catalog readiness");
+assert.equal(ready.context.traceLinkedVisibilityAffectsRendering(), false,
+  "The initial map's phase does not apply the final trace-linked Results restriction");
 assert.equal(ready.analysisEnabled, false);
 assert.equal(ready.events.filter(event => event.type === "ufo:timeline-map-ready").length, 1);
 assert.equal(ready.events.some(event => event.type === "ufo:timeline-ready"), false);
@@ -114,6 +121,13 @@ ready.state.timeRangeStartOrdinal = 110; ready.state.timeRangeEndOrdinal = 190;
 ready.background.resolve(); await sameLoading;
 assert.equal(ready.startup.fullCatalogReady, true);
 assert.equal(ready.analysisEnabled, true);
+assert.equal(ready.context.traceLinkedVisibilityAffectsRendering(), true,
+  "Changing to Ready activates final trace-linked visibility");
+for (const render of ["stats", "results"]) {
+  const finalRender = ready.calls.filter(call => call && call.render === render).at(-1);
+  assert.deepEqual(finalRender, { render, phase: "Ready", traceLinked: true },
+    "Final " + render + " must refresh after Ready, so its displayed population uses final visibility rules");
+}
 assert.deepEqual(ready.viewport, { center: [51, -1], zoom: 6 }, "Catalog promotion preserves the visitor's map view");
 assert.equal(ready.state.timeRangeStartOrdinal, 110);
 assert.equal(ready.state.timeRangeEndOrdinal, 190);

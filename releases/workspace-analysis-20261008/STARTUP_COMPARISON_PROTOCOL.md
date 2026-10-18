@@ -35,3 +35,21 @@ tree is needed. Production `b4e04dc8-4605-486e-bdbc-174acd3ca37e` and rollback
 `626b22b4-af0a-4252-8525-0ba21289c0d0` remain protected. The new validated preview replaces
 `e75adec1` as the current candidate; old provider preview history is superseded and proposed
 for cleanup after review. No dataset deletion is proposed.
+
+## Additional tab-lifecycle condition
+
+The completed ABBAAB existing-tab series is retained in full. Both paths slowed substantially
+relative to their unmeasured warm-ups; catalog consumer processing approximately doubled.
+This observation does not establish its cause. Add a separate, explicitly labelled fresh-tab
+series to distinguish opening the tool from repeated navigation history in a data-heavy tab.
+Do not replace or exclude the existing-tab measurements.
+
+Keep the browser profile, warmed HTTP cache, runtime, viewport and connection unchanged.
+Close only agent-owned map preview tabs between samples; preserve login and unrelated tabs.
+Open each measured page visibly in a fresh tab, in the declared order A, B, A, B, A, B.
+Retain all six runs, failures and slow samples. Report both conditions separately, without
+pooling them or claiming that a fresh tab is equivalent to a cold HTTP cache.
+
+Both series completed on runtime `2ebbc3a`, deployment `cb8556e1`. All twelve measurements
+are retained in `startup_controlled_comparison.json`. Preliminary warm-ups from earlier
+development builds are separately labelled and excluded from the measured summaries.

@@ -1,5 +1,9 @@
 # Progressive startup preview
 
+Current repair and controlled results: [STARTUP_COMPARISON_RESULTS.md](STARTUP_COMPARISON_RESULTS.md).
+The 29-second regression described below is the preserved first-preview observation, superseded
+by runtime `2ebbc3a` / preview `cb8556e1`. Production remains unchanged.
+
 Preview only: `https://progressive-startup-20261018.ufo-timeline.pages.dev/?progressiveStartup=1`.
 The normal startup remains available by omitting the query parameter. Production is unchanged.
 
