@@ -51,4 +51,45 @@ local collection-only candidate, which remains reproducible from its source
 revision. No dataset, analysis, old research queue, or remote deployment is
 deleted by this task.
 
-Verification and delivery receipt will be added after the final stage check.
+## Verified preview
+
+URL: https://analysis-groups-20261018.ufo-timeline.pages.dev/
+Deployment: `18a18133-ca83-4af3-99a7-6cf88ea0b800`.
+Runtime source: `6aa65d32b28f27583e436e9b21ca3dc753f299f6`.
+The frozen Pages candidate has 207 files, 40,584,375 bytes, tree SHA-256
+`875a2cb72d13b721481833e6ae8d29ab0a26a811906021ce9ee111ba5926e70e`.
+The existing 87 immutable R2 objects (101,875,689 bytes) are unchanged and were
+not uploaded again. `provider.json` records the production and rollback check;
+`hosted-public.json` records byte verification of 205 browser-served Pages files.
+
+Focused checks passed: session model, session view, actual app/worker/session
+integration, collection evidence/view/delivery/worker cohort, encounter inspection
+view, catalog filtering, comparison worker, Analysis view and scheduling repairs,
+startup cache/loading cover, and progressive startup flow. The integration test
+uses the real worker response and view envelope for both quick and full frozen
+population results, rather than a response-echoing mock.
+
+Hosted browser checks used A = September-November 1954 (821 reports, 770 mapped)
+and B = June 15-August 31 1952 (505 reports, 491 mapped). The two captured windows
+had no shared report IDs. Applying A rendered the selected 821-report population
+in Time, retaining the 1952 live date inputs and 491 mapped map results. Returning
+to filters restored the 505-report Analysis cohort while preserving both groups.
+Reload cleared both groups. `comparison-preview.png` shows the completed browser
+workflow. This desktop check does not claim a physical-phone accessibility audit.
+
+The live review caught and repaired two issues before delivery: the accepted
+layout inserted the new controls below the charts, and a request used an Analysis
+result-mode value where the worker required a baseline value. Placement is now
+above the topic workspace, and real-envelope regression coverage prevents the
+second issue from silently leaving charts on 'updating'.
+
+Local net growth is approximately under 1 MiB including code, tests, QA and the
+54,698-byte increase in the single existing stage. No newly created file exceeds
+100 MiB. No additional large directory was created. This QA directory contains
+small reproducible evidence for this preview and is retained with its source.
+
+Cleanup proposal: the superseded collection-only local candidate has already
+been replaced in place. Intermediate preview deployments `a8de6675`, `2af5a28e`
+and `9639e2a8` are superseded by `18a18133`; retire them in a later explicit
+remote cleanup, preserving production and its one designated rollback. No data
+or remote deployment was deleted during this task.

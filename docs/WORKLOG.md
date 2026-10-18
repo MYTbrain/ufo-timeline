@@ -5720,3 +5720,9 @@ static coordinate regression report: ready; explicit U.S. rows outside wide U.S.
 static_bundle.zip bytes: 260,817,885
 full pytest: 484 passed
 ```
+
+### 2026-10-18 - Temporary Analysis research workflow (preview)
+
+Added RAM-only frozen report selections across Analysis and temporary A/B groups. Encounter and collection drilldowns include all matching catalog IDs across pagination; map filters stay independent. Comparison counts use catalog report representations with overlap, coverage, unknowns and full-group category denominators explicit. No project/account/file-saving workflow is required. Full reload clears the groups.
+
+Hosted preview, verification, storage lifecycle and reproduction: docs/qa/temporary-analysis-20261018/PREVIEW.md. Production remains 16443086; rollback b4e04dc8. Source branch codex/temporary-analysis-20261018. Focused app/worker/view/startup regressions and the real two-window browser workflow passed. The single stage grew 54,698 bytes; all shared datasets and immutable R2 objects are reused.

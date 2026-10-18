@@ -1598,3 +1598,7 @@ $env:PYTHONPATH='C:\Users\jarod\Desktop\UFO Timeline map tool\.python_packages;C
 ```
 
 Current result: `data/reports/canonical_mutation_contract.json` reports current canonical events `944578`, promoted preview events `942518`, whole-chain reduction `2060`, latest remaining-lower reduction `12`, `contract_valid=true`, `ready_for_direct_canonical_overwrite=false`, and `canonical_outputs_mutated=false`.
+
+### Temporary Analysis preview workflow (2026-10-18)
+
+Current instructions and verified preview receipt are in docs/qa/temporary-analysis-20261018/PREVIEW.md. Work in the attached case-navigation-release checkout on codex/temporary-analysis-20261018, referencing the primary checkout's canonical datasets. Refresh only the existing bounded stage with prepare_workspace_analysis_release.py --refresh-stage; do not run the legacy full bundle pipeline. The session model lives only in RAM, with selection-only worker payloads isolated from Map filter payloads. A frozen selection uses a supported request baseline and full-time scope; the result's internal-structure mode is not itself a valid request baseline. tests/test_analysis_session_integration.mjs checks the actual app request, worker response and UI acceptance envelope. Production and rollback are unchanged.
