@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "previewUrl": "https://progressive-startup-20261018.ufo-timeline.pages.dev/?progressiveStartup=1",
+  "deploymentId": "e75adec1",
+  "runtimeCommit": "c8efb25",
+  "pagesTreeSha256": "5ee8a56d1e117b710e76edce20bc34b02dd43e04492398a2a67783dbf6969be9",
+  "verifiedPages": [
+    "animal_mutilation_bootstrap.js",
+    "app.js",
+    "crop_circle_bootstrap.js",
+    "data/app_config.json",
+    "data/startup_profiles/france_1954_flap/progressive_manifest.json",
+    "data/startup_profiles/france_1954_flap/progressive_view.json.gz",
+    "index.html",
+    "progressive_catalog_runtime.js",
+    "startup_catalog_ui.css",
+    "startup_catalog_ui.js"
+  ],
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "immutableR2Objects": 87,
+  "immutableR2Bytes": 101875689,
+  "productionUnchanged": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+  "retainedRollback": "626b22b4-af0a-4252-8525-0ba21289c0d0",
+  "storage": {
+    "newFilesAbove100MiB": [],
+    "approximateNetGrowthMiBUpperBound": 5,
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "stageBytes": 40025467,
+    "extraCorpusCopies": 0
+  },
+  "observations": {
+    "initialMapMilliseconds": [
+      2022.5,
+      2221.6,
+      3202.3,
+      5736.4
+    ],
+    "fullCatalogMilliseconds": [
+      26487,
+      33837.1
+    ],
+    "conditions": "Desktop IAB; existing shared asset cache; variable network and report-inspection traffic; not a mobile cold-load benchmark. No controlled before/after speed ratio asserted."
+  },
+  "parity": {
+    "mappedReports": 770,
+    "visibleLinks": 721,
+    "orderedVisibleLinks": 254,
+    "unknownOrderVisibleLinks": 467,
+    "fullCatalogRows": 702893,
+    "dateWindow": [
+      "1954-09-01",
+      "1954-11-30"
+    ],
+    "backgroundDetailOpenedEventId": "1242267739208227",
+    "selectedReportRetainedAfterCompletion": true
+  },
+  "finalBrowserCheck": {
+    "catalogReady": "true",
+    "ingestion": {
+      "activeDurationMs": 7792.399999991059,
+      "maxBatchDurationMs": 143.90000000037253,
+      "maxBatchRows": 512,
+      "paintIntervalMs": 32,
+      "processedRows": 702893,
+      "wallDurationMs": 8028.500000007451,
+      "workBudgetMs": 8,
+      "yieldCount": 606
+    },
+    "milestones": {
+      "time to Ready": 28716.20000000112,
+      "time to initial map usable": 3154.5999999996275
+    },
+    "phase": "Ready",
+    "radar": "1954-09-01 – 1954-11-30\n\nVisible traces · current time window\n\n254 ordered links\n467 unknown-order links excluded\n\nN\nNE\nE\nSE\nS\nSW\nW\nNW\nRadial scale: 0–22.8%\nDirection counts & shares",
+    "results": "821",
+    "searchEnabled": true,
+    "visualGate": {
+      "facilityDisplaySettled": true,
+      "facilitySourcesReady": true,
+      "fitApplied": false,
+      "renderedTraceCount": 721,
+      "sightingCount": 770,
+      "tilesSettled": true,
+      "traceArtifactReady": true,
+      "traceCanvasSettled": true,
+      "traceWorkerSettled": true
+    },
+    "window": [
+      "1954-09-01",
+      "1954-11-30"
+    ],
+    "worker": {
+      "reason": "deferred startup facet counts computed off the main thread",
+      "rows": 702893,
+      "used": true
+    }
+  }
+}
