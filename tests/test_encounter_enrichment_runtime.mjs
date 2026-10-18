@@ -5,7 +5,14 @@ import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url), api = require("../encounter_evidence.js");
 const manifest = JSON.parse(fs.readFileSync("data/encounters/manifest.json", "utf8"));
-const base = api.createIndex(JSON.parse(zlib.gunzipSync(fs.readFileSync("data/encounters/evidence.json.gz"))));
+const basePayload = JSON.parse(zlib.gunzipSync(fs.readFileSync("data/encounters/evidence.json.gz")));
+const base = api.createIndex(basePayload, manifest.attributeReviews, manifest.artifact.decodedSha256);
+assert.equal(manifest.attributeReviews.rows.length, 5);
+for (const review of manifest.attributeReviews.rows) {
+  assert.equal(base.get(review.eventId).heightFeet, undefined);
+  assert.equal(base.get(review.eventId).reportedHeightFeet, review.originalHeightFeet);
+  assert.ok(base.get(review.eventId).measurementReview);
+}
 const entry = manifest.enrichment, bytes = fs.readFileSync("data/encounters/" + entry.file), decoded = zlib.gunzipSync(bytes);
 const hash = value => createHash("sha256").update(value).digest("hex");
 assert.equal(hash(bytes), entry.gzipSha256); assert.equal(hash(decoded), entry.decodedSha256);
@@ -28,8 +35,10 @@ assert.deepEqual(entry.reviewBatch, { reviewedAccounts: 177, linked: 105, candid
 for (const link of payload.reportLinks) {
   const value = index.get(link.eventId); assert.ok(value);
   const actual = value.links.find(row => row.sourceEntries.some(source => link.sourceEntryIds.includes(source.entryId)));
-  assert.ok(actual); assert.equal(actual.status, link.status);
-  if (link.status !== "linked") assert.equal(actual.acceptedForRuntime, false);
+  assert.ok(actual);
+  const revision = (actual.qualityReviews || []).find(row => row.associationRevision?.eventId === link.eventId);
+  assert.equal(actual.status, revision ? revision.associationRevision.status : link.status);
+  if (link.status !== "linked" && !revision) assert.equal(actual.acceptedForRuntime, false);
 }
 assert.ok(payload.episodes.every(row => row.time.utcVerified === false && row.time.utcStartMs == null && row.time.utcEndMs == null));
 assert.ok(payload.episodes.every(row => row.site.sourceVerified === false && row.site.lat == null && row.site.lon == null));
@@ -61,4 +70,15 @@ for (const entity of payload.entityObservations.slice(36)) {
   }
 }
 assert.equal(hash(zlib.gunzipSync(fs.readFileSync("data/encounters/evidence.json.gz"))), "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8", "Base classifications remain unchanged");
-console.log("Reviewed runtime: prior pilot preserved; 177 reviewed additions, 127 total accepted links, 75 held; scoped attributes, null UTC/sites and atomic refusal passed.");
+assert.equal(payload.qualityReviews.length, 8);
+const poole = index.get("3356684600748588").links.find(row => row.case.caseId === "case:poole");
+assert.ok(poole.acceptedForRuntime);
+assert.equal(poole.originalStatus, "candidate");
+assert.ok(poole.episodes[0].date.conflicts.length > 0, "Resolved identity does not erase conflicting years");
+assert.equal(new Set(payload.reportLinks.map(row => row.eventId)).size, index.rowCount);
+let effectiveAccepted = 0;
+for (const id of new Set(payload.reportLinks.map(row => row.eventId))) effectiveAccepted += index.get(id).links.filter(row => row.acceptedForRuntime).length;
+assert.equal(effectiveAccepted, 128);
+const wrongReview = structuredClone(payload); wrongReview.qualityReviews[0].associationRevision.previousStatus = "contradicted";
+assert.throws(() => api.createEnrichmentIndex(wrongReview, base, manifest.artifact.decodedSha256), /unreviewed association revision/);
+console.log("Reviewed runtime: all prior rows preserved; eight source reviews, one resolved identity, five disputed height values withheld, 128 effective accepted links; UTC/sites remain unknown.");

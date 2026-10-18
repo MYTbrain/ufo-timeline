@@ -216,3 +216,12 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /scripts/encounter_review_prepare.py -text
 /docs/qa/encounter-source-expansion-20261017/** -text
 /docs/qa/encounter-reviewed-20261017/** -text
+
+# Encounter quality audits retain exact producer and reviewed-delta hashes.
+/scripts/encounter_quality_corpus_audit.py -text
+/scripts/encounter_original_citation_recovery.py -text
+/scripts/encounter_height_unit_audit.py -text
+/scripts/encounter_source_capture_integrity.py -text
+/scripts/encounter_quality_supplements.py -text
+/scripts/build_encounter_evidence.py -text
+/docs/qa/encounter-quality-20261017/** -text

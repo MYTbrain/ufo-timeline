@@ -1,0 +1,217 @@
+{
+  "schemaId": "ufo-encounter-quality-completion-v1",
+  "createdUtc": "2026-10-18T05:20:25.159323+00:00",
+  "scope": {
+    "indexedReports": 16319,
+    "acquiredSourceAccounts": 10853,
+    "verifiedOriginalCaptures": 73,
+    "catalogSummaryIds": 702893,
+    "additionalRecoveredHeldAccount": 1
+  },
+  "research": {
+    "citationFootersRecovered": 12,
+    "missingCitationsBefore": 18,
+    "missingCitationsAfter": 6,
+    "heightRowsReplayed": 2441,
+    "heightRowsWithheld": 5,
+    "sourceComparisonGroupsReviewed": 8,
+    "sourceEpisodeFamiliesInThoseGroups": 9,
+    "runtimeQualityReviews": 8,
+    "runtimeFactualFindings": 18,
+    "additionalRuntimeDocuments": 7,
+    "explicitIdentityResolutions": 1
+  },
+  "runtime": {
+    "baseEvidenceUnchanged": true,
+    "baseEvidenceDecodedSha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8",
+    "enrichment": {
+      "gzipBytes": 132837,
+      "gzipSha256": "9c2009100b1b0e336b2daa03b80f1d08d5a34b5ad524bec144b0efda196a3b4a",
+      "decodedBytes": 944595,
+      "decodedSha256": "8434da9dd242db8a21471647f54531db7622f3d0fed326fab759f070aab768e6",
+      "file": "enrichment.json.gz",
+      "releaseId": "encounter-quality-reviewed-20261017-v1",
+      "counts": {
+        "sources": 28,
+        "sourceEntries": 210,
+        "cases": 197,
+        "episodes": 202,
+        "entityObservations": 214,
+        "reportLinks": 202,
+        "acceptedReportLinks": 128,
+        "heldReportLinks": 74
+      },
+      "reviewBatch": {
+        "reviewedAccounts": 177,
+        "linked": 105,
+        "candidate": 69,
+        "contradicted": 3
+      },
+      "qualityReviewBatch": {
+        "reviewedAccounts": 8,
+        "findings": 18,
+        "addedSources": 7,
+        "identityRevisions": 1,
+        "priorAcceptedLinks": 127,
+        "effectiveAcceptedLinks": 128,
+        "preservedSourceTablePrefixes": true
+      }
+    },
+    "heightAttributeReviews": {
+      "schemaId": "ufo-encounter-attribute-reviews-v1",
+      "baseEvidenceDecodedSha256": "0a26ec2f83c9c2f368c9e457c94d7ec0d651f8da514cdfd27662ee2735bbe8b8",
+      "policy": "Withhold disputed numeric height from comparisons; preserve source fields, labels and null unknowns. No automatic metric conversion.",
+      "rows": [
+        {
+          "eventId": "3645084554199960",
+          "source": "ufocat",
+          "sourceEventId": "160629",
+          "sourceRef": {
+            "chunk": "chunk_000091",
+            "chunkSha256": "2cf9f820fa2b639016d825abb07d7395c60993f1b9817a120e21dee0eecaf58d",
+            "detailIndex": 993
+          },
+          "action": "withhold_height_feet",
+          "originalHeightFeet": 1.0,
+          "reportedMetricText": "1m tall",
+          "reason": "source_height_units_conflict",
+          "reviewer": "encounter_quality_corpus_audit_manual",
+          "nativeNarrativeSha256": "78192a36e01d4cc97a92417f4db4a78fd8c97e780cde47de176f426d8e5a28c6",
+          "sourceField": "NOTES"
+        },
+        {
+          "eventId": "2838200802129686",
+          "source": "ufocat",
+          "sourceEventId": "243428",
+          "sourceRef": {
+            "chunk": "chunk_000100",
+            "chunkSha256": "207b5b6567007e0085a7a41b272e6897a390d27fcfb0c4041a986e49fa3efde6",
+            "detailIndex": 2221
+          },
+          "action": "withhold_height_feet",
+          "originalHeightFeet": 2.5,
+          "reportedMetricText": "2.5m tall",
+          "reason": "source_height_units_conflict",
+          "reviewer": "encounter_quality_corpus_audit_manual",
+          "nativeNarrativeSha256": "76101c7c51b79343d3d1773d7c50b320a1dcf0b7c285916ec51489b03bf9987c",
+          "sourceField": "NOTES"
+        },
+        {
+          "eventId": "3174520330725298",
+          "source": "ufocat",
+          "sourceEventId": "160590",
+          "sourceRef": {
+            "chunk": "chunk_000221",
+            "chunkSha256": "385b062aebc7619d455bb8b470ddb226ad0ba620de2b109b677ea98900180a49",
+            "detailIndex": 653
+          },
+          "action": "withhold_height_feet",
+          "originalHeightFeet": 0.5,
+          "reportedMetricText": "0.5m tall",
+          "reason": "source_height_units_conflict",
+          "reviewer": "encounter_quality_corpus_audit_manual",
+          "nativeNarrativeSha256": "116fbfb75f555e502f0b90c2309f335bcec8b91bd44f174d72826b7fc18b1dd9",
+          "sourceField": "NOTES"
+        },
+        {
+          "eventId": "4024314512153275",
+          "source": "ufocat",
+          "sourceEventId": "243414",
+          "sourceRef": {
+            "chunk": "chunk_000231",
+            "chunkSha256": "95c004406a8dce1f33e92ad7fe5f059f59f2a1d750db46053047ac726f155e56",
+            "detailIndex": 843
+          },
+          "action": "withhold_height_feet",
+          "originalHeightFeet": 1.3,
+          "reportedMetricText": "1.3m tall",
+          "reason": "source_height_units_conflict",
+          "reviewer": "encounter_quality_corpus_audit_manual",
+          "nativeNarrativeSha256": "2b12cfc16b87b7d278fb3a7ccf0a73157ee3e05253026b331b463ac53bd3156d",
+          "sourceField": "NOTES"
+        },
+        {
+          "eventId": "4326802475173721",
+          "source": "ufocat",
+          "sourceEventId": "252836",
+          "sourceRef": {
+            "chunk": "chunk_000231",
+            "chunkSha256": "95c004406a8dce1f33e92ad7fe5f059f59f2a1d750db46053047ac726f155e56",
+            "detailIndex": 709
+          },
+          "action": "withhold_height_feet",
+          "originalHeightFeet": 4.1999998,
+          "reportedMetricText": "4.2m tall",
+          "reason": "source_height_unit_and_entity_scope_unresolved",
+          "reviewer": "encounter_quality_corpus_audit_manual",
+          "nativeNarrativeSha256": "ac8e23a558c894a16db111e8b41fb92d321c0bce44523be79231bc8d80f4bbc5",
+          "sourceField": "NOTES"
+        }
+      ]
+    },
+    "priorSourceTablePrefixesPreserved": true,
+    "priorRawReportLinksPreserved": true,
+    "coordinatesModified": false,
+    "globalCoordinateHoldProposalApplied": false,
+    "deployed": false,
+    "pushed": false
+  },
+  "validation": {
+    "pythonEncounterRegressionTestsPassed": 97,
+    "finalAuditSemanticTestsPassed": 11,
+    "nodeChecksPassed": [
+      "test_encounter_enrichment_runtime.mjs",
+      "test_encounter_inspection_view.mjs",
+      "test_encounter_evidence.mjs"
+    ],
+    "javascriptSyntaxChecksPassed": [
+      "app.js",
+      "analysis_view.js",
+      "encounter_evidence.js"
+    ],
+    "independentIntegrationReview": "no blocking issues; exact prior table prefixes, sole Poole association revision, conflicting years/clocks and witness/recall scope verified",
+    "browserVisualCheckPerformed": false
+  },
+  "canonical": {
+    "currentCorpusAudit": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-current\\audit.json",
+    "currentGapRegistry": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-current\\gap-registry.json.gz",
+    "currentResearchQueue": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-current\\research-queue.json.gz",
+    "citationRecoveredMetadata": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery\\combined-originals-citation-recovered.json.gz",
+    "currentEnrichment": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\validated\\evidence.json.gz",
+    "priorEnrichment": "C:/Users/jarod/Desktop/UFO Timeline map tool/data/research/encounter-reviewed-20261017/validated/evidence.json.gz",
+    "coordinateHoldProposal": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\reviewed-coordinate-hold-proposal.json"
+  },
+  "producers": [
+    {
+      "path": "scripts/encounter_quality_corpus_audit.py",
+      "bytes": 42648,
+      "sha256": "2f211a8cbaba32dc79bf07b483952169c20a41e8aaf36331aeda1e8958de2008"
+    },
+    {
+      "path": "scripts/encounter_original_citation_recovery.py",
+      "bytes": 11649,
+      "sha256": "55d3743293799c7e66a28536faf51dec870b7d6a59614bb69d5e4af2b3207d0d"
+    },
+    {
+      "path": "scripts/encounter_height_unit_audit.py",
+      "bytes": 8883,
+      "sha256": "2764526c0343b159ba0e6d01846faaac449a3fa39ddc9c3098d4568161f81d96"
+    },
+    {
+      "path": "scripts/encounter_source_capture_integrity.py",
+      "bytes": 11632,
+      "sha256": "dfc930a86e8601b6313ca2327ad78ccc4119213a5faba7e45c71037f2f9c0461"
+    },
+    {
+      "path": "scripts/encounter_quality_supplements.py",
+      "bytes": 12310,
+      "sha256": "2a90b0410e8f394c7bc3d919b327cf467f10a4b55c9c17cf175960515bdda768"
+    },
+    {
+      "path": "scripts/build_encounter_evidence.py",
+      "bytes": 44575,
+      "sha256": "497fa1e47bcaeb7d791753c9cb97a60fba1fdfcf05f0d3b5c853ca8552532c22"
+    }
+  ],
+  "retainedProductionAndRollbackUnchanged": true
+}

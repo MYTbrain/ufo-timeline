@@ -99,11 +99,15 @@ controller._appendEncounterEnrichment(enrichmentTarget, { links: [{ acceptedForR
   episodes: [{ scope: 'later_recall', recallMethod: 'hypnosis', date: { raw: '1975', precision: 'year', status: 'disputed', conflicts: ['retrospective date conflict'] }, time: { raw: null, status: 'unknown', utcVerified: false } }],
   entityObservations: [{ label: 'Reported humanoid', count: null, attributes: [{ field: 'height', value: null, attribution: 'not_established' }] }],
   sourceEntries: [{ title: 'Unsafe source URL', shortExcerpt: '<script> retained quote', source: { url: 'javascript:alert(1)' } },
-    { title: 'Reviewed source', locator: 'page 2', source: { url: 'https://example.org/source' } }] }] });
+    { title: 'Reviewed source', locator: 'page 2', source: { url: 'https://example.org/source' } }],
+  qualityReviews: [{ disposition: 'conflicting_version', rationale: 'Preserve both clocks.', findings: [{ field: 'time', text: '00:15 conflicts with 02:00 <img>.', sourceEntryId: 'new' }],
+    sourceEntries: [{ entryId: 'new', locator: 'original page 15', source: { url: 'https://example.org/original' } }] }] }] });
 assert.match(enrichmentTarget.textContent, /0 accepted links.*1 candidate or held/);
 assert.match(enrichmentTarget.textContent, /not used as an accepted case link|contradicted/);
 assert.match(enrichmentTarget.textContent, /UTC not verified|reported count —/);
-assert.equal(walk(enrichmentTarget).filter((node) => node.tagName === 'a').length, 1);
+assert.match(enrichmentTarget.textContent, /Additional source review/);
+assert.match(enrichmentTarget.textContent, /00:15 conflicts with 02:00 <img>/);
+assert.equal(walk(enrichmentTarget).filter((node) => node.tagName === 'a').length, 2);
 assert.equal(walk(enrichmentTarget).find((node) => node.tagName === 'a').href, 'https://example.org/source');
 assert.equal(walk(enrichmentTarget).filter((node) => ['script', 'img'].includes(node.tagName)).length, 0);
 button(inspector, 'Open original report').click(); await tick(); assert.deepEqual(opens[0], { eventId: '0', mode: 'details' });

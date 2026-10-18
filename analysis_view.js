@@ -6391,6 +6391,13 @@
             if (Array.isArray(value.conflicts) && value.conflicts.length) article.appendChild(this._element("p", "analysis-chart-policy", "Conflicting evidence: " + value.conflicts.map((item) => typeof item === "string" ? item : JSON.stringify(item)).join("; ")));
           });
           if (firstArray(episode, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Episode review flags: " + episode.reviewFlags.map(plainLanguageLabel).join("; ")));
+          const stages = firstArray(episode, ["recallStages"]);
+          if (stages.length) {
+            const recall = this._element("details", "encounter-recall-stages");
+            recall.appendChild(this._element("summary", "", "Statements and recall stages"));
+            stages.forEach((stage) => recall.appendChild(this._element("p", "encounter-report-meta", [plainLanguageLabel(stage.method || "Method unknown"), cleanText(stage.content, "Content not specified"), stage.recalledAt ? "Recorded/recalled: " + stage.recalledAt : "", stage.status ? plainLanguageLabel(stage.status) : ""].filter(Boolean).join(" · "))));
+            article.appendChild(recall);
+          }
         });
         firstArray(link, ["entityObservations"]).forEach((entity) => {
           article.appendChild(this._element("p", "", cleanText(entity.label, "Entity description") + " · " + plainLanguageLabel(entity.scope || "scope unavailable") + " · reported count " + (entity.count == null ? "Not recorded" : formatCount(entity.count))
@@ -6407,6 +6414,24 @@
           paragraph.appendChild(this._element("span", "", " · " + cleanText(entry.locator, "Locator unavailable") + " · " + plainLanguageLabel(entry.reviewStatus || "review status unavailable"))); article.appendChild(paragraph);
           if (entry.shortExcerpt) article.appendChild(this._element("blockquote", "", String(entry.shortExcerpt)));
           if (firstArray(entry, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Source review flags: " + entry.reviewFlags.map(plainLanguageLabel).join("; ")));
+        });
+        firstArray(link, ["qualityReviews"]).forEach((review) => {
+          const research = this._element("details", "encounter-additional-source-review");
+          research.appendChild(this._element("summary", "", "Additional source review · " + plainLanguageLabel(review.disposition)));
+          if (review.associationRevision) research.appendChild(this._element("p", "analysis-chart-policy", "This source review resolves the case association. The earlier candidate decision and its date conflicts remain preserved."));
+          const sources = new Map(firstArray(review, ["sourceEntries"]).map((entry) => [entry.entryId, entry]));
+          firstArray(review, ["findings"]).forEach((fact) => {
+            const paragraph = this._element("p", "encounter-report-meta", plainLanguageLabel(fact.field) + ": " + cleanText(fact.text));
+            const entry = sources.get(fact.sourceEntryId), source = entry && entry.source || {};
+            if (entry && typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
+              paragraph.appendChild(this._element("span", "", " "));
+              const anchor = this._element("a", "", "Source · " + cleanText(entry.locator, "document"));
+              anchor.href = source.url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; paragraph.appendChild(anchor);
+            }
+            research.appendChild(paragraph);
+          });
+          if (review.rationale) research.appendChild(this._element("p", "analysis-chart-policy", String(review.rationale)));
+          article.appendChild(research);
         });
         if (link.matchBasis) article.appendChild(this._element("p", "encounter-report-meta", "Association basis: " + (typeof link.matchBasis === "string" ? link.matchBasis : JSON.stringify(link.matchBasis))));
         if (link.sourceRef) {

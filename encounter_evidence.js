@@ -78,7 +78,7 @@
   function abductionLabel(code) { return ABDUCTION_LABELS[code] || ABDUCTION_LABELS[0]; }
   function craftAssociationLabel(code) { return ASSOCIATION_LABELS[code] || ASSOCIATION_LABELS[0]; }
 
-  function createIndex(payload) {
+  function createIndex(payload, attributeReviews, expectedHash) {
     requireValue(plain(payload) && payload.schemaId === SCHEMA_ID && payload.releaseId === RELEASE_ID &&
       payload.catalogCount === CATALOG_COUNT && (payload.schemaVersion == null || payload.schemaVersion === 1), "unsupported release or catalog schema");
     requireValue(Array.isArray(payload.taxonomy) && payload.taxonomy.length === TAXONOMY.length, "incomplete being taxonomy");
@@ -89,6 +89,14 @@
     Object.freeze(taxonomy);
     requireValue(Array.isArray(payload.rows) && payload.rows.length <= CATALOG_COUNT, "invalid sparse row collection");
     if (payload.rowCount != null) requireValue(payload.rowCount === payload.rows.length, "partial sparse evidence collection");
+    const heightReviews = new Map();
+    if (attributeReviews != null) {
+      requireValue(attributeReviews.schemaId === "ufo-encounter-attribute-reviews-v1" && validHash(expectedHash) && attributeReviews.baseEvidenceDecodedSha256 === expectedHash && Array.isArray(attributeReviews.rows), "attribute-review base mismatch");
+      attributeReviews.rows.forEach(function (review) {
+        requireValue(identifier(review.eventId) && !heightReviews.has(review.eventId) && review.action === "withhold_height_feet" && typeof review.originalHeightFeet === "number" && Number.isFinite(review.originalHeightFeet) && review.originalHeightFeet > 0 && nonempty(review.reason) && review.reason.length <= 120 && nonempty(review.reportedMetricText) && review.reportedMetricText.length <= 80, "invalid measurement review");
+        heightReviews.set(review.eventId, review);
+      });
+    }
     const records = new Map();
     const abductionCounts = [0, 0, 0, 0];
     const associationCounts = [0, 0, 0, 0];
@@ -128,12 +136,22 @@
         requireValue(Array.isArray(row.reviewFlags) && row.reviewFlags.every(nonempty) && new Set(row.reviewFlags).size === row.reviewFlags.length, "invalid review flags at row " + position);
         record.reviewFlags = Object.freeze(row.reviewFlags.slice());
       }
+      const measurementReview = heightReviews.get(row.eventId);
+      if (measurementReview) {
+        const pin = measurementReview.sourceRef || {};
+        requireValue(row.source === measurementReview.source && row.sourceEventId === measurementReview.sourceEventId && ref.chunk === pin.chunk && ref.detailIndex === pin.detailIndex && ref.chunkSha256 === pin.chunkSha256 && record.heightFeet === measurementReview.originalHeightFeet, "measurement-review source identity mismatch");
+        record.reportedHeightFeet = record.heightFeet;
+        delete record.heightFeet;
+        record.measurementReview = Object.freeze({ action: measurementReview.action, reason: measurementReview.reason, reportedMetricText: measurementReview.reportedMetricText });
+        record.reviewFlags = Object.freeze(Array.from(new Set((record.reviewFlags || []).concat([measurementReview.reason]))));
+      }
       records.set(row.eventId, Object.freeze(record));
       abductionCounts[record.encounterAbductionCode] += 1;
       associationCounts[record.encounterCraftAssociationCode] += 1;
       if (mask) beingReportCount += 1;
       row.beingTypes.forEach(function (key) { typeCounts[key] += 1; });
     });
+    requireValue(Array.from(heightReviews.keys()).every(function (id) { return records.has(id); }), "measurement-review report missing");
     // No caller-visible index is returned until every source row has validated.
     return Object.freeze({
       ready: true, status: "ready", releaseId: payload.releaseId, catalogCount: CATALOG_COUNT, rowCount: records.size, taxonomy,
@@ -193,6 +211,23 @@
     requireValue(arrays.every(function (key) { return Array.isArray(payload[key]); }), "enrichment tables incomplete");
     function table(key, idKey) { const map = new Map(); payload[key].forEach(function (row) { requireValue(nonempty(row[idKey]) && !map.has(row[idKey]), "enrichment identity collision"); map.set(row[idKey], row); }); return map; }
     const sources = table("sources", "sourceId"), entries = table("sourceEntries", "entryId"), cases = table("cases", "caseId"), episodes = table("episodes", "episodeId"), entities = table("entityObservations", "entityObservationId"), links = new Map();
+    const qualityByEntry = new Map(), reviewIds = new Set();
+    requireValue(payload.qualityReviews == null || Array.isArray(payload.qualityReviews), "invalid additional-source reviews");
+    (payload.qualityReviews || []).forEach(function (review) {
+      const subject = entries.get(review.subjectEntryId);
+      requireValue(nonempty(review.reviewId) && !reviewIds.has(review.reviewId) && subject && subject.caseId === review.caseId && episodes.has(review.episodeId) && episodes.get(review.episodeId).caseId === review.caseId && (subject.episodeIds || [subject.episodeId]).includes(review.episodeId), "additional-source target identity mismatch");
+      requireValue(["additional_source_context", "conflicting_version", "identity_conflict", "source_chain_dependency"].includes(review.disposition) && review.classificationEffect === "none", "invalid additional-source disposition");
+      requireValue(Array.isArray(review.sourceEntryIds) && review.sourceEntryIds.length && review.sourceEntryIds.every(function (id) { const entry = entries.get(id); return entry && entry.caseId === review.caseId && entry.episodeId === review.episodeId && sources.has(entry.sourceId); }), "additional-source evidence reference mismatch");
+      requireValue(Array.isArray(review.findings) && review.findings.length && review.findings.every(function (fact) { return nonempty(fact.field) && nonempty(fact.text) && fact.text.length <= 650 && review.sourceEntryIds.includes(fact.sourceEntryId); }), "additional-source fact attribution missing");
+      if (review.associationRevision) {
+        const revision = review.associationRevision;
+        const prior = payload.reportLinks.filter(function (link) { return link.eventId === revision.eventId && link.caseId === review.caseId && link.sourceEntryIds.includes(review.subjectEntryId); });
+        requireValue(prior.length === 1 && revision.previousStatus === "candidate" && prior[0].status === revision.previousStatus && prior[0].acceptedForRuntime === false && revision.status === "linked" && review.disposition === "additional_source_context" && review.associationEffect === "reviewed_identity_resolution_prior_row_retained" && Array.isArray(revision.identityBasis) && revision.identityBasis.length >= 2 && review.findings.some(function (fact) { return fact.field === "episode_identity"; }), "unreviewed association revision");
+      }
+      reviewIds.add(review.reviewId);
+      if (!qualityByEntry.has(review.subjectEntryId)) qualityByEntry.set(review.subjectEntryId, []);
+      qualityByEntry.get(review.subjectEntryId).push(Object.assign({}, review, { sourceEntries: review.sourceEntryIds.map(function (id) { const entry = entries.get(id); return Object.assign({}, entry, { source: sources.get(entry.sourceId) }); }) }));
+    });
     payload.reportLinks.forEach(function (link) {
       requireValue(identifier(link.eventId) && nonempty(link.source) && ["linked", "candidate", "contradicted"].includes(link.status), "invalid enrichment report link");
       const base = evidenceIndex.get(link.eventId), ref = link.sourceRef || {};
@@ -200,7 +235,10 @@
       if (base) requireValue(link.source === base.source && ref.chunk === base.sourceRef.chunk && ref.detailIndex === base.sourceRef.detailIndex && ref.chunkSha256 === base.sourceRef.chunkSha256, "enrichment source identity mismatch");
       requireValue(cases.has(link.caseId) && Array.isArray(link.episodeIds) && link.episodeIds.every(function (id) { return episodes.has(id) && episodes.get(id).caseId === link.caseId; }) && Array.isArray(link.sourceEntryIds) && link.sourceEntryIds.every(function (id) { return entries.has(id); }) && Array.isArray(link.entityObservationIds) && link.entityObservationIds.every(function (id) { return entities.has(id) && link.episodeIds.includes(entities.get(id).episodeId); }), "enrichment reference mismatch");
       requireValue(link.acceptedForRuntime !== true || link.status === "linked", "unreviewed link promoted to runtime");
-      const item = { status: link.status, acceptedForRuntime: link.acceptedForRuntime === true, case: cases.get(link.caseId),
+      const qualityReviews = link.sourceEntryIds.flatMap(function (id) { return qualityByEntry.get(id) || []; });
+      const revisions = qualityReviews.filter(function (review) { return review.associationRevision && review.associationRevision.eventId === link.eventId; });
+      requireValue(revisions.length <= 1, "conflicting association revisions");
+      const item = { status: revisions.length ? "linked" : link.status, acceptedForRuntime: revisions.length ? true : link.acceptedForRuntime === true, originalStatus: link.status, qualityReviews, case: cases.get(link.caseId),
         episodes: link.episodeIds.map(function (id) { return episodes.get(id); }), entityObservations: link.entityObservationIds.map(function (id) { return entities.get(id); }),
         sourceEntries: link.sourceEntryIds.map(function (id) { const entry = entries.get(id); requireValue(sources.has(entry.sourceId), "enrichment source missing"); return Object.assign({}, entry, { source: sources.get(entry.sourceId) }); }),
         matchBasis: link.matchBasis, reviewFlags: link.reviewFlags, sourceRef: ref };
@@ -279,6 +317,7 @@
       ["Craft association", craftAssociationLabel(record.encounterCraftAssociationCode)],
     ];
     if (record.heightFeet != null) facts.push(["Reported height", String(record.heightFeet) + " feet"]);
+    if (record.measurementReview) facts.push(["Height comparison", "Withheld: source units conflict (coded value " + record.reportedHeightFeet + "; narrative " + record.measurementReview.reportedMetricText + "). Original fields are preserved."]);
     if (record.uniform != null) facts.push(["Uniform in source", typeof record.uniform === "boolean" ? (record.uniform ? "Reported" : "Not reported in the source field") : record.uniform]);
     const ref = record.sourceRef;
     const html = '<section class="detail-block encounter-evidence"><h4>Reported encounters</h4><p class="note-copy">These categories describe retained source claims. They do not verify an abduction, identify a biological species, or establish that reports concern the same craft.</p>' +

@@ -19718,7 +19718,7 @@
           return ENCOUNTERS.decodeEvidenceResponse(response, artifact);
         });
       }).then(async function (payload) {
-        const index = ENCOUNTERS.createIndex(payload);
+        const index = ENCOUNTERS.createIndex(payload, runtime.encounterManifest.attributeReviews, runtime.encounterManifest.sha256);
         runtime.encounterEvidence = index;
         runtime.encounterIndexedIds = payload.rows.map(function (row) { return row.eventId; });
         const origins = runtime.encounterManifest.labelOrigins;

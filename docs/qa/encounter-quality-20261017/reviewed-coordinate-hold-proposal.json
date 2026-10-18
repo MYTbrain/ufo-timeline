@@ -1,0 +1,54 @@
+{
+  "schemaId": "ufo-reviewed-encounter-coordinate-hold-proposal-v1",
+  "status": "reviewed_proposal_not_applied_to_map",
+  "eventId": "2678703484981258",
+  "source": "ufocat",
+  "sourceEventId": "160686",
+  "sourceRef": {
+    "chunk": "chunk_000039",
+    "detailIndex": 224,
+    "chunkSha256": "376f8138d0c89eb77ec77bc47dffff04e11bf6cea213fdee50b3c36f04e3c3b5"
+  },
+  "guards": {
+    "originalLatitude": -22.5,
+    "originalLongitude": -68.92,
+    "originalLocationPrecision": "exact_coords"
+  },
+  "proposedAction": "invalidate_coordinates_preserve_source_record",
+  "proposedFields": {
+    "lat": null,
+    "lon": null,
+    "has_coordinates": false,
+    "location_precision": "unknown",
+    "coordinate_source": "reviewed_location_conflict"
+  },
+  "reason": "native_point_is_Calama_while_original_investigator_and_government_locality_evidence_place_named_event_in_Peumo_OHiggins",
+  "replacementPointAuthorized": false,
+  "automaticMergeAuthorized": false,
+  "sourceEvidence": [
+    {
+      "url": "https://www.geocities.ws/adels_adels/index_archivos/0008.html",
+      "title": "Atacado por un extrano animal / El caso de Guido Canales Osorio, una historia mal contada",
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\gifor_canales_2006.html",
+      "sha256": "c3a741f2303fc358afc5f103c21dcefd37d73821a32a07f99e03554d4270f350",
+      "bytes": 154283,
+      "role": "investigator_authored_article_with_witness_interview_transcription",
+      "locator": "El Fuego del Dragon no92; first article; opening place/date paragraph; Alamiro and Guido interviews; closing critical discussion"
+    },
+    {
+      "url": "https://ohiggins.mop.gob.cl/seremi-saravia-para-mejorar-la-conectividad-en-sectores-rurales-son-claves-los-alcaldes/",
+      "title": "Seremi Saravia: Para mejorar la conectividad en sectores rurales son claves los alcaldes",
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\mop_santa_elena_peumo.html",
+      "sha256": "5a66a6db2fabfafa6234162fdc1af1547c95202e4af210940120929410b31e64",
+      "bytes": 275221,
+      "role": "government_geographic_name_reference",
+      "locator": "Paragraph beginning En Peumo names Santa Elena de Codao road"
+    }
+  ],
+  "relatedPotentialDuplicateEventIds": [
+    "4258007715704332"
+  ],
+  "duplicateReason": "Exact retained merged-member narrative overlaps the separate Calama record; distinct source/date conflicts require adjudication, not automatic merge.",
+  "nextReleaseRequirement": "Integrate a guarded sparse map/detail correction with all packed points, trace endpoint/index and summary consumers; do not change only the displayed dot.",
+  "protectedInputsUnmodified": true
+}

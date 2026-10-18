@@ -1,0 +1,68 @@
+{
+  "schemaId": "ufo-encounter-quality-supplement-audit-v1",
+  "priorContentSha256": "a9a96d9e419ea134be5d8ef7685b95aa6e18cf774c8117bd7d5b5bf045b04839",
+  "outputContentSha256": "8434da9dd242db8a21471647f54531db7622f3d0fed326fab759f070aab768e6",
+  "reviewedAccounts": 8,
+  "reviews": 8,
+  "findings": 18,
+  "addedSources": 7,
+  "addedSourceEntries": 9,
+  "associationRevisions": 1,
+  "effectiveAcceptedLinks": 128,
+  "counts": {
+    "sources": 28,
+    "sourceEntries": 210,
+    "cases": 197,
+    "episodes": 202,
+    "entityObservations": 214,
+    "reportLinks": 202
+  },
+  "priorTablesPreserved": true,
+  "reportLinksUnchanged": true,
+  "baseClassificationsUnchanged": true,
+  "capturePins": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\harris-fsr-casehistories9-pp14-15.pdf",
+      "sha256": "fa2c08f83ef00a6e7d408b1b2e5a5b0b8bd2f2ba0e49fea4317ce4535b4db30f",
+      "bytes": 860270
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\basterfield-2016.html",
+      "sha256": "ced73131a568cf4fabe67fbeb3c2f45b2a05d9a03066e007219543302040160a",
+      "bytes": 498331
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\basterfield-abductions-2005.html",
+      "sha256": "8975ea40d1b054892d71d0ae96d9e5a76b305d35ac502eec03a168aa318268a6",
+      "bytes": 108434
+    },
+    {
+      "path": "D:\\UFO Timeline map tool\\research\\encounter-quality-20261017\\original-research\\MysteriousValleyeBook.pdf",
+      "sha256": "c69d9501d8ef8147bd2bfdbd51e806e01f52afbfef3f072bcab807c056e8e1ab",
+      "bytes": 21689296
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\nuevo_leon_juarez_locality.html",
+      "sha256": "05d6aa22b1dc42294e2ddd0d782efba5d0b8ead09baeac0ceabe355f5fa7d2e0",
+      "bytes": 73971
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\inexplicata_chile_issue7.html",
+      "sha256": "0458d493e287527d4f1e467490b77d78986a95866c22932e89611231e79163b9",
+      "bytes": 20993
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\investigation-sources\\webb_hill_1965.pdf",
+      "sha256": "735750247964e6fafcb3b76b0bcaed5ccec0a529491e2088e9597e5dfb429423",
+      "bytes": 5077521
+    }
+  ],
+  "priorPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-reviewed-20261017\\validated\\evidence.json.gz",
+  "priorGzipSha256": "a86a6bd082a43932576465c59348bf3060969015731fc882c6157dce84f19664",
+  "reviewPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\reviewed-supplements.json",
+  "reviewSha256": "7a02411b3c1a35ee4e4807f2ceab2e5bc3d238e7160b5ab4d3142ac5beaa36de",
+  "gzipSha256": "9c2009100b1b0e336b2daa03b80f1d08d5a34b5ad524bec144b0efda196a3b4a",
+  "decodedSha256": "8434da9dd242db8a21471647f54531db7622f3d0fed326fab759f070aab768e6",
+  "gzipBytes": 132837,
+  "decodedBytes": 944595
+}

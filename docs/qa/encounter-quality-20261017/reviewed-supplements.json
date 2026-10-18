@@ -1,0 +1,399 @@
+{
+  "schemaId": "ufo-encounter-quality-review-v1",
+  "reviewer": "root source reconciliation using two independent research-agent reviews and original document inspection",
+  "releaseId": "encounter-quality-reviewed-20261017-v1",
+  "priorContentSha256": "a9a96d9e419ea134be5d8ef7685b95aa6e18cf774c8117bd7d5b5bf045b04839",
+  "sources": [
+    {
+      "sourceId": "quality:harris-fsr-casehistories9-pp14-15",
+      "title": "A Family and UFOs — Leslie Harris, FSR Case Histories Supplement 9",
+      "url": "https://ignaciodarnaude.es/wp-content/uploads/2025/08/HarrisUFOs-1971Poole-HospitalEnglandFSR-CH-1972-N-9.pdf",
+      "kind": "original_investigator_article_archival_facsimile",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\harris-fsr-casehistories9-pp14-15.pdf",
+        "sha256": "fa2c08f83ef00a6e7d408b1b2e5a5b0b8bd2f2ba0e49fea4317ce4535b4db30f",
+        "bytes": 860270
+      },
+      "sourceDate": "1972-02",
+      "dependency": "Upstream of HUMCAT65-02/65-03 and Rosales; these are not independent confirmations"
+    },
+    {
+      "sourceId": "quality:basterfield-2016",
+      "title": "A Catalogue of the More Interesting Australian UAP Reports — Keith Basterfield",
+      "url": "https://www.project1947.com/kbcat/kbmoreintoz.htm",
+      "kind": "cited_compiler_own_catalogue",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\basterfield-2016.html",
+        "sha256": "ced73131a568cf4fabe67fbeb3c2f45b2a05d9a03066e007219543302040160a",
+        "bytes": 498331
+      },
+      "sourceDate": "2016-06-03",
+      "dependency": "Rosales cites Basterfield, so same underlying testimony, not independent corroboration"
+    },
+    {
+      "sourceId": "quality:basterfield-abductions-2005",
+      "title": "Australian Abductions: A Catalogue of Cases — Keith Basterfield",
+      "url": "https://www.project1947.com/kbcat/kbabduct0505.htm",
+      "kind": "investigator_own_case_catalogue",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research\\basterfield-abductions-2005.html",
+        "sha256": "8975ea40d1b054892d71d0ae96d9e5a76b305d35ac502eec03a168aa318268a6",
+        "bytes": 108434
+      },
+      "sourceDate": "2005",
+      "dependency": "Upstream-author rendition; 2016 entry is same author/account, not independent confirmation"
+    },
+    {
+      "sourceId": "quality:obrien_secrets_mysterious_valley",
+      "title": "Secrets of the Mysterious Valley",
+      "url": "https://www.theparacast.com/resources/MysteriousValleyeBook.pdf",
+      "kind": "author_first_person_and_neighbor_interview_retelling",
+      "capture": {
+        "path": "D:\\UFO Timeline map tool\\research\\encounter-quality-20261017\\original-research\\MysteriousValleyeBook.pdf",
+        "sha256": "c69d9501d8ef8147bd2bfdbd51e806e01f52afbfef3f072bcab807c056e8e1ab",
+        "bytes": 21689296
+      },
+      "sourceDate": "2011",
+      "dependency": "Later author book, not earlier The Mysterious Valley edition named by Rosales"
+    },
+    {
+      "sourceId": "quality:nuevo_leon_juarez_locality",
+      "title": "Hospital General de Juarez, third stage / locality table",
+      "url": "https://smpu.nl.gob.mx/concurso/769",
+      "kind": "government_geographic_name_reference",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\nuevo_leon_juarez_locality.html",
+        "sha256": "05d6aa22b1dc42294e2ddd0d782efba5d0b8ead09baeac0ceabe355f5fa7d2e0",
+        "bytes": 73971
+      },
+      "sourceDate": "2020-04-08",
+      "dependency": "State procurement locality metadata, unrelated to encounter"
+    },
+    {
+      "sourceId": "quality:inexplicata_chile_issue7",
+      "title": "Chupacabras Reappears in Chile",
+      "url": "https://www.geocities.ws/INEXPLICATA2000/issue7/3.html",
+      "kind": "research_journal_reporting_preserved_on_mirror",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research\\inexplicata_chile_issue7.html",
+        "sha256": "0458d493e287527d4f1e467490b77d78986a95866c22932e89611231e79163b9",
+        "bytes": 20993
+      },
+      "sourceDate": null,
+      "dependency": "Radio Pudahuel anonymous callers, Pablo Aguilera, Patricio Borlone flight account; shares Rosales chain, not independent corroboration"
+    },
+    {
+      "sourceId": "quality:webb_hill_1965",
+      "title": "Walter Webb Hill investigation report, 1965-08-30",
+      "url": "https://cufos.org/PDFs/Abductions/1961_09_19_US_NH_White-Mountains_NICAP_Hill.pdf",
+      "kind": "original_investigator_report_with_reproduced_witness_letter",
+      "capture": {
+        "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\investigation-sources\\webb_hill_1965.pdf",
+        "sha256": "735750247964e6fafcb3b76b0bcaed5ccec0a529491e2088e9597e5dfb429423",
+        "bytes": 5077521
+      },
+      "sourceDate": "1965-08-30",
+      "dependency": "Same investigation cited by HUMCAT; reproduced witness letter and later report are stages, not independent confirmation."
+    }
+  ],
+  "sourceEntries": [
+    {
+      "entryId": "entry:quality:1:harris-fsr-casehistories9-pp14-15",
+      "sourceId": "quality:harris-fsr-casehistories9-pp14-15",
+      "caseId": "case:poole",
+      "episodeId": "episode:poole-first",
+      "title": "A Family and UFOs — Leslie Harris, FSR Case Histories Supplement 9",
+      "locator": "Printed p15, Creature in the past; PDF page2",
+      "evidenceSha256": "fa2c08f83ef00a6e7d408b1b2e5a5b0b8bd2f2ba0e49fea4317ce4535b4db30f",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:2:harris-fsr-casehistories9-pp14-15",
+      "sourceId": "quality:harris-fsr-casehistories9-pp14-15",
+      "caseId": "case:poole",
+      "episodeId": "episode:poole-second",
+      "title": "A Family and UFOs — Leslie Harris, FSR Case Histories Supplement 9",
+      "locator": "Printed p15, Creature in the past; PDF page2",
+      "evidenceSha256": "fa2c08f83ef00a6e7d408b1b2e5a5b0b8bd2f2ba0e49fea4317ce4535b4db30f",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:3:basterfield-2016",
+      "sourceId": "quality:basterfield-2016",
+      "caseId": "case:rosales-source:1996:120:faa666c99a65",
+      "episodeId": "episode:rosales-account:1996:120:faa666c99a65",
+      "title": "A Catalogue of the More Interesting Australian UAP Reports — Keith Basterfield",
+      "locator": "The Cases, 22 May1996 Ipswich QLD0015hrs; source UFORQLD",
+      "evidenceSha256": "ced73131a568cf4fabe67fbeb3c2f45b2a05d9a03066e007219543302040160a",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:4:basterfield-abductions-2005",
+      "sourceId": "quality:basterfield-abductions-2005",
+      "caseId": "case:rosales-source:1996:57:6c08ccb6b2af",
+      "episodeId": "episode:rosales-account:1996:57:6c08ccb6b2af",
+      "title": "Australian Abductions: A Catalogue of Cases — Keith Basterfield",
+      "locator": "16 Mar1996 Casino NSW Ca2100hrs; Longley family; reference5",
+      "evidenceSha256": "8975ea40d1b054892d71d0ae96d9e5a76b305d35ac502eec03a168aa318268a6",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:4:basterfield-2016",
+      "sourceId": "quality:basterfield-2016",
+      "caseId": "case:rosales-source:1996:57:6c08ccb6b2af",
+      "episodeId": "episode:rosales-account:1996:57:6c08ccb6b2af",
+      "title": "A Catalogue of the More Interesting Australian UAP Reports — Keith Basterfield",
+      "locator": "The Cases, 16 Mar1996 Casino NSW Evening",
+      "evidenceSha256": "ced73131a568cf4fabe67fbeb3c2f45b2a05d9a03066e007219543302040160a",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:5:obrien_secrets_mysterious_valley",
+      "sourceId": "quality:obrien_secrets_mysterious_valley",
+      "caseId": "case:rosales-source:1993:111:85835d202c21",
+      "episodeId": "episode:rosales-account:1993:111:85835d202c21",
+      "title": "Secrets of the Mysterious Valley",
+      "locator": "The Shadow Visitors, printed pp211-212 / PDF pages218-219; copyright PDF page5",
+      "evidenceSha256": "c69d9501d8ef8147bd2bfdbd51e806e01f52afbfef3f072bcab807c056e8e1ab",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:6:nuevo_leon_juarez_locality",
+      "sourceId": "quality:nuevo_leon_juarez_locality",
+      "caseId": "case:rosales-source:1996:77:b6d4b1a1cf98",
+      "episodeId": "episode:rosales-account:1996:77:b6d4b1a1cf98",
+      "title": "Hospital General de Juarez, third stage / locality table",
+      "locator": "Informacion General / Localidad table: Juarez, Ciudad Benito Juarez",
+      "evidenceSha256": "05d6aa22b1dc42294e2ddd0d782efba5d0b8ead09baeac0ceabe355f5fa7d2e0",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:7:inexplicata_chile_issue7",
+      "sourceId": "quality:inexplicata_chile_issue7",
+      "caseId": "case:rosales-source:2000:62:585c63f77029",
+      "episodeId": "episode:rosales-account:2000:62:585c63f77029",
+      "title": "Chupacabras Reappears in Chile",
+      "locator": "Capture-story paragraphs toward end: May12, anonymous callers, Flights501/503/474",
+      "evidenceSha256": "0458d493e287527d4f1e467490b77d78986a95866c22932e89611231e79163b9",
+      "evidenceHashMeaning": "captured_source_bytes"
+    },
+    {
+      "entryId": "entry:quality:8:webb_hill_1965",
+      "sourceId": "quality:webb_hill_1965",
+      "caseId": "case:hill",
+      "episodeId": "episode:hill",
+      "title": "Webb's 1965 investigation and reproduced Hill documents",
+      "locator": "Report1965-08-30; PDF pp3,8,16,40–46; reproduced letter1961-09-26 and Nov1961 dreams",
+      "evidenceSha256": "735750247964e6fafcb3b76b0bcaed5ccec0a529491e2088e9597e5dfb429423",
+      "evidenceHashMeaning": "captured_source_bytes"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewId": "quality:20261017:1",
+      "subjectEntryId": "entry:poole-first",
+      "caseId": "case:poole",
+      "episodeId": "episode:poole-first",
+      "sourceEntryIds": [
+        "entry:quality:1:harris-fsr-casehistories9-pp14-15"
+      ],
+      "disposition": "additional_source_context",
+      "findings": [
+        {
+          "field": "episode_identity",
+          "text": "The native record cites Harris, FSR Case Histories, February 1972, page 15, the Druce family, two witnesses and childhood age seven. That original page identifies the specific nighttime episode despite the blank native narrative.",
+          "sourceEntryId": "entry:quality:1:harris-fsr-casehistories9-pp14-15"
+        },
+        {
+          "field": "date",
+          "text": "Harris describes an experience about seven years earlier. Native 1964 and HUMCAT approximately 1965 remain competing versions; the article does not establish an exact year or day.",
+          "sourceEntryId": "entry:quality:1:harris-fsr-casehistories9-pp14-15"
+        },
+        {
+          "field": "entity_description",
+          "text": "The original article describes a multicolored triangular form with black arms ending in pincer-like extremities. It calls the younger brother Roderick; later retellings say Broderick.",
+          "sourceEntryId": "entry:quality:1:harris-fsr-casehistories9-pp14-15"
+        }
+      ],
+      "rationale": "Exact bibliography and named-family context resolve the source-account identity. The year conflict remains; the native description is still missing.",
+      "associationRevision": {
+        "eventId": "3356684600748588",
+        "previousStatus": "candidate",
+        "status": "linked",
+        "identityBasis": [
+          "original investigator Harris",
+          "FSR Case Histories February1972 p15",
+          "Druce family",
+          "childhood age seven; two witnesses; night; Poole"
+        ]
+      }
+    },
+    {
+      "reviewId": "quality:20261017:2",
+      "subjectEntryId": "entry:poole-second",
+      "caseId": "case:poole",
+      "episodeId": "episode:poole-second",
+      "sourceEntryIds": [
+        "entry:quality:2:harris-fsr-casehistories9-pp14-15"
+      ],
+      "disposition": "additional_source_context",
+      "findings": [
+        {
+          "field": "time",
+          "text": "The second figure was reported the following afternoon, rather than another specified nighttime episode.",
+          "sourceEntryId": "entry:quality:2:harris-fsr-casehistories9-pp14-15"
+        },
+        {
+          "field": "entity_description",
+          "text": "This account describes a black triangular form with a beak-like projection. Harris says the children supplied drawings at his request; these are reported depictions, not independently measured beings.",
+          "sourceEntryId": "entry:quality:2:harris-fsr-casehistories9-pp14-15"
+        }
+      ],
+      "rationale": "The original investigator article clarifies relative episode order and appearance without supplying a calendar date or craft association."
+    },
+    {
+      "reviewId": "quality:20261017:3",
+      "subjectEntryId": "entry:rosales:1996:120:faa666c99a65",
+      "caseId": "case:rosales-source:1996:120:faa666c99a65",
+      "episodeId": "episode:rosales-account:1996:120:faa666c99a65",
+      "sourceEntryIds": [
+        "entry:quality:3:basterfield-2016"
+      ],
+      "disposition": "conflicting_version",
+      "findings": [
+        {
+          "field": "time",
+          "text": "Basterfield gives 00:15 local, conflicting with Rosales/native 02:00. Neither version establishes UTC.",
+          "sourceEntryId": "entry:quality:3:basterfield-2016"
+        },
+        {
+          "field": "context",
+          "text": "The source distinguishes five perceived minutes from 75 elapsed minutes. Their 70-minute difference is arithmetic from reported values, not an independent measurement or evidence of transport.",
+          "sourceEntryId": "entry:quality:3:basterfield-2016"
+        },
+        {
+          "field": "source_chain",
+          "text": "The catalogue attributes the report to UFORQLD. Rosales cites Basterfield, so these accounts share a source chain rather than providing independent corroboration.",
+          "sourceEntryId": "entry:quality:3:basterfield-2016"
+        }
+      ],
+      "rationale": "The distinctive dog-walking encounter with two glowing figures supports the existing identity. Keep both clocks and do not infer abduction from missing time."
+    },
+    {
+      "reviewId": "quality:20261017:4",
+      "subjectEntryId": "entry:rosales:1996:57:6c08ccb6b2af",
+      "caseId": "case:rosales-source:1996:57:6c08ccb6b2af",
+      "episodeId": "episode:rosales-account:1996:57:6c08ccb6b2af",
+      "sourceEntryIds": [
+        "entry:quality:4:basterfield-abductions-2005",
+        "entry:quality:4:basterfield-2016"
+      ],
+      "disposition": "conflicting_version",
+      "findings": [
+        {
+          "field": "date",
+          "text": "The investigator catalogue gives 16 March 1996, about 21:00. Rosales/native instead use 6 March, 03:00; the date and clock remain unresolved.",
+          "sourceEntryId": "entry:quality:4:basterfield-abductions-2005"
+        },
+        {
+          "field": "recall_stage",
+          "text": "Initial conscious recall concerns lights and delayed arrival. Onboard and entity accounts followed hypnosis of the two adults; the four travelers are not four independent abduction accounts.",
+          "sourceEntryId": "entry:quality:4:basterfield-abductions-2005"
+        },
+        {
+          "field": "entity_description",
+          "text": "Under hypnosis, the male adult described wrinkled, long-necked figures about 2–2.3 metres tall. The female recalled roughly eight to ten figures and a blurred table scene; these are separate witness accounts, not pooled measurements.",
+          "sourceEntryId": "entry:quality:4:basterfield-abductions-2005"
+        }
+      ],
+      "rationale": "New provenance clarifies witness and recall scope, while the sparse native record and differing dates keep its identity association held."
+    },
+    {
+      "reviewId": "quality:20261017:5",
+      "subjectEntryId": "entry:rosales:1993:111:85835d202c21",
+      "caseId": "case:rosales-source:1993:111:85835d202c21",
+      "episodeId": "episode:rosales-account:1993:111:85835d202c21",
+      "sourceEntryIds": [
+        "entry:quality:5:obrien_secrets_mysterious_valley"
+      ],
+      "disposition": "identity_conflict",
+      "findings": [
+        {
+          "field": "episode_identity",
+          "text": "O'Brien's later book separates his own bedroom shimmer from a neighboring woman's report of small figures. His partner reported seeing nothing. His heading gives August 19 at 23:00; the neighbor's gives August 19 at 00:45-01:00, while connecting prose places her experience about two hours later. Those labels conflict across midnight. The native row records 03:30. Keep the episodes distinct and their timing unresolved; the woman's being count must not be assigned to O'Brien.",
+          "sourceEntryId": "entry:quality:5:obrien_secrets_mysterious_valley"
+        }
+      ],
+      "rationale": "Additional sources clarify the conflict; the prior contradicted association remains held. No inferred date, location, count, or UTC is promoted."
+    },
+    {
+      "reviewId": "quality:20261017:6",
+      "subjectEntryId": "entry:rosales:1996:77:b6d4b1a1cf98",
+      "caseId": "case:rosales-source:1996:77:b6d4b1a1cf98",
+      "episodeId": "episode:rosales-account:1996:77:b6d4b1a1cf98",
+      "sourceEntryIds": [
+        "entry:quality:6:nuevo_leon_juarez_locality"
+      ],
+      "disposition": "identity_conflict",
+      "findings": [
+        {
+          "field": "place",
+          "text": "The Rosales header says Ciudad Juarez, Nuevo Leon; the native row says Chihuahua. Nuevo Leon government records separately identify Ciudad Benito Juarez, so the name cannot safely be forced to Chihuahua. No ranch name, witness identity, or original Marco A. Reynoso case report was recovered. The state conflict remains unresolved; coordinates must not be borrowed from either city.",
+          "sourceEntryId": "entry:quality:6:nuevo_leon_juarez_locality"
+        }
+      ],
+      "rationale": "Additional sources clarify the conflict; the prior contradicted association remains held. No inferred date, location, count, or UTC is promoted."
+    },
+    {
+      "reviewId": "quality:20261017:7",
+      "subjectEntryId": "entry:rosales:2000:62:585c63f77029",
+      "caseId": "case:rosales-source:2000:62:585c63f77029",
+      "episodeId": "episode:rosales-account:2000:62:585c63f77029",
+      "sourceEntryIds": [
+        "entry:quality:7:inexplicata_chile_issue7"
+      ],
+      "disposition": "identity_conflict",
+      "findings": [
+        {
+          "field": "source_chain",
+          "text": "The recovered journal report traces the Calama capture story to anonymous calls discussed on Radio Pudahuel and a Borlone account of May 12 airline cargo. The callers could not describe the creatures or establish whether they were alive. This is a capture rumor with a multi-step source chain, separate from the native row's single winged attacker. The journal dates the capture story May 12; Rosales labels the entry May 8. Neither establishes a verified military capture or NASA involvement.",
+          "sourceEntryId": "entry:quality:7:inexplicata_chile_issue7"
+        }
+      ],
+      "rationale": "Additional sources clarify the conflict; the prior contradicted association remains held. No inferred date, location, count, or UTC is promoted."
+    },
+    {
+      "reviewId": "quality:20261017:8",
+      "subjectEntryId": "entry:hill",
+      "caseId": "case:hill",
+      "episodeId": "episode:hill",
+      "sourceEntryIds": [
+        "entry:quality:8:webb_hill_1965"
+      ],
+      "disposition": "source_chain_dependency",
+      "findings": [
+        {
+          "field": "recall_stage",
+          "text": "The reproduced 26 September 1961 letter reports figures through craft windows before the later hypnosis. It places the encounter about midnight on 20 September; this remains approximate testimony.",
+          "sourceEntryId": "entry:quality:8:webb_hill_1965"
+        },
+        {
+          "field": "recall_stage",
+          "text": "Betty’s dream narrative is explicitly labeled as written in November 1961. Its descriptions must remain dream-attributed rather than silently recoded as initial conscious observations.",
+          "sourceEntryId": "entry:quality:8:webb_hill_1965"
+        },
+        {
+          "field": "recall_method",
+          "text": "Webb attributes the detailed abduction section chiefly to Benjamin Simon’s 1964 hypnosis tapes, distinguishing it from the earlier account. The report describes seven months of sessions during 1964.",
+          "sourceEntryId": "entry:quality:8:webb_hill_1965"
+        },
+        {
+          "field": "source_chain",
+          "text": "HUMCAT already cites Webb’s investigation. This earlier documentary chain improves attribution and locators; it does not add independent witnesses or incidents.",
+          "sourceEntryId": "entry:quality:8:webb_hill_1965"
+        }
+      ],
+      "rationale": "Original investigator documentation and a reproduced early witness letter support stage-specific provenance; they do not validate the alleged abduction."
+    }
+  ]
+}

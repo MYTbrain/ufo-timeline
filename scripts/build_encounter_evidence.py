@@ -176,6 +176,58 @@ def narratives(event, raw):
     return result
 
 
+def metric_height_conflicts(number: float, text: str) -> list[dict]:
+    """Find a narrow same-number metric stature conflict, never convert it.
+
+    The codebook declares Height in feet, but some rows repeat a narrative's
+    metric number verbatim. A stature phrase must concern an entity: UFO sizes,
+    altitudes, distances, and witnesses' heights are not entity measurements.
+    Multiple subjects remain an attribution problem, not permission to choose
+    a being or infer a species from its reported stature.
+    """
+    if not math.isfinite(number) or number <= 0 or not text:
+        return []
+    entity = re.compile(r"\b(?:beings?|entities|entity|humanoids?|occupants?|ufonauts?|creatures?|figures?|silhouettes?|aliens?|greys|grays)\b", re.I)
+    other_subject = re.compile(r"\b(?:ufos?|uaps?|craft|spacecraft|spaceship|objects?|saucers?|discs?|disks?|trees?|towers?|houses?|buildings?|walls?|fences?|witness(?:es)?|observers?|man|woman|men|women|boys?|girls?|grandsons?|granddaughters?|he|she|they|it)\b", re.I)
+    metric = re.compile(r"(?<![\w.])(?P<value>\d+(?:\.\d+)?)\s*-?\s*(?P<unit>met(?:er|re)s?|m)\s*-?\s*(?:tall|in\s+height)\b", re.I)
+    modifiers = r"(?:(?:small|short|tall|thin|large|huge|grey|gray|hairy|winged|strange|unknown|ape-like|simian|human-like|robotic|luminous|glowing|slender|naked|white|black|green|red|brown|blue|silver)\s+){0,4}"
+    following_entity = re.compile(r"^\s*" + modifiers + r"(?:beings?|entities|entity|humanoids?|occupants?|ufonauts?|creatures?|figures?|silhouettes?|aliens?)\b", re.I)
+    following_other = re.compile(r"^\s*" + modifiers + other_subject.pattern, re.I)
+    # Unlike sentences(), this does not split decimal measurements at the dot.
+    stops = list(re.finditer(r"(?<!\d)[.!?]|[.!?](?!\d)|[\r\n]+", text))
+
+    def entity_subject(match):
+        prior_stops = [stop for stop in stops if stop.end() <= match.start()]
+        start = prior_stops[-1].end() if prior_stops else 0
+        after_stop = next((stop.start() for stop in stops if stop.start() >= match.end()), len(text))
+        following = text[match.end():after_stop]
+        if following_entity.match(following):
+            return True
+        if following_other.match(following):
+            return False
+        before = text[start:match.start()]
+        # A standalone stature sentence may qualify the preceding entity.
+        if not before.strip(" ,:;()") and prior_stops:
+            previous_start = prior_stops[-2].end() if len(prior_stops) > 1 else 0
+            before = text[previous_start:prior_stops[-1].start()]
+        before = before[-120:]
+        subjects = [(m.start(), True) for m in entity.finditer(before)]
+        subjects += [(m.start(), False) for m in other_subject.finditer(before)]
+        return bool(subjects and max(subjects)[1])
+
+    candidates = [match for match in metric.finditer(text) if entity_subject(match)]
+    if not candidates:
+        return []
+    all_stature = re.compile(r"(?<![\w.])\d+(?:\.\d+)?\s*-?\s*(?:met(?:er|re)s?|m|feet|foot|ft|inches?|in|['\u2032])\s*-?\s*(?:tall|in\s+height)\b", re.I)
+    stature_subjects = [match for match in all_stature.finditer(text) if entity_subject(match)]
+    plural = re.search(r"\b(?:[2-9]\d*|[1-9]\d+|two|three|four|five|six|several|other|another)\s+(?:(?:grey|gray|small|short|tall|hairy|winged)\s+){0,3}(?:beings?|entities|entity|humanoids?|creatures?|figures?|aliens?|greys|grays)\b", text, re.I)
+    ambiguous = bool(plural or len(stature_subjects) > 1)
+    return [{"start": match.start(), "end": match.end(), "value": float(match["value"]),
+             "unit": "m", "subjectAmbiguous": ambiguous}
+            for match in candidates
+            if math.isclose(number, float(match["value"]), rel_tol=1e-6, abs_tol=1e-6)]
+
+
 def classify(event):
     source = event.get("source")
     if source not in SOURCES:
@@ -358,8 +410,18 @@ def classify(event):
         try: number = float(height)
         except (ValueError, TypeError): number = math.nan
         if math.isfinite(number) and number > 0:
-            result["heightFeet"] = number
-            add("Height", height, "ufocat_reported_height_feet_v1")
+            conflicts = [(field, text, match) for field, text in narrative_fields
+                         for match in metric_height_conflicts(number, text)]
+            if conflicts:
+                review.add("ufocat_height_unit_conflict")
+                add("Height", height, "ufocat_reported_height_unit_conflict_v1")
+                for field, text, match in conflicts:
+                    add(field, excerpt(text, match["start"]), "ufocat_narrative_metric_height_conflict_v1")
+                    if match["subjectAmbiguous"]:
+                        review.add("ufocat_height_subject_ambiguous")
+            else:
+                result["heightFeet"] = number
+                add("Height", height, "ufocat_reported_height_feet_v1")
         uniform = fields.get("UNIFORM", "")
         if uniform:
             result["uniform"] = uniform

@@ -1,0 +1,155 @@
+{
+  "schemaId": "ufo-encounter-quality-storage-lifecycle-v1",
+  "canonicalResearch": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017",
+  "canonicalRuntime": "Local data/encounters/enrichment.json.gz plus manifest; corpus-audit-current and citation-recovered metadata are the canonical research views",
+  "rollback": "Immediate prior enrichment shared/data/research/encounter-reviewed-20261017/validated/evidence.json.gz; production and its existing sole rollback unchanged",
+  "directories": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\attribute-reviews.json",
+      "bytes": 3536,
+      "files": 1,
+      "purpose": "bounded reviewed factual delta / evidence manifest",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery",
+      "bytes": 1883363,
+      "files": 3,
+      "purpose": "canonical source-citation delta and derived metadata view",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit",
+      "bytes": 3026497,
+      "files": 5,
+      "purpose": "superseded failed diagnostic; literal cleanup proposal retained",
+      "retention": "eligible for proposed allowlisted cleanup; no deletion authorized or executed"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-current",
+      "bytes": 3124685,
+      "files": 4,
+      "purpose": "canonical post-improvement full audit and research queue",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated",
+      "bytes": 3086243,
+      "files": 5,
+      "purpose": "unique pre-improvement baseline with exact producer",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\gap-research",
+      "bytes": 4356064,
+      "files": 10,
+      "purpose": "bounded original-author source comparisons",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\height-unit-audit",
+      "bytes": 425534,
+      "files": 4,
+      "purpose": "complete measurement-field audit and manual holds",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\investigation-sources",
+      "bytes": 5513619,
+      "files": 4,
+      "purpose": "private original investigation capture and selected page QA",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\original-research",
+      "bytes": 1000235,
+      "files": 11,
+      "purpose": "source conflicts and geographic/duplicate research",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\reviewed-coordinate-hold-proposal.json",
+      "bytes": 2796,
+      "files": 1,
+      "purpose": "bounded reviewed factual delta / evidence manifest",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\reviewed-supplements.json",
+      "bytes": 21729,
+      "files": 1,
+      "purpose": "bounded reviewed factual delta / evidence manifest",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\source-capture-integrity",
+      "bytes": 374706,
+      "files": 4,
+      "purpose": "all-capture completeness checks and held recovery",
+      "retention": "retain as protected unique evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\validated",
+      "bytes": 136116,
+      "files": 2,
+      "purpose": "canonical reviewed runtime enrichment",
+      "retention": "retain as protected unique evidence"
+    }
+  ],
+  "externalCanonicalCapture": {
+    "path": "D:\\UFO Timeline map tool\\research\\encounter-quality-20261017\\original-research\\MysteriousValleyeBook.pdf",
+    "bytes": 21689296,
+    "sha256": "c69d9501d8ef8147bd2bfdbd51e806e01f52afbfef3f072bcab807c056e8e1ab",
+    "purpose": "Private original-author documentary evidence; source manifest and selected-page review retained on C; no native C duplicate",
+    "rebuild": "Capture exact public URL recorded in original-research/capture_manifest.json; no fulltext publication",
+    "retention": "protected unique original source capture on primary D backup/research volume"
+  },
+  "newFilesLargerThan100MiB": [],
+  "approximateNetGrowthBytes": {
+    "CResearch": 22955123,
+    "CCodeRuntimeQa": 270644,
+    "CCombined": 23225767,
+    "D": 21689296
+  },
+  "noFullCorpusOrStaticBundleOrReleaseCopy": true,
+  "supersededGeneratedCleanupProposal": [
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\audit.json",
+      "bytes": 75808,
+      "sha256": "fa1e2309c626c8fcd963f70329ff7feebcdd13b6756fa9263de4ef3325812fef",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\audit.json"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\gap-registry.json.gz",
+      "bytes": 2882711,
+      "sha256": "f4366bb1a2248c74d38de041203485902b4eed6dae0629c158d45d6242a17290",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\gap-registry.json.gz"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\lifecycle.json",
+      "bytes": 2130,
+      "sha256": "810c4343cd5c1318e75952950eeb1e8e6bb6df357bd602d2350df990ac627f7b",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\lifecycle.json"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\research-queue.json.gz",
+      "bytes": 64929,
+      "sha256": "975fc8271b71f71385c5c60441a84307b09d93a90b610a4264d659e4b3a908ec",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\research-queue.json.gz"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\SUPERSEDED.json",
+      "bytes": 919,
+      "sha256": "a056d4541b0e908c5ed8521129dce3dd8481ece5defb8733bc385b39b89f7ee4",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\lifecycle.json"
+    }
+  ],
+  "cleanupExecuted": false,
+  "cleanupRecommendation": "Remove only the five literal hashed noncanonical diagnostic files when cleanup is authorized; retain corrected current audit and valid pre-improvement baseline. No data/source deletion performed.",
+  "rebuildMethods": "Each canonical subdirectory has its producer, input/source hashes, rebuild instructions and lifecycle receipt. Supplement builder requires immutable prior enrichment + reviewed-supplements.json."
+}

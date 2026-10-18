@@ -58,6 +58,19 @@ assert.equal(evidence.decorate({ event_id: "5" }, index).encounterEvidenceReady,
 assert.equal(evidence.decorate({ event_id: "4", source: "fixture" }, index).encounterHeightFeet, 3.5);
 assert.equal(evidence.decorate({ event_id: "4", source: "fixture" }, index).encounterUniform, "silver");
 assert.equal(evidence.decorate({ event_id: "4", source: "another_collection" }, index).encounterHeightFeet, null);
+const measurementPayload = fixture(), measurementReview = { schemaId: "ufo-encounter-attribute-reviews-v1", baseEvidenceDecodedSha256: "b".repeat(64), rows: [{
+  eventId: "4", source: "fixture", sourceEventId: "native-4", sourceRef: measurementPayload.rows[3].sourceRef,
+  action: "withhold_height_feet", originalHeightFeet: 3.5, reason: "source_height_units_conflict", reportedMetricText: "3.5m tall",
+}] };
+const guardedIndex = evidence.createIndex(measurementPayload, measurementReview, "b".repeat(64));
+assert.equal(guardedIndex.get("4").heightFeet, undefined);
+assert.equal(guardedIndex.get("4").reportedHeightFeet, 3.5, "The disputed source value remains inspectable");
+assert.equal(evidence.decorate({ event_id: "4", source: "fixture" }, guardedIndex).encounterHeightFeet, null, "Disputed units do not enter height comparisons");
+assert.match(evidence.renderEvidence({ event_id: "4", source: "fixture" }, guardedIndex), /Withheld: source units conflict/);
+assert.deepEqual(guardedIndex.snapshot(), evidence.createIndex(measurementPayload).snapshot(), "Measurement review does not reclassify reports or beings");
+assert.throws(() => evidence.createIndex(measurementPayload, measurementReview, "c".repeat(64)), /attribute-review base/);
+const wrongMeasurement = structuredClone(measurementReview); wrongMeasurement.rows[0].sourceRef.detailIndex += 1;
+assert.throws(() => evidence.createIndex(measurementPayload, wrongMeasurement, "b".repeat(64)), /measurement-review source identity/);
 assert.equal(evidence.decorate({ event_id: "4", source: "another_collection" }, index).encounterUniform, null);
 const staleSource = evidence.decorate({ event_id: 1, source: "another_collection" }, index);
 assert.equal(staleSource.encounterIdentityMismatch, true);

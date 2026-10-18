@@ -1,0 +1,129 @@
+{
+  "schemaId": "ufo-encounter-quality-corpus-agent-completion-v1",
+  "canonicalPaths": {
+    "corpusAudit": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\audit.json",
+    "gapRegistry": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\gap-registry.json.gz",
+    "researchQueue": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\research-queue.json.gz",
+    "citationDelta": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery\\citation-recovery-delta.json",
+    "citationRecoveredMetadataView": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery\\combined-originals-citation-recovered.json.gz",
+    "heightFullAudit": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\height-unit-audit\\audit.json.gz",
+    "heightManualAdjudications": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\height-unit-audit\\manual-adjudications.json",
+    "captureIntegrity": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\source-capture-integrity\\audit.json",
+    "heldRecoveredPdfAccount": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\source-capture-integrity\\held-account-recovery.json"
+  },
+  "scope": {
+    "nativeEncounterIndexRows": 16319,
+    "archivedParsedSourceAccounts": 10853,
+    "additionalHeldMetadataRecoveredAccount": 1,
+    "allCatalogSummaryRowsIdentityChecked": 702893,
+    "originalCapturesHashVerified": 73,
+    "nativeHeightRowsReplayed": 2441,
+    "nativeHeightChunksReadOnly": 281,
+    "nativeHeightChunkBytesReadOnly": 6320064188
+  },
+  "improvements": {
+    "omittedCitationFootersRecovered": 12,
+    "originallyMissingCitations": 18,
+    "remainingMissingCitations": 6,
+    "confirmedSameSubjectMetricFeetConflicts": 4,
+    "additionalHeightUnitEntityScopeUnresolved": 1,
+    "truncatedHtmlCaptures": 1,
+    "sourceRemovedPlaceholdersPreservedWithoutRestoration": 3,
+    "nonAccountIndexCoverFooterHeldBlocks": 4
+  },
+  "tests": {
+    "semanticUnittestsPassed": 9,
+    "allCitationDeltasReplayExactCaptureAndBlockHashes": true,
+    "allNonCitationMetadataByteEquivalentAsObjects": true,
+    "existing10853AccountIdsPreserved": true,
+    "noDateTimeCoordinateClassificationChanges": true,
+    "nativeHeightSourcePinReplayPassedAll2441": true
+  },
+  "baselineCurrentContextNote": "Corpus audit pins the pre-supplement enrichment gzip a86a6bd082a43932576465c59348bf3060969015731fc882c6157dce84f19664 (201entries/202links). Root may add source supplements separately; this is a clearly pinned baseline audit, not a claim those later supplementary context fields were audited here.",
+  "ownedDirectories": [
+    {
+      "directory": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit",
+      "bytes": 3026497,
+      "files": 5,
+      "role": "failed_noncanonical_initial_run"
+    },
+    {
+      "directory": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated",
+      "bytes": 3052534,
+      "files": 4,
+      "role": "canonical_research_derived_artifact"
+    },
+    {
+      "directory": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery",
+      "bytes": 1883363,
+      "files": 3,
+      "role": "canonical_research_derived_artifact"
+    },
+    {
+      "directory": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\height-unit-audit",
+      "bytes": 425239,
+      "files": 4,
+      "role": "canonical_research_derived_artifact"
+    },
+    {
+      "directory": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\source-capture-integrity",
+      "bytes": 374706,
+      "files": 4,
+      "role": "canonical_research_derived_artifact"
+    }
+  ],
+  "netOwnedDataBytesApproximate": 8762339,
+  "newFilesLargerThan100MiB": [],
+  "retainedRuntimeAndRollback": "This agent did not modify runtime, base encounter index, source captures, deployment or Git. Existing validated runtime and immutable prior enrichment remain protected in place.",
+  "supersededInitialAuditCleanupProposal": [
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\audit.json",
+      "bytes": 75808,
+      "sha256": "fa1e2309c626c8fcd963f70329ff7feebcdd13b6756fa9263de4ef3325812fef",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\audit.json"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\gap-registry.json.gz",
+      "bytes": 2882711,
+      "sha256": "f4366bb1a2248c74d38de041203485902b4eed6dae0629c158d45d6242a17290",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\gap-registry.json.gz"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\lifecycle.json",
+      "bytes": 2130,
+      "sha256": "810c4343cd5c1318e75952950eeb1e8e6bb6df357bd602d2350df990ac627f7b",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\lifecycle.json"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\research-queue.json.gz",
+      "bytes": 64929,
+      "sha256": "975fc8271b71f71385c5c60441a84307b09d93a90b610a4264d659e4b3a908ec",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\research-queue.json.gz"
+    },
+    {
+      "literalPath": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\SUPERSEDED.json",
+      "bytes": 919,
+      "sha256": "a056d4541b0e908c5ed8521129dce3dd8481ece5defb8733bc385b39b89f7ee4",
+      "evidence": "Failed initial metadata audit superseded by corrected tested full-scope audit. Retained as noncanonical pending cleanup; no source or runtime data included.",
+      "retainedCanonicalCounterpart": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\lifecycle.json"
+    }
+  ],
+  "cleanupExecuted": false,
+  "producerFiles": [
+    "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_quality_corpus_audit.py",
+    "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_height_unit_audit.py",
+    "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_original_citation_recovery.py",
+    "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\encounter_source_capture_integrity.py"
+  ],
+  "lifecycleFiles": [
+    "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit\\lifecycle.json",
+    "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\corpus-audit-validated\\lifecycle.json",
+    "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\citation-recovery\\lifecycle.json",
+    "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\height-unit-audit\\lifecycle.json",
+    "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\encounter-quality-20261017\\source-capture-integrity\\lifecycle.json"
+  ]
+}
