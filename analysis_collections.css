@@ -3,3 +3,4 @@
 .collection-coverage-values{display:grid;grid-template-columns:minmax(0,2fr) minmax(50px,1fr);gap:6px 15px;white-space:normal}.collection-coverage-values dd{margin:0}
 #analysis-collections-chart [hidden]{display:none!important}
 .collection-variant-toggle{display:flex;align-items:center;gap:10px;font-size:.85rem;min-height:42px}.collection-variant-toggle input{width:18px;height:18px}
+.collection-session-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.collection-session-actions[hidden]{display:none}.collection-session-actions button{min-height:42px}.collection-session-status{font-size:.85rem;color:var(--muted,#a8bac2);overflow-wrap:anywhere}.collection-session-status:empty{display:none}

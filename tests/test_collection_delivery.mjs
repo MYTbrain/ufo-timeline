@@ -31,7 +31,8 @@ const context = vm.createContext({ runtime: { catalogFacetWorkerRowsQueued: 4, c
     setTimeout(callback, milliseconds) { assert.equal(milliseconds, 30000); const id = ++timerId; timers.set(id, callback); return id; },
     clearTimeout(id) { timers.delete(id); },
   }, Map, Set, Promise, Error });
-vm.runInContext(actualFunction("collectionStudyContext") + actualFunction("loadCollectionStudyRuntime"), context);
+vm.runInContext(actualFunction("analysisSessionNeutralFilters") + actualFunction("analysisWorkerFilterPayload") +
+  actualFunction("collectionStudyContext") + actualFunction("loadCollectionStudyRuntime"), context);
 const reply = (request, eventIds, extra = {}) => worker.emit("message", { type: "collectionReportIdsInspected", requestId: request.requestId,
   generation: request.generation, analysisSignature: request.analysisSignature, result: { eventIds, totalMatchedAnalysisReports: 821 }, ...extra });
 const clean = () => { assert.equal(timers.size, 0); assert.equal(listeners.get("message")?.size || 0, 0); assert.equal(listeners.get("error")?.size || 0, 0); };

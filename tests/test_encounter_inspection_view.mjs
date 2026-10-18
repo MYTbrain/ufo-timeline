@@ -33,15 +33,16 @@ function fixture() {
     getElementById(id) { return roots.flatMap(walk).find((node) => node.id === id) || null; } };
   const add = (id) => { const node = document.createElement('div'); node.id = id; roots.push(node); return node; };
   const controller = Object.create(AnalysisViewController.prototype);
-  const calls = [], opens = [], applies = [], settings = [], exports = [];
+  const calls = [], opens = [], applies = [], settings = [], exports = [], sessionActions = [];
   Object.assign(controller, { document, documentView: null, resultRenderVersion: 1, latestResult: null,
     latestMeta: { filterSnapshot: { start: '2000-01-01', end: '2000-12-31', source: ['A', 'B'] } }, callbacks: {
       onEncounterReportsRequested(query, options) { return new Promise((resolve, reject) => calls.push({ query, options, resolve, reject })); },
       onEncounterReportOpen: (value) => opens.push(value), onEncounterSelectionApply: (value) => applies.push(value),
+      onEncounterSessionAction: (value) => sessionActions.push(value),
       onEncounterSettingsChange: (value) => settings.push(value), onExportEvidence: (value) => exports.push(value),
     }, currentAnalysisMode: 'whole_corpus_structure', _activatePreview() { throw new Error('Inspection must not activate a map/filter preview'); } });
   add('analysis-encounter-atlas-chart'); add('analysis-encounter-context-chart'); add('analysis-encounter-report-inspector').hidden = true;
-  return { controller, document, calls, opens, applies, settings, exports, add };
+  return { controller, document, calls, opens, applies, settings, exports, sessionActions, add };
 }
 const picker = (node, label) => walk(node).find((item) => item.tagName === 'select' && item.getAttribute('aria-label') === label);
 const button = (node, text) => walk(node).find((item) => item.tagName === 'button' && item.textContent === text);
@@ -115,6 +116,14 @@ button(inspector, 'Open original report').click(); await tick(); assert.deepEqua
 button(inspector, 'Locate on map').click(); await tick(); assert.deepEqual(opens[1], { eventId: '0', mode: 'map' });
 button(inspector, 'Use these reports as filters').click(); await tick(); assert.equal(applies[0].bucket, 'cell'); assert.equal(applies[0].total, 26);
 assert.equal(applies[0].offset, 0, 'Applying a drilldown scopes all matching reports, not only the current page');
+button(inspector, 'Hold as A').click(); await tick();
+assert.equal(f.sessionActions[0].action, 'A');
+assert.equal(f.sessionActions[0].inspection.total, 26);
+assert.equal(f.sessionActions[0].inspection.offset, 0, 'A temporary group holds all inspected matches across pages');
+assert.equal(f.sessionActions[0].inspection.bucket, 'cell');
+button(inspector, 'Use in Analysis').click(); await tick();
+assert.equal(f.sessionActions[1].action, 'use');
+assert.deepEqual(f.sessionActions[1].inspection, f.sessionActions[0].inspection);
 button(inspector, 'Next reports').click(); await tick(); assert.equal(calls[1].query.offset, 25);
 assert.equal(calls[0].options.signal.aborted, true);
 resolve(calls[1], 26, [original(25, false)]); await tick();
@@ -131,6 +140,9 @@ controller._openEncounterReports({ domain: 'core', axisKey: 'source', population
 assert.equal(calls[2].options.signal.aborted, true);
 resolve(calls[2], 1, [original(999, true)]); await tick(); assert.doesNotMatch(inspector.textContent, /original-999/);
 resolve(calls[3], 0, []); await tick(); assert.match(inspector.textContent, /No source reports match/); assert.equal(button(inspector, 'Use these reports as filters').disabled, true);
+assert.equal(button(inspector, 'Hold as A').disabled, true);
+assert.equal(button(inspector, 'Hold as B').disabled, true);
+assert.equal(button(inspector, 'Use in Analysis').disabled, true);
 
 // Invalid response scope does not expose stale records or an enabled Apply action.
 controller._openEncounterReports({ domain: 'core', axisKey: 'source', population: 'being', bucket: 'excluded' }, { title: 'Excluded records' }); await tick();

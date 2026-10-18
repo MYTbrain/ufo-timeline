@@ -2550,6 +2550,7 @@
         onEncounterReviewSummaryRequested: typeof config.onEncounterReviewSummaryRequested === "function" ? config.onEncounterReviewSummaryRequested : null,
         onEncounterReportOpen: typeof config.onEncounterReportOpen === "function" ? config.onEncounterReportOpen : null,
         onEncounterSelectionApply: typeof config.onEncounterSelectionApply === "function" ? config.onEncounterSelectionApply : null,
+        onEncounterSessionAction: typeof config.onEncounterSessionAction === "function" ? config.onEncounterSessionAction : null,
         onEncounterSettingsChange: typeof config.onEncounterSettingsChange === "function" ? config.onEncounterSettingsChange : null,
         onCollectionStudyRequested: typeof config.onCollectionStudyRequested === "function" ? config.onCollectionStudyRequested : null,
         onPlanetaryHeatmapRequest: typeof config.onPlanetaryHeatmapRequest === "function" ? config.onPlanetaryHeatmapRequest : null,
@@ -6547,6 +6548,15 @@
           const button = this._element("button", "secondary-button", entry[1]); button.type = "button"; button.disabled = entry[2];
           button.addEventListener("click", () => { if (current() && !button.disabled) this._openEncounterReports(Object.assign({}, query, { offset: entry[0] }), detail); }); actions.appendChild(button);
         });
+        if (this.callbacks.onEncounterSessionAction) {
+          [["use", "Use in Analysis"], ["A", "Hold as A"], ["B", "Hold as B"]].forEach((entry) => {
+            const control = this._element("button", "secondary-button", entry[1]); control.type = "button"; control.disabled = total === 0;
+            control.title = "Use all " + formatCount(total) + " matching reports, including other pages. Groups last while this page is open.";
+            control.addEventListener("click", () => invokeAction(this.callbacks.onEncounterSessionAction, {
+              action: entry[0], inspection: Object.assign({}, query, { offset: 0, total }), label: detail.title || "Selected encounter reports",
+            }, control, actions)); actions.appendChild(control);
+          });
+        }
         if (this.callbacks.onEncounterSelectionApply) {
           const apply = this._element("button", "secondary-button", "Use these reports as filters"); apply.type = "button"; apply.disabled = total === 0;
           apply.addEventListener("click", () => invokeAction(this.callbacks.onEncounterSelectionApply, Object.assign({}, query, { offset: 0, total }), apply, actions)); actions.appendChild(apply);

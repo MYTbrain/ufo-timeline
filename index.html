@@ -45,6 +45,7 @@
   <link rel="stylesheet" href="./ui/accepted-workspace/site-workflow-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/chronology-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/analysis-navigation.css?v=2026-10-08-accepted-workspace-v1">
+  <link rel="stylesheet" href="./analysis_session.css?v=2026-10-18-session-v1">
   <link rel="stylesheet" href="./guided_tour.css?v=2026-10-08-guided-tour-v2">
   <link rel="stylesheet" href="./startup_catalog_ui.css?v=2026-10-18-progressive-startup-v1">
   <script>
@@ -1674,6 +1675,7 @@
               <button id="analysis-section-tab-sources-quality" type="button" role="tab" aria-selected="false" aria-controls="analysis-section-sources-quality" tabindex="-1">Sources &amp; Quality</button>
             </div>
           </div>
+          <div id="analysis-session-panel"></div>
           <p id="analysis-baseline-note" class="analysis-baseline-note">Reference reports preserve the active non-date filters and exclude the selected date window.</p>
           <p id="analysis-computation-status" class="analysis-computation-status" role="status" aria-live="polite" hidden></p>
 
@@ -2058,13 +2060,15 @@
   <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
   <script src="./analysis_comparisons_view.js?v=2026-10-18-encounter-quality-v1"></script>
-  <script src="./analysis_view.js?v=2026-10-18-collections-v1"></script>
+  <script src="./analysis_view.js?v=2026-10-18-session-v1"></script>
+  <script src="./analysis_session.js?v=2026-10-18-session-v1"></script>
+  <script src="./analysis_session_view.js?v=2026-10-18-session-v1"></script>
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
   <script src="./quality_detail_overlay.js?v=2026-10-07-reviewed-quality-v1"></script>
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
   <script src="./progressive_catalog_runtime.js?v=2026-10-18-progressive-startup-v1"></script>
   <script src="./startup_catalog_ui.js?v=2026-10-18-progressive-startup-v2"></script>
-  <script src="./app.js?v=2026-10-18-collections-v3"></script>
+  <script src="./app.js?v=2026-10-18-session-v1"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>

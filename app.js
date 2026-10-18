@@ -1041,6 +1041,9 @@
     catalogFacetWorkerLastError: "",
     catalogFacetWorkerStorage: null,
     analysisViewController: null,
+    analysisSessionStore: null,
+    analysisSessionView: null,
+    analysisSessionCaptureGeneration: 0,
     analysisComparisonsRequested: false,
     analysisComparisonsReady: false,
     analysisComparisonsError: "",
@@ -9466,7 +9469,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-collections-v3");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-analysis-session-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9639,7 +9642,7 @@
     const cropStatus = contextLayerAnalysisStatus("UfoCropCircleLayer", els.overlayCropCirclesToggle);
     const animalStatus = contextLayerAnalysisStatus("UfoAnimalMutilationLayer", els.overlayAnimalMutilationsToggle);
     const contextManifest = runtime.analysisContextManifest || {};
-    return {
+    const snapshot = {
       generation: Number(runtime.activeFilterGeneration) || Number(state.filterGeneration) || 0,
       requestedGeneration: Number(state.filterGeneration) || 0,
       activeView: state.activeView,
@@ -9692,6 +9695,166 @@
         activeMappedSourceCoordinates: state.filteredSourceCoordinateEventIdSet.size,
       },
     };
+    const session = runtime.analysisSessionStore && runtime.analysisSessionStore.getState();
+    const selection = session && session.selection;
+    if (selection) {
+      snapshot.analysisSelection = { label: selection.label, eventIds: selection.eventIds, reportCount: selection.reportCount,
+        key: selection.provenance && selection.provenance.sessionCaptureId || "session-selection",
+        scope: selection.scope, provenance: selection.provenance };
+      snapshot.baselineMode = "whole_corpus_structure";
+      snapshot.timeRange = { mode: "full", startOrdinal: null, endOrdinal: null, startIso: null, endIso: null };
+      snapshot.filters = analysisSessionNeutralFilters();
+      snapshot.areaFilter = { active: false, pointOnly: false, country: null, shapes: [] };
+      const summary = selection.summary || {};
+      snapshot.denominatorCounts = Object.assign({}, snapshot.denominatorCounts, {
+        matchedNonDateReports: selection.reportCount, activeReports: selection.reportCount,
+        activeMapped: summary.mappedN, activeUnmapped: summary.unmappedN, activeDated: summary.datedN,
+        activeSourceCoordinates: null, activeExactDates: null, activeMappedExactDates: null, activeMappedSourceCoordinates: null,
+      });
+    }
+    return snapshot;
+  }
+
+  function analysisSessionNeutralFilters() {
+    return { keyword: "", sourceMode: "all", typeMode: "all", precisionMode: "all",
+      selectedSources: [], selectedTypes: [], selectedPrecisions: [], legendEventMode: "all", legendColorMode: "craft_type",
+      selectedLegendEventKeys: [], hideLowPrecision: false, hideNonExactDates: false,
+      encounters: { abduction: "any", being: "any", beingTypes: [] }, encounterSelectionIds: null };
+  }
+
+  function analysisWorkerFilterPayload(snapshot) {
+    if (!snapshot || !snapshot.analysisSelection) return catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot && snapshot.generation);
+    return Object.assign(analysisSessionNeutralFilters(), { keywordActive: false, keywordEventIds: null, lowPrecisionValues: [],
+      selectedAreaCountry: "", generation: snapshot.generation, analysisSessionEventIds: snapshot.analysisSelection.eventIds });
+  }
+
+  function analysisSessionCaptureSnapshot(snapshot) {
+    return { generation: snapshot.generation, baselineMode: snapshot.baselineMode, timeRange: snapshot.timeRange,
+      filters: snapshot.filters, areaFilter: snapshot.areaFilter, contextReleaseHashes: snapshot.contextReleaseHashes,
+      selection: snapshot.analysisSelection ? { key: snapshot.analysisSelection.key, label: snapshot.analysisSelection.label,
+        reportCount: snapshot.analysisSelection.reportCount } : null };
+  }
+
+  function requireAnalysisSessionReady() {
+    if (!runtime.analysisSessionStore) throw new Error("Temporary Analysis selections are unavailable.");
+    if (!startup.fullCatalogReady || !startup.initialViewReady || runtime.catalogFacetWorkerRowsQueued < catalog.length) {
+      throw new Error("The complete catalog is still preparing. Try again when Analysis is ready.");
+    }
+    const snapshot = getAnalysisFilterSnapshot();
+    if (snapshot.generation !== snapshot.requestedGeneration) throw new Error("Shared filters are still updating. Try again when the selection is ready.");
+    return snapshot;
+  }
+
+  async function captureAnalysisSessionPopulation(inputValue) {
+    const input = inputValue || {}, snapshot = requireAnalysisSessionReady();
+    const signature = analysisComputeCacheKey(snapshot), worker = ensureCatalogFacetWorker();
+    if (!worker) throw new Error("The Analysis catalog worker is unavailable.");
+    if (input.snapshot && analysisComputeCacheKey(input.snapshot) !== signature) {
+      throw new Error("The source selection changed. Refresh it before using or pinning its reports.");
+    }
+    const sessionGeneration = ++runtime.analysisSessionCaptureGeneration;
+    const requestId = "analysis-session-" + (++runtime.catalogFacetWorkerRequestId);
+    const filters = analysisWorkerFilterPayload(snapshot);
+    const result = await new Promise(function (resolve, reject) {
+      let done = false;
+      function finish(error, value) {
+        if (done) return; done = true; window.clearTimeout(timer);
+        worker.removeEventListener("message", listener); worker.removeEventListener("error", failure);
+        if (error) reject(error); else resolve(value);
+      }
+      function failure() { finish(new Error("The temporary Analysis capture failed. Try again.")); }
+      function listener(event) {
+        const message = event.data || {}; if (message.requestId !== requestId) return;
+        if (sessionGeneration !== runtime.analysisSessionCaptureGeneration || signature !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) {
+          finish(new Error("The Analysis selection changed while it was being captured. Try again.")); return;
+        }
+        if (message.type !== "analysisSessionCaptured" || message.analysisSignature !== signature ||
+            Number(message.generation) !== snapshot.generation || message.sessionGeneration !== sessionGeneration) {
+          finish(new Error(message.error || "The Analysis capture returned an invalid response.")); return;
+        }
+        finish(null, message.result);
+      }
+      const timer = window.setTimeout(function () { finish(new Error("The temporary Analysis capture timed out. Try again.")); }, 30000);
+      worker.addEventListener("message", listener); worker.addEventListener("error", failure);
+      try {
+        worker.postMessage({ type: "captureAnalysisSession", requestId: requestId, generation: snapshot.generation,
+          sessionGeneration: sessionGeneration, analysisSignature: signature, requestedEventIds: input.eventIds == null ? null : input.eventIds,
+          filters: filters, keywordEventIds: filters.keywordEventIds, lowPrecisionValues: filters.lowPrecisionValues,
+          areaFilterShapes: snapshot.areaFilter.active ? snapshot.areaFilter.shapes : [],
+          timeRangeMode: snapshot.timeRange.mode, fullTimeRange: snapshot.timeRange.mode === "full",
+          timeRangeStartOrdinal: snapshot.timeRange.startOrdinal, timeRangeEndOrdinal: snapshot.timeRange.endOrdinal,
+          encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all" });
+      } catch (error) { finish(error); }
+    });
+    if (!result || !Array.isArray(result.eventIds) || !result.summary || result.summary.reportN !== result.eventIds.length) {
+      throw new Error("The temporary Analysis capture is incomplete.");
+    }
+    const label = String(input.label || snapshot.analysisSelection && snapshot.analysisSelection.label || "Current Analysis reports");
+    return { eventIds: result.eventIds, label: label,
+      scope: typeof input.scope === "string" ? input.scope : Object.assign({ label: input.source || "Captured Analysis population", timeRange: snapshot.timeRange }, input.scope || {}),
+      provenance: Object.assign({}, input.provenance || {}, { sessionCaptureId: requestId,
+        sessionCaptureGeneration: sessionGeneration, sessionAnalysisSignature: signature,
+        datasetHash: analysisCatalogDatasetHash(), capturedSnapshot: analysisSessionCaptureSnapshot(snapshot),
+        source: String(input.source || "Analysis"), encounterEvidenceMode: result.encounterEvidenceMode }), summary: result.summary };
+  }
+
+  function initializeAnalysisSession() {
+    if (runtime.analysisSessionStore || !window.UfoAnalysisSession || !window.UfoAnalysisSession.createStore) return runtime.analysisSessionStore;
+    const store = window.UfoAnalysisSession.createStore(); runtime.analysisSessionStore = store;
+    let priorSelection = store.getState().selection;
+    store.subscribe(function (value) {
+      const selection = value.selection;
+      if (selection === priorSelection) return;
+      priorSelection = selection; runtime.analysisSessionCaptureGeneration += 1;
+      runtime.analysisLastCohortKey = "";
+      scheduleAnalysisCompute(selection ? "temporary Analysis population selected" : "returned to shared Analysis filters", { immediate: true });
+    });
+    function showAnalysis() {
+      if (runtime.analysisViewController && state.activeView !== "analysis") runtime.analysisViewController.setActiveView("analysis", { source: "temporary-analysis-selection" });
+    }
+    function requireCurrentCapture(payload) {
+      const provenance = payload && payload.provenance || {};
+      if (provenance.sessionCaptureGeneration !== runtime.analysisSessionCaptureGeneration ||
+          provenance.sessionAnalysisSignature !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) {
+        throw new Error("The Analysis selection changed while it was being captured. Try again.");
+      }
+    }
+    const integration = {
+      getState: function () { return store.getState(); }, subscribe: function (listener) { return store.subscribe(listener); },
+      captureCurrent: async function (slot, label) { const payload = await captureAnalysisSessionPopulation({ label: label }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
+      captureSelection: async function (slot, input) { const payload = await captureAnalysisSessionPopulation(input); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
+      captureEncounter: async function (slot, requestValue) {
+        const request = requestValue || {}, snapshot = requireAnalysisSessionReady();
+        const captureGeneration = ++runtime.analysisSessionCaptureGeneration;
+        const page = await requestEncounterReports(Object.assign({}, request.inspection || request, { offset: 0, limit: 100, allIds: true }));
+        if (captureGeneration !== runtime.analysisSessionCaptureGeneration) throw new Error("This encounter capture was cancelled or replaced. Try again.");
+        const input = { eventIds: page.eventIds || [], label: request.label || "Inspected encounter reports",
+          source: "Encounter inspection", scope: { label: request.label || "Inspected encounter reports" }, snapshot: snapshot };
+        return slot == null || slot === "use" ? integration.useSelection(input) : integration.captureSelection(slot, input);
+      },
+      useSelection: async function (input) {
+        const payload = await captureAnalysisSessionPopulation(input);
+        requireCurrentCapture(payload);
+        if (!payload.eventIds.length) throw new Error("This selection contains no catalog reports.");
+        const value = store.useSelection(payload); showAnalysis(); return value;
+      },
+      useSlot: function (slot) { requireAnalysisSessionReady(); const used = store.useGroup(slot); if (used) showAnalysis(); return used; },
+      clearSelection: function () { runtime.analysisSessionCaptureGeneration += 1; return store.clearSelection(); },
+      clearGroup: function (slot) { runtime.analysisSessionCaptureGeneration += 1; return store.clearGroup(slot); },
+      clearAll: function () { runtime.analysisSessionCaptureGeneration += 1; return store.clearAll(); },
+    };
+    window.UfoAnalysisSessionIntegration = Object.freeze(integration);
+    const target = document.getElementById("analysis-session-panel");
+    if (target && window.UfoAnalysisSessionView && window.UfoAnalysisSessionView.create) {
+      runtime.analysisSessionView = window.UfoAnalysisSessionView.create(target, { store: store,
+        onPinCurrent: integration.captureCurrent, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
+        onClearGroup: integration.clearGroup, onClearAll: integration.clearAll, onClearSelection: integration.clearSelection,
+        onOpenSection: function (section) {
+          const controller = runtime.analysisViewController; if (!controller) return;
+          showAnalysis(); controller.navigateToSection("analysis-section-" + section, { updateHash: true, focus: true, source: "analysis-session" });
+        } });
+    }
+    return store;
   }
 
   function applyAnalysisMultiSelectValues(filterKey, rawValues) {
@@ -10051,7 +10214,7 @@
     if (!runtime.collectionStudyScriptPromises) runtime.collectionStudyScriptPromises = new Map();
     const scripts = [
       ["collection-study-evidence", "./analysis_collection_evidence.js?v=2026-10-18-collections-v1"],
-      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v3"],
+      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-analysis-session-v1"],
     ];
     runtime.collectionStudyRuntimePromise = Promise.all(scripts.map(function (entry) {
       if (runtime.collectionStudyScriptPromises.has(entry[0])) return runtime.collectionStudyScriptPromises.get(entry[0]);
@@ -10067,7 +10230,7 @@
       if (!window.UfoAnalysisCollectionEvidence || !window.UfoAnalysisCollectionsView) throw new Error("The collection study components are unavailable.");
       if (!document.getElementById("collection-study-styles")) {
         const link = document.createElement("link"); link.id = "collection-study-styles"; link.rel = "stylesheet";
-        link.href = "./analysis_collections.css?v=2026-10-18-collections-v1"; document.head.appendChild(link);
+        link.href = "./analysis_collections.css?v=2026-10-18-analysis-session-v1"; document.head.appendChild(link);
       }
     }).catch(function (error) { runtime.collectionStudyRuntimePromise = null; throw error; });
     return runtime.collectionStudyRuntimePromise;
@@ -10084,7 +10247,7 @@
     if (!wanted.size) return { allowedEventIds: new Set(), snapshot: snapshot, generation: snapshot.generation };
     const worker = ensureCatalogFacetWorker();
     if (!worker) throw new Error("The Analysis catalog worker is unavailable. Retry the collection view.");
-    const filters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot.generation);
+    const filters = analysisWorkerFilterPayload(snapshot);
     const signature = analysisComputeCacheKey(snapshot, { excludeComparisonOptions: true });
     const requestId = "collection-inspection-" + (++runtime.catalogFacetWorkerRequestId);
     return new Promise(function (resolve, reject) {
@@ -10220,6 +10383,11 @@
       },
       onEncounterReportOpen: openEncounterInspectedReport,
       onEncounterSelectionApply: applyEncounterInspectedSelection,
+      onEncounterSessionAction: function (request) {
+        const integration = window.UfoAnalysisSessionIntegration;
+        if (!integration) return Promise.reject(new Error("Temporary Analysis selections are unavailable."));
+        return integration.captureEncounter(request && request.action === "use" ? null : request && request.action, request);
+      },
       onEncounterSettingsChange: function (settings) {
         runtime.analysisEncounterEvidenceMode = settings && settings.evidenceMode || "all";
         scheduleAnalysisCompute("encounter evidence mode", { immediate: true });
@@ -10230,6 +10398,8 @@
           evidenceApi: window.UfoAnalysisCollectionEvidence,
           manifestUrl: "./data/collections/manifest.json?v=2026-10-18-collections-v1",
           getContext: collectionStudyContext,
+          onUseSelection: function (payload) { return window.UfoAnalysisSessionIntegration.useSelection(payload); },
+          onPinSelection: function (slot, payload) { return window.UfoAnalysisSessionIntegration.captureSelection(slot, payload); },
           onOpenReport: function (eventId) { return openEncounterInspectedReport({ eventId: eventId, mode: "source" }); },
         });
         await study.load();
@@ -10336,6 +10506,7 @@
       applyAnalysisFilterPatch: applyAnalysisFilterPatch,
       setContextLayerEnabled: setContextLayerEnabled,
     });
+    initializeAnalysisSession();
     return controller;
   }
 
@@ -11599,6 +11770,8 @@
     const context = snapshot && snapshot.contextLayers ? snapshot.contextLayers : {};
     return JSON.stringify({
       generation: snapshot ? snapshot.generation : 0,
+      analysisSelectionKey: snapshot && snapshot.analysisSelection ? snapshot.analysisSelection.key : null,
+      analysisSelectionCount: snapshot && snapshot.analysisSelection ? snapshot.analysisSelection.reportCount : null,
       comparisonsRequested: runtime.analysisComparisonsRequested,
       comparisonsReady: runtime.analysisComparisonsReady,
       comparisonOptions: options && options.excludeComparisonOptions ? null : runtime.analysisComparisonOptions,
@@ -11691,7 +11864,7 @@
       return Promise.reject(new Error("The analysis worker is still indexing the catalog."));
     }
     const generation = Number(snapshot.generation) || 0;
-    const workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, generation);
+    const workerFilters = analysisWorkerFilterPayload(snapshot);
     const requestId = "analysis-comparison-" + (++runtime.analysisComparisonRequestId) + "-" + Date.now();
     const pending = {
       requestId, generation, baselineMode: snapshot.baselineMode,
@@ -11766,7 +11939,7 @@
       if (!["all", "accepted", "held"].includes(mode) || !runtime.encounterReviewIds) return Promise.reject(new Error("Reviewed source context is unavailable."));
       reviewedContextEventIds = runtime.encounterReviewIds[mode];
     }
-    const worker = ensureCatalogFacetWorker(), workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot.generation);
+    const worker = ensureCatalogFacetWorker(), workerFilters = analysisWorkerFilterPayload(snapshot);
     if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) return Promise.reject(new Error("The catalog is still indexing."));
     const requestId = "encounter-inspection-" + (++runtime.catalogFacetWorkerRequestId), signature = analysisComputeCacheKey(snapshot);
     return new Promise(function (resolve, reject) {
@@ -11971,7 +12144,7 @@
     }
     const generation = Number(snapshot.generation) || 0;
     const analysisSignature = analysisComputeCacheKey(snapshot);
-    const workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, generation);
+    const workerFilters = analysisWorkerFilterPayload(snapshot);
     const requestId = "analysis-compute-" + analysisPhase + "-" + (++runtime.analysisRequestId) + "-" + Date.now();
     const cancellationGeneration = ++runtime.analysisCancellationGeneration;
     runtime.analysisPendingRequest = {

@@ -168,4 +168,31 @@ assert.deepEqual(asyncStudy.getModel().reports.map(report => report.eventId), ["
 assert.equal(View.safeUrl("javascript:alert(1)"), null);
 assert.equal(View.safeUrl("file:///C:/private.txt"), null);
 assert.equal(View.csvValue("=SUM(1,2)"), '"\'=SUM(1,2)"');
+
+// Temporary group actions use the complete inspected/search-matched set, not
+// the visible page or an unjoined dossier, and never broaden a cell selection.
+const groupFixture = fixture(), groupActions = [], groupReports = Array.from({ length: 28 }, (_, index) => row(100 + index,
+  { materials: index < 3 ? ["soil", "flowers"] : ["soil"] }));
+const groupStudy = View.create(groupFixture.target, { evidenceApi: { ...Engine, load: async () => ({ ...evidence, reports: groupReports }) },
+  onUseSelection: async payload => groupActions.push({ action: "use", payload }),
+  onPinSelection: async (slot, payload) => groupActions.push({ action: slot, payload }),
+});
+await groupStudy.load();
+await byText(groupFixture.target, "button", "Hold as A").click();
+assert.equal(groupActions[0].payload.eventIds.length, 28, "Holding captures all matching pages");
+const groupFlowerCell = all(groupFixture.target, "button").find(element => element.title?.startsWith("Flowers × ") && !element.disabled);
+await groupFlowerCell.click();
+await byText(groupFixture.target, "button", "Use in Analysis").click();
+assert.deepEqual(groupActions[1].payload.eventIds, ["100", "101", "102"], "Applying retains the inspected cell intersection");
+const groupSearch = groupFixture.document.getElementById("collection-study-search");
+groupSearch.value = "Report 101"; await groupSearch.dispatch("input");
+await byText(groupFixture.target, "button", "Hold as B").click();
+assert.deepEqual(groupActions[2].payload.eventIds, ["101"], "Holding also respects the displayed list search");
+assert.equal(groupActions[2].payload.source, "collection study");
+await byText(groupFixture.target, "button", "Source dossiers & controls").click();
+assert.equal(byClass(groupFixture.target, "collection-session-actions").hidden, true, "Unjoined dossier inventory cannot be applied as catalog reports");
+await byText(groupFixture.target, "button", "Matched reports").click();
+groupSearch.value = "absent"; await groupSearch.dispatch("input");
+assert.equal(byText(groupFixture.target, "button", "Use in Analysis").disabled, true);
+assert.equal(byText(groupFixture.target, "button", "Hold as A").disabled, true);
 console.log("Collection view: material denominators, seven-axis drill-downs, filter generations, stale async/error recovery, dossier separation, searched/qualified/pinned exports and safe links passed.");

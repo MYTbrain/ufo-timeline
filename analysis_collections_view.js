@@ -20,7 +20,7 @@
   function create(target, configuration) {
     const config = configuration || {}, api = config.evidenceApi, doc = target.ownerDocument;
     const state = { allRecords: false, scope: "soilplants", disposition: "direct", includeMemberVariants: false, axis: "being", metric: "count", material: "", action: "", being: "", country: "", decade: "", source: "", craft: "", abduction: "", query: "", page: 0, mode: "reports", cell: null };
-    let evidence, model, context, generation = 0, loading;
+    let evidence, model, context, generation = 0, loading, selectionAction = 0;
     const controls = {}, PAGE = 15;
     function node(tag, className, text) { const element = doc.createElement(tag); if (className) element.className = className; if (text != null) element.textContent = String(text); return element; }
     function button(text, callback, className) { const element = node("button", className || "secondary-button", text); element.type = "button"; element.addEventListener("click", callback); return element; }
@@ -70,9 +70,11 @@
     const search = node("input"); search.type = "search"; search.id = "collection-study-search"; search.placeholder = "Material, place, source or report ID"; searchLabel.appendChild(search);
     search.addEventListener("input", () => { state.query = search.value.toLocaleLowerCase().trim(); state.page = 0; renderList(); });
     const listStatus = node("p", "collection-list-status"), list = node("div", "collection-report-list"), pagination = node("div", "collection-pagination");
+    const sessionActions = node("div", "collection-session-actions");
+    const sessionStatus = node("p", "collection-session-status"); sessionStatus.setAttribute("role", "status");
     const exports = node("div", "collection-exports");
     exports.append(button("Export comparison JSON", () => download("json")), button("Export matched reports CSV", () => download("csv")));
-    target.replaceChildren(status, retry, toolbar, refine, summary, empty, matrixHeading, chart, matrixNote, policy, tabs, searchLabel, listStatus, list, pagination, exports);
+    target.replaceChildren(status, retry, toolbar, refine, summary, empty, matrixHeading, chart, matrixNote, policy, tabs, searchLabel, listStatus, sessionActions, sessionStatus, list, pagination, exports);
 
     function resetAndCompute() { state.page = 0; state.cell = null; compute(); }
     function compute() {
@@ -209,6 +211,8 @@
     }
     function renderList() {
       if (!model) return;
+      selectionAction += 1;
+      sessionStatus.textContent = "";
       const cases = state.mode === "cases";
       reportsTab.setAttribute("aria-pressed", String(!cases)); casesTab.setAttribute("aria-pressed", String(cases));
       let values = cases ? evidence.cases || [] : filteredReports();
@@ -217,6 +221,38 @@
       listStatus.replaceChildren(node("span", "", cases ? number(values.length) + " source dossiers · full inventory, including controls; excluded from report counts."
         : number(values.length) + " matching report representations" + (state.cell ? " · " + state.cell.title : "") + "."));
       if (!cases && state.cell) listStatus.appendChild(button("Clear cell selection", () => { state.cell = null; state.page = 0; renderList(); }));
+      sessionActions.replaceChildren();
+      sessionActions.hidden = cases || !(config.onUseSelection || config.onPinSelection);
+      if (!cases && !sessionActions.hidden) {
+        const payload = {
+          eventIds: values.map(row => String(row.eventId)),
+          label: (state.cell ? state.cell.title : "Collection reports") + (state.query ? " · " + state.query.slice(0, 80) : ""),
+          source: "collection study",
+          scope: Object.assign({}, state, { cell: state.cell && Object.assign({}, state.cell) }),
+          snapshot: context && context.snapshot,
+          provenance: { collectionArtifact: evidence.provenance && evidence.provenance.artifact,
+            differingSourceVersionsIncluded: state.includeMemberVariants, countingUnit: "canonical catalog report representations" },
+        };
+        const version = selectionAction, currentModel = model;
+        function action(text, callback) {
+          const control = button(text, async () => {
+            if (control.disabled) return;
+            control.disabled = true;
+            sessionStatus.textContent = "Preparing " + number(payload.eventIds.length) + " matching reports…";
+            try {
+              await callback(payload);
+              if (version === selectionAction && currentModel === model) sessionStatus.textContent = "Selection ready · kept only while this page is open.";
+            } catch (error) {
+              if (version === selectionAction && currentModel === model) sessionStatus.textContent = error.message || "Could not prepare these reports. Please retry.";
+            } finally { control.disabled = !payload.eventIds.length; }
+          });
+          control.disabled = !payload.eventIds.length;
+          control.title = "Use all " + number(payload.eventIds.length) + " matching reports, including other pages. Map filters are unchanged.";
+          sessionActions.appendChild(control);
+        }
+        if (config.onUseSelection) action("Use in Analysis", config.onUseSelection);
+        if (config.onPinSelection) ["A", "B"].forEach(slot => action("Hold as " + slot, value => config.onPinSelection(slot, value)));
+      }
       list.replaceChildren(); values.slice(state.page * PAGE, (state.page + 1) * PAGE).forEach(row => list.appendChild(cases ? caseCard(row) : reportCard(row)));
       if (!values.length) list.appendChild(node("p", "", "No matching records."));
       pagination.replaceChildren();
@@ -245,11 +281,11 @@
         const next = await (config.getContext ? config.getContext({ reportIds: evidence.reports.map(row => String(row.eventId)), allRecords: state.allRecords }) : { allowedEventIds: undefined });
         if (token !== generation) return;
         context = next; retry.hidden = true;
-        [summary, matrixHeading, chart, matrixNote, tabs, searchLabel, listStatus, list, pagination, exports].forEach(element => { element.hidden = false; });
+        [summary, matrixHeading, chart, matrixNote, tabs, searchLabel, listStatus, sessionActions, sessionStatus, list, pagination, exports].forEach(element => { element.hidden = false; });
         compute();
       } catch (error) { if (token === generation) {
         model = null; status.textContent = "Collection view could not refresh: " + (error.message || error); retry.hidden = false;
-        [summary, empty, matrixHeading, chart, matrixNote, tabs, searchLabel, listStatus, list, pagination, exports].forEach(element => { element.hidden = true; });
+        [summary, empty, matrixHeading, chart, matrixNote, tabs, searchLabel, listStatus, sessionActions, sessionStatus, list, pagination, exports].forEach(element => { element.hidden = true; });
         if (throwOnError) throw error;
       } }
     }

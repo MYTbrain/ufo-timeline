@@ -57,7 +57,8 @@ for(const [setter,flag] of [["setAnalysisDurationArtifactInWorker","analysisDura
   ["setAnalysisGeographyArtifactInWorker","analysisGeographyWorkerReady"]]){
   context[setter] = ()=>{artifactVersion+=1;runtime[flag]=true;return Promise.resolve();};
 }
-for (const [name,next] of [["computeAnalysisViaWorker","setAnalysisComputationPhase"],
+for (const [name,next] of [["analysisSessionNeutralFilters","analysisSessionCaptureSnapshot"],
+  ["computeAnalysisViaWorker","setAnalysisComputationPhase"],
   ["setAnalysisComputationPhase","renderAnalysisWorkerResult"],["renderAnalysisWorkerResult","computeAnalysisForCurrentView"],
   ["computeAnalysisForCurrentView","scheduleAnalysisCompute"],["scheduleAnalysisCompute","postCatalogFacetWorkerRows"],
   ["trimAnalysisResultCache","computeAnalysisViaWorker"],["handleAnalysisViewChange","analysisContextLayerConfig"],

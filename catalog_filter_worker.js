@@ -827,6 +827,7 @@
       hideNonExactDates: Boolean(source.hideNonExactDates),
       encounters: source.encounters || { abduction: "any", being: "any", beingTypes: [] },
       encounterSelectionIds: Array.isArray(source.encounterSelectionIds) ? new Set(source.encounterSelectionIds.map(String)) : null,
+      analysisSessionEventIds: Array.isArray(source.analysisSessionEventIds) ? new Set(source.analysisSessionEventIds.map(String)) : null,
     };
   }
 
@@ -842,6 +843,9 @@
   }
 
   function eventMatchesNonDateFilters(values, filters, keywordIds, lowPrecisionValues) {
+    // This field is sent only by Analysis. A frozen population is independent
+    // of later live map/search filters; estimator eligibility still applies.
+    if (filters.analysisSessionEventIds) return filters.analysisSessionEventIds.has(String(values.eventId));
     if (!encounterMatches(values, filters)) return false;
     const keywordActive = Boolean(filters.keyword) || Boolean(keywordIds);
     if (keywordActive && keywordIds && !keywordIds.has(String(values.eventId))) {
@@ -1362,6 +1366,7 @@
       filters,
       keywordCount: Array.isArray(message.keywordEventIds) ? message.keywordEventIds.length : null,
       encounterSelectionIds: message.filters && message.filters.encounterSelectionIds || null,
+      analysisSessionEventIds: message.filters && message.filters.analysisSessionEventIds || null,
       encounterEvidenceMode: message.encounterEvidenceMode || "all",
       areaEventCount: Array.isArray(message.areaFilterEventIds) ? message.areaFilterEventIds.length : null,
       areaFilterShapes: shapeSignature,
@@ -1417,6 +1422,7 @@
       filters,
       keywordEventIds: sortedAnalysisValues(message.keywordEventIds),
       encounterSelectionIds: message.filters && message.filters.encounterSelectionIds || null,
+      analysisSessionEventIds: message.filters && message.filters.analysisSessionEventIds || null,
       areaFilterEventIds: Array.isArray(message.areaFilterEventIds)
         ? sortedAnalysisValues(message.areaFilterEventIds)
         : null,
@@ -1629,6 +1635,67 @@
     }
     return { eventIds: eventIds, requestedReportCount: wanted.size, totalMatchedAnalysisReports: totalMatchedAnalysisReports,
       unit: "catalog_report_representations", cohortScope: "analysis_shared_filters" };
+  }
+
+  function captureAnalysisSession(message) {
+    const explicit = message.requestedEventIds != null;
+    if (explicit && (!Array.isArray(message.requestedEventIds) || message.requestedEventIds.length > 1000000)) {
+      throw new Error("The temporary Analysis population is invalid.");
+    }
+    const wanted = explicit ? new Set(message.requestedEventIds.map(function (id) {
+      if ((typeof id !== "string" && typeof id !== "number") || !String(id).trim() ||
+          typeof id === "number" && (!Number.isFinite(id) || !Number.isSafeInteger(id) || id < 0)) {
+        throw new Error("A temporary Analysis report ID is invalid.");
+      }
+      return String(id).trim();
+    })) : null;
+    const filters = normalizedFilters(message), keywordIds = keywordIdSet(message);
+    const shapes = Array.isArray(message.areaFilterShapes) && message.areaFilterShapes.length ? message.areaFilterShapes : null;
+    const lowPrecision = new Set(message.lowPrecisionValues || []), range = explicit ? null : analysisActiveRange(message);
+    const matched = explicit ? null : matchedAnalysisRows(message, filters, keywordIds, null, shapes, lowPrecision);
+    const maps = { source: new Map(), craft: new Map(), being: new Map(), abduction: new Map() };
+    const known = { source: 0, craft: 0, being: 0, abduction: 0 }, ids = [], seen = new Set();
+    const summary = { reportN: 0, mappedN: 0, unmappedN: 0, datedN: 0, undatedN: 0, distributions: {} };
+    const api = encounterEvidenceReady ? ensureEncounterApi() : null;
+    const mode = ["source_fields", "narrative"].includes(message.encounterEvidenceMode) ? message.encounterEvidenceMode : "all";
+    function add(domain, key, label) {
+      if (!key || ["unknown", "unavailable", "not_indexed", "none"].includes(String(key).toLowerCase())) return false;
+      const map = maps[domain], entry = map.get(String(key)) || { key: String(key), label: label || String(key), count: 0 };
+      entry.count += 1; map.set(entry.key, entry); return true;
+    }
+    function collect(row) {
+      const id = String(row.eventId);
+      if (seen.has(id) || wanted && !wanted.has(id)) return;
+      if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
+      seen.add(id); ids.push(id); summary.reportN += 1;
+      if (row.mapped) summary.mappedN += 1; else summary.unmappedN += 1;
+      const date = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal;
+      if (Number.isFinite(date) && row.datePrecision && row.datePrecision !== "unknown" && row.encounterOccurrenceDateExcluded !== true) summary.datedN += 1;
+      else summary.undatedN += 1;
+      if (add("source", row.source)) known.source += 1;
+      if (add("craft", row.craftType)) known.craft += 1;
+      if (api && row.encounterEvidenceReady) {
+        let mask = Number(row.encounterBeingMask) >>> 0;
+        if (mode !== "all") mask = row.encounterEvidenceProvenanceReady
+          ? Number(mode === "source_fields" ? row.encounterSourceBeingMask : row.encounterNarrativeBeingMask) >>> 0 : 0;
+        const types = api.beingTypes(mask);
+        types.forEach(function (key) { add("being", key, api.beingLabel(key)); });
+        if (types.length) known.being += 1;
+        const code = Number(row.encounterAbductionCode);
+        if (code > 0 && (mode === "all" || mode === "source_fields" && code === 1 || mode === "narrative" && code === 2)) {
+          add("abduction", ["", "source_reported", "narrative_reported", "ambiguous"][code], api.abductionLabel(code)); known.abduction += 1;
+        }
+      }
+    }
+    if (matched) forEachMatchedAnalysisRow(matched, collect); else forEachAnalysisRow(collect);
+    if (wanted && ids.length !== wanted.size) throw new Error("Some selected report IDs are not in the current catalog. Refresh the source selection.");
+    Object.keys(maps).forEach(function (domain) {
+      summary.distributions[domain] = ["being", "abduction"].includes(domain) && !api ? null : {
+        rows: Array.from(maps[domain].values()).sort(function (a, b) { return b.count - a.count || a.key.localeCompare(b.key); }),
+        eligibleN: known[domain], unknownN: ids.length - known[domain], multiLabel: domain === "being",
+      };
+    });
+    return { eventIds: ids, summary: summary, unit: "catalog_report_representations", encounterEvidenceMode: mode };
   }
 
   function spatialReadinessFromManifest(manifest) {
@@ -4945,6 +5012,12 @@
             error: error && error.message ? error.message : String(error),
           });
         });
+        return;
+      }
+      if (message.type === "captureAnalysisSession") {
+        self.postMessage({ type: "analysisSessionCaptured", requestId: message.requestId || "",
+          generation: analysisFilterGeneration(message), analysisSignature: String(message.analysisSignature || ""),
+          sessionGeneration: message.sessionGeneration, result: captureAnalysisSession(message) });
         return;
       }
       if (message.type === "inspectCollectionReportIds") {

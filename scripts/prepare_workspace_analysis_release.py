@@ -22,7 +22,7 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "16443086-c630-41d8-a793-92a0243a76f6"
-RUNTIME_REVISION = "collection-analysis-preview-20261018-v1"
+RUNTIME_REVISION = "temporary-analysis-preview-20261018-v1"
 RETAINED_ROLLBACK = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -186,6 +186,7 @@ def validate_refresh(previous, plan):
         "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
         PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
         "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
+        "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
         COLLECTION_MANIFEST, COLLECTION_EVIDENCE,
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
     }, "Candidate file inventory changed beyond the reviewed runtime assets")
@@ -223,6 +224,7 @@ def assemble(check_only=False):
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
+                   "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
                    "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
