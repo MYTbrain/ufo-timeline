@@ -21,8 +21,8 @@ from concurrent.futures import ThreadPoolExecutor
 RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
-BASE_DEPLOYMENT = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
-RUNTIME_REVISION = "progressive-startup-20261018-v5"
+BASE_DEPLOYMENT = "16443086-c630-41d8-a793-92a0243a76f6"
+RUNTIME_REVISION = "collection-analysis-preview-20261018-v1"
 RETAINED_ROLLBACK = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -35,6 +35,8 @@ NUCLEAR_EXTENSION = "data/analysis_comparisons/nuclear_extension_v1.json.gz"
 PROGRESSIVE_PROFILE = "data/startup_profiles/france_1954_flap"
 PROGRESSIVE_MANIFEST = PROGRESSIVE_PROFILE + "/progressive_manifest.json"
 PROGRESSIVE_VIEW = PROGRESSIVE_PROFILE + "/progressive_view.json.gz"
+COLLECTION_MANIFEST = "data/collections/manifest.json"
+COLLECTION_EVIDENCE = "data/collections/evidence.json.gz"
 
 
 def require(ok, message):
@@ -140,6 +142,39 @@ def add_progressive_startup_pages(pages, pin, uploads):
         pin(path, "bounded initial mapped view derived from the current pinned catalog and chronology")
 
 
+def add_collection_study_pages(pages, pin):
+    """Deliver only reviewed sparse evidence, fetched on request in Analysis."""
+    manifest_path = ROOT / COLLECTION_MANIFEST
+    manifest = load(manifest_path)
+    require(manifest.get("schemaId") == "ufo-collection-evidence-v1"
+            and manifest.get("schemaVersion") == 1, "Collection manifest identity drift")
+    artifact = manifest["artifact"]
+    require(artifact["file"] == "evidence.json.gz"
+            and artifact["url"] == "./" + COLLECTION_EVIDENCE,
+            "Unexpected collection evidence destination")
+    source = ROOT / COLLECTION_EVIDENCE
+    packed = source.read_bytes()
+    require(len(packed) == artifact["gzipBytes"] and len(packed) <= 2 * 1024 * 1024
+            and hashlib.sha256(packed).hexdigest() == artifact["gzipSha256"], "Collection gzip pin drift")
+    decoded = gzip.decompress(packed)
+    require(len(decoded) == artifact["decodedBytes"] and len(decoded) <= 5 * 1024 * 1024
+            and hashlib.sha256(decoded).hexdigest() == artifact["decodedSha256"], "Collection decoded pin drift")
+    payload = json.loads(decoded)
+    require(payload.get("schemaId") == manifest["schemaId"] and payload.get("schemaVersion") == 1
+            and len(payload["reports"]) == artifact["reportCount"]
+            and len(payload["cases"]) == artifact["caseCount"], "Collection population identity drift")
+    require(payload["policy"].get("canonicalDataMutated") is False
+            and payload["policy"].get("keywordCandidatesPromoted") is False
+            and payload["policy"].get("casesExcludedFromReportMatrices") is True,
+            "Collection counting or source policy drift")
+    ids = [row["eventId"] for row in payload["reports"]]
+    require(len(ids) == len(set(ids)) and all(row.get("canonicalJoinStatus") == "validated_id_source_chunk_index"
+            for row in payload["reports"]), "Collection report join drift")
+    for logical, path in ((COLLECTION_MANIFEST, manifest_path), (COLLECTION_EVIDENCE, source)):
+        pages[logical] = path
+        pin(path, "reviewed sparse collection evidence; source dossiers remain outside report matrices")
+
+
 def validate_refresh(previous, plan):
     require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
     old_paths = {r["path"] for r in previous["pages"]}
@@ -150,6 +185,8 @@ def validate_refresh(previous, plan):
         NUCLEAR_EXTENSION,
         "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
         PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
+        "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
+        COLLECTION_MANIFEST, COLLECTION_EVIDENCE,
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
     }, "Candidate file inventory changed beyond the reviewed runtime assets")
 
@@ -185,6 +222,7 @@ def assemble(check_only=False):
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
+                   "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
@@ -328,6 +366,7 @@ def assemble(check_only=False):
     config["analysisRepairDetailOverlay"].pop("file", None)
     page_json("data/app_config.json", config)
     add_progressive_startup_pages(pages, pin, uploads)
+    add_collection_study_pages(pages, pin)
 
     # A frozen manifest can be published both at its Pages lookup location and
     # at the immutable delivery prefix used by its explicit URLs.
