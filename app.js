@@ -9701,7 +9701,9 @@
       snapshot.analysisSelection = { label: selection.label, eventIds: selection.eventIds, reportCount: selection.reportCount,
         key: selection.provenance && selection.provenance.sessionCaptureId || "session-selection",
         scope: selection.scope, provenance: selection.provenance };
-      snapshot.baselineMode = "whole_corpus_structure";
+      // Full time selects internal-structure analysis. The request baseline
+      // must remain a supported baseline so its worker response envelope matches.
+      snapshot.baselineMode = "other_dates_balanced";
       snapshot.timeRange = { mode: "full", startOrdinal: null, endOrdinal: null, startIso: null, endIso: null };
       snapshot.filters = analysisSessionNeutralFilters();
       snapshot.areaFilter = { active: false, pointOnly: false, country: null, shapes: [] };

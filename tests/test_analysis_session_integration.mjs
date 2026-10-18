@@ -93,7 +93,7 @@ const state = { activeView: "analysis", filterGeneration: 1, analysisBaselineMod
   filteredExactDateEventIdSet: new Set(), filteredExactDateEventCount: 1, lastKeywordMatches: new Set(["0"]) };
 const hashes = () => ({});
 const context = vm.createContext({ runtime, state, startup: { fullCatalogReady: true, initialViewReady: true }, catalog: fixture.rows,
-  console, document: { getElementById: () => null }, currentFilterSelections: () => filters,
+  console, performance: { now: () => 0 }, document: { getElementById: () => null }, currentFilterSelections: () => filters,
   contextLayerAnalysisStatus: () => ({}), els: {}, ordinalToIso: value => String(value),
   regionSelectionHasActiveShapes: () => true, analysisRegionShapesSnapshot: () => [{ type: "circle", center: { lat: 0, lng: 0 }, radiusMeters: 1 }],
   analysisCatalogDatasetHash: () => "fixture", analysisContextReleaseHashes: hashes, analysisV2ArtifactHashes: hashes,
@@ -101,7 +101,7 @@ const context = vm.createContext({ runtime, state, startup: { fullCatalogReady: 
   analysisWitnessCountArtifactHashes: hashes, analysisColorArtifactHashes: hashes, analysisCoordinateEvidenceArtifactHashes: hashes,
   LOW_PRECISION_VALUES: new Set(["country", "unknown"]), ensureCatalogFacetWorker: () => worker,
   scheduleAnalysisCompute: (...args) => scheduled.push(args),
-  setTimeout(fn, delay) { assert.equal(delay, 30000); const id = ++nextTimer; timers.set(id, fn); return id; },
+  setTimeout(fn, delay) { assert.ok([30000, 8000, 15000, 45000].includes(delay)); const id = ++nextTimer; timers.set(id, fn); return id; },
   clearTimeout(id) { timers.delete(id); } });
 context.window = context;
 for (const name of ["contextLayerAnalysisStatus", "analysisContextReleaseHashes", "analysisV2ArtifactHashes", "analysisDurationArtifactHashes",
@@ -111,9 +111,10 @@ for (const name of ["contextLayerAnalysisStatus", "analysisContextReleaseHashes"
 context.analysisRegionShapesSnapshot = vm.runInContext("() => [{type:'circle',center:{lat:0,lng:0},radiusMeters:1}]", context);
 filters.encounters = vm.runInContext("({abduction:'any',being:'any',beingTypes:[]})", context);
 vm.runInContext(fs.readFileSync("analysis_session.js", "utf8"), context);
+vm.runInContext(fs.readFileSync("analysis_view.js", "utf8"), context);
 for (const name of ["getAnalysisFilterSnapshot", "analysisSessionNeutralFilters", "analysisWorkerFilterPayload",
   "catalogFacetWorkerFilterPayload", "analysisSessionCaptureSnapshot", "requireAnalysisSessionReady", "captureAnalysisSessionPopulation",
-  "initializeAnalysisSession", "analysisComputeCacheKey"]) vm.runInContext(actualFunction(name), context);
+  "initializeAnalysisSession", "analysisComputeCacheKey", "analysisResponseEnvelopeMatchesCurrentState", "computeAnalysisViaWorker"]) vm.runInContext(actualFunction(name), context);
 context.initializeAnalysisSession();
 const integration = context.UfoAnalysisSessionIntegration;
 const cloneIntoApp = value => vm.runInContext("JSON.parse(" + JSON.stringify(JSON.stringify(value)) + ")", context);
@@ -131,6 +132,20 @@ assert.equal(selected.filters.typeMode, "all");
 assert.equal(selected.areaFilter.active, false);
 assert.deepEqual([...context.analysisWorkerFilterPayload(selected).analysisSessionEventIds], ["later"]);
 assert.equal(JSON.stringify(context.catalogFacetWorkerFilterPayload(state.lastKeywordMatches, 1)), initialMap, "Applying an Analysis population cannot mutate the map payload");
+// Use the actual request and real view envelope checker rather than a baseline-
+// echoing mock. Whole-corpus structure is a result mode, not a request baseline.
+runtime.analysisRequestId = 0; runtime.analysisCancellationGeneration = 0; runtime.discardedWorkerResults = 0;
+for (const quickMode of [true, false]) {
+  const pendingCompute = context.computeAnalysisViaWorker(selected, { quickMode });
+  complete();
+  const acceptedCompute = await pendingCompute;
+  assert.ok(acceptedCompute, "A frozen selection's real worker envelope must be accepted");
+  assert.equal(acceptedCompute.result.summary.activeCount, 1);
+  assert.equal(acceptedCompute.analysisMode, "whole_corpus_structure");
+  assert.equal(acceptedCompute.result.summary.unmappedCount, 1, "Unmapped selected reports retain section eligibility distinctions");
+}
+assert.equal(runtime.discardedWorkerResults, 0);
+
 const selectedKey = context.analysisComputeCacheKey(selected);
 const second = integration.useSelection(cloneIntoApp({ eventIds: ["0"], label: "Epoch report", source: "fixture" }));
 complete(); await second;
