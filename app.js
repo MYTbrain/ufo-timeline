@@ -809,6 +809,10 @@
 
   function getCatalogEventById(eventId) {
     if (eventId == null || eventId === "") return null;
+    if (progressiveInitialMapActive() && runtime.progressiveById) {
+      const scopedEvent = runtime.progressiveById.get(String(eventId));
+      if (scopedEvent) return scopedEvent;
+    }
     if (catalogById.has(eventId)) return catalogById.get(eventId);
     const stringId = String(eventId);
     if (catalogById.has(stringId)) return catalogById.get(stringId);
@@ -1359,6 +1363,10 @@
     progressPercent: 0,
     previewInteractive: false,
     initialViewReady: false,
+    progressiveEnabled: false,
+    mapViewReady: false,
+    fullCatalogReady: false,
+    backgroundError: "",
   };
 
   const state = {
@@ -7668,6 +7676,9 @@
     document.documentElement.setAttribute("data-startup-step", runtime.startupTiming.currentStep || "");
     document.documentElement.setAttribute("data-startup-preview-interactive", startup.previewInteractive ? "true" : "false");
     document.documentElement.setAttribute("data-startup-initial-view-ready", startup.initialViewReady ? "true" : "false");
+    document.documentElement.setAttribute("data-startup-map-ready", startup.mapViewReady ? "true" : "false");
+    document.documentElement.setAttribute("data-startup-catalog-ready", startup.fullCatalogReady ? "true" : "false");
+    updateProgressiveCatalogUi();
     els.startupOverview.textContent = startup.overview;
     els.startupProgressFill.style.width = percent + "%";
     els.startupProgressLabel.textContent = percent + "%";
@@ -7691,7 +7702,8 @@
 
   function renderMapStartupOverlay(percent) {
     if (!els.mapStartupOverlay) return;
-    const ready = startup.phase === "Ready" && startup.initialViewReady && !startup.errorText;
+    const ready = startup.initialViewReady && !startup.errorText &&
+      (startup.phase === "Ready" || (startup.progressiveEnabled && startup.mapViewReady));
     // A provisional preview is useful for startup work, but it is intentionally
     // kept behind the cover. Dismiss only after the complete initial visual
     // state (catalog, map, traces, facilities, and tiles) reaches Ready.
@@ -8508,11 +8520,13 @@
   }
 
   function canonicalTraceRuntimeRequested() {
+    if (progressiveInitialMapActive()) return false;
     const config = canonicalWebArtifactsConfig();
     return config.enabled === true && config.traceRuntime === true;
   }
 
   function canonicalFilteredTraceAggregationRequested() {
+    if (progressiveInitialMapActive()) return false;
     const config = canonicalWebArtifactsConfig();
     return (
       config.enabled === true &&
@@ -8610,6 +8624,7 @@
   }
 
   function cachedCanonicalTraceEventIndexArtifactForRender() {
+    if (progressiveInitialMapActive()) return null;
     const status = canonicalTraceRuntimeStatusSnapshot();
     if (!status.eligible) {
       requestCanonicalTraceRuntimePreload();
@@ -11766,6 +11781,7 @@
   }
 
   function scheduleAnalysisComparisonUpdate(component) {
+    if (startup.progressiveEnabled && !startup.fullCatalogReady) return false;
     if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
     const result = runtime.analysisLastResult;
     if (!result || result.inferenceDeferred || !result.comparisonEvidence || result.comparisonEvidence.status !== "ready" ||
@@ -12006,6 +12022,7 @@
   }
 
   function computeAnalysisForCurrentView(reason) {
+    if (startup.progressiveEnabled && !startup.fullCatalogReady) return Promise.resolve(null);
     if (state.activeView !== "analysis" || !startup.initialViewReady || !runtime.analysisViewController) {
       return Promise.resolve(null);
     }
@@ -12123,6 +12140,7 @@
   }
 
   function scheduleAnalysisCompute(reason, options) {
+    if (startup.progressiveEnabled && !startup.fullCatalogReady) return false;
     if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
     runtime.analysisComputeScheduleGeneration += 1;
     runtime.analysisPendingRequest = null;
@@ -20083,8 +20101,12 @@
       return runtime.traceSequenceCacheValue;
     }
 
-    const mappedSequence = state.filteredMappedPlaybackEvents.slice();
-    if (!runtime.filteredMappedCatalogDateAsc) {
+    const scopedSequence = progressiveInitialMapActive();
+    const selectedIds = scopedSequence ? new Set(state.filteredMappedPlaybackEvents.map(function (event) { return String(event.event_id); })) : null;
+    const mappedSequence = scopedSequence
+      ? runtime.progressiveTraceOrder.filter(function (id) { return selectedIds.has(String(id)); }).map(getCatalogEventById)
+      : state.filteredMappedPlaybackEvents.slice();
+    if (!scopedSequence && !runtime.filteredMappedCatalogDateAsc) {
       mappedSequence.sort(eventComparatorAscending);
     }
 
@@ -24494,7 +24516,9 @@
     const mode = options && options.mode ? options.mode : "custom";
     const fullSelected = nextStart === extent.minOrdinal && nextEnd === extent.maxOrdinal;
 
-    if (mode === "full" || fullSelected) {
+    // A bounded startup window can equal the entire loaded snapshot without
+    // representing all time in the complete catalog that arrives later.
+    if (mode === "full" || (fullSelected && !progressiveInitialMapActive())) {
       state.timeRangeMode = "full";
       state.timeRangeStartOrdinal = extent.minOrdinal;
       state.timeRangeEndOrdinal = extent.maxOrdinal;
@@ -25022,7 +25046,7 @@
     els.mappedResultsCount.textContent = traceVisibilityPending ? "\u2026" : formatNumber(visibleMappedCatalog.length);
 
     const datasetExtent = state.fullCatalogExtent;
-    els.datasetSpan.textContent = datasetExtent
+    els.datasetSpan.textContent = progressiveInitialMapActive() ? "Full catalog preparing…" : datasetExtent
       ? datasetExtent.minIso + " -> " + datasetExtent.maxIso
       : "Loading...";
   }
@@ -28570,7 +28594,7 @@
 
     const facilityFilterActive = traceFacilityFilterEnabled();
     const initialRenderMode = resolveTraceRenderMode(rawSegments.length);
-    let viewportWindowed = traceRenderModeUsesViewportWindow(initialRenderMode) && Boolean(bounds);
+    let viewportWindowed = (progressiveInitialMapActive() || traceRenderModeUsesViewportWindow(initialRenderMode)) && Boolean(bounds);
     let sourceSegments = viewportWindowed
       ? rawSegments.filter(function (segment) {
         return traceSegmentMayIntersectBounds(segment, bounds);
@@ -28988,6 +29012,10 @@
 
   async function ingestCatalogShardProgressively(entries) {
     const rows = Array.isArray(entries) ? entries : [];
+    if (startup.progressiveEnabled && startup.mapViewReady && !startup.fullCatalogReady) {
+      await window.UfoProgressiveCatalogRuntime.ingestRows(rows, ingestCatalogShard, { maxBatchRows: 512, budgetMs: 8 });
+      return;
+    }
     for (let start = 0; start < rows.length; start += STARTUP_CATALOG_INGEST_BATCH_SIZE) {
       ingestCatalogShard(rows.slice(start, start + STARTUP_CATALOG_INGEST_BATCH_SIZE));
       if (start + STARTUP_CATALOG_INGEST_BATCH_SIZE < rows.length) {
@@ -28997,6 +29025,10 @@
   }
 
   function updateCatalogLoadingMessage() {
+    if (startup.progressiveEnabled && startup.mapViewReady) {
+      updateProgressiveCatalogUi();
+      return;
+    }
     if (startup.phase === "Building browser catalog") {
       setSearchStatus(
         "Building browser catalog: " +
@@ -29829,8 +29861,8 @@
     const keywordActive = Boolean(filters.keyword);
     const baseCatalog = [];
     const legendEventCounts = new Map();
-    let preserveDateAscending = runtime.catalogExactDayAscending;
-    for (const event of catalog) {
+    let preserveDateAscending = !progressiveInitialMapActive() && runtime.catalogExactDayAscending;
+    for (const event of progressiveInitialMapActive() ? runtime.progressiveEvents : catalog) {
       if (
         eventMatchesNonDateFilters(event, legendBaseFilters, keywordMatches) &&
         eventMatchesTimeRange(event)
@@ -30042,6 +30074,7 @@
   }
 
   async function refreshFilters() {
+    if (startup.progressiveEnabled && !startup.fullCatalogReady) return;
     const refreshStartedAt = performance.now();
     const generation = ++state.filterGeneration;
     const filterToken = ++state.filterToken;
@@ -30776,10 +30809,11 @@
     renderMapSelectionOverlay();
   }
 
-  function initializeFilters() {
-    populateSelect(els.sourceFilter, uniqueValues(catalog, "source"));
-    populateSelect(els.typeFilter, uniqueValues(catalog, "type"));
-    populateSelect(els.precisionFilter, uniqueValues(catalog, "location_precision"));
+  function initializeFilters(options) {
+    const values = options && options.filterValues;
+    populateSelect(els.sourceFilter, values ? values.sources : uniqueValues(catalog, "source"));
+    populateSelect(els.typeFilter, values ? values.types : uniqueValues(catalog, "type"));
+    populateSelect(els.precisionFilter, values ? values.precisions : uniqueValues(catalog, "location_precision"));
     Array.from(els.precisionFilter.options).forEach(function (option) {
       option.textContent = locationPrecisionDisplayLabel(option.value);
     });
@@ -32840,7 +32874,202 @@
     scheduleMapInvalidate();
   }
 
+  function progressiveStartupRequested() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("progressiveStartup") === "1" &&
+      !params.has("autosearch") && !params.has("autoselect") &&
+      Boolean(window.UFOStartupCatalogUI && window.UfoProgressiveCatalogRuntime);
+  }
+
+  function progressiveInitialMapActive() {
+    return startup.progressiveEnabled && !startup.fullCatalogReady && !runtime.progressivePromotion;
+  }
+
+  function updateProgressiveCatalogUi() {
+    if (!runtime.progressiveCatalogUi) return;
+    runtime.progressiveCatalogUi.update({
+      mapViewReady: startup.mapViewReady,
+      fullCatalogReady: startup.fullCatalogReady,
+      loaded: startup.ingestedCatalogShards,
+      total: startup.totalCatalogShards,
+      windowLabel: "Sep–Nov 1954",
+      backgroundError: startup.backgroundError,
+    });
+  }
+
+  async function loadProgressiveStartupProfile() {
+    const base = "./data/startup_profiles/france_1954_flap/";
+    const manifest = await fetchJson(base + "progressive_manifest.json", "Initial mapped view manifest");
+    const pin = manifest && manifest.artifact;
+    if (!pin || manifest.schemaId !== "ufo-progressive-startup-manifest-v1" ||
+        pin.gzipSha256 !== "cd7e56f1e1099ef194968783014dad337516777caf5e5334de61c125ee5cfe08" ||
+        manifest.sourcePins.globalTimingDecodedSha256 !== runtime.appConfig.traceChronologyEvidenceSha256 ||
+        manifest.counts.globalCatalog !== runtime.appConfig.normalizedCount) {
+      throw new Error("Initial mapped view does not match this catalog release.");
+    }
+    const url = resolveAssetPath(base + "progressive_view.json.gz");
+    const response = await fetch(url, { credentials: "same-origin" });
+    if (!response.ok) throw createStartupError("Initial mapped view returned HTTP " + response.status, url, "Reload to retry the initial map.");
+    let bytes = new Uint8Array(await response.arrayBuffer());
+    async function verify(expectedHash, expectedBytes) {
+      const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+      const hash = Array.from(digest, function (byte) { return byte.toString(16).padStart(2, "0"); }).join("");
+      if (hash !== expectedHash || bytes.byteLength !== expectedBytes) throw new Error("Initial mapped view integrity check failed.");
+    }
+    if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+      await verify(pin.gzipSha256, pin.gzipBytes);
+      bytes = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+    }
+    await verify(pin.decodedSha256, pin.decodedBytes);
+    const payload = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+    if (payload.schemaId !== "ufo-progressive-startup-view-v1" ||
+        payload.events.length !== manifest.counts.events || !Array.isArray(payload.traceEventOrder) ||
+        payload.events.some(function (event) { return !event.encounterEvidenceReady || !event.encounterEvidenceProvenanceReady; })) {
+      throw new Error("Initial mapped view has incomplete report annotations.");
+    }
+    runtime.progressiveManifest = manifest;
+    return payload;
+  }
+
+  async function initializeProgressiveStartup() {
+    startup.progressiveEnabled = true;
+    runtime.progressiveCatalogUi = window.UFOStartupCatalogUI.create({ document: document, onRetry: startProgressiveCatalogBackground });
+    await setStartupPhaseAndPaint("Preparing default map", "Loading the complete default date window. The full catalog will follow in the background.", 10);
+    runtime.appConfig = await measureStartupStep("config load", function () { return fetchJson("./data/app_config.json", "App config"); });
+    startup.appConfigLoaded = true;
+    state.currentTileProviderId = preferredTileProviderId(runtime.appConfig);
+    const results = await Promise.all([
+      measureStartupStep("verified initial mapped view", loadProgressiveStartupProfile),
+      ensureWorldReferenceData(),
+      loadCanonicalWebArtifactsRuntime(),
+      loadDetailQualityOverlayRuntime(),
+      loadAnalysisRepairDetailOverlayRuntime(),
+    ]);
+    const payload = results[0];
+    if (!canonicalWebArtifactsCanServePrimaryCatalog()) throw new Error("The full report manifests could not be prepared.");
+    runtime.catalogSource = "canonical_web";
+    runtime.progressiveEvents = payload.events.map(function (row) {
+      return Object.assign({}, row, { sort_ordinal: row.sort_date_iso ? isoToOrdinal(row.sort_date_iso) : null });
+    });
+    runtime.progressiveById = new Map(runtime.progressiveEvents.map(function (row) { return [String(row.event_id), row]; }));
+    runtime.progressiveTraceOrder = payload.traceEventOrder;
+    runtime.progressiveTiming = TRACE_CHRONOLOGY.createEvidenceIndex(payload.traceChronology);
+    runtime.traceChronologyEvidence = runtime.progressiveTiming;
+    runtime.traceChronologyStatus = "ready";
+    runtime.traceChronologyEvidenceUrl = resolveAssetPath("./data/startup_profiles/france_1954_flap/progressive_view.json.gz");
+    startup.totalCatalogShards = runtime.canonicalWebArtifacts.summaryManifest.length;
+    state.fullCatalogExtent = computeOrdinalExtent(runtime.progressiveEvents);
+    initializeMap();
+    populateBasemapOptions();
+    attachEventHandlers();
+    setBasemap(state.currentTileProviderId);
+    initializeFilters({ filterValues: payload.filterValues });
+    setTimeRange(isoToOrdinal(payload.dateRange.start), isoToOrdinal(payload.dateRange.end), {
+      mode: "custom", autofitVisible: false, clampAnchor: "start",
+    });
+    const filtered = buildFilteredCatalogState(null);
+    applyFilteredCatalogState(filtered.baseCatalog, filtered.keywordActive, {
+      preserveDateAscending: filtered.preserveDateAscending,
+      legendEventCounts: filtered.legendEventCounts, legendEventColorMode: filtered.legendEventColorMode,
+    });
+    finalizeFilteredCatalogState(null, { criticalOnly: true });
+    if (state.filteredMappedCatalog.length !== runtime.progressiveManifest.counts.defaultFilteredEvents) {
+      throw new Error("The initial map filter parity check failed.");
+    }
+    renderFilteredState();
+    await Promise.all(Object.keys(OVERLAY_DEFINITIONS).filter(function (id) { return state.overlayVisibility[id]; }).map(ensureOverlayLayer));
+    syncOverlayVisibility();
+    await Promise.all([window.UfoCropCircleBootstrap, window.UfoAnimalMutilationBootstrap].map(function (bootstrap) {
+      return bootstrap && typeof bootstrap.prepareInitialView === "function" ? bootstrap.prepareInitialView() : null;
+    }));
+    await finalizeInitialStartupVisuals();
+    startup.initialViewReady = true;
+    startup.mapViewReady = true;
+    startup.previewInteractive = true;
+    recordStartupMilestone("time to initial map usable");
+    recordStartupDecision("progressiveInitialMap", { reports: state.filteredMappedCatalog.length, scope: payload.scope, fullCatalogReady: false });
+    setStartupPhase("Map ready", "The default mapped view is ready. The complete catalog is preparing in the background.", 100);
+    writeStartupTimingExport(buildStartupTimingSummary());
+    window.dispatchEvent(new window.CustomEvent("ufo:timeline-map-ready", { detail: { scope: payload.scope, fullCatalogReady: false } }));
+    await waitForBrowserPaint();
+    startProgressiveCatalogBackground();
+  }
+
+  async function promoteProgressiveCatalog() {
+    // Population and filter state change together. No map recreation, fit, or
+    // default-filter reset is allowed after the visitor starts exploring.
+    runtime.progressivePromotion = true;
+    try {
+      runtime.traceSequenceCacheKey = "";
+      runtime.packedTraceRenderCacheKey = "";
+      const filtered = buildFilteredCatalogState(null);
+      applyFilteredCatalogState(filtered.baseCatalog, filtered.keywordActive, {
+        preserveDateAscending: filtered.preserveDateAscending,
+        legendEventCounts: filtered.legendEventCounts, legendEventColorMode: filtered.legendEventColorMode,
+      });
+      finalizeFilteredCatalogState(null, { criticalOnly: true });
+      await runDeferredStartupRefinement(null, { timelineDataVersion: state.timelineDataVersion, filterToken: state.filterToken });
+      await finalizeInitialStartupVisuals();
+      renderFilteredState();
+      startup.fullCatalogReady = true;
+      startup.backgroundError = "";
+      updateProgressiveCatalogUi();
+      setStartupPhase("Ready", "The complete catalog, search, and Analysis are ready.", STARTUP_PROGRESS.ready);
+      if (runtime.analysisViewController) runtime.analysisViewController.setAnalysisEnabled(true, "");
+      window.dispatchEvent(new window.CustomEvent("ufo:timeline-ready", { detail: { phase: "Ready" } }));
+      recordStartupMilestone("time to Ready");
+      finalizeStartupTimingSummary();
+      logStartupTimingSummary();
+      runtime.progressiveEvents = null;
+      runtime.progressiveById = null;
+      runtime.progressiveTraceOrder = null;
+      runtime.progressiveTiming = null;
+    } finally {
+      runtime.progressivePromotion = false;
+    }
+  }
+
+  function startProgressiveCatalogBackground() {
+    if (runtime.progressiveBackgroundPromise || startup.fullCatalogReady) return runtime.progressiveBackgroundPromise;
+    startup.backgroundError = "";
+    updateProgressiveCatalogUi();
+    runtime.progressiveBackgroundPromise = (async function () {
+      try {
+        await loadCatalog();
+        if (catalog.length !== runtime.progressiveManifest.counts.globalCatalog) throw new Error("The complete catalog count did not match its manifest.");
+        await promoteProgressiveCatalog();
+      } catch (error) {
+        startup.fullCatalogReady = false;
+        runtime.progressivePromotion = false;
+        startup.backgroundError = (error && error.message ? error.message : String(error)) + (error && error.url ? "\n" + error.url : "");
+        runtime.traceChronologyEvidence = runtime.progressiveTiming;
+        runtime.traceChronologyStatus = "ready";
+        runtime.traceChronologyEvidencePromise = null;
+        runtime.traceSequenceCacheKey = "";
+        runtime.packedTraceRenderCacheKey = "";
+        state.fullCatalogExtent = computeOrdinalExtent(runtime.progressiveEvents);
+        const filtered = buildFilteredCatalogState(null);
+        applyFilteredCatalogState(filtered.baseCatalog, filtered.keywordActive, {
+          preserveDateAscending: filtered.preserveDateAscending,
+          legendEventCounts: filtered.legendEventCounts, legendEventColorMode: filtered.legendEventColorMode,
+        });
+        finalizeFilteredCatalogState(null, { criticalOnly: true });
+        renderFilteredState();
+        if (runtime.analysisViewController) runtime.analysisViewController.setAnalysisEnabled(false, "The complete catalog is still preparing.");
+        if (runtime.progressiveCatalogUi) runtime.progressiveCatalogUi.dispose();
+        runtime.progressiveCatalogUi = window.UFOStartupCatalogUI.create({ document: document, onRetry: startProgressiveCatalogBackground });
+        // A failed optional background load must never cover the verified map.
+        setStartupPhase("Map ready", "The default map remains available. Retry loading the full catalog.", 100);
+      } finally {
+        runtime.progressiveBackgroundPromise = null;
+        updateProgressiveCatalogUi();
+      }
+    })();
+    return runtime.progressiveBackgroundPromise;
+  }
+
   async function loadCatalog() {
+    const preserveProgressiveMap = startup.progressiveEnabled && startup.mapViewReady;
     runtime.catalogExactDayAscending = true;
     runtime.lastCatalogExactDayEvent = null;
     runtime.timelineCatalogDisplayOrderDateAsc = false;
@@ -32849,6 +33078,7 @@
     runtime.resultsDisplayOrderCache = new WeakMap();
     runtime.resultsDisplayIndexCache = new WeakMap();
     runtime.catalogDateAscendingCache = new WeakMap();
+    if (!preserveProgressiveMap) {
     runtime.catalogSource = "legacy";
     await setStartupPhaseAndPaint("Loading config", "Fetching the hosted app configuration.", STARTUP_PROGRESS.config);
     runtime.appConfig = await measureStartupStep("config load", function () {
@@ -32857,6 +33087,7 @@
     startup.appConfigLoaded = true;
     state.currentTileProviderId = preferredTileProviderId(runtime.appConfig);
     renderStartupDiagnostics();
+    }
 
     await setStartupPhaseAndPaint("Loading report evidence",
       "Checking report corrections, source timing, encounters, and location labels.", STARTUP_PROGRESS.config + 1);
@@ -32869,7 +33100,13 @@
       measureStartupStep("reported encounter evidence load", loadEncounterEvidence),
       measureStartupStep("location label overlay load", loadLocationLabelOverlayRuntime),
     ]);
+    if (preserveProgressiveMap && (runtime.traceChronologyStatus !== "ready" || runtime.encounterStatus !== "ready")) {
+      if (runtime.traceChronologyStatus !== "ready") runtime.traceChronologyEvidencePromise = null;
+      if (runtime.encounterStatus !== "ready") runtime.encounterEvidencePromise = null;
+      throw new Error("Report evidence did not finish loading. The verified default map is still available.");
+    }
 
+    if (!preserveProgressiveMap) {
     await setStartupPhaseAndPaint("Preparing map", "Loading the world reference layer and checking map libraries.", STARTUP_PROGRESS.preparingMap);
     await measureStartupStep("prepare map", async function () {
       await ensureWorldReferenceData();
@@ -32917,12 +33154,14 @@
         }),
       ]);
     });
+    }
 
     runtime.packedPointsPromise = measureStartupStep("packed points preload", function () {
       return loadPackedPointsRuntime();
     });
     runtime.canonicalWebArtifactsPromise = measureStartupStep("canonical web artifact manifest preload", function () {
-      return loadCanonicalWebArtifactsRuntime();
+      return preserveProgressiveMap && canonicalWebArtifactsCanServePrimaryCatalog()
+        ? Promise.resolve(runtime.canonicalWebArtifacts) : loadCanonicalWebArtifactsRuntime();
     });
 
     await runtime.packedPointsPromise;
@@ -33005,6 +33244,7 @@
         : validatePackedPointsCatalogParity({ sampleLimit: 128 });
       recordStartupDecision("packedPointsCatalogParity", runtime.packedPointsCatalogParity);
     });
+    if (!preserveProgressiveMap) {
     const initialTimeRange = resolveInitialTimeRangePreference();
     setTimeRange(
       initialTimeRange && initialTimeRange.startOrdinal != null
@@ -33019,6 +33259,7 @@
         clampAnchor: "start",
       }
     );
+    }
     setSearchStatus("");
   }
 
@@ -33180,6 +33421,7 @@
   }
 
   async function applyStartupFitBeforeReady() {
+    if (startup.progressiveEnabled && startup.mapViewReady) return false;
     if (!runtime.map || !state.filteredMappedCatalog.length) return false;
     if (state.famousCaseId) return false;
     if (state.selectedEventId != null) return false;
@@ -33588,6 +33830,10 @@
     }
 
     ensureCatalogFacetWorker();
+    if (progressiveStartupRequested()) {
+      await initializeProgressiveStartup();
+      return;
+    }
     await loadCatalog();
     await setStartupPhaseAndPaint("Initializing filters", "Configuring filter controls and restoring view state.", STARTUP_PROGRESS.initializeFilters);
     measureStartupStepSync("initializeFilters()", function () {
@@ -33652,6 +33898,8 @@
       return;
     }
     startup.initialViewReady = true;
+    startup.mapViewReady = true;
+    startup.fullCatalogReady = true;
     setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.", STARTUP_PROGRESS.ready);
     if (runtime.analysisViewController) {
       runtime.analysisViewController.setAnalysisEnabled(true, "");

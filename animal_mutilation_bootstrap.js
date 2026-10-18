@@ -10,6 +10,7 @@
   let desiredEnabled = true;
   let desiredDateScope = "window";
   let defaultActivationStarted = false;
+  let initialViewPromise = null;
 
   function setStatus(message, isError) {
     if (!status) return;
@@ -120,12 +121,33 @@
     });
   }
 
+  function prepareInitialView() {
+    if (defaultActivationStarted) return initialViewPromise;
+    defaultActivationStarted = true;
+    initialViewPromise = Promise.resolve().then(function () {
+      if (typeof window.setContextLayerEnabled === "function") {
+        return window.setContextLayerEnabled("animals", desiredEnabled, "startup-default");
+      }
+      return desiredEnabled ? enableDesiredLayer() : setEnabled(false, "startup-default");
+    }).then(function (result) {
+      if (result && result.overlayAvailable === false) {
+        throw new Error(result.error || "The animal-report map overlay could not load.");
+      }
+      return result;
+    }).catch(function (error) {
+      if (desiredEnabled) reportError(error);
+      throw error;
+    });
+    return initialViewPromise;
+  }
+
   window.UfoAnimalMutilationBootstrap = Object.freeze({
     setEnabled: setEnabled,
     setDateScope: setDateScope,
     getDesiredEnabled: function () { return desiredEnabled; },
     getDesiredDateScope: function () { return desiredDateScope; },
     ensureLoaded: ensureRuntime,
+    prepareInitialView: prepareInitialView,
   });
 
   window.addEventListener("ufo:animal-mutilation-statechange", function (event) {
@@ -153,14 +175,6 @@
 
   setDesiredToggleState(true);
   window.addEventListener("ufo:timeline-ready", function () {
-    if (defaultActivationStarted) return;
-    defaultActivationStarted = true;
-    if (typeof window.setContextLayerEnabled === "function") {
-      window.setContextLayerEnabled("animals", true, "startup-default").catch(function (error) {
-        if (desiredEnabled) reportError(error);
-      });
-      return;
-    }
-    enableDesiredLayer().catch(reportError);
+    prepareInitialView().catch(function () {});
   }, { once: true });
 })();

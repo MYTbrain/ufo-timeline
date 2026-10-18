@@ -28,7 +28,7 @@ function fixture() {
   const context = vm.createContext({ console: { error() {} }, Promise, Date, Object, WeakMap, Error,
     startup, runtime, state, STARTUP_PROGRESS: { config: 2, preparingMap: 8 },
     fetchJson: async () => ({ encounterEvidence: { enabled: true } }),
-    preferredTileProviderId: () => "default", renderStartupDiagnostics() {},
+    preferredTileProviderId: () => "default", renderStartupDiagnostics() {}, progressiveStartupRequested: () => false,
     measureStartupStep: (_name, fn) => fn(),
     setStartupPhaseAndPaint: async phase => { startup.phase = phase; calls.push(phase); if (phase === "Preparing map") throw boundary; },
     setStartupFailure: error => { startup.phase = "Failed"; calls.push({ failure: error.message }); },

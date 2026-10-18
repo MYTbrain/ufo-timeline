@@ -32,6 +32,9 @@ META = ROOT / "releases" / RELEASE
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
 OLD_ANIMALS = ORIGIN + "/releases/animal-mutilations-v1-20260812/"
 NUCLEAR_EXTENSION = "data/analysis_comparisons/nuclear_extension_v1.json.gz"
+PROGRESSIVE_PROFILE = "data/startup_profiles/france_1954_flap"
+PROGRESSIVE_MANIFEST = PROGRESSIVE_PROFILE + "/progressive_manifest.json"
+PROGRESSIVE_VIEW = PROGRESSIVE_PROFILE + "/progressive_view.json.gz"
 
 
 def require(ok, message):
@@ -85,6 +88,58 @@ def add_nuclear_extension_pages(comparisons, pages, pin):
     extension["url"] = "./" + NUCLEAR_EXTENSION
 
 
+def add_progressive_startup_pages(pages, pin, uploads):
+    """Deliver only the small derived view, pinned to this exact catalog release."""
+    manifest_path = ROOT / PROGRESSIVE_MANIFEST
+    manifest = load(manifest_path)
+    require(manifest["schemaId"] == "ufo-progressive-startup-manifest-v1"
+            and manifest["profileId"] == "france_1954_flap"
+            and manifest["scope"] == "mapped_reports_in_initial_time_window",
+            "Progressive startup manifest identity drift")
+    require(manifest["dateRange"] == {"start": "1954-09-01", "end": "1954-11-30"},
+            "Progressive startup window drift")
+    artifact = manifest["artifact"]
+    require(artifact["file"] == Path(PROGRESSIVE_VIEW).name, "Unexpected progressive startup filename")
+    source = ROOT / PROGRESSIVE_VIEW
+    compressed = source.read_bytes()
+    require(len(compressed) < 1024 * 1024, "Progressive startup view exceeds its one MiB bound")
+    require(len(compressed) == artifact["gzipBytes"]
+            and hashlib.sha256(compressed).hexdigest() == artifact["gzipSha256"],
+            "Progressive startup gzip pin drift")
+    decoded = gzip.decompress(compressed)
+    require(len(decoded) == artifact["decodedBytes"]
+            and hashlib.sha256(decoded).hexdigest() == artifact["decodedSha256"],
+            "Progressive startup decoded pin drift")
+    payload = json.loads(decoded)
+    require(payload["schemaId"] == "ufo-progressive-startup-view-v1"
+            and all(payload[key] == manifest[key] for key in ("profileId", "scope", "dateRange", "sourcePins")),
+            "Progressive startup payload identity drift")
+    require(manifest["counts"]["globalCatalog"] == 702893
+            and len(payload["events"]) == manifest["counts"]["events"] == manifest["counts"]["mappedEvents"],
+            "Progressive startup count drift")
+    require(manifest["policies"]["fullCatalogReady"] is False
+            and manifest["policies"]["unmappedReportsIncluded"] is False
+            and manifest["policies"]["canonicalSourcesMutated"] is False,
+            "Progressive startup scope policy drift")
+    summary_prefix = PREFIX + "/data/canonical_web/summary_shards/"
+    expected_shards = sorted(
+        ({key: row[key] for key in ("key", "bytes", "sha256")}
+         for row in uploads.values() if row["key"].startswith(summary_prefix)), key=lambda row: row["key"])
+    actual_shards = sorted(manifest["sourcePins"]["effectiveSummaryShards"], key=lambda row: row["key"])
+    require(len(expected_shards) == 71 and actual_shards == expected_shards,
+            "Progressive startup catalog release pins drift")
+    for row in manifest["sourcePins"]["files"]:
+        relative = Path(row["path"])
+        require(not relative.is_absolute() and ".." not in relative.parts,
+                "Unsafe progressive startup source path")
+        path = ROOT / relative
+        require(path.is_file() and path.stat().st_size == row["bytes"] and sha(path) == row["sha256"],
+                "Progressive startup dependency pin drift: " + row["path"])
+    for logical, path in ((PROGRESSIVE_MANIFEST, manifest_path), (PROGRESSIVE_VIEW, source)):
+        pages[logical] = path
+        pin(path, "bounded initial mapped view derived from the current pinned catalog and chronology")
+
+
 def validate_refresh(previous, plan):
     require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
     old_paths = {r["path"] for r in previous["pages"]}
@@ -93,6 +148,8 @@ def validate_refresh(previous, plan):
         "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
         "encounter_evidence.js", "encounter_map.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
         NUCLEAR_EXTENSION,
+        "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
+        PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
     }, "Candidate file inventory changed beyond the reviewed runtime assets")
 
@@ -128,6 +185,7 @@ def assemble(check_only=False):
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
+                   "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
         pages[name] = ROOT / name
@@ -269,6 +327,7 @@ def assemble(check_only=False):
     config["analysisRepairDetailOverlay"] = dict(repair_contract, enabled=True, gzipUrl=detail_url)
     config["analysisRepairDetailOverlay"].pop("file", None)
     page_json("data/app_config.json", config)
+    add_progressive_startup_pages(pages, pin, uploads)
 
     # A frozen manifest can be published both at its Pages lookup location and
     # at the immutable delivery prefix used by its explicit URLs.

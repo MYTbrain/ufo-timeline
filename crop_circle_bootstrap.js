@@ -12,6 +12,7 @@
   let desiredEnabled = true;
   let desiredDateScope = "window";
   let defaultActivationStarted = false;
+  let initialViewPromise = null;
 
   if (window.L && typeof window.L.map === "function") {
     const createLeafletMap = window.L.map;
@@ -194,12 +195,33 @@
     });
   }
 
+  function prepareInitialView() {
+    if (defaultActivationStarted) return initialViewPromise;
+    defaultActivationStarted = true;
+    initialViewPromise = Promise.resolve().then(function () {
+      if (typeof window.setContextLayerEnabled === "function") {
+        return window.setContextLayerEnabled("crops", desiredEnabled, "startup-default");
+      }
+      return desiredEnabled ? enableDesiredLayer() : setEnabled(false, "startup-default");
+    }).then(function (result) {
+      if (result && result.overlayAvailable === false) {
+        throw new Error(result.error || "The crop-circle map overlay could not load.");
+      }
+      return result;
+    }).catch(function (error) {
+      if (desiredEnabled) reportError(error);
+      throw error;
+    });
+    return initialViewPromise;
+  }
+
   window.UfoCropCircleBootstrap = Object.freeze({
     setEnabled: setEnabled,
     setDateScope: setDateScope,
     getDesiredEnabled: function () { return desiredEnabled; },
     getDesiredDateScope: function () { return desiredDateScope; },
     ensureLoaded: ensureLayerLoaded,
+    prepareInitialView: prepareInitialView,
   });
 
   window.addEventListener("ufo:crop-circle-statechange", function (event) {
@@ -217,14 +239,6 @@
 
   setDesiredButtonState(true);
   window.addEventListener("ufo:timeline-ready", function () {
-    if (defaultActivationStarted) return;
-    defaultActivationStarted = true;
-    if (typeof window.setContextLayerEnabled === "function") {
-      window.setContextLayerEnabled("crops", true, "startup-default").catch(function (error) {
-        if (desiredEnabled) reportError(error);
-      });
-      return;
-    }
-    enableDesiredLayer().catch(reportError);
+    prepareInitialView().catch(function () {});
   }, { once: true });
 })();
