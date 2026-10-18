@@ -760,7 +760,7 @@
         "role": "shared effective summary shard"
       }
     ],
-    "coveragePolicy": "Eligible exact Gregorian report dates and all candidate days in their represented year-months; report dates have a \u00b11-day ephemeris halo for full civil-UTC uncertainty. Atlas stores physical quantities, not source clocks, filtered counts, zodiac bins, observed visibility or houses.",
+    "coveragePolicy": "Eligible exact Gregorian report dates and all candidate days in their represented year-months; report dates have a ±1-day ephemeris halo for full civil-UTC uncertainty. Atlas stores physical quantities, not source clocks, filtered counts, zodiac bins, observed visibility or houses.",
     "float32RatePolicy": "Rates within1e-7 degree/day of classification thresholds are resolved against the original double-precision ephemeris at query time.",
     "storage": {
       "canonical": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\ephemeris_atlas_v1.bin.gz",

@@ -14,9 +14,10 @@ const require = createRequire(import.meta.url);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
 const argument = (flag, fallback) => args.includes(flag) ? args[args.indexOf(flag) + 1] : fallback;
-const evidenceRoot = path.resolve(argument("--evidence-root", "C:/Users/jarod/Desktop/UFO Timeline map tool/data/research/encounters-20261013/validated/reviewed"));
+const evidenceRoot = path.resolve(argument("--evidence-root", path.join(root, "data/encounters")));
 const planPath = path.resolve(argument("--delivery-plan", path.join(root, "releases/workspace-analysis-20261008/delivery_plan.json")));
 const outputPath = path.resolve(argument("--output", path.join(root, "docs/qa/encounters-20261013/corpus-runtime.json")));
+assert.ok(!fs.existsSync(outputPath), "Refusing to overwrite a retained runtime audit; select a new --output path");
 const chronologyRoot = args.includes("--chronology-root") ? path.resolve(argument("--chronology-root", "")) : null;
 const sha256 = (bytes) => crypto.createHash("sha256").update(bytes).digest("hex");
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
@@ -38,7 +39,7 @@ assert.equal(sha256(packed), manifest.artifact.gzipSha256);
 assert.equal(sha256(decoded), manifest.artifact.decodedSha256);
 const payload = JSON.parse(decoded.toString("utf8"));
 const api = require(path.join(root, "encounter_evidence.js"));
-const index = api.createIndex(payload);
+const index = api.createIndex(payload, manifest.attributeReviews, manifest.artifact.decodedSha256);
 const originsManifest = readJson(path.join(root, "data/encounters/manifest.json")).labelOrigins;
 let originsIndex = null;
 if (originsManifest) {
@@ -280,6 +281,7 @@ const receipt = { schemaId: "ufo-encounter-corpus-runtime-audit-v1", generatedAt
   ordinalPolicy: "App inputs are Unix-day ordinals (1970-01-01=0); the worker alone converts to the statistics Gregorian-day epoch.",
   catalogReports: rowsRead, summaryShards: shards.length, datedOrdinalReports: dateOrdinalRows, sourceCounts, sourceJoins: joins,
   optionalMetadata: { heightIndexedReports: sparseInputs.filter((row) => row.encounterHeightFeet != null).length,
+    disputedHeightReportsWithheld: (manifest.attributeReviews && manifest.attributeReviews.rows || []).length,
     uniformIndexedReports: sparseInputs.filter((row) => row.encounterUniform != null).length, unindexedMetadataNullRows, sourceDateExcludedReports: dateExcludedReports },
   chronology: chronologyPins, comparisonAtlas: atlasReceipts, evidenceModes,
   evidence: { releaseId: manifest.releaseId, rows: index.rowCount, manifest: filePin(manifestPath), gzip: filePin(evidencePath), decodedSha256: sha256(decoded) },

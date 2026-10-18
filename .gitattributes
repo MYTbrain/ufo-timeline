@@ -225,3 +225,4 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /scripts/encounter_quality_supplements.py -text
 /scripts/build_encounter_evidence.py -text
 /docs/qa/encounter-quality-20261017/** -text
+/docs/qa/encounter-release-20261018/** -text

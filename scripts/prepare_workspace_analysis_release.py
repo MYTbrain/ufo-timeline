@@ -31,6 +31,7 @@ PAGES = ROOT / ".tmp" / (RELEASE + "-pages")
 META = ROOT / "releases" / RELEASE
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
 OLD_ANIMALS = ORIGIN + "/releases/animal-mutilations-v1-20260812/"
+NUCLEAR_EXTENSION = "data/analysis_comparisons/nuclear_extension_v1.json.gz"
 
 
 def require(ok, message):
@@ -57,6 +58,43 @@ def write(path, value):
 
 def release_url(logical):
     return ORIGIN + "/" + PREFIX + "/" + logical
+
+
+def add_nuclear_extension_pages(comparisons, pages, pin):
+    extension = comparisons["artifacts"].get("nuclearExtension")
+    if not extension:
+        return
+    filename = Path(NUCLEAR_EXTENSION).name
+    require(Path(extension["file"]).name == filename, "Unexpected nuclear extension filename")
+    source = ROOT / NUCLEAR_EXTENSION
+    compressed = source.read_bytes()
+    require(len(compressed) == extension["gzipBytes"]
+            and hashlib.sha256(compressed).hexdigest() == extension["gzipSha256"],
+            "Nuclear extension gzip pin drift")
+    decoded = gzip.decompress(compressed)
+    require(len(decoded) == extension["bytes"]
+            and hashlib.sha256(decoded).hexdigest() == extension["sha256"],
+            "Nuclear extension decoded pin drift")
+    payload = json.loads(decoded)
+    require(payload["schemaId"] == extension["schemaId"]
+            and payload["releaseId"] == extension["releaseId"],
+            "Nuclear extension identity drift")
+    pages[NUCLEAR_EXTENSION] = source
+    pin(source, "reviewed additive nuclear context extension delivered through Pages")
+    extension["file"] = "./" + filename
+    extension["url"] = "./" + NUCLEAR_EXTENSION
+
+
+def validate_refresh(previous, plan):
+    require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
+    old_paths = {r["path"] for r in previous["pages"]}
+    new_paths = {r["path"] for r in plan["pages"]}
+    require(old_paths <= new_paths and new_paths - old_paths <= {
+        "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
+        "encounter_evidence.js", "encounter_map.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
+        NUCLEAR_EXTENSION,
+        "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
+    }, "Candidate file inventory changed beyond the reviewed runtime assets")
 
 
 def assemble(check_only=False):
@@ -219,11 +257,9 @@ def assemble(check_only=False):
     facility = comparisons["artifacts"]["facilities"]
     facility["file"] = facility["sourceFile"]
     comparisons["ephemerisAtlas"]["file"] = release_url("data/analysis_comparisons/ephemeris_atlas_v1.bin.gz")
-    if comparisons["artifacts"].get("nuclearExtension"):
-        extension = comparisons["artifacts"]["nuclearExtension"]
-        source = ROOT / "data/analysis_comparisons" / Path(extension["file"]).name
-        require(sha(source) == extension["gzipSha256"], "Nuclear extension hash drift")
-        extension["file"] = upload(source, "data/analysis_comparisons/" + source.name)
+    # Keep the small extension in Pages, as in the validated phone preview.
+    # Existing versioned R2 object inventory and immutable bytes stay unchanged.
+    add_nuclear_extension_pages(comparisons, pages, pin)
     page_json("data/analysis_comparisons/manifest.json", comparisons)
 
     # Sparse original-detail corrections apply after the retained quality overlay.
@@ -331,14 +367,7 @@ def main():
         if args.stage or args.refresh_stage:
             require(not args.check_only, "Cannot stage a check-only plan")
             if args.refresh_stage:
-                require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
-                old_paths = {r["path"] for r in previous["pages"]}
-                new_paths = {r["path"] for r in plan["pages"]}
-                require(old_paths <= new_paths and new_paths - old_paths <= {
-                    "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
-                    "encounter_evidence.js", "encounter_map.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
-                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
-                }, "Candidate file inventory changed beyond the reviewed timing, radar and guided Help assets")
+                validate_refresh(previous, plan)
             else:
                 require(not PAGES.exists(), "Refusing extra/overwritten Pages candidate")
             for row in plan["pages"]:

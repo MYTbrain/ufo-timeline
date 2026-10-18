@@ -63,4 +63,18 @@ const excludedInspection = await send({ ...query, type: "inspectEncounterReports
 assert.deepEqual(excludedInspection.result.eventIds, ["2"]);
 const selected = await send({ ...query, type: "computeAnalysis", filters: { ...query.filters, encounterSelectionIds: ["2"] } });
 assert.equal(selected.result.summary.activeCount, 1);
+await send({ type: "addCatalogFacetRows", rows: [{ ...rows[0], eventId: 4, mapped: false, lat: null, lon: null,
+  encounterBeingMask: 0, encounterAbductionCode: 0, encounterCraftAssociationCode: 0 }] });
+const reviewedQuery = { ...query, type: "inspectEncounterReports", reviewedContextEventIds: ["1", "3", "4"],
+  inspection: { domain: "reviewed_context", reviewStatus: "all", offset: 0, limit: 1 } };
+const reviewedPage = await send(reviewedQuery);
+assert.equal(reviewedPage.result.total, 2, "Reviewed inventory still honors the current source filter");
+assert.deepEqual(Array.from(reviewedPage.result.eventIds), ["1"]);
+const reviewedNext = await send({ ...reviewedQuery, inspection: { ...reviewedQuery.inspection, offset: 1 } });
+assert.deepEqual(Array.from(reviewedNext.result.eventIds), ["4"], "Nonvisual, unmapped source context is reachable without inventing a being classification");
+const reviewedAll = await send({ ...reviewedQuery, inspection: { ...reviewedQuery.inspection, allIds: true } });
+assert.deepEqual(Array.from(reviewedAll.result.eventIds), ["1", "4"], "Applying reviewed reports uses the exact filtered IDs, not just the visible page");
+assert.equal((await send({ ...reviewedQuery, reviewedContextEventIds: [] })).result.total, 0);
+const reviewOutsideWindow = await send({ ...reviewedQuery, fullTimeRange: false, timeRangeMode: "window", timeRangeStartOrdinal: day + 2, timeRangeEndOrdinal: day + 3 });
+assert.equal(reviewOutsideWindow.result.total, 0);
 console.log("Worker metadata, atlas, native contexts, exact cell/coverage drilldowns, bounded pages and explicit selection scopes passed.");

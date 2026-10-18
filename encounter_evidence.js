@@ -334,6 +334,86 @@
     return html;
   }
 
+  // The same source-reviewed context is available from a map report and Results
+  // as from Analysis. Associations stay separate from the base classifications.
+  function renderReviewedContext(value, enrichmentIndex) {
+    const id = identifier(value && typeof value === "object" ? (value.event_id == null ? value.eventId : value.event_id) : value);
+    const enrichment = id && enrichmentIndex && enrichmentIndex.ready === true && typeof enrichmentIndex.get === "function" && enrichmentIndex.get(id);
+    const links = enrichment && Array.isArray(enrichment.links) ? enrichment.links : [];
+    if (!links.length) return "";
+    const label = function (text) { return String(text == null ? "Not recorded" : text).replace(/_/g, " "); };
+    const text = function (value) {
+      if (value == null || value === "") return "Not recorded";
+      if (Array.isArray(value)) return value.map(text).join("; ");
+      if (typeof value === "object") return Object.keys(value).map(function (key) { return label(key) + ": " + text(value[key]); }).join("; ");
+      return String(value);
+    };
+    const paragraph = function (name, value) { return '<p class="note-copy"><strong>' + escapeHtml(name) + ':</strong> ' + escapeHtml(text(value)) + '</p>'; };
+    const publicSource = function (entry) {
+      const source = entry && entry.source || {}, title = entry && entry.title || source.title || "Source title unavailable";
+      let link = escapeHtml(title);
+      if (typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
+        link = '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(title) + '</a>';
+      }
+      const locator = entry && entry.locator;
+      const located = locator && typeof locator === "object" ? [Number.isInteger(locator.pageIndex) ? "PDF page " + (locator.pageIndex + 1) : "", locator.section ? "section " + locator.section : ""].filter(Boolean).join(" · ") : locator;
+      return '<p class="note-copy">' + link + (located ? ' · ' + escapeHtml(text(located)) : '') + '</p>' +
+        (entry && entry.upstreamCitation ? paragraph("Cited upstream source", entry.upstreamCitation) : '') +
+        (source.dependency ? paragraph("Source relationship", source.dependency) : '');
+    };
+    const accepted = links.filter(function (link) { return link.acceptedForRuntime === true; }).length;
+    return '<details class="encounter-reviewed-context"><summary>Reviewed case context · ' + accepted + ' accepted links · ' + (links.length - accepted) + ' candidate or held links</summary>' +
+      '<p class="note-copy">These source associations add context to existing reports. They do not add independent incidents or change encounter filter classifications. Conflicting accounts and held associations remain visible.</p>' + links.map(function (link) {
+        const content = ['<article class="encounter-reviewed-link"><h5>' + escapeHtml(link.case && link.case.title || "Case title unavailable") + '</h5>',
+          paragraph("Association", link.acceptedForRuntime === true ? "Reviewed case association" : "Candidate or held association; not accepted"),
+          paragraph("Status", label(link.status))];
+        if (link.originalStatus && link.originalStatus !== link.status) content.push(paragraph("Prior decision retained", label(link.originalStatus)));
+        if (link.reviewFlags && link.reviewFlags.length) content.push(paragraph("Association review notes", link.reviewFlags.map(label)));
+        (link.episodes || []).forEach(function (episode) {
+          const date = episode.date || {}, time = episode.time || {}, site = episode.site || {};
+          content.push('<details class="encounter-reviewed-episode"><summary>Episode · ' + escapeHtml(text(date.raw || date.startIso)) + '</summary>',
+            paragraph("Episode scope", label(episode.scope)), paragraph("Reported date", date.raw || date.startIso), paragraph("Date precision", label(date.precision)),
+            paragraph("Reported clock", time.raw), paragraph("Clock precision", label(time.precision)),
+            paragraph("Verified UTC", time.utcVerified === true ? "Source-verified interval" : "Not established"),
+            paragraph("Reported locality", site.raw), paragraph("Verified exact site", site.sourceVerified === true ? "Source verified" : "Not established"),
+            paragraph("Recall method", label(episode.recallMethod)), paragraph("Reported interaction", label(episode.contactKind)), paragraph("Witness aboard craft", label(episode.onboardStatus)));
+          if (date.conflicts && date.conflicts.length) content.push(paragraph("Date conflicts retained", date.conflicts));
+          if (time.conflicts && time.conflicts.length) content.push(paragraph("Clock conflicts retained", time.conflicts));
+          (episode.recallStages || []).forEach(function (stage) { content.push(paragraph("Recall stage", [label(stage.method), stage.content, stage.recalledAt ? "Recorded/recalled " + stage.recalledAt : "", stage.status ? label(stage.status) : ""].filter(Boolean).join(" · "))); });
+          if (episode.reviewFlags && episode.reviewFlags.length) content.push(paragraph("Episode review notes", episode.reviewFlags.map(label)));
+          content.push('</details>');
+        });
+        (link.entityObservations || []).forEach(function (entity) {
+          content.push('<details class="encounter-reviewed-entity"><summary>' + escapeHtml(entity.label || "Reported entity description") + '</summary>',
+            paragraph("Reported descriptions", (entity.reportedTypes || []).map(function (key) { return beingLabel(key); })),
+            paragraph("Observation scope", label(entity.scope)), paragraph("Reported count", entity.count),
+            paragraph("Craft association", label(entity.craftAssociation)));
+          (entity.attributes || []).forEach(function (attribute) {
+            content.push(paragraph(label(attribute.field), text(attribute.value) + (attribute.unit ? ' ' + attribute.unit : '') + ' · attribution ' + label(attribute.attribution) + (attribute.subjectScope ? ' · subject ' + label(attribute.subjectScope) : '')));
+          });
+          if (entity.reviewFlags && entity.reviewFlags.length) content.push(paragraph("Description review notes", entity.reviewFlags.map(label)));
+          content.push('</details>');
+        });
+        (link.sourceEntries || []).forEach(function (entry) {
+          content.push(publicSource(entry));
+          if (entry.reviewFlags && entry.reviewFlags.length) content.push(paragraph("Original source review notes (retained)", entry.reviewFlags.map(label)));
+        });
+        (link.qualityReviews || []).forEach(function (review) {
+          const sources = new Map((review.sourceEntries || []).map(function (entry) { return [entry.entryId, entry]; }));
+          content.push('<details class="encounter-additional-source-review"><summary>Additional source review · ' + escapeHtml(label(review.disposition)) + '</summary>');
+          if (review.associationRevision) content.push(paragraph("Association review", "This review resolves the association; the earlier candidate decision and conflicting dates remain preserved."));
+          (review.findings || []).forEach(function (fact) {
+            content.push('<div class="encounter-source-finding">' + paragraph(label(fact.field), fact.text));
+            if (sources.has(fact.sourceEntryId)) content.push(publicSource(sources.get(fact.sourceEntryId)));
+            content.push('</div>');
+          });
+          if (review.rationale) content.push(paragraph("Review basis", review.rationale));
+          content.push('</details>');
+        });
+        content.push('</article>'); return content.join("");
+      }).join("") + '</details>';
+  }
+
   async function verifyHash(bytes, expectedHash, label) {
     requireValue(validHash(expectedHash) && typeof crypto !== "undefined" && crypto.subtle && typeof crypto.subtle.digest === "function", label + " integrity pin or verification is unavailable");
     const digest = await crypto.subtle.digest("SHA-256", bytes);
@@ -361,5 +441,5 @@
 
   return Object.freeze({ SCHEMA_ID, RELEASE_ID, CATALOG_COUNT, TAXONOMY, ALL_BEING_MASK, ABDUCTION_CODES, ASSOCIATION_CODES,
     createIndex, createLabelOriginsIndex, createEnrichmentIndex, decorate, normalizeFilters, matches, beingMask, beingTypes, beingLabel, abductionLabel, craftAssociationLabel,
-    renderBadges, renderEvidence, decodeEvidenceResponse, escapeHtml });
+    renderBadges, renderEvidence, renderReviewedContext, decodeEvidenceResponse, escapeHtml });
 });

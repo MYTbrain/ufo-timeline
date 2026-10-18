@@ -9388,7 +9388,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-13-encounter-map-v6");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-encounter-quality-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -10056,6 +10056,9 @@
         return false;
       },
       onEncounterReportsRequested: requestEncounterReports,
+      onEncounterReviewSummaryRequested: function () {
+        return runtime.encounterReviewSummary || { status: "unavailable" };
+      },
       onEncounterReportOpen: openEncounterInspectedReport,
       onEncounterSelectionApply: applyEncounterInspectedSelection,
       onEncounterSettingsChange: function (settings) {
@@ -11587,6 +11590,12 @@
 
   function requestEncounterReports(requestValue, optionsValue) {
     const request = requestValue || {}, options = optionsValue || {}, snapshot = getAnalysisFilterSnapshot();
+    let reviewedContextEventIds = null;
+    if (request.domain === "reviewed_context") {
+      const mode = request.reviewStatus || "all";
+      if (!["all", "accepted", "held"].includes(mode) || !runtime.encounterReviewIds) return Promise.reject(new Error("Reviewed source context is unavailable."));
+      reviewedContextEventIds = runtime.encounterReviewIds[mode];
+    }
     const worker = ensureCatalogFacetWorker(), workerFilters = catalogFacetWorkerFilterPayload(state.lastKeywordMatches, snapshot.generation);
     if (!worker || runtime.catalogFacetWorkerRowsQueued < catalog.length) return Promise.reject(new Error("The catalog is still indexing."));
     const requestId = "encounter-inspection-" + (++runtime.catalogFacetWorkerRequestId), signature = analysisComputeCacheKey(snapshot);
@@ -11613,6 +11622,7 @@
       if (options.signal) { if (options.signal.aborted) { abort(); return; } options.signal.addEventListener("abort", abort, { once: true }); }
       worker.addEventListener("message", listener);
       worker.postMessage({ type: "inspectEncounterReports", requestId, inspection: request, generation: snapshot.generation,
+        reviewedContextEventIds,
         filters: workerFilters, keywordEventIds: workerFilters.keywordEventIds, lowPrecisionValues: workerFilters.lowPrecisionValues,
         comparisonOptions: Object.assign({}, runtime.analysisComparisonOptions),
         encounterEvidenceMode: runtime.analysisEncounterEvidenceMode || "all",
@@ -19594,7 +19604,7 @@
       escapeHtml(relationship.label) + (craft ? ' · <span class="encounter-craft-sample" style="--encounter-craft-color:' + escapeHtml(craft.color) + '"></span> ' + escapeHtml(craft.label) : '') + '</p><small>' + escapeHtml(event.source || "Unknown source") + ' · ' + escapeHtml(point ? "Mapped: " + point.locationPrecision.replaceAll("_", " ") : "Unmapped: no location invented") +
       (event.encounterOccurrenceDateExcluded ? ' · Source date held from chronology' : '') + '</small><p>' +
       (traces.length ? formatNumber(traces.length) + ' current chronological report links share this report ID.' : 'No current detailed trace has this report as an endpoint.') +
-      '</p><div class="encounter-map-actions"><button type="button" data-encounter-open-report="' + escapeHtml(event.event_id) + '">Full details &amp; evidence</button>' +
+      '</p>' + ENCOUNTERS.renderReviewedContext(event, runtime.encounterEnrichment) + '<div class="encounter-map-actions"><button type="button" data-encounter-open-report="' + escapeHtml(event.event_id) + '">Full details &amp; evidence</button>' +
       (point ? '<button type="button" data-encounter-locate-report="' + escapeHtml(event.event_id) + '">Locate</button>' : '') +
       (traces.length ? '<button type="button" data-encounter-highlight-report="' + escapeHtml(event.event_id) + '">Highlight existing links</button>' : '') + '</div></article>';
   }
@@ -19735,7 +19745,37 @@
             const enrichmentUrl = new URL(enrichment.file, new URL(config.manifestUrl, document.baseURI));
             const enrichedPayload = await ENCOUNTERS.decodeEvidenceResponse(await fetch(enrichmentUrl.toString(), { credentials: "same-origin" }), enrichment);
             runtime.encounterEnrichment = ENCOUNTERS.createEnrichmentIndex(enrichedPayload, index, runtime.encounterManifest.sha256);
-          } catch (error) { runtime.encounterEnrichment = null; console.warn("[encounters] Reviewed case enrichment unavailable.", error.message); }
+            const allIds = Array.from(new Set(enrichedPayload.reportLinks.map(function (link) { return String(link.eventId); })));
+            const acceptedIds = [], heldIds = [];
+            let acceptedLinks = 0, heldLinks = 0;
+            allIds.forEach(function (id) {
+              const links = runtime.encounterEnrichment.get(id).links;
+              if (links.some(function (link) { return link.acceptedForRuntime; })) acceptedIds.push(id);
+              if (links.some(function (link) { return !link.acceptedForRuntime; })) heldIds.push(id);
+              links.forEach(function (link) { if (link.acceptedForRuntime) acceptedLinks += 1; else heldLinks += 1; });
+            });
+            runtime.encounterReviewIds = { all: allIds, accepted: acceptedIds, held: heldIds };
+            const reachable = new Set(enrichedPayload.reportLinks.flatMap(function (link) { return link.sourceEntryIds; }));
+            (enrichedPayload.qualityReviews || []).forEach(function (review) { review.sourceEntryIds.forEach(function (id) { reachable.add(id); }); });
+            const sources = new Map(enrichedPayload.sources.map(function (source) { return [source.sourceId, source]; }));
+            const unlinked = enrichedPayload.sourceEntries.filter(function (entry) { return !reachable.has(entry.entryId); });
+            runtime.encounterReviewSummary = {
+              status: "ready", reportCount: allIds.length, acceptedLinks, heldLinks, sourceEntries: enrichedPayload.sourceEntries.length,
+              entityGroups: enrichedPayload.entityObservations.length,
+              attributedFields: enrichedPayload.entityObservations.reduce(function (sum, entity) { return sum + (entity.attributes || []).length; }, 0),
+              sourceReviews: (enrichedPayload.qualityReviews || []).length,
+              sourceFindings: (enrichedPayload.qualityReviews || []).reduce(function (sum, review) { return sum + review.findings.length; }, 0),
+              unclassifiedReports: allIds.filter(function (id) { return !index.has(id); }).length,
+              unlinkedSourceEntries: unlinked.length,
+              unlinkedSourceAccounts: unlinked.map(function (entry) {
+                const episodeIds = entry.episodeIds || [entry.episodeId];
+                return { sourceEntry: Object.assign({}, entry, { source: sources.get(entry.sourceId) }),
+                  case: enrichedPayload.cases.find(function (item) { return item.caseId === entry.caseId; }),
+                  episodes: enrichedPayload.episodes.filter(function (item) { return episodeIds.includes(item.episodeId); }),
+                  entityObservations: enrichedPayload.entityObservations.filter(function (item) { return episodeIds.includes(item.episodeId); }) };
+              }),
+            };
+          } catch (error) { runtime.encounterEnrichment = null; runtime.encounterReviewIds = null; runtime.encounterReviewSummary = null; console.warn("[encounters] Reviewed case enrichment unavailable.", error.message); }
         }
         runtime.encounterStatus = "ready";
         runtime.encounterError = "";
@@ -25944,7 +25984,7 @@
         return '<div class="detail-row"><span class="detail-label">' + escapeHtml(row[0]) + '</span><span class="detail-value">' + escapeHtml(row[1] == null ? "" : row[1]) + "</span></div>";
       }).join("") +
       "</div>" +
-      (ENCOUNTERS ? ENCOUNTERS.renderEvidence(event, runtime.encounterEvidence) : "") +
+      (ENCOUNTERS ? ENCOUNTERS.renderEvidence(event, runtime.encounterEvidence) + ENCOUNTERS.renderReviewedContext(event, runtime.encounterEnrichment) : "") +
       '<section class="detail-block"><h4>Description</h4><pre class="detail-pre">' + escapeHtml(event.description || "") + "</pre></section>" +
       '<section class="detail-block"><h4>References</h4>' + formatList(event.references || []) + "</section>" +
       '<section class="detail-block"><h4>Links</h4>' + renderLinkList(event) + "</section>" +

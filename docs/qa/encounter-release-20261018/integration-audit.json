@@ -1,0 +1,135 @@
+{
+  "schemaId": "ufo-encounter-release-integration-review-v1",
+  "checkedAtUtc": "2026-10-18T05:33:22.497312+00:00",
+  "scope": {
+    "catalogSourceReports": 702893,
+    "indexedEncounterSourceReports": 16319,
+    "reportedBeings": 12595,
+    "reportedAbductions": 3217,
+    "ambiguousAbductionMentions": 2139,
+    "positiveBeingOrReportedAbductionUnion": 14239,
+    "acquiredRosalesResearchAccounts": 10853,
+    "acquiredAccountsAreAdditiveIncidents": false
+  },
+  "currentApprovedContext": {
+    "sourceEntries": 210,
+    "sourceEntriesDirectlyAttachedToReportLinks": 200,
+    "additionalSourceEntriesAttachedToQualityReviews": 9,
+    "unlinkedEntryIds": [
+      "entry:torphins-first"
+    ],
+    "unlinkedReason": "The first Torphins forestry episode is distinct; no justified native report identity. It remains retained, not invented as an extra incident.",
+    "storedReportAssociationRows": 202,
+    "effectiveAcceptedAssociations": 128,
+    "heldAssociations": 74,
+    "additionalQualityReviews": 8,
+    "additionalFindings": 18,
+    "baseClassificationsModified": false
+  },
+  "measuredAttributeIntegration": {
+    "originalIndexedHeightFields": 2441,
+    "withheldUnitConflicts": 5,
+    "supportedRuntimeHeightFields": 2436,
+    "originalFieldsPreserved": true
+  },
+  "actualCorpusAudit": {
+    "path": "docs/qa/encounter-release-20261018/corpus-runtime.json",
+    "catalogRows": 702893,
+    "sharedSummaryShardsReadInPlace": 71,
+    "exactIndexedJoins": 16319,
+    "missingJoins": 0,
+    "identityMismatches": 0,
+    "sourceFieldBeingReports": 9395,
+    "narrativeBeingReports": 5913,
+    "sourceClassifiedAbductions": 2984,
+    "narrativeAbductions": 233,
+    "receiptPinsCalculationRuntimeBeforeAppendOnlySharedContextRenderer": true
+  },
+  "regressionChecks": {
+    "passed": [
+      "test_encounter_enrichment_runtime.mjs",
+      "test_encounter_evidence.mjs",
+      "test_encounter_map.mjs",
+      "test_encounter_map_integration.mjs",
+      "test_encounter_worker.mjs",
+      "test_analysis_encounters.mjs",
+      "test_encounter_comparison_atlas.mjs",
+      "test_encounter_atlas_populations.mjs",
+      "test_encounter_atlas_source_sensitivity.mjs",
+      "test_encounter_atlas_view.mjs",
+      "test_encounter_context.mjs",
+      "test_encounter_context_worker.mjs",
+      "test_encounter_context_view.mjs",
+      "test_encounter_inspection_view.mjs",
+      "test_encounter_reviewed_context_html.mjs"
+    ],
+    "scope": "Actual app functions, catalog worker, Analysis statistics/renderer fixtures and current pinned data. Separate full-corpus receipt verifies every summary identity and all original encounter populations.",
+    "browserVisualValidation": "Not performed by this integration agent"
+  },
+  "accessibilityFix": {
+    "sharedHtmlRenderer": "renderReviewedContext(eventOrId,enrichmentIndex)",
+    "fullyCollapsedByDefault": true,
+    "acceptedAndHeldAssociationsDistinct": true,
+    "all18AdditionalFindingsRepresented": true,
+    "unsafeSourceTextEscaped": true,
+    "anchorsRestrictedToHttpHttps": true,
+    "rawNarrativesAndLocalCapturePathsExcluded": true,
+    "appWiringOwnedByRoot": "Root adds helper to encounter map inspection and full Results report details. Validate current app integration after wiring."
+  },
+  "deliberateResearchQuarantine": {
+    "originalRosalesAccounts": "10,853 accounts remain source-research candidates until episode identity, scope, source reuse and evidence classification are reviewed; do not add to indexed reports or independent-incident totals.",
+    "citationMetadataRecovery": "12 recovered bibliography fields belong to the private candidate view; accepted context has reviewed public source links.",
+    "mappingProposal": "Codao/Calama coordinate/duplicate correction was an unresolved proposal at HEAD4c6cfee. Root owns any separately reviewed release integration; this receipt does not assert its application."
+  },
+  "inputAndImplementationPins": [
+    {
+      "path": "data/encounters/manifest.json",
+      "bytes": 13768,
+      "sha256": "fdb22041e8a36f8049f04e40b50ecfc114953f1b5227673c2ebf759eadee8557"
+    },
+    {
+      "path": "data/encounters/evidence.json.gz",
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef"
+    },
+    {
+      "path": "data/encounters/label_origins.json.gz",
+      "bytes": 879454,
+      "sha256": "81fee2c14f22417e560bd6c0dcc61def5d51d15d2981dddcc3cb2f142b1af687"
+    },
+    {
+      "path": "data/encounters/enrichment.json.gz",
+      "bytes": 132837,
+      "sha256": "9c2009100b1b0e336b2daa03b80f1d08d5a34b5ad524bec144b0efda196a3b4a"
+    },
+    {
+      "path": "encounter_evidence.js",
+      "bytes": 38333,
+      "sha256": "2287e3d8759596a344ccf3be7a1d2e90be541ff92cfa9aa589f4e8503ba2b84a"
+    },
+    {
+      "path": "scripts/audit_encounter_corpus_runtime.mjs",
+      "bytes": 23185,
+      "sha256": "b53153ed5cbdb5463b26eaf1dd581db9b21d48eb958d4a6329798791aa5df2ee"
+    },
+    {
+      "path": "tests/test_encounter_reviewed_context_html.mjs",
+      "bytes": 4138,
+      "sha256": "dba676cad9030e838aa24e2320950d61227116ec4157396a4519ed87eb535f4c"
+    },
+    {
+      "path": "docs/qa/encounter-release-20261018/corpus-runtime.json",
+      "bytes": 60318,
+      "sha256": "acd4cc1342738fe4a228d8463438acc0bd4f5bbf7b4d81b21b0fac0bf183a717"
+    }
+  ],
+  "storage": {
+    "canonical": "Current worktree runtime assets plus this bounded integration receipt; source datasets remain canonical in shared research folders.",
+    "rollback": "Prior runtime preserved in Git and protected shared prior validated enrichment; current production and sole production rollback remain root deployment responsibility.",
+    "sharedCorpusCopied": false,
+    "databasesCreated": 0,
+    "newFilesOver100MiB": [],
+    "approximateGrowthBytes": 80000,
+    "cleanup": "No superseded staging directory created or deletion proposed by this integration audit."
+  }
+}

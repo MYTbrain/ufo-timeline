@@ -5,7 +5,7 @@
   const MISSING_ANALYSIS_INDEX = 255;
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
-  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-13-encounter-map-v6";
+  const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-18-encounter-quality-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -4917,7 +4917,16 @@
         const matched = matchedAnalysisRows(message, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);
         const request = message.inspection || {}, range = analysisActiveRange(message);
         let result;
-        if (request.domain === "context") {
+        if (request.domain === "reviewed_context") {
+          if (!Array.isArray(message.reviewedContextEventIds) || message.reviewedContextEventIds.length > 10000) throw new Error("Reviewed source inventory is unavailable.");
+          const selected = new Set(message.reviewedContextEventIds.map(String)), ids = [];
+          forEachMatchedAnalysisRow(matched, function (row) {
+            const start = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal, end = row.dateEndOrdinal == null ? start : row.dateEndOrdinal;
+            if (selected.has(String(row.eventId)) && (!range || start != null && end >= range.start && start <= range.end)) ids.push(String(row.eventId));
+          });
+          const offset = Math.max(0, Math.trunc(Number(request.offset) || 0)), limit = Math.max(1, Math.min(100, Math.trunc(Number(request.limit) || 25)));
+          result = { status: "ready", total: ids.length, offset, limit, eventIds: request.allIds ? ids : ids.slice(offset, offset + limit), unit: "source_reports", inventoryScope: "reviewed_source_context_under_current_filters" };
+        } else if (request.domain === "context") {
           if (!analysisComparisonArtifacts.loaded) throw new Error("Comparison evidence is not ready.");
           ensureAnalysisComparisons(); ensureEncounterComparisons();
           const context = buildComparisonInputs(message, matched, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues);

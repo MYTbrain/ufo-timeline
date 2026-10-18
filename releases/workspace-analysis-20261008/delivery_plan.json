@@ -52,8 +52,8 @@
     {
       "path": "analysis_comparisons_view.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_comparisons_view.js",
-      "bytes": 65269,
-      "sha256": "f70b9b835fd1662db5449ff31fa82b9c7b6abaca52e059fff6d535532beff1c1",
+      "bytes": 87336,
+      "sha256": "004521aa81c69cd75b888ea050d069ff751735bd1864d3033a446b0318863b01",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -66,26 +66,34 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "analysis_encounter_context.js",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_encounter_context.js",
+      "bytes": 21683,
+      "sha256": "d6cff55b4fcaeae61500063aceb95a32d877587ee46ae50f48618112feb1c9e8",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "analysis_lunar.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_lunar.js",
-      "bytes": 20233,
-      "sha256": "eda38a8d8ef444cef6458ccd91b8d3cd26338f91a046682c873730a65d856ec7",
+      "bytes": 20465,
+      "sha256": "94c0a260c8255a64b8ec9d9c767459cc63a061786ff9e98e969643215943f9c9",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_nuclear.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_nuclear.js",
-      "bytes": 26724,
-      "sha256": "7a6e450b0590f34687c622e02a1eabba701a97e59e11b1ba7e53442a0aef7b17",
+      "bytes": 27542,
+      "sha256": "40124c627e7d5c5d93fbff549ef370290e1bec65f04bc4c3ed9fe8137cea0467",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_planetary.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_planetary.js",
-      "bytes": 75886,
-      "sha256": "5e3aee0992e4e0af0b60ef68cf376578a5e4a03a2120dfd9055f38d9058f77eb",
+      "bytes": 76928,
+      "sha256": "4269b831abd19d4c7805c4200504f906817afcbc08d7c7757db1c1e64a5a3baf",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -116,16 +124,16 @@
     {
       "path": "analysis_stats.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_stats.js",
-      "bytes": 331481,
-      "sha256": "8d250e6f838ae7101b615a54b6344a736c17b314b582e2ef0a853cfcb4cd9565",
+      "bytes": 386214,
+      "sha256": "e43785fcfcd31d1ad5df0ab80beee7cf9def7daa5d51d4a3d8222542f68c3f3c",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_view.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_view.js",
-      "bytes": 440354,
-      "sha256": "05576b35a6349d52dc7d81a6633c843bf019325d2b643405b2005e85ee456c9c",
+      "bytes": 507580,
+      "sha256": "6fe646f981d2fb08116b44b93d1dbb6e2a64e78ba9be8147ccac839420795930",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -148,16 +156,16 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1375364,
-      "sha256": "611109de4a1b5048b907e3a179f94873a13cc1f9d7b7bd2efe9caa084d17b991",
+      "bytes": 1442068,
+      "sha256": "b544f9d712be8f3603bf3d8925694772e3b673ca335923171accc03db5336af5",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "catalog_filter_worker.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
-      "bytes": 254598,
-      "sha256": "e7672a64faf4334700a8ea9fd8f3e7ccaaf1dd55565407db1e0d80239cb79a27",
+      "bytes": 270210,
+      "sha256": "3a5e8ff311b79fdc2797548e89aab9956fc11babf6297a63df67df72d62c2581",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -188,9 +196,17 @@
     {
       "path": "data/analysis_comparisons/manifest.json",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\manifest.json",
-      "bytes": 34733,
-      "sha256": "175e3bd0d0ce0fb35c994e6dcdd8ddcfe407a78c545c06884d1d00ac3f8351b8",
+      "bytes": 35509,
+      "sha256": "2d7d47e04072c8c0239fcceaa7ac0478b1bde9a78fcc164b14e20884ddd8fb72",
       "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/analysis_comparisons/nuclear_extension_v1.json.gz",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\nuclear_extension_v1.json.gz",
+      "bytes": 3091,
+      "sha256": "4db2dc7e0300a10e837f0588014379ffd088e594ae4e12568e7e7bd20192e6d9",
+      "requires_revalidation": false,
       "allow_pages_analytics": false
     },
     {
@@ -292,8 +308,8 @@
     {
       "path": "data/app_config.json",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\app_config.json",
-      "bytes": 6663,
-      "sha256": "a9dc80d78b96eb43d624ac84ea30c59554bacef69d32a1b36b38b859671c4c09",
+      "bytes": 6771,
+      "sha256": "9d5f8d7e7164711971c1b61bea1ff7a3d617e3c5720e47be36b8229b228d3780",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -383,6 +399,38 @@
       "bytes": 8867,
       "sha256": "39d8738aea4134319c6c2107e05d07e793e1f7a487ae4742029c20583263aceb",
       "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/encounters/enrichment.json.gz",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\enrichment.json.gz",
+      "bytes": 132837,
+      "sha256": "9c2009100b1b0e336b2daa03b80f1d08d5a34b5ad524bec144b0efda196a3b4a",
+      "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/encounters/evidence.json.gz",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\evidence.json.gz",
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+      "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/encounters/label_origins.json.gz",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\label_origins.json.gz",
+      "bytes": 879454,
+      "sha256": "81fee2c14f22417e560bd6c0dcc61def5d51d15d2981dddcc3cb2f142b1af687",
+      "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/encounters/manifest.json",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\manifest.json",
+      "bytes": 13768,
+      "sha256": "fdb22041e8a36f8049f04e40b50ecfc114953f1b5227673c2ebf759eadee8557",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
@@ -1114,6 +1162,38 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "encounter_analysis.css",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_analysis.css",
+      "bytes": 20171,
+      "sha256": "0882532047e338b880d754f72b400108f21bbe23cbe4d0125391cacfb8cdefa9",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "encounter_atlas_query.js",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_atlas_query.js",
+      "bytes": 5219,
+      "sha256": "d9992303dc943940f9c2b2be0487bc85d30f15b773b171864e87d8259329f567",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "encounter_evidence.js",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_evidence.js",
+      "bytes": 38333,
+      "sha256": "2287e3d8759596a344ccf3be7a1d2e90be541ff92cfa9aa589f4e8503ba2b84a",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "encounter_map.js",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\encounter_map.js",
+      "bytes": 32856,
+      "sha256": "68f169a6e6ea51772235f7bba2a3c4efbd510e2bc54a85800b2c1ea444059627",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "famous_case_presets.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\famous_case_presets.js",
       "bytes": 406063,
@@ -1172,8 +1252,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 151409,
-      "sha256": "b0105d5ca5137069d9c95c4f4d3674cd1a5e3f39f4c7ad2e8b99e66f4b45ae71",
+      "bytes": 165519,
+      "sha256": "11582a4bb0fe9af7a2ea0983e577588506243611b1d8abe0b6eb8085a73a1dc3",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1212,8 +1292,8 @@
     {
       "path": "styles.css",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\styles.css",
-      "bytes": 276555,
-      "sha256": "a16e32c0c730d48f5dcdd589c6e66efae9b56a65a2a46a0be2cb5a01eab54377",
+      "bytes": 277976,
+      "sha256": "8c58b637cf913f02ce5ffd372a74f54874a9d33aee249be90e72688d1d62e29d",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1300,8 +1380,8 @@
     {
       "path": "ui/accepted-workspace/analysis-navigation.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\ui\\accepted-workspace\\analysis-navigation.js",
-      "bytes": 14348,
-      "sha256": "3d180fc237cb45fa430465d5fa950ad140c274abc141e4799b321f669cd762b8",
+      "bytes": 14362,
+      "sha256": "c97f6c6bb4f78bacedcff1deb3dba0b1c20b943a9599ca850b781096d6eb97bb",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1324,8 +1404,8 @@
     {
       "path": "ui/accepted-workspace/analysis-view-groups.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\ui\\accepted-workspace\\analysis-view-groups.js",
-      "bytes": 4726,
-      "sha256": "914c9b695c0595d0c933ce3a31232d71a9d139107174c888a28db35240f9e730",
+      "bytes": 5159,
+      "sha256": "84a3083010f81a4bd5cfaf62bf23d5818aea3c40ab48a0193cbb3c9cf8e3728b",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1482,8 +1562,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "09503b6c5e47b389884a831e0b434417587c07e05a0013c86eb1a9846b959dbc",
-  "pages_total_bytes": 36431848,
+  "pages_tree_sha256": "b541127680123cce05ec0174d2ccdeb6f7fff344ed9db5d29b2b2aed620ed036",
+  "pages_total_bytes": 39699974,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -4420,6 +4500,24 @@
       "role": "precomputed guarded source-clock UTC evidence"
     },
     {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\evidence.json.gz",
+      "bytes": 1875418,
+      "sha256": "64e16ec2de205f25c05c8ae6eec9bc6998bab8b9e13889eed1f5978b8790e6ef",
+      "role": "precomputed original-source abduction and reported-being evidence"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\label_origins.json.gz",
+      "bytes": 879454,
+      "sha256": "81fee2c14f22417e560bd6c0dcc61def5d51d15d2981dddcc3cb2f142b1af687",
+      "role": "reviewed encounter metadata extension: labelOrigins"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\encounters\\enrichment.json.gz",
+      "bytes": 132837,
+      "sha256": "9c2009100b1b0e336b2daa03b80f1d08d5a34b5ad524bec144b0efda196a3b4a",
+      "role": "reviewed encounter metadata extension: enrichment"
+    },
+    {
       "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007\\catalog\\catalog_overlay_receipt.json",
       "bytes": 37890,
       "sha256": "86e9ee5c2d8d342be238f9b2a6ccf820414032880ea5520f3d82851ec800adbd",
@@ -4448,14 +4546,20 @@
       "bytes": 11367,
       "sha256": "0432ca5238c04b47b1b3d77e739ea57496815992528e29017e3af503d6bdc1bb",
       "role": "reviewed attribute manifest"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\nuclear_extension_v1.json.gz",
+      "bytes": 3091,
+      "sha256": "4db2dc7e0300a10e837f0588014379ffd088e594ae4e12568e7e7bd20192e6d9",
+      "role": "reviewed additive nuclear context extension delivered through Pages"
     }
   ],
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 4129456,
-    "existing_stage_bytes": 32302392,
-    "c_free_bytes_before_stage": 124438740992,
+    "approximate_net_local_growth_bytes": 3268126,
+    "existing_stage_bytes": 36431848,
+    "c_free_bytes_before_stage": 94504521728,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "192e21f6-9c44-4b89-8d88-361e1c3d10d6",

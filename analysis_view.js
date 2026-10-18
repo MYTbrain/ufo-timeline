@@ -2547,6 +2547,7 @@
         onComparisonSettingsChange: typeof config.onComparisonSettingsChange === "function" ? config.onComparisonSettingsChange : null,
         onEncounterAxisRequested: typeof config.onEncounterAxisRequested === "function" ? config.onEncounterAxisRequested : null,
         onEncounterReportsRequested: typeof config.onEncounterReportsRequested === "function" ? config.onEncounterReportsRequested : null,
+        onEncounterReviewSummaryRequested: typeof config.onEncounterReviewSummaryRequested === "function" ? config.onEncounterReviewSummaryRequested : null,
         onEncounterReportOpen: typeof config.onEncounterReportOpen === "function" ? config.onEncounterReportOpen : null,
         onEncounterSelectionApply: typeof config.onEncounterSelectionApply === "function" ? config.onEncounterSelectionApply : null,
         onEncounterSettingsChange: typeof config.onEncounterSettingsChange === "function" ? config.onEncounterSettingsChange : null,
@@ -6369,9 +6370,15 @@
       target.appendChild(details);
     }
 
+    _encounterSourceLocator(value) {
+      return isObject(value) ? Object.keys(value).map(key => plainLanguageLabel(key) + ": "
+        + (isObject(value[key]) || Array.isArray(value[key]) ? JSON.stringify(value[key]) : cleanText(value[key], "Not recorded"))).join(" · ") : cleanText(value, "Locator unavailable");
+    }
+
     _appendEncounterEnrichment(target, enrichment) {
       const links = firstArray(enrichment, ["links"]);
       if (!links.length) return;
+      const sourceLocator = value => this._encounterSourceLocator(value);
       const reviewed = links.filter((link) => link.acceptedForRuntime === true).length;
       const details = this._element("details", "encounter-report-provenance encounter-reviewed-context");
       details.appendChild(this._element("summary", "", "Reviewed case context · " + reviewed + " accepted links · " + (links.length - reviewed) + " candidate or held links"));
@@ -6411,7 +6418,7 @@
           if (typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
             const anchor = this._element("a", "", sourceTitle); anchor.href = source.url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; paragraph.appendChild(anchor);
           } else paragraph.appendChild(this._element("span", "", sourceTitle));
-          paragraph.appendChild(this._element("span", "", " · " + cleanText(entry.locator, "Locator unavailable") + " · " + plainLanguageLabel(entry.reviewStatus || "review status unavailable"))); article.appendChild(paragraph);
+          paragraph.appendChild(this._element("span", "", " · " + sourceLocator(entry.locator) + " · " + plainLanguageLabel(entry.reviewStatus || "review status unavailable"))); article.appendChild(paragraph);
           if (entry.shortExcerpt) article.appendChild(this._element("blockquote", "", String(entry.shortExcerpt)));
           if (firstArray(entry, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Source review flags: " + entry.reviewFlags.map(plainLanguageLabel).join("; ")));
         });
@@ -6425,7 +6432,7 @@
             const entry = sources.get(fact.sourceEntryId), source = entry && entry.source || {};
             if (entry && typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
               paragraph.appendChild(this._element("span", "", " "));
-              const anchor = this._element("a", "", "Source · " + cleanText(entry.locator, "document"));
+              const anchor = this._element("a", "", "Source · " + sourceLocator(entry.locator));
               anchor.href = source.url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; paragraph.appendChild(anchor);
             }
             research.appendChild(paragraph);
@@ -6773,6 +6780,75 @@
       return false;
     }
 
+    _renderEncounterReviewCoverage(target) {
+      const callback = this.callbacks && this.callbacks.onEncounterReviewSummaryRequested;
+      if (!target || !callback) return;
+      const details = this._element("details", "analysis-supporting-details encounter-reviewed-inventory");
+      details.id = "analysis-encounter-reviewed-inventory";
+      details.appendChild(this._element("summary", "", "Reviewed source context & additional research"));
+      let value;
+      try { value = callback(); } catch (_error) { value = null; }
+      if (!value || value.status !== "ready") {
+        details.appendChild(this._element("p", "analysis-chart-policy", "Reviewed source context is unavailable. Chart classifications remain separate from this additional source research."));
+        target.appendChild(details);
+        return;
+      }
+      const count = key => Number.isSafeInteger(value[key]) && value[key] >= 0 ? formatCount(value[key]) : "Not available";
+      details.appendChild(this._element("p", "analysis-card-question", "Entire reviewed source inventory: " + count("reportCount") + " catalog reports · "
+        + count("acceptedLinks") + " accepted associations · " + count("heldLinks") + " candidate or held associations."));
+      details.appendChild(this._element("p", "encounter-report-meta", count("sourceEntries") + " source entries · " + count("entityGroups")
+        + " entity descriptions · " + count("attributedFields") + " attributed fields · " + count("sourceReviews") + " additional source reviews with "
+        + count("sourceFindings") + " findings."));
+      details.appendChild(this._element("p", "analysis-chart-policy", "This inventory covers the full reviewed collection. The lists below follow your current shared filters and date window. "
+        + "Inspect descriptions, recall stages, conflicts and original sources in each report's Reviewed case context. Detailed attributes retain their source and subject attribution; "
+        + "case associations do not add independent incidents or replace the classifications used by the comparison charts."));
+      if (value.unclassifiedReports > 0) details.appendChild(this._element("p", "analysis-chart-policy", count("unclassifiedReports")
+        + " reviewed reports have no indexed being or abduction classification. Their context remains inspectable without treating them as positive encounter observations."));
+      const actions = this._element("div", "encounter-report-actions");
+      [["all", "Browse reviewed records"], ["accepted", "Accepted associations"], ["held", "Candidate or held associations"]].forEach(entry => {
+        const button = this._element("button", "secondary-button", entry[1]); button.type = "button";
+        button.addEventListener("click", () => this._openEncounterReports({ domain: "reviewed_context", reviewStatus: entry[0] }, { title: entry[1] + " · current cohort" }));
+        actions.appendChild(button);
+      });
+      details.appendChild(actions);
+      const unlinked = firstArray(value, ["unlinkedSourceAccounts"]);
+      if (Number.isSafeInteger(value.unlinkedSourceEntries) && value.unlinkedSourceEntries > 0) {
+        const pending = this._element("details", "analysis-supporting-details encounter-unlinked-accounts");
+        pending.appendChild(this._element("summary", "", count("unlinkedSourceEntries") + " unlinked source account" + (value.unlinkedSourceEntries === 1 ? "" : "s")));
+        pending.appendChild(this._element("p", "analysis-chart-policy", "These source accounts have no reviewed catalog association. They belong to the full source inventory and are excluded from report counts, current-cohort lists and comparison charts."));
+        unlinked.forEach(account => {
+          const entry = account.sourceEntry || {}, source = entry.source || {}, article = this._element("article", "encounter-unlinked-source");
+          article.appendChild(this._element("h5", "", cleanText(entry.title || account.case && account.case.title, "Unlinked source account")));
+          const provenance = this._element("p", "encounter-report-meta", this._encounterSourceLocator(entry.locator));
+          if (typeof source.url === "string" && /^https?:\/\//i.test(source.url)) {
+            provenance.appendChild(this._element("span", "", " · "));
+            const anchor = this._element("a", "", cleanText(source.title, "Original source")); anchor.href = source.url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; provenance.appendChild(anchor);
+          }
+          article.appendChild(provenance);
+          firstArray(account, ["episodes"]).forEach(episode => {
+            article.appendChild(this._element("p", "encounter-report-meta", plainLanguageLabel(episode.scope || "Episode scope unknown") + " · Recall: " + plainLanguageLabel(episode.recallMethod || "unknown")));
+            [["Date", episode.date], ["Time", episode.time], ["Site", episode.site]].forEach(item => {
+              if (!isObject(item[1])) return;
+              const field = item[1];
+              article.appendChild(this._element("p", "encounter-report-meta", item[0] + ": " + cleanText(field.raw, "Not recorded") + " · " + plainLanguageLabel(field.status || "unknown")
+                + (item[0] === "Time" ? field.utcVerified === true ? " · UTC verified" : " · UTC not verified" : item[0] === "Site" ? field.sourceVerified === true ? " · source verified" : " · source not verified" : "")));
+              if (firstArray(field, ["conflicts"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Conflicting evidence: " + field.conflicts.map(item => typeof item === "string" ? item : JSON.stringify(item)).join("; ")));
+            });
+          });
+          firstArray(account, ["entityObservations"]).forEach(entity => {
+            article.appendChild(this._element("p", "encounter-report-meta", cleanText(entity.label, "Entity description") + " · " + plainLanguageLabel(entity.scope || "unknown scope") + " · reported count "
+              + (entity.count == null ? "Not recorded" : formatCount(entity.count)) + " · " + firstArray(entity, ["reportedTypes"]).map(plainLanguageLabel).join(", ")));
+            firstArray(entity, ["attributes"]).forEach(attribute => article.appendChild(this._element("p", "encounter-report-meta", plainLanguageLabel(attribute.field || "Attribute") + ": "
+              + (attribute.value == null ? "Not recorded" : String(attribute.value)) + (attribute.unit ? " " + attribute.unit : "") + " · attribution " + cleanText(attribute.attribution, "Not established"))));
+          });
+          if (firstArray(entry, ["reviewFlags"]).length) article.appendChild(this._element("p", "analysis-chart-policy", "Source review flags: " + entry.reviewFlags.map(plainLanguageLabel).join("; ")));
+          pending.appendChild(article);
+        });
+        details.appendChild(pending);
+      }
+      target.appendChild(details);
+    }
+
     _renderEncounterEvidence(value, summary) {
       const data = isObject(value) ? value : {};
       const ready = data.evidenceReady === true;
@@ -6830,6 +6906,7 @@
           return [row.source, formatCount(row.total), formatCount(row.evidence), formatCount(row.abduction), formatCount(row.ambiguous), formatCount(row.beings)];
         }));
       this._appendChartPolicy("analysis-encounter-source-chart", "Source collections can overlap; underlying source independence and incident deduplication are not established by these counts.");
+      this._renderEncounterReviewCoverage(sourceChart);
     }
 
     _renderDurationEvidence(value, summary) {
