@@ -21,9 +21,9 @@ from concurrent.futures import ThreadPoolExecutor
 RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
-BASE_DEPLOYMENT = "dc834bac-2108-4de3-baad-47044e2ec51c"
-RUNTIME_REVISION = "corpus-timing-20261008-v3"
-RETAINED_ROLLBACK = "192e21f6-9c44-4b89-8d88-361e1c3d10d6"
+BASE_DEPLOYMENT = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
+RUNTIME_REVISION = "progressive-startup-20261018-v5"
+RETAINED_ROLLBACK = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"

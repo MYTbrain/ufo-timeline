@@ -110,7 +110,7 @@
   },
   "analysisWorkspaceRelease": {
     "id": "workspace-analysis-20261008",
-    "baseDeployment": "dc834bac-2108-4de3-baad-47044e2ec51c",
+    "baseDeployment": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
     "sourceRowsPreserved": 702893,
     "mappedRowsPreserved": 582877
   },

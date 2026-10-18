@@ -192,11 +192,44 @@ assert.equal(tracePending.analysisEnabled, false);
 traceGate.resolve({ ready: true }); await tracePending.runtime.progressiveBackgroundPromise;
 assert.equal(tracePending.startup.fullCatalogReady, true);
 
-const optIn = fixture();
-assert.equal(optIn.context.progressiveStartupRequested(), true);
-for (const search of ["", "?progressiveStartup=0", "?progressiveStartup=1&autosearch=ariel", "?progressiveStartup=1&autoselect=first"]) {
-  optIn.context.window.location.search = search;
-  assert.equal(optIn.context.progressiveStartupRequested(), false, "Original startup remains available: " + search);
+const startupRoute = fixture();
+for (const search of ["", "?progressiveStartup=1", "?theme=dark"]) {
+  startupRoute.context.window.location.search = search;
+  assert.equal(startupRoute.context.progressiveStartupRequested(), true,
+    "Verified progressive startup is the default when its runtime is available: " + search);
+}
+for (const search of ["?progressiveStartup=0", "?autosearch=ariel", "?autoselect=first",
+  "?autosearch=", "?autoselect=", "?progressiveStartup=1&autosearch=ariel", "?progressiveStartup=1&autoselect=first"]) {
+  startupRoute.context.window.location.search = search;
+  assert.equal(startupRoute.context.progressiveStartupRequested(), false,
+    "Explicit fallback and automation retain the complete original startup: " + search);
+}
+for (const prefix of ["?", "?progressiveStartup=1&"]) {
+  for (const key of ["start", "end", "windowStart", "windowEnd"]) {
+    for (const suffix of [key + "=1954-09-01", key + "=", key]) {
+      const search = prefix + suffix;
+      startupRoute.context.window.location.search = search;
+      assert.equal(startupRoute.context.progressiveStartupRequested(), false,
+        "A bookmarked date boundary, including an empty one, uses the complete startup: " + search);
+    }
+  }
+  for (const pair of ["start=1954-09-01&end=1954-11-30", "windowStart=1954-09-01&windowEnd=1954-11-30",
+    "start=&end=", "windowStart=&windowEnd="]) {
+    const search = prefix + pair;
+    startupRoute.context.window.location.search = search;
+    assert.equal(startupRoute.context.progressiveStartupRequested(), false,
+      "Paired bookmarked ranges take precedence over the fixed initial profile: " + search);
+  }
+}
+for (const runtimeName of ["UFOStartupCatalogUI", "UfoProgressiveCatalogRuntime"]) {
+  const savedRuntime = startupRoute.context.window[runtimeName];
+  delete startupRoute.context.window[runtimeName];
+  for (const search of ["", "?progressiveStartup=1"]) {
+    startupRoute.context.window.location.search = search;
+    assert.equal(startupRoute.context.progressiveStartupRequested(), false,
+      "Missing " + runtimeName + " safely uses original startup: " + search);
+  }
+  startupRoute.context.window[runtimeName] = savedRuntime;
 }
 const realBackground = fixture();
 realBackground.startup.progressiveEnabled = true;

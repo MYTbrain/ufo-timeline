@@ -32963,8 +32963,9 @@
 
   function progressiveStartupRequested() {
     const params = new URLSearchParams(window.location.search);
-    return params.get("progressiveStartup") === "1" &&
+    return params.get("progressiveStartup") !== "0" &&
       !params.has("autosearch") && !params.has("autoselect") &&
+      !["start", "end", "windowStart", "windowEnd"].some(function (key) { return params.has(key); }) &&
       Boolean(window.UFOStartupCatalogUI && window.UfoProgressiveCatalogRuntime);
   }
 
