@@ -10,7 +10,8 @@
   const reports = value => count(value) + (value === 1 ? " report" : " reports");
   const CRAFT_LABELS = Object.freeze({ chevron_boomerang: "Chevron / boomerang", cigar_cylinder: "Cigar / cylinder",
     disc_saucer: "Disc / saucer", dumbbell_barbell: "Dumbbell / barbell", formation: "Formation", oval_egg: "Oval / egg",
-    rectangle_box: "Rectangle / box", sphere_orb: "Sphere / orb" });
+    rectangle_box: "Rectangle / box", sphere_orb: "Sphere / orb", cone: "Cone", diamond: "Diamond",
+    fireball_meteor_like: "Fireball / meteor-like", light: "Light", teardrop: "Teardrop", triangle: "Triangle" });
   function categoryLabel(domain, row) {
     return domain === "craft" && (!row.label || row.label === row.key) && Object.prototype.hasOwnProperty.call(CRAFT_LABELS, row.key)
       ? CRAFT_LABELS[row.key] : row.label || row.key;
