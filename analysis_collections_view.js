@@ -194,7 +194,10 @@
       const card = node("details", "collection-report"), heading = node("summary");
       heading.append(node("strong", "", record.title || record.caseId || record.case_id), node("span", "collection-record-meta", [record.dateLabel || record.date || "Date unknown", record.location || record.place || record.country || "Place unknown", label(record.disposition)].join(" · "))); card.appendChild(heading);
       card.appendChild(node("p", "", record.observedBehavior || record.observed_behavior || record.behavior || "See the retained source descriptions."));
-      card.appendChild(node("p", "collection-record-meta", sourceText(record.earliestSource || record.earliest_source) || "Source chronology is not established."));
+      card.appendChild(node("p", "collection-record-meta", "Date precision: " + label(record.datePrecision || "Not established")));
+      const chronology = sourceText(record.earliestSource || record.earliest_source)
+        || [record.reportedDate ? "Source report filed: " + record.reportedDate : "", record.postedDate ? "Published: " + record.postedDate : ""].filter(Boolean).join(" · ");
+      card.appendChild(node("p", "collection-record-meta", chronology || "Source chronology is not established."));
       (record.limitations || []).forEach(text => card.appendChild(node("p", "collection-record-meta", text)));
       const ids = record.indexedReportIds || record.acceptedEventIds || [];
       card.appendChild(node("p", "collection-record-meta", ids.length ? "Catalog representations: " + ids.join(", ") + ". This association does not establish incident identity or source independence." : "No accepted catalog association · excluded from report comparisons."));

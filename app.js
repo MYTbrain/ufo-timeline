@@ -10051,7 +10051,7 @@
     if (!runtime.collectionStudyScriptPromises) runtime.collectionStudyScriptPromises = new Map();
     const scripts = [
       ["collection-study-evidence", "./analysis_collection_evidence.js?v=2026-10-18-collections-v1"],
-      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v1"],
+      ["collection-study-view", "./analysis_collections_view.js?v=2026-10-18-collections-v2"],
     ];
     runtime.collectionStudyRuntimePromise = Promise.all(scripts.map(function (entry) {
       if (runtime.collectionStudyScriptPromises.has(entry[0])) return runtime.collectionStudyScriptPromises.get(entry[0]);
@@ -11777,8 +11777,8 @@
       document.body.appendChild(dialog); }
     dialog.replaceChildren();
     const close = document.createElement("button"); close.textContent = "Close source report"; close.onclick = function () { dialog.close(); }; dialog.appendChild(close);
-    const heading = document.createElement("h2"); heading.textContent = event.location || event.title || "Preserved source report"; dialog.appendChild(heading);
-    const summaryText = document.createElement("p"); summaryText.textContent = [event.date_iso, event.source, "Catalog ID " + summary.event_id].filter(Boolean).join(" · "); dialog.appendChild(summaryText);
+    const heading = document.createElement("h2"); heading.textContent = event.location_display || event.location_raw || event.location || event.title || "Preserved source report"; dialog.appendChild(heading);
+    const summaryText = document.createElement("p"); summaryText.textContent = [event.date_raw || event.date_iso || "Date unrecorded", "Date precision: " + (event.date_precision || "unknown"), event.source, "Catalog ID " + summary.event_id].filter(Boolean).join(" · "); dialog.appendChild(summaryText);
     const body = document.createElement("pre"); body.style.cssText = "white-space:pre-wrap;overflow-wrap:anywhere;font:inherit";
     body.textContent = JSON.stringify(event.raw_source_row || event.raw_fields || event, null, 2); dialog.appendChild(body);
     if (!dialog.open) dialog.showModal();
