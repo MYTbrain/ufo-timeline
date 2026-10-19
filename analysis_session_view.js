@@ -455,7 +455,8 @@
       }
       if (typeof config.onOpenInspectedRecord === "function") ids.forEach((eventId, index) => recordAction(ids.length === 1 ? "Open preserved report" : "Open report " + (index + 1), { eventId, sourceUrl: url }));
       if (url) {
-        const link = node("a", "", "Open source"); link.href = url; link.target = "_blank"; link.rel = "noopener noreferrer"; actions.appendChild(link);
+        const sourceLabel = typeof row.sourceLinkLabel === "string" && row.sourceLinkLabel.trim() ? row.sourceLinkLabel.trim() : "Open source";
+        const link = node("a", "", sourceLabel); link.href = url; link.target = "_blank"; link.rel = "noopener noreferrer"; actions.appendChild(link);
       }
       if (actions.children.length) card.appendChild(actions); return card;
     }

@@ -11,6 +11,13 @@ function functionSource(source, name) {
   return source.slice(start, start + 1 + next);
 }
 const app = fs.readFileSync("app.js", "utf8");
+const decorationContext=vm.createContext({getCatalogEventById:id=>String(id)==='a'?{location_display:'Reviewed place'}:null});
+vm.runInContext(functionSource(app,'decorateAnalysisInspectionReports'),decorationContext);
+const rawInspection={groups:{A:{totalN:1,matchedN:1,rows:[{id:'a',eventIds:['a'],label:'Triangle',date:'Date withheld'}]},B:{totalN:1,matchedN:1,rows:[{id:'crop-a',label:'Context record',eventIds:[],contextRecord:{kind:'crops',id:'crop-a'}}]}}};
+const decorated=decorationContext.decorateAnalysisInspectionReports(rawInspection);
+assert.equal(decorated.groups.A.rows[0].label,'Reviewed place · Triangle');assert.equal(decorated.groups.A.rows[0].date,'Date withheld');
+assert.equal(rawInspection.groups.A.rows[0].label,'Triangle','Source presentation does not mutate worker counts or rows');
+assert.equal(decorated.groups.B.rows[0].label,'Context record','Independent records are never decorated via UFO IDs');
 const A = { eventIds: ["a"], reportCount: 1, provenance: { sessionCaptureId: "capture-a" } };
 const B = { eventIds: ["b"], reportCount: 1, provenance: { sessionCaptureId: "capture-b" } };
 let held = { A, B }, posted = [], comparisonLoads = 0, spatialLoads = 0;

@@ -48,12 +48,24 @@
   function unavailable(totalN, reason, offset) { return { totalN: totalN == null ? null : totalN, matchedN: null, rows: [], offset, hasMore: false, available: false, reason }; }
   function collector(totalN, options) {
     let matchedN = 0; const rows = [], offset = Math.max(0, Math.floor(num(options.offset) || 0)), limit = Math.min(100, Math.max(1, Math.floor(num(options.limit) || 25)));
-    return { add: function (raw, values, ids, detail, identity) {
+    return { add: function (raw, values, ids, detail, identity, contextRecord) {
       const keys = new Set(array(Array.isArray(values) ? values : [values]).map(value => value && typeof value === "object" ? value.key : value).filter(known).map(text));
       if (!(options.rowKey === UNKNOWN_KEY ? !keys.size : keys.has(text(options.rowKey)))) return;
-      if (matchedN >= offset && rows.length < limit) rows.push(displayRow(raw, ids || [], detail, identity));
+      if (matchedN >= offset && rows.length < limit) {
+        const item = displayRow(raw, ids || [], detail, identity); if (contextRecord) item.contextRecord = contextRecord; rows.push(item);
+      }
       matchedN++;
     }, finish: () => ({ totalN, matchedN, rows, offset, hasMore: matchedN > offset + rows.length, available: true }) };
+  }
+  function contextIdentity(options, kind, id) {
+    if (!["crops", "animals"].includes(kind)) return null;
+    if (!options._contextRanks) options._contextRanks = {};
+    if (!options._contextRanks[kind]) {
+      const ids = Array.from(new Set(array(options.context && options.context[kind]).map(row => text(row.id)).filter(Boolean))).sort();
+      options._contextRanks[kind] = new Map(ids.map((value, index) => [value, index]));
+    }
+    const rank = options._contextRanks[kind].get(text(id));
+    return { kind, id: text(id), rank: Number.isInteger(rank) ? rank : null };
   }
   function reportCandidates(group, values, details, options) {
     const output = collector(group.totalN, options);
@@ -78,7 +90,7 @@
       else if (field === "reviewState") values = row.reviewState || row.status;
       else if (field === "eligibility") values = typeof row.strictEligible === "boolean" ? row.strictEligible ? "qualified" : "not_qualified" : null;
       else if (field === "sourceFamily") values = row.sourceFamilyIds;
-      output.add(row, values, [], [row.dateRole ? "Date role: " + pretty(row.dateRole) : "Date role unknown", row.datePrecision ? "Date precision: " + pretty(row.datePrecision) : ""].filter(Boolean).join(". "));
+      output.add(row, values, [], [row.dateRole ? "Date role: " + pretty(row.dateRole) : "Date role unknown", row.datePrecision ? "Date precision: " + pretty(row.datePrecision) : ""].filter(Boolean).join(". "), null, contextIdentity(options, domain, row.id));
     });
     return Object.assign(output.finish(), { notes: scoped.notes });
   }
@@ -228,7 +240,8 @@
             details.set(idOf(row), "Displayed planetary cell uses its noon estimate with verified-UTC override where available. Stable–possible count bounds may also include records assigned to other cells at noon."); } }));
       }
     }
-    const output = collector(rows.length, options); rows.forEach(row => output.add(row, values.get(idOf(row)) || [], source.domain === "craft" ? [idOf(row)] : [], details.get(idOf(row)))); return output.finish();
+    const output = collector(rows.length, options); rows.forEach(row => output.add(row, values.get(idOf(row)) || [], source.domain === "craft" ? [idOf(row)] : [], details.get(idOf(row)), null,
+      source.domain === "craft" ? null : contextIdentity(options, source.domain, idOf(row)))); return output.finish();
   }
   function nuclear(options, source) {
     const engine = api(options, "nuclearApi", Nuclear, "UfoAnalysisNuclear"), input = options.nuclear || {}, key = options.domainKey, settings = source.settings, seen = new Set();
@@ -265,8 +278,10 @@
     });
     const output = collector(isPair ? pairs.length : source.rows.length, options);
     if (isPair) pairs.forEach(pair => output.add({ id: pair.id, label: "Report/catalog " + idOf(pair.row) + " / " + text(first(pair.test.name, pair.test.id)), date: dateOf(pair.row), location: displayRow(pair.row, [], "").location, source: pair.row.source, sourceUrl: urlOf(pair.row) }, [key === "nuclear_pair_phase" ? pair.phase : pair.band], source.domain === "craft" ? [idOf(pair.row)] : [],
-      "Report/test pair; nuclear date " + iso(pair.test.ordinal) + "; test role " + text(pair.test.role) + "; marker distance " + pair.km.toFixed(2) + " km. Calendar order is not verified UTC order."));
-    else source.rows.forEach(row => output.add(row, values.get(idOf(row)) || [], source.domain === "craft" ? [idOf(row)] : [], details.get(idOf(row))));
+      "Report/test pair; nuclear date " + iso(pair.test.ordinal) + "; test role " + text(pair.test.role) + "; marker distance " + pair.km.toFixed(2) + " km. Calendar order is not verified UTC order.", null,
+      source.domain === "craft" ? null : contextIdentity(options, source.domain, idOf(pair.row))));
+    else source.rows.forEach(row => output.add(row, values.get(idOf(row)) || [], source.domain === "craft" ? [idOf(row)] : [], details.get(idOf(row)), null,
+      source.domain === "craft" ? null : contextIdentity(options, source.domain, idOf(row))));
     return output.finish();
   }
   function verify(result, options, slot) {

@@ -254,7 +254,7 @@
       const accepted = controller && controller.latestMeta && controller.latestMeta.filterSnapshot;
       const time = accepted && accepted.timeRange;
       const comparing = panel.getAttribute("data-session-mode") === "compare";
-      const text = comparing ? "Preparation dates & filters · held A/B groups stay fixed · chart populations shown below" : result && result.summary && time
+      const text = comparing ? "Prepare a replacement group · held A/B unchanged" : result && result.summary && time
         ? new Intl.NumberFormat().format(result.summary.activeCount) + " reports · " + (time.mode === "full" ? "All time" : [time.startIso,time.endIso].filter(Boolean).join(" to ")) + " · Current reports & filters"
         : "Current reports & filters";
       if (scopeSummary.textContent !== text) scopeSummary.textContent = text;

@@ -351,7 +351,7 @@ const inspector = cls(inspecting.target, "analysis-session-inspection"), inspect
 const inspectRow = key => walk(inspectingChart).find(el => el.getAttribute("data-comparison-row-key") === key);
 const reportRows = (start, end) => Array.from({ length: end - start }, (_, offset) => { const i = start + offset; return { id: "source-a" + i, label: i === 0 ? "Preserved <img src=x>" : "Report " + i,
   date: "1954-10-01", location: "Fixture place", source: "Source family one", detail: i === 0 ? "Long preserved account. ".repeat(30) : "Short account.",
-  eventIds: ["a" + i], sourceUrl: i === 0 ? "https://example.org/source" : i === 1 ? "javascript:alert(1)" : null }; });
+  eventIds: ["a" + i], sourceLinkLabel: i === 0 ? "Open catalog <img src=x>" : undefined, sourceUrl: i === 0 ? "https://example.org/source" : i === 1 ? "javascript:alert(1)" : null }; });
 const recordPage = (aRows, bRows = []) => ({ title: "disc_saucer", unit: "canonical_reports", groups: {
   A: { totalN: 40, matchedN: 40, rows: aRows }, B: { totalN: 3, matchedN: 3, rows: bRows }
 }, notes: ["Records retain their source-family provenance."] });
@@ -371,6 +371,8 @@ assert.equal(walk(inspector).some(el => el.tagName === "img"), false);
 assert.equal(walk(inspector).filter(el => el.tagName === "button" && el.textContent === "Open preserved report").length, 25);
 assert.equal(walk(inspector).filter(el => el.tagName === "a").length, 2, "only safe HTTP sources become links; context IDs do not become report actions");
 assert.equal(walk(inspector).find(el => el.tagName === "a").rel, "noopener noreferrer");
+assert.equal(walk(inspector).find(el => el.tagName === "a").textContent, "Open catalog <img src=x>", "source-link roles remain plain text rather than HTML");
+assert.equal(walk(inspector).some(el => el.tagName === "a" && el.textContent === "Open source"), true, "unlabeled exact sources retain the existing default");
 const accountDisclosure = walk(inspector).find(el => el.tagName === "details" && (el.className || "").includes("analysis-session-record-detail"));
 accountDisclosure.open = true; await accountDisclosure.dispatchEvent({ type: "toggle" });
 button(inspector, "Load more records").focus();

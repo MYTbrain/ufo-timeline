@@ -197,7 +197,7 @@ def validate_refresh(previous, plan):
         PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
         "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
         "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
-        "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js",
+        "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
         COLLECTION_MANIFEST, COLLECTION_EVIDENCE, SEARCH_MANIFEST,
         "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
@@ -237,7 +237,7 @@ def assemble(check_only=False):
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
-                   "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js",
+                   "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
                    "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
                    "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]

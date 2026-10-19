@@ -9950,7 +9950,14 @@
         comparisonTarget: document.getElementById("analysis-comparison-workspace"),
         onModeChange: setAnalysisComparisonMode,
         onLoadComparison: function (request) { return loadAnalysisSessionEvidence(request); },
-        onInspectComparison: function (request) { return loadAnalysisSessionEvidence(Object.assign({}, request, { inspection: true })); },
+        onInspectComparison: async function (request) {
+          let result = decorateAnalysisInspectionReports(await loadAnalysisSessionEvidence(Object.assign({}, request, { inspection: true })));
+          if (["A", "B"].some(function (slot) { return result.groups[slot].rows.some(function (row) { return row.contextRecord; }); })) {
+            try { result = await (await loadAnalysisInspectionSources()).enrich(result); }
+            catch (error) { result.notes = (result.notes || []).concat("Source details could not load: " + error.message + ". Close and reopen these records to retry."); }
+          }
+          return result;
+        },
         onOpenInspectedRecord: function (request) { if (request.eventId != null) return openEncounterInspectedReport({ eventId: request.eventId, mode: "source" }); },
         onPinCurrent: integration.captureCurrentFilters, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
         onClearGroup: integration.clearGroup, onClearAll: integration.clearAll, onClearSelection: integration.clearSelection,
@@ -9963,6 +9970,38 @@
       syncAnalysisComparisonWorkspace();
     }
     return store;
+  }
+
+  function decorateAnalysisInspectionReports(result) {
+    const output = Object.assign({}, result, { groups: {} });
+    ["A", "B"].forEach(function (slot) {
+      const side = result.groups[slot];
+      output.groups[slot] = Object.assign({}, side, { rows: side.rows.map(function (row) {
+        if (!Array.isArray(row.eventIds) || row.eventIds.length !== 1 || row.contextRecord) return row;
+        const summary = getCatalogEventById(row.eventIds[0]);
+        if (!summary) return row;
+        const location = summary.location_display || summary.location_raw || summary.location;
+        return typeof location === "string" && location.trim() ? Object.assign({}, row, { label: location + " · " + row.label, location: location }) : row;
+      }) });
+    });
+    return output;
+  }
+
+  function loadAnalysisInspectionSources() {
+    if (runtime.analysisInspectionSources) return Promise.resolve(runtime.analysisInspectionSources);
+    if (!runtime.analysisInspectionSourcesPromise) {
+      runtime.analysisInspectionSourcesPromise = new Promise(function (resolve, reject) {
+        if (window.UfoAnalysisSessionSources) { resolve(window.UfoAnalysisSessionSources); return; }
+        const script = document.createElement("script"); script.src = resolveAssetPath("./analysis_session_sources.js?v=2026-10-19-inspect-analysis-v1"); script.async = true;
+        script.onload = function () { window.UfoAnalysisSessionSources ? resolve(window.UfoAnalysisSessionSources) : reject(new Error("Source inspection is unavailable")); };
+        script.onerror = function () { script.remove(); reject(new Error("Source inspection could not be downloaded")); };
+        document.head.appendChild(script);
+      }).then(function (api) {
+        runtime.analysisInspectionSources = api.create({ fetch: window.fetch.bind(window), crypto: window.crypto, baseUrl: document.baseURI });
+        return runtime.analysisInspectionSources;
+      }).catch(function (error) { runtime.analysisInspectionSourcesPromise = null; throw error; });
+    }
+    return runtime.analysisInspectionSourcesPromise;
   }
 
   function setAnalysisComparisonMode(mode) {
