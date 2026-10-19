@@ -1,4 +1,6 @@
 {
+  "current_publication_receipt": "docs/qa/analysis-release-20261019/production-release.json",
+  "historical_snapshot_superseded": true,
   "schema": "ufo-workspace-runtime-replication-v1",
   "release_id": "workspace-analysis-20261008",
   "accepted_scope_since_commit": "9f60d3b3480552f995aa8e931a59934ca4dfe02f",

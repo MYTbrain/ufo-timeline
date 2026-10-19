@@ -1,4 +1,6 @@
 {
+  "current_publication_receipt": "docs/qa/analysis-release-20261019/production-release.json",
+  "historical_snapshot_superseded": true,
   "schema": "ufo-workspace-publication-v1",
   "release_id": "workspace-analysis-20261008",
   "status": "published_verified",

@@ -1,0 +1,194 @@
+{
+  "passed": true,
+  "url": "https://ufo-timeline.pages.dev",
+  "runtimeSource": "94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+  "deploymentId": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "pagesTreeSha256": "9091bf5700efae7e0e6dfe2b41313d7c1eef3730c78d3a328efa67f2ee0ad42c",
+  "publicObjects": 214,
+  "changedPublicObjectsVerified": [
+    {
+      "path": "analysis_collection_evidence.js",
+      "bytes": 14406,
+      "sha256": "8cb554ee91294dff9488110499c51dcb596184218cd6477fe41d5a00071d8ba7",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_collections.css",
+      "bytes": 4668,
+      "sha256": "db02287091df2051c45a669e165a00fad0ed19d539d201cb0c790dc85aac3231",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_collections_view.js",
+      "bytes": 30347,
+      "sha256": "8f78f07fc1cbac8c10c8e95b1952654ba11baaf0c4540ec54c9c4a1bfd2adfc6",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session.css",
+      "bytes": 16526,
+      "sha256": "dcbd163937099f68dc2a6626c319f37e3d48b58e98945936e52939be77bd6ba6",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session.js",
+      "bytes": 14994,
+      "sha256": "19861d5b657a80ad77990765edce73ed015a932950072bb2a5d3a786e7c6d8de",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_comparisons.js",
+      "bytes": 26125,
+      "sha256": "230ab79ffe3e2a303e3a4518f1b70da3b766fda78767c0d99c82c4b72837362a",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_context.js",
+      "bytes": 29811,
+      "sha256": "146e998a94e194cc55894984e2ab30af59a2d91f9bb7689457df0a2b1430adcb",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_view.js",
+      "bytes": 47272,
+      "sha256": "4530f81a395a1348dbb0f30b48e735d0a499c3a860894b54b01983f6f0a3ea02",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_view.js",
+      "bytes": 510063,
+      "sha256": "c9d9b14c10cbcba4c47c2d27d7428389035824aa98ed6f339ec2482942ad2699",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "app.js",
+      "bytes": 1502624,
+      "sha256": "fd0cdf723429cd259d89ad09e7086ad4ca7be986b17b86939e762c1a51cef408",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 293617,
+      "sha256": "f34b8f1809984628dd59037c0b6511057aeddfbd3f7f6a97bd58620d6a9535d7",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "data/app_config.json",
+      "bytes": 7180,
+      "sha256": "00fce0d9245e2eb31128ad076d097b01529abf4ee193ed755d3fce666eb8b54d",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "data/collections/evidence.json.gz",
+      "bytes": 398307,
+      "sha256": "e3e8d70aa4d16c16b5e81d1249f18012f92674b3f9acfa43c56b5dab32602281",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "data/collections/manifest.json",
+      "bytes": 38988,
+      "sha256": "db0ab0dec3245e8eb51f11398096c3fca056fa49aee516671f7061049b56b91c",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "data/search/manifest.json",
+      "bytes": 23624,
+      "sha256": "d9758dd835b9b3e47eb65203459132fcf96913e9dd26f94859d63b99edce1f9c",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 167494,
+      "sha256": "be67a51210c72a8ee87bf0a5457c277bd7ff0124869193706c4eda295765570a",
+      "passed": true,
+      "provider_transformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    },
+    {
+      "path": "search_catalog.js",
+      "bytes": 4097,
+      "sha256": "16e3e305fca3f90ac5256a058882c43f4531ff44e00572d1093a2f8a6a27c1ae",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_query.js",
+      "bytes": 14134,
+      "sha256": "8be266ac607d4c1599d4a20b2a0a1079feca936b436c9c9f97be305a54d2219a",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_runtime.js",
+      "bytes": 4556,
+      "sha256": "0561dac47661c1920ce0f34c7906017364406558ca4a4dc7231fff7317ab9a5b",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_view.css",
+      "bytes": 3779,
+      "sha256": "9e84dd5b4969f96b2aacd340349781cc3bc8281d9a26bc6c70c7934b47e18287",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_view.js",
+      "bytes": 10317,
+      "sha256": "1be32ec9cda287fe6e2097f680754b028d60229cddb366571a64f0718e326299",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_worker.js",
+      "bytes": 24722,
+      "sha256": "520411a4d052f34a2b8d9aba120286a13d71ddb6c7ffafe9975fb0bdabb2c336",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 14736,
+      "sha256": "331d9e4d12115ebb2314a063a8d9a1c7f9744f8fcf98057bc1e24716fc925168",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-view-groups.js",
+      "bytes": 5314,
+      "sha256": "d324a7333dec96dd84cbc82752ff7de7a4302a41196c0cd2240b334e29378b69",
+      "passed": true,
+      "provider_transformation": null
+    }
+  ],
+  "unchangedPublicObjects": 190,
+  "method": "Exact changed runtime byte verification plus unchanged hash inheritance from prior production and complete preview proof",
+  "baselineProduction": "16443086-c630-41d8-a793-92a0243a76f6",
+  "baselineProof": "../startup-performance-20261018/production-public.json",
+  "completePreviewProof": "../complete-comparison-20261019/hosted-public.json",
+  "unchangedExistingR2Objects": 87,
+  "additionalPreviouslyUploadedPreviewR2Objects": 18,
+  "newDataUploadsAtPromotion": 0,
+  "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6"
+}

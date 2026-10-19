@@ -1,0 +1,45 @@
+{
+  "schemaId": "ufo-analysis-research-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-19T17:34:29.531812+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "runtimeSourceCommit": "94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+  "approvedFeatureRuntimeSource": "8823b42",
+  "githubMainUpdated": true,
+  "githubSourceUrl": "https://github.com/MYTbrain/ufo-timeline/commit/94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 216,
+    "bytes": 40805985,
+    "treeSha256": "9091bf5700efae7e0e6dfe2b41313d7c1eef3730c78d3a328efa67f2ee0ad42c"
+  },
+  "retainedRollback": {
+    "deploymentId": "16443086-c630-41d8-a793-92a0243a76f6",
+    "sourceCommit": "15ab1607390d636f1571fa10bb4c8b137cf391f2",
+    "url": "https://16443086.ufo-timeline.pages.dev",
+    "supersededRollbackDesignation": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+    "deletionPerformed": false
+  },
+  "verification": {
+    "provider": "production-provider.json",
+    "githubChecks": "github-checks.json",
+    "publicBytes": "production-public.json",
+    "browser": "production-browser.json",
+    "changedPublicObjectsVerified": 24,
+    "unchangedPublicObjectsInherited": 190,
+    "immutableR2ObjectsReused": 105,
+    "dataUploadsAtPromotion": 0,
+    "githubCloudflareCheck": "completed/success"
+  },
+  "storage": {
+    "stageNetGrowthBytes": 0,
+    "approximateProjectGrowth": "under1MiB for release notes, receipts and screenshot",
+    "newFilesAbove100MiB": [],
+    "fullDataOrRepositoryCopies": false,
+    "supersededLargeLocalStages": [],
+    "cleanupProposal": "No protected data deletion. Older provider preview candidates and the former rollback designation are superseded history; provider cleanup requires a later literal allowlist. Retain the single canonical stage and previous validated production as rollback."
+  },
+  "nextAnalysisPass": "NEXT_ANALYSIS_PASS.md",
+  "receiptNotPushed": true
+}

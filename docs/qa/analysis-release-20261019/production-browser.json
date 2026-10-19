@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "sourceCommit": "94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+  "loadingCoverObserved": true,
+  "completeCatalogReady": true,
+  "catalogReports": 702893,
+  "mappedReports": 582877,
+  "legendMapToolsChronologyVisible": true,
+  "researchSearch": {
+    "query": "ariel AND school",
+    "matches": 4,
+    "indexedReports": 702893
+  },
+  "A": {
+    "from": "1973-08-01",
+    "to": "1974-01-31",
+    "reports": 1310
+  },
+  "B": {
+    "from": "1989-11-01",
+    "to": "1990-04-30",
+    "reports": 519
+  },
+  "cropComparison": {
+    "A": 27,
+    "B": 73,
+    "classifiedMorphologyA": 19,
+    "classifiedMorphologyB": 63
+  },
+  "consoleErrors": [],
+  "screenshot": "production-comparison.png",
+  "previewAcceptance": "../complete-comparison-20261019/browser-workflow.json"
+}

@@ -1,0 +1,8 @@
+{
+  "schemaId": "ufo-current-production-pointer-v1",
+  "receipt": "docs/qa/analysis-release-20261019/production-release.json",
+  "deploymentId": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "runtimeSourceCommit": "94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+  "pagesTreeSha256": "9091bf5700efae7e0e6dfe2b41313d7c1eef3730c78d3a328efa67f2ee0ad42c",
+  "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6"
+}
