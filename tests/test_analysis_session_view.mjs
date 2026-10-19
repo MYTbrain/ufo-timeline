@@ -146,12 +146,15 @@ view.setSection("sources_quality"); assert.equal(activeTopic().textContent, "Sou
 view.setSection("overview"); assert.equal(activeTopic().textContent, "Coverage");
 assert.deepEqual(rowValues("With a date"), ["A: 75.0% · 3", "B: Not available"]);
 assert.match(chart.textContent, /dates of any recorded precision/);
-for (const key of ["crops", "animals", "facilities", "spatial", "comparisons", "context", "unknown-topic"]) {
+for (const key of ["crops", "animals", "facilities", "spatial", "comparisons", "context"]) {
   view.setSection(key); assert.equal(chart.hidden, true, key + " must not show a misleading current-B chart");
-  assert.equal(chart.children.length, 0, "unsupported views cannot retain the previous topic's chart");
-  assert.equal(cls(board, "analysis-session-unavailable").hidden, false);
-  assert.match(cls(board, "analysis-session-missing").textContent, /not (?:yet captured|included)/);
+  assert.equal(chart.children.length, 0, "pending views cannot retain the previous topic's chart");
+  assert.equal(cls(board, "analysis-session-external-status").hidden, false);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.match(cls(board, "analysis-session-external-status").textContent, /does not yet provide.*Retry comparison/);
 }
+view.setSection("unknown-topic"); assert.equal(cls(board, "analysis-session-unavailable").hidden, false);
+assert.match(cls(board, "analysis-session-missing").textContent, /not yet captured/);
 await button(board, "View current reports").click(); assert.equal(view.getMode(), "current"); assert.equal(board.hidden, true);
 assert.equal(doc.activeElement, current); view.setSection("craft"); await compare.click();
 await button(board, "Use B in Analysis").click();
@@ -223,4 +226,110 @@ assert.match(cls(card("a"), "analysis-session-card-filters").textContent, /Captu
 const inlineDoc = document(), inline = inlineDoc.createElement("div"), inlineStore = Model.createStore(); inlineDoc.body.appendChild(inline);
 const inlineView = View.create(inline, { store: inlineStore }); inlineStore.setGroup("A", groupA); inlineStore.setGroup("B", groupB);
 assert.equal(cls(inline, "analysis-session-board").hidden, false, "standalone consumers have a working inline fallback host"); inlineView.destroy();
-console.log("Analysis comparison view: automatic inline A/B, explicit current/compare modes, topic-linked measures, exact shares, unknowns, unavailable context, keyboard navigation, capture instructions, scopes, async recovery and reset passed.");
+// External topic adapters run lazily against exact held IDs, including groups
+// captured before these derived views existed. Counts below deliberately use
+// context denominators different from the held UFO report populations.
+const flush = () => new Promise(resolve => setImmediate(resolve));
+const requests = [];
+const derived = fixture({ onLoadComparison(request) { return new Promise((resolve, reject) => requests.push({ request, resolve, reject })); } });
+const derivedBoard = cls(derived.comparisonTarget, "analysis-session-board"), derivedChart = cls(derivedBoard, "analysis-session-chart");
+const derivedAxis = () => walk(derivedBoard).find(element => element.getAttribute("role") === "tab" && element.getAttribute("aria-selected") === "true");
+const makeDimension = (key, label, unit = "context records") => ({ key, label, unit, notes: ["The same eligibility rule applies to A and B."],
+  a: { totalN: 2, eligibleN: 1, unknownN: 1, rows: [{ key: "one", label: label + " one", count: 1 }] },
+  b: { totalN: 3, eligibleN: 1, unknownN: 2, rows: [{ key: "one", label: label + " one", count: 1 }] } });
+const ready = (...dimensions) => ({ status: "ready", dimensions, notes: ["Independent catalog record counts; not the held UFO report denominator."], artifactHashes: { fixture: "pinned-one" } });
+derived.store.setGroup("A", { eventIds: groupA.eventIds, scope: groupA.scope });
+derived.store.setGroup("B", { eventIds: groupB.eventIds, scope: groupB.scope });
+await flush(); assert.equal(requests.length, 0, "holding A/B does not eagerly load derived comparisons");
+derived.view.setSection("encounters"); await flush(); assert.equal(requests.length, 0, "Beings remains an immediate captured field");
+await button(derivedBoard, "Collection materials").click(); await flush();
+assert.equal(requests.length, 1); assert.equal(requests[0].request.section, "encounters");
+assert.equal(requests[0].request.groups.A, derived.store.getState().groups.A, "the adapter receives the exact immutable group");
+assert.equal(requests[0].request.groups.B, derived.store.getState().groups.B);
+assert.equal(requests[0].request.settings.collectionEvidence, "direct"); assert.equal(requests[0].request.settings.orb, 3);
+assert.equal(derivedChart.children.length, 0); assert.match(cls(derivedBoard, "analysis-session-external-status").textContent, /Preparing collection/);
+assert.equal(derivedBoard.getAttribute("aria-busy"), "true");
+requests[0].resolve(ready(makeDimension("collection_materials", "Material", "collection accounts"), makeDimension("collection_actions", "Collection actions", "collection accounts")));
+await flush();
+assert.equal(derivedAxis().textContent, "Collection materials"); assert.match(derivedChart.textContent, /Share of all collection accounts · A: 2 · B: 3/);
+assert.match(derivedChart.textContent, /50\.0% · 1.*33\.3% · 1/);
+assert.match(derivedChart.textContent, /Unknown \/ not indexed/); assert.match(derivedChart.textContent, /Independent catalog record counts/);
+assert.equal(cls(derivedChart, "analysis-session-method-details").open, false, "long source/scope notes remain available in a collapsed disclosure");
+assert.doesNotMatch(derivedChart.textContent, /Recapture/);
+assert.equal(derivedBoard.getAttribute("aria-busy"), "false");
+await derivedAxis().dispatchEvent({ type: "keydown", key: "End" }); assert.equal(derivedAxis().textContent, "Collection actions");
+assert.equal(derived.doc.activeElement, derivedAxis()); assert.equal(requests.length, 1, "switching loaded dimensions reuses one topic result");
+await button(derivedBoard, "Beings").click(); assert.equal(derivedAxis().textContent, "Beings");
+assert.equal(cls(derivedBoard, "analysis-session-settings").hidden, true);
+await button(derivedBoard, "Collection materials").click(); assert.equal(requests.length, 1);
+assert.equal(cls(derivedBoard, "analysis-session-settings").hidden, false);
+
+derived.view.setSection("crops"); await flush(); const cropRequest = requests.at(-1);
+assert.equal(cropRequest.request.section, "crops"); assert.equal(derivedChart.children.length, 0);
+derived.view.setSection("animals"); await flush(); const animalRequest = requests.at(-1);
+animalRequest.resolve(ready(makeDimension("animal_species", "Animal species", "animal records"))); await flush();
+assert.match(derivedChart.textContent, /Animal species one/);
+cropRequest.resolve(ready(makeDimension("crop_profile", "Crop profile", "crop-circle records"))); await flush();
+assert.match(derivedChart.textContent, /Animal species one/); assert.doesNotMatch(derivedChart.textContent, /Crop profile one/, "a late previous topic cannot replace the active chart");
+const beforeCropReturn = requests.length;
+derived.view.setSection("crops"); await flush(); assert.equal(requests.length, beforeCropReturn);
+assert.match(derivedChart.textContent, /Crop profile one/); assert.match(derivedChart.textContent, /Share of all crop-circle records · A: 2 · B: 3/);
+assert.match(walk(derivedChart).find(element => element.tagName === "caption").textContent, /all crop-circle records/);
+
+derived.view.setSection("comparisons"); await flush(); const venusRequest = requests.at(-1);
+derived.view.setSettings({ planet: "jupiter" }); await flush(); const jupiterRequest = requests.at(-1);
+assert.equal(jupiterRequest.request.settings.planet, "jupiter"); assert.equal(jupiterRequest.request.settings.zodiac, "sidereal_lahiri");
+venusRequest.resolve(ready(makeDimension("planet", "Venus"))); await flush(); assert.equal(derivedChart.children.length, 0, "late old settings must not populate a new settings view");
+jupiterRequest.resolve(ready(makeDimension("planet", "Jupiter"))); await flush(); assert.match(derivedChart.textContent, /Jupiter one/);
+const beforeVenusReturn = requests.length;
+derived.view.setSettings({ planet: "venus" }); await flush(); assert.equal(requests.length, beforeVenusReturn); assert.match(derivedChart.textContent, /Venus one/);
+assert.throws(() => derived.view.setSettings({ planet: "mars" }), /different planets/);
+assert.throws(() => derived.view.setSettings({ orb: 100 }), /valid orb/);
+assert.equal(derived.view.getSettings().planet, "venus", "invalid settings leave the accepted chart scope intact");
+const planetControl = walk(derivedBoard).find(el => el.getAttribute("aria-label") === "Planet for both groups");
+planetControl.value = "mars"; await button(derivedBoard, "Apply to both groups").click();
+assert.equal(cls(derivedBoard, "analysis-session-settings-error").hidden, false); assert.match(cls(derivedBoard, "analysis-session-settings-error").textContent, /different planets/);
+planetControl.value = "moon"; await button(derivedBoard, "Apply to both groups").click(); await flush(); const oldGroupRequest = requests.at(-1);
+assert.equal(oldGroupRequest.request.settings.planet, "moon"); assert.equal(cls(derivedBoard, "analysis-session-settings-error").hidden, true);
+derived.store.setGroup("A", { eventIds: ["replacement"], label: "Replacement A" }); await flush(); const newGroupRequest = requests.at(-1);
+assert.notEqual(newGroupRequest.request.groups.A, oldGroupRequest.request.groups.A);
+oldGroupRequest.resolve(ready(makeDimension("planet", "Stale group"))); await flush(); assert.equal(derivedChart.children.length, 0);
+newGroupRequest.resolve(ready(makeDimension("planet", "New group"))); await flush(); assert.match(derivedChart.textContent, /New group one/); assert.doesNotMatch(derivedChart.textContent, /Stale group/);
+
+derived.view.setSettings({ planet: "mercury" }); await flush(); requests.at(-1).reject(new Error("Fixture source unavailable")); await flush();
+assert.equal(derivedChart.children.length, 0); assert.match(cls(derivedBoard, "analysis-session-external-status").textContent, /Fixture source unavailable.*Retry comparison/);
+await button(derivedBoard, "Retry comparison").click(); await flush(); const retried = requests.at(-1);
+retried.resolve(ready(makeDimension("planet", "Mercury"))); await flush(); assert.match(derivedChart.textContent, /Mercury one/);
+derived.view.setSettings({ planet: "neptune" }); await flush(); const offscreenRequest = requests.at(-1);
+await button(derived.target, "Current reports").click(); offscreenRequest.resolve(ready(makeDimension("planet", "Neptune"))); await flush();
+assert.equal(derivedBoard.hidden, true); const beforeCompareReturn = requests.length;
+await button(derived.target, "Compare A / B").click(); await flush(); assert.equal(requests.length, beforeCompareReturn); assert.match(derivedChart.textContent, /Neptune one/);
+
+derived.view.setSettings({ planet: "sun" }); await flush(); const destroyedRequest = requests.at(-1);
+derived.view.destroy(); destroyedRequest.resolve(ready(makeDimension("planet", "Destroyed"))); await flush();
+assert.equal(derived.target.children.length, 0); assert.equal(derived.comparisonTarget.children.length, 0);
+const manyMeasures = fixture({ onLoadComparison() { return Promise.resolve(ready(...Array.from({ length: 12 }, (_, index) => makeDimension("measure-" + index, "Measure " + index)))); } });
+manyMeasures.store.setGroup("A", groupA); manyMeasures.store.setGroup("B", groupB); manyMeasures.view.setSection("comparisons"); await flush();
+const manyBoard = cls(manyMeasures.comparisonTarget, "analysis-session-board"), manyPicker = cls(manyBoard, "analysis-session-measure-picker");
+assert.equal(manyPicker.hidden, false); assert.equal(cls(manyBoard, "analysis-session-tabs").hidden, true, "large measure sets do not become a wall of wrapped tabs");
+const measureSelect = manyPicker.children.find(el => el.tagName === "select");
+assert.equal(measureSelect.children.length, 12); measureSelect.value = "external:measure-11"; await measureSelect.dispatchEvent({ type: "change" });
+assert.match(cls(manyBoard, "analysis-session-chart").textContent, /Measure 11 one/);
+assert.doesNotMatch(cls(manyBoard, "analysis-session-chart").textContent, /Measure 0 one/);
+assert.equal(cls(manyBoard, "analysis-session-chart").getAttribute("role"), "region");
+assert.match(cls(manyBoard, "analysis-session-chart").getAttribute("aria-label"), /Measure 11/); manyMeasures.view.destroy();
+const missingScope = fixture({ onLoadComparison() { return Promise.resolve({ status: "unavailable", dimensions: [], reason: "No captured date or geographic scope defines these context records.", notes: ["Exact report membership is preserved."] }); } });
+missingScope.store.setGroup("A", groupA); missingScope.store.setGroup("B", groupB); missingScope.view.setSection("crops"); await flush();
+const missingBoard = cls(missingScope.comparisonTarget, "analysis-session-board");
+assert.match(cls(missingBoard, "analysis-session-unavailable").textContent, /No captured date or geographic scope/);
+assert.equal(cls(missingBoard, "analysis-session-external-status").hidden, true, "a legitimate unavailable scope is not an endless retry error");
+assert.equal(cls(missingBoard, "analysis-session-chart").hidden, true);
+await button(missingBoard, "View current reports").click(); assert.equal(missingScope.view.getMode(), "current"); missingScope.view.destroy();
+const unavailableFields = fixture({ onLoadComparison() { return Promise.resolve(ready({ key: "gate", label: "Evidence gate", unit: "context records",
+  a: { available: false, totalN: 4, reason: "No source location in A." }, b: { available: false, totalN: 2, reason: "No source location in B." } })); } });
+unavailableFields.store.setGroup("A", groupA); unavailableFields.store.setGroup("B", groupB); unavailableFields.view.setSection("spatial"); await flush();
+const unavailableChart = cls(unavailableFields.comparisonTarget, "analysis-session-chart");
+assert.match(unavailableChart.textContent, /Share of all context records · A: 4 · B: 2/);
+assert.match(cls(unavailableChart, "analysis-session-missing").textContent, /A: No source location in A.*B: No source location in B/);
+assert.equal(cls(unavailableChart, "analysis-session-method-details").open, false); unavailableFields.view.destroy();
+console.log("Analysis comparison view: inline modes, category routing, unit-aware derived results, lazy loads, scope disclosures, compact measure picker, settings/cache/race guards, errors/retry, keyboard access, capture scopes and reset passed.");

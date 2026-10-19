@@ -20,16 +20,32 @@
     overview: { label: "Group overview", axes: ["coverage", "craft", "source"] },
     time: { label: "Time patterns", axes: ["calendarMonth", "weekday", "timeOfDay", "year", "duration"] },
     craft: { label: "Reported craft categories", axes: ["craft", "craftConfidence", "color"] },
-    encounters: { label: "Encounter reports", axes: ["being", "abduction"] },
+    encounters: { label: "Encounter reports", axes: ["being", "abduction", "collections"], external: true },
     geography: { label: "Geography", axes: ["country", "macroregion", "adminRegion"] },
     "sources-quality": { label: "Sources & quality", axes: ["source", "reportType", "datePrecision", "locationPrecision", "witnessCount", "coverage"] },
-    crops: { label: "Crop circles", unavailable: "Crop-circle records belong to a separate catalog. They are not included in the UFO reports held as A and B." },
-    animals: { label: "Animal reports", unavailable: "Animal-mutilation records belong to a separate catalog. They are not included in the UFO reports held as A and B." },
-    facilities: { label: "Facilities", unavailable: "Facility proximity and its location eligibility are not yet captured in the A/B groups." },
-    spatial: { label: "Spatial evidence", unavailable: "Spatial relationships and their location eligibility are not yet captured in the A/B groups." },
-    comparisons: { label: "Context comparisons", unavailable: "Moon, planetary and nuclear context comparisons are not yet captured in the A/B groups." },
-    context: { label: "Evidence gates", unavailable: "Cross-catalog evidence gates and relationship lineage are not yet captured in the A/B groups." }
+    crops: { label: "Crop circles", external: true },
+    animals: { label: "Animal reports", external: true },
+    facilities: { label: "Facilities", external: true },
+    spatial: { label: "Spatial evidence", external: true },
+    comparisons: { label: "Context comparisons", external: true },
+    context: { label: "Evidence gates", external: true }
   });
+  const DEFAULT_SETTINGS = Object.freeze({ sourceDomain: "craft", planet: "venus", partner: "mars", zodiac: "sidereal_lahiri", orb: 3,
+    nuclearWindowDays: 30, nuclearRadiusKm: 500, spatialRadiusKm: 100, collectionEvidence: "direct" });
+  const BODIES = Object.freeze(["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune"]);
+  function normalizeSettings(value) {
+    const result = Object.assign({}, DEFAULT_SETTINGS, value || {});
+    [["sourceDomain", ["craft", "crops", "animals"]], ["planet", BODIES], ["partner", BODIES], ["zodiac", ["sidereal_lahiri", "tropical"]], ["collectionEvidence", ["direct", "all"]]].forEach(([key, choices]) => {
+      if (!choices.includes(result[key])) throw new Error("Choose a valid " + key.replace(/([A-Z])/g, " $1").toLowerCase() + ".");
+    });
+    [["orb", .01, 10], ["nuclearWindowDays", 1, 90], ["nuclearRadiusKm", 1, 2000], ["spatialRadiusKm", 1, 100]].forEach(([key, min, max]) => {
+      const number = Number(result[key]);
+      if (!Number.isFinite(number) || number < min || number > max || key !== "orb" && !Number.isInteger(number)) throw new Error("Enter a valid " + key.replace(/([A-Z])/g, " $1").toLowerCase() + ".");
+      result[key] = number;
+    });
+    if (result.planet === result.partner) throw new Error("Choose different planets for the planet and its aspect partner.");
+    return Object.freeze(Object.fromEntries(Object.keys(DEFAULT_SETTINGS).map(key => [key, result[key]])));
+  }
   let nextId = 0;
   function categoryLabel(domain, row) {
     return domain === "craft" && (!row.label || row.label === row.key) && Object.prototype.hasOwnProperty.call(CRAFT_LABELS, row.key)
@@ -89,8 +105,10 @@
     const comparisonTarget = config.comparisonTarget || target;
     if (!comparisonTarget || comparisonTarget.ownerDocument !== doc) throw new Error("The comparison chart must belong to the same document.");
     let destroyed = false, externalBusy = false, pending = 0, message = "", error = false, mode = "current";
-    let section = "overview", axis = "coverage", showAll = false, tableOpen = false, lastComparison = null, chartVersion = 0;
+    let section = "overview", axis = "coverage", showAll = false, tableOpen = false, methodsOpen = false, lastComparison = null, chartVersion = 0;
     let previousA = null, previousB = null, previousPair = false, focusAfterMutation = null;
+    let settings = normalizeSettings(config.settings), settingsVersion = 0, settingsRenderKey = "", cacheA = null, cacheB = null, measureOptionsKey = "";
+    const externalCache = new Map(), settingsControls = {}, settingFields = {};
     const mutationButtons = [], groups = {}, tabs = {}, id = "analysis-compare-" + (++nextId);
     function node(tag, className, text) { const el = doc.createElement(tag); if (className) el.className = className; if (text != null) el.textContent = String(text); return el; }
     function button(text, callback, className, mutation = true) {
@@ -100,6 +118,60 @@
     }
     function state() { return store.getState(); }
     function topic() { return TOPICS[section] || { label: "This Analysis topic", unavailable: "This topic is not yet captured in the A/B groups." }; }
+    function isExternalAxis() { return topic().external === true && (section !== "encounters" || axis === "collections" || axis.startsWith("external:")); }
+    function externalKey() { return section + "|" + JSON.stringify(settings); }
+    function externalEntry() {
+      const current = state();
+      return current.groups?.A === cacheA && current.groups?.B === cacheB ? externalCache.get(externalKey()) : null;
+    }
+    function collectionDimension(entry) {
+      const dimensions = entry?.result?.dimensions || [];
+      return dimensions.find(value => /material/i.test(value.key + " " + value.label)) || dimensions[0];
+    }
+    function availableAxes() {
+      const currentTopic = topic(), entry = externalEntry();
+      if (!currentTopic.external) return (currentTopic.axes || []).slice();
+      if (section === "encounters") {
+        const material = collectionDimension(entry);
+        return (currentTopic.axes || []).concat((entry?.result?.dimensions || []).filter(value => value !== material).map(value => "external:" + value.key));
+      }
+      return entry?.status === "ready" ? entry.result.dimensions.map(value => "external:" + value.key) : [];
+    }
+    function normalizeExternalResult(value) {
+      if (!value || !["ready", "unavailable"].includes(value.status) || !Array.isArray(value.dimensions)) throw new Error("The comparison returned incomplete category data. Try again.");
+      const api = config.model || (typeof globalThis !== "undefined" && globalThis.UfoAnalysisSession);
+      if (!api || typeof api.compareExternalDimension !== "function") throw new Error("Reload the preview to prepare this comparison.");
+      const keys = new Set(), dimensions = value.dimensions.map(item => {
+        if (!item || keys.has(String(item.key))) throw new Error("The comparison returned repeated category fields.");
+        keys.add(String(item.key)); return api.compareExternalDimension(item);
+      });
+      const reason = value.reason == null ? "" : String(value.reason), notes = Array.isArray(value.notes) ? value.notes.map(String) : [];
+      if (reason) notes.unshift(reason);
+      return Object.freeze({ dimensions: Object.freeze(dimensions), notes: Object.freeze(notes), unavailableReason: reason, artifactHashes: value.artifactHashes || null });
+    }
+    function ensureExternal() {
+      if (mode !== "compare" || !isExternalAxis()) return null;
+      const current = state();
+      if (cacheA !== current.groups?.A || cacheB !== current.groups?.B) { externalCache.clear(); cacheA = current.groups?.A; cacheB = current.groups?.B; }
+      const key = externalKey(), cached = externalCache.get(key);
+      if (cached) return cached;
+      const entry = { key, section, a: cacheA, b: cacheB, settings, status: "loading", result: null, error: null };
+      externalCache.set(key, entry);
+      while (externalCache.size > 12) externalCache.delete(externalCache.keys().next().value);
+      function stillCurrent() { return !destroyed && mode === "compare" && section === entry.section && externalEntry() === entry; }
+      entry.promise = Promise.resolve().then(() => {
+        if (destroyed || cacheA !== entry.a || cacheB !== entry.b || externalCache.get(entry.key) !== entry) throw new Error("This comparison request was replaced.");
+        if (typeof config.onLoadComparison !== "function") throw new Error("This preview does not yet provide this comparison. View current reports or reload the updated preview.");
+        return config.onLoadComparison({ section: entry.section, groups: { A: entry.a, B: entry.b }, settings: entry.settings });
+      }).then(value => {
+        entry.result = normalizeExternalResult(value); entry.status = "ready";
+        if (stillCurrent()) { lastComparison = null; renderComparison(state(), true); renderBusy(); }
+      }).catch(failure => {
+        entry.status = "error"; entry.error = failure?.message || "The comparison could not be loaded. Try again.";
+        if (stillCurrent()) { lastComparison = null; renderComparison(state(), true); renderBusy(); }
+      });
+      return entry;
+    }
     function setStatus(text, isError) { message = text == null ? "" : String(text); error = Boolean(isError); renderStatus(); }
     function renderStatus() { status.textContent = message; status.setAttribute("data-error", error ? "true" : "false"); }
     async function invoke(callback) {
@@ -175,11 +247,12 @@
     });
     details.appendChild(cards); context.append(overlap, details);
     const tabList = node("div", "analysis-session-tabs"); tabList.setAttribute("role", "tablist"); tabList.setAttribute("aria-label", "A/B measure in this Analysis topic");
-    AXES.forEach(([key, label]) => {
+    function createTab(key, label) {
+      if (tabs[key]) { tabs[key].textContent = label; return tabs[key]; }
       const tab = button(label, () => selectAxis(key), "analysis-session-tab", false); tab.id = id + "-" + key;
       tab.setAttribute("role", "tab"); tab.setAttribute("aria-controls", id + "-chart");
       tab.addEventListener("keydown", event => {
-        const available = topic().axes || [], index = available.indexOf(key); let next;
+        const available = availableAxes(), index = available.indexOf(key); let next;
         if (index < 0) return;
         if (event.key === "ArrowRight") next = (index + 1) % available.length;
         else if (event.key === "ArrowLeft") next = (index + available.length - 1) % available.length;
@@ -188,19 +261,69 @@
         if (next != null) { event.preventDefault(); selectAxis(available[next]); tabs[available[next]].focus?.(); }
       });
       tabs[key] = tab; tabList.appendChild(tab);
-    });
+      return tab;
+    }
+    AXES.forEach(([key, label]) => createTab(key, label)); createTab("collections", "Collection materials");
+    const measurePicker = node("label", "analysis-session-measure-picker"), measureCaption = node("span", "", "Measure"), measureSelect = node("select");
+    measurePicker.hidden = true; measureSelect.id = id + "-measure"; measureSelect.setAttribute("aria-label", "A/B comparison measure");
+    measureSelect.addEventListener("change", () => selectAxis(measureSelect.value)); measurePicker.append(measureCaption, measureSelect);
+    const settingsDetails = node("details", "analysis-session-settings"); settingsDetails.appendChild(node("summary", "", "Comparison settings · same for A and B"));
+    const settingsGrid = node("div", "analysis-session-settings-grid");
+    function setting(key, label, options, attributes) {
+      const field = node("label", "analysis-session-setting"), caption = node("span", "", label), control = node(options ? "select" : "input");
+      if (options) options.forEach(([value, text]) => { const option = node("option", "", text); option.value = value; control.appendChild(option); });
+      else { control.type = "number"; Object.entries(attributes || {}).forEach(([name, value]) => control.setAttribute(name, value)); }
+      control.setAttribute("aria-label", label + " for both groups"); settingsControls[key] = control; settingFields[key] = field;
+      field.append(caption, control); settingsGrid.appendChild(field);
+    }
+    setting("sourceDomain", "Context record population", [["craft", "Craft reports"], ["crops", "Crop circles"], ["animals", "Animal reports"]]);
+    const bodyOptions = BODIES.map(value => [value, filterLabel(value)]);
+    setting("planet", "Planet", bodyOptions); setting("partner", "Aspect partner", bodyOptions);
+    setting("zodiac", "Zodiac convention", [["sidereal_lahiri", "Sidereal · Lahiri"], ["tropical", "Tropical"]]);
+    setting("orb", "Aspect orb (degrees)", null, { min: .01, max: 10, step: .01 });
+    setting("nuclearWindowDays", "Nuclear window (± days)", null, { min: 1, max: 90, step: 1 });
+    setting("nuclearRadiusKm", "Nuclear distance (km)", null, { min: 1, max: 2000, step: 1 });
+    setting("spatialRadiusKm", "Neighborhood radius (km)", null, { min: 1, max: 100, step: 1 });
+    setting("collectionEvidence", "Collection evidence", [["direct", "Direct collection accounts"], ["all", "Include uncertain / adjacent contexts"]]);
+    const settingsError = node("p", "analysis-session-settings-error"); settingsError.setAttribute("role", "alert"); settingsError.hidden = true;
+    const applySettings = button("Apply to both groups", () => {
+      const draft = Object.fromEntries(Object.entries(settingsControls).map(([key, control]) => [key, control.value]));
+      try { updateSettings(draft); settingsError.textContent = ""; settingsError.hidden = true; }
+      catch (failure) { settingsError.textContent = failure.message; settingsError.hidden = false; }
+    }, "analysis-session-apply-settings", false);
+    settingsDetails.append(settingsGrid, settingsError, applySettings);
+    const externalStatus = node("div", "analysis-session-external-status"); externalStatus.hidden = true;
+    const externalMessage = node("p"); externalMessage.setAttribute("role", "status"); externalMessage.setAttribute("aria-live", "polite");
+    const retryExternal = button("Retry comparison", () => { externalCache.delete(externalKey()); lastComparison = null; renderComparison(state(), true); renderBusy(); }, "analysis-session-retry", false);
+    externalStatus.append(externalMessage, retryExternal);
     const chart = node("section", "analysis-session-chart"); chart.id = id + "-chart"; chart.setAttribute("role", "tabpanel");
     const unavailable = node("div", "analysis-session-unavailable"); unavailable.hidden = true;
-    const unavailableText = node("p", "analysis-session-missing");
-    unavailable.append(unavailableText, button("View current reports", () => { changeMode("current"); currentButton.focus?.(); }, "analysis-session-return", false));
+    const unavailableText = node("p", "analysis-session-missing"), unavailableNotes = node("div");
+    unavailable.append(unavailableText, unavailableNotes, button("View current reports", () => { changeMode("current"); currentButton.focus?.(); }, "analysis-session-return", false));
     const caveat = node("p", "analysis-session-note analysis-session-caveat", "Counts describe captured catalog reports. Groups may overlap, and different reports may describe the same incident. Differences do not establish a causal relationship.");
-    board.append(title, context, tabList, unavailable, chart, caveat);
+    board.append(title, context, settingsDetails, tabList, measurePicker, externalStatus, unavailable, chart, caveat);
     target.replaceChildren(panel);
     if (comparisonTarget === target) target.appendChild(board); else comparisonTarget.replaceChildren(board);
 
     function selectAxis(key) {
-      if (!(topic().axes || []).includes(key)) return;
-      axis = key; showAll = false; tableOpen = false; renderComparison(state(), true);
+      if (!availableAxes().includes(key)) return;
+      axis = key; showAll = false; tableOpen = false; methodsOpen = false; renderComparison(state(), true);
+      renderBusy();
+    }
+    function updateSettings(value) {
+      const next = normalizeSettings(Object.assign({}, settings, value || {}));
+      if (JSON.stringify(next) === JSON.stringify(settings)) return false;
+      settings = next; settingsVersion++; showAll = false; tableOpen = false; methodsOpen = false; lastComparison = null; render(); return true;
+    }
+    function renderSettings() {
+      settingsDetails.hidden = !isExternalAxis();
+      const key = section + "|" + settingsVersion;
+      if (settingsRenderKey === key) return;
+      settingsRenderKey = key;
+      const visible = section === "comparisons" ? ["sourceDomain", "planet", "partner", "zodiac", "orb", "nuclearWindowDays", "nuclearRadiusKm"]
+        : section === "encounters" ? ["collectionEvidence"] : ["spatialRadiusKm"];
+      Object.entries(settingsControls).forEach(([name, control]) => { control.value = String(settings[name]); settingFields[name].hidden = !visible.includes(name); });
+      settingsError.textContent = ""; settingsError.hidden = true;
     }
     function coverageText(summary, key, label) { return Number.isFinite(summary[key]) ? label + " " + count(summary[key]) + " (" + percent(summary.reportN > 0 ? summary[key] / summary.reportN : null) + ")" : label + " unavailable"; }
     function renderCards(current) {
@@ -218,6 +341,10 @@
     }
     function rowsFor(current) {
       const model = current.comparison;
+      if (isExternalAxis()) {
+        const entry = externalEntry();
+        return axis === "collections" ? collectionDimension(entry) : entry?.result?.dimensions.find(value => "external:" + value.key === axis);
+      }
       if (axis === "coverage") {
         const a = model.a, b = model.b;
         return { rows: [["mappedN", "Mapped"], ["unmappedN", "Unmapped"], ["datedN", "With a date"], ["undatedN", "Date unavailable"]].map(([key, label]) => ({ key, label,
@@ -249,16 +376,25 @@
       });
       return item;
     }
-    function addDataTable(parent, rows) {
+    function addDataTable(parent, rows, unit) {
       const detail = node("details", "analysis-session-data"); detail.open = tableOpen;
       const version = chartVersion;
       detail.addEventListener("toggle", () => { if (mode === "compare" && version === chartVersion) tableOpen = detail.open; }); detail.appendChild(node("summary", "", "View exact data"));
       const wrapper = node("div", "analysis-session-table-wrap"), table = node("table", "analysis-session-table");
-      table.appendChild(node("caption", "", "Count and share of all captured reports in each group"));
+      table.appendChild(node("caption", "", "Count and share of all " + (unit || "captured reports") + " in each group"));
       const head = node("thead"), headings = node("tr");
       ["Category", "A", "B"].forEach(text => { const cell = node("th", "", text); cell.setAttribute("scope", "col"); headings.appendChild(cell); }); head.appendChild(headings); table.appendChild(head);
       const body = node("tbody"); rows.forEach(row => { const line = node("tr"), label = node("th", "", row.label); label.setAttribute("scope", "row"); line.appendChild(label); ["A", "B"].forEach(slot => { const value = sideValue(row, slot); line.appendChild(node("td", "", value.text)); }); body.appendChild(line); });
       table.appendChild(body); wrapper.appendChild(table); detail.appendChild(wrapper); parent.appendChild(detail);
+    }
+    function addMethodDetails(parent, notes) {
+      const values = [...new Set((notes || []).map(value => String(value).trim()).filter(Boolean))];
+      if (!values.length) return;
+      const detail = node("details", "analysis-session-method-details"), version = chartVersion; detail.open = methodsOpen;
+      detail.appendChild(node("summary", "", "Scope & calculation details"));
+      values.forEach(value => detail.appendChild(node("p", "analysis-session-note analysis-session-method-note", value)));
+      detail.addEventListener("toggle", () => { if (mode === "compare" && version === chartVersion) methodsOpen = detail.open; });
+      parent.appendChild(detail);
     }
     function renderComparison(current, force) {
       const model = current.comparison, currentTopic = topic();
@@ -266,30 +402,78 @@
       title.textContent = currentTopic.label + " · Compare A / B";
       renderCards(current);
       const shared = model.overlapCount ?? model.overlap?.reportN;
-      overlap.textContent = count(shared) + " shared " + (shared === 1 ? "report" : "reports") + (model.overlap ? " · " + percent(model.overlap.shareA) + " of A · " + percent(model.overlap.shareB) + " of B" : "");
-      const supported = Boolean(currentTopic.axes?.length);
-      tabList.hidden = !supported; unavailable.hidden = supported; chart.hidden = !supported; caveat.hidden = !supported;
-      if (!supported) { unavailableText.textContent = currentTopic.unavailable; chart.replaceChildren(); lastComparison = null; return; }
-      if (!currentTopic.axes.includes(axis)) axis = currentTopic.axes[0];
-      AXES.forEach(([key]) => {
-        const visible = currentTopic.axes.includes(key), selected = visible && axis === key;
-        tabs[key].hidden = !visible; tabs[key].setAttribute("aria-selected", selected ? "true" : "false"); tabs[key].tabIndex = selected ? 0 : -1;
+      overlap.textContent = (isExternalAxis() ? "Held report groups: " : "") + count(shared) + " shared " + (shared === 1 ? "report" : "reports") + (model.overlap ? " · " + percent(model.overlap.shareA) + " of A · " + percent(model.overlap.shareB) + " of B" : "");
+      renderSettings();
+      const external = isExternalAxis(), entry = external ? ensureExternal() : externalEntry();
+      externalStatus.hidden = !external || entry?.status === "ready";
+      retryExternal.hidden = entry?.status !== "error";
+      if (external && entry?.status !== "ready") {
+        chart.replaceChildren(); chart.hidden = true; unavailable.hidden = true; caveat.hidden = true;
+        measurePicker.hidden = true;
+        externalStatus.setAttribute("data-error", entry?.status === "error" ? "true" : "false");
+        externalMessage.textContent = entry?.status === "error" ? entry.error : "Preparing " + (section === "encounters" ? "collection accounts" : currentTopic.label.toLowerCase()) + " for A and B…";
+        Object.entries(tabs).forEach(([key, tab]) => {
+          const visible = section === "encounters" && (currentTopic.axes || []).includes(key);
+          tab.hidden = !visible; tab.setAttribute("aria-selected", visible && key === axis ? "true" : "false"); tab.tabIndex = visible && key === axis ? 0 : -1;
+        });
+        tabList.hidden = section !== "encounters"; lastComparison = null; return;
+      }
+      const axes = availableAxes(), supported = Boolean(axes.length);
+      if (entry?.status === "ready") entry.result.dimensions.forEach(value => createTab("external:" + value.key, value.label));
+      const usePicker = supported && axes.length > 8;
+      tabList.hidden = !supported || usePicker; measurePicker.hidden = !usePicker;
+      unavailable.hidden = supported; chart.hidden = !supported; caveat.hidden = !supported;
+      if (!supported) {
+        const reason = entry?.result?.unavailableReason;
+        unavailableText.textContent = reason ? reason.length > 220 ? reason.slice(0, 217) + "…" : reason : currentTopic.unavailable || "No comparable fields are available for these groups.";
+        unavailableNotes.replaceChildren(); addMethodDetails(unavailableNotes, entry?.result?.notes || []);
+        chart.replaceChildren(); lastComparison = null; return;
+      }
+      if (!axes.includes(axis)) axis = axes[0];
+      Object.entries(tabs).forEach(([key, tab]) => {
+        const visible = axes.includes(key), selected = visible && axis === key;
+        tab.hidden = !visible; tab.setAttribute("aria-selected", selected ? "true" : "false"); tab.tabIndex = selected ? 0 : -1;
       });
+      axes.forEach(key => { if (tabs[key]) tabList.appendChild(tabs[key]); });
+      if (usePicker) {
+        const optionsKey = JSON.stringify(axes.map(key => [key, tabs[key].textContent]));
+        if (measureOptionsKey !== optionsKey) {
+          measureOptionsKey = optionsKey; measureSelect.replaceChildren();
+          axes.forEach(key => { const option = node("option", "", tabs[key].textContent); option.value = key; measureSelect.appendChild(option); });
+        }
+        measureSelect.value = axis;
+        if (tabList.contains?.(doc.activeElement)) measureSelect.focus?.({ preventScroll: true });
+      }
       if (!force && lastComparison === model) return;
       lastComparison = model; chartVersion++;
-      chart.setAttribute("aria-labelledby", id + "-" + axis); chart.replaceChildren();
-      const data = rowsFor(current), bothAvailable = data.coverage || data.a?.available && data.b?.available;
-      const chronological = ["calendarMonth", "weekday", "timeOfDay", "year", "duration", "witnessCount"].includes(axis);
+      chart.setAttribute("role", usePicker ? "region" : "tabpanel");
+      if (usePicker) { chart.removeAttribute("aria-labelledby"); chart.setAttribute("aria-label", tabs[axis].textContent + " · A/B comparison"); }
+      else { chart.removeAttribute("aria-label"); chart.setAttribute("aria-labelledby", id + "-" + axis); }
+      chart.replaceChildren();
+      const data = rowsFor(current);
+      if (!data) { chart.appendChild(node("p", "analysis-session-empty", "No collection material classification is available for these groups.")); return; }
+      const bothAvailable = data.coverage || data.a?.available && data.b?.available;
+      const chronological = data.order === "source" || ["calendarMonth", "weekday", "timeOfDay", "year", "duration", "witnessCount"].includes(axis);
       const ranked = data.rows.slice();
       if (!chronological) ranked.sort((a, b) => {
         const difference = row => Number.isFinite(row.aShareOfReports) && Number.isFinite(row.bShareOfReports) ? Math.abs(row.aShareOfReports - row.bShareOfReports) : -1;
         return bothAvailable ? difference(b) - difference(a) || String(a.label).localeCompare(String(b.label)) : Math.max(b.aCount || 0, b.bCount || 0) - Math.max(a.aCount || 0, a.bCount || 0) || String(a.label).localeCompare(String(b.label));
       });
-      chart.appendChild(node("p", "analysis-session-denominator", "Share of all captured reports · A: " + count(model.a.reportN) + " · B: " + count(model.b.reportN) + "."));
-      const fieldCoverage = data.coverage ? "Date coverage includes dates of any recorded precision." : "Field indexed · A: " + (data.a?.available && Number.isFinite(data.a.eligibleN) ? count(data.a.eligibleN) + " of " + count(model.a.reportN) : "not available") + " · B: " + (data.b?.available && Number.isFinite(data.b.eligibleN) ? count(data.b.eligibleN) + " of " + count(model.b.reportN) : "not available") + (data.multiLabel ? ". A report may have several labels." : ".");
+      const unit = data.external ? data.unit.replace(/_/g, " ") : "captured reports", totalA = data.external ? data.a.totalN : model.a.reportN, totalB = data.external ? data.b.totalN : model.b.reportN;
+      chart.appendChild(node("p", "analysis-session-denominator", "Share of all " + unit + " · A: " + count(totalA) + " · B: " + count(totalB) + "."));
+      const fieldCoverage = data.coverage ? "Date coverage includes dates of any recorded precision." : "Field indexed · A: " + (data.a?.available && Number.isFinite(data.a.eligibleN) ? count(data.a.eligibleN) + " of " + count(totalA) : "not available") + " · B: " + (data.b?.available && Number.isFinite(data.b.eligibleN) ? count(data.b.eligibleN) + " of " + count(totalB) : "not available") + (data.multiLabel ? (data.external ? ". One record" : ". A report") + " may have several labels." : ".");
       chart.appendChild(node("p", "analysis-session-note", fieldCoverage));
+      caveat.textContent = data.external ? "Counts describe " + unit + " in the derived A/B populations. Records and source accounts may overlap. Differences do not establish independent incidents or a causal relationship."
+        : "Counts describe captured catalog reports. Groups may overlap, and different reports may describe the same incident. Differences do not establish a causal relationship.";
+      if (data.external) addMethodDetails(chart, [...(entry.result.notes || []), ...(data.notes || []),
+        ...(data.a?.reason ? ["A: " + data.a.reason] : []), ...(data.a?.notes || []).map(note => "A: " + note),
+        ...(data.b?.reason ? ["B: " + data.b.reason] : []), ...(data.b?.notes || []).map(note => "B: " + note)]);
       if (axis === "year") chart.appendChild(node("p", "analysis-session-note", "Different date windows naturally occupy different years. Use Month of year, Day of week or Time of day to compare recurring patterns."));
-      if (!data.coverage && !bothAvailable) chart.appendChild(node("p", "analysis-session-missing", "Missing information is not a zero count. " + (!data.a?.available && !data.b?.available ? "This field is unavailable for both groups. Recapture the groups after the relevant Analysis data is ready." : "This field is unavailable for group " + (!data.a?.available ? "A" : "B") + ".")));
+      if (!data.coverage && !bothAvailable) {
+        const reason = data.external && !data.a?.available && !data.b?.available ? [data.a?.reason && "A: " + data.a.reason, data.b?.reason && "B: " + data.b.reason].filter(Boolean).join(" ") : "";
+        const shortReason = reason ? " " + (reason.length > 260 ? reason.slice(0, 257) + "…" : reason) : "";
+        chart.appendChild(node("p", "analysis-session-missing", "Missing information is not a zero count. " + (!data.a?.available && !data.b?.available ? "This field is unavailable for both groups." + (data.external ? shortReason : " Recapture the groups after the relevant Analysis data is ready.") : "This field is unavailable for group " + (!data.a?.available ? "A" : "B") + ".")));
+      }
       const limit = chronological ? 12 : 8;
       if (ranked.length) {
         const scale = node("div", "analysis-session-scale"); scale.setAttribute("aria-hidden", "true"); scale.append(node("span", "", "0%"), node("span", "", "50%"), node("span", "", "100%")); chart.appendChild(scale);
@@ -305,12 +489,14 @@
         const unknown = Object.assign({ label: "Unknown / not indexed" }, data.unknown);
         chart.appendChild(chartRow(unknown, "unknown")); exactRows.push(unknown);
       }
-      if (exactRows.length) addDataTable(chart, exactRows);
+      if (exactRows.length) addDataTable(chart, exactRows, unit);
     }
     function renderBusy() {
-      const busy = externalBusy || pending > 0; panel.setAttribute("aria-busy", busy ? "true" : "false"); board.setAttribute("aria-busy", busy ? "true" : "false");
+      const busy = externalBusy || pending > 0, loading = mode === "compare" && isExternalAxis() && externalEntry()?.status === "loading";
+      panel.setAttribute("aria-busy", busy ? "true" : "false"); board.setAttribute("aria-busy", busy || loading ? "true" : "false");
       mutationButtons.forEach(el => { el.disabled = busy || Boolean(el.sessionUnavailable); });
       compareButton.disabled = busy || !state().comparison; currentButton.disabled = busy;
+      applySettings.disabled = busy;
       if (!busy && focusAfterMutation) { const focus = focusAfterMutation; focusAfterMutation = null; if (!focus.disabled && focus.isConnected !== false) focus.focus?.(); }
     }
     function render() {
@@ -340,19 +526,20 @@
       const current = state(), a = current.groups?.A, b = current.groups?.B, pair = Boolean(a && b && current.comparison);
       const completeNow = pair && !previousPair, changed = a !== previousA || b !== previousB;
       previousA = a; previousB = b; previousPair = pair;
+      if (changed) { externalCache.clear(); cacheA = a; cacheB = b; }
       if (!pair && mode === "compare") changeMode("current");
       else if (completeNow) changeMode("compare");
       else { if (changed) lastComparison = null; render(); }
     }
     const unsubscribe = store.subscribe(onStoreChange); onStoreChange();
     return { render, setStatus, setBusy(value) { externalBusy = Boolean(value); if (!destroyed) renderBusy(); },
-      setMode: changeMode, getMode() { return mode; }, setSection(key) {
+      setMode: changeMode, getMode() { return mode; }, getSettings() { return Object.assign({}, settings); }, setSettings: updateSettings, setSection(key) {
         if (destroyed) return;
         const next = String(key || "overview").replace(/^analysis-section-/, "").replace(/_/g, "-");
         if (section === next) return;
-        section = next; axis = topic().axes?.[0] || "coverage"; showAll = false; tableOpen = false; lastComparison = null; render();
+        section = next; axis = topic().axes?.[0] || "coverage"; showAll = false; tableOpen = false; methodsOpen = false; lastComparison = null; render();
       }, destroy() {
-        if (destroyed) return; destroyed = true; if (typeof unsubscribe === "function") unsubscribe(); target.replaceChildren();
+        if (destroyed) return; destroyed = true; externalCache.clear(); if (typeof unsubscribe === "function") unsubscribe(); target.replaceChildren();
         if (comparisonTarget !== target) comparisonTarget.replaceChildren();
       }
     };

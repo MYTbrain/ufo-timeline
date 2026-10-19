@@ -36,6 +36,23 @@
 .analysis-session-unavailable{padding:12px 0;max-width:750px}
 .analysis-session-unavailable .analysis-session-missing{margin:0 0 15px;font-size:.9rem}
 .analysis-session-unavailable .analysis-session-return{border-color:var(--accent,#6fcddd)}
+.analysis-session-settings{margin:0 0 12px;padding:0 10px;border:1px solid var(--session-border);border-radius:8px;min-width:0}
+.analysis-session-settings>summary{padding:11px 0;min-height:42px;box-sizing:border-box;font-size:.76rem;line-height:1.4;color:var(--session-muted);cursor:pointer}
+.analysis-session-settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(175px,100%),1fr));gap:10px 12px;margin:0 0 10px}
+.analysis-session-setting{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:.74rem;line-height:1.4;color:var(--session-muted)}
+.analysis-session-setting input,.analysis-session-setting select{box-sizing:border-box;width:100%;min-width:0;min-height:42px;padding:9px 10px;border:1px solid var(--session-border);border-radius:7px;background:var(--input-bg,#1b2a35);color:var(--text,#e1e9ec);font:inherit;font-size:.8rem}
+.analysis-session-setting input:focus-visible,.analysis-session-setting select:focus-visible,.analysis-session-settings>summary:focus-visible{outline:2px solid var(--accent,#6fcddd);outline-offset:2px}
+.analysis-session-settings .analysis-session-apply-settings{margin:0 0 10px;border-color:var(--accent,#6fcddd)}
+.analysis-session-settings-error{margin:0 0 10px;font-size:.78rem;color:var(--error,#ffb3a9);line-height:1.5}
+.analysis-session-external-status{padding:16px 0;max-width:750px;font-size:.88rem;line-height:1.5}
+.analysis-session-external-status p{margin:0 0 10px;overflow-wrap:anywhere}.analysis-session-external-status[data-error=true] p{color:var(--error,#ffb3a9)}
+.analysis-session-method-note{margin:5px 0 0}
+.analysis-session-method-details{margin:10px 0 12px;border-top:1px solid var(--session-border);border-bottom:1px solid var(--session-border)}
+.analysis-session-method-details>summary{min-height:40px;box-sizing:border-box;padding:10px 0;cursor:pointer;font-size:.75rem;color:var(--session-muted);line-height:1.4}
+.analysis-session-method-details[open]{padding-bottom:10px}.analysis-session-method-details .analysis-session-method-note{margin:0 0 8px}.analysis-session-method-details .analysis-session-method-note:last-child{margin-bottom:0}
+.analysis-session-measure-picker{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin:0 0 14px;font-size:.78rem;color:var(--session-muted);max-width:100%}
+.analysis-session-measure-picker select{box-sizing:border-box;min-height:42px;min-width:0;max-width:100%;width:350px;padding:9px 10px;border:1px solid var(--session-border);border-radius:7px;background:var(--input-bg,#1b2a35);color:var(--text,#e1e9ec);font:inherit;flex:0 1 350px}
+.analysis-session-measure-picker select:focus-visible{outline:2px solid var(--accent,#6fcddd);outline-offset:2px}
 .analysis-session-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .analysis-session-card{min-width:0;padding:9px 12px;border:1px solid var(--session-border);border-top:3px solid var(--session-color);border-radius:10px;background:color-mix(in srgb,var(--session-color) 4%,transparent)}
 .analysis-session-card-top{display:flex;align-items:flex-start;gap:9px}.analysis-session-badge{display:flex;justify-content:center;align-items:center;flex-shrink:0;width:25px;height:25px;border-radius:5px;font-size:.8rem;font-weight:700;color:var(--session-color);background:color-mix(in srgb,var(--session-color) 13%,transparent)}

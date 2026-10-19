@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-comparison-categories-v2");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-complete-comparison-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9835,6 +9835,58 @@
         source: String(input.source || "Analysis"), encounterEvidenceMode: result.encounterEvidenceMode }), summary: result.summary };
   }
 
+  async function loadAnalysisSessionEvidence(requestValue) {
+    const request = requestValue || {}, groups = request.groups || {};
+    if (!groups.A || !groups.B) throw new Error("Set both A and B before comparing this topic.");
+    const section = String(request.section || "").replace(/_/g, "-");
+    if (!["crops", "animals", "facilities", "spatial", "context", "comparisons", "encounters", "collections"].includes(section)) {
+      throw new Error("This A/B topic is not recognized.");
+    }
+    const store = runtime.analysisSessionStore;
+    const stillCurrent = function () {
+      const current = store && store.getState();
+      return current && current.groups.A === groups.A && current.groups.B === groups.B;
+    };
+    if (!stillCurrent()) throw new Error("The held groups changed. Refresh this comparison.");
+    if (section === "comparisons") await ensureAnalysisComparisonArtifacts();
+    if (["facilities", "spatial", "context"].includes(section)) await ensureAnalysisSpatialArtifacts();
+    if (!stillCurrent()) throw new Error("The held groups changed while evidence was preparing. Refresh this comparison.");
+    const worker = ensureCatalogFacetWorker();
+    if (!worker) throw new Error("The Analysis worker is unavailable.");
+    const requestId = "analysis-session-evidence-" + (++runtime.catalogFacetWorkerRequestId);
+    const settings = Object.assign({}, request.settings || {});
+    const slim = function (cohort) { return { eventIds: cohort.eventIds, reportCount: cohort.reportCount,
+      label: cohort.label, scope: cohort.scope, provenance: cohort.provenance }; };
+    const signature = JSON.stringify({ requestId: requestId, section: section, settings: settings,
+      a: groups.A.provenance && groups.A.provenance.sessionCaptureId, b: groups.B.provenance && groups.B.provenance.sessionCaptureId });
+    return new Promise(function (resolve, reject) {
+      let done = false;
+      function finish(error, value) {
+        if (done) return; done = true; window.clearTimeout(timer);
+        worker.removeEventListener("message", listener); worker.removeEventListener("error", failure);
+        if (error) reject(error); else resolve(value);
+      }
+      function failure() { finish(new Error("The A/B evidence comparison failed. Retry this topic.")); }
+      function listener(event) {
+        const message = event.data || {}; if (message.requestId !== requestId) return;
+        if (!stillCurrent()) { finish(new Error("The held groups changed while this comparison was calculating.")); return; }
+        if (message.type !== "analysisSessionEvidenceComputed" || message.evidenceSignature !== signature) {
+          finish(new Error(message.error || "The A/B evidence response is invalid.")); return;
+        }
+        const result = message.result;
+        if (!result || !Array.isArray(result.dimensions)) { finish(new Error("The A/B evidence comparison is incomplete.")); return; }
+        finish(null, result);
+      }
+      const timer = window.setTimeout(function () { finish(new Error("This A/B comparison timed out. Retry this topic.")); }, 180000);
+      worker.addEventListener("message", listener); worker.addEventListener("error", failure);
+      try { worker.postMessage({ type: "computeAnalysisSessionEvidence", requestId: requestId, evidenceSignature: signature,
+        section: section, groups: { A: slim(groups.A), B: slim(groups.B) }, settings: settings,
+        contextManifestUrl: new URL(resolveAssetPath("./data/analysis_comparisons/manifest.json"), document.baseURI).toString(),
+        collectionManifestUrl: new URL(resolveAssetPath("./data/collections/manifest.json?v=2026-10-18-collections-v1"), document.baseURI).toString() }); }
+      catch (error) { finish(error); }
+    });
+  }
+
   function initializeAnalysisSession() {
     if (runtime.analysisSessionStore || !window.UfoAnalysisSession || !window.UfoAnalysisSession.createStore) return runtime.analysisSessionStore;
     const store = window.UfoAnalysisSession.createStore(); runtime.analysisSessionStore = store;
@@ -9890,6 +9942,7 @@
       runtime.analysisSessionView = window.UfoAnalysisSessionView.create(target, { store: store,
         comparisonTarget: document.getElementById("analysis-comparison-workspace"),
         onModeChange: setAnalysisComparisonMode,
+        onLoadComparison: function (request) { return loadAnalysisSessionEvidence(request); },
         onPinCurrent: integration.captureCurrentFilters, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
         onClearGroup: integration.clearGroup, onClearAll: integration.clearAll, onClearSelection: integration.clearSelection,
         onOpenSection: function (section) {
@@ -9904,8 +9957,18 @@
   }
 
   function setAnalysisComparisonMode(mode) {
+    const previous = runtime.analysisSessionMode;
     runtime.analysisSessionMode = mode === "compare" ? "compare" : "current";
     syncAnalysisComparisonWorkspace();
+    if (runtime.analysisSessionMode === "compare") {
+      window.clearTimeout(runtime.analysisDebounceTimerId);
+      window.clearTimeout(runtime.analysisFullInferenceTimerId);
+    } else if (previous === "compare") {
+      const controller = runtime.analysisViewController;
+      const sectionKey = String(controller && controller.activeSectionId || "overview").replace(/^analysis-section-/, "").replace(/-/g, "_");
+      requestAnalysisCurrentSectionEvidence({ sectionKey: sectionKey });
+      scheduleAnalysisCompute("returned to current reports", { immediate: true });
+    }
   }
 
   function syncAnalysisComparisonWorkspace() {
@@ -10275,6 +10338,38 @@
     return operation;
   }
 
+  function requestAnalysisCurrentSectionEvidence(change) {
+    if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {
+      ensureAnalysisComparisonArtifacts().catch(function () { return null; });
+    }
+    if (change && change.sectionKey === "time") {
+      if (state.activeView === "analysis") {
+        requestAnalysisTimeEvidence();
+      } else {
+        // On first activation, section navigation runs before the core
+        // Analysis request is queued. Let the useful dashboard render
+        // first, then hydrate the optional Time sidecars.
+        runtime.analysisTimeEvidenceLoadPending = true;
+      }
+    }
+    if (change && ["context", "crops", "animals", "facilities"].indexOf(change.sectionKey) !== -1) {
+      ensureAnalysisContextEvidence().catch(function () { return null; });
+    }
+    if (change && ["spatial", "sources_quality"].indexOf(change.sectionKey) !== -1) {
+      if (state.activeView === "analysis") {
+        requestAnalysisCoordinateEvidence();
+      } else {
+        runtime.analysisCoordinateEvidenceLoadPending = true;
+      }
+    }
+    if (change && change.sectionKey === "sources_quality") {
+      ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
+    }
+    if (change && change.sectionKey === "craft") {
+      ensureAnalysisColorArtifact().catch(function () { return null; });
+    }
+  }
+
   function loadCollectionStudyRuntime() {
     if (runtime.collectionStudyRuntimePromise) return runtime.collectionStudyRuntimePromise;
     if (!runtime.collectionStudyScriptPromises) runtime.collectionStudyScriptPromises = new Map();
@@ -10428,6 +10523,7 @@
         );
       },
       onSpatialEvidenceRequested: function () {
+        if (runtime.analysisSessionMode === "compare") return Promise.resolve(null);
         return ensureAnalysisSpatialArtifacts().catch(function () { return null; });
       },
       onGeographyRequested: function () {
@@ -10474,35 +10570,7 @@
       onSectionActivate: function (change) {
         if (change && runtime.analysisSessionView && runtime.analysisSessionView.setSection) runtime.analysisSessionView.setSection(change.sectionKey);
         syncAnalysisComparisonWorkspace();
-        if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {
-          ensureAnalysisComparisonArtifacts().catch(function () { return null; });
-        }
-        if (change && change.sectionKey === "time") {
-          if (state.activeView === "analysis") {
-            requestAnalysisTimeEvidence();
-          } else {
-            // On first activation, section navigation runs before the core
-            // Analysis request is queued. Let the useful dashboard render
-            // first, then hydrate the optional Time sidecars.
-            runtime.analysisTimeEvidenceLoadPending = true;
-          }
-        }
-        if (change && ["context", "crops", "animals", "facilities"].indexOf(change.sectionKey) !== -1) {
-          ensureAnalysisContextEvidence().catch(function () { return null; });
-        }
-        if (change && ["spatial", "sources_quality"].indexOf(change.sectionKey) !== -1) {
-          if (state.activeView === "analysis") {
-            requestAnalysisCoordinateEvidence();
-          } else {
-            runtime.analysisCoordinateEvidenceLoadPending = true;
-          }
-        }
-        if (change && change.sectionKey === "sources_quality") {
-          ensureAnalysisWitnessCountArtifact().catch(function () { return null; });
-        }
-        if (change && change.sectionKey === "craft") {
-          ensureAnalysisColorArtifact().catch(function () { return null; });
-        }
+        if (runtime.analysisSessionMode !== "compare") requestAnalysisCurrentSectionEvidence(change);
       },
       onRenderComplete: function () {
         syncAnalysisComparisonWorkspace();
@@ -12526,6 +12594,7 @@
   }
 
   function scheduleAnalysisCompute(reason, options) {
+    if (runtime.analysisSessionMode === "compare") return false;
     if (startup.progressiveEnabled && !startup.fullCatalogReady) return false;
     if (state.activeView !== "analysis" || !startup.initialViewReady) return false;
     runtime.analysisComputeScheduleGeneration += 1;

@@ -232,3 +232,7 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /scripts/build_encounter_evidence.py -text
 /docs/qa/encounter-quality-20261017/** -text
 /docs/qa/encounter-release-20261018/** -text
+
+# Lazy A/B evidence adapters are delivered as exact runtime bytes.
+/analysis_session_context.js -text
+/analysis_session_comparisons.js -text

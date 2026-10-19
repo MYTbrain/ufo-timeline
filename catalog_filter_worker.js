@@ -40,6 +40,8 @@
   let analysisCoordinatePileKeys = createDictionary();
   let analysisCoordinatePileCounts = new Map();
   let analysisStatsApi = self.UfoAnalysisStats || null;
+  let analysisSessionContextPromise = null;
+  let analysisSessionCollectionPromise = null;
   let analysisComparisonArtifacts = { loaded: false, manifest: {}, context: {}, nuclear: {}, hashes: {} };
   let analysisSpatialApi = self.UfoAnalysisSpatial || null;
   let analysisCache = new Map();
@@ -1635,6 +1637,123 @@
     }
     return { eventIds: eventIds, requestedReportCount: wanted.size, totalMatchedAnalysisReports: totalMatchedAnalysisReports,
       unit: "catalog_report_representations", cohortScope: "analysis_shared_filters" };
+  }
+
+  function ensureAnalysisSessionContextApi() {
+    if (!self.UfoAnalysisSessionContext && typeof importScripts === "function") {
+      ensureAnalysisSpatial();
+      if (!self.UfoAnalysisCollectionEvidence) importScripts("./analysis_collection_evidence.js?v=2026-10-18-collections-v1");
+      importScripts("./analysis_session_context.js?v=2026-10-19-session-evidence-v1");
+    }
+    if (!self.UfoAnalysisSessionContext) throw new Error("The A/B context comparison module is unavailable.");
+    return self.UfoAnalysisSessionContext;
+  }
+
+  function analysisSessionGroupsWithRows(groupsValue, includeRows) {
+    const groups = groupsValue || {}, wanted = {}, found = { A: [], B: [] }, foundN = { A: 0, B: 0 };
+    ["A", "B"].forEach(function (slot) {
+      const cohort = groups[slot];
+      if (!cohort || !Array.isArray(cohort.eventIds) || cohort.eventIds.length > 1000000) throw new Error("The held A/B report inventory is invalid.");
+      wanted[slot] = new Set(cohort.eventIds.map(function (id) {
+        if ((typeof id !== "string" && typeof id !== "number") || !String(id).trim()) throw new Error("A held report identity is invalid.");
+        return String(id);
+      }));
+      if (wanted[slot].size !== cohort.eventIds.length || cohort.reportCount !== wanted[slot].size) throw new Error("The held report inventory is inconsistent.");
+    });
+    const raw = {};
+    chunks.forEach(function (chunk) {
+      for (let index = 0; index < chunk.length; index += 1) {
+        const id = String(eventIdAt(chunk, index)), inA = wanted.A.has(id), inB = wanted.B.has(id);
+        if (!inA && !inB) continue;
+        if (inA) foundN.A += 1; if (inB) foundN.B += 1;
+        if (includeRows === false) continue;
+        // Decode only matching rows and retain just the estimators' inputs. Raw
+        // catalog access uses Unix days; the statistics iterator adds an epoch.
+        readRowValuesInto(raw, chunk, index);
+        const value = { id: id, eventId: id };
+        ["sortOrdinal", "dateStartOrdinal", "dateEndOrdinal", "datePrecision", "lat", "lon", "country", "source", "craftType", "type", "visualTypeGroup", "coordinateSource", "precision", "mapped", "duplicateLineage", "craftConfidence", "encounterOccurrenceDateExcluded"].forEach(function (key) { value[key] = raw[key]; });
+        value.sourceDatePrecision = raw.datePrecision; value.dateRole = "occurrence";
+        value.startOrdinal = value.dateStartOrdinal == null ? value.sortOrdinal : value.dateStartOrdinal;
+        value.endOrdinal = value.dateEndOrdinal == null ? value.startOrdinal : value.dateEndOrdinal;
+        if (raw.encounterOccurrenceDateExcluded === true) { value.datePrecision = "excluded_source_occurrence_date"; value.dateRole = "source_date_withheld"; }
+        if (inA) found.A.push(value); if (inB) found.B.push(value);
+      }
+    });
+    const result = {};
+    ["A", "B"].forEach(function (slot) {
+      if (foundN[slot] !== wanted[slot].size) throw new Error("Some held report IDs are absent from the current catalog. Set this group again.");
+      result[slot] = { cohort: groups[slot], rows: found[slot] };
+    });
+    return result;
+  }
+
+  async function loadAnalysisSessionContext(message) {
+    if (analysisComparisonArtifacts.loaded) return { context: analysisComparisonArtifacts.context, hashes: analysisComparisonArtifacts.hashes };
+    if (analysisSessionContextPromise) return analysisSessionContextPromise;
+    analysisSessionContextPromise = (async function () {
+      const manifestUrl = message.contextManifestUrl;
+      if (!manifestUrl) throw new Error("The A/B context manifest is missing.");
+      const response = await fetch(manifestUrl, { cache: "no-cache" });
+      if (!response.ok) throw new Error("The A/B context manifest could not be downloaded.");
+      const manifest = await response.json(), entry = manifest.artifacts && manifest.artifacts.context;
+      if (!entry || !entry.file || !/^[a-f0-9]{64}$/i.test(String(entry.sha256 || ""))) throw new Error("The A/B context artifact has no integrity pin.");
+      const context = await fetchAnalysisJson(new URL(entry.file, manifestUrl).toString(), entry);
+      if (!context || context.ordinalEpoch !== "unix_day" || !Array.isArray(context.crops) || !Array.isArray(context.animals)) throw new Error("The A/B context artifact is invalid.");
+      return { context: context, hashes: { comparisonContext: entry.sha256 } };
+    })().catch(function (error) { analysisSessionContextPromise = null; throw error; });
+    return analysisSessionContextPromise;
+  }
+
+  async function loadAnalysisSessionCollections(message) {
+    if (!self.UfoAnalysisCollectionEvidence && typeof importScripts === "function") importScripts("./analysis_collection_evidence.js?v=2026-10-18-collections-v1");
+    if (!self.UfoAnalysisCollectionEvidence) throw new Error("Collection evidence is unavailable.");
+    if (!analysisSessionCollectionPromise) {
+      analysisSessionCollectionPromise = self.UfoAnalysisCollectionEvidence.load({ manifestUrl: message.collectionManifestUrl })
+        .catch(function (error) { analysisSessionCollectionPromise = null; throw error; });
+    }
+    return analysisSessionCollectionPromise;
+  }
+
+  async function computeAnalysisSessionEvidence(message) {
+    const section = String(message.section || ""), settings = Object.assign({}, message.settings || {}, {
+      ordinalEpoch: "unix_day", contextOrdinalEpoch: "unix_day", spatialOrdinalEpoch: "statistics_day" });
+    const api = ensureAnalysisSessionContextApi(), groups = analysisSessionGroupsWithRows(message.groups, ["comparisons", "context"].includes(section)), spatialApi = ensureAnalysisSpatial();
+    const collectionSection = section === "encounters" || section === "collections";
+    const data = collectionSection ? { context: { crops: [], animals: [] }, hashes: {} } : await loadAnalysisSessionContext(message);
+    const options = { section: section, groups: groups, context: Object.assign({}, data.context, {
+      facilities: analysisSpatialArtifacts.facilities, neighbors: analysisSpatialArtifacts.neighbors,
+      spatialPoints: analysisSpatialArtifacts.spatialPoints, contextNeighbors: analysisSpatialArtifacts.contextNeighbors,
+      relationships: analysisSpatialArtifacts.relationships, codebooks: analysisSpatialArtifacts.codebooks,
+      manifest: analysisSpatialArtifacts.manifest }), settings: settings, ordinalEpoch: "unix_day",
+      artifactHashes: Object.assign({}, data.hashes, analysisSpatialArtifacts.artifactHashes), spatialApi: spatialApi };
+    if (["facilities", "spatial", "context"].includes(section)) options.spatialApi = ensureAnalysisSpatial();
+    if (collectionSection) options.collectionEvidence = await loadAnalysisSessionCollections(message);
+    if (section === "comparisons") {
+      if (!analysisComparisonArtifacts.loaded) throw new Error("Moon, planetary and nuclear evidence is still preparing.");
+      ensureAnalysisComparisons();
+      if (!self.UfoAnalysisSessionComparisons && typeof importScripts === "function") importScripts("./analysis_session_comparisons.js?v=2026-10-19-session-evidence-v1");
+      if (!self.UfoAnalysisSessionComparisons) throw new Error("The A/B astronomical comparison module is unavailable.");
+      const scopeNotes = [];
+      ["A", "B"].forEach(function (slot) {
+        const scoped = {};
+        ["crops", "animals"].forEach(function (domain) {
+          const scope = api.scopedContext(data.context[domain], groups[slot].cohort, Object.assign({}, settings, { spatialApi: spatialApi }));
+          if (settings.sourceDomain === domain && scope.status !== "ready") throw new Error(scope.reason || "This saved group has no independent context scope.");
+          scoped[domain] = scope.status === "ready" ? scope.rows : [];
+          if (settings.sourceDomain === domain) (scope.notes || []).forEach(function (note) { scopeNotes.push(slot + ": " + note); });
+        });
+        groups[slot].context = scoped;
+      });
+      const result = self.UfoAnalysisSessionComparisons.compute(Object.assign({}, options, {
+        nuclear: analysisComparisonArtifacts.nuclear, facilities: analysisComparisonArtifacts.facilities,
+        facilityCodebook: analysisComparisonArtifacts.facilities && (analysisComparisonArtifacts.facilities.codes || analysisComparisonArtifacts.facilities.codebook) || analysisComparisonArtifacts.manifest.facilityCodebook || {} }));
+      result.notes = (result.notes || []).concat(scopeNotes);
+      return result;
+    }
+    const result = api.compute(options);
+    result.artifactHashes = Object.assign({}, options.artifactHashes, result.artifactHashes || {},
+      options.collectionEvidence && options.collectionEvidence.manifest ? { collectionEvidence: options.collectionEvidence.manifest.artifact.decodedSha256 } : {});
+    return result;
   }
 
   function captureAnalysisSession(message) {
@@ -5083,6 +5202,15 @@
             generation: analysisFilterGeneration(message),
             error: error && error.message ? error.message : String(error),
           });
+        });
+        return;
+      }
+      if (message.type === "computeAnalysisSessionEvidence") {
+        computeAnalysisSessionEvidence(message).then(function (result) {
+          self.postMessage({ type: "analysisSessionEvidenceComputed", requestId: message.requestId || "",
+            evidenceSignature: message.evidenceSignature, result: result });
+        }).catch(function (error) {
+          self.postMessage({ type: "catalogFacetWorkerError", requestId: message.requestId || "", error: error && error.message || String(error) });
         });
         return;
       }

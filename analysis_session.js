@@ -120,6 +120,37 @@
       distributions, countUnit: COUNT_UNIT, inferenceEligible: false,
       interpretation: "Descriptive overlapping report cohorts. Categories may overlap; differences do not establish independent incidents or causal effects." });
   }
+  function compareExternalDimension(input) {
+    requireValue(plain(input) && String(input.key || "").trim(), "invalid external comparison dimension");
+    const key = String(input.key), unit = String(input.unit || "records"), multiLabel = input.multiLabel === true;
+    function side(value, name) {
+      if (value == null || value.available === false) return null;
+      requireValue(plain(value), "invalid external " + name + " population");
+      const totalN = count(value.totalN, Number.MAX_SAFE_INTEGER, name + " total");
+      requireValue(totalN !== null, "missing external " + name + " total");
+      const normalizedDistribution = distribution({ rows: value.rows, eligibleN: value.eligibleN, unknownN: value.unknownN, multiLabel }, totalN, key);
+      requireValue(normalizedDistribution.eligibleN !== null && normalizedDistribution.unknownN !== null, "missing external field coverage");
+      return Object.assign({ totalN }, normalizedDistribution);
+    }
+    const left = side(input.a, "A"), right = side(input.b, "B");
+    // External catalogs have their own denominator. Never reuse the held UFO
+    // report counts for crop records, animal records, pairs or test contexts.
+    const result = compareDomain({ reportCount: left ? left.totalN : 0, summary: { distributions: { [key]: left } } },
+      { reportCount: right ? right.totalN : 0, summary: { distributions: { [key]: right } } }, key);
+    if (input.order === "source") {
+      const order = new Map(); [left, right].forEach(value => { if (value) value.rows.forEach(row => { if (!order.has(row.key)) order.set(row.key, order.size); }); });
+      result.rows.sort((a, b) => order.get(a.key) - order.get(b.key));
+    }
+    result.a.totalN = left ? left.totalN : count(input.a && input.a.totalN, Number.MAX_SAFE_INTEGER, "A total");
+    result.b.totalN = right ? right.totalN : count(input.b && input.b.totalN, Number.MAX_SAFE_INTEGER, "B total");
+    [["a", input.a], ["b", input.b]].forEach(([slot, source]) => {
+      if (source && source.reason != null) result[slot].reason = String(source.reason);
+      result[slot].notes = source && Array.isArray(source.notes) ? source.notes.map(String) : [];
+    });
+    return freeze(Object.assign(result, { key, label: String(input.label || key), unit, external: true,
+      notes: Array.isArray(input.notes) ? input.notes.map(String) : [],
+      reportShareDenominator: "all " + unit + " within each derived group", order: input.order === "source" ? "source" : "difference" }));
+  }
   function slot(value) { const key = String(value).toUpperCase(); requireValue(key === "A" || key === "B", "slot must be A or B"); return key; }
   function createStore(options) {
     options = options || {}; const listeners = new Set(); let state = freeze({ version: 0, groups: { A: null, B: null }, selection: null, activeGroup: null, comparison: null });
@@ -140,5 +171,5 @@
       clearAll: () => !state.groups.A && !state.groups.B && !state.selection ? state : publish({ A: null, B: null }, null, null)
     });
   }
-  return Object.freeze({ createStore, compareGroups, DOMAINS, COUNT_UNIT });
+  return Object.freeze({ createStore, compareGroups, compareExternalDimension, DOMAINS, COUNT_UNIT });
 });

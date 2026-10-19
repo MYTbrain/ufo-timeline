@@ -141,7 +141,7 @@ craftNav.setAttribute("aria-selected", "true"); timeNav.setAttribute("aria-selec
 elements.get("analysis-section-nav").querySelectorAll = selector => { assert.equal(selector, '[role="tab"]'); return [craftNav, timeNav]; };
 const content = elements.get("analysis-content"), host = elements.get("analysis-comparison-workspace");
 const appCalls = [], appRuntime = { analysisSessionMode: "current", analysisSessionView: { setSection(key) { appCalls.push(["section", key]); } } };
-const appContext = vm.createContext({ console, runtime: appRuntime, state: { activeView: "analysis" },
+const appContext = vm.createContext({ console, clearTimeout() {}, scheduleAnalysisCompute() {}, requestAnalysisCurrentSectionEvidence() {}, runtime: appRuntime, state: { activeView: "analysis" },
   document: { getElementById(id) { return elements.get(id) || null; } },
   getAnalysisFilterSnapshot() {}, applyAnalysisFilterPatch() {}, setContextLayerEnabled() {},
   requestEncounterReports() {}, openEncounterInspectedReport() {}, applyEncounterInspectedSelection() {}, requestPlanetaryHeatmaps() {},
@@ -164,7 +164,7 @@ assert.equal(host.getAttribute("aria-labelledby"), craftNav.id);
 const controller = appContext.initializeAnalysisView();
 controller.options.onSectionActivate({ sectionKey: "time" });
 assert.deepEqual(appCalls.find(call => call[0] === "section"), ["section", "time"], "The real Analysis navigator forwards its active category into the A/B view");
-assert.ok(appCalls.some(call => call[0] === "time-evidence"));
+assert.ok(!appCalls.some(call => call[0] === "time-evidence"), "Held comparison navigation does not compute hidden live charts");
 craftNav.setAttribute("aria-selected", "false"); timeNav.setAttribute("aria-selected", "true");
 content.inert = false; content.removeAttribute("aria-hidden");
 timeNav.setAttribute("aria-controls", "analysis-section-time");
