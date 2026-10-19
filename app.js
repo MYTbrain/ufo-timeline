@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-comparison-categories-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-comparison-categories-v2");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9754,6 +9754,30 @@
     return snapshot;
   }
 
+  async function prepareAnalysisComparisonCapture() {
+    requireAnalysisSessionReady();
+    const intentKey = function () {
+      const snapshot = getAnalysisFilterSnapshot({ currentFilters: true });
+      return JSON.stringify({ timeRange: snapshot.timeRange, filters: snapshot.filters, areaFilter: snapshot.areaFilter,
+        generation: snapshot.generation, requestedGeneration: snapshot.requestedGeneration });
+    };
+    const intent = intentKey(), captureGeneration = runtime.analysisSessionCaptureGeneration;
+    const view = runtime.analysisSessionView;
+    if (view && view.setStatus) view.setStatus("Preparing available category data for this group...");
+    // Load existing compact projections only on explicit capture. A failed optional
+    // projection remains unavailable; it must never become an apparent zero.
+    await Promise.allSettled([
+      Promise.resolve().then(ensureAnalysisGeographyArtifact), Promise.resolve().then(ensureAnalysisDurationArtifact),
+      Promise.resolve().then(ensureAnalysisTimeOfDayArtifact), Promise.resolve().then(ensureAnalysisWitnessCountArtifact),
+      Promise.resolve().then(ensureAnalysisColorArtifact),
+    ]);
+    if (captureGeneration !== runtime.analysisSessionCaptureGeneration || intent !== intentKey()) {
+      throw new Error("The applied dates or filters changed while category data was preparing. Try Set/Replace again.");
+    }
+    requireAnalysisSessionReady();
+    if (view && view.setStatus) view.setStatus("");
+  }
+
   async function captureAnalysisSessionPopulation(inputValue) {
     const input = inputValue || {}, activeSnapshot = requireAnalysisSessionReady();
     const snapshot = input.currentFilters ? getAnalysisFilterSnapshot({ currentFilters: true }) : activeSnapshot;
@@ -9835,7 +9859,7 @@
     }
     const integration = {
       getState: function () { return store.getState(); }, subscribe: function (listener) { return store.subscribe(listener); },
-      captureCurrentFilters: async function (slot, label) { const payload = await captureAnalysisSessionPopulation({ label: label, currentFilters: true, source: "Applied dates and filters" }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
+      captureCurrentFilters: async function (slot, label) { await prepareAnalysisComparisonCapture(); const payload = await captureAnalysisSessionPopulation({ label: label, currentFilters: true, source: "Applied dates and filters" }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureCurrent: async function (slot, label) { const payload = await captureAnalysisSessionPopulation({ label: label }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureSelection: async function (slot, input) { const payload = await captureAnalysisSessionPopulation(input); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureEncounter: async function (slot, requestValue) {

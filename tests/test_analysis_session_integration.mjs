@@ -104,6 +104,18 @@ const context = vm.createContext({ runtime, state, startup: { fullCatalogReady: 
   setTimeout(fn, delay) { assert.ok([30000, 8000, 15000, 45000].includes(delay)); const id = ++nextTimer; timers.set(id, fn); return id; },
   clearTimeout(id) { timers.delete(id); } });
 context.window = context;
+const projectionLoaders = ["ensureAnalysisGeographyArtifact", "ensureAnalysisDurationArtifact", "ensureAnalysisTimeOfDayArtifact", "ensureAnalysisWitnessCountArtifact", "ensureAnalysisColorArtifact"];
+for (const name of projectionLoaders) context[name] = () => Promise.resolve(true);
+const flushPreparation = () => new Promise(resolve => setImmediate(resolve));
+function deferProjectionLoads() {
+  const calls = [], pending = new Map(), originals = new Map();
+  for (const name of projectionLoaders) {
+    originals.set(name, context[name]);
+    let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
+    pending.set(name, { resolve, reject }); context[name] = () => { calls.push(name); return promise; };
+  }
+  return { calls, pending, resolveAll() { pending.forEach(item => item.resolve(true)); }, restore() { originals.forEach((loader, name) => { context[name] = loader; }); } };
+}
 for (const name of ["contextLayerAnalysisStatus", "analysisContextReleaseHashes", "analysisV2ArtifactHashes", "analysisDurationArtifactHashes",
   "analysisReportingDelayArtifactHashes", "analysisTimeOfDayArtifactHashes", "analysisWitnessCountArtifactHashes", "analysisColorArtifactHashes", "analysisCoordinateEvidenceArtifactHashes"]) {
   context[name] = vm.runInContext("() => ({})", context);
@@ -113,7 +125,7 @@ filters.encounters = vm.runInContext("({abduction:'any',being:'any',beingTypes:[
 vm.runInContext(fs.readFileSync("analysis_session.js", "utf8"), context);
 vm.runInContext(fs.readFileSync("analysis_view.js", "utf8"), context);
 for (const name of ["getAnalysisFilterSnapshot", "analysisSessionNeutralFilters", "analysisWorkerFilterPayload",
-  "catalogFacetWorkerFilterPayload", "analysisSessionCaptureSnapshot", "requireAnalysisSessionReady", "captureAnalysisSessionPopulation",
+  "catalogFacetWorkerFilterPayload", "analysisSessionCaptureSnapshot", "requireAnalysisSessionReady", "prepareAnalysisComparisonCapture", "captureAnalysisSessionPopulation",
   "initializeAnalysisSession", "setAnalysisComparisonMode", "syncAnalysisComparisonWorkspace", "analysisComputeCacheKey", "analysisResponseEnvelopeMatchesCurrentState", "computeAnalysisViaWorker"]) vm.runInContext(actualFunction(name), context);
 context.initializeAnalysisSession();
 const integration = context.UfoAnalysisSessionIntegration;
@@ -165,7 +177,23 @@ filters.selectedTypes = new Set(fixture.rows.map(row => row.type));
 state.lastKeywordMatches = null;
 state.timeRangeStartOrdinal = 10957; state.timeRangeEndOrdinal = 10957;
 context.regionSelectionHasActiveShapes = () => false;
+const preparationStatuses = [], originalSessionView = runtime.analysisSessionView;
+runtime.analysisSessionView = { setStatus(message) { preparationStatuses.push(message); } };
+const originalGeographyHashes = context.analysisV2ArtifactHashes;
+context.analysisV2ArtifactHashes = vm.runInContext('() => ({fixture:runtime.testArtifactHash || "before"})', context);
+const deferredLoads = deferProjectionLoads(), beforePreparedCapture = posted.length;
 const captureFromControls = integration.captureCurrentFilters("B");
+await flushPreparation();
+assert.deepEqual(deferredLoads.calls.slice().sort(), projectionLoaders.slice().sort());
+assert.equal(posted.length, beforePreparedCapture, "No group snapshot is captured before optional category data settles");
+assert.match(preparationStatuses.at(-1), /preparing.*category/i);
+for (const name of projectionLoaders.slice(0, -1)) deferredLoads.pending.get(name).resolve(true);
+await flushPreparation();
+assert.equal(posted.length, beforePreparedCapture, "A slow final projection cannot leave the group with an unnecessarily incomplete snapshot");
+runtime.testArtifactHash = "after";
+deferredLoads.pending.get("ensureAnalysisColorArtifact").reject(new Error("Optional color projection unavailable"));
+await flushPreparation();
+assert.equal(posted.length, beforePreparedCapture + 1, "An optional projection failure still permits a useful group capture");
 const controlsRequest = posted.at(-1);
 assert.equal(controlsRequest.timeRangeStartOrdinal, 10957);
 assert.equal(controlsRequest.timeRangeEndOrdinal, 10957);
@@ -173,12 +201,34 @@ assert.equal(controlsRequest.fullTimeRange, false);
 assert.equal(controlsRequest.filters.analysisSessionEventIds, undefined, "Toolbar capture must not silently reuse frozen A IDs");
 assert.equal(controlsRequest.filters.keywordActive, false);
 complete(); await captureFromControls;
+deferredLoads.restore(); context.analysisV2ArtifactHashes = originalGeographyHashes;
+assert.equal(preparationStatuses.at(-1), "", "Successful preparation clears its temporary progress status");
+assert.equal(integration.getState().groups.B.summary.distributions.color, null, "A failed or unloaded optional field is unavailable, not a zero distribution");
 assert.deepEqual([...integration.getState().groups.B.eventIds], ["later"], "Visible dates capture distinct B while A remains held");
 assert.deepEqual([...integration.getState().groups.A.eventIds], ["0"]);
 assert.deepEqual([...integration.getState().selection.eventIds], ["0"], "Holding B does not replace the user's active frozen selection");
 assert.equal(integration.getState().groups.B.scope.timeRange.startOrdinal, 10957);
 
+const stalePreload = deferProjectionLoads(), beforeStalePreload = posted.length;
+const controlsChangedDuringPreload = integration.captureCurrentFilters("B");
+await flushPreparation(); state.timeRangeEndOrdinal = 10958;
+stalePreload.resolveAll();
+await assert.rejects(controlsChangedDuringPreload, /dates or filters changed|selection changed/i,
+  "A live date edit while projections prepare rejects the obsolete capture before it reaches the catalog worker");
+assert.equal(posted.length, beforeStalePreload); stalePreload.restore(); state.timeRangeEndOrdinal = 10957;
+
+const cancelledPreload = deferProjectionLoads(), beforeCancelledPreload = posted.length;
+const captureCancelledDuringPreload = integration.captureCurrentFilters("B");
+await flushPreparation(); integration.clearGroup("A"); cancelledPreload.resolveAll();
+await assert.rejects(captureCancelledDuringPreload, /dates or filters changed|selection changed/i,
+  "Clearing a group while projections prepare cannot start a stale replacement capture");
+assert.equal(posted.length, beforeCancelledPreload); cancelledPreload.restore();
+// Restore A from its immutable earlier payload without disturbing the active
+// frozen selection, whose visible shared-date behavior is tested below.
+runtime.analysisSessionStore.setGroup("A", cloneIntoApp({ eventIds: ["0"], label: "Epoch report" }));
+
 const changedControls = integration.captureCurrentFilters("B");
+await flushPreparation();
 state.timeRangeEndOrdinal = 10958;
 complete();
 await assert.rejects(changedControls, /selection changed|filters changed|source selection changed/i,
@@ -186,6 +236,7 @@ await assert.rejects(changedControls, /selection changed|filters changed|source 
 assert.deepEqual([...integration.getState().groups.B.eventIds], ["later"]);
 state.timeRangeEndOrdinal = 10957;
 const controlsChangedAfterReply = integration.captureCurrentFilters("B");
+await flushPreparation();
 complete(); state.timeRangeEndOrdinal = 10958;
 await assert.rejects(controlsChangedAfterReply, /selection changed|filters changed|source selection changed/i,
   "A live date edit after the worker reply is rechecked before a captured group is committed");
@@ -196,6 +247,7 @@ filters.selectedSources = originalSources; filters.selectedTypes = originalTypes
 state.lastKeywordMatches = new Set(["0"]);
 state.timeRangeStartOrdinal = 0; state.timeRangeEndOrdinal = 0;
 context.regionSelectionHasActiveShapes = () => true;
+runtime.analysisSessionView = originalSessionView;
 const cancelled = integration.captureSelection("B", cloneIntoApp({ eventIds: ["later"] }));
 integration.clearAll(); complete();
 await assert.rejects(cancelled, /selection changed/);
@@ -236,4 +288,4 @@ assert.equal(sessionViewConfiguration.onModeChange, context.setAnalysisCompariso
 assert.equal(initialSection, "geography", "A restored Analysis topic initializes the comparison in that same topic");
 runtime.catalogFacetWorkerRowsQueued = 1;
 await assert.rejects(integration.captureCurrent("A"), /complete catalog/);
-console.log("Temporary Analysis integration: exact IDs, date/search/area isolation, cache identities, missing evidence, active capture, cancellation, cleanup and map preservation passed.");
+console.log("Temporary Analysis integration: exact IDs, visible-date capture, projection preparation, optional failure, stale-input cancellation, cache identities, missing evidence and map preservation passed.");

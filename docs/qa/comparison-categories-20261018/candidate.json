@@ -3,7 +3,7 @@
   "baselinePreview": "9ddc6f4e-a385-4524-85dd-3df20435b65b",
   "baselineProof": "../search-20261018/hosted-public.json",
   "baselineTreeSha256": "86d2e4038244e06acf45baeefe21ac275e7078d498c28d65780e28c50914f28b",
-  "candidateTreeSha256": "981b731ced2397e24293855ec9eabb38216db86d0126bdb38139ec641680d199",
+  "candidateTreeSha256": "b866fda19aa78acbd209b586e88811e204f6b39d62a7121bb3d54374208daf26",
   "changedRuntimeFiles": [
     "analysis_session.css",
     "analysis_session.js",
@@ -18,11 +18,18 @@
   "canonicalProduction": "16443086-c630-41d8-a793-92a0243a76f6",
   "retainedRollback": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
   "stage": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
-  "stageBytes": 40713898,
-  "stageNetGrowth": 16419,
+  "stageBytes": 40715429,
+  "stageNetGrowth": 17950,
   "newFilesAbove100MiB": [],
   "newCorpusOrReleaseCopies": false,
   "newDDataBytes": 0,
   "supersededLargeArtifacts": [],
-  "cleanup": "None; one stage refreshed in place; protected corpus, current production and rollback retained."
+  "cleanup": "None; one stage refreshed in place; protected corpus, current production and rollback retained.",
+  "projectionPreparation": {
+    "explicitCaptureOnly": true,
+    "compressedBytes": 22253017,
+    "reusedExistingAssets": true,
+    "optionalFailures": "unavailable",
+    "staleInputs": "capture rejected"
+  }
 }
