@@ -164,4 +164,14 @@ const fallbackDoc = { createElement(tag) { return new Element(tag, this); } }, f
 const fallback = fallbackGlobal.UfoAnalysisOverviewView.create(fallbackTarget); fallback.render({ model: richModel });
 assert.equal(findButton(fallbackTarget, "Difference").disabled, true, "a missing optional helper explicitly disables differences rather than fabricating metrics");
 await findButton(fallbackTarget, "Report count").click(); assert.equal(fallback.getState().mode, "count", "ordinary count charts remain available when the optional visual helper is unavailable");
+for (const [totalN, expected] of [[2500, "−0.04 pp"], [16667, "−0.006 pp"], [1e15, "0.0 pp"]]) {
+  const tiny = fixture(), tinyValue = values(totalN, totalN, 0, [["1950", "1950s", 1, [0, 1]], ["1990", "1990s", totalN - 1, [1, totalN - 2]]], [["conventional_or_explained", "conventional_or_explained", 1], ["disc_saucer", "disc_saucer", totalN - 1]]);
+  tiny.view.render({ model: { status: "ready", totalN, lanes: [{ key: "all", label: "All reports", totalN, available: true }], cards: [{ ...richCard, lanes: { all: tinyValue } }] } });
+  await findButton(tiny.target, "Difference").click();
+  const tinyCell = withClass(tiny.target, "analysis-overview-cell").find(cell => cell.getAttribute("aria-label").startsWith("1950s; Conventional / explained:"));
+  assert.equal(tinyCell.textContent, expected, "a nonzero contrast below 0.1 pp retains one significant digit rather than becoming signed zero");
+  const details = withClass(tiny.target, "analysis-overview-details")[0]; details.open = true; await details.dispatchEvent({ type: "toggle" });
+  assert.match(withClass(details, "analysis-overview-exact")[0].textContent, new RegExp(expected.replace(".", "\\.")), "the exact table uses the same small-contrast formatting as the heatmap");
+  assert.doesNotMatch(tiny.target.textContent, /[+−]0\.0 pp/, "rounded signed zero does not appear anywhere in the chart or supporting table");
+}
 console.log("Analysis overview view tests passed");

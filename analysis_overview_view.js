@@ -14,7 +14,12 @@
   const DIMENSION_LABELS = { craft: "Craft", being: "Being description", country: "Country", decade: "Decade", month: "Month", source: "Source" };
   const CRAFT_LABELS = { chevron_boomerang: "Chevron / boomerang", cigar_cylinder: "Cigar / cylinder", disc_saucer: "Disc / saucer", dumbbell_barbell: "Dumbbell / barbell", formation: "Formation", oval_egg: "Oval / egg", rectangle_box: "Rectangle / box", sphere_orb: "Sphere / orb", cone: "Cone", diamond: "Diamond", fireball_meteor_like: "Fireball / meteor-like", light: "Light", teardrop: "Teardrop", triangle: "Triangle" };
   const differenceReady = typeof visuals?.cellMetrics === "function";
-  const signedPp = value => Number.isFinite(value) ? (value > 0 ? "+" : value < 0 ? "−" : "") + Math.abs(value).toFixed(1) + " pp" : "Not available";
+  const signedPp = value => {
+    if (!Number.isFinite(value)) return "Not available";
+    const magnitude = Math.abs(value);
+    if (magnitude <= 1e-10) return "0.0 pp";
+    return (value > 0 ? "+" : "−") + (magnitude < .1 ? magnitude.toPrecision(1) : magnitude.toFixed(1)) + " pp";
+  };
   const craftColor = key => (typeof visuals?.craftColor === "function" ? visuals.craftColor(key) : null) || "#8ca9b4";
   let nextId = 0;
   function create(target, configuration) {
