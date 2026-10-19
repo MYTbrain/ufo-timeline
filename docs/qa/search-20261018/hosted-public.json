@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "url": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+  "runtime_source": "e85c23c",
+  "deployment": "9ddc6f4e-a385-4524-85dd-3df20435b65b",
+  "pages_tree_sha256": "86d2e4038244e06acf45baeefe21ac275e7078d498c28d65780e28c50914f28b",
+  "method": "Exact changed-file byte verification plus unchanged-file inheritance from prior complete verification",
+  "base_receipt": "hosted-base-public.json",
+  "base_source": "e052452",
+  "base_public_objects_verified": 212,
+  "unchanged_public_objects": 208,
+  "changed_public_objects_verified": [
+    {
+      "path": "app.js",
+      "bytes": 1493208,
+      "sha256": "1bf3a099c6c1accb36aecb526e4a159b5cf07c51ae1f57e36dac8bc1d8fbd1ec",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 167308,
+      "sha256": "61a45f2d7071f8ec3291e7b5f9e2e072594f56137c2ebc002178a617b3e2cda6",
+      "passed": true,
+      "provider_transformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    },
+    {
+      "path": "search_view.css",
+      "bytes": 3779,
+      "sha256": "9e84dd5b4969f96b2aacd340349781cc3bc8281d9a26bc6c70c7934b47e18287",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "search_view.js",
+      "bytes": 10317,
+      "sha256": "1be32ec9cda287fe6e2097f680754b028d60229cddb366571a64f0718e326299",
+      "passed": true,
+      "provider_transformation": null
+    }
+  ],
+  "immutable_uploads_unchanged": 105,
+  "final_full_sweep": {
+    "confirmed": false,
+    "reason": "One public read timed out; bounded verification of the four changed files passed instead."
+  }
+}

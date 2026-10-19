@@ -1,0 +1,29 @@
+{
+  "preview": {
+    "Id": "9ddc6f4e-a385-4524-85dd-3df20435b65b",
+    "Environment": "Preview",
+    "Branch": "analysis-groups-20261018",
+    "Source": "e85c23c",
+    "Deployment": "https://9ddc6f4e.ufo-timeline.pages.dev",
+    "Status": "1 minute ago",
+    "Build": "https://dash.cloudflare.com/f19eee6af8d32295458eda8abec46eac/pages/view/ufo-timeline/9ddc6f4e-a385-4524-85dd-3df20435b65b"
+  },
+  "production": {
+    "Id": "16443086-c630-41d8-a793-92a0243a76f6",
+    "Environment": "Production",
+    "Branch": "main",
+    "Source": "15ab160",
+    "Deployment": "https://16443086.ufo-timeline.pages.dev",
+    "Status": "20 hours ago",
+    "Build": "https://dash.cloudflare.com/f19eee6af8d32295458eda8abec46eac/pages/view/ufo-timeline/16443086-c630-41d8-a793-92a0243a76f6"
+  },
+  "retainedRollback": {
+    "Id": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+    "Environment": "Production",
+    "Branch": "main",
+    "Source": "576e09b",
+    "Deployment": "https://b4e04dc8.ufo-timeline.pages.dev",
+    "Status": "22 hours ago",
+    "Build": "https://dash.cloudflare.com/f19eee6af8d32295458eda8abec46eac/pages/view/ufo-timeline/b4e04dc8-4605-486e-bdbc-174acd3ca37e"
+  }
+}

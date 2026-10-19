@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "preview": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+  "runtimeSource": "e85c23c",
+  "desktop": {
+    "query": "ariel AND school",
+    "completeMatches": 4,
+    "analysisPopulation": 4,
+    "allTimeOrQuery": "soil OR plants",
+    "completeOrMatches": 2640,
+    "highlightedExcerpts": true
+  },
+  "phone": {
+    "width": 390,
+    "height": 844,
+    "filterDrawerAccessible": true,
+    "scopeFits": true,
+    "allMatchesCapture": "Held 2,640 reports as A.",
+    "viewportRestored": true
+  },
+  "startup": {
+    "searchDataOrWorkerFetchedBeforeQuery": false,
+    "initialMapAvailableBeforeAnalysis": true,
+    "loadingCoverRegressionTests": "passed"
+  },
+  "canonicalProduction": "16443086-c630-41d8-a793-92a0243a76f6",
+  "retainedRollback": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+  "productionUnchanged": true
+}
