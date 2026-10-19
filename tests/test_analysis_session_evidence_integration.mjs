@@ -44,6 +44,18 @@ for(const fn of [...listeners.get("message")||[]]) fn({data:{type:"catalogFacetW
 await assert.rejects(error,/integrity mismatch/);
 const timeout=context.loadAnalysisSessionEvidence({section:"animals",groups:held});await next();[...timers.values()].at(-1)();await assert.rejects(timeout,/timed out/);assert.equal(timers.size,0);
 await assert.rejects(context.loadAnalysisSessionEvidence({section:"unsupported",groups:held}),/not recognized/);
+const inspectA={...A,summary:{distributions:{craft:{rows:[{key:'disc_saucer',count:1}],eligibleN:1,unknownN:0}}}},inspectB={...B,summary:{distributions:{craft:{rows:[],eligibleN:0,unknownN:1}}}};
+held={A:inspectA,B:inspectB};
+const inspection=context.loadAnalysisSessionEvidence({inspection:true,section:'craft',domainKey:'craft',rowKey:'disc_saucer',offset:25,limit:25,groups:held});
+await next();
+const inspectionMessage=posted.at(-1);
+assert.equal(inspectionMessage.type,'inspectAnalysisSessionEvidence');assert.equal(inspectionMessage.offset,25);assert.equal(inspectionMessage.rowKey,'disc_saucer');
+assert.equal(inspectionMessage.groups.A.inspectionSummary.distribution.rows[0].count,1);
+for(const fn of [...listeners.get('message')||[]]) fn({data:{type:'analysisSessionEvidenceInspected',requestId:inspectionMessage.requestId,evidenceSignature:inspectionMessage.evidenceSignature,result:{groups:{A:{rows:[]},B:{rows:[]}}}}});
+await inspection;assert.equal(timers.size,0);
+const staleInspection=context.loadAnalysisSessionEvidence({inspection:true,section:'craft',domainKey:'craft',rowKey:'__unknown__',groups:held});await next();held={A:inspectA,B:{...inspectB}};
+for(const fn of [...listeners.get('message')||[]]) fn({data:{type:'analysisSessionEvidenceInspected',requestId:posted.at(-1).requestId,evidenceSignature:posted.at(-1).evidenceSignature,result:{groups:{A:{rows:[]},B:{rows:[]}}}}});
+await assert.rejects(staleInspection,/held groups changed/);held={A,B};
 
 // The actual worker verifies exact membership, date epochs and lazy context reuse.
 const day=iso=>Date.parse(iso+"T00:00:00Z")/86400000;
@@ -67,6 +79,13 @@ assert.equal(result.type,"analysisSessionEvidenceComputed",result.error);assert.
 assert.ok(result.result.dimensions.some(d=>d.a?.totalN===1&&d.b?.totalN===0),"Independent catalogs follow each captured window");
 const again=await ask({type:"computeAnalysisSessionEvidence",requestId:"second",evidenceSignature:"same",section:"animals",groups,settings:{},contextManifestUrl:"https://fixture.invalid/manifest.json"});
 assert.equal(again.type,"analysisSessionEvidenceComputed",again.error);assert.equal(requests,2,"Manifest and artifact reused between categories");
+self.UfoAnalysisSessionInspection=require('../analysis_session_inspection.js');
+const externalDimension=result.result.dimensions.find(row=>row.key==='crops_morphology');
+assert.ok(externalDimension);
+const inspectedContext=await ask({type:'inspectAnalysisSessionEvidence',requestId:'context-inspection',section:'crops',domainKey:externalDimension.key,rowKey:externalDimension.a.rows[0].key,groups,settings:{},contextManifestUrl:'https://fixture.invalid/manifest.json'});
+assert.equal(inspectedContext.type,'analysisSessionEvidenceInspected',inspectedContext.error);
+assert.equal(inspectedContext.result.groups.A.matchedN,1);assert.equal(inspectedContext.result.groups.B.matchedN,0);
+assert.equal(inspectedContext.result.groups.A.rows[0].id,'crop-a');assert.ok(!inspectedContext.result.groups.A.rows[0].eventIds?.length,'A context ID never invents a report join');
 self.UfoAnalysisSessionContext = { ...contextApi, compute(options) {
   assert.equal(options.groups.A.rows[0].sortOrdinal, day("1973-09-01"), "Raw typed-row dates enter estimators as Unix days");
   assert.equal(options.groups.B.rows[0].startOrdinal, day("1989-12-01"));

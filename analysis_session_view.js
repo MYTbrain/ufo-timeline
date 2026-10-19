@@ -107,6 +107,7 @@
     let destroyed = false, externalBusy = false, pending = 0, message = "", error = false, mode = "current";
     let section = "overview", axis = "coverage", showAll = false, tableOpen = false, methodsOpen = false, lastComparison = null, chartVersion = 0;
     let previousA = null, previousB = null, previousPair = false, focusAfterMutation = null;
+    let inspection = null, inspectionGeneration = 0, inspectionOpener = null;
     let settings = normalizeSettings(config.settings), settingsVersion = 0, settingsRenderKey = "", cacheA = null, cacheB = null, measureOptionsKey = "";
     const externalCache = new Map(), settingsControls = {}, settingFields = {};
     const mutationButtons = [], groups = {}, tabs = {}, id = "analysis-compare-" + (++nextId);
@@ -185,6 +186,7 @@
     function changeMode(next) {
       if (destroyed || !["current", "compare"].includes(next) || next === "compare" && !state().comparison) return false;
       if (mode === next) return true;
+      closeInspection(false);
       mode = next; lastComparison = null; render();
       if (typeof config.onModeChange === "function") config.onModeChange(mode);
       return true;
@@ -207,7 +209,7 @@
         const before = state().groups?.[slot];
         if (typeof config.onPinCurrent !== "function") return;
         await config.onPinCurrent(slot);
-        if (!destroyed && state().groups?.[slot] !== before && state().comparison) changeMode("compare");
+        if (!destroyed && state().groups?.[slot] !== before && state().comparison) { changeMode("compare"); edits.open = false; focusAfterMutation = compareButton; }
       }, "analysis-session-pin");
       const label = node("span", "analysis-session-slot-label", "Not set");
       wrap.append(pin, label); slots.appendChild(wrap); groups[slot] = { pin, label };
@@ -218,11 +220,20 @@
     currentButton.setAttribute("aria-controls", "analysis-content"); compareButton.setAttribute("aria-controls", id + "-board");
     modes.append(currentButton, compareButton);
     const clearAll = button("Clear all", async () => { await perform("onClearAll", "clearAll"); focusAfterMutation = groups.A.pin; }, "analysis-session-clear");
-    const toolbarActions = node("div", "analysis-session-toolbar-actions"); toolbarActions.append(modes, clearAll);
-    toolbar.append(heading, slots, toolbarActions);
+    const heldSummary = node("div", "analysis-session-held-summary"); heldSummary.hidden = true;
+    ["A", "B"].forEach(slot => {
+      const summary = node("div", "analysis-session-held-group analysis-session-side-" + slot.toLowerCase()), countText = node("strong"), dateText = node("span", "analysis-session-held-date");
+      summary.append(countText, dateText); heldSummary.appendChild(summary); Object.assign(groups[slot], { summary, summaryCount: countText, summaryDate: dateText });
+    });
+    const toolbarActions = node("div", "analysis-session-toolbar-actions"); toolbarActions.append(modes);
+    toolbar.append(heading, heldSummary, toolbarActions);
+    const edits = node("details", "analysis-session-edits"); edits.open = true;
+    edits.appendChild(node("summary", "", "Edit groups"));
+    const editContent = node("div", "analysis-session-edit-content"), editActions = node("div", "analysis-session-edit-actions"); editActions.appendChild(clearAll);
     const instructions = node("p", "analysis-session-instructions");
     const status = node("p", "analysis-session-status"); status.setAttribute("role", "status"); status.setAttribute("aria-live", "polite");
-    panel.append(selection, toolbar, instructions, status);
+    editContent.append(slots, editActions, instructions); edits.appendChild(editContent);
+    panel.append(selection, toolbar, edits, status);
 
     const board = node("section", "analysis-session-board"); board.id = id + "-board"; board.hidden = true;
     board.setAttribute("aria-labelledby", id + "-title");
@@ -245,7 +256,7 @@
       controls.append(use, clear); card.append(top, date, filter, metrics, controls); cards.appendChild(card);
       Object.assign(groups[slot], { card, title: label, date, filter, total, coverage, use, clear });
     });
-    details.appendChild(cards); context.append(overlap, details);
+    details.append(overlap, cards); context.append(details);
     const tabList = node("div", "analysis-session-tabs"); tabList.setAttribute("role", "tablist"); tabList.setAttribute("aria-label", "A/B measure in this Analysis topic");
     function createTab(key, label) {
       if (tabs[key]) { tabs[key].textContent = label; return tabs[key]; }
@@ -302,17 +313,34 @@
     unavailable.append(unavailableText, unavailableNotes, button("View current reports", () => { changeMode("current"); currentButton.focus?.(); }, "analysis-session-return", false));
     const caveat = node("p", "analysis-session-note analysis-session-caveat", "Counts describe captured catalog reports. Groups may overlap, and different reports may describe the same incident. Differences do not establish a causal relationship.");
     board.append(title, context, settingsDetails, tabList, measurePicker, externalStatus, unavailable, chart, caveat);
-    target.replaceChildren(panel);
+    const inspectionDialog = node("dialog", "analysis-session-inspection"); inspectionDialog.setAttribute("aria-labelledby", id + "-inspection-title");
+    const inspectionHeader = node("div", "analysis-session-inspection-header"), inspectionTitle = node("h2", "", "Inspect comparison records"); inspectionTitle.id = id + "-inspection-title";
+    const closeInspectionButton = button("Close records", () => closeInspection(), "analysis-session-inspection-close", false); inspectionHeader.append(inspectionTitle, closeInspectionButton);
+    const inspectionSummary = node("p", "analysis-session-inspection-summary"), inspectionSides = node("div", "analysis-session-inspection-sides"), inspectionSideButtons = {};
+    inspectionSides.setAttribute("role", "group"); inspectionSides.setAttribute("aria-label", "Inspected group");
+    ["A", "B"].forEach(slot => { const control = button(slot, () => { if (inspection) { inspection.activeSide = slot; renderInspection(); } }, "analysis-session-side-" + slot.toLowerCase(), false); inspectionSides.appendChild(control); inspectionSideButtons[slot] = control; });
+    const inspectionBody = node("div", "analysis-session-inspection-body"), inspectionStatus = node("p", "analysis-session-inspection-status"), inspectionNotes = node("details", "analysis-session-inspection-notes"), inspectionColumns = node("div", "analysis-session-inspection-columns"), inspectionGroupNodes = {};
+    inspectionStatus.setAttribute("role", "status"); inspectionStatus.setAttribute("aria-live", "polite");
+    ["A", "B"].forEach(slot => { const column = node("section", "analysis-session-inspection-group analysis-session-side-" + slot.toLowerCase()), heading = node("h3"), population = node("p", "analysis-session-note"), list = node("div", "analysis-session-inspection-list"); column.append(heading, population, list); inspectionColumns.appendChild(column); inspectionGroupNodes[slot] = { heading, population, list }; });
+    inspectionBody.append(inspectionStatus, inspectionNotes, inspectionColumns);
+    const inspectionFooter = node("div", "analysis-session-inspection-footer"), inspectionRetry = button("Retry records", () => inspection && loadInspectionPage(inspection.failedOffset || 0), "", false), inspectionMore = button("Load more records", () => inspection && loadInspectionPage(inspection.nextOffset), "", false);
+    inspectionFooter.append(inspectionRetry, inspectionMore);
+    inspectionDialog.append(inspectionHeader, inspectionSummary, inspectionSides, inspectionBody, inspectionFooter);
+    inspectionDialog.addEventListener("cancel", event => { event.preventDefault(); closeInspection(); });
+    inspectionDialog.addEventListener("close", () => { if (inspection) closeInspection(); });
+    target.replaceChildren(panel, inspectionDialog);
     if (comparisonTarget === target) target.appendChild(board); else comparisonTarget.replaceChildren(board);
 
     function selectAxis(key) {
       if (!availableAxes().includes(key)) return;
+      closeInspection(false);
       axis = key; showAll = false; tableOpen = false; methodsOpen = false; renderComparison(state(), true);
       renderBusy();
     }
     function updateSettings(value) {
       const next = normalizeSettings(Object.assign({}, settings, value || {}));
       if (JSON.stringify(next) === JSON.stringify(settings)) return false;
+      closeInspection(false);
       settings = next; settingsVersion++; showAll = false; tableOpen = false; methodsOpen = false; lastComparison = null; render(); return true;
     }
     function renderSettings() {
@@ -324,6 +352,142 @@
         : section === "encounters" ? ["collectionEvidence"] : ["spatialRadiusKm"];
       Object.entries(settingsControls).forEach(([name, control]) => { control.value = String(settings[name]); settingFields[name].hidden = !visible.includes(name); });
       settingsError.textContent = ""; settingsError.hidden = true;
+    }
+    function closeInspection(restoreFocus = true) {
+      if (!inspection && !inspectionDialog.open) return;
+      inspectionGeneration++; inspection = null;
+      if (typeof inspectionDialog.close === "function" && inspectionDialog.open) inspectionDialog.close();
+      else { inspectionDialog.open = false; inspectionDialog.removeAttribute("open"); }
+      if (restoreFocus && !destroyed) {
+        const target = inspectionOpener && inspectionOpener.isConnected !== false ? inspectionOpener : compareButton;
+        target?.focus?.({ preventScroll: true });
+      }
+      inspectionOpener = null;
+    }
+    function inspectionMatches(value) {
+      const current = state();
+      return !destroyed && inspection === value && value.generation === inspectionGeneration && mode === "compare" && value.section === section && value.axis === axis && value.settings === settings
+        && value.groups.A === current.groups?.A && value.groups.B === current.groups?.B;
+    }
+    function openInspection(row, data, opener) {
+      if (destroyed || mode !== "compare" || typeof config.onInspectComparison !== "function") return;
+      closeInspection(false);
+      const current = state(), dimension = { key: data.key || axis, label: tabs[axis]?.textContent || topic().label, unit: data.unit || "canonical_reports", external: data.external === true,
+        a: Object.assign({ totalN: current.comparison.a.reportN }, data.a || {}), b: Object.assign({ totalN: current.comparison.b.reportN }, data.b || {}), row, uncertainty: data.uncertainty || null };
+      inspectionOpener = opener || doc.activeElement;
+      inspection = { generation: ++inspectionGeneration, section, axis, domainKey: data.key || axis, rowKey: row.key, dimension, settings,
+        groups: { A: current.groups.A, B: current.groups.B }, title: row.label, unit: dimension.unit, notes: [], expandedIds: new Set(), activeSide: "A", nextOffset: 0, loading: false, error: "", sides: {
+          A: { totalN: null, matchedN: null, rows: [] }, B: { totalN: null, matchedN: null, rows: [] }
+        } };
+      renderInspection();
+      if (typeof inspectionDialog.showModal === "function") inspectionDialog.showModal();
+      else { inspectionDialog.open = true; inspectionDialog.setAttribute("open", ""); }
+      closeInspectionButton.focus?.();
+      return loadInspectionPage(0);
+    }
+    function normalizedInspectionPage(value) {
+      if (!value || !value.groups) throw new Error("The record inspection returned incomplete data. Retry records.");
+      const result = { title: typeof value.title === "string" ? value.title : "", unit: typeof value.unit === "string" ? value.unit : "", notes: Array.isArray(value.notes) ? value.notes.map(String) : [], groups: {} };
+      function validCount(value) { return value == null || Number.isSafeInteger(value) && value >= 0; }
+      ["A", "B"].forEach(slot => {
+        const side = value.groups[slot];
+        if (!side || !Array.isArray(side.rows) || side.rows.length > 25 || !validCount(side.totalN) || !validCount(side.matchedN)
+            || side.totalN != null && side.matchedN != null && side.matchedN > side.totalN || side.matchedN != null && side.rows.length > side.matchedN) throw new Error("The record inspection returned invalid counts. Retry records.");
+        const rows = side.rows.map(row => {
+          if (!row || row.id == null || !String(row.id).trim()) throw new Error("An inspected record is missing its identity. Retry records.");
+          return Object.assign({}, row, { id: String(row.id) });
+        });
+        result.groups[slot] = { totalN: side.totalN ?? null, matchedN: side.matchedN ?? null, rows, reason: side.reason == null ? "" : String(side.reason) };
+      });
+      return result;
+    }
+    async function loadInspectionPage(offset) {
+      const current = inspection;
+      if (!current || current.loading || !inspectionMatches(current)) return;
+      current.pageControlFocus = doc.activeElement === inspectionMore || doc.activeElement === inspectionRetry;
+      current.loading = true; current.error = ""; current.failedOffset = offset; renderInspection();
+      try {
+        const page = normalizedInspectionPage(await config.onInspectComparison({ section: current.section, domainKey: current.domainKey, rowKey: current.rowKey,
+          groups: current.groups, settings: current.settings, dimension: current.dimension, offset, limit: 25 }));
+        if (!inspectionMatches(current)) return;
+        ["A", "B"].forEach(slot => {
+          const side = current.sides[slot], incoming = page.groups[slot];
+          if (offset > 0 && (side.totalN !== incoming.totalN || side.matchedN !== incoming.matchedN)) throw new Error("The record population changed while paging. Close and reopen the inspection.");
+        });
+        ["A", "B"].forEach(slot => {
+          const side = current.sides[slot], incoming = page.groups[slot], rows = offset === 0 ? [] : side.rows.slice(), seen = new Set(rows.map(row => row.id));
+          incoming.rows.forEach(row => { if (!seen.has(row.id)) { seen.add(row.id); rows.push(row); } });
+          current.sides[slot] = Object.assign({}, incoming, { rows });
+        });
+        current.title = current.title || page.title; current.unit = page.unit || current.unit; current.notes = page.notes;
+        current.nextOffset = offset + 25;
+        if (offset === 0 && !(current.sides.A.matchedN > 0) && current.sides.B.matchedN > 0) current.activeSide = "B";
+      } catch (failure) { if (inspectionMatches(current)) current.error = failure?.message || "The records could not be loaded. Retry records."; }
+      finally { if (inspectionMatches(current)) { current.loading = false; renderInspection(); } }
+    }
+    function sourceUrl(value) {
+      try { const url = new URL(String(value)); return ["https:", "http:"].includes(url.protocol) ? url.href : null; } catch (_) { return null; }
+    }
+    function inspectionRecord(row, slot) {
+      const card = node("article", "analysis-session-inspected-record"), label = typeof row.label === "string" && row.label ? row.label : "Record " + row.id;
+      card.appendChild(node("h4", "", label));
+      const text = key => ["string", "number"].includes(typeof row[key]) ? String(row[key]) : "";
+      const metadata = [text("date"), text("location"), text("source")].filter(Boolean);
+      if (metadata.length) card.appendChild(node("p", "analysis-session-note", metadata.join(" · ")));
+      const detail = text("detail");
+      if (detail) {
+        if (detail.length <= 280) card.appendChild(node("p", "analysis-session-record-detail", detail));
+        else {
+          const disclosure = node("details", "analysis-session-record-detail"), owner = inspection, key = slot + ":" + row.id;
+          disclosure.open = Boolean(owner?.expandedIds.has(key));
+          disclosure.addEventListener("toggle", () => { if (inspection === owner) { if (disclosure.open) owner.expandedIds.add(key); else owner.expandedIds.delete(key); } });
+          disclosure.append(node("summary", "", "Account details"), node("p", "", detail)); card.appendChild(disclosure);
+        }
+      }
+      const actions = node("div", "analysis-session-record-actions"), ids = [...new Set([row.eventId, ...(Array.isArray(row.eventIds) ? row.eventIds : [])]
+        .filter(value => typeof value === "string" && value.trim() || typeof value === "number" && Number.isSafeInteger(value) && value >= 0).map(String))], url = sourceUrl(row.sourceUrl);
+      function recordAction(label, payload) {
+        const control = button(label, async () => {
+          closeInspection(false);
+          try { await config.onOpenInspectedRecord(payload); }
+          catch (failure) { if (!destroyed) setStatus(failure?.message || "This record could not be opened. Try inspecting it again.", true); }
+        }, "", false); actions.appendChild(control);
+      }
+      if (typeof config.onOpenInspectedRecord === "function") ids.forEach((eventId, index) => recordAction(ids.length === 1 ? "Open preserved report" : "Open report " + (index + 1), { eventId, sourceUrl: url }));
+      if (url) {
+        const link = node("a", "", "Open source"); link.href = url; link.target = "_blank"; link.rel = "noopener noreferrer"; actions.appendChild(link);
+      }
+      if (actions.children.length) card.appendChild(actions); return card;
+    }
+    function renderInspection() {
+      const current = inspection; if (!current) return;
+      const scrollTop = inspectionBody.scrollTop;
+      inspectionDialog.setAttribute("aria-busy", current.loading ? "true" : "false"); inspectionDialog.setAttribute("data-active-side", current.activeSide);
+      inspectionTitle.textContent = current.title || "Inspect comparison records";
+      inspectionSummary.textContent = "Counting unit: " + current.unit.replace(/_/g, " ") + ". A and B retain their held populations.";
+      inspectionStatus.textContent = current.error || (current.loading ? "Loading preserved records…" : ""); inspectionStatus.setAttribute("data-error", current.error ? "true" : "false");
+      inspectionNotes.replaceChildren(); inspectionNotes.hidden = !current.notes.length;
+      if (current.notes.length) { inspectionNotes.appendChild(node("summary", "", "Scope & source notes")); current.notes.forEach(note => inspectionNotes.appendChild(node("p", "analysis-session-note", note))); }
+      ["A", "B"].forEach(slot => {
+        const side = current.sides[slot], ui = inspectionGroupNodes[slot];
+        const matched = Number.isFinite(side.matchedN) ? count(side.matchedN) + " matched" : current.loading ? "Loading…" : current.error && !side.reason ? "Not loaded" : "Unavailable";
+        ui.heading.textContent = slot + " · " + matched;
+        ui.population.textContent = current.loading && side.totalN == null ? "Preparing this group's records…" : (Number.isFinite(side.matchedN) ? count(side.rows.length) + " shown · " : "") + count(side.totalN) + " " + current.unit.replace(/_/g, " ") + " in this population";
+        inspectionSideButtons[slot].textContent = slot + " · " + matched; inspectionSideButtons[slot].setAttribute("aria-pressed", current.activeSide === slot ? "true" : "false");
+        ui.list.replaceChildren(); side.rows.forEach(row => ui.list.appendChild(inspectionRecord(row, slot)));
+        if (!side.rows.length && !current.loading) ui.list.appendChild(node("p", "analysis-session-note", side.reason || (side.matchedN === 0 ? "No matching records in this group." : current.error ? "Records have not loaded." : "Records are unavailable for this group.")));
+      });
+      inspectionRetry.hidden = !current.error; inspectionRetry.disabled = current.loading;
+      inspectionMore.hidden = !Object.values(current.sides).some(side => Number.isFinite(side.matchedN) && side.matchedN > current.nextOffset);
+      inspectionMore.disabled = current.loading || Boolean(current.error);
+      if (!current.loading && current.pageControlFocus) {
+        current.pageControlFocus = false;
+        if ([inspectionMore, inspectionRetry, inspectionDialog, doc.body].includes(doc.activeElement)) {
+          const focus = current.error ? inspectionRetry : inspectionMore.hidden ? closeInspectionButton : inspectionMore;
+          focus.focus?.({ preventScroll: true });
+        }
+      }
+      if (typeof scrollTop === "number") inspectionBody.scrollTop = scrollTop;
     }
     function coverageText(summary, key, label) { return Number.isFinite(summary[key]) ? label + " " + count(summary[key]) + " (" + percent(summary.reportN > 0 ? summary[key] / summary.reportN : null) + ")" : label + " unavailable"; }
     function renderCards(current) {
@@ -357,13 +521,24 @@
     }
     function sideValue(row, slot) {
       const side = slot.toLowerCase(), n = row[side + "Count"], share = row[side + "ShareOfReports"];
-      return { count: n, share, text: Number.isFinite(n) ? (Number.isFinite(share) ? percent(share) + " · " : "") + count(n) : "Not available" };
+      const lower = row[side + "LowerCount"], upper = row[side + "UpperCount"], hasBounds = Number.isFinite(lower) && Number.isFinite(upper);
+      const baseText = Number.isFinite(n) ? (Number.isFinite(share) ? percent(share) + " · " : "") + count(n) : "Not available", rangeText = hasBounds ? count(lower) + "–" + count(upper) + " stable–possible" : "";
+      return { count: n, share, baseText, rangeText, text: baseText + (rangeText ? " · " + rangeText : "") };
     }
-    function chartRow(row, kind) {
-      const item = node("div", "analysis-session-chart-row" + (kind ? " analysis-session-unknown" : "")), top = node("div", "analysis-session-row-heading");
+    function chartRow(row, kind, dimension) {
+      const canInspect = typeof config.onInspectComparison === "function" && [row.aCount, row.bCount].some(value => Number.isFinite(value) && value > 0), version = chartVersion;
+      let item;
+      if (canInspect) item = button("", () => { if (version === chartVersion) return openInspection(Object.assign({}, row, { key: kind ? "__unknown__" : row.key }), dimension, item); }, "analysis-session-chart-row analysis-session-row-inspect" + (kind ? " analysis-session-unknown" : ""), false);
+      else item = node("div", "analysis-session-chart-row" + (kind ? " analysis-session-unknown" : ""));
+      const top = node("div", "analysis-session-row-heading");
       top.appendChild(node("strong", "", row.label));
       const values = [sideValue(row, "A"), sideValue(row, "B")], difference = values.every(value => Number.isFinite(value.share)) ? Math.abs(values[0].share - values[1].share) : null;
       if (!kind && axis !== "coverage" && difference !== null) top.appendChild(node("span", "analysis-session-difference", (difference * 100).toFixed(1) + " pp difference"));
+      if (canInspect) {
+        top.appendChild(node("span", "analysis-session-inspect-hint", "Inspect"));
+        item.setAttribute("aria-label", "Inspect " + row.label + " records. A: " + values[0].text + ". B: " + values[1].text + ".");
+        item.setAttribute("data-comparison-domain-key", dimension.key || axis); item.setAttribute("data-comparison-row-key", kind ? "__unknown__" : row.key);
+      }
       item.appendChild(top);
       ["A", "B"].forEach((slot, index) => {
         const value = values[index], line = node("div", "analysis-session-bar-line analysis-session-side-" + slot.toLowerCase()), letter = node("span", "analysis-session-bar-letter", slot);
@@ -371,7 +546,8 @@
         track.setAttribute("aria-hidden", "true"); fill.style.width = Number.isFinite(value.share) ? Math.min(1, Math.max(0, value.share)) * 100 + "%" : "0%";
         if (!Number.isFinite(value.share)) track.className += " analysis-session-bar-unavailable";
         track.appendChild(fill);
-        const exact = node("span", "analysis-session-bar-value", value.text);
+        const exact = node("span", "analysis-session-bar-value"); exact.appendChild(node("span", "", value.baseText));
+        if (value.rangeText) exact.appendChild(node("small", "analysis-session-count-bounds", value.rangeText));
         line.append(letter, track, exact); item.appendChild(line);
       });
       return item;
@@ -403,6 +579,7 @@
       renderCards(current);
       const shared = model.overlapCount ?? model.overlap?.reportN;
       overlap.textContent = (isExternalAxis() ? "Held report groups: " : "") + count(shared) + " shared " + (shared === 1 ? "report" : "reports") + (model.overlap ? " · " + percent(model.overlap.shareA) + " of A · " + percent(model.overlap.shareB) + " of B" : "");
+      details.children[0].textContent = "Group details · " + count(shared) + " shared " + (shared === 1 ? "report" : "reports");
       renderSettings();
       const external = isExternalAxis(), entry = external ? ensureExternal() : externalEntry();
       externalStatus.hidden = !external || entry?.status === "ready";
@@ -460,12 +637,18 @@
         return bothAvailable ? difference(b) - difference(a) || String(a.label).localeCompare(String(b.label)) : Math.max(b.aCount || 0, b.bCount || 0) - Math.max(a.aCount || 0, a.bCount || 0) || String(a.label).localeCompare(String(b.label));
       });
       const unit = data.external ? data.unit.replace(/_/g, " ") : "captured reports", totalA = data.external ? data.a.totalN : model.a.reportN, totalB = data.external ? data.b.totalN : model.b.reportN;
-      chart.appendChild(node("p", "analysis-session-denominator", "Share of all " + unit + " · A: " + count(totalA) + " · B: " + count(totalB) + "."));
+      chart.appendChild(node("p", "analysis-session-denominator", "Descriptive · Share of all " + unit + " · A: " + count(totalA) + " · B: " + count(totalB) + "."));
       const fieldCoverage = data.coverage ? "Date coverage includes dates of any recorded precision." : "Field indexed · A: " + (data.a?.available && Number.isFinite(data.a.eligibleN) ? count(data.a.eligibleN) + " of " + count(totalA) : "not available") + " · B: " + (data.b?.available && Number.isFinite(data.b.eligibleN) ? count(data.b.eligibleN) + " of " + count(totalB) : "not available") + (data.multiLabel ? (data.external ? ". One record" : ". A report") + " may have several labels." : ".");
       chart.appendChild(node("p", "analysis-session-note", fieldCoverage));
+      if (data.uncertainty) chart.appendChild(node("p", "analysis-session-note analysis-session-uncertainty-note", data.uncertainty.note || "Stable–possible counts span sampled source-time intervals. These ranges are not confidence intervals."));
       caveat.textContent = data.external ? "Counts describe " + unit + " in the derived A/B populations. Records and source accounts may overlap. Differences do not establish independent incidents or a causal relationship."
         : "Counts describe captured catalog reports. Groups may overlap, and different reports may describe the same incident. Differences do not establish a causal relationship.";
-      if (data.external) addMethodDetails(chart, [...(entry.result.notes || []), ...(data.notes || []),
+      const coverageLabels = { eligibleExactDateN: "eligible exact dates", verifiedTimeN: "verified times", dateOnlyN: "date-only estimates", stableN: "stable classifications", ambiguousN: "classifications may change within the sampled interval", skyEligibleN: "sky-position eligible", verifiedInputN: "verified time/location inputs", missingInputN: "missing required inputs" };
+      const timeCoverage = ["a", "b"].flatMap(slot => {
+        const items = Object.entries(data[slot]?.coverage || {}).filter(([key, value]) => coverageLabels[key] && Number.isFinite(value)).map(([key, value]) => count(value) + " " + coverageLabels[key]);
+        return items.length ? [slot.toUpperCase() + " time/input coverage: " + items.join(" · ") + "."] : [];
+      });
+      if (data.external) addMethodDetails(chart, [...(entry.result.notes || []), ...(data.notes || []), ...timeCoverage,
         ...(data.a?.reason ? ["A: " + data.a.reason] : []), ...(data.a?.notes || []).map(note => "A: " + note),
         ...(data.b?.reason ? ["B: " + data.b.reason] : []), ...(data.b?.notes || []).map(note => "B: " + note)]);
       if (axis === "year") chart.appendChild(node("p", "analysis-session-note", "Different date windows naturally occupy different years. Use Month of year, Day of week or Time of day to compare recurring patterns."));
@@ -478,7 +661,7 @@
       if (ranked.length) {
         const scale = node("div", "analysis-session-scale"); scale.setAttribute("aria-hidden", "true"); scale.append(node("span", "", "0%"), node("span", "", "50%"), node("span", "", "100%")); chart.appendChild(scale);
         if (!data.coverage) chart.appendChild(node("p", "analysis-session-rank-note", (chronological ? "Calendar / category order" : bothAvailable ? "Largest percentage-point differences first" : "Most reports first") + (ranked.length > limit ? " · Showing " + (showAll ? count(ranked.length) : count(limit)) + " of " + count(ranked.length) : "")));
-        const rows = node("div", "analysis-session-chart-rows"); ranked.slice(0, showAll ? undefined : limit).forEach(row => rows.appendChild(chartRow(row))); chart.appendChild(rows);
+        const rows = node("div", "analysis-session-chart-rows"); ranked.slice(0, showAll ? undefined : limit).forEach(row => rows.appendChild(chartRow(row, null, data))); chart.appendChild(rows);
         if (ranked.length > limit) {
           const version = chartVersion;
           const more = button(showAll ? "Show fewer" : "Show all " + count(ranked.length) + " categories", () => { if (version !== chartVersion) return; showAll = !showAll; renderComparison(state(), true); chart.querySelector?.(".analysis-session-show-all")?.focus(); }, "analysis-session-show-all", false); chart.appendChild(more);
@@ -487,7 +670,7 @@
       const exactRows = ranked.slice();
       if (data.unknown && (Number.isFinite(data.unknown.aCount) || Number.isFinite(data.unknown.bCount))) {
         const unknown = Object.assign({ label: "Unknown / not indexed" }, data.unknown);
-        chart.appendChild(chartRow(unknown, "unknown")); exactRows.push(unknown);
+        chart.appendChild(chartRow(unknown, "unknown", data)); exactRows.push(unknown);
       }
       if (exactRows.length) addDataTable(chart, exactRows, unit);
     }
@@ -512,7 +695,10 @@
         ui.pin.sessionUnavailable = typeof config.onPinCurrent !== "function";
         ui.label.textContent = group ? reports(reportCount(group)) + " · " + scopeLabel(group) : "Not set";
         ui.label.title = group ? group.label + " · " + scopeLabel(group) + " · " + filterSummary(group) : "Apply dates and filters, then set " + slot;
+        ui.summaryCount.textContent = slot + " · " + (group ? reports(reportCount(group)) : "Not set");
+        ui.summaryDate.textContent = group ? scopeLabel(group) : ""; ui.summary.title = group ? group.label + " · " + scopeLabel(group) + " · " + filterSummary(group) : "";
       });
+      heldSummary.hidden = !(a && b); panel.setAttribute("data-groups-ready", a && b ? "true" : "false");
       instructions.textContent = a && b ? (mode === "compare" ? "Comparing held A and B in the selected Analysis topic. Replace uses the current applied dates and filters." : "Viewing current reports. Choose Compare A / B to view the held groups in each Analysis topic.")
         : a || b ? "One group is held. Change dates and filters, Apply, then Set " + (a ? "B" : "A") + "."
         : "Apply dates and filters → Set A. Change them → Apply → Set B.";
@@ -526,20 +712,22 @@
       const current = state(), a = current.groups?.A, b = current.groups?.B, pair = Boolean(a && b && current.comparison);
       const completeNow = pair && !previousPair, changed = a !== previousA || b !== previousB;
       previousA = a; previousB = b; previousPair = pair;
-      if (changed) { externalCache.clear(); cacheA = a; cacheB = b; }
+      if (changed) { closeInspection(false); externalCache.clear(); cacheA = a; cacheB = b; }
+      if (completeNow) edits.open = false; else if (!pair) edits.open = true;
       if (!pair && mode === "compare") changeMode("current");
       else if (completeNow) changeMode("compare");
       else { if (changed) lastComparison = null; render(); }
     }
     const unsubscribe = store.subscribe(onStoreChange); onStoreChange();
     return { render, setStatus, setBusy(value) { externalBusy = Boolean(value); if (!destroyed) renderBusy(); },
-      setMode: changeMode, getMode() { return mode; }, getSettings() { return Object.assign({}, settings); }, setSettings: updateSettings, setSection(key) {
+      setMode: changeMode, getMode() { return mode; }, closeInspection, getSettings() { return Object.assign({}, settings); }, setSettings: updateSettings, setSection(key) {
         if (destroyed) return;
         const next = String(key || "overview").replace(/^analysis-section-/, "").replace(/_/g, "-");
         if (section === next) return;
+        closeInspection(false);
         section = next; axis = topic().axes?.[0] || "coverage"; showAll = false; tableOpen = false; methodsOpen = false; lastComparison = null; render();
       }, destroy() {
-        if (destroyed) return; destroyed = true; externalCache.clear(); if (typeof unsubscribe === "function") unsubscribe(); target.replaceChildren();
+        if (destroyed) return; closeInspection(false); destroyed = true; externalCache.clear(); if (typeof unsubscribe === "function") unsubscribe(); target.replaceChildren();
         if (comparisonTarget !== target) comparisonTarget.replaceChildren();
       }
     };

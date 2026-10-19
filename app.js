@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-complete-comparison-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-inspect-analysis-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9837,9 +9837,11 @@
 
   async function loadAnalysisSessionEvidence(requestValue) {
     const request = requestValue || {}, groups = request.groups || {};
+    const inspecting = request.inspection === true;
     if (!groups.A || !groups.B) throw new Error("Set both A and B before comparing this topic.");
     const section = String(request.section || "").replace(/_/g, "-");
-    if (!["crops", "animals", "facilities", "spatial", "context", "comparisons", "encounters", "collections"].includes(section)) {
+    if (!["crops", "animals", "facilities", "spatial", "context", "comparisons", "encounters", "collections"].includes(section) &&
+        !(inspecting && ["overview", "time", "craft", "geography", "sources-quality"].includes(section))) {
       throw new Error("This A/B topic is not recognized.");
     }
     const store = runtime.analysisSessionStore;
@@ -9856,8 +9858,12 @@
     const requestId = "analysis-session-evidence-" + (++runtime.catalogFacetWorkerRequestId);
     const settings = Object.assign({}, request.settings || {});
     const slim = function (cohort) { return { eventIds: cohort.eventIds, reportCount: cohort.reportCount,
-      label: cohort.label, scope: cohort.scope, provenance: cohort.provenance }; };
+      label: cohort.label, scope: cohort.scope, provenance: cohort.provenance,
+      inspectionSummary: inspecting ? { mappedN: cohort.summary.mappedN, unmappedN: cohort.summary.unmappedN,
+        datedN: cohort.summary.datedN, undatedN: cohort.summary.undatedN,
+        distribution: cohort.summary.distributions[String(request.domainKey || "")] } : undefined }; };
     const signature = JSON.stringify({ requestId: requestId, section: section, settings: settings,
+      inspection: inspecting ? { domainKey: request.domainKey, rowKey: request.rowKey, offset: request.offset, limit: request.limit } : null,
       a: groups.A.provenance && groups.A.provenance.sessionCaptureId, b: groups.B.provenance && groups.B.provenance.sessionCaptureId });
     return new Promise(function (resolve, reject) {
       let done = false;
@@ -9870,17 +9876,18 @@
       function listener(event) {
         const message = event.data || {}; if (message.requestId !== requestId) return;
         if (!stillCurrent()) { finish(new Error("The held groups changed while this comparison was calculating.")); return; }
-        if (message.type !== "analysisSessionEvidenceComputed" || message.evidenceSignature !== signature) {
+        if (message.type !== (inspecting ? "analysisSessionEvidenceInspected" : "analysisSessionEvidenceComputed") || message.evidenceSignature !== signature) {
           finish(new Error(message.error || "The A/B evidence response is invalid.")); return;
         }
         const result = message.result;
-        if (!result || !Array.isArray(result.dimensions)) { finish(new Error("The A/B evidence comparison is incomplete.")); return; }
+        if (!result || (inspecting ? !result.groups || !result.groups.A || !result.groups.B : !Array.isArray(result.dimensions))) { finish(new Error("The A/B evidence comparison is incomplete.")); return; }
         finish(null, result);
       }
       const timer = window.setTimeout(function () { finish(new Error("This A/B comparison timed out. Retry this topic.")); }, 180000);
       worker.addEventListener("message", listener); worker.addEventListener("error", failure);
-      try { worker.postMessage({ type: "computeAnalysisSessionEvidence", requestId: requestId, evidenceSignature: signature,
+      try { worker.postMessage({ type: inspecting ? "inspectAnalysisSessionEvidence" : "computeAnalysisSessionEvidence", requestId: requestId, evidenceSignature: signature,
         section: section, groups: { A: slim(groups.A), B: slim(groups.B) }, settings: settings,
+        domainKey: String(request.domainKey || "").replace(/^external:/, ""), rowKey: request.rowKey, offset: request.offset, limit: request.limit, dimension: request.dimension,
         contextManifestUrl: new URL(resolveAssetPath("./data/analysis_comparisons/manifest.json"), document.baseURI).toString(),
         collectionManifestUrl: new URL(resolveAssetPath("./data/collections/manifest.json?v=2026-10-18-collections-v1"), document.baseURI).toString() }); }
       catch (error) { finish(error); }
@@ -9943,6 +9950,8 @@
         comparisonTarget: document.getElementById("analysis-comparison-workspace"),
         onModeChange: setAnalysisComparisonMode,
         onLoadComparison: function (request) { return loadAnalysisSessionEvidence(request); },
+        onInspectComparison: function (request) { return loadAnalysisSessionEvidence(Object.assign({}, request, { inspection: true })); },
+        onOpenInspectedRecord: function (request) { if (request.eventId != null) return openEncounterInspectedReport({ eventId: request.eventId, mode: "source" }); },
         onPinCurrent: integration.captureCurrentFilters, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
         onClearGroup: integration.clearGroup, onClearAll: integration.clearAll, onClearSelection: integration.clearSelection,
         onOpenSection: function (section) {
@@ -9976,6 +9985,16 @@
     if (!panel) return;
     const comparing = runtime.analysisSessionMode === "compare";
     panel.setAttribute("data-session-mode", comparing ? "compare" : "current");
+    const scope = document.getElementById("analysis-scope-summary");
+    if (scope) scope.textContent = comparing
+      ? "Held A/B groups remain fixed while you prepare another date range. Each chart labels its own record population and coverage; differences are descriptive."
+      : "Patterns describe the reports matching the current timeline and filters. They do not establish travel, causation, authenticity, or phenomenon incidence.";
+    const datesLabel = document.getElementById("analysis-date-controls-label");
+    if (datesLabel) datesLabel.textContent = comparing ? "Prepare dates for replacing a held group" : "Analysis date range";
+    const baseline = document.getElementById("analysis-baseline");
+    const baselineField = baseline && baseline.closest("label");
+    if (baselineField) baselineField.hidden = comparing;
+    syncAnalysisDateRangeSummary();
     const content = document.getElementById("analysis-content"), host = document.getElementById("analysis-comparison-workspace");
     if (content) { content.inert = comparing || content.hidden; if (comparing) content.setAttribute("aria-hidden", "true"); else content.removeAttribute("aria-hidden"); }
     if (host) { host.hidden = !comparing; host.inert = !comparing; }
@@ -10459,6 +10478,8 @@
     const controller = new window.UfoAnalysisView.AnalysisViewController({
       document: document,
       onViewChange: function (viewChange) {
+        const activeView = viewChange && typeof viewChange === "object" ? viewChange.activeView : viewChange;
+        if (activeView !== "analysis" && runtime.analysisSessionView && runtime.analysisSessionView.closeInspection) runtime.analysisSessionView.closeInspection();
         handleAnalysisViewChange(
           viewChange && typeof viewChange === "object" ? viewChange.activeView : viewChange
         );
@@ -24790,6 +24811,7 @@
   }
 
   function analysisModeLabelForState() {
+    if (runtime.analysisSessionMode === "compare") return "Held A/B · descriptive";
     if (state.timeRangeMode === "full") return "Internal structure";
     if (state.analysisBaselineMode === "full_catalog") return "Descriptive overlap";
     if (state.analysisBaselineMode === "previous_equal_duration") return "Prior-period comparison";

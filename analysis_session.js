@@ -35,6 +35,67 @@
     if (value == null) return null;
     requireValue(Number.isSafeInteger(value) && value >= 0 && value <= maximum, "invalid " + label); return value;
   }
+  function categoryMetadata(row, n, maximum) {
+    const hasLower = row.lowerCount != null, hasUpper = row.upperCount != null;
+    requireValue(hasLower === hasUpper, "sampled bounds require both lowerCount and upperCount");
+    const metadata = {};
+    if (hasLower) {
+      const lower = count(row.lowerCount, maximum, "sampled lower count"), upper = count(row.upperCount, maximum, "sampled upper count");
+      requireValue(lower <= n && n <= upper, "sampled bounds must contain the category count");
+      metadata.lowerCount = lower; metadata.upperCount = upper;
+    }
+    const hasRow = row.matrixRow != null, hasColumn = row.matrixColumn != null;
+    requireValue(hasRow === hasColumn, "matrix coordinates require both row and column");
+    if (hasRow) {
+      for (const key of ["matrixRow", "matrixColumn"]) {
+        requireValue(typeof row[key] === "string" && row[key].trim() && row[key].length <= 256, "invalid " + key);
+        metadata[key] = row[key];
+      }
+    }
+    return metadata;
+  }
+  function coverageMetadata(value, totalN, eligibleN) {
+    if (value == null) return null;
+    requireValue(plain(value), "invalid comparison input coverage");
+    const result = {};
+    for (const key of ["eligibleExactDateN", "verifiedTimeN", "dateOnlyN", "stableN", "ambiguousN", "skyEligibleN", "verifiedInputN", "missingInputN"]) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) result[key] = count(value[key], totalN, "coverage " + key);
+    }
+    for (const [first, second, denominator] of [["verifiedTimeN", "dateOnlyN", eligibleN], ["stableN", "ambiguousN", eligibleN], ["verifiedInputN", "missingInputN", totalN]]) {
+      if (result[first] != null && result[second] != null) requireValue(result[first] + result[second] === denominator, "coverage " + first + "/" + second + " does not match its population");
+    }
+    return result;
+  }
+  function uncertaintyMetadata(value) {
+    if (value == null) return null;
+    requireValue(plain(value) && value.kind === "sampled_time_interval", "unsupported comparison uncertainty kind");
+    requireValue(["utc_noon_with_verified_utc_overrides", "verified_utc"].includes(value.estimate), "unsupported comparison estimate method");
+    return { kind: value.kind, estimate: value.estimate, label: String(value.label || "Stable–possible counts"),
+      note: String(value.note || "Sampled source-time bounds, not confidence intervals.") };
+  }
+  function heatmapMetadata(value, left, right) {
+    if (value == null) return null;
+    requireValue(plain(value) && typeof value.kind === "string" && value.kind.trim(), "invalid comparison matrix");
+    const axes = {};
+    for (const name of ["rows", "columns"]) {
+      requireValue(Array.isArray(value[name]), "missing comparison matrix " + name);
+      const keys = new Set();
+      axes[name] = value[name].map(entry => {
+        requireValue(plain(entry) && typeof entry.key === "string" && entry.key.trim() && entry.key.length <= 256 && !keys.has(entry.key), "invalid or repeated comparison matrix " + name);
+        keys.add(entry.key); return { key: entry.key, label: String(entry.label == null ? entry.key : entry.label) };
+      });
+    }
+    const rowKeys = new Set(axes.rows.map(entry => entry.key)), columnKeys = new Set(axes.columns.map(entry => entry.key));
+    for (const side of [left, right]) if (side) {
+      const cells = new Set();
+      for (const row of side.rows) {
+        requireValue(rowKeys.has(row.matrixRow) && columnKeys.has(row.matrixColumn), "category does not belong to comparison matrix axes");
+        const cell = JSON.stringify([row.matrixRow, row.matrixColumn]);
+        requireValue(!cells.has(cell), "repeated comparison matrix cell"); cells.add(cell);
+      }
+    }
+    return { kind: value.kind, rows: axes.rows, columns: axes.columns };
+  }
   function ids(values) {
     requireValue(Array.isArray(values) || values instanceof Set, "eventIds must be an array or Set");
     const seen = new Set(), result = [];
@@ -56,7 +117,7 @@
       requireValue(plain(row) && row.key != null, "invalid category"); const key = String(row.key);
       requireValue(key && !keys.has(key), "repeated category"); keys.add(key);
       const n = count(row.count, eligibleN === null ? reportN : eligibleN, "category count"); requireValue(n !== null, "missing category count");
-      return { key, label: String(row.label == null ? key : row.label), count: n };
+      return Object.assign({ key, label: String(row.label == null ? key : row.label), count: n }, categoryMetadata(row, n, eligibleN === null ? reportN : eligibleN));
     });
     const multiLabel = input.multiLabel === true, sum = rows.reduce((total, row) => total + row.count, 0);
     if (eligibleN !== null) requireValue(multiLabel ? sum >= eligibleN : sum === eligibleN, domain + " categories do not describe the eligible pool");
@@ -87,13 +148,22 @@
     const aMeta = { available: !!left, eligibleN: left ? left.eligibleN : null, unknownN: left ? left.unknownN : null };
     const bMeta = { available: !!right, eligibleN: right ? right.eligibleN : null, unknownN: right ? right.unknownN : null };
     const categories = new Map(), leftRows = new Map(), rightRows = new Map();
-    if (left) left.rows.forEach(row => { categories.set(row.key, row.label); leftRows.set(row.key, row.count); });
-    if (right) right.rows.forEach(row => { if (!categories.has(row.key)) categories.set(row.key, row.label); rightRows.set(row.key, row.count); });
+    if (left) left.rows.forEach(row => { categories.set(row.key, row.label); leftRows.set(row.key, row); });
+    if (right) right.rows.forEach(row => { if (!categories.has(row.key)) categories.set(row.key, row.label); rightRows.set(row.key, row); });
     const rows = Array.from(categories, ([key, label]) => {
-      const aCount = left ? (leftRows.get(key) || 0) : null, bCount = right ? (rightRows.get(key) || 0) : null;
+      const aRow = leftRows.get(key), bRow = rightRows.get(key);
+      const aCount = left ? (aRow ? aRow.count : 0) : null, bCount = right ? (bRow ? bRow.count : 0) : null;
       const aShare = ratio(aCount, aMeta.eligibleN), bShare = ratio(bCount, bMeta.eligibleN);
       const aShareOfReports = ratio(aCount, a.reportCount), bShareOfReports = ratio(bCount, b.reportCount);
+      if (aRow && bRow && aRow.matrixRow != null && bRow.matrixRow != null) requireValue(aRow.matrixRow === bRow.matrixRow && aRow.matrixColumn === bRow.matrixColumn, "conflicting comparison matrix coordinates");
+      const aLowerCount = aRow && aRow.lowerCount != null ? aRow.lowerCount : null, aUpperCount = aRow && aRow.upperCount != null ? aRow.upperCount : null;
+      const bLowerCount = bRow && bRow.lowerCount != null ? bRow.lowerCount : null, bUpperCount = bRow && bRow.upperCount != null ? bRow.upperCount : null;
       return { key, label, aCount, bCount, aShare, bShare, aShareOfReports, bShareOfReports,
+        aLowerCount, aUpperCount, bLowerCount, bUpperCount,
+        aLowerShareOfReports: ratio(aLowerCount, a.reportCount), aUpperShareOfReports: ratio(aUpperCount, a.reportCount),
+        bLowerShareOfReports: ratio(bLowerCount, b.reportCount), bUpperShareOfReports: ratio(bUpperCount, b.reportCount),
+        matrixRow: aRow && aRow.matrixRow != null ? aRow.matrixRow : bRow && bRow.matrixRow != null ? bRow.matrixRow : null,
+        matrixColumn: aRow && aRow.matrixColumn != null ? aRow.matrixColumn : bRow && bRow.matrixColumn != null ? bRow.matrixColumn : null,
         shareDifference: aShare === null || bShare === null ? null : aShare - bShare,
         reportShareDifference: aShareOfReports === null || bShareOfReports === null ? null : aShareOfReports - bShareOfReports };
     }).sort((x, y) => {
@@ -146,9 +216,15 @@
     [["a", input.a], ["b", input.b]].forEach(([slot, source]) => {
       if (source && source.reason != null) result[slot].reason = String(source.reason);
       result[slot].notes = source && Array.isArray(source.notes) ? source.notes.map(String) : [];
+      const normalized = slot === "a" ? left : right;
+      result[slot].coverage = normalized ? coverageMetadata(source && source.coverage, normalized.totalN, normalized.eligibleN) : null;
+      if (source && source.calculated != null) {
+        requireValue(typeof source.calculated === "boolean", "invalid calculation availability"); result[slot].calculated = source.calculated;
+      }
     });
     return freeze(Object.assign(result, { key, label: String(input.label || key), unit, external: true,
       notes: Array.isArray(input.notes) ? input.notes.map(String) : [],
+      uncertainty: uncertaintyMetadata(input.uncertainty), heatmap: heatmapMetadata(input.heatmap, left, right),
       reportShareDenominator: "all " + unit + " within each derived group", order: input.order === "source" ? "source" : "difference" }));
   }
   function slot(value) { const key = String(value).toUpperCase(); requireValue(key === "A" || key === "B", "slot must be A or B"); return key; }

@@ -183,6 +183,8 @@ html.analysis-navigation-preview.preview-analysis-filters-open[data-active-prima
   .analysis-navigation-preview #analysis-section-nav [role="tab"],
   .analysis-navigation-preview .preview-analysis-workspace-actions > button { min-height: 44px; }
 }
+#analysis-panel[data-session-mode="compare"] #analysis-baseline-note { display: none; }
+#analysis-panel[data-session-mode="compare"] .analysis-baseline-field { display: none; }
 @media (max-width: 600px) {
   .analysis-navigation-preview .preview-analysis-view-nav { margin: 10px 0 14px; }
   .analysis-navigation-preview .preview-analysis-view-nav > button,

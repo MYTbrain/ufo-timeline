@@ -3312,11 +3312,12 @@
         unavailable_no_reference: "No valid reference",
         unavailable_self_comparison: "Self-comparison unavailable",
       };
-      const resolvedModeLabel = wholeCorpus ? modeLabels.whole_corpus_structure : (modeLabels[comparisonState] || "Analysis comparison");
+      const sessionComparing = this.els.analysisPanel && this.els.analysisPanel.getAttribute("data-session-mode") === "compare";
+      const resolvedModeLabel = sessionComparing ? "Held A/B · descriptive" : wholeCorpus ? modeLabels.whole_corpus_structure : (modeLabels[comparisonState] || "Analysis comparison");
       [desktopModeLabel, mobileModeLabel].forEach(function (element) {
         if (!element) return;
         element.textContent = resolvedModeLabel;
-        element.setAttribute("data-comparison-state", comparisonState);
+        element.setAttribute("data-comparison-state", sessionComparing ? "held_ab_descriptive" : comparisonState);
       });
       this.els.baseline.disabled = wholeCorpus;
       this.els.baseline.setAttribute("aria-disabled", wholeCorpus ? "true" : "false");

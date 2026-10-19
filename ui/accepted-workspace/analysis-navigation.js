@@ -253,7 +253,8 @@
       const result = controller && controller.latestResult;
       const accepted = controller && controller.latestMeta && controller.latestMeta.filterSnapshot;
       const time = accepted && accepted.timeRange;
-      const text = result && result.summary && time
+      const comparing = panel.getAttribute("data-session-mode") === "compare";
+      const text = comparing ? "Preparation dates & filters · held A/B groups stay fixed · chart populations shown below" : result && result.summary && time
         ? new Intl.NumberFormat().format(result.summary.activeCount) + " reports · " + (time.mode === "full" ? "All time" : [time.startIso,time.endIso].filter(Boolean).join(" to ")) + " · Current reports & filters"
         : "Current reports & filters";
       if (scopeSummary.textContent !== text) scopeSummary.textContent = text;
@@ -267,7 +268,7 @@
       queued = true;
       requestAnimationFrame(() => { queued = false; sync(); });
     };
-    new MutationObserver(schedule).observe(panel, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:["aria-selected","hidden","data-phase"]});
+    new MutationObserver(schedule).observe(panel, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:["aria-selected","hidden","data-phase","data-session-mode"]});
     if (byId("preview-mobile-filters")) byId("preview-mobile-filters").addEventListener("toggle", sync);
     window.addEventListener("resize", schedule);
     if (window.ResizeObserver) new ResizeObserver(() => {

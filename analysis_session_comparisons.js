@@ -13,6 +13,8 @@
   const SOURCE_NAMES = { craft: "captured UFO reports", crops: "crop-circle catalog records", animals: "animal-report catalog records" };
   const UNITS = { craft: "canonical_reports", crops: "crop_catalog_records", animals: "animal_catalog_records" };
   const DAY_NOTE = "Date-only celestial states are UTC-noon estimates. Stable/possible counts span the full possible civil-day UTC interval; they are sampled bounds, not confidence intervals.";
+  const TIME_UNCERTAINTY = Object.freeze({ kind: "sampled_time_interval", label: "Stable–possible counts", estimate: "utc_noon_with_verified_utc_overrides",
+    note: "Counts may change within the possible source-date interval. These are sampled stable–possible bounds, not confidence intervals; explicitly verified UTC overrides the noon estimate." });
   function first(...values) { return values.find(value => value != null && value !== ""); }
   function finite(value) { return value == null || value === "" || typeof value === "boolean" || !Number.isFinite(Number(value)) ? null : Number(value); }
   function number(value, fallback, min, max) { const n = finite(value); return n == null ? fallback : Math.max(min, Math.min(max, n)); }
@@ -79,22 +81,30 @@
       ordinalEpoch: "unix_day", contextOrdinalEpoch: "unix_day", range, startOrdinal: range?.start, endOrdinal: range?.end };
   }
   function domain(model, selected) { const key = selected === "craft" ? "ufo" : selected; return Array.isArray(model.domains) ? model.domains.find(item => item.id === key) : model.domains[key]; }
-  function binsSide(rows, total, eligible) { return side(total, eligible, rows.map(row => ({ key: row.id, label: row.label, count: row.count,
-    lowerCount: first(row.lowerCount, row.stableCount), upperCount: first(row.upperCount, row.possibleCount) }))); }
+  function binsSide(rows, total, eligible, coverage) { return side(total, eligible, rows.map(row => ({ key: row.id, label: row.label, count: row.count,
+    lowerCount: first(row.lowerCount, row.stableCount), upperCount: first(row.upperCount, row.possibleCount) })), true, coverage ? { coverage } : null); }
+  function planetaryCoverage(item, stableN) {
+    const coverage = { eligibleExactDateN: item.positionEligible, verifiedTimeN: item.verifiedTimeCount, dateOnlyN: item.positionEligible - item.verifiedTimeCount };
+    if (stableN != null) { coverage.stableN = stableN; coverage.ambiguousN = item.positionEligible - stableN; }
+    return coverage;
+  }
   function phaseDimensions(groups, selected, unit) {
     const output = groups.map(group => domain(Lunar.computeLunarContext(domainOptions(group.rows, selected, group.range)), selected));
     const result = [];
-    result.push(dimension("lunar_phase", "Moon phase", unit, ...output.map(item => binsSide(item.phaseBins, item.total, item.phaseEligible)), [DAY_NOTE]));
-    result.push(dimension("lunar_illumination", "Moon illumination", unit, ...output.map(item => binsSide(item.illumination.bins, item.total, item.phaseEligible)), [DAY_NOTE]));
+    const phaseCoverage = item => ({ eligibleExactDateN: item.phaseEligible, stableN: item.stablePhaseCount, ambiguousN: item.ambiguousPhaseCount, skyEligibleN: item.sky.eligible });
+    const skyCoverage = item => ({ verifiedInputN: item.sky.eligible, missingInputN: item.total - item.sky.eligible, skyEligibleN: item.sky.eligible });
+    result.push(dimension("lunar_phase", "Moon phase", unit, ...output.map(item => binsSide(item.phaseBins, item.total, item.phaseEligible, phaseCoverage(item))), [DAY_NOTE], { uncertainty: TIME_UNCERTAINTY, order: "source" }));
+    result.push(dimension("lunar_illumination", "Moon illumination", unit, ...output.map(item => binsSide(item.illumination.bins, item.total, item.phaseEligible, { eligibleExactDateN: item.phaseEligible })),
+      [DAY_NOTE, "Illumination-category counts retain their noon/verified-UTC estimates; category count bounds have not been calculated."], { uncertainty: { ...TIME_UNCERTAINTY, label: "Illumination estimates", note: "Illumination categories use noon estimates with verified-UTC overrides; category count bounds are not calculated." }, order: "source" }));
     result.push(dimension("lunar_phase_stability", "Moon phase date uncertainty", unit, ...output.map(item => side(item.total, item.phaseEligible,
-      [{ key: "stable", label: "Phase stable across possible time interval", count: item.stablePhaseCount }, { key: "ambiguous", label: "Phase can cross a sector boundary", count: item.ambiguousPhaseCount }])), ["Unknown source clocks and timezones remain uncertain, including when a noon estimate falls in a named phase."]));
+      [{ key: "stable", label: "Phase stable across possible time interval", count: item.stablePhaseCount }, { key: "ambiguous", label: "Phase can cross a sector boundary", count: item.ambiguousPhaseCount }], true, { coverage: phaseCoverage(item) })), ["Unknown source clocks and timezones remain uncertain, including when a noon estimate falls in a named phase."], { order: "source" }));
     const skyNotes = ["Moon location requires explicitly verified UTC, timezone provenance and source-verified coordinates. Recorded coordinate uncertainty above 5 km is excluded; missing uncertainty is not assumed to be zero. No local clock is promoted to UTC.", "Above the geometric horizon does not establish visibility through terrain, clouds or atmosphere."];
     result.push(dimension("lunar_horizon", "Moon above / below horizon", unit, ...output.map(item => side(item.total, item.sky.eligible,
-      [{ key: "above", label: "Above geometric horizon", count: item.sky.aboveHorizon }, { key: "below", label: "Below geometric horizon", count: item.sky.belowHorizon }])), skyNotes));
-    result.push(dimension("lunar_azimuth", "Moon compass position", unit, ...output.map(item => side(item.total, item.sky.eligible, item.sky.azimuthBins.map(row => ({ key: row.label, label: row.label, count: row.count })))), skyNotes));
+      [{ key: "above", label: "Above geometric horizon", count: item.sky.aboveHorizon }, { key: "below", label: "Below geometric horizon", count: item.sky.belowHorizon }], true, { coverage: skyCoverage(item) })), skyNotes, { order: "source" }));
+    result.push(dimension("lunar_azimuth", "Moon compass position", unit, ...output.map(item => side(item.total, item.sky.eligible, item.sky.azimuthBins.map(row => ({ key: row.label, label: row.label, count: row.count })), true, { coverage: skyCoverage(item) })), skyNotes, { order: "source" }));
     result.push(dimension("lunar_sky_coverage", "Moon location input coverage", unit, ...output.map(item => side(item.total, item.total,
       [{ key: "verified", label: "Verified time and location", count: item.sky.eligible }, ...Object.entries(item.sky.excluded).map(([key, count]) => ({ key, label: key.replace(/_/g, " "), count })),
-        ...(item.nonReportContextCount ? [{ key: "non_ufo_context", label: "Non-UFO context record", count: item.nonReportContextCount }] : [])])), skyNotes));
+        ...(item.nonReportContextCount ? [{ key: "non_ufo_context", label: "Non-UFO context record", count: item.nonReportContextCount }] : [])], true, { coverage: skyCoverage(item) })), skyNotes));
     return result;
   }
   function planetaryDimensions(groups, selected, unit, settings) {
@@ -103,23 +113,24 @@
     const prepared = groups.map(group => Planetary.preparePlanetaryCohort(domainOptions(group.rows, selected, group.range)));
     const output = prepared.map(preparedCohort => domain(Planetary.computePlanetaryContext({ ...config, preparedCohort }), selected));
     const notes = [DAY_NOTE, settings.zodiacSystem === "tropical" ? "Tropical zodiac: twelve equal ecliptic-longitude sectors." : "Sidereal zodiac: " + (settings.ayanamsaId === "lahiri" ? "Lahiri" : "Fagan-Bradley") + " ayanamsa, twelve equal sectors; signs are not unequal astronomical constellations.", "Slow-planet positions track calendar era. These descriptive differences establish no astrological cause."];
-    const result = [dimension("planetary_sign", settings.planet + " zodiac sign", unit, ...output.map(item => binsSide(item.signBins, item.total, item.positionEligible)), notes),
-      dimension("planetary_motion", settings.planet + " apparent motion", unit, ...output.map(item => binsSide(item.motion.bins, item.total, item.positionEligible)), notes.concat("Near stationary means an absolute apparent longitude rate of at most 0.01 degree/day."))];
+    const result = [dimension("planetary_sign", settings.planet + " zodiac sign", unit, ...output.map(item => binsSide(item.signBins, item.total, item.positionEligible, planetaryCoverage(item, item.stableSignCount))), notes, { uncertainty: TIME_UNCERTAINTY, order: "source" }),
+      dimension("planetary_motion", settings.planet + " apparent motion", unit, ...output.map(item => binsSide(item.motion.bins, item.total, item.positionEligible, planetaryCoverage(item, item.motion.stableCount))), notes.concat("Near stationary means an absolute apparent longitude rate of at most 0.01 degree/day."), { uncertainty: TIME_UNCERTAINTY, order: "source" })];
     const partners = output[0].aspectPartners;
     partners.forEach((partner, index) => result.push(dimension("planetary_aspect_" + partner.partner.toLowerCase(), settings.planet + " / " + partner.partner + " aspects (±" + settings.orb + "°)", unit,
-      ...output.map(item => binsSide(item.aspectPartners[index].bins.concat(item.aspectPartners[index].outsideBand), item.total, item.positionEligible)), notes.concat("Five major angular bands plus outside-band estimates partition each eligible record. Ecliptic latitude is not included."))));
+      ...output.map(item => { const partner = item.aspectPartners[index], stableN = partner.bins.reduce((sum, bin) => sum + bin.stableCount, 0) + partner.outsideBand.lowerCount;
+        return binsSide(partner.bins.concat(partner.outsideBand), item.total, item.positionEligible, planetaryCoverage(item, stableN)); }), notes.concat("Five major angular bands plus outside-band estimates partition each eligible record. Ecliptic latitude is not included."), { uncertainty: TIME_UNCERTAINTY, order: "source" })));
     result.push(dimension("planetary_stability", settings.planet + " zodiac date uncertainty", unit, ...output.map(item => side(item.total, item.positionEligible,
-      [{ key: "stable", label: "Sign stable across sampled interval", count: item.stableSignCount }, { key: "ambiguous", label: "Sign may change within possible interval", count: item.ambiguousSignCount }])), notes));
+      [{ key: "stable", label: "Sign stable across sampled interval", count: item.stableSignCount }, { key: "ambiguous", label: "Sign may change within possible interval", count: item.ambiguousSignCount }], true, { coverage: planetaryCoverage(item, item.stableSignCount) })), notes, { order: "source" }));
     result.push(dimension("planetary_houses", "Astrological house input coverage", unit, ...output.map(item => side(item.total, item.total,
-      [{ key: "verified_inputs", label: "Verified time and source location available", count: item.houses.eligibleInputs }, { key: "missing_inputs", label: "Verified time or source location missing", count: item.total - item.houses.eligibleInputs }], true, { calculated: false })),
+      [{ key: "verified_inputs", label: "Verified time and source location available", count: item.houses.eligibleInputs }, { key: "missing_inputs", label: "Verified time or source location missing", count: item.total - item.houses.eligibleInputs }], true, { calculated: false, coverage: { verifiedInputN: item.houses.eligibleInputs, missingInputN: item.total - item.houses.eligibleInputs } })),
       ["Houses and ascendant are not calculated. Verified UTC/timezone, trustworthy coordinates and an explicit house-system convention are required; input coverage is not a house assignment."]));
     if (settings.planetaryHeatmaps) {
       const grids = prepared.map(preparedCohort => domain(Planetary.computePlanetaryHeatmaps({ ...config, preparedCohort }), selected));
       for (const [kind, label] of [["zodiac", "All planetary signs"], ["motion", "All planetary motions"], ["aspects", "All planetary aspect pairs"]]) {
         result.push(dimension("planetary_all_" + kind, label, unit, ...grids.map(item => side(item.total, item.positionEligible,
           item.matrices[kind].rows.flatMap(row => row.cells.map(cell => ({ key: row.id + ":" + cell.id, label: row.label + " · " + cell.label,
-            count: cell.count, lowerCount: cell.lowerCount, upperCount: cell.upperCount, matrixRow: row.id, matrixColumn: cell.id }))))),
-          notes.concat("Each body or unordered body pair has its own partition of the same eligible records. Do not sum cells across different bodies/pairs; one record contributes to several rows."), { multiLabel: true, heatmap: { kind, rows: grids[0].matrices[kind].rows.map(row => ({ key: row.id, label: row.label })), columns: grids[0].matrices[kind].columns.map(column => ({ key: column.id, label: column.label })) } }));
+            count: cell.count, lowerCount: cell.lowerCount, upperCount: cell.upperCount, matrixRow: row.id, matrixColumn: cell.id }))), true, { coverage: planetaryCoverage(item) })),
+          notes.concat("Each body or unordered body pair has its own partition of the same eligible records. Do not sum cells across different bodies/pairs; one record contributes to several rows."), { multiLabel: true, uncertainty: TIME_UNCERTAINTY, order: "source", heatmap: { kind, rows: grids[0].matrices[kind].rows.map(row => ({ key: row.id, label: row.label })), columns: grids[0].matrices[kind].columns.map(column => ({ key: column.id, label: column.label })) } }));
       }
     }
     return result;
@@ -180,7 +191,7 @@
       const shared = domainOptions(covered, selected, group.range);
       const computed = Nuclear.computeNuclearContext({ ...input, ...shared, tests: allTests, nuclearFacilities: facilities,
         broaderFacilities: Array.isArray(options.facilities) ? options.facilities : options.facilities?.rows || options.facilities?.facilities || [],
-        facilityCodebook: options.facilityCodebook || {}, windowDays: settings.nuclearWindowDays, testRoles: settings.testRoles, maxDistanceKm: settings.nuclearRadiusKm });
+        facilityCodebook: options.facilityCodebook || {}, windowDays: settings.nuclearWindowDays, testRoles: settings.testRoles, radiusKm: settings.nuclearRadiusKm });
       const data = domain(computed, selected), pairN = data.phases.reduce((sum, item) => sum + item.pairCount, 0);
       return { total: group.rows.length, coverage, coverageEligible, temporal, temporalRoles, temporalEligible, facilityRoles, activity, facilityEligible, data, pairN,
         coverageInfo: computed.coverage, facilityStatus: computed.facilities.status };

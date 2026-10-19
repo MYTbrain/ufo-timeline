@@ -85,7 +85,7 @@ const compare = button(target, "Compare A / B"), current = button(target, "Curre
 assert.equal(view.getMode(), "current"); assert.equal(board.hidden, true); assert.equal(compare.disabled, true);
 assert.equal(button(target, "Clear all").disabled, true);
 assert.match(cls(target, "analysis-session-instructions").textContent, /Apply dates and filters.*Set A.*Set B/);
-assert.equal(walk(target).some(el => el.tagName === "dialog"), false, "comparison must not require a hidden modal");
+assert.equal(cls(target, "analysis-session-inspection").open, false, "an ordinary comparison does not open a record-inspection modal");
 assert.equal(walk(target).includes(board), false, "a separate host places the chart beside topic navigation rather than above it");
 view.setSection("craft"); store.setGroup("A", groupA);
 assert.equal(compare.disabled, true); assert.equal(board.hidden, true);
@@ -332,4 +332,90 @@ const unavailableChart = cls(unavailableFields.comparisonTarget, "analysis-sessi
 assert.match(unavailableChart.textContent, /Share of all context records · A: 4 · B: 2/);
 assert.match(cls(unavailableChart, "analysis-session-missing").textContent, /A: No source location in A.*B: No source location in B/);
 assert.equal(cls(unavailableChart, "analysis-session-method-details").open, false); unavailableFields.view.destroy();
+// The inspector preserves exact source identities and independent counting
+// units. A record's display ID must never become an invented UFO report ID.
+const recordRequests = [], openedRecords = [];
+const inspecting = fixture({ onInspectComparison(request) { return new Promise((resolve, reject) => recordRequests.push({ request, resolve, reject })); },
+  onOpenInspectedRecord(payload) { openedRecords.push(payload); } });
+const longA = { eventIds: Array.from({ length: 40 }, (_, i) => "a" + i), label: "Large A", scope: groupA.scope,
+  summary: { distributions: { craft: { eligibleN: 40, unknownN: 0, rows: [{ key: "disc_saucer", count: 40 }] } } } };
+const shortB = { eventIds: ["b0", "b1", "b2"], label: "Small B", scope: groupB.scope,
+  summary: { distributions: { craft: { eligibleN: 3, unknownN: 0, rows: [{ key: "disc_saucer", count: 3 }] } } } };
+assert.equal(cls(inspecting.target, "analysis-session-edits").open, true);
+inspecting.view.setSection("craft"); inspecting.store.setGroup("A", longA); inspecting.store.setGroup("B", shortB);
+assert.equal(cls(inspecting.target, "analysis-session-edits").open, false, "post-capture edit controls collapse while mode controls remain available");
+assert.equal(cls(inspecting.target, "analysis-session-held-summary").hidden, false);
+assert.match(cls(inspecting.target, "analysis-session-held-summary").textContent, /A · 40 reports.*B · 3 reports/);
+assert.equal(button(inspecting.target, "Current reports").disabled, false);
+const inspector = cls(inspecting.target, "analysis-session-inspection"), inspectingChart = cls(inspecting.comparisonTarget, "analysis-session-chart");
+const inspectRow = key => walk(inspectingChart).find(el => el.getAttribute("data-comparison-row-key") === key);
+const reportRows = (start, end) => Array.from({ length: end - start }, (_, offset) => { const i = start + offset; return { id: "source-a" + i, label: i === 0 ? "Preserved <img src=x>" : "Report " + i,
+  date: "1954-10-01", location: "Fixture place", source: "Source family one", detail: i === 0 ? "Long preserved account. ".repeat(30) : "Short account.",
+  eventIds: ["a" + i], sourceUrl: i === 0 ? "https://example.org/source" : i === 1 ? "javascript:alert(1)" : null }; });
+const recordPage = (aRows, bRows = []) => ({ title: "disc_saucer", unit: "canonical_reports", groups: {
+  A: { totalN: 40, matchedN: 40, rows: aRows }, B: { totalN: 3, matchedN: 3, rows: bRows }
+}, notes: ["Records retain their source-family provenance."] });
+const firstRow = inspectRow("disc_saucer"); const failedInspection = firstRow.click();
+assert.equal(inspector.open, true); assert.equal(inspecting.doc.activeElement, button(inspector, "Close records"));
+assert.equal(recordRequests.at(-1).request.domainKey, "craft"); assert.equal(recordRequests.at(-1).request.rowKey, "disc_saucer");
+assert.equal(recordRequests.at(-1).request.offset, 0); assert.equal(recordRequests.at(-1).request.limit, 25);
+assert.equal(recordRequests.at(-1).request.groups.A, inspecting.store.getState().groups.A);
+assert.equal(recordRequests.at(-1).request.dimension.row.aCount, 40); assert.equal(recordRequests.at(-1).request.dimension.a.totalN, 40);
+recordRequests.at(-1).reject(new Error("Preserved source temporarily unavailable")); await failedInspection;
+assert.match(cls(inspector, "analysis-session-inspection-status").textContent, /temporarily unavailable/);
+const retriedInspection = button(inspector, "Retry records").click();
+recordRequests.at(-1).resolve(recordPage(reportRows(0, 25), [{ id: "context-only", label: "Context source without report join", sourceUrl: "https://example.org/context" }, { id: "second-context", label: "Second context" }, { id: "third-context", label: "Third context" }])); await retriedInspection;
+assert.equal(walk(inspector).filter(el => el.tagName === "article").length, 28);
+assert.match(inspector.textContent, /Disc \/ saucer/); assert.doesNotMatch(walk(inspector).find(el => el.tagName === "h2").textContent, /disc_saucer/);
+assert.equal(walk(inspector).some(el => el.tagName === "img"), false);
+assert.equal(walk(inspector).filter(el => el.tagName === "button" && el.textContent === "Open preserved report").length, 25);
+assert.equal(walk(inspector).filter(el => el.tagName === "a").length, 2, "only safe HTTP sources become links; context IDs do not become report actions");
+assert.equal(walk(inspector).find(el => el.tagName === "a").rel, "noopener noreferrer");
+const accountDisclosure = walk(inspector).find(el => el.tagName === "details" && (el.className || "").includes("analysis-session-record-detail"));
+accountDisclosure.open = true; await accountDisclosure.dispatchEvent({ type: "toggle" });
+button(inspector, "Load more records").focus();
+const loadMore = button(inspector, "Load more records").click(); assert.equal(recordRequests.at(-1).request.offset, 25);
+recordRequests.at(-1).resolve(recordPage(reportRows(25, 40))); await loadMore;
+assert.equal(walk(inspector).filter(el => el.tagName === "article").length, 43);
+assert.equal(button(inspector, "Load more records").hidden, true);
+assert.equal(inspecting.doc.activeElement, button(inspector, "Close records"), "the last page never strands focus on a hidden pagination button");
+assert.equal(walk(inspector).find(el => el.tagName === "details" && (el.className || "").includes("analysis-session-record-detail")).open, true, "pagination retains open source details");
+await button(inspector, "Close records").click(); assert.equal(inspector.open, false); assert.equal(inspecting.doc.activeElement, firstRow);
+
+const partialInspection = inspectRow("disc_saucer").click();
+recordRequests.at(-1).resolve({ unit: "canonical_reports", groups: { A: { totalN: 40, matchedN: 40, rows: reportRows(0, 1) }, B: { totalN: 3, matchedN: null, available: false, reason: "The held field is unavailable for B.", rows: [] } } }); await partialInspection;
+assert.match(inspector.textContent, /B · Unavailable/); assert.match(inspector.textContent, /held field is unavailable for B/);
+await button(inspector, "Open preserved report").click(); assert.equal(inspector.open, false); assert.equal(openedRecords.at(-1).eventId, "a0");
+const bOnlyInspection = inspectRow("disc_saucer").click();
+recordRequests.at(-1).resolve({ unit: "canonical_reports", groups: { A: { totalN: 40, matchedN: null, available: false, reason: "A field unavailable.", rows: [] }, B: { totalN: 3, matchedN: 3, rows: [{ id: "b-preserved", label: "Available B", eventIds: ["b0"] }] } } }); await bOnlyInspection;
+assert.equal(inspector.getAttribute("data-active-side"), "B", "the phone starts with usable B when A is unavailable"); inspecting.view.closeInspection();
+
+const staleTopic = inspectRow("disc_saucer").click(), staleTopicRequest = recordRequests.at(-1);
+inspecting.view.setSection("time"); assert.equal(inspector.open, false); staleTopicRequest.resolve(recordPage(reportRows(0, 1))); await staleTopic;
+assert.equal(inspector.open, false); inspecting.view.setSection("craft");
+const staleSettings = inspectRow("disc_saucer").click(), staleSettingsRequest = recordRequests.at(-1);
+inspecting.view.setSettings({ planet: "jupiter" }); assert.equal(inspector.open, false); staleSettingsRequest.resolve(recordPage(reportRows(0, 1))); await staleSettings;
+const staleGroups = inspectRow("disc_saucer").click(), staleGroupsRequest = recordRequests.at(-1);
+inspecting.store.setGroup("A", { eventIds: ["new-a"], summary: { distributions: { craft: { eligibleN: 1, unknownN: 0, rows: [{ key: "triangle", count: 1 }] } } } });
+assert.equal(inspector.open, false); staleGroupsRequest.resolve(recordPage(reportRows(0, 1))); await staleGroups;
+const staleCurrent = inspectRow("disc_saucer").click(), staleCurrentRequest = recordRequests.at(-1);
+await button(inspecting.target, "Current reports").click(); assert.equal(inspector.open, false); staleCurrentRequest.resolve(recordPage(reportRows(0, 1))); await staleCurrent;
+await button(inspecting.target, "Compare A / B").click();
+inspecting.store.setGroup("A", { ...longA, summary: { distributions: { craft: { eligibleN: 39, unknownN: 1, rows: [{ key: "disc_saucer", count: 39 }] } } } });
+const unknownInspection = inspectRow("__unknown__").click(); assert.equal(recordRequests.at(-1).request.rowKey, "__unknown__");
+recordRequests.at(-1).resolve({ unit: "canonical_reports", groups: { A: { totalN: 40, matchedN: 1, rows: [{ id: "unknown-a39", label: "Unknown craft", eventIds: ["a39"] }] }, B: { totalN: 3, matchedN: 0, rows: [] } } }); await unknownInspection;
+assert.match(inspector.textContent, /No matching records in this group/); inspecting.view.closeInspection(); assert.equal(inspector.open, false);
+const doomedInspection = inspectRow("disc_saucer").click(), doomedRequest = recordRequests.at(-1); inspecting.view.destroy(); doomedRequest.resolve(recordPage(reportRows(0, 1))); await doomedInspection;
+assert.equal(inspecting.target.children.length, 0);
+
+const bounded = fixture({ onLoadComparison() { return Promise.resolve(ready({ key: "phase", label: "Estimated phase", unit: "canonical_reports", uncertainty: {
+  kind: "sampled_time_interval", label: "Stable–possible counts", estimate: "utc_noon_with_verified_utc_overrides", note: "Counts span sampled source-time intervals, not confidence intervals."
+}, a: { totalN: 4, eligibleN: 4, unknownN: 0, coverage: { verifiedTimeN: 1, dateOnlyN: 3 }, rows: [{ key: "one", label: "Phase one", count: 2, lowerCount: 1, upperCount: 3 }, { key: "other", label: "Other phase", count: 2, lowerCount: 1, upperCount: 3 }] },
+  b: { totalN: 2, eligibleN: 2, unknownN: 0, coverage: { verifiedTimeN: 0, dateOnlyN: 2 }, rows: [{ key: "one", label: "Phase one", count: 1, lowerCount: 0, upperCount: 2 }, { key: "other", label: "Other phase", count: 1, lowerCount: 0, upperCount: 2 }] } })); } });
+bounded.store.setGroup("A", groupA); bounded.store.setGroup("B", groupB); bounded.view.setSection("comparisons"); await flush();
+const boundedChart = cls(bounded.comparisonTarget, "analysis-session-chart");
+assert.match(boundedChart.textContent, /1–3 stable–possible/); assert.match(boundedChart.textContent, /0–2 stable–possible/);
+assert.match(cls(boundedChart, "analysis-session-uncertainty-note").textContent, /not confidence intervals/);
+assert.match(cls(boundedChart, "analysis-session-method-details").textContent, /1 verified times.*3 date-only estimates/);
+assert.match(walk(boundedChart).find(el => el.tagName === "table").textContent, /stable–possible/); bounded.view.destroy();
 console.log("Analysis comparison view: inline modes, category routing, unit-aware derived results, lazy loads, scope disclosures, compact measure picker, settings/cache/race guards, errors/retry, keyboard access, capture scopes and reset passed.");

@@ -132,7 +132,7 @@ function actualFunction(name) {
   assert.ok(next >= 0); return appSource.slice(start, start + 1 + next);
 }
 const elements = new Map();
-for (const id of ["analysis-panel", "analysis-content", "analysis-comparison-workspace", "analysis-section-nav"]) {
+for (const id of ["analysis-panel", "analysis-content", "analysis-comparison-workspace", "analysis-section-nav", "analysis-scope-summary", "analysis-date-controls-label", "analysis-mode-label", "analysis-date-range-chip-mode"]) {
   const element = doc.createElement("div"); element.id = id; elements.set(id, element);
 }
 const craftNav = doc.createElement("button"), timeNav = doc.createElement("button");
@@ -142,6 +142,7 @@ elements.get("analysis-section-nav").querySelectorAll = selector => { assert.equ
 const content = elements.get("analysis-content"), host = elements.get("analysis-comparison-workspace");
 const appCalls = [], appRuntime = { analysisSessionMode: "current", analysisSessionView: { setSection(key) { appCalls.push(["section", key]); } } };
 const appContext = vm.createContext({ console, clearTimeout() {}, scheduleAnalysisCompute() {}, requestAnalysisCurrentSectionEvidence() {}, runtime: appRuntime, state: { activeView: "analysis" },
+  els: { analysisModeLabel: elements.get('analysis-mode-label'), analysisDateRangeChipMode: elements.get('analysis-date-range-chip-mode') },
   document: { getElementById(id) { return elements.get(id) || null; } },
   getAnalysisFilterSnapshot() {}, applyAnalysisFilterPatch() {}, setContextLayerEnabled() {},
   requestEncounterReports() {}, openEncounterInspectedReport() {}, applyEncounterInspectedSelection() {}, requestPlanetaryHeatmaps() {},
@@ -154,13 +155,16 @@ appContext.UfoAnalysisView = { AnalysisViewController: class {
   setAnalysisEnabled() {}
   setActiveView() {}
 } };
-for (const name of ["setAnalysisComparisonMode", "syncAnalysisComparisonWorkspace", "initializeAnalysisView"]) vm.runInContext(actualFunction(name), appContext);
+for (const name of ["analysisModeLabelForState", "syncAnalysisDateRangeSummary", "setAnalysisComparisonMode", "syncAnalysisComparisonWorkspace", "initializeAnalysisView"]) vm.runInContext(actualFunction(name), appContext);
 appContext.setAnalysisComparisonMode("compare");
 assert.equal(elements.get("analysis-panel").getAttribute("data-session-mode"), "compare");
 assert.equal(content.inert, true); assert.equal(content.getAttribute("aria-hidden"), "true");
 assert.equal(host.hidden, false); assert.equal(host.inert, false);
 assert.equal(craftNav.getAttribute("aria-controls"), "analysis-comparison-workspace");
 assert.equal(host.getAttribute("aria-labelledby"), craftNav.id);
+assert.equal(elements.get('analysis-mode-label').textContent,'Held A/B · descriptive');
+assert.match(elements.get('analysis-scope-summary').textContent,/Held A\/B groups remain fixed/);
+assert.equal(elements.get('analysis-date-controls-label').textContent,'Prepare dates for replacing a held group');
 const controller = appContext.initializeAnalysisView();
 controller.options.onSectionActivate({ sectionKey: "time" });
 assert.deepEqual(appCalls.find(call => call[0] === "section"), ["section", "time"], "The real Analysis navigator forwards its active category into the A/B view");
@@ -173,6 +177,7 @@ assert.equal(content.inert, true); assert.equal(content.getAttribute("aria-hidde
 assert.equal(timeNav.getAttribute("aria-controls"), "analysis-comparison-workspace", "An ordinary rerender cannot leave category tabs pointing at hidden single-group charts");
 assert.equal(host.getAttribute("aria-labelledby"), timeNav.id);
 appContext.setAnalysisComparisonMode("current");
+assert.equal(elements.get('analysis-mode-label').textContent,'Balanced comparison');
 assert.equal(content.inert, false); assert.equal(content.getAttribute("aria-hidden"), null);
 assert.equal(host.hidden, true); assert.equal(host.inert, true);
 assert.equal(timeNav.getAttribute("aria-controls"), "analysis-section-time");

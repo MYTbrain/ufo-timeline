@@ -4,6 +4,7 @@ import vm from "node:vm";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const Adapter = require("../analysis_session_comparisons.js");
+const Session = require("../analysis_session.js");
 const Lunar = require("../analysis_lunar.js"), Planetary = require("../analysis_planetary.js");
 const day = iso => Date.parse(iso + "T00:00:00Z") / 86400000;
 const dateA = day("2024-04-08"), dateB = day("2024-04-24");
@@ -64,6 +65,33 @@ for (const field of result.dimensions) for (const slot of ["a", "b"]) {
   if (side.available) assert.ok(field.multiLabel ? side.rows.reduce((sum, item) => sum + item.count, 0) >= side.eligibleN : side.rows.reduce((sum, item) => sum + item.count, 0) === side.eligibleN,
     field.key + " must retain a complete partition or explicitly overlapping labels");
 }
+for (const field of result.dimensions) {
+  const normalized = Session.compareExternalDimension(field);
+  for (const slot of ["a", "b"]) for (const row of field[slot].rows) {
+    const compared = normalized.rows.find(value => value.key === row.key);
+    assert.ok(compared);
+    assert.equal(compared[slot + "LowerCount"], row.lowerCount == null ? null : row.lowerCount, field.key + " stable count must reach the visible model");
+    assert.equal(compared[slot + "UpperCount"], row.upperCount == null ? null : row.upperCount, field.key + " possible count must reach the visible model");
+    if (row.matrixRow != null) { assert.equal(compared.matrixRow, row.matrixRow); assert.equal(compared.matrixColumn, row.matrixColumn); }
+  }
+  if (field.heatmap) { assert.deepEqual(normalized.heatmap, field.heatmap); assert.equal(normalized.uncertainty.kind, "sampled_time_interval"); }
+}
+assert.equal(Session.compareExternalDimension(dimension("planetary_sign")).a.coverage.verifiedTimeN, 1);
+assert.equal(Session.compareExternalDimension(dimension("planetary_sign")).a.coverage.dateOnlyN, 0);
+assert.equal(Session.compareExternalDimension(dimension("planetary_sign")).b.coverage.verifiedTimeN, 0);
+assert.equal(Session.compareExternalDimension(dimension("planetary_sign")).b.coverage.dateOnlyN, 1);
+assert.equal(Session.compareExternalDimension(dimension("lunar_horizon")).a.coverage.skyEligibleN, 1);
+assert.equal(Session.compareExternalDimension(dimension("lunar_horizon")).b.coverage.missingInputN, 1);
+assert.equal(Session.compareExternalDimension(dimension("planetary_houses")).a.calculated, false);
+const boundaryDay = Array.from({ length: 30 }, (_, index) => day("2024-04-01") + index).find(ordinal => !Lunar.phaseForDay(ordinal).stablePhase);
+assert.ok(boundaryDay != null);
+const boundaryGroup = group([row("phase-boundary", boundaryDay)]);
+const boundary = Adapter.compute({ ...input, groups: { A: boundaryGroup, B: boundaryGroup }, settings: { planetaryHeatmaps: false } });
+const boundaryPhase = Session.compareExternalDimension(boundary.dimensions.find(field => field.key === "lunar_phase"));
+assert.ok(boundaryPhase.rows.some(value => value.aLowerCount < value.aUpperCount), "A real phase boundary retains visible stable–possible variation");
+assert.ok(boundaryPhase.rows.some(value => value.aCount === 0 && value.aUpperCount > 0), "A zero noon count can still have possible source-time membership");
+assert.equal(boundaryPhase.a.coverage.ambiguousN, 1);
+assert.match(boundaryPhase.uncertainty.note, /not confidence intervals/);
 
 // Each context catalog retains its own captured records and date roles. It
 // cannot borrow either the report count or the other group's context records.
@@ -92,6 +120,16 @@ assert.equal(classification.dimensions.find(item => item.key === "lunar_phase").
 assert.equal(classification.dimensions.find(item => item.key === "planetary_sign").a.eligibleN, 0);
 assert.equal(classification.dimensions.find(item => item.key === "nuclear_temporal").a.eligibleN, 0);
 assert.equal(classification.dimensions.find(item => item.key === "nuclear_temporal").b.eligibleN, 1, "An appearance category alone is not an identified explanation");
+const radiusInput = { ...input, groups: { A: group([verified]), B: group([verified]) }, nuclear: { tests: [
+  { id: "coverage-start", ordinal: dateA - 100, role: "weapons", lat: 0, lon: 0 },
+  { id: "target-278km", ordinal: dateA, role: "weapons", lat: 38.5, lon: -80 },
+  { id: "coverage-end", ordinal: dateA + 100, role: "weapons", lat: 0, lon: 0 },
+] } };
+const narrowRadius = Adapter.compute({ ...radiusInput, settings: { nuclearRadiusKm: 100, planetaryHeatmaps: false } });
+const broadRadius = Adapter.compute({ ...radiusInput, settings: { nuclearRadiusKm: 500, planetaryHeatmaps: false } });
+assert.equal(narrowRadius.dimensions.find(item => item.key === "nuclear_pair_phase").a.totalN, 0, "The selected 100km radius excludes a test approximately278km away");
+assert.equal(broadRadius.dimensions.find(item => item.key === "nuclear_pair_phase").a.totalN, 1);
+assert.ok(narrowRadius.dimensions.find(item => item.key === "nuclear_pair_distance").a.rows.every(item => Number(item.key.slice(3)) <= 100), "Distance bins end at the declared radius");
 const pythonInput = { ...input, ordinalEpoch: "python_day", settings: { planetaryHeatmaps: false }, groups: Object.fromEntries(Object.entries(input.groups).map(([slot, value]) => [slot, { ...value, rows: value.rows.map(item => ({ ...item, sortOrdinal: item.sortOrdinal == null ? null : item.sortOrdinal + 719163 })) }])) };
 assert.deepEqual(Adapter.compute(pythonInput).dimensions.find(item => item.key === "lunar_phase").a.rows.map(item => item.count), dimension("lunar_phase").a.rows.map(item => item.count));
 

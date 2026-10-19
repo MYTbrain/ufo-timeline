@@ -1717,7 +1717,8 @@
   async function computeAnalysisSessionEvidence(message) {
     const section = String(message.section || ""), settings = Object.assign({}, message.settings || {}, {
       ordinalEpoch: "unix_day", contextOrdinalEpoch: "unix_day", spatialOrdinalEpoch: "statistics_day" });
-    const api = ensureAnalysisSessionContextApi(), groups = analysisSessionGroupsWithRows(message.groups, ["comparisons", "context"].includes(section)), spatialApi = ensureAnalysisSpatial();
+    const inspecting = message.type === "inspectAnalysisSessionEvidence";
+    const api = ensureAnalysisSessionContextApi(), groups = analysisSessionGroupsWithRows(message.groups, inspecting || ["comparisons", "context"].includes(section)), spatialApi = ensureAnalysisSpatial();
     const collectionSection = section === "encounters" || section === "collections";
     const data = collectionSection ? { context: { crops: [], animals: [] }, hashes: {} } : await loadAnalysisSessionContext(message);
     const options = { section: section, groups: groups, context: Object.assign({}, data.context, {
@@ -1726,12 +1727,21 @@
       relationships: analysisSpatialArtifacts.relationships, codebooks: analysisSpatialArtifacts.codebooks,
       manifest: analysisSpatialArtifacts.manifest }), settings: settings, ordinalEpoch: "unix_day",
       artifactHashes: Object.assign({}, data.hashes, analysisSpatialArtifacts.artifactHashes), spatialApi: spatialApi };
+    options.contextApi = api;
+    const inspect = function () {
+      if (!self.UfoAnalysisSessionInspection && typeof importScripts === "function") importScripts("./analysis_session_inspection.js?v=2026-10-19-inspect-analysis-v1");
+      if (!self.UfoAnalysisSessionInspection) throw new Error("The comparison record inspector is unavailable.");
+      return self.UfoAnalysisSessionInspection.inspect(Object.assign({}, options, {
+        domainKey: message.domainKey, rowKey: message.rowKey, offset: message.offset, limit: message.limit, dimension: message.dimension,
+        comparisonsApi: self.UfoAnalysisSessionComparisons, collectionApi: self.UfoAnalysisCollectionEvidence,
+        lunarApi: self.UfoAnalysisLunar, planetaryApi: self.UfoAnalysisPlanetary, nuclearApi: self.UfoAnalysisNuclear }));
+    };
     if (["facilities", "spatial", "context"].includes(section)) options.spatialApi = ensureAnalysisSpatial();
     if (collectionSection) options.collectionEvidence = await loadAnalysisSessionCollections(message);
     if (section === "comparisons") {
       if (!analysisComparisonArtifacts.loaded) throw new Error("Moon, planetary and nuclear evidence is still preparing.");
       ensureAnalysisComparisons();
-      if (!self.UfoAnalysisSessionComparisons && typeof importScripts === "function") importScripts("./analysis_session_comparisons.js?v=2026-10-19-session-evidence-v1");
+      if (!self.UfoAnalysisSessionComparisons && typeof importScripts === "function") importScripts("./analysis_session_comparisons.js?v=2026-10-19-inspect-analysis-v1");
       if (!self.UfoAnalysisSessionComparisons) throw new Error("The A/B astronomical comparison module is unavailable.");
       const scopeNotes = [];
       ["A", "B"].forEach(function (slot) {
@@ -1744,16 +1754,44 @@
         });
         groups[slot].context = scoped;
       });
-      const result = self.UfoAnalysisSessionComparisons.compute(Object.assign({}, options, {
-        nuclear: analysisComparisonArtifacts.nuclear, facilities: analysisComparisonArtifacts.facilities,
-        facilityCodebook: analysisComparisonArtifacts.facilities && (analysisComparisonArtifacts.facilities.codes || analysisComparisonArtifacts.facilities.codebook) || analysisComparisonArtifacts.manifest.facilityCodebook || {} }));
+      Object.assign(options, { nuclear: analysisComparisonArtifacts.nuclear, facilities: analysisComparisonArtifacts.facilities,
+        facilityCodebook: analysisComparisonArtifacts.facilities && (analysisComparisonArtifacts.facilities.codes || analysisComparisonArtifacts.facilities.codebook) || analysisComparisonArtifacts.manifest.facilityCodebook || {} });
+      if (inspecting) { const inspected = inspect(); inspected.notes = (inspected.notes || []).concat(scopeNotes); return inspected; }
+      const result = self.UfoAnalysisSessionComparisons.compute(options);
       result.notes = (result.notes || []).concat(scopeNotes);
       return result;
     }
+    if (inspecting) return inspect();
     const result = api.compute(options);
     result.artifactHashes = Object.assign({}, options.artifactHashes, result.artifactHashes || {},
       options.collectionEvidence && options.collectionEvidence.manifest ? { collectionEvidence: options.collectionEvidence.manifest.artifact.decodedSha256 } : {});
     return result;
+  }
+
+  async function inspectAnalysisSessionEvidence(message) {
+    const domain = String(message.domainKey || "");
+    const coreDomains = ["coverage", "source", "craft", "being", "abduction", "year", "calendarMonth", "weekday", "timeOfDay", "country", "macroregion", "adminRegion", "reportType", "datePrecision", "locationPrecision", "craftConfidence", "color", "duration", "witnessCount"];
+    if (!coreDomains.includes(domain)) return computeAnalysisSessionEvidence(message);
+    const groups = {}, rowKey = String(message.rowKey || "");
+    if (!rowKey) throw new Error("Choose a comparison category to inspect.");
+    ["A", "B"].forEach(function (slot) {
+      const group = message.groups && message.groups[slot];
+      if (!group || !Array.isArray(group.eventIds) || group.reportCount !== new Set(group.eventIds.map(String)).size) throw new Error("The held report inventory is invalid.");
+      const frozen = group.inspectionSummary;
+      if (!frozen || domain !== "coverage" && !frozen.distribution) {
+        groups[slot] = { available: false, reason: "This field was unavailable when the group was held. Replace this group after the field loads.", totalN: group.reportCount, matchedN: null, rows: [], offset: Number(message.offset) || 0, hasMore: false };
+        return;
+      }
+      const result = captureAnalysisSession({ requestedEventIds: group.eventIds,
+        encounterEvidenceMode: group.provenance && group.provenance.encounterEvidenceMode || "all",
+        inspection: { domainKey: domain, rowKey: rowKey, offset: message.offset, limit: message.limit } });
+      const expected = domain === "coverage" ? frozen[rowKey] : rowKey === "__unknown__" ? frozen.distribution.unknownN
+        : (frozen.distribution.rows.find(function (row) { return String(row.key) === rowKey; }) || { count: 0 }).count;
+      if (expected !== result.inspection.matchedN) throw new Error("The current field index differs from the held summary. Replace this group before inspecting it.");
+      groups[slot] = result.inspection;
+    });
+    return { title: rowKey === "__unknown__" ? "Unknown / not indexed" : rowKey, unit: "catalog report representations", groups: groups,
+      notes: ["Exact members of the held report groups. Reports may share sources or describe the same incident. Open a preserved report to inspect its original fields."] };
   }
 
   function captureAnalysisSession(message) {
@@ -1775,6 +1813,10 @@
     const domains = ["source", "craft", "being", "abduction", "year", "calendarMonth", "weekday", "timeOfDay", "country", "macroregion",
       "adminRegion", "reportType", "datePrecision", "locationPrecision", "craftConfidence", "color", "duration", "witnessCount"];
     const maps = {}, known = {}, ids = [], seen = new Set();
+    const inspection = message.inspection || null, inspectionRows = [];
+    let inspectionMatches = 0, inspectionCategories = null;
+    const inspectionOffset = inspection ? Math.max(0, Math.floor(Number(inspection.offset) || 0)) : 0;
+    const inspectionLimit = inspection ? Math.max(1, Math.min(100, Math.floor(Number(inspection.limit) || 25))) : 25;
     domains.forEach(function (domain) { maps[domain] = new Map(); known[domain] = 0; });
     const summary = { reportN: 0, mappedN: 0, unmappedN: 0, datedN: 0, undatedN: 0, distributions: {} };
     const api = encounterEvidenceReady ? ensureEncounterApi() : null;
@@ -1795,6 +1837,7 @@
     }
     function add(domain, key, label) {
       key = knownKey(key); if (!key) return false;
+      if (inspectionCategories && domain === inspection.domainKey) inspectionCategories.add(key);
       const map = maps[domain], entry = map.get(key) || { key: key, label: label || key, count: 0 };
       entry.count += 1; map.set(entry.key, entry); return true;
     }
@@ -1857,6 +1900,7 @@
       const id = String(row.eventId);
       if (seen.has(id) || wanted && !wanted.has(id)) return;
       if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
+      if (inspection) inspectionCategories = new Set();
       seen.add(id); ids.push(id); summary.reportN += 1;
       if (row.mapped) summary.mappedN += 1; else summary.unmappedN += 1;
       const date = row.dateStartOrdinal == null ? row.sortOrdinal : row.dateStartOrdinal;
@@ -1877,6 +1921,21 @@
           add("abduction", ["", "source_reported", "narrative_reported", "ambiguous"][code], api.abductionLabel(code)); known.abduction += 1;
         }
       }
+      if (inspection) {
+        const dated = Number.isFinite(date) && row.datePrecision && row.datePrecision !== "unknown" && row.encounterOccurrenceDateExcluded !== true;
+        const matches = inspection.domainKey === "coverage" ? ({ mappedN: !!row.mapped, unmappedN: !row.mapped, datedN: !!dated, undatedN: !dated })[inspection.rowKey]
+          : inspection.rowKey === "__unknown__" ? inspectionCategories.size === 0 : inspectionCategories.has(String(inspection.rowKey));
+        if (matches) {
+          if (inspectionMatches >= inspectionOffset && inspectionRows.length < inspectionLimit) {
+            const civil = stats.civilFromOrdinal(date), dateLabel = civil ? String(civil.year).padStart(4, "0") + "-" + String(civil.month).padStart(2, "0") + "-" + String(civil.day).padStart(2, "0") : "Date unrecorded";
+            inspectionRows.push({ id: id, eventIds: [id], label: [row.type || row.craftType, row.source].filter(Boolean).join(" · ") || "Catalog report " + id,
+              date: row.encounterOccurrenceDateExcluded === true ? "Occurrence date withheld" : dateLabel,
+              location: [knownKey(row.adminRegion), knownKey(row.country)].filter(Boolean).join(", ") || "Location unrecorded", source: row.source,
+              detail: "Catalog report " + id + " · " + (row.datePrecision || "unknown date precision") });
+          }
+          inspectionMatches += 1;
+        }
+      }
     }
     if (matched) forEachMatchedAnalysisRow(matched, collect); else forEachAnalysisRow(collect);
     if (wanted && ids.length !== wanted.size) throw new Error("Some selected report IDs are not in the current catalog. Refresh the source selection.");
@@ -1886,7 +1945,8 @@
         eligibleN: known[domain], unknownN: ids.length - known[domain], multiLabel: domain === "being" || domain === "color",
       };
     });
-    return { eventIds: ids, summary: summary, unit: "catalog_report_representations", encounterEvidenceMode: mode };
+    return { eventIds: ids, summary: summary, unit: "catalog_report_representations", encounterEvidenceMode: mode,
+      inspection: inspection ? { totalN: ids.length, matchedN: inspectionMatches, rows: inspectionRows, offset: inspectionOffset, hasMore: inspectionOffset + inspectionRows.length < inspectionMatches } : null };
   }
 
   function spatialReadinessFromManifest(manifest) {
@@ -5203,6 +5263,12 @@
             error: error && error.message ? error.message : String(error),
           });
         });
+        return;
+      }
+      if (message.type === "inspectAnalysisSessionEvidence") {
+        inspectAnalysisSessionEvidence(message).then(function (result) {
+          self.postMessage({ type: "analysisSessionEvidenceInspected", requestId: message.requestId || "", evidenceSignature: message.evidenceSignature, result: result });
+        }).catch(function (error) { self.postMessage({ type: "catalogFacetWorkerError", requestId: message.requestId || "", error: error && error.message || String(error) }); });
         return;
       }
       if (message.type === "computeAnalysisSessionEvidence") {

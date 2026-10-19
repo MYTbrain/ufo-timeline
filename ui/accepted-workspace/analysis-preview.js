@@ -204,7 +204,8 @@
       if (filters.hideLowPrecision) parts.push("Low-precision locations hidden");
       const updating = !!accepted && !!current && signature(accepted) !== signature(current);
       cohort.dataset.updating = String(updating);
-      setText(cohort, (updating ? "Updating filters. Currently displayed cohort: " : "Current cohort: ") + parts.filter(Boolean).join(" · ") + ".");
+      const comparingHeld = panel.getAttribute("data-session-mode") === "compare";
+      setText(cohort, (comparingHeld ? "Last current-report calculation (not the held A/B chart population): " : updating ? "Updating filters. Currently displayed cohort: " : "Current cohort: ") + parts.filter(Boolean).join(" · ") + ".");
 
       // Label deferred chart preparation honestly, without inserting chart data or changing gates.
       const geography = result.geography || {};
