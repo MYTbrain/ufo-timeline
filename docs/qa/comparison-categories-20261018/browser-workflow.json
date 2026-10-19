@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "preview": "https://analysis-groups-20261018.ufo-timeline.pages.dev/#analysis-section-craft",
+  "runtimeSource": "50a6e9f",
+  "deployment": "32087981-4c3e-4fe2-bcbb-832d0570dfa5",
+  "A": {
+    "from": "1973-08-01",
+    "to": "1974-01-31",
+    "reports": 1310
+  },
+  "B": {
+    "from": "1989-11-01",
+    "to": "1990-04-30",
+    "reports": 519
+  },
+  "craftTriangle": {
+    "A": 43,
+    "B": 77
+  },
+  "geographyIndexed": {
+    "A": 1190,
+    "B": 458
+  },
+  "sourceClockIndexed": {
+    "A": 779,
+    "B": 448
+  },
+  "beingIndexed": {
+    "A": 63,
+    "B": 16
+  },
+  "automaticComparisonAfterB": true,
+  "categoryNavigationPreservesGroups": true,
+  "currentReportsRestoresOrdinaryCharts": true,
+  "optionalPreparationCompletesBeforeCapture": true,
+  "phoneViewport": {
+    "requestedWidth": 390,
+    "height": 844,
+    "documentClientWidth": 375,
+    "documentScrollWidth": 375,
+    "comparisonScrollWidth": 303,
+    "overflow": false
+  },
+  "consoleErrors": [],
+  "screenshots": [
+    "craft-comparison-desktop.png",
+    "craft-comparison-phone.png"
+  ],
+  "productionUnchanged": "16443086-c630-41d8-a793-92a0243a76f6",
+  "retainedRollbackDesignation": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+  "newProjectArtifactsAbove100MiB": [],
+  "approximateProjectGrowth": "under 2 MiB; single stage refreshed in place",
+  "existingOptionalBrowserCacheMaximumNewCompressedBytes": 22253017,
+  "newCorpusOrReleaseCopies": false,
+  "supersededLargeLocalArtifacts": [],
+  "cleanup": "None for this batch; protected data and sole stage retained."
+}

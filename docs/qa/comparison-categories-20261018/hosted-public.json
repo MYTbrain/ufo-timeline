@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "url": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+  "runtime_source": "50a6e9f",
+  "deployment_prefix": "32087981",
+  "pages_tree_sha256": "b866fda19aa78acbd209b586e88811e204f6b39d62a7121bb3d54374208daf26",
+  "method": "Exact changed-file byte verification plus unchanged-file inheritance from prior complete verification",
+  "base_receipt": "../search-20261018/hosted-public.json",
+  "base_source": "e85c23c",
+  "base_public_objects_verified": 212,
+  "unchanged_public_objects": 205,
+  "changed_public_objects_verified": [
+    {
+      "path": "analysis_session.css",
+      "bytes": 13829,
+      "sha256": "8131d97f4de50384d8d448f087b9a85b12a254ae3b3417205770ab17935ac08e",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session.js",
+      "bytes": 12612,
+      "sha256": "063229a2bf4b842bcecafbf0bf7f64b1a17fd073d664f997cea2cf23bd6637e0",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_view.js",
+      "bytes": 31807,
+      "sha256": "cadff89ec52d69b5ab3982295aecdb684e42bdbe1d9af8af62aaff7930e93677",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "app.js",
+      "bytes": 1497956,
+      "sha256": "7fe4433487cb41b165328d326793a043ff05716213f94ebc1c7acd1af1f79089",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 284199,
+      "sha256": "498aba848ce2590f1dc834beb876ba2953d4f20608b7cc877d0e6c9f6c2d7a4d",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 167504,
+      "sha256": "8507c642845da77df76a270d4e44154bbbd5e6e18a211b37d484cd94a417bf13",
+      "passed": true,
+      "provider_transformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 14736,
+      "sha256": "331d9e4d12115ebb2314a063a8d9a1c7f9744f8fcf98057bc1e24716fc925168",
+      "passed": true,
+      "provider_transformation": null
+    }
+  ],
+  "immutable_uploads_unchanged": 105,
+  "deployment": "32087981-4c3e-4fe2-bcbb-832d0570dfa5"
+}
