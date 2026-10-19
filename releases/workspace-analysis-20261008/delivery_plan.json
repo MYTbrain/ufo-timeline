@@ -116,8 +116,8 @@
     {
       "path": "analysis_overview.css",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_overview.css",
-      "bytes": 12677,
-      "sha256": "a3fd93c56c3bf86a299eb482a3dfd705ebade6eb36f3e52c8fb0f4c92e79f842",
+      "bytes": 13171,
+      "sha256": "f49feac844be242601a3854464406471db9aacbf9e2b4986163d5f455834ebeb",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -132,8 +132,8 @@
     {
       "path": "analysis_overview_view.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_overview_view.js",
-      "bytes": 25407,
-      "sha256": "ef7b59f7ed46555274a9eda35b1678a28b0ef93e8676a42e3c1b48324d41af03",
+      "bytes": 25699,
+      "sha256": "48f392bf5e13d3c363072686761617e0b0a8a1cc2a6b25752733a338d2d21786",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1778,8 +1778,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "f376478528433d8cda017e09b52568638d28e09490be4861f347646e85b9cca5",
-  "pages_total_bytes": 40960298,
+  "pages_tree_sha256": "fa82251b973bacd4c9a77360ef23dc9ad4ca4ca3cb8702cb8d632b83a999ca37",
+  "pages_total_bytes": 40961084,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -4947,9 +4947,9 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 58610,
-    "existing_stage_bytes": 40901688,
-    "c_free_bytes_before_stage": 100333703168,
+    "approximate_net_local_growth_bytes": 786,
+    "existing_stage_bytes": 40960298,
+    "c_free_bytes_before_stage": 100316049408,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "16443086-c630-41d8-a793-92a0243a76f6",
