@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "url": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+  "runtimeSource": "8823b42",
+  "deploymentPrefix": "15fcf057",
+  "pagesTreeSha256": "9091bf5700efae7e0e6dfe2b41313d7c1eef3730c78d3a328efa67f2ee0ad42c",
+  "committedRuntimeFilesVerified": 216,
+  "publicObjects": 214,
+  "method": "Exact changed-file verification and unchanged-file hash inheritance from prior complete proof",
+  "baselineReceipt": "../comparison-categories-20261018/hosted-public.json",
+  "baselineSource": "50a6e9f",
+  "unchangedPublicObjects": 206,
+  "changedPublicObjects": [
+    {
+      "path": "analysis_session.css",
+      "bytes": 16526,
+      "sha256": "dcbd163937099f68dc2a6626c319f37e3d48b58e98945936e52939be77bd6ba6",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session.js",
+      "bytes": 14994,
+      "sha256": "19861d5b657a80ad77990765edce73ed015a932950072bb2a5d3a786e7c6d8de",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_comparisons.js",
+      "bytes": 26125,
+      "sha256": "230ab79ffe3e2a303e3a4518f1b70da3b766fda78767c0d99c82c4b72837362a",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_context.js",
+      "bytes": 29811,
+      "sha256": "146e998a94e194cc55894984e2ab30af59a2d91f9bb7689457df0a2b1430adcb",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "analysis_session_view.js",
+      "bytes": 47272,
+      "sha256": "4530f81a395a1348dbb0f30b48e735d0a499c3a860894b54b01983f6f0a3ea02",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "app.js",
+      "bytes": 1502624,
+      "sha256": "fd0cdf723429cd259d89ad09e7086ad4ca7be986b17b86939e762c1a51cef408",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 293617,
+      "sha256": "f34b8f1809984628dd59037c0b6511057aeddfbd3f7f6a97bd58620d6a9535d7",
+      "passed": true,
+      "provider_transformation": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 167494,
+      "sha256": "be67a51210c72a8ee87bf0a5457c277bd7ff0124869193706c4eda295765570a",
+      "passed": true,
+      "provider_transformation": {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    }
+  ],
+  "immutableObjectsUnchanged": 105,
+  "stageNetGrowthBytes": 90556,
+  "newFilesAbove100MiB": [],
+  "supersededLargeStages": [],
+  "deploymentId": "15fcf057-bd31-4d21-bb65-18fb71213f59"
+}

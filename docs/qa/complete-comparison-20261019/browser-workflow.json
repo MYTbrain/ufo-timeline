@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "runtimeSource": "8823b42",
+  "deploymentId": "15fcf057-bd31-4d21-bb65-18fb71213f59",
+  "preview": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+  "A": {
+    "from": "1973-08-01",
+    "to": "1974-01-31",
+    "reports": 1310
+  },
+  "B": {
+    "from": "1989-11-01",
+    "to": "1990-04-30",
+    "reports": 519
+  },
+  "cropRecords": {
+    "A": 27,
+    "B": 73
+  },
+  "animalRecords": {
+    "A": 17,
+    "B": 6
+  },
+  "facilityEligible": {
+    "A": 336,
+    "B": 142
+  },
+  "qualifiedSpatialPoints": {
+    "A": 336,
+    "B": 142
+  },
+  "evidenceExactDates": {
+    "A": 1286,
+    "B": 519
+  },
+  "withheldSourceOccurrenceDates": {
+    "A": 24,
+    "B": 0
+  },
+  "collectionDirectMaterialsIndexed": {
+    "A": 0,
+    "B": 0
+  },
+  "collectionSensitivityMaterialsIndexed": {
+    "A": 2,
+    "B": 0
+  },
+  "alternateCelestialSettings": {
+    "sourceDomain": "crops",
+    "planet": "mars",
+    "partner": "venus",
+    "zodiac": "tropical",
+    "orb": 5,
+    "nuclearWindowDays": 7,
+    "nuclearRadiusKm": 100,
+    "phaseEligible": {
+      "A": 11,
+      "B": 9
+    },
+    "sharedSettingsApplied": true,
+    "planetaryAndNuclearMeasuresVerified": true
+  },
+  "currentReportsRestoredOrdinaryCharts": true,
+  "phoneLayout": {
+    "requestedWidth": 390,
+    "height": 844,
+    "clientWidth": 375,
+    "documentScrollWidth": 375,
+    "comparisonScrollWidth": 303,
+    "horizontalOverflow": false,
+    "viewportReset": true
+  },
+  "consoleErrors": [],
+  "proof": [
+    "comparison-desktop.png",
+    "comparison-phone.png"
+  ],
+  "productionUnchanged": "16443086-c630-41d8-a793-92a0243a76f6",
+  "retainedRollbackDesignation": "b4e04dc8-4605-486e-bdbc-174acd3ca37e",
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 90556,
+    "approximateProjectGrowth": "under3MiB including source, tests, stage and QA",
+    "newFilesAbove100MiB": [],
+    "corpusOrDatabaseCopied": false,
+    "immutableR2ObjectsUnchanged": 105,
+    "supersededLargeStages": [],
+    "cleanupProposed": "None; single stage refreshed in place, production and rollback retained, protected unique data unchanged"
+  }
+}
