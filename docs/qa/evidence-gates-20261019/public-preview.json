@@ -1,0 +1,174 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-19T23:21:37.596398+00:00",
+  "previewUrl": "https://5e423cb2.ufo-timeline.pages.dev",
+  "alias": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+  "source": "e95e07cc9c510cf2c911e925720ddce327455f0b",
+  "runtimeImplementationSource": "70e0f800385e4ffb3dbdf0a3e41649550ed35b0b",
+  "underlyingReadinessImplementationSource": "cf150804a2b65de384678cc032172a0e0fb6f120",
+  "priorPolishImplementationSource": "72a5786b0b8cc2de4754cdddac4c7a8ae820c34b",
+  "previousSource": "52fb30efa25b2ad5863435aba1f7fa3e05e1f18e",
+  "pagesTreeSha256": "ab9002e869cef49e449b698ec8633c85642599cf0b9b99f7da4f8ce2b9a7a728",
+  "runtimeFilesVerifiedAgainstCommittedBlobsAndStage": 225,
+  "publicFiles": 223,
+  "changedPublicFilesVerified": [
+    {
+      "path": "analysis_readiness_view.js",
+      "bytes": 28852,
+      "sha256": "e5bddb92189727a4dd92b8a24dbe635a6ae117c8e526b3d0a93cb8edbc9fe114"
+    },
+    {
+      "path": "index.html",
+      "bytes": 167779,
+      "sha256": "f3ad3773c263d69db99358c5fcfa358035f003b82dd4881fd79c5f4612724702"
+    }
+  ],
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "unchangedPublicFilesInherited": 221,
+  "priorPreviewUrl": "https://c7ad79b6.ufo-timeline.pages.dev",
+  "inheritedPreviewVerification": {
+    "passed": true,
+    "observedUtc": "2026-10-19T23:18:38.392530+00:00",
+    "previewUrl": "https://c7ad79b6.ufo-timeline.pages.dev",
+    "alias": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+    "source": "52fb30efa25b2ad5863435aba1f7fa3e05e1f18e",
+    "runtimeImplementationSource": "72a5786b0b8cc2de4754cdddac4c7a8ae820c34b",
+    "underlyingReadinessImplementationSource": "cf150804a2b65de384678cc032172a0e0fb6f120",
+    "previousSource": "6987b51ee2c07544352d2fa6e23bf7e95e5903fc",
+    "pagesTreeSha256": "0ed1d016ca681132c6af9feabd9912fb8a328f52b5a41dbd4ecc9ffeb876d354",
+    "runtimeFilesVerifiedAgainstCommittedBlobsAndStage": 225,
+    "publicFiles": 223,
+    "changedPublicFilesVerified": [
+      {
+        "path": "analysis_readiness.css",
+        "bytes": 17068,
+        "sha256": "1b6547eec3c06ae8c8b80b86d2c001ff86c90297ad02da21b3a66cc258288da4"
+      },
+      {
+        "path": "analysis_readiness_model.js",
+        "bytes": 14273,
+        "sha256": "dbd742b12a3b18a1114c6733eca55b1e2aeb54926ea347df08f4fc6abf6bfc4b"
+      },
+      {
+        "path": "analysis_readiness_view.js",
+        "bytes": 28498,
+        "sha256": "9d3b25523be8d469add9c266efd27e764fd4ae59d96bbffaf47eba788cd17390"
+      },
+      {
+        "path": "analysis_spatial.js",
+        "bytes": 124728,
+        "sha256": "eb1d1392f7cbb70bec77479dbb0e5723e4340b229ca8b51da6666cfc93fdaafa"
+      },
+      {
+        "path": "analysis_view.js",
+        "bytes": 517170,
+        "sha256": "e28c798572c0e02c2ad9fd8fdbd91f3098f002e51274e70cd855f9acaf775fe1"
+      },
+      {
+        "path": "app.js",
+        "bytes": 1508408,
+        "sha256": "5d21719d08d66c842e6f600c69a6073853e920380c16b4e4b68740487ae6ff79"
+      },
+      {
+        "path": "catalog_filter_worker.js",
+        "bytes": 304021,
+        "sha256": "3b1c011ee8ad6a78c797245ff5a8de693b36990b67e4889b9e13d21d95bc2a0f"
+      },
+      {
+        "path": "index.html",
+        "bytes": 167779,
+        "sha256": "150dcdb17ec92defbc308b1e5bbc4fce16d70c333096a537570f9bf6492bf8db"
+      },
+      {
+        "path": "ui/accepted-workspace/analysis-view-groups.js",
+        "bytes": 5491,
+        "sha256": "5efa3b594825e911728be131c3a326ce55b1332195e2dcea3bedf82a3e31c2d4"
+      }
+    ],
+    "providerTransformations": [
+      {
+        "provider": "Cloudflare Pages Analytics",
+        "inserted_bytes": 214,
+        "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+        "token": "df011473b8f34ae9a926359e4a1743e6",
+        "source_byte_hash_verified_after_exact_removal": true,
+        "path": "index.html"
+      }
+    ],
+    "unchangedPublicFilesInherited": 214,
+    "inheritedVerificationReceipt": "docs/qa/analysis-overview-visuals-20261019/public-preview.json",
+    "priorPreviewUrl": "https://1b4fbabd.ufo-timeline.pages.dev",
+    "immutableUploadsUnchanged": 105,
+    "immutableUploadBytesUnchanged": 581488622,
+    "inputPinsUnchanged": true,
+    "inheritedRuntimeObjectPinsUnchanged": true,
+    "removedRuntimePaths": [],
+    "productionUnchanged": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "storage": {
+      "corpus_copied": false,
+      "new_files_above_100MiB": [],
+      "approximate_net_local_growth_bytes": 1440,
+      "existing_stage_bytes": 41053972,
+      "c_free_bytes_before_stage": 99228868608,
+      "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+      "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
+      "rollback": "16443086-c630-41d8-a793-92a0243a76f6",
+      "superseded_staging": [],
+      "search_derivative": {
+        "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
+        "bytes": 479612933,
+        "copied_to_c": false,
+        "new_files_above_100MiB": [],
+        "purpose": "lazy keyword search only"
+      },
+      "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected.",
+      "preview_stage_total_bytes": 41055412,
+      "stage_growth_from_previous_preview_bytes": 66336,
+      "receipt_only_created_this_verification": true,
+      "c_free_bytes_at_verification": 99036905472,
+      "lifecycle": "Production remains canonical; this existing stage is the current preview candidate. Prior preview code is reproducible from 6987b51; no additional stage or corpus copy was created. No generated artifacts require deletion."
+    }
+  },
+  "inheritanceNote": "The complete preceding verified receipt is retained inline so this final incremental check does not refer to its own overwritten file. All inherited paths are byte-identical to source 52fb30e; that receipt links the earlier accepted 6987b51 proof.",
+  "immutableUploadsUnchanged": 105,
+  "immutableUploadBytesUnchanged": 581488622,
+  "inputPinsUnchanged": true,
+  "inheritedRuntimeObjectPinsUnchanged": true,
+  "removedRuntimePaths": [],
+  "productionUnchanged": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+  "storage": {
+    "corpus_copied": false,
+    "new_files_above_100MiB": [],
+    "approximate_net_local_growth_bytes": 354,
+    "existing_stage_bytes": 41055412,
+    "c_free_bytes_before_stage": 98916646912,
+    "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
+    "rollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "superseded_staging": [],
+    "search_derivative": {
+      "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
+      "bytes": 479612933,
+      "copied_to_c": false,
+      "new_files_above_100MiB": [],
+      "purpose": "lazy keyword search only"
+    },
+    "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected.",
+    "preview_stage_total_bytes": 41055766,
+    "stage_growth_from_previous_preview_bytes": 354,
+    "receipt_only_edited_this_verification": true,
+    "c_free_bytes_at_verification": 98674987008,
+    "lifecycle": "Production remains canonical and the existing stage is the current preview candidate. Prior preview source 52fb30e remains reproducible from Git. No additional stage, corpus copy, or data deletion."
+  }
+}

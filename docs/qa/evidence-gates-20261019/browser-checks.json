@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-19T23:23:17.795Z",
+  "preview": "https://5e423cb2.ufo-timeline.pages.dev/#analysis-section-context",
+  "source": "e95e07cc9c510cf2c911e925720ddce327455f0b",
+  "browser": "In-app browser",
+  "scope": {
+    "dateRange": "All Time",
+    "activeReports": 334511,
+    "activeQualifiedEndpoints": 21110,
+    "filters": "Existing default 23 report types, exact dates; release inventory remains separate"
+  },
+  "checks": {
+    "startupLoadingCoverRetained": true,
+    "lanes": 11,
+    "families": 5,
+    "markerSensitivityLane": {
+      "eligibleRecords": 427,
+      "catalogRecords": 7745,
+      "blockingChecks": 0,
+      "secondaryDetailsInitiallyClosed": true
+    },
+    "strictCrop": {
+      "eligibleUniqueClusters": 1,
+      "catalogRecords": 7745,
+      "firstClusterMinimum": 25,
+      "balancedCohortMinimum": 100,
+      "recordedSourceFamilies": 2,
+      "qualifyingMacroregions": 0,
+      "largestSourceFamilyShare": 1,
+      "largestMacroregionShare": 1,
+      "maximumShare": 0.6,
+      "additionalReleaseNotesInitiallyClosed": true
+    },
+    "strictAnimals": {
+      "eligibleUniqueClusters": 0,
+      "catalogRecords": 1184,
+      "concentration": "Not measurable: 0 clusters",
+      "dateColumnUsesJointDefinedCheck": true
+    },
+    "sharedFacilities": {
+      "qualified": 70,
+      "inventory": 1800,
+      "duplicateInventoryWarning": true
+    },
+    "claimedSites": {
+      "inferenceEligible": 0,
+      "descriptiveInventory": 11
+    },
+    "relationships": {
+      "associationEligible": 0,
+      "reconciled": 1320,
+      "inventory": 1804,
+      "nativeLineageNavigation": true
+    },
+    "fullMatrix": {
+      "rows": 11,
+      "lazyDisclosure": true,
+      "contextOnlyChecksRetained": true
+    },
+    "typedDetails": {
+      "strictCropGateDetails": 3,
+      "policiesAndHashesVisible": true
+    },
+    "keyboard": {
+      "arrowKeysSelectAndFocusMatchingLane": true
+    },
+    "responsive": {
+      "desktop": {
+        "viewportWidth": 1265,
+        "viewportHeight": 720,
+        "documentClientWidth": 1265,
+        "documentScrollWidth": 1265
+      },
+      "phone": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentClientWidth": 375,
+        "documentScrollWidth": 375,
+        "matrixContainerWidth": 262,
+        "matrixScrollWidth": 1050,
+        "matrixOverflowX": "auto",
+        "familyAndLaneSelectorsWork": true
+      },
+      "viewportReset": true
+    },
+    "consoleErrors": 0
+  },
+  "verificationScope": "Final source inspected on desktop and phone. Facility, claimed-site, relationship navigation and original Date mapping checks also observed on c7ad79b6; subsequent change only folded duplicate release notes. Those paths remain covered by final-source integration tests.",
+  "screenshots": [
+    "desktop-strict-readiness.png",
+    "desktop-marker-readiness.png",
+    "phone-readiness.png"
+  ]
+}
