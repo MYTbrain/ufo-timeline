@@ -182,7 +182,11 @@
       if (lane.retention?.status === "ready") drawRetention(panel, lane.retention, lane.status, "Lane eligibility recorded in the release");
       (lane.notes || []).forEach(value => note(panel, value, "analysis-readiness-lane-policy"));
       const milestones = strictMilestones(lane); if (milestones) panel.appendChild(milestones);
-      if (lane.reasons?.length) note(panel, lane.reasons.join(" · "), "analysis-readiness-lane-reasons");
+      const reasons = Array.from(new Set(lane.reasons || []));
+      if (reasons.length) {
+        if (lane.actualBlockedGates?.length) panel.appendChild(disclosure(lane.key + ":release-notes", "Additional release notes · " + number(reasons.length), parent => note(parent, reasons.join(" · "), "analysis-readiness-lane-reasons"), "analysis-readiness-release-notes"));
+        else note(panel, reasons.join(" · "), "analysis-readiness-lane-reasons");
+      }
       const blockers = lane.actualBlockedGates || [], unassessed = [...(lane.unassessedGates || []), ...(lane.unavailableGates || [])], missing = lane.missingDefinitionGates || [];
       if (blockers.length || lane.status === "blocked") issueList(panel, "Failed defined checks", blockers, "blocked", "The output is blocked, but this matrix supplies no failing typed test to diagnose.");
       else { const clear = node("p", "analysis-readiness-no-blockers"); clear.append(node("b", "", "✓"), node("span", "", "No recorded blocking checks for this lane")); panel.appendChild(clear); }

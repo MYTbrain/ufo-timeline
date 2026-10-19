@@ -29,7 +29,7 @@ const strictAudit = { minimumStrictClusters: 25, eligibleUnit: "clusters", inven
   policy: { minimumStrictUniqueClusters: 100, minimumSourceFamilies: 2, minimumMacroregions: 2, minimumClustersPerMacroregion: 25, maximumSourceFamilyOrMacroregionShare: .6 } } };
 const source = [
   { key: "ufoCraftPoints", label: "Qualified UFO report points", status: "ready_inferential", eligibleN: 33800, totalN: 702893, reasons: ["First explicit reason", "Second explicit reason"], gates: [gate("source_coordinates", 702893, 582877, "ready_inferential")] },
-  { key: "crop_strict", label: "Strict crop association", status: "blocked", eligibleN: 1, totalN: 7745, evidenceAudit: strictAudit, gates: strictGates },
+  { key: "crop_strict", label: "Strict crop association", status: "blocked", eligibleN: 1, totalN: 7745, evidenceAudit: strictAudit, reasons: ["Joint source review not met", "More clusters required", "Joint source review not met"], gates: strictGates },
   { key: "cropBounded", label: "Bounded crop markers", status: "ready_sensitivity", eligibleN: 427, totalN: 7745, evidenceAudit: { ...strictAudit, eligibleUnit: "records" }, gates: [gate("crop_bounded_marker_lane", 7745, 427, "ready_sensitivity"), ...strictGates.map(value => ({ ...value, applicableToLane: false }))] },
   { key: "cropCircles", label: "Crop marker aggregate", status: "ready_sensitivity", eligibleN: 3652, totalN: 7745, gates: [] },
   { key: "militaryFacilities", label: "Military facilities", status: "limited", eligibleN: 70, totalN: 1800, gates: [gate("facility_inferential_markers", 1800, 70, "limited")] },
@@ -59,6 +59,8 @@ assert.match(inspector.textContent, /Strict cluster minimum 1 \/ 25/); assert.ma
 assert.deepEqual(cls(inspector, "analysis-readiness-milestone-track").map(el => el.children[0].style.width), ["4%", "1%"], "strict cluster counts are compared with the two actual typed policy targets");
 assert.match(inspector.textContent, /Recorded source families 2 · minimum 2/); assert.match(inspector.textContent, /Macroregions with ≥25 clusters 0 · minimum 2/); assert.match(inspector.textContent, /Largest source-family share 100.0% · maximum 60%/); assert.match(inspector.textContent, /Largest macroregion share 100.0% · maximum 60%/);
 assert.match(inspector.textContent, /meeting one count target does not satisfy the other evidence requirements/);
+const releaseNotes = cls(inspector, "analysis-readiness-release-notes")[0]; assert.equal(releaseNotes.open, false); assert.match(releaseNotes.textContent, /Additional release notes · 2/); assert.equal(cls(inspector, "analysis-readiness-lane-reasons").length, 0, "blocked lanes keep repeated release-level reasons out of the default inspector");
+releaseNotes.open = true; await releaseNotes.dispatchEvent({ type: "toggle" }); assert.equal(cls(releaseNotes, "analysis-readiness-lane-reasons")[0].textContent, "Joint source review not met · More clusters required", "the disclosure preserves each distinct exact reason once");
 assert.equal(inspector.children.filter(el => String(el.className).startsWith("analysis-readiness-retention")).length, 0, "unique clusters divided by catalog records is never drawn as a lane-retention bar");
 assert.match(inspector.textContent, /Failed defined checks · 2/); assert.match(inspector.textContent, /1 \/ 1/);
 assert.ok(cls(inspector, "analysis-readiness-retention").some(el => String(el.className).includes("is-blocked") && el.textContent.trim() === "1 / 1"), "a 1/1 recorded gate ratio remains visibly blocked when the required minimum is unmet");
