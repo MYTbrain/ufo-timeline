@@ -89,7 +89,7 @@
     context: [
       {
         key: "readiness",
-        label: "Cross-domain readiness",
+        label: "Dataset readiness",
         anchorIds: ["analysis-cross-domain-readiness-chart"],
         rootSelectors: [".analysis-context-readiness-card"],
       },

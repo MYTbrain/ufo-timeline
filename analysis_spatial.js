@@ -2207,6 +2207,8 @@
       };
       const laneCounts = value.laneCounts || value.lane_counts || value.details || null;
       if (laneCounts && typeof laneCounts === "object") row.laneCounts = Object.assign({}, laneCounts);
+      if (value.evidenceAudit && typeof value.evidenceAudit === "object") row.evidenceAudit = Object.assign({}, value.evidenceAudit);
+      if (typeof value.laneKey === "string") row.laneKey = value.laneKey;
       rows.push(row);
     });
     return rows;

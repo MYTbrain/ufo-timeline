@@ -6,6 +6,7 @@
   const PYTHON_ORDINAL_UNIX_EPOCH = 719163;
   const ANALYSIS_CACHE_LIMIT = 12;
   const ANALYSIS_RUNTIME_CACHE_KEY = "2026-10-18-encounter-quality-v1";
+  const ANALYSIS_SPATIAL_RUNTIME_CACHE_KEY = "2026-10-19-evidence-readiness-v1";
   const SOURCE_COORDINATE_VALUES = new Set([
     "raw_latlong", "location_coordinates", "source_coordinates", "source-provided", "source_provided",
   ]);
@@ -200,7 +201,7 @@
   function ensureAnalysisSpatial() {
     if (analysisSpatialApi && typeof analysisSpatialApi.computeSpatialAnalysis === "function") return analysisSpatialApi;
     if (typeof importScripts === "function") {
-      importScripts("./analysis_spatial.js?v=" + ANALYSIS_RUNTIME_CACHE_KEY);
+      importScripts("./analysis_spatial.js?v=" + ANALYSIS_SPATIAL_RUNTIME_CACHE_KEY);
       analysisSpatialApi = self.UfoAnalysisSpatial || null;
     }
     if (!analysisSpatialApi || typeof analysisSpatialApi.computeSpatialAnalysis !== "function") {
@@ -1978,6 +1979,8 @@
         failedN: Math.max(0, input - passed),
         unknownN: 0,
         denominatorLabel: denominatorLabel || "records entering this gate",
+        inputUnit: "report_markers",
+        passedUnit: "report_markers",
         reasonCodes: Array.isArray(reasonCodes) ? reasonCodes.slice() : [],
         policyId: policyId || "analysis_v2_2_evidence_gate",
         evidenceHash: String(hashes.ufoPointNeighbors || ""),
@@ -2010,15 +2013,46 @@
     const sourceGates = function (sourceKey) {
       const readiness = manifest && manifest.sources && manifest.sources[sourceKey] &&
         manifest.sources[sourceKey].readiness;
+      const units = {
+        crop_exact_site_formation_date: ["catalog_records", "location_date_clusters"],
+        animal_exact_site_reviewed: ["catalog_records", "location_date_clusters"],
+        crop_strict_balanced_cohort: ["location_date_clusters", "location_date_clusters"],
+        animal_strict_balanced_cohort: ["location_date_clusters", "location_date_clusters"],
+        crop_strict_context_clusters: ["location_date_clusters", "location_date_clusters"],
+        animal_strict_context_clusters: ["location_date_clusters", "location_date_clusters"],
+        crop_bounded_marker_lane: ["catalog_records", "catalog_records"],
+        crop_locality_marker_lane: ["catalog_records", "catalog_records"],
+        animal_public_marker_lane: ["catalog_records", "catalog_records"],
+        facility_descriptive_inventory: ["facility_markers", "facility_markers"],
+        facility_inferential_markers: ["facility_markers", "facility_markers"],
+      };
       return Array.isArray(readiness && readiness.gates)
-        ? readiness.gates.map(function (gate) { return Object.assign({}, gate); })
+        ? readiness.gates.map(function (gate) {
+          const pair = units[String(gate.gateId || "")];
+          return Object.assign(pair ? { inputUnit: pair[0], passedUnit: pair[1] } : {}, gate);
+        })
         : [];
+    };
+    const contextEvidenceAudit = function (sourceKey, eligibleUnit) {
+      const readiness = manifest && manifest.sources && manifest.sources[sourceKey] &&
+        manifest.sources[sourceKey].readiness || {};
+      return {
+        scope: "release_inventory",
+        eligibleUnit: eligibleUnit,
+        inventoryUnit: "catalog_records",
+        minimumStrictClusters: Number.isSafeInteger(readiness.minimumEligibleRecords) ? readiness.minimumEligibleRecords : null,
+        cohortBalance: readiness.cohortBalance && typeof readiness.cohortBalance === "object" ? readiness.cohortBalance : null,
+        leadingExclusionReasons: Array.isArray(readiness.leadingExclusionReasons) ? readiness.leadingExclusionReasons.slice() : [],
+        exclusionReasonsOverlap: true,
+      };
     };
     const relationshipGates = Array.isArray(
       manifest && manifest.sources && manifest.sources.relationshipReconciliation &&
       manifest.sources.relationshipReconciliation.readiness &&
       manifest.sources.relationshipReconciliation.readiness.gates
-    ) ? manifest.sources.relationshipReconciliation.readiness.gates : [];
+    ) ? manifest.sources.relationshipReconciliation.readiness.gates.map(function (gate) {
+      return Object.assign({ inputUnit: "relationship_records", passedUnit: "relationship_records" }, gate);
+    }) : [];
     const strictContextDomain = function (kind, label, sourceKey, countKey) {
       const sourceReadiness = manifest && manifest.sources && manifest.sources[sourceKey] && manifest.sources[sourceKey].readiness || {};
       const strictGates = sourceGates(sourceKey).filter(function (gate) {
@@ -2032,6 +2066,7 @@
         passed, Number(counts[countKey] || 0), strictGates, {
           applicability: "strict_kilometer_inference",
           laneKey: kind + "_strict",
+          evidenceAudit: contextEvidenceAudit(sourceKey, "location_date_clusters"),
           evidenceHash: hashes[sourceKey === "cropContext" ? "cropContextReadiness" : "animalContextReadiness"] || "",
           releaseHash: hashes[sourceKey === "cropContext" ? "cropContextReadiness" : "animalContextReadiness"] || "",
           reasonCodes: Array.from(new Set(strictGates.reduce(function (all, gate) { return all.concat(gate.reasonCodes || []); }, []))),
@@ -2073,6 +2108,7 @@
       cropBounded: domain("cropBounded", "Crop circles — bounded markers", "ready_sensitivity",
         cropBoundedCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
           laneKey: "crop_bounded",
+          evidenceAudit: contextEvidenceAudit("cropContext", "catalog_records"),
           evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           reasonCodes: ["catalog_date_not_formation_date", "bounded_marker_uncertainty_applied"],
@@ -2080,12 +2116,14 @@
       cropLocality: domain("cropLocality", "Crop circles — locality markers", "ready_descriptive",
         cropLocalityCount, Number(counts.cropContextRecords || 0), sourceGates("cropContext"), {
           laneKey: "crop_locality",
+          evidenceAudit: contextEvidenceAudit("cropContext", "catalog_records"),
           evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           reasonCodes: ["rough_marker_lane", "not_exact_site"],
         }),
       cropCircles: domain("cropCircles", "Crop circles", "ready_sensitivity",
         cropBoundedCount + cropLocalityCount, Number(counts.cropContextRecords || 0), [], {
+          evidenceAudit: contextEvidenceAudit("cropContext", "catalog_records"),
           evidenceHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.cropContextReadiness || "",
           reasonCodes: ["bounded_and_locality_lanes_separate"],
@@ -2093,6 +2131,7 @@
       animalReports: domain("animalReports", "Animal reports — public markers", "ready_sensitivity",
         animalMarkerCount, Number(counts.animalContextRecords || 0), sourceGates("animalContext"), {
           laneKey: "animal_public_marker",
+          evidenceAudit: contextEvidenceAudit("animalContext", "catalog_records"),
           evidenceHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
           releaseHash: hashes.contextUfoNeighbors || hashes.animalContextReadiness || "",
           reasonCodes: ["public_marker_association", "origin_publisher_excluded", "not_exact_site"],
@@ -2105,6 +2144,8 @@
         failedN: Math.max(0, Number(relationship.totalN || 0) - Number(relationship.reconciledN || 0)),
         unknownN: 0,
         denominatorLabel: "relationship records",
+        inputUnit: "relationship_records",
+        passedUnit: "relationship_records",
         reasonCodes: ["inference_blocked_but_descriptive_relationships_available"],
         policyId: "relationship_reconciliation_v2_2",
         evidenceHash: String(relationship.releaseHash || ""),

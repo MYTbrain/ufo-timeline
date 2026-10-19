@@ -70,6 +70,8 @@ class WorkspaceAnalysisReleaseTests(unittest.TestCase):
         plan["pages"].extend([{"path": release.NUCLEAR_EXTENSION},
                               {"path": "data/encounters/enrichment.json.gz"},
                               {"path": "analysis_overview_visuals.js"}])
+        plan["pages"].extend({"path": path} for path in (
+            "analysis_readiness_model.js", "analysis_readiness_view.js", "analysis_readiness.css"))
         release.validate_refresh(self.previous, plan)
         for mutation, message in [
             (lambda p: p["uploads"][0].update(sha256="b" * 64), "Immutable uploads"),

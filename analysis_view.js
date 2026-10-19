@@ -128,7 +128,7 @@
     configuration_same_day_suitability: Object.freeze(["sample"]),
     configuration_coordinate_piles: Object.freeze(["sample"]),
     configuration_neighbor_support: Object.freeze(["sample"]),
-    animal_exact_site_reviewed: Object.freeze(["location", "review"]),
+    animal_exact_site_reviewed: Object.freeze(["location", "date", "review"]),
     animal_public_marker_lane: Object.freeze(["location", "date"]),
     crop_exact_site_formation_date: Object.freeze(["location", "date", "review"]),
     crop_bounded_marker_lane: Object.freeze(["location", "date"]),
@@ -1952,6 +1952,19 @@
     })[0];
   }
 
+  function readinessGateAppliesToLane(entry, domainKey) {
+    // Keep new unrecognized gates visible; only stable typed identities can
+    // establish that a requirement belongs to a different analysis lane.
+    const outsideLane = {
+      cropbounded: ["crop_exact_site_formation_date", "crop_strict_balanced_cohort", "crop_strict_context_clusters", "crop_locality_marker_lane"],
+      croplocality: ["crop_exact_site_formation_date", "crop_strict_balanced_cohort", "crop_strict_context_clusters", "crop_bounded_marker_lane"],
+      animalreports: ["animal_exact_site_reviewed", "animal_strict_balanced_cohort", "animal_strict_context_clusters"],
+      cropstrict: ["crop_bounded_marker_lane", "crop_locality_marker_lane"],
+      animalstrict: ["animal_public_marker_lane"],
+    };
+    return !asArray(outsideLane[domainKey]).includes(entry.key);
+  }
+
   function readinessMatrix(value) {
     const source = Array.isArray(value) ? value : firstArray(value, ["domains", "readiness", "rows", "items"]);
     const rows = (source.length ? source : (isObject(value) ? Object.keys(value).filter(function (key) {
@@ -1974,17 +1987,23 @@
         const reasonCodes = asArray(firstDefined(item, ["reasonCodes", "reason_codes"], [])).map(humanizeEvidenceReason).filter(Boolean);
         const gateEntries = readinessGateEntries(item);
         const domainKey = readinessDomainKey(item);
+        const applicableEntries = gateEntries.filter(function (entry) { return readinessGateAppliesToLane(entry, domainKey); });
         const cells = definitions.map(function (definition) {
           if (definition.key === "overall") {
             const outputCell = readinessCell(item, definition.key, reasonCodes);
             outputCell.value = readinessStatusLabel(outputCell.status);
             return outputCell;
           }
-          const representative = readinessRepresentativeGate(gateEntries, domainKey, definition.key);
+          const representative = readinessRepresentativeGate(applicableEntries, domainKey, definition.key);
           const cell = readinessCell(representative && representative.gate, definition.key, reasonCodes);
-          cell.gateIds = gateEntries.filter(function (entry) {
+          cell.gateIds = applicableEntries.filter(function (entry) {
             return asArray(READINESS_GATE_COLUMN_MAP[entry.key]).indexOf(definition.key) !== -1;
           }).map(function (entry) { return entry.key; });
+          if (!representative && gateEntries.some(function (entry) { return asArray(READINESS_GATE_COLUMN_MAP[entry.key]).includes(definition.key); })) {
+            cell.status = "not_applicable";
+            cell.value = "Other lane";
+            cell.reason = "The defined checks in this column belong to another analysis lane. They remain available in the complete gate details.";
+          }
           if (representative) cell.representativeGateId = representative.key;
           return cell;
         });
@@ -1993,6 +2012,7 @@
             key: entry.key,
             label: cleanText(firstDefined(entry.gate, ["label", "name"], humanizeEvidenceReason(entry.key))),
             applicability: cleanText(firstDefined(entry.gate, ["applicability"], "applicable")),
+            applicableToLane: readinessGateAppliesToLane(entry, domainKey),
             policyId: cleanText(firstDefined(entry.gate, ["policyId", "policy_id"], "No policy identifier")),
             evidenceHash: cleanText(firstDefined(entry.gate, ["evidenceHash", "evidence_hash", "releaseHash", "release_hash"], "Unavailable")),
             cell: readinessCell(entry.gate, entry.key, reasonCodes),
@@ -3080,8 +3100,8 @@
           ? (state === "error" ? "Spatial evidence could not be loaded. Select Spatial Evidence to retry."
             : (state === "loading" ? "Loading qualified point-based spatial evidence…" : "Spatial evidence artifacts ready."))
           : section === "context"
-            ? (state === "error" ? "Context point-neighborhood evidence could not be loaded. Select Context to retry."
-              : (state === "loading" ? "Loading crop, animal, and relationship evidence…" : "Context point-neighborhood evidence ready."))
+            ? (state === "error" ? "Evidence inventory could not be loaded. Select Evidence Gates to retry."
+              : (state === "loading" ? "Loading evidence inventory and relationship checks…" : "Evidence inventory loaded. Select a lane to inspect its permitted use and requirements."))
             : (state === "error" ? "Geography evidence could not be loaded. Select Geography to retry."
               : (state === "loading" ? "Loading country-level geography evidence…" : "Country-level geography evidence ready."));
         status.textContent = cleanText(messageValue, fallback);
@@ -6222,6 +6242,24 @@
       const matrix = readinessMatrix(value);
       const container = this._prepareChart(chartId, matrix.rows, summary, config.emptyMessage || "No cross-domain result is estimable. Readiness details will appear after provenance checks complete.");
       if (!container) return;
+      const readinessApi = this.documentView && this.documentView.UfoAnalysisReadinessView ||
+        (typeof globalThis !== "undefined" && globalThis.UfoAnalysisReadinessView);
+      if (chartId === "analysis-cross-domain-readiness-chart" && readinessApi && typeof readinessApi.create === "function") {
+        if (!this.readinessExplorer || this.readinessExplorerTarget !== container) {
+          if (this.readinessExplorer && typeof this.readinessExplorer.destroy === "function") this.readinessExplorer.destroy();
+          this.readinessExplorerTarget = container;
+          this.readinessExplorer = readinessApi.create(container, {
+            onOpenSection: (section) => section === "relationships"
+              ? this._openSupportingChart("analysis-relationship-readiness-chart")
+              : this._openOverviewChart(section, { source: "evidence-readiness" }),
+          });
+        }
+        this.readinessExplorer.render({ matrix: matrix, summary: summary, scope: config.scope || {
+          kind: "release_inventory", label: "Release-wide evidence inventory",
+          activeQueryReports: null, activeQualifiedEndpoints: null, runtimeInferenceEnabled: null,
+        } });
+        return;
+      }
       container.appendChild(this._element("p", "analysis-readiness-explainer", "“No gate defined” means this release has no scientifically valid typed test for that domain/dimension—not that the evidence is zero. “Blocked” means a defined test was attempted but its requirements failed. Low eligible counts are the records that survive the stated gates; they are not repaired by guessing missing dates, coordinates, provenance, or review status."));
       container.appendChild(this._element("p", "analysis-heatmap-legend", "Green = inferentially ready · blue = descriptive or sensitivity-ready · amber = limited · red = blocked · dotted gray = no gate defined · dashed gray = unavailable or not applicable"));
       const scroll = this._element("div", "analysis-heatmap-scroll");
@@ -7599,7 +7637,16 @@
         () => this._renderContextCategoryAssociations("analysis-context-category-chart", "analysis-context-category-card", data.contextAssociations, summary),
       ];
       const spatialFacilityJob = () => this._renderFacilityEvidence("analysis-facility-context-chart", data.facilities, summary, { caption: "Qualified facility-marker context evidence", defaultKind: "filter", primaryCountLabel: "Near band", comparisonCountLabel: "Comparison band", primaryCountKeys: ["nearCount", "near_count"], comparisonCountKeys: ["comparisonCount", "comparison_count"], effectLabel: "CMH odds ratio", valueKeys: ["commonOddsRatio", "common_odds_ratio", "oddsRatio", "odds_ratio"], nullValue: 1, limit: 8, emptyMessage: "Not estimable until facility precision, activity interval, and common-support gates pass." });
-      contextOverviewJobs.push(() => this._renderReadiness("analysis-cross-domain-readiness-chart", data.crossDomainReadiness, summary, { emptyMessage: "Crop and animal proximity remains not estimable until provenance, uncertainty, lineage, and sample gates pass." }));
+      contextOverviewJobs.push(() => this._renderReadiness("analysis-cross-domain-readiness-chart", data.crossDomainReadiness, summary, {
+        emptyMessage: "Crop and animal proximity remains not estimable until provenance, uncertainty, lineage, and sample gates pass.",
+        scope: {
+          kind: "release_inventory", label: "Release-wide evidence inventory",
+          activeQueryReports: data.spatialEligibilityMetadata.activeQueryReports == null ? null : data.spatialEligibilityMetadata.activeQueryReports,
+          activeQualifiedEndpoints: data.spatialEligibilityMetadata.activeQualifiedEndpoints == null ? null : data.spatialEligibilityMetadata.activeQualifiedEndpoints,
+          runtimeInferenceEnabled: typeof (payload.spatial || payload.spatialEvidence || {}).inferenceEnabled === "boolean"
+            ? (payload.spatial || payload.spatialEvidence).inferenceEnabled : null,
+        },
+      }));
       spatialJobs.push(() => {
         if (this.els.spatialStatus) this.els.spatialStatus.textContent = data.spatialStatus
           ? humanizeEvidenceReason(data.spatialStatus)
@@ -7919,6 +7966,7 @@
     }
 
     destroy() {
+      if (this.readinessExplorer && typeof this.readinessExplorer.destroy === "function") this.readinessExplorer.destroy();
       if (this.overviewExplorer && typeof this.overviewExplorer.destroy === "function") this.overviewExplorer.destroy();
       this.overviewExplorer = null;
       this._cancelRenderSequence();

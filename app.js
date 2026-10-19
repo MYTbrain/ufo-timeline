@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-overview-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-evidence-readiness-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -10653,7 +10653,7 @@
         }
         if (runtime.analysisContextEvidenceRenderPending) {
           runtime.analysisContextEvidenceRenderPending = false;
-          setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+          setAnalysisContextEvidenceSectionState("ready", "Evidence inventory loaded. Select a lane to inspect its permitted use and requirements.");
         }
       },
       onComparisonSettingsChange: function (settings) {
@@ -11819,7 +11819,7 @@
       runtime.analysisContextEvidenceWorkerReady = true;
       runtime.analysisContextEvidenceError = "";
       if (analysisResultHasContextEvidence(runtime.analysisLastResult) && !runtime.analysisContextEvidenceRenderPending) {
-        setAnalysisContextEvidenceSectionState("ready", "Context relationship and point-neighborhood evidence ready.");
+        setAnalysisContextEvidenceSectionState("ready", "Evidence inventory loaded. Select a lane to inspect its permitted use and requirements.");
       } else {
         setAnalysisContextEvidenceSectionState("loading", "Context evidence loaded; updating the selected date and filters...");
         scheduleAnalysisCompute("context evidence render pending", { immediate: true });
@@ -11827,7 +11827,7 @@
       return Promise.resolve(runtime.analysisSpatialManifest || runtime.analysisGeographyManifest);
     }
     if (runtime.analysisContextEvidencePromise) return runtime.analysisContextEvidencePromise;
-    setAnalysisContextEvidenceSectionState("loading", "Loading relationship and point-neighborhood evidence...");
+    setAnalysisContextEvidenceSectionState("loading", "Loading evidence inventory and relationship checks...");
     runtime.analysisContextEvidencePromise = Promise.all([
       ensureAnalysisRelationshipArtifact({ deferCompute: true }),
       ensureAnalysisContextSpatialArtifact({ deferCompute: true }),
