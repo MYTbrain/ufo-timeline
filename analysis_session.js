@@ -5,7 +5,13 @@
   if (root) root.UfoAnalysisSession = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
-  const DOMAINS = Object.freeze(["source", "craft", "being", "abduction"]);
+  const DOMAINS = Object.freeze(["source", "craft", "being", "abduction", "year", "calendarMonth", "weekday", "timeOfDay",
+    "country", "macroregion", "adminRegion", "reportType", "datePrecision", "locationPrecision", "craftConfidence", "color", "duration", "witnessCount"]);
+  const DOMAIN_ORDERS = Object.freeze({
+    timeOfDay: Object.freeze(["night_00_05", "morning_06_11", "afternoon_12_17", "evening_18_23"]),
+    duration: Object.freeze(["under_10_seconds", "10_59_seconds", "1_4_minutes", "5_14_minutes", "15_59_minutes", "1_5_hours", "over_5_hours"]),
+    witnessCount: Object.freeze(["one", "two", "three_to_four", "five_to_nine", "ten_to_nineteen", "twenty_to_forty_nine", "fifty_to_ninety_nine", "hundred_to_999", "thousand_plus"]),
+  });
   const COUNT_UNIT = "canonical reports; not independent incidents";
   const normalized = new WeakSet();
   function requireValue(value, message) { if (!value) throw new Error("Analysis session: " + message); }
@@ -90,7 +96,15 @@
       return { key, label, aCount, bCount, aShare, bShare, aShareOfReports, bShareOfReports,
         shareDifference: aShare === null || bShare === null ? null : aShare - bShare,
         reportShareDifference: aShareOfReports === null || bShareOfReports === null ? null : aShareOfReports - bShareOfReports };
-    }).sort((x, y) => x.label.localeCompare(y.label) || x.key.localeCompare(y.key));
+    }).sort((x, y) => {
+      if (["year", "calendarMonth", "weekday"].includes(domain) && /^\d+$/.test(x.key) && /^\d+$/.test(y.key)) return Number(x.key) - Number(y.key);
+      const order = DOMAIN_ORDERS[domain];
+      if (order) {
+        const xi = order.indexOf(x.key), yi = order.indexOf(y.key);
+        if (xi !== -1 || yi !== -1) return (xi === -1 ? order.length : xi) - (yi === -1 ? order.length : yi);
+      }
+      return x.label.localeCompare(y.label) || x.key.localeCompare(y.key);
+    });
     return { available: !!left && !!right, a: aMeta, b: bMeta, multiLabel: !!(left && left.multiLabel || right && right.multiLabel), rows,
       unknown: { aCount: aMeta.unknownN, bCount: bMeta.unknownN, aShareOfReports: ratio(aMeta.unknownN, a.reportCount), bShareOfReports: ratio(bMeta.unknownN, b.reportCount) },
       shareDenominator: "eligible reports within each group", reportShareDenominator: "all captured reports within each group" };

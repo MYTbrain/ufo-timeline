@@ -114,7 +114,7 @@ vm.runInContext(fs.readFileSync("analysis_session.js", "utf8"), context);
 vm.runInContext(fs.readFileSync("analysis_view.js", "utf8"), context);
 for (const name of ["getAnalysisFilterSnapshot", "analysisSessionNeutralFilters", "analysisWorkerFilterPayload",
   "catalogFacetWorkerFilterPayload", "analysisSessionCaptureSnapshot", "requireAnalysisSessionReady", "captureAnalysisSessionPopulation",
-  "initializeAnalysisSession", "analysisComputeCacheKey", "analysisResponseEnvelopeMatchesCurrentState", "computeAnalysisViaWorker"]) vm.runInContext(actualFunction(name), context);
+  "initializeAnalysisSession", "setAnalysisComparisonMode", "syncAnalysisComparisonWorkspace", "analysisComputeCacheKey", "analysisResponseEnvelopeMatchesCurrentState", "computeAnalysisViaWorker"]) vm.runInContext(actualFunction(name), context);
 context.initializeAnalysisSession();
 const integration = context.UfoAnalysisSessionIntegration;
 const cloneIntoApp = value => vm.runInContext("JSON.parse(" + JSON.stringify(JSON.stringify(value)) + ")", context);
@@ -154,6 +154,48 @@ const pin = integration.captureCurrent("A");
 assert.deepEqual([...posted.at(-1).filters.analysisSessionEventIds], ["0"]);
 complete(); await pin;
 assert.deepEqual([...integration.getState().groups.A.eventIds], ["0"]);
+// The toolbar captures the visible shared From/To controls, even after the
+// user has opened a held group across Analysis. The API's captureCurrent
+// above intentionally retains the frozen-selection behavior for drilldowns.
+const originalSourceMode = filters.sourceMode, originalTypeMode = filters.typeMode, originalKeyword = filters.keyword;
+const originalSources = filters.selectedSources, originalTypes = filters.selectedTypes;
+filters.sourceMode = "all"; filters.typeMode = "all"; filters.keyword = "";
+filters.selectedSources = new Set(fixture.rows.map(row => row.source));
+filters.selectedTypes = new Set(fixture.rows.map(row => row.type));
+state.lastKeywordMatches = null;
+state.timeRangeStartOrdinal = 10957; state.timeRangeEndOrdinal = 10957;
+context.regionSelectionHasActiveShapes = () => false;
+const captureFromControls = integration.captureCurrentFilters("B");
+const controlsRequest = posted.at(-1);
+assert.equal(controlsRequest.timeRangeStartOrdinal, 10957);
+assert.equal(controlsRequest.timeRangeEndOrdinal, 10957);
+assert.equal(controlsRequest.fullTimeRange, false);
+assert.equal(controlsRequest.filters.analysisSessionEventIds, undefined, "Toolbar capture must not silently reuse frozen A IDs");
+assert.equal(controlsRequest.filters.keywordActive, false);
+complete(); await captureFromControls;
+assert.deepEqual([...integration.getState().groups.B.eventIds], ["later"], "Visible dates capture distinct B while A remains held");
+assert.deepEqual([...integration.getState().groups.A.eventIds], ["0"]);
+assert.deepEqual([...integration.getState().selection.eventIds], ["0"], "Holding B does not replace the user's active frozen selection");
+assert.equal(integration.getState().groups.B.scope.timeRange.startOrdinal, 10957);
+
+const changedControls = integration.captureCurrentFilters("B");
+state.timeRangeEndOrdinal = 10958;
+complete();
+await assert.rejects(changedControls, /selection changed|filters changed|source selection changed/i,
+  "A live date edit during capture is rejected even while frozen A masks the ordinary active snapshot");
+assert.deepEqual([...integration.getState().groups.B.eventIds], ["later"]);
+state.timeRangeEndOrdinal = 10957;
+const controlsChangedAfterReply = integration.captureCurrentFilters("B");
+complete(); state.timeRangeEndOrdinal = 10958;
+await assert.rejects(controlsChangedAfterReply, /selection changed|filters changed|source selection changed/i,
+  "A live date edit after the worker reply is rechecked before a captured group is committed");
+assert.deepEqual([...integration.getState().groups.B.eventIds], ["later"]);
+
+filters.sourceMode = originalSourceMode; filters.typeMode = originalTypeMode; filters.keyword = originalKeyword;
+filters.selectedSources = originalSources; filters.selectedTypes = originalTypes;
+state.lastKeywordMatches = new Set(["0"]);
+state.timeRangeStartOrdinal = 0; state.timeRangeEndOrdinal = 0;
+context.regionSelectionHasActiveShapes = () => true;
 const cancelled = integration.captureSelection("B", cloneIntoApp({ eventIds: ["later"] }));
 integration.clearAll(); complete();
 await assert.rejects(cancelled, /selection changed/);
@@ -175,6 +217,23 @@ assert.equal(timers.size, 0);
 assert.equal(listeners.get("message").size, 0);
 assert.equal(listeners.get("error").size, 0);
 assert.ok(scheduled.length >= 3);
+// Verify the production toolbar uses the visible-control capture helper,
+// rather than the API's intentionally frozen-population capture helper.
+let sessionViewConfiguration, initialSection;
+const sessionTarget = {}, comparisonTarget = {};
+context.document.getElementById = id => id === "analysis-session-panel" ? sessionTarget : id === "analysis-comparison-workspace" ? comparisonTarget : null;
+context.UfoAnalysisSessionView = { create(target, configuration) {
+  assert.equal(target, sessionTarget); sessionViewConfiguration = configuration;
+  return { setSection(section) { initialSection = section; } };
+} };
+runtime.analysisSessionStore = null;
+runtime.analysisViewController.activeSectionId = "analysis-section-geography";
+context.initializeAnalysisSession();
+assert.equal(sessionViewConfiguration.onPinCurrent, context.UfoAnalysisSessionIntegration.captureCurrentFilters);
+assert.notEqual(sessionViewConfiguration.onPinCurrent, context.UfoAnalysisSessionIntegration.captureCurrent);
+assert.equal(sessionViewConfiguration.comparisonTarget, comparisonTarget);
+assert.equal(sessionViewConfiguration.onModeChange, context.setAnalysisComparisonMode);
+assert.equal(initialSection, "geography", "A restored Analysis topic initializes the comparison in that same topic");
 runtime.catalogFacetWorkerRowsQueued = 1;
 await assert.rejects(integration.captureCurrent("A"), /complete catalog/);
 console.log("Temporary Analysis integration: exact IDs, date/search/area isolation, cache identities, missing evidence, active capture, cancellation, cleanup and map preservation passed.");

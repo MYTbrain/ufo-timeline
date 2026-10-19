@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-18-analysis-session-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-comparison-categories-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9644,7 +9644,7 @@
     return shapes;
   }
 
-  function getAnalysisFilterSnapshot() {
+  function getAnalysisFilterSnapshot(options) {
     const filters = currentFilterSelections();
     const cropStatus = contextLayerAnalysisStatus("UfoCropCircleLayer", els.overlayCropCirclesToggle);
     const animalStatus = contextLayerAnalysisStatus("UfoAnimalMutilationLayer", els.overlayAnimalMutilationsToggle);
@@ -9704,7 +9704,7 @@
     };
     const session = runtime.analysisSessionStore && runtime.analysisSessionStore.getState();
     const selection = session && session.selection;
-    if (selection) {
+    if (selection && !(options && options.currentFilters)) {
       snapshot.analysisSelection = { label: selection.label, eventIds: selection.eventIds, reportCount: selection.reportCount,
         key: selection.provenance && selection.provenance.sessionCaptureId || "session-selection",
         scope: selection.scope, provenance: selection.provenance };
@@ -9755,7 +9755,9 @@
   }
 
   async function captureAnalysisSessionPopulation(inputValue) {
-    const input = inputValue || {}, snapshot = requireAnalysisSessionReady();
+    const input = inputValue || {}, activeSnapshot = requireAnalysisSessionReady();
+    const snapshot = input.currentFilters ? getAnalysisFilterSnapshot({ currentFilters: true }) : activeSnapshot;
+    const guardSignature = analysisComputeCacheKey(activeSnapshot);
     const signature = analysisComputeCacheKey(snapshot), worker = ensureCatalogFacetWorker();
     if (!worker) throw new Error("The Analysis catalog worker is unavailable.");
     if (input.snapshot && analysisComputeCacheKey(input.snapshot) !== signature) {
@@ -9774,7 +9776,8 @@
       function failure() { finish(new Error("The temporary Analysis capture failed. Try again.")); }
       function listener(event) {
         const message = event.data || {}; if (message.requestId !== requestId) return;
-        if (sessionGeneration !== runtime.analysisSessionCaptureGeneration || signature !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) {
+        if (sessionGeneration !== runtime.analysisSessionCaptureGeneration || guardSignature !== analysisComputeCacheKey(getAnalysisFilterSnapshot()) ||
+            input.currentFilters && signature !== analysisComputeCacheKey(getAnalysisFilterSnapshot({ currentFilters: true }))) {
           finish(new Error("The Analysis selection changed while it was being captured. Try again.")); return;
         }
         if (message.type !== "analysisSessionCaptured" || message.analysisSignature !== signature ||
@@ -9803,6 +9806,7 @@
       scope: typeof input.scope === "string" ? input.scope : Object.assign({ label: input.source || "Captured Analysis population", timeRange: snapshot.timeRange }, input.scope || {}),
       provenance: Object.assign({}, input.provenance || {}, { sessionCaptureId: requestId,
         sessionCaptureGeneration: sessionGeneration, sessionAnalysisSignature: signature,
+        sessionGuardSignature: guardSignature, sessionCaptureScope: input.currentFilters ? "current_filters" : "analysis_population",
         datasetHash: analysisCatalogDatasetHash(), capturedSnapshot: analysisSessionCaptureSnapshot(snapshot),
         source: String(input.source || "Analysis"), encounterEvidenceMode: result.encounterEvidenceMode }), summary: result.summary };
   }
@@ -9824,12 +9828,14 @@
     function requireCurrentCapture(payload) {
       const provenance = payload && payload.provenance || {};
       if (provenance.sessionCaptureGeneration !== runtime.analysisSessionCaptureGeneration ||
-          provenance.sessionAnalysisSignature !== analysisComputeCacheKey(getAnalysisFilterSnapshot())) {
+          (provenance.sessionGuardSignature || provenance.sessionAnalysisSignature) !== analysisComputeCacheKey(getAnalysisFilterSnapshot()) ||
+          provenance.sessionCaptureScope === "current_filters" && provenance.sessionAnalysisSignature !== analysisComputeCacheKey(getAnalysisFilterSnapshot({ currentFilters: true }))) {
         throw new Error("The Analysis selection changed while it was being captured. Try again.");
       }
     }
     const integration = {
       getState: function () { return store.getState(); }, subscribe: function (listener) { return store.subscribe(listener); },
+      captureCurrentFilters: async function (slot, label) { const payload = await captureAnalysisSessionPopulation({ label: label, currentFilters: true, source: "Applied dates and filters" }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureCurrent: async function (slot, label) { const payload = await captureAnalysisSessionPopulation({ label: label }); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureSelection: async function (slot, input) { const payload = await captureAnalysisSessionPopulation(input); requireCurrentCapture(payload); return store.setGroup(slot, payload); },
       captureEncounter: async function (slot, requestValue) {
@@ -9845,9 +9851,11 @@
         const payload = await captureAnalysisSessionPopulation(input);
         requireCurrentCapture(payload);
         if (!payload.eventIds.length) throw new Error("This selection contains no catalog reports.");
-        const value = store.useSelection(payload); showAnalysis(); return value;
+        const value = store.useSelection(payload);
+        if (runtime.analysisSessionView && runtime.analysisSessionView.setMode) runtime.analysisSessionView.setMode("current");
+        showAnalysis(); return value;
       },
-      useSlot: function (slot) { requireAnalysisSessionReady(); const used = store.useGroup(slot); if (used) showAnalysis(); return used; },
+      useSlot: function (slot) { requireAnalysisSessionReady(); const used = store.useGroup(slot); if (used) { if (runtime.analysisSessionView && runtime.analysisSessionView.setMode) runtime.analysisSessionView.setMode("current"); showAnalysis(); } return used; },
       clearSelection: function () { runtime.analysisSessionCaptureGeneration += 1; return store.clearSelection(); },
       clearGroup: function (slot) { runtime.analysisSessionCaptureGeneration += 1; return store.clearGroup(slot); },
       clearAll: function () { runtime.analysisSessionCaptureGeneration += 1; return store.clearAll(); },
@@ -9856,14 +9864,39 @@
     const target = document.getElementById("analysis-session-panel");
     if (target && window.UfoAnalysisSessionView && window.UfoAnalysisSessionView.create) {
       runtime.analysisSessionView = window.UfoAnalysisSessionView.create(target, { store: store,
-        onPinCurrent: integration.captureCurrent, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
+        comparisonTarget: document.getElementById("analysis-comparison-workspace"),
+        onModeChange: setAnalysisComparisonMode,
+        onPinCurrent: integration.captureCurrentFilters, onUseGroup: integration.useSlot, onReturnToFilters: integration.clearSelection,
         onClearGroup: integration.clearGroup, onClearAll: integration.clearAll, onClearSelection: integration.clearSelection,
         onOpenSection: function (section) {
           const controller = runtime.analysisViewController; if (!controller) return;
           showAnalysis(); controller.navigateToSection("analysis-section-" + section, { updateHash: true, focus: true, source: "analysis-session" });
         } });
+      const controller = runtime.analysisViewController;
+      if (controller && runtime.analysisSessionView.setSection) runtime.analysisSessionView.setSection(String(controller.activeSectionId || "overview").replace(/^analysis-section-/, "").replace(/-/g, "_"));
+      syncAnalysisComparisonWorkspace();
     }
     return store;
+  }
+
+  function setAnalysisComparisonMode(mode) {
+    runtime.analysisSessionMode = mode === "compare" ? "compare" : "current";
+    syncAnalysisComparisonWorkspace();
+  }
+
+  function syncAnalysisComparisonWorkspace() {
+    const panel = document.getElementById("analysis-panel");
+    if (!panel) return;
+    const comparing = runtime.analysisSessionMode === "compare";
+    panel.setAttribute("data-session-mode", comparing ? "compare" : "current");
+    const content = document.getElementById("analysis-content"), host = document.getElementById("analysis-comparison-workspace");
+    if (content) { content.inert = comparing || content.hidden; if (comparing) content.setAttribute("aria-hidden", "true"); else content.removeAttribute("aria-hidden"); }
+    if (host) { host.hidden = !comparing; host.inert = !comparing; }
+    const nav = document.getElementById("analysis-section-nav");
+    if (nav && nav.querySelectorAll) Array.from(nav.querySelectorAll('[role="tab"]')).forEach(function (tab) {
+      tab.setAttribute("aria-controls", comparing ? "analysis-comparison-workspace" : tab.id.replace("analysis-section-tab-", "analysis-section-"));
+      if (comparing && host && tab.getAttribute("aria-selected") === "true") host.setAttribute("aria-labelledby", tab.id);
+    });
   }
 
   function applyAnalysisMultiSelectValues(filterKey, rawValues) {
@@ -10415,6 +10448,8 @@
         return study;
       },
       onSectionActivate: function (change) {
+        if (change && runtime.analysisSessionView && runtime.analysisSessionView.setSection) runtime.analysisSessionView.setSection(change.sectionKey);
+        syncAnalysisComparisonWorkspace();
         if (change && ["comparisons", "encounters"].includes(change.sectionKey)) {
           ensureAnalysisComparisonArtifacts().catch(function () { return null; });
         }
@@ -10446,6 +10481,7 @@
         }
       },
       onRenderComplete: function () {
+        syncAnalysisComparisonWorkspace();
         if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {
           runtime.analysisTimeEvidenceLoadPending = false;
           requestAnalysisTimeEvidence();

@@ -31,7 +31,7 @@
     // Keep temporary research controls beside the shared date/filter tools.
     const sessionPanel = byId("analysis-session-panel");
     (sessionPanel || toolbar).insertAdjacentElement("afterend", workspace);
-    ["analysis-computation-status", "analysis-state-region", "analysis-content"].forEach((id) => {
+    ["analysis-comparison-workspace", "analysis-computation-status", "analysis-state-region", "analysis-content"].forEach((id) => {
       const element = byId(id);
       if (element) stage.appendChild(element);
     });
@@ -121,7 +121,7 @@
     const scope = document.createElement("details");
     scope.id = "preview-analysis-filter-scope";
     const scopeSummary = document.createElement("summary");
-    scopeSummary.textContent = "Current filters & comparison";
+    scopeSummary.textContent = "Current reports & filters";
     scope.appendChild(scopeSummary);
     const cohort = byId("preview-analysis-cohort");
     const baseline = byId("analysis-baseline-note");
@@ -199,8 +199,9 @@
 
     function revealTopicStart() {
       requestAnimationFrame(() => {
-        const active = document.querySelector('.analysis-section[aria-hidden="false"]');
-        const heading = active && active.querySelector(".analysis-section-heading");
+        const comparing = panel.getAttribute("data-session-mode") === "compare";
+        const active = comparing ? byId("analysis-comparison-workspace") : document.querySelector('.analysis-section[aria-hidden="false"]');
+        const heading = active && (comparing ? active.querySelector("h2, h3") || active : active.querySelector(".analysis-section-heading"));
         if (!heading || document.documentElement.dataset.activePrimaryView !== "analysis") return;
         const top = heading.getBoundingClientRect().top;
         const visibleTop = toolbar.getBoundingClientRect().bottom + 12;
@@ -253,8 +254,8 @@
       const accepted = controller && controller.latestMeta && controller.latestMeta.filterSnapshot;
       const time = accepted && accepted.timeRange;
       const text = result && result.summary && time
-        ? new Intl.NumberFormat().format(result.summary.activeCount) + " reports · " + (time.mode === "full" ? "All time" : [time.startIso,time.endIso].filter(Boolean).join(" to ")) + " · Filters & comparison"
-        : "Current filters & comparison";
+        ? new Intl.NumberFormat().format(result.summary.activeCount) + " reports · " + (time.mode === "full" ? "All time" : [time.startIso,time.endIso].filter(Boolean).join(" to ")) + " · Current reports & filters"
+        : "Current reports & filters";
       if (scopeSummary.textContent !== text) scopeSummary.textContent = text;
       const mobile = byId("preview-mobile-filters");
       const open = innerWidth <= 1080 && mobile ? mobile.open : document.documentElement.classList.contains("preview-analysis-filters-open");

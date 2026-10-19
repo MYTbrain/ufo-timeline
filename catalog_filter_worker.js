@@ -1653,15 +1653,86 @@
     const shapes = Array.isArray(message.areaFilterShapes) && message.areaFilterShapes.length ? message.areaFilterShapes : null;
     const lowPrecision = new Set(message.lowPrecisionValues || []), range = explicit ? null : analysisActiveRange(message);
     const matched = explicit ? null : matchedAnalysisRows(message, filters, keywordIds, null, shapes, lowPrecision);
-    const maps = { source: new Map(), craft: new Map(), being: new Map(), abduction: new Map() };
-    const known = { source: 0, craft: 0, being: 0, abduction: 0 }, ids = [], seen = new Set();
+    const domains = ["source", "craft", "being", "abduction", "year", "calendarMonth", "weekday", "timeOfDay", "country", "macroregion",
+      "adminRegion", "reportType", "datePrecision", "locationPrecision", "craftConfidence", "color", "duration", "witnessCount"];
+    const maps = {}, known = {}, ids = [], seen = new Set();
+    domains.forEach(function (domain) { maps[domain] = new Map(); known[domain] = 0; });
     const summary = { reportN: 0, mappedN: 0, unmappedN: 0, datedN: 0, undatedN: 0, distributions: {} };
     const api = encounterEvidenceReady ? ensureEncounterApi() : null;
+    const stats = ensureAnalysisStats();
+    // Capture field availability along with membership. Loading a projection
+    // later must not turn a previously unavailable frozen summary into zeroes.
+    const available = { being: Boolean(api), abduction: Boolean(api), macroregion: Boolean(analysisGeographyArtifact.loaded),
+      timeOfDay: Boolean(analysisTimeOfDayArtifact.loaded), duration: Boolean(analysisDurationArtifact.loaded),
+      color: Boolean(analysisColorArtifact.loaded), witnessCount: Boolean(analysisWitnessCountArtifact.loaded) };
+    const monthLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const weekdayLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const colorCodes = analysisColorArtifact.manifest && analysisColorArtifact.manifest.codes && analysisColorArtifact.manifest.codes.category || [];
     const mode = ["source_fields", "narrative"].includes(message.encounterEvidenceMode) ? message.encounterEvidenceMode : "all";
+    function knownKey(value) {
+      if (value == null || typeof value !== "string" && typeof value !== "number") return "";
+      const key = String(value).trim();
+      return key && !["unknown", "unavailable", "unresolved", "unparsed", "not_indexed", "not_provided", "none", "null", "undefined", "n/a", "not provided"].includes(key.toLowerCase()) ? key : "";
+    }
     function add(domain, key, label) {
-      if (!key || ["unknown", "unavailable", "not_indexed", "none"].includes(String(key).toLowerCase())) return false;
-      const map = maps[domain], entry = map.get(String(key)) || { key: String(key), label: label || String(key), count: 0 };
+      key = knownKey(key); if (!key) return false;
+      const map = maps[domain], entry = map.get(key) || { key: key, label: label || key, count: 0 };
       entry.count += 1; map.set(entry.key, entry); return true;
+    }
+    function single(domain, value, label) { if (add(domain, value, label)) known[domain] += 1; }
+    function calendar(row) {
+      if (row.encounterOccurrenceDateExcluded === true) return;
+      const precision = String(row.datePrecision || "unknown").trim().toLowerCase();
+      const ordinal = Number.isInteger(row.sortOrdinal) ? row.sortOrdinal : null;
+      const startOrdinal = Number.isInteger(row.dateStartOrdinal) ? row.dateStartOrdinal : ordinal;
+      const endOrdinal = Number.isInteger(row.dateEndOrdinal) ? row.dateEndOrdinal : ordinal;
+      const start = stats.civilFromOrdinal(startOrdinal), end = stats.civilFromOrdinal(endOrdinal);
+      // A stored interval crossing a boundary cannot be assigned to its first
+      // year/month/day merely because the catalog also has a sortable date.
+      if (!start || !end || startOrdinal > endOrdinal || !knownKey(precision) || ["decade", "century"].includes(precision)) return;
+      if (start.year === end.year) {
+        single("year", String(start.year));
+        if (precision !== "year" && start.month === end.month) single("calendarMonth", String(start.month).padStart(2, "0"), monthLabels[start.month - 1]);
+      }
+      if (precision === "exact_day" && startOrdinal === endOrdinal) {
+        const weekday = ((startOrdinal - 1) % 7 + 7) % 7;
+        single("weekday", String(weekday), weekdayLabels[weekday]);
+      }
+    }
+    function additionalFields(row) {
+      calendar(row);
+      single("reportType", row.type);
+      single("datePrecision", row.datePrecision, knownKey(row.datePrecision).replace(/_/g, " "));
+      single("locationPrecision", row.precision, knownKey(row.precision).replace(/_/g, " "));
+      single("craftConfidence", row.craftConfidence, knownKey(row.craftConfidence).replace(/_/g, " "));
+      const country = knownKey(row.analysisCountry) || knownKey(row.country) || knownKey(row.sourceCountry);
+      single("country", country);
+      if (available.macroregion) single("macroregion", row.analysisMacroregion);
+      const adminRegion = knownKey(row.adminRegion);
+      if (adminRegion) single("adminRegion", (country || "country_unspecified") + ":" + adminRegion,
+        adminRegion + " · " + (country || "country unspecified"));
+      if (available.timeOfDay && row.analysisTimeOfDayAvailable === true && stats.TIME_OF_DAY_BIN_ORDER.includes(row.analysisTimeOfDayDescriptiveBin)) {
+        single("timeOfDay", row.analysisTimeOfDayDescriptiveBin, stats.TIME_OF_DAY_BIN_LABELS[row.analysisTimeOfDayDescriptiveBin]);
+      }
+      if (available.duration && row.analysisDurationAvailable === true && stats.DURATION_BIN_ORDER.includes(row.analysisDurationDescriptiveBin)) {
+        single("duration", row.analysisDurationDescriptiveBin, stats.DURATION_BIN_LABELS[row.analysisDurationDescriptiveBin]);
+      }
+      if (available.witnessCount && row.analysisWitnessCountAvailable === true && row.analysisWitnessCountStatus === "exact_count" &&
+          Number.isInteger(row.analysisWitnessCountExactCount) && row.analysisWitnessCountExactCount > 0 && stats.WITNESS_COUNT_BIN_ORDER.includes(row.analysisWitnessCountBin)) {
+        single("witnessCount", row.analysisWitnessCountBin, stats.WITNESS_COUNT_BIN_LABELS[row.analysisWitnessCountBin]);
+      }
+      if (available.color && row.analysisColorAvailable === true && ["exact_single", "explicit_compound", "changing_known"].includes(row.analysisColorStatus)) {
+        const mask = row.analysisColorCategoryMask;
+        if (Number.isInteger(mask) && mask > 0 && mask < Math.pow(2, colorCodes.length)) {
+          const role = knownKey(row.analysisColorRole) || "role_unspecified";
+          let described = false;
+          colorCodes.forEach(function (key, bit) {
+            if (mask & (1 << bit)) described = add("color", role + ":" + key,
+              (stats.COLOR_CATEGORY_LABELS[key] || key) + " · " + role.replace(/_/g, " ")) || described;
+          });
+          if (described) known.color += 1;
+        }
+      }
     }
     function collect(row) {
       const id = String(row.eventId);
@@ -1674,6 +1745,7 @@
       else summary.undatedN += 1;
       if (add("source", row.source)) known.source += 1;
       if (add("craft", row.craftType)) known.craft += 1;
+      additionalFields(row);
       if (api && row.encounterEvidenceReady) {
         let mask = Number(row.encounterBeingMask) >>> 0;
         if (mode !== "all") mask = row.encounterEvidenceProvenanceReady
@@ -1690,9 +1762,9 @@
     if (matched) forEachMatchedAnalysisRow(matched, collect); else forEachAnalysisRow(collect);
     if (wanted && ids.length !== wanted.size) throw new Error("Some selected report IDs are not in the current catalog. Refresh the source selection.");
     Object.keys(maps).forEach(function (domain) {
-      summary.distributions[domain] = ["being", "abduction"].includes(domain) && !api ? null : {
+      summary.distributions[domain] = available[domain] === false ? null : {
         rows: Array.from(maps[domain].values()).sort(function (a, b) { return b.count - a.count || a.key.localeCompare(b.key); }),
-        eligibleN: known[domain], unknownN: ids.length - known[domain], multiLabel: domain === "being",
+        eligibleN: known[domain], unknownN: ids.length - known[domain], multiLabel: domain === "being" || domain === "color",
       };
     });
     return { eventIds: ids, summary: summary, unit: "catalog_report_representations", encounterEvidenceMode: mode };
