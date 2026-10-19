@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "preview": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+  "source": "c0ee782",
+  "groups": {
+    "A": {
+      "from": "1973-08-01",
+      "to": "1974-01-31",
+      "reports": 1310
+    },
+    "B": {
+      "from": "1989-11-01",
+      "to": "1990-04-30",
+      "reports": 519
+    }
+  },
+  "inspection": {
+    "counts": [
+      "A \u00c2\u00b7 9 matched",
+      "B \u00c2\u00b7 32 matched"
+    ],
+    "errors": [],
+    "firstRecords": [
+      {
+        "links": [
+          {
+            "label": "Source catalog / archive",
+            "url": "https://www.cropcirclecenter.com/"
+          }
+        ],
+        "text": "Reported crop formation \u00c2\u00b7 Stockton, Teeside, England\n\n1974-01-01 to 1974-12-31 \u00c2\u00b7 Stockton, Teeside, England \u00c2\u00b7 Crop Circle Center PDF catalog\n\nAccount details\nSource catalog / archive"
+      },
+      {
+        "links": [
+          {
+            "label": "Source catalog / archive",
+            "url": "https://www.cropcirclecenter.com/"
+          }
+        ],
+        "text": "Reported crop formation \u00c2\u00b7 Dilton Hollow, Wiltshire, England\n\n1974-01-01 to 1974-12-31 \u00c2\u00b7 Dilton Hollow, Wiltshire, England \u00c2\u00b7 Crop Circle Center PDF catalog\n\nAccount details\nSource catalog / archive"
+      }
+    ],
+    "mode": "Held A/B \u00c2\u00b7 descriptive",
+    "populations": [
+      "9 shown \u00c2\u00b7 27 crop-circle catalog records in this population",
+      "25 shown \u00c2\u00b7 73 crop-circle catalog records in this population"
+    ]
+  },
+  "pagination": {
+    "A": 9,
+    "B": 32,
+    "finalFocusedControl": "Close records"
+  },
+  "phone": {
+    "boardToFirstBar": 422.796875,
+    "editingOpen": false,
+    "mode": "Held A/B \u00c2\u00b7 descriptive",
+    "scrollWidth": 375,
+    "titleToFirstBar": 958.90625,
+    "width": 375
+  },
+  "previousPhoneTitleToFirstBar": 1134.359375,
+  "preservedReport": {
+    "id": "4254691545265533",
+    "location": "US 15 NEAR RICHMOND, VA, USA",
+    "source": "majestic",
+    "date": "10/18/1973"
+  },
+  "errors": [],
+  "currentReportsRestorationVerified": true,
+  "compareModeRestorationVerified": true
+}

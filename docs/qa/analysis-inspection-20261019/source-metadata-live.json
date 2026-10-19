@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "id": "cc_0de663f715cc",
+      "label": "Reported crop formation · Stockton, Teeside, England",
+      "location": "Stockton, Teeside, England",
+      "sourceUrl": "https://www.cropcirclecenter.com/",
+      "sourceMetadataStatus": "ready"
+    },
+    {
+      "id": "animal_mutilation:ami_00e09498113055380b4f341e",
+      "label": "Crosby County mutilation rumor resolved as natural death",
+      "location": "Crosby County, Texas",
+      "sourceUrl": "https://texashistory.unt.edu/ark:/67531/metapth390712/",
+      "sourceMetadataStatus": "ready"
+    }
+  ],
+  "notes": []
+}

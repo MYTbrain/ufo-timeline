@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-19T19:58:05.952102+00:00",
+  "previewUrl": "https://a9a81802.ufo-timeline.pages.dev",
+  "alias": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+  "deploymentId": "a9a81802-e9ef-499e-84c7-d70d39ff1abc",
+  "source": "c0ee782d81f264f6f9ef4d3ec2489f82efcaa138",
+  "pagesTreeSha256": "28d3bbee3f72b729a09b1ddb08ccba0830e95b627882c15b1a8adbfcf0212118",
+  "committedRuntimeFilesVerified": 218,
+  "changedPublicFilesVerified": [
+    {
+      "path": "analysis_session.css",
+      "bytes": 23710,
+      "sha256": "06e0740d54703c601392c36bde04fa6d3990ddc28a82ad2d34f2af8d5cd87fc3"
+    },
+    {
+      "path": "analysis_session.js",
+      "bytes": 20530,
+      "sha256": "7ee2b26bd61271427495ee2b847c5f2d575d6a340a0f2f32ee357d3cca58ce24"
+    },
+    {
+      "path": "analysis_session_comparisons.js",
+      "bytes": 28604,
+      "sha256": "74a599e7d85f93457d4424e6d3873fddf411637c68b3124bb25d078f036cf3d1"
+    },
+    {
+      "path": "analysis_session_inspection.js",
+      "bytes": 37437,
+      "sha256": "66350edb295a5d64431153b95266065cecbeb565534d97f06137405f5a58effb"
+    },
+    {
+      "path": "analysis_session_sources.js",
+      "bytes": 12768,
+      "sha256": "a2c5812fcf90cc9b18422402d634b2b3280245ccd55843d025f3c49725501cae"
+    },
+    {
+      "path": "analysis_session_view.js",
+      "bytes": 65732,
+      "sha256": "c65a71a48aacffb3232ad3f5131372ed7938b4a012d341e8d5d249e0c3d20e83"
+    },
+    {
+      "path": "analysis_view.js",
+      "bytes": 510280,
+      "sha256": "c08cca9cd76bc552b839aee794e4c98f6000bab4db10fe9d3b8559c3d441003b"
+    },
+    {
+      "path": "app.js",
+      "bytes": 1507684,
+      "sha256": "f14999df3084ee4573dd6e857d18e36edb82b5205ec729016ede842a462828b2"
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 299674,
+      "sha256": "d7dc82d8817c1314aebccc05f62dc367cee6f1111433e8d2ce88d9139630a0a6"
+    },
+    {
+      "path": "index.html",
+      "bytes": 167484,
+      "sha256": "f6e050f0ed5d0bcc19ebbae0d36fc3aff66b6d5b0b7f0ceb5174e7f15a0195cf"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.css",
+      "bytes": 8013,
+      "sha256": "06975e4d2a4c7826831dcb7133aae3116d4717d0c4c859301fa7cbaa9803d0d6"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 14901,
+      "sha256": "b3fddae13706b6ad53b134a3187c5598a96f06bd2065a14d572ccbb651e83961"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-preview.js",
+      "bytes": 11928,
+      "sha256": "ba9d8c3608db67154219d318c205693ea833dd09df6b055b7481741b08356f9e"
+    }
+  ],
+  "unchangedPublicFilesInherited": 204,
+  "unchangedRuntimeDataObjects": 105,
+  "productionUnchanged": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+  "netStageGrowthSinceProductionBytes": 95703,
+  "storage": {
+    "corpus_copied": false,
+    "new_files_above_100MiB": [],
+    "approximate_net_local_growth_bytes": 16497,
+    "existing_stage_bytes": 40885191,
+    "c_free_bytes_before_stage": 98221764608,
+    "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
+    "rollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "superseded_staging": [],
+    "search_derivative": {
+      "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
+      "bytes": 479612933,
+      "copied_to_c": false,
+      "new_files_above_100MiB": [],
+      "purpose": "lazy keyword search only"
+    },
+    "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected."
+  }
+}
