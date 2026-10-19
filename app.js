@@ -27283,7 +27283,7 @@
       scannedReports: complete ? catalog.length : null, totalReports: catalog.length,
       completedChunks: null, totalChunks: null, canUseSelection: complete, busy: false,
       message: complete ? "Searches preserved text and corrected catalog fields, including unmapped reports."
-        : "The search index could not be fully checked. Showing loaded-summary matches; retry to search the full text.",
+        : "The search index could not be fully checked. " + (result.error ? String(result.error) + " " : "") + "Retry to search the full text.",
       error: result.error || null });
     setSearchStatus("");
   }
