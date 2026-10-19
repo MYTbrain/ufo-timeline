@@ -1871,7 +1871,7 @@
         key,
         status: "not_evaluated",
         value: readinessStatusLabel("not_evaluated"),
-        reason: "No typed gate evaluates this dimension for the domain.",
+        reason: "No separate typed result is supplied for this dimension; it may be evaluated within a joint check.",
         reasonCodes: [],
       };
     }

@@ -72,7 +72,12 @@
     function summary(root, model) {
       const header = node("div", "analysis-readiness-heading"); header.append(node("h3", "", "What can this evidence support?"), node("p", "analysis-readiness-note", "Choose a lane to see its usable output, failed checks and missing tests.")); root.appendChild(header);
       const row = node("div", "analysis-readiness-status-summary"); row.setAttribute("aria-label", "Output status counts by analysis lane");
-      Object.keys(labels).forEach(status => { const n = model.statusCounts?.[status]; if (!Number.isFinite(n) || n <= 0) return; const chip = badge(status, number(n) + " " + labels[status].toLowerCase()); row.appendChild(chip); });
+      Object.keys(labels).forEach(status => {
+        const n = model.statusCounts?.[status]; if (!Number.isFinite(n) || n <= 0) return;
+        const noun = n === 1 ? "lane" : "lanes", descriptions = { ready_inferential: noun + " with qualified inputs", ready_sensitivity: "sensitivity " + noun,
+          ready_descriptive: "descriptive " + noun, limited: "limited " + noun, blocked: "blocked " + noun, not_applicable: noun + " marked not applicable", not_evaluated: "unassessed " + noun, data_unavailable: noun + " with unavailable results" };
+        row.appendChild(badge(status, number(n) + " " + descriptions[status]));
+      });
       root.appendChild(row); note(root, number(model.laneN) + " analysis lanes · counts summarize permitted uses, not a quality score or number of independent incidents.", "analysis-readiness-lane-count");
     }
     function picker(model, group, lane) {
@@ -177,14 +182,17 @@
       if (lane.retention?.status === "ready") drawRetention(panel, lane.retention, lane.status, "Lane eligibility recorded in the release");
       (lane.notes || []).forEach(value => note(panel, value, "analysis-readiness-lane-policy"));
       const milestones = strictMilestones(lane); if (milestones) panel.appendChild(milestones);
-      if (lane.reasons?.length) note(panel, lane.reasons.join(" "), "analysis-readiness-lane-reasons");
+      if (lane.reasons?.length) note(panel, lane.reasons.join(" · "), "analysis-readiness-lane-reasons");
       const blockers = lane.actualBlockedGates || [], unassessed = [...(lane.unassessedGates || []), ...(lane.unavailableGates || [])], missing = lane.missingDefinitionGates || [];
-      issueList(panel, "Failed defined checks", blockers, "blocked", lane.status === "blocked" ? "The output is blocked, but this matrix supplies no failing typed test to diagnose." : "No applicable defined check in this lane is marked blocked.");
+      if (blockers.length || lane.status === "blocked") issueList(panel, "Failed defined checks", blockers, "blocked", "The output is blocked, but this matrix supplies no failing typed test to diagnose.");
+      else { const clear = node("p", "analysis-readiness-no-blockers"); clear.append(node("b", "", "✓"), node("span", "", "No recorded blocking checks for this lane")); panel.appendChild(clear); }
       if (unassessed.length || missing.length) {
-        const gaps = node("div", "analysis-readiness-gaps");
-        if (unassessed.length) issueList(gaps, "Checks without an available result", unassessed, "unassessed", "");
-        if (missing.length && !lane.aggregateSummary) issueList(gaps, "No separate gate result", missing, "undefined", "");
-        panel.appendChild(gaps);
+        panel.appendChild(disclosure(lane.key + ":assessments", "Other assessment details · " + number(unassessed.length + missing.length), parent => {
+          const gaps = node("div", "analysis-readiness-gaps");
+          if (unassessed.length) issueList(gaps, "Checks without an available result", unassessed, "unassessed", "");
+          if (missing.length && !lane.aggregateSummary) issueList(gaps, "No separate gate result", missing, "undefined", "");
+          parent.appendChild(gaps);
+        }, "analysis-readiness-assessment-disclosure"));
       }
       const counted = (lane.applicableGates || lane.detailedGates || []).filter(gate => gate.retention?.status === "ready" && gate.applicableToLane !== false);
       if (counted.length) {
@@ -194,7 +202,7 @@
         ordered.slice(0, 4).forEach(gate => { const row = node("div", "analysis-readiness-gate-retention"); row.append(node("span", "", gateLabel(gate)), badge(gateStatus(gate))); drawRetention(row, gate.retention, gateStatus(gate), gateLabel(gate)); visual.appendChild(row); }); panel.appendChild(visual);
       }
       const gateN = (lane.detailedGates || []).length;
-      panel.appendChild(disclosure(lane.key + ":gates", "All typed checks, policies & hashes" + (gateN ? " · " + number(gateN) : ""), parent => detailedGates(parent, lane)));
+      panel.appendChild(disclosure(lane.key + ":gates", "All typed checks, policies & hashes" + (gateN ? " · " + number(gateN) : ""), parent => detailedGates(parent, lane), "analysis-readiness-all-gates"));
       if (typeof config.onOpenSection === "function" && lane.section) { const open = button("Open related analysis →", () => config.onOpenSection(lane.section, { source: "readiness-inspector", lane: lane.key }), "analysis-readiness-open-section"); panel.appendChild(open); }
       return panel;
     }
