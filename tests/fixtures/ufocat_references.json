@@ -1,0 +1,12 @@
+[
+  {"name":"direct catalog Alamosa PRN53369","event":{"source":"ufocat","source_file":"ufocat2023.csv","source_id":"53369","raw_fields":{"AUTHOR":"Phillips Ted R","SOURCE":"TPhillips1","PAGEVOL":" 293","ISOURCE":"TPhillips","IPAGEVOL":""}},"expectedCodes":["TPhillips1","TPhillips"]},
+  {"name":"indirect Delphos printed page is not case number","event":{"source":"ufocat","extra_data":{"canonical":{"raw_fields":{"PRN":"64623","SOURCE":"UNICAT","PAGEVOL":" 337","ISOURCE":"TPhillips1","IPAGEVOL":" 079"}}}},"expectedCodes":["UNICAT","TPhillips1"]},
+  {"name":"other Phillips works share lineage","event":{"source_name":"ufocat","raw_fields":{"SOURCE":"TPhillips2","PAGEVOL":" 012","ISOURCE":"TPhillips3","IPAGEVOL":" 044"}},"expectedCodes":["TPhillips2","TPhillips3"]},
+  {"name":"unknown codes stay literal","event":{"source_file":"C:\\data\\ufocat2023.csv","raw_fields":{"SOURCE":"NotInRegistry","PAGEVOL":" 4/1975","ISOURCE":"TPhillips10","IPAGEVOL":" 007"}},"expectedCodes":["NotInRegistry","TPhillips10"]},
+  {"name":"author alone does not establish work","event":{"source":"ufocat","raw_fields":{"AUTHOR":"Phillips Ted R"}},"expectedCodes":[]},
+  {"name":"another primary with a ufocat member cannot relabel raw fields","event":{"source":"majestic","source_provenance":[{"source_name":"ufocat","source_native_id":"53369"}],"extra_data":{"canonical":{"raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"293"}}}},"expectedCodes":[]},
+  {"name":"explicit owned merged rows are allowed","event":{"source":"majestic","raw_fields":{"SOURCE":"TPhillips3"},"source_records":[{"source_name":"ufocat","raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"494"}},{"source_name":"nuforc","raw_fields":{"SOURCE":"TPhillips3"}}]},"expectedCodes":["TPhillips1"]},
+  {"name":"invalid and missing catalog cases stay unknown","event":{"source":"ufocat","raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"999","ISOURCE":"TPhillips1"}},"expectedCodes":["TPhillips1","TPhillips1"]},
+  {"name":"existing references and duplicate raw containers","event":{"source":"ufocat","references":["Original source","Original source"],"raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"494"},"extra_data":{"canonical":{"raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"494"}}}},"expectedCodes":["TPhillips1"]},
+  {"name":"explicit source identity conflict fails closed","event":{"source_name":"nuforc","source_file":"ufocat2023.csv","raw_fields":{"SOURCE":"TPhillips1","PAGEVOL":"494"}},"expectedCodes":[]}
+]

@@ -10,6 +10,7 @@ from typing import Any
 
 from .canonical_schema import build_location_text, clean_text, stable_hash
 from .locations import infer_text_precision
+from .ufocat_references import references as source_references
 
 
 CANONICAL_EVENT_ID_OFFSET = 1_000_000_000_000
@@ -123,7 +124,7 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "shape_normalized": _first_clean(data, "shape_normalized"),
         "duration_raw": _first_clean(data, "duration_raw"),
         "duration_display": _first_clean(data, "duration_display"),
-        "references": [],
+        "references": source_references(data),
         "links": [source_url] if source_url and URL_RE.match(source_url) else [],
         "source_raw": source_raw,
         "source": source_name,

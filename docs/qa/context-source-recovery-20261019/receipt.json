@@ -1,0 +1,165 @@
+{
+  "schemaId": "ufo-timeline-context-source-recovery-receipt-v1",
+  "date": "2026-10-19",
+  "status": "canonical-evidence-applied-runtime-prepared-not-deployed",
+  "canonicalEvidenceCommit": "731aaaaffd4390db1a2c273c1071fbd1cef3cc9b",
+  "canonicalApplication": {
+    "packageId": "cep_1cb125ed9a7111ca76e693b9",
+    "waveIds": [
+      "wave-026-context-source-recovery-20261019"
+    ],
+    "appended": {
+      "source": 9,
+      "assertion": 21,
+      "decision": 42,
+      "queue": 5
+    },
+    "ledgerSha256": {
+      "source": "d247a7ebf3587ea85cb840d0de1a9da4785ad2c4df1a199d273557c12deda4fd",
+      "assertion": "a7d6869de993159fbc356585d6a644f3406fb2a58cc291d2dfd70e9e6e9cccf7",
+      "decision": "3acf03560af3260240e714f8f396a4d122d6fc37504cef5eaa541f90bf6d8f9e",
+      "queue": "541c97cde1310dad8e2595942468d466220fad3ae79f6f053e79d17eac542df3"
+    },
+    "result": "applied"
+  },
+  "scope": {
+    "cropInventoryN": 7745,
+    "animalInventoryN": 1184,
+    "researchedCropRepresentationsN": 8,
+    "researchedAnimalRecordsN": 6,
+    "acceptedRepresentationsN": 5,
+    "underlyingAcceptedCaseGroupsN": 4,
+    "strictPromotionsN": 0,
+    "strictCropClustersN": 1,
+    "strictAnimalClustersN": 0,
+    "cropSourceReviewedBeforeAfter": [
+      134,
+      137
+    ],
+    "animalSourceReviewedBeforeAfter": [
+      11,
+      13
+    ]
+  },
+  "phillips": {
+    "ufocatRowsScannedN": 320412,
+    "canonicalRepresentationsScannedN": 702893,
+    "sourceRepresentationsN": 2882,
+    "currentEventIdsN": 1953,
+    "mappedCurrentEventIdsN": 1798,
+    "additionalMergedEventIdsWithCitationsN": 905,
+    "encounterEvidenceOverlapN": 195,
+    "collectionEvidenceOverlapN": 13,
+    "interpretation": "Coverage and citation counts, not independent incidents, trace validation, or complete acquisition of later TRACAT/CPTR."
+  },
+  "researchRoot": "D:\\UFO-Timeline-Context-Evidence\\candidate\\eligibility-research-20261019",
+  "researchPins": {
+    "README.md": {
+      "bytes": 2054,
+      "sha256": "021a1178bdc01562ece43fc8ee51d9222c45f9ff96c87a3f301134807d5dadb7"
+    },
+    "baseline-audit.json": {
+      "bytes": 46369,
+      "sha256": "43663e2292923aac0535fb6dce38d9a218c84bf320397a6382895abaebe98cab"
+    },
+    "canonical-application.json": {
+      "bytes": 610,
+      "sha256": "7920608ab5fd3d5c3bf1364867e4024af50d29c4a01b299aa6b903756fb5c03d"
+    },
+    "eligibility-impact.json": {
+      "bytes": 13850,
+      "sha256": "7c8b48b3ff2ca9fd9f6df545d136bc87d83b009c93358ca4de53e182e05e1520"
+    },
+    "canonical-package/package_manifest.json": {
+      "bytes": 997,
+      "sha256": "cee7653098d5b918c44c8fae34af9a6506436f8cca99ed94faffe2442791bdc4"
+    },
+    "review-a/crops-review.json": {
+      "bytes": 41215,
+      "sha256": "7ffdea6ccc3c099edd3791a2ab73219d7affbe77f1705cafc11f0e1418494ba4"
+    },
+    "review-a/animals-review.json": {
+      "bytes": 56165,
+      "sha256": "1864811ebcc451a885f56229579119983de3b28ca20bbd96f0033cb263635811"
+    },
+    "review-b/crops-review.json": {
+      "bytes": 31359,
+      "sha256": "f659967e99c8e4b924cc4db48405c23e1e8d9ce9586ef90a6b45aea5daa0c294"
+    },
+    "review-b/animals-review.json": {
+      "bytes": 51356,
+      "sha256": "b09c4066c82d162fc67e9cda94f2fa909c3035ca65bf41ed3df18926e89d2a2d"
+    },
+    "phillips/manifest.json": {
+      "bytes": 12858,
+      "sha256": "89fe2dc7a6c86861eb1c3c161b466d1af0381419dec2465be5766dea08788fd6"
+    },
+    "phillips/phillips-source-index.json": {
+      "bytes": 2734455,
+      "sha256": "363cfe65b0b6d2b82efb69bd4c79d6a296a365414e7a0e95e69a6fc9a0df17db"
+    }
+  },
+  "preparedRuntimePins": {
+    "ufocat_references.js": {
+      "bytes": 9544,
+      "sha256": "e9dd07f5b340ab9da760bcdfdf2de411b36c6896865ba402d6191198e562f58f"
+    },
+    "parser/ufocat_references.py": {
+      "bytes": 5783,
+      "sha256": "5b305b471ce7cefa0ed0bdb484cd7c6e6a03fe7cac76953f8ee7e39756394797"
+    },
+    "parser/canonical_export.py": {
+      "bytes": 16769,
+      "sha256": "0bf64625049a3495b4e400ff809bf4fb103f5eda4f32d66f20acc3b019965a24"
+    },
+    "scripts/build_phillips_source_citations.py": {
+      "bytes": 6390,
+      "sha256": "f24f48af62d3c08672ac578e23cb75f0ae69aee9a60204d78a8b3a009da8aac3"
+    },
+    "app.js": {
+      "bytes": 1511813,
+      "sha256": "a8aacc57ebba1a18cba2a48a8a0b53386b5c3b064f94fc928576dda986b75ceb"
+    },
+    "index.html": {
+      "bytes": 167873,
+      "sha256": "e80ddf22c5ac6618789c22308233e7aecb73d11c9644ca32089e4e2d76d317b2"
+    },
+    "scripts/prepare_workspace_analysis_release.py": {
+      "bytes": 33119,
+      "sha256": "b3a06bcba67ffd3b0a13e27e5100e0a59b5aec0ed760fa4bea7845adaeb3468f"
+    },
+    "data/source_citations/manifest.json": {
+      "bytes": 2123,
+      "sha256": "257240f28ba73b0cf47a8dc479895397a122dc731125c924d96e883caf02ebf8"
+    },
+    "data/source_citations/phillips.json.gz": {
+      "bytes": 244310,
+      "sha256": "37d46a78c7c341ad02e9bd7b5e0f5054af043f5ca53c4f50ad021e2cd658ad70"
+    }
+  },
+  "verification": {
+    "pythonSourceAndExportTests": 8,
+    "releaseAndSearchTests": 10,
+    "nodeSuitesPassed": [
+      "tests/test_ufocat_references.mjs",
+      "tests/test_ufocat_references_integration.mjs",
+      "tests/test_startup_cache_and_cover.mjs"
+    ],
+    "appSyntaxCheck": "passed",
+    "canonicalPackageAtomicApplyAndPostProjection": "passed",
+    "publicationAndLiveBrowserVerification": "not performed; no deployment requested"
+  },
+  "lifecycle": {
+    "canonicalArtifacts": "append-only evidence ledgers in shared repository; small prepared source-citation runtime derivative and tests in release worktree",
+    "researchBytesOnD": 80214660,
+    "researchFileN": 94,
+    "newFilesOver100MiB": [],
+    "approximateProjectGrowthOnC": "less than 1 MiB",
+    "fullDatasetCopiesCreated": 0,
+    "currentValidatedDeployment": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "lastKnownGoodRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "acceptedPreview": "5e423cb2",
+    "supersededLargeGeneratedArtifacts": [],
+    "cleanupProposal": "None; retain bounded unique research and checked-in receipts. No deletion authorized."
+  }
+}

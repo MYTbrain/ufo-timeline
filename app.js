@@ -24,6 +24,9 @@
   const ENCOUNTERS = window.UFOEncounterEvidence;
   const ENCOUNTER_MAP = window.UfoEncounterMap;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
+  const UFOCAT_REFERENCES = window.UfoUfocatReferences;
+  let sourceCitationIndexPromise = null;
+  let detailLoadGeneration = 0;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
   if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
@@ -7062,6 +7065,7 @@
     return (
       path.indexOf("/data/canonical_web/") !== -1 ||
       path.indexOf("/data/analysis_v2/") !== -1 ||
+      path.indexOf("/data/source_citations/") !== -1 ||
       path.indexOf("/data/trace_intersection_feasibility_v1/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
       path.endsWith("/data/app_config.json") ||
@@ -7076,6 +7080,7 @@
     const url = new URL(relativePath, document.baseURI);
     const shellPinnedAsset = url.pathname.endsWith("/data/app_config.json") ||
       url.pathname.indexOf("/data/analysis_v2/") !== -1 ||
+      url.pathname.indexOf("/data/source_citations/") !== -1 ||
       url.pathname.indexOf("/data/trace_intersection_feasibility_v1/") !== -1;
     const versionToken = shellPinnedAsset
       ? (APP_SHELL_RELEASE_TOKEN || staticAssetVersionToken())
@@ -26437,6 +26442,11 @@
       }
     });
 
+    if (UFOCAT_REFERENCES) {
+      UFOCAT_REFERENCES.referenceEntries(event).forEach(function (entry) {
+        if (entry.url && isHttpUrl(entry.url)) pushEntry("Cited work: " + entry.sourceCode, entry.url);
+      });
+    }
     return entries;
   }
 
@@ -26556,7 +26566,7 @@
       "</div>" +
       (ENCOUNTERS ? ENCOUNTERS.renderEvidence(event, runtime.encounterEvidence) + ENCOUNTERS.renderReviewedContext(event, runtime.encounterEnrichment) : "") +
       '<section class="detail-block"><h4>Description</h4><pre class="detail-pre">' + escapeHtml(event.description || "") + "</pre></section>" +
-      '<section class="detail-block"><h4>References</h4>' + formatList(event.references || []) + "</section>" +
+      '<section class="detail-block"><h4>References</h4>' + formatList(UFOCAT_REFERENCES ? UFOCAT_REFERENCES.references(event) : (event.references || [])) + "</section>" +
       '<section class="detail-block"><h4>Links</h4>' + renderLinkList(event) + "</section>" +
       '<section class="detail-block"><h4>All Locations</h4>' + formatList(event.all_locations_raw || []) + "</section>" +
       '<section class="detail-block"><h4>Attributes</h4>' + formatList(event.attributes_codes || []) + "</section>" +
@@ -27208,6 +27218,8 @@
       state.expandedResultId = null;
     }
     if (!config.preserveDetailPanel) {
+      detailLoadGeneration += 1;
+      clearBusyState("detailLoad");
       state.detailEventId = null;
       renderDetail(null);
     }
@@ -27379,6 +27391,42 @@
     }
   }
 
+  async function enrichEventSourceCitations(event) {
+    if (!event || !UFOCAT_REFERENCES || !UFOCAT_REFERENCES.createIndex ||
+        !browserCanDecodeGzipJson() || !window.crypto || !window.crypto.subtle) return event;
+    if (!sourceCitationIndexPromise) {
+      sourceCitationIndexPromise = (async function () {
+        const base = "./data/source_citations/";
+        const manifest = await fetchJson(base + "manifest.json", "Source citation manifest");
+        const pin = manifest && manifest.artifact;
+        if (manifest.schemaId !== "ufo-timeline-phillips-detail-citations-manifest-v1" ||
+            !pin || pin.file !== "phillips.json.gz" || !Number.isSafeInteger(pin.gzipBytes) ||
+            !Number.isSafeInteger(pin.decodedBytes) || pin.gzipBytes <= 0 || pin.gzipBytes > 2000000 ||
+            pin.decodedBytes <= 0 || pin.decodedBytes > 8000000) throw new Error("Invalid source citation manifest.");
+        const response = await fetch(resolveAssetPath(base + pin.file), { credentials: "same-origin" });
+        if (!response.ok) throw new Error("Source citation payload returned HTTP " + response.status + ".");
+        let bytes = new Uint8Array(await response.arrayBuffer());
+        async function verify(expectedHash, expectedBytes) {
+          const digest = new Uint8Array(await window.crypto.subtle.digest("SHA-256", bytes));
+          const hash = Array.from(digest, function (value) { return value.toString(16).padStart(2, "0"); }).join("");
+          if (bytes.byteLength !== expectedBytes || hash !== expectedHash) throw new Error("Source citation integrity check failed.");
+        }
+        if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+          await verify(pin.gzipSha256, pin.gzipBytes);
+          bytes = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+        }
+        await verify(pin.decodedSha256, pin.decodedBytes);
+        const payload = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+        return UFOCAT_REFERENCES.createIndex(payload, manifest);
+      })().catch(function (error) {
+        console.warn("[source-citations] Showing preserved references; the supplementary citation index is unavailable.", error);
+        return null;
+      });
+    }
+    const index = await sourceCitationIndexPromise;
+    return index ? UFOCAT_REFERENCES.withIndexedCitations(event, index) : event;
+  }
+
   async function openFullEventView(eventId, options) {
     const summary = getCatalogEventById(eventId);
     if (!summary) {
@@ -27399,15 +27447,17 @@
       els.detailStage.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    const loadGeneration = ++detailLoadGeneration;
     setBusyState("detailLoad", "Loading full preserved event details...");
     try {
       const fullEvent = await ensureFullEventLoaded(eventId);
-      renderDetail(fullEvent || summary);
+      const referencedEvent = await enrichEventSourceCitations(fullEvent || summary);
+      if (loadGeneration === detailLoadGeneration && String(state.detailEventId) === String(eventId)) renderDetail(referencedEvent);
     } catch (error) {
-      renderDetailError(eventId, error);
+      if (loadGeneration === detailLoadGeneration && String(state.detailEventId) === String(eventId)) renderDetailError(eventId, error);
       console.error("[full-details] detail load failed.", error);
     } finally {
-      clearBusyState("detailLoad");
+      if (loadGeneration === detailLoadGeneration) clearBusyState("detailLoad");
     }
   }
 

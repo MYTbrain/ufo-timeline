@@ -1,0 +1,54 @@
+{
+  "schemaId": "ufo-timeline-phillips-detail-citations-manifest-v1",
+  "artifact": {
+    "file": "phillips.json.gz",
+    "schemaId": "ufo-timeline-phillips-detail-citations-v1",
+    "decodedBytes": 1115260,
+    "decodedSha256": "0eedc671941d54faa2be4e6db53115fd92d55fc71fdb490c26e574e062bfca61",
+    "gzipBytes": 244310,
+    "gzipSha256": "37d46a78c7c341ad02e9bd7b5e0f5054af043f5ca53c4f50ad021e2cd658ad70"
+  },
+  "counts": {
+    "eventN": 1953,
+    "sourceRecordN": 2882
+  },
+  "inputPins": {
+    "sourceIndex": {
+      "file": "phillips-source-index.json",
+      "sha256": "363cfe65b0b6d2b82efb69bd4c79d6a296a365414e7a0e95e69a6fc9a0df17db"
+    },
+    "ufocatCsv": {
+      "file": "ufocat2023.csv",
+      "sha256": "04b71519710b48c86492f8a73686405621983269795ee65c5e7d3f4a6248f017",
+      "bytes": 91323332
+    },
+    "sourceCodebook": {
+      "file": "UFOCAT 2023 Sources.xlsx",
+      "locator": "worksheet1 rows748-751",
+      "sha256": "8b47d701440bae501a4fb6dd823e79ff34bb2fb42fa971e6f8ab2351dd8d8701",
+      "container": "UFOCAT 2023 Excel format.zip",
+      "containerSha256": "724f02b79736265bede0bbe77043b270a17bfa7a770a85e85c6042c2b0a392ae"
+    },
+    "canonicalChunkManifestSha256": "833ca33e18ca17768b2e1852d36ad28bd45f9544e88d1821677a67ac176a9d19",
+    "previewChunkManifestSha256": "fc63811513069fc0a092b96e82ed4884b1c4aa88e37ba890081304389031099c",
+    "catalogPdf": {
+      "url": "https://cufos.org/PDFs/books/Physical_Traces.pdf",
+      "sha256": "e824270528264c2563df17f79540171dc216fb9be85968a5eb844ecb1b2be17b"
+    }
+  },
+  "policy": {
+    "countingUnit": "existing source representations attached to existing event identities",
+    "identityGuard": [
+      "eventId",
+      "canonicalEventId",
+      "canonical_input_id membership",
+      "source_row_hash exact match"
+    ],
+    "newEventsAdded": 0,
+    "qualificationsChanged": false,
+    "narrativesIncluded": false,
+    "coordinatesIncluded": false,
+    "independentSourceFamiliesAsserted": false,
+    "catalogLocators": "Direct case number; indirect raw ambiguous page-or-case locator"
+  }
+}
