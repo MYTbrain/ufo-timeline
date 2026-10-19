@@ -267,8 +267,9 @@ def assemble(check_only=False):
     search.pop("sourceProof", None)  # Local input paths are provenance, not public runtime assets.
     page_json(SEARCH_MANIFEST, search)
     search_blob = (json.dumps(search, indent=2, ensure_ascii=False) + "\n").encode()
-    config["searchIndex"] = {"manifestUrl": "./" + SEARCH_MANIFEST,
-        "manifestSha256": hashlib.sha256(search_blob).hexdigest(), "expectedRecordCount": 702893,
+    search_digest = hashlib.sha256(search_blob).hexdigest()
+    config["searchIndex"] = {"manifestUrl": "./" + SEARCH_MANIFEST + "?v=" + search_digest,
+        "manifestSha256": search_digest, "expectedRecordCount": 702893,
         "expectedIdSetSha256": search["coverage"]["indexedIdSetSha256"], "loadPolicy": "first_keyword_search"}
     config["staticAssetVersion"] = RELEASE
     config["analysisWorkspaceRelease"] = {"id": RELEASE, "baseDeployment": BASE_DEPLOYMENT,
