@@ -45,6 +45,7 @@ f.view.render({ model: { status: "loading" } }); assert.match(f.target.textConte
 f.view.render({ model });
 assert.equal(withClass(f.target, "analysis-overview-card").length, 6);
 assert.deepEqual(withClass(f.target, "analysis-overview-grid")[0].children.map(el => el.children[0].children[0].children[0].textContent), ["Craft through time", "Beings and craft", "Craft by place", "Seasonality by era"]);
+assert.deepEqual(withClass(f.target, "analysis-overview-card-lead").map(el => el.children[0].children[0].children[0].textContent), ["Craft through time", "Seasonality by era"], "the two time matrices span the full dashboard, leaving being and geography comparisons paired");
 assert.equal(withClass(f.target, "analysis-overview-more")[0].open, false, "secondary patterns start collapsed");
 assert.equal(withClass(f.target, "analysis-overview-profile").length, 2, "geography uses readable row profiles rather than another undifferentiated heatmap");
 assert.match(f.target.textContent, /catalog report representations, not independent incidents/);
@@ -53,6 +54,7 @@ assert.match(f.target.textContent, /27 active \/ 7,745 catalog entries/);
 assert.equal(withClass(f.target, "analysis-overview-exact").length, 0, "full exact tables are built only on request");
 const firstCard = withClass(f.target, "analysis-overview-card")[0], firstMatrix = withClass(firstCard, "analysis-overview-matrix")[0];
 const cells = withClass(firstMatrix, "analysis-overview-cell"), buttons = cells.filter(el => el.tagName === "button");
+assert.equal(firstMatrix.style["--overview-column-count"], 3, "matrix layout receives its actual column count so labels retain a readable minimum width");
 assert.equal(buttons.filter(el => el.tabIndex === 0).length, 1, "a matrix offers one tab stop, then arrow navigation");
 assert.equal(buttons[0].textContent, "37.5%"); assert.match(buttons[0].getAttribute("aria-label"), /Disc \/ saucer; 1950s: 3 report representations, 37.5% of 8 row reports/);
 assert.equal(withClass(firstMatrix, "is-unknown").length, 5, "missing-axis cells remain visible including the zero at a missing intersection");

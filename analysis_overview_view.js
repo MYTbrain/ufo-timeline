@@ -98,10 +98,12 @@
     }
     function matrix(card, value, axes) {
       const wrap = node("div", "analysis-overview-matrix-wrap"), table = node("table", "analysis-overview-matrix");
+      if (card.columnDimension === "month") table.className += " is-calendar-matrix";
+      setStyle(table, "--overview-column-count", axes.columns.length);
       table.setAttribute("aria-label", card.title + ". " + (mode === "share" ? "Shares of each row's reports" : "Report counts") + ". Arrow keys move between categories.");
       const head = node("thead"), header = node("tr");
       header.appendChild(node("th", "analysis-overview-row-heading", card.rowLabel || DIMENSION_LABELS[card.rowDimension] || ""));
-      axes.columns.forEach(column => { const th = node("th", "", column.label || column.key); th.scope = "col"; header.appendChild(th); });
+      axes.columns.forEach(column => { const th = node("th", "", column.key === "__unknown__" ? "Unknown" : column.label || column.key); th.scope = "col"; th.title = column.label || column.key; header.appendChild(th); });
       head.appendChild(header); table.appendChild(head);
       const body = node("tbody"), buttons = [], maximum = Math.max(0, ...axes.rows.flatMap(row => axes.columns.map(column => cellCount(row, column, axes.allColumns))));
       axes.rows.forEach((row, rowIndex) => {
@@ -249,7 +251,7 @@
       const primary = primaryKeys.map(key => cards.find(card => card.key === key)).filter(Boolean);
       if (!primary.length) primary.push(...cards.slice(0, 4));
       const further = cards.filter(card => !primary.includes(card));
-      const grid = node("div", "analysis-overview-grid"); primary.forEach(card => grid.appendChild(renderCard(card, false))); root.appendChild(grid);
+      const grid = node("div", "analysis-overview-grid"); primary.forEach(card => grid.appendChild(renderCard(card, card.key === "craft_decade" || card.key === "month_decade"))); root.appendChild(grid);
       if (further.length) {
         const more = node("details", "analysis-overview-more"), summary = node("summary", "", "More patterns · seasonality & source mix"); more.open = openCards.has("more"); more.appendChild(summary);
         const extras = node("div", "analysis-overview-grid analysis-overview-extra-grid"); further.forEach(card => extras.appendChild(renderCard(card, false))); more.appendChild(extras);
