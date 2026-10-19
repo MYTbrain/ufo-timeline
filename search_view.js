@@ -43,7 +43,7 @@
       explanation = node("p", "search-coverage-explanation"), progress = node("progress", "search-coverage-progress"),
       retry = node("button", "search-retry", "Retry missing data"),
       actionStatus = node("p", "search-action-status"), actions = node("div", "search-selection-actions"),
-      scopeLabel = node("label", "search-scope-label", "Use "), scope = node("select", "search-selection-scope"),
+      scopeLabel = node("label", "search-scope-label", "Scope "), scope = node("select", "search-selection-scope"),
       scopeNote = node("p", "search-scope-note"),
       buttons = node("div", "search-selection-buttons"), tips = node("details", "search-tips"),
       tipsHeading = node("summary", "", "Search tips"), tipsBody = node("div", "search-tips-body");
@@ -71,7 +71,8 @@
       if (destroyed || typeof callback !== "function" || pending || state.busy) return;
       const token = generation; pending += 1; actionStatus.textContent = ""; actionStatus.removeAttribute("data-error"); render();
       try {
-        await callback(payload);
+        const result = await callback(payload);
+        if (!destroyed && token === generation && result && result.message) actionStatus.textContent = String(result.message);
       } catch (error) {
         if (!destroyed && token === generation) {
           actionStatus.textContent = error && error.message ? String(error.message) : "That action could not be completed. Please try again.";
@@ -107,9 +108,9 @@
       else if (complete) heading.textContent = count(matches) + (matches === 1 ? " matching report" : " matching reports");
       else heading.textContent = matches == null ? "Search incomplete" : count(matches) + " matches so far · incomplete";
       const details = [];
-      if (total != null && total > 0 && chunks != null) details.push(count(Math.min(chunks, total)) + " / " + count(total) + " full text chunks checked");
-      else if (complete) details.push("Full text checked");
-      if (scanned != null) details.push(count(scanned) + (reportTotal != null ? " / " + count(reportTotal) : "") + " reports checked");
+      if (complete) details.push(reportTotal != null ? "All " + count(reportTotal) + " catalog reports indexed" : "Full text index checked");
+      else if (total != null && total > 0 && chunks != null) details.push(count(Math.min(chunks, total)) + " / " + count(total) + " full text chunks checked");
+      if (!complete && scanned != null) details.push(count(scanned) + (reportTotal != null ? " / " + count(reportTotal) : "") + " reports checked");
       detail.textContent = details.join(" · "); detail.hidden = !details.length;
       progress.hidden = !scanning || total == null || total <= 0 || chunks == null;
       if (!progress.hidden) progress.value = Math.min(chunks / total, 1);

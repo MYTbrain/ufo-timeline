@@ -27271,7 +27271,10 @@
     }, provenance: { query: searchResult.query, queryPlanKey: searchResult.plan.cacheKey,
       searchCoverage: searchResult.coverage, searchIndexSha256: (runtime.appConfig.searchIndex || {}).manifestSha256 || null,
       selectionScope: all ? "all_search_matches" : "current_shared_filters" } };
-    return input.slot ? integration.captureSelection(input.slot, payload) : integration.useSelection(payload);
+    if (input.slot) await integration.captureSelection(input.slot, payload);
+    else await integration.useSelection(payload);
+    return { message: input.slot ? "Held " + ids.length.toLocaleString() + " reports as " + input.slot + "."
+      : "Using " + ids.length.toLocaleString() + " reports in Analysis." };
   }
 
   function publishSearchResult(result) {

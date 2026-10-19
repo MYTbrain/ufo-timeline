@@ -107,6 +107,41 @@ class SearchReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "complete current corpus"):
                 self.prepare(changed)
 
+    def test_physical_manifest_bytes_match_the_published_pin_on_every_platform(self):
+        self.manifest["normalization"] = "JavaScript lower-case — é and İ remain Unicode"
+        pages, _, _, config = self.prepare()
+        derived = {release.SEARCH_MANIFEST: pages[release.SEARCH_MANIFEST],
+                   "data/unchanged-fixture.json": {"purpose": "Other established writes keep their default policy"}}
+        # Execute the actual assembly write loop, with the actual write helper
+        # writing physical files. Merely hashing an in-memory LF string missed
+        # the Windows CRLF transformation that caused the production defect.
+        tree = ast.parse(textwrap.dedent(inspect.getsource(release.assemble)))
+        write_loop = next(node for node in ast.walk(tree)
+                          if isinstance(node, ast.For) and isinstance(node.target, ast.Tuple)
+                          and [part.id for part in node.target.elts] == ["logical", "value"]
+                          and isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Attribute)
+                          and isinstance(node.iter.func.value, ast.Name) and node.iter.func.value.id == "derived")
+        calls = []
+
+        def physical_write(file, value, **kwargs):
+            calls.append((file.relative_to(self.root).as_posix(), kwargs))
+            release.write(file, value, **kwargs)
+
+        namespace = dict(vars(release), ROOT=self.root, derived=derived, write=physical_write)
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[write_loop], type_ignores=[])),
+                     "<actual release physical write loop>", "exec"), namespace)
+        physical = (self.root / release.SEARCH_MANIFEST).read_bytes()
+        expected = (json.dumps(pages[release.SEARCH_MANIFEST], indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        self.assertEqual(physical, expected)
+        self.assertNotIn(b"\r\n", physical)
+        digest = hashlib.sha256(physical).hexdigest()
+        self.assertEqual(config["searchIndex"]["manifestSha256"], digest)
+        self.assertEqual(config["searchIndex"]["manifestUrl"], "./" + release.SEARCH_MANIFEST + "?v=" + digest)
+        # Assert the explicit newline contract as well as physical bytes, so a
+        # Linux run catches a regression that otherwise appears only on Windows.
+        self.assertEqual(dict(calls)[release.SEARCH_MANIFEST]["newline"], "\n")
+        self.assertIsNone(dict(calls)["data/unchanged-fixture.json"]["newline"])
+
     def test_rejects_member_drift_and_path_escape(self):
         for mutation, message in [
             (lambda value: value["ids"].update(bytes=0), "member pin drift"),
