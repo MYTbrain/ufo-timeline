@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "preview": "https://1b4fbabd.ufo-timeline.pages.dev/",
+  "source": "6987b51ee2c07544352d2fa6e23bf7e95e5903fc",
+  "surface": "Analysis / Overview / Pattern dashboard",
+  "population": {"dates":"All Time","otherFilters":"Existing default report filters retained","unit":"report representations","allActive":334511,"indexedBeings":2368,"reportedAbductionsPositive":823},
+  "checks": {
+    "allThreeLensesRendered":true,
+    "differenceAndSharesRendered":true,
+    "stableCraftColors":true,
+    "coordinatedDiscSaucerHighlight":true,
+    "highlightPopulationUnchanged":334511,
+    "nonCraftSeasonalityMutedElements":0,
+    "highlightClearRestoresOtherCategories":true,
+    "exactTableReferenceAndDifferenceColumns":true,
+    "knownZeroCellNegativeDifference":"2020s / majestic: 0 reports, -1.2 pp versus 1.2% pooled share",
+    "smallDifferenceAfterFinalFix":"10s / Conventional or explained: -0.02 pp",
+    "signedZeroPresentInFinalExactTable":false,
+    "consoleErrors":[],
+    "startupLoadingCoverPresent":true,
+    "phoneViewportReset":true
+  },
+  "desktop":{"clientWidth":1265,"documentScrollWidth":1265},
+  "phone":{"overrideWidth":390,"overrideHeight":844,"clientWidth":375,"documentScrollWidth":375,"reportLensWidth":303,"matrixContainerWidth":285,"matrixContentWidth":635},
+  "screenshots":["desktop-cross-comparisons.png","desktop-difference.png","phone-difference.png"],
+  "productionDeploymentPerformed":false
+}
