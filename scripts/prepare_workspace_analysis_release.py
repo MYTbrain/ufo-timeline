@@ -22,7 +22,7 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "16443086-c630-41d8-a793-92a0243a76f6"
-RUNTIME_REVISION = "overview-pattern-dashboard-preview-20261019-v1"
+RUNTIME_REVISION = "overview-visual-patterns-preview-20261019-v2"
 RETAINED_ROLLBACK = "16443086-c630-41d8-a793-92a0243a76f6"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -198,7 +198,7 @@ def validate_refresh(previous, plan):
         "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
         "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
         "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
-        "analysis_overview_model.js", "analysis_overview_view.js", "analysis_overview.css",
+        "analysis_overview_model.js", "analysis_overview_visuals.js", "analysis_overview_view.js", "analysis_overview.css",
         COLLECTION_MANIFEST, COLLECTION_EVIDENCE, SEARCH_MANIFEST,
         "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
@@ -239,7 +239,7 @@ def assemble(check_only=False):
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
                    "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
-                   "analysis_overview_model.js", "analysis_overview_view.js", "analysis_overview.css",
+                   "analysis_overview_model.js", "analysis_overview_visuals.js", "analysis_overview_view.js", "analysis_overview.css",
                    "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
                    "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]

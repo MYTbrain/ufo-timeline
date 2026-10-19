@@ -68,7 +68,8 @@ class WorkspaceAnalysisReleaseTests(unittest.TestCase):
     def test_refresh_allows_only_reviewed_additions_with_identical_uploads(self):
         plan = copy.deepcopy(self.previous)
         plan["pages"].extend([{"path": release.NUCLEAR_EXTENSION},
-                              {"path": "data/encounters/enrichment.json.gz"}])
+                              {"path": "data/encounters/enrichment.json.gz"},
+                              {"path": "analysis_overview_visuals.js"}])
         release.validate_refresh(self.previous, plan)
         for mutation, message in [
             (lambda p: p["uploads"][0].update(sha256="b" * 64), "Immutable uploads"),

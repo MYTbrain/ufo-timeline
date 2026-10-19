@@ -140,6 +140,10 @@ assert.equal(lazy.fetches.length, 0, "No planetary, spatial, or collection data 
 const markup = fs.readFileSync("index.html", "utf8");
 assert.ok(markup.includes('id="analysis-overview-explore"'),
   "The Overview's initial visible view has a dedicated dashboard host");
+const visualScript = markup.match(/<script\s+defer\s+src="\.\/analysis_overview_visuals\.js\?[^\"]+"><\/script>/g) || [];
+assert.equal(visualScript.length, 1, "The small visual math helper is included exactly once");
+assert.ok(markup.indexOf(visualScript[0]) < markup.indexOf('<script defer src="./analysis_overview_view.js'),
+  "Deferred dashboard scripts preserve helper-before-view execution order");
 const groupsContext = vm.createContext({ window: {} });
 vm.runInContext(fs.readFileSync("ui/accepted-workspace/analysis-view-groups.js", "utf8"), groupsContext);
 const groups = groupsContext.window.PreviewAnalysisViewGroups.overview;

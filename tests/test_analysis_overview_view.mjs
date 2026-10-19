@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { runInNewContext } from "node:vm";
 const require = createRequire(import.meta.url), View = require("../analysis_overview_view.js");
 
 // Deliberately small DOM boundary: checks concern exact populations, keyboard
@@ -15,7 +17,7 @@ class Element {
   getAttribute(key) { return this.attributes.get(key) ?? null; }
   addEventListener(key, fn) { if (!this.events.has(key)) this.events.set(key, []); this.events.get(key).push(fn); }
   dispatchEvent(event) { event.target ||= this; event.preventDefault ||= () => { event.defaultPrevented = true; }; return Promise.all((this.events.get(event.type) || []).map(fn => fn(event))); }
-  click() { return this.dispatchEvent({ type: "click" }); }
+  click() { return this.disabled ? Promise.resolve() : this.dispatchEvent({ type: "click" }); }
   focus() { this.ownerDocument.activeElement = this; }
   querySelector(selector) {
     const display = selector.match(/^\[data-overview-display="(.*)"\]$/);
@@ -23,6 +25,7 @@ class Element {
     if (selector === ".analysis-overview-lens select") return walk(this).find(el => el.tagName === "select");
     return null;
   }
+  querySelectorAll(selector) { return walk(this).slice(1).filter(el => selector === el.tagName || selector.startsWith(".") && String(el.className || "").split(" ").includes(selector.slice(1))); }
 }
 const walk = el => [el, ...el.children.flatMap(walk)];
 const withClass = (root, value) => walk(root).filter(el => String(el.className || "").split(" ").includes(value));
@@ -91,4 +94,74 @@ assert.match(rare.target.textContent, /Rare craft/); assert.equal(withClass(rare
 assert.equal(withClass(rare.target, "analysis-overview-details").length, 1, "the exact table remains reachable for rare positive categories");
 f.view.render({ model: { ...model, cards: [matrixCard("craft_decade", "<img src=x>")] } }); assert.match(f.target.textContent, /<img src=x>/); assert.equal(walk(f.target).some(el => el.tagName === "img"), false, "catalog labels remain plain text");
 f.view.destroy(); f.view.render({ model }); assert.equal(f.target.children.length, 0, "destroyed dashboards cannot reappear after a delayed result");
+
+const rich = fixture(), richColumns = [["disc_saucer", "Disc / saucer", 60], ["triangle", "Triangle", 40], ["__unknown__", "Craft unknown", 10]];
+const richValues = values(110, 90, 20, [["1950", "1950s", 60, [50, 0, 10]], ["1990", "1990s", 40, [10, 30, 0]], ["__unknown__", "Time unknown", 10, [0, 10, 0]]], richColumns);
+const richCard = { key: "craft_decade", title: "Craft through time", section: "craft", rowDimension: "decade", columnDimension: "craft", rowOrder: "chronological", lanes: { all: richValues } };
+const richCountries = values(110, 100, 10, [["US", "United States", 60, [50, 0, 10]], ["FR", "France", 50, [10, 40, 0]]], richColumns);
+const season = values(110, 90, 20, [["1950", "1950s", 60, [50, 0, 10]], ["1990", "1990s", 40, [10, 30, 0]], ["__unknown__", "Time unknown", 10, [0, 10, 0]]], [["01", "Jan", 60], ["02", "Feb", 40], ["__unknown__", "Month unknown", 10]]);
+const richModel = { status: "ready", totalN: 110, coverage: { knownCraftN: 100, knownCountryN: 110, knownDecadeN: 100 }, lanes: [{ key: "all", label: "All reports", totalN: 110, available: true }], cards: [richCard,
+  { ...richCard, key: "craft_country", title: "Country profiles", section: "geography", rowDimension: "country", lanes: { all: richCountries } },
+  { ...richCard, key: "month_decade", title: "Seasonality", section: "time", columnDimension: "month", lanes: { all: season } }] };
+rich.view.render({ model: richModel });
+assert.equal(withClass(rich.target, "analysis-overview-field").length, 3, "coverage is shown as three compact labelled tracks");
+assert.match(withClass(rich.target, "analysis-overview-field")[0].title, /100 of 110 report representations indexed/);
+assert.equal(withClass(rich.target, "analysis-overview-field-track")[0].children[0].style.width, (10000 / 110) + "%");
+const rowVolumes = withClass(withClass(rich.target, "analysis-overview-card")[0], "analysis-overview-row-volume");
+assert.deepEqual(rowVolumes.map(el => el.children[0].style.width), ["100%", (200 / 3) + "%", (50 / 3) + "%"]);
+assert.match(rich.target.textContent, /Row volumes scaled within this chart · longest bar = 60 reports/);
+const contrastBox = withClass(withClass(rich.target, "analysis-overview-card")[0], "analysis-overview-contrasts")[0];
+assert.equal(withClass(contrastBox, "analysis-overview-contrast").length, 2, "no card adds more than two supported descriptive contrasts");
+assert.equal(withClass(contrastBox, "analysis-overview-contrast-row").length, 2, "each contrast has a row-share marker alongside a report-lens marker");
+assert.match(contrastBox.textContent, /0–100%/); assert.match(contrastBox.textContent, /30\/40 reports/);
+await withClass(contrastBox, "analysis-overview-contrast")[0].click(); assert.equal(rich.calls.at(-1)[0], "craft"); assert.equal(rich.calls.at(-1)[1].focus.rowKey, "1990");
+const richExact = withClass(rich.target, "analysis-overview-details")[0]; richExact.open = true; await richExact.dispatchEvent({ type: "toggle" });
+const exactBeforeDifference = withClass(richExact, "analysis-overview-exact")[0].children.find(el => el.tagName === "tbody").children.map(row => row.children.map(cell => cell.textContent));
+await findButton(rich.target, "Difference").click(); assert.equal(rich.view.getState().mode, "difference"); assert.equal(rich.doc.activeElement, findButton(rich.target, "Difference"));
+assert.match(rich.target.textContent, /pooled baseline includes this row and all retained categories/); assert.match(rich.target.textContent, /Color clips at ±50 pp/);
+const diffMatrix = withClass(withClass(rich.target, "analysis-overview-card")[0], "analysis-overview-matrix")[0], diffCells = withClass(diffMatrix, "analysis-overview-cell");
+assert.equal(diffCells[0].textContent, "+28.8 pp", "difference uses the full 60/110 column marginal, including unknown-date reports in the population");
+assert.match(diffCells[0].getAttribute("aria-label"), /versus this report lens's 54.5% category share/);
+assert.equal(diffCells[1].textContent, "−36.4 pp", "zero observed reports versus a positive baseline remains a valid negative composition difference");
+assert.equal(diffCells[1].tagName, "span"); assert.ok(String(diffCells[1].className).includes("is-below")); assert.ok(!String(diffCells[1].className).includes("is-zero"));
+assert.equal(diffCells[1].style["--overview-intensity"], (40 / 110 * 100) / 50, "zero-count differences retain their diverging color rather than neutral zero styling");
+assert.equal(diffCells[2].textContent, "16.7%"); assert.ok(String(diffCells[2].className).includes("is-unknown")); assert.ok(!String(diffCells[2].className).includes("is-difference"), "missing categories retain unsigned shares and striped encoding");
+const differenceDetails = withClass(rich.target, "analysis-overview-details")[0], differenceTable = withClass(differenceDetails, "analysis-overview-exact")[0], differenceRows = differenceTable.children.find(el => el.tagName === "tbody").children.map(row => row.children.map(cell => cell.textContent));
+for (const previous of exactBeforeDifference) assert.deepEqual(differenceRows.find(row => row[0] === previous[0] && row[1] === previous[1]).slice(0, 5), previous, "difference mode leaves every original exact count, denominator and row share unchanged");
+assert.match(differenceTable.textContent, /Pooled report-lens baseline includes each row/); assert.match(differenceTable.textContent, /Report-lens share Difference \(pp\)/);
+assert.deepEqual(differenceRows.find(row => row[0] === "1950s" && row[1] === "Triangle"), ["1950s", "Triangle", "0", "60", "0.0%", "36.4%", "−36.4 pp"], "a supported zero-count contrast can be inspected alongside its pooled reference");
+assert.equal(differenceRows.find(row => row[0] === "1950s" && row[1] === "Craft unknown").at(-1), "—", "unknown axes never receive a signed contrast in the exact table");
+differenceDetails.open = false; await differenceDetails.dispatchEvent({ type: "toggle" }); differenceDetails.open = true; await differenceDetails.dispatchEvent({ type: "toggle" }); await differenceDetails.dispatchEvent({ type: "toggle" });
+assert.equal(withClass(differenceDetails, "analysis-overview-exact").length, 1, "repeated disclosure toggles do not append duplicate exact tables");
+assert.equal(withClass(rich.target, "analysis-overview-scale-zero")[0].textContent, "0", "the diverging scale visibly labels its zero midpoint");
+const craftHeader = withClass(rich.target, "analysis-overview-header-craft").find(el => el.getAttribute("data-overview-craft-key") === "disc_saucer");
+assert.equal(craftHeader.style["--overview-category"], "#38bdf8", "categorical header dots use the canonical map legend color");
+const sameCraftSegment = walk(rich.target).find(el => el.getAttribute("data-overview-craft-segment") === "disc_saucer"); assert.equal(sameCraftSegment.style["--overview-category"], "#38bdf8", "country profiles retain the same craft color independently of category rank");
+craftHeader.focus(); await craftHeader.click(); assert.equal(rich.view.getState().craftFocus, "disc_saucer");
+assert.equal(rich.doc.activeElement.getAttribute("data-overview-craft-key"), "disc_saucer"); assert.equal(rich.doc.activeElement.getAttribute("aria-pressed"), "true", "focus controls retain keyboard focus and pressed state after a redraw");
+assert.match(rich.target.textContent, /visual emphasis only; report populations unchanged/);
+const highlightedCards = withClass(rich.target, "analysis-overview-card"), seasonCard = highlightedCards.find(el => el.children[0].children[0].children[0].textContent === "Seasonality");
+assert.ok(withClass(highlightedCards[0], "is-craft-muted").length > 0); assert.equal(withClass(seasonCard, "is-craft-muted").length, 0, "charts without a craft dimension are never dimmed by craft highlighting");
+assert.equal(withClass(highlightedCards[0], "analysis-overview-cell")[0].textContent, "+28.8 pp", "highlighting changes emphasis without recalculating or filtering counts");
+await findButton(rich.target, "Clear highlight").click(); assert.equal(rich.view.getState().craftFocus, null); assert.equal(withClass(rich.target, "is-craft-muted").length, 0);
+
+// Selecting a rare category in the positive lens must keep it visible when
+// returning to the broad population where it falls outside the top seven.
+const focusRare = fixture(), actualKeys = ["disc_saucer", "sphere_orb", "triangle", "cigar_cylinder", "oval_egg", "chevron_boomerang", "rectangle_box", "teardrop"];
+const actualBroad = values(71, 71, 0, [["1990", "1990s", 71, [10, 10, 10, 10, 10, 10, 10, 1]]], actualKeys.map((key, i) => [key, key, i === 7 ? 1 : 10]));
+const actualPositive = values(1, 1, 0, [["1990", "1990s", 1, [1]]], [["teardrop", "teardrop", 1]]), absentPositive = values(1, 1, 0, [["1990", "1990s", 1, [1]]], [["disc_saucer", "disc_saucer", 1]]);
+const focusRareModel = { ...rareModel, cards: [{ ...rareModel.cards[0], lanes: { all: actualBroad, beings: actualPositive } }] };
+focusRare.view.render({ model: focusRareModel }); let focusLens = walk(focusRare.target).find(el => el.tagName === "select"); focusLens.value = "beings"; await focusLens.dispatchEvent({ type: "change" });
+let rareHeader = withClass(focusRare.target, "analysis-overview-header-craft").find(el => el.getAttribute("data-overview-craft-key") === "teardrop"); rareHeader.focus(); await rareHeader.click();
+focusLens = walk(focusRare.target).find(el => el.tagName === "select"); focusLens.value = "all"; await focusLens.dispatchEvent({ type: "change" });
+assert.equal(focusRare.view.getState().craftFocus, "teardrop"); assert.equal(withClass(focusRare.target, "analysis-overview-matrix")[0].style["--overview-column-count"], 8, "a focused rare craft is forced into the otherwise truncated axis");
+focusRare.view.render({ model: { ...focusRareModel, cards: [{ ...focusRareModel.cards[0], lanes: { all: actualBroad, beings: absentPositive } }] } });
+focusLens = walk(focusRare.target).find(el => el.tagName === "select"); focusLens.value = "beings"; await focusLens.dispatchEvent({ type: "change" });
+assert.equal(focusRare.view.getState().craftFocus, null); assert.match(focusRare.target.textContent, /Highlight cleared: Teardrop is not indexed in this report lens/); assert.equal(withClass(focusRare.target, "is-craft-muted").length, 0);
+
+const fallbackGlobal = {}; runInNewContext(readFileSync(new URL("../analysis_overview_view.js", import.meta.url), "utf8"), { globalThis: fallbackGlobal });
+const fallbackDoc = { createElement(tag) { return new Element(tag, this); } }, fallbackTarget = fallbackDoc.createElement("div");
+const fallback = fallbackGlobal.UfoAnalysisOverviewView.create(fallbackTarget); fallback.render({ model: richModel });
+assert.equal(findButton(fallbackTarget, "Difference").disabled, true, "a missing optional helper explicitly disables differences rather than fabricating metrics");
+await findButton(fallbackTarget, "Report count").click(); assert.equal(fallback.getState().mode, "count", "ordinary count charts remain available when the optional visual helper is unavailable");
 console.log("Analysis overview view tests passed");
