@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "preview": "https://25ccc615.ufo-timeline.pages.dev/",
+  "source": "dce0a8b16a738ceb2910441a3354971bc5129628",
+  "surface": "Analysis / Overview / Pattern dashboard",
+  "population": {
+    "dates": "All Time",
+    "otherFilters": "Existing default report filters retained",
+    "unit": "report representations",
+    "allActive": 334511,
+    "indexedBeings": 2368,
+    "reportedAbductionsPositive": 823
+  },
+  "checks": {
+    "allThreeLenses": true,
+    "countsAndRowShare": true,
+    "modeFocusRetained": true,
+    "nativeCraftEraChartRevealedFromCell": true,
+    "additionalPatternsDisclosure": true,
+    "exactCountsTable": true,
+    "previousOverviewSubviewsReachable": true,
+    "geographyHydratedAfterOverview": true,
+    "consoleErrors": [],
+    "viewportResetAfterPhoneCheck": true
+  },
+  "desktop": {"clientWidth":1265,"documentScrollWidth":1265,"wideTimeCardWidth":973,"pairedCardWidth":480},
+  "phone": {"overrideWidth":390,"overrideHeight":844,"clientWidth":375,"documentScrollWidth":375,"matrixContainerWidth":285,"matrixContentWidth":635},
+  "screenshots": ["desktop-dashboard.png","phone-dashboard.png"],
+  "productionChanged": false
+}

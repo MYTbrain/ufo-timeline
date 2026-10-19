@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-19T21:05:06.755313+00:00",
+  "previewUrl": "https://25ccc615.ufo-timeline.pages.dev",
+  "alias": "https://analysis-groups-20261018.ufo-timeline.pages.dev/",
+  "source": "dce0a8b16a738ceb2910441a3354971bc5129628",
+  "previousSource": "c0ee782d81f264f6f9ef4d3ec2489f82efcaa138",
+  "pagesTreeSha256": "fa82251b973bacd4c9a77360ef23dc9ad4ca4ca3cb8702cb8d632b83a999ca37",
+  "runtimeFilesVerifiedAgainstCommittedBlobsAndStage": 221,
+  "publicFiles": 219,
+  "changedPublicFilesVerified": [
+    {
+      "path": "analysis_overview.css",
+      "bytes": 13171,
+      "sha256": "f49feac844be242601a3854464406471db9aacbf9e2b4986163d5f455834ebeb"
+    },
+    {
+      "path": "analysis_overview_model.js",
+      "bytes": 14492,
+      "sha256": "8c232401f9e146d375ebc00e8f4613f0b045d529d683317c829e171ccdb26327"
+    },
+    {
+      "path": "analysis_overview_view.js",
+      "bytes": 25699,
+      "sha256": "48f392bf5e13d3c363072686761617e0b0a8a1cc2a6b25752733a338d2d21786"
+    },
+    {
+      "path": "analysis_view.js",
+      "bytes": 513581,
+      "sha256": "29529ca64acece44a23d9657b66d903f47df9db99834ef0d934ab8a842d78a4c"
+    },
+    {
+      "path": "app.js",
+      "bytes": 1508344,
+      "sha256": "0d4ec4b08b23c345992b5406b36e8788fe1f32386de326b86ac55f7fbb4b98a2"
+    },
+    {
+      "path": "catalog_filter_worker.js",
+      "bytes": 301313,
+      "sha256": "e1f70e308bad08fd91b6209ae967c73ee84dac8bcce39bac6988f7c4272e9c46"
+    },
+    {
+      "path": "index.html",
+      "bytes": 167736,
+      "sha256": "7b96cee934935e073a643cb4627096b81b2b958630064ba8b91bbb3aa6d2f697"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-view-groups.js",
+      "bytes": 5496,
+      "sha256": "d0900cb092ea774b837dfa274781082c1367112c27bd10a481a25a52792fa12a"
+    }
+  ],
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "unchangedPublicFilesInherited": 211,
+  "inheritedVerificationReceipt": "docs/qa/analysis-inspection-20261019/public-preview.json",
+  "priorPreviewUrl": "https://a9a81802.ufo-timeline.pages.dev",
+  "immutableUploadsUnchanged": 105,
+  "immutableUploadBytesUnchanged": 581488622,
+  "inputPinsUnchanged": true,
+  "inheritedRuntimeObjectPinsUnchanged": true,
+  "finalUiChangesSinceInterimVerifiedSource": "1b53dd05ce5f459e99e12cfd49ed56f3fa1a4fbf",
+  "finalUiChangedPaths": [
+    "analysis_overview.css",
+    "analysis_overview_view.js"
+  ],
+  "removedRuntimePaths": [],
+  "productionUnchanged": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+  "storage": {
+    "corpus_copied": false,
+    "new_files_above_100MiB": [],
+    "approximate_net_local_growth_bytes": 786,
+    "existing_stage_bytes": 40960298,
+    "c_free_bytes_before_stage": 100316049408,
+    "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
+    "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
+    "rollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "superseded_staging": [],
+    "search_derivative": {
+      "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
+      "bytes": 479612933,
+      "copied_to_c": false,
+      "new_files_above_100MiB": [],
+      "purpose": "lazy keyword search only"
+    },
+    "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected.",
+    "preview_stage_total_bytes": 40961084,
+    "stage_growth_from_previous_preview_bytes": 59396,
+    "receipt_only_created_this_verification": true,
+    "c_free_bytes_at_verification": 100078424064,
+    "lifecycle": "Production remains canonical; this existing stage is the current preview candidate. Prior preview code is reproducible from c0ee782; no additional stage or corpus copy was created. No generated artifacts require deletion."
+  }
+}
