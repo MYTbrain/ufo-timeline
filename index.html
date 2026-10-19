@@ -55,6 +55,7 @@
       sessionStorage.setItem("ufoTimeline.acceptedWorkspaceSizing.v1", "1");
     }
   </script>
+  <link rel="stylesheet" href="./search_view.css?v=2026-10-18-search-v1">
 </head>
 <body>
   <div class="page-shell">
@@ -564,6 +565,7 @@
               <input id="keyword-search" type="search" placeholder="Search raw blocks, descriptions, references, extra data">
             </label>
             <p id="search-status" class="status-copy compact-status" hidden></p>
+            <div id="search-tools"></div>
             <div class="two-column filter-date-grid">
               <div class="field">
                 <label for="start-date">Start Date</label>
@@ -2068,7 +2070,11 @@
   <script src="./analysis_repair_detail_overlay.js?v=2026-10-08-reviewed-date-repairs-v1"></script>
   <script src="./progressive_catalog_runtime.js?v=2026-10-18-progressive-startup-v1"></script>
   <script src="./startup_catalog_ui.js?v=2026-10-18-progressive-startup-v2"></script>
-  <script src="./app.js?v=2026-10-18-session-v2"></script>
+  <script src="./search_query.js?v=2026-10-18-search-v1"></script>
+  <script src="./search_catalog.js?v=2026-10-18-search-v1"></script>
+  <script src="./search_runtime.js?v=2026-10-18-search-v1"></script>
+  <script src="./search_view.js?v=2026-10-18-search-v1"></script>
+  <script src="./app.js?v=2026-10-18-search-v1"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>

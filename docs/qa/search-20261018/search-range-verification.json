@@ -1,0 +1,61 @@
+{
+  "checkedAtUtc": "2026-10-19T04:17:51.573Z",
+  "scope": "Three 64-byte ranges covering text and postings packs and production and preview origins, plus one pinned metadata object; no whole pack downloads.",
+  "rangeChecks": [
+    {
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_000.pack",
+      "origin": "https://ufo-timeline.pages.dev",
+      "status": 206,
+      "contentRange": "bytes 0-63/33552723",
+      "contentType": "application/octet-stream",
+      "contentEncoding": null,
+      "allowOrigin": "https://ufo-timeline.pages.dev",
+      "exposeHeaders": "ETag,Content-Length,Content-Range,Accept-Ranges",
+      "bytes": 64,
+      "expectedSha256": "a0daf605cc2e5533ff0d5f4bbea0fde04cf37450b670125097c74e7dc3289d8b",
+      "actualSha256": "a0daf605cc2e5533ff0d5f4bbea0fde04cf37450b670125097c74e7dc3289d8b",
+      "passed": true
+    },
+    {
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_000.pack",
+      "origin": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+      "status": 206,
+      "contentRange": "bytes 64-127/33552723",
+      "contentType": "application/octet-stream",
+      "contentEncoding": null,
+      "allowOrigin": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+      "exposeHeaders": "ETag,Content-Length,Content-Range,Accept-Ranges",
+      "bytes": 64,
+      "expectedSha256": "294363ba26d5985c4c970ee0d17e36acfa93946565a3b42006740b95de491751",
+      "actualSha256": "294363ba26d5985c4c970ee0d17e36acfa93946565a3b42006740b95de491751",
+      "passed": true
+    },
+    {
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/postings_000.pack",
+      "origin": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+      "status": 206,
+      "contentRange": "bytes 0-63/33553266",
+      "contentType": "application/octet-stream",
+      "contentEncoding": null,
+      "allowOrigin": "https://analysis-groups-20261018.ufo-timeline.pages.dev",
+      "exposeHeaders": "ETag,Content-Length,Content-Range,Accept-Ranges",
+      "bytes": 64,
+      "expectedSha256": "ae4f656f4153ab14ec27c5f077377e9f8f333e2c8a9bcd430297d22ec32421cf",
+      "actualSha256": "ae4f656f4153ab14ec27c5f077377e9f8f333e2c8a9bcd430297d22ec32421cf",
+      "passed": true
+    }
+  ],
+  "metadataChecks": [
+    {
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/pages.json.gz",
+      "status": 200,
+      "bytes": 422302,
+      "sha256": "6bed112c4fa0df0c547f520a88cd0f4836026ad329d830b6cffef121279e4fd8",
+      "expectedSha256": "6bed112c4fa0df0c547f520a88cd0f4836026ad329d830b6cffef121279e4fd8",
+      "contentType": "application/gzip",
+      "contentEncoding": null,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

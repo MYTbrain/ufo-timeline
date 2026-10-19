@@ -1,0 +1,106 @@
+{
+  "release_id": "search-index-20261018-v1",
+  "manifest_sha256": "02a7141a97d8c0465eac677fdf28a0c0a82ba41393e35cd257e7c8da30f5b63e",
+  "passed": true,
+  "objects": [
+    {
+      "key": "releases/search-index-20261018-v1/ids.json.gz",
+      "status": "uploaded",
+      "sha256": "d32d93c47dda32f7b1eb5d483dda53fa868ba397447fdf969826dfd9eff9f0dc",
+      "bytes": 5927772
+    },
+    {
+      "key": "releases/search-index-20261018-v1/lexicon.json.gz",
+      "status": "uploaded",
+      "sha256": "42786c99108ada7c4af23c091d245db255dcdd16788b3425857acd23e9ddf9d1",
+      "bytes": 8316827
+    },
+    {
+      "key": "releases/search-index-20261018-v1/pages.json.gz",
+      "status": "uploaded",
+      "sha256": "6bed112c4fa0df0c547f520a88cd0f4836026ad329d830b6cffef121279e4fd8",
+      "bytes": 422302
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_000.pack",
+      "status": "uploaded",
+      "sha256": "573e6c79c968b31b5e55393093b720d9a38982087ba03aba9d1beeebdfd61ca5",
+      "bytes": 33553266
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_001.pack",
+      "status": "uploaded",
+      "sha256": "3710db4f2dce0896485c917adbe18b7589d953c39de69568031742543335a8b3",
+      "bytes": 33350682
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_002.pack",
+      "status": "uploaded",
+      "sha256": "d12a091482819f0ddb4d3bf15789129b6fddedbbdf6d0ab7d23fc2645e7a9b50",
+      "bytes": 31989317
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_000.pack",
+      "status": "uploaded",
+      "sha256": "8e5de87a747a56bea00d8b754e04fa14a0c7a80d082b318cee9824bd95b44fb2",
+      "bytes": 33552723
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_001.pack",
+      "status": "uploaded",
+      "sha256": "68a15c8fd7dd8005eca9edf807ad5d96657d3eb3988b9c142ad78165ddcc4691",
+      "bytes": 33553856
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_002.pack",
+      "status": "uploaded",
+      "sha256": "36e896b2087f12e10aa9605b390644675534e50b812abb2bdf1f8d342c090b5e",
+      "bytes": 33553349
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_003.pack",
+      "status": "uploaded",
+      "sha256": "2b28d0705e13314b8035dffeaa8b08e4c0310ff755df1cef1c88dd96fe1d891b",
+      "bytes": 33552895
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_004.pack",
+      "status": "uploaded",
+      "sha256": "739ea289871b6a028ec47df5a0d58b21ec6735ef65c319ef7e950b9e09625f16",
+      "bytes": 33552954
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_005.pack",
+      "status": "uploaded",
+      "sha256": "8e1cadb32c5336a4bd651e96d1d54edcf1d9278d4b1275fa017a2ec174c49577",
+      "bytes": 33552250
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_006.pack",
+      "status": "uploaded",
+      "sha256": "4e5102f5bde68fcb22bc85062262fe8e740eb3b3d0f818712d100a20c010832f",
+      "bytes": 33553935
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_007.pack",
+      "status": "uploaded",
+      "sha256": "5edf59b04a9f9faec1ee51cfd1b7c4ad66d712382db1511e461d7287e2f34f54",
+      "bytes": 33548421
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_008.pack",
+      "status": "uploaded",
+      "sha256": "8ffac64fa706da06303e80787580105f3bc52387878005c25332fb40a7dac521",
+      "bytes": 33549644
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_009.pack",
+      "status": "uploaded",
+      "sha256": "be16e6a63b480f7f04a65f88901550fe47642e576715983261253cd46c04038f",
+      "bytes": 28919279
+    }
+  ],
+  "failures": [],
+  "published_bytes": 444449472,
+  "original_objects_replaced": false
+}

@@ -805,6 +805,13 @@
   const loadedEventChunkIds = new Set();
   const fullEventCache = new Map();
   const searchCache = new Map();
+  let searchRuntime = null;
+  let searchRuntimeKey = "";
+  let searchView = null;
+  let searchAbortController = null;
+  let searchExcerptController = null;
+  let searchResult = null;
+  let searchResultRenderGeneration = 0;
   const markerByEventId = new Map();
 
   function getCatalogEventById(eventId) {
@@ -24970,7 +24977,7 @@
   }
 
   function getCurrentKeyword() {
-    return String(els.keywordInput.value || "").trim().toLowerCase();
+    return String(els.keywordInput.value || "").trim();
   }
 
   function normalizedMapLegendEventSelection() {
@@ -26006,6 +26013,7 @@
         '<div class="result-location">' + summary + "</div>" +
         '<div class="result-meta">' + escapeHtml(event.source || "Unknown source") + " | " + escapeHtml(event.type || "Unknown type") + "</div>" +
         "</button>" +
+        '<div data-search-excerpt hidden></div>' +
         '<div class="result-card-actions">' +
         '<button class="result-expand-toggle" type="button" data-result-expand="' + escapeHtml(event.event_id) + '" aria-expanded="' + String(state.expandedResultId === event.event_id) + '">' +
         (state.expandedResultId === event.event_id ? "Hide" : "Description") +
@@ -26023,6 +26031,7 @@
     runtime.renderedResultsWindowStart = normalizedWindow.start;
     runtime.renderedResultsWindowEnd = normalizedWindow.end;
     rebuildRenderedResultCardIndex();
+    renderSearchExcerpts(displayed);
     if (anchorEventId != null) {
       syncResultsPaneToEvent(anchorEventId, {
         reason: options && options.reason ? options.reason : "selection",
@@ -27208,99 +27217,172 @@
   }
 
   function serializeSearchableEvent(event) {
-    const parts = [
-      event.raw_event_block || "",
-      event.description || "",
-      event.time_display || "",
-      event.location_display || "",
-      event.location_raw || "",
-      event.duration_display || "",
-      (event.references || []).join("\n"),
-      event.source || "",
-      event.mapping_notes || "",
-      JSON.stringify(event.extra_data || {}),
-      JSON.stringify(event.parse_warnings || []),
-    ];
-    return parts.join("\n").toLowerCase();
+    return window.UfoSearchQuery.serializeEvent(event);
   }
 
-  function searchLoadedCatalogSummaries(keyword) {
-    const matches = new Set();
-    const normalizedKeyword = String(keyword || "").toLowerCase();
-    if (!normalizedKeyword) return matches;
-    for (const event of catalog) {
-      if (serializeSearchableEvent(event).includes(normalizedKeyword)) {
-        matches.add(event.event_id);
-      }
+  function searchDatasetKey() {
+    const config = runtime.appConfig.searchIndex || {};
+    return [analysisCatalogDatasetHash(), catalog.length, config.manifestUrl || "", config.manifestSha256 || "", config.expectedIdSetSha256 || "",
+      JSON.stringify(runtime.appConfig.locationLabelOverlay || {}),
+      JSON.stringify(runtime.appConfig.detailQualityOverlay || {}),
+      JSON.stringify(runtime.appConfig.analysisRepairDetailOverlay || {})].join("|");
+  }
+
+  function cancelKeywordSearch() {
+    if (searchAbortController) searchAbortController.abort();
+    searchAbortController = null;
+    if (searchExcerptController) searchExcerptController.abort();
+    searchExcerptController = null;
+    searchResultRenderGeneration += 1;
+    if (searchView) searchView.setState({ query: getCurrentKeyword(), status: getCurrentKeyword() ? "searching" : "idle",
+      complete: false, canUseSelection: false, busy: false, matchCount: null, message: "", summaryOnly: false,
+      completedChunks: null, totalChunks: null, scannedReports: null, totalReports: null });
+  }
+
+  function initializeSearchTools() {
+    if (searchView || !window.UfoSearchView) return searchView;
+    const target = document.getElementById("search-tools");
+    if (!target) return null;
+    searchView = window.UfoSearchView.create(target, {
+      onRetry: function () { cancelKeywordSearch(); scheduleRefresh({ immediate: true }); },
+      onUseSelection: function (input) { return captureSearchSelection(input); },
+      onHoldSelection: function (input) { return captureSearchSelection(input); },
+    });
+    return searchView;
+  }
+
+  async function captureSearchSelection(input) {
+    if (!input || input.query !== getCurrentKeyword() || !searchResult || !searchResult.complete || searchResult.query !== getCurrentKeyword() ||
+        state.lastKeyword !== searchResult.query || searchResult.datasetKey !== searchDatasetKey() ||
+        runtime.activeFilterGeneration !== state.filterGeneration) {
+      throw new Error("Wait for a complete search and the current filters before using these reports.");
     }
-    return matches;
+    const integration = window.UfoAnalysisSessionIntegration;
+    if (!integration) throw new Error("Analysis is still preparing. Try again when it is ready.");
+    const all = input.scope === "all";
+    const ids = all ? Array.from(searchResult.matches, String)
+      : window.UfoSearchCatalog.filteredIds(searchResult.matches, state.filteredCatalog);
+    if (!ids.length) throw new Error("No reports match this search in the selected scope. Try All search matches or widen the shared filters.");
+    const label = 'Search: ' + searchResult.query;
+    const payload = { eventIds: ids, label: label, source: "Full text search", scope: {
+      label: all ? "All search matches" : "Shared-filter matches",
+      timeRange: all ? { mode: "full" } : { mode: state.timeRangeMode,
+        startOrdinal: state.timeRangeStartOrdinal, endOrdinal: state.timeRangeEndOrdinal },
+    }, provenance: { query: searchResult.query, queryPlanKey: searchResult.plan.cacheKey,
+      searchCoverage: searchResult.coverage, searchIndexSha256: (runtime.appConfig.searchIndex || {}).manifestSha256 || null,
+      selectionScope: all ? "all_search_matches" : "current_shared_filters" } };
+    return input.slot ? integration.captureSelection(input.slot, payload) : integration.useSelection(payload);
+  }
+
+  function publishSearchResult(result) {
+    searchResult = result;
+    const complete = result.complete === true;
+    const view = initializeSearchTools();
+    if (view) view.setState({ query: result.query, status: complete ? "complete" : "partial", complete: complete,
+      summaryOnly: result.summaryOnly === true, matchCount: result.matches.size,
+      scannedReports: complete ? catalog.length : null, totalReports: catalog.length,
+      completedChunks: null, totalChunks: null, canUseSelection: complete, busy: false,
+      message: complete ? "Searches preserved text and corrected catalog fields, including unmapped reports."
+        : "The search index could not be fully checked. Showing loaded-summary matches; retry to search the full text.",
+      error: result.error || null });
+    setSearchStatus("");
   }
 
   async function searchAcrossFullCorpus(keyword, filterToken) {
     if (!keyword) return null;
-    const normalizedKeyword = String(keyword || "").toLowerCase();
-    if (!normalizedKeyword) return null;
-    if (searchCache.has(keyword)) {
-      setSearchStatus('Using cached full-corpus matches for "' + keyword + '".');
-      return searchCache.get(keyword);
+    const Query = window.UfoSearchQuery, CatalogSearch = window.UfoSearchCatalog;
+    const plan = Query.compile(keyword);
+    const datasetKey = searchDatasetKey(), key = datasetKey + "|" + plan.cacheKey;
+    if (filterToken !== state.filterToken || keyword !== getCurrentKeyword()) return null;
+    if (searchCache.has(key)) {
+      const cached = searchCache.get(key);
+      publishSearchResult(Object.assign({}, cached, { query: keyword }));
+      return cached.matches;
     }
-
-    const matches = new Set();
-    const chunkSource = fullCorpusSearchChunkSource();
-    const chunkManifest = chunkSource.chunks;
-    if (!chunkManifest.length) {
-      const fallbackMatches = searchLoadedCatalogSummaries(keyword);
-      searchCache.set(keyword, fallbackMatches);
-      setSearchStatus(
-        'Full preserved-text search is not hydrated yet; searched loaded summaries for "' +
-          keyword +
-          '" instead.'
-      );
-      return fallbackMatches;
+    if (searchAbortController) searchAbortController.abort();
+    const controller = new AbortController(); searchAbortController = controller;
+    const isCurrent = function () { return !controller.signal.aborted && filterToken === state.filterToken && keyword === getCurrentKeyword() && datasetKey === searchDatasetKey(); };
+    const view = initializeSearchTools();
+    if (view) view.setState({ query: keyword, status: "searching", complete: false, summaryOnly: false,
+      matchCount: null, totalReports: catalog.length, scannedReports: null, completedChunks: null, totalChunks: null,
+      canUseSelection: false, busy: false, error: null, message: "Checking the search index and corrected catalog metadata…" });
+    let supplemental = null;
+    try {
+      supplemental = await CatalogSearch.supplementalMatches(plan, catalog, { signal: controller.signal, isCurrent: isCurrent, yieldEvery: 5000 });
+      if (!isCurrent()) return null;
+      const config = runtime.appConfig.searchIndex || {};
+      if (!config.manifestUrl || !window.UfoSearchRuntime) throw new Error("The full text search index is unavailable.");
+      if (searchRuntime && searchRuntimeKey !== datasetKey) { searchRuntime.destroy(); searchRuntime = null; }
+      searchRuntimeKey = datasetKey;
+      if (!searchRuntime) searchRuntime = window.UfoSearchRuntime.create({ manifestUrl: new URL(config.manifestUrl, document.baseURI).href,
+        manifestSha256: config.manifestSha256 || undefined,
+        expectedIdSetSha256: config.expectedIdSetSha256 || undefined,
+        workerUrl: new URL("./search_worker.js?v=2026-10-18-search-v1", document.baseURI).href });
+      const found = await searchRuntime.search(plan, { signal: controller.signal, supplementalMatches: supplemental,
+        metadataComplete: true, expectedRecordCount: catalog.length, expectedIdSetSha256: config.expectedIdSetSha256 || undefined,
+        onProgress: function (progress) {
+          if (!isCurrent() || !view) return;
+          const label = progress.phase === "index" ? "Preparing the search index…"
+            : progress.phase === "verification" ? "Checking report text"
+            : progress.phase === "postings" ? "Finding indexed matches" : "Searching";
+          const detail = progress.term ? ' for “' + progress.term + '”' : "";
+          const counts = Number.isFinite(progress.total) && progress.total > 1
+            ? " (" + formatNumber(progress.completed || 0) + " / " + formatNumber(progress.total) + ")" : "";
+          view.setState({ message: progress.message || label + detail + counts + "…" });
+        } });
+      if (!isCurrent()) return null;
+      if (!found.complete) throw new Error(found.errors && found.errors.map(function (error) { return error && error.message || String(error); }).join("; ") || "Full text coverage is incomplete.");
+      const matches = new Set();
+      for (const id of found.ids || []) {
+        const event = getCatalogEventById(id);
+        if (!event) throw new Error("The search index does not match the current catalog. Retry after refreshing the page.");
+        matches.add(event.event_id);
+      }
+      const result = { query: keyword, plan: plan, datasetKey: datasetKey, matches: matches,
+        complete: true, summaryOnly: false, coverage: found.coverage };
+      searchCache.set(key, result);
+      // Bound report-ID cache memory; only verified complete searches are reusable.
+      while (searchCache.size > 6) searchCache.delete(searchCache.keys().next().value);
+      publishSearchResult(result);
+      return matches;
+    } catch (error) {
+      if (!isCurrent() || error && error.name === "AbortError") return null;
+      const matches = new Set();
+      // A failed index never masquerades as full-corpus coverage or poisons its cache.
+      for (const event of catalog) if (Query.matchEvent(plan, event)) matches.add(event.event_id);
+      publishSearchResult({ query: keyword, plan: plan, datasetKey: datasetKey, matches: matches,
+        complete: false, summaryOnly: true, coverage: { rawPreservedText: false, metadataOverlay: true },
+        error: error && error.message ? error.message : String(error) });
+      return matches;
+    } finally {
+      if (searchAbortController === controller) searchAbortController = null;
     }
-    for (let index = 0; index < chunkManifest.length; index += 1) {
-      if (filterToken !== state.filterToken) {
-        return null;
-      }
+  }
 
-      const chunk = chunkManifest[index];
-      setSearchStatus(
-        'Searching full event corpus for "' + keyword + '" (' + (index + 1) + "/" + chunkManifest.length + " chunks)..."
-      );
-      if (startup.phase !== "Ready") {
-        setStartupPhase(
-          "Searching full corpus",
-          'Scanning full event chunk ' + (index + 1) + " of " + chunkManifest.length + ' for "' + keyword + '".'
-        );
+  function renderSearchExcerpts(displayed) {
+    if (searchExcerptController) searchExcerptController.abort();
+    searchExcerptController = new AbortController();
+    const excerptSignal = searchExcerptController.signal;
+    const generation = ++searchResultRenderGeneration, result = searchResult;
+    if (!result || result.query !== getCurrentKeyword() || state.lastKeyword !== result.query || !window.UfoSearchView) return;
+    // Only the current result page asks for text. Search matches never hydrate full report chunks.
+    displayed.forEach(async function (event) {
+      const card = runtime.renderedResultCardsByEventId.get(String(event.event_id)) ||
+        runtime.renderedResultCardsByEventId.get(event.event_id);
+      const target = card && card.querySelector("[data-search-excerpt]");
+      if (!target) return;
+      let excerpt = window.UfoSearchQuery.excerpt(result.plan, serializeSearchableEvent(event), { maxLength: 230 });
+      if (!excerpt.matched && result.complete && searchRuntime) {
+        try { excerpt = await searchRuntime.getExcerpt(String(event.event_id), result.plan, { maxLength: 230, signal: excerptSignal }); }
+        catch (error) { return; }
       }
-      let events;
-      try {
-        events = await ensureFullCorpusSearchChunkLoaded(chunk.id, chunkSource.source);
-      } catch (error) {
-        console.error("[keyword-search] full-corpus chunk search failed; using loaded summaries instead.", error);
-        const fallbackMatches = searchLoadedCatalogSummaries(keyword);
-        searchCache.set(keyword, fallbackMatches);
-        setSearchStatus(
-          'Full preserved-text search is unavailable right now; searched loaded summaries for "' +
-            keyword +
-            '" instead.'
-        );
-        if (startup.phase !== "Failed") {
-          setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.");
-        }
-        return fallbackMatches;
-      }
-      for (const event of events) {
-        if (serializeSearchableEvent(event).includes(normalizedKeyword)) {
-          matches.add(event.event_id);
-        }
-      }
-    }
-
-    searchCache.set(keyword, matches);
-    setSearchStatus('Full-corpus keyword search is complete for "' + keyword + '".');
-    setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.");
-    return matches;
+      if (generation !== searchResultRenderGeneration || result !== searchResult || result.query !== getCurrentKeyword() || !target.isConnected || !excerpt.matched) return;
+      const segments = [];
+      if (excerpt.leadingEllipsis) segments.push({ text: "…", match: false });
+      segments.push.apply(segments, excerpt.segments || []);
+      if (excerpt.trailingEllipsis) segments.push({ text: "…", match: false });
+      window.UfoSearchView.renderExcerpt(target, { segments: segments, label: "Search match" });
+    });
   }
 
   function hexToRgba(hex, alpha) {
@@ -30436,16 +30518,23 @@
     let keywordMatches = null;
 
     if (keyword) {
-      keywordMatches = await searchAcrossFullCorpus(keyword, filterToken);
-      if (filterToken !== state.filterToken || generation !== state.filterGeneration) {
+      try { keywordMatches = await searchAcrossFullCorpus(keyword, filterToken); }
+      catch (error) {
+        if (filterToken !== state.filterToken) return;
+        const view = initializeSearchTools();
+        if (view) view.setState({ query: keyword, status: "error", complete: false, canUseSelection: false,
+          matchCount: null, summaryOnly: false, message: String(error.message || error) + " Previous results remain displayed." });
+        setSearchStatus("");
+        return;
+      }
+      if (keywordMatches == null || filterToken !== state.filterToken || generation !== state.filterGeneration) {
         runtime.discardedFilterGenerations += 1;
         return;
       }
     } else {
+      cancelKeywordSearch();
+      searchResult = null;
       setSearchStatus("");
-      if (startup.phase !== "Failed") {
-        setStartupPhase("Ready", "Startup complete. Filters, map markers, and full event loading are ready.");
-      }
     }
 
     state.lastKeyword = keyword;
@@ -31164,6 +31253,7 @@
   }
 
   function initializeFilters(options) {
+    initializeSearchTools();
     const values = options && options.filterValues;
     populateSelect(els.sourceFilter, values ? values.sources : uniqueValues(catalog, "source"));
     populateSelect(els.typeFilter, values ? values.types : uniqueValues(catalog, "type"));
@@ -31648,6 +31738,8 @@
 
     if (els.keywordInput) {
       els.keywordInput.addEventListener("input", function () {
+        state.filterToken += 1;
+        cancelKeywordSearch();
         resetPlayback({ preserveSelection: true });
         scheduleRefresh();
       });

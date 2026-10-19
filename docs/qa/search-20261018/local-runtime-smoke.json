@@ -1,0 +1,39 @@
+{
+  "scope": "Real immutable 702893-report search derivative, local filesystem range adapter; not internet or browser latency",
+  "indexManifestSha256": "106c37daa265789abfa13e938c941fe41dfd57eee2daef920e1d92ff1cf8f2d6",
+  "indexRoot": "D:/Codex/UFO-Timeline/search-index-20261018-v1",
+  "nodeVersion": "24.22.0",
+  "runtime": {
+    "rangeConcurrency": 12,
+    "rangeConcurrencyMaximum": 16,
+    "compressedByteCacheMiB": 12,
+    "ordinaryCoalescedRangeMaximumKiB": 256,
+    "coalescingGapMaximumBytes": 2048,
+    "singleMemberMaximumMiB": 16,
+    "requestsRequire": "HTTP206, exact Content-Range including pack size, exact byte length",
+    "metadataPinVerified": true
+  },
+  "metadataSupplement": {
+    "metadataCompleteOption": true,
+    "supplementalMatches": "An empty array for every normalized query leaf; intentionally tests raw preserved text only",
+    "currentCorrectedCatalogOverlayTestedHere": false,
+    "overlayCoverageTests": "tests/test_search_runtime.mjs and tests/test_search_catalog.mjs separately cover leaf unions and AND split between raw and corrected metadata"
+  },
+  "queries": [
+    {"query":"dna","temperature":"cold","complete":true,"matches":20427,"seconds":0.518,"requests":5,"bytes":14710045,"heapMiB":187.4,"rssMiB":479.3},
+    {"query":"ariel AND school","temperature":"warm","complete":true,"matches":4,"seconds":0.012,"requests":2,"bytes":12841,"heapMiB":82.0,"rssMiB":362.5},
+    {"query":"\"soil sample\"","temperature":"warm","complete":true,"matches":108,"seconds":0.266,"requests":584,"bytes":4697157,"heapMiB":138.1,"rssMiB":444.9},
+    {"query":"red","temperature":"warm","complete":true,"matches":377638,"seconds":0.045,"requests":1,"bytes":377638,"heapMiB":198.3,"rssMiB":497.9},
+    {"query":"light","temperature":"warm","complete":true,"matches":403899,"seconds":0.060,"requests":1,"bytes":403899,"heapMiB":191.0,"rssMiB":483.5},
+    {"query":"a","temperature":"warm","complete":true,"matches":702893,"seconds":0.118,"requests":1,"bytes":702893,"heapMiB":255.5,"rssMiB":561.9}
+  ],
+  "realReportExcerpt": {"found":true,"matched":true,"normalized":true,"query":"ariel"},
+  "total": {"requestsIncludingExcerpt":595,"packRangeRequests":591,"bytesIncludingExcerpt":20910045},
+  "limits": [
+    "Local adapter reads only requested file ranges; no server, network RTT, throttling, CORS, mobile browser or cellular conditions were measured.",
+    "Quoted phrases and punctuation are verified against independently compressed text pages; soil sample required 584 requests and may be appreciably slower over a network despite bounded concurrency.",
+    "Common fragment accelerators avoid thousands of small posting requests: red had 2001 warm range requests before acceleration and one afterward, preserving its exact 377638-report count.",
+    "Memory values are Node process observations across sequential queries, not browser requirements or measured peak residency. Broad one-character queries return the entire corpus and use larger transient result sets.",
+    "No corpus copy or new large artifact was created for this smoke run. The adapter read the existing D: derivative in place."
+  ]
+}

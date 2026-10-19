@@ -4,6 +4,150 @@
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
     {
+      "key": "releases/search-index-20261018-v1/fragments_000.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/fragments_000.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\fragments_000.pack",
+      "bytes": 33484464,
+      "sha256": "68ad141bba81b09162cd6941445be65f2a60b43e18fe88ac3e06b08c0beb9384",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/fragments_001.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/fragments_001.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\fragments_001.pack",
+      "bytes": 1678997,
+      "sha256": "e181cb3cda6ad99b53c823fa17b68daeb84949c74c263d28b2bf9a2823433ed9",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/ids.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/ids.json.gz",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\ids.json.gz",
+      "bytes": 5927772,
+      "sha256": "d32d93c47dda32f7b1eb5d483dda53fa868ba397447fdf969826dfd9eff9f0dc",
+      "content_type": "application/gzip"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/lexicon.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/lexicon.json.gz",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\lexicon.json.gz",
+      "bytes": 8316827,
+      "sha256": "42786c99108ada7c4af23c091d245db255dcdd16788b3425857acd23e9ddf9d1",
+      "content_type": "application/gzip"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/pages.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/pages.json.gz",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\pages.json.gz",
+      "bytes": 422302,
+      "sha256": "6bed112c4fa0df0c547f520a88cd0f4836026ad329d830b6cffef121279e4fd8",
+      "content_type": "application/gzip"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_000.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/postings_000.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\postings_000.pack",
+      "bytes": 33553266,
+      "sha256": "573e6c79c968b31b5e55393093b720d9a38982087ba03aba9d1beeebdfd61ca5",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_001.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/postings_001.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\postings_001.pack",
+      "bytes": 33350682,
+      "sha256": "3710db4f2dce0896485c917adbe18b7589d953c39de69568031742543335a8b3",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/postings_002.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/postings_002.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\postings_002.pack",
+      "bytes": 31989317,
+      "sha256": "d12a091482819f0ddb4d3bf15789129b6fddedbbdf6d0ab7d23fc2645e7a9b50",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_000.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_000.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_000.pack",
+      "bytes": 33552723,
+      "sha256": "8e5de87a747a56bea00d8b754e04fa14a0c7a80d082b318cee9824bd95b44fb2",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_001.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_001.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_001.pack",
+      "bytes": 33553856,
+      "sha256": "68a15c8fd7dd8005eca9edf807ad5d96657d3eb3988b9c142ad78165ddcc4691",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_002.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_002.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_002.pack",
+      "bytes": 33553349,
+      "sha256": "36e896b2087f12e10aa9605b390644675534e50b812abb2bdf1f8d342c090b5e",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_003.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_003.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_003.pack",
+      "bytes": 33552895,
+      "sha256": "2b28d0705e13314b8035dffeaa8b08e4c0310ff755df1cef1c88dd96fe1d891b",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_004.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_004.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_004.pack",
+      "bytes": 33552954,
+      "sha256": "739ea289871b6a028ec47df5a0d58b21ec6735ef65c319ef7e950b9e09625f16",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_005.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_005.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_005.pack",
+      "bytes": 33552250,
+      "sha256": "8e1cadb32c5336a4bd651e96d1d54edcf1d9278d4b1275fa017a2ec174c49577",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_006.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_006.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_006.pack",
+      "bytes": 33553935,
+      "sha256": "4e5102f5bde68fcb22bc85062262fe8e740eb3b3d0f818712d100a20c010832f",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_007.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_007.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_007.pack",
+      "bytes": 33548421,
+      "sha256": "5edf59b04a9f9faec1ee51cfd1b7c4ad66d712382db1511e461d7287e2f34f54",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_008.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_008.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_008.pack",
+      "bytes": 33549644,
+      "sha256": "8ffac64fa706da06303e80787580105f3bc52387878005c25332fb40a7dac521",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/text_009.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/text_009.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\text_009.pack",
+      "bytes": 28919279,
+      "sha256": "be16e6a63b480f7f04a65f88901550fe47642e576715983261253cd46c04038f",
+      "content_type": "application/octet-stream"
+    },
+    {
       "key": "releases/workspace-analysis-20261008/data/analysis_comparisons/context_rows.json.gz",
       "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_comparisons/context_rows.json.gz",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_comparisons\\context_rows.json.gz",
@@ -700,5 +844,5 @@
       "content_type": "application/gzip"
     }
   ],
-  "upload_total_bytes": 101875689
+  "upload_total_bytes": 581488622
 }

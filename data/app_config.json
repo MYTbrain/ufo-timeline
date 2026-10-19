@@ -141,5 +141,12 @@
   "encounterEvidence": {
     "enabled": true,
     "manifestUrl": "./data/encounters/manifest.json"
+  },
+  "searchIndex": {
+    "manifestUrl": "./data/search/manifest.json",
+    "manifestSha256": "d9758dd835b9b3e47eb65203459132fcf96913e9dd26f94859d63b99edce1f9c",
+    "expectedRecordCount": 702893,
+    "expectedIdSetSha256": "c7d723deb1b172ebd8938ab1e3399d2e807c7e6c4aa48a107b636dea363df8f2",
+    "loadPolicy": "first_keyword_search"
   }
 }

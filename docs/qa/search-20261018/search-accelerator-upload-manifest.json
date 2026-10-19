@@ -1,0 +1,24 @@
+{
+  "release_id": "search-index-20261018-v1",
+  "bucket": "ufo-timeline-data",
+  "key_prefix": "releases/search-index-20261018-v1",
+  "uploads": [
+    {
+      "key": "releases/search-index-20261018-v1/fragments_000.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/fragments_000.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\fragments_000.pack",
+      "bytes": 33484464,
+      "sha256": "68ad141bba81b09162cd6941445be65f2a60b43e18fe88ac3e06b08c0beb9384",
+      "content_type": "application/octet-stream"
+    },
+    {
+      "key": "releases/search-index-20261018-v1/fragments_001.pack",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/fragments_001.pack",
+      "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\fragments_001.pack",
+      "bytes": 1678997,
+      "sha256": "e181cb3cda6ad99b53c823fa17b68daeb84949c74c263d28b2bf9a2823433ed9",
+      "content_type": "application/octet-stream"
+    }
+  ],
+  "upload_total_bytes": 35163461
+}

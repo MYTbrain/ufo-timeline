@@ -22,7 +22,7 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "16443086-c630-41d8-a793-92a0243a76f6"
-RUNTIME_REVISION = "temporary-analysis-preview-20261018-v3"
+RUNTIME_REVISION = "search-preview-20261018-v1"
 RETAINED_ROLLBACK = "b4e04dc8-4605-486e-bdbc-174acd3ca37e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -37,6 +37,10 @@ PROGRESSIVE_MANIFEST = PROGRESSIVE_PROFILE + "/progressive_manifest.json"
 PROGRESSIVE_VIEW = PROGRESSIVE_PROFILE + "/progressive_view.json.gz"
 COLLECTION_MANIFEST = "data/collections/manifest.json"
 COLLECTION_EVIDENCE = "data/collections/evidence.json.gz"
+SEARCH_MANIFEST = "data/search/manifest.json"
+SEARCH_DIRECTORY = Path(r"D:/Codex/UFO-Timeline/search-index-20261018-v1")
+SEARCH_SOURCE_MANIFEST_SHA256 = "106c37daa265789abfa13e938c941fe41dfd57eee2daef920e1d92ff1cf8f2d6"
+SEARCH_PREFIX = "releases/search-index-20261018-v1"
 
 
 def require(ok, message):
@@ -176,7 +180,13 @@ def add_collection_study_pages(pages, pin):
 
 
 def validate_refresh(previous, plan):
-    require(previous["uploads"] == plan["uploads"], "Immutable uploads changed during candidate refresh")
+    old_uploads = {r["key"]: r for r in previous["uploads"]}
+    new_uploads = {r["key"]: r for r in plan["uploads"]}
+    require(old_uploads.keys() <= new_uploads.keys() and
+            all(new_uploads[key] == row for key, row in old_uploads.items()),
+            "Immutable uploads changed during candidate refresh")
+    require(all(key.startswith(SEARCH_PREFIX + "/") for key in new_uploads.keys() - old_uploads.keys()),
+            "Immutable uploads may only add the reviewed search index objects")
     old_paths = {r["path"] for r in previous["pages"]}
     new_paths = {r["path"] for r in plan["pages"]}
     require(old_paths <= new_paths and new_paths - old_paths <= {
@@ -187,7 +197,8 @@ def validate_refresh(previous, plan):
         PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
         "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
         "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
-        COLLECTION_MANIFEST, COLLECTION_EVIDENCE,
+        COLLECTION_MANIFEST, COLLECTION_EVIDENCE, SEARCH_MANIFEST,
+        "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
     }, "Candidate file inventory changed beyond the reviewed runtime assets")
 
@@ -204,13 +215,13 @@ def assemble(check_only=False):
         require(path.is_file(), "Missing protected input: " + str(path))
         input_pins.append({"path": str(path), "bytes": path.stat().st_size, "sha256": sha(path), "role": role})
 
-    def upload(path, logical):
+    def upload(path, logical, prefix=PREFIX):
         require(path.is_file(), "Missing changed asset: " + str(path))
         require(".." not in logical.split("/") and not logical.startswith("/"), "Unsafe logical path")
-        key = PREFIX + "/" + logical
+        key = prefix + "/" + logical
         uploads[key] = {"key": key, "url": ORIGIN + "/" + key, "source": str(path.resolve()),
                         "bytes": path.stat().st_size, "sha256": sha(path),
-                        "content_type": "application/gzip" if logical.endswith(".gz") else "application/json"}
+                        "content_type": "application/gzip" if logical.endswith(".gz") else "application/octet-stream" if logical.endswith(".pack") else "application/json"}
         return ORIGIN + "/" + key
 
     def page_json(logical, value):
@@ -225,6 +236,7 @@ def assemble(check_only=False):
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
+                   "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
                    "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
                    "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"]
     for name in new_runtime:
@@ -234,6 +246,30 @@ def assemble(check_only=False):
             pages[path.relative_to(ROOT).as_posix()] = path
 
     config = copy.deepcopy(load(ROOT / "data/app_config.json"))
+    source_search_manifest = SEARCH_DIRECTORY / "manifest.json"
+    require(source_search_manifest.is_file() and sha(source_search_manifest) == SEARCH_SOURCE_MANIFEST_SHA256,
+            "Search source manifest pin drift")
+    search = load(source_search_manifest)
+    require(search["schemaVersion"] == 1 and search["recordCount"] == 702893 and
+            search["coverage"]["complete"] is True and search["coverage"]["includesUnmapped"] is True and
+            search["coverage"]["currentCatalogIdSetSha256"] == search["coverage"]["indexedIdSetSha256"],
+            "Search index is not the complete current corpus")
+    pin(source_search_manifest, "bounded D-drive search derivative manifest; canonical corpus remains in place")
+    search_members = [search[k] for k in ("ids", "pages", "lexicon")] + search["textPacks"] + search["postingPacks"] + search.get("fragmentPacks", [])
+    for member in search_members:
+        name = member["file"]
+        require(Path(name).name == name and ".." not in name, "Unsafe search derivative member")
+        source = SEARCH_DIRECTORY / name
+        require(source.stat().st_size == member["bytes"] and sha(source) == member["sha256"] and
+                member["bytes"] <= 32 * 1024**2, "Search derivative member pin drift: " + name)
+        member["file"] = upload(source, name, SEARCH_PREFIX)
+    require(sum(row["bytes"] for row in search_members) < 900 * 1024**2, "Search derivative cap exceeded")
+    search.pop("sourceProof", None)  # Local input paths are provenance, not public runtime assets.
+    page_json(SEARCH_MANIFEST, search)
+    search_blob = (json.dumps(search, indent=2, ensure_ascii=False) + "\n").encode()
+    config["searchIndex"] = {"manifestUrl": "./" + SEARCH_MANIFEST,
+        "manifestSha256": hashlib.sha256(search_blob).hexdigest(), "expectedRecordCount": 702893,
+        "expectedIdSetSha256": search["coverage"]["indexedIdSetSha256"], "loadPolicy": "first_keyword_search"}
     config["staticAssetVersion"] = RELEASE
     config["analysisWorkspaceRelease"] = {"id": RELEASE, "baseDeployment": BASE_DEPLOYMENT,
                                          "sourceRowsPreserved": 702893, "mappedRowsPreserved": 582877}
@@ -417,11 +453,18 @@ def assemble(check_only=False):
                         "existing_stage_bytes": existing_bytes, "c_free_bytes_before_stage": free_bytes,
                         "canonical_candidate": str(PAGES), "shared_inputs": str(REPAIRS),
                         "rollback": RETAINED_ROLLBACK, "superseded_staging": [],
+                        "search_derivative": {"canonical_candidate": str(SEARCH_DIRECTORY),
+                            "bytes": sum(row["bytes"] for row in search_members), "copied_to_c": False,
+                            "new_files_above_100MiB": [], "purpose": "lazy keyword search only"},
                         "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected."}}
     if not check_only:
         validate_browser_references(records)
         write(META / "delivery_plan.json", plan)
         write(META / "upload_manifest.json", {k:plan[k] for k in ("release_id", "bucket", "key_prefix", "uploads", "upload_total_bytes")})
+        search_uploads = [row for row in plan["uploads"] if row["key"].startswith(SEARCH_PREFIX + "/")]
+        write(META / "search_upload_manifest.json", {"release_id": SEARCH_PREFIX.split("/")[-1], "bucket": plan["bucket"],
+              "key_prefix": SEARCH_PREFIX, "uploads": search_uploads,
+              "upload_total_bytes": sum(row["bytes"] for row in search_uploads)})
     return plan
 
 

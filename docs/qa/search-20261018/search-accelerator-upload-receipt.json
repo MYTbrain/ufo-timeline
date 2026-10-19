@@ -1,0 +1,22 @@
+{
+  "release_id": "search-index-20261018-v1",
+  "manifest_sha256": "9c1d9ced50b7427dd81b80f915f4c57d71e2d47c5f0c837519708772f5bb89b5",
+  "passed": true,
+  "objects": [
+    {
+      "key": "releases/search-index-20261018-v1/fragments_000.pack",
+      "status": "uploaded",
+      "sha256": "68ad141bba81b09162cd6941445be65f2a60b43e18fe88ac3e06b08c0beb9384",
+      "bytes": 33484464
+    },
+    {
+      "key": "releases/search-index-20261018-v1/fragments_001.pack",
+      "status": "uploaded",
+      "sha256": "e181cb3cda6ad99b53c823fa17b68daeb84949c74c263d28b2bf9a2823433ed9",
+      "bytes": 1678997
+    }
+  ],
+  "failures": [],
+  "published_bytes": 35163461,
+  "original_objects_replaced": false
+}
