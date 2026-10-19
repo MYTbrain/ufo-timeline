@@ -4016,6 +4016,44 @@
       container.appendChild(visual);
     }
 
+    _openOverviewChart(section, metadata) {
+      const charts = {
+        craft_decade: "analysis-craft-era-chart", craft_month: "analysis-month-year-chart",
+        craft_country: "analysis-geography-grid-chart", being_craft: "analysis-being-craft-chart",
+        month_decade: "analysis-time-series-chart", source_decade: "analysis-source-time-chart",
+        being_decade: "analysis-encounter-time-chart", crops: "analysis-crop-time-chart",
+        animals: "analysis-animal-time-chart", facilities: "analysis-facility-context-chart",
+        comparisons: "analysis-comparisons-chart", collections: "analysis-collections-chart",
+        spatial: "analysis-cooccurrence-chart", "sources-quality": "analysis-source-composition-chart",
+      };
+      const key = metadata && metadata.card || section;
+      const chart = charts[key] || charts[section];
+      if (chart) return this._openSupportingChart(chart);
+      return this.navigateToSection("analysis-section-" + String(section || "overview").replace(/_/g, "-"), { updateHash: true, focus: true, source: "overview-dashboard" });
+    }
+
+    _renderOverviewExplorer(payload, summary) {
+      const target = this.document.getElementById("analysis-overview-explore");
+      if (!target) return;
+      const api = this.documentView && this.documentView.UfoAnalysisOverviewView ||
+        (typeof globalThis !== "undefined" && globalThis.UfoAnalysisOverviewView);
+      if (!api || typeof api.create !== "function") { target.textContent = "The pattern dashboard could not load. The detailed Analysis sections remain available."; return; }
+      if (!this.overviewExplorer) this.overviewExplorer = api.create(target, {
+        onOpenSection: (section, metadata) => this._openOverviewChart(section, metadata),
+      });
+      const source = payload.overviewExplorer || { status: "unavailable", totalN: summary.activeCount, reason: "The comparison overview is not available for this result.", cards: [] };
+      const context = payload.context || {};
+      const contexts = [["crops", "Crop circles"], ["animals", "Animal reports"]].map(([key, label]) => {
+        const data = context[key] || {}, ready = data.enabled === true && data.status === "ready" && Number.isSafeInteger(data.activeCount);
+        return { section: key, label: label, available: ready,
+          detail: ready ? formatCount(data.activeCount) + " records in this date window · separate catalog" : "Open this catalog's coverage and date evidence" };
+      }).concat([
+        { section: "collections", label: "Soil & plant collections", available: false, detail: "Reviewed collection accounts · being and craft comparisons" },
+        { section: "comparisons", label: "Moon, planets & nuclear activity", available: payload.comparisonEvidence && payload.comparisonEvidence.status === "ready", detail: "Date and location comparisons · detailed evidence on open" },
+      ]);
+      this.overviewExplorer.render({ model: Object.assign({}, source, { contexts: contexts }), result: payload, summary: summary });
+    }
+
     _renderContextPulse(chartId, data, summary) {
       const container = this._prepareChart(chartId, [true], summary, "Context summaries are not available.");
       if (!container) return;
@@ -7490,6 +7528,7 @@
       const relationshipContextJobs = [];
       encounterJobs.push(() => this._renderEncounterEvidence(data.encounters, summary));
       encounterJobs.push(() => { if (this.collectionStudy) this.collectionStudy.refresh(); });
+      overviewJobs.push(() => this._renderOverviewExplorer(payload, summary));
       overviewJobs.push(() => this._renderEligibilityFunnel("analysis-coverage-chart", data.overviewCoverage, summary, { caption: "Analysis eligibility funnel", limit: 8 }));
       overviewJobs.push(() => this._renderCoverageOrbit("analysis-overview-coverage-visual", data.overviewCoverage, summary));
       overviewJobs.push(() => this._renderCraftMosaic("analysis-overview-craft-mosaic", data.craftDistribution, summary, { caption: "Overview craft composition", defaultKind: "filter", limit: 9 }));
@@ -7643,7 +7682,7 @@
         { sectionId: "analysis-section-encounters", targets: ["analysis-encounter-context-chart"] });
       this.renderFinalState = summary.activeCount > 0 ? "ready" : "empty";
       this.renderPlans = new Map([
-        ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
+        ["analysis-section-overview", { jobs: overviewJobs, targets: ["analysis-overview-explore", "analysis-coverage-chart", "analysis-overview-coverage-visual", "analysis-overview-craft-mosaic", "analysis-overview-context-visual", "analysis-comparison-chart", "analysis-pattern-list"] }],
         ["analysis-section-time", { jobs: timeJobs, targets: ["analysis-time-series-chart", "analysis-reporting-delay-chart", "analysis-reporting-delay-comparison-chart", "analysis-duration-chart", "analysis-duration-comparison-chart", "analysis-time-of-day-chart", "analysis-time-of-day-comparison-chart", "analysis-month-year-chart"] }],
         ["analysis-section-craft", { jobs: craftJobs, targets: ["analysis-craft-distribution-chart", "analysis-color-chart", "analysis-color-comparison-chart", "analysis-craft-confidence-chart", "analysis-craft-era-chart"] }],
         ["analysis-section-encounters", { jobs: encounterJobs, targets: ["analysis-abduction-profile-chart", "analysis-being-profile-chart", "analysis-being-craft-chart", "analysis-abduction-craft-chart", "analysis-encounter-time-chart", "analysis-encounter-source-chart", "analysis-encounter-coverage-chart", "analysis-encounter-atlas-chart", "analysis-encounter-context-chart"] }],
@@ -7880,6 +7919,8 @@
     }
 
     destroy() {
+      if (this.overviewExplorer && typeof this.overviewExplorer.destroy === "function") this.overviewExplorer.destroy();
+      this.overviewExplorer = null;
       this._cancelRenderSequence();
       if (this.sectionObserver && typeof this.sectionObserver.disconnect === "function") this.sectionObserver.disconnect();
       this.sectionObserver = null;

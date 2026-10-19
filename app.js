@@ -9476,7 +9476,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-inspect-analysis-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-overview-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -10634,6 +10634,15 @@
       },
       onRenderComplete: function () {
         syncAnalysisComparisonWorkspace();
+        const analysisController = runtime.analysisViewController;
+        if (state.activeView === "analysis" && runtime.analysisSessionMode !== "compare" &&
+            analysisController && analysisController.activeSectionId === "analysis-section-overview" &&
+            analysisController.latestResult && analysisController.latestResult.overviewExplorer &&
+            analysisController.latestResult.overviewExplorer.status === "ready_descriptive" &&
+            !runtime.analysisOverviewGeographyRequested) {
+          runtime.analysisOverviewGeographyRequested = true;
+          ensureAnalysisGeographyArtifact().catch(function () { return null; });
+        }
         if (runtime.analysisTimeEvidenceLoadPending && state.activeView === "analysis") {
           runtime.analysisTimeEvidenceLoadPending = false;
           requestAnalysisTimeEvidence();

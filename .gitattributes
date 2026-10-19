@@ -238,3 +238,6 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /analysis_session_comparisons.js -text
 /analysis_session_inspection.js -text
 /analysis_session_sources.js -text
+/analysis_overview_model.js -text
+/analysis_overview_view.js -text
+/analysis_overview.css -text

@@ -11,6 +11,12 @@
   const groups = {
     overview: [
       {
+        key: "explore",
+        label: "Pattern dashboard",
+        anchorIds: ["analysis-overview-explore"],
+        rootSelectors: ["#analysis-overview-explore"],
+      },
+      {
         key: "cohort",
         label: "Cohort overview",
         anchorIds: ["analysis-overview-coverage-visual", "analysis-cohort-banner"],

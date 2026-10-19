@@ -2507,6 +2507,32 @@
       quickMode: Boolean(message.quickMode),
       contextProjections: analysisContext,
     });
+    if (selectedDomains.indexOf("overview") !== -1) {
+      try {
+        if (!self.UfoAnalysisOverviewModel && typeof importScripts === "function") importScripts("./analysis_overview_model.js?v=2026-10-19-overview-v1");
+        const model = self.UfoAnalysisOverviewModel;
+        if (!model) throw new Error("The overview comparison module is unavailable.");
+        const range = analysisActiveRange(message);
+        result.overviewExplorer = model.compute({
+          forEachRow: function (visit) {
+            const collect = function (row) {
+              if (!matched && !analysisRowMatches(row, filters, keywordIds, areaEventIds, areaShapes, lowPrecisionValues)) return;
+              if (range && !rowOverlapsDateRange(row, range[0], range[1])) return;
+              visit(row);
+            };
+            if (matched) forEachMatchedAnalysisRow(matched, collect); else forEachAnalysisRow(collect);
+          },
+          encounterApi: encounterEvidenceReady ? ensureEncounterApi() : null,
+          encounterEvidenceReady: encounterEvidenceReady,
+          encounterEvidenceMode: message.encounterEvidenceMode || "all",
+          geographyProjectionLoaded: Boolean(analysisGeographyArtifact.loaded), statsApi: stats,
+        });
+        if (result.overviewExplorer.totalN !== result.summary.activeCount) throw new Error("The overview population does not match the active Analysis reports.");
+      } catch (error) {
+        result.overviewExplorer = { status: "unavailable", totalN: result.summary.activeCount,
+          reason: error && error.message || "Overview comparisons could not be prepared.", cards: [] };
+      }
+    }
     const contextEvidenceRequested = selectedDomains.indexOf("context") !== -1 &&
       ((Array.isArray(analysisSpatialArtifacts.relationshipRows) && analysisSpatialArtifacts.relationshipRows.length > 0) ||
         (Array.isArray(analysisSpatialArtifacts.contextNeighbors) && analysisSpatialArtifacts.contextNeighbors.length > 0));
