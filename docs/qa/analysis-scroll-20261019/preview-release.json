@@ -1,0 +1,32 @@
+{
+  "schemaId": "ufo-analysis-scroll-preview-v1",
+  "status": "preview_verified",
+  "sourceCommit": "b6963778f80d8afd2a7f8dcd6ba50b71b44e79f8",
+  "previewUrl": "https://175eb326.ufo-timeline.pages.dev/#analysis-section-overview",
+  "deploymentId": "175eb326-a7ae-4e1c-9589-4ffce1627687",
+  "githubBranch": "codex/analysis-scroll-20261019",
+  "providerCheck": "completed/success",
+  "observedUtc": "2026-10-20T03:49:22.661051+00:00",
+  "verification": [
+    "baseline.json",
+    "browser.json",
+    "public.json",
+    "independent.json"
+  ],
+  "productionUnchanged": {
+    "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1"
+  },
+  "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "storage": {
+    "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
+    "stageGrowthBytes": 957,
+    "approximateNetTaskGrowth": "under1MiB including UI/source/Git/QA/screenshot",
+    "newFilesAbove100MiB": [],
+    "dataObjectsCreated": 0,
+    "largeCopiesCreated": 0,
+    "supersededLocalStages": [],
+    "retention": "Single existing stage is the current repair preview; validated production and one rollback remain protected. Temporary hosted preview is superseded after later authorized promotion. No deletion or extra backup performed."
+  },
+  "receiptCommittedLocally": true
+}

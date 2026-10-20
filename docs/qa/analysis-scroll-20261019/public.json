@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "url": "https://175eb326.ufo-timeline.pages.dev/",
+  "sourceCommit": "b696377",
+  "pagesTreeSha256": "ea4b081d0a45561c1ca3764b190995800352fd55abe12cacf30833d3518edc7e",
+  "changedFiles": [
+    {
+      "path": "analysis_comparisons.css",
+      "bytes": 8913,
+      "sha256": "218b11255b57931b8fc83d0fd39b18dcff94418e6de25260b1566d6f997f51a6"
+    },
+    {
+      "path": "analysis_overview.css",
+      "bytes": 20197,
+      "sha256": "27eda8ae2271b7087607cb6be9c78c493dbf66473c730f535ba58c55776543d6"
+    },
+    {
+      "path": "analysis_readiness.css",
+      "bytes": 17155,
+      "sha256": "ca2413b2b8a7ce9564b80155a1023474aa55c2f256e67b54f912a1cc0dc1fb96"
+    },
+    {
+      "path": "data/app_config.json",
+      "bytes": 7648,
+      "sha256": "99e4421ce2d1a3a4dfd8c28674d85c12954258b4c4d6cd59c0cbc2a714c13508"
+    },
+    {
+      "path": "index.html",
+      "bytes": 167945,
+      "sha256": "8c16e1c8c01bf00ec4ef9dac7a27b7588cea01516be7cb92b5172a0b1cb79f3a"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 278042,
+      "sha256": "0ffe88667dd4cf11a2ee0a353816c732e8c85b1d09c673b0df39bc1179c2ef1e"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.css",
+      "bytes": 8439,
+      "sha256": "f50b8f2516cfa7a988bb0abb79a2ef81afd19b88e813aa323c767f4b33ec1295"
+    },
+    {
+      "path": "ui/accepted-workspace/analysis-navigation.js",
+      "bytes": 15230,
+      "sha256": "a9a835dc146c984d1b99cfcf43df4f34261974de6704b8e2bebcc866b1f2f7a0"
+    }
+  ],
+  "unchangedFilesVerifiedByExactGitByteIdentity": 221,
+  "unchangedRuntimeReference": "production a49d5164 / source83e1ed4 public-files.json",
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "dataUploads": 0,
+  "newLargeFiles": [],
+  "observedUtc": "2026-10-20T03:38:24.669564+00:00"
+}

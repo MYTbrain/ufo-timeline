@@ -1,0 +1,125 @@
+{
+  "observedUtc": "2026-10-20T03:48:09.446Z",
+  "preview": "https://175eb326.ufo-timeline.pages.dev/",
+  "sourceCommit": "b696377",
+  "wheel": {
+    "before": {
+      "hit": "TD",
+      "pageMax": 5044,
+      "y": 4554
+    },
+    "after": {
+      "pageMax": 5044,
+      "y": 5044
+    },
+    "upBefore": {
+      "hit": "TD",
+      "y": 4324
+    },
+    "upAfter": {
+      "y": 3604
+    }
+  },
+  "innerPane": {
+    "phone": {
+      "bottom": 347.34375,
+      "height": 523,
+      "left": 48,
+      "overscrollY": "auto",
+      "pageMax": 3045,
+      "pageY": 2737,
+      "scrollHeight": 1828,
+      "scrollTop": 0,
+      "top": -192.65625,
+      "width": 262
+    },
+    "firstScroll": {
+      "innerY": 844,
+      "pageY": 2737
+    },
+    "bottom": {
+      "hit": "TH",
+      "innerMax": 1305,
+      "innerY": 1305,
+      "pageY": 2737
+    },
+    "handoff": {
+      "innerY": 1305,
+      "pageMax": 3045,
+      "pageY": 3045
+    }
+  },
+  "shortScreen": {
+    "flow": true,
+    "pageY": 403,
+    "toolbar": {
+      "height": 252.90625,
+      "position": "static",
+      "top": -90.15625
+    },
+    "viewport": {
+      "height": 390,
+      "width": 844
+    }
+  },
+  "phone": {
+    "flow": false,
+    "pageHeight": 3250,
+    "pageWidth": 375,
+    "pageY": 403,
+    "toolbarHeight": 176.8125,
+    "viewport": {
+      "height": 844,
+      "width": 390
+    }
+  },
+  "dialog": {
+    "before": {
+      "bodyBottom": 629.1875,
+      "bodyTop": 122.421875,
+      "innerMax": 3341,
+      "innerY": 0,
+      "pageY": 671,
+      "width": 1103
+    },
+    "scrolled": {
+      "innerY": 720,
+      "pageY": 671
+    },
+    "bottom": {
+      "innerMax": 3341,
+      "innerY": 3341,
+      "pageY": 671
+    },
+    "phone": {
+      "bodyHeight": 600,
+      "bodyMax": 3709,
+      "closeVisible": true,
+      "dialog": {
+        "bottom": 827.109375,
+        "left": 6,
+        "right": 369,
+        "top": 16.875
+      },
+      "overscrollY": "contain",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    }
+  },
+  "restored": {
+    "flow": false,
+    "height": 720,
+    "heldGroups": [
+      "Not set",
+      "Not set"
+    ],
+    "toolbarPosition": "sticky",
+    "width": 1280
+  },
+  "temporaryGroupsCleared": true,
+  "consoleErrors": [],
+  "screenshot": "preview.png",
+  "note": "Actual wheel input tested through supported browser UI; phone-size viewport emulated, physical-device touch not claimed."
+}

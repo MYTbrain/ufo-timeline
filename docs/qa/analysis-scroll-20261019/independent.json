@@ -1,0 +1,58 @@
+{
+  "schema": "ufo-analysis-scroll-independent-review-v1",
+  "reviewedAtUtc": "2026-10-20T03:38:08.071996+00:00",
+  "commit": "b6963778f80d8afd2a7f8dcd6ba50b71b44e79f8",
+  "result": "pass",
+  "scope": "Independent static review and focused actual-installer regression; root owns real hosted browser checks.",
+  "pageScrollRules": {
+    "verifiedRuleCount": 7,
+    "vertical": "auto",
+    "horizontal": "contain"
+  },
+  "protectedStylesByteIdentical": {
+    "analysis_session.css": true,
+    "encounter_analysis.css": true,
+    "guided_tour.css": true
+  },
+  "protectedRulesIdentical": {
+    ".analysis-preview-drawer": true,
+    ".map-control-cluster-body": true,
+    ".map-legend-body": true
+  },
+  "dialogAssessment": "A/B inspector remains a max-height flex dialog with min-height:0 overflow:auto contained body. Encounter source dialog and fixed preview drawer retain bounded scrolling. No changed dialog height or overflow clipping declarations.",
+  "navigationAssessment": "Observer synchronization only adjusts the inner rail. Outer page scroll exists solely in explicit revealTopicStart path. Toolbar class and offset styles are absent from the observed attribute filter; offset write is value-guarded; sticky-to-static does not change normal-flow toolbar dimensions. Resize callbacks coalesce in requestAnimationFrame.",
+  "focusedRegression": {
+    "command": "node tests/test_analysis_navigation_scroll.mjs",
+    "exitCode": 0,
+    "checks": [
+      "background mutations preserve outer page position",
+      "explicit click and keyboard heading reveal",
+      "short-screen and expanded-toolbar fallback",
+      "sticky restoration",
+      "stable measurements avoid repeated style writes"
+    ]
+  },
+  "releaseIntegrity": {
+    "committedRuntimeFilesChecked": 229,
+    "hashOrSizeMismatches": 0,
+    "dataPlanFieldsUnchanged": [
+      "uploads",
+      "upload_total_bytes",
+      "inherited_runtime_objects",
+      "input_pins",
+      "context_recovery",
+      "counts",
+      "bucket",
+      "key_prefix"
+    ],
+    "dataObjectsAddedOrRewritten": 0,
+    "sourceCorpusChanged": false
+  },
+  "limits": [
+    "Hosted wheel, touch, computed-style and modal behavior are verified separately by root browser checks."
+  ],
+  "storage": {
+    "newFilesAbove100MiB": [],
+    "purpose": "Small independent QA receipt for the current scroll repair candidate; retained with release evidence."
+  }
+}
