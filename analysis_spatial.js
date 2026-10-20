@@ -959,6 +959,10 @@
       contextId: text(row.contextId),
       clusterId: text(firstDefined(row.clusterId, row.contextClusterId)),
       contextOrdinal: finite(row.contextOrdinal, null),
+      contextEndOrdinal: finite(row.contextEndOrdinal, null),
+      contextDatePrecision: text(firstDefined(
+        row.contextDatePrecision, row.contextDatePrecisionCode
+      )),
       ufoEventId: text(row.ufoEventId),
       distanceDecameters: finite(row.distanceDecameters, null),
       dayLag: finite(row.dayLag, null),
@@ -1263,6 +1267,113 @@
     };
   }
 
+  function contextCraftTemporal(rowsValue, observedRole) {
+    // Public-marker neighbor artifacts admit only exact-day context markers.
+    // The persisted ordinal is Python/statistics-day (0001-01-01 = 1), and is
+    // the original animal context date even on matched-control rows. Controls
+    // must never be counted as additional reports on this descriptive timeline.
+    const rows = Array.isArray(rowsValue) ? rowsValue : [];
+    const clusters = new Map();
+    const excluded = { controls: 0, origin: 0, nonIndependent: 0, noNeighbor: 0, noCluster: 0 };
+    function ordinalYear(value) {
+      if (!Number.isInteger(value) || value < 1 || value > 3652059) return null;
+      const year = new Date((value - 719163) * 86400000).getUTCFullYear();
+      return Number.isInteger(year) && year >= 1 && year <= 9999 ? year : null;
+    }
+    rows.forEach(function (row) {
+      if (row.dateRole !== observedRole) { excluded.controls += 1; return; }
+      if (row.originUfoExcluded || row.originPublisherExcluded) { excluded.origin += 1; return; }
+      if (!row.independentEligible) { excluded.nonIndependent += 1; return; }
+      if (!row.ufoEventId || !row.craft || row.craft === "none") { excluded.noNeighbor += 1; return; }
+      if (!row.clusterId) { excluded.noCluster += 1; return; }
+      if (!clusters.has(row.clusterId)) clusters.set(row.clusterId, { crafts: new Set(), dates: new Map(), unknown: false });
+      const cluster = clusters.get(row.clusterId);
+      cluster.crafts.add(row.craft);
+      const start = row.contextOrdinal;
+      const end = row.contextEndOrdinal == null ? start : row.contextEndOrdinal;
+      const precision = text(row.contextDatePrecision).toLowerCase();
+      const startYear = ordinalYear(start);
+      const endYear = ordinalYear(end);
+      // Optional unpacked rows can carry ranges. Never choose one endpoint
+      // for a period that the full range or conflicting cluster dates cross.
+      const pointPrecision = !precision || ["day", "exact_day", "month", "year"].indexOf(precision) !== -1;
+      if (startYear == null || endYear == null || end < start || (!pointPrecision && row.contextEndOrdinal == null)) {
+        cluster.unknown = true;
+        return;
+      }
+      cluster.dates.set(start + "|" + end, { startYear, endYear });
+    });
+    function summarize(periodUnit) {
+      const membership = new Map();
+      const timedClusters = new Set();
+      let unknownDateCount = 0;
+      let ambiguousPeriodCount = 0;
+      let unknownLabelCount = 0;
+      const toPeriod = periodUnit === "year" ? function (year) { return year; } : function (year) { return Math.floor(year / 10) * 10; };
+      clusters.forEach(function (cluster, clusterId) {
+        if (cluster.unknown || !cluster.dates.size) { unknownDateCount += 1; return; }
+        const periods = new Set();
+        cluster.dates.forEach(function (bounds) {
+          periods.add(toPeriod(bounds.startYear)); periods.add(toPeriod(bounds.endYear));
+        });
+        if (periods.size !== 1) { ambiguousPeriodCount += 1; return; }
+        const period = String(Array.from(periods)[0]);
+        timedClusters.add(clusterId);
+        cluster.crafts.forEach(function (craft) {
+          if (!membership.has(craft)) membership.set(craft, new Map());
+          const craftPeriods = membership.get(craft);
+          if (!craftPeriods.has(period)) craftPeriods.set(period, new Set());
+          craftPeriods.get(period).add(clusterId);
+        });
+        if (cluster.crafts.has("unknown")) unknownLabelCount += 1;
+      });
+      const crafts = Array.from(membership.keys()).sort();
+      const periods = Array.from(new Set(Array.from(membership.values()).reduce(function (values, craftPeriods) {
+        return values.concat(Array.from(craftPeriods.keys()));
+      }, []))).sort(function (left, right) { return Number(left) - Number(right); });
+      let membershipCount = 0;
+      const cells = [];
+      crafts.forEach(function (craft) {
+        periods.forEach(function (period) {
+          const members = membership.get(craft).get(period);
+          const count = members ? members.size : 0;
+          membershipCount += count;
+          cells.push({
+            row: craft, column: period, count, observedCount: count, observedClusterCount: count,
+            referenceCount: null, value: count, estimateAvailable: true,
+            inferenceEligible: false, patternFinderEligible: false,
+            pValue: null, p_value: null, p: null, qValue: null, q_value: null, q: null,
+            evidenceStatus: "descriptive_only", supportReasons: ["descriptive_timeline_not_inferential"],
+          });
+        });
+      });
+      return {
+        cells, rows: crafts, columns: periods,
+        metadata: {
+          periodUnit,
+          membershipUnit: "unique animal-report location/date cluster per neighboring craft/period",
+          dateBasis: "animal context marker date, not neighboring UFO date",
+          ordinalEpoch: "statistics_day",
+          observedDateRole: observedRole,
+          activeReportCount: clusters.size, referenceReportCount: null,
+          activeTimedReportCount: timedClusters.size, referenceTimedReportCount: null,
+          activeUnknownDateCount: unknownDateCount, referenceUnknownDateCount: null,
+          activeAmbiguousPeriodCount: ambiguousPeriodCount, referenceAmbiguousPeriodCount: null,
+          activeUnknownLabelCount: unknownLabelCount, referenceUnknownLabelCount: null,
+          activeMembershipCount: membershipCount, referenceMembershipCount: null,
+          excludedControlRowCount: excluded.controls,
+          excludedOriginRowCount: excluded.origin,
+          excludedNonIndependentRowCount: excluded.nonIndependent,
+          excludedNoNeighborRowCount: excluded.noNeighbor,
+          excludedMissingClusterRowCount: excluded.noCluster,
+          descriptiveOnly: true,
+          policy: "Only observed-role independent animal context clusters with an active eligible neighboring craft report are counted. A cluster may contribute to multiple craft categories; these are not counts of animals, independent incidents, or established craft relationships. Ranges crossing a period are excluded from that period view.",
+        },
+      };
+    }
+    return { yearly: summarize("year"), decadal: summarize("decade") };
+  }
+
   function computeContextLane(laneValue, optionsValue) {
     const options = optionsValue || {};
     const rows = Array.isArray(options.rows) ? options.rows : [];
@@ -1397,7 +1508,7 @@
         strictDistanceClassificationCounts.bandAmbiguous += 1;
       }
     });
-    return {
+    const result = {
       estimatorVersion: ESTIMATOR_VERSION,
       lane,
       evidenceClass: strictLane
@@ -1439,6 +1550,8 @@
           ? ["Crop-locality centroid association only; distances do not locate a formation site.", "Time is catalog date, not established formation time."]
           : ["Bounded crop-marker sensitivity uses catalog dates, not established formation times."],
     };
+    if (lane === "animal_public_marker") result.temporal = { craft: contextCraftTemporal(allLaneRows, observedRole) };
+    return result;
   }
 
   function computeContextAssociations(optionsValue) {

@@ -22,7 +22,7 @@ RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
 BASE_DEPLOYMENT = "a49d5164-2f86-48e7-9d4c-9d8686d015d9"
-RUNTIME_REVISION = "analysis-scroll-species-preview-20261019-v2"
+RUNTIME_REVISION = "animal-time-preview-20261020-v1"
 RETAINED_ROLLBACK = "16b1c76f-8896-4c00-ab00-4676212a941e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
@@ -44,6 +44,40 @@ SEARCH_PREFIX = "releases/search-index-20261018-v1"
 CONTEXT_RELEASE = "context-recovery-20261019-v1"
 CONTEXT_DIRECTORY = Path("D:/UFO-Timeline-Context-Evidence/releases") / CONTEXT_RELEASE
 CONTEXT_INTEGRATION = CONTEXT_DIRECTORY / "integration.json"
+ANIMAL_TEMPORAL_FILES = {
+    "data/analysis_v1/animal_reports_temporal.json",
+    "data/analysis_v1/animal_reports_temporal.json.gz",
+    "data/analysis_v1/animal_temporal_provenance.json",
+}
+ANIMAL_COUNTRY_SEED = Path("C:/Users/jarod/Documents/Cattle Mutilation Map/outputs/phase1_1/global_animal_seed_v1_1/canonical_incidents.jsonl")
+
+
+def add_animal_temporal_pages(pages, derived, pin, check_only=False):
+    """Append only explicit country information to the small animal projection."""
+    from build_animal_temporal_projection import build_animal_temporal_projection
+    result = build_animal_temporal_projection(CONTEXT_DIRECTORY, ANIMAL_COUNTRY_SEED, ROOT,
+                                               write_outputs=not check_only)
+    pin(ROOT / "scripts/build_animal_temporal_projection.py", "deterministic animal country extension builder")
+    for record in result["inputPins"]:
+        pin(Path(record["path"]), "animal temporal projection: " + record["role"])
+    for logical in sorted(ANIMAL_TEMPORAL_FILES):
+        pages[logical] = ROOT / logical
+    animal = result["projection"]
+    manifest = derived["data/analysis_v1/manifest.json"]
+    manifest["artifacts"]["animalReports"] = {
+        key: animal[key] for key in ("file", "gzipFile", "sha256", "bytes", "gzipSha256",
+                                    "gzipBytes", "rowCount", "rowSchema")
+    }
+    manifest["releaseId"] += ".animal-time-country-v1"
+    manifest["sources"]["animalReports"]["countryExtension"] = {
+        "schemaId": "ufo-animal-temporal-country-projection-v1",
+        "provenanceFile": "data/analysis_v1/animal_temporal_provenance.json",
+        "provenanceSha256": result["provenance"]["sha256"],
+        "knownCountry": result["counts"]["knownCountry"],
+        "unknownCountry": result["counts"]["unknownCountry"],
+        "sourceCountsChanged": False,
+    }
+    return result
 
 
 def add_context_recovery(pages, derived, uploads, config, pin):
@@ -241,6 +275,7 @@ def validate_refresh(previous, plan):
         "analysis_overview_model.js", "analysis_overview_visuals.js", "analysis_overview_view.js", "analysis_overview.css",
         "analysis_readiness_model.js", "analysis_readiness_view.js", "analysis_readiness.css", "ufocat_references.js", "mufon_date_review.js", "data/source_citations/manifest.json", "data/source_citations/phillips.json.gz",
         COLLECTION_MANIFEST, COLLECTION_EVIDENCE, SEARCH_MANIFEST,
+        *ANIMAL_TEMPORAL_FILES,
         "search_query.js", "search_catalog.js", "search_runtime.js", "search_worker.js", "search_view.js", "search_view.css",
         "guided_tour.css", "guided_tour.js", "guided_tour_content.js", "guided_tour_state.js", "help_panel.js"
     }, "Candidate file inventory changed beyond the reviewed runtime assets")
@@ -453,6 +488,7 @@ def assemble(check_only=False):
     add_progressive_startup_pages(pages, pin, uploads)
     add_collection_study_pages(pages, pin)
     context_recovery = add_context_recovery(pages, derived, uploads, config, pin)
+    animal_temporal = add_animal_temporal_pages(pages, derived, pin, check_only)
 
     # A frozen manifest can be published both at its Pages lookup location and
     # at the immutable delivery prefix used by its explicit URLs.
@@ -508,6 +544,9 @@ def assemble(check_only=False):
     plan["context_recovery"] = {"integration": str(CONTEXT_INTEGRATION),
                                 "counts": context_recovery["counts"],
                                 "storage": context_recovery["storage"]}
+    plan["animal_temporal"] = {"counts": animal_temporal["counts"],
+                               "provenance": animal_temporal["provenance"],
+                               "source_fields_preserved": True}
     if not check_only:
         validate_browser_references(records)
         write(META / "delivery_plan.json", plan)

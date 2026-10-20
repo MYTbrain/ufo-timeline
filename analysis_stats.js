@@ -5534,6 +5534,7 @@
           return lookupProjectionCode([projection, manifest], "animalReports", ["speciesGroup", "species_group"], value);
         }),
         mapped: Boolean(row[5]),
+        country: lookupProjectionCode([projection, manifest], "animalReports", ["country"], row[9]),
         lat: null,
         lon: null,
         status: lookupProjectionCode([projection, manifest], "animalReports", ["status", "reviewStatus"], row[6]),
@@ -5549,6 +5550,7 @@
       endYear: finiteInteger(source.endYear || source.end_year || source.year),
       datePrecision: category(source.datePrecision || source.date_precision, "unknown"),
       species: (Array.isArray(source.species) ? source.species : (source.speciesGroups || [])).map(function (value) { return category(value, "unknown"); }),
+      country: category(source.country, "unknown"),
       mapped: typeof source.mapped === "boolean" ? source.mapped : validCoordinates(source),
       lat: finiteNumber(source.lat),
       lon: finiteNumber(source.lon),
@@ -5701,6 +5703,108 @@
       return Object.assign({}, datum, metadata);
     });
     return { values, metadata };
+  }
+
+  // A stored interval contributes to a named time bin only when every date in
+  // that interval belongs to it. The first year of a multi-year record is not
+  // an observed event year; unknown and excluded intervals remain explicit.
+  function contextPeriod(row, periodUnit) {
+    const interval = contextRowInterval(row);
+    if (!interval) return { key: "unknown", status: "unknown_date" };
+    const start = civilFromOrdinal(interval.start);
+    const end = civilFromOrdinal(interval.end);
+    if (!start || !end) return { key: "unknown", status: "unknown_date" };
+    const lower = periodUnit === "decade" ? Math.floor(start.year / 10) * 10 : start.year;
+    const upper = periodUnit === "decade" ? Math.floor(end.year / 10) * 10 : end.year;
+    return lower === upper
+      ? { key: String(lower), status: "timed" }
+      : { key: null, status: "ambiguous_period" };
+  }
+
+  function contextTemporalCounts(rows, descriptor, dimensionAccessor, periodUnit, membershipUnit, multiLabel) {
+    const active = new Map();
+    const reference = new Map();
+    const labels = new Set();
+    const periods = new Set();
+    const metadata = {
+      periodUnit,
+      membershipUnit,
+      unitOfAnalysis: membershipUnit,
+      multiLabel: Boolean(multiLabel),
+      totalsMayExceedReportN: Boolean(multiLabel),
+      descriptiveOnly: true,
+      inferenceEligible: false,
+      patternFinderEligible: false,
+      countPolicy: "Each report contributes once per distinct label to one supported period; no interpolation or occurrence date is inferred.",
+      datePolicy: "Unknown dates use an explicit Unknown column. Intervals spanning multiple " + (periodUnit === "decade" ? "decades" : "years") + " are excluded from named bins and counted separately.",
+    };
+    ["active", "reference"].forEach(function (cohort) {
+      ["ReportCount", "TimedReportCount", "UnknownDateCount", "AmbiguousPeriodCount", "UnknownLabelCount", "MembershipCount"].forEach(function (suffix) {
+        metadata[cohort + suffix] = 0;
+      });
+    });
+    rows.forEach(function (row) {
+      const membership = contextMembership(row, descriptor);
+      if (!membership.active && !membership.reference) return;
+      const rawLabels = dimensionAccessor(row);
+      const values = Array.isArray(rawLabels) ? rawLabels : [rawLabels];
+      const categories = Array.from(new Set(values.map(function (value) { return isKnown(value) ? category(value) : "unknown"; })));
+      if (!categories.length) categories.push("unknown");
+      const period = contextPeriod(row, periodUnit);
+      ["active", "reference"].forEach(function (cohort) {
+        if (!membership[cohort]) return;
+        metadata[cohort + "ReportCount"] += 1;
+        if (categories.indexOf("unknown") !== -1) metadata[cohort + "UnknownLabelCount"] += 1;
+        if (period.status === "ambiguous_period") metadata[cohort + "AmbiguousPeriodCount"] += 1;
+        else if (period.status === "unknown_date") metadata[cohort + "UnknownDateCount"] += 1;
+        else metadata[cohort + "TimedReportCount"] += 1;
+      });
+      if (period.key == null) return;
+      periods.add(period.key);
+      categories.forEach(function (label) {
+        labels.add(label);
+        const key = JSON.stringify([label, period.key]);
+        if (membership.active) { incrementRaw(active, key, 1); metadata.activeMembershipCount += 1; }
+        if (membership.reference) { incrementRaw(reference, key, 1); metadata.referenceMembershipCount += 1; }
+      });
+    });
+    const rowKeys = Array.from(labels).sort(function (left, right) {
+      return Number(left === "unknown") - Number(right === "unknown") || left.localeCompare(right);
+    });
+    const columnKeys = Array.from(periods).sort(function (left, right) {
+      return Number(left === "unknown") - Number(right === "unknown") || Number(left) - Number(right);
+    });
+    const cells = [];
+    rowKeys.forEach(function (row) {
+      columnKeys.forEach(function (column) {
+        const key = JSON.stringify([row, column]);
+        const observedCount = active.get(key) || 0;
+        const referenceCount = reference.get(key) || 0;
+        cells.push({
+          row, column, count: observedCount, value: observedCount, observed: observedCount, observedCount,
+          reference: referenceCount, referenceCount,
+          estimateAvailable: true, tested: false, inferenceEligible: false, patternFinderEligible: false,
+          pValue: null, qValue: null, evidenceStatus: "descriptive", suppressionStatus: "descriptive",
+          supportReasons: ["descriptive_animal_report_counts"],
+        });
+      });
+    });
+    return { cells, rows: rowKeys, columns: columnKeys, metadata };
+  }
+
+  function animalTemporalCounts(rows, descriptor) {
+    const species = function (row) { return row.species.length ? row.species : ["unknown"]; };
+    const country = function (row) { return row.country; };
+    return {
+      species: {
+        yearly: contextTemporalCounts(rows, descriptor, species, "year", "animal-report-to-species-group memberships", true),
+        decadal: contextTemporalCounts(rows, descriptor, species, "decade", "animal-report-to-species-group memberships", true),
+      },
+      locations: {
+        yearly: contextTemporalCounts(rows, descriptor, country, "year", "animal reports with explicit country assignments", false),
+        decadal: contextTemporalCounts(rows, descriptor, country, "decade", "animal reports with explicit country assignments", false),
+      },
+    };
   }
 
   function contextCoverage(rows, descriptor, definitions) {
@@ -5864,6 +5968,7 @@
         totalProjectionRows: projections.animalReports.length,
         summary: animalSummary,
         time: contextCounts(projections.animalReports, descriptor, function (row) { return row.year == null ? "unknown" : String(row.year); }, "year"),
+        temporal: animalTemporalCounts(projections.animalReports, descriptor),
         species: speciesMembership.values,
         speciesMembership: speciesMembership.metadata,
         speciesMembershipUnit: speciesMembership.metadata.membershipUnit,

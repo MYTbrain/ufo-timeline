@@ -4751,7 +4751,9 @@
       const config = options || {};
       const axisMaximum = config.descriptiveCounts === true ? 32 : HEATMAP_AXIS_LIMIT;
       const axisLimit = Math.max(1, Math.min(axisMaximum, Number(config.axisLimit) || HEATMAP_AXIS_LIMIT));
-      const columnMaximum = config.speciesColumns === true ? Object.keys(SPECIES_DISPLAY_LABELS).length : axisMaximum;
+      const columnMaximum = config.temporalCounts === true && config.descriptiveCounts === true
+        ? Math.max(axisMaximum, asArray(config.axisColumns).length)
+        : (config.speciesColumns === true ? Object.keys(SPECIES_DISPLAY_LABELS).length : axisMaximum);
       const columnAxisLimit = Math.max(1, Math.min(columnMaximum, Number(config.columnAxisLimit) || axisLimit));
       const display = heatmapDisplayItems(value, config.valueKeys);
       const fullData = display.data;
@@ -4798,7 +4800,10 @@
         displayedRows = shared;
         displayedColumns = shared.slice();
       } else {
-        displayedRows = sortSemanticAxis(rows.slice(0, axisLimit), rowKind, config.rowAxisOrder || firstDefined(rowMetadata, ["order", "labels"], []));
+        const rowCandidates = config.keepUnknownRow === true && rows.length > axisLimit && rows.includes("unknown")
+          ? rows.filter(function (row) { return row !== "unknown"; }).slice(0, axisLimit - 1).concat("unknown")
+          : rows.slice(0, axisLimit);
+        displayedRows = sortSemanticAxis(rowCandidates, rowKind, config.rowAxisOrder || firstDefined(rowMetadata, ["order", "labels"], []));
         const columnCandidates = fixedAxisColumns.length
           ? fixedAxisColumns.concat(columns.filter(function (column) { return fixedAxisColumns.indexOf(column) === -1; }))
           : columns;
@@ -4842,7 +4847,7 @@
         "p",
         "analysis-qualification-summary" + (qualifiedCount ? "" : " is-descriptive-only"),
         config.descriptiveCounts
-          ? formatCount(config.preserveUnavailableCells ? completeData.length : fullData.length) + " " + (config.combinationLabel || "reported being–craft combinations") + " · each report counts once per combination."
+          ? (config.qualificationText || formatCount(config.preserveUnavailableCells ? completeData.length : fullData.length) + " " + (config.combinationLabel || "reported being–craft combinations") + " · each report counts once per combination.")
           : qualifiedCount
           ? formatCount(qualifiedCount) + " inferentially qualified " + (qualifiedCount === 1 ? "cell" : "cells") + " · " + formatCount(descriptiveCount) + " additional descriptive " + (descriptiveCount === 1 ? "estimate" : "estimates")
           : "No cells qualify for inference in this view. " + formatCount(descriptiveCount) + " descriptive " + (descriptiveCount === 1 ? "estimate remains" : "estimates remain") + " visible."
@@ -4924,7 +4929,7 @@
             const expected = config.descriptiveCounts ? null : firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "reference", "expected"], null);
             const countText = observed == null && expected == null
               ? ""
-              : (config.descriptiveCounts ? (config.valueFormat === "percent" ? formatCount(observed) + " reports" : "reports") : "O " + formatCount(observed) + (expected == null ? "" : " · E " + (typeof config.expectedCountFormatter === "function" ? config.expectedCountFormatter(expected) : formatCount(expected))));
+              : (config.descriptiveCounts ? (config.valueFormat === "percent" ? formatCount(observed) + " " + (config.countNoun || "reports") : (config.countNoun || "reports")) : "O " + formatCount(observed) + (expected == null ? "" : " · E " + (typeof config.expectedCountFormatter === "function" ? config.expectedCountFormatter(expected) : formatCount(expected))));
             if (countText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-counts", countText));
             const interval = config.descriptiveCounts ? null : intervalBounds(item);
             const pValue = config.descriptiveCounts ? null : firstDefined(item, ["pValue", "p_value", "p"], null);
@@ -4961,9 +4966,9 @@
       }
       this._appendLazyDataTable(
         container,
-        (config.caption || "Heatmap") + (config.descriptiveCounts ? " complete report counts" : " complete qualified data"),
+        (config.caption || "Heatmap") + (config.descriptiveCounts ? " complete " + (config.countNounSingular || "report") + " counts" : " complete qualified data"),
         config.descriptiveCounts
-          ? [config.rowHeading || "Group", config.columnHeading || "Column", "Reports", config.countShareLabel || "Share of eligible co-reports"].concat(config.encounterDenominators ? ["Within-row share", "Row eligible N", "Within-column share", "Column eligible N", "Supported-row share", "Supported-row N", "Source-balanced row share", "Source-balanced column share", "Conditional difference (percentage points)", "Common support", "Shared strata"] : [])
+          ? [config.rowHeading || "Group", config.columnHeading || "Column", config.countColumnLabel || "Reports", config.countShareLabel || "Share of eligible co-reports"].concat(config.encounterDenominators ? ["Within-row share", "Row eligible N", "Within-column share", "Column eligible N", "Supported-row share", "Supported-row N", "Source-balanced row share", "Source-balanced column share", "Conditional difference (percentage points)", "Common support", "Shared strata"] : [])
           : [config.rowHeading || "Group", "Column", "Effect", "Observed n", "Expected/reference n", "95% interval", "p-value", "q-value", "Support", "Status"],
         completeData.map(function (item) {
           const rawRow = cleanText(firstDefined(item, ["row", "rowLabel", "group", "category"], "All"), "All");
@@ -4994,8 +4999,125 @@
       if (peak) {
         const peakRow = formatRowLabel(cleanText(firstDefined(peak, ["row", "rowLabel", "group", "category"], "All")));
         const peakColumn = formatColumnLabel(cleanText(firstDefined(peak, ["column", "columnLabel", "period", "month", "year", "label"], "Value")));
-        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? (config.countPeakLabel || "Most co-reported: ") : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? (config.valueFormat === "percent" ? ")." : " reports).") : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
+        container.appendChild(this._element("p", "analysis-chart-summary", (config.descriptiveCounts ? (config.countPeakLabel || "Most co-reported: ") : "Largest displayed magnitude: ") + peakRow + " / " + peakColumn + " (" + formatValue(comparativeEffect(peak, config.valueKeys)) + (config.descriptiveCounts ? (config.valueFormat === "percent" ? ")." : " " + (config.countNoun || "reports") + ").") : ") · " + (inferenceEligible(peak) ? "inferentially qualified" : "descriptive") + ".")));
       }
+    }
+
+    _renderAnimalTemporalChart(chartId, value, summary, options) {
+      const config = options || {};
+      const kind = config.kind || "species";
+      const source = isObject(value) ? value : {};
+      const labels = kind === "craft"
+        ? { caption: "Nearby craft type over time", heading: "Nearby craft", unit: "clusters", counted: "animal-report clusters" }
+        : kind === "locations"
+        ? { caption: "Country over time", heading: "Country", unit: "reports", counted: "reports" }
+        : { caption: "Animal type over time", heading: "Animal type", unit: "reports", counted: "reports" };
+      const choices = this.animalTemporalSelections || (this.animalTemporalSelections = new Map());
+      const previous = choices.get(chartId) || { period: "decadal", cohort: "active" };
+      const version = this.resultRenderVersion;
+      const render = (periodKey, cohortKey) => {
+        if (this.resultRenderVersion !== version) return;
+        const period = isObject(source[periodKey]) ? source[periodKey] : {};
+        const metadata = isObject(period.metadata) ? period.metadata : {};
+        const sourceCells = firstArray(period, ["cells"]);
+        const canReference = this.currentAnalysisMode !== "whole_corpus_structure"
+          && (typeof metadata.referenceReportCount === "number" && Number.isFinite(metadata.referenceReportCount)
+            || sourceCells.some(function (cell) { return typeof cell.referenceCount === "number" && Number.isFinite(cell.referenceCount); }));
+        const selected = canReference && cohortKey === "reference" ? "reference" : "active";
+        choices.set(chartId, { period: periodKey, cohort: selected });
+        const prefix = selected === "reference" ? "reference" : "active";
+        const cohortLabel = selected === "reference" ? "Reference reports" : (this.currentAnalysisMode === "whole_corpus_structure" ? "All matched reports" : "Selected reports");
+        const countField = selected === "reference" ? "referenceCount" : "observedCount";
+        const totalMemberships = sourceCells.reduce(function (sum, cell) { return sum + Math.max(0, finiteNumber(cell[countField])); }, 0);
+        const cells = sourceCells.map(function (cell) {
+          const count = Math.max(0, finiteNumber(cell[countField]));
+          return Object.assign({}, cell, { count, observedCount: count, value: count,
+            referenceCount: null, share: totalMemberships > 0 ? count / totalMemberships : null,
+            estimateAvailable: true, inferenceEligible: false, patternFinderEligible: false,
+            pValue: null, qValue: null, p_value: null, q_value: null });
+        });
+        const rowTotals = new Map();
+        cells.forEach(function (cell) { rowTotals.set(cell.row, (rowTotals.get(cell.row) || 0) + cell.count); });
+        const rows = Array.from(new Set(firstArray(period, ["rows"]).concat(cells.map(function (cell) { return cell.row; })))).map(cleanText).filter(Boolean).sort(function (left, right) {
+          if (left === "unknown" || right === "unknown") return left === right ? 0 : (left === "unknown" ? 1 : -1);
+          return (rowTotals.get(right) || 0) - (rowTotals.get(left) || 0) || left.localeCompare(right);
+        });
+        const columns = sortSemanticAxis(firstArray(period, ["columns"]).concat(cells.map(function (cell) { return cell.column; })), "year");
+        let countryNames = null;
+        if (kind === "locations" && typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
+          try { countryNames = new Intl.DisplayNames(["en"], { type: "region" }); } catch (_error) { countryNames = null; }
+        }
+        const rowLabel = kind === "craft" ? craftDisplayLabel : kind === "species" ? speciesDisplayLabel : function (key) {
+          if (key === "unknown") return "Unknown country";
+          const label = cleanText(key);
+          if (countryNames && /^[A-Z]{2}$/.test(label)) {
+            try { return countryNames.of(label) || label; } catch (_error) { return label; }
+          }
+          return label;
+        };
+        const periodLabel = function (key) {
+          if (key === "unknown") return "Unknown date";
+          return periodKey === "decadal" ? key + "s" : key;
+        };
+        this._renderHeatmap(chartId, cells, summary, {
+          caption: labels.caption + " · " + cohortLabel.toLowerCase(), rowHeading: labels.heading,
+          columnHeading: periodKey === "decadal" ? "Decade" : "Year",
+          descriptiveCounts: true, temporalCounts: true, inspectable: false, preserveUnavailableCells: true,
+          axisLimit: 32, keepUnknownRow: kind === "locations", columnAxisLimit: Math.max(1, columns.length),
+          axisRows: rows, rowAxisOrder: rows, axisColumns: columns, columnAxisOrder: columns, columnAxisKind: "year",
+          rowLabelFormatter: rowLabel, columnLabelFormatter: periodLabel,
+          valueKeys: ["count"], completeData: cells, countNoun: labels.unit, countNounSingular: kind === "craft" ? "cluster" : "report",
+          countColumnLabel: kind === "craft" ? "Animal-report clusters" : "Animal reports",
+          countShareLabel: "Share of displayed-cohort category/period memberships",
+          countStatusText: "descriptive " + labels.counted + " count",
+          zeroCountLabel: "zero indexed " + labels.counted + " in this category and period.",
+          qualificationText: cohortLabel + " · descriptive counts only · " + formatCount(totalMemberships) + " category/period memberships",
+          descriptiveLegend: "Darker teal = more " + labels.counted + ". Read left to right through time; counts describe the retained reports, not population rates.",
+          countPeakLabel: "Largest displayed count: ",
+          emptyMessage: Number(metadata[prefix + "ReportCount"]) > 0
+            ? "No records can be assigned to this period view. Date-coverage exclusions are shown below; a wider period may retain more records."
+            : (kind === "craft" ? "Nearby craft timing evidence has not loaded or no eligible animal-report neighborhoods match this window. The animal catalog remains available in the other views." : "No animal-report timing records are available for this window."),
+        });
+        const container = this.document.getElementById(chartId);
+        if (!container) return;
+        const controls = this._element("div", "analysis-timeline-view-controls");
+        controls.setAttribute("role", "group"); controls.setAttribute("aria-label", labels.caption + " controls");
+        [{ key: "decadal", label: "Decade" }, { key: "yearly", label: "Year" }].forEach((entry) => {
+          const button = this._element("button", "analysis-timeline-view-button", entry.label); button.type = "button";
+          button.setAttribute("aria-pressed", periodKey === entry.key ? "true" : "false");
+          button.setAttribute("aria-label", "Show " + labels.caption.toLowerCase() + " by " + entry.label.toLowerCase());
+          button.addEventListener("click", () => render(entry.key, selected)); controls.appendChild(button);
+        });
+        if (canReference) {
+          const label = this._element("label", "analysis-temporal-cohort-label", "Count ");
+          const picker = this._element("select", "analysis-temporal-cohort-select");
+          picker.setAttribute("aria-label", labels.caption + " report group");
+          [{ key: "active", label: "Selected reports" }, { key: "reference", label: "Reference reports" }].forEach((entry) => {
+            const option = this._element("option", "", entry.label); option.value = entry.key; picker.appendChild(option);
+          });
+          picker.value = selected; picker.addEventListener("change", () => render(periodKey, picker.value));
+          label.appendChild(picker); controls.appendChild(label);
+        }
+        container.insertBefore(controls, container.firstChild || null);
+        const timed = metadata[prefix + "TimedReportCount"];
+        const unknownDate = metadata[prefix + "UnknownDateCount"];
+        const ambiguous = metadata[prefix + "AmbiguousPeriodCount"];
+        const coverage = [timed == null ? "" : formatCount(timed) + " " + labels.counted + " in dated periods",
+          unknownDate == null ? "" : formatCount(unknownDate) + " with unknown dates",
+          ambiguous == null ? "" : formatCount(ambiguous) + " cross-period date ranges excluded"].filter(Boolean);
+        if (coverage.length) this._appendChartPolicy(chartId, coverage.join(" · ") + (kind === "craft" ? ". Unknown-date clusters are excluded; no period is guessed." : ". Unknown dates remain in their own column when present; dates are never assigned to the midpoint of a range."));
+        if (kind === "craft") {
+          this._appendChartPolicy(chartId, "Each animal-report location/date cluster counts once per neighboring craft type and animal-report period. This uses the animal marker's date and observed neighborhoods only; matched-date controls are excluded. A nearby craft report is context, not evidence of the same incident or a causal connection.");
+        } else if (kind === "locations") {
+          this._appendChartPolicy(chartId, "Country comes from an explicit retained source country or an unambiguous country-only label. Missing or broad ambiguous geography remains Unknown country; map centroids are not used to guess a country. Country counts describe catalog coverage, not incidence rates.");
+        } else {
+          this._appendChartPolicy(chartId, "Each report counts once per animal-type/period membership. A report with several animal types can appear in several rows; these are report counts, not counts of individual animals. Unknown animal types remain separate.");
+        }
+        const unknownLabel = metadata[prefix + "UnknownLabelCount"];
+        if (unknownLabel != null && kind !== "craft") this._appendChartPolicy(chartId, (kind === "locations" ? "Unknown country: " : "Unknown animal type: ") + formatCount(unknownLabel) + " reports in this group.");
+        if (cells.length) this._appendChartPolicy(chartId, "Every available period is shown in chronological order; scroll the heatmap sideways for the full timeline. " + (kind === "locations" && rows.length > 32 ? "The largest country rows and Unknown country are shown, up to 32 rows; the complete table retains all countries and periods." : "The complete table retains every category/period count.") + (canReference ? " Selected and reference counts use their actual report groups; they are not balanced or adjusted rates." : ""));
+      };
+      render(previous.period, previous.cohort);
     }
 
     _renderCountryChoropleth(chartId, value, summary, options) {
@@ -7736,6 +7858,12 @@
       if (animalSummary) {
         animalContextJobs.push(() => this._renderReadiness("analysis-animal-readiness-chart", data.animalReadiness, animalSummary, { emptyMessage: "Detailed animal-association readiness loads with Spatial Evidence; descriptive catalog health remains available here." }));
         animalContextJobs.push(() => this._renderSeries("analysis-animal-time-chart", firstArray(animals, ["time", "series", "yearly"]), animalSummary, { caption: "Animal reports by period", axisKind: "year", singleSeries: this.currentAnalysisMode === "whole_corpus_structure", singleSeriesLabel: "All animal reports" }));
+        animalContextJobs.push(() => this._renderAnimalTemporalChart("analysis-animal-species-time-chart", animals.temporal && animals.temporal.species, animalSummary, { kind: "species" }));
+        animalContextJobs.push(() => this._renderAnimalTemporalChart("analysis-animal-location-time-chart", animals.temporal && animals.temporal.locations, animalSummary, { kind: "locations" }));
+        animalContextJobs.push(() => {
+          const animalLane = firstArray(data.contextAssociations, ["lanes"]).find(function (lane) { return lane.lane === "animal_public_marker"; });
+          this._renderAnimalTemporalChart("analysis-animal-craft-time-chart", animalLane && animalLane.temporal && animalLane.temporal.craft, animalSummary, { kind: "craft" });
+        });
         animalContextJobs.push(() => this._renderBars("analysis-animal-species-chart", firstArray(animals, ["species", "speciesGroups", "distribution"]), animalSummary, { caption: "Animal report species groups", labelKind: "species" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-status-chart", firstArray(animals, ["statusBreakdown", "reviewStatus", "status"]), animalSummary, { caption: "Animal report review status" }));
         animalContextJobs.push(() => this._renderBars("analysis-animal-date-precision-chart", firstArray(animals, ["datePrecision", "datePrecisions", "date_precision"]), animalSummary, { caption: "Animal report date precision" }));
@@ -7775,7 +7903,7 @@
         ["analysis-section-geography", { jobs: geographyJobs, targets: ["analysis-geography-grid-chart", "analysis-geography-sensitivity-chart", "analysis-geography-time-chart"] }],
         ["analysis-section-spatial", { jobs: spatialJobs, targets: ["analysis-cooccurrence-chart", "analysis-spatial-eligibility-chart", "analysis-context-neighborhood-chart", "analysis-context-category-chart", "analysis-coordinate-evidence-spatial-chart", "analysis-coordinate-evidence-spatial-comparison-chart"] }],
         ["analysis-section-crops", { jobs: cropContextJobs, targets: ["analysis-crop-readiness-chart", "analysis-crop-time-chart", "analysis-crop-craft-context-chart", "analysis-crop-morphology-chart", "analysis-crop-type-chart", "analysis-crop-coordinate-chart", "analysis-crop-coverage-chart", "analysis-crop-spatial-chart"] }],
-        ["analysis-section-animals", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-craft-context-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
+        ["analysis-section-animals", { jobs: animalContextJobs, targets: ["analysis-animal-readiness-chart", "analysis-animal-time-chart", "analysis-animal-species-time-chart", "analysis-animal-craft-time-chart", "analysis-animal-location-time-chart", "analysis-animal-craft-context-chart", "analysis-animal-species-chart", "analysis-animal-status-chart", "analysis-animal-date-precision-chart", "analysis-animal-coverage-chart", "analysis-animal-spatial-chart"] }],
         ["analysis-section-facilities", { jobs: [spatialFacilityJob], targets: ["analysis-facility-context-chart"] }],
         ["analysis-section-comparisons", { jobs: [() => this._renderComparisonEvidence(this.latestResult.comparisonEvidence)], targets: ["analysis-comparisons-chart"] }],
         ["analysis-section-context", { jobs: contextOverviewJobs.concat(relationshipContextJobs), targets: ["analysis-cross-domain-readiness-chart", "analysis-relationship-readiness-chart"] }],

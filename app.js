@@ -9497,7 +9497,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-mufon-date-review-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-20-animal-time-v1");
   }
 
   function catalogFacetWorkerEnabled() {

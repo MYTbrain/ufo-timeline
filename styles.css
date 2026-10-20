@@ -11472,6 +11472,22 @@ button.analysis-craft-mosaic-tile:focus-visible {
   margin-bottom: 8px;
 }
 
+.analysis-temporal-cohort-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  font-size: 0.75rem;
+}
+
+.analysis-temporal-cohort-select {
+  width: auto;
+  max-width: 100%;
+  min-height: 34px;
+  padding: 5px 10px;
+}
+
 .analysis-timeline-view-button {
   min-height: 34px;
   padding: 6px 10px;

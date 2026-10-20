@@ -1,0 +1,61 @@
+{
+  "review": "independent read-only temporal change review",
+  "scope": "Temporal source dates, controls, counts, full row-period zeros and selected/reference cohorts; no build, deployment or runtime edits.",
+  "checks": {
+    "species_and_location_model_test": "passed",
+    "nearby_craft_model_test": "passed",
+    "temporal_renderer_test": "passed",
+    "real_neighbor_counts_independent_python_vs_runtime": "exact_match"
+  },
+  "realData": {
+    "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v2\\context_ufo_neighbors_v1.json.gz",
+    "sourceGzipSha256": "65170b47c6a2b742776615c214f1e23d74504d43a116b64fd5ea4f1e1378931a",
+    "neighborRows": 63859,
+    "cohort": "all observed independent animal public-marker neighbors, without active UFO filtering (read-only reference probe; not the default UI cohort)",
+    "uniqueObservedAnimalClusters": 55,
+    "craftCategories": 8,
+    "representedYears": 13,
+    "firstYear": 1966,
+    "lastYear": 1997,
+    "craftYearClusterMemberships": 75,
+    "completeCellCount": 104
+  },
+  "findings": [
+    {
+      "severity": "P2",
+      "status": "fixed_in_source_and_reviewed",
+      "file": "analysis_view.js",
+      "issue": "Empty annual timelines return before displaying known date-range exclusions. A cohort made solely of cross-year ranges appears as no timing records instead of reporting excluded intervals.",
+      "fix": "Append date coverage/policies even with zero cells; distinguish no assignable records from missing timing data."
+    },
+    {
+      "severity": "P3",
+      "status": "fixed_in_source_and_reviewed",
+      "file": "analysis_stats.js / analysis_view.js",
+      "issue": "Legacy Reports over time still aggregates representative row.year (start year), while new heatmaps correctly exclude cross-period intervals.",
+      "fix": "Label legacy series Recorded start year or clearly disclose its retained start-year grouping."
+    }
+  ],
+  "boundaries": [
+    "Craft chronology uses the animal marker date. Active UFO filters select eligible neighboring context; matched controls never enter observed chronology.",
+    "Zero cells exist only in the crossed observed label/period domain, with unknown dates and cross-period intervals separately accounted; no continuous-surveillance or population-rate denominator is asserted."
+  ],
+  "countryReleaseReview": {
+    "status": "passed",
+    "method": "Read-only country builder validation (write_outputs=False), direct frozen-field comparison, staged manifest/output hashes and release inventory checks",
+    "recordCount": 1184,
+    "originalNineFields": "byte-decoded field equality for every original row in original order; no duplicates added",
+    "onlyNewRuntimeField": "country",
+    "knownCountry": 870,
+    "unknownCountry": 314,
+    "privateSeedMatched": 1177,
+    "privateSeedUnmatched": 7,
+    "pins": "Frozen projection/detail hashes and seed sha plus per-record canonical hash joins validated by read-only builder",
+    "publicPrivacy": "New projection appends only country strings; public provenance contains roles, hashes and byte counts, without local paths, coordinates or narratives",
+    "stageFiles": 232,
+    "stageBytes": 41552267,
+    "unchangedR2Objects": 150,
+    "unchangedR2Bytes": 586867702,
+    "noBuildDeploymentOrRuntimeEdits": true
+  }
+}

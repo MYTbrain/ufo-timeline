@@ -2,7 +2,7 @@
   "schema": "ufo-workspace-analysis-release-v1",
   "release_id": "workspace-analysis-20261008",
   "base_deployment": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
-  "runtime_revision": "analysis-scroll-species-preview-20261019-v2",
+  "runtime_revision": "animal-time-preview-20261020-v1",
   "retained_rollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
   "counts": {
     "events": 702893,
@@ -244,32 +244,32 @@
     {
       "path": "analysis_spatial.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_spatial.js",
-      "bytes": 124728,
-      "sha256": "eb1d1392f7cbb70bec77479dbb0e5723e4340b229ca8b51da6666cfc93fdaafa",
+      "bytes": 131457,
+      "sha256": "efe21a877a9009eb5eced5527a4139b82d01fe8992409f6bff003829984124ca",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_spatial_worker.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_spatial_worker.js",
-      "bytes": 5873,
-      "sha256": "95167f131a1b9fca15b3a650042ae5dd7d25a4b126cf2bcfcef9abd2a1604e69",
-      "requires_revalidation": false,
+      "bytes": 5868,
+      "sha256": "a0ddde44d4d30b01e3d65f5d6f5d02d1943d941bf7e0786ee7fb9920a6cc3219",
+      "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_stats.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_stats.js",
-      "bytes": 386214,
-      "sha256": "e43785fcfcd31d1ad5df0ab80beee7cf9def7daa5d51d4a3d8222542f68c3f3c",
+      "bytes": 392019,
+      "sha256": "a2089a7b7f34a5809a04861d6a02a1db25ddb9201b704e654bd0c7dfb2c64cb7",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "analysis_view.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\analysis_view.js",
-      "bytes": 521093,
-      "sha256": "3f92a33201daf6a4eddf4381099b1c4d337d5033d505168f656ed013a5024f01",
+      "bytes": 533235,
+      "sha256": "5e7a5fcba8ee0fb3560718c5bb15850d07291f952919294706354739060bc042",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -292,16 +292,16 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1513352,
-      "sha256": "9a3fd5f92e9b5df1561ac18c7615ca76305a4aaacaf47069b0fb346906a32f30",
+      "bytes": 1513346,
+      "sha256": "d4098bc7edbe84dfc156b0a5b676252d384a35155cb2383fe15f6d42ead1dce7",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
     {
       "path": "catalog_filter_worker.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\catalog_filter_worker.js",
-      "bytes": 305328,
-      "sha256": "388420c7d7978fd60dd75d406f15c6e1df0af30c082ee3823c8334f18550ded2",
+      "bytes": 305315,
+      "sha256": "a4072c464f64531aec8aa4d2fc8c6519b445766345232f6df69ff89a68e816e7",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -394,6 +394,30 @@
       "allow_pages_analytics": false
     },
     {
+      "path": "data/analysis_v1/animal_reports_temporal.json",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_v1\\animal_reports_temporal.json",
+      "bytes": 112535,
+      "sha256": "1b16ba14e13a3d87abf7a2045d442a2a7ebf0267343470fcbeccb25288acfeae",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/analysis_v1/animal_reports_temporal.json.gz",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_v1\\animal_reports_temporal.json.gz",
+      "bytes": 29209,
+      "sha256": "4905678c8a0c11480bda47a0ce16b7f250a4397a74a3fdcd00c4ac499665a9ec",
+      "requires_revalidation": false,
+      "allow_pages_analytics": false
+    },
+    {
+      "path": "data/analysis_v1/animal_temporal_provenance.json",
+      "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_v1\\animal_temporal_provenance.json",
+      "bytes": 2584,
+      "sha256": "169f827ea9ade07ee9ecd2f14cc4f1a90a99de8d4a529cb29147107ea403a358",
+      "requires_revalidation": true,
+      "allow_pages_analytics": false
+    },
+    {
       "path": "data/analysis_v1/crop_circles.json",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_v1\\crop_circles.json",
       "bytes": 626048,
@@ -412,8 +436,8 @@
     {
       "path": "data/analysis_v1/manifest.json",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\data\\analysis_v1\\manifest.json",
-      "bytes": 12164,
-      "sha256": "b9ccf0ab2f0d1eb163fc8ac95e7adc006ecdde83f6312e8126d2099dfdc8649f",
+      "bytes": 12426,
+      "sha256": "67fab8e129db7abb7106f673648cb417b3f194b6fd7e5a82a1211942dc51dc68",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1444,8 +1468,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 167936,
-      "sha256": "784235ab6664ae23227f535d98437c1ec48f1754d9bc0324d9503499201c636f",
+      "bytes": 169102,
+      "sha256": "ff77234625aaf2644bdb262747144ec5afd4fdbdf071847414ca60c8f92527f1",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1564,8 +1588,8 @@
     {
       "path": "styles.css",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\styles.css",
-      "bytes": 278042,
-      "sha256": "0ffe88667dd4cf11a2ee0a353816c732e8c85b1d09c673b0df39bc1179c2ef1e",
+      "bytes": 278312,
+      "sha256": "52baf501b299bc58db9cfcd54a4c2d1c98035bb1d9adb8ec51917e16bc385390",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1684,8 +1708,8 @@
     {
       "path": "ui/accepted-workspace/analysis-view-groups.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\ui\\accepted-workspace\\analysis-view-groups.js",
-      "bytes": 5491,
-      "sha256": "5efa3b594825e911728be131c3a326ce55b1332195e2dcea3bedf82a3e31c2d4",
+      "bytes": 5599,
+      "sha256": "fd51908591ab01bf2dbc907944e4f215faac957f623a754e8690160d643196ca",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1842,8 +1866,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "ba7d7c9ff8fb197a9c89196eda754ed6bf9bc5cbaba54cb6c1cbe740fb842a72",
-  "pages_total_bytes": 41381481,
+  "pages_tree_sha256": "8a0c019ddc8fa80a6f37e6b4b9b92b5b0669c210d318a4c80a6b418a8f413ba2",
+  "pages_total_bytes": 41552267,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -5372,14 +5396,74 @@
       "bytes": 32654,
       "sha256": "8810bdc923ae772c1ef45ecdbdcf94cc1917ff09730720789f971ba537ca1b61",
       "role": "reviewed context recovery integration contract"
+    },
+    {
+      "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\scripts\\build_animal_temporal_projection.py",
+      "bytes": 12707,
+      "sha256": "6e61fba077e04d9a4c2ce7de6cb058ad10ae022b446e4119285e61a453d5b820",
+      "role": "deterministic animal country extension builder"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\public\\data\\analysis_v1\\manifest.json",
+      "bytes": 8958,
+      "sha256": "92cff2b8279644c516f2ad96393fdc3252840e3b2c486cfaeb5c138227d7594e",
+      "role": "animal temporal projection: analysis_manifest"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v1\\animal_reports.json.gz",
+      "bytes": 28120,
+      "sha256": "5ea15ddb8b902389fc735c18bfcd70191db7029227f28a9aa6a5c25091a7ff55",
+      "role": "animal temporal projection: animal_projection_gzip"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\manifest.json",
+      "bytes": 5922,
+      "sha256": "dfcbb3e3fcb04d13d8df64521c395a2198319e99300bb0035b35019a484f4291",
+      "role": "animal temporal projection: animal_detail_manifest"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_000.json.gz",
+      "bytes": 74285,
+      "sha256": "d986e54ad5c88a0939234d8c54ec5db7d8bdacc1b8d09847da577ba53a275a85",
+      "role": "animal temporal projection: animal_detail_chunk_0"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_001.json.gz",
+      "bytes": 71246,
+      "sha256": "e8aa42e28a65bd8d0aa6f226a59358425024e8f1417b0e467a76b7c4f6091064",
+      "role": "animal temporal projection: animal_detail_chunk_1"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_002.json.gz",
+      "bytes": 69054,
+      "sha256": "655dd5bba6d33cf25f80f5d4524aae174bfcf836e4aa70b7a66a2888b0afbc13",
+      "role": "animal temporal projection: animal_detail_chunk_2"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_003.json.gz",
+      "bytes": 66950,
+      "sha256": "3a06ab371058bc8c259f346f8c5381ef747c663d9882ecbe27fcd96d5c0629a5",
+      "role": "animal temporal projection: animal_detail_chunk_3"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_004.json.gz",
+      "bytes": 49534,
+      "sha256": "e1a707fb7f6f0fdb7c9d1f05c139b2c0aa575c3c5650f1f5157fffcc788e9c34",
+      "role": "animal temporal projection: animal_detail_chunk_4"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Documents\\Cattle Mutilation Map\\outputs\\phase1_1\\global_animal_seed_v1_1\\canonical_incidents.jsonl",
+      "bytes": 5547856,
+      "sha256": "ba9558107ae1db1e08c53c7d2f36c2a941a50d3b8ed29608e32a876835e183f6",
+      "role": "animal temporal projection: private_seed_country_source"
     }
   ],
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 3914,
-    "existing_stage_bytes": 41377567,
-    "c_free_bytes_before_stage": 89288900608,
+    "approximate_net_local_growth_bytes": 170786,
+    "existing_stage_bytes": 41381481,
+    "c_free_bytes_before_stage": 84495466496,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
@@ -5416,5 +5500,47 @@
       "rollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
       "supersededStaging": []
     }
+  },
+  "animal_temporal": {
+    "counts": {
+      "recordCount": 1184,
+      "seedMatched": 1177,
+      "seedUnmatched": 7,
+      "knownCountry": 870,
+      "unknownCountry": 314,
+      "countries": {
+        "AR": 9,
+        "AU": 4,
+        "BO": 2,
+        "BR": 3,
+        "CA": 23,
+        "CL": 2,
+        "CN": 12,
+        "DE": 1,
+        "FR": 5,
+        "GB": 5,
+        "IL": 4,
+        "IQ": 1,
+        "IT": 1,
+        "JP": 2,
+        "NL": 1,
+        "US": 794,
+        "ZW": 1,
+        "unknown": 314
+      },
+      "countryResolution": {
+        "continent_suffix_recovered": 20,
+        "country_missing": 314,
+        "public_country_suffix": 1,
+        "source_and_public_agree": 787,
+        "source_country": 62
+      }
+    },
+    "provenance": {
+      "path": "data/analysis_v1/animal_temporal_provenance.json",
+      "sha256": "169f827ea9ade07ee9ecd2f14cc4f1a90a99de8d4a529cb29147107ea403a358",
+      "bytes": 2584
+    },
+    "source_fields_preserved": true
   }
 }

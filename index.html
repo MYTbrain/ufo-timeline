@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="./styles.css?v=2026-10-19-analysis-scroll-v1">
+    <link rel="stylesheet" href="./styles.css?v=2026-10-20-animal-time-v1">
   <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-18-encounter-quality-v1">
   <link rel="stylesheet" href="./analysis_comparisons.css?v=2026-10-19-analysis-scroll-v1">
   <script>
@@ -1853,8 +1853,11 @@
                 </div>
                 <div id="analysis-animal-content" class="analysis-context-content">
                 <div class="analysis-card-grid">
-                  <article class="analysis-card analysis-card-span-6"><h5>Reports over time</h5><div id="analysis-animal-time-chart" class="analysis-chart" data-analysis-chart="animal-time"></div></article>
-                  <article class="analysis-card analysis-card-span-6 analysis-context-feature-card"><h5>Craft and animal context</h5><p class="analysis-card-question">Which reported craft categories vary across the named animal species groups?</p><div id="analysis-animal-craft-context-chart" class="analysis-chart" data-analysis-chart="animal-craft-context"></div></article>
+                  <article class="analysis-card analysis-card-wide"><h5>Reports by recorded start year</h5><p class="analysis-card-question">Overall catalog activity using each record's start year. The detailed time charts below keep ranges and unknown dates explicit.</p><div id="analysis-animal-time-chart" class="analysis-chart" data-analysis-chart="animal-time"></div></article>
+                  <article class="analysis-card analysis-card-wide"><h5>Animal types over time</h5><p class="analysis-card-question">How has the mix of reported animal types changed by year or decade?</p><div id="analysis-animal-species-time-chart" class="analysis-chart" data-analysis-chart="animal-species-time"></div></article>
+                  <article class="analysis-card analysis-card-wide"><h5>Nearby craft over time</h5><p class="analysis-card-question">Which craft categories occur in animal-report neighborhoods across the animal reports' dates?</p><div id="analysis-animal-craft-time-chart" class="analysis-chart" data-analysis-chart="animal-craft-time"></div></article>
+                  <article class="analysis-card analysis-card-wide analysis-context-feature-card"><h5>Craft and animal context</h5><p class="analysis-card-question">Which reported craft categories vary across the named animal species groups?</p><div id="analysis-animal-craft-context-chart" class="analysis-chart" data-analysis-chart="animal-craft-context"></div></article>
+                  <article class="analysis-card analysis-card-wide"><h5>Locations over time</h5><p class="analysis-card-question">Where were animal reports recorded in different years or decades?</p><div id="analysis-animal-location-time-chart" class="analysis-chart" data-analysis-chart="animal-location-time"></div></article>
                   <details class="analysis-card analysis-card-span-6 analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Report composition</summary><div class="analysis-context-subchart"><h6>Species groups</h6><div id="analysis-animal-species-chart" class="analysis-chart" data-analysis-chart="animal-species"></div></div><div class="analysis-context-subchart"><h6>Review status</h6><div id="analysis-animal-status-chart" class="analysis-chart" data-analysis-chart="animal-status"></div></div></details>
                   <details class="analysis-card analysis-card-wide analysis-context-composite-card analysis-supporting-details analysis-dashboard-support"><summary>Date, coverage, and public-marker evidence</summary><div class="analysis-context-subchart-grid"><div class="analysis-context-subchart"><h6>Date precision</h6><div id="analysis-animal-date-precision-chart" class="analysis-chart" data-analysis-chart="animal-date-precision"></div></div><div class="analysis-context-subchart"><h6>Field coverage</h6><div id="analysis-animal-coverage-chart" class="analysis-chart" data-analysis-chart="animal-coverage"></div></div></div><div class="analysis-context-subchart analysis-context-spatial-subchart"><h6>Public-marker uncertainty and contamination audit</h6><p class="analysis-card-question">Generalized public markers support rough association estimates only; originating UFO and publisher matches are audited and excluded.</p><div id="analysis-animal-spatial-chart" class="analysis-chart analysis-context-spatial-chart" data-analysis-chart="animal-spatial"></div></div></details>
                 </div>
@@ -2072,7 +2075,7 @@
   <script defer src="./analysis_overview_view.js?v=2026-10-19-overview-visuals-v3"></script>
   <script defer src="./analysis_readiness_model.js?v=2026-10-19-evidence-readiness-v1"></script>
   <script defer src="./analysis_readiness_view.js?v=2026-10-19-evidence-readiness-v3"></script>
-  <script src="./analysis_view.js?v=2026-10-19-animal-species-v1"></script>
+  <script src="./analysis_view.js?v=2026-10-20-animal-time-v1"></script>
   <script src="./analysis_session.js?v=2026-10-19-inspect-analysis-v1"></script>
   <script src="./analysis_session_view.js?v=2026-10-19-inspect-analysis-v1"></script>
   <script src="./trace_intersection_layer.js?v=2026-08-19-trace-convergence-v1"></script>
@@ -2084,12 +2087,12 @@
   <script src="./search_catalog.js?v=2026-10-18-search-v1"></script>
   <script src="./search_runtime.js?v=2026-10-18-search-v1"></script>
   <script src="./search_view.js?v=2026-10-18-search-v2"></script>
-  <script src="./app.js?v=2026-10-19-mufon-date-review-v1"></script>
+  <script src="./app.js?v=2026-10-20-animal-time-v1"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-19-inspect-analysis-v1"></script>
   <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/chronology-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
-  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-19-evidence-readiness-v1"></script>
+  <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-20-animal-time-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-19-analysis-scroll-v1"></script>
   <script defer src="./ui/accepted-workspace/polish.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./guided_tour_state.js?v=2026-10-08-guided-tour-v1"></script>
