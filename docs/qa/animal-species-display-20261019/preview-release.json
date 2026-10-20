@@ -1,0 +1,53 @@
+{
+  "schemaId": "ufo-animal-species-preview-v1",
+  "status": "preview_verified",
+  "sourceCommit": "93a814ed07d4286c4d8dbb25102133db57ed1918",
+  "previewUrl": "https://6c27a4d1.ufo-timeline.pages.dev/#analysis-section-animals",
+  "deploymentId": "6c27a4d1-37ea-4e10-a083-bee9407cae1b",
+  "githubBranch": "codex/analysis-scroll-20261019",
+  "providerCheck": "completed/success",
+  "observedUtc": "2026-10-20T05:14:07.866881+00:00",
+  "verification": [
+    "baseline-ui.json",
+    "checks.json",
+    "browser.json",
+    "public.json",
+    "independent.json"
+  ],
+  "browserResult": {
+    "appliedReports": 334509,
+    "dateWindow": "All time",
+    "columns": [
+      "Cattle",
+      "Goats",
+      "Horses",
+      "Pigs",
+      "Birds",
+      "Dogs / canids",
+      "Sheep",
+      "Unknown species"
+    ],
+    "descriptiveEstimates": 22,
+    "inferenceEligibleCells": 0,
+    "sourceTableCells": 72,
+    "consoleErrors": 0
+  },
+  "productionUnchanged": {
+    "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1"
+  },
+  "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "storage": {
+    "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
+    "supersededTemporaryHostedPreview": "175eb326-a7ae-4e1c-9589-4ffce1627687",
+    "stageGrowthBytes": 3914,
+    "approximateNetTaskGrowth": "under 1 MiB including source, tests, Git, QA and screenshot",
+    "qaFilesBytes": 93415,
+    "newFilesAbove100MiB": [],
+    "dataObjectsCreated": 0,
+    "largeCopiesCreated": 0,
+    "supersededLocalStages": [],
+    "cleanup": "Single existing stage refreshed in place; no data deletion or extra backup. Hosted preview supersedes earlier temporary preview only; validated production and its one rollback remain protected."
+  },
+  "receiptCommittedLocally": true
+}

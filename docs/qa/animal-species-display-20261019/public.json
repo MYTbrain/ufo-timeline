@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T05:08:42.530354+00:00",
+  "url": "https://6c27a4d1.ufo-timeline.pages.dev",
+  "sourceCommit": "93a814ed07d4286c4d8dbb25102133db57ed1918",
+  "changedFilesVerified": [
+    "analysis_view.js",
+    "index.html"
+  ],
+  "unchangedRuntimeFiles": 227,
+  "basePreview": "175eb326-a7ae-4e1c-9589-4ffce1627687",
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "dataObjectsUnchanged": true
+}

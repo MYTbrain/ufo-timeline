@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T05:13:01.742Z",
+  "appliedReports": 334509,
+  "dateWindow": "All time",
+  "ui": {
+    "cellNames": [
+      "Oval / egg, Cattle: 2.54; O 14 · E 2. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Oval / egg, Goats: 2.32; O 2 · E 0. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Oval / egg, Horses: 0.58; O 1 · E 0.5. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Cigar / cylinder, Cattle: -1.58; O 0 · E 1. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Rectangle / box, Cattle: -1.32; O 0 · E 0.75. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Disc / saucer, Cattle: 1.07; O 10 · E 4.5. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Disc / saucer, Goats: 1; O 1 · E 0.25. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Disc / saucer, Pigs: 0.26; O 1 · E 0.75. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Disc / saucer, Birds: -0.58; O 0 · E 0.25. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Disc / saucer, Dogs / canids: -0.58; O 0 · E 0.25. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Sphere / orb, Cattle: 0.15; O 7 · E 6.25. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details.",
+      "Sphere / orb, Goats: -0.58; O 0 · E 0.25. descriptive estimate; Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential. Inspect evidence details."
+    ],
+    "columns": [
+      "Craft",
+      "Cattle",
+      "Goats",
+      "Horses",
+      "Pigs",
+      "Birds",
+      "Dogs / canids",
+      "Sheep",
+      "Unknown species"
+    ],
+    "question": "Which reported craft categories vary across the named animal species groups?",
+    "scope": "Animal reports and nearby sighting context\n\nReported and unreviewed; public-marker uncertainty remains explicit.\n\nView\nReports over time\nCraft & animal context\nSpecies & review status\nCoverage & locations\nAll c",
+    "text": "Context feature lane\nCraft by animal species\n\nSpecies stay separate, including small samples. Observed counts are location/date clusters; expected counts average four matched-date controls. All comparisons remain descriptive.\n\nBlue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support\n\nNo cells qualify for inference in this view. 22 descriptive estimates remain visible.\n\nCraft by animal species\nCraft\tCattle\tGoats\tHorses\tPigs\tBirds\tDogs / canids\tSheep\tUnknown species\nOval / egg\t\n2.54\n\t\n2.32\n\t\n0.58\n\t\n\t\n\t\n\t\n\t\n\nCigar / cylinder\t\n-1.58\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\nRectangle / box\t\n-1.32\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\nDisc / saucer\t\n1.07\n\t\n1\n\t\n\t\n0.26\n\t\n-0.58\n\t\n-0.58\n\t\n\t\n\nSphere / orb\t\n0.15\n\t\n-0.58\n\t\n-1\n\t\n-1\n\t\n\t\n\t\n-0.58\n\t\n\nTriangle\t\n0.81\n\t\n\t\n\t\n\t\n\t\n\t\n-0.58\n\t\n-0.58\n\nChevron / boomerang\t\n0.58\n\t\n-0.58\n\t\n\t\n\t\n\t\n\t\n\t\n\nCone\t\n\t\n\t\n\t\n-0.58\n\t\n\t\n\t\n\t\n\nDiamond\t\n-0.58\n\t\n\t\n\t\n\t\n\t\n\t\n\t\nView complete data table (22 rows)\n\nLargest displayed magnitude: Oval / egg / Cattle (2.54) · descriptive.\n\nView complete data table (72 rows)",
+    "url": "https://6c27a4d1.ufo-timeline.pages.dev/#analysis-section-animals"
+  },
+  "evidenceInspection": "EVIDENCE DETAILS\n\nOval / egg / Cattle\nClose\n\nEvidence details for this chart cell. This inspection does not change shared filters.\n\nCOHORT\n14\nMISSINGNESS\nSee evidence package\nCOMPARISON\nObserved n=14 · matched-date expected average=2\nChanged criteria\nEffect: 2.536\nCount unit: Animal-report location/date clusters per craft/species combination\nReliability: Limited sample (observed n<25; expected n<10); Sensitivity lane not inferential\n\nCancel",
+  "consoleErrors": [],
+  "screenshot": "preview.png"
+}
