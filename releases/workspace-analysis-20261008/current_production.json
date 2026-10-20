@@ -1,8 +1,8 @@
 {
   "schemaId": "ufo-current-production-pointer-v1",
-  "receipt": "docs/qa/context-recovery-production-20261019/production-release.json",
-  "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
-  "runtimeSourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
-  "pagesTreeSha256": "a71f321904ccef8b58906a5660bc09609682f66ab05c4e8b9de4a119a495fa4c",
-  "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e"
+  "receipt": "docs/qa/animal-time-production-20261020/production-release.json",
+  "deploymentId": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+  "runtimeSourceCommit": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+  "pagesTreeSha256": "15a94888f25796ebdfe9cb4cd5df39f4fd4ee1128b3d38b5ebf758e5ba78985e",
+  "retainedRollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9"
 }

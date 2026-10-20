@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+  "environment": "Production",
+  "branch": "main",
+  "sourceCommit": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+  "githubMainMatchesSource": true,
+  "githubPagesCheck": "completed/success",
+  "githubIntegratedDeployment": "a10d2b0a-edd3-4dc9-9d2d-f96dcd718713",
+  "directVerifiedDeployment": "https://1a60ac73.ufo-timeline.pages.dev",
+  "automaticEarlierSourceCheck402e51f": "completed/success; superseded by cache repair",
+  "observedUtc": "2026-10-20T08:55:56.998173+00:00"
+}

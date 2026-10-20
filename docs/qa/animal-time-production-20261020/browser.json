@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T08:54:05.686Z",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+  "sourceCommit": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+  "returningVisitorVerifiedWithoutClearingCache": true,
+  "country": {
+    "columns": [
+      "Country",
+      "1890s",
+      "1930s",
+      "1940s",
+      "1950s",
+      "1960s",
+      "1970s",
+      "1980s",
+      "1990s",
+      "2000s",
+      "2010s",
+      "2020s",
+      "Unknown date"
+    ],
+    "coverage": "1,156 reports in dated periods · 28 with unknown dates · 0 cross-period date ranges excluded · Unknown country: 314 reports.",
+    "rows": [
+      "United States",
+      "Canada",
+      "China",
+      "Argentina",
+      "France",
+      "United Kingdom",
+      "Australia",
+      "Israel",
+      "Brazil",
+      "Bolivia",
+      "Chile",
+      "Japan",
+      "Germany",
+      "Iraq",
+      "Italy",
+      "Netherlands",
+      "Zimbabwe",
+      "Unknown country"
+    ],
+    "status": "Animal reports: 1,184 matched records · 1,184 total projection rows.",
+    "visible": true
+  },
+  "species": {
+    "coverage": "1,156 reports in dated periods · 28 with unknown dates · 0 cross-period date ranges excluded · Unknown animal type: 64 reports.",
+    "rows": [
+      "Cattle",
+      "Horses",
+      "Dogs / canids",
+      "Sheep",
+      "Deer",
+      "Goats",
+      "Pigs",
+      "Birds",
+      "Cats / felines",
+      "Marine mammals",
+      "Rabbits / hares",
+      "Fish",
+      "Other mammals",
+      "Camels / llamas",
+      "Unknown species"
+    ],
+    "visible": true
+  },
+  "craft": {
+    "columns": [
+      "Nearby craft",
+      "1960s",
+      "1970s",
+      "1990s"
+    ],
+    "coverage": "26 animal-report clusters in dated periods · 0 with unknown dates · 0 cross-period date ranges excluded.",
+    "rows": [
+      "Oval / egg",
+      "Disc / saucer",
+      "Sphere / orb",
+      "Triangle",
+      "Chevron / boomerang"
+    ],
+    "text": "Decade\nYear\n\nDarker teal = more animal-report clusters. Read left to right through time; counts describe the retained reports, not population rates.\n\nAll matched reports · descriptive counts only · 40 category/period memberships\n\nNearby craft type over time · all matched reports\nNearby craft\t1960s\t1970s\t1990s\nOval / egg\t\n1\n\t\n6\n\t\n10\n\nDisc / saucer\t\n0\n\t\n9\n\t\n3\n\nSphere / orb\t\n0\n\t\n5\n\t\n2\n\nTriangle\t\n0\n\t\n0\n\t\n3\n\nChevron / boomerang\t\n0\n\t\n0\n\t\n1\nView complete data table (15 rows)\n\nLargest displayed count: Oval / egg / 1990s (10 clusters).\n\n26 animal-report clusters in dated periods · 0 with unknown dates · 0 cross-period date ranges excluded.\n\nCounting & coverage notes",
+    "visible": true
+  },
+  "consoleErrorsObserved": [
+    {
+      "level": "error",
+      "message": "[analysis relationships] Error: Relationship evidence timed out.\n    at https://ufo-timeline.pages.dev/app.js?v=2026-10-20-animal-time-v2:11677:16",
+      "timestamp": "2026-10-20T08:50:52.327Z",
+      "url": "https://ufo-timeline.pages.dev/app.js?v=2026-10-20-animal-time-v2"
+    },
+    {
+      "level": "error",
+      "message": "[analysis context evidence] Error: Relationship evidence timed out.\n    at https://ufo-timeline.pages.dev/app.js?v=2026-10-20-animal-time-v2:11677:16",
+      "timestamp": "2026-10-20T08:50:52.327Z",
+      "url": "https://ufo-timeline.pages.dev/app.js?v=2026-10-20-animal-time-v2"
+    }
+  ],
+  "transientRelationshipRequest": {
+    "initialTimeout": true,
+    "recoveredOnOpeningEvidenceGates": true,
+    "verifiedPanel": {
+      "text": "Blue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support\n\nNo cells qualify for inference in this view. 9 descriptive estimates remain visible.\n\nRelationship lane and reconciliation counts\nEvidence lane\treconciled unmapped ufo\tquarantined subject\treconciled current\tquarantined object\ndeterministic match · duplicate lineage\t\n240\n\t\n224\n\t\n21\n\t\n\ndeterministic match · regional context\t\n\t\n\t\n112\n\t\n\nexplicit source · same scene\t\n\t\n\t\n\t\n13\n\nexplicit source · topical context\t\n\t\n\t\n13\n\t\n11\n\nexplicit source · reported nearby\t\n11\n\t\n\t\n\t\n\ndeterministic match · reported nearby\t\n\t\n\t\n1\n\t\nView complete data table (9 rows)\n\nLargest displayed magnitude: deterministic match · duplicate lineage / reconciled unmapped ufo (240) · descriptive.\n\nCounts describe inherited relationship records and reconciliation state. Recomputed proximity evidence is kept separate.",
+      "visible": true
+    }
+  },
+  "screenshot": "live-country.png",
+  "expectedCountryCounts": {
+    "known": 870,
+    "unknown": 314
+  }
+}

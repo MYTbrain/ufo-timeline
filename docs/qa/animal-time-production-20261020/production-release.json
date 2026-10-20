@@ -1,0 +1,59 @@
+{
+  "schemaId": "ufo-animal-time-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-20T08:55:56.998521+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+  "runtimeSourceCommit": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+  "githubMainUpdated": true,
+  "githubSourceUrl": "https://github.com/MYTbrain/ufo-timeline/commit/a407980ec75c7366c3841b1e78451e3952d80f4e",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 232,
+    "bytes": 41553472,
+    "treeSha256": "15a94888f25796ebdfe9cb4cd5df39f4fd4ee1128b3d38b5ebf758e5ba78985e"
+  },
+  "retainedRollback": {
+    "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+    "url": "https://a49d5164.ufo-timeline.pages.dev",
+    "availableAndPinnedIndexVerified": true,
+    "supersededDesignation": "16b1c76f-8896-4c00-ab00-4676212a941e"
+  },
+  "verification": {
+    "provider": "provider.json",
+    "publicFiles": "public-files.json",
+    "browser": "browser.json",
+    "independent": "independent.json",
+    "cacheRepair": "cache-fix.json",
+    "rollback": "rollback.json",
+    "servedFilesVerified": 230,
+    "immutableDataObjectsReused": 150,
+    "immutableDataBytesReused": 586867702,
+    "returningVisitorVerifiedWithoutClearingCache": true,
+    "note": "First candidate1c28a761 exposed an existing force-cached unversioned V1 manifest path for returning visitors. Finala407980 versions and revalidates those mutable assets. Countries, species and nearbycraft timelines are verified on the productionorigin. One initial relationship request timedout; reopening Evidence Gates recovered its populated relationship panel, documented in browser.json."
+  },
+  "counts": {
+    "events": 702893,
+    "mapped": 582877,
+    "animalReports": 1184,
+    "countriesKnown": 870,
+    "countriesUnknown": 314
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "canonicalContextDerivative": "D:/UFO-Timeline-Context-Evidence/releases/context-recovery-20261019-v1",
+    "stageNetGrowthDuringDeploymentBytes": 107,
+    "newFilesAbove100MiB": [],
+    "approximateTaskNetGrowth": "under 1 MiB for source/test/Git/QA and a 107-byte stage delta",
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededLargeLocalStages": [],
+    "supersededHostedCandidates": [
+      "1c28a761: cache issue found, not retained as rollback",
+      "Prior temporary review previews: superseded by the validated production"
+    ],
+    "cleanupProposal": "Keep current validated production and previous validated productiona49d5164 as the sole designated rollback; existing bounded canonical sources and provenance remain protected. No duplicate local stage exists. Superseded hosted history may be considered under a later literal cleanup allowlist; no deletion performed."
+  },
+  "postPublicationEvidenceCommittedLocally": true,
+  "receiptPushDeferredToAvoidDocumentationOnlyRebuild": true
+}
