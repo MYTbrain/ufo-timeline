@@ -113,7 +113,7 @@
     setStatus("Loading the crop-circle layer…");
     const attempt = new Promise(function (resolve, reject) {
       const script = document.createElement("script");
-      script.src = "./crop_circle_layer.js?v=2026-08-13-crop-circle-icon-only-v1";
+      script.src = "./crop_circle_layer.js?v=2026-10-19-reviewed-duplicate-chronology-v1";
       script.async = true;
       script.onload = function () {
         if (!window.UfoCropCircleLayer) {

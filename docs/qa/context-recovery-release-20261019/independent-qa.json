@@ -1,0 +1,148 @@
+{
+  "schemaId": "ufo-context-recovery-independent-qa-v1",
+  "checkedAtUtc": "2026-10-20T02:19:57.014041+00:00",
+  "status": "passed_with_documented_pre_existing_metadata_limit",
+  "releaseId": "context-recovery-20261019-v1",
+  "integrationSha256": "212083907a9c2da564e39ec4c1564389199a465c2085e583079463fbf8d50670",
+  "independentVerification": {
+    "frozenContextOutputs": 50,
+    "frozenContextInputPins": 16,
+    "allNewContextPublicOutputsScannedForLocalPaths": 50,
+    "localPathMetadataInNewContextOutputs": 0,
+    "allStagedMemberPins": 229,
+    "stageInventoryMatchesPlanExactly": true,
+    "stageBytes": 41376518,
+    "stageTreeSha256": "80f65e123440efdb0275572203d96901b055e3e3552bf4be0bcf2fdde7487d23",
+    "v1V2ComparisonDateParityRecords": 8929,
+    "comparisonDateRoleLaneAndStrictFlagParity": true,
+    "animalOriginTriplesPreserved": 1184,
+    "changedProjectionRowOrderingContracts": 3,
+    "dictionaryAndArtifactDeclarationHashesRecalculated": true,
+    "unchangedV2ArtifactDeclarations": 7,
+    "strictEligibilityPolicyRelaxed": false,
+    "cropChronologyReviewedDuplicateExclusionRegression": "passed"
+  },
+  "existingRuntimeChecksRunIndependently": {
+    "pythonTestsPassed": 42,
+    "pythonSubtestsPassed": 11,
+    "javascriptSuitesPassed": 35,
+    "coverage": [
+      "Evidence readiness model, view and runtime integration",
+      "Analysis overview and temporary A/B comparisons, inspection, sources and uncertainty",
+      "MUFON reviewed dates in map, details, traces, worker and Analysis",
+      "Phillips guarded citations, verified page locators and lazy loading",
+      "Startup cover, progressive map and full catalog pipeline",
+      "Catalog filters, partial dates, chronology and encounter decoration",
+      "Release builder pin and immutable-inventory safeguards"
+    ],
+    "failed": 0
+  },
+  "counts": {
+    "animalInventory": 1184,
+    "animalSourceReviewed": 14,
+    "animalStrict": 0,
+    "contextNeighbors": 63859,
+    "cropBounded": 428,
+    "cropInventory": 7745,
+    "cropLocality": 3224,
+    "cropSourceReviewed": 140,
+    "cropStrict": 1
+  },
+  "scopeLimits": {
+    "liveBrowserVerification": "root release owner performs after publication; not claimed by this receipt",
+    "preExistingMetadataPaths": [
+      {
+        "publicFile": "data/analysis_color_v1/manifest.json",
+        "metadataFields": [
+          ".inputs.qualityView.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_comparisons/nuclear_extension_v1.json.gz",
+        "metadataFields": [
+          ".inputFacilityCatalog.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_coordinate_evidence_v1/manifest.json",
+        "metadataFields": [
+          ".inputs.qualityView.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_duration_v1/manifest.json",
+        "metadataFields": [
+          ".attributeRecovery.baseDictionary.path",
+          ".inputs.attributeRecoveryBaseManifest.path",
+          ".inputs.qualityView.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_reporting_delay_v1/manifest.json",
+        "metadataFields": [
+          ".inputs.qualityView.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_time_of_day_v1/manifest.json",
+        "metadataFields": [
+          ".attributeRecovery.baseDictionary.path",
+          ".inputs.attributeRecoveryBaseManifest.path",
+          ".inputs.qualityView.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/analysis_witness_count_v1/manifest.json",
+        "metadataFields": [
+          ".inputs.attributeRecoveryBaseManifest.path",
+          ".inputs.qualityView.path",
+          ".inputs.ufocatFieldInventory.path",
+          ".inputs.ufocatWitnessContract.path",
+          ".inputs.ufocatWitnessPrimaryCodebook.path"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      },
+      {
+        "publicFile": "data/canonical_web/canonical_web_manifest.json",
+        "metadataFields": [
+          ".policy.non_terrestrial_coordinate_quarantine.sidecar",
+          ".policy.reviewed_event_merge_runs[0].sidecar",
+          ".policy.reviewed_event_merge_runs[1].sidecar",
+          ".policy.reviewed_event_merges.sidecar",
+          ".repairOverlay.frozenPatches.path",
+          ".repairOverlay.sourceManifest.path",
+          ".repairOverlay.sourceSummaryManifest.path",
+          ".reviewedYearOverlay.frozenPatches.path",
+          ".reviewedYearOverlay.sourceManifest.path",
+          ".reviewedYearOverlay.sourceReview.path",
+          ".source.quality_manifest"
+        ],
+        "status": "pre_existing_inherited_build_provenance_paths",
+        "rawSourceContentAdded": false
+      }
+    ],
+    "preExistingMetadataPathFieldCount": 26,
+    "interpretation": "Inherited build-provenance paths identify local filenames. No raw source archive, private document contents or new context local paths were found. Root accepted this pre-existing metadata limit without changing inherited immutable artifacts during deployment.",
+    "javascriptLiteralFileScheme": "app.js contains an explanatory file:// comment; it is not a user path.",
+    "binaryPatternHandling": "Binary payload byte coincidences are not interpreted as filesystem paths."
+  },
+  "storage": {
+    "newArtifact": "this compact independent QA receipt only",
+    "newFilesAbove100MiB": [],
+    "canonicalContextDerivative": "retained D-drive context-recovery-20261019-v1",
+    "fullCorpusOrDatabaseCopied": false
+  }
+}

@@ -2,10 +2,10 @@
   "artifacts": {
     "animalReports": {
       "bytes": 105046,
-      "file": "data/analysis_v1/animal_reports.json",
-      "gzipBytes": 28118,
-      "gzipFile": "data/analysis_v1/animal_reports.json.gz",
-      "gzipSha256": "63d99e95aacd106f80d44aa04c08fc6278ecf0c9f392963055a00b86aea1f2e0",
+      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/animal_reports.json",
+      "gzipBytes": 28120,
+      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/animal_reports.json.gz",
+      "gzipSha256": "5ea15ddb8b902389fc735c18bfcd70191db7029227f28a9aa6a5c25091a7ff55",
       "rowCount": 1184,
       "rowSchema": [
         "id",
@@ -18,14 +18,14 @@
         "startOrdinal",
         "endOrdinal"
       ],
-      "sha256": "9ee581a8a5a1375388f284c59d5ed114071c35e3adf263f9f348c72e37557db3"
+      "sha256": "5b0ff59cada8d59f8740525ef5e8629e9819381abae7b1ebc33ac5235b649467"
     },
     "cropCircles": {
-      "bytes": 688007,
-      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_v1/crop_circles.json",
-      "gzipBytes": 147057,
-      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/analysis_v1/crop_circles.json.gz",
-      "gzipSha256": "a1102da64fb8e55f6e427ef6350e2621bb2b600d50a34f91f10fa21de2912f88",
+      "bytes": 688003,
+      "file": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/crop_circles.json",
+      "gzipBytes": 147066,
+      "gzipFile": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/crop_circles.json.gz",
+      "gzipSha256": "4f830282fb8c5d3f7087223ed8bf6e3a1d15c8cca6ab109d805d7ddd36acbe39",
       "rowCount": 7745,
       "rowSchema": [
         "id",
@@ -47,7 +47,7 @@
         "reviewStateCode",
         "coordinateEvidenceClassCode"
       ],
-      "sha256": "f0a60205b4eafe4dd7ad900ff80f9f0b4816fe80018d036ba22a9bdc3fe57792"
+      "sha256": "26a2b8fbfb0e851ff0eb70355057768d34efd5d118f56639cdfc134f0715c130"
     }
   },
   "codes": {
@@ -334,7 +334,7 @@
     },
     "qualityView": {
       "bytes": 67799,
-      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\quality_view_manifest.json",
+      "path": "data/research/database_quality_20261007/quality_view_manifest.json",
       "policy": "guarded_sparse_quality_view_v2",
       "sha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
     }
@@ -359,7 +359,7 @@
     "originalSourceFieldsPreserved": true,
     "qualityManifestSha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
   },
-  "releaseId": "quality-analysis-context-v1-20261007",
+  "releaseId": "context-recovery-20261019-v1.analysis_v1",
   "repairOverlay": {
     "baseManifestSha256": "016af992ca22f63552186e8cdac6f5ee70c3efed4ba64d5279869d66a3dc77d0",
     "repairId": "context-analysis-repairs-20261007",
@@ -371,16 +371,15 @@
   "sources": {
     "animalReports": {
       "manifest": "webapp/static_public/data/animal_mutilations/manifest.json",
-      "manifestSha256": "7e0b07b8a0d5fd23a425af3e0ac43fb4bfe625df57e42107b45e490ec8cdc673",
-      "publicDetailOverlayManifestSha256": "4760e8441cd84684ee85d4283edfa9e2af461f84c8d5c3936e6b8ac2c150b4da",
-      "releaseId": "animal-mutilations-v1-20260812",
+      "manifestSha256": "9c6957794046e84cd6546c8c04814ef849722b567c647e0a105932d14d0a4eb7",
+      "releaseId": "context-recovery-20261019-v1.animal_mutilations",
       "rowCount": 1184,
       "sourceSchema": "animal-mutilation-timeline-overlay-v1.1.0"
     },
     "cropCircles": {
       "manifest": "webapp/static_public/data/crop_circles/manifest.json",
-      "manifestSha256": "d7e5be315b24220fa95c70843dd45417a276690743a3fb3c1aa5befe28047508",
-      "releaseId": "crop-circles-context-evidence-v1-20260812",
+      "manifestSha256": "bac9733ff1cf076ef57b66511c5b6261ebec9d1d8f4c6193b025359b43c9bc87",
+      "releaseId": "context-recovery-20261019-v1.crop_circles",
       "rowCount": 7745,
       "sourceCommit": "0086e3b86ceefeaa5c12422ea28a3fed05e8e260",
       "sourceSchema": "crop-circle-timeline-export-v1.0.0"

@@ -21,9 +21,9 @@ from concurrent.futures import ThreadPoolExecutor
 RELEASE = "workspace-analysis-20261008"
 ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
 PREFIX = "releases/" + RELEASE
-BASE_DEPLOYMENT = "16443086-c630-41d8-a793-92a0243a76f6"
-RUNTIME_REVISION = "context-source-continuation-preview-20261019-v1"
-RETAINED_ROLLBACK = "16443086-c630-41d8-a793-92a0243a76f6"
+BASE_DEPLOYMENT = "16b1c76f-8896-4c00-ab00-4676212a941e"
+RUNTIME_REVISION = "context-source-recovery-production-20261019-v1"
+RETAINED_ROLLBACK = "16b1c76f-8896-4c00-ab00-4676212a941e"
 ROOT = Path(__file__).resolve().parent.parent
 SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
@@ -41,6 +41,45 @@ SEARCH_MANIFEST = "data/search/manifest.json"
 SEARCH_DIRECTORY = Path(r"D:/Codex/UFO-Timeline/search-index-20261018-v1")
 SEARCH_SOURCE_MANIFEST_SHA256 = "106c37daa265789abfa13e938c941fe41dfd57eee2daef920e1d92ff1cf8f2d6"
 SEARCH_PREFIX = "releases/search-index-20261018-v1"
+CONTEXT_RELEASE = "context-recovery-20261019-v1"
+CONTEXT_DIRECTORY = Path("D:/UFO-Timeline-Context-Evidence/releases") / CONTEXT_RELEASE
+CONTEXT_INTEGRATION = CONTEXT_DIRECTORY / "integration.json"
+
+
+def add_context_recovery(pages, derived, uploads, config, pin):
+    """Use a bounded, separately frozen delta; never replace old R2 objects."""
+    contract = load(CONTEXT_INTEGRATION)
+    require(contract.get("schemaId") == "ufo-context-recovery-release-v1"
+            and contract.get("releaseId") == CONTEXT_RELEASE, "Context release identity drift")
+    require(contract["counts"]["cropSourceReviewed"] == 140
+            and contract["counts"]["animalSourceReviewed"] == 14
+            and contract["counts"]["cropBounded"] == 428, "Context recovery count drift")
+    require(sum(row["bytes"] for row in contract["uploads"]) < 100 * 1024**2,
+            "Context delta exceeds its bounded release budget")
+    pin(CONTEXT_INTEGRATION, "reviewed context recovery integration contract")
+    for row in contract["pages"] + contract["uploads"]:
+        path = Path(row["source"]).resolve()
+        require(path.is_relative_to(CONTEXT_DIRECTORY.resolve()) and path.is_file()
+                and path.stat().st_size == row["bytes"] and sha(path) == row["sha256"],
+                "Context release member pin drift")
+    for row in contract["uploads"]:
+        require(row["key"].startswith("releases/" + CONTEXT_RELEASE + "/")
+                and ".." not in row["key"].split("/")
+                and row["url"] == ORIGIN + "/" + row["key"]
+                and row["key"] not in uploads, "Unsafe or conflicting context object")
+        uploads[row["key"]] = row
+    for row in contract["pages"]:
+        logical = row["path"]
+        require(logical in {
+            "data/crop_circles/manifest.json", "data/animal_mutilations/manifest.json",
+            "data/analysis_v1/manifest.json", "data/analysis_v2/manifest.json",
+            "data/analysis_comparisons/manifest.json"}, "Unexpected context manifest override")
+        derived[logical] = load(row["source"])
+        pages[logical] = ROOT / logical
+    config["contextEvidenceRelease"] = {
+        "id": CONTEXT_RELEASE, "counts": contract["counts"],
+        "integrationSha256": sha(CONTEXT_INTEGRATION)}
+    return contract
 
 
 def require(ok, message):
@@ -185,8 +224,9 @@ def validate_refresh(previous, plan):
     require(old_uploads.keys() <= new_uploads.keys() and
             all(new_uploads[key] == row for key, row in old_uploads.items()),
             "Immutable uploads changed during candidate refresh")
-    require(all(key.startswith(SEARCH_PREFIX + "/") for key in new_uploads.keys() - old_uploads.keys()),
-            "Immutable uploads may only add the reviewed search index objects")
+    require(all(key.startswith((SEARCH_PREFIX + "/", "releases/" + CONTEXT_RELEASE + "/"))
+                for key in new_uploads.keys() - old_uploads.keys()),
+            "Immutable uploads may only add reviewed search or context recovery objects")
     old_paths = {r["path"] for r in previous["pages"]}
     new_paths = {r["path"] for r in plan["pages"]}
     require(old_paths <= new_paths and new_paths - old_paths <= {
@@ -412,6 +452,7 @@ def assemble(check_only=False):
     page_json("data/app_config.json", config)
     add_progressive_startup_pages(pages, pin, uploads)
     add_collection_study_pages(pages, pin)
+    context_recovery = add_context_recovery(pages, derived, uploads, config, pin)
 
     # A frozen manifest can be published both at its Pages lookup location and
     # at the immutable delivery prefix used by its explicit URLs.
@@ -464,6 +505,9 @@ def assemble(check_only=False):
                             "bytes": sum(row["bytes"] for row in search_members), "copied_to_c": False,
                             "new_files_above_100MiB": [], "purpose": "lazy keyword search only"},
                         "cleanup": "No data deletion. Earlier rollback designation is superseded; shared source assets remain protected."}}
+    plan["context_recovery"] = {"integration": str(CONTEXT_INTEGRATION),
+                                "counts": context_recovery["counts"],
+                                "storage": context_recovery["storage"]}
     if not check_only:
         validate_browser_references(records)
         write(META / "delivery_plan.json", plan)

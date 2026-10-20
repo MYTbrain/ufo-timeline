@@ -1,0 +1,45 @@
+{
+  "schemaId": "ufo-context-recovery-production-preparation-v1",
+  "status": "prepared_not_published",
+  "observedUtc": "2026-10-20T02:18:29.037807+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "previousProduction": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "supersededRollbackDesignation": "16443086-c630-41d8-a793-92a0243a76f6",
+  "pagesTreeSha256": "80f65e123440efdb0275572203d96901b055e3e3552bf4be0bcf2fdde7487d23",
+  "pagesFiles": 229,
+  "pagesBytes": 41376518,
+  "newDataRelease": "context-recovery-20261019-v1",
+  "newObjects": 45,
+  "newUploadBytes": 5379080,
+  "inheritedObjects": 105,
+  "sourceCounts": {
+    "events": 702893,
+    "mapped": 582877
+  },
+  "contextCounts": {
+    "animalInventory": 1184,
+    "animalSourceReviewed": 14,
+    "animalStrict": 0,
+    "contextNeighbors": 63859,
+    "cropBounded": 428,
+    "cropInventory": 7745,
+    "cropLocality": 3224,
+    "cropSourceReviewed": 140,
+    "cropStrict": 1
+  },
+  "sharedResearchCommits": [
+    "731aaaaffd4390db1a2c273c1071fbd1cef3cc9b",
+    "65d05ef3106bcb30bf7a0ac05d7656df255a64a6"
+  ],
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "canonicalContextDerivative": "D:/UFO-Timeline-Context-Evidence/releases/context-recovery-20261019-v1",
+    "stageNetGrowthBytes": 0,
+    "newFilesAbove100MiB": [],
+    "fullCorpusOrDatabaseCopied": false,
+    "approximateTotalProjectGrowthMiB": 7,
+    "supersededLargeLocalStages": [],
+    "cleanupProposal": "Retain one canonical stage, new validated production and prior validated production as rollback. Retain bounded D context delta, research sources and QA as provenance. Superseded provider previews/history are reproducible and candidates for a later literal cleanup allowlist; no deletion performed."
+  }
+}

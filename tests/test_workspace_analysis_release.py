@@ -65,6 +65,33 @@ class WorkspaceAnalysisReleaseTests(unittest.TestCase):
     def test_absent_extension_does_not_add_pages_or_pins(self):
         self.assertEqual(self.prepare_extension({"artifacts": {}}), ({}, []))
 
+    def test_context_delta_confines_sources_and_preserves_old_uploads(self):
+        context_root = self.root / "context"
+        context_root.mkdir()
+        source = context_root / "manifest.json"
+        source.write_text('{"releaseId":"reviewed"}', encoding="utf-8")
+        raw = source.read_bytes()
+        member = {"source": str(source), "bytes": len(raw),
+                  "sha256": hashlib.sha256(raw).hexdigest()}
+        key = "releases/" + release.CONTEXT_RELEASE + "/data/reviewed.json"
+        contract = {"schemaId": "ufo-context-recovery-release-v1", "releaseId": release.CONTEXT_RELEASE,
+                    "counts": {"cropSourceReviewed": 140, "animalSourceReviewed": 14, "cropBounded": 428},
+                    "pages": [dict(member, path="data/analysis_v2/manifest.json")],
+                    "uploads": [dict(member, key=key, url=release.ORIGIN + "/" + key)]}
+        integration = context_root / "integration.json"
+        integration.write_text(json.dumps(contract), encoding="utf-8")
+        uploads = {"retained": {"sha256": "immutable"}}
+        pages, derived, config = {}, {}, {}
+        with patch.object(release, "ROOT", self.root), patch.object(release, "CONTEXT_DIRECTORY", context_root), \
+                patch.object(release, "CONTEXT_INTEGRATION", integration):
+            release.add_context_recovery(pages, derived, uploads, config, lambda *args: None)
+            self.assertEqual(uploads["retained"], {"sha256": "immutable"})
+            self.assertEqual(derived["data/analysis_v2/manifest.json"], {"releaseId": "reviewed"})
+            self.assertEqual(config["contextEvidenceRelease"]["counts"], contract["counts"])
+            source.write_text("changed bytes", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "member pin drift"):
+                release.add_context_recovery({}, {}, {}, {}, lambda *args: None)
+
     def test_refresh_allows_only_reviewed_additions_with_identical_uploads(self):
         plan = copy.deepcopy(self.previous)
         plan["pages"].extend([{"path": release.NUCLEAR_EXTENSION},

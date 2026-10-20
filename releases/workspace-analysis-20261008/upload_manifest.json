@@ -4,6 +4,366 @@
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
     {
+      "bytes": 980837,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_comparisons/context_rows.json.gz",
+      "sha256": "21dd596d2162dbe8a3453c91fc4b84ad531e867e42408cee5d8bdf3c6b5378c1",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_comparisons\\context_rows.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_comparisons/context_rows.json.gz"
+    },
+    {
+      "bytes": 28120,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_v1/animal_reports.json.gz",
+      "sha256": "5ea15ddb8b902389fc735c18bfcd70191db7029227f28a9aa6a5c25091a7ff55",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v1\\animal_reports.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/animal_reports.json.gz"
+    },
+    {
+      "bytes": 147066,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_v1/crop_circles.json.gz",
+      "sha256": "4f830282fb8c5d3f7087223ed8bf6e3a1d15c8cca6ab109d805d7ddd36acbe39",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v1\\crop_circles.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v1/crop_circles.json.gz"
+    },
+    {
+      "bytes": 202333,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_v2/animal_context_readiness.json.gz",
+      "sha256": "666111611e28a313de4269e1f4f126af35f160591fe65ca82038ceca15a78dc9",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v2\\animal_context_readiness.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v2/animal_context_readiness.json.gz"
+    },
+    {
+      "bytes": 1145395,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_v2/context_ufo_neighbors_v1.json.gz",
+      "sha256": "65170b47c6a2b742776615c214f1e23d74504d43a116b64fd5ea4f1e1378931a",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v2\\context_ufo_neighbors_v1.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v2/context_ufo_neighbors_v1.json.gz"
+    },
+    {
+      "bytes": 574578,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/analysis_v2/crop_context_readiness.json.gz",
+      "sha256": "843b6d29d80a6c76cecd11b6f0f10c8533a3274fb0bd66991d6d01c648441a49",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\projections\\analysis_v2\\crop_context_readiness.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/analysis_v2/crop_context_readiness.json.gz"
+    },
+    {
+      "bytes": 110617,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/catalog.json.gz",
+      "sha256": "30825d69056a4a7dfc8f3ed7dab645b8e5c43c271f71b7d1c4cae3a27fc8c329",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\catalog.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/catalog.json.gz"
+    },
+    {
+      "bytes": 74285,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_000.json.gz",
+      "sha256": "d986e54ad5c88a0939234d8c54ec5db7d8bdacc1b8d09847da577ba53a275a85",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_000.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_000.json.gz"
+    },
+    {
+      "bytes": 71246,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_001.json.gz",
+      "sha256": "e8aa42e28a65bd8d0aa6f226a59358425024e8f1417b0e467a76b7c4f6091064",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_001.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_001.json.gz"
+    },
+    {
+      "bytes": 69054,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_002.json.gz",
+      "sha256": "655dd5bba6d33cf25f80f5d4524aae174bfcf836e4aa70b7a66a2888b0afbc13",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_002.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_002.json.gz"
+    },
+    {
+      "bytes": 66950,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_003.json.gz",
+      "sha256": "3a06ab371058bc8c259f346f8c5381ef747c663d9882ecbe27fcd96d5c0629a5",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_003.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_003.json.gz"
+    },
+    {
+      "bytes": 49534,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_004.json.gz",
+      "sha256": "e1a707fb7f6f0fdb7c9d1f05c139b2c0aa575c3c5650f1f5157fffcc788e9c34",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\details\\chunk_004.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_004.json.gz"
+    },
+    {
+      "bytes": 14357,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/animal_mutilations/points.json.gz",
+      "sha256": "de03ac207db5d8da6dc36a4df1d13fd7272f00fc575c8ae31ce065574fa8482e",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\animal_mutilations\\points.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/points.json.gz"
+    },
+    {
+      "bytes": 53918,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_000.json.gz",
+      "sha256": "e592e081c434dcac67d362285ca0adc5ecfda6a5b5ae97ad4af07af14e8916be",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_000.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_000.json.gz"
+    },
+    {
+      "bytes": 56525,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_001.json.gz",
+      "sha256": "9f911b105e6e4ffce69aab9ea3f714d8d3eba2512bbb97c93736069ecd13a1be",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_001.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_001.json.gz"
+    },
+    {
+      "bytes": 56101,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_002.json.gz",
+      "sha256": "73e161cf39c8c5a974f397707220efec9e54e14d03839b65214567d76ba0b023",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_002.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_002.json.gz"
+    },
+    {
+      "bytes": 55512,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_003.json.gz",
+      "sha256": "085893d40903a0ce24491c1fe9bcf2eac0cb1f721f4449f86808c1ba282efd3e",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_003.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_003.json.gz"
+    },
+    {
+      "bytes": 53473,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_004.json.gz",
+      "sha256": "c058e8c929788e16e0fc266a4132e47b0eba4c55ad191cbef9cf6c68867c172e",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_004.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_004.json.gz"
+    },
+    {
+      "bytes": 57032,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_005.json.gz",
+      "sha256": "c7800b06baac6cfd77b7de09ce0c14944a24f924af805de9e96291d06d0400fd",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_005.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_005.json.gz"
+    },
+    {
+      "bytes": 55533,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_006.json.gz",
+      "sha256": "205e2ad12d23e738674c230d9e34ac498f17b74b1d14c1cdc65cc8f03a4c21c5",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_006.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_006.json.gz"
+    },
+    {
+      "bytes": 58388,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_007.json.gz",
+      "sha256": "6e3268059f14f8fff6e228a85d85bf92806ca56c253f5209374cfbbcfd02291f",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_007.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_007.json.gz"
+    },
+    {
+      "bytes": 54364,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_008.json.gz",
+      "sha256": "6af9932bbeb4da8a7bee38c2e2270a90108081095ca06df7fdaabbe70f6c062f",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_008.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_008.json.gz"
+    },
+    {
+      "bytes": 57935,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_009.json.gz",
+      "sha256": "9f981b42c0c191f95e13186b092b25afd5b0eab1404406ea5775b2d5a01bcb26",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_009.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_009.json.gz"
+    },
+    {
+      "bytes": 56399,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_010.json.gz",
+      "sha256": "1b2523294568b9e855c6f266283a98f451bc46ab69c7e2ab571990b7ee92ad30",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_010.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_010.json.gz"
+    },
+    {
+      "bytes": 56620,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_011.json.gz",
+      "sha256": "3e7ea05f60be45bf2cd7286bf128df33bb77a98ce71338d422203069cb19e3db",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_011.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_011.json.gz"
+    },
+    {
+      "bytes": 55746,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_012.json.gz",
+      "sha256": "48fe59b66f7618139af0130a01f21087ced2eae64fae393e3e2fbf7a52fffbb8",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_012.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_012.json.gz"
+    },
+    {
+      "bytes": 58799,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_013.json.gz",
+      "sha256": "c517c4fb56fdf55565c3d7e022e4679cdaac4c368935526dd069ba698a8b68b7",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_013.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_013.json.gz"
+    },
+    {
+      "bytes": 57401,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_014.json.gz",
+      "sha256": "35d59500a541f88de0c2cdfde97f55783aede30a3cb13fb1fe7c3e968b5ea40a",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_014.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_014.json.gz"
+    },
+    {
+      "bytes": 54312,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_015.json.gz",
+      "sha256": "fd0ef9a9d70acc46bdc89f7b2a21029e2846a61e2b97eb6c0e573ff540e1e7e7",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_015.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_015.json.gz"
+    },
+    {
+      "bytes": 54414,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_016.json.gz",
+      "sha256": "a71c97b44cad33e355f5deea0d44b04a708945400a8d14dd81525ecb24fae84a",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_016.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_016.json.gz"
+    },
+    {
+      "bytes": 60473,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_017.json.gz",
+      "sha256": "5f4d29988f07b03ad0aea33cd39ad1eaa8b0bcf3ed3912fd35512b0e0b969800",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_017.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_017.json.gz"
+    },
+    {
+      "bytes": 57006,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_018.json.gz",
+      "sha256": "3c91a4312fc7840aa31fcdbe605108984233dc925c31cdb868021d2a0a8c8003",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_018.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_018.json.gz"
+    },
+    {
+      "bytes": 54393,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_019.json.gz",
+      "sha256": "0a057a36a3de264760b430c753531793e2dc7a4b5b20501d9ebe947fe75a4944",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_019.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_019.json.gz"
+    },
+    {
+      "bytes": 57530,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_020.json.gz",
+      "sha256": "2c73806b6d675787a41a62a4435dac69283a97e6eac697c0caedc651dfe110c4",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_020.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_020.json.gz"
+    },
+    {
+      "bytes": 55629,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_021.json.gz",
+      "sha256": "9c5f9fc543fc1b35ffcaad2d9341fc109a8b673dff40a59b99e8eb3e95a654d8",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_021.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_021.json.gz"
+    },
+    {
+      "bytes": 55347,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_022.json.gz",
+      "sha256": "89e330547383d5ccee7c941db95cc049d408834874cb9048724e6da4e2dfc270",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_022.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_022.json.gz"
+    },
+    {
+      "bytes": 57288,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_023.json.gz",
+      "sha256": "14db187d3b37833fc001d3272cd734ecdefcb54047c8513f74d6902b3f8700d2",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_023.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_023.json.gz"
+    },
+    {
+      "bytes": 54266,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_024.json.gz",
+      "sha256": "a564e5243b0a96c1062e7a14eba45d1f3344f52591a11b419f0b8613fa7c57b1",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_024.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_024.json.gz"
+    },
+    {
+      "bytes": 58512,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_025.json.gz",
+      "sha256": "34722c42b2138a55ce88ccd2fa3d2265821ba12c955efb1a5acb6937a2de22cc",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_025.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_025.json.gz"
+    },
+    {
+      "bytes": 57930,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_026.json.gz",
+      "sha256": "5d4b340399e0b8a0b2f0ea7da2ea5247e32582765f885658ec9014e8fe960140",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_026.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_026.json.gz"
+    },
+    {
+      "bytes": 54579,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_027.json.gz",
+      "sha256": "9d90da0b029d8c1bdac4db466bbf08a79b91b5ce68a6cf1e2c6745c629912a57",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_027.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_027.json.gz"
+    },
+    {
+      "bytes": 57485,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_028.json.gz",
+      "sha256": "24c2b86afa4cec4293f10c08b50de457f6f78d7fdd4aaf1c1d58da318dc36f55",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_028.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_028.json.gz"
+    },
+    {
+      "bytes": 56532,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_029.json.gz",
+      "sha256": "9f0338ed05767f2ca44e67678c54c3dc7ae18f28b0a8e7e2864b1170733d4063",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_029.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_029.json.gz"
+    },
+    {
+      "bytes": 55414,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_030.json.gz",
+      "sha256": "1fe183e5bbfc1249922b1714b1702941c70fdf13eb6fe023be1bca69ddca134a",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\details\\chunk_030.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/details/chunk_030.json.gz"
+    },
+    {
+      "bytes": 99852,
+      "content_type": "application/gzip",
+      "key": "releases/context-recovery-20261019-v1/data/crop_circles/points.json.gz",
+      "sha256": "d4bd46367fc33c0e9a74c09d2b5b97268a5d4d0d802e19dc98f2a2888a7d0930",
+      "source": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\layers\\crop_circles\\points.json.gz",
+      "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/crop_circles/points.json.gz"
+    },
+    {
       "key": "releases/search-index-20261018-v1/fragments_000.pack",
       "url": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/search-index-20261018-v1/fragments_000.pack",
       "source": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1\\fragments_000.pack",
@@ -844,5 +1204,5 @@
       "content_type": "application/gzip"
     }
   ],
-  "upload_total_bytes": 581488622
+  "upload_total_bytes": 586867702
 }

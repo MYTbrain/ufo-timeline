@@ -110,7 +110,7 @@
   },
   "analysisWorkspaceRelease": {
     "id": "workspace-analysis-20261008",
-    "baseDeployment": "16443086-c630-41d8-a793-92a0243a76f6",
+    "baseDeployment": "16b1c76f-8896-4c00-ab00-4676212a941e",
     "sourceRowsPreserved": 702893,
     "mappedRowsPreserved": 582877
   },
@@ -148,5 +148,20 @@
     "expectedRecordCount": 702893,
     "expectedIdSetSha256": "c7d723deb1b172ebd8938ab1e3399d2e807c7e6c4aa48a107b636dea363df8f2",
     "loadPolicy": "first_keyword_search"
+  },
+  "contextEvidenceRelease": {
+    "id": "context-recovery-20261019-v1",
+    "counts": {
+      "animalInventory": 1184,
+      "animalSourceReviewed": 14,
+      "animalStrict": 0,
+      "contextNeighbors": 63859,
+      "cropBounded": 428,
+      "cropInventory": 7745,
+      "cropLocality": 3224,
+      "cropSourceReviewed": 140,
+      "cropStrict": 1
+    },
+    "integrationSha256": "212083907a9c2da564e39ec4c1564389199a465c2085e583079463fbf8d50670"
   }
 }

@@ -1,9 +1,9 @@
 {
-  "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/workspace-analysis-20261008/data/animal_mutilations/",
+  "assetBaseUrl": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/",
   "catalog": {
-    "bytes": 110282,
-    "decodedBytes": 659962,
-    "path": "catalog.json.gz",
+    "bytes": 110617,
+    "decodedBytes": 660394,
+    "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/catalog.json.gz",
     "r2Only": true,
     "recordCount": 1184,
     "rowSchema": [
@@ -25,7 +25,7 @@
       "coordinateEvidenceClass",
       "coordinateUncertaintyM"
     ],
-    "sha256": "2b1b69e99d3027ad9d51697ca738acf316917503622f83f11c80e4c4959f7d3b"
+    "sha256": "30825d69056a4a7dfc8f3ed7dab645b8e5c43c271f71b7d1c4cae3a27fc8c329"
   },
   "codes": {
     "coordinateEvidenceClass": {
@@ -67,24 +67,24 @@
   },
   "contextEvidence": {
     "acceptedNewCaseCount": 7,
-    "activeAcceptedAssertions": 87,
-    "caseCount": 11,
+    "activeAcceptedAssertions": 102,
+    "caseCount": 14,
     "files": {
       "case_enrichment.jsonl": {
-        "bytes": 726607,
-        "sha256": "94b9806d7654398b41de22f7ecd5503c25a91ebaede4787dfc986db50f92ea5b"
+        "bytes": 758701,
+        "sha256": "7c918dbb9b46931906dc544b7753b45449a7f8681aaa737a255f6b9a4fcb60cd"
       },
       "case_review_decisions.jsonl": {
-        "bytes": 1184959,
-        "sha256": "27dbc976da3a9966739ccd0198316b59453049fb4f0bf1b562e5063569c4bc3a"
+        "bytes": 1243107,
+        "sha256": "1eb40fc0ce99c83b5593edd595ca9268c098eb7f7fdae3c2ee30727047303c52"
       },
       "research_queue.jsonl": {
-        "bytes": 288496,
-        "sha256": "b97012b78a3fd9313fc29214ed756a7e9e328bdc1295b8d4f35e2f494a42ae55"
+        "bytes": 323865,
+        "sha256": "e4df43599ae1ca8d3a050419d4552fc05a8a8a64bc852489c4881347d8988952"
       },
       "source_ledger.jsonl": {
-        "bytes": 176772,
-        "sha256": "69db9173acf80b377074096171ba960e9626f2395f266a3ce64567853195b365"
+        "bytes": 201305,
+        "sha256": "e44673e9dc93f100941cf5ded438dddc8c13af68fa79bc15d99277627d8ac07b"
       }
     },
     "status": "loaded"
@@ -101,24 +101,25 @@
     "mappedExactDay": 340,
     "mappedPositions": 400,
     "records": 1184,
-    "reportedUnreviewed": 1173,
+    "reportedUnreviewed": 1170,
     "sourceRecords": 1177,
     "undated": 28,
     "unmapped": 666
   },
   "delivery": {
-    "immutablePrefix": "releases/workspace-analysis-20261008/data/animal_mutilations/",
+    "immutablePrefix": "releases/context-recovery-20261019-v1/data/animal_mutilations",
+    "inheritedImmutableArtifacts": true,
     "pagesFiles": [
       "manifest.json"
     ],
     "r2OnlyPaths": [
-      "catalog.json.gz",
-      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/points.json.gz",
-      "details/chunk_000.json.gz",
-      "details/chunk_001.json.gz",
-      "details/chunk_002.json.gz",
-      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/details/chunk_003.json.gz",
-      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/details/chunk_004.json.gz"
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/points.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_000.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_001.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_002.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_003.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_004.json.gz",
+      "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/catalog.json.gz"
     ]
   },
   "details": {
@@ -127,52 +128,52 @@
     "chunkSize": 250,
     "files": [
       {
-        "bytes": 70248,
-        "decodedBytes": 549735,
-        "path": "details/chunk_000.json.gz",
+        "bytes": 74285,
+        "decodedBytes": 568257,
+        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_000.json.gz",
         "r2Only": true,
         "recordCount": 250,
-        "sha256": "ca9974eadf2f316994ea99c51a6c325570aff88135ea549abde1ddc323ac745d"
+        "sha256": "d986e54ad5c88a0939234d8c54ec5db7d8bdacc1b8d09847da577ba53a275a85"
       },
       {
-        "bytes": 70508,
-        "decodedBytes": 550221,
-        "path": "details/chunk_001.json.gz",
+        "bytes": 71246,
+        "decodedBytes": 552643,
+        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_001.json.gz",
         "r2Only": true,
         "recordCount": 250,
-        "sha256": "c8fcf22620d75b74a97fab67d349b6d8899d17836d60c9132be08ada89183b07"
+        "sha256": "e8aa42e28a65bd8d0aa6f226a59358425024e8f1417b0e467a76b7c4f6091064"
       },
       {
-        "bytes": 69050,
-        "decodedBytes": 541775,
-        "path": "details/chunk_002.json.gz",
+        "bytes": 69054,
+        "decodedBytes": 541776,
+        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_002.json.gz",
         "r2Only": true,
         "recordCount": 250,
-        "sha256": "f47eda55c6922d9734eed11cc786ef1e5af419f59dcadd87d9fe122879bddcf3"
+        "sha256": "655dd5bba6d33cf25f80f5d4524aae174bfcf836e4aa70b7a66a2888b0afbc13"
       },
       {
-        "bytes": 66138,
-        "decodedBytes": 534499,
-        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/details/chunk_003.json.gz",
+        "bytes": 66950,
+        "decodedBytes": 537027,
+        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_003.json.gz",
         "r2Only": true,
         "recordCount": 250,
-        "sha256": "1654fcf81c2e1598e96493ad1e0c7e69d656e2c4d8c8e90c6cfd323e6978d665"
+        "sha256": "3a06ab371058bc8c259f346f8c5381ef747c663d9882ecbe27fcd96d5c0629a5"
       },
       {
-        "bytes": 49530,
-        "decodedBytes": 394454,
-        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/details/chunk_004.json.gz",
+        "bytes": 49534,
+        "decodedBytes": 394455,
+        "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/details/chunk_004.json.gz",
         "r2Only": true,
         "recordCount": 184,
-        "sha256": "c63ca86a1017f8e7698a4ae4b7e1147af24f72122cd47c0c69c2a419da1d3b97"
+        "sha256": "e1a707fb7f6f0fdb7c9d1f05c139b2c0aa575c3c5650f1f5157fffcc788e9c34"
       }
     ]
   },
   "layerName": "Animal Mutilation Reports",
   "points": {
-    "bytes": 14353,
-    "decodedBytes": 46685,
-    "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/animal-mutilations-v1-20260812/points.json.gz",
+    "bytes": 14357,
+    "decodedBytes": 46686,
+    "path": "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev/releases/context-recovery-20261019-v1/data/animal_mutilations/points.json.gz",
     "r2Only": true,
     "recordCount": 518,
     "rowSchema": [
@@ -187,7 +188,7 @@
       "coordinateEvidenceClassCode",
       "coordinateUncertaintyM"
     ],
-    "sha256": "1131634b04ddccca736b8eb8d55f85581ab268e4e9217135ffdcbc83548f64c1"
+    "sha256": "de03ac207db5d8da6dc36a4df1d13fd7272f00fc575c8ae31ce065574fa8482e"
   },
   "policy": {
     "causality": "not_asserted",
@@ -231,13 +232,7 @@
     "sensitivityReady": 340,
     "strictReady": 0
   },
-  "releaseId": "animal-mutilations-v1-20260812",
-  "repairOverlay": {
-    "baseManifestSha256": "7e0b07b8a0d5fd23a425af3e0ac43fb4bfe625df57e42107b45e490ec8cdc673",
-    "repairId": "context-analysis-repairs-20261007",
-    "scope": "seven_source_reviewed_case_public_provenance",
-    "strictReadinessChanged": false
-  },
+  "releaseId": "context-recovery-20261019-v1.animal_mutilations",
   "schemaVersion": 1,
   "source": {
     "adapterVersion": "animal-mutilation-timeline-adapter-v1.1.1",

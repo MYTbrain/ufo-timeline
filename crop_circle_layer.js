@@ -829,7 +829,9 @@
 
   function chronologyNodes(context) {
     const nodes = new Map();
+    const excludedIds = new Set(state.manifest && state.manifest.chronologyExcludedIds || []);
     for (const row of state.points || []) {
+      if (excludedIds.has(String(row[ROW.id]))) continue;
       if (!pointMatches(row, context) || Number(row[ROW.datePrecision]) !== 0) continue;
       if (state.chronology.coordinateScope === "field" && Number(row[ROW.coordinate]) > 1) continue;
       const day = Number(row[ROW.start]);
