@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T05:06:55.790327+00:00",
+  "tests": [
+    "test_analysis_animal_species_display.mjs",
+    "test_analysis_navigation_scroll.mjs",
+    "test_analysis_view_repairs.mjs",
+    "test_animal_reviewed_evidence_ui.mjs",
+    "test_analysis_comparison_navigation.mjs",
+    "test_analysis_cross_context.mjs"
+  ],
+  "stage": {
+    "files": 229,
+    "bytes": 41381481,
+    "treeSha256": "ba7d7c9ff8fb197a9c89196eda754ed6bf9bc5cbaba54cb6c1cbe740fb842a72"
+  },
+  "dataUnchanged": {
+    "uploadObjects": 150,
+    "bytesReused": 586867702,
+    "inputPinsAndCountsUnchanged": true
+  },
+  "storage": {
+    "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
+    "currentValidatedProduction": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "stageNetGrowthBytes": 3914,
+    "approximateNetTaskGrowth": "under 1 MiB including source, tests, Git, QA and screenshot",
+    "newFilesAbove100MiB": [],
+    "supersededLocalStages": [],
+    "cleanup": "Existing stage refreshed in place; no large copy, new dataset, backup or deletion. Prior temporary hosted preview becomes superseded; production and its one rollback remain protected."
+  },
+  "reviewFollowup": "Index chart question changed after independent review to remove the obsolete pooled wording; no behavioral difference."
+}

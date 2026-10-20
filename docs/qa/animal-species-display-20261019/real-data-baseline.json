@@ -1,0 +1,113 @@
+{
+  "neighborRows": 63859,
+  "animalIndependentNeighborRows": 1391,
+  "observedUniqueClustersBySpecies": {
+    "bovine": 43,
+    "canid": 3,
+    "caprine": 3,
+    "avian": 2,
+    "ovine": 1,
+    "porcine": 1,
+    "equine": 2
+  },
+  "allSpecies": [
+    "avian",
+    "bovine",
+    "canid",
+    "caprine",
+    "cervid",
+    "equine",
+    "ovine",
+    "porcine",
+    "unknown"
+  ],
+  "pooledColumns": [
+    "bovine",
+    "other_sparse_species",
+    "unknown"
+  ],
+  "pooledGroups": [
+    "avian",
+    "canid",
+    "caprine",
+    "equine",
+    "ovine",
+    "porcine"
+  ],
+  "completeColumns": [
+    "avian",
+    "bovine",
+    "canid",
+    "caprine",
+    "equine",
+    "ovine",
+    "porcine",
+    "unknown"
+  ],
+  "completeCells": 72,
+  "cattleCells": [
+    {
+      "row": "chevron_boomerang",
+      "column": "bovine",
+      "observedClusterCount": 4,
+      "expectedClusterCount": 1.5,
+      "log2Enrichment": 1.169925
+    },
+    {
+      "row": "cigar_cylinder",
+      "column": "bovine",
+      "observedClusterCount": 5,
+      "expectedClusterCount": 9,
+      "log2Enrichment": -0.788496
+    },
+    {
+      "row": "cone",
+      "column": "bovine",
+      "observedClusterCount": 1,
+      "expectedClusterCount": 0,
+      "log2Enrichment": 1.584963
+    },
+    {
+      "row": "diamond",
+      "column": "bovine",
+      "observedClusterCount": 0,
+      "expectedClusterCount": 0.25,
+      "log2Enrichment": -0.584963
+    },
+    {
+      "row": "disc_saucer",
+      "column": "bovine",
+      "observedClusterCount": 17,
+      "expectedClusterCount": 12.75,
+      "log2Enrichment": 0.401363
+    },
+    {
+      "row": "oval_egg",
+      "column": "bovine",
+      "observedClusterCount": 14,
+      "expectedClusterCount": 2.5,
+      "log2Enrichment": 2.273018
+    },
+    {
+      "row": "rectangle_box",
+      "column": "bovine",
+      "observedClusterCount": 1,
+      "expectedClusterCount": 1.25,
+      "log2Enrichment": -0.222392
+    },
+    {
+      "row": "sphere_orb",
+      "column": "bovine",
+      "observedClusterCount": 10,
+      "expectedClusterCount": 8.5,
+      "log2Enrichment": 0.222392
+    },
+    {
+      "row": "triangle",
+      "column": "bovine",
+      "observedClusterCount": 8,
+      "expectedClusterCount": 4.25,
+      "log2Enrichment": 0.839535
+    }
+  ]
+}

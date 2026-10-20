@@ -1,0 +1,14 @@
+{
+  "chartQuestion": "Which reported craft categories vary across pooled common-language animal groups?",
+  "columns": [
+    "Craft",
+    "Other species (limited sample)",
+    "Birds",
+    "Dogs / canids",
+    "Sheep",
+    "Unknown species"
+  ],
+  "scope": "Animal reports and nearby sighting context\n\nReported and unreviewed; public-marker uncertainty remains explicit.\n\nView\nReports over time\nCraft & animal context\nSpecies & ",
+  "text": "Context feature lane\nCraft by pooled animal species\n\nSparse context features are pooled below N=25; the complete unpooled table remains available below.\n\nBlue = above expectation · amber = below expectation · diagonal overlay = descriptive estimate with limited inferential support\n\nNo cells qualify for inference in this view. 14 descriptive estimates remain visible.\n\nCraft by pooled animal species\nCraft\tOther species (limited sample)\tBirds\tDogs / canids\tSheep\tUnknown species\nOval / egg\t\n2.54\n\t\n\t\n\t\n\t\n\nCigar / cylinder\t\n-1.58\n\t\n\t\n\t\n\t\n\nRectangle / box\t\n-1.32\n\t\n\t\n\t\n\t\n\nDisc / saucer\t\n1.06\n\t\n-0.58\n\t\n-0.58\n\t\n\t\n\nTriangle\t\n0.81\n\t\n\t\n\t\n-0.58\n\t\n-0.58\n\nCone\t\n-0.58\n\t\n\t\n\t\n\t\n\nDiamond\t\n-0.58\n\t\n\t\n\t\n\t\n\nSphere / orb\t\n-0.09\n\t\n\t\n\t\n-0.58\n\t\n\nChevron / boomerang\t\n0.26\n\t\n\t\n\t\n\t\nView complete data table (14 rows)\n\nLargest displayed magnitude: Oval / egg / Other species (limited sample) (2.54) · descriptive.\n\nView complete data table (72 rows)",
+  "url": "https://175eb326.ufo-timeline.pages.dev/#analysis-section-animals"
+}

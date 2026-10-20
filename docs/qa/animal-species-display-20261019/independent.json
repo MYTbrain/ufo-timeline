@@ -1,0 +1,50 @@
+{
+  "schema": "ufo-animal-species-display-independent-review-v1",
+  "reviewedAtUtc": "2026-10-20T05:05:42.199396+00:00",
+  "baseCommit": "690d9bbe52e8eb1d9e3c0b91522de11092d679ba",
+  "scope": "Independent read-only review of the uncommitted cattle/species UI change. No runtime edits, builds or deployments.",
+  "result": "pass",
+  "blockingFindings": [],
+  "checks": {
+    "scientificGates": "Animal display clones complete unpooled descriptive cells; inferenceEligible and patternFinderEligible are false, all p/q aliases are null, sensitivity reason is explicit, and unavailable zero/zero combinations are not promoted to estimates.",
+    "sourcePreservation": "Original association and complete table are not mutated. The original complete unpooled values remain available in their own lazy table; source datasets, estimator and gates are unchanged.",
+    "counts": "Count unit explicitly states location/date clusters per craft/species combination. Fractional expected averages are retained in hover, inspection and exact chart table.",
+    "expectedControls": "Four matched-date controls matches contextFeatureAssociation implementation: minus two years, minus one year, plus one year and plus two years; expected cell counts sum their cluster counts and divide by four.",
+    "taxonomy": "Named species remain separate, ordered by observed cluster volume with unknown last. The animal column bound is 16 while the global/craft row bound remains 12. The complete table retains rows beyond the display bound.",
+    "cropRegression": "Non-animal lanes retain original pooled cell reference, morphology formatter, pooling disclosure and default expected-count formatter. Generic heatmaps retain their previous column limits unless speciesColumns is true.",
+    "controls": "Lane selector remains present and re-renders the selected lane. Inspectable cells preserve click and keyboard inspection paths; no shared filter mutation is introduced.",
+    "regression": "node tests/test_analysis_animal_species_display.mjs passed, including source immutability, control-only species, fractional expected values, inference rejection, all named columns, row truncation and crop-path checks."
+  },
+  "nonblockingNotes": [
+    "git diff --check treats the new CRLF lines in the -text analysis_view.js file as trailing whitespace; no runtime consequence. Avoid broad line-ending normalization of this large runtime file."
+  ],
+  "limits": [
+    "Root independently verifies real-data browser appearance, tests and release preparation. This receipt does not claim deployment."
+  ],
+  "reviewedFiles": [
+    {
+      "path": "analysis_view.js",
+      "bytes": 521093,
+      "sha256": "3f92a33201daf6a4eddf4381099b1c4d337d5033d505168f656ed013a5024f01"
+    },
+    {
+      "path": "tests/test_analysis_animal_species_display.mjs",
+      "bytes": 10426,
+      "sha256": "87c893ab486d6c903408407c13dad47584ef4f8224822bd701d36284a0baaeac"
+    },
+    {
+      "path": "index.html",
+      "bytes": 167941,
+      "sha256": "141276b4cef96f25ca58fa5892a78b7e14a8f63bb1b465a3aac3d8f70069f5bb"
+    },
+    {
+      "path": "scripts/prepare_workspace_analysis_release.py",
+      "bytes": 35812,
+      "sha256": "11ab14d2b0bf3070bcaf478682cc6bca4dfa7c6d6ae8eb0d3377d9e072d16f7f"
+    }
+  ],
+  "storage": {
+    "purpose": "Small independent QA evidence for the current species display change. Retain with release evidence.",
+    "newFilesAbove100MiB": []
+  }
+}

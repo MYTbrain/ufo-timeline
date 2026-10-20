@@ -3774,6 +3774,7 @@
         const support = firstDefined(item, ["commonSupportRate", "common_support_rate", "supportRate", "support_rate", "supportedN", "supported_n"], null);
         const criteria = [
           { label: cleanText(config.effectLabel, "Effect"), value: (config.valueFormat === "percent" ? formatSignedPercent(effect) : formatDecimal(effect, 3)) },
+          config.countUnit ? { label: "Count unit", value: cleanText(config.countUnit) } : null,
           interval ? { label: "95% interval", value: formatInterval(interval) } : null,
           pValue == null ? null : { label: "p-value", value: formatDecimal(pValue, 4) },
           qValue == null ? null : { label: "q-value", value: formatDecimal(qValue, 4) },
@@ -3787,7 +3788,7 @@
           summary: "Evidence details for this chart cell. This inspection does not change shared filters.",
           cohortSize: observed,
           missingness: firstDefined(item, ["missingness", "missingRate", "missing_rate"], "See evidence package"),
-          comparison: "Observed n=" + formatCount(observed) + (expected == null ? "" : " · conditional expected n=" + formatCount(expected)),
+          comparison: "Observed n=" + formatCount(observed) + (expected == null ? "" : " · " + cleanText(config.expectedCountLabel, "conditional expected n=") + (typeof config.expectedCountFormatter === "function" ? config.expectedCountFormatter(expected) : formatCount(expected))),
           criteria,
         });
       };
@@ -4750,6 +4751,8 @@
       const config = options || {};
       const axisMaximum = config.descriptiveCounts === true ? 32 : HEATMAP_AXIS_LIMIT;
       const axisLimit = Math.max(1, Math.min(axisMaximum, Number(config.axisLimit) || HEATMAP_AXIS_LIMIT));
+      const columnMaximum = config.speciesColumns === true ? Object.keys(SPECIES_DISPLAY_LABELS).length : axisMaximum;
+      const columnAxisLimit = Math.max(1, Math.min(columnMaximum, Number(config.columnAxisLimit) || axisLimit));
       const display = heatmapDisplayItems(value, config.valueKeys);
       const fullData = display.data;
       const completeData = config.completeData == null
@@ -4803,7 +4806,7 @@
           columnCandidates,
           columnKind,
           config.columnAxisOrder || (fixedAxisColumns.length ? fixedAxisColumns : firstDefined(columnMetadata, ["order", "labels"], []))
-        ).slice(0, axisLimit);
+        ).slice(0, columnAxisLimit);
       }
       const formatRowLabel = typeof config.rowLabelFormatter === "function"
         ? config.rowLabelFormatter
@@ -4921,7 +4924,7 @@
             const expected = config.descriptiveCounts ? null : firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "reference", "expected"], null);
             const countText = observed == null && expected == null
               ? ""
-              : (config.descriptiveCounts ? (config.valueFormat === "percent" ? formatCount(observed) + " reports" : "reports") : "O " + formatCount(observed) + (expected == null ? "" : " · E " + formatCount(expected)));
+              : (config.descriptiveCounts ? (config.valueFormat === "percent" ? formatCount(observed) + " reports" : "reports") : "O " + formatCount(observed) + (expected == null ? "" : " · E " + (typeof config.expectedCountFormatter === "function" ? config.expectedCountFormatter(expected) : formatCount(expected))));
             if (countText && !config.effectOnly) mark.appendChild(this._element("span", "analysis-heat-cell-counts", countText));
             const interval = config.descriptiveCounts ? null : intervalBounds(item);
             const pValue = config.descriptiveCounts ? null : firstDefined(item, ["pValue", "p_value", "p"], null);
@@ -4953,7 +4956,7 @@
           chartId,
           "Display shows " + displayedRows.length + " of " + rows.length + " highest-information rows and "
             + displayedColumns.length + " of " + columns.length + " highest-information columns (at most "
-            + (axisLimit * axisLimit) + " cells); " + (config.descriptiveCounts ? "complete report counts remain in the table and exports." : "calculations and evidence gates use every cell.")
+            + (axisLimit * columnAxisLimit) + " cells); " + (config.descriptiveCounts ? "complete report counts remain in the table and exports." : "calculations and evidence gates use every cell.")
         );
       }
       this._appendLazyDataTable(
@@ -4974,7 +4977,7 @@
             config.preserveRawCompleteLabels ? rawColumn : formatColumnLabel(rawColumn),
             formatValue(comparativeEffect(item, config.valueKeys)),
             formatCount(firstDefined(item, ["activeCount", "active_count", "observedCount", "observed_count", "observedClusterCount", "observed_cluster_count", "observed", "count"], null)),
-            formatCount(firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "expectedClusterCount", "expected_cluster_count", "reference", "expected"], null)),
+            (typeof config.expectedCountFormatter === "function" ? config.expectedCountFormatter : formatCount)(firstDefined(item, ["referenceCount", "reference_count", "expectedCount", "expected_count", "expectedClusterCount", "expected_cluster_count", "reference", "expected"], null)),
             intervalBounds(item) ? formatInterval(intervalBounds(item)) : "—",
             formatDecimal(firstDefined(item, ["pValue", "p_value", "p"], null), 3),
             formatDecimal(firstDefined(item, ["qValue", "q_value", "q"], null), 3),
@@ -5936,7 +5939,7 @@
         const laneLabels = {
           crop_bounded: "Craft by bounded-marker crop morphology",
           crop_locality: "Craft by crop-locality morphology",
-          animal_public_marker: "Craft by pooled animal species",
+          animal_public_marker: "Craft by animal species",
         };
         groups = firstArray(source, ["lanes", "evidenceLanes", "evidence_lanes"]).map(function (lane, index) {
           const association = firstDefined(lane, ["featureAssociation", "feature_association"], null);
@@ -5964,17 +5967,52 @@
       const renderGroup = (indexValue) => {
         const index = Math.max(0, Math.min(groups.length - 1, Number(indexValue) || 0));
         const group = groups[index];
-        const labelText = cleanText(firstDefined(group, ["label", "name"], "Craft by context feature"));
         const laneKey = cleanText(firstDefined(group, ["lane", "key", "id"], ""));
-        this._renderHeatmap(chartId, firstDefined(group, ["cells", "matrix", "effects"], group), summary, {
+        const animalSpecies = laneKey === "animal_public_marker";
+        const labelText = animalSpecies ? "Craft by animal species" : cleanText(firstDefined(group, ["label", "name"], "Craft by context feature"));
+        const complete = firstDefined(group, ["completeAccessibleTable", "complete_accessible_table"], null);
+        const completeCells = matrixItems(complete);
+        const unpooledSpecies = animalSpecies && completeCells.length > 0;
+        const speciesVolumes = new Map();
+        const displayCells = animalSpecies
+          ? (unpooledSpecies ? completeCells : matrixItems(firstDefined(group, ["cells", "matrix", "effects"], group))).map(function (cell) {
+            const observed = Math.max(0, finiteNumber(firstDefined(cell, ["observedClusterCount", "observed_cluster_count", "observedCount", "observed_count", "observed", "count"], 0), 0));
+            const expected = Math.max(0, finiteNumber(firstDefined(cell, ["expectedClusterCount", "expected_cluster_count", "expectedCount", "expected_count", "expected", "reference"], 0), 0));
+            const column = cleanText(firstDefined(cell, ["column", "columnLabel"], "unknown"));
+            if (observed > 0 || expected > 0) speciesVolumes.set(column, (speciesVolumes.get(column) || 0) + observed);
+            const supportReasons = asArray(firstDefined(cell, ["supportReasons", "support_reasons"], [])).slice();
+            if (observed < 25) supportReasons.push("observed_clusters_below_25");
+            if (expected < 10) supportReasons.push("expected_clusters_below_10");
+            supportReasons.push("sensitivity_lane_not_inferential");
+            return Object.assign({}, cell, {
+              observedCount: observed, expectedCount: expected,
+              estimateAvailable: observed > 0 || expected > 0,
+              inferenceEligible: false, patternFinderEligible: false,
+              pValue: null, p_value: null, p: null, qValue: null, q_value: null, q: null,
+              evidenceStatus: "sensitivity_only",
+              supportReasons: Array.from(new Set(supportReasons)),
+            });
+          })
+          : firstDefined(group, ["cells", "matrix", "effects"], group);
+        const speciesOrder = Array.from(speciesVolumes.keys()).sort(function (left, right) {
+          if (left === "unknown" || right === "unknown") return left === right ? 0 : (left === "unknown" ? 1 : -1);
+          return (speciesVolumes.get(right) || 0) - (speciesVolumes.get(left) || 0) || speciesDisplayLabel(left).localeCompare(speciesDisplayLabel(right));
+        });
+        this._renderHeatmap(chartId, displayCells, summary, {
           caption: labelText,
           rowHeading: "Craft",
           rowAxisKind: "category",
           columnAxisKind: "category",
           valueKeys: ["log2Enrichment", "log2_enrichment", "adjustedResidual", "adjusted_residual", "standardizedResidual", "standardized_residual"],
           craftRows: true,
-          speciesColumns: laneKey === "animal_public_marker",
-          columnLabelFormatter: laneKey === "animal_public_marker" ? speciesDisplayLabel : morphologyDisplayLabel,
+          speciesColumns: animalSpecies,
+          columnAxisLimit: animalSpecies ? Object.keys(SPECIES_DISPLAY_LABELS).length : undefined,
+          axisColumns: animalSpecies ? speciesOrder : undefined,
+          columnAxisOrder: animalSpecies ? speciesOrder : undefined,
+          columnLabelFormatter: animalSpecies ? speciesDisplayLabel : morphologyDisplayLabel,
+          countUnit: animalSpecies ? "Animal-report location/date clusters per craft/species combination" : undefined,
+          expectedCountLabel: animalSpecies ? "matched-date expected average=" : undefined,
+          expectedCountFormatter: animalSpecies ? function (value) { return formatDecimal(value, 2); } : undefined,
           effectOnly: true,
           inspectable: true,
         });
@@ -5986,7 +6024,8 @@
         const select = this._element("select", "analysis-evidence-view-select");
         select.setAttribute("aria-label", "Context feature lane");
         groups.forEach(function (candidate, groupIndex) {
-          const option = documentSafeElement(container.ownerDocument, "option", "", cleanText(firstDefined(candidate, ["label", "name"], "Context feature " + (groupIndex + 1))));
+          const candidateLane = cleanText(firstDefined(candidate, ["lane", "key", "id"], ""));
+          const option = documentSafeElement(container.ownerDocument, "option", "", candidateLane === "animal_public_marker" ? "Craft by animal species" : cleanText(firstDefined(candidate, ["label", "name"], "Context feature " + (groupIndex + 1))));
           option.value = String(groupIndex);
           select.appendChild(option);
         });
@@ -5995,14 +6034,14 @@
         label.appendChild(select);
         controls.appendChild(label);
         const poolingThreshold = firstDefined(group, ["poolingThreshold", "pooling_threshold"], null);
-        if (poolingThreshold != null) {
+        if (unpooledSpecies) {
+          controls.appendChild(this._element("p", "analysis-chart-policy", "Species stay separate, including small samples. Observed counts are location/date clusters; expected counts average four matched-date controls. All comparisons remain descriptive."));
+        } else if (poolingThreshold != null) {
           controls.appendChild(this._element("p", "analysis-chart-policy", "Sparse context features are pooled below N=" + formatCount(poolingThreshold) + "; the complete unpooled table remains available below."));
         }
         if (typeof container.insertBefore === "function") container.insertBefore(controls, container.firstChild || null);
         else container.appendChild(controls);
 
-        const complete = firstDefined(group, ["completeAccessibleTable", "complete_accessible_table"], null);
-        const completeCells = matrixItems(complete);
         if (completeCells.length) {
           this._appendLazyDataTable(container, labelText + " complete unpooled values", ["Craft", "Context feature", "Observed", "Expected", "Log2 enrichment"], completeCells.map(function (cell) {
             return [
