@@ -26,7 +26,7 @@ const context = vm.createContext({ Object, Number, String, Array, Date, Math, Bo
   },
 });
 for (const name of ["parseIsoParts", "daysFromCivil", "isoToOrdinal", "finiteChronologyNumber",
-  "compactCanonicalSummaryEventForRuntime", "hydrateCatalogEvent"]) {
+  "applyMufonDateReview", "compactCanonicalSummaryEventForRuntime", "hydrateCatalogEvent"]) {
   vm.runInContext(actualFunction(name), context, { filename: "app.js:" + name });
 }
 const nativeOrdinal = context.isoToOrdinal;

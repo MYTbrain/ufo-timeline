@@ -1,0 +1,133 @@
+{
+  "schemaId": "ufo-timeline-mufon-date-review-implementation-v1",
+  "reviewId": "mufon-occurrence-date-20261019-v1",
+  "date": "2026-10-19",
+  "status": "prepared-tested-committed-not-deployed",
+  "sourceBaseCommit": "0a46c29",
+  "inputEvidence": {
+    "bytes": 7604,
+    "sha256": "2ffd1ff34f7ebc404cf431f7a558b37a2d334c11f6ee5016760f4a3d4e28578e"
+  },
+  "targetRecordsN": 5,
+  "replacementOccurrenceDatesAssertedN": 0,
+  "otherPre1900RecordsChangedN": 0,
+  "rawInputsOrPublishedAssetsChanged": false,
+  "preparedRuntimePins": {
+    "mufon_date_review.js": {
+      "bytes": 7645,
+      "sha256": "580f18644bbb58a17603330e36c69426312cd6f24116f51ecc9b3ecfa0cb1ee1"
+    },
+    "app.js": {
+      "bytes": 1513352,
+      "sha256": "9a3fd5f92e9b5df1561ac18c7615ca76305a4aaacaf47069b0fb346906a32f30"
+    },
+    "catalog_filter_worker.js": {
+      "bytes": 305328,
+      "sha256": "388420c7d7978fd60dd75d406f15c6e1df0af30c082ee3823c8334f18550ded2"
+    },
+    "index.html": {
+      "bytes": 167950,
+      "sha256": "1032ccb52579fd7bae92e46e5143f8727fb1331ad0d018c8d6d39c06c783de95"
+    },
+    "parser/canonical_export.py": {
+      "bytes": 17036,
+      "sha256": "098ebb18a728d4562c74e329598d97f52790e8d39573a490641c4407e1e382fd"
+    },
+    "parser/reviewed_event_corrections.py": {
+      "bytes": 33196,
+      "sha256": "bf9b594fe4321e27cbf942123b3599c4d658998cdb3196414ced68a67db6b1ea"
+    },
+    "scripts/build_canonical_web_artifacts.py": {
+      "bytes": 39868,
+      "sha256": "fac650575881d556fea5f9e1f3fa5cb43bdd3b60163f112df31c6a95d6980551"
+    },
+    "scripts/prepare_workspace_analysis_release.py": {
+      "bytes": 33161,
+      "sha256": "6a6c345d8fc23f32581205afd539869fc4ba6217568de18f3c2af8d1a75423bf"
+    },
+    "tests/test_mufon_date_review.py": {
+      "bytes": 7848,
+      "sha256": "872d3a000a0106b8afa998a7ddba30b94e24550ca5f7f1bec5a43b393e7306b1"
+    },
+    "tests/test_mufon_date_review.mjs": {
+      "bytes": 9305,
+      "sha256": "d749c28fc65a9fce71e571c12ac0754cf4e5663fe4d7e0e95ef339a6dd546857"
+    },
+    "tests/test_mufon_date_review_integration.mjs": {
+      "bytes": 6735,
+      "sha256": "e0ab84c50361d76fde644c366e12b37b73d87abca408cfc1286339492b192f3d"
+    },
+    "tests/test_mufon_date_review_worker.mjs": {
+      "bytes": 7214,
+      "sha256": "8aebe7ec0980575f975a7ae5bd45b86b39d6fd7b926e4b7015e93322fb603740"
+    },
+    "tests/test_catalog_ordinal_hydration.mjs": {
+      "bytes": 4253,
+      "sha256": "67d551fd86607c6254440142b210c18a10b0341298026b20d60028bec9c3dc87"
+    },
+    "tests/test_encounter_owned_decoration.mjs": {
+      "bytes": 9469,
+      "sha256": "0233c1c3da19924df2a1c0ace2ba5d5cffc59ee594fdadaaadc03c5777ef6efd"
+    }
+  },
+  "qaPins": {
+    "evidence-receipt.json": {
+      "bytes": 7604,
+      "sha256": "2ffd1ff34f7ebc404cf431f7a558b37a2d334c11f6ee5016760f4a3d4e28578e"
+    },
+    "five-source-rows.json": {
+      "bytes": 5447,
+      "sha256": "8ed6482936a3fd6daafbc15c71a34ad28891e3b6f6ab330e2c4956bab570f619"
+    },
+    "fixtures.json": {
+      "bytes": 37151,
+      "sha256": "d39f4d58bf644d111fb5f739d4d7f41d41e5c3491e2be0e8728641e4da925b30"
+    },
+    "pre1900-roster.json": {
+      "bytes": 50421,
+      "sha256": "5905fe872e3ba49d7d2f48cf401405f3e5d5254267ff4251f1dcf49088f1f759"
+    },
+    "README.md": {
+      "bytes": 6415,
+      "sha256": "f9190ced0253b318fbb745217ffc0efaff762b8ba69c3c7fd0840c75fc6c9259"
+    }
+  },
+  "verification": {
+    "pytestPassed": 60,
+    "unittestReleaseChecksPassed": 5,
+    "nodeSuitesPassed": [
+      "test_mufon_date_review",
+      "test_mufon_date_review_integration",
+      "test_mufon_date_review_worker",
+      "test_catalog_ordinal_hydration",
+      "test_analysis_partial_date_runtime",
+      "test_encounter_owned_decoration",
+      "test_catalog_filter_worker",
+      "test_analysis_session_dimensions",
+      "test_startup_cache_and_cover"
+    ],
+    "syntax": [
+      "app.js",
+      "catalog_filter_worker.js"
+    ],
+    "whitespace": "passed",
+    "browserOrPublicDeployment": "not performed; no deployment requested"
+  },
+  "boundaries": [
+    "April 1 is a suspected placeholder for five exact reviewed rows, not a universal historical-date rule.",
+    "Original submission/redaction dates are not replacement occurrence dates.",
+    "Remaining31 early records require individual review.",
+    "Actual local delay values were inspected but are not claimed as verified published bytes."
+  ],
+  "lifecycle": {
+    "canonicalArtifacts": "guarded review module, canonical-build correction and compact QA receipts in current release worktree",
+    "currentValidatedDeployment": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "acceptedPreview": "5e423cb2",
+    "supersededStagingAndBackupArtifacts": [],
+    "newFilesOver100MiB": [],
+    "approximateNetProjectGrowth": "less than 1 MiB on C:; no new D: capture needed",
+    "cleanupProposal": "None; retain compact unique review evidence and shared originals. No deletion authorized.",
+    "fullCorpusDatabaseOrStageCopiesCreated": 0
+  }
+}

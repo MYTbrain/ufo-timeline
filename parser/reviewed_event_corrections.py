@@ -13,7 +13,46 @@ from copy import deepcopy
 import hashlib
 from typing import Any, Iterable, Mapping
 
+from .canonical_schema import split_date_time
 from .location_display import apply_location_display_normalization
+
+
+MUFON_DATE_REVIEW_ID = "mufon-occurrence-date-20261019-v1"
+MUFON_DATE_REVIEW_REASON = (
+    "The source date 1890-04-01 conflicts with the account or lacks "
+    "occurrence-date support; no replacement occurrence date is established."
+)
+# These are five reviewed source rows, not a rule against historical dates or
+# delayed submissions. The input and row-hash guards survive supported dedupe
+# identity modes while refusing a changed source row or new merge topology.
+MUFON_DATE_REVIEW_TARGETS = {
+    "8882": (8094, "1c1102c34960326a9bd11db62cf28314877ffe37", "cin_7df8db704f1bf3e24f4313ba"),
+    "9920": (9105, "c0a765843a994a2e15ac364c076d1361b0a517d7", "cin_b24994d8c27fc61547e2149c"),
+    "12619": (11730, "40d6b60be4dcb9b8ac21f874a16b17034e538753", "cin_87bb5f23c1e9056cdf2636f2"),
+    "18815": (17625, "d873e1c85158af98d3d2c245547e80aef76f114a", "cin_0b99d6037f0bf66577e6b62f"),
+    "30468": (28811, "2a951f6cf5709af778ee14007c3502a0e367cd65", "cin_6ff74cd08d4c00e5e1c5c5dd"),
+}
+MUFON_DATE_REVIEW_FIELDS = {
+    **dict.fromkeys((
+        "date_iso", "end_date_iso", "sort_date_iso", "sort_ordinal", "sort_date_key", "sort_time_ms",
+        "parsed_time_local_minutes", "parsed_time_local_range_start_minutes", "parsed_time_local_range_end_minutes",
+        "estimated_utc_timestamp_ms", "estimated_utc_range_start_ms", "estimated_utc_range_end_ms",
+        "time_bucket_label", "resolved_timezone", "playback_sort_key",
+    )),
+    "date_precision": "unknown",
+    "exact_day_eligible": False,
+    "time_sort_kind": "unknown",
+    "time_sort_confidence": "none",
+    "timezone_source": "unknown",
+    "timezone_confidence": "none",
+    "playback_sort_confidence": "none",
+    "playback_sort_reason": "unverified_source_date",
+    "date_review": {
+        "review_id": MUFON_DATE_REVIEW_ID,
+        "status": "unverified_source_date",
+        "reason": MUFON_DATE_REVIEW_REASON,
+    },
+}
 
 
 NAPA_CORRECTION_ID = "majestic-hatch-udb-2481-napa-2026-08-23"
@@ -296,7 +335,7 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
     if _is_napa_non_primary_merge_member(event):
         return deepcopy(dict(event))
 
-    next_event = apply_location_display_normalization(event)
+    next_event = apply_location_display_normalization(_apply_mufon_date_review(event))
     if not _targets_napa_event(next_event):
         return _apply_narrative_location_correction(next_event)
 
@@ -328,6 +367,82 @@ def apply_reviewed_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
     corrections.append(correction_record)
     next_event["reviewed_corrections"] = corrections
     return next_event
+
+
+def _apply_mufon_date_review(event: Mapping[str, Any]) -> dict[str, Any]:
+    """Withhold five unsupported dates without rewriting their source claims."""
+    native_id = str(_first(event, "source_native_id", "source_id") or "")
+    target = MUFON_DATE_REVIEW_TARGETS.get(native_id)
+    source_name = _first(event, "source_name", "source")
+    input_ids = event.get("canonical_input_ids") or []
+    primary_id = event.get("canonical_input_id")
+    primary_identity = primary_id or (input_ids[0] if len(input_ids) == 1 else None)
+    identity_target = next(((native, value) for native, value in MUFON_DATE_REVIEW_TARGETS.items()
+                            if value[2] == primary_identity), None)
+    if identity_target is not None:
+        target_native_id, target = identity_target
+    elif target is not None and source_name == "mufon":
+        target_native_id = native_id
+    else:
+        return dict(event)
+
+    row_number, row_hash, input_id = target
+    # A reviewed input appearing only as a non-primary merged member must never
+    # overwrite the representative's occurrence date.
+    if primary_id not in (None, input_id):
+        if len(input_ids) > 1 and input_id in input_ids:
+            return dict(event)
+
+    errors: list[str] = []
+    _expect(errors, "source_name", source_name, "mufon")
+    _expect(errors, "source_file", event.get("source_file"), "mufonpy.csv")
+    _expect(errors, "source_native_id", native_id, target_native_id)
+    if primary_id is not None:
+        _expect(errors, "canonical_input_id", primary_id, input_id)
+    _expect(errors, "canonical_input_ids", event.get("canonical_input_ids"), [input_id])
+    _expect(errors, "duplicate_record_count", event.get("duplicate_record_count"), 1)
+    _expect(errors, "dedupe_strategy", event.get("dedupe_strategy"), "single_record")
+    provenance = _source_provenance(event)
+    _expect(errors, "source_provenance.count", len(provenance), 1)
+    if len(provenance) == 1:
+        for field, expected in {
+            "source_name": "mufon", "source_file": "mufonpy.csv", "source_native_id": target_native_id,
+            "source_row_number": row_number, "source_row_hash": row_hash, "canonical_input_id": input_id,
+        }.items():
+            _expect(errors, "source_provenance[0]." + field, provenance[0].get(field), expected)
+    for field, expected in (("source_row_number", row_number), ("source_row_hash", row_hash)):
+        if event.get(field) is not None:
+            _expect(errors, field, event[field], expected)
+    _expect(errors, "date_raw", event.get("date_raw"), "1890-04-01")
+    _expect(errors, "time_raw", event.get("time_raw"), "12:00AM")
+    raw_fields = event.get("raw_fields")
+    if not isinstance(raw_fields, Mapping):
+        errors.append("raw_fields: expected preserved MUFON source mapping")
+    else:
+        _expect(errors, "raw_fields.No", str(raw_fields.get("No") or ""), target_native_id)
+        _expect(errors, "raw_fields.Date/Time of Event", split_date_time(raw_fields.get("Date/Time of Event")),
+                ("1890-04-01", "12:00AM"))
+
+    reviewed = event.get("date_review") == MUFON_DATE_REVIEW_FIELDS["date_review"]
+    if reviewed:
+        for field in ("date_iso", "end_date_iso", "sort_date_iso", "date_precision", "exact_day_eligible"):
+            _expect(errors, field, event.get(field), MUFON_DATE_REVIEW_FIELDS[field])
+    else:
+        for field in ("date_iso", "sort_date_iso"):
+            _expect(errors, field, event.get(field), "1890-04-01")
+        if event.get("end_date_iso") not in (None, "1890-04-01"):
+            errors.append("end_date_iso: reviewed source bounds changed")
+        if event.get("date_precision") not in {"day", "exact_day"}:
+            errors.append("date_precision: expected imported exact-day projection")
+        if event.get("date_review") is not None:
+            errors.append("date_review: conflicting existing review")
+    if errors:
+        raise ValueError(
+            f"Reviewed correction {MUFON_DATE_REVIEW_ID} failed its stale-source guard: " + "; ".join(errors)
+        )
+    result = deepcopy(dict(event))
+    result.update(deepcopy(MUFON_DATE_REVIEW_FIELDS))
+    return result
 
 
 def _apply_narrative_location_correction(

@@ -1,0 +1,165 @@
+{
+  "schema_id": "ufo-timeline-mufon-date-review-evidence-v1",
+  "created_at": "2026-10-20T00:03:46.912234+00:00",
+  "status": "read_only_evidence_capture_no_canonical_runtime_or_deployment_changes",
+  "scope": {
+    "source_rows_scanned": 138856,
+    "target_date": "1890-04-01",
+    "target_n": 5,
+    "nonzero_pre1900_n": 36,
+    "year_1890_n": 28,
+    "year_zero_n": 90,
+    "five_current_events_captured": 5,
+    "roster_is_triage_not_automatic_invalidation": true
+  },
+  "source_pins": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\UFO Databases\\mufonpy.csv",
+      "bytes": 169853910,
+      "sha256": "822be43478673ecaebc37e2382fd0bdb192abe65ebde4d61e27c820920b58bc3"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\UFO Databases\\mufon.csv",
+      "bytes": 169786620,
+      "sha256": "b358dfe3e2e881482c7b01a7db1b1352385d23f62fb794cdfc67c2f911d74214"
+    }
+  ],
+  "manifest_pins": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunk_manifest.json",
+      "sha256": "833ca33e18ca17768b2e1852d36ad28bd45f9544e88d1821677a67ac176a9d19"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_manifest.json",
+      "sha256": "9c50d0e608fc89d1dc7523cde5f407a45e2d10a9e6adefaf83384d1a8a209bdc"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\canonical_web_manifest.json",
+      "sha256": "242ff4abc42c70c2b241a3cd16c8b9059bca137d940bd6147c5a65de63b7750b"
+    }
+  ],
+  "current_event_input_pins": [
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_shards\\summary_000039.json",
+      "bytes": 7756831,
+      "sha256": "5be6d1d726854cdba861fdf83397bc3300278bdb87e4e4fe207b5be7768d227f"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000157.json",
+      "bytes": 22294571,
+      "sha256": "e6cd841f34710bc04d1eaca54029daab15f23c4c7f8b46cd8480ef8b18a3c4cf"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_shards\\summary_000052.json",
+      "bytes": 7740143,
+      "sha256": "1ebf4530e284ffc5ff0ff33c83437a122c5faf1a68a6219a74bee522dcc62735"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000211.json",
+      "bytes": 22336586,
+      "sha256": "49ab35ec3640d85f087c594e23b4f1c1fdde7998c592b22fbe6819df1fcdbd6b"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_shards\\summary_000042.json",
+      "bytes": 7751337,
+      "sha256": "6f6900b56f754fb616cec8bb4370d547f149301e200d437a2beff9df173f2986"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000168.json",
+      "bytes": 22650901,
+      "sha256": "0f789b293acfd1d40d3f884bf68f070956714ee1fcc2afa26c00eb113abc2e03"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_shards\\summary_000004.json",
+      "bytes": 7778859,
+      "sha256": "16d7199833f8121113b5c54e56c547fb6b29b137d09feb89c0672c01d227f8f0"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000017.json",
+      "bytes": 22021621,
+      "sha256": "2b2f79c39a6b1f5f721c5e383ef114517435eb6c732b052e6e85e8658dd7118e"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\summary_shards\\summary_000035.json",
+      "bytes": 7758952,
+      "sha256": "ecdacb51414676c4d91eca25f99c9778812e71ed2f8191777776d98113e34592"
+    },
+    {
+      "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000142.json",
+      "bytes": 22676085,
+      "sha256": "d9f4d3e96ef7547fa06d89c232da5d6d578ced1afbab866913e3732420986541"
+    }
+  ],
+  "sibling_comparison": [
+    {
+      "source_native_id": "8882",
+      "source_row_number": 8094,
+      "source_row_hash": "1c1102c34960326a9bd11db62cf28314877ffe37",
+      "all_seven_fields_identical": true
+    },
+    {
+      "source_native_id": "9920",
+      "source_row_number": 9105,
+      "source_row_hash": "c0a765843a994a2e15ac364c076d1361b0a517d7",
+      "all_seven_fields_identical": true
+    },
+    {
+      "source_native_id": "12619",
+      "source_row_number": 11730,
+      "source_row_hash": "40d6b60be4dcb9b8ac21f874a16b17034e538753",
+      "all_seven_fields_identical": true
+    },
+    {
+      "source_native_id": "18815",
+      "source_row_number": 17625,
+      "source_row_hash": "d873e1c85158af98d3d2c245547e80aef76f114a",
+      "all_seven_fields_identical": true
+    },
+    {
+      "source_native_id": "30468",
+      "source_row_number": 28811,
+      "source_row_hash": "2a951f6cf5709af778ee14007c3502a0e367cd65",
+      "all_seven_fields_identical": true
+    }
+  ],
+  "findings": [
+    "The shared April 1 1890 date exists literally in upstream source rows; current adapter normalizes it to exact_day.",
+    "All five rows also classify midnight as high-confidence exact local time in current summaries/details.",
+    "No12619 explicitly states the witness does not remember dates; submitted2008-09-18 is a separate date role.",
+    "No18815 has no narrative beyond a2012 omission notice; its short description says Reported to9-11.",
+    "No8882 narrative explicitly dates photographs to2007-2008 but supplies no exact day.",
+    "No9920 andNo30468 contain no supported replacement incident date.",
+    "No84071 says year1890 was selected because the form had no earlier years; this is a specific source-form floor example, not proof all1890 records share one cause.",
+    "Historical oral-history reports such asNo32747 andNo58042 prevent a blanket pre1900 rejection."
+  ],
+  "recommended_handling": {
+    "target_five": "Preserve raw fields, narrative, submission date, identities and coordinates. Quarantine unsupported normalized incident date/time. Use unknown chronology rather than guess modern dates.",
+    "other_31_pre1900": "Individual review; preserve legitimate approximate historical periods and distinguish source-entry dates from incident dates."
+  },
+  "artifacts": [
+    {
+      "file": "five-source-rows.json",
+      "bytes": 5447,
+      "sha256": "8ed6482936a3fd6daafbc15c71a34ad28891e3b6f6ab330e2c4956bab570f619"
+    },
+    {
+      "file": "pre1900-roster.json",
+      "bytes": 50421,
+      "sha256": "5905fe872e3ba49d7d2f48cf401405f3e5d5254267ff4251f1dcf49088f1f759"
+    },
+    {
+      "file": "fixtures.json",
+      "bytes": 37151,
+      "sha256": "d39f4d58bf644d111fb5f739d4d7f41d41e5c3491e2be0e8728641e4da925b30"
+    }
+  ],
+  "storage_lifecycle": {
+    "canonical_inputs_unchanged": true,
+    "current_release_and_rollback_unchanged": true,
+    "new_files_over_100MiB": [],
+    "full_corpus_or_release_copy_created": false,
+    "new_qa_bytes_before_receipt": 93019,
+    "retention": "Retain compact evidence and real event fixtures with this code review; source CSVs and canonical assets remain shared originals.",
+    "rebuild": "Read csv.DictReader from pinned originals, compute source_row_hash with parser.canonical_schema, select five native IDs and36 nonzero pre1900 rows; select pinned detail indices and their matching event summaries."
+  }
+}

@@ -13,6 +13,8 @@
 
   let chunks = [];
   let rowCount = 0;
+  // Reviewed exceptions are sparse; do not allocate another all-catalog array.
+  const occurrenceDateWithheldIds = new Set();
   let encounterEvidenceReady = false;
   let encounterApi = self.UFOEncounterEvidence || null;
 
@@ -624,6 +626,9 @@
       if (row.encounterUniform != null && String(row.encounterUniform).trim()) chunk.encounterUniforms.set(index, String(row.encounterUniform));
       chunk.encounterDateExclusionStates[index] = typeof row.encounterOccurrenceDateExcluded === "boolean" ? (row.encounterOccurrenceDateExcluded ? 2 : 1) : 0;
       const rawEventId = row.eventId;
+      if (row.occurrenceDateWithheld === true && rawEventId != null) {
+        occurrenceDateWithheldIds.add(String(rawEventId));
+      }
       if (typeof rawEventId === "number" && Number.isSafeInteger(rawEventId)) {
         chunk.eventIds[index] = rawEventId;
       } else {
@@ -1087,6 +1092,23 @@
     values.analysisDecade = Number.isFinite(values.analysisYear)
       ? Math.floor(values.analysisYear / 10) * 10
       : null;
+    values.occurrenceDateWithheld = occurrenceDateWithheldIds.has(String(values.eventId)) &&
+      values.datePrecision === "unknown" && values.sortOrdinal == null;
+    if (values.occurrenceDateWithheld) {
+      // Immutable projections can predate a reviewed source-date correction.
+      // Preserve their source-role evidence in storage, but never count stale
+      // derived delays or clock values for an explicitly withheld occurrence.
+      values.analysisReportingDelayAvailable = false;
+      values.analysisReportingDelayStatus = "unavailable";
+      values.analysisReportingDelayBin = "unknown";
+      values.analysisReportingDelayDays = null;
+      values.analysisTimeOfDayAvailable = false;
+      values.analysisTimeOfDayStatus = "unavailable";
+      values.analysisTimeOfDayDescriptiveBin = "unknown";
+      values.analysisTimeOfDayInferentialBin = "unknown";
+      values.analysisTimeOfDayLowerMinute = null;
+      values.analysisTimeOfDayUpperMinute = null;
+    }
     return values;
   }
 
@@ -5033,6 +5055,7 @@
   function resetRows() {
     chunks = [];
     rowCount = 0;
+    occurrenceDateWithheldIds.clear();
     encounterEvidenceReady = false;
     typedStorageBytes = 0;
     dictionaries = createDictionaries();

@@ -1,0 +1,132 @@
+[
+  {
+    "source_name": "mufon",
+    "source_file": "mufonpy.csv",
+    "source_native_id": "8882",
+    "source_row_number": 8094,
+    "source_row_hash": "1c1102c34960326a9bd11db62cf28314877ffe37",
+    "canonical_input_id": "cin_7df8db704f1bf3e24f4313ba",
+    "raw_source_header": [
+      "No",
+      "Date Submitted",
+      "Date/Time of Event",
+      "Short Description",
+      "Location of Event",
+      "Long Description",
+      "Attachments"
+    ],
+    "raw_source_row": {
+      "No": "8882",
+      "Date Submitted": "2008-01-15",
+      "Date/Time of Event": "1890-04-01\\n12:00AM",
+      "Short Description": "Study the Photographs",
+      "Location of Event": "New Rochelle\\, NY\\, US",
+      "Long Description": "Sorry but I've been photographing and studying these flying craft for over a year I\\nknow a lot about them. The story would take to long. So let the pictures speak\\nfor themselves\\n\\nshot in 2007 to 2008",
+      "Attachments": ""
+    }
+  },
+  {
+    "source_name": "mufon",
+    "source_file": "mufonpy.csv",
+    "source_native_id": "9920",
+    "source_row_number": 9105,
+    "source_row_hash": "c0a765843a994a2e15ac364c076d1361b0a517d7",
+    "canonical_input_id": "cin_b24994d8c27fc61547e2149c",
+    "raw_source_header": [
+      "No",
+      "Date Submitted",
+      "Date/Time of Event",
+      "Short Description",
+      "Location of Event",
+      "Long Description",
+      "Attachments"
+    ],
+    "raw_source_row": {
+      "No": "9920",
+      "Date Submitted": "2008-03-13",
+      "Date/Time of Event": "1890-04-01\\n12:00AM",
+      "Short Description": "huge bright objects over Long ISLAND N.Y.",
+      "Location of Event": "Brentwood\\, NY\\, US",
+      "Long Description": "OBJECTS JUST SITTING IN THE SKY .So bright any plane would be seeing them.They look as large as 2 football fields.",
+      "Attachments": ""
+    }
+  },
+  {
+    "source_name": "mufon",
+    "source_file": "mufonpy.csv",
+    "source_native_id": "12619",
+    "source_row_number": 11730,
+    "source_row_hash": "40d6b60be4dcb9b8ac21f874a16b17034e538753",
+    "canonical_input_id": "cin_87bb5f23c1e9056cdf2636f2",
+    "raw_source_header": [
+      "No",
+      "Date Submitted",
+      "Date/Time of Event",
+      "Short Description",
+      "Location of Event",
+      "Long Description",
+      "Attachments"
+    ],
+    "raw_source_row": {
+      "No": "12619",
+      "Date Submitted": "2008-09-18",
+      "Date/Time of Event": "1890-04-01\\n12:00AM",
+      "Short Description": "Giant triangle with five lights\\, flying straight across the horizon",
+      "Location of Event": "La Junta\\, CO\\, US",
+      "Long Description": "I was driving home with my family and a close friend on east bound US Hwy 50 and we saw a giant triangle with five lights going straight across the sky. It was flying in and out of the clouds so we were able to get some idea of its size and speed. It was huge\\, aircraft carrier huge\\, and moving very fast. It was reported in the Pueblo news the next morning as a Russian Re-entry rocket\\, whatever that's supposed to be. I'm not a rocket scientist but I know the diference between a rocket falling and a craft flying horizontally across the sky. Besides that\\, what would a Russian rocket be doing over Oklahoma\\, Kansas\\, and eastern Colorado. I think that in itself would have generated serious cause for alarm! I'm pretty sure the Russians are not allowed to fly rockets over the midwestern United States. It was reportedly seen in all three states.\\nIt's been several years since the sighting so I don't remember dates but I know it was no rocket. It flew srtaight across the horizon and there was no sound\\, no exhaust\\, and no jet trail.\\nThat's what we saw.",
+      "Attachments": ""
+    }
+  },
+  {
+    "source_name": "mufon",
+    "source_file": "mufonpy.csv",
+    "source_native_id": "18815",
+    "source_row_number": 17625,
+    "source_row_hash": "d873e1c85158af98d3d2c245547e80aef76f114a",
+    "canonical_input_id": "cin_0b99d6037f0bf66577e6b62f",
+    "raw_source_header": [
+      "No",
+      "Date Submitted",
+      "Date/Time of Event",
+      "Short Description",
+      "Location of Event",
+      "Long Description",
+      "Attachments"
+    ],
+    "raw_source_row": {
+      "No": "18815",
+      "Date Submitted": "2009-08-22",
+      "Date/Time of Event": "1890-04-01\\n12:00AM",
+      "Short Description": "Undulating light in sky. Reported to 9-11",
+      "Location of Event": "MD\\, US",
+      "Long Description": "[Description omitted by submitter/cms/tg/10.10.2012]",
+      "Attachments": ""
+    }
+  },
+  {
+    "source_name": "mufon",
+    "source_file": "mufonpy.csv",
+    "source_native_id": "30468",
+    "source_row_number": 28811,
+    "source_row_hash": "2a951f6cf5709af778ee14007c3502a0e367cd65",
+    "canonical_input_id": "cin_6ff74cd08d4c00e5e1c5c5dd",
+    "raw_source_header": [
+      "No",
+      "Date Submitted",
+      "Date/Time of Event",
+      "Short Description",
+      "Location of Event",
+      "Long Description",
+      "Attachments"
+    ],
+    "raw_source_row": {
+      "No": "30468",
+      "Date Submitted": "2011-07-31",
+      "Date/Time of Event": "1890-04-01\\n12:00AM",
+      "Short Description": "no description",
+      "Location of Event": "City\\, MD\\, US",
+      "Long Description": "no description",
+      "Attachments": ""
+    }
+  }
+]

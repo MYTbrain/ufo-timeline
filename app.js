@@ -25,6 +25,7 @@
   const ENCOUNTER_MAP = window.UfoEncounterMap;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
   const UFOCAT_REFERENCES = window.UfoUfocatReferences;
+  const MUFON_DATE_REVIEW = window.UfoMufonDateReview;
   let sourceCitationIndexPromise = null;
   let detailLoadGeneration = 0;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
@@ -9276,6 +9277,17 @@
     return sortTimeMs;
   }
 
+  function applyMufonDateReview(event, packed) {
+    if (typeof MUFON_DATE_REVIEW === "undefined" || !MUFON_DATE_REVIEW) return event;
+    return packed ? MUFON_DATE_REVIEW.applyPacked(event) : MUFON_DATE_REVIEW.apply(event);
+  }
+
+  function eventDateLabel(event, fallback) {
+    const original = (event && (event.date_raw || event.sort_date_iso || event.date_iso)) || fallback || "Unknown date";
+    return typeof MUFON_DATE_REVIEW !== "undefined" && MUFON_DATE_REVIEW
+      ? MUFON_DATE_REVIEW.displayDate(event, original) : original;
+  }
+
   function projectPackedPointRowToEvent(row) {
     if (!row || row.event_id == null) return null;
     const sortDateIso = sortDateIsoFromPackedKey(row.sort_date_key);
@@ -9302,7 +9314,7 @@
       chunk_id: row.chunk_id || null,
       detail_index: Number.isSafeInteger(row.detail_index) && row.detail_index >= 0 ? row.detail_index : null,
     };
-    return event;
+    return applyMufonDateReview(event, true);
   }
 
   function readPackedPointEvent(packedPoints, rowIndex) {
@@ -9316,6 +9328,10 @@
   function augmentPackedMapEventDisplayFields(packedEvent, catalogEvent) {
     if (!packedEvent || !catalogEvent) return packedEvent;
     packedEvent.date_raw = catalogEvent.date_raw || "";
+    if (catalogEvent.date_review) {
+      packedEvent.date_review = catalogEvent.date_review;
+      packedEvent.exact_day_eligible = catalogEvent.exact_day_eligible;
+    }
     packedEvent.time_display = catalogEvent.time_display || "";
     packedEvent.location_raw = catalogEvent.location_raw || "";
     packedEvent.location_display = catalogEvent.location_display || "";
@@ -9481,7 +9497,7 @@
   }
 
   function catalogFacetWorkerUrl() {
-    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-evidence-readiness-v1");
+    return resolveAssetPath("./catalog_filter_worker.js?v=2026-10-19-mufon-date-review-v1");
   }
 
   function catalogFacetWorkerEnabled() {
@@ -9539,6 +9555,7 @@
       shape: event.shape_normalized || event.type || "",
       precision: event.location_precision || "",
       datePrecision: event.date_precision || "",
+      ...(event.date_review && event.date_review.status === "unverified_source_date" ? { occurrenceDateWithheld: true } : {}),
       coordinateSource: event.coordinate_source || "unresolved",
       country: event.country || "unknown",
       adminRegion: event.state_province || event.admin_region || "unknown",
@@ -12201,7 +12218,7 @@
     dialog.replaceChildren();
     const close = document.createElement("button"); close.textContent = "Close source report"; close.onclick = function () { dialog.close(); }; dialog.appendChild(close);
     const heading = document.createElement("h2"); heading.textContent = event.location_display || event.location_raw || event.location || event.title || "Preserved source report"; dialog.appendChild(heading);
-    const summaryText = document.createElement("p"); summaryText.textContent = [event.date_raw || event.date_iso || "Date unrecorded", "Date precision: " + (event.date_precision || "unknown"), event.source, "Catalog ID " + summary.event_id].filter(Boolean).join(" · "); dialog.appendChild(summaryText);
+    const summaryText = document.createElement("p"); summaryText.textContent = [eventDateLabel(event, "Date unrecorded"), "Date precision: " + (event.date_precision || "unknown"), event.source, "Catalog ID " + summary.event_id].filter(Boolean).join(" · "); dialog.appendChild(summaryText);
     const body = document.createElement("pre"); body.style.cssText = "white-space:pre-wrap;overflow-wrap:anywhere;font:inherit";
     body.textContent = JSON.stringify(event.raw_source_row || event.raw_fields || event, null, 2); dialog.appendChild(body);
     if (!dialog.open) dialog.showModal();
@@ -16490,7 +16507,7 @@
     return (
       '<div class="popup-content">' +
       '<div class="popup-title-row">' +
-      '<h3 class="popup-title">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</h3>" +
+      '<h3 class="popup-title">' + escapeHtml(eventDateLabel(event)) + "</h3>" +
       '<div class="popup-nav-actions" role="group" aria-label="Browse adjacent events">' +
       '<button class="secondary-button popup-nav-button" type="button" data-popup-nav="prev" data-popup-event-id="' + escapeHtml(event.event_id) + '" aria-label="Previous event" title="Previous event"' + previousDisabled + '>&#x23EE;</button>' +
       '<button class="secondary-button popup-nav-button" type="button" data-popup-nav="next" data-popup-event-id="' + escapeHtml(event.event_id) + '" aria-label="Next event" title="Next event"' + nextDisabled + '>&#x23ED;</button>' +
@@ -16609,7 +16626,7 @@
     const hitSize = expandedMobileHitSize(visualSize, MOBILE_DIV_MARKER_HIT_SIZE);
     const half = Math.round(hitSize / 2);
     const marker = L.marker([event.lat, longitude], {
-      title: (event.date_raw || event.sort_date_iso || "Unknown") + " - " + displayLocationForEvent(event),
+      title: (eventDateLabel(event, "Unknown")) + " - " + displayLocationForEvent(event),
       bubblingMouseEvents: false,
       icon: L.divIcon({
         className: "",
@@ -20159,7 +20176,7 @@
     const relationship = ENCOUNTER_MAP.describeRelationship(event);
     const craft = relationship.sameReport ? resolvedCraftTypeForEvent(event) : null;
     const point = ENCOUNTER_MAP.pointForEvent(event), traces = encounterTraceSegmentsForReport(event.event_id);
-    return '<article class="encounter-map-item"><strong>' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + '</strong> · ' +
+    return '<article class="encounter-map-item"><strong>' + escapeHtml(eventDateLabel(event)) + '</strong> · ' +
       escapeHtml(displayLocationForEvent(event) || "Location unresolved") + '<div>' + ENCOUNTERS.renderBadges(event, runtime.encounterEvidence) + '</div><p>' +
       escapeHtml(relationship.label) + (craft ? ' · <span class="encounter-craft-sample" style="--encounter-craft-color:' + escapeHtml(craft.color) + '"></span> ' + escapeHtml(craft.label) : '') + '</p><small>' + escapeHtml(event.source || "Unknown source") + ' · ' + escapeHtml(point ? "Mapped: " + point.locationPrecision.replaceAll("_", " ") : "Unmapped: no location invented") +
       (event.encounterOccurrenceDateExcluded ? ' · Source date held from chronology' : '') + '</small><p>' +
@@ -20474,6 +20491,10 @@
     if (!artifact || !artifact.metadata || !artifact.view) return null;
     const eventId = decodePackedTraceField(artifact.metadata, artifact.view, "event_id", rowIndex);
     if (eventId == null) return null;
+    if (typeof MUFON_DATE_REVIEW !== "undefined" && MUFON_DATE_REVIEW && MUFON_DATE_REVIEW.isTargetId(eventId)) {
+      const reviewedEvent = getCatalogEventById(eventId);
+      if (reviewedEvent && reviewedEvent.date_review && reviewedEvent.date_review.status === "unverified_source_date") return null;
+    }
     const lat = Number(decodePackedTraceField(artifact.metadata, artifact.view, "lat", rowIndex));
     const lon = Number(decodePackedTraceField(artifact.metadata, artifact.view, "lon", rowIndex));
     const sortOrdinal = normalizedPackedTraceSortOrdinalForRender(artifact, rowIndex);
@@ -26210,7 +26231,7 @@
       return (
         '<article class="result-card' + caseClass + activeClass + playbackClass + expandedClass + '" data-result-card-event-id="' + escapeHtml(event.event_id) + '">' +
         '<button class="result-card-button" type="button" data-event-id="' + escapeHtml(event.event_id) + '">' +
-        '<div class="result-card-head"><span class="result-date">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</span></div>" +
+        '<div class="result-card-head"><span class="result-date">' + escapeHtml(eventDateLabel(event)) + "</span></div>" +
         (caseLabel ? '<span class="result-case-membership">' + caseLabel + '</span>' : '') +
         '<div class="result-badges">' + mappedBadge + precisionBadge +
         (ENCOUNTERS ? ENCOUNTERS.renderBadges(event, runtime.encounterEvidence) : "") + "</div>" +
@@ -26500,7 +26521,7 @@
 
   function renderDetailLoading(event) {
     const label = event
-      ? (event.date_raw || event.sort_date_iso || "Selected event") + " | " + displayLocationForEvent(event)
+      ? (eventDateLabel(event, "Selected event")) + " | " + displayLocationForEvent(event)
       : "Full preserved event record";
     els.detailStageTitle.textContent = label;
     els.detailPanel.innerHTML = '<p class="note-copy">Loading full preserved event record...</p>';
@@ -26509,7 +26530,7 @@
   function renderDetailError(eventId, error) {
     const summary = eventId != null ? getCatalogEventById(eventId) : null;
     els.detailStageTitle.textContent = summary
-      ? (summary.date_raw || summary.sort_date_iso || "Selected event") + " | " + displayLocationForEvent(summary)
+      ? (eventDateLabel(summary, "Selected event")) + " | " + displayLocationForEvent(summary)
       : "Full preserved event record";
     els.detailPanel.innerHTML =
       '<div class="detail-block">' +
@@ -26526,7 +26547,7 @@
     }
 
     els.detailStageTitle.textContent =
-      (event.date_raw || event.sort_date_iso || "Unknown date") +
+      (eventDateLabel(event)) +
       " | " +
       displayLocationForEvent(event);
 
@@ -26535,8 +26556,9 @@
       ["Event ID", event.event_id],
       ["Event Hash", event.event_hash],
       ["Source File", event.source_file],
-      ["Date Raw", event.date_raw],
-      ["Normalized Date", event.sort_date_iso || event.date_iso || ""],
+      [event.date_review ? "Imported Date (unverified)" : "Date Raw", event.date_raw],
+      ["Normalized Date", event.sort_date_iso || event.date_iso || (event.date_review ? "Unverified" : "")],
+      ...(event.reported_date_raw ? [["Date Submitted", event.reported_date_raw]] : []),
       ["Date Precision", event.date_precision],
       ...(event.time_display ? [["Reviewed Time", event.time_display]] : []),
       ["Time Raw", event.time_raw],
@@ -26556,7 +26578,7 @@
 
     els.detailPanel.innerHTML =
       '<div class="detail-header">' +
-      '<h3 class="detail-title">' + escapeHtml(event.date_raw || event.sort_date_iso || "Unknown date") + "</h3>" +
+      '<h3 class="detail-title">' + escapeHtml(eventDateLabel(event)) + "</h3>" +
       '<p class="detail-subtitle">' + escapeHtml(displayLocationForEvent(event)) + "</p>" +
       "</div>" +
       '<div class="detail-grid">' +
@@ -26564,6 +26586,8 @@
         return '<div class="detail-row"><span class="detail-label">' + escapeHtml(row[0]) + '</span><span class="detail-value">' + escapeHtml(row[1] == null ? "" : row[1]) + "</span></div>";
       }).join("") +
       "</div>" +
+      (event.date_review ? '<section class="detail-block"><h4>Occurrence date unverified</h4><p class="note-copy">' +
+        escapeHtml(event.date_review.reason) + ' The imported date and time remain below as source claims. Submission dates are recorded separately.</p></section>' : "") +
       (ENCOUNTERS ? ENCOUNTERS.renderEvidence(event, runtime.encounterEvidence) + ENCOUNTERS.renderReviewedContext(event, runtime.encounterEnrichment) : "") +
       '<section class="detail-block"><h4>Description</h4><pre class="detail-pre">' + escapeHtml(event.description || "") + "</pre></section>" +
       '<section class="detail-block"><h4>References</h4>' + formatList(UFOCAT_REFERENCES ? UFOCAT_REFERENCES.references(event) : (event.references || [])) + "</section>" +
@@ -26606,7 +26630,7 @@
 
     const promise = (async function () {
       const events = (await fetchJson("./data/event_chunks/" + manifestEntry.file, "Event chunk " + chunkId))
-        .map(function (event) { return applyLocationLabelOverlay(event, { detail: true }); });
+        .map(function (event) { return applyMufonDateReview(applyLocationLabelOverlay(event, { detail: true })); });
       cacheChunkData(chunkId, events);
       if (!loadedEventChunkIds.has(chunkId)) {
         loadedEventChunkIds.add(chunkId);
@@ -26666,7 +26690,7 @@
         );
       }
       const overlaidEvents = events.map(function (event) {
-        return applyLocationLabelOverlay(applyAnalysisRepairDetailOverlay(applyDetailQualityOverlay(event)), { detail: true });
+        return applyMufonDateReview(applyLocationLabelOverlay(applyAnalysisRepairDetailOverlay(applyDetailQualityOverlay(event)), { detail: true }));
       });
       cacheChunkData(cacheKey, overlaidEvents);
       return overlaidEvents;
@@ -28616,7 +28640,7 @@
 
   function chronologicalNeighborhoodDateLabel(event) {
     if (!event) return "Missing";
-    return String(event.date_raw || event.sort_date_iso || event.date || "Missing");
+    return String(eventDateLabel(event, event.date || "Missing"));
   }
 
   function currentAreaDirectionSummary(result) {
@@ -29587,6 +29611,10 @@
       duplicate_lineage_id: internCanonicalSummaryString(event.duplicate_lineage_id || event.reviewed_duplicate_cluster_id || ""),
       sort_ordinal: event.sort_date_iso ? isoToOrdinal(event.sort_date_iso) : null,
     };
+    if (event.date_review) {
+      compactEvent.date_review = event.date_review;
+      compactEvent.exact_day_eligible = event.exact_day_eligible;
+    }
     if (event.date_recovery_contract) {
       compactEvent.date_iso = event.date_iso;
       compactEvent.end_date_iso = event.end_date_iso;
@@ -29608,7 +29636,7 @@
   }
 
   function hydrateCatalogEvent(event) {
-    event = applyLocationLabelOverlay(event);
+    event = applyMufonDateReview(applyLocationLabelOverlay(event));
     const compactEvent = compactCanonicalSummaryEventForRuntime(event);
     const ownsCompactEvent = compactEvent !== event;
     event = compactEvent;
@@ -30845,7 +30873,7 @@
     }
     els.mapPlaybackDateBadge.textContent =
       "Playback Date: " +
-      (currentEvent.date_raw || currentEvent.sort_date_iso || "Unknown date");
+      (eventDateLabel(currentEvent));
   }
 
   function renderPlaybackStatus(options) {
@@ -30932,11 +30960,11 @@
 
     const compactMobilePlayback = window.innerWidth <= SMALL_SCREEN_WIDTH && state.playbackState === "playing";
     els.playbackCurrentEvent.textContent = compactMobilePlayback
-      ? (currentEvent.date_raw || currentEvent.sort_date_iso || "Unknown date") +
+      ? (eventDateLabel(currentEvent)) +
         " | " +
         displayLocationForEvent(currentEvent)
       : "Current playback event: " +
-        (currentEvent.date_raw || currentEvent.sort_date_iso || "Unknown date") +
+        (eventDateLabel(currentEvent)) +
         " | " +
         displayLocationForEvent(currentEvent) +
         " | " +

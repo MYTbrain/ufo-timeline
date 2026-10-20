@@ -97,7 +97,7 @@ for (const [ownsCompact, helperPresent] of [[true, true], [false, true], [true, 
   };
   const context = vm.createContext({ ENCOUNTERS: hooks, runtime: { encounterEvidence: index, encounterLabelOrigins: origins,
     traceChronologyEvidence: { exclusion: () => false } },
-    applyLocationLabelOverlay: event => event,
+    applyLocationLabelOverlay: event => event, applyMufonDateReview: event => event,
     compactCanonicalSummaryEventForRuntime: event => { compact = ownsCompact ? { ...event } : event; return compact; },
     isoToOrdinal: () => 42, getVisualTypeGroup: () => "disc_saucer", finiteChronologyNumber: Number,
   });

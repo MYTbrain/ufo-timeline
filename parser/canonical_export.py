@@ -150,6 +150,11 @@ def canonical_event_to_normalized_event(record: Any, *, event_id: int | None = N
         "reviewed_corrections": data.get("reviewed_corrections") or [],
     }
 
+    if isinstance(data.get("date_review"), Mapping):
+        normalized["date_review"] = dict(data["date_review"])
+        normalized["exact_day_eligible"] = data.get("exact_day_eligible")
+        normalized["reported_date_raw"] = data.get("reported_date_raw")
+
     return normalized
 
 
