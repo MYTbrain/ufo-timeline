@@ -7066,6 +7066,7 @@
     return (
       path.indexOf("/data/canonical_web/") !== -1 ||
       path.indexOf("/data/analysis_v2/") !== -1 ||
+      path.indexOf("/data/analysis_v1/") !== -1 ||
       path.indexOf("/data/source_citations/") !== -1 ||
       path.indexOf("/data/trace_intersection_feasibility_v1/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
@@ -7081,6 +7082,7 @@
     const url = new URL(relativePath, document.baseURI);
     const shellPinnedAsset = url.pathname.endsWith("/data/app_config.json") ||
       url.pathname.indexOf("/data/analysis_v2/") !== -1 ||
+      url.pathname.indexOf("/data/analysis_v1/") !== -1 ||
       url.pathname.indexOf("/data/source_citations/") !== -1 ||
       url.pathname.indexOf("/data/trace_intersection_feasibility_v1/") !== -1;
     const versionToken = shellPinnedAsset
@@ -10875,7 +10877,7 @@
     if (runtime.analysisContextWorkerReady) return Promise.resolve(runtime.analysisContextManifest);
     if (runtime.analysisContextPromise) return runtime.analysisContextPromise;
     const manifestUrl = new URL(resolveAssetPath("./data/analysis_v1/manifest.json"), document.baseURI).toString();
-    runtime.analysisContextPromise = fetch(manifestUrl, { cache: "force-cache" })
+    runtime.analysisContextPromise = fetch(manifestUrl, { cache: "no-cache" })
       .then(function (response) {
         if (!response.ok) throw new Error("Analysis manifest request failed (" + response.status + ").");
         return response.json();

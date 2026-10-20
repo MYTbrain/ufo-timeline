@@ -1,0 +1,97 @@
+{
+  "schemaId": "ufo-animal-time-production-independent-readiness-v1",
+  "observedUtc": "2026-10-20T08:41:42.639370+00:00",
+  "reviewedCommit": "94400bab0f3a366feb7c3675033430522117bed0",
+  "runtimeSourceCommit": "2d862cf57bca3f2eaeb2af3137a51db2b00432d7",
+  "comparisonProductionSource": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+  "status": "ready_for_authorized_promotion",
+  "blockingFindings": [],
+  "runtimeIntegrity": {
+    "files": 232,
+    "bytes": 41553365,
+    "treeSha256": "3e982adb016dc9084d958d30472f32a55c13e612e49e041eef57b4ac0c25e4a5",
+    "gitSourceStageHashMismatches": 0,
+    "missingOrExtraStageFiles": 0
+  },
+  "dataIntegrity": {
+    "unchangedFromProductionPlanFields": [
+      "uploads",
+      "upload_total_bytes",
+      "inherited_runtime_objects",
+      "counts",
+      "bucket",
+      "key_prefix",
+      "context_recovery"
+    ],
+    "immutableR2ObjectsReused": 150,
+    "immutableR2BytesReused": 586867702,
+    "corpusCounts": {
+      "events": 702893,
+      "mapped": 582877
+    },
+    "boundedPagesDataAddition": "Animal temporal projection adds country only, with frozen source hashes and unchanged original nine fields/record order documented by prior independent country review. No corpus rebuild or immutable R2 object rewrite."
+  },
+  "retainedFixes": {
+    "scroll": "All seven vertical chaining fixes and measured flowing toolbar/observer synchronization remain present; prior actual wheel, phone-size and contained dialog evidence is recorded.",
+    "cattle": "Unpooled named species, fractional expected counts, cluster count unit, explicit sensitivity status, null p/q values and original complete unpooled source table remain present. Crop path stays pooled.",
+    "temporal": "Animal species/country and nearby craft timelines retain observed-role/control separation, unknown dates, cross-period range exclusions, descriptive-only labels and compact rows/expandable notes. Worker cache versions advance together."
+  },
+  "priorEvidenceReviewed": [
+    {
+      "path": "docs/qa/analysis-scroll-20261019/browser.json",
+      "sha256": "db2dccd254b716701507a706287f29404e4146e2ad33ac020eb75d682b5de4f1"
+    },
+    {
+      "path": "docs/qa/analysis-scroll-20261019/independent.json",
+      "sha256": "781f4595f99d95f49c6d3aea488f6c00cc749f9b51b8dd7c58166aa07a42249c"
+    },
+    {
+      "path": "docs/qa/animal-species-display-20261019/browser.json",
+      "sha256": "1cdd1fa7ffdf394f8983b09892137b5c8059bfdd6acf239c1be1dff2bd0a5937"
+    },
+    {
+      "path": "docs/qa/animal-species-display-20261019/independent.json",
+      "sha256": "e89220977405666821c8775260566b314eafb5b7f33c2f269cb7ee5039103d5e"
+    },
+    {
+      "path": "docs/qa/animal-time-20261020/checks.json",
+      "sha256": "b6be775d977d51e6421da1fe307ab3e2136061e3e552bdaef24cce64e92761f8"
+    },
+    {
+      "path": "docs/qa/animal-time-20261020/independent.json",
+      "sha256": "a131e02e868ef9f5ebd66d151c63c72141dd701265e1a0c46ca3821f65fe1c6d"
+    },
+    {
+      "path": "docs/qa/animal-time-20261020/browser.json",
+      "sha256": "88a7cd992538a5545aa62cd706f07aca94dc8e77956f48c5c86487b3a833becc"
+    },
+    {
+      "path": "docs/qa/animal-time-20261020/public.json",
+      "sha256": "e9f18024e5ec93e9668aac2870891c5bdefd5cce8a188775431d55f0cb2f164f"
+    },
+    {
+      "path": "docs/qa/animal-time-20261020/preview-release.json",
+      "sha256": "fe32a15dfa71bb30f6c3aa41e40a0187764bd37d09673888de6abc042b0818a1"
+    }
+  ],
+  "previewEvidence": {
+    "url": "https://f7e5c2d6.ufo-timeline.pages.dev/#analysis-section-animals",
+    "verifiedRuntimeSource": "2d862cf57bca3f2eaeb2af3137a51db2b00432d7",
+    "checks": "Eleven focused suite entries (including ten Python builder tests), real-data independent comparison, all changed hosted files and desktop/phone-size browser checks passed in preserved receipts. No need to repeat the full validation set."
+  },
+  "promotionRetention": {
+    "newCurrent": "Authorized candidate after provider and live production verification by root",
+    "retainedRollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "supersededRollbackDesignation": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "note": "Preparation plan still describes pre-promotion rollback; root publication receipt must record the rotation. No deletion authorized or performed."
+  },
+  "limits": [
+    "This independent check does not perform upload, build, Git mutation or live production verification; root owns those actions.",
+    "Prior browser evidence includes emulated phone-size viewport, not physical-device touch claims."
+  ],
+  "storage": {
+    "newFilesAbove100MiB": [],
+    "newArtifacts": "One small JSON readiness receipt only; no generated stage or dataset copy.",
+    "purpose": "Retain with current authorized production release QA."
+  }
+}

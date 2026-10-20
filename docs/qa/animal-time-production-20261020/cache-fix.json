@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T08:48:40.493516+00:00",
+  "issue": "Returning production visitors could reuse an older nine-field analysis projection because the mutable V1 manifest was unversioned and fetched with force-cache.",
+  "repair": [
+    "Analysis V1 assets use the app shell release token",
+    "Context manifest revalidates through no-cache; same-page reuse and retry behavior are retained",
+    "App script URL bumped to animal-time-v2"
+  ],
+  "regression": [
+    "test_analysis_context_manifest_refresh.mjs",
+    "test_ufocat_references_integration.mjs"
+  ],
+  "dataObjectsUnchanged": 150,
+  "sourceAnimalRecordsUnchanged": 1184,
+  "stage": {
+    "files": 232,
+    "bytes": 41553472,
+    "treeSha256": "15a94888f25796ebdfe9cb4cd5df39f4fd4ee1128b3d38b5ebf758e5ba78985e"
+  },
+  "retainedRollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+  "newFilesAbove100MiB": [],
+  "storageGrowth": "under 1 MiB for release metadata and regression/QA; no dataset copies"
+}
