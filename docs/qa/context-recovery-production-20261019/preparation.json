@@ -1,14 +1,14 @@
 {
   "schemaId": "ufo-context-recovery-production-preparation-v1",
-  "status": "prepared_not_published",
+  "status": "published_verified",
   "observedUtc": "2026-10-20T02:18:29.037807+00:00",
   "productionUrl": "https://ufo-timeline.pages.dev/",
   "previousProduction": "16b1c76f-8896-4c00-ab00-4676212a941e",
   "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
   "supersededRollbackDesignation": "16443086-c630-41d8-a793-92a0243a76f6",
-  "pagesTreeSha256": "80f65e123440efdb0275572203d96901b055e3e3552bf4be0bcf2fdde7487d23",
+  "pagesTreeSha256": "a71f321904ccef8b58906a5660bc09609682f66ab05c4e8b9de4a119a495fa4c",
   "pagesFiles": 229,
-  "pagesBytes": 41376518,
+  "pagesBytes": 41376610,
   "newDataRelease": "context-recovery-20261019-v1",
   "newObjects": 45,
   "newUploadBytes": 5379080,
@@ -35,11 +35,14 @@
   "storage": {
     "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
     "canonicalContextDerivative": "D:/UFO-Timeline-Context-Evidence/releases/context-recovery-20261019-v1",
-    "stageNetGrowthBytes": 0,
+    "stageNetGrowthBytes": 320844,
     "newFilesAbove100MiB": [],
     "fullCorpusOrDatabaseCopied": false,
     "approximateTotalProjectGrowthMiB": 7,
     "supersededLargeLocalStages": [],
     "cleanupProposal": "Retain one canonical stage, new validated production and prior validated production as rollback. Retain bounded D context delta, research sources and QA as provenance. Superseded provider previews/history are reproducible and candidates for a later literal cleanup allowlist; no deletion performed."
-  }
+  },
+  "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+  "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+  "verifiedUtc": "2026-10-20T02:35:07.773885+00:00"
 }

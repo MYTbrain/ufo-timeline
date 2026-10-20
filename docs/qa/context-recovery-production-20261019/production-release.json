@@ -1,0 +1,64 @@
+{
+  "schemaId": "ufo-context-recovery-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-20T02:35:07.773885+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+  "runtimeSourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+  "githubMainUpdated": true,
+  "githubSourceUrl": "https://github.com/MYTbrain/ufo-timeline/commit/83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 229,
+    "bytes": 41376610,
+    "treeSha256": "a71f321904ccef8b58906a5660bc09609682f66ab05c4e8b9de4a119a495fa4c"
+  },
+  "retainedRollback": {
+    "deploymentId": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "sourceCommit": "94384c055f9363c8ebdd13d1c8fcec1c5e83ba3d",
+    "url": "https://16b1c76f.ufo-timeline.pages.dev",
+    "available": true,
+    "supersededDesignation": "16443086-c630-41d8-a793-92a0243a76f6"
+  },
+  "verification": {
+    "provider": "provider.json",
+    "publicFiles": "public-files.json",
+    "newImmutableData": "r2-public.json",
+    "browser": "browser.json",
+    "publicFilesVerified": 227,
+    "newImmutableObjectsVerified": 45,
+    "inheritedImmutableObjectsReused": 105,
+    "postFixBrowserErrors": 0,
+    "actualManifestConsumerRegression": "tests/test_context_manifest_consumers.mjs",
+    "note": "Initial production candidate e8430fdb exposed an animal release-label validation mismatch. Final source83e1ed4 corrects only the manifest label, adds actual-consumer validation, and preserves every published gzip object. Final startup and public assets are verified."
+  },
+  "contextCounts": {
+    "animalInventory": 1184,
+    "animalSourceReviewed": 14,
+    "animalStrict": 0,
+    "contextNeighbors": 63859,
+    "cropBounded": 428,
+    "cropInventory": 7745,
+    "cropLocality": 3224,
+    "cropSourceReviewed": 140,
+    "cropStrict": 1
+  },
+  "sourceCounts": {
+    "events": 702893,
+    "mapped": 582877
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "canonicalContextDerivative": "D:/UFO-Timeline-Context-Evidence/releases/context-recovery-20261019-v1",
+    "stageNetGrowthBytes": 320844,
+    "newFilesAbove100MiB": [],
+    "fullCorpusOrDatabaseCopied": false,
+    "approximateTotalProjectGrowthMiB": 7,
+    "supersededLargeLocalStages": [],
+    "cleanupProposal": "Retain one canonical stage, new validated production and prior validated production as rollback. Retain bounded D context delta, research sources and QA as provenance. Superseded provider previews/history are reproducible and candidates for a later literal cleanup allowlist; no deletion performed.",
+    "cFreeBytesObserved": 90300178432,
+    "dFreeBytesObserved": 79232200704
+  },
+  "postPublicationEvidenceCommittedLocally": true,
+  "receiptPushDeferredToAvoidDocumentationOnlyRebuild": true
+}

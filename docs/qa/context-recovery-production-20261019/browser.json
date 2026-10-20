@@ -1,0 +1,23 @@
+{
+  "observedUtc": "2026-10-20T02:34:06.487Z",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "startupCoverObserved": true,
+  "fullCatalogReadyObserved": true,
+  "catalogCount": 702893,
+  "mappedCount": 582877,
+  "mapLegendAndControlsObserved": true,
+  "chronologyObserved": true,
+  "analysisOverviewRendered": true,
+  "evidenceReadinessRendered": true,
+  "boundedCropCountObserved": 428,
+  "cropDenominatorObserved": 7745,
+  "searchIndexCountObserved": 702893,
+  "postFixConsoleErrors": [],
+  "initialFailure": {
+    "message": "Animal manifest release label rejected by existing validator",
+    "fixedBy": "83e1ed4",
+    "sameImmutableDataBytes": true
+  },
+  "recordInspectionBoundary": "Five actual-record corrections covered by fixture integration and worker tests. Direct UI record selection was not asserted.",
+  "screenshot": "production-evidence.png"
+}
