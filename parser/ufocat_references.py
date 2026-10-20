@@ -12,6 +12,9 @@ import re
 from typing import Any
 
 CATALOG_URL = "https://cufos.org/PDFs/books/Physical_Traces.pdf"
+CATALOG_PDF_SHA256 = "e824270528264c2563df17f79540171dc216fb9be85968a5eb844ecb1b2be17b"
+# Original scan visually checked by independent reviewers; no OCR inference.
+VERIFIED_CATALOG_PAGES = {253: (44, 62), 537: (86, 104), 585: (90, 108)}
 FAMILY_ID = "ted_phillips_physical_trace_lineage"
 WORKS = {
     "TPhillips": ("investigation_files", "Ted Phillips - investigation files"),
@@ -88,6 +91,7 @@ def reference_entries(event: Mapping[str, Any] | None) -> list[dict[str, Any]]:
                 "catalogCaseNumber": None, "flags": []}
             title = f"UFOCAT source code {code}" if not work else f"{work[1]} [{code}]"
             suffix = f", locator {locator}" if locator else ""
+            legacy_text = None
             if work:
                 entry.update({"sourceWorkId": work[0], "familyId": FAMILY_ID})
             if code == "TPhillips1":
@@ -97,6 +101,13 @@ def reference_entries(event: Mapping[str, Any] | None) -> list[dict[str, Any]]:
                         entry["catalogCaseNumber"] = int(locator)
                         entry["locatorType"] = "catalog_case_number"
                         suffix = f", case {locator}"
+                        pages = VERIFIED_CATALOG_PAGES.get(entry["catalogCaseNumber"])
+                        if pages:
+                            legacy_text = f"{title}{suffix} ({role} citation)"
+                            entry["catalogPrintedPage"], entry["catalogPdfPage"] = pages
+                            entry["catalogPdfSha256"] = CATALOG_PDF_SHA256
+                            entry["url"] = f"{CATALOG_URL}#page={entry['catalogPdfPage']}"
+                            suffix += f", printed p. {entry['catalogPrintedPage']}, PDF page {entry['catalogPdfPage']}"
                     else:
                         entry["flags"].append("missing_or_invalid_catalog_case_number")
                         suffix = f", unverified locator {locator}" if locator else ", case number unavailable"
@@ -105,6 +116,18 @@ def reference_entries(event: Mapping[str, Any] | None) -> list[dict[str, Any]]:
                     suffix = f", locator {locator} (page or case number unverified)" if locator else ", locator unavailable"
             text = f"{title}{suffix} ({role} citation)"
             entry["text"] = text
+            # Upgrade only this owned row's exact former helper string. Do not
+            # relabel arbitrary existing references or citations without raw rows.
+            if legacy_text and legacy_text != text:
+                for i, existing in enumerate(entries):
+                    if existing["text"] == legacy_text and existing["citationRole"] == "existing":
+                        seen.discard(legacy_text)
+                        if text in seen:
+                            entries.pop(i)
+                        else:
+                            existing.update(entry)
+                            seen.add(text)
+                        break
             if text not in seen:
                 entries.append(entry)
                 seen.add(text)

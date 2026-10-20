@@ -5,6 +5,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const CATALOG_URL = "https://cufos.org/PDFs/books/Physical_Traces.pdf";
+  const CATALOG_PDF_SHA256 = "e824270528264c2563df17f79540171dc216fb9be85968a5eb844ecb1b2be17b";
+  // Original scan visually checked by independent reviewers; no OCR inference.
+  const VERIFIED_CATALOG_PAGES = new Map([[253, [44, 62]], [537, [86, 104]], [585, [90, 108]]]);
   const FAMILY_ID = "ted_phillips_physical_trace_lineage";
   // UFOCAT 2023 Sources.xlsx, rows 748-751; no inference from AUTHOR alone.
   const WORKS = new Map([
@@ -46,13 +49,21 @@
       const locator = text(raw[locatorField]), work = WORKS.get(code), entry = {sourceCode: code, citationRole: role,
         locatorRaw: locator || null, locatorType: "source_locator_unresolved", catalogCaseNumber: null, flags: []};
       const title = work ? `${work[1]} [${code}]` : `UFOCAT source code ${code}`;
-      let suffix = locator ? `, locator ${locator}` : "";
+      let suffix = locator ? `, locator ${locator}` : "", legacyValue = null;
       if (work) { entry.sourceWorkId = work[0]; entry.familyId = FAMILY_ID; }
       if (code === "TPhillips1") {
         entry.url = CATALOG_URL;
         if (role === "direct") {
           if (/^[0-9]+$/.test(locator) && Number(locator) >= 1 && Number(locator) <= 831) {
             entry.catalogCaseNumber = Number(locator); entry.locatorType = "catalog_case_number"; suffix = `, case ${locator}`;
+            const pages = VERIFIED_CATALOG_PAGES.get(entry.catalogCaseNumber);
+            if (pages) {
+              legacyValue = `${title}${suffix} (${role} citation)`;
+              [entry.catalogPrintedPage, entry.catalogPdfPage] = pages;
+              entry.catalogPdfSha256 = CATALOG_PDF_SHA256;
+              entry.url = `${CATALOG_URL}#page=${entry.catalogPdfPage}`;
+              suffix += `, printed p. ${entry.catalogPrintedPage}, PDF page ${entry.catalogPdfPage}`;
+            }
           } else {
             entry.flags.push("missing_or_invalid_catalog_case_number"); suffix = locator ? `, unverified locator ${locator}` : ", case number unavailable";
           }
@@ -63,6 +74,16 @@
       }
       const value = `${title}${suffix} (${role} citation)`;
       entry.text = value;
+      // Upgrade only this owned row's exact former helper string. Unrelated
+      // references, and a bare old citation without owned raw fields, survive.
+      if (legacyValue && legacyValue !== value) {
+        const legacyIndex = entries.findIndex(item => item.text === legacyValue && item.citationRole === "existing");
+        if (legacyIndex >= 0) {
+          seen.delete(legacyValue);
+          if (seen.has(value)) entries.splice(legacyIndex, 1);
+          else { Object.assign(entries[legacyIndex], entry); seen.add(value); }
+        }
+      }
       if (!seen.has(value)) { entries.push(entry); seen.add(value); }
       else {
         const existing = entries.find(item => item.text === value && item.citationRole === "existing");

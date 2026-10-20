@@ -1,0 +1,198 @@
+{
+  "schemaId": "context-source-continuation-receipt-v1",
+  "date": "2026-10-19",
+  "status": "canonical-applied-runtime-prepared-not-deployed",
+  "canonicalDataCommit": "65d05ef3106bcb30bf7a0ac05d7656df255a64a6",
+  "canonicalApplication": {
+    "packageId": "cep_43cea7767e7590922e335580",
+    "waveIds": [
+      "wave-027-context-source-continuation-20261019"
+    ],
+    "appended": {
+      "source": 9,
+      "assertion": 21,
+      "decision": 42,
+      "queue": 11
+    },
+    "ledgerSha256": {
+      "source": "e44673e9dc93f100941cf5ded438dddc8c13af68fa79bc15d99277627d8ac07b",
+      "assertion": "7c918dbb9b46931906dc544b7753b45449a7f8681aaa737a255f6b9a4fcb60cd",
+      "decision": "1eb40fc0ce99c83b5593edd595ca9268c098eb7f7fdae3c2ee30727047303c52",
+      "queue": "e4df43599ae1ca8d3a050419d4552fc05a8a8a64bc852489c4881347d8988952"
+    },
+    "result": "applied"
+  },
+  "researchRoot": "D:\\UFO-Timeline-Context-Evidence\\candidate\\eligibility-recovery-continuation-20261019",
+  "researchPins": {
+    "README.md": {
+      "bytes": 1600,
+      "sha256": "ffab67e87e708e081bca884fb85ce3dd7f3bf58898fde0d5a8087641e08b420a"
+    },
+    "canonical-application.json": {
+      "bytes": 615,
+      "sha256": "fcb1f79f3bf3b8a90ed484bc707927ca741a0979b3c7abe96fe8b54a3f744431"
+    },
+    "before-projection.json": {
+      "bytes": 136360,
+      "sha256": "f900e1e8618de958d5c07e161b587ee8dfd5309bc82396ab05aa9eb08b83466c"
+    },
+    "after-projection.json": {
+      "bytes": 135587,
+      "sha256": "826a53e590f61528e0123fe272fa4fe52a531cb34332bede80949aef37b6a436"
+    },
+    "canonical-package/package_manifest.json": {
+      "bytes": 1168,
+      "sha256": "c53f88da7afd3a6c60eabb59d7de9819e6bb6381190797b38fef720b47580284"
+    },
+    "canonical-package/package_report.json": {
+      "bytes": 31675,
+      "sha256": "d0ca37c0c3d92465d493f8c57fe49153f4c0211e270a13375d99ecc3941b28f4"
+    },
+    "canonical-package/validation.json": {
+      "bytes": 338,
+      "sha256": "c7f000283a1c2c3d4b9d836f8dc8a3b9e338e765f046bef327a6471b21ed6e29"
+    },
+    "canonical-package/validation-initial-failure.json": {
+      "bytes": 531,
+      "sha256": "1a4bf829a169e664ce30902b4c78baacc88ed9d7c5bfe935a606b2e316f12fef"
+    },
+    "crops/receipt.json": {
+      "bytes": 2361,
+      "sha256": "6faa6f7852a90d376bc891f9a0e24c3c66017d5f0c71f024aa6e79df1fa63f91"
+    },
+    "animals/manifest.json": {
+      "bytes": 2254,
+      "sha256": "38ca6c56c5e41c764971d49c58f8d1a04e857680cf60384c4b61addbd9bcf274"
+    },
+    "phillips/manifest.json": {
+      "bytes": 5665,
+      "sha256": "b951118e9a13768ba099124d06b3df595843569a2472ce96dcbf7ebec7522615"
+    },
+    "review-a/crops-review.json": {
+      "bytes": 15812,
+      "sha256": "40dd2cb6984084c56002efcee385be9b08fd4461c19815f0dd21bb5e853d7984"
+    },
+    "review-b/crops-review.json": {
+      "bytes": 9211,
+      "sha256": "315d5b8f3d503654dded727ecf4b50bc5296ac680c714ddef284d92a78121a2b"
+    },
+    "review-a/animals-review.json": {
+      "bytes": 14764,
+      "sha256": "d9df6ccfa1c6d2004416f6973c2a4381adbb58780795cf3a3dc92448592a5d43"
+    },
+    "review-b/animals-review.json": {
+      "bytes": 10770,
+      "sha256": "2ae2764b4aa65dcee897ff2834f815f4722e643a9fe9871ab934a982378754e8"
+    },
+    "review-a/vimy-review.json": {
+      "bytes": 6223,
+      "sha256": "4fc68d61bb91bba0ead220089a480d9c7d11a7df753d3f5cbbbfaae27f451244"
+    },
+    "review-b/vimy-review.json": {
+      "bytes": 5724,
+      "sha256": "80eef17c91cf211c23e1090a6b80c40ed68f004f6c6dbb299f90c513af7e18bb"
+    },
+    "review-a/crop-date-mapping-review.json": {
+      "bytes": 1504,
+      "sha256": "b983193bee7a79d27c84c43b82cf77bc487d73d448fb5d664402c674650fd8a9"
+    },
+    "review-b/crop-date-mapping-review.json": {
+      "bytes": 1897,
+      "sha256": "0bcf140308383d7ddb2466480575667e5f7b7ae45301d437db0f2a02ec833447"
+    },
+    "review-a/phillips-review-root.json": {
+      "bytes": 3072,
+      "sha256": "a98d64e55cbb4e5fff73da570700ea59cea838ac475ca99c22e6259fc8521350"
+    },
+    "review-b/phillips-review.json": {
+      "bytes": 6961,
+      "sha256": "cbeb41f4104c21e07b44f097e3bbdfed0397ccd7985eed011602362f704e628a"
+    }
+  },
+  "preparedRuntimePins": {
+    "ufocat_references.js": {
+      "bytes": 10884,
+      "sha256": "fb0074c931c0c6dda0a9a1b3e019e4b8f599c4068a7bd0e9588abcc42d41bebb"
+    },
+    "parser/ufocat_references.py": {
+      "bytes": 7283,
+      "sha256": "84d9a8f08bc8767b6d6cd9a140bdf136e03534484af31bcc93f80293d4181d9c"
+    },
+    "index.html": {
+      "bytes": 167954,
+      "sha256": "ce484c7bee24239babf05fd668ae9daa00c3b3ab04a8a47307afe9fd2c6fb8b2"
+    },
+    "scripts/prepare_workspace_analysis_release.py": {
+      "bytes": 33171,
+      "sha256": "df4708953ce42a65dcdc566bcc2c3a7109543804396ad9fd401106d2b47f0e6e"
+    },
+    "tests/test_phillips_verified_pages.mjs": {
+      "bytes": 3777,
+      "sha256": "be37a5c520b3f0bccfbb3f7e786c6ea3bc432440d523b22c8bef93045b08ce38"
+    },
+    "tests/test_phillips_verified_pages.py": {
+      "bytes": 3839,
+      "sha256": "263bdb9ba86baa930223cf4974b000a4b2979bf8a984f71bb403926c5c158626"
+    }
+  },
+  "effect": {
+    "upgradedCatalogRepresentationsN": 6,
+    "underlyingUpgradedCaseGroupsN": 5,
+    "newEventsImportedN": 0,
+    "cropSourceReviewedBeforeAfter": [
+      137,
+      140
+    ],
+    "animalSourceReviewedBeforeAfter": [
+      13,
+      14
+    ],
+    "cropBoundedBeforeAfter": [
+      427,
+      428
+    ],
+    "cropLocalityBeforeAfter": [
+      3225,
+      3224
+    ],
+    "duplicateRepresentationsExcludedN": 1,
+    "strictCropBeforeAfter": [
+      1,
+      1
+    ],
+    "strictAnimalBeforeAfter": [
+      0,
+      0
+    ],
+    "verifiedPhillipsBookLocatorsN": 3,
+    "completeLaterTracatRecovered": false
+  },
+  "verification": {
+    "sharedBuilderTestsPassed": 30,
+    "parentPythonCitationTestsPassed": 7,
+    "parentJavaScriptSuitesPassed": [
+      "test_ufocat_references.mjs",
+      "test_phillips_verified_pages.mjs",
+      "test_ufocat_references_integration.mjs"
+    ],
+    "atomicAppendAndTargetProjectionAssertions": "passed",
+    "publicDataRebuild": "not performed",
+    "deployment": "not performed"
+  },
+  "lifecycle": {
+    "canonicalArtifacts": "shared append-only evidence ledgers, source-date builders, guarded citation helper and small QA receipts",
+    "newResearchBytesOnD": 25058967,
+    "newResearchFilesN": 73,
+    "largestNewFile": {
+      "path": "D:\\UFO-Timeline-Context-Evidence\\candidate\\eligibility-recovery-continuation-20261019\\animals\\newsclipping-1995-03-308.pdf",
+      "bytes": 18653575
+    },
+    "newFilesOver100MiB": [],
+    "approximateCProjectGrowth": "less than1MiB",
+    "currentValidatedDeployment": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "retainedRollback": "16443086-c630-41d8-a793-92a0243a76f6",
+    "acceptedPreview": "5e423cb2",
+    "supersededLargeGeneratedArtifacts": [],
+    "cleanupProposal": "None; retain unique sources/reviews and compact canonical receipts; no deletion authorized."
+  }
+}
