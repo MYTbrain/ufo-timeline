@@ -58,6 +58,10 @@ assert.match(root.textContent, /Cattle/);
 assert.match(root.textContent, /1940s.*1970s.*Unknown date/);
 assert.match(root.textContent, /report counts, not counts of individual animals/);
 assert.match(root.textContent, /0 cross-period date ranges excluded/);
+const countingNotes = walk(root).find(el => hasClass(el, "analysis-supporting-details"));
+assert.ok(countingNotes && !countingNotes.open, "Counting policies are collapsed by default");
+assert.equal(countingNotes.children[0].textContent, "Counting & coverage notes");
+assert.ok(root.children.some(el => el.tagName === "P" && hasClass(el, "analysis-chart-note") && /14 reports in dated periods/.test(el.textContent)), "A concise plain coverage line stays visible");
 assert.ok(marks(root).every(el => !hasClass(el, "is-low-support")), "Raw counts must not look like unsupported residual estimates");
 assert.ok(marks(root).every(el => el.tagName !== "BUTTON"), "Descriptive counts do not pretend to expose an unavailable record drilldown");
 assert.ok(!/inferentially qualified|above expectation|p-value|q-value/i.test(root.textContent));
@@ -132,6 +136,7 @@ const ambiguousPeriod = { cells: [], rows: [], columns: [], metadata: { activeRe
 controller._renderAnimalTemporalChart("species-time", { yearly: ambiguousPeriod, decadal: ambiguousPeriod }, {}, { kind: "species" });
 assert.match(root.textContent, /No records can be assigned to this period view/);
 assert.match(root.textContent, /2 cross-period date ranges excluded/);
+assert.ok(root.children.some(el => el.tagName === "P" && /2 cross-period date ranges excluded/.test(el.textContent)), "Empty-period exclusions remain visible outside the collapsed notes");
 assert.match(root.textContent, /not counts of individual animals/);
 assert.ok(select(root), "Reference selection stays available when all selected and reference dates cross a period boundary");
 select(root).value = "reference"; select(root).emit("change");

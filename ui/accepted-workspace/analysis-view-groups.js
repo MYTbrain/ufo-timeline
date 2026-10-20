@@ -78,7 +78,7 @@
       { key: "coverage", label: "Coverage & locations", anchorIds: ["analysis-crop-coordinate-chart"] },
     ],
     animals: [
-      { key: "activity", label: "Animal types over time", anchorIds: ["analysis-animal-time-chart", "analysis-animal-species-time-chart"] },
+      { key: "activity", label: "Animal types over time", anchorIds: ["analysis-animal-species-time-chart", "analysis-animal-time-chart"] },
       { key: "craft", label: "Craft & time", anchorIds: ["analysis-animal-craft-time-chart", "analysis-animal-craft-context-chart"] },
       { key: "composition", label: "Species & review status", anchorIds: ["analysis-animal-species-chart"] },
       { key: "coverage", label: "Locations & coverage", anchorIds: ["analysis-animal-location-time-chart", "analysis-animal-date-precision-chart"] },

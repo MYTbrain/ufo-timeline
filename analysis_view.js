@@ -5102,20 +5102,26 @@
         const timed = metadata[prefix + "TimedReportCount"];
         const unknownDate = metadata[prefix + "UnknownDateCount"];
         const ambiguous = metadata[prefix + "AmbiguousPeriodCount"];
+        const unknownLabel = metadata[prefix + "UnknownLabelCount"];
         const coverage = [timed == null ? "" : formatCount(timed) + " " + labels.counted + " in dated periods",
           unknownDate == null ? "" : formatCount(unknownDate) + " with unknown dates",
           ambiguous == null ? "" : formatCount(ambiguous) + " cross-period date ranges excluded"].filter(Boolean);
-        if (coverage.length) this._appendChartPolicy(chartId, coverage.join(" · ") + (kind === "craft" ? ". Unknown-date clusters are excluded; no period is guessed." : ". Unknown dates remain in their own column when present; dates are never assigned to the midpoint of a range."));
+        if (unknownLabel != null && kind !== "craft") coverage.push((kind === "locations" ? "Unknown country: " : "Unknown animal type: ") + formatCount(unknownLabel) + " reports");
+        if (coverage.length) container.appendChild(this._element("p", "analysis-chart-note", coverage.join(" · ") + "."));
+        const notes = this._element("details", "analysis-supporting-details");
+        notes.appendChild(this._element("summary", "", "Counting & coverage notes"));
+        const appendNote = (text) => notes.appendChild(this._element("p", "analysis-chart-note", text));
+        appendNote(kind === "craft" ? "Unknown-date clusters are excluded; no period is guessed." : "Unknown dates remain in their own column when present; dates are never assigned to the midpoint of a range.");
         if (kind === "craft") {
-          this._appendChartPolicy(chartId, "Each animal-report location/date cluster counts once per neighboring craft type and animal-report period. This uses the animal marker's date and observed neighborhoods only; matched-date controls are excluded. A nearby craft report is context, not evidence of the same incident or a causal connection.");
+          appendNote("Each animal-report location/date cluster counts once per neighboring craft type and animal-report period. This uses the animal marker's date and observed neighborhoods only; matched-date controls are excluded. A nearby craft report is context, not evidence of the same incident or a causal connection.");
         } else if (kind === "locations") {
-          this._appendChartPolicy(chartId, "Country comes from an explicit retained source country or an unambiguous country-only label. Missing or broad ambiguous geography remains Unknown country; map centroids are not used to guess a country. Country counts describe catalog coverage, not incidence rates.");
+          appendNote("Country comes from an explicit retained source country or an unambiguous country-only label. Missing or broad ambiguous geography remains Unknown country; map centroids are not used to guess a country. Country counts describe catalog coverage, not incidence rates.");
         } else {
-          this._appendChartPolicy(chartId, "Each report counts once per animal-type/period membership. A report with several animal types can appear in several rows; these are report counts, not counts of individual animals. Unknown animal types remain separate.");
+          appendNote("Each report counts once per animal-type/period membership. A report with several animal types can appear in several rows; these are report counts, not counts of individual animals. Unknown animal types remain separate.");
         }
-        const unknownLabel = metadata[prefix + "UnknownLabelCount"];
-        if (unknownLabel != null && kind !== "craft") this._appendChartPolicy(chartId, (kind === "locations" ? "Unknown country: " : "Unknown animal type: ") + formatCount(unknownLabel) + " reports in this group.");
-        if (cells.length) this._appendChartPolicy(chartId, "Every available period is shown in chronological order; scroll the heatmap sideways for the full timeline. " + (kind === "locations" && rows.length > 32 ? "The largest country rows and Unknown country are shown, up to 32 rows; the complete table retains all countries and periods." : "The complete table retains every category/period count.") + (canReference ? " Selected and reference counts use their actual report groups; they are not balanced or adjusted rates." : ""));
+        if (cells.length) appendNote("Every available period is shown in chronological order; scroll the heatmap sideways for the full timeline. " + (kind === "locations" && rows.length > 32 ? "The largest country rows and Unknown country are shown, up to 32 rows; the complete table retains all countries and periods." : "The complete table retains every category/period count."));
+        if (canReference) appendNote("Selected and reference counts use their actual report groups; they are not balanced or adjusted rates.");
+        container.appendChild(notes);
       };
       render(previous.period, previous.cohort);
     }

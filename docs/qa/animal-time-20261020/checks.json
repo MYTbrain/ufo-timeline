@@ -17,8 +17,8 @@
   "realData": "real-data.json",
   "stage": {
     "files": 232,
-    "bytes": 41552267,
-    "treeSha256": "8a0c019ddc8fa80a6f37e6b4b9b92b5b0669c210d318a4c80a6b418a8f413ba2"
+    "bytes": 41553365,
+    "treeSha256": "3e982adb016dc9084d958d30472f32a55c13e612e49e041eef57b4ac0c25e4a5"
   },
   "countryExtension": {
     "counts": {
@@ -76,11 +76,20 @@
     "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
     "currentValidatedProduction": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
     "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
-    "stageNetGrowthBytes": 170786,
+    "stageNetGrowthBytes": 171884,
     "approximateNetTaskGrowth": "under 2 MiB including bounded projection, source, tests, stage, Git and QA",
     "newFilesAbove100MiB": [],
     "dataArchiveCopies": 0,
     "supersededLocalStages": [],
     "cleanup": "Single existing stage updated in place. No raw input copied or deleted. This temporal preview supersedes the prior temporary cattle preview; production and one rollback remain protected."
+  },
+  "layoutFollowup": {
+    "compactCountRowsPx": 30,
+    "countingNotesCollapsed": true,
+    "speciesHeatmapBeforeLegacyStartYearSeries": true,
+    "regressionTestsPassed": [
+      "test_analysis_animal_time_view.mjs",
+      "test_analysis_navigation_scroll.mjs"
+    ]
   }
 }

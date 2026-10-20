@@ -12959,3 +12959,29 @@ button[data-analysis-unavailable="true"]:disabled {
 .encounter-evidence { border-left: 2px solid #8da7b1; padding-left: 12px; }
 .encounter-evidence blockquote { margin: 8px 0; padding-left: 10px; border-left: 1px solid #526a75; }
 .encounter-evidence code { overflow-wrap: anywhere; word-break: break-word; }
+
+/* Counts need readable rows, not square inferential-effect tiles. */
+.analysis-animal-temporal-chart .analysis-heatmap-table {
+  width: calc(156px + (var(--analysis-heatmap-columns, 6) * 54px));
+  min-width: calc(144px + (var(--analysis-heatmap-columns, 6) * 48px));
+}
+.analysis-animal-temporal-chart .analysis-heat-cell {
+  height: 30px;
+  min-height: 30px;
+  aspect-ratio: auto;
+  padding: 3px;
+  border-radius: 5px;
+}
+.analysis-animal-temporal-chart .analysis-heatmap-table th {
+  font-size: 0.68rem;
+  padding: 4px;
+}
+.analysis-animal-temporal-chart .analysis-chart-note {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+.analysis-animal-temporal-chart .analysis-supporting-details {
+  margin-top: 8px;
+}
