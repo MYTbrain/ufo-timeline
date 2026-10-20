@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-20T07:37:27.953850+00:00",
+  "url": "https://f7e5c2d6.ufo-timeline.pages.dev",
+  "sourceCommit": "2d862cf57bca3f2eaeb2af3137a51db2b00432d7",
+  "changedFilesVerified": [
+    "analysis_spatial.js",
+    "analysis_spatial_worker.js",
+    "analysis_stats.js",
+    "analysis_view.js",
+    "app.js",
+    "catalog_filter_worker.js",
+    "data/analysis_v1/animal_reports_temporal.json",
+    "data/analysis_v1/animal_reports_temporal.json.gz",
+    "data/analysis_v1/animal_temporal_provenance.json",
+    "data/analysis_v1/manifest.json",
+    "index.html",
+    "styles.css",
+    "ui/accepted-workspace/analysis-view-groups.js"
+  ],
+  "unchangedRuntimeFiles": 219,
+  "basePreview": "6c27a4d1-37ea-4e10-a083-bee9407cae1b",
+  "providerTransformations": [
+    {
+      "provider": "Cloudflare Pages Analytics",
+      "inserted_bytes": 214,
+      "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+      "token": "df011473b8f34ae9a926359e4a1743e6",
+      "source_byte_hash_verified_after_exact_removal": true,
+      "path": "index.html"
+    }
+  ],
+  "immutableUploadsUnchanged": true
+}

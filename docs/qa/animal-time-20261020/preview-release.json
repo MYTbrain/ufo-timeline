@@ -1,0 +1,55 @@
+{
+  "schemaId": "ufo-animal-time-preview-v1",
+  "status": "preview_verified",
+  "sourceCommit": "2d862cf57bca3f2eaeb2af3137a51db2b00432d7",
+  "previewUrl": "https://f7e5c2d6.ufo-timeline.pages.dev/#analysis-section-animals",
+  "deploymentId": "f7e5c2d6-7d5d-4219-9a1f-ce92bcdc8715",
+  "githubBranch": "codex/analysis-scroll-20261019",
+  "publication": "Verified existing bounded Pages stage published directly after the automatic Git preview build remained pending. Provider list confirms Preview environment and source 2d862cf.",
+  "observedUtc": "2026-10-20T07:40:50.334490+00:00",
+  "verification": [
+    "checks.json",
+    "real-data.json",
+    "independent.json",
+    "public.json",
+    "browser.json"
+  ],
+  "productionUnchanged": {
+    "deploymentId": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+    "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1"
+  },
+  "retainedRollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "storage": {
+    "canonicalCandidate": ".tmp/workspace-analysis-20261008-pages",
+    "currentAnimalCountryProjection": "data/analysis_v1/animal_reports_temporal.json.gz",
+    "projectionRebuild": "scripts/build_animal_temporal_projection.py; frozen release/seed inputs read in place, specified and pinned by release builder",
+    "stageBytes": 41553365,
+    "stageNetGrowthFromPriorCattlePreviewBytes": 171884,
+    "approximateNetTaskGrowth": "under 2 MiB including bounded generated projection, source, tests, Git, QA and refreshed single stage",
+    "newFilesAbove100MiB": [],
+    "corpusCopies": 0,
+    "dataObjectsCreated": 0,
+    "immutableR2ObjectsReused": 150,
+    "supersededLocalStages": [],
+    "supersededTemporaryHostedPreviews": [
+      {
+        "prefix": "6c27a4d1",
+        "purpose": "prior cattle comparison preview"
+      },
+      {
+        "prefix": "d03e5f49",
+        "purpose": "initial animal timeline verification before compact layout"
+      },
+      {
+        "prefix": "8a904ea1",
+        "purpose": "pending automatic build of final source; verified direct preview is canonical for this task"
+      },
+      {
+        "prefix": "914b1bcf",
+        "purpose": "identical direct bundle; superseded immediately to correct source commit metadata; not a validated release"
+      }
+    ],
+    "retention": "Existing validated production and one rollback remain protected. Retain f7e5c2d6 as current review preview; superseded hosted previews are temporary and may be cleaned up after later promotion. No extra local stage or backup exists; no data deletion was performed."
+  },
+  "receiptCommittedLocally": true
+}
