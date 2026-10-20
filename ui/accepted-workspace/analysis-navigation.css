@@ -82,6 +82,16 @@ html.analysis-navigation-preview.preview-analysis-filters-open[data-active-prima
   flex: 1 1 100%;
 }
 .analysis-navigation-preview #analysis-workspace-toolbar { gap: 7px; margin-bottom: 0; }
+/* Keep a usable reading area when short screens or expanded controls make the
+   toolbar too tall to pin. Its measured height controls this fallback. */
+.analysis-navigation-preview .has-flowing-toolbar .analysis-workspace-toolbar {
+  position: static;
+  top: auto;
+}
+.analysis-navigation-preview .has-flowing-toolbar .preview-analysis-topic-rail {
+  top: max(8px, var(--safe-area-top));
+  max-height: calc(100dvh - 20px);
+}
 @media (min-width: 901px) {
   .analysis-navigation-preview .analysis-date-controls {
     grid-template-columns: minmax(150px, 210px) minmax(150px, 210px) auto;

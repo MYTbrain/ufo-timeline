@@ -1,0 +1,36 @@
+{
+  "schemaId": "ufo-analysis-scroll-baseline-v1",
+  "sourceCommit": "83e1ed4b6c9d30ce3fb2f39611653b475792d0d1",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "observedUtc": "2026-10-20T03:36:28.583324+00:00",
+  "wheelTrap": {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "topic": "Time > Reporting activity",
+    "openTable": "View complete data table (142 rows)",
+    "target": {
+      "x": 900,
+      "y": 300,
+      "element": "TD"
+    },
+    "pageYBefore": 4554,
+    "pageYAfter": 4554,
+    "pageMaximum": 5046,
+    "gesture": "one page downward using browser wheel",
+    "tableClientHeight": 3725,
+    "tableScrollHeight": 3725,
+    "computedOverscrollY": "contain"
+  },
+  "shortScreen": {
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "stickyToolbarHeight": 252.90625,
+    "stickyToolbarTop": 8,
+    "remainingVisibleHeight": 129.09375
+  },
+  "sourceFinding": "Observer synchronization could also scroll the outer page while the selected navigation tab retained focus; covered with actual-installer regression."
+}

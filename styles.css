@@ -10276,7 +10276,8 @@ html[data-active-primary-view="analysis"] .timeline-panel {
   max-height: 220px;
   padding-right: 3px;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   scrollbar-width: thin;
 }
 
@@ -10716,7 +10717,8 @@ button.analysis-composition-segment:focus-visible {
 .analysis-data-table-scroll {
   max-width: 100%;
   overflow: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
 }
 
 .analysis-heatmap-table,

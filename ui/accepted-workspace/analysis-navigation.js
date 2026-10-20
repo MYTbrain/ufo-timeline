@@ -204,7 +204,8 @@
         const heading = active && (comparing ? active.querySelector("h2, h3") || active : active.querySelector(".analysis-section-heading"));
         if (!heading || document.documentElement.dataset.activePrimaryView !== "analysis") return;
         const top = heading.getBoundingClientRect().top;
-        const visibleTop = toolbar.getBoundingClientRect().bottom + 12;
+        const visibleTop = panel.classList.contains("has-flowing-toolbar")
+          ? 12 : Math.max(12, toolbar.getBoundingClientRect().bottom + 12);
         if (top < visibleTop || top > innerHeight * .66) {
           scrollTo({top: Math.max(0, scrollY + top - visibleTop), behavior: "auto"});
         }
@@ -232,22 +233,27 @@
       controller._openSupportingChart(shortcut.getAttribute("aria-controls"));
     }, true);
 
-    let previousSelectedTopic = "";
     function sync() {
       placeMobileFilters();
+      const toolbarHeight = Math.ceil(toolbar.getBoundingClientRect().height);
+      // On short screens, or with expanded controls, a sticky toolbar can cover
+      // most of the results. Let it scroll with the page if less than 240px
+      // would remain for the analysis itself.
+      panel.classList.toggle("has-flowing-toolbar", innerHeight - toolbarHeight < 240);
+      const toolbarOffset = (toolbarHeight + 20) + "px";
+      if (panel.style.getPropertyValue("--analysis-toolbar-offset") !== toolbarOffset) {
+        panel.style.setProperty("--analysis-toolbar-offset", toolbarOffset);
+      }
       nav.setAttribute("aria-orientation", innerWidth > 900 ? "vertical" : "horizontal");
       const selectedTopic = nav.querySelector('[aria-selected="true"]');
       if (selectedTopic && innerWidth > 900 && rail.offsetHeight > 0 && document.documentElement.dataset.activePrimaryView === "analysis") {
-        const topicChanged = selectedTopic.id !== previousSelectedTopic;
-        previousSelectedTopic = selectedTopic.id;
+        // Keep the selected topic visible inside its own rail. Background chart
+        // updates must not move the page just because that topic retains focus;
+        // deliberate navigation already reveals the heading in revealTopicStart.
         const topicRect = selectedTopic.getBoundingClientRect();
         const railRect = rail.getBoundingClientRect();
         if (topicRect.bottom > railRect.bottom) rail.scrollTop += topicRect.bottom - railRect.bottom + 4;
         else if (topicRect.top < railRect.top) rail.scrollTop -= railRect.top - topicRect.top + 4;
-        const revealedTopic = selectedTopic.getBoundingClientRect();
-        if ((topicChanged || document.activeElement === selectedTopic) && revealedTopic.bottom > innerHeight - 12) {
-          scrollTo({top: scrollY + revealedTopic.bottom - innerHeight + 12, behavior: "auto"});
-        }
       }
       const controller = window.AnalysisViewController;
       const result = controller && controller.latestResult;
@@ -271,10 +277,7 @@
     new MutationObserver(schedule).observe(panel, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:["aria-selected","hidden","data-phase","data-session-mode"]});
     if (byId("preview-mobile-filters")) byId("preview-mobile-filters").addEventListener("toggle", sync);
     window.addEventListener("resize", schedule);
-    if (window.ResizeObserver) new ResizeObserver(() => {
-      panel.style.setProperty("--analysis-toolbar-offset", Math.ceil(toolbar.getBoundingClientRect().height + 20) + "px");
-      schedule();
-    }).observe(toolbar);
+    if (window.ResizeObserver) new ResizeObserver(schedule).observe(toolbar);
     if (window.ResizeObserver) new ResizeObserver(schedule).observe(rail);
     sync();
   }
