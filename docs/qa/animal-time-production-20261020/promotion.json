@@ -1,0 +1,24 @@
+{
+  "status": "ready_for_authorized_promotion",
+  "observedUtc": "2026-10-20T08:41:06.531423+00:00",
+  "userAuthorized": true,
+  "preview": "https://f7e5c2d6.ufo-timeline.pages.dev/",
+  "runtimeFiles": 232,
+  "runtimeBytes": 41553365,
+  "runtimeTreeSha256": "3e982adb016dc9084d958d30472f32a55c13e612e49e041eef57b4ac0c25e4a5",
+  "runtimeBytesIdenticalToReviewedPreview": true,
+  "immutableDataInventoryUnchanged": {
+    "objects": 150,
+    "bytes": 586867702
+  },
+  "retainedRollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
+  "supersededRollbackDesignation": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 0,
+    "newFilesAbove100MiB": [],
+    "expectedNetGrowth": "under 1 MiB of Git and QA receipts; no new datasets or full copies",
+    "supersededLocalStages": [],
+    "cleanupProposal": "Keep this validated production and the previous validated production as the sole designated rollback. Existing temporary hosted previews become superseded. No source or dataset deletion performed."
+  }
+}

@@ -2,8 +2,8 @@
   "schema": "ufo-workspace-analysis-release-v1",
   "release_id": "workspace-analysis-20261008",
   "base_deployment": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
-  "runtime_revision": "animal-time-preview-20261020-v2",
-  "retained_rollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+  "runtime_revision": "animal-time-production-20261020-v1",
+  "retained_rollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
   "counts": {
     "events": 702893,
     "mapped": 582877
@@ -5461,12 +5461,12 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 1098,
-    "existing_stage_bytes": 41552267,
-    "c_free_bytes_before_stage": 84260478976,
+    "approximate_net_local_growth_bytes": 0,
+    "existing_stage_bytes": 41553365,
+    "c_free_bytes_before_stage": 81592971264,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
-    "rollback": "16b1c76f-8896-4c00-ab00-4676212a941e",
+    "rollback": "a49d5164-2f86-48e7-9d4c-9d8686d015d9",
     "superseded_staging": [],
     "search_derivative": {
       "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
