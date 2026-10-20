@@ -1,0 +1,20 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import vm from "node:vm";
+import path from "node:path";
+
+const candidate = process.argv[2];
+assert.ok(candidate, "Pass the retained context release directory");
+const source = fs.readFileSync(new URL("../animal_mutilation_layer.js", import.meta.url), "utf8");
+const begin = source.indexOf("  function validateManifest(manifest) {");
+const end = source.indexOf("  function ensureManifest()", begin);
+assert.ok(begin >= 0 && end > begin);
+const sandbox = vm.createContext({});
+vm.runInContext(source.slice(begin, end), sandbox);
+const manifest = JSON.parse(fs.readFileSync(path.join(candidate, "public/data/animal_mutilations/manifest.json"), "utf8"));
+assert.equal(sandbox.validateManifest(manifest), manifest, "The real animal map consumer must accept the released manifest");
+assert.equal(manifest.counts.records, 1184);
+assert.equal(manifest.contextEvidenceReleaseId, "context-recovery-20261019-v1");
+assert.throws(() => sandbox.validateManifest({ ...manifest, releaseId: "context-recovery-20261019-v1.animal_mutilations" }), /incompatible/);
+assert.throws(() => sandbox.validateManifest({ ...manifest, delivery: { ...manifest.delivery, r2OnlyPaths: [] } }), /incomplete/);
+console.log("Released context manifest passes its actual runtime consumer");

@@ -83,6 +83,7 @@
     },
     "status": "loaded"
   },
+  "contextEvidenceReleaseId": "context-recovery-20261019-v1",
   "counts": {
     "acceptedNewCases": 0,
     "boundedCoordinates": 0,

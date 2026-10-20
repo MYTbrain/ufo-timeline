@@ -371,14 +371,14 @@
   "sources": {
     "animalReports": {
       "manifest": "webapp/static_public/data/animal_mutilations/manifest.json",
-      "manifestSha256": "9c6957794046e84cd6546c8c04814ef849722b567c647e0a105932d14d0a4eb7",
-      "releaseId": "context-recovery-20261019-v1.animal_mutilations",
+      "manifestSha256": "dfcbb3e3fcb04d13d8df64521c395a2198319e99300bb0035b35019a484f4291",
+      "releaseId": "animal-mutilations-v1-20261019",
       "rowCount": 1184,
       "sourceSchema": "animal-mutilation-timeline-overlay-v1.1.0"
     },
     "cropCircles": {
       "manifest": "webapp/static_public/data/crop_circles/manifest.json",
-      "manifestSha256": "bac9733ff1cf076ef57b66511c5b6261ebec9d1d8f4c6193b025359b43c9bc87",
+      "manifestSha256": "f8498fb72d0f0c95bb8f7bd01891a85ad81a75005b5da29d9390428bb273d31c",
       "releaseId": "context-recovery-20261019-v1.crop_circles",
       "rowCount": 7745,
       "sourceCommit": "0086e3b86ceefeaa5c12422ea28a3fed05e8e260",

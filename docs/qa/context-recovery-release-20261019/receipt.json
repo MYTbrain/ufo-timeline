@@ -2,7 +2,7 @@
   "status": "validated_local_derivative_ready_for_publication",
   "releaseId": "context-recovery-20261019-v1",
   "integrationPath": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1\\integration.json",
-  "integrationSha256": "212083907a9c2da564e39ec4c1564389199a465c2085e583079463fbf8d50670",
+  "integrationSha256": "8810bdc923ae772c1ef45ecdbdcf94cc1917ff09730720789f971ba537ca1b61",
   "sharedSourceCommit": "65d05ef3106bcb30bf7a0ac05d7656df255a64a6",
   "counts": {
     "animalInventory": 1184,
@@ -207,10 +207,12 @@
     "comparisonInventoryAndRoleLaneParity": true,
     "cropChronologyDuplicateRegressionTestsPassed": true,
     "publicFilesScannedForPrivateLocalPaths": 50,
-    "publicMetadataPathsReplaced": 76
+    "publicMetadataPathsReplaced": 76,
+    "actualAnimalManifestConsumerPassed": true,
+    "publishedImmutableGzipObjectsUnchanged": 45
   },
   "storage": {
-    "approximateNetDiskGrowthBytes": 5739820,
+    "approximateNetDiskGrowthBytes": 5776991,
     "cDriveGrowthBytes": 0,
     "canonicalCandidate": "D:\\UFO-Timeline-Context-Evidence\\releases\\context-recovery-20261019-v1",
     "cleanup": "No source or dataset deletion. Generated context derivative retained as current canonical deployment input; no additional whole release retained.",

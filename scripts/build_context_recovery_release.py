@@ -165,7 +165,8 @@ def refresh_layer(b, lane, module, domain):
     evidence, metadata, new = module.load_context_evidence(LEDGERS, domain)
     require(not (new - {key.split(":", 1)[-1] for key in records}), "Unexpected new context identity")
     manifest = copy.deepcopy(old)
-    manifest["releaseId"] = RELEASE + "." + lane
+    manifest["releaseId"] = "animal-mutilations-v1-20261019" if lane == "animal_mutilations" else RELEASE + "." + lane
+    manifest["contextEvidenceReleaseId"] = RELEASE
     manifest["contextEvidence"] = metadata
     manifest["assetBaseUrl"] = ORIGIN + "/" + PREFIX + "/data/" + lane + "/"
     local_root = OUTPUT / "layers" / lane
@@ -273,8 +274,9 @@ def projection(b, lane, name, rows, schema, old=None, artifact_key=None):
     return declaration
 
 
-def build(refresh=False):
+def build(refresh=False, manifest_only=False):
     require(not (OUTPUT / "integration.json").exists() or refresh, "Validated context candidate already exists; verify/reuse it instead")
+    previous_contract = read(OUTPUT / "integration.json") if manifest_only else None
     b = Builder()
     b.document("PURPOSE.json", {"purpose": "Changed-only deployment of reviewed context source recovery waves 026 and 027", "rebuild": "Run scripts/build_context_recovery_release.py --build from release worktree", "retention": "Canonical current context derivative after publication; prior production remains sole designated rollback. No source deletion.", "capBytes": CAP, "corpusCopied": False, "databaseBuilt": False})
     for name in ("source_ledger.jsonl", "case_enrichment.jsonl", "case_review_decisions.jsonl", "research_queue.jsonl"):
@@ -394,6 +396,10 @@ def build(refresh=False):
                       "changedCropIds": sorted(set(crop_changed)), "changedAnimalIds": sorted(set(animal_changed)), "inheritedUfoRows": len(spatial)}}
     receipt["qa"]["buildFindings"] = [{"finding": "All-record parity assertion exposed one pre-existing source-regional map/locality versus Analysis/bounded label difference", "status": "documented_inherited_exception", "strictEvidenceAffected": False}]
     receipt["qa"]["publicManifestLocalPathsReplaced"] = len(b.metadata_sanitizations)
+    if previous_contract:
+        old_objects = {r["key"]: (r["bytes"], r["sha256"]) for r in previous_contract["uploads"]}
+        new_objects = {r["key"]: (r["bytes"], r["sha256"]) for r in receipt["uploads"]}
+        require(old_objects == new_objects, "Manifest-only compatibility repair changed an immutable uploaded object")
     b.document("integration.json", receipt)
     print(json.dumps({"passed": True, "output": str(OUTPUT), "counts": counts, "pages": len(b.pages), "uploads": len(b.uploads), "generatedBytes": b.bytes, "uploadBytes": sum(r["bytes"] for r in b.uploads)}, indent=2))
 
@@ -414,6 +420,7 @@ def verify():
     by_url = {r["url"]: Path(r["source"]) for r in contract["uploads"]}
     public = {r["path"].split("/")[1]: read(r["source"]) for r in contract["pages"]}
     manifest = public["analysis_v2"]
+    require(re.fullmatch(r"animal-mutilations-v1-\d{8}", public["animal_mutilations"]["releaseId"]), "Animal manifest violates the actual runtime release-ID contract")
     for key in ("cropContextReadiness", "animalContextReadiness", "contextUfoNeighbors"):
         declaration = manifest["artifacts"][key]
         packed = by_url[declaration["gzipFile"]].read_bytes()
@@ -446,10 +453,12 @@ if __name__ == "__main__":
     parser.add_argument("--build", action="store_true")
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--refresh-unpublished-candidate", action="store_true")
+    parser.add_argument("--manifest-only-compatibility-repair", action="store_true")
     args = parser.parse_args()
     if args.verify:
         verify()
     elif args.build:
-        build(refresh=args.refresh_unpublished_candidate)
+        build(refresh=args.refresh_unpublished_candidate or args.manifest_only_compatibility_repair,
+              manifest_only=args.manifest_only_compatibility_repair)
     else:
         print(json.dumps({"output": str(OUTPUT), "expectedBytesBelow": 32 * 1024**2, "hardCapBytes": CAP, "cDriveDataGrowth": 0, "fullCorpusBuild": False}))

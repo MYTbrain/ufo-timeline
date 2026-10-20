@@ -89,6 +89,7 @@
     },
     "status": "loaded"
   },
+  "contextEvidenceReleaseId": "context-recovery-20261019-v1",
   "counts": {
     "acceptedNewCases": 7,
     "boundedCoordinates": 0,
@@ -232,7 +233,7 @@
     "sensitivityReady": 340,
     "strictReady": 0
   },
-  "releaseId": "context-recovery-20261019-v1.animal_mutilations",
+  "releaseId": "animal-mutilations-v1-20261019",
   "schemaVersion": 1,
   "source": {
     "adapterVersion": "animal-mutilation-timeline-adapter-v1.1.1",
