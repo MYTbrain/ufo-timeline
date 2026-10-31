@@ -10587,7 +10587,7 @@
         runtime.analysisMapRenderPending = false;
       }
       renderTimeline();
-      runtime.map.invalidateSize({ animate: false, pan: false });
+      runtime.map.invalidateSize({ animate: false, pan: runtime.sharedViewRestored === true });
       scheduleMapProjectionRefresh();
       scheduleMapInvalidate();
       renderRegionSelectionShapes();
@@ -17272,7 +17272,8 @@
     if (!runtime.map) return;
     window.clearTimeout(runtime.mapInvalidateTimerId);
     runtime.mapInvalidateTimerId = window.setTimeout(function () {
-      runtime.map.invalidateSize({ animate: false, pan: false });
+      // Late startup/Analysis layout changes must keep a shared camera centered.
+      runtime.map.invalidateSize({ animate: false, pan: runtime.sharedViewRestored === true });
     }, 60);
   }
 

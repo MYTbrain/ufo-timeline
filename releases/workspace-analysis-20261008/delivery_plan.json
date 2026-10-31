@@ -292,8 +292,8 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1550714,
-      "sha256": "90db90d442196ef701eae27a58422b8dd5a03ddc245f376f0f7c7632fc647233",
+      "bytes": 1550856,
+      "sha256": "3d7639d803f0c0468f2d6beeb5fd794b2d4115c8ac337b796cf2eeeea2133435",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1477,7 +1477,7 @@
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
       "bytes": 170551,
-      "sha256": "b4b9220a4c32cbd6c62e5f39b5e94f06c7fc56e3434de32829a400d394b577ae",
+      "sha256": "83c7bf4d3983c9b26b1eb2391ccad842e92d508f1e2e9cdeb0708aaf52221771",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1882,8 +1882,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "8cac6075513a3c5f04c27d3f1721e99a620ba4f0573d35611017ac30d262d936",
-  "pages_total_bytes": 41638402,
+  "pages_tree_sha256": "a1f902449a1ca3e4212da10d5d66a3e944a08d300a81878b772ba4b4d34c2902",
+  "pages_total_bytes": 41638544,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -5477,9 +5477,9 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 163,
-    "existing_stage_bytes": 41638239,
-    "c_free_bytes_before_stage": 4917583872,
+    "approximate_net_local_growth_bytes": 142,
+    "existing_stage_bytes": 41638402,
+    "c_free_bytes_before_stage": 4909531136,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "11f72dab-fdf5-4eaf-b84c-301637685fa2",
@@ -5560,7 +5560,7 @@
     "source_fields_preserved": true
   },
   "frontend_refresh": {
-    "base_pages_tree_sha256": "3cb96c11c6bef4e695334821c748499892c2029a64948659fe736686ca1cd4f9",
+    "base_pages_tree_sha256": "8cac6075513a3c5f04c27d3f1721e99a620ba4f0573d35611017ac30d262d936",
     "changed_paths": [
       "app.js",
       "index.html"
