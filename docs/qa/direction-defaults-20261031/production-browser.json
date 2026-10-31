@@ -1,0 +1,17 @@
+{
+  "arrows": false,
+  "knownOnly": true,
+  "script": "./app.js?v=2026-10-31-direction-defaults-v1",
+  "startup": "Ready",
+  "errors": [],
+  "returningVisitor": {
+    "previousScript": "2026-10-31-playback-resume-v1",
+    "previousKnownOnly": false,
+    "normalReload": true,
+    "cacheCleared": false
+  },
+  "resetMap": {
+    "arrows": false,
+    "knownOnly": true
+  }
+}

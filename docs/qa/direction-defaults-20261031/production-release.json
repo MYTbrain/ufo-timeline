@@ -1,0 +1,75 @@
+{
+  "schemaId": "ufo-direction-defaults-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-31T17:31:35.358625+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "90fa1b95-d819-4808-8e8e-387930455391",
+  "immutableDeploymentUrl": "https://90fa1b95.ufo-timeline.pages.dev",
+  "runtimeSourceCommit": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+  "featureSourceCommit": "fab8d46a9d8b85c195482898ddd707639253881e",
+  "feature": "Default to known-direction traces with direction arrows hidden; both reset paths restore this pair",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 234,
+    "bytes": 41646208,
+    "treeSha256": "d994c2cdc2bee19b6bea8f091a265592126876294850e71353a03f3f945d52e5"
+  },
+  "retainedRollback": {
+    "deploymentId": "0ac7c2bc-3f39-4984-920a-5fcd45327d4c",
+    "sourceCommit": "e1d1ce6e287abc4d5e572f86dcd01cce47b2712b",
+    "url": "https://0ac7c2bc.ufo-timeline.pages.dev",
+    "pinnedIndexVerified": true,
+    "supersededDesignation": "034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c"
+  },
+  "verification": {
+    "servedFilesVerified": 232,
+    "changedFrontendFiles": [
+      "app.js",
+      "index.html"
+    ],
+    "immutableProductionFrontendFilesVerified": 2,
+    "immutableDataObjectsReused": 150,
+    "immutableDataBytesReused": 586867702,
+    "dataUploads": 0,
+    "hostedPreview": "https://b13f1846.ufo-timeline.pages.dev",
+    "hostedPreviewDeploymentId": "b13f1846-01bd-42e3-9fda-8a26a4e209da",
+    "hostedPreviewFiles": "preview-files.json",
+    "hostedPreviewBrowser": "preview-browser.json",
+    "publicFiles": "production-files.json",
+    "immutableProduction": "immutable-production.json",
+    "browser": "production-browser.json",
+    "screenshot": "production-defaults.png",
+    "provider": "provider.json",
+    "rollback": "rollback.json",
+    "liveSettings": {
+      "arrows": false,
+      "knownOnly": true,
+      "script": "./app.js?v=2026-10-31-direction-defaults-v1",
+      "startup": "Ready",
+      "errors": [],
+      "returningVisitor": {
+        "previousScript": "2026-10-31-playback-resume-v1",
+        "previousKnownOnly": false,
+        "normalReload": true,
+        "cacheCleared": false
+      },
+      "resetMap": {
+        "arrows": false,
+        "knownOnly": true
+      }
+    }
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 396,
+    "newFilesAbove100MiB": [],
+    "approximateTaskNetGrowth": "Under 1 MiB including receipts, screenshot, Git objects and in-place stage refresh",
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededLargeLocalStages": [],
+    "supersededHostedCandidates": [
+      "b13f1846-01bd-42e3-9fda-8a26a4e209da"
+    ],
+    "cleanupProposal": "Retain canonical 90fa1b95 and sole rollback 0ac7c2bc. The hosted preview and older rollback designation are superseded; deletion only under a separate explicit allowlist. No deletion performed."
+  },
+  "receiptPushStrategy": "[CF-Pages-Skip] commit to main avoids a redundant Git-integrated deployment"
+}

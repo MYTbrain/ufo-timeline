@@ -1,0 +1,11 @@
+{
+  "arrows": false,
+  "knownOnly": true,
+  "script": "./app.js?v=2026-10-31-direction-defaults-v1",
+  "startup": "Ready",
+  "reset": {
+    "arrows": false,
+    "knownOnly": true
+  },
+  "errors": []
+}
