@@ -1,0 +1,77 @@
+{
+  "schemaId": "ufo-compact-share-production-browser-v1",
+  "observedUtc": "2026-10-31T15:39:10.395Z",
+  "url": "https://ufo-timeline.pages.dev/",
+  "passed": true,
+  "returningVisitor": {
+    "previousCodec": 2,
+    "currentCodec": 3,
+    "normalReloadWithoutCacheClearing": true,
+    "legacyVersion": 2,
+    "startupPhase": "Ready",
+    "error": "",
+    "nonCameraStateMatches": true,
+    "expectedMap": {
+      "basemap": "configured",
+      "lat": 55.78892895389265,
+      "lng": -3.5266113281250004,
+      "zoom": 6
+    },
+    "actualMap": {
+      "basemap": "configured",
+      "lat": 55.78892895389265,
+      "lng": -3.5156250000000004,
+      "zoom": 6
+    },
+    "cameraDifferenceInPixels": {
+      "x": 0.5,
+      "y": 0
+    }
+  },
+  "freshSharedView": {
+    "codec": 3,
+    "startupPhase": "Ready",
+    "error": "",
+    "catalog": "702,893",
+    "mapped": "582,877",
+    "expectedMap": {
+      "basemap": "configured",
+      "lat": -15.26869530794737,
+      "lng": -40.15014469120664,
+      "zoom": 2.75
+    },
+    "actualMap": {
+      "basemap": "configured",
+      "lat": -15.47025953723095,
+      "lng": -40.15203047985578,
+      "zoom": 2.75
+    },
+    "cameraDifferenceInPixels": {
+      "x": 0.009021172138599917,
+      "y": 1.0000000000000433
+    },
+    "newLinkLength": 294,
+    "newLinkFragmentPrefix": "#view=3.",
+    "decodedNewLinkMatchesCapturedState": true
+  },
+  "mosaic": {
+    "triangle": {
+      "clientHeight": 17,
+      "rect": {
+        "bottom": 197.203125,
+        "height": 16.984375,
+        "left": 774.9375,
+        "right": 901.21875,
+        "top": 180.21875,
+        "width": 126.28125,
+        "x": 774.9375,
+        "y": 180.21875
+      },
+      "scrollHeight": 17,
+      "text": "Triangle"
+    },
+    "visibleText": "Craft composition\n\nRebalance the mosaic to reveal the categories hidden by dominant labels such as Light.\n\nRebalance categories\nShow all\nSelect a tile to preview its filter\nSphere / orb\n33.3%\n+13.3%\nLight\n27.9%\n-11.3%\nTriangle\n8.1%\nCigar / cylinder\n7.2%\n+2.5%\nOval / egg\n7.2%\n+3%\nDisc / saucer\n5.4%\n7\n9\n7\nFireball Meteor Like\n2.7%\n8\nChevron / boomerang\n1.8%\n9\nRemaining Categories\n6.3%\n\nArea = recalculated share of displayed categories. Teal = above the balanced expectation; amber = below it.\n\nView data table",
+    "screenshot": "production-mosaic.png"
+  },
+  "cameraNote": "Leaflet quantizes its display origin to pixels. Observed camera differences are at most approximately one screen pixel; encoded view coordinates and report/area geometry remain exact."
+}

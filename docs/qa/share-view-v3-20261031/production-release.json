@@ -1,0 +1,75 @@
+{
+  "schemaId": "ufo-share-view-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-31T15:38:50Z",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "742eb895-1387-43bd-b69f-85911b806ee9",
+  "immutableDeploymentUrl": "https://742eb895.ufo-timeline.pages.dev",
+  "runtimeSourceCommit": "15f32aa0ded006c2b1a718dcf3a6141adb6ce678",
+  "githubMainUpdated": true,
+  "githubIntegratedDeployment": null,
+  "feature": "Smaller v3 browser-fragment share links with legacy compatibility, stable shared camera restoration, and readable craft-composition mosaics",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 234,
+    "bytes": 41638544,
+    "treeSha256": "a1f902449a1ca3e4212da10d5d66a3e944a08d300a81878b772ba4b4d34c2902"
+  },
+  "retainedRollback": {
+    "deploymentId": "11f72dab-fdf5-4eaf-b84c-301637685fa2",
+    "sourceCommit": "151354cb62dc9546b76a62182f539f9302bd1241",
+    "url": "https://11f72dab.ufo-timeline.pages.dev",
+    "pinnedIndexVerified": true,
+    "supersededDesignation": "2850fbfd-1010-417d-86c4-3d94decc5025"
+  },
+  "verification": {
+    "servedFilesVerified": 232,
+    "changedFrontendFiles": [
+      "analysis_view.js",
+      "app.js",
+      "index.html",
+      "share_view.js",
+      "styles.css"
+    ],
+    "immutableProductionFrontendFilesVerified": 5,
+    "immutableDataObjectsReused": 150,
+    "immutableDataBytesReused": 586867702,
+    "dataUploads": 0,
+    "browser": "production-browser.json",
+    "publicFiles": "public-files.json",
+    "immutableProduction": "immutable-production.json",
+    "provider": "provider.json",
+    "rollback": "release-preflight.json",
+    "preflight": "release-preflight.json",
+    "mosaicScreenshot": "production-mosaic.png",
+    "hostedPreview": "https://d70e9dcc.ufo-timeline.pages.dev",
+    "hostedPreviewDeploymentId": "d70e9dcc-1d2a-46a1-9193-1bc024c908ee",
+    "returningVisitor": "Previously loaded v2 client updated to v3 after a normal reload",
+    "legacyStateRestoration": "All non-camera settings restored exactly; camera position remained within approximately one screen pixel after hosted startup and layout changes",
+    "newV3ExampleUrlCharacters": 294,
+    "newV3DecodedSnapshotExact": true,
+    "returningVisitorCameraDeltaPixels": { "horizontal": 0.5, "vertical": 0 },
+    "freshV3CameraDeltaPixels": { "horizontal": 0.009, "vertical": 1 },
+    "triangleLabelHeightPixels": { "client": 17, "scroll": 17 },
+    "smallCategoryKeyVisible": true,
+    "allEvents": 702893,
+    "mappedEvents": 582877
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 11891,
+    "newFilesAbove100MiB": [],
+    "approximateTaskNetGrowth": "Under 5 MiB for source, tests, Git objects, receipts and screenshots; existing stage refreshed in place",
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededLargeLocalStages": [],
+    "supersededHostedCandidates": [
+      "9e44325c-720e-42fc-a75f-7fec850f49a8",
+      "34e8edb8-f1db-4198-a8c4-bc3e3ca50678",
+      "d70e9dcc-1d2a-46a1-9193-1bc024c908ee"
+    ],
+    "cleanupProposal": "Retain validated production 742eb895 and designate 11f72dab as the sole rollback. No duplicate local stage exists. Superseded hosted candidates are eligible for later cleanup only under a separate explicit allowlist; no deletion performed."
+  },
+  "receiptPushDeferredToAvoidDocumentationOnlyRebuild": false,
+  "receiptPushStrategy": "Receipt commit prefixed [CF-Pages-Skip] to avoid a redundant GitHub-integrated Pages deployment",
+  "receiptPushStrategyReference": "https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/"
+}

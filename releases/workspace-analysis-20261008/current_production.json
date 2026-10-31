@@ -1,8 +1,8 @@
 {
   "schemaId": "ufo-current-production-pointer-v1",
-  "receipt": "docs/qa/share-view-20261031/production-release.json",
-  "deploymentId": "11f72dab-fdf5-4eaf-b84c-301637685fa2",
-  "runtimeSourceCommit": "151354cb62dc9546b76a62182f539f9302bd1241",
-  "pagesTreeSha256": "95dc8369c112b6319bba8cee42c29861e1d857b2d4da0a40affc9ca73cdfbb4c",
-  "retainedRollback": "2850fbfd-1010-417d-86c4-3d94decc5025"
+  "receipt": "docs/qa/share-view-v3-20261031/production-release.json",
+  "deploymentId": "742eb895-1387-43bd-b69f-85911b806ee9",
+  "runtimeSourceCommit": "15f32aa0ded006c2b1a718dcf3a6141adb6ce678",
+  "pagesTreeSha256": "a1f902449a1ca3e4212da10d5d66a3e944a08d300a81878b772ba4b4d34c2902",
+  "retainedRollback": "11f72dab-fdf5-4eaf-b84c-301637685fa2"
 }
