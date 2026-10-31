@@ -7074,6 +7074,7 @@
   function visiblePlaybackTraceCount() {
     return runtime.playbackTrailLines.reduce(function (count, entry) {
       const visible = entry &&
+        traceSegmentVisibleUnderDirectionFilter(entry.segment || entry.facilitySegment) &&
         traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) &&
         playbackTrailEntryVisibleUnderFacilityFilter(entry);
       return count + (visible ? 1 : 0);
@@ -13582,6 +13583,7 @@
   function buildAndClassifyPackedTraceFacilitySegmentsViaWorker(artifact, options) {
     const config = options || {};
     const requestedGeneration = state.filterGeneration;
+    const requestedKnownDirectionOnly = Boolean(state.regionSelection.knownDirectionOnly);
     if (!traceFacilityWorkerEnabled()) return Promise.resolve(null);
     if (!traceFacilityFilterReady()) return Promise.resolve(null);
     if (!artifact || !artifact.metadata || !artifact.view || !artifact.rowCount) return Promise.resolve(null);
@@ -13626,7 +13628,8 @@
         function onMessage(event) {
           const message = event.data || {};
           if (message.requestId !== requestId) return;
-          if (Number(message.generation) !== requestedGeneration || requestedGeneration !== state.filterGeneration) {
+          if (Number(message.generation) !== requestedGeneration || requestedGeneration !== state.filterGeneration ||
+              requestedKnownDirectionOnly !== Boolean(state.regionSelection.knownDirectionOnly)) {
             runtime.discardedWorkerResults += 1;
             settle(resolve, null);
             return;
@@ -13653,6 +13656,7 @@
           filter: traceFacilityWorkerFilterPayload(),
           filteredEventIds,
           activeBucketKeys,
+          knownDirectionOnly: requestedKnownDirectionOnly,
           startOrdinal: state.timeRangeStartOrdinal,
           endOrdinal: state.timeRangeEndOrdinal,
           bounds: serializeTraceFacilityWorkerBounds(config.bounds || null),
@@ -13815,7 +13819,7 @@
     runtime.heatmapLayer.addTo(runtime.map);
     const traceSegments = (profile.tracePreviewSegments || [])
       .map(normalizeStartupProfileTraceSegment)
-      .filter(Boolean);
+      .filter(function (segment) { return segment && traceSegmentVisibleUnderDirectionFilter(segment); });
     if (traceSegments.length && runtime.staticTraceLayer && traceModeIncludesStatic()) {
       runtime.staticTraceLayer.setSegments(traceSegments);
       if (!runtime.map.hasLayer(runtime.staticTraceLayer)) {
@@ -16326,8 +16330,10 @@
     const toggle = document.getElementById("legend-trace-arrows");
     if (toggle) {
       toggle.checked = state.showTraceDirectionArrows;
-      toggle.disabled = !regionSelectionAffectsRendering() || currentRegionSelectionResult().pointOnly;
-      toggle.title = toggle.disabled ? "Select a case or area with trace lines to use direction arrows." : "Toggle selection arrows; trace lines and statistics stay visible.";
+      toggle.disabled = regionSelectionAffectsRendering()
+        ? currentRegionSelectionResult().pointOnly : state.traceMode === "off";
+      toggle.title = toggle.disabled ? "Enable trace lines to use direction arrows." :
+        "Show report-order arrows on individual traces; lines and counts stay unchanged.";
     }
     const knownDirectionToggle = document.getElementById("legend-known-direction-only");
     if (knownDirectionToggle) knownDirectionToggle.checked = Boolean(state.regionSelection.knownDirectionOnly);
@@ -16335,13 +16341,19 @@
 
   function setKnownTraceDirectionOnly(knownOnly) {
     state.regionSelection.knownDirectionOnly = Boolean(knownOnly);
+    invalidateTraceSequenceCache();
+    runtime.largeWindowTraceBuildToken += 1;
+    runtime.largeWindowTraceBuildKey = "";
+    runtime.traceFacilityWorkerRenderToken += 1;
+    runtime.traceFacilityWorkerPendingKey = "";
     closeChronologicalNeighborhoodInspector();
     refreshRegionSelectionRenderState();
+    syncPlaybackTrailVisibility();
     renderLegendTraceDirectionPanel();
     renderMapLegendHeaderControls();
     announceMapLegendStatus(state.regionSelection.knownDirectionOnly
-      ? "Only area and case traces with known report order are shown."
-      : "Area and case traces include connections with unknown report order.");
+      ? "Only traces with known report order are shown."
+      : "Traces include connections with unknown report order.");
   }
 
   function setTraceDirectionArrowsVisible(visible) {
@@ -16349,6 +16361,9 @@
     safeStorageSet(TRACE_DIRECTION_ARROWS_STORAGE_KEY, state.showTraceDirectionArrows ? "1" : "0");
     // Arrow presentation never changes the selected links, chronology or counts.
     renderChronologicalNeighborhoodOverlay();
+    [runtime.staticTraceLayer, runtime.playbackTrailCanvasLayer].forEach(function (layer) {
+      if (layer && typeof layer._redraw === "function") layer._redraw();
+    });
     renderLegendTraceDirectionPanel();
     renderMapLegendHeaderControls();
     announceMapLegendStatus(state.showTraceDirectionArrows ? "Direction arrows shown. Trace lines and counts are unchanged." : "Direction arrows hidden. Trace lines and counts are unchanged.");
@@ -19533,6 +19548,7 @@
           return Boolean(
             entry &&
             entry.segment &&
+            traceSegmentVisibleUnderDirectionFilter(entry.segment) &&
             traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) &&
             playbackTrailEntryVisibleUnderFacilityFilter(entry)
           );
@@ -19587,7 +19603,8 @@
 
   function syncPlaybackTrailEntryVisibility(entry) {
     if (!entry || !runtime.playbackLayer) return;
-    const visible = traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) && playbackTrailEntryVisibleUnderFacilityFilter(entry);
+    const visible = traceSegmentVisibleUnderDirectionFilter(entry.segment || entry.facilitySegment) &&
+      traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId) && playbackTrailEntryVisibleUnderFacilityFilter(entry);
     (entry.lines || []).forEach(function (line) {
       if (!line) return;
       const attached = runtime.playbackLayer.hasLayer(line);
@@ -19654,6 +19671,7 @@
     } else if (traceModeIncludesPlayback()) {
       runtime.playbackTrailLines.forEach(function (entry) {
         if (!entry || !playbackTrailEntryVisibleUnderFacilityFilter(entry)) return;
+        if (!traceSegmentVisibleUnderDirectionFilter(entry.segment || entry.facilitySegment)) return;
         if (!traceVisibleUnderActiveTraceAndRegionFilters(entry.traceId)) return;
         addTraceFacilityDisplayKeys(keys, [entry]);
       });
@@ -20701,6 +20719,10 @@
     return Object.assign(datedSegment, { sameDayOrderKnown: false, chronology: { status: "unknown", reason: "timing_support_unavailable" } });
   }
 
+  function traceSegmentVisibleUnderDirectionFilter(segment) {
+    return !state.regionSelection.knownDirectionOnly || TRACE_DIRECTIONS.segmentHasKnownDirection(segment);
+  }
+
   function canonicalTraceSegmentsCacheKey() {
     return [
       "legacy",
@@ -21026,6 +21048,9 @@
       activeTraceBuckets().length
     );
     if (!windowHasEnoughEvents || totalSegments > 0 || viewportSourceSegments > 0) return false;
+    // A completed scan can legitimately contain only unresolved chronology.
+    // Preserve the fallback for empty/broken scans with no excluded links.
+    if (state.regionSelection.knownDirectionOnly && scannedRows > 0 && Number(result.directionExcludedSegments) > 0) return false;
     if (traceFacilityFilterEnabled()) {
       if (!traceFacilitySourcesLoaded()) return false;
       return scannedRows === 0 || facilityCandidateSegments === 0;
@@ -21113,6 +21138,7 @@
     const viewportBoundsKey = config.viewportBoundsKey || traceViewportBoundsKey(bounds);
     const cacheKey = [
       "packedTraceRender",
+      state.regionSelection.knownDirectionOnly ? "known-direction" : "all-directions",
       canonicalTraceSegmentsPackedCacheKey(artifact),
       state.timelineDataVersion,
       state.timeRangeStartOrdinal == null ? "" : state.timeRangeStartOrdinal,
@@ -21165,6 +21191,7 @@
 
     let previousEvent = null;
     let totalSegments = 0;
+    let directionExcludedSegments = 0;
     let viewportSourceSegments = 0;
     let maxSequenceIndex = 1;
     let rawSegments = [];
@@ -21203,7 +21230,9 @@
             source: "canonical_trace_event_index",
             sequenceIndex: totalSegments,
           }, previousEvent, currentEvent);
-          const filteredSegment = applyTraceFacilityFilterToSegment(segment);
+          const directionVisible = traceSegmentVisibleUnderDirectionFilter(segment);
+          if (!directionVisible) directionExcludedSegments += 1;
+          const filteredSegment = directionVisible ? applyTraceFacilityFilterToSegment(segment) : null;
           if (!filteredSegment) {
             previousEvent = currentEvent;
             continue;
@@ -21278,6 +21307,7 @@
       renderMode: renderMode,
       initialRenderMode: initialRenderMode,
       totalSegments: totalSegments,
+      directionExcludedSegments: directionExcludedSegments,
       viewportSourceSegments: viewportSourceSegments,
       viewportWindowed: viewportWindowed,
       aggregationStatus: aggregationStatus,
@@ -21353,6 +21383,10 @@
             source: "canonical_trace_event_index",
             sequenceIndex: totalSegments,
           }, previousEvent, currentEvent);
+          if (!traceSegmentVisibleUnderDirectionFilter(segment)) {
+            previousEvent = currentEvent;
+            continue;
+          }
           totalSegments += 1;
           if (!bounds || traceSegmentMayIntersectBounds(segment, bounds)) {
             viewportSourceSegments += 1;
@@ -21558,6 +21592,7 @@
       renderMode: lodRender.renderMode,
       initialRenderMode: lodRender.initialRenderMode,
       totalSegments: sourceSegments,
+      directionExcludedSegments: Number(workerResult.directionExcludedSegments) || 0,
       viewportSourceSegments: viewportSourceSegments,
       viewportWindowed: Boolean(workerResult.viewportWindowed),
       aggregationStatus: aggregationStatus,
@@ -21617,6 +21652,7 @@
 
   function schedulePackedTraceFacilityWorkerStaticRender(artifact, cacheKey, areaFilterActive, options) {
     const config = options || {};
+    const knownDirectionOnly = Boolean(state.regionSelection.knownDirectionOnly);
     if (!artifact || !artifact.rowCount || runtime.traceFacilityWorkerPendingKey === cacheKey) return false;
     const token = ++runtime.traceFacilityWorkerRenderToken;
     runtime.traceFacilityWorkerPendingKey = cacheKey;
@@ -21654,7 +21690,8 @@
       bounds: config.bounds || null,
       timeoutMs: config.timeoutMs,
     }).then(function (workerResult) {
-      if (token !== runtime.traceFacilityWorkerRenderToken || runtime.traceFacilityWorkerPendingKey !== cacheKey) {
+      if (token !== runtime.traceFacilityWorkerRenderToken || runtime.traceFacilityWorkerPendingKey !== cacheKey ||
+          knownDirectionOnly !== Boolean(state.regionSelection.knownDirectionOnly)) {
         runtime.discardedRenderResults += 1;
         return;
       }
@@ -21683,6 +21720,7 @@
   }
 
   function scheduleTraceFacilityWorkerStaticRender(candidateRender, cacheKey, areaFilterActive) {
+    const knownDirectionOnly = Boolean(state.regionSelection.knownDirectionOnly);
     if (!candidateRender || !Array.isArray(candidateRender.segments) || !candidateRender.segments.length) return false;
     if (runtime.traceFacilityWorkerPendingKey === cacheKey) return true;
     const token = ++runtime.traceFacilityWorkerRenderToken;
@@ -21707,7 +21745,8 @@
       scope: "static-worker",
       minSegments: 1,
     }).then(function (workerResult) {
-      if (token !== runtime.traceFacilityWorkerRenderToken || runtime.traceFacilityWorkerPendingKey !== cacheKey) {
+      if (token !== runtime.traceFacilityWorkerRenderToken || runtime.traceFacilityWorkerPendingKey !== cacheKey ||
+          knownDirectionOnly !== Boolean(state.regionSelection.knownDirectionOnly)) {
         runtime.discardedRenderResults += 1;
         return;
       }
@@ -28477,6 +28516,81 @@
         ctx.stroke();
         ctx.restore();
       },
+      _drawTraceDirectionArrow: function (segment, start, end, opacity) {
+        // Area/case selections already have interactive direction badges.
+        // Aggregated display lines cannot stand in for an individual chronology.
+        if (!state.showTraceDirectionArrows ||
+            (this !== runtime.staticTraceLayer && this !== runtime.playbackTrailCanvasLayer) ||
+            regionSelectionAffectsRendering() || segment.aggregateSegmentCount != null) return;
+        const alpha = clamp(scaledTraceOpacity(opacity), 0, 1);
+        if (!alpha) return;
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const length = Math.hypot(dx, dy);
+        if (!Number.isFinite(length) || length < 28) return;
+        // Clip the link before positioning the glyph, so a long link remains
+        // legible even when its original midpoint is outside the current view.
+        const inset = 12;
+        let first = 0;
+        let last = 1;
+        const edges = [
+          [-dx, start.x - inset], [dx, this._canvas.width - inset - start.x],
+          [-dy, start.y - inset], [dy, this._canvas.height - inset - start.y],
+        ];
+        for (const edge of edges) {
+          if (edge[0] === 0) { if (edge[1] < 0) return; continue; }
+          const ratio = edge[1] / edge[0];
+          if (edge[0] < 0) first = Math.max(first, ratio);
+          else last = Math.min(last, ratio);
+          if (first > last) return;
+        }
+        if ((last - first) * length < 28) return;
+        const known = TRACE_DIRECTIONS.segmentHasKnownDirection(segment);
+        const description = TRACE_DIRECTIONS.describeSegment({
+          from: segment.from, to: segment.to, sameDayOrderKnown: known,
+        });
+        if (!description.valid) return;
+        const entry = known ? description.directions[0] : description.orientation;
+        if (!entry) return;
+        const occupied = this._directionArrowCells || (this._directionArrowCells = new Set());
+        let point = null;
+        for (const fraction of [0.5, 0.32, 0.68]) {
+          const ratio = first + ((last - first) * fraction);
+          const candidate = { x: start.x + (dx * ratio), y: start.y + (dy * ratio) };
+          const cell = Math.round(candidate.x / 36) + ":" + Math.round(candidate.y / 36);
+          if (occupied.has(cell)) continue;
+          occupied.add(cell);
+          point = candidate;
+          break;
+        }
+        if (!point) return;
+        const ctx = this._ctx;
+        ctx.save();
+        ctx.translate(point.x, point.y);
+        ctx.rotate(Math.atan2(dy, dx));
+        ctx.globalAlpha = alpha;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(-8, 0);
+        ctx.lineTo(8, 0);
+        ctx.moveTo(2, -5);
+        ctx.lineTo(8, 0);
+        ctx.lineTo(2, 5);
+        if (!known) {
+          ctx.moveTo(-2, -5);
+          ctx.lineTo(-8, 0);
+          ctx.lineTo(-2, 5);
+        }
+        ctx.strokeStyle = entry.ink;
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.strokeStyle = entry.tone;
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+        ctx.restore();
+      },
       _drawSegmentCopy: function (segment, copy) {
         const width = this._canvas.width;
         const height = this._canvas.height;
@@ -28515,6 +28629,7 @@
           this._strokeTraceSegmentLine(segment, midpoint, end, segment.toCraftColor, mainOpacity, mainWeight, {
             dashArray: dashArray,
           });
+          this._drawTraceDirectionArrow(segment, start, end, mainOpacity);
           return;
         }
         this._strokeTraceSegmentLine(segment, start, end, mainColor, mainOpacity, mainWeight, {
@@ -28522,6 +28637,7 @@
           useBucketGlow: true,
           dashArray: segment.facilityTraceEvidenceClass === "possible" ? TRACE_FACILITY_POSSIBLE_TRACE_DASH_ARRAY : "",
         });
+        this._drawTraceDirectionArrow(segment, start, end, mainOpacity);
 
         const accentPlacement = segment.facilityAccentPlacement || "";
         const accentColor = segment.facilityAccentColor || "";
@@ -28591,6 +28707,7 @@
         const width = this._canvas.width;
         const height = this._canvas.height;
         ctx.clearRect(0, 0, width, height);
+        this._directionArrowCells = new Set();
         if (!this._segments || !this._segments.length) return;
 
         if (this._segments.length >= TRACE_PROGRESSIVE_SEGMENT_THRESHOLD) {
@@ -29396,6 +29513,7 @@
     viewportBoundsKey
   ) {
     return [
+      state.regionSelection.knownDirectionOnly ? "known-direction" : "all-directions",
       "packedStaticTraceRender",
       packedTraceArtifact ? packedTraceArtifact.rowCount || 0 : 0,
       packedTraceArtifact ? packedTraceArtifact.bytesPerRow || 0 : 0,
@@ -29575,6 +29693,7 @@
     }
 
     const cacheKey = [
+      state.regionSelection.knownDirectionOnly ? "known-direction" : "all-directions",
       state.timelineDataVersion,
       state.filterGeneration,
       state.colorMode,
@@ -29595,7 +29714,8 @@
 
     const regionResult = areaFilterActive ? currentRegionSelectionResult() : null;
     const visibleTraceIds = regionResult ? regionResult.visibleTraceIds : null;
-    const sourceTraceSegments = regionResult ? regionResult.traceSegments : buildCanonicalTraceSegments();
+    const sourceTraceSegments = regionResult ? regionResult.traceSegments
+      : buildCanonicalTraceSegments().filter(traceSegmentVisibleUnderDirectionFilter);
     const rawSegments = visibleTraceIds && !visibleTraceIds.size
       ? []
       : regionResult && regionResult.visibleTraceSegments
@@ -30236,6 +30356,7 @@
       context.filterGeneration === state.filterGeneration &&
       context.timelineDataVersion === state.timelineDataVersion &&
       context.colorMode === state.colorMode &&
+      context.knownDirectionOnly === Boolean(state.regionSelection.knownDirectionOnly) &&
       context.traceBucketSignature === activeTraceBuckets().map(function (bucket) {
         return bucket.key;
       }).join(",") &&
@@ -30419,6 +30540,7 @@
       filterGeneration: state.filterGeneration,
       timelineDataVersion: state.timelineDataVersion,
       colorMode: state.colorMode,
+      knownDirectionOnly: Boolean(state.regionSelection.knownDirectionOnly),
       traceBucketSignature: traceBucketSignature,
       zoomDetail: traceAggregateZoomBucket().label,
       currentViewportBoundsKey: currentViewportBoundsKey,
@@ -30435,6 +30557,7 @@
     let previousEvent = null;
     let rowIndex = scanRange.startRow;
     let totalSegments = 0;
+    let directionExcludedSegments = 0;
     let viewportSourceSegments = 0;
     let maxSequenceIndex = 1;
     let batchCount = 0;
@@ -30518,8 +30641,14 @@
                 source: "canonical_trace_event_index",
                 sequenceIndex: totalSegments,
               }, previousEvent, currentEvent);
-              totalSegments += 1;
-              if (!bounds || traceSegmentMayIntersectBounds(segment, bounds)) {
+              const directionVisible = traceSegmentVisibleUnderDirectionFilter(segment);
+              if (directionVisible) {
+                totalSegments += 1;
+              } else {
+                directionExcludedSegments += 1;
+              }
+              if (directionVisible &&
+                  (!bounds || traceSegmentMayIntersectBounds(segment, bounds))) {
                 directionAccumulator.add(segment);
                 segment.sequenceRatio = totalSegments <= 1
                   ? 1
@@ -30627,6 +30756,7 @@
         renderMode: renderMode,
         initialRenderMode: initialRenderMode,
         totalSegments: totalSegments,
+        directionExcludedSegments: directionExcludedSegments,
         viewportSourceSegments: viewportSourceSegments,
         viewportWindowed: viewportWindowed,
         aggregationStatus: aggregationStatus,

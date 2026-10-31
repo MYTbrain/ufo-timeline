@@ -51,7 +51,8 @@ const context = vm.createContext({
   TRACE_DIRECTIONS: directions,
   TRACE_CHRONOLOGY: chronology,
   runtime: { traceChronologyEvidence: evidence, packedTraceRenderCacheKey: "", packedTraceRenderCacheValue: null },
-  state: { timelineDataVersion: 1, filterGeneration: 1, colorMode: "craft_type", filteredMappedCatalog: events },
+  state: { timelineDataVersion: 1, filterGeneration: 1, colorMode: "craft_type", filteredMappedCatalog: events,
+    regionSelection: { knownDirectionOnly: false } },
   TRACE_RENDER_MODE_INDIVIDUAL: "individual",
   TRACE_RENDER_MODE_AGGREGATE: "aggregate",
   TRACE_RENDER_MODE_SUMMARY: "summary",
@@ -106,6 +107,39 @@ const cached = context.buildCanonicalPackedTraceRenderSegments(artifact, { bound
 assert.equal(cached, all, "Cache restoration preserves source-population metadata");
 context.publishStaticTraceDirectionPopulation(cached.segments);
 assert.equal(publications.at(-1).summary.denominator, 2, "Cached activation never recalculates representative bearings");
+
+// Changing this checkbox must affect the actual global packed path even when
+// the data generation and viewport are unchanged and its cache is warm.
+context.state.regionSelection.knownDirectionOnly = true;
+const orderedOnly = context.buildCanonicalPackedTraceRenderSegments(artifact, { bounds: {} });
+assert.notEqual(orderedOnly, all);
+assert.equal(orderedOnly.totalSegments, 2, "Unknown links are removed before aggregation and density selection");
+assert.equal(orderedOnly.directionSummary.uniqueSegments, 2);
+assert.equal(orderedOnly.directionSummary.unorderedSegments, 0, "Compass and rendered source population agree");
+context.state.regionSelection.knownDirectionOnly = false;
+assert.equal(context.buildCanonicalPackedTraceRenderSegments(artifact, { bounds: {} }).totalSegments, 3,
+  "Unchecking restores unknown global links without changing date or map filters");
+
+context.state.filteredMappedPlaybackEvents = events;
+vm.runInContext(["packedTraceResultShouldFallbackToLegacy", "packedTraceRenderResultIsUsable"].map(extract).join("\n"), context);
+context.state.regionSelection.knownDirectionOnly = true;
+context.runtime.traceChronologyEvidence = { releaseId: "no-accepted-clocks", interval: () => null, exclusion: () => null };
+context.runtime.packedTraceRenderCacheKey = "";
+const allUnknown = context.buildCanonicalPackedTraceRenderSegments(artifact, { bounds: {} });
+assert.equal(allUnknown.segments.length, 0);
+assert.equal(allUnknown.totalSegments, 0);
+assert.equal(allUnknown.directionExcludedSegments, 3);
+assert.equal(context.packedTraceRenderResultIsUsable(allUnknown), true, "A completed known-only empty result is usable");
+assert.equal(context.buildCanonicalPackedTraceRenderSegments(artifact, { bounds: {} }), allUnknown,
+  "An all-unknown known-only window reuses its completed empty packed cache");
+const emptyScan = { ...allUnknown, directionExcludedSegments: 0,
+  aggregationStatus: { ...allUnknown.aggregationStatus, scannedRows: 0 } };
+assert.equal(context.packedTraceResultShouldFallbackToLegacy(emptyScan), true,
+  "A genuinely empty packed scan still falls back when mapped reports should exist");
+assert.equal(context.packedTraceRenderResultIsUsable(emptyScan), false);
+context.runtime.traceChronologyEvidence = evidence;
+context.runtime.packedTraceRenderCacheKey = "";
+context.state.regionSelection.knownDirectionOnly = false;
 
 context.state.filterGeneration += 1;
 context.resolveTraceRenderMode = () => "individual";
@@ -252,3 +286,99 @@ assert.equal(view.summary, all.directionSummary);
 assert.equal(legendRuntime.legendTraceDirectionPopulation.status, "preview", "Rendering never mutates stored population status");
 
 console.log("Trace direction population passed: exact pre-LOD counts, accepted-clock exclusions, viewport scope, narrow-window refresh, immutable cache metadata, fallback disclosure, loading/off states, selected-case precedence, point-only exclusions and visible playback scope.");
+
+// Exercise the real progressive scheduler, its cancellation check and global
+// legacy fallback; selection-only tests do not reach any of these renderers.
+function extract(name) {
+  const start = source.indexOf(`function ${name}(`);
+  const end = source.indexOf("\n  function ", start + 1);
+  assert.ok(start >= 0 && end > start, name);
+  return source.slice(start, end);
+}
+const queued = [];
+const completed = [];
+let cancelled = 0;
+Object.assign(context, {
+  window: { setTimeout: callback => queued.push(callback), requestAnimationFrame: callback => queued.push(callback) },
+  performance: { now: () => 0 },
+  MAP_INTERACTIVE_TIMELINE_EXACT_THRESHOLD: 0,
+  TRACE_LARGE_WINDOW_BUILD_CONSTRAINED_FRAME_BUDGET_MS: 8,
+  TRACE_LARGE_WINDOW_BUILD_FRAME_BUDGET_MS: 12,
+  TRACE_LARGE_WINDOW_BUILD_BATCH_ROW_LIMIT: 2,
+  TRACE_BUDGETED_SEGMENT_THRESHOLD: 10,
+  regionSelectionAffectsRendering: () => false,
+  cachedCanonicalTraceEventIndexArtifactForRender: () => artifact,
+  updateStaticTraceRenderMetrics: () => {}, renderTraceStatus: () => {},
+  applyProgressiveLargeWindowStaticTraceResult: (build, result) => completed.push({ build, result }),
+  markProgressiveLargeWindowTraceBuildCancelled: () => cancelled++,
+});
+context.runtime.largeWindowTraceBuildToken = 0;
+context.runtime.timeRangeGeneration = 1;
+context.runtime.packedStaticTraceRenderCache = new Map();
+context.runtime.map = { getBounds: () => ({}), hasLayer: () => false, removeLayer: () => {} };
+context.runtime.staticTraceLayer = { setSegments: () => {} };
+vm.runInContext(["buildPackedStaticTraceRenderCacheKey", "progressiveLargeWindowTraceContextIsCurrent",
+  "scheduleProgressiveLargeWindowStaticTraceRender", "buildPackedTraceFacilityWorkerCandidateSegments"].map(extract).join("\n"), context);
+context.state.regionSelection.knownDirectionOnly = false;
+const allCacheKey = context.buildPackedStaticTraceRenderCacheKey(artifact, [bucket], "viewport:current");
+context.state.regionSelection.knownDirectionOnly = true;
+assert.notEqual(context.buildPackedStaticTraceRenderCacheKey(artifact, [bucket], "viewport:current"), allCacheKey);
+assert.equal(context.buildPackedTraceFacilityWorkerCandidateSegments(artifact, {}).totalSegments, 2,
+  "Main-thread facility candidates already exclude unknown chronology");
+assert.equal(context.scheduleProgressiveLargeWindowStaticTraceRender(1, {}), true);
+while (queued.length) queued.shift()();
+assert.equal(completed.length, 1);
+assert.equal(completed[0].result.totalSegments, 2);
+assert.equal(completed[0].result.directionExcludedSegments, 1);
+assert.equal(completed[0].result.directionSummary.unorderedSegments, 0);
+context.runtime.largeWindowTraceBuildKey = "";
+context.state.regionSelection.knownDirectionOnly = false;
+context.scheduleProgressiveLargeWindowStaticTraceRender(1, {});
+queued.shift()(); // Finish one bounded batch, then toggle while another is queued.
+context.state.regionSelection.knownDirectionOnly = true;
+while (queued.length) queued.shift()();
+assert.equal(cancelled, 1, "An in-flight old filter cannot overwrite the newly selected population");
+assert.equal(completed.length, 1);
+
+Object.assign(context, {
+  cachedCanonicalTraceEventIndexArtifactForRender: () => null,
+  buildCanonicalTraceSegments: () => rawLinks,
+  progressiveInitialMapActive: () => false,
+  traceRenderModeUsesViewportWindow: () => false,
+  craftTraceColoringActive: () => false,
+  filteredTraceAggregationEligibleForRenderMode: () => false,
+  sampleTraceSegmentsForRender: segments => segments,
+  normalTraceDensityProfile: () => ({}), styleTraceSegmentForDensity: segment => segment,
+});
+context.runtime.map.getBounds = () => null;
+context.runtime.traceRenderCacheKey = "";
+vm.runInContext(extract("buildStaticTraceSegments"), context);
+context.state.regionSelection.knownDirectionOnly = false;
+assert.equal(context.buildStaticTraceSegments().length, 3);
+context.state.regionSelection.knownDirectionOnly = true;
+assert.equal(context.buildStaticTraceSegments().length, 2, "Global non-packed rendering also obeys a warm-cache toggle");
+context.state.regionSelection.knownDirectionOnly = false;
+assert.equal(context.buildStaticTraceSegments().length, 3);
+context.state.regionSelection.knownDirectionOnly = true;
+context.buildCanonicalTraceSegments = () => [rawLinks[0]];
+context.state.filterGeneration += 1;
+assert.equal(context.buildStaticTraceSegments().length, 0);
+assert.equal(context.runtime.staticTraceTotalSegments, 0, "A completed all-unknown result cannot preserve stale visible lines");
+
+const playbackSegments = [];
+context.runtime.playbackTrailLines = rawLinks.map(segment => ({ traceId: segment.traceId, segment }));
+context.runtime.playbackTrailCanvasLayer = { setSegments: segments => playbackSegments.push(segments), addTo: () => {} };
+context.traceModeIncludesPlayback = () => true;
+context.traceVisibleUnderActiveTraceAndRegionFilters = () => true;
+context.playbackTrailEntryVisibleUnderFacilityFilter = () => true;
+context.scheduleLegendTraceDirectionRefresh = () => {};
+vm.runInContext(["syncPlaybackTrailCanvas", "visiblePlaybackTraceCount"].map(extract).join("\n"), context);
+context.syncPlaybackTrailCanvas();
+assert.equal(playbackSegments.at(-1).length, 2);
+assert.equal(context.visiblePlaybackTraceCount(), 2);
+assert.equal(context.runtime.playbackTrailLines.length, 3, "Filtering preserves playback history for a later toggle");
+context.state.regionSelection.knownDirectionOnly = false;
+context.syncPlaybackTrailCanvas();
+assert.equal(playbackSegments.at(-1).length, 3);
+assert.equal(context.visiblePlaybackTraceCount(), 3);
+console.log("Global known-direction rendering passed: packed and legacy warm caches, pre-aggregation filtering, worker candidates, progressive cancellation, empty results and reversible playback history.");

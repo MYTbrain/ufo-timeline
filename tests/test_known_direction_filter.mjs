@@ -50,8 +50,9 @@ assert.deepEqual(caseSegments.filter(directions.segmentHasKnownDirection).map(se
 const state = { traceMode: "static", regionSelection: { knownDirectionOnly: false }, filterGeneration: 1, showTraceDirectionArrows: true };
 let caseActive = false;
 const rawSegments = [ordered, unordered];
-const calls = { close: 0, refresh: 0, legend: 0, header: 0, message: "" };
-const context = vm.createContext({ state, TRACE_DIRECTIONS: directions,
+const calls = { invalidate: 0, close: 0, refresh: 0, playback: 0, legend: 0, header: 0, message: "" };
+const runtime = { largeWindowTraceBuildToken: 1, largeWindowTraceBuildKey: "old", traceFacilityWorkerRenderToken: 1, traceFacilityWorkerPendingKey: "old" };
+const context = vm.createContext({ state, runtime, TRACE_DIRECTIONS: directions,
   TRACE_NEIGHBORHOOD: neighborhood, CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH: 0,
   CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DIRECTION: "forward",
   famousCaseTraceSelectionActive: () => caseActive,
@@ -59,6 +60,8 @@ const context = vm.createContext({ state, TRACE_DIRECTIONS: directions,
   normalizeTraceMode: value => value,
   activeTraceBuckets: () => [{ key: "gap_le_1" }], traceFacilityFilterSignature: () => "off",
   closeChronologicalNeighborhoodInspector: () => calls.close++,
+  invalidateTraceSequenceCache: () => calls.invalidate++,
+  syncPlaybackTrailVisibility: () => calls.playback++,
   refreshRegionSelectionRenderState: () => calls.refresh++,
   renderLegendTraceDirectionPanel: () => calls.legend++, renderMapLegendHeaderControls: () => calls.header++,
   announceMapLegendStatus: message => calls.message = message,
@@ -69,7 +72,9 @@ assert.equal(context.currentSelectableTraceSegments(), rawSegments, "disabled fi
 const allKey = context.currentRegionSelectionTraceKey();
 context.setKnownTraceDirectionOnly(true);
 assert.equal(state.showTraceDirectionArrows, true, "the filter does not reset existing arrow preferences");
-assert.deepEqual(calls, { close: 1, refresh: 1, legend: 1, header: 1, message: "Only area and case traces with known report order are shown." });
+assert.deepEqual(calls, { invalidate: 1, close: 1, refresh: 1, playback: 1, legend: 1, header: 1, message: "Only traces with known report order are shown." });
+assert.equal(runtime.largeWindowTraceBuildToken, 2, "in-flight global renders cannot put unfiltered traces back");
+assert.equal(runtime.traceFacilityWorkerRenderToken, 2, "in-flight facility renders cannot put unfiltered traces back");
 assert.notEqual(context.currentRegionSelectionTraceKey(), allKey, "switching invalidates neighborhood and result caches");
 const filtered = context.currentSelectableTraceSegments();
 assert.deepEqual(filtered, [ordered]);
@@ -93,4 +98,47 @@ assert.ok(markup.indexOf('id="legend-known-direction-only"') > markup.indexOf('i
 assert.match(markup, /aria-describedby="legend-known-direction-help"/);
 assert.match(extractFunction("resetMapLegendControls"), /state\.regionSelection\.knownDirectionOnly = false/);
 assert.match(extractFunction("resetViewState"), /state\.regionSelection = Object\.assign\(\{\}, defaults\.regionSelection/);
+// The ordinary map needs the same controls as a selected area or case.
+let selectedArea = false;
+let pointOnly = false;
+const arrowToggle = {};
+const knownToggle = {};
+const holder = { firstChild: {}, querySelector: () => null };
+const arrowCalls = { static: 0, playback: 0, neighborhood: 0 };
+const arrowContext = vm.createContext({
+  state, runtime: { legendTraceDirectionMarkup: "summary",
+    staticTraceLayer: { _redraw: () => arrowCalls.static++ },
+    playbackTrailCanvasLayer: { _redraw: () => arrowCalls.playback++ } },
+  els: {}, document: { getElementById: id => ({
+    "legend-trace-direction-summary": holder,
+    "legend-trace-arrows": arrowToggle,
+    "legend-known-direction-only": knownToggle,
+  })[id] },
+  TRACE_DIRECTIONS: { legendSummaryMarkup: () => "summary" },
+  TRACE_DIRECTION_ARROWS_STORAGE_KEY: "arrows", safeStorageSet: () => {},
+  legendTraceDirectionView: () => ({ summary: {} }),
+  regionSelectionAffectsRendering: () => selectedArea,
+  currentRegionSelectionResult: () => ({ pointOnly }),
+  renderChronologicalNeighborhoodOverlay: () => arrowCalls.neighborhood++,
+  renderMapLegendHeaderControls: () => {}, announceMapLegendStatus: () => {},
+});
+vm.runInContext(["renderLegendTraceDirectionPanel", "setTraceDirectionArrowsVisible"].map(extractFunction).join("\n"), arrowContext);
+state.traceMode = "static";
+arrowContext.renderLegendTraceDirectionPanel();
+assert.equal(arrowToggle.disabled, false, "global static traces do not require selecting an area");
+state.traceMode = "playback";
+arrowContext.renderLegendTraceDirectionPanel();
+assert.equal(arrowToggle.disabled, false, "global playback arrows remain available");
+arrowContext.setTraceDirectionArrowsVisible(false);
+assert.deepEqual(arrowCalls, { static: 1, playback: 1, neighborhood: 1 }, "arrow toggle redraws every supported presentation");
+assert.equal(state.regionSelection.knownDirectionOnly, false, "arrow visibility never changes the direction filter");
+selectedArea = true; pointOnly = true;
+arrowContext.renderLegendTraceDirectionPanel();
+assert.equal(arrowToggle.disabled, true, "a points-only selection has no arrow layer");
+pointOnly = false; state.traceMode = "off";
+arrowContext.renderLegendTraceDirectionPanel();
+assert.equal(arrowToggle.disabled, false, "case/area connections retain arrows when ordinary traces are off");
+selectedArea = false; state.traceMode = "off";
+arrowContext.renderLegendTraceDirectionPanel();
+assert.equal(arrowToggle.disabled, true, "arrows are disabled only when trace lines are unavailable");
 console.log("Known-direction filter passed: accepted same-day clocks, authoritative uncertainty, traversal, cache invalidation, legend controls and reset.");

@@ -167,9 +167,11 @@ assert.match(labelContext.traceChronologyClockLabel({ time_raw: "21:00" }, null,
 const runtime = { traceChronologyEvidence: index, traceChronologyStatus: "ready", filteredMappedCatalogDateAsc: true };
 const bucket = { key: "gap_le_1", maxDays: 1 };
 const artifact = { rowCount: 2 };
-const state = { filteredMappedPlaybackEvents: reports, filteredMappedCatalog: reports, timelineDataVersion: 1, filterGeneration: 1 };
+const state = { filteredMappedPlaybackEvents: reports, filteredMappedCatalog: reports, timelineDataVersion: 1, filterGeneration: 1,
+  regionSelection: { knownDirectionOnly: false } };
 const context = vm.createContext({ TRACE_CHRONOLOGY: chronology, TRACE_DIRECTIONS: directions, runtime, state,
   staticTraceDirectionPopulations: new WeakMap(),
+  progressiveInitialMapActive: () => false,
   getCatalogEventById: id => reports.find(event => String(event.event_id) === String(id)),
   activeTraceBuckets: () => [bucket], filteredMappedEventIdSet: () => new Set(["1", "2"]),
   canonicalTraceSegmentsCacheKey: () => "legacy:" + runtime.traceChronologyEvidence.releaseId,
@@ -188,7 +190,7 @@ const context = vm.createContext({ TRACE_CHRONOLOGY: chronology, TRACE_DIRECTION
   packedTraceRenderResultIsUsable: () => true, clamp: (v, lo, hi) => Math.min(hi, Math.max(lo, v)),
   PLAYBACK_TRAIL_BUCKET_BY_KEY: new Map([["gap_le_1", bucket]]),
 });
-vm.runInContext(["applyTraceChronology", "traceChronologyIdentity", "canonicalTraceId", "finiteChronologyNumber",
+vm.runInContext(["applyTraceChronology", "traceSegmentVisibleUnderDirectionFilter", "traceChronologyIdentity", "canonicalTraceId", "finiteChronologyNumber",
   "staticTraceDirectionScopeLabel", "registerStaticTraceDirectionPopulation",
   "buildCanonicalTraceSegmentsFromPackedEventIndex", "buildLegacyCanonicalTraceSegments", "buildCanonicalPackedTraceRenderSegments",
   "buildPackedTraceFacilityWorkerCandidateSegments", "normalizeStartupProfileTraceSegment"].map(extract).join("\n"), context);

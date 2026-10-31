@@ -6,6 +6,7 @@ import { gzipSync } from "node:zlib";
 import { createHash } from "node:crypto";
 const require = createRequire(import.meta.url);
 const chronology = require("../trace_chronology.js");
+const directions = require("../trace_direction_summary.js");
 
 function loadWorker(workerPath, overrides = {}) {
   const messages = [];
@@ -25,6 +26,7 @@ function loadWorker(workerPath, overrides = {}) {
     String,
     console,
     UfoTraceChronology: chronology,
+    UfoTraceDirectionSummary: directions,
     self,
     ...overrides,
   };
@@ -677,7 +679,7 @@ const packedIndexResponse = await packedWorker.sendAsync({
 });
 assert.equal(packedIndexResponse.type, "traceEventIndexConfigured");
 
-function classifyPacked(evidenceMode) {
+function classifyPacked(evidenceMode, knownDirectionOnly = false) {
   const response = packedWorker.send({
     type: "buildAndClassifyPackedTraceFacilitySegments",
     requestId: "packed-" + evidenceMode,
@@ -690,6 +692,7 @@ function classifyPacked(evidenceMode) {
     },
     filteredEventIds: ["101", "102"],
     activeBucketKeys: ["gap_le_30"],
+    knownDirectionOnly,
     startOrdinal: 0,
     endOrdinal: 100,
   });
@@ -709,6 +712,15 @@ assert.equal(packedExploratory.segments[0].facilityTraceClass, "between");
 assert.equal(packedExploratory.segments[0].facilityTraceEvidenceClass, "possible");
 assert.deepEqual(normalize(packedExploratory.segments[0].supportedFacilityKeys), ["verified:packed-start"]);
 assert.deepEqual(normalize(packedExploratory.segments[0].possibleFacilityKeys), ["verified:packed-end"]);
+// Without the timing artifact (which also carries date exclusions), even a
+// positive calendar gap remains unresolved. Filter before classification.
+assert.equal(classifyPacked("source_coordinates", true).segments.length, 0);
+const unknownFiltered = classifyPacked("include_generalized", true);
+assert.equal(unknownFiltered.totalSegments, 0);
+assert.equal(unknownFiltered.directionExcludedSegments, 1);
+assert.equal(unknownFiltered.viewportSourceSegments, 0);
+assert.equal(unknownFiltered.segments.length, 0);
+assert.equal(classifyPacked("include_generalized", false).segments.length, 1, "Unchecking restores the worker candidate");
 
 console.log("trace facility worker classification assertions passed");
 
@@ -746,6 +758,7 @@ const timedResult = timedWorker.send({
   type: "buildAndClassifyPackedTraceFacilitySegments", requestId: "timed-links", traceIndexKey: "timed-index", facilityIndexKey: "timed-facility",
   filter: { radiusMeters: 20000, evidenceMode: "source_coordinates", classes: { start: false, end: true, between: false, passes: false } },
   filteredEventIds: ["101", "102"], activeBucketKeys: ["gap_le_30"], startOrdinal: 0, endOrdinal: 100,
+  knownDirectionOnly: true,
 });
 assert.equal(timedResult.type, "packedTraceFacilitySegmentsBuilt");
 assert.equal(timedResult.result.segments.length, 1);

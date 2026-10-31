@@ -1,0 +1,28 @@
+{
+  "observedUtc": "2026-10-31T15:53:25.349Z",
+  "status": "local_preview_verified",
+  "previewOrigin": "http://127.0.0.1:8136/",
+  "window": {
+    "start": "2022-08-06",
+    "end": "2022-08-07"
+  },
+  "selectedCase": null,
+  "selectedAreas": [],
+  "before": {
+    "renderedTraces": 98,
+    "ordered": 62,
+    "unknownOrder": 36
+  },
+  "knownOnly": {
+    "renderedTraces": 62,
+    "unknownOrder": 0,
+    "arrowsEnabled": true
+  },
+  "arrowsOff": {
+    "renderedTraces": 62,
+    "canvasChanged": true
+  },
+  "filterOffRestoredTraces": 98,
+  "screenshot": "map-controls.png",
+  "productionUnchanged": true
+}

@@ -6,6 +6,11 @@
     importScripts("./trace_chronology.js" + (version || ""));
   }
   const TRACE_CHRONOLOGY = self.UfoTraceChronology || globalThis.UfoTraceChronology;
+  if (typeof importScripts === "function" && !self.UfoTraceDirectionSummary) {
+    const version = self.location && new URL(self.location.href).search;
+    importScripts("./trace_direction_summary.js" + (version || ""));
+  }
+  const TRACE_DIRECTIONS = self.UfoTraceDirectionSummary || globalThis.UfoTraceDirectionSummary;
 
   const EARTH_RADIUS_METERS = 6371008.8;
   const CELL_SIZE_DEGREES = 1;
@@ -1071,6 +1076,7 @@
     const segments = [];
     let previousEvent = null;
     let totalSegments = 0;
+    let directionExcludedSegments = 0;
     let viewportSourceSegments = 0;
 
     if (!radiusMeters || !index.points.length || !filteredEventIds.size || !activeBucketKeys.size) {
@@ -1116,6 +1122,11 @@
           }
           const segment = TRACE_CHRONOLOGY ? TRACE_CHRONOLOGY.orientSegment(traceChronologyEvidence, rawSegment)
             : Object.assign(rawSegment, { sameDayOrderKnown: false });
+          if (payload.knownDirectionOnly && (!TRACE_DIRECTIONS || !TRACE_DIRECTIONS.segmentHasKnownDirection(segment))) {
+            directionExcludedSegments += 1;
+            previousEvent = currentEvent;
+            continue;
+          }
           totalSegments += 1;
           if (!bounds || traceSegmentMayIntersectSerializedBounds(segment, bounds)) {
             viewportSourceSegments += 1;
@@ -1154,6 +1165,7 @@
       stats,
       facilityCount: index.points.length,
       totalSegments,
+      directionExcludedSegments,
       viewportSourceSegments,
       viewportWindowed: Boolean(bounds),
       scannedRows: Math.max(0, scanRange.endRow - scanRange.startRow),
