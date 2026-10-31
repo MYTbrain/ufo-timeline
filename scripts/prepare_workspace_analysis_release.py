@@ -29,6 +29,11 @@ SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
 PAGES = ROOT / ".tmp" / (RELEASE + "-pages")
 META = ROOT / "releases" / RELEASE
+FRONTEND_REFRESH_FILES = frozenset({
+    "index.html", "app.js", "famous_case_presets.js", "famous_case_availability.js",
+    "flap_preset_labels.js", "trace_direction_summary.js", "styles.css",
+    "ui/accepted-workspace/site-workflow-preview.js", "ui/accepted-workspace/chronology-preview.css",
+})
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
 OLD_ANIMALS = ORIGIN + "/releases/animal-mutilations-v1-20260812/"
 NUCLEAR_EXTENSION = "data/analysis_comparisons/nuclear_extension_v1.json.gz"
@@ -264,6 +269,7 @@ def validate_refresh(previous, plan):
     old_paths = {r["path"] for r in previous["pages"]}
     new_paths = {r["path"] for r in plan["pages"]}
     require(old_paths <= new_paths and new_paths - old_paths <= {
+        "famous_case_availability.js",
         "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
         "encounter_evidence.js", "encounter_map.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
         NUCLEAR_EXTENSION,
@@ -310,7 +316,7 @@ def assemble(check_only=False):
     # never become Pages assets merely because they live alongside runtime data.
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
-                   "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "encounter_evidence.js", "encounter_map.js",
+                   "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "famous_case_availability.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
@@ -558,15 +564,87 @@ def assemble(check_only=False):
     return plan
 
 
-def verify(plan):
+def verify(plan, pages_only=False):
     expected = {row["path"] for row in plan["pages"]}
     require({p.relative_to(PAGES).as_posix() for p in PAGES.rglob("*") if p.is_file()} == expected, "Pages inventory drift")
     for row in plan["pages"]:
         p = PAGES / row["path"]
         require(p.stat().st_size == row["bytes"] and sha(p) == row["sha256"], "Frozen Pages bytes changed:" + row["path"])
-    for row in plan["uploads"]:
+    for row in (() if pages_only else plan["uploads"]):
         p = Path(row["source"])
         require(p.stat().st_size == row["bytes"] and sha(p) == row["sha256"], "Frozen delta changed:" + row["key"])
+
+
+def refresh_frontend(check_only=False):
+    """Overlay only reviewed UI files, retaining the existing data release byte-for-byte."""
+    plan_path = META / "delivery_plan.json"
+    previous_bytes = plan_path.read_bytes()
+    previous = load(plan_path)
+    production = load(META / "current_production.json")
+    rollback = production.get("deploymentId")
+    require(isinstance(rollback, str) and rollback, "Current validated production is required as rollback")
+    verify(previous, pages_only=True)
+    require(tree_hash(previous["pages"]) == previous["pages_tree_sha256"], "Previous Pages tree pin drift")
+    old_rows = {row["path"]: row for row in previous["pages"]}
+    require(len(old_rows) == len(previous["pages"]), "Duplicate Pages paths")
+    require(sum(row["bytes"] for row in previous["pages"]) == previous["pages_total_bytes"],
+            "Previous Pages size pin drift")
+    plan = copy.deepcopy(previous)
+    rows = {row["path"]: row for row in plan["pages"]}
+    payloads = {}
+    for name in sorted(FRONTEND_REFRESH_FILES):
+        source = (ROOT / name).resolve()
+        require(source.is_relative_to(ROOT.resolve()) and source.is_file(), "Missing reviewed frontend: " + name)
+        require(source.stat().st_size < 25 * 1024**2, "Pages file cap: " + name)
+        blob = source.read_bytes()
+        digest = hashlib.sha256(blob).hexdigest()
+        if name in old_rows and old_rows[name]["bytes"] == len(blob) and old_rows[name]["sha256"] == digest:
+            continue
+        payloads[name] = blob
+        rows[name] = dict(rows.get(name, {}), path=name, source=str(source), bytes=len(blob), sha256=digest,
+                          requires_revalidation=True, allow_pages_analytics=name.endswith(".html"))
+    require(sum(len(blob) for blob in payloads.values()) < 100 * 1024**2, "Frontend refresh exceeds100MiB")
+    plan["pages"] = sorted(rows.values(), key=lambda row: row["path"])
+    plan["pages_total_bytes"] = sum(row["bytes"] for row in plan["pages"])
+    plan["pages_tree_sha256"] = tree_hash(plan["pages"])
+    require(plan["pages_total_bytes"] < 40 * 1024**2, "Bounded Pages candidate exceeds40MiB")
+    validate_refresh(previous, plan)
+    # Validate unchanged assets from their frozen stage, not potentially newer sources.
+    validation_rows = [dict(row, source=str(ROOT / row["path"] if row["path"] in payloads else PAGES / row["path"]))
+                       for row in plan["pages"]]
+    validate_browser_references(validation_rows)
+    net_growth = max(0, plan["pages_total_bytes"] - previous["pages_total_bytes"])
+    free_bytes = shutil.disk_usage(ROOT).free
+    reserve = 100 * 1024**3
+    require(net_growth <= 100 * 1024**2 if free_bytes < reserve else free_bytes - net_growth >= reserve,
+            "Frontend refresh exceeds available storage budget")
+    plan["runtime_revision"] = "case-navigation-20261030-v19"
+    plan["base_deployment"] = rollback
+    plan["retained_rollback"] = rollback
+    plan["frontend_refresh"] = {"base_pages_tree_sha256": previous["pages_tree_sha256"],
+                                "changed_paths": sorted(payloads), "data_and_upload_records_unchanged": True}
+    plan["storage"].update(canonical_candidate=str(PAGES), existing_stage_bytes=previous["pages_total_bytes"],
+                           c_free_bytes_before_stage=free_bytes, approximate_net_local_growth_bytes=net_growth,
+                           new_files_above_100MiB=[], superseded_staging=[], corpus_copied=False, rollback=rollback)
+    if check_only:
+        return plan
+    # Only this small allowlist is held in memory for restoration if applying fails.
+    originals = {name: (PAGES / name).read_bytes() if (PAGES / name).is_file() else None for name in payloads}
+    try:
+        for name, blob in payloads.items():
+            (PAGES / name).write_bytes(blob)
+        verify(plan, pages_only=True)
+        write(plan_path, plan)
+    except Exception:
+        for name, blob in originals.items():
+            target = PAGES / name
+            if blob is None:
+                target.unlink(missing_ok=True)
+            else:
+                target.write_bytes(blob)
+        plan_path.write_bytes(previous_bytes)
+        raise
+    return plan
 
 
 def main():
@@ -574,13 +652,18 @@ def main():
     p.add_argument("--check-only", action="store_true")
     p.add_argument("--stage", action="store_true")
     p.add_argument("--refresh-stage", action="store_true", help="Verify and update the single existing candidate; immutable uploads must stay identical")
+    p.add_argument("--refresh-frontend", action="store_true", help="Overlay only the reviewed frontend allowlist without rebuilding data; supports --check-only")
     p.add_argument("--verify-existing", action="store_true")
     p.add_argument("--verify-public")
     p.add_argument("--pages-only", action="store_true")
     args = p.parse_args()
-    if args.verify_existing or args.verify_public:
+    require(not args.refresh_frontend or not (args.stage or args.refresh_stage or args.verify_existing or args.verify_public),
+            "Frontend refresh cannot be combined with staging or verification modes")
+    if args.refresh_frontend:
+        plan = refresh_frontend(check_only=args.check_only)
+    elif args.verify_existing or args.verify_public:
         plan = load(META / "delivery_plan.json")
-        verify(plan)
+        verify(plan, pages_only=args.pages_only)
         if args.verify_public:
             checks = [(args.verify_public.rstrip("/") + "/" + r["path"], r) for r in plan["pages"] if r["path"] not in ("_headers", ".nojekyll")]
             if not args.pages_only:

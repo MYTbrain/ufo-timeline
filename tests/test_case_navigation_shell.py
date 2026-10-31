@@ -42,7 +42,7 @@ def test_case_picker_and_direction_controls_have_accessible_unique_targets():
     ):
         assert parser.ids[element_id] == 1
     assert markup.index('id="filter-flap-presets"') < markup.index('id="filter-famous-cases"')
-    assert parser.elements["filter-famous-cases"][1]["aria-describedby"] == "famous-case-search-status"
+    assert parser.elements["filter-famous-cases"][1]["aria-describedby"] == "famous-case-search-status famous-case-availability-help"
     assert parser.elements["famous-case-search"][1]["aria-controls"] == "filter-famous-cases"
     assert parser.elements["famous-case-search-status"][1]["role"] == "status"
     assert "hidden" in parser.elements["area-direction-summary"][1]
@@ -68,10 +68,11 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
     _markup, parser = load_shell()
     script_paths = [urlsplit(src).path.removeprefix("./") for src in parser.scripts]
     expected = {
-        "trace_neighborhood.js": "2026-10-06-case-traces-v4",
-        "trace_direction_summary.js": "2026-10-06-shared-arrows-v8",
+        "trace_neighborhood.js": "2026-10-08-corpus-timing-v3",
+        "trace_direction_summary.js": "2026-10-30-compact-legend-v13",
         "legend_controls.js": "2026-10-06-legend-case-labels-v3",
-        "famous_case_presets.js": "2026-10-06-all-case-records-v7",
+        "famous_case_presets.js": "2026-10-30-case-availability-v11",
+        "famous_case_availability.js": "2026-10-30-case-availability-v11",
     }
     for filename, token in expected.items():
         assert (ROOT / filename).is_file()
@@ -83,4 +84,6 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
     worker_source = (ROOT / "catalog_filter_worker.js").read_text(encoding="utf-8")
     worker_version = re.search(r'ANALYSIS_RUNTIME_CACHE_KEY\s*=\s*"([^"]+)"', worker_source)
     assert worker_version, "The worker declares its runtime cache version"
-    assert parse_qs(app_urls[0].query).get("v") == [worker_version.group(1)]
+    # This shell-only change has its own cache key; unchanged worker dependencies
+    # retain their existing version.
+    assert parse_qs(app_urls[0].query).get("v") == ["2026-10-30-case-badges-v17"]

@@ -161,6 +161,7 @@ const context = vm.createContext({
   eventLegendKeyForMode: (event) => event.craft_type_inferred,
   resolvedCraftTypeForEvent: (event) => ({ key: event.craft_type_inferred, label: event.craft_type_inferred, color: "#38bdf8" }),
   displayLocationForEvent: (event) => event.location_display || "Location unresolved",
+  eventDateLabel: (event) => event.sort_date_iso || event.date_raw || "Unknown date",
   getCatalogEventById: (id) => catalogById.get(String(id)) || null,
   regionSelectionAffectsRendering: () => state.regionSelection.shapes.length > 0,
   regionSelectionShapesSignature: () => JSON.stringify(state.regionSelection.shapes),

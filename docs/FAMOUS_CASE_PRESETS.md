@@ -1,6 +1,6 @@
 # Famous UFO case navigation catalog
 
-The initial catalog contains 85 individually referenced historical reports, cases,
+The catalog contains 86 individually referenced historical reports, cases,
 and controversies. It is an editorial navigation aid, independent of the canonical
 sighting corpus. Inclusion does not identify an object's origin or validate a
 historical claim. Known natural explanations, hoax controversies, and conflicting
@@ -14,7 +14,8 @@ entries can be added through the existing `add` definition with an individually
 relevant source, without changing the application integration.
 
 The optional order argument to `filterCases`, `sortCases`, and `formatCaseLabel`
-accepts `alphabetical` or `chronological`, with alphabetical as the default.
+accepts `alphabetical` or `chronological`, with chronological as the default.
+An explicitly saved alphabetical preference remains available and is respected.
 Alphabetical labels use `Name · Year`; chronological labels use `Year · Name`.
 Cases spanning multiple years retain the full year range in either display order.
 Chronological sorting follows each preset's first date, including context windows.
@@ -47,7 +48,7 @@ an empty vicinity from nearby records hidden by filters and waits for catalog
 ingestion before claiming zero coverage. These counts are contextual candidates,
 not verified case membership.
 
-All 85 presets now have a completed, bounded database identity review. Their
+The original 85 presets have a completed, bounded database identity review. Their
 `catalogReview` separates matched cases from cases with no confirmed source
 identity; an empty vicinity does not substitute for this decision. The generated
 crosswalk is rebuilt from the three reviewed group JSONs by
@@ -97,6 +98,73 @@ submitted witness reports. Source type labels distinguish these categories.
 Secondary references are starting points for research, not an exhaustive source
 review. Some archive URLs may require ordinary browser access when automated
 fetching is restricted.
+
+Dalnegorsk / Height 611 was added on 30 October 2026 with the reported local date
+of 29 January 1986, using the [Dalnegorsk Museum's local history](https://dalmuseum.ru/height611/).
+Its 75 km vicinity is centered approximately on Dalnegorsk, not a claimed impact
+coordinate. The description distinguishes the reported sphere and fire from later
+material-origin claims; this navigation entry does not validate those claims or
+include later follow-up sightings as part of the original event. The new entry is
+outside the original 85-case identity review: `catalogReview` is null and no
+`catalogRefs` are asserted. Nearby catalog reports do not establish identity.
+Its dropdown availability is computed from the loaded catalog and active report
+filters, like the other presets. That indicator describes possible contextual
+report connections and does not substitute for a database identity review.
+
+Results shows a compact Case details / Fit connections row. Case name, reported
+date/location, matched source records, connection status, background, and sources
+are inside the disclosure; the active viewing range is not repeated. The outer
+disclosure owns scrolling, avoiding nested scroll panes for matched records.
+Existing disclosure persistence, record inspection, and Fit actions remain intact.
+The Results header, case disclosure, and area count retain their content height;
+only the report list uses remaining space. In the reported 206-result view, the
+expanded detail body ends before the area count and pagination, with no overlap.
+Browser proof is retained in `docs/ui/expanded-case-results-layout.png`.
+
+The availability previews use each preset's default padded dates and actual
+vicinity geometry against the complete, report-filtered all-date catalog.
+Dropdown rows show only the case date/name, followed by a thin colored outline
+around a positive visible link count. Cases without visible links have no suffix.
+The native select remains in use: browsers with customizable-select support render
+the outlined badges, and older browsers retain readable plain-text link counts.
+Reports-only, no-local-report, outside-catalog, filtered-link, and record-identity
+statuses remain in option tooltips rather than adding text to every row. Loading
+and failed-load states appear once in the shared picker status as Checking links
+or Link counts unavailable. These are presentation changes only; source data,
+identity reviews, counts, and graph semantics are unchanged. The same case graph
+builder and accepted chronology evidence used by the map also supply the counts.
+Changing report filters, chronology evidence or the known-direction preference
+invalidates the cached preview. Facility filters may further hide connections,
+as disclosed beside the picker.
+
+The October 30 change is based on the current root frontend at `4af19b0`, with
+the October 20 production data configuration, not the older desktop checkout's
+`webapp/static_public` shell. Its reviewed stage is reused by
+`scripts/serve_current_frontend_preview.py`; only nine named frontend files are
+overlaid. Published R2 assets are routed through the loopback preview in memory
+to avoid the host's localhost CORS restriction. Compressed scientific data bytes
+are unchanged and no data copy is written. Production and rollback designations
+are recorded in `releases/workspace-analysis-20261008/current_production.json`.
+The canonical development artifact is this worktree's root source plus tests;
+the authorized deployment overlays only these nine frontend files into the
+existing stage, as recorded in `docs/qa/case-navigation-20261030/RELEASE.md`.
+Superseded edits from the older checkout were restored after preserving a
+78,124-byte recovery delta and literal-path receipt at
+`D:/UFO-Timeline-Safety-Backup/case-navigation-baseline-correction/`.
+The delta is provenance, not an additional deployment. No newly created file
+exceeds 100 MiB; estimated net growth is below 2 MiB. No superseded large staging
+or backup artifact was created and no dataset cleanup is required.
+
+Initial browser verification on the corrected preview completed with the full
+catalog and Analysis ready. Chronological was selected, Dalnegorsk had reports
+but no links, and Ariel School displayed two links. Enabling Only traces with known
+direction reduced Ariel to one link and one connected outside report; its
+compass retained the single northwest ordered link. The existing Encounters
+panel opened with its two in-scope being reports. Small screenshots are retained
+as validation evidence in `docs/ui/case-availability-current-version.png` and
+`docs/ui/encounters-and-compass-current-version.png`; they can be reproduced from
+the local preview and are not deployment artifacts. Ten focused Node suites and
+the three case-navigation shell checks passed.
 
 `tests/test_famous_case_presets.mjs` checks required cases and dates, citation
 schema, unique IDs, valid geographic/date windows, immutability, browser export,

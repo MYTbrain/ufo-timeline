@@ -95,6 +95,7 @@ function caseHarness() {
   ], {
     state, runtime, els, FAMOUS_CASES: cases, isoToOrdinal, ordinalToIso, escapeHtml, clamp,
     formatNumber: String,
+    famousCaseAvailabilitySummary: () => null, progressiveInitialMapActive: () => false,
     catalog: control.catalog, startup: control.startup,
     getCatalogEventById: () => null,
     currentFilterSelections: () => control.filters,
@@ -143,6 +144,19 @@ const harness = caseHarness();
 const originalDates = [harness.state.timeRangeStartOrdinal, harness.state.timeRangeEndOrdinal];
 const originalZoom = harness.runtime.map.getZoom();
 const sourceCaseSnapshot = JSON.stringify(kecksberg);
+const directionPreferences = caseHarness();
+directionPreferences.state.regionSelection.knownDirectionOnly = false;
+directionPreferences.state.showTraceDirectionArrows = true;
+directionPreferences.context.applyFamousCasePreset(kecksberg.id);
+directionPreferences.state.regionSelection.knownDirectionOnly = true;
+directionPreferences.state.showTraceDirectionArrows = false;
+directionPreferences.context.applyFamousCasePreset(ariel.id);
+assert.equal(directionPreferences.state.regionSelection.knownDirectionOnly, true, "switching cases preserves the user's direction filter");
+assert.equal(directionPreferences.state.showTraceDirectionArrows, false, "switching cases preserves the separate arrow preference");
+directionPreferences.context.clearFamousCasePreset();
+assert.equal(directionPreferences.state.regionSelection.knownDirectionOnly, true, "Clear retains a direction filter changed during case focus");
+assert.equal(directionPreferences.state.showTraceDirectionArrows, false, "Clear leaves the separate arrow preference intact");
+assert.equal(directionPreferences.state.regionSelection.shapes[0].id, "user-area", "Clear still restores the original area");
 harness.context.applyFamousCasePreset(kecksberg.id);
 assert.equal(harness.state.famousCaseId, kecksberg.id);
 assert.equal(harness.state.timeRangeStartOrdinal, isoToOrdinal(kecksberg.startIso) - 1, "case navigation includes the preceding calendar day");
@@ -233,7 +247,7 @@ assert.equal(caseSummary.state.famousCaseId, kecksberg.id);
 assert.deepEqual(clone(caseSummary.state.regionSelection), summaryCaseArea, "Results date refresh preserves the case's area and trace settings");
 assert.equal(caseSummary.state.traceMode, "static");
 assert.equal(caseSummary.state.traceBucketVisibility.gap_le_1, true);
-assert.match(summaryPanel.innerHTML, /Viewing 1989-11-01 to 1990-04-30/);
+assert.ok(!summaryPanel.innerHTML.includes('Viewing '), "Results does not repeat the viewing range already shown by date controls");
 assert.ok(summaryPanel.innerHTML.includes("Reported " + escapeHtml(cases.formatCaseDate(kecksberg))), "the historical case date remains separate from the active viewing range");
 assert.match(summaryPanel.innerHTML, /2 same-day connections/);
 assert.equal(summaryPanel.details.open, true, "a changed date or count retains the user's open case context");
@@ -438,7 +452,7 @@ assert.equal(JSON.stringify(kecksberg), sourceCaseSnapshot);
 const startupFitCalls = { fits: [], zoomReads: 0, paints: 0 };
 const startupFitState = { famousCaseId: kecksberg.id, filteredMappedCatalog: [{ event_id: "mapped-report" }], selectedEventId: null, playbackState: "paused" };
 const startupFit = loadFunctions(["applyStartupFitBeforeReady"], {
-  state: startupFitState,
+  state: startupFitState, startup: { progressiveEnabled: false, mapViewReady: false },
   runtime: { map: { getZoom() { startupFitCalls.zoomReads += 1; return 2.5; } } },
   MAP_DEFAULT_INITIAL_ZOOM: 2.5,
   fitToResults(options) { startupFitCalls.fits.push(clone(options)); },
@@ -556,20 +570,25 @@ picker.context.renderFamousCasePicker();
 const chronologicalChoices = Array.from(picker.els.filterFamousCases.innerHTML.matchAll(/<option value="([^"]+)"/g))
   .map(match => cases.getCase(match[1])).filter(Boolean);
 assert.deepEqual(chronologicalChoices.map(item => item.id), cases.sortCases(chronologicalChoices, "chronological").map(item => item.id));
-const chronologicalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([^<]+)<\/option>/g)];
+const chronologicalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([\s\S]*?)<\/option>/g)];
+assert.equal(chronologicalLabels.length, chronologicalChoices.length);
 for (const option of chronologicalLabels) {
-  const suffix = cases.getCase(option[1]).catalogReview?.status === "no_confirmed_match" ? " · no confirmed record" : "";
-  assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "chronological")) + suffix, "the picker keeps the year first and identifies unmatched presets");
-  assert.match(option[2], /^\d{4}(?:–\d{4})? · /);
+  const label = option[2].replace(/<[^>]*>/g, "");
+  assert.equal(label, escapeHtml(cases.formatCaseLabel(option[1], "chronological")), "loading rows retain only the date and case name");
+  assert.match(label, /^\d{4}(?:–\d{4})? · /);
+  if (cases.getCase(option[1]).catalogReview?.status === "no_confirmed_match") {
+    assert.match(option[0], /title="[^"]*no confirmed record/, "record identity status remains available in the tooltip");
+  }
 }
+assert.match(picker.els.famousCaseSearchStatus.textContent, /Checking links…$/);
 assert.equal(picker.els.famousCaseOrderButtons[1].attributes["aria-pressed"], "true");
 assert.equal(picker.els.famousCaseOrderButtons[0].attributes["aria-pressed"], "false");
 picker.state.famousCaseOrder = "alphabetical";
 picker.context.renderFamousCasePicker();
-const alphabeticalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([^<]+)<\/option>/g)];
+const alphabeticalLabels = [...picker.els.filterFamousCases.innerHTML.matchAll(/<option value="(case_[^"]+)"[^>]*>([\s\S]*?)<\/option>/g)];
+assert.equal(alphabeticalLabels.length, chronologicalChoices.length);
 for (const option of alphabeticalLabels) {
-  const suffix = cases.getCase(option[1]).catalogReview?.status === "no_confirmed_match" ? " · no confirmed record" : "";
-  assert.equal(option[2], escapeHtml(cases.formatCaseLabel(option[1], "alphabetical")) + suffix);
+  assert.equal(option[2].replace(/<[^>]*>/g, ""), escapeHtml(cases.formatCaseLabel(option[1], "alphabetical")));
 }
 assert.equal(picker.els.famousCaseOrderButtons[0].attributes["aria-pressed"], "true");
 assert.equal(picker.els.filterFamousCases.value, kecksberg.id, "changing case order preserves the selected case");
@@ -615,13 +634,13 @@ function caseConnectionsHarness() {
     "buildFamousCaseTraceSegments", "currentSelectableTraceSegments", "currentChronologicalNeighborhoodIndex",
     "computeRegionSelectionResult", "traceLinkedVisibilityAffectsRendering",
   ], {
-    state, runtime, TRACE_NEIGHBORHOOD: neighborhood, TRACE_CHRONOLOGY: chronology, performance,
+    state, runtime, TRACE_NEIGHBORHOOD: neighborhood, TRACE_DIRECTIONS: directions, TRACE_CHRONOLOGY: chronology, performance,
     PLAYBACK_TRAIL_BUCKET_BY_KEY: new Map([["gap_le_1", { key: "gap_le_1", maxDays: 1 }]]),
     CHRONOLOGICAL_NEIGHBORHOOD_SPATIAL_CELL_DEGREES: 5,
     REGION_SELECTION_EARTH_RADIUS_METERS: 6371008.8,
     normalizeLongitude: value => ((((Number(value) + 180) % 360) + 360) % 360) - 180,
     canonicalTraceSegmentsCacheKey: () => state.traceMode + "|" + state.traceBucketVisibility.gap_le_1 + "|" + control.facilityRejects,
-    currentRegionSelectionTraceKey: () => state.traceMode + "|" + state.traceBucketVisibility.gap_le_1 + "|" + control.facilityRejects,
+    currentRegionSelectionTraceKey: () => state.traceMode + "|" + state.traceBucketVisibility.gap_le_1 + "|" + control.facilityRejects + "|" + state.regionSelection.knownDirectionOnly,
     catalogEventIdIdentityKey: events => events.map(event => event.event_id).join(","),
     createTraceFacilityClassificationContext: () => ({}),
     applyTraceFacilityFilterToSegmentWithContext: segment => control.facilityRejects ? null : segment,
@@ -656,6 +675,13 @@ assert.deepEqual([...caseResult.visibleMappedCatalog].map(event => event.event_i
 assert.equal(connections.state.filteredMappedCatalog.length, 11, "selection leaves remote reports available in the global pool");
 assert.equal(JSON.stringify(connections.events), poolSnapshot, "grouping and selection preserve source report records");
 assert.equal(connections.context.traceLinkedVisibilityAffectsRendering(), false, "unmatched local reports are not hidden by link visibility");
+connections.state.regionSelection.knownDirectionOnly = true;
+const knownDirectionResult = connections.context.computeRegionSelectionResult();
+assert.equal(knownDirectionResult.visibleTraceCount, 0, "unknown-order case links are hidden");
+assert.equal(knownDirectionResult.caseResultLinkedEventIds.size, 0, "external endpoints disappear with hidden links");
+assert.equal(knownDirectionResult.caseResultsCatalog.length, connections.localIds.length, "independent local candidate reports stay available");
+connections.state.regionSelection.knownDirectionOnly = false;
+assert.equal(connections.context.computeRegionSelectionResult().visibleTraceCount, caseResult.visibleTraceCount, "unchecking restores case connections");
 connections.state.traceMode = "off";
 assert.equal(connections.context.computeRegionSelectionResult().visibleTraceCount, 0);
 assert.equal(connections.context.computeRegionSelectionResult().visibleEventCount, connections.localIds.length, "turning traces off retains the case's reports");
@@ -689,8 +715,10 @@ Object.assign(resultsContext, {
   currentPlaybackEvent: () => null,
   setResultSummaryValue(value) { resultsControl.summary = value; },
   displayLocationForEvent: event => event.event_id,
+  eventDateLabel: event => event.sort_date_iso || "Unknown date",
   locationPrecisionDisplayLabel: String,
   rebuildRenderedResultCardIndex: noOp,
+  renderSearchExcerpts: noOp,
   clearFamousCaseCirclePulse: noOp, renderTraceControls: noOp, renderFamousCasePicker: noOp, renderFamousCaseResultsSummary: noOp, scheduleRefresh: noOp,
 });
 vm.runInContext([
@@ -786,6 +814,7 @@ function directionHarness(inputSegments, projectionScale = 1) {
     wrappedSegmentCopies(row) { return [{ from: row.from, to: row.to }, { from: [row.from[0], row.from[1] + 360], to: [row.to[0], row.to[1] + 360] }]; },
     renderedPointMarkerHitAtLatLng: () => null, activateMapPointEvent: () => false,
     getCatalogEventById(id) { return { event_id: id, location: "Report " + id, date_raw: "1965-12-09" }; },
+    eventDateLabel: event => event.date_raw || "Unknown date",
   });
   return { context, runtime, state, els, result, controls, layers };
 }

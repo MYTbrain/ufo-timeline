@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.css">
   <link rel="stylesheet" href="./vendor/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="./styles.css?v=2026-10-20-animal-time-v2">
+    <link rel="stylesheet" href="./styles.css?v=2026-10-30-case-badges-v17">
   <link rel="stylesheet" href="./encounter_analysis.css?v=2026-10-18-encounter-quality-v1">
   <link rel="stylesheet" href="./analysis_comparisons.css?v=2026-10-19-analysis-scroll-v1">
   <script>
@@ -43,7 +43,7 @@
   <link rel="stylesheet" href="./ui/accepted-workspace/workspace-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/analysis-preview.css?v=2026-10-08-accepted-workspace-v1">
   <link rel="stylesheet" href="./ui/accepted-workspace/site-workflow-preview.css?v=2026-10-08-accepted-workspace-v1">
-  <link rel="stylesheet" href="./ui/accepted-workspace/chronology-preview.css?v=2026-10-08-accepted-workspace-v1">
+  <link rel="stylesheet" href="./ui/accepted-workspace/chronology-preview.css?v=2026-10-30-layout-spacing-v16">
   <link rel="stylesheet" href="./ui/accepted-workspace/analysis-navigation.css?v=2026-10-19-analysis-scroll-v1">
   <link rel="stylesheet" href="./analysis_session.css?v=2026-10-19-inspect-analysis-v1">
   <link rel="stylesheet" href="./analysis_overview.css?v=2026-10-19-analysis-scroll-v1">
@@ -102,7 +102,7 @@
         </div>
         <p id="hero-event-count-hook" class="hero-hook">Explore UFO events over time</p>
         <p class="hero-subtext">Compare sightings with airports, military bases, and overlays</p>
-        <p class="hero-attribution">Sightings datasets generously provided by <a href="https://ufosint.com/" target="_blank" rel="noopener noreferrer external">UFOSINT</a>.</p>
+        <p class="hero-attribution">Massive thanks to <a href="https://ufosint.com/" target="_blank" rel="noopener noreferrer external">UFOSINT</a>.</p>
         <div class="hero-view-switcher">
           <div id="analysis-view-tablist" class="hero-view-tablist" role="tablist" aria-label="Primary data view">
             <button
@@ -599,19 +599,20 @@
             <div class="famous-case-picker">
               <label class="field compact-field">
                 <span>Famous Sightings &amp; Cases</span>
-                <select id="filter-famous-cases" aria-describedby="famous-case-search-status">
+                <select id="filter-famous-cases" aria-describedby="famous-case-search-status famous-case-availability-help">
                   <option value="">Choose a famous case</option>
                 </select>
               </label>
               <div class="famous-case-order" role="group" aria-label="Sort famous cases">
-                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="alphabetical" aria-pressed="true" title="A–Z by case name">Alphabetical</button>
-                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="chronological" aria-pressed="false" title="Oldest first, using the reported start date">Chronological</button>
+                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="alphabetical" aria-pressed="false" title="A–Z by case name">Alphabetical</button>
+                <button class="secondary-button famous-case-order-button" type="button" data-famous-case-order="chronological" aria-pressed="true" title="Oldest first, using the reported start date">Chronological</button>
               </div>
               <label class="field compact-field famous-case-search-field">
                 <span class="sr-only">Search famous cases</span>
                 <input id="famous-case-search" type="search" placeholder="Find a case, place, or year…" autocomplete="off" aria-controls="filter-famous-cases">
               </label>
               <p id="famous-case-search-status" class="famous-case-search-status" role="status" aria-live="polite"></p>
+              <p id="famous-case-availability-help" class="famous-case-search-status">Link counts use same-date, same-craft reports in the preset’s default view. Filters may hide links.</p>
               <div id="famous-case-details" class="famous-case-details" hidden></div>
             </div>
             <label class="checkbox-field">
@@ -2063,10 +2064,10 @@
   <script src="./encounter_map.js?v=2026-10-18-encounter-quality-v1"></script>
   <script src="./trace_chronology.js?v=2026-10-08-corpus-timing-v3"></script>
   <script src="./trace_neighborhood.js?v=2026-10-08-corpus-timing-v3"></script>
-  <script src="./trace_direction_summary.js?v=2026-10-08-legend-directions-v1"></script>
+  <script src="./trace_direction_summary.js?v=2026-10-30-compact-legend-v13"></script>
   <script src="./legend_controls.js?v=2026-10-06-legend-case-labels-v3"></script>
-  <script src="./flap_preset_labels.js?v=2026-07-31-area-lifecycle-v154"></script>
-  <script src="./famous_case_presets.js?v=2026-10-06-all-case-records-v7"></script>
+  <script src="./flap_preset_labels.js?v=2026-10-30-year-month-v19"></script>
+  <script src="./famous_case_presets.js?v=2026-10-30-case-availability-v11"></script>
   <script src="./playback_performance.js?v=2026-07-31-area-lifecycle-v154"></script>
   <script src="./crop_circle_bootstrap.js?v=2026-08-13-crop-circle-icon-only-v1"></script>
   <script src="./animal_mutilation_bootstrap.js?v=2026-08-13-animal-three-state-v1"></script>
@@ -2087,10 +2088,11 @@
   <script src="./search_catalog.js?v=2026-10-18-search-v1"></script>
   <script src="./search_runtime.js?v=2026-10-18-search-v1"></script>
   <script src="./search_view.js?v=2026-10-18-search-v2"></script>
-  <script src="./app.js?v=2026-10-20-animal-time-v2"></script>
+  <script src="./famous_case_availability.js?v=2026-10-30-case-availability-v11"></script>
+  <script src="./app.js?v=2026-10-30-case-badges-v17"></script>
   <script defer src="./ui/accepted-workspace/workspace-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-preview.js?v=2026-10-19-inspect-analysis-v1"></script>
-  <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
+  <script defer src="./ui/accepted-workspace/site-workflow-preview.js?v=2026-10-30-compact-legend-v13"></script>
   <script defer src="./ui/accepted-workspace/chronology-preview.js?v=2026-10-08-accepted-workspace-v1"></script>
   <script defer src="./ui/accepted-workspace/analysis-view-groups.js?v=2026-10-20-animal-time-v2"></script>
   <script defer src="./ui/accepted-workspace/analysis-navigation.js?v=2026-10-19-analysis-scroll-v1"></script>

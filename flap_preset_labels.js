@@ -51,21 +51,9 @@
     const start = parseIsoMonth(startIso);
     const end = parseIsoMonth(endIso);
     if (!start || !end) return "";
-    if (start.year === end.year) {
-      if (start.month === end.month) {
-        return start.year + " " + start.monthLabel;
-      }
-      return start.year + " " + start.monthLabel + "\u2013" + end.monthLabel;
-    }
-    return (
-      start.year +
-      " " +
-      start.monthLabel +
-      "\u2013" +
-      compactEndYear(start.year, end.year) +
-      " " +
-      end.monthLabel
-    );
+    const startLabel = start.year + "/" + String(start.month).padStart(2, "0");
+    const endLabel = end.year + "/" + String(end.month).padStart(2, "0");
+    return startLabel === endLabel ? startLabel : startLabel + " - " + endLabel;
   }
 
   function formatPresetLabel(preset) {

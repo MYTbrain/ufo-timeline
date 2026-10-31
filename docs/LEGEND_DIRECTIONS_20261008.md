@@ -32,6 +32,31 @@ lines already have no badges. The toggle is unavailable without a trace-capable
 case/area selection. Hiding badges leaves the connection lines and their click
 inspectors intact. Reset legend restores arrows off.
 
+The direction filter explanation is a brief hover hint with an accessible
+screen-reader description, keeping its paragraph out of the visible legend.
+The repeated map-count caption is removed; its scope is available on the Legend
+title. Dates and scope now live inside Direction counts & shares. Explanations
+of traces and encounters are collapsed under About traces / About encounters,
+while controls, symbols, counts, scale, and short status messages remain visible.
+The compact layout was checked in the loopback preview; existing direction,
+population, case, legend, encounter, and shell checks passed. This changes only
+small source files and UI proof images, with no data copy, build, or deployment.
+
+The chronology controls also use aligned label/control rows. Desktop browser
+geometry confirmed all five playback/display labels have the same top and height,
+as do their controls; date-field labels align and use matching 44px controls.
+`docs/ui/aligned-playback-controls.png` records the compact layout. The accepted
+chronology stylesheet retains responsive wrapping and existing control behavior.
+
+On October 30, **Only traces with known direction** was added immediately below
+the existing arrow toggle in the legend. It removes unknown-order connections
+before area/case traversal, so remote Results and compass statistics use the same
+remaining links. Accepted source-clock ordering, including supported same-day
+links, remains eligible; estimated or missing timing is not upgraded. Local
+reports remain visible independently. The preference survives case switching and
+Clear; Reset legend and Reset filters turn it off. The compass, arrow preference,
+encounter controls and progressive startup remain those of the current frontend.
+
 Directions describe map bearings of chronological report connections, not
 measured craft travel. Accepted chronological ordering supplies direction;
 unresolved links are separately disclosed and excluded from percentages.

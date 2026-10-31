@@ -24,13 +24,14 @@
   const ENCOUNTERS = window.UFOEncounterEvidence;
   const ENCOUNTER_MAP = window.UfoEncounterMap;
   const FAMOUS_CASES = window.UfoFamousCasePresets;
+  const CASE_AVAILABILITY = window.UfoFamousCaseAvailability;
   const UFOCAT_REFERENCES = window.UfoUfocatReferences;
   const MUFON_DATE_REVIEW = window.UfoMufonDateReview;
   let sourceCitationIndexPromise = null;
   let detailLoadGeneration = 0;
   const QUALITY_DETAILS = window.UfoQualityDetailOverlay;
   const ANALYSIS_REPAIR_DETAILS = window.UfoAnalysisRepairDetailOverlay;
-  if (!TRACE_DIRECTIONS || !FAMOUS_CASES) {
+  if (!TRACE_DIRECTIONS || !FAMOUS_CASES || !CASE_AVAILABILITY) {
     throw new Error("Direction summaries or famous case presets failed to load.");
   }
   const PLAYBACK_PERFORMANCE = window.UfoPlaybackPerformance;
@@ -1601,6 +1602,7 @@
       displayMode: "hide-unselected",
       depth: CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH,
       direction: CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DIRECTION,
+      knownDirectionOnly: false,
     };
   }
 
@@ -2949,7 +2951,7 @@
 
     syncRegionSelectionMapInteraction();
     renderAreaDirectionSummary(result, hasAreaFilter);
-    if (state.famousCaseId) renderFamousCasePicker();
+    renderFamousCasePicker();
     renderFamousCaseResultsSummary(result);
   }
 
@@ -4603,12 +4605,61 @@
     updateTimelinePresetButtonStates();
   }
 
+  function famousCaseAvailabilitySummary() {
+    // Use the report-filtered, all-date pool, never the currently selected case
+    // or map viewport. A partial startup catalog must not become a false zero.
+    if (!startup.fullCatalogReady) {
+      if (startup.phase === "Failed" || startup.backgroundError) return Object.fromEntries(
+        FAMOUS_CASES.CASES.map(function (item) { return [item.id, { label: "Catalog unavailable" }]; }));
+      return null;
+    }
+    const extent = selectionClampExtent();
+    if (!extent) return null;
+    const knownOnly = Boolean(state.regionSelection.knownDirectionOnly);
+    const key = [state.timelineDataVersion, extent.minOrdinal, extent.maxOrdinal, knownOnly, traceChronologyIdentity()].join("|");
+    if (runtime.famousCaseAvailabilityKey === key) return runtime.famousCaseAvailability;
+    if (runtime.famousCaseAvailabilityPendingKey !== key) {
+      runtime.famousCaseAvailabilityPendingKey = key;
+      window.setTimeout(function () {
+        if (runtime.famousCaseAvailabilityPendingKey !== key) return;
+        runtime.famousCaseAvailability = CASE_AVAILABILITY.summarizeCases(FAMOUS_CASES.CASES,
+          state.timelineMappedPlaybackEvents, {
+            selectionWindow: function (item) {
+              if (isoToOrdinal(item.startIso) < extent.minOrdinal || isoToOrdinal(item.endIso) > extent.maxOrdinal) return null;
+              const window = FAMOUS_CASES.buildSelectionWindow(item);
+              return {
+                startIso: ordinalToIso(Math.max(isoToOrdinal(window.startIso), extent.minOrdinal)),
+                endIso: ordinalToIso(Math.min(isoToOrdinal(window.endIso), extent.maxOrdinal)),
+              };
+            },
+            containsPoint: function (item, lat, lon) {
+              return pointInsideCircleShape(lat, lon, {
+                center: { lat: item.center[0], lng: item.center[1] }, radiusMeters: item.radiusKm * 1000,
+              });
+            },
+            buildSegments: function (events) {
+              return TRACE_NEIGHBORHOOD.buildSameDayCraftTraceSegments(events,
+                { chronology: runtime.traceChronologyEvidence, timingSupport: TRACE_CHRONOLOGY });
+            },
+            filterSegment: function (segment) {
+              return !knownOnly || TRACE_DIRECTIONS.segmentHasKnownDirection(segment);
+            },
+          });
+        runtime.famousCaseAvailabilityKey = key;
+        runtime.famousCaseAvailabilityPendingKey = "";
+        renderFamousCasePicker();
+      }, 0);
+    }
+    return null;
+  }
+
   function renderFamousCasePicker() {
     if (!els.filterFamousCases) return;
     const query = els.famousCaseSearch ? els.famousCaseSearch.value : "";
     const order = FAMOUS_CASES.normalizeCaseOrder(state.famousCaseOrder);
     const matches = FAMOUS_CASES.filterCases(query, order);
     const activeCase = FAMOUS_CASES.getCase(state.famousCaseId);
+    const availability = famousCaseAvailabilitySummary();
     const choices = matches.slice();
     if (activeCase && !choices.some(function (item) { return item.id === activeCase.id; })) {
       choices.unshift(activeCase);
@@ -4620,15 +4671,23 @@
     els.filterFamousCases.innerHTML = '<option value="">' +
       (activeCase ? "Clear case preset" : "Choose a famous case") + "</option>" +
       orderedChoices.map(function (item) {
+        const summary = availability && availability[item.id];
+        const linkCount = summary && summary.connectionCount > 0 ? summary.connectionCount : 0;
         const unmatched = item.catalogReview && item.catalogReview.status === "no_confirmed_match";
-        return '<option value="' + escapeHtml(item.id) + '" title="' + escapeHtml(item.location) + '">' +
-          escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + (unmatched ? " · no confirmed record" : "") + "</option>";
+        const title = item.location + (summary ? " · " + summary.label : "") +
+          (unmatched ? " · no confirmed record" : "");
+        return '<option value="' + escapeHtml(item.id) + '" title="' + escapeHtml(title) + '">' +
+          '<span class="famous-case-option-name">' + escapeHtml(FAMOUS_CASES.formatCaseLabel(item, order)) + '</span>' +
+          (linkCount ? ' <span class="famous-case-link-count">' + formatNumber(linkCount) +
+            (linkCount === 1 ? " link" : " links") + '</span>' : "") + "</option>";
       }).join("") + (choices.length ? "" : '<option disabled>No cases match this search</option>');
     els.filterFamousCases.value = state.famousCaseId || "";
     if (els.famousCaseSearchStatus) {
-      els.famousCaseSearchStatus.textContent = query.trim()
+      const catalogStatus = !startup.fullCatalogReady && (startup.phase === "Failed" || startup.backgroundError)
+        ? " · Link counts unavailable" : !availability ? " · Checking links…" : "";
+      els.famousCaseSearchStatus.textContent = (query.trim()
         ? formatNumber(matches.length) + " of " + formatNumber(FAMOUS_CASES.CASES.length) + " cases match"
-        : formatNumber(FAMOUS_CASES.CASES.length) + " historical presets · search names, places, or years";
+        : formatNumber(FAMOUS_CASES.CASES.length) + " historical presets · search names, places, or years") + catalogStatus;
     }
     if (!els.famousCaseDetails) return;
     els.famousCaseDetails.hidden = !activeCase;
@@ -4715,16 +4774,12 @@
     const status = connectionCount
       ? formatNumber(connectionCount) + " same-day connection" + (connectionCount === 1 ? "" : "s")
       : famousCaseTraceStatusText(caseTraceResult, hasVicinity);
-    const currentDates = ordinalToIso(state.timeRangeStartOrdinal) + " to " + ordinalToIso(state.timeRangeEndOrdinal);
-    const markup = '<h3 class="results-famous-case-title">' + escapeHtml(activeCase.name) + '</h3>' +
+    const markup = '<details data-case-results-details><summary title="Case records, context, and sources">Case details</summary><div class="results-famous-case-details-body">' +
+      '<h3 class="results-famous-case-title">' + escapeHtml(activeCase.name) + '</h3>' +
       '<p class="results-famous-case-meta">Reported ' + escapeHtml(FAMOUS_CASES.formatCaseDate(activeCase)) +
       ' · ' + escapeHtml(activeCase.location) + '</p>' +
-      '<p class="results-famous-case-meta">Viewing ' + escapeHtml(currentDates) + '</p>' +
       renderFamousCaseCatalogEntries(activeCase) +
-      '<div class="results-famous-case-connections"><p role="status">' + escapeHtml(status) + '</p>' +
-      '<button type="button" class="secondary-button" data-fit-famous-case-traces' +
-      (connectionCount ? '' : ' disabled') + '>Fit connections</button></div>' +
-      '<details data-case-results-details><summary>Case details &amp; sources</summary><div class="results-famous-case-details-body">' +
+      '<p role="status">' + escapeHtml(status) + '</p>' +
       '<p>' + escapeHtml(activeCase.description) + '</p>' +
       (activeCase.catalogReview && activeCase.catalogReview.note ? '<p>Database review: ' + escapeHtml(activeCase.catalogReview.note) + '</p>' : '') +
       (activeCase.dateNote && activeCase.dateNote !== "Reported event date; the preset does not establish a case match."
@@ -4738,7 +4793,9 @@
       '<div class="famous-case-sources">' + activeCase.sources.map(function (source) {
         return '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' +
           escapeHtml(source.title) + '</a>';
-      }).join("") + '</div></div></details>';
+      }).join("") + '</div></div></details>' +
+      '<button type="button" class="secondary-button results-famous-case-fit" data-fit-famous-case-traces' +
+      (connectionCount ? '' : ' disabled') + '>Fit connections</button>';
     // Native disclosure state does not change the content cache. Ordinary
     // refreshes leave focused controls intact; changed content retains the state.
     if (runtime.famousCaseResultsMarkup !== markup) {
@@ -4860,6 +4917,8 @@
     const countText = formatNumber(reportCount) + " report" + (reportCount === 1 ? "" : "s") + " in the case vicinity";
     if (connectionCount) return formatNumber(connectionCount) + " same-day, same-type connection" +
       (connectionCount === 1 ? "" : "s") + " · " + countText + ". Endpoints may extend beyond the vicinity.";
+    if (state.regionSelection.knownDirectionOnly) return countText +
+      "; the known-direction filter hides connections with unresolved order. Turn it off in the map legend to include those links.";
     const selectedTypes = els.typeFilter && els.typeFilter.selectedOptions
       ? Array.from(els.typeFilter.selectedOptions).map(function (option) { return option.value; }) : [];
     const typeHint = selectedTypes.length && (!selectedTypes.includes("Sighting") || !selectedTypes.includes("Unknown"))
@@ -4895,7 +4954,9 @@
       state.regionSelection.shapes[0].id === runtime.famousCaseShapeId;
     runtime.famousCaseShapeId = null;
     if (previous && stillOwnsArea) {
+      const knownDirectionOnly = state.regionSelection.knownDirectionOnly;
       state.regionSelection = previous.regionSelection;
+      if (typeof knownDirectionOnly === "boolean") state.regionSelection.knownDirectionOnly = knownDirectionOnly;
       state.analysisCountryAreaFilter = previous.countryArea;
       invalidateRegionSelectionResult();
       renderRegionSelectionShapes();
@@ -7782,6 +7843,7 @@
       startup.progressPercent = STARTUP_PROGRESS.ready;
     }
     renderStartupDiagnostics();
+    if (phase === "Ready") renderFamousCasePicker();
   }
 
   function setStartupPreviewInteractive(overview) {
@@ -15517,15 +15579,16 @@
             ? "height:4px;border-top:0;border-radius:999px;background:#38bdf8;opacity:0.92;"
             : "height:4px;border-top:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8 0 50%,#fb7185 50% 100%);opacity:0.92;"
         ),
+        '<details class="map-legend-trace-notes"><summary>About traces</summary>' +
         buildMapLegendNoteRow(famousCaseTraceSelectionActive()
           ? "Each connection uses one craft category color. Dashed, double-headed arrows indicate unknown report order."
-          : "Matching craft types use one continuous color. Unknown endpoints use gray."),
-        buildMapLegendNoteRow("Single-headed arrows follow report chronology. Unknown-order links are excluded from directional percentages; arrows do not establish craft travel."),
+          : "Matching craft types use one continuous color. Unknown endpoints use gray.") +
+        buildMapLegendNoteRow("Single-headed arrows follow report chronology. Unknown-order links are excluded from directional percentages; arrows do not establish craft travel.") +
         buildMapLegendNoteRow(
           traceFacilityFilterEnabled()
             ? "Facility evidence uses outlines and dashes; craft hue takes precedence."
             : "Chronological adjacency under current filters is exploratory, not evidence of travel or the same craft."
-        ),
+        ) + '</details>',
       ];
     }
     if (traceFacilityFilterEnabled()) {
@@ -15589,6 +15652,7 @@
       eventSelection.mode !== "all" ||
       runtime.encounterMapEnabled || runtime.encounterDisplayMode !== "markers" || runtime.encounterConnectionsEnabled || runtime.encounterConnectionRadiusKm !== 250 || runtime.encounterMapHiddenKinds.size > 0 || runtime.encounterMapIncludeAmbiguous || runtime.encounterTraceHighlightEventId != null ||
       state.showTraceDirectionArrows ||
+      Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly) ||
       craftTypeColorsAreCustomized() ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
@@ -15888,6 +15952,8 @@
   }
 
   function resetMapLegendControls() {
+    const knownDirectionWasFiltered = Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly);
+    if (state.regionSelection) state.regionSelection.knownDirectionOnly = false;
     runtime.encounterMapEnabled = false; runtime.encounterDisplayMode = "markers";
     runtime.encounterConnectionsEnabled = false; runtime.encounterConnectionRadiusKm = 250;
     runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapIncludeAmbiguous = false;
@@ -15934,6 +16000,8 @@
     announceMapLegendStatus("Legend filters, overlays, and craft colors were reset to their defaults.");
     if (eventSelectionWasFiltered) {
       scheduleRefresh({ immediate: true });
+    } else if (knownDirectionWasFiltered) {
+      refreshRegionSelectionRenderState();
     } else {
       renderMap();
     }
@@ -15955,6 +16023,9 @@
         (state.legendDirectionExpanded ? ' open' : '') + '><summary>Report-link directions</summary>' +
         '<label class="map-legend-arrow-toggle"><input id="legend-trace-arrows" type="checkbox"' +
         (state.showTraceDirectionArrows ? ' checked' : '') + '> Show direction arrows</label>' +
+        '<label class="map-legend-arrow-toggle" title="Hide links with unknown order. Arrows show report chronology, not flight paths."><input id="legend-known-direction-only" type="checkbox" aria-describedby="legend-known-direction-help"' +
+        (state.regionSelection.knownDirectionOnly ? ' checked' : '') + '> Only traces with known direction</label>' +
+        '<span id="legend-known-direction-help" class="sr-only">Hide links with unknown order. Arrows show report chronology, not flight paths.</span>' +
         '<div id="legend-trace-direction-summary"></div></details>',
       buildMapLegendSection(
         "Events",
@@ -16013,8 +16084,7 @@
     const start = els.startDateInput && els.startDateInput.value;
     const end = els.endDateInput && els.endDateInput.value;
     const period = start || end ? (start || "Earliest") + " – " + (end || "Latest") : "All time";
-    const markup = '<p class="map-legend-direction-period">' + escapeHtml(period) + '</p>' +
-      TRACE_DIRECTIONS.legendSummaryMarkup(view.summary, view);
+    const markup = TRACE_DIRECTIONS.legendSummaryMarkup(view.summary, Object.assign({}, view, { periodLabel: period }));
     if (runtime.legendTraceDirectionMarkup !== markup || !holder.firstChild) {
       const details = holder.querySelector(".trace-direction-legend-details");
       if (details) runtime.legendDirectionTableExpanded = details.open;
@@ -16031,6 +16101,19 @@
       toggle.disabled = !regionSelectionAffectsRendering() || currentRegionSelectionResult().pointOnly;
       toggle.title = toggle.disabled ? "Select a case or area with trace lines to use direction arrows." : "Toggle selection arrows; trace lines and statistics stay visible.";
     }
+    const knownDirectionToggle = document.getElementById("legend-known-direction-only");
+    if (knownDirectionToggle) knownDirectionToggle.checked = Boolean(state.regionSelection.knownDirectionOnly);
+  }
+
+  function setKnownTraceDirectionOnly(knownOnly) {
+    state.regionSelection.knownDirectionOnly = Boolean(knownOnly);
+    closeChronologicalNeighborhoodInspector();
+    refreshRegionSelectionRenderState();
+    renderLegendTraceDirectionPanel();
+    renderMapLegendHeaderControls();
+    announceMapLegendStatus(state.regionSelection.knownDirectionOnly
+      ? "Only area and case traces with known report order are shown."
+      : "Area and case traces include connections with unknown report order.");
   }
 
   function setTraceDirectionArrowsVisible(visible) {
@@ -19656,6 +19739,7 @@
       activeTraceBuckets().map(function (bucket) { return bucket.key; }).join(","),
       traceFacilityFilterSignature(),
       famousCaseTraceSelectionActive() ? state.famousCaseId + ":same-day-craft" : "chronology",
+      state.regionSelection.knownDirectionOnly ? "known-direction" : "all-directions",
       state.filterGeneration,
     ].join("|");
   }
@@ -20218,12 +20302,13 @@
       return '<button type="button" class="encounter-legend-key" data-encounter-legend-kind="' + kind.key + '" aria-pressed="' + (runtime.encounterMapEnabled && !runtime.encounterMapHiddenKinds.has(kind.key)) + '"' + (!ready ? ' disabled' : '') + ' title="' + escapeHtml(kind.description) + '"><span class="encounter-legend-symbol">' + ENCOUNTER_MAP.markerSvg(kind.key) + '</span><span>' + escapeHtml(label) + '</span><strong>' + (ready ? formatNumber(counts[kind.key] || 0) : '…') + '</strong></button>';
     });
     return '<section class="encounter-legend-section"><strong>Encounters</strong><label class="map-legend-arrow-toggle"><input id="legend-encounter-layer" type="checkbox"' +
-      (runtime.encounterMapEnabled ? ' checked' : '') + (!ready ? ' disabled' : '') + '> Show encounters</label><small>Encounter reports in view · independent of craft-type visibility</small>' + rows.join('') +
+      (runtime.encounterMapEnabled ? ' checked' : '') + (!ready ? ' disabled' : '') + '> Show encounters</label>' + rows.join('') +
       '<label class="map-legend-arrow-toggle"><input id="legend-encounter-unclear" type="checkbox"' + (runtime.encounterMapIncludeAmbiguous ? ' checked' : '') + (!ready ? ' disabled' : '') + '> Include unclear abduction mentions</label>' +
       (ready ? '<small>' + formatNumber(model.cohort.reports) + ' in selected encounter scope · ' + formatNumber(model.cohort.unmapped) + ' unmapped</small><button type="button" data-encounter-inspect-scope>Inspect encounter reports</button>' : '<small>' + (state.analysisCountryAreaFilter ? 'Country scope ' + (runtime.encounterCountryStatus === "unavailable" ? 'unavailable; clear the area or retry.' : 'loading…') : runtime.encounterStatus === "unavailable" ? 'Encounter evidence unavailable.' : 'Loading encounter catalog…') + '</small>') +
+      '<button type="button" data-encounter-map-settings>Display settings</button><details><summary>About encounters</summary><small>Encounter reports in view · independent of craft-type visibility.</small>' +
       (runtime.encounterMapEnabled && runtime.encounterDisplayMode !== "markers" ? '<small>Smoothed encounter report density · weighted report counts; brightness indicates concentration.</small>' : '') +
       (runtime.encounterMapEnabled && runtime.encounterConnectionsEnabled ? '<small>Violet links: same-day encounter comparisons. Dashed means report order is unresolved.</small>' : '') +
-      '<button type="button" data-encounter-map-settings>Display settings</button><details><summary>How encounters relate to traces</summary><small>Symbols describe source-reported content. Details distinguish explicit craft association, co-reporting, no craft reported and unknown. Highlighting uses existing craft links with the same report ID. Optional encounter connections compare matching descriptions on the same recorded day; neither establishes a shared being, craft, route or flight path. These connections are excluded from the craft-direction radar. Overlay follows dates, sources, search, precision and selected areas. Unmapped reports cannot be placed inside a drawn area.</small><button type="button" data-encounter-clear-highlight>Clear link highlight</button></details></section>';
+      '<small>Symbols describe source-reported content. Details distinguish explicit craft association, co-reporting, no craft reported and unknown. Highlighting uses existing craft links with the same report ID. Optional encounter connections compare matching descriptions on the same recorded day; neither establishes a shared being, craft, route or flight path. These connections are excluded from the craft-direction radar. Overlay follows dates, sources, search, precision and selected areas. Unmapped reports cannot be placed inside a drawn area.</small><button type="button" data-encounter-clear-highlight>Clear link highlight</button></details></section>';
   }
 
   function openEncounterMapInspection(events) {
@@ -21833,7 +21918,11 @@
     if (mode !== "static" && mode !== "playback") {
       return [];
     }
-    return famousCaseTraceSelectionActive() ? buildFamousCaseTraceSegments() : buildCanonicalTraceSegments();
+    const segments = famousCaseTraceSelectionActive() ? buildFamousCaseTraceSegments() : buildCanonicalTraceSegments();
+    if (!state.regionSelection.knownDirectionOnly) return segments;
+    // Filter before indexing so traversal cannot cross an unordered connection
+    // or retain its remote endpoint as a trace-associated sighting.
+    return segments.filter(TRACE_DIRECTIONS.segmentHasKnownDirection);
   }
 
   function buildFamousCaseTraceSegments() {
@@ -32318,6 +32407,10 @@
         }
         if (event.target.id === "legend-trace-arrows") {
           setTraceDirectionArrowsVisible(event.target.checked);
+          return;
+        }
+        if (event.target.id === "legend-known-direction-only") {
+          setKnownTraceDirectionOnly(event.target.checked);
           return;
         }
         handleCraftColorInput(event);

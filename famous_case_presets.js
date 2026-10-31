@@ -216,6 +216,9 @@
     ["Renato Nicolai", "GEPAN", "landing trace"], "A witness described a landed object, and GEPAN examined ground and plant samples; the cause of the traces remains debated.", wiki("Trans-en-Provence_case"));
   add("nancy", "Nancy / amaranth case", "1982-10-21", null, "Nancy, France", [48.69, 6.18], 9,
     ["amaranth", "amarante", "Laxou", "GEPAN"], "A witness described an object near garden plants; investigators considered the reported observation and subsequent plant changes.", wiki("UFO_sightings_in_France#1982"));
+  add("dalnegorsk", "Dalnegorsk / Height 611", "1986-01-29", null, "Dalnegorsk, Primorsky Krai, Russia (then USSR)", [44.55, 135.61], 9,
+    ["Dal'negorsk", "Hill 611", "Height 611", "Izvestkovaya", "Valery Dvuzhilny", "Russian Roswell"], "Residents reported a luminous sphere descending onto Height 611 and a subsequent fire. Later recovered-material claims do not establish an extraterrestrial origin.",
+    source("Dalnegorsk Museum: Height 611 (Russian)", "https://dalmuseum.ru/height611/", "local museum history"), { dateNote: "Reported local date, 29 January 1986. The preset does not include later follow-up sighting claims as part of this event." });
   add("jal_1628", "Japan Air Lines Flight 1628", "1986-11-17", null, "Alaska flight route, United States", [64.3, -147.0], 6,
     ["JAL 1628", "Kenju Terauchi", "Kenji Terauchi", "Alaska cargo flight"], "A cargo-flight captain reported objects during an Alaska flight; FAA records and proposed identifications were later disputed.", wiki("Japan_Air_Lines_Cargo_Flight_1628_incident"), { radiusKm: 500 });
   add("gulf_breeze", "Gulf Breeze photographs", "1987-11-11", "1988-05-01", "Gulf Breeze, Florida, United States", [30.36, -87.16], 9,
@@ -263,7 +266,7 @@
     ] });
 
   function normalizeCaseOrder(order) {
-    return String(order || "").trim().toLowerCase() === "chronological" ? "chronological" : "alphabetical";
+    return String(order || "").trim().toLowerCase() === "alphabetical" ? "alphabetical" : "chronological";
   }
   function sortCases(items, order) {
     const chronological = normalizeCaseOrder(order) === "chronological";
@@ -274,7 +277,7 @@
       return chronological ? byDate || byName || byId : byName || byDate || byId;
     });
   }
-  const CASES = Object.freeze(sortCases(records, "alphabetical"));
+  const CASES = Object.freeze(sortCases(records, "chronological"));
   const BY_ID = new Map(CASES.map(function (item) { return [item.id, item]; }));
 
   function normalizeSearch(value) {

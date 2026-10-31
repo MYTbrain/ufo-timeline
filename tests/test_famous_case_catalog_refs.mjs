@@ -22,8 +22,15 @@ const cash = cases.getCase("case_cash_landrum");
 assert.ok(cash.catalogRefs.length >= 6);
 const cashMappedRef = cash.catalogRefs.find(ref => ref.eventId === "4435047138615330");
 assert.ok(cashMappedRef, "The original reviewed Cash source reference is retained");
-for (const preset of cases.CASES) {
-  assert.ok(Object.isFrozen(preset.catalogReview), "Every one of the 85 cases has a completed identity review");
+const auditedCaseIds = new Set(["a", "b", "c"].flatMap(group => {
+  const audit = JSON.parse(readFileSync(new URL(`../docs/releases/famous-case-identity-audit/group-${group}.json`, import.meta.url), "utf8"));
+  return audit.cases.map(review => review.caseId);
+}));
+assert.equal(auditedCaseIds.size, 85, "The original completed identity review retains its historical scope");
+for (const caseId of auditedCaseIds) {
+  const preset = cases.getCase(caseId);
+  assert.ok(preset, `The originally reviewed preset ${caseId} is retained`);
+  assert.ok(Object.isFrozen(preset.catalogReview), "Every original audited case retains its completed identity review");
   assert.ok(["matched", "no_confirmed_match"].includes(preset.catalogReview.status));
   assert.equal(preset.catalogReview.status === "matched", preset.catalogRefs.length > 0);
   assert.ok(Object.isFrozen(preset.catalogRefs));
@@ -34,6 +41,12 @@ for (const preset of cases.CASES) {
     assert.ok(ref.identityEvidence && ref.sourceRef);
   }
 }
+const dalnegorsk = cases.getCase("case_dalnegorsk");
+assert.ok(dalnegorsk && !auditedCaseIds.has(dalnegorsk.id));
+assert.equal(dalnegorsk.catalogReview, null, "Dalnegorsk is a newly sourced historical preset, not an asserted completed database identity review");
+assert.deepEqual(dalnegorsk.catalogRefs, [], "No identity crosswalk is invented for the new case");
+assert.ok(Object.isFrozen(dalnegorsk.catalogRefs));
+assert.deepEqual(cases.CASES.filter(preset => !auditedCaseIds.has(preset.id)).map(preset => preset.id), ["case_dalnegorsk"]);
 const records = new Map(cash.catalogRefs.map(ref => [ref.eventId, {
   event_id: Number(ref.eventId), source: ref.source, sort_date_iso: ref.dateIso,
   has_coordinates: ref.mappingStatus !== "unmapped", lat: ref.reviewedLat, lon: ref.reviewedLon,
@@ -69,6 +82,7 @@ assert.equal(context.famousCaseCatalogEntries(cash).find(row => row.reference.ev
 assert.match(context.renderFamousCaseCatalogEntries(cash), /disabled/);
 assert.ok(cases.getCase("case_mariana").catalogRefs.length > 0, "Nonempty vicinities also receive actual source identity review");
 assert.match(context.renderFamousCaseCatalogEntries({ startIso: "2020-01-01", endIso: "2020-01-01", catalogRefs: [], catalogReview: { status: "no_confirmed_match" } }), /no confirmed case record/);
+assert.match(context.renderFamousCaseCatalogEntries(dalnegorsk), /database identity not yet checked/);
 const dateConflict = { ...cash, startIso: "1981-01-01", endIso: "1981-01-01" };
 assert.match(context.renderFamousCaseCatalogEntries(dateConflict), /source dates differ from the preset/);
 assert.match(context.renderFamousCaseCatalogEntries(dateConflict), /1980-12-29.*outside reported dates/);

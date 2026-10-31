@@ -44,6 +44,7 @@ const requested = [
   ["case_ariel_school", "1994-09-16", "1994-09-16", "1994-09-15", "1994-09-17"],
   ["case_betty_barney_hill", "1961-09-19", "1961-09-20", "1961-09-18", "1961-09-21"],
   ["case_kenneth_arnold", "1947-06-24", "1947-06-24", "1947-06-23", "1947-06-25"],
+  ["case_dalnegorsk", "1986-01-29", "1986-01-29", "1986-01-28", "1986-01-30"],
 ];
 for (const [id, first, last, contextFirst, contextLast] of requested) {
   const item = cases.getCase(id);
@@ -84,6 +85,11 @@ assert.ok(cases.getCase("case_kecksburg").sources.some((citation) => citation.ki
 assert.ok(cases.getCase("case_falcon_lake").sources.some((citation) => citation.url.includes("canada.ca")));
 assert.ok(cases.getCase("case_betty_barney_hill").sources.some((citation) => citation.url.includes("unh.edu")));
 assert.ok(cases.getCase("case_kenneth_arnold").sources.some((citation) => citation.url.includes("si.edu")));
+assert.ok(cases.getCase("case_dalnegorsk").sources.some((citation) => citation.url === "https://dalmuseum.ru/height611/"));
+assert.match(cases.getCase("case_dalnegorsk").description, /Residents reported/);
+assert.match(cases.getCase("case_dalnegorsk").description, /do not establish an extraterrestrial origin/);
+assert.equal(cases.getCase("case_dalnegorsk").catalogReview, null, "A new preset is not silently included in the prior database identity review");
+assert.deepEqual(cases.getCase("case_dalnegorsk").catalogRefs, [], "No original-record identity is inferred from nearby dates or coordinates");
 
 assert.equal(cases.filterCases("Kecksberg")[0].id, "case_kecksburg");
 assert.equal(cases.filterCases("Betty Barney 1961")[0].id, "case_betty_barney_hill");
@@ -93,6 +99,11 @@ assert.equal(cases.filterCases("Antônio Vilas-Boas")[0].id, "case_vilas_boas");
 assert.equal(cases.filterCases("O'Hare")[0].id, "case_ohare");
 assert.equal(cases.filterCases("O’Hare")[0].id, "case_ohare");
 assert.equal(cases.filterCases("TIC TAC")[0].id, "case_nimitz");
+assert.equal(cases.filterCases("Dalnegorsk 1986")[0].id, "case_dalnegorsk");
+assert.equal(cases.filterCases("Dal'negorsk")[0].id, "case_dalnegorsk");
+assert.equal(cases.filterCases("Hill 611")[0].id, "case_dalnegorsk");
+assert.equal(cases.filterCases("Height 611")[0].id, "case_dalnegorsk");
+assert.equal(cases.filterCases("Izvestkovaya")[0].id, "case_dalnegorsk");
 assert.deepEqual(cases.filterCases("no-such-case-zzzz"), []);
 assert.deepEqual(cases.filterCases("Kenneth Zimbabwe"), []);
 const all = cases.filterCases(null);
@@ -102,9 +113,11 @@ assert.equal(cases.filterCases("").length, cases.CASES.length, "Filtering return
 
 assert.equal(cases.normalizeCaseOrder("chronological"), "chronological");
 assert.equal(cases.normalizeCaseOrder(" CHRONOLOGICAL "), "chronological");
-for (const order of [undefined, null, "", "alphabetical", "unexpected"]) {
-  assert.equal(cases.normalizeCaseOrder(order), "alphabetical");
+for (const order of [undefined, null, "", "unexpected"]) {
+  assert.equal(cases.normalizeCaseOrder(order), "chronological");
 }
+assert.equal(cases.normalizeCaseOrder("alphabetical"), "alphabetical", "An explicitly saved alphabetical preference is retained");
+assert.equal(cases.normalizeCaseOrder(" ALPHABETICAL "), "alphabetical");
 const catalogIdsBefore = cases.CASES.map((item) => item.id);
 const chronology = cases.filterCases("", "chronological");
 assert.equal(chronology[0].id, "case_nuremberg");
@@ -141,15 +154,16 @@ assert.deepEqual(cases.sortCases(null, "chronological"), []);
 assert.notEqual(cases.sortCases(cases.CASES), cases.CASES, "Sorting always returns a fresh array");
 chronology.reverse();
 assert.deepEqual(cases.CASES.map((item) => item.id), catalogIdsBefore, "Ordering never mutates the catalog");
-assert.deepEqual(cases.filterCases("").map((item) => item.id), catalogIdsBefore, "Default remains alphabetical");
+assert.deepEqual(cases.filterCases("").map((item) => item.id), catalogIdsBefore, "Default is chronological");
+assert.equal(cases.filterCases("")[0].id, "case_nuremberg", "A fresh picker starts with the earliest case");
 
-assert.equal(cases.formatCaseLabel("case_kecksburg"), "Kecksburg · 1965");
-assert.equal(cases.formatCaseLabel("case_gulf_breeze"), "Gulf Breeze photographs · 1987–1988");
+assert.equal(cases.formatCaseLabel("case_kecksburg"), "1965 · Kecksburg");
+assert.equal(cases.formatCaseLabel("case_gulf_breeze"), "1987–1988 · Gulf Breeze photographs");
 assert.equal(cases.formatCaseLabel("case_kenneth_arnold", "chronological"), "1947 · Kenneth Arnold");
 assert.equal(cases.formatCaseLabel("case_gulf_breeze", "chronological"), "1987–1988 · Gulf Breeze photographs");
 assert.equal(cases.formatCaseLabel(cases.getCase("case_kecksburg"), " CHRONOLOGICAL "), "1965 · Kecksburg");
 assert.equal(cases.formatCaseLabel("case_kenneth_arnold", "alphabetical"), "Kenneth Arnold · 1947");
-assert.equal(cases.formatCaseLabel("case_kenneth_arnold", "unexpected"), "Kenneth Arnold · 1947");
+assert.equal(cases.formatCaseLabel("case_kenneth_arnold", "unexpected"), "1947 · Kenneth Arnold");
 assert.equal(cases.formatCaseLabel(null, "chronological"), "");
 assert.equal(cases.formatCaseDate("case_falcon_lake"), "1967-05-20");
 assert.equal(cases.formatCaseDate("case_betty_barney_hill"), "1961-09-19 to 1961-09-20");

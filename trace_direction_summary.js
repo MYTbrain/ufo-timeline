@@ -181,6 +181,15 @@
     return describeSegment(segment, options).directions;
   }
 
+  function segmentHasKnownDirection(segment) {
+    if (!segment || segmentOrderUncertain(segment)) return false;
+    // Accepted chronology evidence is authoritative, including same-day links.
+    // Legacy links must provide an explicit known-order flag or positive day gap.
+    const orderedEvidence = segment.chronology && segment.chronology.status === "ordered";
+    if (!orderedEvidence && segment.sameDayOrderKnown !== true && !(numericCoordinate(segment.gapDays) > 0)) return false;
+    return describeSegment(segment).valid;
+  }
+
   function canonicalConnectionEndpoint(value) {
     const pair = coordinatePair(value);
     if (!pair) return null;
@@ -556,10 +565,10 @@
     const directionText = data.denominator !== ordered
       ? " · " + data.denominator + " direction" + (data.denominator === 1 ? "" : "s") : "";
     const unknownText = unordered + " unknown-order link" + (unordered === 1 ? "" : "s") + " excluded";
-    const defaultEmpty = status === "off" ? "Enable traces to see directions for this time window."
-      : status === "loading" ? "Updating trace directions for this time window."
-        : unordered ? "These links have unknown chronological order; no directions can be counted."
-          : "No ordered report links are visible in this time window.";
+    const defaultEmpty = status === "off" ? "Enable traces to see directions."
+      : status === "loading" ? "Updating trace directions…"
+        : unordered ? "Unknown order; no directions can be counted."
+          : "No ordered links in this view.";
     const emptyText = !data.denominator
       ? '<p class="trace-direction-empty">' + escapeHtml(config.emptyMessage || defaultEmpty) + "</p>" : "";
     const rows = data.sectors.map(function (sector) {
@@ -578,12 +587,12 @@
         " excluded: " + data.excludedCounts.invalidCoordinates + " invalid coordinates, " + data.excludedCounts.zeroDistance +
         " coincident endpoints, " + data.excludedCounts.undefinedBearing + " undefined bearings.</p>" : "";
     return '<section class="trace-direction-summary trace-direction-legend-summary" data-direction-status="' + status +
-      '" aria-label="Report-link direction distribution"><p class="trace-direction-legend-scope">' +
-      escapeHtml(config.scopeLabel || "Visible traces · current time window") +
-      '</p><p class="trace-direction-legend-counts"><strong>' + countText + directionText +
+      '" aria-label="Report-link direction distribution"><p class="trace-direction-legend-counts"><strong>' + countText + directionText +
       '</strong><span class="trace-direction-uncertainty">' + unknownText + "</span></p>" +
       radialChartMarkup(data, { showEmpty: true }) + emptyText +
       '<details class="trace-direction-legend-details"><summary>Direction counts &amp; shares</summary>' +
+      (config.periodLabel ? '<p class="map-legend-direction-period">' + escapeHtml(config.periodLabel) + '</p>' : '') +
+      '<p class="trace-direction-legend-scope">' + escapeHtml(config.scopeLabel || "Visible traces · current time window") + '</p>' +
       '<table class="trace-direction-table"><caption class="sr-only">Eight compass sectors; shares of ' + data.denominator +
       ' ordered link directions. Unknown-order links are excluded.</caption><thead><tr><th scope="col">Direction</th>' +
       '<th scope="col">Count</th><th scope="col">Share</th></tr></thead><tbody>' + rows + "</tbody></table>" +
@@ -638,6 +647,7 @@
     sectorForBearing,
     segmentDirection,
     segmentOrderUncertain,
+    segmentHasKnownDirection,
     describeSegment,
     segmentDirections,
     groupUnorderedConnections,

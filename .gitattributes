@@ -151,6 +151,7 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -text
 /data/world_countries.geojson -text
 /famous_case_presets.js -text
+/famous_case_availability.js -text
 /flap_preset_labels.js -text
 /index.html -text
 /legend_controls.js -text

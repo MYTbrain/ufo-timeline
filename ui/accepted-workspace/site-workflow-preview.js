@@ -258,10 +258,8 @@
     document.documentElement.classList.add("site-workflow-preview");
     const reportBody = byId("primary-filters-body");
     caption("workflow-report-scope", reportBody, reportBody && reportBody.firstChild);
-    const legend = byId("map-legend-panel");
-    const legendCaption = caption("workflow-legend-scope", legend, byId("map-legend-status"));
-    setText(legendCaption, "Counts in this map view");
-    if (legendCaption) legendCaption.title = "Viewport legend counts can differ from the full filtered Results total.";
+    const legendTitle = document.querySelector("#map-legend-panel .map-legend-title");
+    if (legendTitle) legendTitle.title = "Counts reflect the current map view and may differ from Results.";
     caption("workflow-context-scope", byId("map-control-overlays-slot"));
     caption("workflow-convergence-scope", byId("map-control-intersections-slot"));
     const convergenceLabel = document.querySelector("#map-control-section-intersections .map-control-summary-label");
