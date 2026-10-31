@@ -35080,10 +35080,6 @@
     if (selectedReport) {
       await selectEvent(selectedReport.event_id, { centerMap: false });
     }
-    if (runtime.analysisViewController && ["map", "analysis"].includes(snapshot.section)) {
-      runtime.analysisViewController.setAnalysisEnabled(true, "");
-      runtime.analysisViewController.setActiveView(snapshot.section, { source: "shared-view" });
-    }
     const map = snapshot.map;
     if (map && runtime.map) {
       if (typeof map.basemap === "string" && Array.from(els.basemapMode.options).some(function (option) { return option.value === map.basemap; })) {
@@ -35093,6 +35089,11 @@
       if (Number.isFinite(map.lat) && Math.abs(map.lat) <= 90 && Number.isFinite(map.lng) && Math.abs(map.lng) <= 100000 && Number.isFinite(map.zoom) && map.zoom >= 0 && map.zoom <= 22) {
         runtime.map.setView([map.lat, map.lng], map.zoom, { animate: false });
       }
+    }
+    // Position the map while its container is visible, before opening Analysis.
+    if (runtime.analysisViewController && ["map", "analysis"].includes(snapshot.section)) {
+      runtime.analysisViewController.setAnalysisEnabled(true, "");
+      runtime.analysisViewController.setActiveView(snapshot.section, { source: "shared-view" });
     }
     runtime.sharedViewRestored = true;
   }

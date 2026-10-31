@@ -9,7 +9,9 @@
     "documentRequestUrl": "http://127.0.0.1:8136/index.html",
     "settingsInRequestUrl": false,
     "analysisNavigationRetainsToken": true,
-    "analysisSection": "analysis-section-encounters"
+    "analysisSection": "analysis-section-encounters",
+    "analysisFirstSnapshotDifferences": 0,
+    "mapCenterPreservedAfterReturningFromAnalysis": true
   },
   "tests": [
     "test_share_view.mjs",
@@ -18,5 +20,9 @@
     "3 shell contract checks",
     "6 bounded release checks"
   ],
-  "independentReview": "No blockers found in fragment decoding, navigation, startup guards or release allowlists."
+  "independentReview": "No blockers found in fragment decoding, navigation, startup guards or release allowlists.",
+  "supersededHostedPreview": {
+    "url": "https://1f086736.ufo-timeline.pages.dev",
+    "reason": "Superseded by map-center restore-order correction; no deletion performed."
+  }
 }

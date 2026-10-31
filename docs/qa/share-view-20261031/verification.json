@@ -18,7 +18,8 @@
     "Fragment and legacy browser snapshots match exactly, ignoring regenerated shape IDs",
     "Browser network Document request was /index.html without view settings",
     "Analysis navigation preserves view token and selected section",
-    "Analysis navigation test suite passed; independent fragment review found no blockers"
+    "Analysis navigation test suite passed; independent fragment review found no blockers",
+    "Analysis-first link preserves exact map center before and after returning to Map Explorer"
   ],
   "storage": {
     "canonical": ".tmp/workspace-analysis-20261008-pages",
@@ -28,13 +29,13 @@
     "cleanup": "No duplicate local stage; previous rollback designation superseded only after successful publication. No deletion.",
     "production": "2850fbfd-1010-417d-86c4-3d94decc5025",
     "supersededLargeArtifacts": [],
-    "stageNetGrowthBytes": 58121
+    "stageNetGrowthBytes": 58202
   },
   "files": [
     {
       "path": "app.js",
-      "bytes": 1550050,
-      "sha256": "31fe10802efe87251dc0a54c3c8a34cf4d14d9742e610553b80fd76923822053"
+      "bytes": 1550131,
+      "sha256": "330b3ec80aefb25fa8456720867e98f5fb854942c276f29f09cdf7c9ce8943b6"
     },
     {
       "path": "index.html",

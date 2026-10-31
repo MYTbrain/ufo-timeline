@@ -292,8 +292,8 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1550050,
-      "sha256": "31fe10802efe87251dc0a54c3c8a34cf4d14d9742e610553b80fd76923822053",
+      "bytes": 1550131,
+      "sha256": "330b3ec80aefb25fa8456720867e98f5fb854942c276f29f09cdf7c9ce8943b6",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1882,8 +1882,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "43d8ba8655bcaa06e9a1b14204a6e8394d00f5b8069713220168d7031182b6b8",
-  "pages_total_bytes": 41626572,
+  "pages_tree_sha256": "95dc8369c112b6319bba8cee42c29861e1d857b2d4da0a40affc9ca73cdfbb4c",
+  "pages_total_bytes": 41626653,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -5477,9 +5477,9 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 58121,
-    "existing_stage_bytes": 41568451,
-    "c_free_bytes_before_stage": 4958523392,
+    "approximate_net_local_growth_bytes": 81,
+    "existing_stage_bytes": 41626572,
+    "c_free_bytes_before_stage": 4920430592,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
     "rollback": "2850fbfd-1010-417d-86c4-3d94decc5025",
@@ -5560,13 +5560,9 @@
     "source_fields_preserved": true
   },
   "frontend_refresh": {
-    "base_pages_tree_sha256": "e473ce1355d5108af28ca09e0e6c8b1342cdde08a53580762d0e995b59687b22",
+    "base_pages_tree_sha256": "43d8ba8655bcaa06e9a1b14204a6e8394d00f5b8069713220168d7031182b6b8",
     "changed_paths": [
-      "analysis_view.js",
-      "app.js",
-      "index.html",
-      "share_view.js",
-      "styles.css"
+      "app.js"
     ],
     "data_and_upload_records_unchanged": true
   }
