@@ -16299,7 +16299,7 @@
       return { status: "off", scopeLabel: "Current time window", emptyMessage: "Enable Static traces to see directions for this time window." };
     }
     if (traceModeIncludesPlayback()) {
-      const bounds = runtime.map ? currentMapViewportBoundsSnapshot() : null;
+      const bounds = runtime.map ? runtime.map.getBounds() : null;
       const trail = runtime.playbackTrailCanvasLayer && runtime.playbackTrailCanvasLayer._segments || [];
       const shown = bounds ? trail.filter(function (segment) { return traceSegmentMayIntersectBounds(segment, bounds); }) : trail;
       return { summary: TRACE_DIRECTIONS.summarizeDirections(shown), status: "ready", scopeLabel: "Visible playback trail", emptyMessage: "Play the chronology to see directions in its visible trail." };

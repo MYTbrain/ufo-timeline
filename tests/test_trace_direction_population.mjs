@@ -222,8 +222,11 @@ const rawLinks = events.slice(1).map((event, index) => {
 let areaActive = true;
 let isCase = true;
 let areaResult = { pointOnly: false, visibleTraceSegments: rawLinks };
+const playbackBounds = {
+  getSouth: () => -1, getWest: () => -1, getNorth: () => 9, getEast: () => 11,
+};
 const legendRuntime = {
-  map: {},
+  map: { getBounds: () => playbackBounds },
   playbackTrailCanvasLayer: { _segments: rawLinks },
 };
 const legendState = { traceMode: "off", regionSelection: { direction: "forward" } };
@@ -235,10 +238,14 @@ const viewContext = vm.createContext({
   currentRegionSelectionResult: () => areaResult,
   famousCaseTraceSelectionActive: () => isCase,
   traceModeIncludesPlayback: () => legendState.traceMode === "playback",
-  currentMapViewportBoundsSnapshot: () => ({ visibleLinks: new Set(["1->2", "2->3"]) }),
-  traceSegmentMayIntersectBounds: (segment, bounds) => bounds.visibleLinks.has(segment.traceId),
+  TRACE_VIEWPORT_LAT_PAD: 0, TRACE_VIEWPORT_LON_PAD: 0,
 });
-vm.runInContext(areaSummarySource + "\n" + legendViewSource, viewContext);
+vm.runInContext(areaSummarySource + "\n" + legendViewSource + "\n" + [
+  "currentMapViewportBoundsSnapshot", "traceSegmentMayIntersectBounds", "wrappedSegmentCopies",
+  "worldIndicesNearReferenceLongitude", "normalizeLongitude",
+].map(extract).join("\n"), viewContext);
+assert.deepEqual({ ...viewContext.currentMapViewportBoundsSnapshot() }, { south: -1, west: -1, north: 9, east: 11 },
+  "The serializable bounds snapshot is intentionally distinct from Leaflet's method-based bounds");
 
 let view = viewContext.legendTraceDirectionView();
 assert.equal(view.status, "ready", "Selected case links remain usable while global static traces are off");
@@ -267,6 +274,8 @@ assert.equal(view.summary.uniqueSegments, 2, "Playback statistics use only the c
 assert.equal(view.summary.unorderedSegments, 1);
 assert.equal(view.summary.denominator, 1);
 assert.equal(view.summary.sectors.find(sector => sector.key === "N").percentage, 100);
+assert.equal(legendRuntime.playbackTrailCanvasLayer._segments.length, 3,
+  "Viewport statistics retain the offscreen and unknown links in playback history");
 legendRuntime.map = null;
 assert.equal(viewContext.legendTraceDirectionView().summary.denominator, 2,
   "A missing viewport conservatively uses the existing trail, without inventing whole-window statistics");

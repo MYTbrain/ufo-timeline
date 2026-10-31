@@ -1,0 +1,56 @@
+{
+  "observedUtc": "2026-10-31T16:12:30.324Z",
+  "status": "local_preview_verified",
+  "reproductionUrl": "https://ufo-timeline.pages.dev/#view=3.g.H4sIAAAAAAAACk2OS27DMAxE78L11OBHoiRfRdAidd3UcJoUsQM0CHL3Qll1xceZB4K1CqQol4aqnUQaqoGm27ZfvqmhBjxo1ZlGKaICWjV3VpFnQ429lV8aXQfNHHIwS5nNYjeZxjfhwVOy4KZcWFwVtIaJRh1Sl5xGmi7nz-V4u84f9GyQgqoR9HM63N8P00oNJjCHJVRn8MCxobpAhtzBYH2E_297PzBft2Xb5_P-Shx0Wo5fryUpYoOwQzRAQkCVmGHR1VRyjKWUrLm1P8aA5RsiAQAA&s=sources-quality",
+  "before": {
+    "paused": "Paused 18 / 137 at 4x",
+    "stalled": "Playing 18 / 137 at 4x",
+    "errors": [
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:12.693Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:12.999Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:13.305Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:13.611Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at renderMapLegend (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16270:5)\n    at renderPlaybackStatus (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:31439:7)\n    at pausePlayback (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:31506:5)\n    at togglePlayback (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:31707:7)\n    at HTMLButtonElement.<anonymous> (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:32870:9)",
+        "timestamp": "2026-10-31T16:10:13.663Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:13.668Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at renderMapLegend (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16270:5)\n    at renderPlaybackStatus (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:31439:7)\n    at togglePlayback (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:31719:7)\n    at HTMLButtonElement.<anonymous> (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:32870:9)",
+        "timestamp": "2026-10-31T16:10:13.947Z"
+      },
+      {
+        "message": "TypeError: bounds.getSouth is not a function\n    at traceSegmentMayIntersectBounds (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:19815:26)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:71\n    at Array.filter (<anonymous>)\n    at legendTraceDirectionView (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16304:36)\n    at renderLegendTraceDirectionPanel (http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16315:18)\n    at http://127.0.0.1:8136/app.js?v=2026-10-31-global-trace-directions-v1:16284:7",
+        "timestamp": "2026-10-31T16:10:13.952Z"
+      }
+    ]
+  },
+  "after": {
+    "timelinePaused": "Paused 18 / 137 at 4x",
+    "timelineResumed": "Playing 18 / 137 at 4x",
+    "timelineAdvanced": "Playing 42 / 137 at 4x",
+    "mapPaused": "Paused 42 / 137 at 4x",
+    "mapResumed": "Playing 42 / 137 at 4x",
+    "mapAdvanced": "Playing 116 / 137 at 4x",
+    "finalPause": "Paused 116 / 137 at 4x",
+    "newErrors": []
+  },
+  "passed": true,
+  "productionUnchanged": true,
+  "screenshot": "playback-resume.png"
+}
