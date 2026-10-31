@@ -1830,7 +1830,7 @@
       displayMode: "hide-unselected",
       depth: CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DEPTH,
       direction: CHRONOLOGICAL_NEIGHBORHOOD_DEFAULT_DIRECTION,
-      knownDirectionOnly: false,
+      knownDirectionOnly: true,
     };
   }
 
@@ -1897,6 +1897,7 @@
       traceWidthScale: TRACE_WIDTH_SCALE_DEFAULT,
       traceBoldnessScale: TRACE_BOLDNESS_SCALE_DEFAULT,
       showTrailLegend: false,
+      showTraceDirectionArrows: false,
       panelCollapse: defaultPanelCollapseState(),
       primaryFiltersCollapsed: window.innerWidth <= MAP_CONTROL_CLUSTER_MOBILE_BREAKPOINT,
       filterSectionCollapse: defaultFilterSectionCollapseState(),
@@ -15884,7 +15885,7 @@
       eventSelection.mode !== "all" ||
       runtime.encounterMapEnabled || runtime.encounterDisplayMode !== "markers" || runtime.encounterConnectionsEnabled || runtime.encounterConnectionRadiusKm !== 250 || runtime.encounterMapHiddenKinds.size > 0 || runtime.encounterMapIncludeAmbiguous || runtime.encounterTraceHighlightEventId != null ||
       state.showTraceDirectionArrows ||
-      Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly) ||
+      Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly) !== defaultRegionSelectionState().knownDirectionOnly ||
       craftTypeColorsAreCustomized() ||
       !booleanStateMatchesDefaults(state.overlayVisibility, defaultOverlayVisibilityState()) ||
       !booleanStateMatchesDefaults(state.claimedUfoBaseVisibility, defaultClaimedUfoBaseVisibilityState()) ||
@@ -16184,8 +16185,9 @@
   }
 
   function resetMapLegendControls() {
-    const knownDirectionWasFiltered = Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly);
-    if (state.regionSelection) state.regionSelection.knownDirectionOnly = false;
+    const defaultKnownDirectionOnly = defaultRegionSelectionState().knownDirectionOnly;
+    const knownDirectionChanged = Boolean(state.regionSelection && state.regionSelection.knownDirectionOnly) !== defaultKnownDirectionOnly;
+    if (state.regionSelection) state.regionSelection.knownDirectionOnly = defaultKnownDirectionOnly;
     runtime.encounterMapEnabled = false; runtime.encounterDisplayMode = "markers";
     runtime.encounterConnectionsEnabled = false; runtime.encounterConnectionRadiusKm = 250;
     runtime.encounterMapHiddenKinds.clear(); runtime.encounterMapIncludeAmbiguous = false;
@@ -16232,7 +16234,7 @@
     announceMapLegendStatus("Legend filters, overlays, and craft colors were reset to their defaults.");
     if (eventSelectionWasFiltered) {
       scheduleRefresh({ immediate: true });
-    } else if (knownDirectionWasFiltered) {
+    } else if (knownDirectionChanged) {
       refreshRegionSelectionRenderState();
     } else {
       renderMap();
@@ -31873,6 +31875,8 @@
     state.traceMode = defaults.traceMode;
     state.playbackTracePersistence = defaults.playbackTracePersistence;
     state.showTrailLegend = defaults.showTrailLegend;
+    state.showTraceDirectionArrows = defaults.showTraceDirectionArrows;
+    safeStorageSet(TRACE_DIRECTION_ARROWS_STORAGE_KEY, state.showTraceDirectionArrows ? "1" : "0");
     state.panelCollapse = Object.assign({}, defaults.panelCollapse);
     state.primaryFiltersCollapsed = defaults.primaryFiltersCollapsed;
     state.filterSectionCollapse = Object.assign({}, defaults.filterSectionCollapse);

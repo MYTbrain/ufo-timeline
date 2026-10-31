@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { gzipSync } from "node:zlib";
 import vm from "node:vm";
 
+const require = createRequire(import.meta.url);
+const share = require("../share_view.js");
 const app = readFileSync(new URL("../app.js", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const evidence = JSON.parse(readFileSync(new URL("../docs/qa/share-view-20261031/browser.json", import.meta.url), "utf8"));
 const saved = evidence.caseRoundTrip.expected;
@@ -84,4 +88,38 @@ assert.equal(empty.time.visible, null);
 assert.equal(empty.map, null);
 assert.deepEqual(empty.region.shapes, []);
 assert.equal(empty.region.caseShapeIndex, -1);
-console.log("Shared-view capture: derived labels and local IDs omitted; exact geometry, settings, checkboxes and case association preserved.");
+
+assert.equal(context.defaultRegionSelectionState().knownDirectionOnly, true,
+  "An ordinary new view uses the requested known-direction-only default");
+
+// These protocol fixtures predate the UI default change. Their omitted wire
+// delta still means an explicit false in the restored snapshot, not today's
+// default. Never derive these fixtures from the live application defaults.
+const oldV2Baseline = "2." + gzipSync(Buffer.from('["d",[0]]', "utf8")).toString("base64url");
+const oldV3Baseline = "3.r.W10";
+for (const [version, token] of [["v2", oldV2Baseline], ["v3", oldV3Baseline]]) {
+  const decoded = await share.readAnyUrl("https://ufo-timeline.pages.dev/#view=" + token);
+  assert.equal(decoded.region.knownDirectionOnly, false, `${version} retains its frozen protocol baseline`);
+  state.regionSelection = context.defaultRegionSelectionState();
+  assert.equal(state.regionSelection.knownDirectionOnly, true);
+  context.snapshot = decoded;
+  vm.runInContext("restoreShareRegion(snapshot.region)", context);
+  assert.equal(state.regionSelection.knownDirectionOnly, false,
+    `${version} explicitly restores all directions despite the new app default`);
+}
+
+for (const knownOnly of [false, true]) {
+  state.regionSelection.knownDirectionOnly = knownOnly;
+  const captured = json(context.captureShareView());
+  assert.equal(captured.region.knownDirectionOnly, knownOnly);
+  const url = await share.buildCompactUrl(captured, "https://ufo-timeline.pages.dev/");
+  const decoded = await share.readAnyUrl(url);
+  assert.equal(decoded.region.knownDirectionOnly, knownOnly,
+    `Current compact links preserve explicit knownDirectionOnly=${knownOnly}`);
+  state.regionSelection.knownDirectionOnly = !knownOnly;
+  context.snapshot = decoded;
+  vm.runInContext("restoreShareRegion(snapshot.region)", context);
+  assert.equal(state.regionSelection.knownDirectionOnly, knownOnly,
+    "The saved checkbox choice takes precedence over recipient state");
+}
+console.log("Shared-view capture passed: exact geometry/settings/case association, new known-direction default, frozen v2/v3 false restoration and explicit true/false compact-link round trips.");

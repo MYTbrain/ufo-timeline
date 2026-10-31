@@ -67,7 +67,7 @@ const context = vm.createContext({ state, runtime, TRACE_DIRECTIONS: directions,
   announceMapLegendStatus: message => calls.message = message,
 });
 vm.runInContext(["currentSelectableTraceSegments", "currentRegionSelectionTraceKey", "defaultRegionSelectionState", "setKnownTraceDirectionOnly"].map(extractFunction).join("\n"), context);
-assert.equal(context.defaultRegionSelectionState().knownDirectionOnly, false, "reset shows all connections");
+assert.equal(context.defaultRegionSelectionState().knownDirectionOnly, true, "fresh views and resets show only known-direction connections");
 assert.equal(context.currentSelectableTraceSegments(), rawSegments, "disabled filter preserves the existing cached sequence");
 const allKey = context.currentRegionSelectionTraceKey();
 context.setKnownTraceDirectionOnly(true);
@@ -96,8 +96,10 @@ assert.equal(context.currentSelectableTraceSegments().length, 0);
 const markup = extractFunction("renderMapLegend");
 assert.ok(markup.indexOf('id="legend-known-direction-only"') > markup.indexOf('id="legend-trace-arrows"'));
 assert.match(markup, /aria-describedby="legend-known-direction-help"/);
-assert.match(extractFunction("resetMapLegendControls"), /state\.regionSelection\.knownDirectionOnly = false/);
+assert.match(extractFunction("resetMapLegendControls"), /state\.regionSelection\.knownDirectionOnly = defaultKnownDirectionOnly/);
 assert.match(extractFunction("resetViewState"), /state\.regionSelection = Object\.assign\(\{\}, defaults\.regionSelection/);
+assert.match(extractFunction("createDefaultResetViewState"), /showTraceDirectionArrows: false/);
+assert.match(extractFunction("resetViewState"), /state\.showTraceDirectionArrows = defaults\.showTraceDirectionArrows/);
 // The ordinary map needs the same controls as a selected area or case.
 let selectedArea = false;
 let pointOnly = false;
