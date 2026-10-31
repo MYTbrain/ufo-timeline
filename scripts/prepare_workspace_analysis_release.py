@@ -618,7 +618,7 @@ def refresh_frontend(check_only=False):
     reserve = 100 * 1024**3
     require(net_growth <= 100 * 1024**2 if free_bytes < reserve else free_bytes - net_growth >= reserve,
             "Frontend refresh exceeds available storage budget")
-    plan["runtime_revision"] = "share-view-20261031-v3"
+    plan["runtime_revision"] = "compact-share-v3-mosaic-20261031"
     plan["base_deployment"] = rollback
     plan["retained_rollback"] = rollback
     plan["frontend_refresh"] = {"base_pages_tree_sha256": previous["pages_tree_sha256"],

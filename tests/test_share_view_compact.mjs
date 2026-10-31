@@ -18,12 +18,12 @@ const measurements = [];
 const frozenV2 = "2.H4sIAAAAAAAACm1S0ZKCMAz8lzyD06a0QH-FYRyE6nEgdQre6Tn8-03DgcLpE9vdJLsmGVQQZBg8oClBZzyAsujN3tmDccN-KO6tdZAH0PAK9KTjLQkHdzVEnAkei7Y3-RhkOT3eZ_VlKeve6L5mNkoXnXjRBdCIz23dMkTNNee1o-gJVwXIiXhAo0BDabtjfbo6U4EvuoGWcpdyxBhTwZgSivsaBjoUO8mlQsnmXxRAE5Wg1Uh9f2YjFQ1g5OJ7ZUqka1hsUn4Qzh7QGNCPp58XC3L0bXvQ4Myptl2I3jjeQcfembeU-Fy1K1sDI0UW9WZOs7bRbuhu89f5t9OcDg_LktZlcg2xfrNqtEub4h3tpvO7GNfX_WC6gc4Oe3oW9D38Xei1H-yZaLGZLNQkaW1ZDLXt9kVfTkK7yh1NAdhOElJ_iMln6tuSNZ4sKEZ7xeN_F9dJIdOE2hXzmWEMGpChClkUck7rSkAjk9JfEFaggScpCxkP2UQb0CGmyNPx5XbzX-dOfp2nAwAA";
 assert.deepEqual(await share.decodeAny(frozenV2), archived[0], "previous v2 links retain their exact baseline and key meanings");
 
-assert.equal(share.COMPACT_VERSION, 2);
+assert.equal(share.COMPACT_VERSION, 3);
 for (const snapshot of archived) {
   const original = JSON.stringify(snapshot);
   const legacy = share.encode(snapshot);
   const compact = await share.encodeCompact(snapshot);
-  assert.match(compact, /^2\.[A-Za-z0-9_-]+$/);
+  assert.match(compact, /^(?:2\.|3\.[rg]\.)[A-Za-z0-9_-]+$/);
   assert.ok(compact.length <= legacy.length * 0.4, "the real view should shrink by at least 60 percent");
   assert.deepEqual(await share.decodeAny(compact), snapshot, "every original setting survives compaction");
   assert.deepEqual(await share.decodeAny(legacy), snapshot, "original v1 links remain readable");
@@ -31,9 +31,10 @@ for (const snapshot of archived) {
   const url = new URL(await share.buildCompactUrl(snapshot, base));
   const fragment = new URLSearchParams(url.hash.slice(1));
   assert.equal(url.search, "", "compact settings never enter the HTTP request query");
-  assert.deepEqual([...fragment.keys()], ["view", "section"]);
+  assert.deepEqual([...fragment.keys()], ["view", "s"]);
   assert.equal(fragment.get("view"), compact);
-  assert.equal(fragment.get("section"), "analysis-section-encounters");
+  assert.equal(fragment.get("s"), "encounters");
+  assert.equal(share.readSectionHash(url.href), "#analysis-section-encounters");
   assert.deepEqual(await share.readAnyUrl(url.href), snapshot);
   assert.deepEqual(await share.readAnyUrl(share.buildUrl(snapshot, base)), snapshot);
   assert.deepEqual(await share.readAnyUrl(`https://example.test/?view=${compact}`), snapshot,
@@ -113,7 +114,8 @@ for (const suffix of ["?view=", "#view=", "?view=a&view=b", "#view=a&view=b",
 assert.deepEqual(await share.readAnyUrl("https://example.test/#view=" + frozenV2), archived[0],
   "existing compact bytes can move to the fragment without changing the restored state");
 
-const compact = await share.encodeCompact(archived[0]);
+// Keep the v2 transport's corruption/CRC tests independent of which encoder wins.
+const compact = frozenV2;
 const bytes = Buffer.from(compact.slice(2), "base64url");
 assert.ok(gunzipSync(bytes).length < 24576);
 const corrupt = Buffer.from(bytes);
@@ -122,7 +124,7 @@ for (const token of ["2.", "2.a", "2._w", compact + "=", "2." + corrupt.toString
   "2." + bytes.subarray(0, bytes.length - 5).toString("base64url"), compressedToken("{"), compressedToken("[]")]) {
   await assert.rejects(share.decodeAny(token), Error, "malformed or corrupt data is rejected");
 }
-await assert.rejects(share.decodeAny("3." + compact.slice(2)), /newer/i);
+await assert.rejects(share.decodeAny("4." + compact.slice(2)), /newer/i);
 await assert.rejects(share.decodeAny("1." + compact.slice(2)), /not supported|unsupported/i);
 await assert.rejects(share.decodeAny("2." + "a".repeat(32772)), /too large/i);
 await assert.rejects(share.decodeAny(compressedToken('"' + "x".repeat(24577) + '"')), /too large/i,
@@ -144,7 +146,7 @@ for (const preference of ["checked", "unchecked"]) {
   vm.runInContext(code, browser);
   browser.snapshotJson = JSON.stringify(tricky);
   browser.token = await vm.runInContext("UfoShareView.encodeCompact(JSON.parse(snapshotJson))", browser);
-  assert.match(browser.token, /^2\./);
+  assert.match(browser.token, /^(?:2\.|3\.[rg]\.)/);
   const restored = await vm.runInContext("UfoShareView.decodeAny(token).then(JSON.stringify)", browser);
   assert.deepEqual(JSON.parse(restored), tricky, "the actual browser API path works without Node Buffer");
   browser.token = share.encode(tricky);
@@ -160,7 +162,7 @@ const fallback = vm.createContext({ ...browserGlobals, CompressionStream: undefi
 vm.runInContext(code, fallback);
 fallback.snapshotJson = JSON.stringify(tricky);
 const fallbackToken = await vm.runInContext("UfoShareView.encodeCompact(JSON.parse(snapshotJson))", fallback);
-assert.equal(fallbackToken, share.encode(tricky), "unavailable compression preserves the portable legacy format");
+assert.ok(fallbackToken.length <= share.encode(tricky).length, "unavailable compression selects a portable raw format no longer than legacy");
 fallback.token = fallbackToken;
 assert.deepEqual(JSON.parse(await vm.runInContext("UfoShareView.decodeAny(token).then(JSON.stringify)", fallback)), tricky);
 fallback.token = compact;

@@ -34924,9 +34924,17 @@
     const region = Object.assign({}, state.regionSelection, { drawingActive: false, modeActive: false,
       country: state.analysisCountryAreaFilter,
       caseShapeIndex: state.regionSelection.shapes.findIndex(function (shape) { return shape.id === runtime.famousCaseShapeId; }) });
+    // Shape IDs are local; restoration regenerates them and uses caseShapeIndex.
+    region.shapes = region.shapes.map(function (shape) {
+      const saved = Object.assign({}, shape);
+      delete saved.id;
+      return saved;
+    });
+    const visible = state.visibleTimelineExtent;
     return JSON.parse(JSON.stringify({
       time: { start: state.timeRangeStartOrdinal, end: state.timeRangeEndOrdinal, mode: state.timeRangeMode,
-        visible: state.visibleTimelineExtent },
+        // ISO labels are derived; restoring the timeline only needs ordinals.
+        visible: visible ? { minOrdinal: visible.minOrdinal, maxOrdinal: visible.maxOrdinal } : null },
       map: center ? { lat: center.lat, lng: center.lng, zoom: runtime.map.getZoom(), basemap: state.currentTileProviderId } : null,
       case: state.famousCaseId, filters: { facets: facets, keyword: getCurrentKeyword(),
         hideLowPrecision: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),

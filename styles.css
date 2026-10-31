@@ -11482,7 +11482,7 @@ button.analysis-forest-row:hover {
 
 .analysis-craft-mosaic {
   position: relative;
-  min-height: clamp(260px, 30vw, 390px);
+  height: 22rem;
   overflow: hidden;
   border: 1px solid var(--panel-border);
   border-radius: 16px;
@@ -11490,11 +11490,11 @@ button.analysis-forest-row:hover {
 }
 
 .analysis-craft-mosaic-card .analysis-craft-mosaic {
-  min-height: clamp(230px, 30cqi, 285px);
+  height: 24rem;
 }
 
 .analysis-overview-mosaic-card .analysis-craft-mosaic {
-  min-height: 188px;
+  height: 20rem;
 }
 
 .analysis-overview-mosaic-card .analysis-data-details {
@@ -11543,9 +11543,10 @@ button.analysis-forest-row:hover {
   box-sizing: border-box;
   min-width: 0;
   display: grid;
+  grid-auto-rows: max-content;
   align-content: end;
   gap: 3px;
-  padding: clamp(5px, 0.7vw, 11px);
+  padding: 0.5rem;
   overflow: hidden;
   border: 2px solid var(--panel-strong);
   border-radius: 8px;
@@ -11591,16 +11592,17 @@ button.analysis-craft-mosaic-tile:focus-visible {
 }
 
 .analysis-craft-mosaic-label {
-  overflow: hidden;
-  font-size: clamp(0.68rem, 0.85vw, 0.9rem);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  white-space: normal;
 }
 
 .analysis-craft-mosaic-count,
 .analysis-craft-mosaic-effect {
   color: color-mix(in srgb, var(--ink) 78%, var(--muted));
-  font-size: clamp(0.58rem, 0.7vw, 0.72rem);
+  font-size: 0.8rem;
+  line-height: 1.25;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   font-weight: 750;
 }
@@ -11620,15 +11622,75 @@ button.analysis-craft-mosaic-tile:focus-visible {
 
 .analysis-craft-mosaic-tile.is-compact {
   align-content: center;
-  padding: 5px 6px;
 }
 
 .analysis-craft-mosaic-tile.is-compact .analysis-craft-mosaic-effect {
   display: none;
 }
 
-.analysis-craft-mosaic-tile.is-compact .analysis-craft-mosaic-label {
-  font-size: 0.63rem;
+.analysis-mosaic-tile-index {
+  display: none;
+  font-size: 0.85rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.analysis-craft-mosaic-tile.has-external-label {
+  align-content: center;
+  text-align: center;
+}
+
+.analysis-craft-mosaic-tile.has-external-label > * {
+  display: none;
+}
+
+.analysis-craft-mosaic-tile.has-external-label:not(.is-symbol-only) .analysis-mosaic-tile-index {
+  display: block;
+}
+
+.analysis-mosaic-label-key {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 4px 12px;
+  margin-top: 8px;
+}
+
+.analysis-mosaic-label-key[hidden],
+.analysis-mosaic-key-entry[hidden] {
+  display: none;
+}
+
+.analysis-mosaic-key-entry {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.analysis-mosaic-key-label {
+  overflow-wrap: anywhere;
+}
+
+.analysis-mosaic-key-index {
+  padding: 2px 0;
+  border-radius: 3px;
+  background: var(--analysis-mosaic-fill);
+  font-weight: 750;
+  text-align: center;
+}
+
+.analysis-mosaic-key-share {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .analysis-mosaic-encoding {

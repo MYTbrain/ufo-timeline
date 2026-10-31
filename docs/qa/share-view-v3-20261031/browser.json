@@ -1,0 +1,443 @@
+{
+  "sourceUrl": "http://127.0.0.1:8136/index.html#view=2.H4sIAAAAAAAACnVQyWrDQAz9F53HRtJsnvkV40PwEoKbuHgJLsH_XkaunULpZXiL0HuaEhpQJasX9HqF-IMWiCUpCkxYKejJn5wS50441Ms0D3dIkrmI9IKeW4gUiCkNFgkzCW4gAiNzhjbDAEnyp1Rk6GGrNlVWkkDHOlohZmRzdoULVqMPxmufRhBiZjAni2SMC8TonElVaoice6ugdxChHh7d7bqMbQNbWq2v55l3CZnHpZXM4TB4P6a7fEziaP2LHxWNExFztEL3xpQXsmsSxoLnP7_F4y59tuN0m-b2Me-fqM8GqwzYPe2IpK_Dfx6AzPuGs9m_5vupvgEioqCg-QEAAA&section=analysis-section-overview",
+  "generatedUrl": "http://127.0.0.1:8136/index.html#view=3.g.H4sIAAAAAAAACk2OS2oDQQxE76J1uZHUUv-u0vRqMglmiB08M2AwvnvorLKqR71aVO8CqSo80PWPZKBH0HLux_2bBrrhRZuu1KSKCmjTMllF3gPdp5UntYt40FRS9ci5Wo55TpnaxTiIK0e2XIt7LqDNFmoasoO2RI2W--3z-nU-1g96D0RBTIgZPTE4sA_0JJBQJkToDPv_MTnoZ33s1_1Yb8dsssIHRA1iNn4BwDJRGOcAAAA&s=overview",
+  "encodedSnapshotExact": true,
+  "restoredSnapshotExact": true,
+  "expected": {
+    "case": "",
+    "filters": {
+      "encounterSelectionIds": null,
+      "facets": {
+        "precision": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "source": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "type": {
+          "mode": "subset",
+          "selectedValues": [
+            "Beam",
+            "Changing / irregular",
+            "Chevron",
+            "Cigar",
+            "Circle",
+            "Cone",
+            "Crescent",
+            "Cross",
+            "Cylinder",
+            "Diamond",
+            "Disk",
+            "Fireball",
+            "Flash",
+            "Formation",
+            "Landing",
+            "Light",
+            "Linear",
+            "Oval / egg",
+            "Rectangle",
+            "Sphere / orb",
+            "Star-like",
+            "Teardrop",
+            "Triangle"
+          ]
+        }
+      },
+      "hideLowPrecision": false,
+      "hideNonExactDates": true,
+      "keyword": ""
+    },
+    "layers": {
+      "animals": {
+        "dateScope": "window",
+        "enabled": true
+      },
+      "convergence": {
+        "craftScope": "all_no_lights",
+        "enabled": false,
+        "endpointBuffer": "buffer5",
+        "hideTraces": true,
+        "metric": "lift",
+        "resolution": "equal_area_259_km2",
+        "savedTraceMode": null,
+        "selectedCellId": null,
+        "support": "limited_candidate",
+        "timeScope": "all_time"
+      },
+      "crops": {
+        "chronology": {
+          "coordinateScope": "field",
+          "enabled": false,
+          "maxDistanceKm": 250,
+          "relation": "off"
+        },
+        "dateScope": "window",
+        "enabled": true,
+        "selectedRecordId": null,
+        "ufoFocus": {
+          "cropPositionQuality": "field",
+          "emphasizeIntersections": true,
+          "hopDepth": 1,
+          "hopDirection": "both",
+          "isolation": false,
+          "positionQuality": "source",
+          "radiusKm": 25,
+          "relationWindow": "off",
+          "showRadius": true,
+          "traceAnalysisEnabled": false
+        }
+      },
+      "encounters": {
+        "abduction": "any",
+        "being": "any",
+        "beingSearch": "",
+        "beingTypes": [],
+        "connectionRadiusKm": 250,
+        "connectionsEnabled": false,
+        "displayMode": "markers",
+        "enabled": false,
+        "filterTarget": "overlay",
+        "hiddenKinds": [],
+        "highlightedEventId": null,
+        "includeAmbiguous": false
+      }
+    },
+    "map": {
+      "basemap": "configured",
+      "lat": -15.26869530794737,
+      "lng": -40.15203047985578,
+      "zoom": 2.75
+    },
+    "region": {
+      "caseShapeIndex": -1,
+      "combineMode": "any",
+      "country": "",
+      "depth": 0,
+      "direction": "forward",
+      "displayMode": "hide-unselected",
+      "drawingActive": false,
+      "knownDirectionOnly": false,
+      "modeActive": false,
+      "pointOnly": false,
+      "selectEvents": false,
+      "selectTraces": true,
+      "shapes": [],
+      "showEventsAssociatedWithSelectedTraces": true,
+      "showSelectedEvents": false,
+      "showSelectedTraces": true,
+      "showTracesAssociatedWithSelectedEvents": false,
+      "tool": "rectangle"
+    },
+    "section": "map",
+    "selection": null,
+    "settings": {
+      "analysisBaselineMode": "other_dates_balanced",
+      "claimedUfoBaseVisibility": {
+        "sites": false,
+        "traces": false
+      },
+      "colorMode": "craft_type",
+      "craftTypeColorOverrides": {},
+      "famousCaseOrder": "chronological",
+      "fontScaleMode": "default",
+      "legendDirectionExpanded": true,
+      "mapLabelScaleMode": "default",
+      "mapLegendCraftSolo": null,
+      "mapLegendEventSelection": {
+        "colorMode": "craft_type",
+        "mode": "all",
+        "selectedKeys": []
+      },
+      "mapMode": "heatmap",
+      "militaryBranchVisibility": {
+        "air": true,
+        "army": true,
+        "naval": true,
+        "other": false
+      },
+      "overlayVisibility": {
+        "airports": false,
+        "highways": false,
+        "military": false,
+        "researchSites": false
+      },
+      "playbackSpeed": 4,
+      "playbackTracePersistence": "persistent",
+      "playbackWindowDays": 2,
+      "playbackWindowPreset": "custom",
+      "researchCategoryVisibility": {
+        "contractor": true,
+        "defense_research": true,
+        "military_test": true,
+        "national_lab": true,
+        "observatory": true,
+        "other_research": true,
+        "space_launch": true
+      },
+      "resultsFollowPlayback": true,
+      "resultsSortMode": "date_asc",
+      "showTraceDirectionArrows": true,
+      "showTrailLegend": false,
+      "themeMode": "dark",
+      "traceBoldnessScale": 1.8,
+      "traceBucketVisibility": {
+        "gap_gt_30": false,
+        "gap_le_1": true,
+        "gap_le_2": true,
+        "gap_le_30": false,
+        "gap_le_7": false
+      },
+      "traceFacilityFilter": {
+        "classes": {
+          "between": true,
+          "end": true,
+          "passes": false,
+          "start": true
+        },
+        "enabled": false,
+        "evidenceMode": "source_coordinates",
+        "onlyShowTraceLinkedFacilities": true,
+        "radiusKm": 5,
+        "sources": {
+          "claimedUfoBases": false,
+          "military": true,
+          "researchSites": true
+        }
+      },
+      "traceMode": "static",
+      "traceWidthMode": "auto",
+      "traceWidthScale": 0.05
+    },
+    "time": {
+      "end": 19211,
+      "mode": "custom",
+      "start": 19210,
+      "visible": {
+        "maxOrdinal": 19211,
+        "minOrdinal": 19121
+      }
+    }
+  },
+  "actual": {
+    "case": "",
+    "filters": {
+      "encounterSelectionIds": null,
+      "facets": {
+        "precision": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "source": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "type": {
+          "mode": "subset",
+          "selectedValues": [
+            "Beam",
+            "Changing / irregular",
+            "Chevron",
+            "Cigar",
+            "Circle",
+            "Cone",
+            "Crescent",
+            "Cross",
+            "Cylinder",
+            "Diamond",
+            "Disk",
+            "Fireball",
+            "Flash",
+            "Formation",
+            "Landing",
+            "Light",
+            "Linear",
+            "Oval / egg",
+            "Rectangle",
+            "Sphere / orb",
+            "Star-like",
+            "Teardrop",
+            "Triangle"
+          ]
+        }
+      },
+      "hideLowPrecision": false,
+      "hideNonExactDates": true,
+      "keyword": ""
+    },
+    "layers": {
+      "animals": {
+        "dateScope": "window",
+        "enabled": true
+      },
+      "convergence": {
+        "craftScope": "all_no_lights",
+        "enabled": false,
+        "endpointBuffer": "buffer5",
+        "hideTraces": true,
+        "metric": "lift",
+        "resolution": "equal_area_259_km2",
+        "savedTraceMode": null,
+        "selectedCellId": null,
+        "support": "limited_candidate",
+        "timeScope": "all_time"
+      },
+      "crops": {
+        "chronology": {
+          "coordinateScope": "field",
+          "enabled": false,
+          "maxDistanceKm": 250,
+          "relation": "off"
+        },
+        "dateScope": "window",
+        "enabled": true,
+        "selectedRecordId": null,
+        "ufoFocus": {
+          "cropPositionQuality": "field",
+          "emphasizeIntersections": true,
+          "hopDepth": 1,
+          "hopDirection": "both",
+          "isolation": false,
+          "positionQuality": "source",
+          "radiusKm": 25,
+          "relationWindow": "off",
+          "showRadius": true,
+          "traceAnalysisEnabled": false
+        }
+      },
+      "encounters": {
+        "abduction": "any",
+        "being": "any",
+        "beingSearch": "",
+        "beingTypes": [],
+        "connectionRadiusKm": 250,
+        "connectionsEnabled": false,
+        "displayMode": "markers",
+        "enabled": false,
+        "filterTarget": "overlay",
+        "hiddenKinds": [],
+        "highlightedEventId": null,
+        "includeAmbiguous": false
+      }
+    },
+    "map": {
+      "basemap": "configured",
+      "lat": -15.26869530794737,
+      "lng": -40.15203047985578,
+      "zoom": 2.75
+    },
+    "region": {
+      "caseShapeIndex": -1,
+      "combineMode": "any",
+      "country": "",
+      "depth": 0,
+      "direction": "forward",
+      "displayMode": "hide-unselected",
+      "drawingActive": false,
+      "knownDirectionOnly": false,
+      "modeActive": false,
+      "pointOnly": false,
+      "selectEvents": false,
+      "selectTraces": true,
+      "shapes": [],
+      "showEventsAssociatedWithSelectedTraces": true,
+      "showSelectedEvents": false,
+      "showSelectedTraces": true,
+      "showTracesAssociatedWithSelectedEvents": false,
+      "tool": "rectangle"
+    },
+    "section": "map",
+    "selection": null,
+    "settings": {
+      "analysisBaselineMode": "other_dates_balanced",
+      "claimedUfoBaseVisibility": {
+        "sites": false,
+        "traces": false
+      },
+      "colorMode": "craft_type",
+      "craftTypeColorOverrides": {},
+      "famousCaseOrder": "chronological",
+      "fontScaleMode": "default",
+      "legendDirectionExpanded": true,
+      "mapLabelScaleMode": "default",
+      "mapLegendCraftSolo": null,
+      "mapLegendEventSelection": {
+        "colorMode": "craft_type",
+        "mode": "all",
+        "selectedKeys": []
+      },
+      "mapMode": "heatmap",
+      "militaryBranchVisibility": {
+        "air": true,
+        "army": true,
+        "naval": true,
+        "other": false
+      },
+      "overlayVisibility": {
+        "airports": false,
+        "highways": false,
+        "military": false,
+        "researchSites": false
+      },
+      "playbackSpeed": 4,
+      "playbackTracePersistence": "persistent",
+      "playbackWindowDays": 2,
+      "playbackWindowPreset": "custom",
+      "researchCategoryVisibility": {
+        "contractor": true,
+        "defense_research": true,
+        "military_test": true,
+        "national_lab": true,
+        "observatory": true,
+        "other_research": true,
+        "space_launch": true
+      },
+      "resultsFollowPlayback": true,
+      "resultsSortMode": "date_asc",
+      "showTraceDirectionArrows": true,
+      "showTrailLegend": false,
+      "themeMode": "dark",
+      "traceBoldnessScale": 1.8,
+      "traceBucketVisibility": {
+        "gap_gt_30": false,
+        "gap_le_1": true,
+        "gap_le_2": true,
+        "gap_le_30": false,
+        "gap_le_7": false
+      },
+      "traceFacilityFilter": {
+        "classes": {
+          "between": true,
+          "end": true,
+          "passes": false,
+          "start": true
+        },
+        "enabled": false,
+        "evidenceMode": "source_coordinates",
+        "onlyShowTraceLinkedFacilities": true,
+        "radiusKm": 5,
+        "sources": {
+          "claimedUfoBases": false,
+          "military": true,
+          "researchSites": true
+        }
+      },
+      "traceMode": "static",
+      "traceWidthMode": "auto",
+      "traceWidthScale": 0.05
+    },
+    "time": {
+      "end": 19211,
+      "mode": "custom",
+      "start": 19210,
+      "visible": {
+        "maxOrdinal": 19211,
+        "minOrdinal": 19121
+      }
+    }
+  },
+  "analysisTopicNavigation": true,
+  "shortTopicResharing": true,
+  "errors": []
+}

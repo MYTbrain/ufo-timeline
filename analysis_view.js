@@ -1645,7 +1645,8 @@
     };
   }
 
-  function proportionalTreemap(itemsValue) {
+  function proportionalTreemap(itemsValue, aspectRatioValue) {
+    const aspectRatio = Math.max(0.01, finiteNumber(aspectRatioValue, 1));
     const items = asArray(itemsValue).map(function (item, index) {
       return {
         item,
@@ -1688,7 +1689,7 @@
       const second = entries.slice(splitIndex);
       const firstWeight = first.reduce(function (sum, entry) { return sum + entry.weight; }, 0);
       const ratio = weight > 0 ? firstWeight / weight : 0.5;
-      if (width >= height) {
+      if (width * aspectRatio >= height) {
         const firstWidth = width * ratio;
         partition(first, x, y, firstWidth, height);
         partition(second, x + firstWidth, y, width - firstWidth, height);
@@ -3005,6 +3006,7 @@
       let hash = "#" + sectionId;
       const fragment = new URLSearchParams(cleanText(this.documentView.location.hash).replace(/^#/, ""));
       if (fragment.has("view")) {
+        fragment.delete("s");
         fragment.set("section", sectionId);
         hash = "#" + fragment.toString();
       }
@@ -4133,6 +4135,10 @@
     }
 
     _renderCraftMosaic(chartId, items, summary, options) {
+      if (!this._craftMosaicObservers) this._craftMosaicObservers = new Map();
+      const previousObserver = this._craftMosaicObservers.get(chartId);
+      if (previousObserver) previousObserver.disconnect();
+      this._craftMosaicObservers.delete(chartId);
       const config = options || {};
       const craftCount = function (item) {
         const explicit = firstDefined(item, ["count", "observedCount", "observed_count", "activeCount", "active_count", "observed", "reportCount", "report_count"], null);
@@ -4149,6 +4155,8 @@
       let rebalanceMode = false;
       const categoryKey = function (item, index) { return datumLabel(item, index).toLowerCase().replace(/[\s/-]+/g, "_"); };
       const renderMosaic = () => {
+        const previousObserver = this._craftMosaicObservers.get(chartId);
+        if (previousObserver) previousObserver.disconnect();
         this._clear(container);
         let included = ranked.filter(function (item, index) { return !excluded.has(categoryKey(item, index)); });
         if (!included.length) {
@@ -4211,9 +4219,13 @@
         mosaic.setAttribute("role", "group");
         mosaic.setAttribute("aria-label", "Craft mosaic; tile area encodes recalculated report share and color encodes "
           + (this.currentAnalysisMode === "whole_corpus_structure" ? "whole-corpus share intensity" : "adjusted difference"));
-        const layout = proportionalTreemap(display.map(function (item) {
+        const weightedItems = display.map(function (item) {
           return { item, weight: craftCount(item) };
-        }));
+        });
+        const layout = proportionalTreemap(weightedItems);
+        const labelKey = this._element("div", "analysis-mosaic-label-key");
+        labelKey.setAttribute("aria-label", "Small craft categories");
+        const tileEntries = [];
         const effects = display.map(function (item) {
           return finiteNumber(firstDefined(item, ["adjustedDifference", "adjusted_difference", "difference", "shareDifference", "share_difference", "effect"], 0), 0);
         });
@@ -4238,7 +4250,6 @@
           tile.style.width = rectangle.width.toFixed(4) + "%";
           tile.style.height = rectangle.height.toFixed(4) + "%";
           tile.style.setProperty("--analysis-mosaic-area-share", share.toFixed(8));
-          if (rectangle.width < 18 || rectangle.height < 22 || share < 0.025) tile.classList.add("is-compact");
           if (this.currentAnalysisMode === "whole_corpus_structure") {
             const intensity = Math.round(14 + (74 * Math.sqrt(share / maximumShare)));
             tile.style.setProperty("--analysis-mosaic-fill", "color-mix(in srgb, var(--accent) " + intensity + "%, var(--surface-muted))");
@@ -4254,6 +4265,9 @@
           tile.appendChild(this._element("strong", "analysis-craft-mosaic-label", label));
           tile.appendChild(this._element("span", "analysis-craft-mosaic-count", formatPercent(share)));
           if (effect != null && this.currentAnalysisMode !== "whole_corpus_structure") tile.appendChild(this._element("span", "analysis-craft-mosaic-effect", formatSignedPercent(effect)));
+          const tileIndex = this._element("span", "analysis-mosaic-tile-index", String(index + 1));
+          tileIndex.setAttribute("aria-hidden", "true");
+          tile.appendChild(tileIndex);
           const accessible = label + ": " + formatCount(count) + " reports, " + formatPercent(share) + " of the displayed composition; tile area " + formatPercent(rectangle.areaShare)
             + (this.currentAnalysisMode === "whole_corpus_structure" ? "; color shows report-share intensity" : (effect == null ? "" : "; adjusted effect " + formatSignedPercent(effect)))
             + (interval ? "; 95% interval " + formatPercentInterval(interval) : "");
@@ -4268,8 +4282,63 @@
             this._activatePreview(tile, item, label, summary, config.defaultKind || "filter");
           }
           mosaic.appendChild(tile);
+          const keyEntry = this._element(selectable ? "button" : "div", "analysis-mosaic-key-entry");
+          keyEntry.hidden = true;
+          keyEntry.style.setProperty("--analysis-mosaic-fill", tile.style.getPropertyValue("--analysis-mosaic-fill"));
+          keyEntry.appendChild(this._element("span", "analysis-mosaic-key-index", String(index + 1)));
+          keyEntry.appendChild(this._element("span", "analysis-mosaic-key-label", label));
+          keyEntry.appendChild(this._element("strong", "analysis-mosaic-key-share", formatPercent(share)));
+          keyEntry.setAttribute("aria-label", tile.getAttribute("aria-label"));
+          keyEntry.setAttribute("title", accessible);
+          if (selectable) {
+            keyEntry.type = "button";
+            keyEntry.addEventListener("click", function () { tile.click(); });
+          }
+          labelKey.appendChild(keyEntry);
+          tileEntries.push({ tile, keyEntry });
         });
         container.appendChild(mosaic);
+        container.appendChild(labelKey);
+        const resizeMosaic = () => {
+          const bounds = mosaic.getBoundingClientRect();
+          if (!bounds.width || !bounds.height) return;
+          const view = this.document.defaultView;
+          const resizedLayout = proportionalTreemap(weightedItems, bounds.width / bounds.height);
+          // Keep every area proportional; move text out of tiles that cannot fit it.
+          tileEntries.forEach(({ tile, keyEntry }, index) => {
+            const rectangle = resizedLayout[index];
+            tile.style.left = rectangle.x.toFixed(4) + "%";
+            tile.style.top = rectangle.y.toFixed(4) + "%";
+            tile.style.width = rectangle.width.toFixed(4) + "%";
+            tile.style.height = rectangle.height.toFixed(4) + "%";
+            tile.classList.remove("is-compact", "has-external-label", "is-symbol-only");
+            const style = view.getComputedStyle(tile);
+            const availableHeight = tile.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+            const availableWidth = tile.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+            const labelNode = tile.querySelector(".analysis-craft-mosaic-label");
+            const countNode = tile.querySelector(".analysis-craft-mosaic-count");
+            const effectNode = tile.querySelector(".analysis-craft-mosaic-effect");
+            const gap = parseFloat(style.rowGap) || 0;
+            const textHeight = labelNode.getBoundingClientRect().height + countNode.getBoundingClientRect().height + gap;
+            const effectHeight = effectNode ? effectNode.getBoundingClientRect().height + gap : 0;
+            tile.classList.toggle("is-compact", textHeight + effectHeight > availableHeight
+              || Boolean(effectNode && effectNode.scrollWidth > availableWidth + 1));
+            const needsKey = textHeight > availableHeight || labelNode.scrollWidth > availableWidth + 1 || countNode.scrollWidth > availableWidth + 1;
+            tile.classList.toggle("has-external-label", needsKey);
+            const indexStyle = view.getComputedStyle(tile.querySelector(".analysis-mosaic-tile-index"));
+            const indexSize = parseFloat(indexStyle.lineHeight);
+            tile.classList.toggle("is-symbol-only", needsKey && (availableWidth < indexSize || availableHeight < indexSize));
+            keyEntry.hidden = !needsKey;
+          });
+          labelKey.hidden = tileEntries.every(function (entry) { return entry.keyEntry.hidden; });
+        };
+        const view = this.document.defaultView;
+        if (view && typeof view.ResizeObserver === "function") {
+          const observer = new view.ResizeObserver(resizeMosaic);
+          observer.observe(mosaic);
+          this._craftMosaicObservers.set(chartId, observer);
+        }
+        if (view) resizeMosaic();
         container.appendChild(this._element("p", "analysis-chart-summary analysis-mosaic-encoding", "Area = recalculated share of displayed categories. "
           + (this.currentAnalysisMode === "whole_corpus_structure"
             ? "Darker teal = larger whole-corpus share."
@@ -8157,6 +8226,10 @@
       this._cancelRenderSequence();
       if (this.sectionObserver && typeof this.sectionObserver.disconnect === "function") this.sectionObserver.disconnect();
       this.sectionObserver = null;
+      if (this._craftMosaicObservers) {
+        this._craftMosaicObservers.forEach(function (observer) { observer.disconnect(); });
+        this._craftMosaicObservers.clear();
+      }
       if (this.sectionScrollFrame != null && this.cancelRenderFrame) this.cancelRenderFrame(this.sectionScrollFrame);
       this.sectionScrollFrame = null;
       if (this.anchorCorrectionTimerId != null && this.documentView && typeof this.documentView.clearTimeout === "function") {

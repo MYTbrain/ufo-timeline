@@ -303,6 +303,14 @@ try {
   navigation.documentView.UfoShareView = share;
   navigation.documentView.location = new URL("https://example.test/#view=invalid&section=unknown");
   assert.equal(navigation._honorAnalysisHash(), false, "Unrecognized shared section values do not activate a topic");
+  navigation.documentView.location = new URL(await share.buildCompactUrl(snapshot, "https://example.test/#analysis-section-overview"));
+  assert.equal(navigation._honorAnalysisHash(), true);
+  assert.equal(navigated.at(-1).id, "analysis-section-overview");
+  navigation._replaceHash("analysis-section-time");
+  assert.equal(new URLSearchParams(navigation.documentView.location.hash.slice(1)).has("s"), false,
+    "Topic navigation removes the old short section rather than leaving conflicting destinations");
+  assert.equal(share.readSectionHash(navigation.documentView.location.href), "#analysis-section-time");
+  assert.deepEqual(await share.readAnyUrl(navigation.documentView.location.href), snapshot);
 }
 
 console.log("Analysis view repairs: coverage, funnel, strict gates, disclosure lifecycle and lazy heatmap callback assertions passed");

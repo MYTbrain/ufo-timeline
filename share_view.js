@@ -18,7 +18,7 @@
   // Wire format v2. These dictionaries are permanent protocol data, NOT app
   // defaults. Never edit them for a UI/default change: introduce a new format
   // version instead. Every omitted/different value is represented explicitly.
-  const COMPACT_VERSION = 2;
+  const COMPACT_VERSION = 3;
   const V2_KEYS = Object.freeze((
     "abduction air airports analysisBaselineMode animals army basemap being beingSearch beingTypes between bounds case caseShapeIndex center chronology claimedUfoBaseVisibility claimedUfoBases classes colorMode combineMode connectionRadiusKm connectionsEnabled contractor controls convergence coordinateScope country craftScope craftTypeColorOverrides cropPositionQuality crops dateScope defense_research depth direction displayMode drawingActive east emphasizeIntersections enabled encounterSelectionIds encounters end endpointBuffer evidenceMode facets famousCaseOrder filterTarget filters fontScaleMode gap_gt_30 gap_le_1 gap_le_2 gap_le_30 gap_le_7 hiddenKinds hideLowPrecision hideNonExactDates hideTraces highlightedEventId highways hopDepth hopDirection id includeAmbiguous isolation keyword knownDirectionOnly lat layers legendDirectionExpanded lng map mapLabelScaleMode mapLegendCraftSolo mapLegendEventSelection mapMode maxDistanceKm maxIso maxOrdinal metric military militaryBranchVisibility military_test minIso minOrdinal mode modeActive national_lab naval north observatory onlyShowTraceLinkedFacilities other other_research overlayVisibility passes playbackSpeed playbackTracePersistence playbackWindowDays playbackWindowPreset pointOnly positionQuality precision radiusKm radiusMeters region relation relationWindow researchCategoryVisibility researchSites resolution resultsFollowPlayback resultsSortMode savedTraceMode section selectEvents selectTraces selectedCellId selectedKeys selectedRecordId selectedValues selection settings shapes showEventsAssociatedWithSelectedTraces showRadius showSelectedEvents showSelectedTraces showTraceDirectionArrows showTracesAssociatedWithSelectedEvents showTrailLegend sites source sources south space_launch start support themeMode time timeScope tool traceAnalysisEnabled traceBoldnessScale traceBucketVisibility traceFacilityFilter traceMode traceWidthMode traceWidthScale traces type ufoFocus visible west zoom"
   ).split(" "));
@@ -81,6 +81,20 @@
     },
     section: "map", selection: null,
   });
+
+  // v3 paths are a permanent preorder traversal of the frozen v2 baseline.
+  // Never derive these from live settings or change the baseline/key order.
+  const V3_PATHS = [];
+  const V3_PATH_CODES = new Map();
+  (function addPaths(value, parent) {
+    Object.keys(value).forEach(function (key) {
+      const path = parent.concat(key);
+      V3_PATH_CODES.set(JSON.stringify(path), V3_PATHS.length);
+      V3_PATHS.push(Object.freeze(path));
+      if (plainObject(value[key])) addPaths(value[key], path);
+    });
+  })(V2_BASELINE, []);
+  Object.freeze(V3_PATHS);
 
   function invalid() { return new Error("This shared view is invalid or incomplete. Ask for a new link."); }
   function tooLarge() { return new Error("This view is too large to share in a link. Reduce the selection and try again."); }
@@ -287,6 +301,75 @@
     return result;
   }
 
+  // Flat operations avoid repeated object/tag wrappers. A bare path code flips
+  // a frozen Boolean; [path] removes a field; [path, value] replaces a value.
+  // Unknown paths are literal key arrays, keeping future/extension data exact.
+  function makeFlatDelta(snapshot) {
+    const operations = [];
+    function pathCode(path) {
+      const code = V3_PATH_CODES.get(JSON.stringify(path));
+      return code === undefined ? path : code;
+    }
+    function visit(value, baseline, path) {
+      if (sameValue(value, baseline)) return;
+      if (plainObject(value) && plainObject(baseline)) {
+        Object.keys(baseline).forEach(function (key) {
+          if (!Object.prototype.hasOwnProperty.call(value, key)) operations.push([pathCode(path.concat(key))]);
+        });
+        Object.keys(value).forEach(function (key) { visit(value[key], baseline[key], path.concat(key)); });
+      } else {
+        const code = pathCode(path);
+        if (typeof code === "number" && typeof baseline === "boolean" && value === !baseline) operations.push(code);
+        else operations.push([code, packKeys(value)]);
+      }
+    }
+    visit(snapshot, V2_BASELINE, []);
+    return operations;
+  }
+
+  function applyFlatDelta(operations) {
+    if (!Array.isArray(operations) || operations.length > MAX_ITEMS) throw invalid();
+    const result = cloneSnapshot(V2_BASELINE);
+    const trie = { children: new Map(), terminal: false };
+    const edits = operations.map(function (operation) {
+      const toggle = Number.isInteger(operation);
+      if (!toggle && (!Array.isArray(operation) || ![1, 2].includes(operation.length))) throw invalid();
+      const code = toggle ? operation : operation[0];
+      let path;
+      if (Number.isInteger(code) && code >= 0 && code < V3_PATHS.length) path = V3_PATHS[code];
+      else if (Array.isArray(code)) path = code;
+      else throw invalid();
+      if (!path.length || path.length > MAX_DEPTH || !ROOT_KEYS.has(path[0])) throw invalid();
+      let node = trie;
+      path.forEach(function (key) {
+        if (typeof key !== "string" || key.length > 128 || FORBIDDEN_KEYS.has(key) || node.terminal) throw invalid();
+        if (!node.children.has(key)) node.children.set(key, { children: new Map(), terminal: false });
+        node = node.children.get(key);
+      });
+      if (node.terminal || node.children.size) throw invalid();
+      node.terminal = true;
+      let baseline = V2_BASELINE;
+      for (let index = 0; index < path.length - 1; index += 1) {
+        if (!plainObject(baseline) || !Object.prototype.hasOwnProperty.call(baseline, path[index])) throw invalid();
+        baseline = baseline[path[index]];
+      }
+      if (!plainObject(baseline)) throw invalid();
+      const key = path[path.length - 1];
+      const exists = Object.prototype.hasOwnProperty.call(baseline, key);
+      const remove = !toggle && operation.length === 1;
+      if ((remove && !exists) || (toggle && (!exists || typeof baseline[key] !== "boolean"))) throw invalid();
+      return { path, remove, value: toggle ? !baseline[key] : (remove ? null : unpackKeys(operation[1])) };
+    });
+    edits.forEach(function (edit) {
+      let target = result;
+      edit.path.slice(0, -1).forEach(function (key) { target = target[key]; });
+      const key = edit.path[edit.path.length - 1];
+      if (edit.remove) delete target[key];
+      else target[key] = edit.value;
+    });
+    return result;
+  }
+
   async function gzipBytes(bytes, decompress) {
     const Stream = decompress ? root.DecompressionStream : root.CompressionStream;
     if (typeof Stream !== "function" || typeof root.Blob !== "function") {
@@ -318,12 +401,22 @@
   }
 
   async function encodeCompact(snapshot) {
-    // v1 remains a valid fallback for small payloads and older browsers.
     const legacy = encode(snapshot);
-    if (typeof root.CompressionStream !== "function" || typeof root.Blob !== "function") return legacy;
     const copy = cloneSnapshot(snapshot);
-    const candidates = [["f", packKeys(copy)], ["d", packKeys(makeDelta(copy, V2_BASELINE))]];
+    const flatBytes = utf8Bytes(JSON.stringify(makeFlatDelta(copy)));
     let best = legacy;
+    if (flatBytes.length <= MAX_JSON_BYTES) {
+      const raw = "3.r." + base64url(flatBytes);
+      if (raw.length < best.length) best = raw;
+    }
+    // Small changes need no compression header, including in older browsers.
+    if (typeof root.CompressionStream !== "function" || typeof root.Blob !== "function") return best;
+    if (flatBytes.length > 32 && flatBytes.length <= MAX_JSON_BYTES) {
+      const flat = "3.g." + base64url(await gzipBytes(flatBytes, false));
+      if (flat.length < best.length) best = flat;
+    }
+    // Preserve shortest-form fallbacks for sparse or unusual snapshots.
+    const candidates = [["f", packKeys(copy)], ["d", packKeys(makeDelta(copy, V2_BASELINE))]];
     for (const candidate of candidates) {
       const bytes = utf8Bytes(JSON.stringify(candidate));
       if (bytes.length > MAX_JSON_BYTES) continue;
@@ -340,8 +433,10 @@
     const prefix = /^(\d+)\./.exec(token);
     if (!prefix) return decode(token);
     if (Number(prefix[1]) > COMPACT_VERSION) throw new Error("This link uses a newer shared-view format. Refresh the app and try again.");
-    if (prefix[1] !== "2") throw new Error("This shared-view format is not supported. Ask for a new link.");
-    const encoded = token.slice(2);
+    if (!["2", "3"].includes(prefix[1])) throw new Error("This shared-view format is not supported. Ask for a new link.");
+    const flat = prefix[1] === "3";
+    if (flat && !/^3\.[rg]\./.test(token)) throw invalid();
+    const encoded = token.slice(flat ? 4 : 2);
     if (!encoded || !/^[A-Za-z0-9_-]+$/.test(encoded) || encoded.length % 4 === 1) throw invalid();
     let bytes;
     try {
@@ -351,10 +446,13 @@
     } catch (_error) { throw invalid(); }
     let unpacked;
     try {
-      const payload = JSON.parse(utf8Text(await gzipBytes(bytes, true)));
-      if (!Array.isArray(payload) || payload.length !== 2 || !["f", "d"].includes(payload[0])) throw invalid();
-      unpacked = unpackKeys(payload[1]);
-      if (payload[0] === "d") unpacked = applyDelta(unpacked, V2_BASELINE, 0);
+      const payload = JSON.parse(utf8Text(flat && token.charAt(2) === "r" ? bytes : await gzipBytes(bytes, true)));
+      if (flat) unpacked = applyFlatDelta(payload);
+      else {
+        if (!Array.isArray(payload) || payload.length !== 2 || !["f", "d"].includes(payload[0])) throw invalid();
+        unpacked = unpackKeys(payload[1]);
+        if (payload[0] === "d") unpacked = applyDelta(unpacked, V2_BASELINE, 0);
+      }
     } catch (error) {
       if (error && /too large|This browser/.test(error.message)) throw error;
       throw invalid();
@@ -394,6 +492,11 @@
     if (direct) return direct;
     const params = fragmentParams(url);
     const sections = params.getAll("section");
+    const shortSections = params.getAll("s");
+    if (shortSections.length) {
+      if (sections.length || shortSections.length !== 1 || !params.has("view")) return "";
+      return safeSectionHash("#analysis-section-" + shortSections[0]);
+    }
     return params.has("view") && sections.length === 1 ? safeSectionHash("#" + sections[0]) : "";
   }
 
@@ -404,11 +507,12 @@
     return views;
   }
 
-  function withViewFragment(url, token) {
+  function withViewFragment(url, token, compactSection) {
     const section = readSectionHash(url.toString());
     const params = new root.URLSearchParams();
     params.set("view", token);
-    if (section) params.set("section", section.slice(1));
+    if (compactSection && section.startsWith("#analysis-section-")) params.set("s", section.slice("#analysis-section-".length));
+    else if (section) params.set("section", section.slice(1));
     // Fragments stay in the browser rather than entering the HTTP request URL.
     url.search = "";
     url.hash = params.toString();
@@ -428,7 +532,7 @@
   }
 
   async function buildCompactUrl(snapshot, baseUrl) {
-    return withViewFragment(parseUrl(baseUrl), await encodeCompact(snapshot));
+    return withViewFragment(parseUrl(baseUrl), await encodeCompact(snapshot), true);
   }
 
   async function readAnyUrl(value) {

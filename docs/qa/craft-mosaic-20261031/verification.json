@@ -1,0 +1,482 @@
+{
+  "checks": [
+    {
+      "name": "desktop-real-cohort",
+      "rootFont": "16px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "32.6%",
+          "width": 262.22015380859375
+        },
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Light",
+          "readable": true,
+          "share": "28.5%",
+          "width": 228.96453857421875
+        },
+        {
+          "external": false,
+          "height": 119.23973083496094,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "14.6%",
+          "width": 312.1268615722656
+        },
+        {
+          "external": false,
+          "height": 197.7378692626953,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "10%",
+          "width": 128.61473083496094
+        },
+        {
+          "external": false,
+          "height": 136.89364624023438,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "9.9%",
+          "width": 183.5121154785156
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Formation",
+          "readable": true,
+          "share": "1.2%",
+          "width": 50.956153869628906
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Fireball Meteor Like",
+          "readable": true,
+          "share": "0.9%",
+          "width": 35.68096923828125
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Cone",
+          "readable": true,
+          "share": "0.6%",
+          "width": 25.46641731262207
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "1.7%",
+          "width": 71.3619384765625
+        }
+      ],
+      "viewport": 2262
+    },
+    {
+      "name": "mobile-390",
+      "rootFont": "16px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 169.21641540527344,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "32.6%",
+          "width": 260.984130859375
+        },
+        {
+          "external": false,
+          "height": 147.7611846923828,
+          "label": "Light",
+          "readable": true,
+          "share": "28.5%",
+          "width": 260.984130859375
+        },
+        {
+          "external": false,
+          "height": 119.23973083496094,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "14.6%",
+          "width": 165.8582000732422
+        },
+        {
+          "external": false,
+          "height": 81.48320770263672,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "10%",
+          "width": 165.8582000732422
+        },
+        {
+          "external": false,
+          "height": 116.2546615600586,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "9.9%",
+          "width": 114.80876159667967
+        },
+        {
+          "external": true,
+          "height": 32.276119232177734,
+          "label": "Formation",
+          "readable": true,
+          "share": "1.2%",
+          "width": 51.026119232177734
+        },
+        {
+          "external": true,
+          "height": 22.597946166992188,
+          "label": "Fireball Meteor Like",
+          "readable": true,
+          "share": "0.9%",
+          "width": 51.026119232177734
+        },
+        {
+          "external": true,
+          "height": 18.98320770263672,
+          "label": "Cone",
+          "readable": true,
+          "share": "0.6%",
+          "width": 51.026119232177734
+        },
+        {
+          "external": true,
+          "height": 45.195892333984375,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "1.7%",
+          "width": 51.026119232177734
+        }
+      ],
+      "viewport": 582
+    },
+    {
+      "name": "desktop-150-percent-text",
+      "rootFont": "24px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 477.0055847167969,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "32.6%",
+          "width": 262.22015380859375
+        },
+        {
+          "external": false,
+          "height": 477.0055847167969,
+          "label": "Light",
+          "readable": true,
+          "share": "28.5%",
+          "width": 228.96453857421875
+        },
+        {
+          "external": false,
+          "height": 179.43096923828125,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "14.6%",
+          "width": 312.1268615722656
+        },
+        {
+          "external": false,
+          "height": 297.5513000488281,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "10%",
+          "width": 128.61473083496094
+        },
+        {
+          "external": false,
+          "height": 205.99346923828125,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "9.9%",
+          "width": 183.5121154785156
+        },
+        {
+          "external": true,
+          "height": 53.84794616699219,
+          "label": "Formation",
+          "readable": true,
+          "share": "1.2%",
+          "width": 86.66044616699219
+        },
+        {
+          "external": true,
+          "height": 37.68656539916992,
+          "label": "Fireball Meteor Like",
+          "readable": true,
+          "share": "0.9%",
+          "width": 86.66044616699219
+        },
+        {
+          "external": true,
+          "height": 91.55783081054688,
+          "label": "Cone",
+          "readable": true,
+          "share": "0.6%",
+          "width": 26.958953857421875
+        },
+        {
+          "external": true,
+          "height": 91.55783081054688,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "1.7%",
+          "width": 71.3619384765625
+        }
+      ],
+      "viewport": 2262
+    },
+    {
+      "name": "reported-shares-fixture",
+      "rootFont": "16px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "33.3%",
+          "width": 267.7705078125
+        },
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Light",
+          "readable": true,
+          "share": "27.9%",
+          "width": 224.3470001220703
+        },
+        {
+          "external": false,
+          "height": 184.28170776367188,
+          "label": "Triangle",
+          "readable": true,
+          "share": "8.1%",
+          "width": 112.01025390625
+        },
+        {
+          "external": false,
+          "height": 184.28170776367188,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "7.2%",
+          "width": 99.5802230834961
+        },
+        {
+          "external": false,
+          "height": 184.28170776367188,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "7.2%",
+          "width": 99.5802230834961
+        },
+        {
+          "external": false,
+          "height": 132.69589233398438,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "6.3%",
+          "width": 121.01212310791016
+        },
+        {
+          "external": false,
+          "height": 132.69589233398438,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "5.4%",
+          "width": 103.73133850097656
+        },
+        {
+          "external": false,
+          "height": 79.6175308227539,
+          "label": "Fireball",
+          "readable": true,
+          "share": "2.7%",
+          "width": 86.42723846435547
+        },
+        {
+          "external": true,
+          "height": 53.0783576965332,
+          "label": "Changing Irregular",
+          "readable": true,
+          "share": "1.8%",
+          "width": 86.42723846435547
+        }
+      ],
+      "viewport": 2262
+    },
+    {
+      "name": "mobile-390-reported-shares",
+      "rootFont": "16px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 128.9878692626953,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "33.3%",
+          "width": 234.3283538818359
+        },
+        {
+          "external": false,
+          "height": 108.06902313232422,
+          "label": "Light",
+          "readable": true,
+          "share": "27.9%",
+          "width": 234.3283538818359
+        },
+        {
+          "external": true,
+          "height": 53.96455001831055,
+          "label": "Triangle",
+          "readable": true,
+          "share": "8.1%",
+          "width": 136.21734619140625
+        },
+        {
+          "external": true,
+          "height": 95.9421615600586,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "7.2%",
+          "width": 68.09701538085938
+        },
+        {
+          "external": false,
+          "height": 95.9421615600586,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "7.2%",
+          "width": 68.09701538085938
+        },
+        {
+          "external": true,
+          "height": 58.30223846435547,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "6.3%",
+          "width": 98.08768463134766
+        },
+        {
+          "external": true,
+          "height": 91.60447692871094,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "5.4%",
+          "width": 53.49813079833984
+        },
+        {
+          "external": true,
+          "height": 54.96735000610352,
+          "label": "Fireball",
+          "readable": true,
+          "share": "2.7%",
+          "width": 44.56623077392578
+        },
+        {
+          "external": true,
+          "height": 36.63712692260742,
+          "label": "Changing Irregular",
+          "readable": true,
+          "share": "1.8%",
+          "width": 44.56623077392578
+        }
+      ],
+      "viewport": 389
+    },
+    {
+      "name": "final-source-real-cohort",
+      "rootFont": "16px",
+      "tiles": [
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Disc / saucer",
+          "readable": true,
+          "share": "32.6%",
+          "width": 211.6604461669922
+        },
+        {
+          "external": false,
+          "height": 317.00091552734375,
+          "label": "Light",
+          "readable": true,
+          "share": "28.5%",
+          "width": 184.79476928710935
+        },
+        {
+          "external": false,
+          "height": 119.23973083496094,
+          "label": "Sphere / orb",
+          "readable": true,
+          "share": "14.6%",
+          "width": 251.9356231689453
+        },
+        {
+          "external": false,
+          "height": 197.7378692626953,
+          "label": "Cigar / cylinder",
+          "readable": true,
+          "share": "10%",
+          "width": 103.80130004882812
+        },
+        {
+          "external": false,
+          "height": 136.89364624023438,
+          "label": "Oval / egg",
+          "readable": true,
+          "share": "9.9%",
+          "width": 148.1110076904297
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Formation",
+          "readable": true,
+          "share": "1.2%",
+          "width": 41.138057708740234
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Fireball Meteor Like",
+          "readable": true,
+          "share": "0.9%",
+          "width": 28.801305770874023
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Cone",
+          "readable": true,
+          "share": "0.6%",
+          "width": 20.569028854370117
+        },
+        {
+          "external": true,
+          "height": 60.844215393066406,
+          "label": "Remaining Categories",
+          "readable": true,
+          "share": "1.7%",
+          "width": 57.60261154174805
+        }
+      ],
+      "viewport": 1910
+    }
+  ],
+  "previewSelection": true,
+  "rebalanceThroughSmallCategoryKey": true,
+  "resetRebalance": true,
+  "finalErrors": []
+}
