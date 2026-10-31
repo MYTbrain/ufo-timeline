@@ -1,0 +1,33 @@
+{
+  "schemaId": "ufo-case-navigation-independent-stage-verification-v1",
+  "passed": true,
+  "observedUtc": "2026-10-31T06:43:36.164077+00:00",
+  "comparison": "Updated delivery_plan against Git HEAD predecessor; all staged bytes independently hashed",
+  "previousTreeSha256": "15a94888f25796ebdfe9cb4cd5df39f4fd4ee1128b3d38b5ebf758e5ba78985e",
+  "pagesTreeSha256": "e473ce1355d5108af28ca09e0e6c8b1342cdde08a53580762d0e995b59687b22",
+  "files": 233,
+  "bytes": 41568451,
+  "changedFrontendPaths": [
+    "app.js",
+    "famous_case_availability.js",
+    "famous_case_presets.js",
+    "flap_preset_labels.js",
+    "index.html",
+    "styles.css",
+    "trace_direction_summary.js",
+    "ui/accepted-workspace/chronology-preview.css",
+    "ui/accepted-workspace/site-workflow-preview.js"
+  ],
+  "addedPaths": [
+    "famous_case_availability.js"
+  ],
+  "removedPaths": [],
+  "sourceAndStageFrontendHashesMatch": true,
+  "dataRecordsUnchanged": true,
+  "uploadRecordsUnchanged": true,
+  "inheritedRuntimeObjectsUnchanged": true,
+  "inputPinsUnchanged": true,
+  "privateDocumentationOrSourceIncluded": false,
+  "stageNetGrowthBytes": 14979,
+  "newFilesAbove100MiB": []
+}

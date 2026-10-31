@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "nodeSuites": [
+    "test_famous_case_presets.mjs",
+    "test_famous_case_catalog_refs.mjs",
+    "test_famous_case_availability.mjs",
+    "test_case_availability_integration.mjs",
+    "test_known_direction_filter.mjs",
+    "test_direction_cases_integration.mjs",
+    "test_famous_case_traces.mjs",
+    "test_trace_direction_summary.mjs",
+    "test_trace_direction_population.mjs",
+    "test_trace_neighborhood.mjs",
+    "test_encounter_map_integration.mjs",
+    "test_flap_preset_labels.mjs"
+  ],
+  "pythonSuite": "test_case_navigation_shell.py",
+  "pythonTestsPassed": 3,
+  "fullCorpusBuild": false
+}

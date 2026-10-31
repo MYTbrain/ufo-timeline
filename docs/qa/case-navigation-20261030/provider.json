@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-31T06:45:15.319667+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deployments": [
+    {
+      "id": "2850fbfd-1010-417d-86c4-3d94decc5025",
+      "url": "https://2850fbfd.ufo-timeline.pages.dev",
+      "source": "6d7d4f093745c1b087e67ac5ce1e821d1c9f57a9",
+      "stage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T06:44:35.326895Z",
+        "status": "success"
+      }
+    },
+    {
+      "id": "686819b3-2093-47cb-891f-c3e625957232",
+      "url": "https://686819b3.ufo-timeline.pages.dev",
+      "source": "6d7d4f093745c1b087e67ac5ce1e821d1c9f57a9",
+      "stage": {
+        "name": "deploy",
+        "started_on": "2026-10-31T06:44:13.87868Z",
+        "ended_on": "2026-10-31T06:44:20.231545Z",
+        "status": "success"
+      }
+    },
+    {
+      "id": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+      "url": "https://1a60ac73.ufo-timeline.pages.dev",
+      "source": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+      "stage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-20T08:48:52.332213Z",
+        "status": "success"
+      }
+    }
+  ],
+  "runtimeSourceCommit": "6d7d4f093745c1b087e67ac5ce1e821d1c9f57a9",
+  "publication": "GitHub main fast-forward succeeded; final direct publish uses the exact bounded stage."
+}

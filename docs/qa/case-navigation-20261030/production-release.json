@@ -1,0 +1,47 @@
+{
+  "schemaId": "ufo-case-navigation-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-31T06:47:43.016290+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "2850fbfd-1010-417d-86c4-3d94decc5025",
+  "runtimeSourceCommit": "6d7d4f093745c1b087e67ac5ce1e821d1c9f57a9",
+  "githubMainUpdated": true,
+  "githubIntegratedDeployment": "686819b3-2093-47cb-891f-c3e625957232",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 233,
+    "bytes": 41568451,
+    "treeSha256": "e473ce1355d5108af28ca09e0e6c8b1342cdde08a53580762d0e995b59687b22"
+  },
+  "retainedRollback": {
+    "deploymentId": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+    "sourceCommit": "a407980ec75c7366c3841b1e78451e3952d80f4e",
+    "url": "https://1a60ac73.ufo-timeline.pages.dev",
+    "availableAndPinnedIndexVerified": true,
+    "supersededDesignation": "a49d5164-2f86-48e7-9d4c-9d8686d015d9"
+  },
+  "verification": {
+    "checks": "checks.json",
+    "independent": "independent.json",
+    "provider": "provider.json",
+    "publicFiles": "public-files.json",
+    "browser": "browser.json",
+    "rollback": "rollback.json",
+    "servedFilesVerified": 231,
+    "changedFrontendFiles": 9,
+    "immutableDataObjectsReused": 150,
+    "immutableDataBytesReused": 586867702,
+    "dataUploads": 0
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 14979,
+    "newFilesAbove100MiB": [],
+    "approximateTaskNetGrowth": "under 5 MiB including source, tests, Git objects, receipts and small screenshots",
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededLargeLocalStages": [],
+    "supersededHostedCandidate": "686819b3 Git-integrated candidate superseded by the bounded production stage",
+    "cleanupProposal": "Retain the new validated production and 1a60ac73 as the sole designated rollback. No duplicate local stage exists. Historical hosted candidates may be cleaned only under a separate explicit allowlist; no deletion performed."
+  },
+  "receiptPushDeferredToAvoidDocumentationOnlyRebuild": true
+}

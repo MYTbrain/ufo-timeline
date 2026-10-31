@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "observedUtc": "2026-10-31T06:47:25.995Z",
+  "url": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "2850fbfd-1010-417d-86c4-3d94decc5025",
+  "checks": {
+    "chronologicalDefault": true,
+    "famousCaseCount": 86,
+    "dalnegorskWindow": [
+      "1986-01-28",
+      "1986-01-30"
+    ],
+    "numericFlapLabels": [
+      "1896/11 - 1897/06 · Mystery Airship Wave",
+      "1947/06 - 1947/09 · Roswell era",
+      "1952/06 - 1952/08 · Washington D.C.",
+      "1954/09 - 1954/11 · France wave",
+      "1965/01 - 1967/12 · Late-60s wave",
+      "1973/08 - 1974/01 · 1973 wave",
+      "1989/11 - 1990/04 · Belgium Wave",
+      "1997/03 · Phoenix Lights",
+      "1997/02 - 1997/05 · Phoenix era",
+      "2004/10 - 2005/01 · Nimitz era"
+    ],
+    "positiveBadges": 48,
+    "noLinkRows": [
+      "1561 · Nuremberg sky broadsheet",
+      "1566 · Basel sky broadsheet",
+      "1883 · Bonilla observation"
+    ],
+    "knownDirectionToggle": {
+      "case": "Ariel School",
+      "before": "2 links",
+      "after": "1 link"
+    },
+    "expandedDetails": {
+      "bodyBottom": 454.1875,
+      "followingCountTop": 471.1875,
+      "overlap": false
+    },
+    "compassAndEncountersPreserved": true
+  },
+  "consoleErrors": [],
+  "screenshot": "production.png"
+}
