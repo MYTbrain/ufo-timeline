@@ -31,7 +31,7 @@ PAGES = ROOT / ".tmp" / (RELEASE + "-pages")
 META = ROOT / "releases" / RELEASE
 FRONTEND_REFRESH_FILES = frozenset({
     "index.html", "app.js", "famous_case_presets.js", "famous_case_availability.js",
-    "flap_preset_labels.js", "trace_direction_summary.js", "share_view.js", "analysis_view.js", "styles.css",
+    "flap_preset_labels.js", "trace_direction_summary.js", "trace_facility_worker.js", "share_view.js", "analysis_view.js", "styles.css",
     "ui/accepted-workspace/site-workflow-preview.js", "ui/accepted-workspace/chronology-preview.css",
 })
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
@@ -618,7 +618,7 @@ def refresh_frontend(check_only=False):
     reserve = 100 * 1024**3
     require(net_growth <= 100 * 1024**2 if free_bytes < reserve else free_bytes - net_growth >= reserve,
             "Frontend refresh exceeds available storage budget")
-    plan["runtime_revision"] = "compact-share-v3-mosaic-20261031"
+    plan["runtime_revision"] = "global-trace-directions-20261031"
     plan["base_deployment"] = rollback
     plan["retained_rollback"] = rollback
     plan["frontend_refresh"] = {"base_pages_tree_sha256": previous["pages_tree_sha256"],
