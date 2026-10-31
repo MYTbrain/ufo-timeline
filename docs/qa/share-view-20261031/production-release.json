@@ -1,0 +1,57 @@
+{
+  "schemaId": "ufo-share-view-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-10-31T07:57:42.688955+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "11f72dab-fdf5-4eaf-b84c-301637685fa2",
+  "runtimeSourceCommit": "151354cb62dc9546b76a62182f539f9302bd1241",
+  "githubMainUpdated": true,
+  "githubIntegratedDeployment": "2c9b51b2-01a7-4850-9a02-54d34759b22a",
+  "feature": "Compact browser-fragment share links, legacy query compatibility, exact view restoration including Analysis navigation",
+  "canonicalArtifact": {
+    "stage": ".tmp/workspace-analysis-20261008-pages",
+    "files": 234,
+    "bytes": 41626653,
+    "treeSha256": "95dc8369c112b6319bba8cee42c29861e1d857b2d4da0a40affc9ca73cdfbb4c"
+  },
+  "retainedRollback": {
+    "deploymentId": "2850fbfd-1010-417d-86c4-3d94decc5025",
+    "sourceCommit": "6d7d4f093745c1b087e67ac5ce1e821d1c9f57a9",
+    "url": "https://2850fbfd.ufo-timeline.pages.dev",
+    "pinnedIndexVerified": true,
+    "supersededDesignation": "1a60ac73-eaab-4efa-9dc3-a59da873929d"
+  },
+  "verification": {
+    "servedFilesVerified": 232,
+    "changedFrontendFiles": [
+      "analysis_view.js",
+      "app.js",
+      "index.html",
+      "share_view.js",
+      "styles.css"
+    ],
+    "immutableDataObjectsReused": 150,
+    "immutableDataBytesReused": 586867702,
+    "dataUploads": 0,
+    "browser": "production-browser.json",
+    "provider": "provider.json",
+    "rollback": "rollback.json",
+    "privacy": "privacy.json",
+    "hostedPreview": "https://cc41b061.ufo-timeline.pages.dev"
+  },
+  "storage": {
+    "canonicalStage": ".tmp/workspace-analysis-20261008-pages",
+    "stageNetGrowthBytes": 58202,
+    "newFilesAbove100MiB": [],
+    "approximateTaskNetGrowth": "Under 5 MiB for source, tests, Git objects, receipts and screenshots; existing stage refreshed in place",
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededLargeLocalStages": [],
+    "supersededHostedCandidates": [
+      "1f086736-2f8a-496d-9b11-25530f69da4e",
+      "cc41b061-5c50-4b33-9346-6acece3521dd",
+      "2c9b51b2-01a7-4850-9a02-54d34759b22a"
+    ],
+    "cleanupProposal": "Retain validated production11f72dab and designate2850fbfd as the sole rollback. No duplicate local stage exists. Superseded hosted candidates are eligible for later cleanup only under a separate explicit allowlist; no deletion performed."
+  },
+  "receiptPushDeferredToAvoidDocumentationOnlyRebuild": true
+}

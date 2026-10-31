@@ -1,0 +1,478 @@
+{
+  "passed": true,
+  "productionUrl": "https://ufo-timeline.pages.dev/#view=2.H4sIAAAAAAAACm1R0ZKCMAz8lzyD06S0Sn-FYRyE6nEgdQre6Tn--02L9KwnD0w2TTbJbgENJAUlN-j4BdQjOoMqMOEi35QJdLieoWTMQdp7CPV5nMwRXCqrfOoGHWlQKeWEuavcgCImRObiBhTgJmcpw5QhuNQaFBAjmbIsRYR7eU-K0o_AhQ8voIRY5Ui0ppwzJrlEV8FApXwlUEgSbPncoKwGJRPoJCiozbBvD2erG7g73vqxeTXqrTU7baftVF17Y_0V2CwCYO8LJ3vW_uHo4b7qRx125Icgl5xpe1NXU2uGbTXWnpCLpz6HTURLZmGg6s0A2oV1YhpqYyzeNGfzTmzFhIf4gB7ROBvq4-mfm2Tn1EnbsR0nPUzwt9RPuPrDVxU36LKN07q1da-drxrUk3NPZom7A1dQa2eZE3YEBVYfWjOkzn8vUvUiWh6JxvuX5y5-ftGGD7GT3xFsZlXCdXgNkssQZVHL8Q8tXV9LaZYHcT7jNZC_erQ0n8Kc4W2J_5W_tRsWv6cDAAA",
+  "generatedShareLink": "https://ufo-timeline.pages.dev/#view=2.H4sIAAAAAAAACm1R0Y6jMAz8Fz9DFTskJfkVVFUspD0WSqpA97ZX9d9PCSXddMsD8jj22J6poIWsouwGPf8G_YguoCvMuFDlLoMetwuUjHlIhwChuUyzPYFPFXVI3aAnAzonRah8ZQmamBCFj1vQgKViOcOcIfjUFjQQI5mzIkeE--6eVbswAlc-_AYtxKaUpEriiGorOfcVDHTONwKFJMHWzw8qGtAyg16ChsaOh-54caaFu-dtHpvXk9k7-2HcvJ_r62BduALbVQAcQuHsLiY8nAI81MNk4o78GOWSC-1gm3ru7LivpyYQcvGjz2Ob0JJdGah-M4A-4jopDXUpFm-ai2UntmEiQHzAgGhaDA3x_MtNckvqbNzUTbMZZ3gu9S9e_SdUVTfoi9Jr3blmMN5XA_rpnPphlrh7cAW99ZZ5YSfQ4Myxs2Pu_Q8i1S-iqUQ0Prw89-nzizZ8TJ38m8B2USVeh9couYxRkbScnmjt-lpLCxXF-UzXQP7q0dp8jnPGtyXht_sPbV4x4acDAAA",
+  "linkLength": 574,
+  "queryAbsent": true,
+  "fragmentView": true,
+  "returningVisitorCachePreserved": true,
+  "oldScriptToken": "2026-10-30-case-badges-v17",
+  "newScriptToken": "2026-10-31-share-view-v3",
+  "snapshotDifferences": [],
+  "expected": {
+    "case": "case_robert_taylor",
+    "filters": {
+      "encounterSelectionIds": null,
+      "facets": {
+        "precision": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "source": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "type": {
+          "mode": "subset",
+          "selectedValues": [
+            "Beam",
+            "Changing / irregular",
+            "Chevron",
+            "Cigar",
+            "Circle",
+            "Cone",
+            "Crescent",
+            "Cross",
+            "Cylinder",
+            "Diamond",
+            "Disk",
+            "Fireball",
+            "Flash",
+            "Formation",
+            "Landing",
+            "Light",
+            "Linear",
+            "Oval / egg",
+            "Rectangle",
+            "Sphere / orb",
+            "Star-like",
+            "Teardrop",
+            "Triangle"
+          ]
+        }
+      },
+      "hideLowPrecision": true,
+      "hideNonExactDates": false,
+      "keyword": ""
+    },
+    "layers": {
+      "animals": {
+        "dateScope": "window",
+        "enabled": false
+      },
+      "convergence": {
+        "craftScope": "all_no_lights",
+        "enabled": false,
+        "endpointBuffer": "buffer5",
+        "hideTraces": false,
+        "metric": "lift",
+        "resolution": "equal_area_259_km2",
+        "savedTraceMode": null,
+        "selectedCellId": null,
+        "support": "limited_candidate",
+        "timeScope": "all_time"
+      },
+      "crops": {
+        "chronology": {
+          "coordinateScope": "field",
+          "enabled": false,
+          "maxDistanceKm": 250,
+          "relation": "off"
+        },
+        "dateScope": "window",
+        "enabled": false,
+        "selectedRecordId": null,
+        "ufoFocus": {
+          "cropPositionQuality": "field",
+          "emphasizeIntersections": false,
+          "hopDepth": 1,
+          "hopDirection": "both",
+          "isolation": false,
+          "positionQuality": "source",
+          "radiusKm": 25,
+          "relationWindow": "off",
+          "showRadius": false,
+          "traceAnalysisEnabled": false
+        }
+      },
+      "encounters": {
+        "abduction": "any",
+        "being": "any",
+        "beingSearch": "",
+        "beingTypes": [],
+        "connectionRadiusKm": 250,
+        "connectionsEnabled": true,
+        "displayMode": "markers",
+        "enabled": true,
+        "filterTarget": "overlay",
+        "hiddenKinds": [],
+        "highlightedEventId": null,
+        "includeAmbiguous": false
+      }
+    },
+    "map": {
+      "basemap": "configured",
+      "lat": 55.91227293006361,
+      "lng": -3.5156250000000004,
+      "zoom": 6
+    },
+    "region": {
+      "caseShapeIndex": 0,
+      "combineMode": "any",
+      "country": "",
+      "depth": 0,
+      "direction": "forward",
+      "displayMode": "hide-unselected",
+      "drawingActive": false,
+      "knownDirectionOnly": true,
+      "modeActive": false,
+      "pointOnly": false,
+      "selectEvents": true,
+      "selectTraces": false,
+      "shapes": [
+        {
+          "center": {
+            "lat": 55.9,
+            "lng": -3.55
+          },
+          "id": "region-1",
+          "radiusMeters": 75000,
+          "type": "circle"
+        }
+      ],
+      "showEventsAssociatedWithSelectedTraces": false,
+      "showSelectedEvents": true,
+      "showSelectedTraces": false,
+      "showTracesAssociatedWithSelectedEvents": true,
+      "tool": "rectangle"
+    },
+    "section": "map",
+    "selection": null,
+    "settings": {
+      "analysisBaselineMode": "other_dates_balanced",
+      "claimedUfoBaseVisibility": {
+        "sites": false,
+        "traces": false
+      },
+      "colorMode": "craft_type",
+      "craftTypeColorOverrides": {},
+      "famousCaseOrder": "chronological",
+      "fontScaleMode": "default",
+      "legendDirectionExpanded": true,
+      "mapLabelScaleMode": "default",
+      "mapLegendCraftSolo": null,
+      "mapLegendEventSelection": {
+        "colorMode": "craft_type",
+        "mode": "all",
+        "selectedKeys": []
+      },
+      "mapMode": "heatmap",
+      "militaryBranchVisibility": {
+        "air": false,
+        "army": false,
+        "naval": false,
+        "other": false
+      },
+      "overlayVisibility": {
+        "airports": false,
+        "highways": false,
+        "military": false,
+        "researchSites": true
+      },
+      "playbackSpeed": 4,
+      "playbackTracePersistence": "persistent",
+      "playbackWindowDays": 3,
+      "playbackWindowPreset": "custom",
+      "researchCategoryVisibility": {
+        "contractor": true,
+        "defense_research": true,
+        "military_test": true,
+        "national_lab": true,
+        "observatory": true,
+        "other_research": true,
+        "space_launch": true
+      },
+      "resultsFollowPlayback": false,
+      "resultsSortMode": "location_asc",
+      "showTraceDirectionArrows": false,
+      "showTrailLegend": true,
+      "themeMode": "dark",
+      "traceBoldnessScale": 0.5,
+      "traceBucketVisibility": {
+        "gap_gt_30": false,
+        "gap_le_1": true,
+        "gap_le_2": true,
+        "gap_le_30": false,
+        "gap_le_7": false
+      },
+      "traceFacilityFilter": {
+        "classes": {
+          "between": true,
+          "end": true,
+          "passes": false,
+          "start": true
+        },
+        "enabled": false,
+        "evidenceMode": "source_coordinates",
+        "onlyShowTraceLinkedFacilities": true,
+        "radiusKm": 10,
+        "sources": {
+          "claimedUfoBases": false,
+          "military": true,
+          "researchSites": true
+        }
+      },
+      "traceMode": "static",
+      "traceWidthMode": "auto",
+      "traceWidthScale": 0.05
+    },
+    "time": {
+      "end": 3600,
+      "mode": "custom",
+      "start": 3598,
+      "visible": {
+        "maxIso": "2026-04-11",
+        "maxOrdinal": 20554,
+        "minIso": "1890-01-01",
+        "minOrdinal": -29219
+      }
+    }
+  },
+  "actual": {
+    "case": "case_robert_taylor",
+    "filters": {
+      "encounterSelectionIds": null,
+      "facets": {
+        "precision": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "source": {
+          "mode": "all",
+          "selectedValues": []
+        },
+        "type": {
+          "mode": "subset",
+          "selectedValues": [
+            "Beam",
+            "Changing / irregular",
+            "Chevron",
+            "Cigar",
+            "Circle",
+            "Cone",
+            "Crescent",
+            "Cross",
+            "Cylinder",
+            "Diamond",
+            "Disk",
+            "Fireball",
+            "Flash",
+            "Formation",
+            "Landing",
+            "Light",
+            "Linear",
+            "Oval / egg",
+            "Rectangle",
+            "Sphere / orb",
+            "Star-like",
+            "Teardrop",
+            "Triangle"
+          ]
+        }
+      },
+      "hideLowPrecision": true,
+      "hideNonExactDates": false,
+      "keyword": ""
+    },
+    "layers": {
+      "animals": {
+        "dateScope": "window",
+        "enabled": false
+      },
+      "convergence": {
+        "craftScope": "all_no_lights",
+        "enabled": false,
+        "endpointBuffer": "buffer5",
+        "hideTraces": false,
+        "metric": "lift",
+        "resolution": "equal_area_259_km2",
+        "savedTraceMode": null,
+        "selectedCellId": null,
+        "support": "limited_candidate",
+        "timeScope": "all_time"
+      },
+      "crops": {
+        "chronology": {
+          "coordinateScope": "field",
+          "enabled": false,
+          "maxDistanceKm": 250,
+          "relation": "off"
+        },
+        "dateScope": "window",
+        "enabled": false,
+        "selectedRecordId": null,
+        "ufoFocus": {
+          "cropPositionQuality": "field",
+          "emphasizeIntersections": false,
+          "hopDepth": 1,
+          "hopDirection": "both",
+          "isolation": false,
+          "positionQuality": "source",
+          "radiusKm": 25,
+          "relationWindow": "off",
+          "showRadius": false,
+          "traceAnalysisEnabled": false
+        }
+      },
+      "encounters": {
+        "abduction": "any",
+        "being": "any",
+        "beingSearch": "",
+        "beingTypes": [],
+        "connectionRadiusKm": 250,
+        "connectionsEnabled": true,
+        "displayMode": "markers",
+        "enabled": true,
+        "filterTarget": "overlay",
+        "hiddenKinds": [],
+        "highlightedEventId": null,
+        "includeAmbiguous": false
+      }
+    },
+    "map": {
+      "basemap": "configured",
+      "lat": 55.86298231197633,
+      "lng": -3.5156250000000004,
+      "zoom": 6
+    },
+    "region": {
+      "caseShapeIndex": 0,
+      "combineMode": "any",
+      "country": "",
+      "depth": 0,
+      "direction": "forward",
+      "displayMode": "hide-unselected",
+      "drawingActive": false,
+      "knownDirectionOnly": true,
+      "modeActive": false,
+      "pointOnly": false,
+      "selectEvents": true,
+      "selectTraces": false,
+      "shapes": [
+        {
+          "center": {
+            "lat": 55.9,
+            "lng": -3.55
+          },
+          "id": "region-1",
+          "radiusMeters": 75000,
+          "type": "circle"
+        }
+      ],
+      "showEventsAssociatedWithSelectedTraces": false,
+      "showSelectedEvents": true,
+      "showSelectedTraces": false,
+      "showTracesAssociatedWithSelectedEvents": true,
+      "tool": "rectangle"
+    },
+    "section": "map",
+    "selection": null,
+    "settings": {
+      "analysisBaselineMode": "other_dates_balanced",
+      "claimedUfoBaseVisibility": {
+        "sites": false,
+        "traces": false
+      },
+      "colorMode": "craft_type",
+      "craftTypeColorOverrides": {},
+      "famousCaseOrder": "chronological",
+      "fontScaleMode": "default",
+      "legendDirectionExpanded": true,
+      "mapLabelScaleMode": "default",
+      "mapLegendCraftSolo": null,
+      "mapLegendEventSelection": {
+        "colorMode": "craft_type",
+        "mode": "all",
+        "selectedKeys": []
+      },
+      "mapMode": "heatmap",
+      "militaryBranchVisibility": {
+        "air": false,
+        "army": false,
+        "naval": false,
+        "other": false
+      },
+      "overlayVisibility": {
+        "airports": false,
+        "highways": false,
+        "military": false,
+        "researchSites": true
+      },
+      "playbackSpeed": 4,
+      "playbackTracePersistence": "persistent",
+      "playbackWindowDays": 3,
+      "playbackWindowPreset": "custom",
+      "researchCategoryVisibility": {
+        "contractor": true,
+        "defense_research": true,
+        "military_test": true,
+        "national_lab": true,
+        "observatory": true,
+        "other_research": true,
+        "space_launch": true
+      },
+      "resultsFollowPlayback": false,
+      "resultsSortMode": "location_asc",
+      "showTraceDirectionArrows": false,
+      "showTrailLegend": true,
+      "themeMode": "dark",
+      "traceBoldnessScale": 0.5,
+      "traceBucketVisibility": {
+        "gap_gt_30": false,
+        "gap_le_1": true,
+        "gap_le_2": true,
+        "gap_le_30": false,
+        "gap_le_7": false
+      },
+      "traceFacilityFilter": {
+        "classes": {
+          "between": true,
+          "end": true,
+          "passes": false,
+          "start": true
+        },
+        "enabled": false,
+        "evidenceMode": "source_coordinates",
+        "onlyShowTraceLinkedFacilities": true,
+        "radiusKm": 10,
+        "sources": {
+          "claimedUfoBases": false,
+          "military": true,
+          "researchSites": true
+        }
+      },
+      "traceMode": "static",
+      "traceWidthMode": "auto",
+      "traceWidthScale": 0.05
+    },
+    "time": {
+      "end": 3600,
+      "mode": "custom",
+      "start": 3598,
+      "visible": {
+        "maxIso": "2026-04-11",
+        "maxOrdinal": 20554,
+        "minIso": "1890-01-01",
+        "minOrdinal": -29219
+      }
+    }
+  },
+  "documentRequests": [
+    "https://ufo-timeline.pages.dev/"
+  ],
+  "hostedAnalysisRoundTrip": {
+    "passed": true,
+    "section": "analysis-section-encounters",
+    "snapshotDifferences": []
+  }
+}

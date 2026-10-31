@@ -1,6 +1,6 @@
 {
   "feature": "Share view",
-  "status": "Validated fragment-link candidate; awaiting hosted publication",
+  "status": "Published and verified",
   "snapshotVersion": 2,
   "sourceRoot": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool",
   "checks": [
@@ -27,7 +27,7 @@
     "estimatedNetGrowth": "Under 5 MiB including source, tests, Git objects and small QA artifacts",
     "newFilesOver100MiB": [],
     "cleanup": "No duplicate local stage; previous rollback designation superseded only after successful publication. No deletion.",
-    "production": "2850fbfd-1010-417d-86c4-3d94decc5025",
+    "production": "11f72dab-fdf5-4eaf-b84c-301637685fa2",
     "supersededLargeArtifacts": [],
     "stageNetGrowthBytes": 58202
   },
