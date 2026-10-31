@@ -1,0 +1,18 @@
+{
+  "observedUtc": "2026-10-31T15:57:14.487Z",
+  "url": "https://2bd77ead.ufo-timeline.pages.dev",
+  "passed": true,
+  "baseline": {
+    "arrowsDisabled": false,
+    "phase": "Ready",
+    "segments": 98,
+    "summary": "62 ordered links36 unknown-order links excludedReport-link direction distributio"
+  },
+  "filtered": {
+    "segments": 62,
+    "summary": "62 ordered links0 unknown-order links excludedReport-link direction distribution"
+  },
+  "arrowToggleChangesCanvas": true,
+  "arrowToggleKeepsCount": 62,
+  "filterOffRestoresCount": 98
+}

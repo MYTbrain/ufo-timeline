@@ -1,8 +1,9 @@
 # Global trace direction controls
 
-Local preview verified on 2026-10-31; not deployed. The candidate is the source
-in the `case-navigation-release/UFO Timeline map tool` worktree on branch
-`codex/global-trace-directions-20261031`.
+Published on 2026-10-31 at [UFO Timeline](https://ufo-timeline.pages.dev/).
+The runtime source is `caae56d89a35dfbd20302a9e31232147b7c0fc01`, including
+the direction-control fix `cafd3235fce9754bbfbf58bce07037a1f7bd8851` and the
+updated frontend staging allowlist.
 
 The known-direction filter previously affected only area/case traversal. The
 ordinary map bypassed it, and its arrow control was disabled without an area.
@@ -33,9 +34,39 @@ Validation:
   the actual Canvas while keeping the filtered count at 62. See `browser.json`
   and `map-controls.png`.
 
-Production remains `742eb895-1387-43bd-b69f-85911b806ee9`, with
-`11f72dab-fdf5-4eaf-b84c-301637685fa2` as the retained rollback. The validated
-deployment stage is unchanged. No dataset/build/backup tree was created or
-copied. New artifacts are small, reproducible QA evidence retained with the
-source; no new file exceeds 100 MiB. Approximate net growth is under 1 MiB.
-There are no superseded generated directories requiring cleanup in this task.
+## Published release
+
+Validated production is `034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c`
+([immutable deployment](https://034c76fd.ufo-timeline.pages.dev)). The sole
+retained rollback is `742eb895-1387-43bd-b69f-85911b806ee9`, from source
+`15f32aa0ded006c2b1a718dcf3a6141adb6ce678`; its pinned index is verified in
+`rollback.json`. This supersedes the former rollback designation `11f72dab`.
+
+The canonical site passed verification of 232 served objects; the immutable
+production deployment passed hash checks for all three changed runtime files:
+`app.js`, `index.html`, and `trace_facility_worker.js`. The worker and its
+dependencies inherit the new app version token for returning visitors.
+All 150 immutable data objects (586,867,702 bytes) were reused, with zero data
+uploads. See `production-release.json`, `production-files.json`,
+`immutable-production.json`, and `provider.json`.
+
+Hosted preview `2bd77ead-93cc-4887-b261-db5b9c855ff2` reproduced the
+98 → 62 → 98 trace counts and the arrow-only canvas change at a stable count
+of 62. Its evidence is `preview-browser.json` and `preview-files.json`.
+Production repeated these counts and canvas checks. A returning visitor's
+ordinary reload, without clearing caches, updated the old app and enabled the
+arrow control. Startup reached Ready with 702,893 total and 582,877 mapped
+events and no error. Evidence is kept separately in `production-browser.json`
+and `production-controls.png`; the original local `browser.json` and
+`map-controls.png` remain unchanged.
+
+The single canonical stage, `.tmp/workspace-analysis-20261008-pages`, was
+refreshed in place: 234 files, 41,645,831 bytes, tree SHA-256
+`188ac39e5301d9b69c623d8b811839ba0f5ec6f2baa65e04660deafad2011a7f`.
+Rebuild with `scripts/prepare_workspace_analysis_release.py --refresh-frontend`
+and verify the frozen stage with `--verify-existing`. Stage growth is 7,287
+bytes; approximate total task growth is under 1 MiB, with no newly created file
+above 100 MiB. No corpus, database, backup tree, or duplicate stage was copied.
+Retain this stage, validated production, and the designated rollback. The
+superseded hosted preview is a future cleanup candidate requiring a separate
+explicit allowlist; no deletion was performed.

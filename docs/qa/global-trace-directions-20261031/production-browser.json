@@ -1,0 +1,28 @@
+{
+  "observedUtc": "2026-10-31T15:58:43.229Z",
+  "url": "https://ufo-timeline.pages.dev/",
+  "passed": true,
+  "returningVisitor": {
+    "normalReload": true,
+    "cacheCleared": false,
+    "before": {
+      "app": "https://ufo-timeline.pages.dev/app.js?v=2026-10-31-compact-share-v5",
+      "arrowsDisabled": true,
+      "phase": "Ready"
+    },
+    "afterApp": "app.js?v=2026-10-31-global-trace-directions-v1",
+    "arrowsEnabledAfterReload": true
+  },
+  "before": {
+    "catalog": "702,893",
+    "error": "",
+    "mapped": "582,877",
+    "phase": "Ready",
+    "segments": 98
+  },
+  "filteredTraces": 62,
+  "filterOffRestoredTraces": 98,
+  "arrowToggleKeepsCount": 62,
+  "arrowToggleChangesCanvas": true,
+  "screenshot": "production-controls.png"
+}
