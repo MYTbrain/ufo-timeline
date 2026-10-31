@@ -35095,7 +35095,9 @@
         els.basemapMode.value = map.basemap;
       }
       if (Number.isFinite(map.lat) && Math.abs(map.lat) <= 90 && Number.isFinite(map.lng) && Math.abs(map.lng) <= 100000 && Number.isFinite(map.zoom) && map.zoom >= 0 && map.zoom <= 22) {
-        runtime.map.setView([map.lat, map.lng], map.zoom, { animate: false });
+        // Use the settled container size and bypass Leaflet's pixel-rounded pan.
+        runtime.map.invalidateSize({ animate: false, pan: false });
+        runtime.map.setView([map.lat, map.lng], map.zoom, { animate: false, reset: true });
       }
     }
     // Position the map while its container is visible, before opening Analysis.

@@ -30,6 +30,13 @@ Validation passed:
   opening it in another tab restored every captured root exactly, including
   unchecked boxes; Analysis topic navigation and sharing preserved the topic.
 
+Release preview caught a pre-existing camera restore issue at fractional zoom:
+stale map dimensions shifted latitude by four screen pixels. Restoration now
+invalidates the visible container size before a forced Leaflet camera reset.
+The supplied view retains its exact latitude; longitude differs by less than
+0.01 screen pixel from Leaflet's pixel-origin rounding. Report and area geometry
+remain exact. Final deployment evidence is in `production-release.json`.
+
 The canonical candidate is the source in the `case-navigation-release/UFO Timeline
 map tool` worktree, alongside the previously validated mosaic readability change.
 Production and its canonical staging tree are unchanged: deployment
