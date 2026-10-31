@@ -1,9 +1,9 @@
 {
   "schema": "ufo-workspace-analysis-release-v1",
   "release_id": "workspace-analysis-20261008",
-  "base_deployment": "742eb895-1387-43bd-b69f-85911b806ee9",
-  "runtime_revision": "global-trace-directions-20261031",
-  "retained_rollback": "742eb895-1387-43bd-b69f-85911b806ee9",
+  "base_deployment": "034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c",
+  "runtime_revision": "playback-resume-20261031",
+  "retained_rollback": "034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c",
   "counts": {
     "events": 702893,
     "mapped": 582877
@@ -292,8 +292,8 @@
     {
       "path": "app.js",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\app.js",
-      "bytes": 1557497,
-      "sha256": "18666793fab230a6eb20d4cd9c15142744ce45a867ed1d31941340f078c1f6df",
+      "bytes": 1557486,
+      "sha256": "7bad8f6d863cec5234af5fd62c2b625b5c86ca55f802c825b6e73d62334c6ba1",
       "requires_revalidation": true,
       "allow_pages_analytics": false
     },
@@ -1476,8 +1476,8 @@
     {
       "path": "index.html",
       "source": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\index.html",
-      "bytes": 170561,
-      "sha256": "c7ecf491861afc00a5d9f0326fea7b094569f79c45906afafb1538e4dfd1910e",
+      "bytes": 170553,
+      "sha256": "62c42617a00f8250dc050636e4d487c9e00be5d4fba293abfdaa710d15ba71f4",
       "requires_revalidation": true,
       "allow_pages_analytics": true
     },
@@ -1882,8 +1882,8 @@
       "allow_pages_analytics": false
     }
   ],
-  "pages_tree_sha256": "188ac39e5301d9b69c623d8b811839ba0f5ec6f2baa65e04660deafad2011a7f",
-  "pages_total_bytes": 41645831,
+  "pages_tree_sha256": "8750a8f760b2cefc95f162cecbf99433f2655f0a1221400eb820629558429e76",
+  "pages_total_bytes": 41645812,
   "bucket": "ufo-timeline-data",
   "key_prefix": "releases/workspace-analysis-20261008",
   "uploads": [
@@ -5477,12 +5477,12 @@
   "storage": {
     "corpus_copied": false,
     "new_files_above_100MiB": [],
-    "approximate_net_local_growth_bytes": 7287,
-    "existing_stage_bytes": 41638544,
-    "c_free_bytes_before_stage": 4869713920,
+    "approximate_net_local_growth_bytes": 0,
+    "existing_stage_bytes": 41645831,
+    "c_free_bytes_before_stage": 4913930240,
     "canonical_candidate": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\.tmp\\workspace-analysis-20261008-pages",
     "shared_inputs": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\analysis-repairs-20261007",
-    "rollback": "742eb895-1387-43bd-b69f-85911b806ee9",
+    "rollback": "034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c",
     "superseded_staging": [],
     "search_derivative": {
       "canonical_candidate": "D:\\Codex\\UFO-Timeline\\search-index-20261018-v1",
@@ -5560,11 +5560,10 @@
     "source_fields_preserved": true
   },
   "frontend_refresh": {
-    "base_pages_tree_sha256": "a1f902449a1ca3e4212da10d5d66a3e944a08d300a81878b772ba4b4d34c2902",
+    "base_pages_tree_sha256": "188ac39e5301d9b69c623d8b811839ba0f5ec6f2baa65e04660deafad2011a7f",
     "changed_paths": [
       "app.js",
-      "index.html",
-      "trace_facility_worker.js"
+      "index.html"
     ],
     "data_and_upload_records_unchanged": true
   }
