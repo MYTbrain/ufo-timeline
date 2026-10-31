@@ -1,0 +1,32 @@
+{
+  "status": "Verified local candidate; not deployed",
+  "formatVersion": 2,
+  "oldFormatsAccepted": [
+    1
+  ],
+  "browser": {
+    "oldUrlCharacters": 5089,
+    "newUrlCharacters": 571,
+    "reductionPercent": 88.8,
+    "legacyLinkRestoresSameView": true,
+    "compactLinkRestoresSameView": true,
+    "exactCodecRoundTrip": true,
+    "copyStatus": "Link copied."
+  },
+  "method": "Frozen versioned defaults and key dictionary; lossless gzip; shortest of full, delta, or legacy representation",
+  "limits": "No rounding of coordinates or removal of explicit checkbox/empty/absent values",
+  "validation": [
+    "Legacy codec suite passed",
+    "Compact codec suite and permanent v2 fixture passed",
+    "Three shell checks and syntax checks passed",
+    "Real browser opened both legacy and compact URLs with matching view settings"
+  ],
+  "storage": {
+    "canonical": "Current worktree candidate; deployed stage unchanged",
+    "rollback": "1a60ac73-eaab-4efa-9dc3-a59da873929d",
+    "estimatedNetGrowth": "Less than 1 MiB",
+    "newFilesOver100MiB": [],
+    "supersededLargeArtifacts": [],
+    "cleanup": "None needed; retain the small test evidence"
+  }
+}

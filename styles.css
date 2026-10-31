@@ -2330,6 +2330,115 @@ input::placeholder {
   width: min(300px, 100%);
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  max-width: 100%;
+}
+
+.share-view-button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.share-view-dialog {
+  box-sizing: border-box;
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  background: var(--bg-top);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.share-view-dialog[open] {
+  display: grid;
+  gap: 12px;
+}
+
+.share-view-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.share-view-dialog h2 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.share-view-link-field {
+  display: block;
+  min-width: 0;
+}
+
+#share-view-url {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+
+.share-view-status {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.share-view-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.share-view-actions button {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+}
+
+.share-view-button:focus-visible,
+.share-view-dialog :focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+@media (pointer: coarse) {
+  .hero-actions .share-view-button,
+  .hero-actions .guided-tour-start,
+  .share-view-actions button {
+    min-height: 44px;
+  }
+}
+
 .mobile-appearance-controls {
   display: none;
   align-items: center;

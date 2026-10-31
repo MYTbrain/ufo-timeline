@@ -24,7 +24,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SOURCE_OVERLAYS = frozenset({
     "index.html", "app.js", "famous_case_presets.js",
-    "famous_case_availability.js", "flap_preset_labels.js", "trace_direction_summary.js",
+    "famous_case_availability.js", "flap_preset_labels.js", "trace_direction_summary.js", "share_view.js", "analysis_view.js",
     "styles.css", "ui/accepted-workspace/site-workflow-preview.js",
     "ui/accepted-workspace/chronology-preview.css",
 })

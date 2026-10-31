@@ -1,0 +1,96 @@
+{
+  "feature": "Share view",
+  "status": "Validated fragment-link candidate; awaiting hosted publication",
+  "snapshotVersion": 2,
+  "sourceRoot": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool",
+  "checks": [
+    "Node codec round trips and invalid-input limits passed",
+    "App and helper JavaScript syntax passed",
+    "Three shell contract checks passed",
+    "Six bounded release tests passed",
+    "Browser famous case/circle/dates/map/checkbox round trip: zero differences",
+    "Browser custom rectangle+circle/no precision selections/numeric selected report: zero differences",
+    "Clearing restored case removes owned circle",
+    "Native Windows clipboard contains generated 5089-character view link",
+    "Compact format: browser full URL 5089 to 571 characters; same settings restored",
+    "Old and new link formats verified in browser; frozen v2 fixture and codec limits passed",
+    "New links use #view= with an empty query; legacy v1/v2 query links remain readable",
+    "Fragment and legacy browser snapshots match exactly, ignoring regenerated shape IDs",
+    "Browser network Document request was /index.html without view settings",
+    "Analysis navigation preserves view token and selected section",
+    "Analysis navigation test suite passed; independent fragment review found no blockers"
+  ],
+  "storage": {
+    "canonical": ".tmp/workspace-analysis-20261008-pages",
+    "rollback": "2850fbfd-1010-417d-86c4-3d94decc5025",
+    "estimatedNetGrowth": "Under 5 MiB including source, tests, Git objects and small QA artifacts",
+    "newFilesOver100MiB": [],
+    "cleanup": "No duplicate local stage; previous rollback designation superseded only after successful publication. No deletion.",
+    "production": "2850fbfd-1010-417d-86c4-3d94decc5025",
+    "supersededLargeArtifacts": [],
+    "stageNetGrowthBytes": 58121
+  },
+  "files": [
+    {
+      "path": "app.js",
+      "bytes": 1550050,
+      "sha256": "31fe10802efe87251dc0a54c3c8a34cf4d14d9742e610553b80fd76923822053"
+    },
+    {
+      "path": "index.html",
+      "bytes": 170539,
+      "sha256": "2a0ccb3b5ea53515dfbc5c37e99cc524fd6a7b7938d519ddcd1551d32805bd72"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 282503,
+      "sha256": "cd7133e96028eb8ad98365435d1caf9a7a9e5481b996b8fb37ea27b8f1ce6c45"
+    },
+    {
+      "path": "share_view.js",
+      "bytes": 23673,
+      "sha256": "aa12d7a0e2c715620839dcb4a9c239b70f5fa2f79c8b7fe1e8fc8ec66e066b9b"
+    },
+    {
+      "path": "tests/test_share_view.mjs",
+      "bytes": 8724,
+      "sha256": "1ef056890d8c4b067164ff9ac4b242754c4b5dd700cd2bb3081752e6bbe3a622"
+    },
+    {
+      "path": "scripts/serve_current_frontend_preview.py",
+      "bytes": 12459,
+      "sha256": "8c1ab959a4b31e0afd589881eead8bc61e17fdb2392cc477e99329c5348ce7d4"
+    },
+    {
+      "path": "scripts/prepare_workspace_analysis_release.py",
+      "bytes": 43178,
+      "sha256": "2bdb04f3462579bc5999e33ee5f4432e247ab0afe158b3cb30ea5318993c4cd4"
+    },
+    {
+      "path": "tests/test_case_navigation_shell.py",
+      "bytes": 3917,
+      "sha256": "affeaab58454d48cb3a87b6aecb8201feab31c41c2cca72684cfede40d1dbcd9"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 12824,
+      "sha256": "49ed4d7fa5d1b6e287566cdf89d835d0826c90eb41fa1cea43e940181e74704e"
+    },
+    {
+      "path": "tests/test_share_view_compact.mjs",
+      "bytes": 11077,
+      "sha256": "126d581a5aff74e823cf78fa439e8cd05d67ceeac4bf4879ea58b1c70a5ee912"
+    },
+    {
+      "path": "analysis_view.js",
+      "bytes": 534093,
+      "sha256": "5f53818794a99a91a89842ffd20757a19deeca9bdf76a43c00d923db1ec3af99"
+    },
+    {
+      "path": "tests/test_analysis_view_repairs.mjs",
+      "bytes": 17283,
+      "sha256": "63daf8e9a19358ab4c96114923a197d76d300ce2cc1beabd98dcf1e2a557a9cb"
+    }
+  ],
+  "release": "share-view-20261031-v3"
+}

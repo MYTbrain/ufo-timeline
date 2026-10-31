@@ -31,7 +31,7 @@ PAGES = ROOT / ".tmp" / (RELEASE + "-pages")
 META = ROOT / "releases" / RELEASE
 FRONTEND_REFRESH_FILES = frozenset({
     "index.html", "app.js", "famous_case_presets.js", "famous_case_availability.js",
-    "flap_preset_labels.js", "trace_direction_summary.js", "styles.css",
+    "flap_preset_labels.js", "trace_direction_summary.js", "share_view.js", "analysis_view.js", "styles.css",
     "ui/accepted-workspace/site-workflow-preview.js", "ui/accepted-workspace/chronology-preview.css",
 })
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
@@ -269,7 +269,7 @@ def validate_refresh(previous, plan):
     old_paths = {r["path"] for r in previous["pages"]}
     new_paths = {r["path"] for r in plan["pages"]}
     require(old_paths <= new_paths and new_paths - old_paths <= {
-        "famous_case_availability.js",
+        "famous_case_availability.js", "share_view.js",
         "trace_chronology.js", "trace_direction_summary.js", "data/trace_chronology/evidence.json.gz", "data/trace_chronology/manifest.json",
         "encounter_evidence.js", "encounter_map.js", "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css", "data/encounters/manifest.json", "data/encounters/evidence.json.gz", "data/encounters/label_origins.json.gz", "data/encounters/enrichment.json.gz",
         NUCLEAR_EXTENSION,
@@ -316,7 +316,7 @@ def assemble(check_only=False):
     # never become Pages assets merely because they live alongside runtime data.
     new_runtime = ["analysis_astronomy_engine.js", "analysis_comparisons.css", "analysis_comparisons_view.js",
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
-                   "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "famous_case_availability.js", "encounter_evidence.js", "encounter_map.js",
+                   "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "famous_case_availability.js", "share_view.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
                    "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
@@ -618,7 +618,7 @@ def refresh_frontend(check_only=False):
     reserve = 100 * 1024**3
     require(net_growth <= 100 * 1024**2 if free_bytes < reserve else free_bytes - net_growth >= reserve,
             "Frontend refresh exceeds available storage budget")
-    plan["runtime_revision"] = "case-navigation-20261030-v19"
+    plan["runtime_revision"] = "share-view-20261031-v3"
     plan["base_deployment"] = rollback
     plan["retained_rollback"] = rollback
     plan["frontend_refresh"] = {"base_pages_tree_sha256": previous["pages_tree_sha256"],

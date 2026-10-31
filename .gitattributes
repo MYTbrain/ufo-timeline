@@ -157,6 +157,7 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /legend_controls.js -text
 /playback_performance.js -text
 /quality_detail_overlay.js -text
+/share_view.js -text
 /startup_profile_worker.js -text
 /styles.css -text
 /sw.js -text

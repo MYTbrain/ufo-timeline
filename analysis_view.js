@@ -3002,7 +3002,12 @@
 
     _replaceHash(sectionId) {
       if (!this.documentView || !this.documentView.location) return;
-      const hash = "#" + sectionId;
+      let hash = "#" + sectionId;
+      const fragment = new URLSearchParams(cleanText(this.documentView.location.hash).replace(/^#/, ""));
+      if (fragment.has("view")) {
+        fragment.set("section", sectionId);
+        hash = "#" + fragment.toString();
+      }
       if (this.documentView.location.hash === hash) return;
       if (this.documentView.history && typeof this.documentView.history.replaceState === "function") {
         this.documentView.history.replaceState(null, "", hash);
@@ -3022,7 +3027,14 @@
     }
 
     _honorAnalysisHash(options) {
-      const hash = cleanText(this.documentView && this.documentView.location && this.documentView.location.hash).replace(/^#/, "");
+      const location = this.documentView && this.documentView.location;
+      const shareView = this.documentView && this.documentView.UfoShareView;
+      let sectionHash = location && location.hash;
+      if (shareView && typeof shareView.readSectionHash === "function" && location && location.href) {
+        try { sectionHash = shareView.readSectionHash(location.href); }
+        catch (_error) { sectionHash = ""; }
+      }
+      const hash = cleanText(sectionHash).replace(/^#/, "");
       if (!hash) return false;
       if (/^analysis-section-/.test(hash)) {
         return this.navigateToSection(hash, Object.assign({ updateHash: false, focus: false }, options || {}));

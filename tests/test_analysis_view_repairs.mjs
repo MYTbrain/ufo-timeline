@@ -255,4 +255,54 @@ try {
   globalThis.UfoAnalysisComparisonsView = priorComparisonsView;
 }
 
+// Analysis topic navigation must retain fragment-carried view settings so a
+// refresh or a copied address continues to restore the same selected map state.
+{
+  const share = require("../share_view.js");
+  const snapshot = { settings: { showTraceDirectionArrows: false }, section: "analysis" };
+  const sharedUrl = share.buildUrl(snapshot, "https://example.test/index.html#analysis-section-time");
+  const navigation = fixture().controller;
+  const navigated = [];
+  navigation.navigateToSection = (id, options) => { navigated.push({ id, options }); return true; };
+  navigation.documentView = {
+    location: new URL(sharedUrl), UfoShareView: share,
+    history: { replaceState(_state, _title, next) {
+      navigation.documentView.location = new URL(next, navigation.documentView.location.href);
+    } },
+  };
+  assert.equal(navigation._honorAnalysisHash({ focus: true }), true);
+  assert.deepEqual(navigated.at(-1), { id: "analysis-section-time", options: { updateHash: false, focus: true } });
+  navigation._replaceHash("analysis-section-encounters");
+  assert.equal(navigation.documentView.location.search, "");
+  assert.equal(share.readSectionHash(navigation.documentView.location.href), "#analysis-section-encounters");
+  assert.deepEqual(share.readUrl(navigation.documentView.location.href), snapshot,
+    "Changing Analysis topics retains the complete shared view token");
+  assert.equal(navigation._honorAnalysisHash(), true);
+  assert.equal(navigated.at(-1).id, "analysis-section-encounters");
+  navigation._replaceHash("analysis-animal-context");
+  assert.equal(navigation._honorAnalysisHash(), true);
+  assert.equal(navigated.at(-1).id, "analysis-section-animals");
+
+  // The fallback without history.replaceState also keeps the token intact.
+  delete navigation.documentView.history;
+  navigation._replaceHash("analysis-section-craft");
+  assert.deepEqual(share.readUrl(navigation.documentView.location.href), snapshot);
+  assert.equal(share.readSectionHash(navigation.documentView.location.href), "#analysis-section-craft");
+
+  // Existing bare section anchors and query-based links retain their behavior.
+  navigation.documentView.location = new URL("https://example.test/?view=" + share.encode(snapshot) + "#analysis-section-time");
+  navigation._replaceHash("analysis-section-geography");
+  assert.equal(navigation.documentView.location.hash, "#analysis-section-geography");
+  assert.deepEqual(share.readUrl(navigation.documentView.location.href), snapshot);
+  assert.equal(navigation._honorAnalysisHash(), true);
+  assert.equal(navigated.at(-1).id, "analysis-section-geography");
+  delete navigation.documentView.UfoShareView;
+  navigation.documentView.location = new URL("https://example.test/#analysis-section-overview");
+  assert.equal(navigation._honorAnalysisHash(), true, "Analysis also runs when the optional sharing module is absent");
+  assert.equal(navigated.at(-1).id, "analysis-section-overview");
+  navigation.documentView.UfoShareView = share;
+  navigation.documentView.location = new URL("https://example.test/#view=invalid&section=unknown");
+  assert.equal(navigation._honorAnalysisHash(), false, "Unrecognized shared section values do not activate a topic");
+}
+
 console.log("Analysis view repairs: coverage, funnel, strict gates, disclosure lifecycle and lazy heatmap callback assertions passed");

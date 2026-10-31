@@ -1514,6 +1514,234 @@
     },
   };
 
+  function captureShareViewLayers() {
+    function value(id, fallback) {
+      const control = document.getElementById(id);
+      return control ? String(control.value) : fallback;
+    }
+    function checked(id, fallback) {
+      const control = document.getElementById(id);
+      return control ? Boolean(control.checked) : fallback;
+    }
+    function settings(source, keys) {
+      const result = {};
+      keys.forEach(function (key) {
+        if (source && ["string", "number", "boolean"].includes(typeof source[key])) result[key] = source[key];
+      });
+      return result;
+    }
+    const cropLayer = window.UfoCropCircleLayer;
+    const crop = cropLayer && typeof cropLayer.getStatus === "function" ? cropLayer.getStatus() : null;
+    const convergence = runtime.traceIntersectionController;
+    const cropSettings = { enabled: cropCircleOverlayActive(), dateScope: cropCircleDateScope() };
+    if (crop) {
+      cropSettings.chronology = settings(crop.chronology, ["enabled", "relation", "coordinateScope", "maxDistanceKm"]);
+      cropSettings.ufoFocus = settings(crop.ufoFocus, ["relationWindow", "positionQuality", "cropPositionQuality", "radiusKm",
+        "traceAnalysisEnabled", "hopDepth", "hopDirection", "showRadius", "emphasizeIntersections", "isolation"]);
+      cropSettings.selectedRecordId = crop.selectedRecordId == null ? null : String(crop.selectedRecordId);
+    } else {
+      cropSettings.chronology = {
+        relation: value("crop-circle-chronology-relation", "off"),
+        coordinateScope: value("crop-circle-chronology-coordinate-scope", "field"),
+        maxDistanceKm: Number(value("crop-circle-chronology-max-distance", "250")),
+      };
+      cropSettings.ufoFocus = {
+        relationWindow: value("crop-circle-ufo-relation-window", "off"),
+        positionQuality: value("crop-circle-ufo-position-quality", "source"),
+        cropPositionQuality: value("crop-circle-ufo-crop-position-quality", "field"),
+        radiusKm: Number(value("crop-circle-radius-km", "25")),
+        hopDepth: Number(value("crop-circle-ufo-hop-depth", "1")),
+        hopDirection: value("crop-circle-ufo-hop-direction", "both"),
+      };
+      cropSettings.selectedRecordId = null;
+    }
+    // These controls exist before the optional crop runtime has loaded.
+    Object.assign(cropSettings.ufoFocus, {
+      showRadius: checked("crop-circle-show-radius", true),
+      traceAnalysisEnabled: checked("crop-circle-analyze-ufo-traces", false),
+      emphasizeIntersections: checked("crop-circle-highlight-intersections", true),
+      isolation: checked("crop-circle-focus-mode", false),
+    });
+    const hideTraces = document.getElementById("trace-intersection-hide-traces");
+    const encounter = encounterOverlaySelections();
+    return {
+      encounters: {
+        enabled: Boolean(runtime.encounterMapEnabled), displayMode: runtime.encounterDisplayMode,
+        connectionsEnabled: Boolean(runtime.encounterConnectionsEnabled), connectionRadiusKm: runtime.encounterConnectionRadiusKm,
+        hiddenKinds: Array.from(runtime.encounterMapHiddenKinds || []), includeAmbiguous: Boolean(runtime.encounterMapIncludeAmbiguous),
+        filterTarget: value("encounter-filter-target", "overlay"), abduction: encounter.abduction, being: encounter.being,
+        beingTypes: encounter.beingTypes.slice(), beingSearch: value("encounter-being-search", ""),
+        highlightedEventId: runtime.encounterTraceHighlightEventId == null ? null : String(runtime.encounterTraceHighlightEventId),
+      },
+      crops: cropSettings,
+      animals: { enabled: animalMutilationOverlayActive(), dateScope: animalMutilationDateScope() },
+      convergence: {
+        enabled: Boolean(convergence && convergence.enabled), hideTraces: Boolean(hideTraces && hideTraces.checked),
+        endpointBuffer: value("trace-intersection-endpoint-buffer", "buffer5"),
+        resolution: value("trace-intersection-resolution", "equal_area_259_km2"),
+        craftScope: value("trace-intersection-craft-scope", "all_no_lights"),
+        timeScope: value("trace-intersection-time-scope", "all_time"), metric: value("trace-intersection-metric", "lift"),
+        support: value("trace-intersection-support", "limited_candidate"),
+        savedTraceMode: convergence && convergence.savedTraceMode || null,
+        selectedCellId: convergence && convergence.selectedCellId || null,
+      },
+    };
+  }
+
+  async function restoreShareViewLayers(layers) {
+    const warnings = [];
+    function object(value) { return value && typeof value === "object" && !Array.isArray(value) ? value : null; }
+    function shortText(value, limit) { return typeof value === "string" && value.length <= limit && !/[\u0000-\u001f]/.test(value); }
+    function setSelect(id, value) {
+      const control = document.getElementById(id);
+      if (!control || !shortText(value, 128) || !Array.from(control.options || []).some(function (option) { return option.value === value; })) return false;
+      control.value = value;
+      return true;
+    }
+    function stringList(value, allowed) {
+      return Array.isArray(value) && value.length <= allowed.length && value.every(function (key) {
+        return typeof key === "string" && allowed.includes(key);
+      }) ? Array.from(new Set(value)) : null;
+    }
+    function safeSettings(raw, enums, booleans) {
+      const result = {};
+      if (!object(raw)) return result;
+      Object.keys(enums).forEach(function (key) { if (enums[key].includes(raw[key])) result[key] = raw[key]; });
+      booleans.forEach(function (key) { if (typeof raw[key] === "boolean") result[key] = raw[key]; });
+      return result;
+    }
+    if (!object(layers)) return { warnings: warnings };
+
+    const encounter = object(layers.encounters);
+    if (encounter) {
+      try {
+        await loadEncounterEvidence();
+        if (runtime.encounterStatus !== "ready") throw new Error("Encounter evidence unavailable");
+        renderEncounterControls();
+        setSelect("encounter-filter-target", encounter.filterTarget);
+        setSelect("encounter-abduction-filter", encounter.abduction);
+        setSelect("encounter-being-filter", encounter.being);
+        const typeControls = Array.from(document.querySelectorAll("[data-encounter-being]"));
+        const types = stringList(encounter.beingTypes, typeControls.map(function (input) { return input.value; }));
+        const being = document.getElementById("encounter-being-filter");
+        if (types) typeControls.forEach(function (input) { input.checked = types.includes(input.value); });
+        if (being && being.value === "not_indexed") typeControls.forEach(function (input) { input.checked = false; });
+        const search = document.getElementById("encounter-being-search");
+        if (search && shortText(encounter.beingSearch, 200)) search.value = encounter.beingSearch;
+        if (typeof encounter.enabled === "boolean") runtime.encounterMapEnabled = encounter.enabled;
+        if (["markers", "heatmap", "combined"].includes(encounter.displayMode)) runtime.encounterDisplayMode = encounter.displayMode;
+        if (typeof encounter.connectionsEnabled === "boolean") runtime.encounterConnectionsEnabled = encounter.connectionsEnabled;
+        if ([25, 100, 250, 1000].includes(encounter.connectionRadiusKm)) runtime.encounterConnectionRadiusKm = encounter.connectionRadiusKm;
+        if (typeof encounter.includeAmbiguous === "boolean") runtime.encounterMapIncludeAmbiguous = encounter.includeAmbiguous;
+        const kinds = stringList(encounter.hiddenKinds, ENCOUNTER_MAP.KINDS.map(function (entry) { return entry.key; }));
+        if (kinds) runtime.encounterMapHiddenKinds = new Set(kinds);
+        if (encounter.highlightedEventId === null || (shortText(encounter.highlightedEventId, 160) && getCatalogEventById(encounter.highlightedEventId))) {
+          runtime.encounterTraceHighlightEventId = encounter.highlightedEventId;
+        }
+        runtime.encounterMapModelKey = "";
+        filterEncounterDescriptionChoices();
+        updateEncounterControlSummary();
+      } catch (error) {
+        warnings.push("Encounter settings could not be fully restored.");
+      }
+    }
+
+    const crop = object(layers.crops);
+    if (crop) {
+      try {
+        const chronology = safeSettings(crop.chronology, {
+          relation: ["off", "same_day", "7", "30"], coordinateScope: ["field", "all"], maxDistanceKm: [100, 250, 500, 1000],
+        }, ["enabled"]);
+        const focus = safeSettings(crop.ufoFocus, {
+          relationWindow: ["off", "same_day", "after_1_7", "after_1_30"], positionQuality: ["source", "all"],
+          cropPositionQuality: ["field", "all"], radiusKm: [5, 10, 25, 50, 100, 250, 500],
+          hopDepth: [1, 2, 3, 4], hopDirection: ["forward", "backward", "both"],
+        }, ["traceAnalysisEnabled", "showRadius", "emphasizeIntersections", "isolation"]);
+        if (typeof crop.enabled === "boolean") {
+          const result = await setContextLayerEnabled("crops", crop.enabled, "shared-view");
+          if (result && result.overlayAvailable === false) warnings.push("The crop-circle overlay is unavailable.");
+        }
+        // Bootstrap enablement resets this to window, so restore it afterward.
+        if (["all", "window"].includes(crop.dateScope)) setCropCircleDateScope(crop.dateScope);
+        if (!window.UfoCropCircleLayer && (Object.keys(chronology).length || Object.keys(focus).length) &&
+            window.UfoCropCircleBootstrap && typeof window.UfoCropCircleBootstrap.ensureLoaded === "function") {
+          await window.UfoCropCircleBootstrap.ensureLoaded();
+        }
+        const layer = window.UfoCropCircleLayer;
+        if (layer) {
+          if (["all", "window"].includes(crop.dateScope)) setCropCircleDateScope(crop.dateScope);
+          if (Object.keys(chronology).length && typeof layer.setChronology === "function") layer.setChronology(chronology);
+          if (crop.selectedRecordId === null) {
+            const close = document.getElementById("crop-circle-detail-close");
+            if (close) close.click();
+          } else if (shortText(crop.selectedRecordId, 160) && crop.selectedRecordId &&
+              typeof layer.openRecord === "function" && typeof layer.isEnabled === "function" && layer.isEnabled()) {
+            try { await layer.openRecord(crop.selectedRecordId); }
+            catch (error) { warnings.push("The selected crop-circle record could not be restored."); }
+          }
+          if (Object.keys(focus).length && typeof layer.setUfoFocus === "function") await layer.setUfoFocus(focus);
+        }
+      } catch (error) {
+        warnings.push("Crop-circle settings could not be fully restored.");
+      }
+    }
+
+    const animal = object(layers.animals);
+    if (animal) {
+      try {
+        if (typeof animal.enabled === "boolean") {
+          const result = await setContextLayerEnabled("animals", animal.enabled, "shared-view");
+          if (result && result.overlayAvailable === false) warnings.push("The animal-report overlay is unavailable.");
+        }
+        if (["all", "window"].includes(animal.dateScope)) setAnimalMutilationDateScope(animal.dateScope);
+      } catch (error) {
+        warnings.push("Animal-report settings could not be fully restored.");
+      }
+    }
+
+    const convergence = object(layers.convergence);
+    const controller = runtime.traceIntersectionController;
+    if (convergence && controller) {
+      try {
+        const hide = document.getElementById("trace-intersection-hide-traces");
+        if (hide && typeof convergence.hideTraces === "boolean") hide.checked = convergence.hideTraces;
+        const selectors = {
+          endpointBuffer: "trace-intersection-endpoint-buffer", resolution: "trace-intersection-resolution",
+          craftScope: "trace-intersection-craft-scope", timeScope: "trace-intersection-time-scope",
+          metric: "trace-intersection-metric", support: "trace-intersection-support",
+        };
+        Object.keys(selectors).forEach(function (key) { setSelect(selectors[key], convergence[key]); });
+        if (typeof convergence.enabled === "boolean") {
+          // The caller already restored the ordinary trace mode. Disabling an old
+          // convergence view must not replace it with that view's saved mode.
+          controller.savedTraceMode = null;
+          await controller.setEnabled(convergence.enabled);
+        }
+        // Craft-specific options are populated lazily with the profiles.
+        if (!controller.profiles && shortText(convergence.craftScope, 80) && /^craft:[a-z0-9_]+$/.test(convergence.craftScope)) {
+          await controller.loadProfiles();
+          controller.populateCraftOptions();
+          controller.populateResolutionOptions();
+        }
+        Object.keys(selectors).forEach(function (key) { setSelect(selectors[key], convergence[key]); });
+        if (convergence.savedTraceMode === null || ["off", "static", "playback"].includes(convergence.savedTraceMode)) {
+          controller.savedTraceMode = controller.enabled ? convergence.savedTraceMode : null;
+        }
+        if (convergence.selectedCellId === null) controller.selectedCellId = null;
+        if (controller.enabled) {
+          if (hide && hide.checked) controller.suppressOrdinaryTraces();
+          controller.refresh();
+          if (shortText(convergence.selectedCellId, 160) && controller.lastAggregation &&
+              controller.lastAggregation.cellById.has(convergence.selectedCellId)) controller.selectCell(convergence.selectedCellId, false);
+        }
+        if (convergence.enabled === true && !controller.enabled) warnings.push("The convergence overlay is unavailable.");
+      } catch (error) {
+        warnings.push("Convergence settings could not be fully restored.");
+      }
+    }
+    return { warnings: warnings };
+  }
+
   function defaultOverlayVisibilityState() {
     return {
       airports: false,
@@ -33698,6 +33926,7 @@
   function progressiveStartupRequested() {
     const params = new URLSearchParams(window.location.search);
     return params.get("progressiveStartup") !== "0" &&
+      !window.UfoShareView.hasViewUrl(window.location.href) &&
       !params.has("autosearch") && !params.has("autoselect") &&
       !["start", "end", "windowStart", "windowEnd"].some(function (key) { return params.has(key); }) &&
       Boolean(window.UFOStartupCatalogUI && window.UfoProgressiveCatalogRuntime);
@@ -34276,6 +34505,7 @@
   }
 
   async function applyStartupFitBeforeReady() {
+    if (runtime.sharedViewRestored) return false;
     if (startup.progressiveEnabled && startup.mapViewReady) return false;
     if (!runtime.map || !state.filteredMappedCatalog.length) return false;
     if (state.famousCaseId) return false;
@@ -34659,11 +34889,276 @@
     setStartupFailure(reason);
   });
 
+  // Explicit view schema: never merge URL data into application/runtime objects.
+  const SHARE_SETTING_ENUMS = {
+    colorMode: ["single", "type", "craft_type", "precision"],
+    mapMode: ["auto", "points", "clusters", "heatmap"],
+    traceMode: ["off", "static", "playback"],
+    resultsSortMode: ["date_asc", "date_desc", "location_asc"],
+    famousCaseOrder: ["chronological", "alphabetical"],
+    traceWidthMode: ["auto", "manual"],
+  };
+  const SHARE_SETTING_BOOLS = ["resultsFollowPlayback", "showTrailLegend", "showTraceDirectionArrows", "legendDirectionExpanded"];
+  const SHARE_VISIBILITY_MAPS = ["overlayVisibility", "claimedUfoBaseVisibility", "militaryBranchVisibility", "researchCategoryVisibility", "traceBucketVisibility"];
+
+  function shareBooleanMap(target, source) {
+    if (!source || typeof source !== "object") return;
+    Object.keys(target).forEach(function (key) {
+      if (typeof source[key] === "boolean") target[key] = source[key];
+    });
+  }
+
+  function captureShareView() {
+    const settings = {};
+    Object.keys(SHARE_SETTING_ENUMS).concat(SHARE_SETTING_BOOLS, SHARE_VISIBILITY_MAPS,
+      ["traceWidthScale", "traceBoldnessScale", "playbackSpeed", "playbackWindowDays", "playbackWindowPreset",
+        "playbackTracePersistence", "themeMode", "fontScaleMode", "mapLabelScaleMode", "craftTypeColorOverrides",
+        "traceFacilityFilter", "mapLegendCraftSolo", "analysisBaselineMode"]).forEach(function (key) {
+      if (state[key] !== undefined) settings[key] = state[key];
+    });
+    settings.mapLegendEventSelection = normalizedMapLegendEventSelection();
+    const facets = {};
+    ["source", "type", "precision"].forEach(function (key) { facets[key] = effectiveMultiSelectState(key); });
+    const center = runtime.map ? runtime.map.getCenter() : null;
+    // Drawing is a local gesture; the completed geometry is what the link shares.
+    const region = Object.assign({}, state.regionSelection, { drawingActive: false, modeActive: false,
+      country: state.analysisCountryAreaFilter,
+      caseShapeIndex: state.regionSelection.shapes.findIndex(function (shape) { return shape.id === runtime.famousCaseShapeId; }) });
+    return JSON.parse(JSON.stringify({
+      time: { start: state.timeRangeStartOrdinal, end: state.timeRangeEndOrdinal, mode: state.timeRangeMode,
+        visible: state.visibleTimelineExtent },
+      map: center ? { lat: center.lat, lng: center.lng, zoom: runtime.map.getZoom(), basemap: state.currentTileProviderId } : null,
+      case: state.famousCaseId, filters: { facets: facets, keyword: getCurrentKeyword(),
+        hideLowPrecision: Boolean(els.hideLowPrecisionToggle && els.hideLowPrecisionToggle.checked),
+        hideNonExactDates: Boolean(els.hideNonExactDatesToggle && els.hideNonExactDatesToggle.checked),
+        encounterSelectionIds: state.encounterAnalysisSelectionIds ? Array.from(state.encounterAnalysisSelectionIds) : null },
+      settings: settings, region: region, layers: captureShareViewLayers(), section: state.activeView,
+      selection: state.selectedEventId,
+    }));
+  }
+
+  function restoreShareRegion(saved) {
+    if (!saved || typeof saved !== "object") return;
+    const region = defaultRegionSelectionState();
+    Object.keys(region).forEach(function (key) {
+      if (typeof region[key] === "boolean" && typeof saved[key] === "boolean") region[key] = saved[key];
+    });
+    region.drawingActive = false;
+    region.modeActive = false;
+    region.tool = saved.tool === "circle" ? "circle" : "rectangle";
+    region.combineMode = saved.combineMode === "all" ? "all" : "any";
+    region.displayMode = saved.displayMode === "dim-unselected" ? "dim-unselected" : "hide-unselected";
+    region.depth = TRACE_NEIGHBORHOOD.normalizeAreaDepth(saved.depth);
+    region.direction = TRACE_NEIGHBORHOOD.normalizeDirection(saved.direction);
+    const finite = function (value, limit) { return typeof value === "number" && Number.isFinite(value) && Math.abs(value) <= limit; };
+    const idByIndex = [];
+    (Array.isArray(saved.shapes) ? saved.shapes.slice(0, 100) : []).forEach(function (shape, index) {
+      if (!shape || typeof shape !== "object") return;
+      let restored = null;
+      if (shape.type === "rectangle" && shape.bounds) {
+        const b = shape.bounds;
+        if (finite(b.north, 90) && finite(b.south, 90) && finite(b.east, 100000) && finite(b.west, 100000) && b.north >= b.south && b.east >= b.west) {
+          restored = { type: "rectangle", bounds: { north: b.north, south: b.south, east: b.east, west: b.west } };
+        }
+      } else if (shape.type === "circle" && shape.center && finite(shape.center.lat, 90) && finite(shape.center.lng, 100000) &&
+          finite(shape.radiusMeters, 50000000) && shape.radiusMeters > 0) {
+        restored = { type: "circle", center: { lat: shape.center.lat, lng: shape.center.lng }, radiusMeters: shape.radiusMeters };
+      }
+      if (restored) {
+        restored.id = nextRegionSelectionShapeId();
+        idByIndex[index] = restored.id;
+        region.shapes.push(restored);
+      }
+    });
+    state.regionSelection = region;
+    state.analysisCountryAreaFilter = typeof saved.country === "string" ? saved.country.slice(0, 200) : "";
+    runtime.famousCaseShapeId = state.famousCaseId && Number.isInteger(saved.caseShapeIndex) ? idByIndex[saved.caseShapeIndex] || null : null;
+    if (runtime.famousCaseShapeId) {
+      runtime.famousCasePreviousSelection = {
+        regionSelection: Object.assign({}, region, { shapes: region.shapes.filter(function (shape) { return shape.id !== runtime.famousCaseShapeId; }) }),
+        countryArea: state.analysisCountryAreaFilter, startOrdinal: state.timeRangeStartOrdinal,
+        endOrdinal: state.timeRangeEndOrdinal, mode: state.timeRangeMode,
+        traceMode: state.traceMode, sameDayBucketVisible: state.traceBucketVisibility.gap_le_1,
+      };
+    }
+    syncRegionSelectionMapInteraction();
+    refreshRegionSelectionRenderState({ skipResults: true, skipMap: true, skipAnalysis: true });
+  }
+
+  async function restoreShareView(snapshot) {
+    resetPlayback({ preserveSelection: false });
+    state.famousCaseId = typeof snapshot.case === "string" && FAMOUS_CASES.getCase(snapshot.case) ? snapshot.case : "";
+    runtime.famousCasePreviousSelection = null;
+    runtime.famousCaseGapBucketOwned = Boolean(state.famousCaseId);
+    runtime.famousCaseTraceModeOwned = Boolean(state.famousCaseId);
+    const settings = snapshot.settings || {};
+    Object.keys(SHARE_SETTING_ENUMS).forEach(function (key) {
+      if (SHARE_SETTING_ENUMS[key].includes(settings[key])) state[key] = settings[key];
+    });
+    SHARE_SETTING_BOOLS.forEach(function (key) { if (typeof settings[key] === "boolean") state[key] = settings[key]; });
+    SHARE_VISIBILITY_MAPS.forEach(function (key) { shareBooleanMap(state[key], settings[key]); });
+    if (typeof settings.traceWidthScale === "number") state.traceWidthScale = normalizeTraceWidthScale(settings.traceWidthScale);
+    if (typeof settings.traceBoldnessScale === "number") state.traceBoldnessScale = normalizeTraceBoldnessScale(settings.traceBoldnessScale);
+    if ([0.25, 0.5, 1, 2, 4, 6, 8, 16].includes(settings.playbackSpeed)) state.playbackSpeed = settings.playbackSpeed;
+    if (typeof settings.playbackWindowDays === "number" && settings.playbackWindowDays >= 1 && settings.playbackWindowDays <= 1000000) state.playbackWindowDays = settings.playbackWindowDays;
+    if (["30", "90", "365", "1826", "3652", "9126", "18262", "custom"].includes(settings.playbackWindowPreset)) state.playbackWindowPreset = settings.playbackWindowPreset;
+    if (["normal", "slow", "persistent"].includes(settings.playbackTracePersistence)) state.playbackTracePersistence = settings.playbackTracePersistence;
+    if (settings.craftTypeColorOverrides && typeof settings.craftTypeColorOverrides === "object") {
+      state.craftTypeColorOverrides = LEGEND_CONTROLS.normalizeCraftColorOverrides(settings.craftTypeColorOverrides, DEFAULT_CRAFT_TYPE_COLORS);
+      syncCraftTypeColorPalette();
+      invalidateCraftTypeColorRenderingCaches();
+    }
+    state.mapLegendEventSelection = LEGEND_CONTROLS.normalizeEventSelection(settings.mapLegendEventSelection, state.colorMode);
+    state.mapLegendCraftSolo = null;
+    if (ANALYSIS_BASELINE_MODES.has(settings.analysisBaselineMode)) {
+      state.analysisBaselineMode = settings.analysisBaselineMode;
+      if (runtime.analysisViewController) runtime.analysisViewController.setBaselineMode(settings.analysisBaselineMode, { notify: false });
+    }
+    const facility = settings.traceFacilityFilter;
+    if (facility && typeof facility === "object") {
+      shareBooleanMap(state.traceFacilityFilter, facility);
+      shareBooleanMap(state.traceFacilityFilter.sources, facility.sources);
+      shareBooleanMap(state.traceFacilityFilter.classes, facility.classes);
+      state.traceFacilityFilter.radiusKm = normalizeTraceFacilityRadiusKm(facility.radiusKm);
+      state.traceFacilityFilter.evidenceMode = normalizeTraceFacilityEvidenceMode(facility.evidenceMode);
+    }
+    if (["dark", "light", "auto"].includes(settings.themeMode)) applyThemeMode(settings.themeMode, { skipPersist: true });
+    if (Object.prototype.hasOwnProperty.call(FONT_SCALE_VALUES, settings.fontScaleMode)) applyFontScaleMode(settings.fontScaleMode, { skipPersist: true });
+    if (Object.prototype.hasOwnProperty.call(MAP_LABEL_TILE_ZOOM_STEPS, settings.mapLabelScaleMode)) applyMapLabelScaleMode(settings.mapLabelScaleMode, { skipPersist: true });
+    const time = snapshot.time || {};
+    // Reconcile against the shared cohort during refresh, never against the
+    // recipient's previous filters (which may cover a different date extent).
+    if (Number.isFinite(time.start) && Number.isFinite(time.end) && state.fullCatalogExtent) {
+      const extent = state.fullCatalogExtent;
+      state.timeRangeStartOrdinal = clamp(Math.round(Math.min(time.start, time.end)), extent.minOrdinal, extent.maxOrdinal);
+      state.timeRangeEndOrdinal = clamp(Math.round(Math.max(time.start, time.end)), extent.minOrdinal, extent.maxOrdinal);
+      state.timeRangeMode = time.mode === "full" ? "full" : "custom";
+    }
+    if (time.visible && Number.isFinite(time.visible.minOrdinal) && Number.isFinite(time.visible.maxOrdinal) && time.visible.maxOrdinal > time.visible.minOrdinal) {
+      state.visibleTimelineExtent = { minOrdinal: time.visible.minOrdinal, maxOrdinal: time.visible.maxOrdinal };
+    }
+    restoreShareRegion(snapshot.region);
+    const filters = snapshot.filters || {};
+    ["source", "type", "precision"].forEach(function (key) {
+      const facet = filters.facets && filters.facets[key];
+      if (!facet || !["all", "none", "subset"].includes(facet.mode)) return;
+      if (facet.mode === "subset") applyAnalysisMultiSelectValues(key, Array.isArray(facet.selectedValues) ? facet.selectedValues.filter(function (value) { return typeof value === "string"; }) : []);
+      else { setOptionSelection(filterSelectByKey(key), false); setMultiSelectMode(key, facet.mode); }
+    });
+    if (typeof filters.keyword === "string") els.keywordInput.value = filters.keyword;
+    if (typeof filters.hideLowPrecision === "boolean") els.hideLowPrecisionToggle.checked = filters.hideLowPrecision;
+    if (typeof filters.hideNonExactDates === "boolean") els.hideNonExactDatesToggle.checked = filters.hideNonExactDates;
+    state.encounterAnalysisSelectionIds = Array.isArray(filters.encounterSelectionIds) ? new Set(filters.encounterSelectionIds.filter(function (id) { return typeof id === "string"; })) : null;
+    const layerResult = await restoreShareViewLayers(snapshot.layers);
+    runtime.sharedViewWarnings = layerResult && layerResult.warnings || [];
+    window.clearTimeout(scheduleRefresh._timer);
+    els.colorModeSelect.value = state.colorMode;
+    els.resultsSortSelect.value = state.resultsSortMode;
+    els.playbackWindowSelect.value = state.playbackWindowPreset;
+    if (els.showTrailLegendToggle) els.showTrailLegendToggle.checked = state.showTrailLegend;
+    if (els.followPlaybackResultsToggle) els.followPlaybackResultsToggle.checked = state.resultsFollowPlayback;
+    syncPlaybackSpeedControls();
+    syncMapModeControl();
+    renderTraceControls();
+    renderOverlayControls();
+    syncOverlayVisibility();
+    renderFamousCasePicker();
+    invalidateTraceFacilityIndex();
+    await syncClaimedUfoBaseVisibility();
+    renderTrailLegend();
+    updateTrailLegendVisibility();
+    invalidateTraceSequenceCache();
+    invalidateRegionSelectionResult();
+    await refreshFilters();
+    if (state.colorMode === "craft_type" && settings.mapLegendCraftSolo && typeof settings.mapLegendCraftSolo === "object") {
+      assignCraftLegendState(LEGEND_CONTROLS.normalizeCraftSelectionState({ selection: state.mapLegendEventSelection, solo: settings.mapLegendCraftSolo },
+        buildMapLegendEventEntries().map(function (entry) { return entry.key; }), "craft_type"));
+      renderLegend();
+    }
+    const selectedReport = (typeof snapshot.selection === "string" || Number.isSafeInteger(snapshot.selection))
+      ? getCatalogEventById(snapshot.selection) : null;
+    if (selectedReport) {
+      await selectEvent(selectedReport.event_id, { centerMap: false });
+    }
+    if (runtime.analysisViewController && ["map", "analysis"].includes(snapshot.section)) {
+      runtime.analysisViewController.setAnalysisEnabled(true, "");
+      runtime.analysisViewController.setActiveView(snapshot.section, { source: "shared-view" });
+    }
+    const map = snapshot.map;
+    if (map && runtime.map) {
+      if (typeof map.basemap === "string" && Array.from(els.basemapMode.options).some(function (option) { return option.value === map.basemap; })) {
+        setBasemap(map.basemap);
+        els.basemapMode.value = map.basemap;
+      }
+      if (Number.isFinite(map.lat) && Math.abs(map.lat) <= 90 && Number.isFinite(map.lng) && Math.abs(map.lng) <= 100000 && Number.isFinite(map.zoom) && map.zoom >= 0 && map.zoom <= 22) {
+        runtime.map.setView([map.lat, map.lng], map.zoom, { animate: false });
+      }
+    }
+    runtime.sharedViewRestored = true;
+  }
+
+  function initializeShareViewControls() {
+    const button = document.getElementById("share-view");
+    const dialog = document.getElementById("share-view-dialog");
+    const field = document.getElementById("share-view-url");
+    const status = document.getElementById("share-view-status");
+    const copy = document.getElementById("copy-share-view");
+    if (!button || !dialog || !window.UfoShareView) return;
+    button.addEventListener("click", async function () {
+      field.value = "";
+      copy.disabled = true;
+      button.disabled = true;
+      status.textContent = "Preparing link…";
+      dialog.showModal();
+      try {
+        if (!startup.fullCatalogReady) throw new Error("Please wait for the full catalog to finish loading.");
+        field.value = await window.UfoShareView.buildCompactUrl(captureShareView(), window.location.href);
+        copy.disabled = false;
+        status.textContent = "";
+      } catch (error) { status.textContent = error.message || "This view could not be shared."; }
+      finally { button.disabled = false; }
+      if (dialog.open && !copy.disabled) {
+        field.focus();
+        field.select();
+        field.scrollLeft = 0;
+      }
+    });
+    copy.addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(field.value);
+        status.textContent = "Link copied.";
+      } catch (error) {
+        field.focus(); field.select();
+        status.textContent = "Select and copy the link above.";
+      }
+    });
+    document.getElementById("close-share-view").addEventListener("click", function () { dialog.close(); });
+  }
+
+  async function restoreInitialSharedView() {
+    if (!window.UfoShareView.hasViewUrl(window.location.href)) return;
+    try {
+      const snapshot = await window.UfoShareView.readAnyUrl(window.location.href);
+      if (snapshot) await restoreShareView(snapshot);
+      if (runtime.sharedViewWarnings && runtime.sharedViewWarnings.length) {
+        document.getElementById("share-view-status").textContent = runtime.sharedViewWarnings.join(" ");
+        document.getElementById("share-view-url").value = window.location.href;
+        document.getElementById("share-view-dialog").showModal();
+      }
+    } catch (error) {
+      document.getElementById("share-view-status").textContent = "Could not open this shared view. " + (error.message || "The link is invalid.");
+      document.getElementById("share-view-url").value = "";
+      document.getElementById("copy-share-view").disabled = true;
+      document.getElementById("share-view-dialog").showModal();
+    }
+  }
+
   async function initialize() {
     resetStartupTimingSession();
     startup.initialViewReady = false;
     applyBrowserPerformanceProfile();
     initializeAppearanceState();
+    initializeShareViewControls();
     applyFilterSectionCollapseState({ skipPersist: true });
     initializeGuideChips();
     mountHeroGuide();
@@ -34747,7 +35242,9 @@
       filterToken: state.filterToken,
     });
 
-    await runAutomationFromQuery();
+    startup.fullCatalogReady = true;
+    await restoreInitialSharedView();
+    if (!window.UfoShareView.hasViewUrl(window.location.href)) await runAutomationFromQuery();
     await finalizeInitialStartupVisuals();
     if (startup.phase === "Failed" || startup.errorText) {
       return;
@@ -34772,6 +35269,8 @@
   }
 
   window.__UFO_TIMELINE_DEBUG__ = {
+    captureShareView: captureShareView,
+    restoreShareView: restoreShareView,
     getTraceChronologySnapshot: getTraceChronologySnapshot,
     getEncounterSnapshot: getEncounterSnapshot,
     getMapWorldConstraintSnapshot: function () {

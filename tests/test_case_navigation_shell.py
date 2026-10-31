@@ -73,6 +73,7 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
         "legend_controls.js": "2026-10-06-legend-case-labels-v3",
         "famous_case_presets.js": "2026-10-30-case-availability-v11",
         "famous_case_availability.js": "2026-10-30-case-availability-v11",
+        "share_view.js": "2026-10-31-share-view-v3",
     }
     for filename, token in expected.items():
         assert (ROOT / filename).is_file()
@@ -86,4 +87,4 @@ def test_case_direction_and_legend_dependencies_ship_before_the_app():
     assert worker_version, "The worker declares its runtime cache version"
     # This shell-only change has its own cache key; unchanged worker dependencies
     # retain their existing version.
-    assert parse_qs(app_urls[0].query).get("v") == ["2026-10-30-case-badges-v17"]
+    assert parse_qs(app_urls[0].query).get("v") == ["2026-10-31-share-view-v3"]

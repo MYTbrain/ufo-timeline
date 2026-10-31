@@ -1,0 +1,22 @@
+{
+  "schemaId": "ufo-share-fragment-verification-v1",
+  "local": {
+    "passed": true,
+    "legacyQueryRoundTrip": true,
+    "fragmentRoundTrip": true,
+    "snapshotDifferencesIgnoringShapeIds": 0,
+    "fragmentUrlLength": 571,
+    "documentRequestUrl": "http://127.0.0.1:8136/index.html",
+    "settingsInRequestUrl": false,
+    "analysisNavigationRetainsToken": true,
+    "analysisSection": "analysis-section-encounters"
+  },
+  "tests": [
+    "test_share_view.mjs",
+    "test_share_view_compact.mjs",
+    "test_analysis_view_repairs.mjs",
+    "3 shell contract checks",
+    "6 bounded release checks"
+  ],
+  "independentReview": "No blockers found in fragment decoding, navigation, startup guards or release allowlists."
+}
