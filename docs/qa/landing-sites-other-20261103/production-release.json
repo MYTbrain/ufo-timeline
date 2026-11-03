@@ -1,0 +1,235 @@
+{
+  "schemaId": "ufo-landing-sites-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-11-03T21:14:48.371564+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/#analysis-section-landing-sites",
+  "deploymentId": "bcc2d1b8-2fe0-4747-b5f6-55009ec01e4e",
+  "immutableDeploymentUrl": "https://bcc2d1b8.ufo-timeline.pages.dev",
+  "runtimeSourceCommit": "d369ea1e4ab91cbfe08e5faea7159588c95eae37",
+  "canonicalArtifact": {
+    "stage": "D:\\UFO-Timeline-Research\\landing-sites-production-20261103\\pages-stage",
+    "files": 251,
+    "bytes": 44788529,
+    "treeSha256": "6ddb1f39bf8e5ca6eac753638492247b6bd7e08379dd385ae27c8d30224035ac",
+    "rebuild": "D:\\UFO-Timeline-Research\\landing-sites-production-20261103\\build_stage.py",
+    "pins": {
+      "pages-stage.json": {
+        "bytes": 47017,
+        "sha256": "3028aa6dfde12e373ad289d1e831cdbc0b6c4920d28890d1085ea34416f06535"
+      },
+      "public-verification.json": {
+        "bytes": 6854,
+        "sha256": "290f11dcb2b86a5d80b6f5cd899e3ab7aba58dc0f48a0bb84215d72ee1ad93a0"
+      },
+      "build_stage.py": {
+        "bytes": 3327,
+        "sha256": "389ebc9eccfb95441e7f290595adf69a655849861dbaa095a1936be67ae49b1b"
+      },
+      "verify_public.py": {
+        "bytes": 2526,
+        "sha256": "a273af96c2024ec02e018a2840938c75b74c425e8b202ff1dc3a58a61b3ed978"
+      }
+    },
+    "changedPaths": [
+      "_headers",
+      "analysis_view.js",
+      "index.html",
+      "landing_site_analysis.js",
+      "landing_site_australian_catalog.js",
+      "landing_site_australian_reviewed_cases.js",
+      "landing_site_cases.js",
+      "landing_site_comparison.js",
+      "landing_site_diagrams.js",
+      "landing_site_direct_reviewed_cases.js",
+      "landing_site_expanded_cases.js",
+      "landing_site_historical_reviewed_cases.js",
+      "landing_site_other_catalog.js",
+      "landing_site_phillips_catalog.js",
+      "landing_site_phillips_early_cases.js",
+      "landing_site_phillips_late_cases.js",
+      "landing_site_review_audit.js",
+      "landing_site_ufocat_reviewed_cases.js",
+      "styles.css",
+      "ui/accepted-workspace/analysis-navigation.js"
+    ]
+  },
+  "retainedRollback": {
+    "deploymentId": "f975c83d-e2fe-4f4a-a956-043eea13bf71",
+    "url": "https://f975c83d.ufo-timeline.pages.dev",
+    "localStage": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\pages-stage",
+    "treeSha256": "b372a8e6f91497f01e94e0493b785a8465a45a82d7fe4b2958861d4af2857f71",
+    "receipt": "docs/qa/mapping-recovery-20261103/production-release.json"
+  },
+  "verification": {
+    "provider": "Cloudflare Pages production, branch main",
+    "publicAssets": [
+      {
+        "url": "https://ufo-timeline.pages.dev/analysis_view.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "f7a61fcd5bfbecb68e27c26a1907b3ef198cff68ab0f7279bbe879f060491a55",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/app.js",
+        "sha256": "7b427c99a25e1b326f0a6942ba80f59e08053011dac97cc3247a90e2ac3688d6",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/data/app_config.json",
+        "sha256": "d1b74be35ba2ac33b1f5f924db973c8606fe937994a9a4fd19ad8cd68af5d426",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/index.html",
+        "sha256": "1e1f33b9d56b7a07af1beda0221fb8576edbe05d915fa0b40fa249e2d835d5f1",
+        "providerHtmlTransform": {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "index.html"
+        }
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_analysis.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "f961f5a5a89662f0e1c08dddf4b9514ad6f8bd9bd5d50110a134f3890e2b59da",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_australian_catalog.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "cb8e1a0ff138fa315e6c398adff3d5cae0b8e639ef1bc460a5e3081d9b344a9f",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_australian_reviewed_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "24abef07db18cdd3c445b904304be6cc9e88748a28e4f5c9294a4571f723a2a1",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "370a561fee67d354d1ff93b16599d670b65a9a64ccc3d68073960bdd7b374cfd",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_comparison.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "f01a57e17b507afa4d2a3a794677c2f6ea0ea11d64823d69918828dcd07c1bb1",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_diagrams.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "1df3e06e81aa9a042e332c8699d76ad2f03574ba7e6748cd4e1fc70889a92813",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_direct_reviewed_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "72809bd988d7b50af275266c674e5bc0a21b01ad822060fb835d1b6e538f3d59",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_expanded_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "4afd5a1e896343d4369f353d1d3654637f51e5ea0cecced2bc2f5764a506ed64",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_historical_reviewed_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "7afed6e89e5fcb1cea3d82cfdfd4548e26d281b851e8f771d2ab2b7947a454c2",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_other_catalog.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "0e17eb43401c4c1e508174745d85c1edb15356955e19d39ed2d70d2e2db7d5a8",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_phillips_catalog.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "b417e83d47d67db460b4bbb09b0064d10134ee69e6203015c05c45c2307e4c7a",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_phillips_early_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "5e212fd4b2d8f5b95a69b2b12e722d138da227c195517201a41204f497fef0f1",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_phillips_late_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "e554e34fc32288abfcfd04d0ca243a2487bcd6fec53958622c1d3da0b35781f5",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_review_audit.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "cac1b79d3585752ba2db57ca16de08acd24429925fcb1d849998bac82bd42eca",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/landing_site_ufocat_reviewed_cases.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "8573ce5f92de475fe1b581b03c11b708ed7e303f25cc57a1e2936f9726f8516b",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/quality_detail_overlay.js",
+        "sha256": "d6118eb43cf8a5420b6241bc9cae8a3d9b56006a6d7eacb8c56b9e0dc89b690e",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/styles.css?v=2026-11-03-landing-sites-v5",
+        "sha256": "e32ff40b9c79b62b6aa619d19f1dc43c028e191456a4319096d7f653fcf5191e",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://ufo-timeline.pages.dev/ui/accepted-workspace/analysis-navigation.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "c193beb64a90537b28dc009c6305b89d15480a5b6c8da29ef35255cf2fc016fa",
+        "providerHtmlTransform": null
+      },
+      {
+        "url": "https://bcc2d1b8.ufo-timeline.pages.dev/index.html",
+        "sha256": "1e1f33b9d56b7a07af1beda0221fb8576edbe05d915fa0b40fa249e2d835d5f1",
+        "providerHtmlTransform": {
+          "provider": "Cloudflare Pages Analytics",
+          "inserted_bytes": 214,
+          "envelope_sha256": "d1ed74ad7e8bcbccc076fe650602c9fa19b37fa495a9f442e8ed2dfae6dfa5a6",
+          "token": "df011473b8f34ae9a926359e4a1743e6",
+          "source_byte_hash_verified_after_exact_removal": true,
+          "path": "index.html"
+        }
+      },
+      {
+        "url": "https://bcc2d1b8.ufo-timeline.pages.dev/landing_site_review_audit.js?v=2026-11-03-landing-sites-v5",
+        "sha256": "cac1b79d3585752ba2db57ca16de08acd24429925fcb1d849998bac82bd42eca",
+        "providerHtmlTransform": null
+      }
+    ],
+    "priorStyleValidator": {
+      "url": "https://ufo-timeline.pages.dev/styles.css?v=2026-10-31-mosaic-labels-v1",
+      "etag": "\"9c0444c302e0023e53d4f26fd7b4fe14\"",
+      "status": 200,
+      "sha256": "e32ff40b9c79b62b6aa619d19f1dc43c028e191456a4319096d7f653fcf5191e"
+    },
+    "landingCases": 71,
+    "diagrams": 54,
+    "reviewedInventoryRecords": 1541,
+    "sourceDispositions": {
+      "original": 80,
+      "catalog": 1143,
+      "citationOnly": 305,
+      "unresolved": 13
+    },
+    "confirmedLinks": {
+      "records": 70,
+      "cases": 51
+    },
+    "possibleOverlapRecords": 267,
+    "browser": "Canonical production verified with desktop and 390 px mobile Chromium. All 15 Landing Sites scripts returned 200, no uncaught exceptions. Diagram layers, case links, filters, comparison drilldown, and mobile layout passed.",
+    "automatedChecks": "16 Node tests passed. Release preparation suite passed 6 tests and 11 subtests in the source review."
+  },
+  "storage": {
+    "newStageDataBytesD": 2547654,
+    "releaseSupportFilesBytesD": 59724,
+    "approximateNewCBytes": "Under 2 MiB for Git objects and release receipts",
+    "hardLinkedUnchangedFiles": 231,
+    "r2ObjectsUploaded": 0,
+    "newFilesAbove100MiB": [],
+    "supersededRollbackDesignation": "90fa1b95-d819-4808-8e8e-387930455391",
+    "supersededLocalStage": ".tmp/workspace-analysis-20261008-pages",
+    "cleanupProposal": "Review the superseded stage under a literal allowlist before removal. Keep the current and rollback stages, their shared artifacts, and protected evidence. No files were removed."
+  }
+}

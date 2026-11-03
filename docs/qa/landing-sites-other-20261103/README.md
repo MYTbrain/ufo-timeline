@@ -44,7 +44,7 @@ The combined table keeps possible support impressions, scorching, swirl or twist
 
 Run `python scripts/build_landing_site_review_audit.py` from the release worktree. The script requires an exact one-to-one reconciliation between inventory records and review dispositions and records input SHA-256 hashes in the generated asset. The checked-in format keeps the four ledgers inspectable and the site dossiers maintainable separately.
 
-The local preview serves the current worktree assets over the retained mapping stage without copying the catalog or static bundle. Production remains `f975c83d` with `90fa1b95` retained as rollback.
+The production deployment is [`bcc2d1b8`](https://ufo-timeline.pages.dev/#analysis-section-landing-sites), with `f975c83d` retained as rollback. The [production release receipt](production-release.json) records the exact deployed assets and verification.
 
 ## Storage and retention
 
@@ -54,4 +54,4 @@ The four ledgers and reviewed case modules are the canonical local research deri
 - `D:/UFO-Timeline-Research/landing-sites-combined-20261103/historical-source-review` retains historical acquisitions and a source manifest. Retain the underlying evidence and consider the derived renders for cleanup.
 - `D:/UFO-Timeline-Context-Evidence/candidate/landing-other-ufocat-20261103` holds the small UFOCAT working files and source receipt. The Australian dossier sources carry the published plan and photo locators.
 
-The retained production stage and rollback are reused. There are no superseded release or staging trees from this pass. The cleanup candidates are reproducible review renders and contact sheets, with the underlying sources retained.
+The production stage under `D:/UFO-Timeline-Research/landing-sites-production-20261103` hard-links 231 verified assets from the rollback stage and materializes 20 changed files, including the Pages header configuration. This adds about 2.5 MiB of stage and verification data on D:. No data objects were uploaded. The prior `90fa1b95` rollback designation is superseded. Review the older local stage and reproducible research renders under a literal cleanup allowlist before removal.
