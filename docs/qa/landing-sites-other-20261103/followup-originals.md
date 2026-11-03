@@ -39,7 +39,9 @@ The canonical local derivatives are the reviewed case modules, the four addition
 
 ## Storage and retention
 
-The [local preview](http://127.0.0.1:8146/#analysis-section-landing-sites) serves the expanded worktree over the existing stage. The validated production release is still `bcc2d1b8`, and its retained rollback is `f975c83d`. This follow-up creates no release tree or catalog copy. New worktree data is approximately 0.11 MiB. Retained D: research growth is approximately 220 MiB across the Phillips, UFOCAT and historical source-review folders. No newly created file exceeds 100 MiB.
+The [follow-up is live](https://ufo-timeline.pages.dev/#analysis-section-landing-sites) as `277fbeff`. The retained rollback is `bcc2d1b8`. The [release receipt](followup-production-release.json) pins the stage and verification. The stage materializes 11 changed files and hard-links 240 verified files from the rollback stage. Deployment adds about 1.1 MiB on D: and under 1 MiB on C:. The earlier `f975c83d` rollback designation is superseded.
+
+Research growth was approximately 0.11 MiB in the worktree and 220 MiB on D: across the Phillips, UFOCAT and historical source-review folders. No newly created file exceeds 100 MiB.
 
 - `D:/UFO-Timeline-Research/landing-sites-originals-followup-20261103` contains the recovered PDFs, a source hash manifest, and reproducible text and image working files. The Dell issue 3 scan and its derivatives are superseded search scratch. The relevant source PDFs remain retained.
 - `D:/UFO-Timeline-Context-Evidence/candidate/landing-other-ufocat-20261103` retains the pinned UFOCAT source review and reproducibility aids.
