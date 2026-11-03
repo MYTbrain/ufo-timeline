@@ -57,8 +57,9 @@
 
   function analyze(cases, options = {}) {
     const selected = cases.filter((site) => {
-      if (options.source === "phillips" && !site.phillipsCaseNumber) return false;
-      if (options.source === "other" && site.phillipsCaseNumber) return false;
+      const linkedToPhillips = site.phillipsCaseNumber || options.phillipsCaseIds?.has(site.id);
+      if (options.source === "phillips" && !linkedToPhillips) return false;
+      if (options.source === "other" && linkedToPhillips) return false;
       if (options.origin && site.evidenceOrigin !== options.origin) return false;
       return !options.diagramsOnly || Boolean(site.diagram);
     });
@@ -207,6 +208,8 @@
       cell.append(button);
     }
 
+    const phillipsReviews = Object.values(audit?.phillipsRecords || {});
+    const phillipsCaseIds = new Set(phillipsReviews.map((review) => review.caseId).filter(Boolean));
     let comparisonCases = [];
     function drawDiagrams() {
       diagrams.replaceChildren();
@@ -239,6 +242,7 @@
     function refresh() {
       const model = analyze(cases, {
         source: source.select.value,
+        phillipsCaseIds,
         origin: origin.select.value,
         dimensionsOnly: evidence.select.value === "dimensions",
         diagramsOnly: availability.select.value === "diagrams",
@@ -356,6 +360,12 @@
         " records link to supported diagrams, " + number.format(counts.geometry.description || 0) +
         " have descriptive details and " + number.format(counts.geometry.insufficient || 0) +
         " have insufficient geometry. The matrix uses reviewed case dossiers with coded layouts."));
+    }
+    if (phillipsReviews.length) {
+      const originals = phillipsReviews.filter(({ access }) => access === "original_reviewed").length;
+      inventory.section.append(el("p", "landing-scope-note",
+        number.format(phillipsReviews.length) + " Phillips records have separate source review notes. " +
+        number.format(originals) + " were checked against original reporting."));
     }
     pairs.section.append(el("p", "landing-scope-note",
       "Traces in the same dossier can reflect observations made at different times. Ground impressions include possible supports and marks with other explanations."));

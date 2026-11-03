@@ -14,11 +14,185 @@
   const joinville = "https://files.afu.se/Downloads/Magazines/Brazil/SBEDV/SBEDV%20-%20No%20094-98%20-%201973-1974.pdf";
   const stara = "https://files.afu.se/Downloads/Magazines/Canada/Canadian%20UFO%20Report%20%28Magor%29/Canadian%20UFO%20Report%20-%20vol%204%20no%204%20-%201977.pdf";
   const linke = "https://upload.wikimedia.org/wikipedia/commons/7/76/Flying_Saucers_in_East_Germany%2C_CIA_Report.pdf";
+  const ngatea = "https://ignaciodarnaude.es/wp-content/uploads/2025/08/FultonCrop-Circles-1969N.Zealand-1FSR70V16N2.pdf#page=1";
+  const haukeli = "https://www.ufo.se/index.php/utlaednska-rapporter/1329-norge-1991-farkost-svarade-pa-blinkningar";
+  const baldwin = "https://cufos.org/PDFs/IUR%20issues/IUR%20Vol.%204%20No.%206%20Dec.%201979.pdf#page=11";
+  const campestre = "https://ufo.com.br/movimentacao-de-ufos-no-litoral-do-rio-grande-do-norte/";
   const gt = [1.8288, 1.3716, 1.3208];
   const gtThirdX = (gt[0] ** 2 + gt[1] ** 2 - gt[2] ** 2) / (2 * gt[0]);
   const gtThirdY = Math.sqrt(gt[1] ** 2 - gtThirdX ** 2);
 
   return [
+    {
+      id: "baldwin_hay_1979",
+      title: "Baldwin hayfield patch",
+      date: "1979-10-20",
+      location: "Baldwin, Wisconsin, United States",
+      inventoryIds: ["hatch:Hatch_UDB_13788"],
+      evidenceOrigin: "original",
+      summary: "A family reported a brown, dried patch in a hayfield after a teenager saw lights from their farmhouse. The contemporary CUFOS account includes a field photograph.",
+      limits: "The family found the patch three days after the light report. The record gives two approximate spans and a general shape without a plan, third side, bearings or an established connection to the lights.",
+      sources: [
+        { id: "iur", label: "CUFOS report 4-6-30, Wisconsin CE II?", url: baldwin,
+          locator: "International UFO Reporter 4(6), December 1979, printed and PDF p. 11." }
+      ],
+      traces: [
+        {
+          kind: "surface",
+          observation: "The reported patch of hay was brown and dried, triangular in outline, with dimensions of about 45 ft by 30 ft.",
+          pattern: { label: "Triangular dried vegetation patch", basis: "dimensions",
+            dimensions: { longM: 13.716, shortM: 9.144 },
+            details: "The source supplies two spans without identifying individual sides. No direct heat measurement or scorch analysis was reported." },
+          sourceIds: ["iur"]
+        }
+      ]
+    },
+    {
+      id: "sao_jose_campestre_1989",
+      title: "São José do Campestre",
+      date: "1989",
+      location: "Near São José do Campestre, Rio Grande do Norte, Brazil",
+      inventoryIds: ["hatch:Hatch_UDB_15381"],
+      evidenceOrigin: "catalog",
+      summary: "Revista UFO's account of a CEUA field visit describes an affected vegetation patch and paired holes outside it. Bob Pratt also published an account attributed to a local investigator, Jackson Felix Pereira.",
+      limits: "The published dates differ. Revista UFO dates a nearby light report to October 17 and gives no exact date for the inspection. Pratt dates the trace report to November. The accounts match on the locality and unusual nine-pair arrangement. The witnesses quoted by Revista UFO saw a light near a tree about 200 m from the marks and did not see the marks form.",
+      sources: [
+        { id: "ceua", label: "Revista UFO summary of CEUA interviews and inspection", url: campestre,
+          locator: "Movimentação de UFOs no litoral do Rio Grande do Norte, paragraphs beginning with October 17, 1989." },
+        { id: "pratt", label: "Bob Pratt, UFO Danger Zone", url: "https://www.scribd.com/document/766772600/UFO-Danger-Zone-Bob-Pratt",
+          locator: "November 1989 entry naming Jackson Felix Pereira." }
+      ],
+      traces: [
+        {
+          kind: "impression",
+          observation: "Both accounts describe nine pairs of holes arranged around the patch. Pratt gives a depth of about 6 in and describes four additional depressions in a line between two pairs.",
+          pattern: { label: "Reported ring of paired holes", families: ["ring"], basis: "description",
+            details: "Revista UFO describes repeated triangular holes and a 1.4 m separation, without defining the measurement endpoints. The individual pair positions and angles were not published." },
+          sourceIds: ["ceua", "pratt"]
+        },
+        {
+          kind: "scorching",
+          observation: "Revista UFO reports that a 5.4 m by 5.2 m patch appeared burned. It describes a small intact area about 0.5 m across within it.",
+          pattern: { label: "Nearly circular reported burn boundary", families: ["ring", "oval"], basis: "dimensions",
+            dimensions: { longM: 5.4, shortM: 5.2 }, details: "The spans give the nominal outline. The publication does not specify an orientation, an offset for the intact area, or a heat source." },
+          sourceIds: ["ceua"]
+        },
+        {
+          kind: "deformation",
+          observation: "Revista UFO also describes flattened vegetation in the affected area.",
+          sourceIds: ["ceua"],
+          context: "The flattened area has no separately measured boundary or recorded direction of lay."
+        }
+      ],
+      diagram: {
+        title: "São José do Campestre nominal affected boundary",
+        basis: "Reported outer spans",
+        note: "Local metres. Only the approximate outer boundary has usable paired dimensions. The unregistered intact patch, paired holes, additional holes and flattened vegetation are described separately.",
+        viewBox: [-3.2, -3.2, 6.4, 6.4],
+        layers: [
+          { kind: "scorching", label: "Reported affected vegetation boundary",
+            note: "Nominal 5.4 m by 5.2 m ellipse. The source describes apparent burning, without a test of heating.", sourceIds: ["ceua"],
+            marks: [{ type: "ellipse", x: 0, y: 0, rx: 2.7, ry: 2.6, estimated: true, label: "Approximate reported outer boundary" }] }
+        ]
+      }
+    },
+    {
+      id: "ngatea_manuka_1969",
+      title: "Ngātea mānuka patch",
+      date: "1969-09-04",
+      location: "Ngātea, Waikato, New Zealand",
+      inventoryIds: ["hatch:Hatch_UDB_9410", "specialist:Eberhart_4722", "specialist:Johnson_5631"],
+      evidenceOrigin: "original",
+      summary: "Bert O’Neil examined a pale patch of standing mānuka on his farm and found three depressions near its middle. A university group recorded the site dimensions and separate ground marks.",
+      limits: "September 4 is the date of close inspection. O’Neil noticed bleaching from a distance several weeks earlier. The field account does not establish a witnessed landing. Early visitors had already trampled the site and removed vegetation.",
+      controls: "Field radiation checks and a gamma-spectrum test on a plant sample were reported as negative. Investigators disagreed about how the plants died and how the depressions formed.",
+      sources: [
+        { id: "fulton", label: "Harold H. Fulton, The Ngatea Mystery Circle, part 1", url: ngatea,
+          locator: "Flying Saucer Review 16(2), pp. 27–28. Reproduces the university team's measurement report, ground sketch and photographs." },
+        { id: "nzbc", label: "New Zealand Broadcasting Corporation, 1969 interviews",
+          url: "https://www.ngataonga.org.nz/search-use-collection/search/31841/",
+          locator: "Ngā Taonga Sound & Vision catalog record 31841. Archive lists interviews about the site." }
+      ],
+      traces: [
+        {
+          kind: "impression",
+          observation: "Three shallow ground depressions near the middle of the affected plants formed a triangle with sides of 10 ft, 10 ft and 9 ft. A sketch also shows furrows around the depressions.",
+          pattern: { label: "Measured isosceles outline with distinct furrows", families: ["three_point"], basis: "dimensions",
+            edgesM: [3.048, 3.048, 2.7432], details: "The equal lengths are two reported spacings. The individual marks and furrows differ in shape and depth." },
+          sourceIds: ["fulton"]
+        },
+        {
+          kind: "surface",
+          observation: "About 56 ft across, the main patch contained dead, bleached mānuka that remained standing. A separate taller stand nearby was also bleached.",
+          pattern: { label: "Circular patch of standing discolored mānuka", families: ["ring"], basis: "dimensions",
+            details: "The investigators described an affected circle and gave its approximate diameter. They did not measure a heat source or record a bearing from the ground marks to the boundary." },
+          sourceIds: ["fulton"]
+        }
+      ],
+      diagram: {
+        title: "Ngātea ground triangle and estimated vegetation outline",
+        basis: "Measured ground triangle with separate approximate vegetation boundary",
+        note: "Local metres. The sketch gives the triangle’s sides, and the account places it near the middle of the bleached patch. The circle's alignment to the triangle is schematic. The furrows and taller bleached stand are omitted.",
+        viewBox: [-10, -10, 20, 20],
+        layers: [
+          { kind: "surface", label: "Reported 56 ft vegetation patch",
+            note: "Approximate diameter. The outline illustrates the near-center relationship, with no surveyed center offset.", sourceIds: ["fulton"],
+            marks: [{ type: "ellipse", x: 0, y: 0, rx: 8.5344, ry: 8.5344, estimated: true, label: "Approximate circular patch of standing bleached plants" }] },
+          { kind: "impression", label: "Reported ground depressions",
+            note: "The three centers follow the reported 10 ft, 10 ft and 9 ft spacing. The source sketch gives distinct mark shapes and furrows.", sourceIds: ["fulton"],
+            marks: [
+              { type: "point", x: 0, y: -1.815, tag: "A", estimated: true, label: "Reconstructed depression A" },
+              { type: "point", x: -1.3716, y: 0.907, tag: "B", estimated: true, label: "Reconstructed depression B" },
+              { type: "point", x: 1.3716, y: 0.907, tag: "C", estimated: true, label: "Reconstructed depression C" }
+            ] }
+        ]
+      }
+    },
+    {
+      id: "oydeskyvatn_snow_1991",
+      title: "Øydeskyvatn snow impressions",
+      date: "1991-03-26",
+      location: "Øydeskyvatn, Setesdalsheiene, Norway",
+      inventoryIds: ["hatch:Hatch_UDB_15824"],
+      evidenceOrigin: "original",
+      summary: "Witnesses found three spiral-shaped snow impressions after several nights of light reports. Torfrid Urdal of UFO-Norge documented their dimensions, the witness account and a later visit to the site.",
+      limits: "Witnesses found and photographed the traces on March 28. Urdal associates the marks with March 26. Snow and thaws altered the site before investigators arrived. The account gives no individual bearings or spiral directions.",
+      controls: "A later visit reported ordinary pH and no radiation detected by the field instrument. The investigators collected samples from the center, an impression and outside the site. These checks did not establish a formation mechanism.",
+      sources: [
+        { id: "urdal", label: "Torfrid Urdal, UFO-Norge investigation", url: haukeli,
+          locator: "UFO-Sverige reproduction. Paragraphs beginning with the March 28 discovery and April 9 visit." }
+      ],
+      traces: [
+        {
+          kind: "impression",
+          observation: "Three spiral-shaped impressions in snow were described as 50–60 cm across, with about 3 m between them.",
+          pattern: { label: "Three spiral impressions in a triangle", families: ["three_point", "swirl"], basis: "dimensions",
+            details: "The account gives a single approximate spacing. It does not report three individually measured sides, the spirals' pitch or their handedness." },
+          sourceIds: ["urdal"]
+        },
+        {
+          kind: "surface",
+          observation: "The witnesses described a brown-yellow depression between the circles and slight discoloration within them.",
+          sourceIds: ["urdal"],
+          context: "The account does not give the discolored area's boundary or identify heating as the cause."
+        }
+      ],
+      diagram: {
+        title: "Øydeskyvatn nominal snow impression spacing",
+        basis: "Schematic from the reported nominal spacing and diameter range",
+        note: "Local metres, with arbitrary orientation. Identical outlines use the 55 cm midpoint of the reported range. The circles show extents, without drawing unrecorded spiral directions. The discolored depression is described separately.",
+        viewBox: [-0.5, -0.5, 4, 3.7],
+        layers: [
+          { kind: "impression", label: "Three reported spiral impression extents",
+            note: "Three nominal 3 m separations illustrate the reported arrangement. Equality of the actual spacings was not measured in the source.", sourceIds: ["urdal"],
+            marks: [
+              { type: "ellipse", x: 0, y: 0, rx: 0.275, ry: 0.275, estimated: true, label: "Nominal extent of the first snow impression" },
+              { type: "ellipse", x: 3, y: 0, rx: 0.275, ry: 0.275, estimated: true, label: "Nominal extent of the second snow impression" },
+              { type: "ellipse", x: 1.5, y: 1.5 * Math.sqrt(3), rx: 0.275, ry: 0.275, estimated: true, label: "Nominal extent of the third snow impression" }
+            ] }
+        ]
+      }
+    },
     {
       id: "haselbach_linke",
       title: "Haselbach",

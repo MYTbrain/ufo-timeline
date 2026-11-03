@@ -1,5 +1,7 @@
 # Source review of the additional landing reports
 
+This page records the published baseline. The [original-source follow-up](followup-originals.md) documents the expanded local review.
+
 The review covers the 1,541 records in the two additional Landing Sites inventories. Four ledgers preserve the native inventory IDs and the source and geometry decisions for each record. The Australian ledger records the Basterfield catalog review. The historical ledger covers Hatch and the other historical compilations. The UFOCAT ledger uses the native citation records and source-code index. The direct ledger covers NUFORC, GEIPAN and Project Blue Book.
 
 ## Review results

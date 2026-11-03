@@ -74,7 +74,7 @@ test("each plotted layer has matching trace evidence and diagram-specific source
     const [left, top, width, height] = diagram.viewBox;
     assert.ok(diagram.title && diagram.basis && diagram.note, site.id);
     assert.ok(diagram.viewBox.every(Number.isFinite) && width > 0 && height > 0, site.id);
-    assert.equal(new Set(diagram.layers.map((layer) => layer.channel || layer.kind)).size, diagram.layers.length, site.id);
+    assert.equal(new Set(diagram.layers.map((layer) => layer.label)).size, diagram.layers.length, site.id);
     for (const layer of diagram.layers) {
       assert.ok(site.traces.some((trace) => trace.kind === layer.kind), site.id);
       if (layer.channel) assert.ok(site.traces.some((trace) =>
@@ -187,4 +187,32 @@ test("distinct mapped grass lay and twist layers support independent comparison"
   const pair = model.pairs.find(({ left, right }) => left.id === "twist" && right.id === "deformation");
   assert.ok(pair.sharedPlans.some(({ site }) => site.id === "porcieu_amblagnieu"));
   assert.ok(!model.byLane.get("scorching").has("titusville_yard_ring"));
+});
+
+test("Phillips original checks link existing dossiers and preserve the additional inventory denominator", () => {
+  const byId = new Map(cases.map((site) => [site.id, site]));
+  const indexed = new Set(phillips.rows.map(({ id }) => String(id)));
+  for (const [id, entry] of Object.entries(audit.phillipsRecords)) {
+    assert.ok(indexed.has(id), id);
+    if (entry.caseId) assert.ok(byId.has(entry.caseId), id);
+    if (entry.geometry === "diagram") assert.ok(byId.get(entry.caseId)?.diagram, id);
+  }
+  assert.equal(audit.phillipsRecords[167].caseId, "socorro");
+  assert.equal(audit.phillipsRecords[820].caseId, "donnybrook_north_dakota");
+  const filtered = comparison.analyze(cases, {
+    source: "phillips", phillipsCaseIds: new Set(Object.values(audit.phillipsRecords).map(({ caseId }) => caseId)),
+  }).selected;
+  assert.equal(filtered.filter(({ id }) => id === "socorro").length, 1);
+  assert.equal(Object.keys(audit.records).length, 1541);
+});
+
+test("new field plans register only the traces plotted in their source", () => {
+  const dale = cases.find(({ id }) => id === "dale_englebrecht");
+  assert.deepEqual(dale.diagram.layers.map(({ kind }) => kind), ["impression", "scorching"]);
+  assert.equal(comparison.traceLane(dale.traces[2]), "twist");
+  const churchill = cases.find(({ id }) => id === "churchill_park");
+  assert.equal(churchill.diagram.layers.filter(({ kind }) => kind === "impression").length, 2);
+  const pair = comparison.analyze([churchill]).pairs.find(({ left, right }) =>
+    left.id === "impression" && right.id === "surface");
+  assert.equal(pair.sharedPlans.length, 1);
 });

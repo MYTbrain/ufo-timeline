@@ -13,7 +13,7 @@
     "locator": "NUFORC report 33958 · CSV row 23803. Original submission text checked in the retained NUFORC export.",
     "access": "original_reviewed",
     "geometry": "description",
-    "note": "Burn extent is inferred from an estimated object diameter. The headline and structured date disagree."
+    "note": "Exact same submission as UFOCAT PRN 312378. The header says 1963 and the narrative says 1965. A burned-grass area about 45 feet across was reported without a measurement method or plan."
   },
   {
     "id": "nuforc:51879",
@@ -55,7 +55,8 @@
     "locator": "NUFORC report 154178 · CSV row 126502. Original submission text checked in the retained NUFORC export.",
     "access": "original_reviewed",
     "geometry": "description",
-    "note": "Round burnt spot and slime attributed to another observer. No trace positions or size."
+    "note": "Submitter reports seeing a round burned area and a separate spattered material trail. Submission header and narrative give different years. No dimensions or mapped positions.",
+    "caseId": "elk_grove_lawn"
   },
   {
     "id": "nuforc:104287",
@@ -87,7 +88,8 @@
     "locator": "NUFORC report 45849 · CSV row 33439. Original submission text checked in the retained NUFORC export.",
     "access": "original_reviewed",
     "geometry": "description",
-    "note": "Paired footprint-like snow marks in various sizes. No site positions and no support attribution."
+    "note": "Witness reports repeated pairs of three-pronged snow depressions, with sizes and depths estimated. No pairwise spacing, surveyed orientations or confirmed trace formation process.",
+    "caseId": "plain_snow_1973"
   },
   {
     "id": "nuforc:186552",

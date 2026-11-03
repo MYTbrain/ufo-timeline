@@ -188,13 +188,19 @@
           label: "Tully Studio photo of the main reed mat",
           url: "https://documents.theblackvault.com/documents/ufos/australia/A703_580-1-1_Part%205_645646.pdf#page=170",
           locator: "Townsville Daily Bulletin, January 21, 1966, clipping preserved in the RAAF file."
+        },
+        {
+          id: "ufoic-plan",
+          label: "UFOIC main reed mat photograph and Horseshoe Lagoon sketch",
+          url: "https://files.afu.se/Downloads/Magazines/Australia/Australian%20Flying%20Saucer%20Review/Australian%20Flying%20Saucer%20Review%20-%201966%2011%20-%20no%209%20UFOIC.pdf#page=17",
+          locator: "Australian Flying Saucer Review No. 9, November 1966, pp. 16–17. Photograph and caption p. 16, lagoon sketch and clipped patch dimensions p. 17."
         }
       ],
       diagram: {
-        title: "Horseshoe Lagoon reed patch outline",
-        basis: "Outline based on reported spans",
-        note: "The ellipse represents the police questionnaire’s approximate 32 × 25 ft envelope. The oblique archival photo shows the mat but gives too little information to plot individual reed paths or swirl direction.",
-        viewBox: [0, 0, 1250, 930],
+        title: "Horseshoe Lagoon main reed mat and adjacent clipped patch",
+        basis: "Reported spans and a relative direction from the lagoon sketch",
+        note: "North is up. The main outline uses the police questionnaire’s approximate 32 × 25 ft spans. Its long-axis bearing and the clipped patch’s orientation are schematic. The photograph is oblique and individual reed paths are unplotted.",
+        viewBox: [0, -360, 1250, 1290],
         layers: [
           {
             kind: "deformation",
@@ -202,6 +208,13 @@
             note: "The reported length was about 1.28 times the width. The outline describes elongation. The witness and police record give too little information to assess symmetry in the reed lay.",
             sourceIds: ["raaf", "mat-photo"],
             marks: [{ type: "ellipse", x: 625, y: 465, rx: 487.5, ry: 381, estimated: true, label: "Approximate envelope of the flattened reeds" }]
+          },
+          {
+            kind: "deformation",
+            label: "Separate clipped and uprooted grass patch",
+            note: "The UFOIC drawing places the clipped patch approximately north of the main mat. Its account estimates a 5 × 6 ft area and roughly 6 ft between it and the main mat edge.",
+            sourceIds: ["ufoic-plan"],
+            marks: [{ type: "path", d: "M 549 -282 H 701 V -99 H 549 Z", estimated: true, label: "Approximate clipped grass patch" }]
           }
         ]
       },
@@ -209,8 +222,8 @@
         {
           kind: "deformation",
           observation: "Reeds were flattened in curved strands down to the water surface, with an approximately 32 × 25 ft (9.75 × 7.62 m) boundary.",
-          context: "The witness reported seeing no scorch marks and detecting no burning smell. The police form contains a typed-over correction that leaves the swirl direction uncertain.",
-          sourceIds: ["raaf"],
+          context: "The witness reported seeing no scorch marks and detecting no burning smell. UFOIC labels the main mat clockwise in the photo caption and sketch. The typed-over direction in the police questionnaire is ambiguous.",
+          sourceIds: ["raaf", "ufoic-plan"],
           pattern: {
             label: "Curved reeds in an elongated patch",
             families: ["oval", "swirl"], handedness: "uncertain",
@@ -218,6 +231,12 @@
             details: "The rough outline dimensions differ. They describe the patch envelope and leave local reed angles and the precision of the boundary undetermined.",
             dimensions: { longM: 9.75, shortM: 7.62 }
           }
+        },
+        {
+          kind: "deformation",
+          observation: "The contemporary UFOIC account describes an adjacent rectangular patch, roughly 5 × 6 ft, where grass was clipped at the water line and removed with roots and muddy soil.",
+          context: "The lagoon sketch places it north of the main mat. Timing and formation mechanism are uncertain.",
+          sourceIds: ["ufoic-plan"]
         }
       ]
     },

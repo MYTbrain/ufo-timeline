@@ -10,6 +10,13 @@
   const catalogUrl = "https://www.project1947.com/kbcat/kbtrace0505.htm";
   const aproUrl = "https://noufors.com/Documents/Books%2C%20Manuals%20and%20Published%20Papers/Specialty%20UFO%20Publications/A.P.R.O.%20Bulletin/";
   const sketchUrl = "https://oldcropcircles.weebly.com/uploads/6/8/2/6/6826365/";
+  const afuMagazines = "https://files.afu.se/Downloads/Magazines/Australia/";
+  const churchillUrl = afuMagazines + "Australian%20UFO%20Bulletin/Australian%20UFO%20Bulletin%20-%201990%2003%20-%20March.pdf";
+  const portNeillUrl = "https://www.beaudeeley.com/xenodimensional/ufo/Australian%20UFO%20Bulletin%20-%201977%2005%20-%20May.pdf";
+  const afsrUrl = afuMagazines + "Australian%20Flying%20Saucer%20Review/Australian%20Flying%20Saucer%20Review%20-%201966%20";
+  const july1966 = afsrUrl + "07%20-%20no%205%20VFSRS.pdf";
+  const november1966 = afsrUrl + "11%20-%20no%209%20UFOIC.pdf";
+  const june1990 = afuMagazines + "Australian%20UFO%20Bulletin/Australian%20UFO%20Bulletin%20-%201990%2006%20-%20June.pdf";
 
   function source(id, label, url, locator) {
     return { id, label, url, locator };
@@ -55,6 +62,202 @@
   }
 
   return [
+    site(4, "catalog", {
+      id: "eton_ridge",
+      title: "Eton Ridge",
+      date: "1965-05-24",
+      location: "Eton Ridge, Queensland, Australia",
+      summary: "James Tilse reported a flattened grass area and possible burning in treetops after a reported sighting. A contemporary account describes two bands of different flattening with an undisturbed center.",
+      limits: "The published summary attributes the dimensions to local police. The police measurements and Tilse's reported ground photographs were not independently recovered. The tree marks lack positions and are outside the grass diagram.",
+      sources: [source("ufoic", "UFOIC, contemporary Eton Ridge account", november1966 + "#page=14",
+        "Australian Flying Saucer Review No. 9, November 1966, PDF p. 14. Reports Tilse's inspection and attributes a separate description to police.")],
+      traces: [
+        trace("deformation", "A 20 ft radius grass patch had an untouched center and a surrounding 3 ft 2 in band of less flattened grass. The report distinguishes the grass from the possible burning in treetops.", ["ufoic"],
+          pattern("Two circular grass bands", ["ring"], "dimensions", "The reported total diameter is 46 ft 4 in (14.12 m). The unchanged center has no measured radius.", { dimensions: { longM: 14.12, shortM: 14.12 } })),
+        trace("scorching", "Tilse described apparent signs of burning in treetops. No tree positions or burn dimensions were published in this account.", ["ufoic"])
+      ],
+      diagram: {
+        title: "Eton Ridge grass band boundaries",
+        viewBox: [-8.6, -8.6, 17.2, 17.2],
+        basis: "Boundaries reconstructed from a contemporary report",
+        note: "The circles show the stated boundaries of the two flattening bands. The untouched center and possible treetop burning lack measurements.",
+        layers: [layer("deformation", "Strong and weaker grass flattening", "The two reported boundaries are approximately 12.19 and 14.12 m across.", ["ufoic"],
+          [ring(6.096, "Boundary of strongly flattened grass"), ring(7.061, "Outer edge of less-flattened band")])]
+      }
+    }),
+    site(8, "original", {
+      id: "tully_january_26",
+      title: "Horseshoe Lagoon follow-up, January 26",
+      date: "1966-01-26",
+      location: "Near Tully, Queensland, Australia",
+      summary: "The contemporary account credits Lou Lardi and Van Klaphake with finding two older-looking reed formations a week after the original Tully report. It describes a scorched patch at the center of the smaller one.",
+      limits: "The two formations had no reported sightings tied to their creation. The lagoon sketch does not assign the two measured sizes to distinct positions with confidence.",
+      sources: [source("ufoic", "UFOIC account of the additional Tully formations", november1966 + "#page=17",
+        "Australian Flying Saucer Review No. 9, November 1966, pp. 17–18. The text distinguishes the two older-looking circles from a later find.")],
+      traces: [
+        trace("deformation", "The two formations were about 12 ft (3.66 m) and 8 ft (2.44 m) across. The article attributes counterclockwise reed lay to these formations and a later find.", ["ufoic"],
+          pattern("Two circular reed formations", ["ring", "swirl"], "dimensions", "Reported spans are separate diameters. Individual reed paths are unmeasured.", { handedness: "counterclockwise" })),
+        trace("scorching", "The smaller formation reportedly had a circular scorched patch centered within it.", ["ufoic"],
+          pattern("Central scorch", ["ring"], "description", "The account provides no scorch diameter or material analysis for this patch."))
+      ],
+      diagram: {
+        title: "January 26 Tully formations, size comparison",
+        viewBox: [-4.6, -2.35, 8.5, 4.7],
+        basis: "Independent diameters and one reported central relation",
+        note: "The outlines are placed side by side for comparison. Their real separation and relative orientation are unknown. The center symbol does not encode scorch extent.",
+        layers: [
+          layer("deformation", "Flattened reed outlines", "The two reported diameters are 3.66 m and 2.44 m.", ["ufoic"],
+            [ellipse(-2.25, 0, 1.83, 1.83, "Larger reed formation"), ellipse(1.8, 0, 1.22, 1.22, "Smaller reed formation")]),
+          layer("scorching", "Reported central scorch", "The source locates the patch at the center of the smaller formation.", ["ufoic"],
+            [point(1.8, 0, "Center of reported scorch")])
+        ]
+      }
+    }),
+    site(9, "original", {
+      id: "euramo_late_january",
+      title: "Euramo late January reed formation",
+      date: "1966-01",
+      location: "Euramo, Queensland, Australia",
+      summary: "The contemporary account describes a new reed formation with a scorched center among the earlier Horseshoe Lagoon formations.",
+      limits: "The report gives no dimensions or survey coordinates for this later formation. Its description is distinct from the two formations found a week after the January 19 sighting.",
+      sources: [source("ufoic", "UFOIC account of the later Pennisi farm formation", november1966 + "#page=18",
+        "Australian Flying Saucer Review No. 9, November 1966, p. 18, opening paragraphs.")],
+      traces: [
+        trace("deformation", "The report groups the new formation with the two previously discovered ones and describes all three as flattened counterclockwise.", ["ufoic"],
+          pattern("Counterclockwise reed lay", ["swirl"], "description", "No diameter or measured stem angles are given for this formation.", { handedness: "counterclockwise" })),
+        trace("scorching", "The source describes scorching at the center of the new formation.", ["ufoic"])
+      ]
+    }),
+    site(10, "original", {
+      id: "bankstown_reeds",
+      title: "Bankstown reed clearing",
+      date: "1966-02-14",
+      location: "Bankstown, New South Wales, Australia",
+      summary: "Two students found a circular area of flattened reeds. The UFOIC report includes an on-site inspection and an oblique photograph.",
+      limits: "Visitors damaged the reeds before or during follow-up. The account links no observed landing to the site, and the photo provides no calibrated stem angles.",
+      controls: "The investigators reported no access tracks in the standing grass and tested whether stems would snap when flexed. No matched comparison plot is described.",
+      sources: [source("ufoic", "UFOIC Bankstown inspection and photograph", november1966 + "#page=22",
+        "Australian Flying Saucer Review No. 9, November 1966, p. 22.")],
+      traces: [
+        trace("deformation", "The reported circle measured 19 ft 6 in (5.94 m) across. Reeds lay clockwise and were bent near the base.", ["ufoic"],
+          pattern("Clockwise reeds within a circle", ["ring", "swirl"], "dimensions", "The diameter establishes the approximate envelope. The source provides a direction in prose, with no mapped stem paths.", { dimensions: { longM: 5.94, shortM: 5.94 }, handedness: "clockwise" }))
+      ],
+      diagram: {
+        title: "Bankstown reed clearing envelope",
+        viewBox: [-3.65, -3.65, 7.3, 7.3],
+        basis: "Reported diameter and contemporary oblique photograph",
+        note: "The outline uses the reported diameter. Reed lay is recorded in the description without invented stem paths.",
+        layers: [layer("deformation", "Flattened reed outline", "The circular outline is approximate.", ["ufoic"], [ring(2.97, "Reported reed clearing envelope")])]
+      }
+    }),
+    site(11, "original", {
+      id: "burkes_flat",
+      title: "Burkes Flat depression",
+      date: "1966-04-04",
+      location: "Burkes Flat, Victoria, Australia",
+      summary: "Ronald Sullivan reported finding a round depression in a ploughed and harrowed paddock after a light sighting. His published sketch places it relative to the road and his line of sight.",
+      limits: "The trace measurements are approximate values from Sullivan's letter. The plot in his sketch marks the object-to-depression association as an assumption.",
+      sources: [source("sullivan", "Ronald Sullivan's account and diagram", july1966 + "#page=8",
+        "Australian Flying Saucer Review, Victorian edition No. 5, July 1966, printed p. 12 / PDF p. 8. Includes Sullivan's own scene drawing.")],
+      traces: [
+        trace("impression", "Sullivan described one circular depression approximately 4 ft (1.22 m) across and 6 in (15 cm) deep.", ["sullivan"],
+          pattern("Single circular depression", ["isolated", "ring"], "dimensions", "Reported outer diameter and depth describe one mark. No measured profile or neighboring support marks were published.", { dimensions: { longM: 1.22, shortM: 1.22 } }))
+      ],
+      diagram: {
+        title: "Burkes Flat depression envelope",
+        viewBox: [-0.85, -0.85, 1.7, 1.7],
+        basis: "Approximate outer diameter reported by Sullivan",
+        note: "The outline depicts the one reported depression. Sullivan's source sketch records the broader scene context.",
+        layers: [layer("impression", "Depression", "The profile is unmeasured beyond the reported depth.", ["sullivan"], [ring(0.61, "Reported depression envelope")])]
+      }
+    }),
+    site(12, "original", {
+      id: "westall",
+      title: "Westall field grass",
+      date: "1966-04-06",
+      location: "Westall, Victoria, Australia",
+      summary: "An anonymous pupil's 1966 account describes finding a broad patch of flattened grass beyond the school after an aerial sighting.",
+      limits: "The pupil lost sight of the object behind pines before inspecting the field. The patch dimensions were an estimate, without a measured boundary, site plan, or independently verified scorching.",
+      sources: [source("clayton", "Westall pupil account in The Clayton Calendar", july1966 + "#page=9",
+        "Australian Flying Saucer Review, Victorian edition No. 5, July 1966, printed pp. 13–14 / PDF pp. 8–9.")],
+      traces: [
+        trace("deformation", "The pupil described grass crushed against the ground over an area about 25–30 ft (7.6–9.1 m) across and reported seeing no access track.", ["clayton"])
+      ]
+    }),
+    site(133, "original", {
+      id: "turriff_wheat_rings",
+      title: "Turriff wheat rings near Speed",
+      date: "1989-12-06",
+      location: "Turriff near Speed, Victoria, Australia",
+      summary: "Auchettl's field report describes twelve flattened wheat formations, commonly in pairs down a rise. All twelve reportedly had counterclockwise stem lay and four retained upright wheat at their centers.",
+      limits: "The field report gives counts, diameters and qualitative arrangement, without a survey tying diameters or soil properties to all twelve positions. Its account of a May light is a separate event from the December discovery.",
+      controls: "The report records negative on-site radiation tests and compares soil inside and outside several rings. Numerical magnetometer results were left to a later report. The interior of ring 4 showed no unusual surface indentations in the area checked.",
+      sources: [source("auchettl", "John W. Auchettl, The Turriff Ground Ring Summary", june1990 + "#page=8",
+        "Australian UFO Bulletin, June 1990, printed pp. 11–15 and 18–20, PDF pp. 7–9 and 11–12.")],
+      traces: [
+        trace("deformation", "Twelve circular formations ranged from 1.22 to 3.66 m in diameter. Most were reported in pairs along a J-shaped course, with pair axes trending northeast. Four formations retained upright central wheat.", ["auchettl"],
+          pattern("Twelve counterclockwise wheat formations", ["ring", "swirl"], "dimensions", "Reported diameters are 3.66 m twice, 2.74, 2.59, 1.98, 1.83 m five times, 1.37 and 1.22 m. Relative positions are not measured.", { handedness: "counterclockwise" })),
+        trace("surface", "Soil in the main formations was described as hard and smooth. Smaller rings near the fence lacked that reported soil hardness.", ["auchettl"])
+      ]
+    }),
+    site(132, "original", {
+      id: "churchill_park",
+      title: "Churchill Park, Endeavour Hills",
+      date: "1989-10-09",
+      location: "Endeavour Hills, Victoria, Australia",
+      summary: "Field investigator John W. Auchettl found a ring of discolored grass with four small pad-like holes, two scoops and a central cluster of indistinct marks after a reported light sighting.",
+      limits: "The ground ring was found after four days of searching. The sighting did not establish contact with that patch. The bulletin describes vegetation and soil testing but supplies no calibrated exposure, complete lab data or control series for inferring a source.",
+      controls: "Auchettl reported comparing soil from inside and outside, found no unusual soil elements in the tests described, and raised radon as a possible contributor to the reported alpha difference. These are the investigator's reported comparisons.",
+      sources: [source("auchettl", "John W. Auchettl, Churchill Park field report and plan", churchillUrl + "#page=11",
+        "Australian UFO Bulletin, March 1990, printed pp. 11–19. Measurements p. 15, testing p. 16 and field plan p. 19 (PDF p. 11).")],
+      traces: [
+        trace("impression", "Four 5 cm holes, each 3 cm deep with a reported 7 cm pad impression, had two adjacent 2.28 m separations and two adjacent 2.60 m separations. Two nearby scoop-like marks were mapped separately.", ["auchettl"],
+          pattern("Four holes in a kite-like layout", ["four_point"], "dimensions",
+            "The printed equal-side pairs suggest one approximate reflection axis. No survey uncertainty or support mechanism is recorded.", { edgesM: [2.28, 2.28, 2.6, 2.6] })),
+        trace("surface", "The investigator described a brown-yellow grass band, 8–10 cm wide, around a green interior. A small central mark group was left undefined.", ["auchettl"],
+          pattern("Circular vegetation discoloration", ["ring"], "dimensions",
+            "The source gives a 3.65 m outer diameter. The color change is recorded separately from the depressions and its cause remains open.", { dimensions: { longM: 3.65, shortM: 3.65 } }))
+      ],
+      diagram: {
+        title: "Churchill Park field plan",
+        viewBox: [-2.25, -2.18, 4.5, 4.36],
+        basis: "Positions traced from Auchettl's printed graph-paper plan",
+        note: "North is right and east is down, as in the source. Coordinates are approximate, scaled to the reported outer diameter. Point symbols are enlarged and the discoloration ring stroke is illustrative.",
+        layers: [
+          layer("surface", "Discolored vegetation and central marks", "The plan depicts the narrow brown-yellow band and a small undefined central group.", ["auchettl"],
+            [ring(1.825, "Outer extent of brown-yellow ring"), point(-0.12, 0, "Undefined central marks", "G")]),
+          layer("impression", "Holes and pad marks", "Four locations from the field plan. The two near sides to A are annotated 2.28 m and the two sides to C are annotated 2.60 m.", ["auchettl"],
+            [point(-0.05, -1.68, "A, hole and pad imprint", "A"), point(-1.69, -0.17, "B, hole and pad imprint", "B"),
+              point(-0.05, 1.74, "C, hole and pad imprint", "C"), point(1.6, -0.17, "D, hole and pad imprint", "D")]),
+          layer("impression", "Separate scoop marks", "E and F are distinct from the four holes. The illustrated scoop profile is 10 × 7 cm and 3 cm deep.", ["auchettl"],
+            [point(-0.81, 1.2, "E, scoop", "E"), point(-0.05, 1.57, "F, scoop", "F")])
+        ]
+      }
+    }),
+    site(108, "original", {
+      id: "port_neill",
+      title: "Port Neill",
+      date: "1977-03",
+      location: "Port Neill, South Australia, Australia",
+      summary: "Brian Bray found an annular scoop in a paddock. Contemporary accounts describe a hollow between an undisturbed center and a hard outer rim.",
+      limits: "The two local newspaper accounts give different outer measurements, about 4.3 m and about 4.62 m when doubling the reported 7 ft 7 in center-to-rim distance. Neither gives a cross section or connects the mark to a witnessed event.",
+      sources: [source("eyre_press", "Port Lincoln Times and Eyre Peninsula Tribune contemporary reports", portNeillUrl + "#page=4",
+        "Australian UFO Bulletin, May 1977, printed p. 4. Excerpts from 3 and 17 March 1977 respectively.")],
+      traces: [
+        trace("impression", "The annular soil hollow reportedly held loose sand over harder soil. Its width and depth were unrecorded.", ["eyre_press"],
+          pattern("Circular soil hollow", ["ring"], "dimensions",
+            "Approximate outer span comes from the two press accounts. Inner edge and profile are unmeasured.", { dimensions: { longM: 4.3, shortM: 4.3 } })),
+        trace("surface", "The center was described as undisturbed and the outer rim as harder than the neighboring topsoil.", ["eyre_press"])
+      ],
+      diagram: {
+        title: "Port Neill reported outer extent",
+        viewBox: [-2.9, -2.9, 5.8, 5.8],
+        basis: "One reported outer diameter",
+        note: "The outline uses the Tribune's approximate 4.3 m diameter. The other press estimate implies about 4.62 m. The hollow's inner edge is unmeasured.",
+        layers: [layer("impression", "Outer extent of annular soil feature", "Measured envelope only. The ring stroke carries no width measurement.", ["eyre_press"],
+          [ring(2.15, "Approximate outer extent")])]
+      }
+    }),
     site(26, "catalog", {
       id: "afterlea",
       title: "Afterlea",

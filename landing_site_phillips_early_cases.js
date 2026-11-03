@@ -48,6 +48,180 @@
 
   return [
     {
+      id: "la_madera_1964",
+      phillipsCaseNumber: 168,
+      inventoryIds: ["hatch:Hatch_UDB_6933"],
+      evidenceOrigin: "original",
+      title: "La Madera",
+      date: "1964-04-26",
+      location: "Near La Madera, New Mexico, United States",
+      summary: "Police examined a smoldering patch after Orlando Gallegos reported a luminous object near a road and dumping area. APRO interviewed the witness and the state police captain who visited the site.",
+      limits: "The captain described four indentations, while the witness described two. The photographs reviewed by APRO did not resolve their layout. The Air Force file attributed the fire to burning refuse.",
+      sources: [
+        ...phillips(168, 48, "Later compilation of the police and APRO account."),
+        { id: "apro", label: "APRO Bulletin, Incident at La Madera",
+          url: "https://noufors.com/Documents/Books%2C%20Manuals%20and%20Published%20Papers/Specialty%20UFO%20Publications/A.P.R.O.%20Bulletin/apro_july_1964.pdf#page=6",
+          locator: "July 1964, printed pp. 4 and 6. Lorenzen's interviews with Captain Vigil and Gallegos." },
+        { id: "bluebook", label: "U.S. Air Force, La Madera investigation",
+          url: "https://catalog.archives.gov/id/302532310",
+          locator: "Project Blue Book record card and April 27, 1964 report extract." }
+      ],
+      traces: [
+        { kind: "impression", observation: "Vigil described four wedge-bottomed depressions about 8 by 12 in and at least a dozen smaller round marks. Gallegos said he saw two wedge-shaped impressions.",
+          sourceIds: ["apro"], pattern: { label: "Conflicting impression counts", basis: "description", details: "The reports give individual mark sizes without positions, spacing or orientation." } },
+        { kind: "scorching", observation: "Vigil gave a diameter of 35–40 ft (10.7–12.2 m) for the scorched and smoldering area.",
+          sourceIds: ["apro", "bluebook"], pattern: { label: "Reported burn extent", basis: "dimensions", families: ["ring"], details: "The diameter supports a nominal circular envelope. The field record gives no surveyed boundary." } }
+      ],
+      diagram: {
+        title: "La Madera reported scorch extent",
+        viewBox: [-7, -7, 14, 14],
+        basis: "Nominal diameter bounds from the state police interview",
+        note: "The two outlines bracket a single reported burned area. The locations of the depressions and smaller marks are undetermined.",
+        layers: [{ kind: "scorching", label: "Scorch diameter bounds", note: "Nominal diameters of 35 and 40 ft, in local metres.", sourceIds: ["apro"],
+          marks: [circle(0, 0, feet(17.5), "35 ft diameter"), circle(0, 0, feet(20), "40 ft diameter")] }]
+      }
+    },
+    {
+      id: "hubbard_wheat_1964",
+      phillipsCaseNumber: 172,
+      evidenceOrigin: "original",
+      title: "Hubbard wheat field",
+      date: "1964-05-18",
+      location: "Hubbard, Oregon, United States",
+      summary: "A deputy sheriff and the first adult at the site described crushed wheat after a boy's sighting. The deputy reported three localized spots about three feet apart.",
+      limits: "The first published investigation reports crushed wheat, with no surveyed soil impressions or bearings. The spot count and spacing describe the vegetation observations. The reported object was described with four legs.",
+      sources: [
+        ...phillips(172, 48, "Catalog entry citing NICAP."),
+        { id: "nicap", label: "NICAP, Physical Evidence: Landing Reports",
+          url: "https://cufos.org/PDFs/UFOI_and_Selected_Documents/UFOI/023%20JUL-AUG%201964.pdf#page=6",
+          locator: "UFO Investigator 2(11), July–August 1964, PDF p. 6. Deputy Sheriff Davidson and Ray Mortensen accounts." }
+      ],
+      traces: [
+        { kind: "deformation", observation: "The deputy described three areas of crushed wheat about 3 ft (0.91 m) apart.",
+          sourceIds: ["nicap"], pattern: { label: "Three vegetation spots", basis: "dimensions", families: ["three_point"], details: "One approximate spacing is reported. A nominal equal-sided rendering assumes it applies to all three pairs." } },
+        { kind: "deformation", observation: "Mortensen described the flattened wheat as splayed outward in several directions.",
+          sourceIds: ["nicap"], pattern: { label: "Outward flattened wheat", basis: "description", families: ["radial"], details: "The account describes radial lay. It supplies no measured angles or independent twist direction." } }
+      ],
+      diagram: {
+        title: "Hubbard nominal positions of the three crushed-wheat spots",
+        viewBox: [-0.65, -0.97, 1.30, 1.18],
+        basis: "Illustration using the deputy's approximate shared spacing",
+        note: "Local metres. The diagram assumes all three distances are approximately 3 ft. Individual spot outlines and the wider flattened area are undetermined.",
+        layers: [{ kind: "deformation", label: "Three reported vegetation spots", note: "The marks represent crushed wheat.", sourceIds: ["nicap"],
+          marks: triangle(feet(3), feet(3), "Crushed wheat spot") }]
+      }
+    },
+    {
+      id: "dale_englebrecht",
+      phillipsCaseNumber: 173,
+      inventoryIds: ["ufocat:214890"],
+      evidenceOrigin: "original",
+      title: "Dale farmyard",
+      date: "1964-06",
+      location: "Near Dale, Indiana, United States",
+      summary: "William T. Powers drew a small irregular burn and three shallow indentations after interviewing Charles Englebrecht. The later field history separately describes swirled grass around the affected patch.",
+      limits: "The preliminary NICAP bulletin and later follow-up presentation date the report to June 14. A separately reproduced NICAP account gives June 24. The sources describe the same witness and farm. The published trace drawing omits the grass boundary and stem orientation.",
+      sources: [
+        ...phillips(173, 49, "Catalog summary of the Dale traces."),
+        { id: "powers", label: "William T. Powers, burn and indentation field sketch",
+          url: "https://www.iccra.org/reports/ICCRA%20pdf%20reports/Dale%2C%20IN%201964%20for%202010%20ICCRA%20Conference_v%20website.pdf#page=14",
+          locator: "PDF p. 14. Reproduced drawing signed WTP, with a Dale News photograph alongside." },
+        { id: "interviews", label: "Dale historical witness and investigator follow-up",
+          url: "https://www.iccra.org/reports/ICCRA%20pdf%20reports/Dale%2C%20IN%201964%20for%202010%20ICCRA%20Conference_v%20website.pdf#page=10",
+          locator: "PDF pp. 10–12 describe witness recollections and the samples collected. PDF p. 17 reproduces the NICAP account." },
+        { id: "nicap", label: "NICAP, contemporary Dale account",
+          url: "https://cufos.org/PDFs/UFOI_and_Selected_Documents/UFOI/023%20JUL-AUG%201964.pdf#page=6",
+          locator: "UFO Investigator 2(11), PDF p. 6. Names Englebrecht, gives June 14 and reports scorch samples." }
+      ],
+      traces: [
+        { kind: "impression", observation: "Powers plotted three indentations near the boundary of a small burned patch.",
+          sourceIds: ["powers"], pattern: { label: "Unequal three-point layout", basis: "dimensions", families: ["three_point"], details: "Two sides are similar in the drawing and the remaining side is shorter. The sketch gives no measurement uncertainty." } },
+        { kind: "scorching", observation: "The field drawing outlines an irregular burned patch with annotated spans of about 3 by 4 in.",
+          sourceIds: ["powers"], pattern: { label: "Irregular small burn", basis: "dimensions", families: ["irregular"], details: "These dimensions describe the drawn patch. Later recollections describe a larger affected area.",
+            dimensions: { longM: inches(4), shortM: inches(3) } } },
+        { kind: "deformation", observation: "The historical follow-up describes a flattened, swirled grass circle about 5–6 ft across.",
+          sourceIds: ["interviews"], pattern: { label: "Reported grass swirl", basis: "dimensions", families: ["ring", "swirl"], details: "The published field drawing does not register the grass to the small burn and depressions. The direction was not reported." } }
+      ],
+      diagram: {
+        title: "Dale burn and indentation sketch",
+        viewBox: [-12, -12, 226, 310],
+        basis: "Relative positions redrawn from Powers's field sketch",
+        note: "The sketch has north upward. Outlines follow the field drawing approximately. The wider grass report has no independently plotted boundary.",
+        layers: [
+          { kind: "impression", label: "Three indentations", note: "Markers use the approximate centers of the three numbered marks in the original sketch.", sourceIds: ["powers"],
+            marks: [point(189, 22, "Indentation 1", "1"), point(96, 272, "Indentation 2", "2"), point(31, 202, "Indentation 3", "3")] },
+          { kind: "scorching", label: "Burned patch", note: "The irregular perimeter is taken from the same sketch as the indentations.", sourceIds: ["powers"],
+            marks: [{ type: "path", d: "M 12 47 Q 8 20 39 15 L 110 9 Q 158 2 182 27 Q 176 81 168 121 L 154 195 Q 143 252 122 264 Q 103 275 84 263 Q 53 240 33 197 L 19 131 Q 9 80 12 47 Z", label: "Approximate burn outline", estimated: true }] }
+        ]
+      }
+    },
+    {
+      id: "presque_isle_1966",
+      phillipsCaseNumber: 244,
+      inventoryIds: ["hatch:Hatch_UDB_7752"],
+      evidenceOrigin: "original",
+      title: "Presque Isle State Park",
+      date: "1966-07-31",
+      location: "Presque Isle State Park, Pennsylvania, United States",
+      summary: "Air Force and police investigators photographed two larger triangular depressions and noted a smaller mark in beach sand. The Flight Dynamics Laboratory compared the photographs with the field sketch.",
+      limits: "The photographs contradicted the sketch's footprint orientations. The engineering review found the pattern asymmetric and considered it unlikely to have served as landing supports. The marks were found away from the point where a witness reported the object settling.",
+      controls: "Police took a plaster cast. The laboratory traced an acrylic residue to the lacquer applied before casting. The case file reports no evidence of heat blast.",
+      sources: [
+        ...phillips(244, 61, "Catalog entry for the beach traces."),
+        { id: "engineering", label: "U.S. Air Force, evaluation of beach depressions",
+          url: "https://documents2.theblackvault.com/documents/projectbluebook/PresqueIslandStatePark-Pennsylvania-07-31-1966-main.pdf#page=77",
+          locator: "Project Blue Book case file, PDF pp. 76–77. Flight Dynamics Laboratory photograph and sketch comparison." },
+        { id: "memo", label: "Project Blue Book field evidence and spacing memo",
+          url: "https://documents2.theblackvault.com/documents/projectbluebook/PresqueIslandStatePark-Pennsylvania-07-31-1966-main.pdf#page=96",
+          locator: "PDF pp. 89, 91–92 and 96. Field evidence, sand analysis summary and reported spacing." }
+      ],
+      traces: [
+        { kind: "impression", observation: "The file describes two larger triangular depressions and a smaller third depression. A memo reports 16 ft between the larger marks.",
+          sourceIds: ["engineering", "memo"], pattern: { label: "Asymmetric three-mark group", basis: "dimensions", families: ["three_point", "irregular"], details: "The large pair has one reported spacing. The footprint axes in the photograph do not converge symmetrically, and the remaining position lacks measured registration." } }
+      ],
+      diagram: {
+        title: "Presque Isle reported spacing of two larger depressions",
+        viewBox: [-3.2, -1.5, 6.4, 3],
+        basis: "One reported distance from the Air Force memo",
+        note: "Local metres. Only the reported 16 ft spacing is represented. Markers omit the disputed footprint orientation and the unmeasured third position.",
+        layers: [{ kind: "impression", label: "Larger depression pair", note: "The drawn baseline represents the reported spacing, with arbitrary orientation.", sourceIds: ["memo", "engineering"],
+          marks: [point(-feet(8), 0, "Larger depression A", "A"), point(feet(8), 0, "Larger depression B", "B")] }]
+      }
+    },
+    {
+      id: "hampton_falls_1966",
+      phillipsCaseNumber: 754,
+      evidenceOrigin: "original",
+      title: "Hampton Falls",
+      date: "1966-03-29",
+      location: "Hampton Falls, New Hampshire, United States",
+      summary: "A boy and his mother described an approximately circular depression in pine litter and elongated impressions around it. Raymond Fowler's field investigation was conducted several years after the event.",
+      limits: "The impressions were reported outside the circular depression. The published narrative gives no bearings or spacings for individual marks. Clockwise rotation in the account concerns the reported object.",
+      sources: [
+        ...phillips(754, 59, "Catalog trace account."),
+        { id: "fowler", label: "Raymond Fowler, The Flying Box, and Other Cases",
+          url: "https://cufos.org/PDFs/IUR%20issues/IUR%20Vol.%2028%20No.%202%20Summer%202003.pdf#page=17",
+          locator: "International UFO Reporter 28(2), Summer 2003, p. 17. Witness and family observations of the traces." },
+        { id: "nicap", label: "NICAP Massachusetts Subcommittee investigation",
+          url: "https://noufors.com/Documents/Books%2C%20Manuals%20and%20Published%20Papers/Specialty%20UFO%20Publications/NICAP%20UFO%20Investigator/072%20MARCH%201972.pdf#page=3",
+          locator: "UFO Investigator, March 1972, p. 3. First published field investigation summary." }
+      ],
+      traces: [
+        { kind: "impression", observation: "The witness and his mother recalled elongated impressions outside the central depression.",
+          sourceIds: ["fowler", "phillips"], pattern: { label: "Three reported marks around a depression", basis: "description", families: ["three_point"], details: "Phillips gives the count. Distances and orientations for individual impressions are missing." } },
+        { kind: "surface", observation: "The central bowl-like patch through the pine litter was described as roughly 2 ft across and 4–6 in deep at the center.",
+          sourceIds: ["fowler"], pattern: { label: "Circular central disturbance", basis: "dimensions", families: ["ring"], details: "The witnesses described displacement of litter and soil. They reported no scorching." } }
+      ],
+      diagram: {
+        title: "Hampton Falls central surface disturbance",
+        viewBox: [-0.42, -0.42, 0.84, 0.84],
+        basis: "Schematic from the reported central diameter",
+        note: "Local metres. The elongated impressions are omitted because individual positions were not reported.",
+        layers: [{ kind: "surface", label: "Central bowl-like depression", note: "The perimeter uses the approximate two-foot diameter.", sourceIds: ["fowler"],
+          marks: [circle(0, 0, feet(1), "Approximate circular depression")] }]
+      }
+    },
+    {
       id: "villares_del_saz",
       phillipsCaseNumber: 54,
       title: "Villares del Saz",

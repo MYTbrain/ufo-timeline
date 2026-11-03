@@ -165,8 +165,10 @@
       catalog_only: "Catalog entry",
     };
     const evidence = !isPhillips && addSelect("Screening basis", "All screening bases", Object.entries(screeningLabels));
-    const reviewedAccess = !isPhillips && addSelect("Source review", "All review outcomes", Object.entries(reviewAccess));
-    const geometry = !isPhillips && addSelect("Geometry review", "All geometry outcomes", Object.entries(reviewGeometry));
+    const reviewedAccess = (!isPhillips || rows.some((row) => row.audit)) &&
+      addSelect("Source review", "All review outcomes", Object.entries(reviewAccess));
+    const geometry = (!isPhillips || rows.some((row) => row.audit)) &&
+      addSelect("Geometry review", "All geometry outcomes", Object.entries(reviewGeometry));
     const overlap = !isPhillips && addSelect("Case linkage", "All report records",
       [["linked", "Linked to reviewed case"], ["possible", "Possible same-day overlap"]]);
     const pager = element("div", "landing-catalog-pager");
@@ -236,8 +238,9 @@
         where.append(element("strong", "", record.location || "Location unconfirmed"), element("div", "", formatDate(record.date)));
         const screen = row.insertCell();
         const audit = record.audit;
-        screen.textContent = isPhillips ? catalogKinds[record.kind] :
-          audit ? reviewAccess[audit.access] + " · " + reviewGeometry[audit.geometry] : screeningLabels[record.evidenceBasis];
+        const disposition = audit && (reviewAccess[audit.access] + " · " + reviewGeometry[audit.geometry]);
+        screen.textContent = isPhillips ? [catalogKinds[record.kind], disposition].filter(Boolean).join(" · ") :
+          disposition || screeningLabels[record.evidenceBasis];
         if (audit) {
           const detail = element("details", "landing-report-audit");
           detail.append(element("summary", "", "Review notes"));
@@ -526,8 +529,12 @@
         document, cases, [catalog, ...otherCatalogs], openReviewedCase,
         { edgeSpread, spanMetrics }, root.UfoLandingSiteReviewAudit));
     }
-    if (catalog?.rows?.length) addView("phillips", "Phillips catalog (" + number.format(catalog.rows.length) + ")",
-      renderCatalog(element, catalog, cases, openReviewedCase, true));
+    if (catalog?.rows?.length) {
+      const reviews = root.UfoLandingSiteReviewAudit?.phillipsRecords || {};
+      const rows = catalog.rows.map((row) => ({ ...row, audit: reviews[row.id] }));
+      addView("phillips", "Phillips catalog (" + number.format(rows.length) + ")",
+        renderCatalog(element, { ...catalog, rows }, cases, openReviewedCase, true));
+    }
     const sourceReviews = root.UfoLandingSiteReviewAudit?.records || {};
     const otherRows = otherCatalogs.flatMap(({ rows }) => rows.map((row) => ({ ...row, audit: sourceReviews[row.id] })));
     if (otherRows.length) {

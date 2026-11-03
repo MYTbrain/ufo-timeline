@@ -23,11 +23,11 @@ INSUFFICIENT_FIRST_PAGE = 126
 DECLARED_COUNT = 831
 DPI = 180
 VERIFIED_PAGES = {
-    12: 19, 54: 28, 104: 19, 112: 37, 158: 46, 164: 47, 179: 50, 188: 52, 199: 54, 221: 58, 235: 60,
+    12: 19, 54: 28, 104: 19, 112: 37, 158: 46, 164: 47, 167: 48, 179: 50, 188: 52, 199: 54, 221: 58, 235: 60,
     247: 61, 248: 62, 259: 63, 264: 63, 269: 65, 288: 69, 290: 69, 291: 69,
     293: 69, 381: 82, 386: 83, 476: 95, 494: 97, 496: 97, 535: 104, 537: 104,
     583: 108, 618: 75, 643: 115, 665: 109, 673: 104, 684: 57, 707: 70, 708: 75,
-    712: 69, 726: 111, 746: 122, 753: 108, 763: 64, 787: 32,
+    712: 69, 726: 111, 746: 122, 753: 108, 763: 64, 787: 32, 820: 61,
 }
 # Independently read from the scan for the linked case dossiers.
 REVIEWED_ROWS = {
@@ -41,6 +41,8 @@ REVIEWED_ROWS = {
           ["scorching", "surface"], ["circular"]),
     164: ("1963-12-27", "Epping, Essex, England", "sighting_trace",
           ["impression", "deformation"], ["circular", "rectangular"]),
+    167: ("1964-04-24", "Socorro, New Mexico, United States", "sighting_trace",
+          ["impression", "scorching"], ["rectangular"]),
     179: ("1964-09-04", "Glassboro, New Jersey, United States", "sighting_trace",
           ["impression", "scorching", "deformation"], ["circular", "radial"]),
     188: ("1965-01-12", "Custer, Washington, United States", "sighting_trace",
@@ -101,6 +103,8 @@ REVIEWED_ROWS = {
           ["impression"], ["circular"]),
     787: ("1954-09-27", "Prémanon, Jura, France", "sighting_trace",
           ["deformation", "impression"], ["circular", "rectangular", "swirl"]),
+    820: ("1966-08-19", "Donnybrook, North Dakota, United States", "sighting_trace",
+          ["impression", "surface"], ["triangular"]),
 }
 REVIEWED_MEDIA = {
     179: ["photo"], 188: ["sketch"], 199: ["photo"], 381: ["photo", "sketch"],

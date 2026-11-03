@@ -17,9 +17,14 @@ ACCESS = {"original_reviewed", "catalog_reviewed", "citation_only", "unresolved"
 GEOMETRY = {"diagram", "description", "insufficient"}
 
 
+def read_pinned_text(path):
+    # Match the repository's LF text blobs even in a CRLF checkout.
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def load_asset(name):
     path = ROOT / name
-    raw = path.read_bytes()
+    raw = read_pinned_text(path)
     text = raw.decode("utf-8")
     start = re.search(r'\{\s*"source"\s*:', text)
     if not start:
@@ -51,7 +56,7 @@ def build():
     receipts = {}
     for name in ("direct.json", "australian.json", "historical.json", "ufocat.json"):
         path = QA / name
-        raw = path.read_bytes()
+        raw = read_pinned_text(path)
         pins[name] = sha256(raw).hexdigest()
         for row in json.loads(raw):
             ident = row["id"]
@@ -67,6 +72,23 @@ def build():
     missing = rows_by_id.keys() - receipts.keys()
     if missing:
         raise ValueError(f"Missing {len(missing)} review dispositions: {sorted(missing)[:5]}")
+
+    phillips_path = QA / "phillips-originals.json"
+    raw = read_pinned_text(phillips_path)
+    pins[phillips_path.name] = sha256(raw).hexdigest()
+    phillips_ids = {row["id"] for row in phillips}
+    phillips_reviews = {}
+    for row in json.loads(raw):
+        ident = row["id"]
+        if ident not in phillips_ids or ident in phillips_reviews:
+            raise ValueError(f"Unexpected or repeated Phillips review ID {ident}")
+        if row["access"] not in ACCESS or row["geometry"] not in GEOMETRY:
+            raise ValueError(f"Unknown Phillips review disposition for {ident}")
+        if row.get("url") and urlsplit(row["url"]).scheme != "https":
+            raise ValueError(f"Unexpected Phillips source URL for {ident}")
+        if row["geometry"] == "diagram" and not row.get("caseId"):
+            raise ValueError(f"A Phillips diagram needs an exact dossier link: {ident}")
+        phillips_reviews[ident] = {key: value for key, value in row.items() if key != "id"}
 
     related = {}
     for peers in groups.values():
@@ -87,6 +109,7 @@ def build():
 
     return {
         "records": output,
+        "phillipsRecords": phillips_reviews,
         "counts": {
             "access": dict(Counter(row["access"] for row in receipts.values())),
             "geometry": dict(Counter(row["geometry"] for row in receipts.values())),

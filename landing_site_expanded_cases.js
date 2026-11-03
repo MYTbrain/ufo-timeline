@@ -30,6 +30,11 @@
   ];
   const antenBurnGaps = [2.55, 2.60, 2.60];
   const phillipsBook = "https://cufos.org/PDFs/books/Physical_Traces.pdf";
+  const southHillDiagonalA = (16 * 12 + 1) * 0.0254;
+  const southHillDiagonalB = (16 * 12 + 6) * 0.0254;
+  const southHillAngle = 88 * Math.PI / 180;
+  const southHillOtherX = southHillDiagonalB / 2 * Math.cos(southHillAngle);
+  const southHillOtherY = southHillDiagonalB / 2 * Math.sin(southHillAngle);
 
   function phillipsEntry(id, pdfPage, locator) {
     return {
@@ -81,8 +86,10 @@
       title: "South Hill",
       date: "1967-04-21",
       location: "South Hill, Virginia, United States",
-      summary: "A driver reported an object on a road and returned with two state troopers. They found a burned patch and spent paper matches. The next inspection found four small holes around the patch.",
-      limits: "The troopers said the holes were absent during the first inspection. The Air Force flagged a possible prank and continued to carry the sighting as unidentified.",
+      inventoryIds: ["hatch:Hatch_UDB_8190", "specialist:Johnson_2183"],
+      evidenceOrigin: "original",
+      summary: "A driver reported an object on a road and returned with two state troopers. They found a burned patch and spent paper matches. Later inspection recorded small holes around the patch.",
+      limits: "The troopers said the holes were absent during the first inspection. The Air Force flagged a possible prank and continued to carry the sighting as unidentified. APRO and the Air Force give different individual hole counts. The date follows the federal summary because APRO's weekday and day-of-month disagree.",
       controls: "Investigators compared asphalt from the burned patch with an unburned sample. Infrared spectroscopy of the extracts found no foreign material, and the report noted that a chemical could have evaporated.",
       sources: [
         {
@@ -90,28 +97,52 @@
           label: "U.S. Air Force Project Blue Book case summary",
           url: "https://documents.theblackvault.com/bluebookdesk/pbb-univcol.pdf",
           locator: "South Hill, Virginia, April 21, 1967, narrative and investigative comments."
+        },
+        {
+          id: "apro",
+          label: "APRO Bulletin, South Hill, Va. Landing",
+          url: "https://projectaquarius.mufon.com/wp-content/uploads/APROBulletins/apro_may_1967.pdf#page=11",
+          locator: "May–June 1967, printed p. 11. Reports William Powers’s diagonal lengths and crossing angle."
         }
       ],
       traces: [
         {
           kind: "scorching",
-          observation: "State troopers found a burned patch on the road and three spent paper matches near its center.",
+          observation: "State troopers found a burned patch on the road and three spent paper matches near its center. APRO describes an irregular, kidney-shaped patch roughly 3 ft wide.",
           context: "The Air Force considered ignition of a flammable liquid and described an absence of outward blast marks or blast damage to the pavement.",
-          sourceIds: ["blue-book"]
+          sourceIds: ["blue-book", "apro"],
+          pattern: { label: "Reported kidney-shaped asphalt burn", families: ["irregular"], basis: "dimensions",
+            details: "Only one approximate width is reported. The boundary was not surveyed in the same coordinate frame as the holes." }
         },
         {
           kind: "impression",
-          observation: "On the following morning four holes, each roughly ½ in (1.3 cm) in diameter, were reported around the burned patch.",
+          observation: "The Air Force summary records four holes about ½ in across. APRO instead describes four groups of paired holes, about 11½ to 12 ft apart.",
           context: "The sequence matters because the burn was already present at the first search and the holes were first recorded the following day.",
-          sourceIds: ["blue-book"],
+          sourceIds: ["blue-book", "apro"],
           pattern: {
-            label: "Reported square around a burn",
+            label: "Four reported mark positions",
             families: ["four_point"],
-            basis: "description",
-            details: "The Air Force describes the holes as forming a square. The case summary gives no perimeter lengths or angles to test the reported symmetry."
+            basis: "dimensions",
+            details: "APRO reports 16 ft 1 in and 16 ft 6 in diagonals crossing about 2° from perpendicular. The lengths from the intersection to each individual mark are unspecified."
           }
         }
-      ]
+      ],
+      diagram: {
+        title: "South Hill nominal four-position quadrilateral",
+        basis: "Schematic from APRO’s reported diagonals and crossing angle",
+        note: "Local metres. The two reported diagonals cross at about 88° in this drawing. Placing their midpoints at the crossing is a schematic assumption. The burn and individual spike holes lack registered coordinates and are described separately.",
+        viewBox: [-3.1, -3.1, 6.2, 6.2],
+        layers: [
+          { kind: "impression", label: "Nominal positions from the APRO account",
+            note: "Four symbols show group centers. The display uses the reported diagonal lengths and angle. The appearance of 180° symmetry follows the drawing’s midpoint assumption.", sourceIds: ["apro"],
+            marks: [
+              { type: "point", x: -southHillDiagonalA / 2, y: 0, tag: "A", estimated: true, label: "Nominal mark group A" },
+              { type: "point", x: southHillOtherX, y: -southHillOtherY, tag: "B", estimated: true, label: "Nominal mark group B" },
+              { type: "point", x: southHillDiagonalA / 2, y: 0, tag: "C", estimated: true, label: "Nominal mark group C" },
+              { type: "point", x: -southHillOtherX, y: southHillOtherY, tag: "D", estimated: true, label: "Nominal mark group D" }
+            ] }
+        ]
+      }
     },
     {
       id: "falcon_lake",
