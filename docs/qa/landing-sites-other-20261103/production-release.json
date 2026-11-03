@@ -19,15 +19,15 @@
       },
       "public-verification.json": {
         "bytes": 6854,
-        "sha256": "290f11dcb2b86a5d80b6f5cd899e3ab7aba58dc0f48a0bb84215d72ee1ad93a0"
+        "sha256": "96223935b9657b1b868984a5e9482157129d2c62ffcd50dd682f517acbf03d5f"
       },
       "build_stage.py": {
         "bytes": 3327,
         "sha256": "389ebc9eccfb95441e7f290595adf69a655849861dbaa095a1936be67ae49b1b"
       },
       "verify_public.py": {
-        "bytes": 2526,
-        "sha256": "a273af96c2024ec02e018a2840938c75b74c425e8b202ff1dc3a58a61b3ed978"
+        "bytes": 2567,
+        "sha256": "4d56afe3c7eeab91bfe366d516a6c724f9972f2de325d15982605e25d393c5a5"
       }
     },
     "changedPaths": [
@@ -223,7 +223,7 @@
   },
   "storage": {
     "newStageDataBytesD": 2547654,
-    "releaseSupportFilesBytesD": 59724,
+    "releaseSupportFilesBytesD": 59765,
     "approximateNewCBytes": "Under 2 MiB for Git objects and release receipts",
     "hardLinkedUnchangedFiles": 231,
     "r2ObjectsUploaded": 0,
