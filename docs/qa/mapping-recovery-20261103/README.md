@@ -1,7 +1,9 @@
 # Mapping recovery, 3 November 2026
 
-Current reviewed local candidate. **Not deployed.** The current production and
-rollback remain 90fa1b95 and 0ac7c2bc respectively.
+**Deployed and verified:** https://ufo-timeline.pages.dev/
+Production `f975c83d`; sole retained rollback `90fa1b95`.
+See [production-release.json](production-release.json) for the source revision,
+artifact pins, public delivery checks, storage, and retention record.
 
 The complete 702,893-record served catalog was checked. Every one of its 120,016
 unmapped records was screened against retained location authorities and original
@@ -54,8 +56,8 @@ Focused source-admission, overlay, map/Analysis-build, and cache tests pass. The
 HTTP check verified 28 requests including the compressed production upload
 paths. Returning-visitor manifest URLs now carry the new version. Visual UI
 inspection could not run: both browser-control and native computer-use kernels
-failed with `failed to write kernel assets: path not found`. No visual pass or
-production deployment is claimed.
+failed with `failed to write kernel assets: path not found`. No visual browser pass is claimed. Production publication and public delivery
+were subsequently verified as recorded below.
 
 ## Rebuild and preview
 
@@ -86,7 +88,29 @@ The only new file larger than 100 MiB is
 `4e48f09585dac64055e7acb85ff04548b1abb2fd88da6717a93ca9b62d4bec79`).
 
 The D: evidence root and its sparse map/Analysis candidate are canonical for this
-review. The production pointer and retained rollback are unchanged. The initial
+review. Production and rollback designations are recorded in production-release.json. The initial
 `location-source-review` directory (about 2.55 MiB) is superseded by
 `location-source-review-v2`; retain it as review history until a literal-path
 cleanup allowlist is approved. No cleanup or deletion was performed.
+
+## Verified production release
+
+All 234 public Pages assets and all 99 new R2 objects match the frozen release
+plan. New R2 objects total 138,246,939 bytes and were checked at exact production
+URLs. The 236-file Pages stage matches committed source
+`980a9ef45ed5b60e9516a57fa4282bc621796c85`. Live configuration reports
+595,356 mapped and 107,537 unmapped source representations. Conditional requests
+using prior-production cache validators return the updated files; versioned
+shell and auxiliary Analysis manifest URLs also changed.
+
+The active plan is `releases/mapping-recovery-20261103/delivery_plan.json`.
+The new canonical stage is `D:/UFO-Timeline-Research/mapping-recovery-20261103/pages-stage`.
+It adds 43,253,929 bytes on D: (about 41.25 MiB), plus small receipts. Runtime
+materialization added 1,598,973 bytes on C:; deployment-turn growth including Git
+and receipts is under 10 MiB. No deployment-turn file exceeds 100 MiB.
+The old `.tmp/workspace-analysis-20261008-pages` stage is retained as rollback
+90fa1b95. The preview and previous rollback designation are superseded; cleanup
+requires a separate explicit allowlist. No deletion was performed.
+
+The pinned `recovery-report.html` and candidate receipt remain historical review
+snapshots; their predeployment status is superseded by this production receipt.

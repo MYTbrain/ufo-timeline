@@ -1,0 +1,84 @@
+{
+  "schema": "mapping_recovery_provider_production_v1",
+  "observedUtc": "2026-11-03T17:31:47.470Z",
+  "accountId": "f19eee6af8d32295458eda8abec46eac",
+  "projectName": "ufo-timeline",
+  "productionBranch": "main",
+  "canonicalDeployment": {
+    "id": "f975c83d-e2fe-4f4a-a956-043eea13bf71",
+    "environment": "production",
+    "url": "https://f975c83d.ufo-timeline.pages.dev",
+    "aliases": null,
+    "createdOn": "2026-11-03T17:31:29.443101Z",
+    "modifiedOn": "2026-11-03T17:31:31.100204Z",
+    "latestStage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-11-03T17:31:31.100204Z",
+      "status": "success"
+    },
+    "isSkipped": false,
+    "trigger": {
+      "type": "ad_hoc",
+      "branch": "main",
+      "commitHash": "980a9ef45ed5b60e9516a57fa4282bc621796c85",
+      "commitMessage": "Recover 12,479 mapped references with explicit location uncertainty"
+    }
+  },
+  "latestDeployment": {
+    "id": "f975c83d-e2fe-4f4a-a956-043eea13bf71",
+    "environment": "production",
+    "url": "https://f975c83d.ufo-timeline.pages.dev",
+    "aliases": null,
+    "createdOn": "2026-11-03T17:31:29.443101Z",
+    "modifiedOn": "2026-11-03T17:31:31.100204Z",
+    "latestStage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-11-03T17:31:31.100204Z",
+      "status": "success"
+    },
+    "isSkipped": false,
+    "trigger": {
+      "type": "ad_hoc",
+      "branch": "main",
+      "commitHash": "980a9ef45ed5b60e9516a57fa4282bc621796c85",
+      "commitMessage": "Recover 12,479 mapped references with explicit location uncertainty"
+    }
+  },
+  "retainedRollback": {
+    "id": "90fa1b95-d819-4808-8e8e-387930455391",
+    "environment": "production",
+    "url": "https://90fa1b95.ufo-timeline.pages.dev",
+    "aliases": null,
+    "createdOn": "2026-10-31T17:29:45.333598Z",
+    "modifiedOn": "2026-10-31T17:29:46.961319Z",
+    "latestStage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-10-31T17:29:46.961319Z",
+      "status": "success"
+    },
+    "isSkipped": false,
+    "trigger": {
+      "type": "ad_hoc",
+      "branch": "main",
+      "commitHash": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+      "commitMessage": "Default known-direction traces with arrows hidden"
+    }
+  },
+  "validation": {
+    "expectedCanonicalIdPrefix": true,
+    "productionEnvironment": true,
+    "deploymentSuccessful": true,
+    "sourceRevisionCorrect": true,
+    "rollbackAvailable": true
+  },
+  "previewProvenance": {
+    "deploymentIdPrefix": "4eb12a87",
+    "providerAnnotationIncorrect": "980a9efcd0",
+    "authoritativeRuntimeSourceCommit": "980a9ef45ed5b60e9516a57fa4282bc621796c85",
+    "basis": "Root independently verified all236 committed candidate files against980a9ef45; preview served234 public files byte-verified. Do not use mistyped preview provider annotation as source provenance."
+  },
+  "readOnly": true
+}

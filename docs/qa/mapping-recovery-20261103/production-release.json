@@ -1,0 +1,88 @@
+{
+  "schemaId": "ufo-mapping-recovery-production-release-v1",
+  "status": "published_verified",
+  "observedUtc": "2026-11-03T17:35:21.455387+00:00",
+  "productionUrl": "https://ufo-timeline.pages.dev/",
+  "deploymentId": "f975c83d-e2fe-4f4a-a956-043eea13bf71",
+  "immutableDeploymentUrl": "https://f975c83d.ufo-timeline.pages.dev",
+  "runtimeSourceCommit": "980a9ef45ed5b60e9516a57fa4282bc621796c85",
+  "featureSourceCommit": "47e3dbd4d94d30e113bd495698fa0784809ebd67",
+  "releaseId": "mapping-recovery-20261103",
+  "deliveryPlan": "releases/mapping-recovery-20261103/delivery_plan.json",
+  "counts": {
+    "sourceRepresentations": 702893,
+    "mapped": 595356,
+    "unmapped": 107537,
+    "newlyMapped": 12479,
+    "existingCoordinateCorrections": 1,
+    "guardedPatches": 12480
+  },
+  "meaning": "Reviewed location references; broad areas explicitly labelled approximate. Original dates, descriptions, source identities and strict spatial-inference eligibility are preserved.",
+  "canonicalArtifact": {
+    "stage": "D:/UFO-Timeline-Research/mapping-recovery-20261103/pages-stage",
+    "files": 236,
+    "bytes": 43253929,
+    "treeSha256": "b372a8e6f91497f01e94e0493b785a8465a45a82d7fe4b2958861d4af2857f71",
+    "rebuild": "scripts/publish_mapping_recovery.py --root D:/UFO-Timeline-Research/mapping-recovery-20261103 --materialize; frozen Pages allowlist only, shared source inputs"
+  },
+  "retainedRollback": {
+    "deploymentId": "90fa1b95-d819-4808-8e8e-387930455391",
+    "sourceCommit": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+    "url": "https://90fa1b95.ufo-timeline.pages.dev",
+    "localStage": ".tmp/workspace-analysis-20261008-pages",
+    "treeSha256": "d994c2cdc2bee19b6bea8f091a265592126876294850e71353a03f3f945d52e5",
+    "receipt": "docs/qa/direction-defaults-20261031/production-release.json",
+    "supersededDesignation": "0ac7c2bc-3f39-4984-920a-5fcd45327d4c"
+  },
+  "verification": {
+    "servedFilesVerified": 234,
+    "allPagesFilesMatchCommittedBlobs": 236,
+    "newR2ObjectsVerified": 99,
+    "newR2BytesVerified": 138246939,
+    "exactBaseUrlsVerified": true,
+    "hostedPreview": "https://4eb12a87.ufo-timeline.pages.dev",
+    "hostedPreviewSourceProvenance": "All 236 staged files match runtimeSourceCommit; preview provider commit annotation was mistyped. Correct source commit is recorded on production. See provider-production.json.",
+    "publicFiles": "production-files.json",
+    "publicR2": "r2-production-base-urls.json",
+    "provider": "provider-production.json",
+    "preview": "hosted-preview-review.json",
+    "returningVisitor": "returning-visitor-production.json",
+    "returningVisitorMethod": "Conditional HTTP requests using previous-production ETags returned new 200 responses; new versioned shell and Analysis manifest paths verified. No visual reload claim.",
+    "browserInspection": "Unavailable: browser and native computer-use kernels failed to initialize. Actual JavaScript overlay-chain checks and public HTTP delivery checks passed."
+  },
+  "storage": {
+    "deploymentCNetGrowthBytes": 1598973,
+    "deploymentCAdditionalGitAndReceipts": "Small metadata; combined deployment-turn growth under 10 MiB",
+    "deploymentDStageGrowthBytes": 43253929,
+    "deploymentDAdditionalReceipts": "Small JSON evidence files",
+    "newDeploymentFilesAbove100MiB": [],
+    "precedingAuditGrowthD": "Approximately 447 MiB, protected evidence and sparse deltas",
+    "precedingAuditFileAbove100MiB": {
+      "path": "D:/UFO-Timeline-Research/mapping-recovery-20261103/unmapped-details.jsonl.gz",
+      "bytes": 137475232,
+      "sha256": "4e48f09585dac64055e7acb85ff04548b1abb2fd88da6717a93ca9b62d4bec79"
+    },
+    "fullCorpusOrDatabaseCopied": false,
+    "supersededHostedCandidates": [
+      "https://4eb12a87.ufo-timeline.pages.dev"
+    ],
+    "supersededReviewArtifact": "D:/UFO-Timeline-Research/mapping-recovery-20261103/location-source-review",
+    "cleanupProposal": "Retain current f975c83d and sole rollback 90fa1b95. Hosted preview and former rollback designation 0ac7c2bc are superseded. Initial 2.55 MiB location-source-review is superseded by v2 but retained as evidence history. Delete only with a separate explicit literal-path allowlist; no cleanup performed. Older shared R2 data still referenced by current or rollback releases must remain.",
+    "temporaryArtifacts": "Upload progress JSON enables interrupted-upload recovery; final r2-publication.json is authoritative. Candidate review report is a preserved predeployment snapshot, not current production status."
+  },
+  "receiptPushStrategy": "[CF-Pages-Skip] commit to main; confirm canonical remains f975c83d after push.",
+  "artifactPins": {
+    "accepted-decisions.jsonl.gz": {
+      "bytes": 1146469,
+      "sha256": "57cef96dc3d43e6a771603d6881eeb94fc82a2d60507d8e110563c9c31af0f01"
+    },
+    "map-delta/map_release_receipt.json": {
+      "bytes": 147029,
+      "sha256": "3bfcc984b58e7ec7de03737c48a9e7704c8a57f5782468bbef24600b6550dc29"
+    },
+    "analysis-delta/analysis_delta_receipt.json": {
+      "bytes": 25384,
+      "sha256": "60bd3b843cc1a6e4d14bf82bc3deb003a5eb4792d567d4f9b37c3efeb8638da7"
+    }
+  }
+}

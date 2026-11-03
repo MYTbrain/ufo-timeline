@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "path": "index.html",
+      "priorEtag": null,
+      "status": 200,
+      "etag": null,
+      "updatedBytesMatch": true
+    },
+    {
+      "path": "data/app_config.json",
+      "priorEtag": "\"afa0ec005a81e54e440fec502e552d6b\"",
+      "status": 200,
+      "etag": "\"00e87cff12cc2d36ed5ba4fdf462bf4b\"",
+      "updatedBytesMatch": true
+    },
+    {
+      "path": "data/analysis_v2/manifest.json",
+      "priorEtag": "\"881397fe32cede07e53aaecb204b825f\"",
+      "status": 200,
+      "etag": "\"3a6ee95ac63f3a9b66a8ade7164ec24a\"",
+      "updatedBytesMatch": true
+    },
+    {
+      "path": "data/analysis_duration_v1/manifest.json",
+      "priorEtag": "\"6e463a4d300efaa241ead681806861da\"",
+      "status": 200,
+      "etag": "\"c36ed916a114e145ec78d229f9c02dcc\"",
+      "updatedBytesMatch": true
+    }
+  ],
+  "mapped": 595356,
+  "unmapped": 107537,
+  "recoveryPatches": 12480,
+  "canonicalAndImmutableConfigAgree": true,
+  "method": "Actual conditional HTTP requests with prior production cache validators; new shell version and dedicated manifest URL test. Browser UI tool unavailable, not a visual reload claim."
+}

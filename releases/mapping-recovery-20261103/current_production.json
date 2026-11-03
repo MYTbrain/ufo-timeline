@@ -1,0 +1,11 @@
+{
+  "schemaId": "ufo-current-production-pointer-v1",
+  "releaseId": "mapping-recovery-20261103",
+  "receipt": "docs/qa/mapping-recovery-20261103/production-release.json",
+  "deploymentId": "f975c83d-e2fe-4f4a-a956-043eea13bf71",
+  "runtimeSourceCommit": "980a9ef45ed5b60e9516a57fa4282bc621796c85",
+  "pagesTreeSha256": "b372a8e6f91497f01e94e0493b785a8465a45a82d7fe4b2958861d4af2857f71",
+  "retainedRollback": "90fa1b95-d819-4808-8e8e-387930455391",
+  "deliveryPlan": "releases/mapping-recovery-20261103/delivery_plan.json",
+  "canonicalStage": "D:/UFO-Timeline-Research/mapping-recovery-20261103/pages-stage"
+}
