@@ -1,0 +1,128 @@
+{
+  "status": "validated_local_candidate_not_deployed",
+  "counts": {
+    "inputs": [
+      {
+        "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\area-reference-candidates\\accepted-area-decisions.jsonl.gz",
+        "sha256": "ac47efd129de20ade8f77763044acc7e387e3aef0cd62e08bc7d6934dbe15dc8",
+        "bytes": 975580,
+        "decisions": 11439
+      },
+      {
+        "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\location-source-review-v2\\accepted-decisions.jsonl.gz",
+        "sha256": "5622f6fb5d4d87da6755992f58e79d8193bd68b2f32f92e2753cb316e1d90bbd",
+        "bytes": 372299,
+        "decisions": 985
+      },
+      {
+        "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\source-coordinates\\accepted-decisions.jsonl.gz",
+        "sha256": "35b09ab7927b6a7ffdf08dbb16ec39fd04a7236fc9c7e49a56fd8356ad03c7a9",
+        "bytes": 73298,
+        "decisions": 51
+      },
+      {
+        "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\manual-examples\\accepted-decisions.jsonl.gz",
+        "sha256": "5aa8f71aa7a2d4f97a5dcfab4a0d0845c682373370f9ed247d028a12fbe16353",
+        "bytes": 1376,
+        "decisions": 7
+      }
+    ],
+    "accepted_records": 12480,
+    "newly_mapped": 12479,
+    "corrected_existing_points": 1,
+    "remaining_unmapped": 107537,
+    "mapped_after": 595356,
+    "by_reference_kind": {
+      "country": 10803,
+      "state": 251,
+      "province": 383,
+      "source_coordinate": 51,
+      "compound_area": 551,
+      "locality": 441
+    },
+    "by_source": {
+      "phenomenainon_updb": 9654,
+      "mufon": 787,
+      "majestic": 448,
+      "nuforc": 1126,
+      "ufocat": 465
+    },
+    "overrides": [
+      {
+        "event_id": 2128218034239345,
+        "replaced": "area-reference:2128218034239345",
+        "chosen": "native-coordinate-20261103-2128218034239345",
+        "reason": "independently reviewed more specific source evidence"
+      },
+      {
+        "event_id": 3061324959165480,
+        "replaced": "area-reference:3061324959165480",
+        "chosen": "native-coordinate-20261103-3061324959165480",
+        "reason": "independently reviewed more specific source evidence"
+      }
+    ],
+    "output": {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\accepted-decisions.jsonl.gz",
+      "bytes": 1146469,
+      "sha256": "57cef96dc3d43e6a771603d6881eeb94fc82a2d60507d8e110563c9c31af0f01"
+    },
+    "policy": "All current records screened; conservative source-supported mappings only. Mapped counts are source representations, not independent incidents."
+  },
+  "artifacts": [
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\accepted-decisions.jsonl.gz",
+      "bytes": 1146469,
+      "sha256": "57cef96dc3d43e6a771603d6881eeb94fc82a2d60507d8e110563c9c31af0f01"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\accepted-decisions-receipt.json",
+      "bytes": 2463,
+      "sha256": "df67fcdebd962b60a405a8a40261cb356c9b839eb2f388c325ed09dacf523fc9"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\map-delta\\map_release_receipt.json",
+      "bytes": 147029,
+      "sha256": "3bfcc984b58e7ec7de03737c48a9e7704c8a57f5782468bbef24600b6550dc29"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\analysis-delta\\analysis_delta_receipt.json",
+      "bytes": 25384,
+      "sha256": "60bd3b843cc1a6e4d14bf82bc3deb003a5eb4792d567d4f9b37c3efeb8638da7"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\candidate\\delivery_plan.json",
+      "bytes": 306902,
+      "sha256": "9c287bfc9d8771264b6bdce9a5def54867757233bee120bc507ad36d0772566a"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\frontend-integration-review.json",
+      "bytes": 3569,
+      "sha256": "680e694612e0ad35ed89e5aad1f58b133ab14fccbc412df249002574ac734f1b"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\preview-delivery-review.json",
+      "bytes": 6557,
+      "sha256": "d9232867082b5a73e54a23de2d76d246d0bc947b79ad93340c0829145a1a0a41"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\recovery-report.html",
+      "bytes": 20747,
+      "sha256": "c8c2546f75bb47c051ac772244dd6078d7a6980feba7663e0fb91bb530db77b5"
+    }
+  ],
+  "currentProduction": "90fa1b95-d819-4808-8e8e-387930455391",
+  "retainedRollback": "0ac7c2bc-3f39-4984-920a-5fcd45327d4c",
+  "storage": {
+    "canonicalEvidenceAndCandidate": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103",
+    "netDBytes": 468579319,
+    "sourceCorpusCopied": false,
+    "newFilesAbove100MiB": [
+      {
+        "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\unmapped-details.jsonl.gz",
+        "bytes": 137475232,
+        "sha256": "4e48f09585dac64055e7acb85ff04548b1abb2fd88da6717a93ca9b62d4bec79"
+      }
+    ]
+  },
+  "visualInspection": "unavailable due to browser and native computer-use kernel asset path failure"
+}

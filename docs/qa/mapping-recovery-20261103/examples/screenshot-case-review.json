@@ -1,0 +1,332 @@
+{
+  "schema_id": "ufo-mapping-screenshot-review-v1",
+  "reviewed_date": "2026-11-03",
+  "generated_utc": "2026-11-03T16:08:19.413517+00:00",
+  "scope": "Five screenshot records dated 2014-03-08; recommendations only, no canonical or deployment mutations",
+  "current_runtime_summary_source": "releases/workspace-analysis-20261008/delivery_plan.json uploads summary_shards",
+  "gazetteer": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\cache\\map_overlays\\allCountries.zip",
+    "bytes": 418652677,
+    "member": "allCountries.txt",
+    "member_crc32": "0xb724e8a0",
+    "member_uncompressed_bytes": 1777801738,
+    "matching_policy": "Primary or ASCII populated-place names, explicit country and state if provided; no unrestricted alternate-name transfer."
+  },
+  "records": [
+    {
+      "event_id": 198690462474303,
+      "canonical_event_id": "evt_5001dda9535a42cd400a80c2",
+      "source": "mufon",
+      "source_file": "mufonpy.csv",
+      "source_id": "54548",
+      "source_row_number": 49760,
+      "canonical_input_ids": [
+        "cin_5f6047f17bbed39d6960913c",
+        "cin_aee5a9760c6641532d2fc731"
+      ],
+      "source_provenance": [
+        {
+          "source_name": "mufon",
+          "source_file": "mufonpy.csv",
+          "source_row_number": 49804,
+          "source_native_id": "54592",
+          "source_row_hash": "01b17c1c925e72600e60ddc664ab6867251a30eb",
+          "canonical_input_id": "cin_5f6047f17bbed39d6960913c"
+        },
+        {
+          "source_name": "mufon",
+          "source_file": "mufonpy.csv",
+          "source_row_number": 49760,
+          "source_native_id": "54548",
+          "source_row_hash": "f5c5f167be16caef0aaa600113109911bacc5c1f",
+          "canonical_input_id": "cin_aee5a9760c6641532d2fc731"
+        }
+      ],
+      "date_iso": "2014-03-08",
+      "time_raw": "8:35PM",
+      "location_raw": "Keaau-Pahoa, HI, US",
+      "has_coordinates": false,
+      "coordinate_source": "unresolved",
+      "location_precision": "city",
+      "lat": null,
+      "lon": null,
+      "preserved_description_excerpt": "Driving on Kaloli ave ocean bound with my friend in passenger seat, noticed objects flying in zig zag formation all orange in color, I pulled onto 12 th ave to the right or south east I stopped and turned off the engine and the lights of my jeep, me and my friend both jumped out of the jeep,and observed the objects fly in a changing formation in south west direction, I took 4 pictures of the objects with my I phone, my friend got alarmed and asked me not to take pictures of the objects he thought that they changed direction toward us, at this point the object flew behind the clouds , a home ow",
+      "description_sha256": "c807c4177eb652b591eda5de08019c0a7ee3e5db1f4c87d0f3066e70e2fdc55b",
+      "input": {
+        "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000124.json.gz",
+        "gzip_bytes": 2841137,
+        "gzip_sha256": "c2e9de11b4c0052a2f8cd583d5617675dfb6d7151bfda29a9ccb6014cec467b4",
+        "event_id_verified_in_chunk": true
+      },
+      "reason_unmapped": "Persisted summary and detail both lack coordinates; not a map rendering failure. City precision label was present independently of a usable point.",
+      "proposal": {
+        "status": "reviewed_locality_centroid_candidate",
+        "matched_place": "Hawaiian Paradise Park",
+        "geoname_id": "5855809",
+        "lat": 19.59333,
+        "lon": -154.97306,
+        "country": "US",
+        "admin1": "HI",
+        "location_precision": "city",
+        "basis": "The preserved witness account names Kaloli Avenue and 12th Avenue. Official Hawaii Police geography places 12th Avenue between Kaloli Drive and Paradise Drive in Hawaiian Paradise Park, Keaau. Use the populated-place centroid, not an exact intersection coordinate.",
+        "reported_location_role": "observer_locality",
+        "evidence_urls": [
+          "https://www.hawaiipolice.gov/police-investigating-fatal-traffic-collision-in-hpp/",
+          "https://records.hawaiicounty.gov/weblink/1/edoc/55489/Hawaii%20Council%20District%204%2011-10-11%20Draft.pdf"
+        ]
+      }
+    },
+    {
+      "event_id": 1228969906984748,
+      "canonical_event_id": "evt_9b468e7f01a976a9402ecab6",
+      "source": "nuforc",
+      "source_file": "nuforcpy.csv",
+      "source_id": "107899",
+      "source_row_number": 87915,
+      "canonical_input_ids": [
+        "cin_0ba69310a62ddd7f5832a3d4"
+      ],
+      "source_provenance": [
+        {
+          "source_name": "nuforc",
+          "source_file": "nuforcpy.csv",
+          "source_row_number": 87915,
+          "source_native_id": "107899",
+          "source_row_hash": "7c2cc0f50edaea8b33231b68e7b50438ff035469",
+          "canonical_input_id": "cin_0ba69310a62ddd7f5832a3d4"
+        }
+      ],
+      "date_iso": "2014-03-08",
+      "time_raw": "03:00 Local",
+      "location_raw": "Everett/Snohomish, WA, USA",
+      "has_coordinates": false,
+      "coordinate_source": "unresolved",
+      "location_precision": "city",
+      "lat": null,
+      "lon": null,
+      "preserved_description_excerpt": "NUFORC UFO Sighting 107899Three lights were HOVERING closely or together over Everett/Snohomish flatlands in early AM, as seen from I-5.I was driving southbound I-5 off of Broadway Exit in Everett, WA, at approx 3:00 am on Saturday, 3/8/14, when I saw were 3 lights hovering over the flatlands of Snohomish.These lights did not move, nor did they change color or shape. They were in a triangular setup, with one light and two others directly below.I am not sure if they were connected, or just very close together. They just hovered there, a hundred feet or so off the ground.I could see them the ent",
+      "description_sha256": "56195635f0d1a1b9c92a376af65c033af3b6bbb07e2caa33e64dc7b440affd8b",
+      "input": {
+        "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000017.json.gz",
+        "gzip_bytes": 2953167,
+        "gzip_sha256": "c84945115717dff53ed310a9e32a54baba82328b79264cef0503f3e24044199b",
+        "event_id_verified_in_chunk": true
+      },
+      "reason_unmapped": "Persisted summary and detail both lack coordinates; not a map rendering failure. City precision label was present independently of a usable point.",
+      "proposal": {
+        "status": "reviewed_observer_city_candidate",
+        "matched_place": "Everett",
+        "geoname_id": "5793933",
+        "lat": 47.97898,
+        "lon": -122.20208,
+        "country": "US",
+        "admin1": "WA",
+        "location_precision": "city",
+        "basis": "Header contains two places, but the preserved source explicitly places the observer on southbound I-5 off Broadway Exit in Everett WA. Object said to be above Snohomish flatlands. Map observer city, preserve both text locations, and do not claim an exact object position.",
+        "reported_location_role": "observer_city",
+        "evidence_urls": [
+          "https://nuforc.org/sighting/?id=107899"
+        ],
+        "live_source_status": "Direct web retrieval unavailable; retained raw source record inspected."
+      }
+    },
+    {
+      "event_id": 1953936209449515,
+      "canonical_event_id": "evt_abee940e9c9187be75f2bae1",
+      "source": "nuforc",
+      "source_file": "nuforcpy.csv",
+      "source_id": "107792",
+      "source_row_number": 87821,
+      "canonical_input_ids": [
+        "cin_420d8e86d56f72eb4d1d79e2"
+      ],
+      "source_provenance": [
+        {
+          "source_name": "nuforc",
+          "source_file": "nuforcpy.csv",
+          "source_row_number": 87821,
+          "source_native_id": "107792",
+          "source_row_hash": "445adf55a02b8c62a705b379d91dcc1ff887b049",
+          "canonical_input_id": "cin_420d8e86d56f72eb4d1d79e2"
+        }
+      ],
+      "date_iso": "2014-03-08",
+      "time_raw": "23:55 Local",
+      "location_raw": "Birmingham (UK/Birmingham), , United Kingdom",
+      "has_coordinates": false,
+      "coordinate_source": "unresolved",
+      "location_precision": "city",
+      "lat": null,
+      "lon": null,
+      "preserved_description_excerpt": "NUFORC UFO Sighting 107792Two elongated triangle shaped craft,no noise or lights, one behind the other, Birmingham, England. March 8 2014I was looking up at the night sky looking at a group of stars called in laymans terms the Saucepan which is a group of 7 stars. The sky was clear with various thin,broken clouds when 2 triangular shaped objects appeared. They were traveling in a northerly direction one behind the other. Speed, height and size was hard to gauge as there was nothing in the sky to compare them to. My best guess as to the speed would be faster than a commercial aircraft at cruisi",
+      "description_sha256": "c22cb35b3cb433ce2b98b9b997ffc1f67d3031807e9c68027861ffab3bdb1287",
+      "input": {
+        "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000089.json.gz",
+        "gzip_bytes": 2912292,
+        "gzip_sha256": "7e1995dc4c3b666f8b557a8d576676cdf5a4b2a04a2b913e2fc2660570e7c592",
+        "event_id_verified_in_chunk": true
+      },
+      "reason_unmapped": "Persisted summary and detail both lack coordinates; not a map rendering failure. City precision label was present independently of a usable point.",
+      "proposal": {
+        "status": "reviewed_unique_primary_city_country_candidate",
+        "matched_place": "Birmingham",
+        "geoname_id": "2655603",
+        "lat": 52.48142,
+        "lon": -1.89983,
+        "country": "GB",
+        "admin1": "ENG",
+        "location_precision": "city",
+        "basis": "Strip only the redundant UK/Birmingham parenthesis. The original header names United Kingdom and the body explicitly names Birmingham England. Unique primary populated-place match in the retained GeoNames GB records.",
+        "reported_location_role": "reported_city",
+        "evidence_urls": [
+          "https://nuforc.org/sighting/?id=107792"
+        ],
+        "live_source_status": "Direct web retrieval unavailable; retained raw source record inspected."
+      }
+    },
+    {
+      "event_id": 3426756551886707,
+      "canonical_event_id": "evt_5875b90d8e151f04d9efed01",
+      "source": "nuforc",
+      "source_file": "nuforcpy.csv",
+      "source_id": "107721",
+      "source_row_number": 87755,
+      "canonical_input_ids": [
+        "cin_c6b3c4ccb1f6af3f0340cc47"
+      ],
+      "source_provenance": [
+        {
+          "source_name": "nuforc",
+          "source_file": "nuforcpy.csv",
+          "source_row_number": 87755,
+          "source_native_id": "107721",
+          "source_row_hash": "3170947046bf74b2cb0cf4ad49e3afdb5d576ee5",
+          "canonical_input_id": "cin_c6b3c4ccb1f6af3f0340cc47"
+        }
+      ],
+      "date_iso": "2014-03-08",
+      "time_raw": "20:50 Local",
+      "location_raw": "Lennox Head (Australia), , Australia",
+      "has_coordinates": false,
+      "coordinate_source": "unresolved",
+      "location_precision": "city",
+      "lat": null,
+      "lon": null,
+      "preserved_description_excerpt": "NUFORC UFO Sighting 107721Orange light/UFO with red spike moving silentlyStanding on my balcony at 20:50 looking due north, dark night no real moonlight and quite still.I saw an orange light move silently from an easterly direction almost due west over the course of a minute until it disappeared into clouds.The light moved in a straight line at a steady speed traveling quicker than I would anticipate a lantern would travel and it appeared not to flicker.At ground level there is virtually not a breath of wind.The orange light had a thin red spike with an orange tip.The spike was about 4/5 times",
+      "description_sha256": "1a4ab70f170b6c75df5ab7e2bcbfad3f99c0780f12253974302354b30985a26e",
+      "input": {
+        "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000230.json.gz",
+        "gzip_bytes": 2824536,
+        "gzip_sha256": "f6cc16b1072527d1d3bab0382a47451644a297b8e9aa4efa5350c4797fba3260",
+        "event_id_verified_in_chunk": true
+      },
+      "reason_unmapped": "Persisted summary and detail both lack coordinates; not a map rendering failure. City precision label was present independently of a usable point.",
+      "proposal": {
+        "status": "reviewed_unique_primary_city_country_candidate",
+        "matched_place": "Lennox Head",
+        "geoname_id": "8310731",
+        "lat": -28.79131,
+        "lon": 153.59201,
+        "country": "AU",
+        "admin1": "02",
+        "location_precision": "city",
+        "basis": "The Australia parenthesis repeats the country. Unique primary populated-place match for Lennox Head in Australia; live NUFORC report retains same label and date. Ballina Shire Council independently places Lennox Head in NSW.",
+        "reported_location_role": "reported_city",
+        "evidence_urls": [
+          "https://nuforc.org/sighting/?id=107721",
+          "https://www.ballina.nsw.gov.au/Council/Major-Projects/Lennox-Head-Shared-Path"
+        ],
+        "live_source_status": "Live NUFORC report and council geography verified."
+      }
+    },
+    {
+      "event_id": 4173291518594354,
+      "canonical_event_id": "evt_d58dac5fc947a95e9aa63873",
+      "source": "nuforc",
+      "source_file": "nuforcpy.csv",
+      "source_id": "107728",
+      "source_row_number": 87762,
+      "canonical_input_ids": [
+        "cin_28a4f637b2b4108dd97ba56f"
+      ],
+      "source_provenance": [
+        {
+          "source_name": "nuforc",
+          "source_file": "nuforcpy.csv",
+          "source_row_number": 87762,
+          "source_native_id": "107728",
+          "source_row_hash": "81bbbbf3a941d9298af344acd2839ff3ae4dc303",
+          "canonical_input_id": "cin_28a4f637b2b4108dd97ba56f"
+        }
+      ],
+      "date_iso": "2014-03-08",
+      "time_raw": "20:00 Local",
+      "location_raw": "Los Lunas/Albuqerque, NM, USA",
+      "has_coordinates": false,
+      "coordinate_source": "unresolved",
+      "location_precision": "city",
+      "lat": null,
+      "lon": null,
+      "preserved_description_excerpt": "NUFORC UFO Sighting 107728Red/White flashing lights moving in sky. Over 15 red flashing lights counted and they were moving seemed to almost 'shoot.'While outside witness lots of birds flying east at night and very fast.Thought it was strange then saw Red and White round lights hovering in the sky.5 people on street and 3 others on the phone all saw the same thing. Lights were in groups and moving both fast and slow then disappearing and reappearing in different location. Lasted over 45 minutes. If you looked close enough you can see little white lights almost being shot off the blinking light",
+      "description_sha256": "d29b9edb168d05b5a89f69d1deb3171ff427eb4cb602a478f1d181b58f22e135",
+      "input": {
+        "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000056.json.gz",
+        "gzip_bytes": 2956574,
+        "gzip_sha256": "6dc4c58ca76b83593a81e8cc17ca184b531ed8c2dcf8a79bdba39dc4aba9a91a",
+        "event_id_verified_in_chunk": true
+      },
+      "reason_unmapped": "Persisted summary and detail both lack coordinates; not a map rendering failure. City precision label was present independently of a usable point.",
+      "proposal": {
+        "status": "ambiguous_multi_place_do_not_choose_single_city",
+        "matched_place": null,
+        "lat": null,
+        "lon": null,
+        "location_precision": "approximate_if_regional_mapping_admitted",
+        "basis": "Original header is Los Lunas/Albuqerque NM USA. Live source retains the misspelling. Body describes multiple witnesses on a street and on the phone but does not choose either city. A single-city centroid is not justified. Retain unresolved unless an explicitly approximate regional representation with extent is supported.",
+        "reported_location_role": "ambiguous_observer_area",
+        "candidate_places": [
+          {
+            "name": "Los Lunas",
+            "geoname_id": "5476913",
+            "lat": 34.80617,
+            "lon": -106.73336
+          },
+          {
+            "name": "Albuquerque",
+            "geoname_id": "5454711",
+            "lat": 35.08449,
+            "lon": -106.65114
+          }
+        ],
+        "evidence_urls": [
+          "https://nuforc.org/sighting/?id=107728"
+        ],
+        "live_source_status": "Live NUFORC report verified."
+      }
+    }
+  ],
+  "related_mapped_conflict": {
+    "event_id": 4102805855565119,
+    "canonical_event_id": "evt_149643aa1809307b135053ec",
+    "source": "phenomenainon_updb",
+    "source_id": "5504346",
+    "location_raw": "KEAAU-PAHOA, US",
+    "existing_point": [
+      20.78785,
+      -156.38612
+    ],
+    "existing_coordinate_source": "geocoded",
+    "linked_raw_source_id": "54548",
+    "linked_raw_source_name": "MUFON",
+    "raw_location_id": "5516307",
+    "distance_km_from_supported_hpp_centroid": 198.47,
+    "decision": "Do not transfer this geocoded point to the unmapped MUFON report. It is on Maui while the observer street pair supports Hawaiian Paradise Park on Hawaii Island. Same source_native_id 54548 and retained narrative provide a direct provenance linkage; this is a correction candidate, not independent corroboration.",
+    "detail_chunk": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\canonical_web\\event_chunks\\chunk_000016.json.gz"
+  },
+  "storage": {
+    "new_large_files": [],
+    "new_outputs_under_bytes": 25000,
+    "source_files_copied": false,
+    "retention": "Retain small provenance review with mapping recovery QA."
+  }
+}

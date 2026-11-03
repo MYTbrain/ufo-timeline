@@ -16,8 +16,12 @@
     "resolved_timezone", "timezone_source", "timezone_confidence",
     "estimated_utc_timestamp_ms", "estimated_utc_range_start_ms", "estimated_utc_range_end_ms",
     "playback_sort_confidence", "playback_sort_reason", "playback_sort_key",
-    "quality_view_changes", "quality_date_review", "quality_incident_relationships", "quality_original_account"
+    "quality_view_changes", "quality_date_review", "quality_incident_relationships", "quality_original_account",
+    "location_reference"
   ]);
+  const REFERENCE_KINDS = new Set(["country", "state", "province", "locality", "compound_area", "source_coordinate"]);
+  const REFERENCE_FIELDS = new Set(["kind", "label", "note", "authority_ids", "bounds", "radius_km", "evidence_id"]);
+  const MAPPING_FIELDS = new Set(["lat", "lon", "has_coordinates", "coordinate_source", "location_precision", "location_reference"]);
 
   function requireValue(condition, message) {
     if (!condition) throw new Error("Quality detail correction refused: " + message);
@@ -37,6 +41,32 @@
       Object.values(value).forEach(freezeTree);
       Object.freeze(value);
     }
+    return value;
+  }
+
+  function validateLocationReference(value) {
+    requireValue(plain(value) && Object.keys(value).every((key) => REFERENCE_FIELDS.has(key)), "invalid location reference fields");
+    requireValue(REFERENCE_KINDS.has(value.kind), "unsupported location reference kind");
+    for (const [key, limit] of [["label", 160], ["note", 600], ["evidence_id", 160]]) {
+      requireValue(typeof value[key] === "string" && value[key].trim().length > 0 && value[key].length <= limit &&
+        !/[\u0000-\u001f\u007f]/.test(value[key]), "invalid location reference " + key);
+    }
+    if (Object.hasOwn(value, "authority_ids")) {
+      requireValue(Array.isArray(value.authority_ids) && value.authority_ids.length > 0 && value.authority_ids.length <= 8 &&
+        value.authority_ids.every((id) => typeof id === "string" && id.length <= 160 && /^[a-zA-Z0-9:_./#-]+$/.test(id)),
+        "invalid location reference authorities");
+    }
+    if (Object.hasOwn(value, "bounds")) {
+      const b = value.bounds;
+      requireValue(Array.isArray(b) && b.length === 4 && b.every((n) => typeof n === "number" && Number.isFinite(n)) &&
+        b[0] >= -180 && b[2] <= 180 && b[1] >= -90 && b[3] <= 90 && b[0] <= b[2] && b[1] <= b[3],
+        "invalid location reference bounds");
+    }
+    if (Object.hasOwn(value, "radius_km")) {
+      requireValue(typeof value.radius_km === "number" && Number.isFinite(value.radius_km) && value.radius_km > 0 && value.radius_km <= 20040,
+        "invalid location reference radius");
+    }
+    requireValue(new TextEncoder().encode(JSON.stringify(value)).byteLength <= 1024, "location reference is too large");
     return value;
   }
 
@@ -67,9 +97,38 @@
       if (Object.hasOwn(patch.setFields, "date_precision")) {
         requireValue(patch.guards.date_precision === "exact_day" && patch.setFields.date_precision === "approximate", "unsupported precision transition");
       }
+      if (Object.hasOwn(patch.setFields, "location_reference")) validateLocationReference(patch.setFields.location_reference);
       patches.set(id, freezeTree(JSON.parse(JSON.stringify(patch))));
     }
     return Object.freeze({ patchCount: patches.size, hasPatch: (id) => patches.has(String(id)), getPatch: (id) => patches.get(String(id)) });
+  }
+
+  function createMappingIndex(payload, config) {
+    requireValue(plain(payload) && Array.isArray(payload.patches), "invalid mapping recovery payload");
+    for (const patch of payload.patches) {
+      requireValue(plain(patch) && plain(patch.setFields) &&
+        Object.keys(patch.setFields).every((key) => MAPPING_FIELDS.has(key)) &&
+        Array.from(MAPPING_FIELDS).every((key) => Object.hasOwn(patch.setFields, key)), "incomplete or protected mapping recovery fields");
+      const fields = patch.setFields;
+      const reference = validateLocationReference(fields.location_reference);
+      requireValue(fields.has_coordinates === true && typeof fields.coordinate_source === "string" &&
+        fields.coordinate_source.length > 0 && fields.coordinate_source.length <= 100 && fields.coordinate_source !== "unresolved",
+        "invalid mapping recovery source");
+      requireValue(typeof fields.lat === "number" && Number.isFinite(fields.lat) && Math.abs(fields.lat) <= 90 &&
+        typeof fields.lon === "number" && Number.isFinite(fields.lon) && Math.abs(fields.lon) <= 180,
+        "invalid mapping recovery point");
+      const precision = fields.location_precision;
+      requireValue(typeof precision === "string" && new Set(["country", "state", "province", "approximate", "city", "exact_coords", "mapped"]).has(precision),
+        "invalid mapping recovery precision");
+      if (["country", "state", "province"].includes(reference.kind)) {
+        requireValue(precision === reference.kind, "administrative reference precision mismatch");
+      } else if (reference.kind === "compound_area") {
+        requireValue(precision === "approximate", "compound area requires approximate precision");
+      } else if (reference.kind === "locality") {
+        requireValue(precision === "city" || precision === "approximate", "locality reference is not an exact position");
+      }
+    }
+    return createIndex(payload, config);
   }
 
   function apply(index, original) {
@@ -100,5 +159,5 @@
     requireValue(actual === config.gzipSha256, "compressed payload hash mismatch");
   }
 
-  return Object.freeze({ createIndex, apply, verifyCompressedPayload });
+  return Object.freeze({ createIndex, createMappingIndex, validateLocationReference, apply, verifyCompressedPayload });
 });

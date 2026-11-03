@@ -12,6 +12,9 @@
 /data/quality_detail_patches.json.gz
   Cache-Control: public, max-age=0, must-revalidate
 
+/data/mapping_recovery_detail/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 /sw.js
   Cache-Control: no-store
   Service-Worker-Allowed: /

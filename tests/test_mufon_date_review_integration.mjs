@@ -27,7 +27,8 @@ const context = vm.createContext({console, MUFON_DATE_REVIEW:review, ENCOUNTERS:
 for (const name of ["parseIsoParts","daysFromCivil","isoToOrdinal","finiteChronologyNumber",
   "applyMufonDateReview","eventDateLabel","compactCanonicalSummaryEventForRuntime","hydrateCatalogEvent",
   "sortDateIsoFromPackedKey","sortTimeMsFromPackedValue","projectPackedPointRowToEvent","augmentPackedMapEventDisplayFields",
-  "nullableCatalogNumber","serializeCatalogFacetWorkerRow","decodePackedTraceEventIndexRowForRender","renderDetail"]) {
+  "nullableCatalogNumber","serializeCatalogFacetWorkerRow","decodePackedTraceEventIndexRowForRender",
+  "locationReferenceForEvent","eventHasAreaReference","renderDetail"]) {
   vm.runInContext(actual(name),context,{filename:"actual-app:"+name});
 }
 const serialized=[];
@@ -79,6 +80,6 @@ const all=send({...query,type:"computeAnalysis",requestId:"all",timeRangeMode:"a
 assert.equal(all.summary.activeCount,6,"Undated reports remain available in All Time");
 const html=fs.readFileSync("index.html","utf8");
 assert.ok(html.indexOf('src="./mufon_date_review.js?')<html.indexOf('src="./app.js?'));
-assert.match(app,/applyMufonDateReview\(applyLocationLabelOverlay\(applyAnalysisRepairDetailOverlay/);
+assert.match(app,/applyMufonDateReview\(applyLocationLabelOverlay\(applyMappingRecoveryDetailOverlay\(applyAnalysisRepairDetailOverlay/);
 assert.match(app,/applyMufonDateReview\(applyLocationLabelOverlay\(event, \{ detail: true \}\)\)/);
 console.log("Actual map/summary/detail/trace and core Analysis paths withhold all five unsupported dates, preserve raw/submission fields and retain valid historical records.");

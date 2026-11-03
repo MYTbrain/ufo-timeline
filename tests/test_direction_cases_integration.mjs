@@ -725,6 +725,7 @@ vm.runInContext([
   "currentVisibleResultsCatalog", "currentResultsPaneCatalog", "currentVisibleMappedCatalog", "visibleResultsEventIdSet",
   "famousCaseResultMembership", "renderResultsCaseContext", "eventVisibleInCurrentResults", "renderResults",
   "resultsRenderContextKey", "renderExpandedResultDescription", "resultWindowNavigationMarkup", "clearFamousCasePreset",
+  "locationReferenceForEvent", "eventHasAreaReference", "mappingStatusBadge",
 ].map(extractFunction).join("\n"), resultsContext);
 const resultsSelection = resultsContext.computeRegionSelectionResult();
 const outsideIds = ["disc-remote", "triangle-after", "triangle-before"];

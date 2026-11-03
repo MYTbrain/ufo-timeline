@@ -1308,6 +1308,7 @@
     packedStartupPreviewSourceRowCount: 0,
     packedMapLayerCache: new Map(),
     analysisRepairDetailOverlay: null,
+    mappingRecoveryDetailOverlay: null,
     locationLabelOverlay: {
       enabled: false,
       status: PACKED_POINTS_STATUS.NOT_LOADED,
@@ -7358,6 +7359,7 @@
       path.indexOf("/data/canonical_web/") !== -1 ||
       path.indexOf("/data/analysis_v2/") !== -1 ||
       path.indexOf("/data/analysis_v1/") !== -1 ||
+      /\/data\/analysis_[a-z0-9_]+\/manifest\.json$/.test(path) ||
       path.indexOf("/data/source_citations/") !== -1 ||
       path.indexOf("/data/trace_intersection_feasibility_v1/") !== -1 ||
       path.indexOf("/data/startup_profiles/") !== -1 ||
@@ -8445,6 +8447,7 @@
 
   function applyLocationLabelOverlay(event, options) {
     if (!event || event.event_id == null) return event;
+    if (event.location_reference || (runtime.mappingRecoveryDetailOverlay && runtime.mappingRecoveryDetailOverlay.hasPatch(event.event_id))) return event;
     if (event.quality_view_changes || (runtime.detailQualityOverlay && runtime.detailQualityOverlay.hasPatch(event.event_id))) return event;
     const overlay = runtime.locationLabelOverlay;
     if (!overlay || overlay.status !== PACKED_POINTS_STATUS.READY || !overlay.patchesByEventId) return event;
@@ -8502,6 +8505,17 @@
     return runtime.analysisRepairDetailOverlayLoadPromise;
   }
 
+  function ensureMappingRecoveryDetailOverlayLoaded() {
+    if (runtime.mappingRecoveryDetailOverlay) return Promise.resolve(runtime.mappingRecoveryDetailOverlay);
+    if (!runtime.mappingRecoveryDetailOverlayLoadPromise) {
+      runtime.mappingRecoveryDetailOverlayLoadPromise = Promise.resolve().then(loadMappingRecoveryDetailOverlayRuntime).catch(function (error) {
+        runtime.mappingRecoveryDetailOverlayLoadPromise = null;
+        throw error;
+      });
+    }
+    return runtime.mappingRecoveryDetailOverlayLoadPromise;
+  }
+
   function loadStartupSupportEvidence() {
     if (runtime.startupSupportEvidencePromise) return runtime.startupSupportEvidencePromise;
     runtime.startupSupportEvidencePromise = Promise.all([
@@ -8510,6 +8524,7 @@
       measureStartupStep("source-backed trace timing load", loadTraceChronologyEvidence),
       measureStartupStep("reported encounter evidence load", loadEncounterEvidence),
       measureStartupStep("location label overlay load", loadLocationLabelOverlayRuntime),
+      measureStartupStep("reviewed mapping recovery load", ensureMappingRecoveryDetailOverlayLoaded),
     ]).then(function (values) {
       if (startup.progressiveEnabled && (!values[2] || runtime.encounterStatus !== "ready")) {
         if (!values[2]) runtime.traceChronologyEvidencePromise = null;
@@ -8572,6 +8587,33 @@
   function applyAnalysisRepairDetailOverlay(event) {
     return runtime.analysisRepairDetailOverlay
       ? ANALYSIS_REPAIR_DETAILS.apply(runtime.analysisRepairDetailOverlay, event) : event;
+  }
+
+  async function loadMappingRecoveryDetailOverlayRuntime() {
+    const config = runtime.appConfig && runtime.appConfig.mappingRecoveryDetailOverlay;
+    runtime.mappingRecoveryDetailOverlay = null;
+    if (!config || config.enabled !== true) return;
+    if (!QUALITY_DETAILS || typeof QUALITY_DETAILS.createMappingIndex !== "function" || !browserCanDecodeGzipJson()) {
+      throw createStartupError("Reviewed location references could not be loaded.", "./quality_detail_overlay.js",
+        "Use a current browser with compressed-data and integrity verification support.");
+    }
+    const url = resolveAssetPath(config.gzipUrl);
+    const payload = await retryStaticAssetLoad("Reviewed location references", async function () {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw createStartupError("Reviewed location references returned HTTP " + response.status + ".", url);
+      const bytes = await response.arrayBuffer();
+      await QUALITY_DETAILS.verifyCompressedPayload(bytes, config);
+      const stream = new Response(bytes).body.pipeThrough(new DecompressionStream("gzip"));
+      return new Response(stream).json();
+    });
+    runtime.mappingRecoveryDetailOverlay = QUALITY_DETAILS.createMappingIndex(payload, config);
+    recordStartupDecision("mappingRecoveryDetailOverlay", { enabled: true,
+      patchCount: runtime.mappingRecoveryDetailOverlay.patchCount, qualityManifestSha256: config.qualityManifestSha256 });
+  }
+
+  function applyMappingRecoveryDetailOverlay(event) {
+    return runtime.mappingRecoveryDetailOverlay
+      ? QUALITY_DETAILS.apply(runtime.mappingRecoveryDetailOverlay, event) : event;
   }
 
   function binaryAssetCacheMode(url) {
@@ -9630,6 +9672,7 @@
     packedEvent.location_raw = catalogEvent.location_raw || "";
     packedEvent.location_display = catalogEvent.location_display || "";
     packedEvent.location_precision = catalogEvent.location_precision || packedEvent.location_precision || "unknown";
+    if (catalogEvent.location_reference) packedEvent.location_reference = catalogEvent.location_reference;
     packedEvent.geocode_display_name = catalogEvent.geocode_display_name || "";
     packedEvent.description_short = catalogEvent.description_short || "";
     return packedEvent;
@@ -14479,6 +14522,38 @@
     return PRECISION_LABELS[key] || key;
   }
 
+  function locationReferenceForEvent(event) {
+    if (!event || !event.location_reference || !QUALITY_DETAILS || typeof QUALITY_DETAILS.validateLocationReference !== "function") return null;
+    try {
+      return QUALITY_DETAILS.validateLocationReference(event.location_reference);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function eventHasAreaReference(event) {
+    const reference = locationReferenceForEvent(event);
+    return Boolean(event && event.has_coordinates && reference &&
+      ["country", "state", "province", "compound_area"].includes(reference.kind));
+  }
+
+  function mappingStatusBadge(event) {
+    if (eventHasAreaReference(event)) {
+      return '<span class="badge badge-precision" title="Approximate area reference; exact sighting position unknown">Area ref</span>';
+    }
+    return event.has_coordinates
+      ? '<span class="badge badge-mapped">Mapped</span>'
+      : '<span class="badge badge-unmapped">Unmapped</span>';
+  }
+
+  function locationReferencePopupRows(event) {
+    const reference = locationReferenceForEvent(event);
+    if (!reference) return "";
+    const label = eventHasAreaReference(event) ? "Area reference:" : "Location reference:";
+    return '<div class="popup-row"><span class="popup-label">' + label + '</span> ' + escapeHtml(reference.label) + '</div>' +
+      '<div class="popup-row">' + escapeHtml(reference.note) + '</div>';
+  }
+
   function colorOrderForMode() {
     if (state.colorMode === "type") return TYPE_GROUP_ORDER;
     if (state.colorMode === "craft_type") return CRAFT_TYPE_ORDER;
@@ -16851,6 +16926,7 @@
         ? '<div class="popup-row"><span class="popup-label">Reviewed Time:</span> ' + escapeHtml(event.time_display) + "</div>"
         : "") +
       popupResolvedPlaceRow(event) +
+      locationReferencePopupRows(event) +
       '<div class="popup-row"><span class="popup-label">Source:</span> ' + escapeHtml(event.source || "Unknown") + "</div>" +
       '<div class="popup-row"><span class="popup-label">Type:</span> ' + escapeHtml(event.type || "Unknown") + "</div>" +
       '<div class="popup-row"><span class="popup-label">Location Precision:</span> ' + escapeHtml(locationPrecisionDisplayLabel(event.location_precision)) + "</div>" +
@@ -26579,9 +26655,7 @@
         : caseMembership === "connected" ? " is-case-connected" : "";
       const caseLabel = caseMembership === "area" ? "In selected area"
         : caseMembership === "connected" ? "Connected outside area" : "";
-      const mappedBadge = event.has_coordinates
-        ? '<span class="badge badge-mapped">Mapped</span>'
-        : '<span class="badge badge-unmapped">Unmapped</span>';
+      const mappedBadge = mappingStatusBadge(event);
       const precisionBadge = event.location_precision
         ? '<span class="badge badge-precision">' + escapeHtml(locationPrecisionDisplayLabel(event.location_precision)) + "</span>"
         : "";
@@ -26913,6 +26987,7 @@
       displayLocationForEvent(event);
 
     const resolvedPlace = String(event.geocode_display_name || "").trim();
+    const locationReference = locationReferenceForEvent(event);
     const summaryRows = [
       ["Event ID", event.event_id],
       ["Event Hash", event.event_hash],
@@ -26929,6 +27004,8 @@
       ...(resolvedPlace ? [["Resolved Place", resolvedPlace]] : []),
       ["Coordinate Source", event.coordinate_source],
       ["Location Precision", locationPrecisionDisplayLabel(event.location_precision)],
+      ...(locationReference ? [[eventHasAreaReference(event) ? "Area Reference" : "Location Reference", locationReference.label],
+        ["Reference Note", locationReference.note]] : []),
       ...(event.duration_display ? [["Reviewed Duration", event.duration_display]] : []),
       ["Duration Raw", event.duration_raw],
       ["Latitude", event.lat],
@@ -27051,7 +27128,7 @@
         );
       }
       const overlaidEvents = events.map(function (event) {
-        return applyMufonDateReview(applyLocationLabelOverlay(applyAnalysisRepairDetailOverlay(applyDetailQualityOverlay(event)), { detail: true }));
+        return applyMufonDateReview(applyLocationLabelOverlay(applyMappingRecoveryDetailOverlay(applyAnalysisRepairDetailOverlay(applyDetailQualityOverlay(event))), { detail: true }));
       });
       cacheChunkData(cacheKey, overlaidEvents);
       return overlaidEvents;
@@ -27859,7 +27936,8 @@
     return [analysisCatalogDatasetHash(), catalog.length, config.manifestUrl || "", config.manifestSha256 || "", config.expectedIdSetSha256 || "",
       JSON.stringify(runtime.appConfig.locationLabelOverlay || {}),
       JSON.stringify(runtime.appConfig.detailQualityOverlay || {}),
-      JSON.stringify(runtime.appConfig.analysisRepairDetailOverlay || {})].join("|");
+      JSON.stringify(runtime.appConfig.analysisRepairDetailOverlay || {}),
+      JSON.stringify(runtime.appConfig.mappingRecoveryDetailOverlay || {})].join("|");
   }
 
   function cancelKeywordSearch() {
@@ -30063,6 +30141,7 @@
       compactEvent.date_recovery_contract = event.date_recovery_contract;
       compactEvent.date_interval_semantics = event.date_interval_semantics;
     }
+    if (event.location_reference) compactEvent.location_reference = event.location_reference;
     return compactEvent;
   }
 
@@ -34148,6 +34227,7 @@
       loadCanonicalWebArtifactsRuntime(),
       ensureDetailQualityOverlayLoaded(),
       ensureAnalysisRepairDetailOverlayLoaded(),
+      ensureMappingRecoveryDetailOverlayLoaded(),
     ]);
     const payload = results[0];
     if (!canonicalWebArtifactsCanServePrimaryCatalog()) throw new Error("The full report manifests could not be prepared.");

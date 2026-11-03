@@ -1,0 +1,60 @@
+{
+  "schema": "ufo-full-unmapped-audit-v1",
+  "generated_at_utc": "2026-11-03T16:08:43.613230+00:00",
+  "scope": "Every current served source representation; map locations are not independent incident counts.",
+  "plan": {
+    "path": "C:\\Users\\jarod\\.codex\\worktrees\\case-navigation-release\\UFO Timeline map tool\\releases\\workspace-analysis-20261008\\delivery_plan.json",
+    "sha256": "7063be73b0e33735d55a3a7146a4bbd11cabb344b310859d985bb9c4c0741700"
+  },
+  "source_quality_manifest": {
+    "path": "C:\\Users\\jarod\\Desktop\\UFO Timeline map tool\\data\\research\\database_quality_20261007\\quality_view_manifest.json",
+    "sha256": "28580c1ccd5d834f365f3d3a27f7ab02b5a8bebf1c696213a37daf0e8e2376ec"
+  },
+  "counts": {
+    "events": 702893,
+    "mapped": 582877,
+    "unmapped": 120016
+  },
+  "by_source": {
+    "nuforc": {
+      "mapped": 136062,
+      "unmapped": 15754
+    },
+    "ufocat": {
+      "mapped": 204168,
+      "unmapped": 17112
+    },
+    "phenomenainon_updb": {
+      "mapped": 117420,
+      "unmapped": 43609
+    },
+    "majestic": {
+      "mapped": 18437,
+      "unmapped": 30981
+    },
+    "mufon": {
+      "mapped": 106790,
+      "unmapped": 12560
+    }
+  },
+  "unmapped_by_declared_precision": {
+    "city": 80755,
+    "country": 22384,
+    "unknown": 16877
+  },
+  "coordinate_anomalies": {},
+  "unmapped_unique_source_labels": 71305,
+  "outputs": [
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\unmapped-summary.jsonl.gz",
+      "bytes": 7255717,
+      "sha256": "56c96dad44024d8aa70afa1173ebe563b8fb284294310a12fcf6dafb50b9167d"
+    },
+    {
+      "path": "D:\\UFO-Timeline-Research\\mapping-recovery-20261103\\unmapped-details.jsonl.gz",
+      "bytes": 137475232,
+      "sha256": "4e48f09585dac64055e7acb85ff04548b1abb2fd88da6717a93ca9b62d4bec79"
+    }
+  ],
+  "source_or_runtime_mutated": false
+}
