@@ -134,8 +134,8 @@
     "points": "points.bin"
   },
   "input": {
-    "event_count": 2583,
-    "mapped_event_count": 2583,
+    "event_count": 2681,
+    "mapped_event_count": 2681,
     "row_order": "input_order",
     "skipped_event_count": 0
   },
@@ -427,7 +427,8 @@
     "coordinate_sources": [
       null,
       "geocoded",
-      "raw_latlong"
+      "raw_latlong",
+      "reviewed_area_reference"
     ],
     "craft_type_confidences": [
       null,
@@ -479,6 +480,7 @@
       "city",
       "country",
       "exact_coords",
+      "province",
       "state"
     ],
     "same_day_match_strengths": [
@@ -561,7 +563,7 @@
     "sort_date_key": 0,
     "sort_time_ms": -9223372036854775808
   },
-  "row_count": 2583,
+  "row_count": 2681,
   "schema_version": 3,
   "struct_format": "<QddiqIIIIIIIIIIIIi"
 }

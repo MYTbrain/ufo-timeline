@@ -134,8 +134,8 @@
     "points": "points.bin"
   },
   "input": {
-    "event_count": 979,
-    "mapped_event_count": 979,
+    "event_count": 1059,
+    "mapped_event_count": 1059,
     "row_order": "input_order",
     "skipped_event_count": 0
   },
@@ -215,6 +215,7 @@
       "chunk_000071",
       "chunk_000072",
       "chunk_000073",
+      "chunk_000074",
       "chunk_000075",
       "chunk_000076",
       "chunk_000077",
@@ -268,6 +269,7 @@
       "chunk_000128",
       "chunk_000129",
       "chunk_000130",
+      "chunk_000131",
       "chunk_000132",
       "chunk_000133",
       "chunk_000134",
@@ -313,6 +315,7 @@
       "chunk_000174",
       "chunk_000175",
       "chunk_000176",
+      "chunk_000177",
       "chunk_000178",
       "chunk_000179",
       "chunk_000180",
@@ -402,6 +405,7 @@
       "chunk_000267",
       "chunk_000268",
       "chunk_000269",
+      "chunk_000270",
       "chunk_000271",
       "chunk_000272",
       "chunk_000273",
@@ -418,6 +422,7 @@
       null,
       "geocoded",
       "raw_latlong",
+      "reviewed_area_reference",
       "source_account_city_reference"
     ],
     "craft_type_confidences": [
@@ -464,12 +469,15 @@
       null,
       "approximate",
       "exact_day",
-      "month"
+      "month",
+      "range"
     ],
     "location_precisions": [
       null,
       "city",
+      "country",
       "exact_coords",
+      "province",
       "state"
     ],
     "same_day_match_strengths": [
@@ -552,7 +560,7 @@
     "sort_date_key": 0,
     "sort_time_ms": -9223372036854775808
   },
-  "row_count": 979,
+  "row_count": 1059,
   "schema_version": 3,
   "struct_format": "<QddiqIIIIIIIIIIIIi"
 }

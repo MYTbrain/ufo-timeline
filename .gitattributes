@@ -254,3 +254,13 @@ data/trace_intersection_feasibility_v1/strict_25km_7d_buffer5.json -diff
 /mufon_date_review.js -text
 /docs/qa/mufon-date-review-20261019/** -text
 /docs/qa/context-source-continuation-20261019/** -text
+
+# Mapping recovery receipts and producers retain their pinned bytes on Windows.
+/releases/mapping-recovery-20261103/** -text
+/docs/qa/mapping-recovery-20261103/** -text
+/scripts/*mapping_recovery*.py -text
+/scripts/recover_mapping*.py -text
+/scripts/review_mapping*.py -text
+/scripts/admit_mapping_area_references.py -text
+/scripts/build_mapping_analysis_delta.py -text
+/scripts/audit_unmapped_source_coordinates.py -text

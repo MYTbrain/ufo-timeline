@@ -1,0 +1,678 @@
+{
+  "schema": "mapping_recovery_provider_preflight_v1",
+  "observedUtc": "2026-11-03T17:25:31.692Z",
+  "accountId": "f19eee6af8d32295458eda8abec46eac",
+  "projectName": "ufo-timeline",
+  "subdomain": "ufo-timeline.pages.dev",
+  "productionBranch": "main",
+  "buildConfig": {
+    "buildCommand": "",
+    "destinationDir": "",
+    "rootDir": ""
+  },
+  "source": {
+    "type": "github",
+    "productionBranch": "main",
+    "productionDeploymentsEnabled": true,
+    "owner": "MYTbrain",
+    "repoName": "ufo-timeline",
+    "previewDeploymentSetting": "all"
+  },
+  "canonicalDeployment": {
+    "id": "90fa1b95-d819-4808-8e8e-387930455391",
+    "environment": "production",
+    "url": "https://90fa1b95.ufo-timeline.pages.dev",
+    "aliases": null,
+    "createdOn": "2026-10-31T17:29:45.333598Z",
+    "modifiedOn": "2026-10-31T17:29:46.961319Z",
+    "latestStage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-10-31T17:29:46.961319Z",
+      "status": "success"
+    },
+    "stages": [
+      {
+        "name": "queued",
+        "status": "active",
+        "startedOn": "2026-10-31T17:29:45.333598Z",
+        "endedOn": null
+      },
+      {
+        "name": "initialize",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "build",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "deploy",
+        "status": "success",
+        "startedOn": null,
+        "endedOn": "2026-10-31T17:29:46.961319Z"
+      }
+    ],
+    "trigger": {
+      "type": "ad_hoc",
+      "branch": "main",
+      "commitHash": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+      "commitMessage": "Default known-direction traces with arrows hidden"
+    },
+    "isSkipped": false,
+    "productionBranch": "main"
+  },
+  "latestDeployment": {
+    "id": "41fec634-5b4e-4d48-b13e-a5900144fc26",
+    "environment": "production",
+    "url": "https://41fec634.ufo-timeline.pages.dev",
+    "aliases": null,
+    "createdOn": "2026-10-31T17:32:07.415626Z",
+    "modifiedOn": "2026-10-31T17:32:07.415626Z",
+    "latestStage": {
+      "name": "queued",
+      "started_on": null,
+      "ended_on": null,
+      "status": "idle"
+    },
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "initialize",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "build",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      },
+      {
+        "name": "deploy",
+        "status": "idle",
+        "startedOn": null,
+        "endedOn": null
+      }
+    ],
+    "trigger": {
+      "type": "github:push",
+      "branch": "main",
+      "commitHash": "cecc4e40409ea8a79143ddcf92227ce925e736ae",
+      "commitMessage": "[CF-Pages-Skip] Normalize release receipt line endings"
+    },
+    "isSkipped": true,
+    "productionBranch": "main"
+  },
+  "recentDeployments": [
+    {
+      "id": "41fec634-5b4e-4d48-b13e-a5900144fc26",
+      "environment": "production",
+      "url": "https://41fec634.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T17:32:07.415626Z",
+      "modifiedOn": "2026-10-31T17:32:07.415626Z",
+      "latestStage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        }
+      ],
+      "trigger": {
+        "type": "github:push",
+        "branch": "main",
+        "commitHash": "cecc4e40409ea8a79143ddcf92227ce925e736ae",
+        "commitMessage": "[CF-Pages-Skip] Normalize release receipt line endings"
+      },
+      "isSkipped": true,
+      "productionBranch": "main"
+    },
+    {
+      "id": "61d0e484-2f74-4973-830d-25d3b19ad437",
+      "environment": "production",
+      "url": "https://61d0e484.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T17:31:49.836182Z",
+      "modifiedOn": "2026-10-31T17:31:49.836182Z",
+      "latestStage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        }
+      ],
+      "trigger": {
+        "type": "github:push",
+        "branch": "main",
+        "commitHash": "89fcfdc7ef8dbb8ec908e36ab24b49293f84d0a7",
+        "commitMessage": "[CF-Pages-Skip] Record verified direction defaults release"
+      },
+      "isSkipped": true,
+      "productionBranch": "main"
+    },
+    {
+      "id": "90fa1b95-d819-4808-8e8e-387930455391",
+      "environment": "production",
+      "url": "https://90fa1b95.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T17:29:45.333598Z",
+      "modifiedOn": "2026-10-31T17:29:46.961319Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T17:29:46.961319Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T17:29:45.333598Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T17:29:46.961319Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "main",
+        "commitHash": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+        "commitMessage": "Default known-direction traces with arrows hidden"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    },
+    {
+      "id": "b13f1846-01bd-42e3-9fda-8a26a4e209da",
+      "environment": "preview",
+      "url": "https://b13f1846.ufo-timeline.pages.dev",
+      "aliases": [
+        "https://direction-defaults-20261031.ufo-timeline.pages.dev"
+      ],
+      "createdOn": "2026-10-31T17:28:49.758136Z",
+      "modifiedOn": "2026-10-31T17:28:51.28974Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T17:28:51.28974Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T17:28:49.758136Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T17:28:51.28974Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "direction-defaults-20261031",
+        "commitHash": "4b2ccd569ffc4b5d649a2e6b2234ad6b65cd6d0a",
+        "commitMessage": "Default known-direction traces with arrows hidden"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    },
+    {
+      "id": "3d2f97b9-c241-4db1-b931-f77af7580e3f",
+      "environment": "production",
+      "url": "https://3d2f97b9.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T16:17:46.663517Z",
+      "modifiedOn": "2026-10-31T16:17:46.663517Z",
+      "latestStage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        }
+      ],
+      "trigger": {
+        "type": "github:push",
+        "branch": "main",
+        "commitHash": "8d76a7b609f24620b6d94d5b8b2086b58614a067",
+        "commitMessage": "[CF-Pages-Skip] Record verified playback resume release"
+      },
+      "isSkipped": true,
+      "productionBranch": "main"
+    },
+    {
+      "id": "0ac7c2bc-3f39-4984-920a-5fcd45327d4c",
+      "environment": "production",
+      "url": "https://0ac7c2bc.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T16:15:26.587497Z",
+      "modifiedOn": "2026-10-31T16:15:29.551867Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T16:15:29.551867Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T16:15:26.587497Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T16:15:29.551867Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "main",
+        "commitHash": "e1d1ce6e287abc4d5e572f86dcd01cce47b2712b",
+        "commitMessage": "Prepare playback resume fix for release"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    },
+    {
+      "id": "fcb85210-ec70-49e1-95cb-0e6943b98fe5",
+      "environment": "preview",
+      "url": "https://fcb85210.ufo-timeline.pages.dev",
+      "aliases": [
+        "https://playback-resume-20261031.ufo-timeline.pages.dev"
+      ],
+      "createdOn": "2026-10-31T16:14:07.815988Z",
+      "modifiedOn": "2026-10-31T16:14:09.300618Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T16:14:09.300618Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T16:14:07.815988Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T16:14:09.300618Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "playback-resume-20261031",
+        "commitHash": "e1d1ce6e287abc4d5e572f86dcd01cce47b2712b",
+        "commitMessage": "Prepare playback resume fix for release"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    },
+    {
+      "id": "28ac64bb-4b82-4378-b51d-61d6ba33714a",
+      "environment": "production",
+      "url": "https://28ac64bb.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T15:59:31.752291Z",
+      "modifiedOn": "2026-10-31T15:59:31.752291Z",
+      "latestStage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        }
+      ],
+      "trigger": {
+        "type": "github:push",
+        "branch": "main",
+        "commitHash": "e2d5a59afedf1f9d63e1103611c2eb626222001e",
+        "commitMessage": "[CF-Pages-Skip] Record verified global direction controls release"
+      },
+      "isSkipped": true,
+      "productionBranch": "main"
+    },
+    {
+      "id": "034c76fd-15cf-4e30-a2d3-fea9fd4c1b2c",
+      "environment": "production",
+      "url": "https://034c76fd.ufo-timeline.pages.dev",
+      "aliases": null,
+      "createdOn": "2026-10-31T15:57:36.719053Z",
+      "modifiedOn": "2026-10-31T15:57:38.376631Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T15:57:38.376631Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T15:57:36.719053Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T15:57:38.376631Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "main",
+        "commitHash": "caae56d89a35dfbd20302a9e31232147b7c0fc01",
+        "commitMessage": "Prepare direction controls and worker for release"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    },
+    {
+      "id": "2bd77ead-93cc-4887-b261-db5b9c855ff2",
+      "environment": "preview",
+      "url": "https://2bd77ead.ufo-timeline.pages.dev",
+      "aliases": [
+        "https://direction-controls-20261031.ufo-timeline.pages.dev"
+      ],
+      "createdOn": "2026-10-31T15:56:01.81973Z",
+      "modifiedOn": "2026-10-31T15:56:03.586307Z",
+      "latestStage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-10-31T15:56:03.586307Z",
+        "status": "success"
+      },
+      "stages": [
+        {
+          "name": "queued",
+          "status": "active",
+          "startedOn": "2026-10-31T15:56:01.81973Z",
+          "endedOn": null
+        },
+        {
+          "name": "initialize",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "clone_repo",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "build",
+          "status": "idle",
+          "startedOn": null,
+          "endedOn": null
+        },
+        {
+          "name": "deploy",
+          "status": "success",
+          "startedOn": null,
+          "endedOn": "2026-10-31T15:56:03.586307Z"
+        }
+      ],
+      "trigger": {
+        "type": "ad_hoc",
+        "branch": "direction-controls-20261031",
+        "commitHash": "caae56d89a35dfbd20302a9e31232147b7c0fc01",
+        "commitMessage": "Prepare direction controls and worker for release"
+      },
+      "isSkipped": false,
+      "productionBranch": "main"
+    }
+  ],
+  "readOnly": true
+}

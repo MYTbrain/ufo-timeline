@@ -2,25 +2,25 @@
   "bytes_per_row": 72,
   "counts": {
     "gap_bucket_counts": {
-      "gap_le_1": 962,
+      "gap_le_1": 965,
       "gap_le_2": 7,
       "gap_le_30": 7,
       "gap_le_7": 15
     },
-    "mapped_trace_events": 992,
+    "mapped_trace_events": 995,
     "source_pair_counts": {
       "majestic->majestic": 2,
       "majestic->ufocat": 28,
-      "nuforc->ufocat": 1,
+      "nuforc->ufocat": 2,
       "phenomenainon_updb->majestic": 1,
-      "phenomenainon_updb->phenomenainon_updb": 13,
+      "phenomenainon_updb->phenomenainon_updb": 15,
       "phenomenainon_updb->ufocat": 14,
       "ufocat->majestic": 27,
-      "ufocat->nuforc": 1,
+      "ufocat->nuforc": 2,
       "ufocat->phenomenainon_updb": 14,
-      "ufocat->ufocat": 890
+      "ufocat->ufocat": 889
     },
-    "trace_segments": 991
+    "trace_segments": 994
   },
   "endianness": "little",
   "fields": [
@@ -162,7 +162,7 @@
     "runtime_warning": "Use trace_event_index for exact filtered static trace behavior; this full-sequence segment file is diagnostic/convenience data.",
     "segment_rule": "consecutive mapped events after canonical playback ordering"
   },
-  "row_count": 991,
+  "row_count": 994,
   "schema_version": 1,
   "struct_format": "<QQddddiiiIII"
 }

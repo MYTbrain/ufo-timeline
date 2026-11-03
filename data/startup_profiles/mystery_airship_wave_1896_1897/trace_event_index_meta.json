@@ -359,7 +359,7 @@
     "row_order": "canonical_playback_order",
     "sequence_index_scope": "full canonical mapped sequence; recompute visible sequence_index and sequence_ratio after filtering"
   },
-  "row_count": 992,
+  "row_count": 995,
   "schema_version": 1,
   "struct_format": "<QddiiIIiI"
 }

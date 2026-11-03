@@ -2,31 +2,33 @@
   "bytes_per_row": 72,
   "counts": {
     "gap_bucket_counts": {
-      "gap_le_1": 2582
+      "gap_le_1": 2680
     },
-    "mapped_trace_events": 2583,
+    "mapped_trace_events": 2681,
     "source_pair_counts": {
-      "majestic->majestic": 387,
+      "majestic->majestic": 386,
       "majestic->mufon": 3,
       "majestic->nuforc": 1,
-      "majestic->phenomenainon_updb": 12,
-      "majestic->ufocat": 263,
+      "majestic->phenomenainon_updb": 20,
+      "majestic->ufocat": 258,
       "mufon->majestic": 3,
       "mufon->mufon": 1,
+      "mufon->phenomenainon_updb": 1,
       "mufon->ufocat": 2,
       "nuforc->majestic": 1,
-      "nuforc->ufocat": 8,
-      "phenomenainon_updb->majestic": 8,
-      "phenomenainon_updb->nuforc": 1,
-      "phenomenainon_updb->phenomenainon_updb": 3,
-      "phenomenainon_updb->ufocat": 85,
-      "ufocat->majestic": 267,
-      "ufocat->mufon": 2,
-      "ufocat->nuforc": 7,
-      "ufocat->phenomenainon_updb": 82,
-      "ufocat->ufocat": 1446
+      "nuforc->phenomenainon_updb": 2,
+      "nuforc->ufocat": 6,
+      "phenomenainon_updb->majestic": 18,
+      "phenomenainon_updb->nuforc": 3,
+      "phenomenainon_updb->phenomenainon_updb": 20,
+      "phenomenainon_updb->ufocat": 149,
+      "ufocat->majestic": 260,
+      "ufocat->mufon": 3,
+      "ufocat->nuforc": 5,
+      "ufocat->phenomenainon_updb": 147,
+      "ufocat->ufocat": 1391
     },
-    "trace_segments": 2582
+    "trace_segments": 2680
   },
   "endianness": "little",
   "fields": [
@@ -154,8 +156,10 @@
       "majestic->ufocat",
       "mufon->majestic",
       "mufon->mufon",
+      "mufon->phenomenainon_updb",
       "mufon->ufocat",
       "nuforc->majestic",
+      "nuforc->phenomenainon_updb",
       "nuforc->ufocat",
       "phenomenainon_updb->majestic",
       "phenomenainon_updb->nuforc",
@@ -177,7 +181,7 @@
     "runtime_warning": "Use trace_event_index for exact filtered static trace behavior; this full-sequence segment file is diagnostic/convenience data.",
     "segment_rule": "consecutive mapped events after canonical playback ordering"
   },
-  "row_count": 2582,
+  "row_count": 2680,
   "schema_version": 1,
   "struct_format": "<QQddddiiiIII"
 }
