@@ -29,10 +29,20 @@ SHARED = Path(r"C:/Users/jarod/Desktop/UFO Timeline map tool")
 REPAIRS = SHARED / "data/research/analysis-repairs-20261007"
 PAGES = ROOT / ".tmp" / (RELEASE + "-pages")
 META = ROOT / "releases" / RELEASE
+LANDING_SITE_RUNTIME = (
+    "landing_site_cases.js", "landing_site_expanded_cases.js",
+    "landing_site_diagrams.js", "landing_site_phillips_catalog.js", "landing_site_analysis.js",
+    "landing_site_phillips_early_cases.js", "landing_site_phillips_late_cases.js",
+    "landing_site_comparison.js", "landing_site_other_catalog.js", "landing_site_australian_catalog.js",
+    "landing_site_direct_reviewed_cases.js", "landing_site_australian_reviewed_cases.js",
+    "landing_site_historical_reviewed_cases.js", "landing_site_ufocat_reviewed_cases.js",
+    "landing_site_review_audit.js",
+)
 FRONTEND_REFRESH_FILES = frozenset({
     "index.html", "app.js", "famous_case_presets.js", "famous_case_availability.js",
     "flap_preset_labels.js", "trace_direction_summary.js", "trace_facility_worker.js", "share_view.js", "analysis_view.js", "styles.css",
     "ui/accepted-workspace/site-workflow-preview.js", "ui/accepted-workspace/chronology-preview.css",
+    "ui/accepted-workspace/analysis-navigation.js", "_headers", *LANDING_SITE_RUNTIME,
 })
 OLD_MAP = ORIGIN + "/releases/quality-20261007/map_delta/"
 OLD_ANIMALS = ORIGIN + "/releases/animal-mutilations-v1-20260812/"
@@ -275,7 +285,7 @@ def validate_refresh(previous, plan):
         NUCLEAR_EXTENSION,
         "startup_catalog_ui.js", "startup_catalog_ui.css", "progressive_catalog_runtime.js",
         PROGRESSIVE_MANIFEST, PROGRESSIVE_VIEW,
-        "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
+        "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css", *LANDING_SITE_RUNTIME,
         "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
         "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
         "analysis_overview_model.js", "analysis_overview_visuals.js", "analysis_overview_view.js", "analysis_overview.css",
@@ -318,7 +328,7 @@ def assemble(check_only=False):
                    "analysis_cross_context.js", "analysis_lunar.js", "analysis_nuclear.js", "analysis_planetary.js",
                    "analysis_repair_detail_overlay.js", "trace_chronology.js", "trace_direction_summary.js", "famous_case_availability.js", "share_view.js", "encounter_evidence.js", "encounter_map.js",
                    "analysis_encounter_context.js", "encounter_atlas_query.js", "encounter_analysis.css",
-                   "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css",
+                   "analysis_collection_evidence.js", "analysis_collections_view.js", "analysis_collections.css", *LANDING_SITE_RUNTIME,
                    "analysis_session.js", "analysis_session_view.js", "analysis_session.css",
                    "analysis_session_context.js", "analysis_session_comparisons.js", "analysis_session_inspection.js", "analysis_session_sources.js",
                    "analysis_overview_model.js", "analysis_overview_visuals.js", "analysis_overview_view.js", "analysis_overview.css",

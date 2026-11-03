@@ -13217,3 +13217,489 @@ button[data-analysis-unavailable="true"]:disabled {
 .analysis-animal-temporal-chart .analysis-supporting-details {
   margin-top: 8px;
 }
+
+/* Landing Sites evidence register */
+.landing-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.landing-stats dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.landing-stats dd {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.landing-scope-note,
+.landing-case-meta,
+.landing-trace-context {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.landing-toolbar,
+.landing-traces {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.landing-toolbar label {
+  display: grid;
+  gap: 5px;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.landing-toolbar select {
+  width: 100%;
+  min-height: 42px;
+  padding: 6px 10px;
+  color: var(--ink);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--card);
+  font: inherit;
+}
+
+.landing-toolbar select:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.landing-case {
+  padding: clamp(12px, 2vw, 20px);
+}
+
+.landing-case > h4 {
+  font-size: 1.25rem;
+}
+
+.landing-case p {
+  margin: 6px 0;
+  line-height: 1.55;
+}
+
+.landing-trace {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-top: 3px solid var(--landing-trace-color);
+  border-radius: 12px;
+}
+
+.landing-trace[data-trace-kind="impression"] { --landing-trace-color: #4978bd; }
+.landing-trace[data-trace-kind="scorching"] { --landing-trace-color: #b46b3d; }
+.landing-trace[data-trace-kind="deformation"] { --landing-trace-color: #3d8b71; }
+.landing-trace[data-trace-kind="surface"] { --landing-trace-color: #8772a7; }
+
+.landing-trace h5,
+.landing-limits h5 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.landing-pattern {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  margin: 10px 0;
+  padding: 9px 10px;
+  border: 1px solid var(--panel-separator);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--landing-trace-color) 7%, var(--card));
+}
+
+.landing-pattern p {
+  margin: 0;
+}
+
+.landing-basis {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.landing-span-comparison {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin-block: 5px;
+}
+
+.landing-span-row {
+  display: grid;
+  grid-template-columns: auto 1fr minmax(5em, auto);
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.landing-span-row meter {
+  width: 100%;
+  accent-color: var(--landing-trace-color);
+}
+
+.landing-metric,
+.landing-sources {
+  font-size: 0.82rem;
+}
+
+.landing-sources {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding-inline-start: 1.1em;
+  overflow-wrap: anywhere;
+}
+
+.landing-sources a {
+  color: var(--accent-strong);
+}
+
+.landing-limits {
+  padding: 10px 12px;
+  border-left: 3px solid var(--panel-border);
+}
+
+.landing-limits h5:not(:first-child) {
+  margin-top: 12px;
+}
+
+.landing-methods {
+  margin-top: 12px;
+}
+
+.landing-methods .analysis-methodology-body {
+  overflow-x: auto;
+}
+
+.landing-layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.83rem;
+}
+
+.landing-layout-table th,
+.landing-layout-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--panel-separator);
+  vertical-align: top;
+}
+
+.landing-layout-table thead {
+  color: var(--muted);
+}
+
+@media (max-width: 500px) {
+  .landing-layout-table th,
+  .landing-layout-table td {
+    padding: 6px 4px;
+    font-size: 0.75rem;
+  }
+}
+
+.landing-toolbar .landing-diagram-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+  min-height: 28px;
+}
+
+.landing-diagram {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.landing-diagram h5 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.landing-diagram-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+}
+
+.landing-diagram-controls legend {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.landing-diagram-layer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.landing-diagram [data-trace-kind="impression"] { --landing-mark: #3975c0; }
+.landing-diagram [data-trace-kind="scorching"] { --landing-mark: #bb6932; }
+.landing-diagram [data-trace-kind="deformation"] { --landing-mark: #2a8c65; }
+.landing-diagram [data-trace-kind="surface"] { --landing-mark: #8b65b3; }
+.landing-diagram [data-trace-channel="twist"] { --landing-mark: #17818d; }
+
+.landing-diagram-swatch {
+  width: 9px;
+  height: 9px;
+  background: var(--landing-mark);
+  flex: none;
+}
+
+[data-trace-kind="scorching"] > .landing-diagram-swatch { transform: rotate(45deg); }
+[data-trace-kind="deformation"] > .landing-diagram-swatch,
+[data-trace-kind="surface"] > .landing-diagram-swatch { border-radius: 50%; }
+
+.landing-diagram-figure {
+  margin: 0;
+}
+
+.landing-diagram-plot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 1px solid var(--panel-separator);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--ink) 4%, var(--card));
+}
+
+.landing-diagram-plot svg {
+  display: block;
+  width: 100%;
+  height: clamp(190px, 37vw, 320px);
+}
+
+.landing-diagram-empty {
+  position: absolute;
+  padding: 10px;
+  text-align: center;
+}
+
+.landing-diagram-point,
+.landing-diagram-outline {
+  stroke: color-mix(in srgb, var(--landing-mark) 88%, var(--ink));
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.landing-diagram-point { fill: var(--landing-mark); }
+.landing-diagram-outline { fill: none; }
+.landing-diagram-estimated { stroke-dasharray: 6 5; }
+.landing-diagram-tag {
+  fill: var(--ink);
+  font-weight: 750;
+  paint-order: stroke;
+  stroke: var(--card);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.landing-diagram-caption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.landing-diagram-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 8px;
+  margin: 9px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-diagram-layer-note {
+  padding: 8px 10px;
+  border-left: 3px solid var(--landing-mark);
+  background: color-mix(in srgb, var(--landing-mark) 6%, var(--card));
+  font-size: 0.83rem;
+}
+
+.landing-diagram-references {
+  display: grid;
+  gap: 4px;
+  overflow-wrap: anywhere;
+}
+
+.landing-diagram-references a { color: var(--accent-strong); }
+
+.landing-mode-switch,
+.landing-catalog-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.landing-mode-switch [aria-pressed="true"] {
+  border-color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent) 16%, var(--card));
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.landing-catalog {
+  padding: clamp(12px, 2vw, 20px);
+}
+
+.landing-catalog h4 {
+  margin-bottom: 6px;
+}
+
+.landing-catalog a,
+.landing-catalog-case-link {
+  color: var(--accent-strong);
+}
+
+.landing-catalog-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.landing-catalog-filters label {
+  display: grid;
+  gap: 5px;
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.landing-catalog-filters input,
+.landing-catalog-filters select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 6px 9px;
+  color: var(--ink);
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  background: var(--card);
+  font: inherit;
+}
+
+.landing-catalog-pager p {
+  margin: 0 auto 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.landing-catalog-scroll {
+  overflow-x: auto;
+}
+
+.landing-catalog-table {
+  min-width: 465px;
+}
+
+.landing-catalog-case-link {
+  display: block;
+  margin-top: 3px;
+  padding: 3px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}
+
+.landing-combined {
+  display: grid;
+  gap: 12px;
+}
+
+.landing-combined[hidden] { display: none; }
+.landing-combined > .landing-catalog-filters,
+.landing-combined > .landing-scope-note { margin: 0; }
+
+.landing-comparison-card {
+  min-width: 0;
+  padding: clamp(12px, 2vw, 20px);
+}
+
+.landing-comparison-card h4 { margin: 0 0 8px; }
+.landing-comparison-table { min-width: 420px; }
+
+.landing-comparison-count {
+  display: inline-grid;
+  min-width: 2.1em;
+  min-height: 2.1em;
+  place-items: center;
+  padding: 2px 6px;
+  border: 1px solid var(--panel-separator);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) calc(7% + 24% * var(--landing-count-share, 0)), var(--card));
+  color: var(--accent-strong);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.landing-comparison-detail {
+  border-color: var(--accent-strong);
+}
+
+.landing-comparison-cases,
+.landing-comparison-cases ul {
+  margin-block: 4px;
+  padding-inline-start: 1.25em;
+}
+
+.landing-comparison-cases > li { margin-bottom: 6px; }
+
+.landing-diagram-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 12px;
+}
+
+.landing-diagram-pair-case { min-width: 0; }
+.landing-diagram-pair-case > .landing-catalog-case-link { font-weight: 750; }
+.landing-diagram-pair-case .landing-diagram { margin-top: 4px; }
+
+.landing-report-audit {
+  margin-top: 5px;
+  min-width: 9rem;
+}
+
+.landing-report-audit summary {
+  cursor: pointer;
+  color: var(--accent-strong);
+}
+
+.landing-report-audit p { margin: 4px 0; }

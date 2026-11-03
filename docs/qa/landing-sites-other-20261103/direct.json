@@ -1,0 +1,462 @@
+[
+  {
+    "id": "nuforc:28506",
+    "url": "https://nuforc.org/sighting/?id=28506",
+    "locator": "NUFORC report 28506 · CSV row 19688. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Source reports no tracks in snow."
+  },
+  {
+    "id": "nuforc:33958",
+    "url": "https://nuforc.org/sighting/?id=33958",
+    "locator": "NUFORC report 33958 · CSV row 23803. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Burn extent is inferred from an estimated object diameter. The headline and structured date disagree."
+  },
+  {
+    "id": "nuforc:51879",
+    "url": "https://nuforc.org/sighting/?id=51879",
+    "locator": "NUFORC report 51879 · CSV row 38519. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Retrospective asphalt depressions and burn damage, with no site layout or dimensions."
+  },
+  {
+    "id": "nuforc:39200",
+    "url": "https://nuforc.org/sighting/?id=39200",
+    "locator": "NUFORC report 39200 · CSV row 28183. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Small burned patch described after a hover. No measured boundary."
+  },
+  {
+    "id": "bluebook:BB-10872",
+    "url": "https://www.theufochronicles.com/2013/01/ufo-lands-near-nuke-missile-sites.html",
+    "locator": "USAF report, August 26, 1966, reproduced scan p. 3.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "USAF report p. 3 records two groups of three, pooled spacing range, and wildlife explanation. The object sketch is separate.",
+    "caseId": "donnybrook_north_dakota"
+  },
+  {
+    "id": "bluebook:BB-10944",
+    "url": "https://catalog.archives.gov/id/302555731",
+    "locator": "NARA T1206 roll 65, frames 0908–0935. North Dakota Air National Guard field report p. 3, frame 0923, and Air Force technical review, frame 0925.",
+    "access": "original_reviewed",
+    "geometry": "diagram",
+    "note": "The Gwinner file names Stirum as the witness location and records three measured depressions with side lengths 26 ft, 21 ft 6 in, and 21 ft 6 in. It supports the existing Phillips diagram. Investigators recorded no heat effect in dried stubble.",
+    "caseId": "stirum"
+  },
+  {
+    "id": "nuforc:154178",
+    "url": "https://nuforc.org/sighting/?id=154178",
+    "locator": "NUFORC report 154178 · CSV row 126502. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Round burnt spot and slime attributed to another observer. No trace positions or size."
+  },
+  {
+    "id": "nuforc:104287",
+    "url": "https://nuforc.org/sighting/?id=104287",
+    "locator": "NUFORC report 104287 · CSV row 84695. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Snow depression described without measured position or boundary."
+  },
+  {
+    "id": "nuforc:55973",
+    "url": "https://nuforc.org/sighting/?id=55973",
+    "locator": "NUFORC report 55973 · CSV row 42079. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Burned area attributed to a farmer. No plan or location precision."
+  },
+  {
+    "id": "nuforc:3565",
+    "url": "https://nuforc.org/sighting/?id=3565",
+    "locator": "NUFORC report 3565 · CSV row 2434. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Source explicitly reports neither flattened grass nor singed ground."
+  },
+  {
+    "id": "nuforc:45849",
+    "url": "https://nuforc.org/sighting/?id=45849",
+    "locator": "NUFORC report 45849 · CSV row 33439. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Paired footprint-like snow marks in various sizes. No site positions and no support attribution."
+  },
+  {
+    "id": "nuforc:186552",
+    "url": "https://nuforc.org/sighting/?id=186552",
+    "locator": "NUFORC report 186552 · CSV row 153108. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Submission compiles a newspaper account of burned grass and footprint sizes. No relative positions."
+  },
+  {
+    "id": "nuforc:62115",
+    "url": "https://nuforc.org/sighting/?id=62115",
+    "locator": "NUFORC report 62115 · CSV row 47472. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "titusville_yard_ring",
+    "geometry": "diagram"
+  },
+  {
+    "id": "nuforc:64874",
+    "url": "https://nuforc.org/sighting/?id=64874",
+    "locator": "NUFORC report 64874 · CSV row 49830. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Western-ridge indentations described as glassy. Neither inter-mark distances nor original field records recovered."
+  },
+  {
+    "id": "nuforc:13140",
+    "url": "https://nuforc.org/sighting/?id=13140",
+    "locator": "NUFORC report 13140 · CSV row 8355. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Partial round hillside mark in a retrospective account. No dimensions."
+  },
+  {
+    "id": "nuforc:152275",
+    "url": "https://nuforc.org/sighting/?id=152275",
+    "locator": "NUFORC report 152275 · CSV row 124834. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Witness describes a circular burned area the next day, without measured extent."
+  },
+  {
+    "id": "nuforc:97103",
+    "url": "https://nuforc.org/sighting/?id=97103",
+    "locator": "NUFORC report 97103 · CSV row 79204. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "cerrillos_reported_traces",
+    "geometry": "description"
+  },
+  {
+    "id": "geipan:1978-03-bennecourt",
+    "url": "https://www.geipan.fr/sites/default/files/Compte%20rendu%20enquete2.pdf",
+    "locator": "Re-examination of Bennecourt, pp. 1-3. Header and witness statement differ by one day.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "GEIPAN reviewed witness reports of round traces. Gendarmes saw tractor marks and did not verify a round trace."
+  },
+  {
+    "id": "nuforc:29569",
+    "url": "https://nuforc.org/sighting/?id=29569",
+    "locator": "NUFORC report 29569 · CSV row 20545. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Track language refers to a road. No recovered physical trace description."
+  },
+  {
+    "id": "nuforc:17899",
+    "url": "https://nuforc.org/sighting/?id=17899",
+    "locator": "NUFORC report 17899 · CSV row 12034. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Flattened grass and weeds reported in a quarry. No dimensions or documented support impressions."
+  },
+  {
+    "id": "nuforc:37927",
+    "url": "https://nuforc.org/sighting/?id=37927",
+    "locator": "NUFORC report 37927 · CSV row 27060. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Burned circle described without dimensions. Additional sites are hearsay."
+  },
+  {
+    "id": "geipan:79-06",
+    "url": "https://www.geipan.fr/sites/default/files/note_tech_8.pdf",
+    "locator": "GEPAN 79/06, technical note 8, chap. 4 and §6.1.2",
+    "access": "original_reviewed",
+    "geometry": "diagram",
+    "note": "GEPAN measured the flattened patch and separately located a clockwise swirl.",
+    "caseId": "porcieu_amblagnieu"
+  },
+  {
+    "id": "geipan:81-07",
+    "url": "https://www.geipan.fr/sites/default/files/note_tech_12.pdf",
+    "locator": "GEPAN 81/07, technical note 12, §1.2 and §§2.3–2.6",
+    "access": "original_reviewed",
+    "geometry": "diagram",
+    "note": "GEPAN figures document five holes and disturbed soil. The report considers lightning sufficient.",
+    "caseId": "le_guery_maize"
+  },
+  {
+    "id": "geipan:1982-10-amarante",
+    "url": "https://www.geipan.fr/sites/default/files/note_tech_17.pdf",
+    "locator": "L'Amarante, GEPAN technical note 17, §VII.1",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Original investigation includes a four-axis sampling grid selected by the investigators. Sampling locations do not establish a trace symmetry."
+  },
+  {
+    "id": "nuforc:139125",
+    "url": "https://nuforc.org/sighting/?id=139125",
+    "locator": "NUFORC report 139125 · CSV row 114813. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Tracks and cloud opening are context, without a documented site mark."
+  },
+  {
+    "id": "nuforc:32760",
+    "url": "https://nuforc.org/sighting/?id=32760",
+    "locator": "NUFORC report 32760 · CSV row 22784. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Witness searched and found no trace."
+  },
+  {
+    "id": "nuforc:38071",
+    "url": "https://nuforc.org/sighting/?id=38071",
+    "locator": "NUFORC report 38071 · CSV row 27191. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Existing terrain depression and viewing geometry. No trace attributed to an observed formation."
+  },
+  {
+    "id": "nuforc:5091",
+    "url": "https://nuforc.org/sighting/?id=5091",
+    "locator": "NUFORC report 5091 · CSV row 3472. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Terrain depression is the reported backdrop, without a newly formed mark."
+  },
+  {
+    "id": "nuforc:3068",
+    "url": "https://nuforc.org/sighting/?id=3068",
+    "locator": "NUFORC report 3068 · CSV row 2054. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Burn wording concerns a luminous object in flight."
+  },
+  {
+    "id": "nuforc:45461",
+    "url": "https://nuforc.org/sighting/?id=45461",
+    "locator": "NUFORC report 45461 · CSV row 33099. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Nominal burn diameter in retrospective narrative. Specific locality, perimeter survey and verification absent."
+  },
+  {
+    "id": "nuforc:36182",
+    "url": "https://nuforc.org/sighting/?id=36182",
+    "locator": "NUFORC report 36182 · CSV row 25632. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Witness described dry grass and explicitly distinguished it from burning. Timing and outline uncertain."
+  },
+  {
+    "id": "nuforc:17803",
+    "url": "https://nuforc.org/sighting/?id=17803",
+    "locator": "NUFORC report 17803 · CSV row 11961. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Round flattened dead grass was explicitly described as unburned. No size or local positions."
+  },
+  {
+    "id": "nuforc:37003",
+    "url": "https://nuforc.org/sighting/?id=37003",
+    "locator": "NUFORC report 37003 · CSV row 26285. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Road gravel displacement without ground mark geometry. Reported triangular burn was on the witness."
+  },
+  {
+    "id": "nuforc:53991",
+    "url": "https://nuforc.org/sighting/?id=53991",
+    "locator": "NUFORC report 53991 · CSV row 40349. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Second-hand oval road damage. Actual place and year conflict with structured record, and no landing witness."
+  },
+  {
+    "id": "nuforc:17133",
+    "url": "https://nuforc.org/sighting/?id=17133",
+    "locator": "NUFORC report 17133 · CSV row 11430. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Reported burned ground and plants without registered shape, extent or independent site survey."
+  },
+  {
+    "id": "nuforc:104594",
+    "url": "https://nuforc.org/sighting/?id=104594",
+    "locator": "NUFORC report 104594 · CSV row 84970. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Tracks described as animal- or boot-like. No documented support pattern."
+  },
+  {
+    "id": "nuforc:28915",
+    "url": "https://nuforc.org/sighting/?id=28915",
+    "locator": "NUFORC report 28915 · CSV row 20019. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Ground track refers to an orbital track. No site trace."
+  },
+  {
+    "id": "nuforc:32479",
+    "url": "https://nuforc.org/sighting/?id=32479",
+    "locator": "NUFORC report 32479 · CSV row 22546. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "yermo_reed_swirl",
+    "geometry": "diagram"
+  },
+  {
+    "id": "nuforc:43972",
+    "url": "https://nuforc.org/sighting/?id=43972",
+    "locator": "NUFORC report 43972 · CSV row 31870. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Two circular soil imprints and laid weeds. The square formation describes reported objects, with no traced ground layout."
+  },
+  {
+    "id": "nuforc:57052",
+    "url": "https://nuforc.org/sighting/?id=57052",
+    "locator": "NUFORC report 57052 · CSV row 43013. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Imprint attributed to a guard account with no usable placement or dimensions."
+  },
+  {
+    "id": "nuforc:57895",
+    "url": "https://nuforc.org/sighting/?id=57895",
+    "locator": "NUFORC report 57895 · CSV row 43773. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Circular burn/smoke observed beyond a fence. No measured extent or observed formation."
+  },
+  {
+    "id": "nuforc:58060",
+    "url": "https://nuforc.org/sighting/?id=58060",
+    "locator": "NUFORC report 58060 · CSV row 43921. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Reported burned grass and debris. The ring describes the reported object, with no documented trace geometry."
+  },
+  {
+    "id": "nuforc:67317",
+    "url": "https://nuforc.org/sighting/?id=67317",
+    "locator": "NUFORC report 67317 · CSV row 52012. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Railroad tracks mentioned. Witness searched and found no mark."
+  },
+  {
+    "id": "nuforc:68059",
+    "url": "https://nuforc.org/sighting/?id=68059",
+    "locator": "NUFORC report 68059 · CSV row 52679. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Melted snow reported without boundary or registered measurements."
+  },
+  {
+    "id": "nuforc:72574",
+    "url": "https://nuforc.org/sighting/?id=72574",
+    "locator": "NUFORC report 72574 · CSV row 56849. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "No fresh road tracks. The ring/sketch descriptions concern reported lights."
+  },
+  {
+    "id": "nuforc:90093",
+    "url": "https://nuforc.org/sighting/?id=90093",
+    "locator": "NUFORC report 90093 · CSV row 72706. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "milton_grass_traces",
+    "geometry": "description"
+  },
+  {
+    "id": "nuforc:100448",
+    "url": "https://nuforc.org/sighting/?id=100448",
+    "locator": "NUFORC report 100448 · CSV row 81579. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Witness searched for depressions or burns and reported normal conditions."
+  },
+  {
+    "id": "nuforc:118395",
+    "url": "https://nuforc.org/sighting/?id=118395",
+    "locator": "NUFORC report 118395 · CSV row 97133. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Burn and hole language concerns the light and a comparison to the sky."
+  },
+  {
+    "id": "nuforc:127133",
+    "url": "https://nuforc.org/sighting/?id=127133",
+    "locator": "NUFORC report 127133 · CSV row 104559. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Witness could not inspect the fenced area for marks."
+  },
+  {
+    "id": "nuforc:125989",
+    "url": "https://nuforc.org/sighting/?id=125989",
+    "locator": "NUFORC report 125989 · CSV row 103571. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Burning refers to the reported aerial object. No ground trace."
+  },
+  {
+    "id": "nuforc:130587",
+    "url": "https://nuforc.org/sighting/?id=130587",
+    "locator": "NUFORC report 130587 · CSV row 107506. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Burn language describes a fireball that disappeared before ground contact."
+  },
+  {
+    "id": "nuforc:131524",
+    "url": "https://nuforc.org/sighting/?id=131524",
+    "locator": "NUFORC report 131524 · CSV row 108314. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "description",
+    "note": "Lawn scorch marks reported without their layout or dimensions."
+  },
+  {
+    "id": "nuforc:179122",
+    "url": "https://nuforc.org/sighting/?id=179122",
+    "locator": "NUFORC report 179122 · CSV row 147298. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Footprints were attributed to people in the account."
+  },
+  {
+    "id": "nuforc:157583",
+    "url": "https://nuforc.org/sighting/?id=157583",
+    "locator": "NUFORC report 157583 · CSV row 129473. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "louisburg_grass_depression",
+    "geometry": "diagram"
+  },
+  {
+    "id": "nuforc:180817",
+    "url": "https://nuforc.org/sighting/?id=180817",
+    "locator": "NUFORC report 180817 · CSV row 148692. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Flattened appearance refers to a reported light in the air."
+  },
+  {
+    "id": "nuforc:182042",
+    "url": "https://nuforc.org/sighting/?id=182042",
+    "locator": "NUFORC report 182042 · CSV row 149688. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "caseId": "arlington_radial_grass",
+    "geometry": "description"
+  },
+  {
+    "id": "nuforc:193442",
+    "url": "https://nuforc.org/sighting/?id=193442",
+    "locator": "NUFORC report 193442 · CSV row 157695. Original submission text checked in the retained NUFORC export.",
+    "access": "original_reviewed",
+    "geometry": "insufficient",
+    "note": "Plant damage predates the sighting and is attributed to ice pellets."
+  }
+]

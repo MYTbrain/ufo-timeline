@@ -2979,6 +2979,11 @@
         setElementInert(entry.section, !active);
       });
       if (!options || options.scrollLink !== false) this._revealActiveSectionLink();
+      if (previousSectionId !== sectionId &&
+          [previousSectionId, sectionId].includes("analysis-section-landing-sites")) {
+        this._syncAnalysisStateVisibility();
+        this._syncComputationVisibility();
+      }
       if ((previousSectionId !== sectionId || sectionId === "analysis-section-context") && this.callbacks.onSectionActivate) {
         this.callbacks.onSectionActivate({
           sectionId,
@@ -3371,6 +3376,14 @@
       return { analysisMode: this.currentAnalysisMode, comparisonState: this.currentComparisonState };
     }
 
+    _syncAnalysisStateVisibility() {
+      const showCaseCatalog = this.activeSectionId === "analysis-section-landing-sites";
+      const hideContent = this.analysisState !== "ready" && !showCaseCatalog;
+      this.els.stateRegion.hidden = this.analysisState === "ready" || showCaseCatalog;
+      this.els.content.hidden = hideContent;
+      setElementInert(this.els.content, hideContent);
+    }
+
     _applyAnalysisState(nextState, message) {
       this.analysisState = nextState;
       const cards = [this.els.loading, this.els.empty, this.els.error];
@@ -3378,9 +3391,7 @@
         ? this.els.loading
         : (nextState === "empty" ? this.els.empty : (nextState === "error" ? this.els.error : null));
       cards.forEach(function (card) { card.hidden = card !== stateCard; });
-      this.els.stateRegion.hidden = nextState === "ready";
-      this.els.content.hidden = nextState !== "ready";
-      setElementInert(this.els.content, nextState !== "ready");
+      this._syncAnalysisStateVisibility();
       if (message) {
         const target = nextState === "loading"
           ? this.els.loadingMessage
@@ -3403,15 +3414,23 @@
       return this._applyAnalysisState(nextState, message);
     }
 
+    _syncComputationVisibility() {
+      const status = this.els.computationStatus;
+      if (!status) return;
+      const phase = status.getAttribute("data-phase");
+      const hidden = !phase || phase === "idle" || phase === "ready" || this.activeSectionId === "analysis-section-landing-sites";
+      status.hidden = hidden;
+      if (this.els.content) this.els.content.setAttribute("aria-busy", hidden ? "false" : "true");
+    }
+
     setComputationPhase(phaseValue, messageValue) {
       const phase = cleanText(phaseValue, "idle").toLowerCase();
       const status = this.els.computationStatus;
       if (!status) return phase;
-      const hidden = phase === "idle" || phase === "ready";
-      status.hidden = hidden;
       status.setAttribute("data-phase", phase);
-      status.textContent = hidden ? "" : cleanText(messageValue, "Analysis computation is continuing off the main thread.");
-      if (this.els.content) this.els.content.setAttribute("aria-busy", hidden ? "false" : "true");
+      status.textContent = phase === "idle" || phase === "ready"
+        ? "" : cleanText(messageValue, "Analysis computation is continuing off the main thread.");
+      this._syncComputationVisibility();
       return phase;
     }
 

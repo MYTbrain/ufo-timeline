@@ -31,6 +31,51 @@
 /analysis_view.js
   Cache-Control: public, max-age=0, must-revalidate
 
+/landing_site_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_expanded_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_diagrams.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_phillips_catalog.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_phillips_early_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_phillips_late_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_other_catalog.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_australian_catalog.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_comparison.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_direct_reviewed_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_australian_reviewed_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_historical_reviewed_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_ufocat_reviewed_cases.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_review_audit.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/landing_site_analysis.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /analysis_collection_evidence.js
   Cache-Control: public, max-age=0, must-revalidate
 

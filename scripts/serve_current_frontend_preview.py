@@ -25,7 +25,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SOURCE_OVERLAYS = frozenset({
     "index.html", "app.js", "famous_case_presets.js",
     "famous_case_availability.js", "flap_preset_labels.js", "trace_direction_summary.js", "share_view.js", "analysis_view.js",
-    "styles.css", "ui/accepted-workspace/site-workflow-preview.js",
+    "styles.css", "landing_site_cases.js", "landing_site_expanded_cases.js",
+    "landing_site_diagrams.js", "landing_site_phillips_catalog.js", "landing_site_analysis.js",
+    "landing_site_phillips_early_cases.js", "landing_site_phillips_late_cases.js",
+    "landing_site_comparison.js", "landing_site_other_catalog.js", "landing_site_australian_catalog.js",
+    "landing_site_direct_reviewed_cases.js", "landing_site_australian_reviewed_cases.js",
+    "landing_site_historical_reviewed_cases.js", "landing_site_ufocat_reviewed_cases.js",
+    "landing_site_review_audit.js",
+    "ui/accepted-workspace/analysis-navigation.js", "ui/accepted-workspace/site-workflow-preview.js",
     "ui/accepted-workspace/chronology-preview.css",
 })
 PUBLISHED_ORIGIN = "https://pub-e9029ab2f6b448daad03d7cde7e15e64.r2.dev"
